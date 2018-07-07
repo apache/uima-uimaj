@@ -331,8 +331,10 @@ public class FSUtil {
       }
     }
     
+    FeatureStructure value = aFS.getFeatureValue(aFeature);
+    
     // "null" case
-    if (aFS.getFeatureValue(aFeature) == null) {
+    if (value == null) {
       return null;
     }
     
@@ -342,59 +344,67 @@ public class FSUtil {
     int length;
     
     // Handle case where feature is an array
-    if (aFeature.getRange().isArray()) {
-      CommonArrayFS source = (CommonArrayFS) aFS.getFeatureValue(aFeature);
+    if (value instanceof CommonArrayFS) {
+      // Shortcut if the user explicitly requests an array type
+      if (!Object.class.equals(aClazz) && aClazz.isAssignableFrom(value.getClass())) {
+        return (T) value;
+      }
+      
+      CommonArrayFS source = (CommonArrayFS) value;
       length = source.size();
-      switch (aFeature.getRange().getComponentType().getName()) {
-        case CAS.TYPE_NAME_BOOLEAN:
-          target = new boolean[length];
-          ((BooleanArrayFS) source).copyToArray(0, (boolean[]) target, 0, length);
-          break;
-        case CAS.TYPE_NAME_BYTE:
-          target = new byte[length];
-          ((ByteArrayFS) source).copyToArray(0, (byte[]) target, 0, length);
-          break;
-        case CAS.TYPE_NAME_DOUBLE:
-          target = new double[length];
-          ((DoubleArrayFS) source).copyToArray(0, (double[]) target, 0, length);
-          break;
-        case CAS.TYPE_NAME_FLOAT:
-          target = new float[length];
-          ((FloatArrayFS) source).copyToArray(0, (float[]) target, 0, length);
-          break;
-        case CAS.TYPE_NAME_INTEGER:
-          target = new int[length];
-          ((IntArrayFS) source).copyToArray(0, (int[]) target, 0, length);
-          break;
-        case CAS.TYPE_NAME_LONG:
-          target = new long[length];
-          ((LongArrayFS) source).copyToArray(0, (long[]) target, 0, length);
-          break;
-        case CAS.TYPE_NAME_SHORT:
-          target = new short[length];
-          ((ShortArrayFS) source).copyToArray(0, (short[]) target, 0, length);
-          break;
-        case CAS.TYPE_NAME_STRING:
-          target = new String[length];
-          ((StringArrayFS) source).copyToArray(0, (String[]) target, 0, length);
-          break;
-        default:
-          if (aClazz.isArray()) {
-            target = Array.newInstance(aClazz.getComponentType(), length);
-          }
-          else {
-            target = new FeatureStructure[length];
-          }
-          ((ArrayFS) source).copyToArray(0, (FeatureStructure[]) target, 0, length);
-          break;
+      if (value instanceof BooleanArrayFS) {
+        target = new boolean[length];
+        ((BooleanArrayFS) source).copyToArray(0, (boolean[]) target, 0, length);
+      }
+      else if (value instanceof ByteArrayFS) {
+        target = new byte[length];
+        ((ByteArrayFS) source).copyToArray(0, (byte[]) target, 0, length);
+      }
+      else if (value instanceof DoubleArrayFS) {
+        target = new double[length];
+        ((DoubleArrayFS) source).copyToArray(0, (double[]) target, 0, length);
+      }
+      else if (value instanceof FloatArrayFS) {
+        target = new float[length];
+        ((FloatArrayFS) source).copyToArray(0, (float[]) target, 0, length);
+      }
+      else if (value instanceof IntArrayFS) {
+        target = new int[length];
+        ((IntArrayFS) source).copyToArray(0, (int[]) target, 0, length);
+      }
+      else if (value instanceof LongArrayFS) {
+        target = new long[length];
+        ((LongArrayFS) source).copyToArray(0, (long[]) target, 0, length);
+      }
+      else if (value instanceof ShortArrayFS) {
+        target = new short[length];
+        ((ShortArrayFS) source).copyToArray(0, (short[]) target, 0, length);
+      }
+      else if (value instanceof StringArrayFS) {
+        target = new String[length];
+        ((StringArrayFS) source).copyToArray(0, (String[]) target, 0, length);
+      }
+      else {
+        if (aClazz.isArray()) {
+          target = Array.newInstance(aClazz.getComponentType(), length);
+        }
+        else {
+          target = new FeatureStructure[length];
+        }
+        ((ArrayFS) source).copyToArray(0, (FeatureStructure[]) target, 0, length);
       }
     }
     // Handle case where feature is a list
     else if (isListType(aFS.getCAS().getTypeSystem(), aFeature.getRange())) {
+      // Shortcut if the user explicitly requests a list type
+      if (!Object.class.equals(aClazz) && aClazz.isAssignableFrom(value.getClass())) {
+        return (T) value;
+      }
+      
       // Get length of list
       length = 0;
       {
-        FeatureStructure cur = aFS.getFeatureValue(aFeature);
+        FeatureStructure cur = value;
         // We assume to by facing a non-empty element if it has a "head" feature
         while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
           length++;
@@ -406,7 +416,7 @@ public class FSUtil {
         case CAS.TYPE_NAME_FLOAT_LIST: {
           float[] floatTarget = new float[length];
           int i = 0;
-          FeatureStructure cur = aFS.getFeatureValue(aFeature);
+          FeatureStructure cur = value;
           // We assume to by facing a non-empty element if it has a "head" feature
           while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
             floatTarget[i] = cur.getFloatValue(cur.getType().getFeatureByBaseName(
@@ -420,7 +430,7 @@ public class FSUtil {
         case CAS.TYPE_NAME_INTEGER_LIST: {
           int[] intTarget = new int[length];
           int i = 0;
-          FeatureStructure cur = aFS.getFeatureValue(aFeature);
+          FeatureStructure cur = value;
           // We assume to by facing a non-empty element if it has a "head" feature
           while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
             intTarget[i] = cur.getIntValue(cur.getType().getFeatureByBaseName(
@@ -434,7 +444,7 @@ public class FSUtil {
         case CAS.TYPE_NAME_STRING_LIST: {
           String[] stringTarget = new String[length];
           int i = 0;
-          FeatureStructure cur = aFS.getFeatureValue(aFeature);
+          FeatureStructure cur = value;
           // We assume to by facing a non-empty element if it has a "head" feature
           while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
             stringTarget[i] = cur.getStringValue(cur.getType().getFeatureByBaseName(
@@ -452,7 +462,7 @@ public class FSUtil {
             target = new FeatureStructure[length];
           }
           int i = 0;
-          FeatureStructure cur = aFS.getFeatureValue(aFeature);
+          FeatureStructure cur = value;
           // We assume to by facing a non-empty element if it has a "head" feature
           while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
             Array.set(target, i,
@@ -466,9 +476,12 @@ public class FSUtil {
         }
       }
     }    
+    else if (aClazz.isAssignableFrom(value.getClass())) {
+      return (T) value;
+    }
     else if (aFS.getCAS().getTypeSystem()
               .subsumes(CasUtil.getType(aFS.getCAS(), aClazz), aFeature.getRange())) {
-      return (T) aFS.getFeatureValue(aFeature);
+      return (T) value;
     }    
     else {
       throw new IllegalArgumentException("Unable to coerce value of feature [" + aFeature.getName()
@@ -480,39 +493,45 @@ public class FSUtil {
       return aClazz.cast(target);
     }
     
+    // Handle case where return value is Object
+    Class targetClass = aClazz;
+    if (Object.class.equals(aClazz)) {
+      targetClass = List.class;
+    }
+    
     // Handle case where return value is a collection
-    if (Collection.class.isAssignableFrom(aClazz)) {
+    if (Collection.class.isAssignableFrom(targetClass)) {
       Collection targetCollection;
       
-      if (aClazz.isInterface()) {
+      if (targetClass.isInterface()) {
         // If the target is an interface, try using a default implementation;
-        if (List.class.isAssignableFrom(aClazz)) {
+        if (List.class.isAssignableFrom(targetClass)) {
           targetCollection = new ArrayList(length);
         }
-        else if (Set.class.isAssignableFrom(aClazz)) {
+        else if (Set.class.isAssignableFrom(targetClass)) {
           targetCollection = new HashSet(length);
         }
         else {
           throw new IllegalArgumentException("Unable to coerce value of feature [" + aFeature.getName()
-                  + "] with type [" + aFeature.getRange().getName() + "] into [" + aClazz.getName() + "]");
+                  + "] with type [" + aFeature.getRange().getName() + "] into [" + targetClass.getName() + "]");
         }
       }
       else {
         // Try to instantiate using 0-args constructor
         try {
-          targetCollection = (Collection) aClazz.newInstance();
+          targetCollection = (Collection) targetClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
           throw new IllegalArgumentException("Unable to coerce value of feature [" + aFeature.getName()
-                  + "] with type [" + aFeature.getRange().getName() + "] into [" + aClazz.getName() + "]", e);
+                  + "] with type [" + aFeature.getRange().getName() + "] into [" + targetClass.getName() + "]", e);
         }
       }
       for (int i = 0; i < length; i++) {
         targetCollection.add(Array.get(target, i));
       }
-      return aClazz.cast(targetCollection);
+      return (T) targetClass.cast(targetCollection);
     }
     
     throw new IllegalArgumentException("Unable to coerce value of feature [" + aFeature.getName()
-            + "] with type [" + aFeature.getRange().getName() + "] into [" + aClazz.getName() + "]");
+            + "] with type [" + aFeature.getRange().getName() + "] into [" + targetClass.getName() + "]");
   }
 }
