@@ -43,6 +43,7 @@ import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
@@ -162,12 +163,12 @@ public final class CollectionReaderFactory {
    */
   public static CollectionReader createReader(String descriptorName,
           Object... configurationData) throws UIMAException, IOException {
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
     Import imp = UIMAFramework.getResourceSpecifierFactory().createImport();
     imp.setName(descriptorName);
-    URL url = imp.findAbsoluteUrl(ResourceManagerFactory.newResourceManager());
+    URL url = imp.findAbsoluteUrl(resMgr);
     ResourceSpecifier specifier = createResourceCreationSpecifier(url, configurationData);
-    return UIMAFramework.produceCollectionReader(specifier,
-            ResourceManagerFactory.newResourceManager(), null);
+    return UIMAFramework.produceCollectionReader(specifier, resMgr, null);
   }
 
   /**
