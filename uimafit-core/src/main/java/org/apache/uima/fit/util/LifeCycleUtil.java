@@ -24,6 +24,7 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.collection.base_cpm.BaseCollectionReader;
 import org.apache.uima.resource.Resource;
+import org.apache.uima.resource.ResourceManager;
 
 /**
  * Helper methods to handle the life cycle of UIMA components.
@@ -47,6 +48,18 @@ public final class LifeCycleUtil {
           throws AnalysisEngineProcessException {
     for (AnalysisEngine e : engines) {
       e.collectionProcessComplete();
+    }
+  }
+
+  /**
+   * Destroy a set of {@link ResourceManager resource manager}.
+   * 
+   * @param aResMgr
+   *          the resource manager to destroy
+   */
+  public static void destroy(final ResourceManager aResMgr) {
+    if (aResMgr != null) {
+      aResMgr.destroy();
     }
   }
 

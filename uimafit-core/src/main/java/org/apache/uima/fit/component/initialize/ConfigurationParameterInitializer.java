@@ -37,7 +37,9 @@ import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.Parameter;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.NameValuePair;
@@ -193,13 +195,23 @@ public final class ConfigurationParameterInitializer {
    */
   public static void initialize(final Object component, final Map<String, Object> map)
           throws ResourceInitializationException {
-    UimaContextAdmin context = UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
-            ResourceManagerFactory.newResourceManager(), UIMAFramework.newConfigurationManager());
+    // If there is already a UimaContext then re-use that, otherwise create a new one.
+    UimaContextAdmin context;
+    if (component instanceof Resource) {
+      context = ((Resource) component).getUimaContextAdmin();
+    } else {
+      ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+      context = UIMAFramework.newUimaContext(UIMAFramework.getLogger(), resMgr,
+              UIMAFramework.newConfigurationManager());
+    }
+
     ConfigurationManager cfgMgr = context.getConfigurationManager();
     cfgMgr.setSession(context.getSession());
+    
     for (Entry<String, Object> e : map.entrySet()) {
       cfgMgr.setConfigParameterValue(context.getQualifiedContextName() + e.getKey(), e.getValue());
     }
+
     initialize(component, context);
   }
 
