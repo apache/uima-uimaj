@@ -63,9 +63,11 @@ public class JCasIterable implements Iterable<JCas> {
     engines = aEngines;
   }
 
+  @Override
   public JCasIterator iterator() {
+    ResourceManager resMgr = null;
     try {
-      ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+      resMgr = ResourceManagerFactory.newResourceManager();
       
       // Create the components
       CollectionReader readerInst = UIMAFramework.produceCollectionReader(reader, resMgr, null);
@@ -76,12 +78,17 @@ public class JCasIterable implements Iterable<JCas> {
       // Instantiate AAE
       AnalysisEngine aaeInst = UIMAFramework.produceAnalysisEngine(aaeDesc, resMgr, null);
       
-      JCasIterator i = new JCasIterator(readerInst, aaeInst);
+      JCasIterator i = new JCasIterator(resMgr, readerInst, aaeInst);
       i.setSelfComplete(true);
       i.setSelfDestroy(true);
       return i;
     } catch (UIMAException e) {
       throw new IllegalStateException(e);
+    }
+    finally {
+      if (resMgr != null) {
+        resMgr.destroy();
+      }
     }
   }
 }
