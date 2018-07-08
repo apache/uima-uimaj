@@ -67,6 +67,9 @@ public final class SimplePipeline {
    * Note that with this method, external resources cannot be shared between the reader and the
    * analysis engines. They can be shared amongst the analysis engines.
    * </p>
+   * <p>
+   * The CAS is created using the resource manager used by the collection reader.
+   * </p>
    * 
    * @param reader
    *          The CollectionReader that loads the documents into the CAS.
@@ -90,9 +93,8 @@ public final class SimplePipeline {
       aae = createEngine(aaeDesc);
   
       // Create CAS from merged metadata
-      ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
       final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()), 
-              null, resMgr);
+              null, reader.getResourceManager());
       reader.typeSystemInit(cas.getTypeSystem());
 
       // Process
@@ -153,8 +155,9 @@ public final class SimplePipeline {
     
     CollectionReader reader = null;
     AnalysisEngine aae = null;
+    ResourceManager resMgr = null;
     try {
-      ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+      resMgr = ResourceManagerFactory.newResourceManager();
       
       // Create the components
       reader = UIMAFramework.produceCollectionReader(readerDesc, resMgr, null);
@@ -183,6 +186,7 @@ public final class SimplePipeline {
       // Destroy
       LifeCycleUtil.destroy(reader);
       LifeCycleUtil.destroy(aae);
+      LifeCycleUtil.destroy(resMgr);
     }
   }
 
@@ -199,6 +203,9 @@ public final class SimplePipeline {
    * External resources can only be shared between the reader and/or the analysis engines if the
    * reader/engines have been previously instantiated using a shared resource manager.
    * </p>
+   * <p>
+   * The CAS is created using the resource manager used by the collection reader.
+   * </p>
    * 
    * @param reader
    *          a collection reader
@@ -211,14 +218,44 @@ public final class SimplePipeline {
    */
   public static void runPipeline(final CollectionReader reader, final AnalysisEngine... engines)
           throws UIMAException, IOException {
+    runPipeline(reader.getResourceManager(), reader, engines);
+  }
+  
+  /**
+   * <p>
+   * Provides a simple way to run a pipeline for a given collection reader and sequence of analysis
+   * engines. After processing all CASes provided by the reader, the method calls
+   * {@link AnalysisEngine#collectionProcessComplete() collectionProcessComplete()} on the engines.
+   * Note that {@link AnalysisEngine#destroy()} and {@link CollectionReader#destroy()} are
+   * <b>NOT</b> called. As the components were instantiated by the caller, they must also be managed
+   * (i.e. destroyed) the caller.
+   * </p>
+   * <p>
+   * External resources can only be shared between the reader and/or the analysis engines if the
+   * reader/engines have been previously instantiated using a shared resource manager.
+   * </p>
+   * 
+   * @param aResMgr
+   *          a resource manager. Normally the same one used by the collection reader and analysis
+   *          engines.
+   * @param reader
+   *          a collection reader
+   * @param engines
+   *          a sequence of analysis engines
+   * @throws UIMAException
+   *           if there is a problem initializing or running the CPE.
+   * @throws IOException
+   *           if there is an I/O problem in the reader
+   */
+  public static void runPipeline(final ResourceManager aResMgr, final CollectionReader reader,
+          final AnalysisEngine... engines) throws UIMAException, IOException {
     final List<ResourceMetaData> metaData = new ArrayList<ResourceMetaData>();
     metaData.add(reader.getMetaData());
     for (AnalysisEngine engine : engines) {
       metaData.add(engine.getMetaData());
     }
 
-    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
-    final CAS cas = CasCreationUtils.createCas(metaData, null, resMgr);
+    final CAS cas = CasCreationUtils.createCas(metaData, null, aResMgr);
     reader.typeSystemInit(cas.getTypeSystem());
 
     while (reader.hasNext()) {
