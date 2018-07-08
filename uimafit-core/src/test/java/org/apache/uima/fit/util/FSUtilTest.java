@@ -21,6 +21,7 @@ package org.apache.uima.fit.util;
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.util.FSUtil.getFeature;
 import static org.apache.uima.fit.util.FSUtil.setFeature;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -30,11 +31,13 @@ import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.AnnotationImpl;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -95,44 +98,73 @@ public class FSUtilTest {
     
     Type annotationType = cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION);
 
-    FeatureStructure fs = cas.createFS(cas.getTypeSystem().getType("MyType"));
+    final FeatureStructure fs = cas.createFS(cas.getTypeSystem().getType("MyType"));
+    
     setFeature(fs, "BooleanValue", true);
     assertEquals(true, getFeature(fs, "BooleanValue", Boolean.class));
+    assertEquals(true, getFeature(fs, "BooleanValue", Object.class));
+    assertThat(getFeature(fs, "BooleanValue", Object.class).getClass()).isEqualTo(Boolean.class);
 
     setFeature(fs, "ByteValue", (byte) 1);
     assertTrue(((byte) 1) == getFeature(fs, "ByteValue", Byte.class));
+    assertTrue(((byte) 1) == (byte) getFeature(fs, "ByteValue", Object.class));
+    assertThat(getFeature(fs, "ByteValue", Object.class).getClass()).isEqualTo(Byte.class);
 
     setFeature(fs, "DoubleValue", 1d);
     assertTrue(1d == getFeature(fs, "DoubleValue", Double.class));
+    assertTrue(1d == (double) getFeature(fs, "DoubleValue", Object.class));
+    assertThat(getFeature(fs, "DoubleValue", Object.class).getClass()).isEqualTo(Double.class);
     
     setFeature(fs, "FloatValue", 1f);
     assertTrue(1f == getFeature(fs, "FloatValue", Float.class));
+    assertTrue(1f == (float) getFeature(fs, "FloatValue", Object.class));
+    assertThat(getFeature(fs, "FloatValue", Object.class).getClass()).isEqualTo(Float.class);
 
     setFeature(fs, "IntegerValue", 1);
     assertTrue(1 == getFeature(fs, "IntegerValue", Integer.class));
+    assertTrue(1 == (int) getFeature(fs, "IntegerValue", Object.class));
+    assertThat(getFeature(fs, "IntegerValue", Object.class).getClass()).isEqualTo(Integer.class);
     
     setFeature(fs, "LongValue", 1l);
     assertTrue(1l == getFeature(fs, "LongValue", Long.class));
+    assertTrue(1l == (long) getFeature(fs, "LongValue", Object.class));
+    assertThat(getFeature(fs, "LongValue", Object.class).getClass()).isEqualTo(Long.class);
     
     setFeature(fs, "ShortValue", (short) 1);
     assertTrue(((short) 1) == getFeature(fs, "ShortValue", Short.class));
+    assertTrue(((short) 1) == (short) getFeature(fs, "ShortValue", Short.class));
+    assertThat(getFeature(fs, "ShortValue", Object.class).getClass()).isEqualTo(Short.class);
     
     setFeature(fs, "StringValue", "set");
     assertEquals("set", getFeature(fs, "StringValue", String.class));
+    assertEquals("set", getFeature(fs, "StringValue", Object.class));
+    assertThat(getFeature(fs, "StringValue", Object.class).getClass()).isEqualTo(String.class);
     
-    setFeature(fs, "TopValue", cas.createArrayFS(1));
+    final ArrayFS arrayArg = cas.createArrayFS(1);
+    final AnnotationFS arrayElem = cas.createAnnotation(annotationType, 0, 1);
+    arrayArg.set(0, arrayElem);
+    setFeature(fs, "TopValue", arrayArg);
+    assertThat(getFeature(fs, "TopValue", FeatureStructure.class)).isEqualTo(arrayArg);
+    assertThat(getFeature(fs, "TopValue", List.class)).containsExactly(arrayElem);
+    assertThat((List) getFeature(fs, "TopValue", Object.class)).containsExactly(arrayElem);
+    assertThat(getFeature(fs, "TopValue", ArrayFS.class).toArray())
+            .containsExactly(arrayElem);
+    assertThat(getFeature(fs, "TopValue", TOP.class).getClass()).isEqualTo(FSArray.class);
 
-    setFeature(fs, "AnnotationValue", cas.createAnnotation(annotationType, 0, 1));
+    final AnnotationFS annVal = cas.createAnnotation(annotationType, 0, 1);
+    setFeature(fs, "AnnotationValue", annVal);
     if (aActivateJCas) {
       assertEquals(Annotation.class.getName(),
               getFeature(fs, "AnnotationValue", FeatureStructure.class).getClass().getName());
+      assertThat(getFeature(fs, "AnnotationValue", TOP.class)).isEqualTo(annVal);
     }
     else {
       assertEquals(Annotation.class.getName(),
               getFeature(fs, "AnnotationValue", FeatureStructure.class).getClass().getName());
     }
-    assertEquals(0, getFeature(fs, "AnnotationValue", AnnotationFS.class).getBegin());
-    assertEquals(1, getFeature(fs, "AnnotationValue", AnnotationFS.class).getEnd());
+    assertThat(getFeature(fs, "AnnotationValue", AnnotationFS.class)).isEqualTo(annVal);
+    assertThat(getFeature(fs, "AnnotationValue", FeatureStructure.class)).isEqualTo(annVal);
+    assertThat(getFeature(fs, "AnnotationValue", Object.class)).isEqualTo(annVal);
 
     setFeature(fs, "BooleanArrayValue", (boolean[]) null);
     assertEquals(null, getFeature(fs, "BooleanArrayValue", boolean[].class));
@@ -144,15 +176,28 @@ public class FSUtilTest {
     assertEquals(0, getFeature(fs, "BooleanArrayValue", boolean[].class).length);
 
     setFeature(fs, "BooleanArrayValue", true);
-    assertEquals(true, getFeature(fs, "BooleanArrayValue", boolean[].class)[0]);
+    assertThat(getFeature(fs, "BooleanArrayValue", boolean[].class)).containsExactly(true);
+    assertThat(getFeature(fs, "BooleanArrayValue", List.class)).containsExactly(true);
+    assertThat((List<Boolean>) getFeature(fs, "BooleanArrayValue", Object.class))
+            .containsExactly(true);
 
     setFeature(fs, "BooleanArrayValue", true, false);
-    assertEquals(true, getFeature(fs, "BooleanArrayValue", boolean[].class)[0]);
-    assertEquals(false, getFeature(fs, "BooleanArrayValue", boolean[].class)[1]);
-    
+    assertThat(getFeature(fs, "BooleanArrayValue", boolean[].class)).containsExactly(true, false);
+    assertThat(getFeature(fs, "BooleanArrayValue", List.class)).containsExactly(true, false);
+    assertThat((List<Boolean>) getFeature(fs, "BooleanArrayValue", Object.class))
+            .containsExactly(true, false);
+
     setFeature(fs, "BooleanArrayValue", new boolean[] { true, false });
-    assertEquals(true, getFeature(fs, "BooleanArrayValue", boolean[].class)[0]);
-    assertEquals(false, getFeature(fs, "BooleanArrayValue", boolean[].class)[1]);
+    assertThat(getFeature(fs, "BooleanArrayValue", boolean[].class)).containsExactly(true, false);
+    assertThat(getFeature(fs, "BooleanArrayValue", List.class)).containsExactly(true, false);
+    assertThat((List<Boolean>) getFeature(fs, "BooleanArrayValue", Object.class))
+            .containsExactly(true, false);
+
+    setFeature(fs, "BooleanArrayValue", asList(true, false));
+    assertThat(getFeature(fs, "BooleanArrayValue", boolean[].class)).containsExactly(true, false);
+    assertThat(getFeature(fs, "BooleanArrayValue", List.class)).containsExactly(true, false);
+    assertThat((List<Boolean>) getFeature(fs, "BooleanArrayValue", Object.class))
+            .containsExactly(true, false);
     
     setFeature(fs, "ByteArrayValue", new byte[] { 0, 1 });
     setFeature(fs, "DoubleArrayValue", new double[] { 0d, 1d });
@@ -163,15 +208,19 @@ public class FSUtilTest {
     setFeature(fs, "StringArrayValue", new String[] { "one", "two" });
     setFeature(fs, "TopArrayValue", cas.createArrayFS(1), cas.createDoubleArrayFS(1));
 
-    setFeature(fs, "AnnotationArrayValue", cas.createAnnotation(annotationType, 0, 1), 
-            cas.createAnnotation(annotationType, 1, 2));
-    assertEquals(0, getFeature(fs, "AnnotationArrayValue", AnnotationFS[].class)[0].getBegin());
-    assertEquals(1, getFeature(fs, "AnnotationArrayValue", AnnotationFS[].class)[1].getBegin());
+    final AnnotationFS arg1 = cas.createAnnotation(annotationType, 0, 1);
+    final AnnotationFS arg2 = cas.createAnnotation(annotationType, 1, 2);
+    setFeature(fs, "AnnotationArrayValue", arg1, arg2);
+    assertThat(getFeature(fs, "AnnotationArrayValue", AnnotationFS[].class)).containsExactly(arg1,
+            arg2);
+    assertThat(getFeature(fs, "AnnotationArrayValue", ArrayFS.class).toArray())
+            .containsExactly(arg1, arg2);
+    assertThat(getFeature(fs, "AnnotationArrayValue", TOP.class).getClass())
+            .isEqualTo(FSArray.class);
+    assertThat(getFeature(fs, "AnnotationArrayValue", List.class)).containsExactly(arg1, arg2);
+    assertThat((List) getFeature(fs, "AnnotationArrayValue", Object.class)).containsExactly(arg1,
+            arg2);
 
-    setFeature(fs, "BooleanArrayValue", asList(true, false));
-    assertEquals(true, getFeature(fs, "BooleanArrayValue", List.class).get(0));
-    assertEquals(false, getFeature(fs, "BooleanArrayValue", List.class).get(1));
-    
     setFeature(fs, "ByteArrayValue", asList((byte) 0, (byte) 1));
     setFeature(fs, "DoubleArrayValue", asList(0d, 1d));
     setFeature(fs, "FloatArrayValue", asList(0f, 1f));
