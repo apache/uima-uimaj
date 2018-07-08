@@ -45,7 +45,6 @@ import org.apache.uima.util.CasCreationUtils;
  * A class implementing iteration over a the documents of a collection. Each element in the Iterable
  * is a JCas containing a single document. The documents have been loaded by the CollectionReader
  * and processed by the AnalysisEngine (if any).
- * 
  */
 public class JCasIterator implements Iterator<JCas> {
 
@@ -60,6 +59,10 @@ public class JCasIterator implements Iterator<JCas> {
   private boolean selfDestroy = false;
   
   private boolean destroyed = false;
+  
+  private ResourceManager resMgr;
+  
+  private boolean resourceManagerCreatedInternally = false;
 
   /**
    * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
@@ -77,6 +80,29 @@ public class JCasIterator implements Iterator<JCas> {
    */
   public JCasIterator(final CollectionReader aReader, final AnalysisEngine... aEngines)
           throws CASException, ResourceInitializationException {
+    this(ResourceManagerFactory.newResourceManager(), aReader, aEngines);
+    resourceManagerCreatedInternally = true;
+  }
+
+  /**
+   * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
+   * one before yielding them. By default, components get no lifecycle events, such as
+   * collectionProcessComplete or destroy when this constructor is used.
+   * @param aResMgr 
+   *          The ResourceManager. Should be the one also used by the CollectionReader and 
+   *          AnalysisEngines.
+   * @param aReader
+   *          The CollectionReader for loading documents.
+   * @param aEngines
+   *          The AnalysisEngines for processing documents.
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization of the components
+   * @throws CASException
+   *           if the JCas could not be initialized
+   */
+  public JCasIterator(final ResourceManager aResMgr, final CollectionReader aReader,
+          final AnalysisEngine... aEngines) throws CASException, ResourceInitializationException {
+    resMgr = aResMgr;
     collectionReader = aReader;
     analysisEngines = aEngines;
 
@@ -86,8 +112,7 @@ public class JCasIterator implements Iterator<JCas> {
       metaData.add(ae.getProcessingResourceMetaData());
     }
 
-    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
-    jCas = CasCreationUtils.createCas(metaData, null, resMgr).getJCas();
+    jCas = CasCreationUtils.createCas(metaData, null, aResMgr).getJCas();
     collectionReader.typeSystemInit(jCas.getTypeSystem());
   }
 
@@ -111,6 +136,7 @@ public class JCasIterator implements Iterator<JCas> {
     this(aReader, createEngine(NoOpAnnotator.class, aTypeSystemDescription));
   }
 
+  @Override
   public boolean hasNext() {
     if (destroyed) {
       return false;
@@ -132,6 +158,7 @@ public class JCasIterator implements Iterator<JCas> {
     }
   }
 
+  @Override
   public JCas next() {
     jCas.reset();
     boolean error = true;
@@ -170,6 +197,7 @@ public class JCasIterator implements Iterator<JCas> {
     return jCas;
   }
 
+  @Override
   public void remove() {
     throw new UnsupportedOperationException();
   }
@@ -192,6 +220,9 @@ public class JCasIterator implements Iterator<JCas> {
       LifeCycleUtil.close(collectionReader);
       LifeCycleUtil.destroy(collectionReader);
       LifeCycleUtil.destroy(analysisEngines);
+      if (resourceManagerCreatedInternally) {
+        LifeCycleUtil.destroy(resMgr);
+      }
       destroyed = true;
     }
   }
