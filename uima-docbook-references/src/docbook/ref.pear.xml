@@ -966,6 +966,12 @@ try {
     <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <pearSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
    <pearPath>/home/user/uimaApp/installedPears/testpear</pearPath>
+   <parameters>   <!-- optional -->
+      <parameter> <!-- any number, repeated -->
+        <name>name-of-the-parameter</name>
+        <value>string-value</value>
+      </parameter>
+   </parameters>
 </pearSpecifier>]]></programlisting>
     <para>
        The <literal>pearPath</literal> setting in the descriptor must point to the component root directory 
@@ -982,6 +988,12 @@ try {
          (unless exactly the same Classpath and Data Path are being used).
       </para>
     </note>
+    
+    <para>The optional <literal>parameters</literal> section, if used, specifies parameter values,
+      which are used to customize / override parameter values in the PEAR descriptor. 
+      External Settings overrides continue to work for PEAR descriptors, and have precedence, if specified.
+    </para>
+          
   </section>
   
 </chapter>
