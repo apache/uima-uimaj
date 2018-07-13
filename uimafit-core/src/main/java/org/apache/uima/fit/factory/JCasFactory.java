@@ -18,23 +18,11 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
-import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescriptionFromPath;
-import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
-import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection;
-
-import java.io.File;
 import java.io.IOException;
 
 import org.apache.uima.UIMAException;
-import org.apache.uima.fit.internal.ResourceManagerFactory;
-import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.resource.metadata.FsIndexCollection;
-import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.util.CasCreationUtils;
 
 /**
  * Convenience methods to create {@link JCas} objects.
@@ -57,7 +45,7 @@ public final class JCasFactory {
    *           if the JCas could not be initialized
    */
   public static JCas createText(String aText) throws UIMAException {
-    return createText(aText, null);
+    return CasFactory.createText(aText, null).getJCas();
   }
 
   /**
@@ -75,14 +63,7 @@ public final class JCasFactory {
    *           if the JCas could not be initialized
    */
   public static JCas createText(String aText, String aLanguage) throws UIMAException {
-    JCas jcas = createJCas();
-    if (aText != null) {
-      jcas.setDocumentText(aText);
-    }
-    if (aLanguage != null) {
-      jcas.setDocumentLanguage(aLanguage);
-    }
-    return jcas;
+    return CasFactory.createText(aText, aLanguage).getJCas();
   }
   
   /**
@@ -96,11 +77,7 @@ public final class JCasFactory {
    *           if the JCas could not be initialized
    */
   public static JCas createJCas() throws UIMAException {
-    TypeSystemDescription tsd = createTypeSystemDescription();
-    TypePriorities tp = createTypePriorities();
-    FsIndexCollection indexes = createFsIndexCollection();
-    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
-    return CasCreationUtils.createCas(tsd, tp, indexes.getFsIndexes(), null, resMgr).getJCas();
+    return CasFactory.createCas().getJCas();
   }
 
   /**
@@ -115,8 +92,7 @@ public final class JCasFactory {
    *           if the JCas could not be initialized
    */
   public static JCas createJCas(String... typeSystemDescriptorNames) throws UIMAException {
-    return CasCreationUtils.createCas(createTypeSystemDescription(typeSystemDescriptorNames), null,
-            null).getJCas();
+    return CasFactory.createCas(typeSystemDescriptorNames).getJCas();
   }
 
   /**
@@ -130,7 +106,7 @@ public final class JCasFactory {
    *           if the JCas could not be initialized
    */
   public static JCas createJCasFromPath(String... typeSystemDescriptorPaths) throws UIMAException {
-    return createJCas(createTypeSystemDescriptionFromPath(typeSystemDescriptorPaths));
+    return CasFactory.createCasFromPath(typeSystemDescriptorPaths).getJCas();
   }
 
   /**
@@ -144,7 +120,7 @@ public final class JCasFactory {
    *           if the JCas could not be initialized
    */
   public static JCas createJCas(TypeSystemDescription typeSystemDescription) throws UIMAException {
-    return CasCreationUtils.createCas(typeSystemDescription, null, null).getJCas();
+    return CasFactory.createCas(typeSystemDescription).getJCas();
   }
 
   /**
@@ -162,8 +138,6 @@ public final class JCasFactory {
    */
   public static JCas createJCas(String fileName, TypeSystemDescription typeSystemDescription)
           throws UIMAException, IOException {
-    JCas jCas = createJCas(typeSystemDescription);
-    CasIOUtil.readJCas(jCas, new File(fileName));
-    return jCas;
+    return CasFactory.createCas(fileName, typeSystemDescription).getJCas();
   }
 }
