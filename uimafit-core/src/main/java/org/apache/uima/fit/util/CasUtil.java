@@ -33,9 +33,9 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -188,7 +188,7 @@ public final class CasUtil {
    * @return A collection of the selected type.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static Collection<FeatureStructure> selectFS(ArrayFS array, Type type) {
+  public static List<FeatureStructure> selectFS(ArrayFS array, Type type) {
     return FSCollectionFactory.create(array, type);
   }
 
@@ -203,12 +203,12 @@ public final class CasUtil {
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public static Collection<AnnotationFS> select(ArrayFS array, Type type) {
+  public static List<AnnotationFS> select(ArrayFS array, Type type) {
     final CAS cas = array.getCAS();
     if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
       throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
     }
-    return (Collection) FSCollectionFactory.create(array, type);
+    return (List) FSCollectionFactory.create(array, type);
   }
 
   /**
@@ -753,14 +753,14 @@ public final class CasUtil {
    * @return the index.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static Map<AnnotationFS, Collection<AnnotationFS>> indexCovering(CAS cas, Type type,
+  public static Map<AnnotationFS, List<AnnotationFS>> indexCovering(CAS cas, Type type,
           Type coveringType) {
-    Map<AnnotationFS, Collection<AnnotationFS>> index = new HashMap<AnnotationFS, Collection<AnnotationFS>>() {
+    Map<AnnotationFS, List<AnnotationFS>> index = new HashMap<AnnotationFS, List<AnnotationFS>>() {
       private static final long serialVersionUID = 1L;
 
       @Override
-      public Collection<AnnotationFS> get(Object paramObject) {
-        Collection<AnnotationFS> res = super.get(paramObject);
+      public List<AnnotationFS> get(Object paramObject) {
+        List<AnnotationFS> res = super.get(paramObject);
         if (res == null) {
           return emptyList();
         } else {
@@ -770,9 +770,9 @@ public final class CasUtil {
     };
     for (AnnotationFS s : select(cas, coveringType)) {
       for (AnnotationFS u : selectCovered(cas, type, s)) {
-        Collection<AnnotationFS> c = index.get(u);
+        List<AnnotationFS> c = index.get(u);
         if (c == EMPTY_LIST) {
-          c = new LinkedList<AnnotationFS>();
+          c = new ArrayList<AnnotationFS>();
           index.put(u, c);
         }
         c.add(s);
@@ -801,14 +801,14 @@ public final class CasUtil {
    * @return the index.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static Map<AnnotationFS, Collection<AnnotationFS>> indexCovered(CAS cas, Type type,
+  public static Map<AnnotationFS, List<AnnotationFS>> indexCovered(CAS cas, Type type,
           Type coveredType) {
-    Map<AnnotationFS, Collection<AnnotationFS>> index = new HashMap<AnnotationFS, Collection<AnnotationFS>>() {
+    Map<AnnotationFS, List<AnnotationFS>> index = new HashMap<AnnotationFS, List<AnnotationFS>>() {
       private static final long serialVersionUID = 1L;
 
       @Override
-      public Collection<AnnotationFS> get(Object paramObject) {
-        Collection<AnnotationFS> res = super.get(paramObject);
+      public List<AnnotationFS> get(Object paramObject) {
+        List<AnnotationFS> res = super.get(paramObject);
         if (res == null) {
           return emptyList();
         } else {
@@ -867,9 +867,9 @@ public final class CasUtil {
         // Record covered annotations
         for (AnnotationFS covering : memory) {
           if (covering.getBegin() <= iFSbegin && iFS.getEnd() <= covering.getEnd()) {
-            Collection<AnnotationFS> c = index.get(covering);
+            List<AnnotationFS> c = index.get(covering);
             if (c == EMPTY_LIST) {
-              c = new LinkedList<AnnotationFS>();
+              c = new ArrayList<AnnotationFS>();
               index.put(covering, c);
             }
             c.add(iFS);
@@ -1093,7 +1093,7 @@ public final class CasUtil {
       throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
     }
 
-    List<AnnotationFS> precedingAnnotations = new LinkedList<AnnotationFS>();
+    List<AnnotationFS> precedingAnnotations = new ArrayList<AnnotationFS>();
 
     // Seek annotation in index
     // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
@@ -1172,7 +1172,7 @@ public final class CasUtil {
     }
 
     // add annotations from the iterator into the result list
-    List<AnnotationFS> followingAnnotations = new LinkedList<AnnotationFS>();
+    List<AnnotationFS> followingAnnotations = new ArrayList<AnnotationFS>();
     for (int i = 0; i < count && itr.isValid(); i++, itr.moveToNext()) {
       followingAnnotations.add(itr.get());
     }

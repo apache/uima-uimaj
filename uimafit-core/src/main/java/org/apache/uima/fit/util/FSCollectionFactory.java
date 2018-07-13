@@ -167,7 +167,7 @@ public abstract class FSCollectionFactory {
    *          the CAS type.
    * @return a new collection of all feature structures of the given type.
    */
-  public static <T extends FeatureStructure> Collection<T> create(ArrayFS<T> aArray, Type aType) {
+  public static <T extends FeatureStructure> List<T> create(ArrayFS<T> aArray, Type aType) {
     TypeSystem ts = aArray.getCAS().getTypeSystem();
     List<FeatureStructure> data = new ArrayList<FeatureStructure>(aArray.size());
     for (int i = 0; i < aArray.size(); i++) {
@@ -176,7 +176,7 @@ public abstract class FSCollectionFactory {
         data.add(value);
       }
     }
-    return (Collection<T>) asList(data.toArray(new FeatureStructure[data.size()]));
+    return (List<T>) asList(data.toArray(new FeatureStructure[data.size()]));
   }
 
   public static <T extends FeatureStructure> ArrayFS<T> createArrayFS(CAS aCas,
@@ -548,7 +548,7 @@ public abstract class FSCollectionFactory {
   }
 
   // Using TOP here because FSList is only available in the JCas.
-  public static <T extends TOP> Collection<T> create(FSList<T> aList, Type type) {
+  public static <T extends TOP> List<T> create(FSList<T> aList, Type type) {
     TypeSystem ts = aList.getCAS().getTypeSystem();
     List<FeatureStructure> data = new ArrayList<FeatureStructure>();
     FSList<T> i = aList;
@@ -561,10 +561,10 @@ public abstract class FSCollectionFactory {
       i = l.getTail();
     }
 
-    return (Collection<T>) asList(data.toArray(new TOP[data.size()]));
+    return (List<T>) asList(data.toArray(new TOP[data.size()]));
   }
 
-  public static Collection<String> create(StringList aList) {
+  public static List<String> create(StringList aList) {
     List<String> data = new ArrayList<String>();
     StringList i = aList;
     while (i instanceof NonEmptyStringList) {
@@ -576,7 +576,7 @@ public abstract class FSCollectionFactory {
     return asList(data.toArray(new String[data.size()]));
   }
 
-  public static Collection<Integer> create(IntegerList aList) {
+  public static List<Integer> create(IntegerList aList) {
     List<Integer> data = new ArrayList<Integer>();
     IntegerList i = aList;
     while (i instanceof NonEmptyIntegerList) {
@@ -588,7 +588,7 @@ public abstract class FSCollectionFactory {
     return asList(data.toArray(new Integer[data.size()]));
   }
 
-  public static Collection<Float> create(FloatList aList) {
+  public static List<Float> create(FloatList aList) {
     List<Float> data = new ArrayList<Float>();
     FloatList i = aList;
     while (i instanceof NonEmptyFloatList) {

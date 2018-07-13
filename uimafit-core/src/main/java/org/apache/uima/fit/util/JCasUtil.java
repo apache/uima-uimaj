@@ -154,7 +154,7 @@ public final class JCasUtil {
    * @return A collection of the selected type.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static <T extends TOP> Collection<T> select(final FSArray array, final Class<T> type) {
+  public static <T extends TOP> List<T> select(final FSArray array, final Class<T> type) {
     return cast(CasUtil.selectFS(array, CasUtil.getType(array.getCAS(), type.getName())));
   }
 
@@ -170,7 +170,7 @@ public final class JCasUtil {
    * @return A collection of the selected type.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static <T extends TOP> Collection<T> select(final FSList list, final Class<T> type) {
+  public static <T extends TOP> List<T> select(final FSList list, final Class<T> type) {
     return cast(FSCollectionFactory.create(list, CasUtil.getType(list.getCAS(), type.getName())));
   }
 
@@ -497,7 +497,7 @@ public final class JCasUtil {
    * @return the index.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static <T extends Annotation, S extends Annotation> Map<T, Collection<S>> indexCovering(
+  public static <T extends Annotation, S extends Annotation> Map<T, List<S>> indexCovering(
           JCas jCas, Class<? extends T> type, Class<? extends S> coveringType) {
     return cast(CasUtil.indexCovering(jCas.getCas(), getType(jCas, type),
             getType(jCas, coveringType)));
@@ -527,7 +527,7 @@ public final class JCasUtil {
    * @return the index.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static <T extends Annotation, S extends Annotation> Map<T, Collection<S>> indexCovered(
+  public static <T extends Annotation, S extends Annotation> Map<T, List<S>> indexCovered(
           JCas jCas, Class<? extends T> type, Class<? extends S> coveredType) {
     return cast(CasUtil
             .indexCovered(jCas.getCas(), getType(jCas, type), getType(jCas, coveredType)));
