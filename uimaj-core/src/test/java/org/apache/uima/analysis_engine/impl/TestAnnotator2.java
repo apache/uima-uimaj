@@ -79,6 +79,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     String contextName = ((UimaContext_ImplBase) aContext).getQualifiedContextName();
     if ("/ExternalOverrides/".equals(contextName)) {
       // Test getting a (0-length) array of strings
+      String expected = "Context Holder Test";
       String[] actuals = null;
       try {
         actuals = UimaContextHolder.getContext().getSharedSettingArray("test.externalFloatArray");
@@ -88,7 +89,17 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       Assert.assertEquals(0, actuals.length);
       
       // Test assigning an array to a string and vice-versa
+      // prefix-suffix     Prefix-${suffix}
+      // suffix = should be ignored
       String actual = null;
+      try {
+        actual = UimaContextHolder.getContext().getSharedSettingValue("context-holder");
+      } catch (ResourceConfigurationException e) {
+        Assert.fail(e.getMessage());
+      }
+      Assert.assertEquals(expected, actual);
+      
+      // Test assigning an array to a string and vice-versa
       try {
         actual = UimaContextHolder.getContext().getSharedSettingValue("test.externalFloatArray");
         Assert.fail("\"bad\" should create an error");
@@ -134,7 +145,6 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       }
       
       // Test POFO access via UimaContextHolder
-      String expected = "Context Holder Test";
       long threadId = Thread.currentThread().getId();
       UimaContextHolderTest testPojoAccess = new UimaContextHolderTest();
       try {
