@@ -147,16 +147,25 @@ public class CasUtilBenchmark {
       .magnitudeIncrement(count -> count * 10)
       .incrementTimes(3);
     
-    new Benchmark("JCas selectCovering", template)
+    new Benchmark("CAS selectCovering", template)
       .measure(() -> {
         Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
         Type tokenType = getType(cas, TYPE_NAME_TOKEN);
-        select(cas, tokenType).forEach(s -> selectCovering(sentenceType, s));
+        select(cas, tokenType).forEach(t -> selectCovering(sentenceType, t));
       })
       .run();
 
-    new Benchmark("JCas indexCovering", template)
-      .measure(() -> indexCovering(cas, getType(cas, TYPE_NAME_TOKEN), getType(cas, TYPE_NAME_SENTENCE)))
+    new Benchmark("CAS selectCovering v3", template)
+      .measure(() -> {
+        Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
+        Type tokenType = getType(cas, TYPE_NAME_TOKEN);
+        cas.select(tokenType).forEach(t -> cas.select(sentenceType).covering((AnnotationFS) t).forEach(s -> {}));
+      })
+      .run();
+
+    new Benchmark("CAS indexCovering", template)
+      .measure(() -> indexCovering(cas, getType(cas, TYPE_NAME_TOKEN), getType(cas, TYPE_NAME_SENTENCE))
+          .forEach((t, l) -> l.forEach(s -> {})))
       .run();
   }
 }

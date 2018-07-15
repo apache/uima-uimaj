@@ -123,7 +123,7 @@ public class JCasUtilBenchmark {
     .run();
 
     new Benchmark("JCas indexCovered", template)
-      .measure(() -> indexCovered(jcas, Sentence.class, Token.class))
+      .measure(() -> indexCovered(jcas, Sentence.class, Token.class).forEach((s, l) -> l.forEach(t -> {})))
       .run();
   }
   
@@ -136,11 +136,17 @@ public class JCasUtilBenchmark {
       .incrementTimes(3);
     
     new Benchmark("JCas selectCovering", template)
-      .measure(() -> select(jcas, Token.class).forEach(s -> selectCovering(Sentence.class, s)))
+      .measure(() -> select(jcas, Token.class).forEach(t -> selectCovering(Sentence.class, t)))
       .run();
 
+    new Benchmark("JCas selectCovering v3", template)
+      .measure(() -> {
+          jcas.select(Token.class).forEach(t -> jcas.select(Sentence.class).covering(t).forEach(s -> {}));
+      })
+    .run();
+    
     new Benchmark("JCas indexCovering", template)
-      .measure(() -> indexCovering(jcas, Token.class, Sentence.class))
+      .measure(() -> indexCovering(jcas, Token.class, Sentence.class).forEach((t, l) -> l.forEach(s -> {})))
       .run();
   }
 }
