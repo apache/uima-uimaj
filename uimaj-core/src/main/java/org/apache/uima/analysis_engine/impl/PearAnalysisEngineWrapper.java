@@ -31,6 +31,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.CasIterator;
 import org.apache.uima.analysis_engine.ResultSpecification;
@@ -39,6 +40,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.impl.ChildUimaContext_impl;
 import org.apache.uima.pear.tools.PackageBrowser;
+import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -47,6 +49,7 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.impl.ResourceManager_impl;
+import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
@@ -259,6 +262,20 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
       // Parse the resource specifier
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+      
+      AnalysisEngineDescription analysisEngineDescription = (AnalysisEngineDescription) specifier;
+      AnalysisEngineMetaData analysisEngineMetaData = analysisEngineDescription
+              .getAnalysisEngineMetaData();
+      ConfigurationParameterSettings configurationParameterSettings = analysisEngineMetaData
+              .getConfigurationParameterSettings();
+      Parameter[] parameters = pearSpec.getParameters();
+
+      if (parameters != null) {
+        for (Parameter parameter : parameters) {
+          configurationParameterSettings.setParameterValue(parameter.getName(),
+                  parameter.getValue());
+        }
+      }
 
       UimaContextAdmin uimaContext = (aAdditionalParams == null) ? null
           : (UimaContextAdmin) aAdditionalParams.get(Resource.PARAM_UIMA_CONTEXT);
