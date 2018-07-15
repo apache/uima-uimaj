@@ -82,7 +82,7 @@ public class CasUtilBenchmark {
     new Benchmark("CAS select TOP and iterate", template)
       .measure(() -> selectFS(cas, getType(cas, CAS.TYPE_NAME_TOP)).forEach(v -> {}))
       .run();
-    
+
     new Benchmark("CAS select ALL", template)
       .measure(() -> selectAll(cas))
       .run();
@@ -102,14 +102,15 @@ public class CasUtilBenchmark {
     
     new Benchmark("CAS selectCovered", template)
       .measure(() -> {
-      	Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
-      	Type tokenType = getType(cas, TYPE_NAME_TOKEN);
-      	select(cas, sentenceType).forEach(s -> selectCovered(tokenType, s));
+        Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
+        Type tokenType = getType(cas, TYPE_NAME_TOKEN);
+        select(cas, sentenceType).forEach(s -> selectCovered(tokenType, s).forEach(t -> {}));
       })
       .run();
 
     new Benchmark("CAS indexCovered", template)
-      .measure(() -> indexCovered(cas, getType(cas, TYPE_NAME_SENTENCE), getType(cas, TYPE_NAME_TOKEN)))
+      .measure(() -> indexCovered(cas, getType(cas, TYPE_NAME_SENTENCE), getType(cas, TYPE_NAME_TOKEN))
+          .forEach((s, l) -> l.forEach(t -> {})))
       .run();
   }
   
@@ -121,7 +122,15 @@ public class CasUtilBenchmark {
       .magnitudeIncrement(count -> count * 10)
       .incrementTimes(3);
     
-    new Benchmark("JCas selectCovering", template)
+    new Benchmark("CAS selectCovering", template)
+      .measure(() -> {
+        Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
+        Type tokenType = getType(cas, TYPE_NAME_TOKEN);
+        select(cas, tokenType).forEach(t -> selectCovering(sentenceType, t));
+      })
+      .run();
+
+    new Benchmark("CAS selectCovering", template)
       .measure(() -> {
         Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
         Type tokenType = getType(cas, TYPE_NAME_TOKEN);
@@ -129,8 +138,9 @@ public class CasUtilBenchmark {
       })
       .run();
 
-    new Benchmark("JCas indexCovering", template)
-      .measure(() -> indexCovering(cas, getType(cas, TYPE_NAME_TOKEN), getType(cas, TYPE_NAME_SENTENCE)))
+    new Benchmark("CAS indexCovering", template)
+      .measure(() -> indexCovering(cas, getType(cas, TYPE_NAME_TOKEN), getType(cas, TYPE_NAME_SENTENCE))
+          .forEach((t, l) -> l.forEach(s -> {})))
       .run();
   }
 }
