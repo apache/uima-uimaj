@@ -20,9 +20,11 @@ package org.apache.uima.fit.benchmark;
 
 import static org.apache.uima.fit.benchmark.CasInitializationUtils.initRandomCas;
 import static org.apache.uima.fit.util.JCasUtil.indexCovered;
+import static org.apache.uima.fit.util.JCasUtil.indexCovering;
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectAll;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
+import static org.apache.uima.fit.util.JCasUtil.selectCovering;
 
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.type.Sentence;
@@ -89,10 +91,10 @@ public class JCasUtilBenchmark {
   @Test
   public void benchmarkSelectCovered() {
     Benchmark template = new Benchmark("TEMPLATE")
-        .initialize(n -> initRandomCas(jcas.getCas(), n))
-        .magnitude(10)
-        .magnitudeIncrement(count -> count * 10)
-        .incrementTimes(4);
+      .initialize(n -> initRandomCas(jcas.getCas(), n))
+      .magnitude(10)
+      .magnitudeIncrement(count -> count * 10)
+      .incrementTimes(4);
     
     new Benchmark("JCas selectCovered", template)
       .measure(() -> select(jcas, Sentence.class).forEach(s -> selectCovered(Token.class, s)))
@@ -100,6 +102,23 @@ public class JCasUtilBenchmark {
 
     new Benchmark("JCas indexCovered", template)
       .measure(() -> indexCovered(jcas, Sentence.class, Token.class))
+      .run();
+  }
+  
+  @Test
+  public void benchmarkSelectCovering() {
+    Benchmark template = new Benchmark("TEMPLATE")
+      .initialize(n -> initRandomCas(jcas.getCas(), n))
+      .magnitude(10)
+      .magnitudeIncrement(count -> count * 10)
+      .incrementTimes(3);
+    
+    new Benchmark("JCas selectCovering", template)
+      .measure(() -> select(jcas, Token.class).forEach(s -> selectCovering(Sentence.class, s)))
+      .run();
+
+    new Benchmark("JCas indexCovering", template)
+      .measure(() -> indexCovering(jcas, Token.class, Sentence.class))
       .run();
   }
 }
