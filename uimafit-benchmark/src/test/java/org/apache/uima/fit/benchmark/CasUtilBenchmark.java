@@ -18,12 +18,16 @@
  */
 package org.apache.uima.fit.benchmark;
 
-import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.*;
 import static org.apache.uima.fit.benchmark.CasInitializationUtils.initRandomCas;
+import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
+import static org.apache.uima.fit.util.CasUtil.getType;
 import static org.apache.uima.fit.util.CasUtil.indexCovered;
+import static org.apache.uima.fit.util.CasUtil.indexCovering;
 import static org.apache.uima.fit.util.CasUtil.select;
 import static org.apache.uima.fit.util.CasUtil.selectAll;
-import static org.apache.uima.fit.util.CasUtil.*;
+import static org.apache.uima.fit.util.CasUtil.selectCovered;
+import static org.apache.uima.fit.util.CasUtil.selectCovering;
+import static org.apache.uima.fit.util.CasUtil.selectFS;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
@@ -106,6 +110,27 @@ public class CasUtilBenchmark {
 
     new Benchmark("CAS indexCovered", template)
       .measure(() -> indexCovered(cas, getType(cas, TYPE_NAME_SENTENCE), getType(cas, TYPE_NAME_TOKEN)))
+      .run();
+  }
+  
+  @Test
+  public void benchmarkSelectCovering() {
+    Benchmark template = new Benchmark("TEMPLATE")
+      .initialize(n -> initRandomCas(cas, n))
+      .magnitude(10)
+      .magnitudeIncrement(count -> count * 10)
+      .incrementTimes(3);
+    
+    new Benchmark("JCas selectCovering", template)
+      .measure(() -> {
+        Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
+        Type tokenType = getType(cas, TYPE_NAME_TOKEN);
+        select(cas, tokenType).forEach(s -> selectCovering(sentenceType, s));
+      })
+      .run();
+
+    new Benchmark("JCas indexCovering", template)
+      .measure(() -> indexCovering(cas, getType(cas, TYPE_NAME_TOKEN), getType(cas, TYPE_NAME_SENTENCE)))
       .run();
   }
 }
