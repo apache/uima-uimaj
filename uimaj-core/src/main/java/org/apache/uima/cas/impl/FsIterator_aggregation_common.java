@@ -43,7 +43,7 @@ import org.apache.uima.jcas.cas.TOP;
  */
 class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterator_multiple_indexes<T> {
   
-  private final static AtomicInteger moveToCount = new AtomicInteger(0);
+  private final static AtomicInteger moveTo_error_msg_count = new AtomicInteger(0);
   
 //  /** only used for moveTo */
 //  final private boolean ignoreTypePriority;
@@ -102,7 +102,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
    *   
    */
   public void moveToNoReinit(FeatureStructure fs) {
-    Misc.decreasingWithTrace(moveToCount, "MoveTo operations on unsorted iterators are likely mistakes." , UIMAFramework.getLogger());
+    Misc.decreasingWithTrace(moveTo_error_msg_count, "MoveTo operations on unsorted iterators are likely mistakes." , UIMAFramework.getLogger());
     
 //    Type typeCompare = fs.getType();
     
@@ -289,7 +289,6 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
   @Override
   public Comparator<TOP> getComparator() {
     return null; // This style is unordered
-  }
-  
+  }  
   
 }
