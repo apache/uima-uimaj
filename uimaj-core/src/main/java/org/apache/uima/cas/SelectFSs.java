@@ -249,6 +249,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   /**
    * Limits the number of Feature Structures returned by this select
    * @param n the maximum number of feature structures returned.
+   *   This must be a value >= 0.
    * @return the updated SelectFSs object
    */
   SelectFSs<T> limit(int n);
