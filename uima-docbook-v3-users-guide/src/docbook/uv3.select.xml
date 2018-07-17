@@ -638,34 +638,41 @@ startAt(begin, end, shifted) // same as above,
       <title>Following or Preceding</title>
       
       <para>For an Annotation Index, you can specify all Feature Structures following or preceding a position.
-      The position can be specified either as a Feature Structure, or 
+      The position can be specified either as a Feature Structure, or by specifying an annotation begin index and
+      an optional offset.  Note that the positioning arguments differ from the <code>startAt</code> specification, 
+      which uses both begin and end values.  
       by using begin and end values.
-      The arguments are identical to those of the <code>startAt</code> specification, but are interpreted 
-      differently.    
       </para>
             
       <variablelist>
         <varlistentry>
           <term><emphasis role="strong">following</emphasis></term>
           <listitem>
-            <para>Position the iterator according to the argument, get that Annotation&apos;s <code>end</code>
-            value, and then move the iterator forwards until
-            the Annotation at that position has its begin value &gt;= to the saved end value.
+            <para>Position the iterator according to the argument, 
+            and then move the iterator forwards until
+            the Annotation at that position has its begin value &gt;= to the positioning annotation's end value.
+            </para>
+            <para>If the position is specified as an int, move the iterator forwards until
+            the Annotation at that position has its begin value &gt;= the specified int.
             </para>
           </listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis role="strong">preceding</emphasis></term>
           <listitem>
-            <para>Position the iterator according to the argument, save that Annotation&apos;s <code>begin</code> value,
+            <para>Position the iterator according to the argument, 
             and then move it backwards until
-            the Annotation&apos;s (at that position) <code>end</code> value is &lt;= to the saved <code>begin</code>value.
+            the Annotation&apos;s (at that position) <code>end</code> value is &lt;= to 
+            the positioning Annotation's <code>begin</code>value.
             </para>
+            <para>If the position is specified as an int, treat this as the begin value.</para>
+            
           </listitem>
         </varlistentry>
       </variablelist>
       
-      <para>The <code>preceding</code> iteration skips annotations whose <code>end</code> values are &gt; the saved <code>begin</code>.</para>
+      <para>The <code>preceding</code> iteration skips over annotations whose <code>end</code> values are &gt; 
+      the positioning annotation's begin value, or the positioning int's value.</para>
     </section>  
   </section>
   
