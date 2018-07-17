@@ -638,10 +638,10 @@ startAt(begin, end, shifted) // same as above,
       <title>Following or Preceding</title>
       
       <para>For an Annotation Index, you can specify all Feature Structures following or preceding a position.
-      The position can be specified either as a Feature Structure, or by specifying an annotation begin index and
-      an optional offset.  Note that the positioning arguments differ from the <code>startAt</code> specification, 
+      The position can be specified either as an Annotation or by specifying an annotation begin index.  
+      Both of these can have an additional shift offset amount as a 2nd parameter.
+      Note that the positioning arguments differ from the <code>startAt</code> specification, 
       which uses both begin and end values.  
-      by using begin and end values.
       </para>
             
       <variablelist>
@@ -666,7 +666,7 @@ startAt(begin, end, shifted) // same as above,
             the positioning Annotation's <code>begin</code>value.
             </para>
             <para>If the position is specified as an int, treat this as the begin value.</para>
-            
+            <para>Once positioned, the actual iteration starts at the beginning and ends at the last position.</para>            
           </listitem>
         </varlistentry>
       </variablelist>
