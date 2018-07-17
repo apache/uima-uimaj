@@ -309,4 +309,12 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
     ((LowLevelIterator<T>)this).ll_remove();
   } 
 
+  /**
+   * return the size of the collection being iterated over, if available.
+   * This may be inefficient to compute
+   * @return the size of the collection being iterated over.
+   */
+  default int size() {
+    return ((LowLevelIterator<T>)this).ll_indexSizeMaybeNotCurrent();
+  }
 }
