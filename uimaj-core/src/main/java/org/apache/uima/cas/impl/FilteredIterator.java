@@ -19,8 +19,8 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
@@ -124,22 +124,22 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
 
   @Override
   public int ll_indexSizeMaybeNotCurrent() {
-    throw new UnsupportedOperationException();
+    return it.ll_indexSizeMaybeNotCurrent();
   }
 
   @Override
   public LowLevelIndex<T> ll_getIndex() {
-    throw new UnsupportedOperationException();
+    return it.ll_getIndex();
   }
 
   @Override
   public int ll_maxAnnotSpan() {
-    throw new UnsupportedOperationException();
+    return it.ll_maxAnnotSpan();
   }
 
   @Override
   public boolean isIndexesHaveBeenUpdated() {
-    throw new UnsupportedOperationException();
+    return it.isIndexesHaveBeenUpdated();
   }
 
   @Override
@@ -150,6 +150,27 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   @Override
   public Comparator<TOP> getComparator() {
     return it.getComparator();
+  }
+
+  @Override
+  public int size() {
+    FilteredIterator<T> it2 = new FilteredIterator<T>(it, cons);
+    int count = 0;
+    while (it2.hasNext()) {
+      count++;
+      it2.nextNvc();
+    }
+    return count;
+  }
+
+  @Override
+  public FeatureStructure[] getArray() {
+    FilteredIterator<T> it2 = new FilteredIterator<T>(it, cons);
+    ArrayList<FeatureStructure> items = new ArrayList<>();
+    while (it2.hasNext()) {
+      items.add(it2.nextNvc());
+    }
+    return items.toArray(new FeatureStructure[items.size()]);
   }
 
 //  /* (non-Javadoc)
