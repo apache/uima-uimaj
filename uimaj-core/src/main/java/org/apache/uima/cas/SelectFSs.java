@@ -350,19 +350,19 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   * ---------------------------------*/
   /**
    * For AnnotationIndex, position to first Annotation 
-   * whose begin &gt; fs.getEnd();
+   * whose begin &gt;= fs.getEnd();
    * @param annotation the Annotation to follow
    * @return the updated SelectFSs object
    */
   SelectFSs<T> following(Annotation annotation);
   /**
-   * For AnnotationIndex, position to first Annotation whose begin &gt; fs.getEnd();
+   * For AnnotationIndex, position to first Annotation whose begin &gt;= position;
    * @param position start following this position
    * @return the updated SelectFSs object
    */
   SelectFSs<T> following(int position);
   /**
-   * For AnnotationIndex, position to first Annotation whose begin &gt; fs.getEnd()
+   * For AnnotationIndex, position to first Annotation whose begin &gt;= fs.getEnd()
    *   and then adjust position by the offset
    * @param annotation start following this Annotation, adjusted for the offset
    * @param offset positive or negative shift amount to adjust starting position 
@@ -370,7 +370,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    */
   SelectFSs<T> following(Annotation annotation, int offset);
   /**
-   * For AnnotationIndex, position to first Annotation whose begin &gt; position
+   * For AnnotationIndex, position to first Annotation whose begin &gt;= position
    *   and then adjust position by the offset.
    * @param position start following this position, adjusted for the offset
    * @param offset positive or negative shift amount to adjust starting position 
@@ -380,7 +380,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
 
   /**
    * For AnnotationIndex, set up a selection that will proceed backwards, 
-   * starting at the first Annotation whose end &lt;= fs.getBegin().
+   * starting at the first Annotation to the left of the specified position, 
+   * whose end &lt;= fs.getBegin().
    * Annotations whose end &gt; fs.getBegin() are skipped.
    * @param annotation the Annotation to use as the position to start before.
    * @return the updated SelectFSs object
