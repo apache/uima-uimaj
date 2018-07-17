@@ -246,8 +246,8 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     this.boundsUse = (boundsUse == null) ? BoundsUse.notBounded : boundsUse;
     this.isUnambiguous = !ambiguous;
     if (strict) {
-      if (BoundsUse.coveredBy != boundsUse) {
-        throw new IllegalArgumentException("Strict requires BoundsUse.coveredBy");
+      if (BoundsUse.coveredBy != boundsUse && BoundsUse.sameBeginEnd != boundsUse) {
+        throw new IllegalArgumentException("Strict requires BoundsUse.coveredBy or BoundsUse.sameBeginEnd");
       }
     }
     this.isStrict = strict;
@@ -1250,6 +1250,27 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   public Comparator<TOP> getComparator() {
     // TODO Auto-generated method stub
     return null;
+  }
+  
+  @Override
+  public int size() {
+    FSIterator<T> it2 = copy();
+    int sz = 0;
+    while (it2.hasNext()) {
+      sz++;
+      it2.nextNvc();
+    }
+    return sz;
+  }
+
+  @Override
+  public FeatureStructure[] getArray() {
+    FSIterator<T> it2 = copy();
+    ArrayList<FeatureStructure> a = new ArrayList<>();
+    while (it2.hasNext()) {
+      a.add(it2.nextNvc());
+    }
+    return a.toArray(new FeatureStructure[a.size()]);
   }
 
 //  /**
