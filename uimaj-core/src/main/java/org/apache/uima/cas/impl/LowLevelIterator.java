@@ -25,7 +25,6 @@ import java.util.NoSuchElementException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -161,7 +160,7 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
   /**
    * an empty iterator
    */
-  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator_empty();
+  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator_empty<FeatureStructure>();
   
   /**
    * Internal use constants
@@ -172,4 +171,13 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
    * @return false if this iterator is over an unordered collection or set or bag
    */
   default boolean isMoveToSupported() { return false; }
+
+  /**
+   * @return an array representing the collection of items the iterator would return
+   */
+  default FeatureStructure[] getArray() { 
+    throw new UnsupportedOperationException();
+  }
+  
+
 }

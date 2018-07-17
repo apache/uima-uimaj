@@ -299,6 +299,13 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     return this.ll_getIndex().isSorted();
   }
 
+  @Override
+  public FeatureStructure[] getArray() {
+    TOP[] a = new TOP[size()];
+    this.ofsa.copyToArray(a, 0);
+    return a;
+  }
+
 //  @Override
 //  protected int getModificationCountFromIndex() {
 //    return ofsa.getModificationCount();

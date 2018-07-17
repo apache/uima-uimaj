@@ -29,6 +29,8 @@ import org.apache.uima.jcas.cas.TOP;
  * An empty Low-level FS iterator
  */
 public class LowLevelIterator_empty<T extends FeatureStructure> implements LowLevelIterator<T> {
+  
+  private final static FeatureStructure[] EMPTY_ARRAY = new FeatureStructure[0];
 
   @Override
   public boolean isValid() { return false; }
@@ -59,4 +61,6 @@ public class LowLevelIterator_empty<T extends FeatureStructure> implements LowLe
   public boolean maybeReinitIterator() { return false; }
   @Override
   public Comparator<TOP> getComparator() { return null; }
+  @Override
+  public FeatureStructure[] getArray() { return EMPTY_ARRAY; }
 }

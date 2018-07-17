@@ -191,6 +191,18 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
                 ? main_idx 
                 : ((LowLevelIterator<T>)allIterators[0]).ll_getIndex());
   }  
-
   
+  @Override
+  public FeatureStructure[] getArray() {
+    FeatureStructure[] a = new FeatureStructure[size()];
+    int destPos = 0;
+    for (LowLevelIterator<T> it : nonEmptyIterators) {
+      FeatureStructure[] p = it.getArray();
+      System.arraycopy(p, 0, a, destPos, p.length);
+      destPos += p.length;
+    }
+    return a;
+  }
+
+
 }

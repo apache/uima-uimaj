@@ -135,4 +135,20 @@ class FsIterator_limited<T extends FeatureStructure>
     return iterator.getComparator();
   }
 
+  @Override
+  public int size() {
+    return Math.min(limit, iterator.size());
+  }
+
+  @Override
+  public FeatureStructure[] getArray() {
+    FeatureStructure[] a = iterator.getArray();
+    if (a.length > limit) {
+      FeatureStructure[] a2 = new FeatureStructure[limit];
+      System.arraycopy(a, 0, a2, 0, limit);
+      return a2;
+    }
+    return a;
+  }
+
 }

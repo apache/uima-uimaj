@@ -140,4 +140,23 @@ class FsIterator_backwards<T extends FeatureStructure>
     return it.getComparator();
   }
 
+  @Override
+  public int size() {
+    return it.size();
+  }
+
+  @Override
+  public FeatureStructure[] getArray() {
+    FeatureStructure[] a = it.getArray();
+    int len = a.length;
+    int len2 = len >> 1;
+    int len1 = len - 1;
+    for (int i = 0, i2 = len1; i < len2; i++, i2--) {
+      FeatureStructure t = a[i];
+      a[i] = a[i2];
+      a[i2] = t;
+    }
+    return a;
+  }
+
 }

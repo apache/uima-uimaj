@@ -184,6 +184,13 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   public Comparator<TOP> getComparator() {
     return null;  // not used for bag
   }
+
+  @Override
+  public FeatureStructure[] getArray() {
+    TOP[] a = new TOP[size()];
+    bag.copyToArray(a, 0);
+    return a;
+  }
   
 }
 
