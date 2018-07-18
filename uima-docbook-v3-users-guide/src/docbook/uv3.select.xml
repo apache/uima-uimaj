@@ -800,6 +800,13 @@ startAt(begin, end, shifted) // same as above,
             </para>
           </listitem>
         </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">isEmpty</emphasis></term>
+          <listitem>
+            <para>returns true if the selection is empty.
+            </para>
+          </listitem>
+        </varlistentry>
       </variablelist>
     </section>
     <section id="uv3.select.terminal_form_actions.streams">

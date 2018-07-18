@@ -1583,4 +1583,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return stream().unordered();
   }
 
+  @Override
+  public boolean isEmpty() {
+    if (this.limit == 0) return true;
+    return fsIterator().size() == 0;
+  }
 }

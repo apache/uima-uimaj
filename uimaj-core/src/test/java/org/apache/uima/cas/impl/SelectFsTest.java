@@ -163,4 +163,18 @@ public class SelectFsTest  {
     // uimaFIT: JCasUtil.selectByIndex(jCas, Token.class, -1).getCoveredText()
     assertEquals("t4", jcas.select(Token.class).backwards().get(0).getCoveredText());
   }
+  
+  @Test
+  public void testempty() {
+    cas.reset();
+    JCas jcas = cas.getJCas();
+    cas.setDocumentText("t1 t2 t3 t4");
+    
+    Token p1 = new Token(jcas, 0, 2); 
+    p1.addToIndexes();
+    assertFalse(jcas.select(Token.class).isEmpty());
+    cas.reset();
+    assertTrue(jcas.select(Token.class).isEmpty());
+    
+  }
 }

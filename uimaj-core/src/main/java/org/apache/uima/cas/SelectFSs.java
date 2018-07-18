@@ -689,6 +689,11 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   default void forEach(Consumer<? super T> action) {
     Iterable.super.forEach(action);
   }
+  
+  /**
+   * @return true if the selection is empty
+   */
+  boolean isEmpty();
 
 //  /**
 //   * DON'T USE THIS, use index.select(XXX.class) instead
