@@ -340,8 +340,8 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     this.boundsUse = (boundsUse == null) ? BoundsUse.notBounded : boundsUse;
     this.isUnambiguous = !ambiguous;
     if (strict) {
-      if (BoundsUse.coveredBy != boundsUse) {
-        throw new IllegalArgumentException("Strict requires BoundsUse.coveredBy");
+      if (BoundsUse.coveredBy != boundsUse && BoundsUse.sameBeginEnd != boundsUse) {
+        throw new IllegalArgumentException("Strict requires BoundsUse.coveredBy or BoundsUse.sameBeginEnd");
       }
     }
     this.isStrict = strict;
