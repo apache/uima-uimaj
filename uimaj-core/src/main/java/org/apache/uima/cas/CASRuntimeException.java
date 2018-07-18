@@ -320,6 +320,9 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** Select with FSList or FSArray may not specify bounds, starting position, following, or preceding. */
   public static final String SELECT_ALT_SRC_INVALID = "SELECT_ALT_SRC_INVALID";
   
+  /** Select with startFs invalid with {0}*/
+  public static final String SELECT_START_FS_INVALID = "SELECT_START_FS_INVALID";
+  
   /** Index "{0}" must be an AnnotationIndex. */ 
   public static final String ANNOTATION_INDEX_REQUIRED = "ANNOTATION_INDEX_REQUIRED";
   
