@@ -392,6 +392,7 @@ FSIterator&lt;Token&gt; token_iterator =
           <term><emphasis role=""></emphasis>startAt</term>
           <listitem>
             <para>position the starting point of any iteration.  
+            This specification is not allowed (and will throw an exception) for bounded iterations.
 			        <code>startAt(xxx)</code> takes two forms, each of which has, in turn 2 subforms.  
 			        The form using <code>begin, end</code> is only valid for Annotation Indexes.
 			        <programlisting>startAt(fs);          // fs specifies a feature structure 
