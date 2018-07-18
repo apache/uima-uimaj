@@ -389,7 +389,7 @@ FSIterator&lt;Token&gt; token_iterator =
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term><emphasis role=""></emphasis>startAt</term>
+          <term><emphasis role="">startAt</emphasis></term>
           <listitem>
             <para>position the starting point of any iteration.  
 			        <code>startAt(xxx)</code> takes two forms, each of which has, in turn 2 subforms.  
@@ -476,10 +476,11 @@ startAt(begin, end, shifted) // same as above,
           <term><emphasis role="strong">between</emphasis></term>
           <listitem>
             <para>uses two Annotations, and returns Annotations that are in between
-				      the two bounds.  If the bounds are backwards, then they are automatically used in reverse order.
+				      the two bounds, specified by Annotations.  If the bounds are backwards, then they are automatically used in reverse order, 
+              and the results are returned in reverse order.
 				      The meaning of between is that an included Annotation's begin has to be &gt;= the earlier bound's <code>end</code>, 
 				      and the Annotation's end has to be &lt;= the later bound's <code>begin</code>.
-            </para>
+            </para>            
           </listitem>
         </varlistentry>
       </variablelist>
