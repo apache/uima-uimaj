@@ -380,8 +380,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   SelectFSs<T> following(int position, int offset);
 
   /**
-   * For AnnotationIndex, set up a selection that will proceed backwards, 
-   * starting at the first Annotation to the left of the specified position, 
+   * For AnnotationIndex, set up a selection that will go from the beginning to  
+   * the first Annotation to the left of the specified position, 
    * whose end &lt;= fs.getBegin().
    * Annotations whose end &gt; fs.getBegin() are skipped.
    * @param annotation the Annotation to use as the position to start before.
@@ -389,28 +389,31 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    */
   SelectFSs<T> preceding(Annotation annotation);
   /**
-   * For AnnotationIndex, set up a selection that will proceed backwards, 
-   * starting at the first Annotation whose end &lt;= position.
+   * For AnnotationIndex, set up a selection that will go from the beginning to  
+   * the first Annotation to the left of the specified position, 
+   * ending at the last Annotation whose end &lt;= position.
    * Annotations whose end &gt; position are skipped.
    * @param position the position to start before.
    * @return the updated SelectFSs object
    */
   SelectFSs<T> preceding(int position);
   /**
-   * For AnnotationIndex, set up a selection that will proceed backwards, 
-   * starting at the first Annotation whose end &lt;= fs.getBegin(),
+   * For AnnotationIndex, set up a selection that will go from the beginning to  
+   * the first Annotation to the left of the specified position, 
+   * ending at the last Annotation whose end &lt;= fs.getBegin(),
    * after adjusting by offset items.
    * Annotations whose end &gt; fs.getBegin() are skipped (including during the offset positioning)
    * @param annotation the Annotation to use as the position to start before.
-   * @param offset the offset adjustment, positive or negative.  Positive moves backwards.
+   * @param offset the offset adjustment, positive or negative. Positive moves backwards. 
    * @return the updated SelectFSs object
    */
   SelectFSs<T> preceding(Annotation annotation, int offset);
   /**
-   * For AnnotationIndex, set up a selection that will proceed backwards, 
-   * starting at the first Annotation whose end &lt;= position.
+   * For AnnotationIndex, set up a selection that will go from the beginning to  
+   * the first Annotation to the left of the specified position, 
+   * ending at the last Annotation whose end &lt;= position.
    * after adjusting by offset items.
-   * Annotations whose end &gt; fs.getBegin() are skipped (including during the offset positioning)
+   * Annotations whose end &gt; position are skipped (including during the offset positioning)
    * @param position the position to start before.
    * @param offset the offset adjustment, positive or negative.  Positive moves backwards.
    * @return the updated SelectFSs object
