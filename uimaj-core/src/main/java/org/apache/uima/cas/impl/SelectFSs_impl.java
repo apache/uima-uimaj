@@ -80,12 +80,12 @@ import org.apache.uima.jcas.tcas.Annotation;
  *   
  *   for not-bounded, 
  *     - ignore strict and skipEq
- *       -- except: preceding implies skipping annotations whose end > positioning begin
+ *       -- except: preceding implies skipping annotations whose end &gt; positioning begin
  *     - order-not-needed only applies if iicp size &gt; 1
  *     - unambig ==&gt; use Subiterator
  *         -- subiterator wraps: according to typePriority and order-not-needed
  *     - no Type Priority - need to pass in as arg to fsIterator_multiple_indexes
- *        == if no type priority, need to prevent rattling off the == type while comparate is equal
+ *        == if no type priority, need to prevent rattling off the == type while compare is equal
  *        == affects both FsIterator_aggregation_common and FsIterator_subtypes_ordered
  *   for 3 other boundings:
  *     - use subiterator, pass in strict and skipeq
