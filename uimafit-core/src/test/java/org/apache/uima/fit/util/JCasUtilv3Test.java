@@ -433,11 +433,11 @@ public class JCasUtilv3Test extends ComponentTestBase {
     List<Token> token = new ArrayList<Token>(select(jCas, Token.class));
 
     // uimaFIT: selectSingleRelative(jCas, Token.class, token.get(1), -1)
-    Token preceding =  jCas.select(Token.class).at(token.get(1)).get(-1);
+    Token preceding =  jCas.select(Token.class).startAt(token.get(1)).get(-1);
     assertEquals(token.get(0).getCoveredText(), preceding.getCoveredText());
 
     // selectSingleRelative(jCas, Token.class, token.get(1), 1);
-    Token following = jCas.select(Token.class).at(token.get(1)).get(1);
+    Token following = jCas.select(Token.class).startAt(token.get(1)).get(1);
     assertEquals(token.get(2).getCoveredText(), following.getCoveredText());
   }
 
@@ -474,7 +474,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
     Token firstToken = tokens.get(0);
     Token secondToken = tokens.get(1);
     // uimaFIT: selectSingleRelative(jCas, AnalyzedText.class, firstToken, 1);
-    AnalyzedText a = jCas.select(AnalyzedText.class).at(firstToken).get(-1);
+    AnalyzedText a = jCas.select(AnalyzedText.class).startAt(firstToken).get(-1);
     assertEquals(secondToken.getBegin(), a.getBegin());
     assertEquals(secondToken.getEnd(), a.getEnd());
   }
