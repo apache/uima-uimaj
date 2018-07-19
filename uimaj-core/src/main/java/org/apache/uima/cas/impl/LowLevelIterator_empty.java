@@ -19,10 +19,12 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.reflect.Array;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -30,8 +32,6 @@ import org.apache.uima.jcas.cas.TOP;
  */
 public class LowLevelIterator_empty<T extends FeatureStructure> implements LowLevelIterator<T> {
   
-  private final static FeatureStructure[] EMPTY_ARRAY = new FeatureStructure[0];
-
   @Override
   public boolean isValid() { return false; }
   @Override
@@ -62,5 +62,7 @@ public class LowLevelIterator_empty<T extends FeatureStructure> implements LowLe
   @Override
   public Comparator<TOP> getComparator() { return null; }
   @Override
-  public FeatureStructure[] getArray() { return EMPTY_ARRAY; }
+  public T[] getArray(Class<? super T> clazz) { return (T[]) Array.newInstance(clazz, 0); }
+  @Override
+  public Type getType() { return TypeSystemImpl.staticTsi.getTopType(); }
 }
