@@ -146,13 +146,13 @@ class FsIterator_backwards<T extends FeatureStructure>
   }
 
   @Override
-  public FeatureStructure[] getArray() {
-    FeatureStructure[] a = it.getArray();
+  public T[] getArray(Class<? super T> clazz) {
+    T[] a = it.getArray(clazz);
     int len = a.length;
     int len2 = len >> 1;
     int len1 = len - 1;
     for (int i = 0, i2 = len1; i < len2; i++, i2--) {
-      FeatureStructure t = a[i];
+      T t = a[i];
       a[i] = a[i2];
       a[i2] = t;
     }

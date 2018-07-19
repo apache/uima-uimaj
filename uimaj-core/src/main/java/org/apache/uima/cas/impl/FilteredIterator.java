@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -164,13 +165,14 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   }
 
   @Override
-  public FeatureStructure[] getArray() {
+  public T[] getArray(Class<? super T> clazz) {
     FilteredIterator<T> it2 = new FilteredIterator<T>(it, cons);
     ArrayList<FeatureStructure> items = new ArrayList<>();
     while (it2.hasNext()) {
       items.add(it2.nextNvc());
     }
-    return items.toArray(new FeatureStructure[items.size()]);
+    T[] r = (T[]) Array.newInstance(clazz, items.size());
+    return items.toArray(r);
   }
 
 //  /* (non-Javadoc)

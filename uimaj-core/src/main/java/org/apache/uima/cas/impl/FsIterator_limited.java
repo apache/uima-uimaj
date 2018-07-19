@@ -19,7 +19,9 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Arrays;
 import java.util.Comparator;
+
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
@@ -141,12 +143,10 @@ class FsIterator_limited<T extends FeatureStructure>
   }
 
   @Override
-  public FeatureStructure[] getArray() {
-    FeatureStructure[] a = iterator.getArray();
+  public T[] getArray(Class<? super T> clazz) {
+    T[] a = iterator.getArray(clazz);
     if (a.length > limit) {
-      FeatureStructure[] a2 = new FeatureStructure[limit];
-      System.arraycopy(a, 0, a2, 0, limit);
-      return a2;
+      return Arrays.copyOf(a,  limit);
     }
     return a;
   }

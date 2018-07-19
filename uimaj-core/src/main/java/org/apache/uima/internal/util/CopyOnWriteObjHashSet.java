@@ -23,14 +23,12 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
-import org.apache.uima.internal.util.ObjHashSet;
-import org.apache.uima.jcas.cas.TOP;
 
 /**
  * implements ObjHashSet partially, for iterator use
  */
 
-public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
+public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOnWriteIndexPart<T>{
   
   private ObjHashSet<T> ohs;
   
@@ -186,11 +184,11 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
    * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#copyToArray(org.apache.uima.jcas.cas.TOP[], int)
    */
   @Override
-  public int copyToArray(TOP[] target, int startingIndexInTarget) {
+  public int copyToArray(T[] target, int startingIndexInTarget) {
     Iterator<T> it = iterator();
     int i = startingIndexInTarget;
     while (it.hasNext()) {
-      target[i++] = (TOP) it.next();
+      target[i++] = it.next();
     }
     return i;
   }

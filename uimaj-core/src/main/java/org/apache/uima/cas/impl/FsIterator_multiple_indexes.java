@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -193,11 +194,11 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
   }  
   
   @Override
-  public FeatureStructure[] getArray() {
-    FeatureStructure[] a = new FeatureStructure[size()];
+  public T[] getArray(Class<? super T> clazz) {
+    T[] a = (T[]) Array.newInstance(clazz, size());
     int destPos = 0;
     for (LowLevelIterator<T> it : nonEmptyIterators) {
-      FeatureStructure[] p = it.getArray();
+      T[] p = it.getArray(clazz);
       System.arraycopy(p, 0, a, destPos, p.length);
       destPos += p.length;
     }

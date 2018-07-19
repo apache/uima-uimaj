@@ -67,6 +67,9 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
 
   // A reference to the low-level CAS.
   final protected CASImpl casImpl;
+  
+  // comparators are over TOP since it's allowed to compare
+  //   items with types in the superchain of T (up to TOP)
   /**
    * comparator for an index, passed in as an argument to the constructor
    */
@@ -522,8 +525,8 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
     flush();
   }
 
-  protected CopyOnWriteIndexPart getNonNullCow() {
-    CopyOnWriteIndexPart n = getCopyOnWriteIndexPart();
+  protected CopyOnWriteIndexPart<T> getNonNullCow() {
+    CopyOnWriteIndexPart<T> n = getCopyOnWriteIndexPart();
     if (n != null) {
       if (CASImpl.traceCow) {
         this.casImpl.traceCowReinit("reuse", this);
@@ -550,7 +553,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
     return (wr_cow == null) ? null : wr_cow.get();
   }
 
-  protected abstract CopyOnWriteIndexPart createCopyOnWriteIndexPart();
+  protected abstract CopyOnWriteIndexPart<T> createCopyOnWriteIndexPart();
 
   /**
    * Called just before modifying an index if wr_cow has a value, tell that

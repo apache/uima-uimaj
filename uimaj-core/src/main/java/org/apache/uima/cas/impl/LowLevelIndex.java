@@ -22,7 +22,6 @@ package org.apache.uima.cas.impl;
 import java.util.Comparator;
 
 import org.apache.uima.cas.FSIndex;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;

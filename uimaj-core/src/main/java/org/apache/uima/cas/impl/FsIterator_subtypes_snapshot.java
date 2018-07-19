@@ -263,7 +263,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
 
 
   @Override
-  public FeatureStructure[] getArray() {
+  public T[] getArray(Class<? super T> clazz) {
     return snapshot;
   }  
  

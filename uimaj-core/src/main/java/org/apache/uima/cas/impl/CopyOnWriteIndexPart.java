@@ -21,12 +21,13 @@ package org.apache.uima.cas.impl;
 
 import java.util.Iterator;
 
-import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.cas.FeatureStructure;
 
 /**
  * common APIs supporting the copy on write aspect of index parts
  */
-public interface CopyOnWriteIndexPart<T> {
+// extend FeatureStructure because users have type specs like this
+public interface CopyOnWriteIndexPart<T extends FeatureStructure> {
   
   void makeReadOnlyCopy();
   
@@ -52,5 +53,5 @@ public interface CopyOnWriteIndexPart<T> {
    * @param startingIndexInTarget the starting index in the target array
    * @return startingIndexInTarget + size
    */
-  int copyToArray(TOP[] target, int startingIndexInTarget);
+  int copyToArray(T[] target, int startingIndexInTarget);
 }

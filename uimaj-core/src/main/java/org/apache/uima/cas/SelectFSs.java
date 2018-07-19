@@ -434,13 +434,13 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param <N> the generic type argument of the elements of the list
    * @return a List object whose elements represent the selection.
    */
-  <N extends T> List<N> asList();
+  List<T> asList();
   /**
    * @param clazz the class of the type of the elements
    * @param <N> the generic type argument of the elements of the array
    * @return a Array object representation of the elements of the selection.
    */
-  <N extends T> N[] asArray(Class<N> clazz);
+   T[] asArray(Class<? super T> clazz);
 //  Spliterator<T> spliterator(); // inherited, not needed here 
   
   // returning one item

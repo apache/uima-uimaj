@@ -1617,7 +1617,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         
         int i = 0;
         for (CopyOnWriteIndexPart<T> idx : indexes) {
-          i = idx.copyToArray(r, i);
+          i = idx.copyToArray((T[]) r, i);
         }
         return r;
       }
@@ -1630,7 +1630,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         
         int i = 0;
         for (CopyOnWriteIndexPart<T> idx : indexes) {
-          i = idx.copyToArray((TOP[]) r, i);
+          i = idx.copyToArray( (T[]) r, i);
         }
         return r;
       }

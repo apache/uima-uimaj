@@ -652,7 +652,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   private FSIterator<T> make_or_copy_snapshot(LowLevelIterator<T> baseIterator, boolean bkwd) {
     FSIterator<T> it;
-    T[] a = (T[]) asArray(baseIterator);  // array is in forward order because 
+    T[] a = (T[]) asArray(baseIterator, FeatureStructure.class);  // array is in forward order because 
                                           // it's produced by a backwards iterator, but then the array is reversed
     it = new FsIterator_subtypes_snapshot<T>(
                            a, 
@@ -877,54 +877,40 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * 
    */
   @Override
-  public <N extends T> List<N> asList() {
+  public List<T> asList() {
  
-    return new AbstractList<N>() {
- 
-      /**
-       * iterator used for two purposes:
-       *   - as underlying impl for listIterator 
-       *   - to compute the size
-       */
-      private final LowLevelIterator<T> it = (LowLevelIterator<T>) fsIterator();
+    return new AbstractList<T>() {
       
-      N[] a = asArrayFs(it);
-
+      private final T[] a = asArray((LowLevelIterator<T>) fsIterator());
+      
       @Override
-      public N get(int i) {
+      public T get(int i) {
         return a[i];
       }
 
       @Override
       public int size() {
-        return it.size();
+        return a.length;
       }
     };
-      
-      
      
-    
   }
   
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#asArray()
    */
   @Override
-  public <N extends T> N[] asArray(Class<N> clazz) {
-    return asArray((LowLevelIterator<T>)fsIterator());
-  }
-
-  private <N extends T> N[] asArrayFs(LowLevelIterator<T> it) {
-    return (N[]) ((LowLevelIterator<T>)it).getArray();
+  public T[] asArray(Class<? super T> clazz) {
+    return asArray((LowLevelIterator<T>)fsIterator(), clazz);
   }
   
-  private <N extends T> N[] asArray(LowLevelIterator<T> it) {
-    return (N[]) ((LowLevelIterator<T>)it).getArray();
+  private T[] asArray(LowLevelIterator<T> it, Class<? super T> clazz) {
+    return ((LowLevelIterator<T>)it).getArray(clazz);
   }
     
-//  private FeatureStructure[] asArray(FSIterator<T> it) {
-//    return asArray(it, FeatureStructure.class);
-//  }
+  private T[] asArray(LowLevelIterator<T> it) {
+    return asArray(it, (Class<? super T>) ((TypeImpl)it.getType()).javaClass);
+  }
   
 
   private Annotation makePosAnnot(int begin, int end) {

@@ -19,8 +19,8 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.reflect.Array;
 import java.util.Comparator;
-import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.UIMAFramework;
@@ -33,7 +33,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
 
   private static final AtomicInteger moveToCount = new AtomicInteger(0);
   
-  protected CopyOnWriteObjHashSet<TOP> bag;
+  protected CopyOnWriteObjHashSet<T> bag;
   final protected FsIndex_bag<T> fsBagIndex; // just an optimization, is == to fsLeafIndexImpl from super class, allows dispatch w/o casting
   
   private int position = -1;  
@@ -42,16 +42,16 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   
 
 
-  FsIterator_bag(FsIndex_bag<T> fsBagIndex, TypeImpl ti, CopyOnWriteIndexPart cow_wrapper) {
+  FsIterator_bag(FsIndex_bag<T> fsBagIndex, TypeImpl ti, CopyOnWriteIndexPart<T> cow_wrapper) {
     super(ti);
     this.fsBagIndex = fsBagIndex;  // need for copy()
-    bag = (CopyOnWriteObjHashSet<TOP>) cow_wrapper;
+    bag = (CopyOnWriteObjHashSet<T>) cow_wrapper;
     moveToFirst();
   }
   
   public boolean maybeReinitIterator() {
     if (!bag.isOriginal()) {
-      bag = (CopyOnWriteObjHashSet<TOP>) fsBagIndex.getNonNullCow();
+      bag = (CopyOnWriteObjHashSet<T>) fsBagIndex.getNonNullCow();
       return true;
     }
     return false;
@@ -186,8 +186,8 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   }
 
   @Override
-  public FeatureStructure[] getArray() {
-    TOP[] a = new TOP[size()];
+  public T[] getArray(Class<? super T> clazz) {
+    T[] a = (T[]) Array.newInstance(clazz, size());
     bag.copyToArray(a, 0);
     return a;
   }

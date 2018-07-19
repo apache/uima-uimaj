@@ -21,32 +21,32 @@ package org.apache.uima.internal.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
-import org.apache.uima.jcas.cas.TOP;
 
 /**
  * implements OrderedFsSet_array partially, for iterator use
  */
 
-public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
+public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implements CopyOnWriteIndexPart<T> {
   
-  private OrderedFsSet_array<TOP> set;
+  private OrderedFsSet_array<T> set;
     
   final public int a_firstUsedslot;
   final public int a_nextFreeslot;
-  final public OrderedFsSet_array<TOP> original;
+  final public OrderedFsSet_array<T> original;
   final private int original_size;
   
-  public TOP[] a;  // derived from "set" above
+  public T[] a;  // derived from "set" above
    
-  public CopyOnWriteOrderedFsSet_array(OrderedFsSet_array original) {
+  public CopyOnWriteOrderedFsSet_array(OrderedFsSet_array<T> original) {
     this.set = original;    
     this.original = original;
 //    this.comparatorNoTypeWithoutID = original.comparatorNoTypeWithoutID;
 //    this.comparatorNoTypeWithID = original.comparatorNoTypeWithID;
     this.a_firstUsedslot = original.a_firstUsedslot;
     this.a_nextFreeslot = original.a_nextFreeslot;
-    this.a = original.a;
+    this.a = (T[]) original.a;
     this.original_size = original.size();
   }
   
@@ -56,8 +56,8 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
    */
   @Override
   public void makeReadOnlyCopy() {
-    this.set = new OrderedFsSet_array<TOP>(set, true); // true = make read only copy
-    this.a = set.a;
+    this.set = new OrderedFsSet_array<T>(set, true); // true = make read only copy
+    this.a = (T[]) set.a;
   }
 
   /* (non-Javadoc)
@@ -110,7 +110,7 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
     return set.toString();
   }
     
-  public OrderedFsSet_array<TOP> getOfsa() {
+  public OrderedFsSet_array<T> getOfsa() {
     return set;
   }
   
@@ -118,8 +118,8 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
    * @see java.lang.Iterable#iterator()
    */
   @Override
-  public Iterator<TOP> iterator() {
-    return new Iterator<TOP>() {
+  public Iterator<T> iterator() {
+    return new Iterator<T>() {
 
       int pos = a_firstUsedslot;
       
@@ -129,11 +129,11 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
       }
 
       @Override
-      public TOP next() {
+      public T next() {
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
-        return a[pos++];
+        return (T) a[pos++];
       }      
     };
   }
@@ -142,7 +142,7 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
    * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#copyToArray(org.apache.uima.jcas.cas.TOP[], int)
    */
   @Override
-  public int copyToArray(TOP[] target, int startingIndexInTarget) {
+  public int copyToArray(T[] target, int startingIndexInTarget) {
     System.arraycopy(a, a_firstUsedslot, target, startingIndexInTarget, size());
     return startingIndexInTarget + size();
   }

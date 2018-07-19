@@ -175,7 +175,7 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
   /**
    * @return an array representing the collection of items the iterator would return
    */
-  default FeatureStructure[] getArray() { 
+  default  T[] getArray(Class<? super T> clazz) { 
     throw new UnsupportedOperationException();
   }
   

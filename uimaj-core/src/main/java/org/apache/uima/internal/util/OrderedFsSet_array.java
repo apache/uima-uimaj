@@ -67,8 +67,10 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
    */
   int a_nextFreeslot = 0;
   int a_firstUsedslot = 0;
-    
-  final private Comparator<TOP> comparatorNoTypeWithID;
+    // comparators are over TOP, not "T", because it's allowed to compare
+    //   items which are supertypes of the index's items
+    //   e.g. compare something of type Annotation with "Token"
+  final private Comparator<TOP> comparatorNoTypeWithID;  
   final private Comparator<TOP> comparatorNoTypeWithoutID;
   private int maxSize = 0; // managing shrinking
   
@@ -189,9 +191,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
                     ? a.length + multiplication_limit
                     : (a.length << 1);
        
-    TOP[] aa = new TOP[newSize];
-    System.arraycopy(a, 0, aa, 0, a.length);
-    a = aa;
+    a = Arrays.copyOf(a, newSize);
   }
       
   /**
@@ -336,7 +336,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
    * @return - the index of the found item, or if not found, the (-index) -1 of the 
    *           position one more than where the item would go
    */
-  public static int binarySearch(
+  public int binarySearch(
       TOP[] _a, 
       int start, 
       int end,
@@ -549,7 +549,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
           b.append(",\n");
         }
         if (i != null) {
-          b.append(i.toShortString());
+          b.append(((TOP)i).toShortString());
         } else {
           b.append("null");
         }
