@@ -27,7 +27,9 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.uima.cas.impl.LowLevelIndex;
 import org.apache.uima.cas.impl.LowLevelIterator;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 
 /**
  * Iterator over feature structures.
@@ -195,7 +197,10 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * @return the type this iterator is over
    */
   default Type getType() {
-    return ((LowLevelIterator<T>)this).ll_getIndex().getType();
+    LowLevelIndex<T> idx = ((LowLevelIterator<T>)this).ll_getIndex();
+    return (null == idx) // happens with a low level empty index, maybe wrapped by others
+             ? TypeSystemImpl.staticTsi.getTopType()
+             : idx.getType();
   }
 
   /*****************************************************
