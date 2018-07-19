@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1255,6 +1256,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   @Override
   public int size() {
     FSIterator<T> it2 = copy();
+    it2.moveToFirst();
     int sz = 0;
     while (it2.hasNext()) {
       sz++;
@@ -1264,13 +1266,15 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   }
 
   @Override
-  public FeatureStructure[] getArray() {
+  public T[] getArray(Class<? super T> clazz) {
     FSIterator<T> it2 = copy();
+    it2.moveToFirst();
     ArrayList<FeatureStructure> a = new ArrayList<>();
     while (it2.hasNext()) {
       a.add(it2.nextNvc());
     }
-    return a.toArray(new FeatureStructure[a.size()]);
+    T[] r = (T[]) Array.newInstance(clazz, a.size());
+    return a.toArray(r);
   }
 
 //  /**
