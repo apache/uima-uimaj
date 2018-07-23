@@ -29,6 +29,7 @@ import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
@@ -75,8 +76,34 @@ public class CasPoolTest extends TestCase {
   
   public void tearDown() {
     
+
   }
   
+  public void testCasReleaseNotAllowed() throws Exception {
+    final Properties p = new Properties();
+    p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);   
+    casManager.defineCasPool("id",  2,  p);
+    CASImpl c = (CASImpl) casManager.getCas("id");
+    c.setCasState(CasState.UIMA_AS_WAIT_4_RESPONSE);
+    Exception ex = null;
+    try {
+      c.release();
+    } catch (UIMARuntimeException e) {
+      ex = e;
+    }
+    assertTrue(ex != null && 
+        ex.getMessage().equals("Illegal invocation of casRelease() while awaiting response from a UIMA-AS Service."));
+    c.clearCasState(CasState.UIMA_AS_WAIT_4_RESPONSE);
+    ex = null;
+    try {
+      c.release();
+    } catch (UIMARuntimeException e) {
+      ex = e;
+    }
+    assertTrue(ex == null);
+        
+  }
+
   public void testMultiThread() throws Exception {
     final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);   
@@ -135,6 +162,7 @@ public class CasPoolTest extends TestCase {
     casManager.releaseCas(c);
     sb.append(" " + nc.decrementAndGet());
   }
+  
   
   // verify that several CASes in a pool in different views share the same type system
   

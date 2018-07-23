@@ -39,6 +39,7 @@ import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -364,7 +365,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     private final  StringBuilder traceFScreationSb = traceFSs ? new StringBuilder() : null;
     private int traceFSid = 0; 
-    private boolean traceFSisCreate;    
+    private boolean traceFSisCreate;
+    
+    
+    private final EnumSet<CasState> casState = EnumSet.noneOf(CasState.class); 
     
     private SharedViewData(boolean useFSCache, Heap heap, CASImpl baseCAS, CASMetadata casMetadata) {
       this.useFSCache = useFSCache;
@@ -422,7 +426,31 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void setCacheNotInIndex(int fsAddr) {
     svd.cache_not_in_index = fsAddr;
   }
+  
+  /**
+   * @param state to add to the set
+   * @return true if the set changed as a result of this operation
+   */
+  public boolean setCasState(CasState state) {
+    return svd.casState.add(state);
+  }
+  
+  /**
+   * @param state to see if it is among the items in this set
+   * @return true if the set contains that state
+   */
+  public boolean containsCasState(CasState state) {
+    return svd.casState.contains(state);
+  }
 
+  /**
+   * @param state to be removed
+   * @return true if it was present, and is now removed
+   */
+  public boolean clearCasState(CasState state) {
+    return svd.casState.remove(state);
+  }
+  
   // The index repository. Referenced by XmiCasSerializer
   FSIndexRepositoryImpl indexRepository;
 
