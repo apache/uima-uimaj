@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -553,7 +554,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      *    modify serializers to include reachables only found via id2fs table
      */
     private boolean isId2Fs;
-                
+    
+    private final EnumSet<CasState> casState = EnumSet.noneOf(CasState.class); 
+
     private SharedViewData(CASImpl baseCAS, int initialHeapSize, TypeSystemImpl tsi) {
       this.baseCAS = baseCAS;
       this.tsi = tsi;
@@ -868,6 +871,29 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // package protected to let other things share this info
   final SharedViewData svd; // shared view data
   
+  /**
+   * @param state to add to the set
+   * @return true if the set changed as a result of this operation
+   */
+  public boolean setCasState(CasState state) {
+    return svd.casState.add(state);
+  }
+  
+  /**
+   * @param state to see if it is among the items in this set
+   * @return true if the set contains that state
+   */
+  public boolean containsCasState(CasState state) {
+    return svd.casState.contains(state);
+  }
+
+  /**
+   * @param state to be removed
+   * @return true if it was present, and is now removed
+   */
+  public boolean clearCasState(CasState state) {
+    return svd.casState.remove(state);
+  }
     
   /** The index repository. Referenced by XmiCasSerializer */
   FSIndexRepositoryImpl indexRepository;

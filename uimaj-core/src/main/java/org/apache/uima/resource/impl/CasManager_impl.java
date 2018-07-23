@@ -34,6 +34,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.CasState;
 import org.apache.uima.internal.util.JmxMBeanAgent;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasDefinition;
@@ -188,6 +189,10 @@ public class CasManager_impl implements CasManager {
     CASImpl baseCas = (aCAS instanceof JCas) ? ((JCas)aCAS).getCasImpl().getBaseCAS() 
                                              : ((CASImpl)aCAS).getBaseCAS();
 
+    if (baseCas.containsCasState(CasState.UIMA_AS_WAIT_4_RESPONSE)) {
+      throw new UIMARuntimeException(UIMARuntimeException.CAS_RELEASE_NOT_ALLOWED_WHILE_WAITING_FOR_UIMA_AS, new Object[0]);
+    }
+    
     CasPool pool = mCasToCasPoolMap.get(baseCas);
     if (pool == null) {
       // CAS doesn't belong to this CasManager!

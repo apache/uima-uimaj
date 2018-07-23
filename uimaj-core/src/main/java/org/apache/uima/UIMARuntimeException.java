@@ -57,6 +57,11 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
   public static final String CAS_RELEASED_TO_WRONG_CAS_MANAGER = "cas_released_to_wrong_cas_manager";
 
   /**
+   * Illegal invocation of casRelease() while awaiting response from a UIMA-AS Service.
+   */
+  public static final String CAS_RELEASE_NOT_ALLOWED_WHILE_WAITING_FOR_UIMA_AS = "CAS_RELEASE_NOT_ALLOWED_WHILE_WAITING_FOR_UIMA_AS";
+
+  /**
    * Message key for a standard UIMA exception message: "The Ecore model for the UIMA built-in types
    * (uima.ecore) was not found in the classpath."
    */
