@@ -136,7 +136,7 @@ public abstract class FSCollectionFactory {
     // Was: return new AnnotationIndexAdapter<T>(aIndex);
     // return aIndex.select().asList(); // That call is still buggy in UIMA 3.0.0
     Collection<T> result = new AnnotationIndexAdapter<T>(aIndex);
-    return (List<T>) asList(result.toArray());
+    return (List) asList(result.toArray());
   }
 
   /**
