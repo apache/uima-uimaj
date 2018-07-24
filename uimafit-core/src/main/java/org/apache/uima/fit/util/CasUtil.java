@@ -73,7 +73,9 @@ public final class CasUtil {
    *          a type.
    * @return a return value.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   * @deprecated Use {@code cas.select(type).iterator()}
    */
+  @Deprecated
   @SuppressWarnings("unchecked")
   public static <T extends FeatureStructure> Iterator<T> iteratorFS(CAS cas, Type type) {
     return (Iterator<T>) FSCollectionFactory.create(cas, type).iterator();
@@ -232,9 +234,12 @@ public final class CasUtil {
    *          the type.
    * @return A collection of the selected type.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   * @deprecated Use {@code cas.select(type).asList()}
    */
-  public static Collection<FeatureStructure> selectFS(final CAS cas, final Type type) {
-    return FSCollectionFactory.create(cas, type);
+  @SuppressWarnings("unchecked")
+  @Deprecated
+  public static <T extends FeatureStructure> List<T> selectFS(final CAS cas, final Type type) {
+    return (List<T>) FSCollectionFactory.create(cas, type);
   }
 
   /**

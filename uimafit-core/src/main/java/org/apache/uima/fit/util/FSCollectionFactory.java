@@ -88,17 +88,21 @@ public abstract class FSCollectionFactory {
    *          the type of feature structures to select. All sub-types are returned as well.
    * @return a {@link Collection} of the given type of feature structures backed live by the CAS.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   * @deprecated Use {@code cas.select(type).asList()}
    */
+  @Deprecated
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public static Collection<FeatureStructure> create(CAS cas, Type type) {
+  public static List<FeatureStructure> create(CAS cas, Type type) {
     // If the type is an annotation type, we can use the annotation index, which directly
     // provides us with its size. If not, we have to use getAllIndexedFS() which we have to
     // scan from beginning to end in order to determine its size.
     TypeSystem ts = cas.getTypeSystem();
     if (ts.subsumes(cas.getAnnotationType(), type)) {
-      return (Collection) create(cas.getAnnotationIndex(type));
+      return (List) create(cas.getAnnotationIndex(type));
     } else {
-      return create(cas.getIndexRepository().getAllIndexedFS(type));
+      Collection<FeatureStructure> result = create(cas.getIndexRepository().getAllIndexedFS(type));
+      return asList(result.toArray(new FeatureStructure[result.size()]));
+      // return (List) cas.select(type).asList(); - This call is still buggy in UIMA 3.0.0
     }
   }
 
@@ -125,9 +129,14 @@ public abstract class FSCollectionFactory {
    *          the index to convert.
    * @return the wrapped index.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   * @deprecated Use {@code index.select().asList()}
    */
-  public static <T extends AnnotationFS> Collection<T> create(AnnotationIndex<T> aIndex) {
-    return new AnnotationIndexAdapter<T>(aIndex);
+  @Deprecated
+  public static <T extends AnnotationFS> List<T> create(AnnotationIndex<T> aIndex) {
+    // Was: return new AnnotationIndexAdapter<T>(aIndex);
+    // return aIndex.select().asList(); // That call is still buggy in UIMA 3.0.0
+    Collection<T> result = new AnnotationIndexAdapter<T>(aIndex);
+    return (List<T>) asList(result.toArray());
   }
 
   /**
@@ -138,7 +147,7 @@ public abstract class FSCollectionFactory {
    * @return a new collection containing the same feature structures as the provided array.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static <T extends FeatureStructure> Collection<T> create(ArrayFS<T> aArray) {
+  public static <T extends FeatureStructure> List<T> create(ArrayFS<T> aArray) {
     return create(aArray, (Type) null);
   }
 
@@ -154,8 +163,8 @@ public abstract class FSCollectionFactory {
    * @return a new collection of all feature structures of the given type.
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public static <T extends TOP> Collection<T> create(ArrayFS aArray, Class<T> aType) {
-    return (Collection) create(aArray, CasUtil.getType(aArray.getCAS(), aType));
+  public static <T extends TOP> List<T> create(ArrayFS aArray, Class<T> aType) {
+    return (List) create(aArray, CasUtil.getType(aArray.getCAS(), aType));
   }
 
   /**

@@ -85,10 +85,11 @@ public final class JCasUtil {
    *          a type.
    * @return a return value.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   * @deprecated Use {@code jcas.select(type).iterator()}
    */
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @Deprecated
   public static <T extends TOP> Iterator<T> iterator(JCas jCas, Class<T> type) {
-    return (Iterator) FSCollectionFactory.create(jCas.getCas(), getType(jCas, type)).iterator();
+    return jCas.select(type).iterator();
   }
 
   /**
