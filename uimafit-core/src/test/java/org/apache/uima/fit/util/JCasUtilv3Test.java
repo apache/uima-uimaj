@@ -31,6 +31,8 @@ import static org.apache.uima.fit.util.JCasUtil.selectAt;
 import static org.apache.uima.fit.util.JCasUtil.*;
 import static org.apache.uima.fit.util.JCasUtil.selectSingleAt;
 import static org.apache.uima.fit.util.JCasUtil.toText;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -49,6 +51,7 @@ import java.util.stream.Collectors;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -343,11 +346,15 @@ public class JCasUtilv3Test extends ComponentTestBase {
     // uimaFIT: JCasUtil.selectByIndex(jCas, Token.class, 0).getCoveredText()
     assertEquals("Rot", jCas.select(Token.class).get(0).getCoveredText());
     // uimaFIT: JCasUtil.selectByIndex(jCas, Token.class, -4).getCoveredText()
-    assertEquals("Rot", jCas.select(Token.class).backwards().get(4).getCoveredText());
-    // uimaFIT: JCasUtil.selectByIndex(jCas, Token.class, -5)
-    assertNull(jCas.select(Token.class).backwards().get(5));
-    // uimaFIT: JCasUtil.selectByIndex(jCas, Token.class, 4)
-    assertNull(jCas.select(Token.class).get(4));
+    assertEquals("Rot", jCas.select(Token.class).backwards().get(3).getCoveredText());
+    // uimaFIT: assertNull(JCasUtil.selectByIndex(jCas, Token.class, -5));
+    assertThatExceptionOfType(CASRuntimeException.class)
+        .isThrownBy(() -> jCas.select(Token.class).backwards().get(4))
+        .withMessage("CAS does not contain any '" + Token.class.getName() + "' instances  shifted by: 4.");
+    // uimaFIT: assertNull(JCasUtil.selectByIndex(jCas, Token.class, 4));
+    assertThatExceptionOfType(CASRuntimeException.class)
+        .isThrownBy(() -> jCas.select(Token.class).backwards().get(4))
+        .withMessage("CAS does not contain any '" + Token.class.getName() + "' instances  shifted by: 4.");
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -455,7 +462,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
     Token lastToken = tokens.get(tokens.size()-1);
     Token preLastToken = tokens.get(tokens.size()-2);
     // uimaFIT selectSingleRelative(jCas, AnalyzedText.class, lastToken, -1);
-    AnalyzedText a = jCas.select(AnalyzedText.class).preceding(lastToken, 1).get();
+    AnalyzedText a = jCas.select(AnalyzedText.class).startAt(lastToken).shifted(-1).get();
     assertEquals(preLastToken.getBegin(), a.getBegin());
     assertEquals(preLastToken.getEnd(), a.getEnd());
   }
@@ -473,13 +480,16 @@ public class JCasUtilv3Test extends ComponentTestBase {
     
     Token firstToken = tokens.get(0);
     Token secondToken = tokens.get(1);
-    // uimaFIT: selectSingleRelative(jCas, AnalyzedText.class, firstToken, 1);
-    AnalyzedText a = jCas.select(AnalyzedText.class).startAt(firstToken).get(-1);
+    // uimaFIT: 
+    // AnalyzedText a = selectSingleRelative(jCas, AnalyzedText.class, firstToken, 1);
+    AnalyzedText a = jCas.select(AnalyzedText.class).startAt(firstToken).get(1);
     assertEquals(secondToken.getBegin(), a.getBegin());
     assertEquals(secondToken.getEnd(), a.getEnd());
   }
   
-  @Test(expected=IllegalArgumentException.class)
+  // Actually, in UIMAv3 this does not fail - and it is ok to not fail
+  @Deprecated()
+  @Test
   public void testSingleRelativeDifferentTypeSamePositionFail() {
     String text = "one two three";
     tokenBuilder.buildTokens(jCas, text);
@@ -491,12 +501,16 @@ public class JCasUtilv3Test extends ComponentTestBase {
     }    
     
     Token firstToken = tokens.get(0);
-    // uimaFIT selectSingleRelative(jCas, AnalyzedText.class, firstToken, 0);
-    jCas.select(AnalyzedText.class).preceding(firstToken, 0).get();
+    // uimaFIT:
+    // assertThatExceptionOfType(IllegalArgumentException.class)
+    //    .isThrownBy(() -> selectSingleRelative(jCas, AnalyzedText.class, firstToken, 0));
+    
+    assertThat(jCas.select(AnalyzedText.class).startAt(firstToken).shifted(0).get())
+        .isSameAs(jCas.select(AnalyzedText.class).get());
   }
 
   @Test
-  public void testSingleRelativeDifferentTypeSamePositionOk() {
+  public void testSingleRelativeSameTypeSamePositionOk() {
     String text = "one two three";
     tokenBuilder.buildTokens(jCas, text);
 
@@ -508,8 +522,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
     
     Token firstToken = tokens.get(0);
     // uimaFIT: selectSingleRelative(jCas, Token.class, firstToken, 0);
-    Token a = jCas.select(Token.class).preceding(firstToken).get();
-    assertEquals(firstToken, a);
+    assertEquals(firstToken, jCas.select(Token.class).startAt(firstToken).shifted(0).get());
   }
 
   @Test
@@ -584,7 +597,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
     Token lastToken = tokens.get(tokens.size()-1);
     Token preLastToken = tokens.get(tokens.size()-2);
     // selectPreceding(jCas, AnalyzedText.class, lastToken, 1).get(0);
-    AnalyzedText a = jCas.select(AnalyzedText.class).preceding(lastToken).get();
+    AnalyzedText a = jCas.select(AnalyzedText.class).preceding(lastToken).limit(1).get();
     assertEquals(preLastToken.getBegin(), a.getBegin());
     assertEquals(preLastToken.getEnd(), a.getEnd());
   }
@@ -657,17 +670,19 @@ public class JCasUtilv3Test extends ComponentTestBase {
     assertEquals(Arrays.asList(a), preceding);
 
     // uimaFIT: selectFollowing(this.jCas, Token.class, sentence, 1);
-    List<Token> following = jCas.select(Token.class).following(sentence).limit(1).asList();
-    assertEquals(Arrays.asList("D"), JCasUtil.toText(following));
-    assertEquals(Arrays.asList(d), following);
+    List<Token> following1 = jCas.select(Token.class).following(sentence).limit(1).asList();
+    assertEquals(Arrays.asList("D"), JCasUtil.toText(following1));
+    assertEquals(Arrays.asList(d), following1);
+    
     // uimaFIT: selectFollowing(this.jCas, Token.class, sentence, 2);
-    following = jCas.select(Token.class).following(sentence).limit(2).asList();
-    assertEquals(Arrays.asList("D", "E"), JCasUtil.toText(following));
-    assertEquals(Arrays.asList(d, e), following);
+    List<Token> following2 = jCas.select(Token.class).following(sentence).limit(2).asList();
+    assertEquals(Arrays.asList("D", "E"), JCasUtil.toText(following2));
+    assertEquals(Arrays.asList(d, e), following2);
+    
     // uimaFIT: selectFollowing(this.jCas, Token.class, sentence, 3);
-    following = jCas.select(Token.class).following(sentence).limit(3).asList();
-    assertEquals(Arrays.asList("D", "E"), JCasUtil.toText(following));
-    assertEquals(Arrays.asList(d, e), following);
+    List<Token> following3 = jCas.select(Token.class).following(sentence).limit(3).asList();
+    assertEquals(Arrays.asList("D", "E"), JCasUtil.toText(following3));
+    assertEquals(Arrays.asList(d, e), following3);
   }
 
   @Test
@@ -720,13 +735,12 @@ public class JCasUtilv3Test extends ComponentTestBase {
   public void testSelectSingle() throws UIMAException {
     JCas jcas = CasCreationUtils.createCas(createTypeSystemDescription(), null, null).getJCas();
 
-    try {
-      // uimaFIT: selectSingle(jcas, Token.class);
-      jcas.select(Token.class).single();
-      fail("Found annotation that has not yet been created");
-    } catch (IllegalArgumentException e) {
-      // OK
-    }
+    // uimaFIT:
+    // assertThatExceptionOfType(IllegalArgumentException.class)
+    //    .isThrownBy(() -> selectSingle(jcas, Token.class)); 
+    
+    assertThatExceptionOfType(CASRuntimeException.class)
+        .isThrownBy(() -> jcas.select(Token.class).single()); 
 
     new Token(jcas, 0, 1).addToIndexes();
 
@@ -735,13 +749,14 @@ public class JCasUtilv3Test extends ComponentTestBase {
 
     new Token(jcas, 1, 2).addToIndexes();
 
-    try {
-      // uimaFIT: selectSingle(jcas, Token.class);
-      jcas.select(Token.class).single();
-      fail("selectSingle must fail if there is more than one annotation of the type");
-    } catch (IllegalArgumentException e) {
-      // OK
-    }
+    // uimaFIT:
+    // assertThatExceptionOfType(IllegalArgumentException.class)
+    //    .isThrownBy(() -> selectSingle(jcas, Token.class))
+    //    .as("selectSingle must fail if there is more than one annotation of the type"); 
+
+    assertThatExceptionOfType(CASRuntimeException.class)
+      .isThrownBy(() -> jcas.select(Token.class).single())
+      .as("selectSingle must fail if there is more than one annotation of the type"); 
   }
 
   @Test
