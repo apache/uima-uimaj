@@ -28,7 +28,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -301,8 +300,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     @Override
     public boolean equals(Object obj) {
-      if (obj == null || !(obj instanceof FsChange))
+      if (obj == null || !(obj instanceof FsChange)) {
         return false;
+    }
       return ((FsChange)obj).fs._id == fs._id;
     }
   }
@@ -597,7 +597,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           (state == CasState.NO_ACCESS && thread != current_one_thread_access)) {
         switch (state) {
         case READ_ONLY:
-          if (casState.contains(CasState.NO_ACCESS)) break;  // ignore readonly if no-access is set
+          if (casState.contains(CasState.NO_ACCESS))
+         {
+            break;  // ignore readonly if no-access is set
+        }
           updateCallSite(is_updatable_callsite, mh_return_false, is_updatable_callsites);
           break;
         case NO_ACCESS:
@@ -617,7 +620,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       if (wasRemoved) {
         switch (state) {
         case READ_ONLY:
-          if (casState.contains(CasState.NO_ACCESS)) break; 
+          if (casState.contains(CasState.NO_ACCESS)) {
+            break;
+        } 
           updateCallSite(is_updatable_callsite, mh_return_true, is_updatable_callsites);
           break;
         case NO_ACCESS:
@@ -637,7 +642,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       this.initialHeapSize = initialHeapSize;
       bcsd = new BinaryCasSerDes(baseCAS);
       id2fs = new Id2FS(initialHeapSize);
-      if (traceFSs) id2addr.add(0);
+      if (traceFSs) {
+        id2addr.add(0);
+    }
       
       Boolean v = getDefaultV2IdRefs().get();
       isId2Fs = (v == null) 
@@ -769,7 +776,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       viewCount = 1;  // initial view
       
       traceFSid = 0;
-      if (traceFSs) traceFScreationSb.setLength(0);
+      if (traceFSs) {
+        traceFScreationSb.setLength(0);
+    }
       componentInfo = null; // https://issues.apache.org/jira/browse/UIMA-5097
     }
     
@@ -952,7 +961,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   /**
    * @param state to add to the set
-   * @thread null or the thread to permit access to 
+   * @param thread null or the thread to permit access to 
    * @return true if the set changed as a result of this operation
    */
   public boolean setCasState(CasState state, Thread thread) {
@@ -1360,9 +1369,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @return true if made a base for a trampoline
    */
   boolean maybeMakeBaseVersionForPear(FeatureStructureImplC fs, TypeImpl ti) {
-    if (!inPearContext()) return false;
+    if (!inPearContext()) {
+        return false;
+    }
     FsGenerator3 g = svd.generators[ti.getCode()];  // get pear generator or null
-    if (g == null) return false;
+    if (g == null) {
+        return false;
+    }
     TOP baseFs;
     try {
       suspendPearContext();
@@ -2361,7 +2374,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.jcas;
   }
   
-  public JCasImpl getJCasImpl() {
+  @Override
+public JCasImpl getJCasImpl() {
     if (this.jcas == null) {
       this.jcas = JCasImpl.getJCas(this);
     }
@@ -5020,7 +5034,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
-  public <T extends TOP> EmptyFSList<T> emptyFSList() {
+  @Override
+public <T extends TOP> EmptyFSList<T> emptyFSList() {
     if (null == svd.emptyFSList) {
       svd.emptyFSList = new EmptyFSList<>(getTypeSystemImpl().fsEListType, this);
     }
@@ -5030,21 +5045,24 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   /*
    * @see org.apache.uima.cas.CAS#emptyFloatList()
    */
-  public EmptyFloatList emptyFloatList() {
+  @Override
+public EmptyFloatList emptyFloatList() {
     if (null == svd.emptyFloatList) {
       svd.emptyFloatList = new EmptyFloatList(getTypeSystemImpl().floatEListType, this);
     }
     return svd.emptyFloatList;
   }
   
-  public EmptyIntegerList emptyIntegerList() {
+  @Override
+public EmptyIntegerList emptyIntegerList() {
     if (null == svd.emptyIntegerList) {
       svd.emptyIntegerList = new EmptyIntegerList(getTypeSystemImpl().intEListType, this);
     }
     return svd.emptyIntegerList;
   }
   
-  public EmptyStringList emptyStringList() {
+  @Override
+public EmptyStringList emptyStringList() {
     if (null == svd.emptyStringList) {
       svd.emptyStringList = new EmptyStringList(getTypeSystemImpl().stringEListType, this);
     }
@@ -5074,63 +5092,72 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
   
-  public FloatArray emptyFloatArray() {
+  @Override
+public FloatArray emptyFloatArray() {
     if (null == svd.emptyFloatArray) {
       svd.emptyFloatArray = new FloatArray(this.getJCas(), 0);
     }
     return svd.emptyFloatArray;
   }
 
-  public <T extends FeatureStructure> FSArray<T> emptyFSArray() {
+  @Override
+public <T extends FeatureStructure> FSArray<T> emptyFSArray() {
     if (null == svd.emptyFSArray) {
       svd.emptyFSArray = new FSArray<T>(this.getJCas(), 0);
     }
     return svd.emptyFSArray;
   }
   
-  public IntegerArray emptyIntegerArray() {
+  @Override
+public IntegerArray emptyIntegerArray() {
     if (null == svd.emptyIntegerArray) {
       svd.emptyIntegerArray = new IntegerArray(this.getJCas(), 0);
     }
     return svd.emptyIntegerArray;
   }
   
-  public StringArray emptyStringArray() {
+  @Override
+public StringArray emptyStringArray() {
     if (null == svd.emptyStringArray) {
       svd.emptyStringArray = new StringArray(this.getJCas(), 0);
     }
     return svd.emptyStringArray;
   }
   
-  public DoubleArray emptyDoubleArray() {
+  @Override
+public DoubleArray emptyDoubleArray() {
     if (null == svd.emptyDoubleArray) {
       svd.emptyDoubleArray = new DoubleArray(this.getJCas(), 0);
     }
     return svd.emptyDoubleArray;
   }
   
-  public LongArray emptyLongArray() {
+  @Override
+public LongArray emptyLongArray() {
     if (null == svd.emptyLongArray) {
       svd.emptyLongArray = new LongArray(this.getJCas(), 0);
     }
     return svd.emptyLongArray;
   }
   
-  public ShortArray emptyShortArray() {
+  @Override
+public ShortArray emptyShortArray() {
     if (null == svd.emptyShortArray) {
       svd.emptyShortArray = new ShortArray(this.getJCas(), 0);
     }
     return svd.emptyShortArray;
   }
   
-  public ByteArray emptyByteArray() {
+  @Override
+public ByteArray emptyByteArray() {
     if (null == svd.emptyByteArray) {
       svd.emptyByteArray = new ByteArray(this.getJCas(), 0);
     }
     return svd.emptyByteArray;
   }
   
-  public BooleanArray emptyBooleanArray() {
+  @Override
+public BooleanArray emptyBooleanArray() {
     if (null == svd.emptyBooleanArray) {
       svd.emptyBooleanArray = new BooleanArray(this.getJCas(), 0);
     }
@@ -5502,7 +5529,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       TOP fs = (TOP) v;
       return Misc.elide(fs.getType().getShortName(), 5, false)  + ':' + geti2addr(fs._id);
     } 
-    if (v == null) return "null";
+    if (v == null) {
+        return "null";
+    }
     if (v instanceof String) {
       String s = Misc.elide((String) v, 50, false);
       return Misc.replaceWhiteSpace(s, "_");
@@ -5542,7 +5571,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   public StringBuilder traceFSflush() {
-    if (!traceFSs) return null;
+    if (!traceFSs) {
+        return null;
+    }
     StringBuilder b = svd.traceFScreationSb;
     if (b.length() > 0) {
       traceOut.println((svd.traceFSisCreate ? "cr: " :
@@ -5804,11 +5835,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     };
   }
   
-  public boolean is_ll_enableV2IdRefs() {
+  @Override
+public boolean is_ll_enableV2IdRefs() {
     return svd.isId2Fs;
   }
   
-  public AutoCloseableNoException ll_enableV2IdRefs(boolean enable) {
+  @Override
+public AutoCloseableNoException ll_enableV2IdRefs(boolean enable) {
     final boolean restoreState = svd.isId2Fs;
     if (enable && !restoreState && svd.fsIdGenerator != 0) {
       throw new IllegalStateException("CAS must be empty when switching to V2 ID References mode.");
