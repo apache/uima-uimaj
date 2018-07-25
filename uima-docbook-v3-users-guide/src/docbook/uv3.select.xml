@@ -334,7 +334,7 @@ FSIterator&lt;Token&gt; token_iterator =
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term><emphasis role="strong">nullOk</emphasis></term>
+          <term><emphasis role="strong">mullOK</emphasis></term>
           <listitem>
             <para>changes the behavior for the terminal_form actions <code>get(...) and single(...)</code>, which would otherwise
       throw an exception if a null result happened.
@@ -774,11 +774,11 @@ startAt(begin, end, shifted) // same as above,
         <varlistentry>
           <term><emphasis role="strong">get</emphasis></term>
           <listitem>
-            <para>If no argument is specified, then returns the first item.  If nullOk(false) is configured, 
-            then if the result is null, an exception will be thrown.
+            <para>If no argument is specified, then returns the first item.  If there is no item, then
+            an exception is thrown unless <code>nullOK</code> is set.
             </para>
             <para>If any positioning arguments are specified, then this returns the item at that position unless 
-            there is no item at that position, in which case it throws an exception unless <code>nullOk</code> is set.
+            there is no item at that position, in which case it throws an exception unless <code>mullOK</code> is set.
             </para>
           </listitem>
         </varlistentry>
