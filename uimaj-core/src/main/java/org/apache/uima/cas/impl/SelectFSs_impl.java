@@ -442,7 +442,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       this.boundingFs = makePosAnnot(begin, end);
     }
     this.boundsUse = BoundsUse.coveredBy;
-    this.isBackwards = reverse;
 //    this.isIncludeAnnotWithEndBeyondBounds = true; // default    
     return this;
   }

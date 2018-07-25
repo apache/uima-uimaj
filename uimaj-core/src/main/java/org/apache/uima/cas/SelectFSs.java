@@ -331,7 +331,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    *   is the end of fs1, and whose end is the begin of fs2.
    * Requires an Annotation Index.
    * <p> 
-   * If fs1 &gt; fs2, they are swapped, and the selected values are returned in reverse order.
+   * If fs1 &gt; fs2, they are swapped.
    * 
    * @param fs1 the beginning bound
    * @param fs2 the ending bound

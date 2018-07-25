@@ -218,6 +218,15 @@ public class SelectFsTest  {
     prec2 =jCas.select(Token.class).following(sentence).shifted(-1).asList();
     assertEquals(Arrays.asList(c, d, e), prec2);
 
+    prec2 = jCas.select(Token.class).between(b, e).asList();
+    assertEquals(Arrays.asList(c, d), prec2);
+
+    prec2 = jCas.select(Token.class).between(e, b).asList();
+    assertEquals(Arrays.asList(c, d), prec2);
+
+    prec2 = jCas.select(Token.class).between(b, e).backwards().asList();
+    assertEquals(Arrays.asList(d, c), prec2);
+
 
   }
 }
