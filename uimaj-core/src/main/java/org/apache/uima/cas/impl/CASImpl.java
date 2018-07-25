@@ -28,6 +28,11 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.invoke.MutableCallSite;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -555,7 +560,76 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      */
     private boolean isId2Fs;
     
+    /***********************************
+     * C A S   S T A T E    management *
+     ***********************************/
     private final EnumSet<CasState> casState = EnumSet.noneOf(CasState.class); 
+
+    private static final MethodType noArgBoolean = MethodType.methodType(boolean.class);
+    private static final MethodHandle mh_return_false;
+    private static final MethodHandle mh_return_true;
+    static {try {
+      mh_return_false = MethodHandles.lookup().findStatic(CasState.class, "return_false", noArgBoolean);
+      mh_return_true  = MethodHandles.lookup().findStatic(CasState.class, "return_true", noArgBoolean);
+    } catch (NoSuchMethodException | IllegalAccessException e) {
+      throw new RuntimeException(e);
+    } }
+    
+    private final MutableCallSite is_updatable_callsite = new MutableCallSite(mh_return_true);
+    private final MutableCallSite is_readable_callsite = new MutableCallSite(mh_return_true);
+    
+    private final MethodHandle is_updatable = is_updatable_callsite.dynamicInvoker();
+    private final MethodHandle is_readable = is_readable_callsite.dynamicInvoker();
+
+    private final MutableCallSite[] is_updatable_callsites = new MutableCallSite[] {is_updatable_callsite};
+    private final MutableCallSite[] is_readable_callsites = new MutableCallSite[] {is_readable_callsite};
+    
+    private volatile Thread current_one_thread_access = null;
+    
+    private void updateCallSite(MutableCallSite c, MethodHandle mh, MutableCallSite[] cs) {
+      c.setTarget(mh);
+      MutableCallSite.syncAll(cs);
+    }
+    
+    private synchronized boolean setCasState(CasState state, Thread thread) {
+      boolean wasAdded = casState.add(state);
+      if (wasAdded || 
+          (state == CasState.NO_ACCESS && thread != current_one_thread_access)) {
+        switch (state) {
+        case READ_ONLY:
+          if (casState.contains(CasState.NO_ACCESS)) break;  // ignore readonly if no-access is set
+          updateCallSite(is_updatable_callsite, mh_return_false, is_updatable_callsites);
+          break;
+        case NO_ACCESS:
+          current_one_thread_access = thread;
+          MethodHandle mh = CasState.produce_one_thread_access_test(thread);
+          updateCallSite(is_updatable_callsite, mh, is_updatable_callsites);
+          updateCallSite(is_readable_callsite, mh, is_readable_callsites);
+          break;
+        default:
+        }
+      }
+      return wasAdded;
+    }
+
+    private synchronized boolean clearCasState(CasState state) {
+      boolean wasRemoved = casState.remove(state);
+      if (wasRemoved) {
+        switch (state) {
+        case READ_ONLY:
+          if (casState.contains(CasState.NO_ACCESS)) break; 
+          updateCallSite(is_updatable_callsite, mh_return_true, is_updatable_callsites);
+          break;
+        case NO_ACCESS:
+          current_one_thread_access = null;
+          updateCallSite(is_updatable_callsite, mh_return_true, is_updatable_callsites);
+          updateCallSite(is_readable_callsite, mh_return_true, is_readable_callsites);
+          break;
+        default:
+        }
+      }
+      return wasRemoved;
+    }
 
     private SharedViewData(CASImpl baseCAS, int initialHeapSize, TypeSystemImpl tsi) {
       this.baseCAS = baseCAS;
@@ -864,19 +938,25 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   }
   
-  /*****************************************************************
-   * Non-shared instance data kept per CAS view incl base CAS
-   *****************************************************************/
+  /**********************************************
+   * C A S   S T A T E    m a n a g e m e n t   *
+   **********************************************/
 
-  // package protected to let other things share this info
-  final SharedViewData svd; // shared view data
-  
   /**
    * @param state to add to the set
    * @return true if the set changed as a result of this operation
    */
   public boolean setCasState(CasState state) {
-    return svd.casState.add(state);
+    return setCasState(state, null);
+  }
+  
+  /**
+   * @param state to add to the set
+   * @thread null or the thread to permit access to 
+   * @return true if the set changed as a result of this operation
+   */
+  public boolean setCasState(CasState state, Thread thread) {
+    return svd.setCasState(state, thread);
   }
   
   /**
@@ -892,9 +972,31 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @return true if it was present, and is now removed
    */
   public boolean clearCasState(CasState state) {
-    return svd.casState.remove(state);
+    return svd.clearCasState(state);
   }
-    
+
+  boolean is_updatable() {
+    try {
+      return (boolean) svd.is_updatable.invokeExact();
+    } catch (Throwable e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  boolean is_readable() {
+    try {
+      return (boolean) svd.is_readable.invokeExact();
+    } catch (Throwable e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  /*****************************************************************
+   * Non-shared instance data kept per CAS view incl base CAS
+   *****************************************************************/
+  // package protected to let other things share this info
+  final SharedViewData svd; // shared view data
+
   /** The index repository. Referenced by XmiCasSerializer */
   FSIndexRepositoryImpl indexRepository;
 
