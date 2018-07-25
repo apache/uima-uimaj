@@ -316,7 +316,10 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
 
   /**
    * return the size of the collection being iterated over, if available.
-   * This may be inefficient to compute
+   * Because the iterator can move forwards and backwards, the size is the 
+   * total size that the iterator would iterate over, starting at the first element
+   * thru the last element.
+   * This may be inefficient to compute.
    * @return the size of the collection being iterated over.
    */
   default int size() {

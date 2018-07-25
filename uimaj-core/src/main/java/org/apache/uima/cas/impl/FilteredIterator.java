@@ -104,7 +104,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   /**
    * @see org.apache.uima.cas.FSIterator#copy()
    */
-  public FSIterator<T> copy() {
+  public FilteredIterator<T> copy() {
     return new FilteredIterator<T>(this.it.copy(), this.cons);
   }
 
@@ -162,17 +162,6 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
       it2.nextNvc();
     }
     return count;
-  }
-
-  @Override
-  public T[] getArray(Class<? super T> clazz) {
-    FilteredIterator<T> it2 = new FilteredIterator<T>(it, cons);
-    ArrayList<FeatureStructure> items = new ArrayList<>();
-    while (it2.hasNext()) {
-      items.add(it2.nextNvc());
-    }
-    T[] r = (T[]) Array.newInstance(clazz, items.size());
-    return items.toArray(r);
   }
 
 //  /* (non-Javadoc)

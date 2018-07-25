@@ -36,7 +36,7 @@ class FsIterator_backwards<T extends FeatureStructure>
     
   FsIterator_backwards(FSIterator<T> iterator) {
     this.it = (LowLevelIterator<T>) iterator;
-    it.moveToLast();
+    it.moveToLast();  // will act like move to first
   }
 
   @Override
@@ -143,20 +143,6 @@ class FsIterator_backwards<T extends FeatureStructure>
   @Override
   public int size() {
     return it.size();
-  }
-
-  @Override
-  public T[] getArray(Class<? super T> clazz) {
-    T[] a = it.getArray(clazz);
-    int len = a.length;
-    int len2 = len >> 1;
-    int len1 = len - 1;
-    for (int i = 0, i2 = len1; i < len2; i++, i2--) {
-      T t = a[i];
-      a[i] = a[i2];
-      a[i2] = t;
-    }
-    return a;
   }
 
 }

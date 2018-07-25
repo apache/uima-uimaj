@@ -24,6 +24,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -176,5 +177,47 @@ public class SelectFsTest  {
     cas.reset();
     assertTrue(jcas.select(Token.class).isEmpty());
     
+  }
+  
+  @Test
+  public void testSelectFollowingPrecedingDifferentTypes() {
+    
+    JCas jCas = cas.getJCas();
+    jCas.setDocumentText("A B C D E");
+    Token a = new Token(jCas, 0, 1);
+    Token b = new Token(jCas, 2, 3);
+    Token c = new Token(jCas, 4, 5);
+    Token d = new Token(jCas, 6, 7);
+    Token e = new Token(jCas, 8, 9);
+    for (Token token : Arrays.asList(a, b, c, d, e)) {
+      token.addToIndexes();
+    }
+    Sentence sentence = new Sentence(jCas, 2, 5);
+    sentence.addToIndexes();
+
+    // uimaFIT: selectFollowing(this.jCas, Token.class, sentence, 1);
+    
+    List<Token> following1 = jCas.select(Token.class).following(sentence).limit(1).asList();
+//    assertEquals(Arrays.asList("D"), JCasUtil.toText(following1));
+    assertEquals(Arrays.asList(d), following1);
+    
+    Sentence s2 = new Sentence(jCas, 4, 5);
+    Token[] prec1 = jCas.select(Token.class).preceding(s2).asArray(Token.class);
+    assertEquals(2, prec1.length);
+    assertTrue(Arrays.equals(new Token[] {a, b}, prec1));
+    
+    List<Token> prec2 =jCas.select(Token.class).preceding(s2).backwards().asList();
+    assertEquals(Arrays.asList(b, a), prec2);
+
+    prec2 =jCas.select(Token.class).preceding(s2).backwards().shifted(1).asList();
+    assertEquals(Arrays.asList(a), prec2);
+
+    prec2 =jCas.select(Token.class).following(sentence).shifted(1).asList();
+    assertEquals(Arrays.asList(e), prec2);
+
+    prec2 =jCas.select(Token.class).following(sentence).shifted(-1).asList();
+    assertEquals(Arrays.asList(c, d, e), prec2);
+
+
   }
 }

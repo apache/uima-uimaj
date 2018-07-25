@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
@@ -173,11 +174,15 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
   default boolean isMoveToSupported() { return false; }
 
   /**
-   * @return an array representing the collection of items the iterator would return
+   * @param arrayList updated by adding elements representing the collection of items the iterator would return
+   * from its current position to the end
+   * 
+   * NOTE: This operation will move the iterator from its current position to the end.
    */
-  default  T[] getArray(Class<? super T> clazz) { 
-    throw new UnsupportedOperationException();
+  default void getArrayList(ArrayList<? super T> arrayList) {
+    while (isValid()) {
+      arrayList.add(nextNvc());
+    }
   }
-  
 
 }

@@ -567,21 +567,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
   
   private void incr(FSIterator<T> it) {
-    if (isBackwards) {
-      it.moveToPrevious();
-    } else {
-      it.moveToNext();
-    }
+    it.moveToNext();    
   }
   
-//  private void decr(FSIterator<T> it) {
-//    if (isBackwards) {
-//      it.moveToNext();
-//    } else {
-//      it.moveToPrevious();
-//    }
-//  }
-//  
   /*********************************
    * terminal operations
    * returning other than SelectFSs
@@ -626,8 +614,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     
     if (isPreceding) {
       boolean bkwd = isBackwards;   // save isBackwards flag.  
-                                    // since preceding normally operates backwards, if this flag is set
-                                    // the user wants to operate "forwards"
+                                    
       isBackwards = true;   // because need the iterator to move from the position to the front.
       return make_or_copy_snapshot(fsIterator1(), bkwd);  // this iterator fails to skip annotations whose end is > positioning begin
 //      LowLevelIterator<T> baseIterator = fsIterator1();  // this iterator fails to skip annotations whose end is > positioning begin
@@ -678,8 +665,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
                       : plainFsIterator(index, view);
 
     it = maybeWrapBackwards(it);                  
-    maybePosition(it);
-    maybeShift(it);
+    maybePosition(it);  // position needs to come after backwards because that sets the position
+    maybeShift(it);     // shift semantically needs to come after backwards
     return (limit == -1) ? it : new FsIterator_limited<>(it, limit);    
   }
   
@@ -803,8 +790,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   private LowLevelIterator<T> maybeWrapBackwards(LowLevelIterator<T> it) {
     if (isBackwards) {
-      it = new FsIterator_backwards<>(it);
-      it.moveToFirst();
+      it = new FsIterator_backwards<>(it);  // positions the underlying iterator to last,
+                                            // which is first for going backwards
     }
     return it;
   }
@@ -877,23 +864,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * 
    */
   @Override
-  public List<T> asList() {
- 
-    return new AbstractList<T>() {
-      
-      private final T[] a = asArray((LowLevelIterator<T>) fsIterator());
-      
-      @Override
-      public T get(int i) {
-        return a[i];
-      }
-
-      @Override
-      public int size() {
-        return a.length;
-      }
-    };
-     
+  public ArrayList<T> asList() {
+    return asArrayList((LowLevelIterator<T>) fsIterator());
+  }
+  
+  private ArrayList<T> asArrayList(LowLevelIterator<T> it) {
+    ArrayList<T> al = new ArrayList<>();
+    it.getArrayList(al);
+    return al;
   }
   
   /* (non-Javadoc)
@@ -904,13 +882,26 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return asArray((LowLevelIterator<T>)fsIterator(), clazz);
   }
   
+  /**
+   * This is a terminal operation, so can use/modify the original iterator
+   * @param it the iterator positioned at the start position
+   * @param clazz the class of the result
+   * @return an array of elements from the position to the end
+   */
   private T[] asArray(LowLevelIterator<T> it, Class<? super T> clazz) {
-    return ((LowLevelIterator<T>)it).getArray(clazz);
+    // can't use the iterator's getArray method, because that returns the entire 
+    // array, starting from the first position thru the last position,
+    // and the iterator might have been positioned other than the starting spot
+    // by a following or startAt etc.
+    
+    ArrayList<T> a = asArrayList(it);
+    T[] r = (T[]) Array.newInstance(clazz, a.size());
+    return a.toArray(r);
   }
     
-  private T[] asArray(LowLevelIterator<T> it) {
-    return asArray(it, (Class<? super T>) ((TypeImpl)it.getType()).javaClass);
-  }
+//  private T[] asArray(LowLevelIterator<T> it) {
+//    return asArray(it, (Class<? super T>) ((TypeImpl)it.getType()).javaClass);
+//  }
   
 
   private Annotation makePosAnnot(int begin, int end) {

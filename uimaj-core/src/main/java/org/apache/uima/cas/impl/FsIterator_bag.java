@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -185,12 +186,6 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     return null;  // not used for bag
   }
 
-  @Override
-  public T[] getArray(Class<? super T> clazz) {
-    T[] a = (T[]) Array.newInstance(clazz, size());
-    bag.copyToArray(a, 0);
-    return a;
-  }
   
 }
 

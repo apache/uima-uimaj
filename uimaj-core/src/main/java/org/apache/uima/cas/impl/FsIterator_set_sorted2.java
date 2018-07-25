@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import org.apache.uima.cas.FeatureStructure;
@@ -298,13 +299,6 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
   @Override
   public boolean isMoveToSupported() {
     return this.ll_getIndex().isSorted();
-  }
-
-  @Override
-  public T[] getArray(Class<? super T> clazz) {
-    T[] a = (T[]) Array.newInstance(clazz, size());
-    this.ofsa.copyToArray(a, 0);
-    return a;
   }
 
 //  @Override

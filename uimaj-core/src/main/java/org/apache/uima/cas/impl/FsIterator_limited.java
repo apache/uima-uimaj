@@ -141,14 +141,4 @@ class FsIterator_limited<T extends FeatureStructure>
   public int size() {
     return Math.min(limit, iterator.size());
   }
-
-  @Override
-  public T[] getArray(Class<? super T> clazz) {
-    T[] a = iterator.getArray(clazz);
-    if (a.length > limit) {
-      return Arrays.copyOf(a,  limit);
-    }
-    return a;
-  }
-
 }

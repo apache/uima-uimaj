@@ -1265,18 +1265,6 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     return sz;
   }
 
-  @Override
-  public T[] getArray(Class<? super T> clazz) {
-    FSIterator<T> it2 = copy();
-    it2.moveToFirst();
-    ArrayList<FeatureStructure> a = new ArrayList<>();
-    while (it2.hasNext()) {
-      a.add(it2.nextNvc());
-    }
-    T[] r = (T[]) Array.newInstance(clazz, a.size());
-    return a.toArray(r);
-  }
-
 //  /**
 //   * Simple implementation:
 //   *   move to leftmost, then
