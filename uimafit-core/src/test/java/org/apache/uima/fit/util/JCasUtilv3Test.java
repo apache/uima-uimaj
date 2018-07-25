@@ -43,6 +43,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -238,6 +239,12 @@ public class JCasUtilv3Test extends ComponentTestBase {
 
         ti = System.currentTimeMillis();
         // uimaFIT: selectBetween(Sentence.class, t1, t2);
+        // in uimaFIT, selectBetween always returns annotations in index order, so the reverse
+        // if t2 < t1 is not necessary. Adding it here because UIMA v3 between works differently.
+        if (t2.getBegin() < t1.getBegin()) {
+          Collections.reverse(reference);
+        }
+        
         List<Sentence> actual = jcas.select(Sentence.class).between(t1, t2).asList();
         timeOptimized += System.currentTimeMillis() - ti;
 
