@@ -139,7 +139,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
       
       // Prepare the index
       long timeIndexed = System.currentTimeMillis();
-      Map<Sentence, Collection<Token>> index = indexCovered(jcas, Sentence.class, Token.class);
+      Map<Sentence, List<Token>> index = indexCovered(jcas, Sentence.class, Token.class);
       timeIndexed = System.currentTimeMillis() - timeIndexed;
       
       // -- The order of entries in the index is NOT defined!
@@ -847,7 +847,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
     List<Sentence> sentences = new ArrayList<Sentence>(select(jCas, Sentence.class));
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
 
-    Map<Token, Collection<Sentence>> index = indexCovering(jCas, Token.class, Sentence.class);
+    Map<Token, List<Sentence>> index = indexCovering(jCas, Token.class, Sentence.class);
 
     // Check covering annotations are found
     assertEquals(asList(sentences.get(0)), index.get(tokens.get(0)));
