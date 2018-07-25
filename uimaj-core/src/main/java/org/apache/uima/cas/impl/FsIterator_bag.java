@@ -186,6 +186,10 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     return null;  // not used for bag
   }
 
+  @Override
+  public int size() {
+    return bag.size();
+  }
   
 }
 

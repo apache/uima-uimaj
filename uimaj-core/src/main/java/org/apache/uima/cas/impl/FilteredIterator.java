@@ -153,16 +153,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
     return it.getComparator();
   }
 
-  @Override
-  public int size() {
-    FilteredIterator<T> it2 = new FilteredIterator<T>(it, cons);
-    int count = 0;
-    while (it2.hasNext()) {
-      count++;
-      it2.nextNvc();
-    }
-    return count;
-  }
+
 
 //  /* (non-Javadoc)
 //   * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)

@@ -322,7 +322,19 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * This may be inefficient to compute.
    * @return the size of the collection being iterated over.
    */
+  /*
+   * (non-Javadoc)
+   * @see org.apache.uima.cas.FSIterator#size()
+   */
   default int size() {
-    return ((LowLevelIterator<T>)this).ll_indexSizeMaybeNotCurrent();
+    FSIterator<T> it = copy();
+    it.moveToFirst();
+    int count = 0;
+    while (it.isValid()) {
+      count++;
+      it.nextNvc();
+    }
+    return count;
   }
+
 }

@@ -193,4 +193,12 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
                 : ((LowLevelIterator<T>)allIterators[0]).ll_getIndex());
   }  
 
+  @Override
+  public int size() {
+    int r = 0;
+    for (LowLevelIterator<T> it : nonEmptyIterators) {
+      r += it.size();
+    }
+    return r;
+  }
 }

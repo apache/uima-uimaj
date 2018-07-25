@@ -242,6 +242,7 @@ public class IteratorTest extends TestCase {
   public void testEmptySnapshotIterator() {
     setupindexes();
     FSIterator<FeatureStructure> it = sortedIndex.iterator();
+    assertEquals(0, it.size());
     assertFalse(it.isValid());
     boolean ok = false;
     try {
@@ -252,6 +253,7 @@ public class IteratorTest extends TestCase {
     assertTrue(ok);
     
     it = ssSortedIndex.iterator();
+    assertEquals(0, it.size());    
     assertFalse(it.isValid());
     ok = false;
     try {
@@ -286,7 +288,9 @@ public class IteratorTest extends TestCase {
     FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex();
     FSIndex<AnnotationFS> ssIndex = index.withSnapshotIterators();
     FSIterator<AnnotationFS> it = index.iterator();
+    assertEquals(60, it.size());
     FSIterator<AnnotationFS> ssit = ssIndex.iterator();
+    assertEquals(60, it.size());
     it.moveTo(match);  // should move to left-most of the 10 with start=5 end=7
     ssit.moveTo(match);
     assertTrue(index.compare(match, it.get()) == 0);
@@ -311,6 +315,7 @@ public class IteratorTest extends TestCase {
     
     index = index.withSnapshotIterators();
     it = index.iterator();
+    assertEquals(1, it.size());
     it.moveTo(pastEnd);
     assertFalse(it.isValid());
 
@@ -338,6 +343,7 @@ public class IteratorTest extends TestCase {
       
       FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex(this.subsentenceType);
       FSIterator<AnnotationFS> it = index.iterator();
+      assertEquals((i == 0) ? 6 : 5, it.size());
       it.moveTo(testAnnot);
       for (int j = 0; j < 2; j++) {
         assertTrue(it.isValid());
@@ -352,6 +358,7 @@ public class IteratorTest extends TestCase {
       
       index = index.withSnapshotIterators();
       it = index.iterator();
+      assertEquals((i == 0) ? 6 : 5, it.size());
       it.moveTo(testAnnot);
       for (int j = 0; j < 2; j++) {
         assertTrue(it.isValid());
@@ -591,6 +598,7 @@ public class IteratorTest extends TestCase {
     
     setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
     LowLevelIterator it = setIndexForType.ll_iterator();
+    assertEquals(20, it.size());
     assertTrue(it.isValid());
     it.moveToPrevious();
     assertFalse(it.isValid());
@@ -606,6 +614,7 @@ public class IteratorTest extends TestCase {
   
   private void setIndexIterchk(LowLevelIndex idx, int[] expected) {
     LowLevelIterator it = idx.ll_iterator();
+    assertEquals(expected.length, it.size());
     int[] r = new int[70];
     int i = 0;
     while (it.isValid()) {
@@ -849,6 +858,7 @@ public class IteratorTest extends TestCase {
   
   private void tstWord(FSIndex<FeatureStructure> index) {
     FSIterator<FeatureStructure> it = index.iterator();
+    assertEquals(20, it.size());  // test size
     it.moveToLast();
 
     FeatureStructure fs = this.cas.createFS(wType);

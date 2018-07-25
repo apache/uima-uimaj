@@ -301,6 +301,11 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     return this.ll_getIndex().isSorted();
   }
 
+  @Override
+  public int size() {
+    return ofsa.size();
+  }
+  
 //  @Override
 //  protected int getModificationCountFromIndex() {
 //    return ofsa.getModificationCount();

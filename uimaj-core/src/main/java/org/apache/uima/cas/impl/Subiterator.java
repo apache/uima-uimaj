@@ -1252,18 +1252,6 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     // TODO Auto-generated method stub
     return null;
   }
-  
-  @Override
-  public int size() {
-    FSIterator<T> it2 = copy();
-    it2.moveToFirst();
-    int sz = 0;
-    while (it2.hasNext()) {
-      sz++;
-      it2.nextNvc();
-    }
-    return sz;
-  }
 
 //  /**
 //   * Simple implementation:

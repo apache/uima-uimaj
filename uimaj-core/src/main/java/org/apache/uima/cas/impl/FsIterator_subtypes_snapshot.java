@@ -260,4 +260,9 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
   public Comparator<TOP> getComparator() {
     return comparatorMaybeNoTypeWithoutId;
   } 
+  
+  @Override 
+  public int size() {
+    return snapshot.length;
+  }
 }

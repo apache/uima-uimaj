@@ -63,4 +63,6 @@ public class LowLevelIterator_empty<T extends FeatureStructure> implements LowLe
   public Comparator<TOP> getComparator() { return null; }
   @Override
   public Type getType() { return TypeSystemImpl.staticTsi.getTopType(); }
+  @Override
+  public int size() { return 0; }
 }
