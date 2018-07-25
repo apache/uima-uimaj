@@ -15,9 +15,9 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-
-
- getCoveredAnnotations() contains code adapted from the UIMA Subiterator class.
+ *
+ *
+ * getCoveredAnnotations() contains code adapted from the UIMA Subiterator class.
  */
 package org.apache.uima.fit.util;
 
@@ -75,7 +75,6 @@ import org.junit.Test;
 
 /**
  * Test cases for {@link JCasUtil}.
- * 
  */
 public class JCasUtilTest extends ComponentTestBase {
   /**
@@ -139,7 +138,7 @@ public class JCasUtilTest extends ComponentTestBase {
       
       // Prepare the index
       long timeIndexed = System.currentTimeMillis();
-      Map<Sentence, Collection<Token>> index = indexCovered(jcas, Sentence.class, Token.class);
+      Map<Sentence, List<Token>> index = indexCovered(jcas, Sentence.class, Token.class);
       timeIndexed = System.currentTimeMillis() - timeIndexed;
       
       // -- The order of entries in the index is NOT defined!
@@ -770,7 +769,7 @@ public class JCasUtilTest extends ComponentTestBase {
     List<Sentence> sentences = new ArrayList<Sentence>(select(jCas, Sentence.class));
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
 
-    Map<Token, Collection<Sentence>> index = indexCovering(jCas, Token.class, Sentence.class);
+    Map<Token, List<Sentence>> index = indexCovering(jCas, Token.class, Sentence.class);
 
     // Check covering annotations are found
     assertEquals(asList(sentences.get(0)), index.get(tokens.get(0)));
