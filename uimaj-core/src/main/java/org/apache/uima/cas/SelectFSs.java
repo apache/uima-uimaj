@@ -128,15 +128,16 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   SelectFSs<T> allViews(boolean allViews);
   
   /**
-   * Applies to the various argument forms of the get method.
+   * Applies to the various argument forms of the get and single methods.
    * Indicates that a null value should not throw an exception.
    * <p>
-   * Default: null is not OK as a value 
+   * Calling this method is equivalent to nullOK(true).
+   * If never called, nulls are not OK by default.
    * @return the updated SelectFSs object
    */
   SelectFSs<T> nullOK();  
   /**
-   * Applies to the various argument forms of the get method.
+   * Applies to the various argument forms of the get and single methods.
    * Indicates that a null value should or should not throw an exception.
    * <p>
    * Default: null is not OK as a value 
@@ -451,8 +452,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    */
   T get();          // returns first element or null if empty (unless nullOK(false) specified)
   /**
-   * @return first element, which must be not null
-   * @throws CASRuntimeException if element is null or 
+   * @return first element, verifying that the size of the selection is 1 (or maybe 0)
+   * @throws CASRuntimeException (conditioned on nullOK == false ) if element is null or 
    *          if there is more than 1 element in the selection,
    *          or if the selection is empty
    */
@@ -462,6 +463,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @throws CASRuntimeException if there is more than 1 element in the selection.
    */
   T singleOrNull(); // throws if more than 1 element, returns single or null
+  
+  
    // next are positioning alternatives
    // get(...) throws if null (unless nullOK specified)
   /**

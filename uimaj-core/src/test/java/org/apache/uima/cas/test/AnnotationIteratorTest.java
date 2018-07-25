@@ -378,7 +378,7 @@ public class AnnotationIteratorTest extends TestCase {
       }
     }
     assertTrue(x);
-    assertNull(annotIndex.select().coveredBy(3, 3).get());
+    assertNull(annotIndex.select().coveredBy(3, 3).nullOK().get());
     assertNotNull(annotIndex.select().get(3));
     assertNull(annotIndex.select().nullOK().coveredBy(3, 5).get(3));
     x = false;

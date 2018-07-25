@@ -123,7 +123,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private boolean isFollowing = false;
   private boolean isPreceding = false;
   
-  private boolean isNullOkSpecified = false; // for complex defaulting of get(), get(n)
   private boolean isAltSource = false;
   
   private BoundsUse boundsUse = null; 
@@ -316,14 +315,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   @Override
   public SelectFSs_impl<T> nullOK() { // applies to get() and single()
-    this.isNullOK = true;
-    this.isNullOkSpecified = true;
-    return this;
+   this.isNullOK = true;
+   return this;
   }  
   @Override
   public SelectFSs_impl<T> nullOK(boolean bNullOk) {  // applies to get() and single()
     this.isNullOK = bNullOk;
-    this.isNullOkSpecified = true;
     return this;
   }
     
@@ -1007,15 +1004,15 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public T get() {
-    return getNullChk(true);
+    return getNullChk();
   }
   
-  private T getNullChk(boolean isDoSetTest) {
+  private T getNullChk() {
     FSIterator<T> it = fsIterator();
     if (it.isValid()) {
       return it.getNvc();
     }
-    if ((!isDoSetTest || isNullOkSpecified) && !isNullOK) {  // if not specified, isNullOK == false
+    if (!isNullOK) {  // if not specified, isNullOK == false
       throw new CASRuntimeException(CASRuntimeException.SELECT_GET_NO_INSTANCES, ti.getName(), maybeMsgPosition());
     }
     return null;
@@ -1030,7 +1027,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T single() {
     T v = singleOrNull();
-    if (v == null) {
+    if (v == null && !isNullOK) {
       throw new CASRuntimeException(CASRuntimeException.SELECT_GET_NO_INSTANCES, ti.getName(), maybeMsgPosition());
     }
     return v;
@@ -1064,7 +1061,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T get(int offset) {
     this.shift = offset;
-    return getNullChk(false);
+    return getNullChk();
   }
 
   @Override
@@ -1082,7 +1079,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T get(TOP fs) {
     startAt(fs);
-    return getNullChk(false);
+    return getNullChk();
   }
 
   @Override
@@ -1100,7 +1097,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T get(TOP fs, int offset) {
     startAt(fs, offset);
-    return getNullChk(false);
+    return getNullChk();
   }
 
   @Override
@@ -1118,7 +1115,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T get(int begin, int end) {
     startAt(begin, end);
-    return getNullChk(false);
+    return getNullChk();
   }
 
   @Override
@@ -1136,7 +1133,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T get(int begin, int end, int offset) {
     startAt(begin, end, offset);
-    return getNullChk(false);
+    return getNullChk();
   }
 
   @Override
