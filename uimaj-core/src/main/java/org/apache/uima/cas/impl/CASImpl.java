@@ -707,7 +707,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       emptyByteArray = null;
       emptyBooleanArray = null;
   
+      current_one_thread_access = null;
+      updateCallSite(is_updatable_callsite, mh_return_true, is_updatable_callsites);
+      updateCallSite(is_readable_callsite, mh_return_true, is_readable_callsites);
+      
       clearNonSharedInstanceData();
+      
     }
     
     /**
@@ -4864,7 +4869,7 @@ public JCasImpl getJCasImpl() {
     return this.getClass().getSimpleName() + ":" + getCasId() + "[view: " + sofa + "]";
   }
     
-  int getCasResets() {
+  public int getCasResets() {
     return svd.casResets.get();
   }
   
