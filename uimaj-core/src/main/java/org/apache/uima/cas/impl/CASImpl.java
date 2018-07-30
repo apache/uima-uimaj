@@ -5534,7 +5534,7 @@ public Marker createMarker() {
     return "CASImpl [view: " + sofa + "]";
   }
     
-  int getCasResets() {
+  public int getCasResets() {
     return svd.casResets.get();
   }
   
