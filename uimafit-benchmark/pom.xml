@@ -90,7 +90,7 @@
             <id>add-test-source</id>
             <phase>process-resources</phase>
             <goals>
-              <goal>add-test-source</goal>
+              <goal>add-source</goal>
             </goals>
             <configuration>
               <sources>
