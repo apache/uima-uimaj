@@ -226,32 +226,6 @@ public final class ExternalResourceInitializer {
               + resMgr.getClass() + "]");
     }
     
-    // UIMA-2903 - List resources in a ResourceManager / remove hack in uimaFIT
-    // This is how we do it after upgrading to UIMA 2.10.0
-    // return resMgr.getExternalResources();
-
-    // For UIMA 2.9.0 and before, we need to do this
-    Field resourceMapField = null;
-    try {
-      // Fetch the list of resources
-      resourceMapField = ReflectionUtil.getField(resMgr, "mResourceMap");
-      resourceMapField.setAccessible(true);
-      @SuppressWarnings("unchecked")
-      Map<String, Object> resources = (Map<String, Object>) resourceMapField.get(resMgr);
-
-      return resources.values();
-    } catch (SecurityException e) {
-      throw new ResourceInitializationException(e);
-    } catch (NoSuchFieldException e) {
-      throw new ResourceInitializationException(e);
-    } catch (IllegalArgumentException e) {
-      throw new ResourceInitializationException(e);
-    } catch (IllegalAccessException e) {
-      throw new ResourceInitializationException(e);
-    } finally {
-      if (resourceMapField != null) {
-        resourceMapField.setAccessible(false);
-      }
-    }
+    return resMgr.getExternalResources();
   }
 }
