@@ -23,12 +23,13 @@ package org.apache.uima.fit.util;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
+import static org.apache.uima.fit.util.JCasUtil.getAnnotationType;
 import static org.apache.uima.fit.util.JCasUtil.getView;
 import static org.apache.uima.fit.util.JCasUtil.indexCovered;
 import static org.apache.uima.fit.util.JCasUtil.indexCovering;
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectAt;
-import static org.apache.uima.fit.util.JCasUtil.*;
+import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 import static org.apache.uima.fit.util.JCasUtil.selectSingleAt;
 import static org.apache.uima.fit.util.JCasUtil.toText;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,6 +67,7 @@ import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.CasCreationUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -184,6 +186,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
   /**
    * Test what happens if there is actually nothing overlapping with the Token.
    */
+  @Ignore("Requires UIMA v3 3.0.1 to work")
   @Test
   public void testSelectBetweenInclusion() {
     Token t1 = new Token(jCas, 45, 57);
@@ -198,6 +201,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
     assertTrue(stem1.isEmpty());
   }
 
+  @Ignore("Requires UIMA v3 3.0.1 to work")
   @Test
   public void testSelectBetweenRandom() throws Exception {
     final int ITERATIONS = 10;
@@ -334,6 +338,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
         jCas.select(Token.class).map(AnnotationFS::getCoveredText).collect(Collectors.toList()));
   }
 
+  @Ignore("Requires UIMA v3 3.0.1 to work")
   @Test
   public void testSelectByIndex() {
     String text = "Rot wood cheeses dew?";
@@ -547,6 +552,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
             .get().getCoveredText());
   }
 
+  @Ignore("Requires UIMA v3 3.0.1 to work")
   @Test
   public void testSelectPrecedingWithOverlaps() {
     String text = "a b c d e";
@@ -563,6 +569,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
     assertEquals("a", preceedingTokens.get(0).getCoveredText());
   }
 
+  @Ignore("Requires UIMA v3 3.0.1 to work")
   @Test
   public void testSelectPrecedingWithOverlaps2() {
     jCas.setDocumentText("abcde");
@@ -621,6 +628,7 @@ public class JCasUtilv3Test extends ComponentTestBase {
     assertEquals(secondToken.getEnd(), a.getEnd());
   }
 
+  @Ignore("Requires UIMA v3 3.0.1 to work")
   @Test
   public void testSelectFollowingPrecedingBuiltinTypes() {
     this.jCas.setDocumentText("A B C");

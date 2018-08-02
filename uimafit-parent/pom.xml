@@ -15,7 +15,7 @@
 	<inceptionYear>2012</inceptionYear>
 	<properties>
 		<spring.version>3.2.16.RELEASE</spring.version>
-		<uima.version>3.0.1-SNAPSHOT</uima.version>
+		<uima.version>3.0.0</uima.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <compat.previous.version>2.1.0</compat.previous.version>

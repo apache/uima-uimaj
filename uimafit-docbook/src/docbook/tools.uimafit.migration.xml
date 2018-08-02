@@ -28,8 +28,23 @@
       compatible with UIMA 2.x anyway, the legacy module was removed now.</para>
     </formalpara>
     <formalpara>
+      <title>Using List instead of Collection</title>
+      <para>The <literal>CasUtil</literal>, <literal>JCasUtil</literal> and 
+      <literal>FSCollectionFactory</literal> classes were adjusted to return results
+      using <literal>List</literal> instead of the more general <literal>Collection</literal>. 
+      Often, lists are already used internally and then again wrapped into new lists in client 
+      code. This API change avoids this in the future.</para>
+    </formalpara>
+    <formalpara>
+      <title>Throwing specific exceptions instead of UIMAException</title>
+      <para>Several uimaFIT methods were throwing the generic <literal>UIMAException</literal>. 
+      These have been adjusted to declare throwing several of the sub-types of 
+      <literal>UIMAException</literal> to be better able to handle
+      specific causes of errors in client code.</para>
+    </formalpara>
+    <formalpara>
       <title>Version requirements</title>
-      <para>Depends on UIMA 3.0.0, Spring Framework 3.2.16 and Java 7.</para>
+      <para>Depends on UIMA 3.0.0, Spring Framework 3.2.16 and Java 8.</para>
     </formalpara>
   </section>
   <section>
@@ -162,67 +177,5 @@
       <para>Methods only loading JCas data have been removed from <literal>JCasFactory</literal>.
         The new methods in <literal>CasIOUtil</literal> can be used instead.</para>
     </formalpara>
-  </section>
-  <section>
-    <title>Legacy support module</title>
-    <para>The compatibility layer should allow you to migrate to uimaFIT <?eval ${project.version}?> without breaking
-      anything. You should then be able to gradually change the codebase to be compatible with
-      uimaFIT <?eval ${project.version}?>. As far as my tests go, uimaFIT 1.x and <?eval ${project.version}?> can coexist peacefully on the
-      classpath (and indeed both need to be on the classpath in order to use the legacy support
-      module).</para>
-    <para>To enable the legacy support, make sure that you have a dependency on uimaFIT 1.x and then
-      just add a dependency on the legacy module:</para>
-    <programlisting>&lt;dependency>
-  &lt;groupId>org.uimafit&lt;/groupId>
-  &lt;artifactId>uimafit&lt;/artifactId>
-  &lt;version>1.4.0&lt;/version>
-&lt;/dependency>
-&lt;dependency>
-  &lt;groupId>org.apache.uima&lt;/groupId>
-  &lt;artifactId>uimafit-legacy-support&lt;/artifactId>
-  &lt;version><?eval ${project.version}?>&lt;/version>
-&lt;/dependency></programlisting>
-    <para>uimaFIT <?eval ${project.version}?> automatically detects the presence of the legacy module and uses it - no
-      additional configuration is necessary.</para>
-    <para>The following bash script may help to partially automatize the source code migration process.
-      Please observe that it does not cover all of the necessary changes!</para>
-    <note>
-      <para>The script recursively changes all files under the current working directory! Make
-      sure you are in the right directory before running it! <emphasis>Use the script at your own 
-      risk!</emphasis></para>
-    </note>
-    <programlisting>#!/bin/sh
-
-############################################
-# MAKE SURE TO BACKUP YOUR FILES FIRST!
-# SCRIPT RECURSIVELY CHANGES ALL JAVA FILES!
-# USE AT YOUR OWN RISK!
-############################################
-
-# Change of package names
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/org.uimafit/org.apache.uima.fit/g'
-
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/org.uimafit.component.xwriter.CASDumpWriter/\
-org.apache.uima.fit.component.CasDumpWriter/g'
-
-# AnalysisEngineFactory
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/createAggregate/createEngine/g'
-
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/createPrimitive/createEngine/g'
-
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/createAnalysisEngine/createEngine/g'
-
-# Readers
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/createDescription/createReaderDescription/g'
-
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/createCollectionReader/createReader/g'
-</programlisting>    
   </section>
 </chapter>

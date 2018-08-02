@@ -32,7 +32,7 @@
 		<relativePath>uimafit-parent</relativePath>
 	</parent>
 	<properties>
-		<jiraVersion>12332459</jiraVersion>
+		<jiraVersion>12332458</jiraVersion>
 	</properties>
 	<scm>
 		<connection>scm:svn:http://svn.apache.org/repos/asf/uima/uimafit/trunk/</connection>
@@ -100,6 +100,25 @@
 			</plugin>
 
 		</plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes combine.children="append">
+                  <!-- These configuration files cannot bear a license header -->
+                  <exclude>.github/*</exclude>
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
 	</build>
 
 	<modules>
