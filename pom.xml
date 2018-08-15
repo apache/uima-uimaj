@@ -34,12 +34,12 @@
 	<properties>
 		<jiraVersion>12332459</jiraVersion>
 	</properties>
-	<scm>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/uima/uimafit/trunk/</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/uima/uimafit/trunk/</developerConnection>
-		<url>http://svn.apache.org/repos/asf/uima/uimafit/trunk/</url>
-	</scm>
-
+  <scm>
+    <connection>scm:git:git://github.com/apache/uima-uimafit</connection>
+    <developerConnection>scm:git:git@github.com:apache/uima-uimafit.git</developerConnection>
+    <url>https://github.com/apache/uima-uimafit</url>
+    <tag>HEAD</tag>
+  </scm>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -64,9 +64,9 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                </configuration>
+          <configuration>
+            <source>${maven.compiler.source}</source>
+          </configuration>
 				<executions>
 					<execution>
 						<id>javadocs-distr</id> <!-- name should match one in parent-pom -->
