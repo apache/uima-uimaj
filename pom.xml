@@ -28,7 +28,7 @@
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimafit-parent</artifactId>
-		<version>3.0.0</version>
+		<version>3.1.0-SNAPSHOT</version>
 		<relativePath>uimafit-parent</relativePath>
 	</parent>
 	<properties>
@@ -38,7 +38,7 @@
     <connection>scm:git:git://github.com/apache/uima-uimafit</connection>
     <developerConnection>scm:git:git@github.com:apache/uima-uimafit.git</developerConnection>
     <url>https://github.com/apache/uima-uimafit</url>
-    <tag>uimafit-3.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
 	<licenses>
 		<license>
@@ -51,12 +51,12 @@
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimafit-core</artifactId>
-			<version>3.0.0</version>
+			<version>3.1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimafit-cpe</artifactId>
-			<version>3.0.0</version>
+			<version>3.1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
