@@ -23,7 +23,7 @@ package org.apache.uima.cas;
  * The interface that describes features in the type system.
  * 
  * <p>
- * <a name="names">Feature short or base names</a> are <a href="./Type.html#identifiers"> type
+ * <a id="names">Feature short or base names</a> are <a href="./Type.html#identifiers"> type
  * system identifiers</a>. The (fully) qualified name of a feature is the <a
  * href="./Type.html#names">name</a> of the type it is defined on, followed by a colon, followed by
  * the its short name. For example, the qualified name of the Annotation begin feature is
