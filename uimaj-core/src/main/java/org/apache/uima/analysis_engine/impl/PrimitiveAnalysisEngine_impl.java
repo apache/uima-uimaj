@@ -35,6 +35,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.CasIterator;
 import org.apache.uima.analysis_engine.ResultNotSupportedException;
 import org.apache.uima.analysis_engine.ResultSpecification;
+import org.apache.uima.analysis_engine.impl.MultiThreadCoordination.MultiThreadInfo;
 import org.apache.uima.analysis_engine.impl.compatibility.AnalysisComponentAdapterFactory;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
@@ -60,11 +61,12 @@ import org.apache.uima.util.Logger;
  * 
  */
 public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase implements AnalysisEngine {
+
+  private static final boolean IS_MULTI_THREAD_COORD = false;  // for experimenting
+  
   /**
    * UIMA-5043 Set & restore the UimaContextHolder around calls to user code so it can be used to access the External Settings
    */
-  
-  
   private static final Class<PrimitiveAnalysisEngine_impl> CLASS_NAME = PrimitiveAnalysisEngine_impl.class;
  
   /**
@@ -304,6 +306,23 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @see AnalysisEngine#processAndOutputNewCASes(CAS)
    */
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
+    if (IS_MULTI_THREAD_COORD) {
+      String key = ((UimaContextAdmin)getUimaContext()).getQualifiedContextName();
+      MultiThreadInfo mti = null;
+      try {
+        mti = MultiThreadCoordination.at_call_primitive(key, ((CASImpl)aCAS).getCasId(), ((CASImpl)aCAS).getCasResets());
+        return innerCall(aCAS);
+      } finally {
+        if (mti != null) {
+          mti.mtc.at_call_primitive_exit(mti, key);
+        }
+      }
+    } else {
+      return innerCall(aCAS);
+    }
+  }
+  
+  private CasIterator innerCall(CAS aCAS) throws AnalysisEngineProcessException {
     enterProcess();
     try {
       // make initial call to the AnalysisComponent
@@ -385,12 +404,12 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           mAnalysisComponent.setResultSpecification(analysisComponentResultSpec);
           mResultSpecChanged = false;
         }
-       
         // insure view is passed to switch / restore class loader https://issues.apache.org/jira/browse/UIMA-2211
         ((CASImpl)view).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
 
         // call the process method
         mAnalysisComponent.process(casToPass);
+
         getMBean().incrementCASesProcessed();
         
         //note we do not clear the CAS's currentComponentInfo at this time
