@@ -237,7 +237,7 @@ public interface JCas extends AbstractCas {
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same valuee because it is not
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a StringArray
@@ -247,7 +247,7 @@ public interface JCas extends AbstractCas {
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same valuee because it is not
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of an IntegerArray
@@ -256,7 +256,7 @@ public interface JCas extends AbstractCas {
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same valuee because it is not
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a FloatArray
@@ -264,7 +264,7 @@ public interface JCas extends AbstractCas {
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same valuee because it is not
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a FSArray
