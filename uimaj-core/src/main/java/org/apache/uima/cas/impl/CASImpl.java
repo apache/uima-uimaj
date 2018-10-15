@@ -5538,7 +5538,7 @@ public Marker createMarker() {
     return svd.casResets.get();
   }
   
-  int getCasId() {
+  public int getCasId() {
     return svd.casId;
   }
   
