@@ -79,6 +79,17 @@ public class Misc {
     return (s == null) ? "" : s;
   }
   
+  public static byte[] hex_string_to_bytearray(String s) {
+    int len2 = s.length();
+    int len = len2 >> 1;
+    byte[] out = new byte[len];
+    for (int out_i = 0, str_i = 0; out_i < len; out_i ++, str_i += 2) {
+      out[out_i] = (byte) ((Character.digit(s.charAt(str_i),  16) << 4) + 
+                            Character.digit(s.charAt(str_i + 1), 16));
+    }
+    return out;
+  }
+  
   public static String dumpByteArray(byte[] b, int limit) {
     if (b == null) {
       return "null";

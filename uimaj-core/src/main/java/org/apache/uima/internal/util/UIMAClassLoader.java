@@ -56,7 +56,7 @@ public class UIMAClassLoader extends URLClassLoader {
    * This is the byte array that defines the class org.apache.uima.cas.impl.MethodHandlesLookup, obtained by
    * converting the .class file to a hex byte string.
    */
-  static byte[] methodHandlesLookupClass = javax.xml.bind.DatatypeConverter.parseHexBinary(
+  static byte[] methodHandlesLookupClass = Misc.hex_string_to_bytearray(
       "CAFEBABE00000034001B07000201002C6F72672F6170616368652F75696D612F6361732F696D706C2F4D6574686F6448616E646C65734C6F"
     + "6F6B75700700040100106A6176612F6C616E672F4F626A6563740100063C696E69743E010003282956010004436F64650A000300090C0005"
     + "000601000F4C696E654E756D6265725461626C650100124C6F63616C5661726961626C655461626C650100047468697301002E4C6F72672F"
