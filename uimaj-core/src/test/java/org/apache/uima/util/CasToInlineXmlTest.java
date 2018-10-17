@@ -21,7 +21,6 @@ package org.apache.uima.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.uima.UIMAFramework;
@@ -38,6 +37,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.testTypeSystem_arrays.OfShorts;
 import org.apache.uima.testTypeSystem_arrays.OfStrings;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 
 import junit.framework.TestCase;
 
@@ -155,7 +155,14 @@ public class CasToInlineXmlTest extends TestCase {
         break;
       }
     }
-    XMLAssert.assertXMLEqual(expected, result);
+    boolean whitespaceFlag = XMLUnit.getIgnoreWhitespace();
+    XMLUnit.setIgnoreWhitespace(true);
+    try {
+      XMLAssert.assertXMLEqual(expected, result);
+    }
+    finally {
+      XMLUnit.setIgnoreWhitespace(whitespaceFlag);
+    }
 //    assertEquals(expected, result.trim());
   }
   

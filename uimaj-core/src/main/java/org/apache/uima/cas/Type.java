@@ -28,14 +28,14 @@ import org.apache.uima.cas.impl.TypeImpl;
  * The interface describing types in the type system.
  * 
  * <p>
- * <a name="names">Type names</a> are Java strings that look like Java class names. For example,
+ * <a id="names">Type names</a> are Java strings that look like Java class names. For example,
  * the built-in annotation type is called <code>uima.tcas.Annotation</code>. The whole string is
  * called the (fully) qualified type name. The part after the last period is called the short or
  * base name. The rest of the name is the name space of the type. This part can be empty, in which
  * case the qualified and the base name are identical.
  * 
  * <p>
- * <a name="identifiers">Type system identifiers</a> in general have the following syntax: they are
+ * <a id="identifiers">Type system identifiers</a> in general have the following syntax: they are
  * non-empty strings whose first character is a letter (Unicode letter), followed by an arbitrary
  * sequence of letters, digits and underscores. No other characters are legal parts of identifiers.
  * A type name is then a non-empty sequence of identifiers separated by periods. See also <a

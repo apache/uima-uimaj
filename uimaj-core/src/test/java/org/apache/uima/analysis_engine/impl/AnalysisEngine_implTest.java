@@ -1643,7 +1643,7 @@ public class AnalysisEngine_implTest extends TestCase {
     // Write out descriptor
     File cloneFile = new File(inFile.getParentFile(), "CopyOfAggregateWithManyDelegates.xml");
     BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(cloneFile));
-    XMLSerializer xmlSerializer = new XMLSerializer(true);
+    XMLSerializer xmlSerializer = new XMLSerializer(false);
     xmlSerializer.setOutputStream(os);
     // set the amount to a value which will show up if used
     // indent should not be used because we're using a parser mode which preserves
