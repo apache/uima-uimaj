@@ -560,9 +560,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      */
     private boolean isId2Fs;
     
-    /***********************************
-     * C A S   S T A T E    management *
-     ***********************************/
+    /******************************************************************************************
+     * C A S   S T A T E    management                                                        *
+     *    Cas state is implemented in a way to allow the Java to efficiently                  * 
+     *    access the state test without synchronization or "voliatile" memory accessing,      *
+     *    while at the same time, allowing for an occasional cross-thread memory invalidation *
+     *    when the state is changed.  This is done using a MutableCallSite plus that          *
+     *    objects "syncAll" method.                                                           *
+     ******************************************************************************************/
     private final EnumSet<CasState> casState = EnumSet.noneOf(CasState.class); 
 
     private static final MethodType noArgBoolean = MethodType.methodType(boolean.class);
