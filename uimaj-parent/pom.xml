@@ -32,7 +32,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>11</version>
+    <version>12-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.uima</groupId>
@@ -195,11 +195,6 @@
   <build>
     <pluginManagement>
       <plugins>
-         
-        <plugin>
-          <artifactId>maven-invoker-plugin</artifactId>
-          <version>3.0.1</version>
-        </plugin>
         
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -238,34 +233,6 @@
     
   </build>
   <profiles>
-    <!-- ************ Java 9 enablement ************** -->
-    <profile>
-      <id>java9</id>
-      <activation>
-        <jdk>9</jdk>
-      </activation>
-      <properties>
-        <maven.surefire.java9>--add-modules java.xml.bind</maven.surefire.java9>
-      </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <configuration>
-                <compilerArgs>
-                  <arg>--add-modules</arg>
-                  <arg>java.xml.bind</arg>
-                </compilerArgs>
-                <target>1.9</target>
-              </configuration>
-            </plugin>
-            
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
     
     <profile>
       <id>pmd</id>
@@ -401,7 +368,6 @@
             <plugin>
 	            <groupId>org.apache.rat</groupId>
 		          <artifactId>apache-rat-plugin</artifactId>
-              <version>${rat.version}</version>
 		          <executions>
 		            <execution>
 		              <id>default-cli</id>
@@ -421,9 +387,8 @@
           <plugin>              
             <groupId>com.github.siom79.japicmp</groupId>
             <artifactId>japicmp-maven-plugin</artifactId>
-            <version>0.9.4</version>
+            <version>0.13.0</version>
             <configuration>
-              <!--  fixed in 0.94 -->
               <oldVersion>
                 <dependency>
                   <groupId>${project.groupId}</groupId>
