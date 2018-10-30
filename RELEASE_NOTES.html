@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.10.2 Release Notes</title>
+  <title>Apache UIMA v2.10.3 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.10.2 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v2.10.3 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -82,12 +82,16 @@
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 <p>The major changes in this release include:</p>
 
-<ul><li>fixed a bug in xmi serialization/deserialization of 0-length string array</li>
-<li>added a filter to the Annotation Viewer utility</li>
-<li>Eclipse plugin jars are now Eclipse-signed.</li>
-<li>The Eclipse examples project fixed a typo in the javadoc attachments.
-<li>The Eclipse update site was pruned of old releases; these are still available at
-https://archive.apache.org/dist/uima/eclipse-update-site/uimaj-2.3.1-2.10.1
+<ul><li>The minimum Java version was changed from 7 to 8.  The code and the build 
+was adjusted to compile using both Java 8 and Java 11.</li>
+<li>The class loading when using the UIMA Class Loader now will first try loading
+from that class loader's URL list, and if not found will try using the
+Context Class Loader (if set), and if not found, then will delegate to the parent.
+Previously the Context Class Loader was never consulted.</li>
+<li>Fixed some edge case performance issues.</li>
+<li>Fixed PEAR installation to no longer lock files.</li>
+<li>Pear Specifier parameters now passed to the wrapped Analysis Engine</li>
+<li>Implemented a destroy() method for ResourceManager which closes its UIMAClassLoader</li> 
 </ul>
   
 <h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>

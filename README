@@ -90,12 +90,12 @@ What's New
 Supported Platforms
 --------------------
 
-Apache UIMA requires Java version 7 or later; it has been tested with Sun/Oracle Java SDK 7, and 8, 
-and IBM Java 7 and 8.
+Apache UIMA requires Java version 8 or later; it has been tested with Sun/Oracle 8, 
+and IBM Java 8.
 
-Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 7 or later, as well.
+Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later, as well.
 
-The supported platforms are: Windows, Linux, and Mac OS X. Other platforms and Java (7+) 
+The supported platforms are: Windows, Linux, and Mac OS X. Other platforms and Java (8+) 
 implementations should work, but have not been significantly tested.
 
 Many of the scripts in the /bin directory invoke Java. They use the value of the environment variable, JAVA_HOME, 

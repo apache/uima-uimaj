@@ -158,6 +158,7 @@
     
     <jacoco.argLine />
     <api_check_oldVersion>2.10.1</api_check_oldVersion>
+    <java.version>8</java.version>
   </properties>
 
   <dependencyManagement>
