@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>uimaj-eclipse-update-site</artifactId>
-  <version>2.10.4-SNAPSHOT</version>
+  <version>2.10.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
@@ -145,38 +145,43 @@
                 
                 <fail unless="eclipse.home" message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse" />
                 <fail unless="uima-eclipse-jar-processor" message="********** Please add to your settings.xml file the property uima-eclipse-jar-processor, point to this within an Eclipse installation at level 4.2 or later, e.g. \$\{uima-maven-build-eclipse-home\}/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.200.v20110808-1657.jar" />
-                <!--  skip this when dropping previous versions
-                  <if>
-                      <equals arg1="${isApacheRelease}" arg2="true" />
-                      <then>
-    
-                        <echo>checking out eclipse update subsite ${eclipseUpdateSiteComponent} from dist ...release...</echo>
-                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
-                        <exec executable="svn" failonerror="true">
-                          <arg value="checkout" />
-                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
-                          <arg value="${eclipseUpdateSubSite}" />
-                        </exec> 
-                        
-                        <!- - abandon safety for now
-                        <echo>switching this checkout to ...dev... for safety</echo>
-                        <exec executable="svn">
-                          <arg value="switch" />
-                          <arg value="- -force" />  remove space between 2 dashes if uncommented
-                          <arg value="- -accept" />  remove space between 2 dashes if uncommented
-                          <arg value="mine-full" />
-                          <arg value="${distsvnroot}repos/dist/dev/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
-                          <arg value="${eclipseUpdateSubSite}" />
-                        </exec> 
-                         - ->
-                      </then>
-                      <else>
-                        <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
-                        <!- - https://issues.apache.org/jira/browse/UIMA-3501 - ->
-                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
-                      </else>
-                    </if>
-                   -->
+                <property dropPrevVersions="false" />
+                <!--  skip this when dropping previous versions -->
+                <if> 
+                    <equals arg1="${dropPrevVersions}" arg2="false" />
+                  <then>
+	                  <if>
+	                      <equals arg1="${isApacheRelease}" arg2="true" />
+	                      <then>
+	    
+	                        <echo>checking out eclipse update subsite ${eclipseUpdateSiteComponent} from dist ...release...</echo>
+	                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
+	                        <exec executable="svn" failonerror="true">
+	                          <arg value="checkout" />
+	                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
+	                          <arg value="${eclipseUpdateSubSite}" />
+	                        </exec> 
+	                        
+	                        <!-- abandon safety for now
+	                        <echo>switching this checkout to ...dev... for safety</echo>
+	                        <exec executable="svn">
+	                          <arg value="switch" />
+	                          <arg value="- -force" />  remove space between 2 dashes if uncommented
+	                          <arg value="- -accept" />  remove space between 2 dashes if uncommented
+	                          <arg value="mine-full" />
+	                          <arg value="${distsvnroot}repos/dist/dev/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
+	                          <arg value="${eclipseUpdateSubSite}" />
+	                        </exec> 
+	                         -->
+	                      </then>
+	                      <else>
+	                        <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
+	                        <!-- https://issues.apache.org/jira/browse/UIMA-3501 -->
+	                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
+	                      </else>
+	                    </if>
+                   </then>
+                </if>
                     
                 <echo>Compress plugin Jars using pack200 - this may take a minute or 2</echo>
                 <java fork="true" maxmemory="256m" jar="${uima-eclipse-jar-processor}" failonerror="true">
