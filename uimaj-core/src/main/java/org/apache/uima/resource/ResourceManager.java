@@ -380,8 +380,12 @@ public interface ResourceManager {
   public Map<String,XMLizable> getImportCache();
   
   /**
-   * Loads a user class using either the UIMA extension class loader (if specified) or 
+   * Loads a user class using either the UIMA extension class loader (if specified) or
+   * the ThreadLocal Context Class Loader (if available) or 
    * the loader the UIMA framework is running in.
+   * 
+   * If the class is not found in the ThreadLocal COntext Class Loader, then 
+   * the loader the UIMA framework is running in will be searched.
    * @param name the class to load
    * @param <N> generic class of class
    * @return the class
