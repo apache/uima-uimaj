@@ -160,7 +160,7 @@
 	                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
 	                        <exec executable="svn" failonerror="true">
                       <arg value="checkout" />
-	                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
+	                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site-v3/${eclipseUpdateSiteComponent}" />
                       <arg value="${eclipseUpdateSubSite}" />
                     </exec>
                     
