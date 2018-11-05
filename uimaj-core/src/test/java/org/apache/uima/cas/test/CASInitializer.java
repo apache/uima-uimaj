@@ -40,6 +40,7 @@ public class CASInitializer {
 
   public static CAS initCas(AnnotatorInitializer init, Consumer<TypeSystemImpl> reinitTypeSystem) {
     // Create an initial CASMgr from the factory.
+//    long startTime = System.nanoTime();
     CASMgr casMgr0 = CASFactory.createCAS();
     CASMgr casMgr = null;
     try {
@@ -71,8 +72,10 @@ public class CASInitializer {
       throw new RuntimeException(e);
     }
 
+//    System.out.format("Debug SerDesTest6 setup time: %d micros%n", 
+//    (System.nanoTime() - startTime)/1000L);
+
     // Create the default text Sofa and return CAS view
-    
     return casMgr.getCAS().getCurrentView();
   }
 

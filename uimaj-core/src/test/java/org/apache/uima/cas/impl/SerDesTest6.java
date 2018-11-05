@@ -287,6 +287,7 @@ public class SerDesTest6 extends SerDesTstCommon {
   }
 
   public void setUp() {
+//    long startTime = System.nanoTime();
     mSrc = setupTTypeSystem(TwoTypes);
     casSrc = mSrc.cas;
     final TypeSystems[] tss = TypeSystems.values();
@@ -296,6 +297,9 @@ public class SerDesTest6 extends SerDesTstCommon {
       alternateTTypeSystems[i] = setupTTypeSystem(tss[i]);
     }
     lfs = new ArrayList<FeatureStructure>();
+//    System.out.format("Debug SerDesTest6 setup time: %d micros%n", 
+//        (System.nanoTime() - startTime)/1000L);
+
   }
 
   public void tearDown() {

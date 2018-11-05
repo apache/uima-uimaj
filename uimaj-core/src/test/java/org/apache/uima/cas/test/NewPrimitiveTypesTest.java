@@ -120,6 +120,7 @@ public class NewPrimitiveTypesTest extends TestCase {
    */
   protected void setUp() throws Exception {
     try {
+//      long startTime = System.nanoTime();
       super.setUp();
       casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
@@ -191,6 +192,8 @@ public class NewPrimitiveTypesTest extends TestCase {
       irm.commit();
 
       cas = casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
+//      System.out.format("Debug NewPrimitiveTypesTest time to setup CAS: %,d microsec%n",
+//          (System.nanoTime() - startTime)/1000L);
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);
