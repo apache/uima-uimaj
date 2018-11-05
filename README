@@ -3,7 +3,7 @@
       --------------------------------------------------------------
       
 This file applies to UIMA-SDK version 3.0.0 and subsequent versions.
-Java 8 is required.
+Java 8 or later is required.
 
 Backwards Compatibility
 -----------------------
@@ -45,10 +45,9 @@ What's New
 Supported Platforms
 --------------------
 
-Apache UIMA v3.0.0 requires Java version 8; it has been tested with Oracle Java 8, 
-and IBM Java 8.
+Apache UIMA v3.0.0 requires Java version 8; it has been tested with Java 11 and Java 8.
 
-Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later, as well.
+Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later.
 
 Running the migration tool requires running with a Java JDK, not a Java JRE.
 

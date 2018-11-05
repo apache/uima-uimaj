@@ -61,7 +61,7 @@
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <jiraVersion>3.0.0SDK</jiraVersion>   
+    <jiraVersion>3.0.1SDK</jiraVersion>   
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName> 
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
@@ -213,14 +213,7 @@
   </modules>
   
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>2.5.3</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+
     <plugins>
 
       <!-- This java doc config is for building the ones distributed with the bin packaging, and also 
