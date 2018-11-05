@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <relativePath />
   </parent>
 
@@ -51,9 +51,11 @@
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
 
-    <eclipseUpdateSiteComponent>uimaj-uv3</eclipseUpdateSiteComponent>
+    <eclipseUpdateSiteComponent>uimaj</eclipseUpdateSiteComponent>
 
-    <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
+    <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site-v3/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
+
+    <dropPrevVersions>false</dropPrevVersions>
 
   </properties>
 
@@ -114,6 +116,15 @@
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
+
+           <!-- ==================================================== -->
+           <!--                                                      -->
+           <!--       P O S T   JAR   S I G N I N G by Digicert      -->
+           <!--                                                      -->
+           <!--       is not here, it was                            -->
+           <!--       moved to uima-wide parent pom 10/2018          -->
+           <!-- ==================================================== -->
+ 
            <execution>
             <id>BuildUpdateSite-pack-svnget-buildMetadata-commit-to-dev</id>
             <phase>package</phase>
@@ -137,16 +148,19 @@
                 
                 <fail unless="eclipse.home" message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse" />
                 <fail unless="uima-eclipse-jar-processor" message="********** Please add to your settings.xml file the property uima-eclipse-jar-processor, point to this within an Eclipse installation at level 4.2 or later, e.g. \$\{uima-maven-build-eclipse-home\}/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.200.v20110808-1657.jar" />
-                <!--  skip this for first release, only want latest there
+                <!--  skip this when dropping previous versions -->
                 <if>
-                  <equals arg2="true" arg1="${isApacheRelease}" />
+                    <equals arg1="${dropPrevVersions}" arg2="false" />
+                  <then>
+	                  <if>
+	                      <equals arg1="${isApacheRelease}" arg2="true" />
                   <then>
                     
-                    <echo>checking out eclipse update subsite uimaj-v3-pre-production from dist ...release...</echo>
-                    <delete quiet="true" dir="${eclipseUpdateSubSite}" />
-                    <exec failonerror="true" executable="svn">
+	                        <echo>checking out eclipse update subsite ${eclipseUpdateSiteComponent} from dist ...release...</echo>
+	                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
+	                        <exec executable="svn" failonerror="true">
                       <arg value="checkout" />
-                      <arg value="https://dist.apache.org/repos/dist/release/uima/eclipse-update-site/uimaj-v3-pre-production" />
+	                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
                       <arg value="${eclipseUpdateSubSite}" />
                     </exec>
                     
@@ -158,10 +172,12 @@
                   </then>
                   <else>
                     <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
-                    <delete quiet="true" dir="${eclipseUpdateSubSite}" />
+	                <!-- https://issues.apache.org/jira/browse/UIMA-3501 -->
+	                <delete dir="${eclipseUpdateSubSite}" quiet="true" />
                   </else>
                 </if>
-                   -->
+              </then>
+            </if>
                     
                 <echo>Compress plugin Jars using pack200 - this may take a minute or 2</echo>
                 <java fork="true" maxmemory="256m" jar="${uima-eclipse-jar-processor}" failonerror="true">
@@ -206,13 +222,7 @@
                   <equals arg2="true" arg1="${isApacheRelease}" />
                   <then>
                     <echo message="Generating checksums for new features and plugins" />
-                    <checksum format="MD5SUM" algorithm="sha1">
-                      <fileset dir="${eusWork}">
-                        <include name="**/*.gz" />
-                        <include name="**/*.jar" />
-                      </fileset>
-                    </checksum>
-                    <checksum format="MD5SUM" algorithm="md5">
+                     <checksum algorithm="SHA-512" fileext=".sha512" format="MD5SUM" forceoverwrite="yes">
                       <fileset dir="${eusWork}">
                         <include name="**/*.gz" />
                         <include name="**/*.jar" />
@@ -232,23 +242,16 @@
                     <copy todir="${eclipseUpdateSubSite}" failonerror="true">
                       <fileset dir="${eusWork}">
                         <include name="**/*.asc" />
-                        <include name="**/*.md5" />
-                        <include name="**/*.sha1" />
+                        <include name="**/*.sha512" />
                       </fileset>
                     </copy>
                     <echo message="Clearing previous checksums and signatures for update artifacts.jar and content.jar" />
                     <delete dir="${eclipseUpdateSubSite}">
-                      <include name="*.sha1" />
-                      <include name="*.md5" />
+                      <include name="*.sha512" />
                       <include name="*.asc" />
                     </delete>
                     <echo message="Generating checksums for updated artifacts.jar and content.jar" />
-                    <checksum format="MD5SUM" algorithm="sha1">
-                      <fileset dir="${eclipseUpdateSubSite}">
-                        <include name="*.jar" />
-                      </fileset>
-                    </checksum>
-                    <checksum format="MD5SUM" algorithm="md5">
+                        <checksum algorithm="SHA-512" fileext=".sha512" format="MD5SUM" forceoverwrite="yes">
                       <fileset dir="${eclipseUpdateSubSite}">
                         <include name="*.jar" />
                       </fileset>
