@@ -22,6 +22,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -40,7 +41,6 @@ public class DataIO {
   private static final int SIGNED_INT_VALUE_0x80 = 0x80;
   private static final int MASK_LOW_7 = 0x7f;
   private static final long MASK_LOW_7_LONG = 0x7fL;
-  private static final long TOP_LONG_BIT = 0x8000000000000000L;
  
   private static ThreadLocal<CharsetDecoder> DECODER = new ThreadLocal<CharsetDecoder>();
   
@@ -65,7 +65,7 @@ public class DataIO {
           }
           sb.setCharAt(i, (char)b);
         }
-        in.position(in.position() + length);
+        ((Buffer)in).position(in.position() + length);
         return sb.toString();  // doesn't copy the string char array
       } 
     } while (false); // not a real do loop - do only once
@@ -78,11 +78,11 @@ public class DataIO {
       DECODER.set(decoder);       
     }
     ByteBuffer partToDecode = in.slice();
-    partToDecode.limit(length);
+    ((Buffer)partToDecode).limit(length);
     CharBuffer cb;
     try {
       cb = decoder.decode(partToDecode);
-      in.position(in.position() + length);
+      ((Buffer)in).position(in.position() + length);
     } catch (CharacterCodingException e) {
       // should never happen
       throw new RuntimeException(e);
