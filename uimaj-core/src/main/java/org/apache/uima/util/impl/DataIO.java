@@ -82,7 +82,7 @@ public class DataIO {
     CharBuffer cb;
     try {
       cb = decoder.decode(partToDecode);
-      in.position(in.position() + length);
+      ((Buffer)in).position(in.position() + length);
     } catch (CharacterCodingException e) {
       // should never happen
       throw new RuntimeException(e);
