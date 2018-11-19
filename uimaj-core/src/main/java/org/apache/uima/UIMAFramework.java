@@ -1059,9 +1059,10 @@ public abstract class UIMAFramework {
 
   /**
    * Gets a new instance of the default {@link org.apache.uima.resource.ResourceManagerPearWrapper} used by this implementation. 
-   * 
+   * No longer used 2018
    * @return a new <code>ResourceManagerPearWrapper</code> to be used by the application.
    */
+  @Deprecated
   public static ResourceManager newDefaultResourceManagerPearWrapper() {
     return getInstance()._newDefaultResourceManagerPearWrapper();
   }
@@ -1264,8 +1265,11 @@ public abstract class UIMAFramework {
    * To be implemented by subclasses; this should return a new instance of the default
    * {@link org.apache.uima.resource.ResourceManagerPearWrapper} used by this implementation.
    * 
+   * No longer used 2018
+   * 
    * @return a new <code>ResourceManagerPearWrapper</code> to be used by the application.
    */
+  @Deprecated
   protected abstract ResourceManager _newDefaultResourceManagerPearWrapper();
   
   

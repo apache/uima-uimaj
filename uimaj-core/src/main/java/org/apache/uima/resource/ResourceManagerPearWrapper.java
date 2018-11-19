@@ -27,6 +27,7 @@ package org.apache.uima.resource;
  * 
  * 
  */
+@Deprecated
 public interface ResourceManagerPearWrapper extends ResourceManager {
   /**
    * N O T E :     N O   L O N G E R    U S E D    2018
