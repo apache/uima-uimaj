@@ -439,13 +439,11 @@ public final class AnnotationOutline extends ContentOutlinePage
    */
   @Override
   public void dispose() {
-    
-    super.dispose();
-    
     getSite().setSelectionProvider(null);
     getSite().getPage().removeSelectionListener(this);
-    
     editor.removeAnnotationListener(editorChangeListener);
+
+    super.dispose();
   }
 
   /**
