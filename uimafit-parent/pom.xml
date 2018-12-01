@@ -344,7 +344,9 @@
                   </goals>
                   <configuration>
                     <rules>
-                      <requireJavaVersion>[1.8.0,)</requireJavaVersion>
+                      <requireJavaVersion>
+                        <version>[1.8.0,)</version>
+                      </requireJavaVersion>
                       <requireBackwardCompatibility implementation="org.semver.enforcer.RequireBackwardCompatibility">
                         <previousVersion>${compat.previous.version}</previousVersion>
                         <dumpDetails>true</dumpDetails>
