@@ -175,10 +175,9 @@
             </goals>
             <configuration>
               <source>
-                def noticeFile = new File(project.basedir.path +
-                "/NOTICE");
+                def noticeFile = new File(project.basedir.path + "/NOTICE");
                 if (noticeFile.exists()) {
-                project.properties.postNoticeText = noticeFile.text;
+                  project.properties.postNoticeText = noticeFile.text;
                 }
               </source>
             </configuration>
@@ -283,6 +282,26 @@
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>1.4.1</version>
+          <executions>
+            <execution>
+              <id>enforce-prerequisites</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <requireJavaVersion>
+                    <version>[1.8.0,)</version>
+                  </requireJavaVersion>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -327,7 +346,6 @@
           <plugins>
             <plugin>
               <artifactId>maven-enforcer-plugin</artifactId>
-              <version>1.4.1</version>
               <dependencies>
                 <dependency>
                   <groupId>org.semver</groupId>
@@ -344,9 +362,6 @@
                   </goals>
                   <configuration>
                     <rules>
-                      <requireJavaVersion>
-                        <version>[1.8.0,)</version>
-                      </requireJavaVersion>
                       <requireBackwardCompatibility implementation="org.semver.enforcer.RequireBackwardCompatibility">
                         <previousVersion>${compat.previous.version}</previousVersion>
                         <dumpDetails>true</dumpDetails>
