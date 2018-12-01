@@ -50,7 +50,7 @@ A full list of issues addressed in this release can be found on the Apache issue
 Supported Platforms
 -------------------
 
-uimaFIT requires Java 1.7 or higher, UIMA 2.10.2 or higher, and the Spring Framework 3.2.16 or higher.
+uimaFIT requires Java 1.8 or higher, UIMA 2.10.3 or higher, and the Spring Framework 3.2.16 or higher.
 
 
 Availability

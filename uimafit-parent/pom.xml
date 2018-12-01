@@ -4,7 +4,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>10</version>
+    <version>12</version>
   </parent>
   <artifactId>uimafit-parent</artifactId>
   <version>2.5.0-SNAPSHOT</version>
@@ -14,9 +14,9 @@
   <inceptionYear>2012</inceptionYear>
   <properties>
     <spring.version>3.2.16.RELEASE</spring.version>
-    <uima.version>2.10.2</uima.version>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <uima.version>2.10.3</uima.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <!-- 
      BACKWARD_COMPATIBLE_IMPLEMENTER - patch version (=.=.+)
      BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
@@ -344,6 +344,7 @@
                   </goals>
                   <configuration>
                     <rules>
+                      <requireJavaVersion>[1.8.0,)</requireJavaVersion>
                       <requireBackwardCompatibility implementation="org.semver.enforcer.RequireBackwardCompatibility">
                         <previousVersion>${compat.previous.version}</previousVersion>
                         <dumpDetails>true</dumpDetails>
