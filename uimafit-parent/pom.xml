@@ -178,15 +178,6 @@
 
   <build>
     <plugins>
-      <!-- This should no longer be required with current versions of the maven-resources-plugin
-        <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <configuration>
-        <encoding>${project.build.sourceEncoding}</encoding>
-        </configuration>
-        </plugin>
-      -->
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>
@@ -201,11 +192,9 @@
             </goals>
             <configuration>
               <source>
-                def noticeFile = new File(project.basedir.path +
-                "/NOTICE");
-                if
-                (noticeFile.exists()) {
-                project.properties.postNoticeText = noticeFile.text;
+                def noticeFile = new File(project.basedir.path + "/NOTICE");
+                if (noticeFile.exists()) {
+                  project.properties.postNoticeText = noticeFile.text;
                 }
               </source>
             </configuration>
@@ -223,7 +212,7 @@
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
-          <version>0.11</version>
+          <version>0.13</version>
           <executions>
             <execution>
               <id>default-cli</id>
