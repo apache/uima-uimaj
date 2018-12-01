@@ -4,7 +4,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>10</version>
+    <version>12</version>
   </parent>
   <artifactId>uimafit-parent</artifactId>
   <version>2.5.0-SNAPSHOT</version>
@@ -14,9 +14,9 @@
   <inceptionYear>2012</inceptionYear>
   <properties>
     <spring.version>3.2.16.RELEASE</spring.version>
-    <uima.version>2.10.2</uima.version>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <uima.version>2.10.3</uima.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <!-- 
      BACKWARD_COMPATIBLE_IMPLEMENTER - patch version (=.=.+)
      BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
@@ -175,10 +175,9 @@
             </goals>
             <configuration>
               <source>
-                def noticeFile = new File(project.basedir.path +
-                "/NOTICE");
+                def noticeFile = new File(project.basedir.path + "/NOTICE");
                 if (noticeFile.exists()) {
-                project.properties.postNoticeText = noticeFile.text;
+                  project.properties.postNoticeText = noticeFile.text;
                 }
               </source>
             </configuration>
@@ -283,6 +282,26 @@
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>1.4.1</version>
+          <executions>
+            <execution>
+              <id>enforce-prerequisites</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <requireJavaVersion>
+                    <version>[1.8.0,)</version>
+                  </requireJavaVersion>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -327,7 +346,6 @@
           <plugins>
             <plugin>
               <artifactId>maven-enforcer-plugin</artifactId>
-              <version>1.4.1</version>
               <dependencies>
                 <dependency>
                   <groupId>org.semver</groupId>

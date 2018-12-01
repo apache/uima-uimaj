@@ -96,7 +96,14 @@ under the License.
     &lt;externalResourceNameConstantPrefixes>
       &lt;prefix>KEY_&lt;prefix/>
       &lt;prefix>RES_&lt;prefix/>
-   &lt;/externalResourceNameConstantPrefixes>
+    &lt;/externalResourceNameConstantPrefixes>
+    
+    &lt;!-- OPTIONAL -->
+    &lt;!-- Mode of adding type systems found on the classpath via the
+         uimaFIT detection mechanism at compile time to the generated
+         descriptor. By default, no type systems are added. -->
+    &lt;addTypeSystemDescriptions>NONE&lt;/addTypeSystemDescriptions>
+    
   &lt;/configuration>
   &lt;executions>
     &lt;execution>
