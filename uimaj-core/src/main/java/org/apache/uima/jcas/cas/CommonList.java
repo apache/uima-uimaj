@@ -303,7 +303,7 @@ public interface CommonList extends FeatureStructure {
    * @return -
    */
   default List<String> anyListToStringList(XmiSerializationSharedData sharedData, CasSerializerSupport.CasDocSerializer cds) {
-    final List<String> list = new ArrayList<String>();
+    final List<String> list = new ArrayList<>();
     anyListToOutput(sharedData, cds, s -> list.add(s)); 
     return list;
   }

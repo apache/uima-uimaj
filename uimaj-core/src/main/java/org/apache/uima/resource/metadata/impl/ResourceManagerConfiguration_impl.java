@@ -269,12 +269,12 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
     if (getImports().length == 0) {
       resolveImports(null, null);
     } else {
-      resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
+      resolveImports(new TreeSet<>(), UIMAFramework.newDefaultResourceManager());
     }
   }
 
   public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports((getImports().length == 0) ? null : new TreeSet<String>(), aResourceManager);
+    resolveImports((getImports().length == 0) ? null : new TreeSet<>(), aResourceManager);
   }
 
   public synchronized void resolveImports(Collection<String> aAlreadyImportedURLs, ResourceManager aResourceManager)
@@ -286,8 +286,8 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
       if (getSourceUrl() != null) {
         aAlreadyImportedURLs.add(getSourceUrl().toString());
       }
-      importedResources = new ArrayList<ExternalResourceDescription>();
-      importedBindings = new ArrayList<ExternalResourceBinding>();
+      importedResources = new ArrayList<>();
+      importedBindings = new ArrayList<>();
       Import[] imports = getImports();
       for (int i = 0; i < imports.length; i++) {
         // make sure Import's relative path base is set, to allow for users who create

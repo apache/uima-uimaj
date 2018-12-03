@@ -309,7 +309,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
   
     String defaultEncoding = Charset.defaultCharset().displayName();
     
-    Set<String> charsets = new HashSet<String>();
+    Set<String> charsets = new HashSet<>();
     charsets.add("US-ASCII");
     charsets.add("ISO-8859-1");
     charsets.add("UTF-8");

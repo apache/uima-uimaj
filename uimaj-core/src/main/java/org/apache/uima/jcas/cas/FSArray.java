@@ -260,7 +260,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
    * @return -
    */
   public static <U extends FeatureStructure> FSArray<U> create(JCas jcas, FeatureStructure[] a) {
-    FSArray<U> fsa = new FSArray<U>(jcas, a.length);
+    FSArray<U> fsa = new FSArray<>(jcas, a.length);
     fsa.copyFromArray(a, 0, 0, a.length);
     return fsa;
   }

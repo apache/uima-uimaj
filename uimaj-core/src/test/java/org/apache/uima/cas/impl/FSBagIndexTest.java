@@ -22,9 +22,9 @@ package org.apache.uima.cas.impl;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
@@ -38,8 +38,6 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
-
-import junit.framework.TestCase;
 
 public class FSBagIndexTest extends TestCase {
 
@@ -72,7 +70,7 @@ public class FSBagIndexTest extends TestCase {
   private FsIndex_bag<TOP> cbi() {
     FSIndexComparator comparatorForIndexSpecs = new FSIndexComparatorImpl();
     comparatorForIndexSpecs.setType(ts.getTopType());
-    return new FsIndex_bag<TOP>(cas, ts.getType("uima.cas.TOP"), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
+    return new FsIndex_bag<>(cas, ts.getType("uima.cas.TOP"), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
   }
 
   protected void tearDown() throws Exception {
@@ -112,7 +110,7 @@ public class FSBagIndexTest extends TestCase {
       r.add(it.get());
       it.moveToNext();
     }
-    Collections.sort(r, FeatureStructureImplC::compare);
+    r.sort(FeatureStructureImplC::compare);
     Arrays.sort(ns, FeatureStructureImplC::compare);
     assertTrue(Arrays.equals(ns, r.toArray()));
     assertFalse(it.isValid());

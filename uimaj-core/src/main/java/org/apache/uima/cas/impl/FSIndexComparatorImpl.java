@@ -51,7 +51,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   // Public only for testing purposes.
   public FSIndexComparatorImpl() {
     this.type = null;
-    this.keySpecs = new ArrayList<Object>();
+    this.keySpecs = new ArrayList<>();
     this.directions = new IntVector();
   }
   

@@ -474,7 +474,7 @@ public class JsonCasSerializer {
 
     private final JsonGenerator jg;
            
-    private final Map<String, SerializedString> serializedStrings = new HashMap<String, SerializedString>();
+    private final Map<String, SerializedString> serializedStrings = new HashMap<>();
     
     private final Map<String, XmlElementName> usedTypeName2XmlElementName;
     
@@ -508,7 +508,7 @@ public class JsonCasSerializer {
       jch = (JsonContentHandlerJacksonWrapper) ch;
       jg = jch.getJsonGenerator();
       isWithContext = JsonCasSerializer.this.isWithContext || isWithSubtypes || isWithExpandedTypeNames; 
-      usedTypeName2XmlElementName = new HashMap<String, XmlElementName>(cds.tsi.getNumberOfTypes());    
+      usedTypeName2XmlElementName = new HashMap<>(cds.tsi.getNumberOfTypes());
     }
     
     @Override
@@ -609,7 +609,7 @@ public class JsonCasSerializer {
       int i = 0;
       for (final List<TOP> fss : cds.indexedFSs) {
         r[i] = (fss == null) ? Collections.EMPTY_LIST : (List<TOP>) ((ArrayList<TOP>)fss).clone();
-        Collections.sort(r[i++], cds.sortFssByType);
+        r[i++].sort(cds.sortFssByType);
       }
       return r;
     }

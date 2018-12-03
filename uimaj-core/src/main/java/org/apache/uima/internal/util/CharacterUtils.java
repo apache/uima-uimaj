@@ -55,7 +55,7 @@ public class CharacterUtils {
   }
 
   private static ArrayList<CharRange> getCharacterRanges(int[] charSpecs) {
-    final ArrayList<CharRange> ranges = new ArrayList<CharRange>();
+    final ArrayList<CharRange> ranges = new ArrayList<>();
     CharRange range;
     // Max value needs special case since characters wrap.
     for (char c = Character.MIN_VALUE; c <= Character.MAX_VALUE; c++) {

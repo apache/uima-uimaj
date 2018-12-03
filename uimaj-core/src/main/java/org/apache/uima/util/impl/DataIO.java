@@ -42,7 +42,7 @@ public class DataIO {
   private static final int MASK_LOW_7 = 0x7f;
   private static final long MASK_LOW_7_LONG = 0x7fL;
  
-  private static ThreadLocal<CharsetDecoder> DECODER = new ThreadLocal<CharsetDecoder>();
+  private static ThreadLocal<CharsetDecoder> DECODER = new ThreadLocal<>();
   
   
   public static String decodeUTF8(ByteBuffer in, final int length) {

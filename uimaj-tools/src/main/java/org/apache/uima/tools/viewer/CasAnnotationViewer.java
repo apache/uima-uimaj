@@ -202,7 +202,7 @@ public class CasAnnotationViewer extends JPanel {
   private boolean useConsistentColors = true;
   
   /** The high frequency types. */
-  private List<String> highFrequencyTypes = new ArrayList<String>();
+  private List<String> highFrequencyTypes = new ArrayList<>();
   
   /** The bold face key words. */
   private String[] boldFaceKeyWords = new String[0];
@@ -211,10 +211,10 @@ public class CasAnnotationViewer extends JPanel {
   private int[] boldFaceSpans = new int[0];
   
   /** The hidden feature names. */
-  private Set<String> hiddenFeatureNames = new HashSet<String>();
+  private Set<String> hiddenFeatureNames = new HashSet<>();
   
   /** The hidden type names. */
-  private Set<String> hiddenTypeNames = new HashSet<String>();
+  private Set<String> hiddenTypeNames = new HashSet<>();
   
   /** The displayed type names. */
   private Set<String> displayedTypeNames;
@@ -226,16 +226,16 @@ public class CasAnnotationViewer extends JPanel {
   private boolean hideUnselectedCheckBoxes;
   
   /** The user types. */
-  private List<String> userTypes = new ArrayList<String>();
+  private List<String> userTypes = new ArrayList<>();
   
   /** The types not checked. */
-  private Set<String> typesNotChecked = new HashSet<String>();
+  private Set<String> typesNotChecked = new HashSet<>();
   
   /** The type color map. */
-  private Map<String, Color> typeColorMap = new HashMap<String, Color>();
+  private Map<String, Color> typeColorMap = new HashMap<>();
   
   /** The feature color map. */
-  private Map<String, Color> featureColorMap = new HashMap<String, Color>();
+  private Map<String, Color> featureColorMap = new HashMap<>();
   
   /** The entity resolver. */
   private EntityResolver entityResolver = new DefaultEntityResolver();
@@ -245,10 +245,10 @@ public class CasAnnotationViewer extends JPanel {
   
   /** The type to check box map. */
   // GUI components
-  private Map<Type, JCheckBox> typeToCheckBoxMap = new HashMap<Type, JCheckBox>();
+  private Map<Type, JCheckBox> typeToCheckBoxMap = new HashMap<>();
   
   /** The entity to check box map. */
-  private Map<Entity, JCheckBox> entityToCheckBoxMap = new HashMap<Entity, JCheckBox>();
+  private Map<Entity, JCheckBox> entityToCheckBoxMap = new HashMap<>();
   
   /** The horizontal split pane. */
   private JSplitPane horizontalSplitPane;
@@ -263,16 +263,16 @@ public class CasAnnotationViewer extends JPanel {
   private JScrollPane textScrollPane;
   
   /** The type radio button map. */
-  private Map<Type, JRadioButton> typeRadioButtonMap = new HashMap<Type, JRadioButton>();
+  private Map<Type, JRadioButton> typeRadioButtonMap = new HashMap<>();
   
   /** The feature radio button map. */
-  private Map<String, JRadioButton> featureRadioButtonMap = new HashMap<String, JRadioButton>();
+  private Map<String, JRadioButton> featureRadioButtonMap = new HashMap<>();
   
   /** The feature value check box map. */
-  private Map<String, JCheckBox> featureValueCheckBoxMap = new HashMap<String, JCheckBox>();
+  private Map<String, JCheckBox> featureValueCheckBoxMap = new HashMap<>();
   
   /** The feature value color map. */
-  private Map<String, Color> featureValueColorMap = new HashMap<String, Color>();
+  private Map<String, Color> featureValueColorMap = new HashMap<>();
   
   /** The show hide unselected button. */
   private JButton showHideUnselectedButton;
@@ -1105,7 +1105,7 @@ public class CasAnnotationViewer extends JPanel {
       this.displayedTypeNames = null;
     } else {
       if (this.displayedTypeNames == null) {
-        this.displayedTypeNames = new HashSet<String>();
+        this.displayedTypeNames = new HashSet<>();
       }
       if (this.displayedTypeNames.size() > 0) {
         this.displayedTypeNames.clear();
@@ -1135,7 +1135,7 @@ public class CasAnnotationViewer extends JPanel {
    *          array of fully-qualified names of types to be initially selected
    */
   public void setInitiallySelectedTypes(String[] aTypeNames) {
-    this.initiallySelectedTypeNames = new HashSet<String>();
+    this.initiallySelectedTypeNames = new HashSet<>();
     for (int i = 0; i < aTypeNames.length; i++) {
       this.initiallySelectedTypeNames.add(aTypeNames[i]);
     }
@@ -1449,8 +1449,8 @@ public class CasAnnotationViewer extends JPanel {
    */
   public void configureViewForXmlFragmentsQuery(String aQuery, String aTypeNamespace) {
     // need to parse query and produce type list and keyword list
-    List<String> typeList = new ArrayList<String>();
-    List<String> keywordList = new ArrayList<String>();
+    List<String> typeList = new ArrayList<>();
+    List<String> keywordList = new ArrayList<>();
 
     String delims = "<>+-*\" \t\n";
     StringTokenizer tokenizer = new StringTokenizer(aQuery, delims, true);
@@ -1684,8 +1684,8 @@ public class CasAnnotationViewer extends JPanel {
       return;
     }
 
-    List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>(this.featureValueCheckBoxMap.values());
-    Collections.sort(checkBoxes, new Comparator<JCheckBox>() {
+    List<JCheckBox> checkBoxes = new ArrayList<>(this.featureValueCheckBoxMap.values());
+    checkBoxes.sort(new Comparator<JCheckBox>() {
       @Override
       public int compare(JCheckBox arg0, JCheckBox arg1) {
         return arg0.getText().toLowerCase().compareTo(arg1.getText().toLowerCase());
@@ -1708,8 +1708,8 @@ public class CasAnnotationViewer extends JPanel {
       return;
     }
 
-    List<JRadioButton> radioButtons = new ArrayList<JRadioButton>(this.featureRadioButtonMap.values());
-    Collections.sort(radioButtons, new Comparator<JRadioButton>() {
+    List<JRadioButton> radioButtons = new ArrayList<>(this.featureRadioButtonMap.values());
+    radioButtons.sort(new Comparator<JRadioButton>() {
       @Override
       public int compare(JRadioButton arg0, JRadioButton arg1) {
         return arg0.getText().toLowerCase().compareTo(arg1.getText().toLowerCase());
@@ -1733,8 +1733,8 @@ public class CasAnnotationViewer extends JPanel {
       return;
     }
 
-    Map<String, JRadioButton> radioButtonMap = new HashMap<String, JRadioButton>();
-    Set<JRadioButton> radioButtonSet = new HashSet<JRadioButton>();
+    Map<String, JRadioButton> radioButtonMap = new HashMap<>();
+    Set<JRadioButton> radioButtonSet = new HashSet<>();
     for (Type type : this.typeRadioButtonMap.keySet()) {
       JRadioButton typeRadioButton = this.typeRadioButtonMap.get(type);
       radioButtonMap.put(type.getName(), typeRadioButton);
@@ -1754,8 +1754,8 @@ public class CasAnnotationViewer extends JPanel {
     }
 
     if (radioButtonSet != null && radioButtonSet.size() > 0) {
-      List<JRadioButton> remainingRadioButtons = new ArrayList<JRadioButton>(radioButtonSet);
-      Collections.sort(remainingRadioButtons, new Comparator<JRadioButton>() {
+      List<JRadioButton> remainingRadioButtons = new ArrayList<>(radioButtonSet);
+      remainingRadioButtons.sort(new Comparator<JRadioButton>() {
         @Override
         public int compare(JRadioButton arg0, JRadioButton arg1) {
           return arg0.getText().toLowerCase().compareTo(arg1.getText().toLowerCase());
@@ -2011,8 +2011,8 @@ public class CasAnnotationViewer extends JPanel {
       return;
     }
 
-    Map<String, JCheckBox> checkBoxMap = new HashMap<String, JCheckBox>();
-    Set<JCheckBox> checkBoxSet = new HashSet<JCheckBox>();
+    Map<String, JCheckBox> checkBoxMap = new HashMap<>();
+    Set<JCheckBox> checkBoxSet = new HashSet<>();
     for (Type type : this.typeToCheckBoxMap.keySet()) {
       JCheckBox typeCheckBox = this.typeToCheckBoxMap.get(type);
       // If the type check box is already added or not selected but needs
@@ -2037,8 +2037,8 @@ public class CasAnnotationViewer extends JPanel {
     // If we still have remaining type check boxes that need to be added,
     // add them in sorted order.
     if (checkBoxSet != null && checkBoxSet.size() > 0) {
-      List<JCheckBox> remainingCheckBoxes = new ArrayList<JCheckBox>(checkBoxSet);
-      Collections.sort(remainingCheckBoxes, new Comparator<JCheckBox>() {
+      List<JCheckBox> remainingCheckBoxes = new ArrayList<>(checkBoxSet);
+      remainingCheckBoxes.sort(new Comparator<JCheckBox>() {
         @Override
         public int compare(JCheckBox o1, JCheckBox o2) {
           return o1.getText().toLowerCase().compareTo(o2.getText().toLowerCase());

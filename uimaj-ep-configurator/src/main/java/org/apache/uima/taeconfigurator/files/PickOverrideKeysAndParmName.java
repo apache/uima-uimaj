@@ -209,7 +209,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
     // Then build a list of all config params in the first group
     String[] groupNames = cg.getNameArray();
     ConfigurationGroup[] dcgs = delegateCpd.getConfigurationGroupDeclarations(groupNames[0]);
-    ArrayList<ConfigurationParameter> cps = new ArrayList<ConfigurationParameter>();
+    ArrayList<ConfigurationParameter> cps = new ArrayList<>();
     for (ConfigurationGroup dcg : dcgs) {
       cps.addAll(Arrays.asList(dcg.getConfigurationParameters()));
     }
@@ -217,7 +217,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
     // Then for each of the other groups keep only those parameters in that group
     // Quite inefficient as searches for each parameter in turn in the group, but .... !!
     for (int i = 1; i < groupNames.length; ++i) {
-      ArrayList<ConfigurationParameter> newCps = new ArrayList<ConfigurationParameter>();
+      ArrayList<ConfigurationParameter> newCps = new ArrayList<>();
       for (ConfigurationParameter cp : cps) {
         ConfigurationParameter sameCp = delegateCpd.getConfigurationParameter(groupNames[i], cp.getName());
         if (sameCp != null) {

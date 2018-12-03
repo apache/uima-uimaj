@@ -112,7 +112,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
     // get list of files in the specified directory, and subdirectories if the
     // parameter PARAM_SUBDIR is set to True
-    mFiles = new ArrayList<File>();
+    mFiles = new ArrayList<>();
     addFilesFromDir(directory);
   }
   

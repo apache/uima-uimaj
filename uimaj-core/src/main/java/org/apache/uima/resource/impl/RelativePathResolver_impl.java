@@ -96,7 +96,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
    * @see org.apache.uima.resource.RelativePathResolver#setDataPath(java.lang.String)
    */
   public void setDataPath(String aPath) throws MalformedURLException {
-    List<URL> urls = new ArrayList<URL>();
+    List<URL> urls = new ArrayList<>();
 
     // tokenize based on path.separator system property
     String pathSepChar = System.getProperty("path.separator");

@@ -464,7 +464,7 @@ public class CASSerializer implements Serializable {
     //  if (csds.getHeapEnd() == 0) {
     //  System.out.println("debug");
     //}
-    final Obj2IntIdentityHashMap<TOP> fs2auxOffset = new Obj2IntIdentityHashMap<TOP>(TOP.class, TOP._singleton);
+    final Obj2IntIdentityHashMap<TOP> fs2auxOffset = new Obj2IntIdentityHashMap<>(TOP.class, TOP._singleton);
 
     int byteOffset = 1;
     int shortOffset = 1;

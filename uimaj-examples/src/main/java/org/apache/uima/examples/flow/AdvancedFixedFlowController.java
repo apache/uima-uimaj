@@ -121,7 +121,7 @@ public class AdvancedFixedFlowController extends CasFlowController_ImplBase {
     // Append new keys as a ParallelStep at end of Sequence
     // This is just an example of what could be done.
     // Note that in general, a "Collection" is unordered
-    mSequence.add(new ParallelStep(new ArrayList<String>(aKeys)));
+    mSequence.add(new ParallelStep(new ArrayList<>(aKeys)));
   }
 
   /* (non-Javadoc)
@@ -135,7 +135,7 @@ public class AdvancedFixedFlowController extends CasFlowController_ImplBase {
         mSequence.set(i, null);
       }
       else if (step instanceof ParallelStep) {
-        Collection<String> keys = new ArrayList<String>(((ParallelStep)step).getAnalysisEngineKeys());
+        Collection<String> keys = new ArrayList<>(((ParallelStep) step).getAnalysisEngineKeys());
         keys.removeAll(aKeys);
         if (keys.isEmpty()) {
           mSequence.set(i, null);

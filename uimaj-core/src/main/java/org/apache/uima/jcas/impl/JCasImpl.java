@@ -1085,7 +1085,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getViewIterator()
    */
   public Iterator<JCas> getViewIterator() throws CASException {
-    List<JCas> viewList = new ArrayList<JCas>();
+    List<JCas> viewList = new ArrayList<>();
     Iterator<CAS> casViewIter = casImpl.getViewIterator();
     while (casViewIter.hasNext()) {
       viewList.add((casViewIter.next()).getJCas());
@@ -1099,7 +1099,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getViewIterator(java.lang.String)
    */
   public Iterator<JCas> getViewIterator(String localViewNamePrefix) throws CASException {
-    List<JCas> viewList = new ArrayList<JCas>();
+    List<JCas> viewList = new ArrayList<>();
     Iterator<CAS> casViewIter = casImpl.getViewIterator(localViewNamePrefix);
     while (casViewIter.hasNext()) {
       viewList.add((casViewIter.next()).getJCas());

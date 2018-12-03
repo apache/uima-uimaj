@@ -316,9 +316,9 @@ public class InstallationController {
 
   private String _mainPearFileLocation = null;
 
-  private Hashtable<String, String> _installationTable = new Hashtable<String, String>();
+  private Hashtable<String, String> _installationTable = new Hashtable<>();
 
-  private Hashtable<String, InstallationDescriptor> _installationInsDs = new Hashtable<String, InstallationDescriptor>();
+  private Hashtable<String, InstallationDescriptor> _installationInsDs = new Hashtable<>();
 
   private InstallationDescriptor _insdObject;
 
@@ -410,7 +410,7 @@ public class InstallationController {
    */
   public static String[] buildArrayOfNetworkParams(InstallationDescriptor insdObject) {
     String[] paramsArray = Constants.EMPTY_STRING_ARRAY;
-    List<String> paramsList = new ArrayList<String>();
+    List<String> paramsList = new ArrayList<>();
     StringBuffer itemBuffer = new StringBuffer();
     Set<String> pNames = insdObject.getMainComponentNetworkParamNames();
     // go through specified parameters and add them to the list
@@ -873,7 +873,7 @@ public class InstallationController {
     // get list of separately installed delegate components
     Enumeration<String> dlgIdList = installationTable.keys();
     // build Hashtable of delegate InsD objects
-    Hashtable<String, InstallationDescriptor> dlgInsdObjects = new Hashtable<String, InstallationDescriptor>();
+    Hashtable<String, InstallationDescriptor> dlgInsdObjects = new Hashtable<>();
     while (dlgIdList.hasMoreElements()) {
       // process next delegate component
       String dlgId = dlgIdList.nextElement();

@@ -79,7 +79,7 @@ public class TypeSystem2Xml {
     ResourceSpecifierFactory factory = UIMAFramework.getResourceSpecifierFactory();
     TypeSystemDescription tsDesc = factory.createTypeSystemDescription();
 
-    List<TypeDescription> typeDescs = new ArrayList<TypeDescription>();
+    List<TypeDescription> typeDescs = new ArrayList<>();
     Iterator<Type> typeIterator = aTypeSystem.getTypeIterator();
     while (typeIterator.hasNext()) {
       TypeImpl type = (TypeImpl) typeIterator.next();
@@ -93,7 +93,7 @@ public class TypeSystem2Xml {
       typeDesc.setName(type.getName());
       typeDesc.setSupertypeName(superType.getName());
       LowLevelTypeSystem llts = aTypeSystem.getLowLevelTypeSystem();
-      List<FeatureDescription> featDescs = new ArrayList<FeatureDescription>();
+      List<FeatureDescription> featDescs = new ArrayList<>();
       Iterator<FeatureImpl> featIterator = Arrays.asList(type.getFeatureImpls()).iterator();
       while (featIterator.hasNext()) {
         Feature feat = featIterator.next();

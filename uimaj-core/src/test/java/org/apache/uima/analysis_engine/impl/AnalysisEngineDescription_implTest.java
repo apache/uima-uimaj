@@ -307,7 +307,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
  
     UimaContext uimaContext = UIMAFramework.newUimaContext(logger, resourceManager, configManager);
     
-    final Map<String, Object> p = new HashMap<String, Object>();
+    final Map<String, Object> p = new HashMap<>();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);
     p.put(Resource.PARAM_CONFIG_MANAGER, configManager);
     p.put(Resource.PARAM_RESOURCE_MANAGER,  UIMAFramework.newDefaultResourceManager());

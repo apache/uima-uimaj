@@ -50,7 +50,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
 
   FSFloatConstraintImpl() {
     this.codes = new IntVector();
-    this.values = new Vector<Float>();
+    this.values = new Vector<>();
   }
 
   @Override

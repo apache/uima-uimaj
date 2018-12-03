@@ -1262,7 +1262,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   private static void add2errors(ThreadLocal<List<ErrorReport>> errors, Exception e, boolean doThrow) {
     List<ErrorReport> es = errors.get();
     if (es == null) {
-      es = new ArrayList<ErrorReport>();
+      es = new ArrayList<>();
       errors.set(es);
     }
     es.add(new ErrorReport(e, doThrow));

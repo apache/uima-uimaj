@@ -367,7 +367,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   @Override
   @Deprecated
   public Vector<Feature> getAppropriateFeatures() {
-    return new Vector<Feature>(getFeatures());
+    return new Vector<>(getFeatures());
 
   }
 
@@ -481,7 +481,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public List<Feature> getFeatures() {
-    return new ArrayList<Feature>(Arrays.asList(getFeatureImpls()));
+    return new ArrayList<>(Arrays.asList(getFeatureImpls()));
   }
   
   /** 

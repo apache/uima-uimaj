@@ -101,7 +101,7 @@ public class CasTypeSystemMapper {
       throw new CASRuntimeException(CASRuntimeException.TYPESYSTEMS_NOT_COMMITTED);
     }
     this.tsSrc = tsSrc;
-    this.tsTgt = new WeakReference<TypeSystemImpl>(tsTgt);
+    this.tsTgt = new WeakReference<>(tsTgt);
     boolean tss = true;
 
     if (tsSrc != tsTgt) {

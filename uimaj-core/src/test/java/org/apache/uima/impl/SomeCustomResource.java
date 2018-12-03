@@ -32,7 +32,7 @@ import org.junit.Assert;
 
 public class SomeCustomResource extends Resource_ImplBase {
   
-  public Map<String, String> paramMap = new HashMap<String, String>();
+  public Map<String, String> paramMap = new HashMap<>();
 
   /* (non-Javadoc)
    * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)

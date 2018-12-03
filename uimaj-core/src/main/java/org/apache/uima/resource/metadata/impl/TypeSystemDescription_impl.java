@@ -202,12 +202,12 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
     if (getImports().length == 0) {
       resolveImports(null, null);
     } else {
-      resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
+      resolveImports(new TreeSet<>(), UIMAFramework.newDefaultResourceManager());
     }
   }
 
   public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports((getImports().length == 0) ? null : new TreeSet<String>(), aResourceManager);
+    resolveImports((getImports().length == 0) ? null : new TreeSet<>(), aResourceManager);
   }
 
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
@@ -219,7 +219,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
         aAlreadyImportedTypeSystemURLs.add(getSourceUrl().toString());
       }
   
-      importedTypes = new ArrayList<TypeDescription>();
+      importedTypes = new ArrayList<>();
       Import[] imports = getImports();
       for (int i = 0; i < imports.length; i++) {
         // make sure Import's relative path base is set, to allow for users who create
@@ -274,11 +274,11 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
         XMLInputSource input;
         input = new XMLInputSource(aURL);
         desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(input);
-        TreeSet<String> previouslyImported = new TreeSet<String>(aAlreadyImportedTypeSystemURLs);
+        TreeSet<String> previouslyImported = new TreeSet<>(aAlreadyImportedTypeSystemURLs);
         desc.resolveImports(aAlreadyImportedTypeSystemURLs, aResourceManager);
         importCache.put(urlString, desc);
         // Save the URLS parsed by this import 
-        TreeSet<String> locallyImported = new TreeSet<String>(aAlreadyImportedTypeSystemURLs);
+        TreeSet<String> locallyImported = new TreeSet<>(aAlreadyImportedTypeSystemURLs);
         locallyImported.removeAll(previouslyImported);
         importUrlsCache.put(urlString, locallyImported);
       }

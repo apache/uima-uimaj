@@ -41,7 +41,7 @@ public class FeatureStructureImpl implements FeatureStructure {
   private int[] mIndexed = Constants.EMPTY_INT_ARRAY;
 
   public FeatureStructureImpl() {
-    mFeatureMap = new TreeMap<String, FeatureValue>();
+    mFeatureMap = new TreeMap<>();
   }
 
   public String getType() {

@@ -710,7 +710,7 @@ public class SofaTest extends TestCase {
     UimaContextAdmin rootCtxt = UIMAFramework.newUimaContext(
             UIMAFramework.getLogger(), UIMAFramework.newDefaultResourceManager(),
             UIMAFramework.newConfigurationManager());
-    Map<String, String> sofamap = new HashMap<String, String>();
+    Map<String, String> sofamap = new HashMap<>();
     sofamap.put("SourceDocument","EnglishDocument");
     UimaContextAdmin childCtxt = rootCtxt.createChild("test", sofamap);
     cas.setCurrentComponentInfo(childCtxt.getComponentInfo());

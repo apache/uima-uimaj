@@ -64,9 +64,9 @@ import org.apache.uima.jcas.tcas.Annotation;
  */
 public class BuiltinTypeKinds {
   
-  private static final Set<String> primitiveTypeNames = new HashSet<String>();
+  private static final Set<String> primitiveTypeNames = new HashSet<>();
 
-  public static final Set<String> creatableArrays = new HashSet<String>();
+  public static final Set<String> creatableArrays = new HashSet<>();
    
   public static final Set<String> nonCreatablePrimitives = primitiveTypeNames;
 
@@ -74,7 +74,7 @@ public class BuiltinTypeKinds {
    *  These types can not be created with CAS.createFS().
    *    Arrays can be created using CAS.create&lt;XYZ&gt;Array  XYZ = Boolean, Byte, etc.
    */
-  public static final Set<String> nonCreatableTypesAndBuiltinArrays = new HashSet<String>();
+  public static final Set<String> nonCreatableTypesAndBuiltinArrays = new HashSet<>();
   
   public static final Set<String> creatableBuiltinJCasClassNames = new HashSet<>();
   

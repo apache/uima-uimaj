@@ -198,12 +198,12 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     if (getImports().length == 0) {
       resolveImports(null, null);
     } else {
-      resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
+      resolveImports(new TreeSet<>(), UIMAFramework.newDefaultResourceManager());
     }
   }
 
   public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports((getImports().length == 0) ? null : new TreeSet<String>(), aResourceManager);
+    resolveImports((getImports().length == 0) ? null : new TreeSet<>(), aResourceManager);
   }
 
   public synchronized void resolveImports(Collection<String> aAlreadyImportedFsIndexURLs,
@@ -215,7 +215,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
         aAlreadyImportedFsIndexURLs.add(getSourceUrl().toString());
       }
       
-      importedIndexes = new ArrayList<FsIndexDescription>();
+      importedIndexes = new ArrayList<>();
       Import[] imports = getImports();
       for (int i = 0; i < imports.length; i++) {
         // make sure Import's relative path base is set, to allow for users who create
@@ -272,11 +272,11 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
         XMLInputSource input;
         input = new XMLInputSource(aURL);
         desc = UIMAFramework.getXMLParser().parseFsIndexCollection(input);
-        TreeSet<String> previouslyImported = new TreeSet<String>(aAlreadyImportedFsIndexCollectionURLs);
+        TreeSet<String> previouslyImported = new TreeSet<>(aAlreadyImportedFsIndexCollectionURLs);
         desc.resolveImports(aAlreadyImportedFsIndexCollectionURLs, aResourceManager);
         importCache.put(urlString, desc);
         // Save the URLS parsed by this import 
-        TreeSet<String> locallyImported = new TreeSet<String>(aAlreadyImportedFsIndexCollectionURLs);
+        TreeSet<String> locallyImported = new TreeSet<>(aAlreadyImportedFsIndexCollectionURLs);
         locallyImported.removeAll(previouslyImported);
         importUrlsCache.put(urlString, locallyImported);
       }

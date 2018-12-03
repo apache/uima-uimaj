@@ -51,7 +51,7 @@ public class FSTreeModel implements TreeModel {
   private CASImpl cas;
 
   /** The tree model listeners. */
-  private List<TreeModelListener> treeModelListeners = new ArrayList<TreeModelListener>();
+  private List<TreeModelListener> treeModelListeners = new ArrayList<>();
 
   /** The fss. */
   private List<FSNode> fss;
@@ -69,7 +69,7 @@ public class FSTreeModel implements TreeModel {
   public FSTreeModel() {
     super();
     this.root = new FSNode(this, FSNode.DISPLAY_NODE, null, 0, null);
-    this.root.setChildren(new ArrayList<FSTreeNode>());
+    this.root.setChildren(new ArrayList<>());
   }
 
   /**
@@ -86,7 +86,7 @@ public class FSTreeModel implements TreeModel {
     this.rootString = "<html><font color=green>" + indexName + "</font> - <font color=blue>"
             + index.getType().getName() + "</font> [" + size + "]</html>";
     this.root = new FSNode(this, FSNode.DISPLAY_NODE, null, 0, null);
-    this.fss = new ArrayList<FSNode>();
+    this.fss = new ArrayList<>();
     FSIterator<TOP> it = index.iterator();
     int count = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
@@ -308,7 +308,7 @@ int getNodeType(Type type) {
    * @return the list
    */
   static List<FSTreeNode> createArrayChildren(int start, int end, List<FSNode> array, FSTreeModel model) {
-    ArrayList<FSTreeNode> kids = new ArrayList<FSTreeNode>();
+    ArrayList<FSTreeNode> kids = new ArrayList<>();
     final int size = end - start;
     if (size <= ArrayNode.CUTOFF) {
       kids.ensureCapacity(size);
@@ -352,7 +352,7 @@ int getNodeType(Type type) {
    * @return the tree path
    */
   public TreePath pathToNode(int fsNum) {
-    List<FSTreeNode> p = new ArrayList<FSTreeNode>();
+    List<FSTreeNode> p = new ArrayList<>();
     p.add(this.root);
     getPathToNode(fsNum, this.root.getChildren(), p);
     TreePath path = new TreePath(p.toArray());

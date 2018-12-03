@@ -192,7 +192,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     mQualifiedContextName = "/";  // This constructor for root call only
     uniqueIdentifier = constructUniqueName();
     mdcUniqueId = String.valueOf(MDC_NEXT_ID.getAndIncrement());
-    mSofaMappings = new TreeMap<String, String>();
+    mSofaMappings = new TreeMap<>();
 
   }
   
@@ -263,7 +263,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     // produce the absolute mapping and pass that into the child context's constructor.
 
     // child context's mappings are originally equivalent to this context's mappings
-    Map<String, String> childSofaMap = new TreeMap<String, String>();
+    Map<String, String> childSofaMap = new TreeMap<>();
     childSofaMap.putAll(mSofaMappings);
     if (aSofaMappings != null) {
       // iterate through remappings list (aSofaMappings) and apply them
@@ -555,7 +555,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     if (groups == null) {
       return Constants.EMPTY_STRING_ARRAY;
     } else {
-      Set<String> names = new TreeSet<String>();
+      Set<String> names = new TreeSet<>();
       for (int i = 0; i < groups.length; i++) {
         names.addAll(Arrays.asList(groups[i].getNames()));
       }
@@ -597,7 +597,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     if (groups.length == 0) {
       return Constants.EMPTY_STRING_ARRAY;
     } else {
-      List<String> names = new ArrayList<String>();
+      List<String> names = new ArrayList<>();
       ConfigurationParameter[] commonParams = getConfigurationManager()
               .getConfigParameterDeclarations(getQualifiedContextName()).getCommonParameters();
       if (commonParams != null) {

@@ -36,7 +36,7 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 
 	private static final long serialVersionUID = 7557683109761796280L;
 
-	private Set<String> nameSet = new HashSet<String>();
+	private Set<String> nameSet = new HashSet<>();
 
 	private transient SortedIntSet typeSet = new SortedIntSet();
 

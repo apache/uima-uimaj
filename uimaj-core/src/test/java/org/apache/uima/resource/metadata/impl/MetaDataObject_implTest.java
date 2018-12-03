@@ -119,9 +119,9 @@ public class MetaDataObject_implTest extends TestCase {
    */
   public void testGetAttributes() throws Exception {
     try {
-      HashSet<MetaDataAttr> apple1Attrs = new HashSet<MetaDataAttr>(Arrays.asList(apple1.getAttributes()));
-      HashSet<MetaDataAttr> orangeAttrs = new HashSet<MetaDataAttr>(Arrays.asList(orange.getAttributes()));
-      HashSet<MetaDataAttr> bagAttrs = new HashSet<MetaDataAttr>(Arrays.asList(fruitBag.getAttributes()));
+      HashSet<MetaDataAttr> apple1Attrs = new HashSet<>(Arrays.asList(apple1.getAttributes()));
+      HashSet<MetaDataAttr> orangeAttrs = new HashSet<>(Arrays.asList(orange.getAttributes()));
+      HashSet<MetaDataAttr> bagAttrs = new HashSet<>(Arrays.asList(fruitBag.getAttributes()));
       
       Set<MetaDataAttr> r = TestFruitObject.getMetaDataAttrSet();
       for (MetaDataAttr r1 : r) {

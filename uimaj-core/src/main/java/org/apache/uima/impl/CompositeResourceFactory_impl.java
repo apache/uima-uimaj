@@ -44,7 +44,7 @@ public class CompositeResourceFactory_impl implements CompositeResourceFactory {
   /**
    * List of Registration objects.
    */
-  private List<Registration> mRegisteredFactories = Collections.synchronizedList(new ArrayList<Registration>());
+  private List<Registration> mRegisteredFactories = Collections.synchronizedList(new ArrayList<>());
 
   /**
    * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,

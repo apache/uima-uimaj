@@ -56,7 +56,7 @@ public class FileUtils {
     if (!directory.exists() || !directory.isDirectory()) {
       return null;
     }
-    ArrayList<File> fileList = new ArrayList<File>();
+    ArrayList<File> fileList = new ArrayList<>();
     for (File file : directory.listFiles()) {
       if (file.isDirectory()) {
         if (getRecursive) {
@@ -93,7 +93,7 @@ public class FileUtils {
     if (!directory.exists() || !directory.isDirectory()) {
       return null;
     }
-    ArrayList<File> dirList = new ArrayList<File>();
+    ArrayList<File> dirList = new ArrayList<>();
 
     for (File file : directory.listFiles()) {
        if (file.isDirectory()) {

@@ -20,7 +20,6 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.uima.internal.util.Int2ObjHashMap;
@@ -203,10 +202,10 @@ public class CommonSerDesSequential {
   }
   
   private void merge() {
-    Collections.sort(pending, FeatureStructureImplC::compare);
+    pending.sort(FeatureStructureImplC::compare);
     sortedFSs.addAll(pending);
     pending.clear();
-    Collections.sort(sortedFSs, FeatureStructureImplC::compare);
+    sortedFSs.sort(FeatureStructureImplC::compare);
   }
   
 }

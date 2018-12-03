@@ -92,7 +92,7 @@ public class AnnotationIteratorTest extends TestCase {
 
   private List<Annotation> fss;
 
-  private List<Integer> fssStarts = new ArrayList<Integer>();
+  private List<Integer> fssStarts = new ArrayList<>();
 
   private int callCount = -1;
 

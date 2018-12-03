@@ -164,7 +164,7 @@ class FsIndex_iicp<T extends FeatureStructure>
       final int indexKind = this.getIndexingStrategy();
       int size = (indexKind == FSIndex.DEFAULT_BAG_INDEX) ? 1 : 1 + (int) rootType.getAllSubtypes().count();
 
-      final ArrayList<FsIndex_singletype<FeatureStructure>> tempSubIndexCache = new ArrayList<FsIndex_singletype<FeatureStructure>>();
+      final ArrayList<FsIndex_singletype<FeatureStructure>> tempSubIndexCache = new ArrayList<>();
       sortedTypeCodes = (indexKind == FSIndex.SORTED_INDEX) ? new int[size] : null;
 
       initOneTypeThenAllSubtypes(rootType, tempSubIndexCache, indexKind);
@@ -504,10 +504,10 @@ class FsIndex_iicp<T extends FeatureStructure>
     
     if (! fsIndex_singletype.isSorted() ||  // is a set index, or 
                          orderNotNeeded) {  // order is not needed 
-      return new FsIterator_aggregation_common<T>(getIterators(), this, comparatorMaybeNoTypeWithoutId); 
+      return new FsIterator_aggregation_common<>(getIterators(), this, comparatorMaybeNoTypeWithoutId);
     }
     
-    return new FsIterator_subtypes_ordered<T>(this, comparatorMaybeNoTypeWithoutId);   
+    return new FsIterator_subtypes_ordered<>(this, comparatorMaybeNoTypeWithoutId);
   }
 
   /**
@@ -524,7 +524,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     LowLevelIterator<T> it = iterator(IS_ORDERED, IS_TYPE_ORDER);
     return ambiguous
              ? it
-             : new LLUnambiguousIteratorImpl<T>(it);
+             : new LLUnambiguousIteratorImpl<>(it);
   }
   
 //  /* ***********************************

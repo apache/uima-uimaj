@@ -64,7 +64,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
   FsIndex_set_sorted(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs) {
     super(cas, type, indexType, comparatorForIndexSpecs);
     
-    this.indexedFSs = new OrderedFsSet_array<T>(comparatorNoTypeWithID, comparatorNoTypeWithoutID);
+    this.indexedFSs = new OrderedFsSet_array<>(comparatorNoTypeWithID, comparatorNoTypeWithoutID);
   }
 
   @Override
@@ -253,8 +253,8 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
     //   not an empty one, because it may become non-empty
     Comparator<TOP> comparatorMaybeNoTypeWithoutID = ignoreType ? comparatorNoTypeWithoutID : comparatorWithoutID;
     return casImpl.inPearContext()
-             ? new FsIterator_set_sorted_pear<T>(this, cow_wrapper, comparatorMaybeNoTypeWithoutID)
-             : new FsIterator_set_sorted2<T>(this, cow_wrapper, comparatorMaybeNoTypeWithoutID);  }
+             ? new FsIterator_set_sorted_pear<>(this, cow_wrapper, comparatorMaybeNoTypeWithoutID)
+             : new FsIterator_set_sorted2<>(this, cow_wrapper, comparatorMaybeNoTypeWithoutID);  }
 
   @Override
   protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {

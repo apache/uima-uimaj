@@ -81,9 +81,9 @@ public class ResultSpecTest extends TestCase {
   }
   
   private void checkl(String... args) {
-    List<String> rs1List = new ArrayList<String>();
-    List<String> rs2List = new ArrayList<String>();
-    List<String> expList = new ArrayList<String>();
+    List<String> rs1List = new ArrayList<>();
+    List<String> rs2List = new ArrayList<>();
+    List<String> expList = new ArrayList<>();
     List<String>[] tgts = new List[]{rs1List, rs2List, expList};
     int tgtI = 0;
     

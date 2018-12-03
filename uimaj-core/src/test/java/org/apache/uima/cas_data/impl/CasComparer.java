@@ -134,8 +134,8 @@ public class CasComparer {
     Assert.assertEquals(list1.size(),  list2.size());
     
     isSortUse = true;  // while sorting; i.e., for next two calls. Affects how visited is used
-    Collections.sort(list1, fsComparator);
-    Collections.sort(list2, fsComparator);
+    list1.sort(fsComparator);
+    list2.sort(fsComparator);
 
     isSortUse = false;  // makes the compare1 throw exception if not equal
     int i = 0;
@@ -372,7 +372,7 @@ public class CasComparer {
    * When populating, skip items already visted and compared in other views (but always include sofas)
    */
   private static List<TOP> populate(Collection<TOP> items, Set<TOP> visited) {
-    List<TOP> s = new ArrayList<TOP>();
+    List<TOP> s = new ArrayList<>();
     for (TOP fs : items) {
       if (!(fs instanceof Sofa) && !visited.contains(fs)) {
         s.add(fs);

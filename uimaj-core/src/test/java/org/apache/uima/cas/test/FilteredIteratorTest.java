@@ -422,7 +422,7 @@ public class FilteredIteratorTest extends TestCase {
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
     FSStringConstraint type1Constraint = cas.getConstraintFactory().createStringConstraint();
     type1Constraint.equals(lemma);
-    ArrayList<String> path = new ArrayList<String>();
+    ArrayList<String> path = new ArrayList<>();
     path.add(lemmaFeat.getShortName());
     FSMatchConstraint cons = cas.getConstraintFactory().embedConstraint(path, type1Constraint);
     it = cas.createFilteredIterator(it, cons);
@@ -513,7 +513,7 @@ public class FilteredIteratorTest extends TestCase {
     FSTypeConstraint tc = cf.createTypeConstraint();
     tc.add(sepType);
     tc.add(eosType.getName());
-    ArrayList<String> path = new ArrayList<String>();
+    ArrayList<String> path = new ArrayList<>();
     path.add(tokenTypeFeat.getShortName());
     FSMatchConstraint cons = cf.embedConstraint(path, tc);
     it = this.cas.createFilteredIterator(it, cons);

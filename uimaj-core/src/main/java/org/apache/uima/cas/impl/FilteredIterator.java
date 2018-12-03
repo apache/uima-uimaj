@@ -105,7 +105,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
    * @see org.apache.uima.cas.FSIterator#copy()
    */
   public FilteredIterator<T> copy() {
-    return new FilteredIterator<T>(this.it.copy(), this.cons);
+    return new FilteredIterator<>(this.it.copy(), this.cons);
   }
 
   /**

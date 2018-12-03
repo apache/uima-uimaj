@@ -38,7 +38,7 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
 
   AnnotationTreeNodeImpl() {
     super();
-    this.dtrs = new ArrayList<AnnotationTreeNode<T>>();
+    this.dtrs = new ArrayList<>();
   }
 
   public AnnotationTreeNode<T> getParent() {

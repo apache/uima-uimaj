@@ -53,8 +53,8 @@ public class SymbolTable {
    *          larger code points.
    */
   public SymbolTable(int start) {
-    this.symbol2intMap = new HashMap<String, Integer>();
-    this.int2symbolMap = new ArrayList<String>();
+    this.symbol2intMap = new HashMap<>();
+    this.int2symbolMap = new ArrayList<>();
     this.start = start;
   }
 

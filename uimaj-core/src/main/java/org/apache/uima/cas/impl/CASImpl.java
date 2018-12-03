@@ -453,7 +453,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     /**
      * This stack corresponds to nested protectIndexes contexts. Normally should be very shallow.
      */
-    private final ArrayList<FSsTobeAddedback> fssTobeAddedback = new ArrayList<FSsTobeAddedback>();
+    private final ArrayList<FSsTobeAddedback> fssTobeAddedback = new ArrayList<>();
     
     /**
      * This version is for single fs use, by binary deserializers and by automatic mode
@@ -1105,7 +1105,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    
     this.svd.sofa2indexMap = new ArrayList<>();
     this.svd.sofaNbr2ViewMap = new ArrayList<>();
-    this.svd.sofaNameSet = new HashSet<String>();
+    this.svd.sofaNameSet = new HashSet<>();
     this.svd.initialSofaCreated = false;
     this.svd.viewCount = 0;
     
@@ -1746,7 +1746,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   @Override
   public<T extends FeatureStructure> FSIterator<T> createFilteredIterator(FSIterator<T> it, FSMatchConstraint cons) {
-    return new FilteredIterator<T>(it, cons);
+    return new FilteredIterator<>(it, cons);
   }
 
   public TypeSystemImpl commitTypeSystem(boolean skip_loading_user_jcas) {
@@ -4233,7 +4233,7 @@ public JCasImpl getJCasImpl() {
     final TypeSystemImpl ts = getTypeSystemImpl();
     // Remove any existing document annotations.
     FSIterator<T> it = this.<T>getAnnotationIndex(ts.docType).iterator();
-    List<T> list = new ArrayList<T>();
+    List<T> list = new ArrayList<>();
     while (it.isValid()) {
       list.add(it.get());
       it.moveToNext();
@@ -4717,7 +4717,7 @@ public JCasImpl getJCasImpl() {
     }
 
     // find Sofas with this prefix
-    List<CAS> viewList = new ArrayList<CAS>();
+    List<CAS> viewList = new ArrayList<>();
     FSIterator<Sofa> sofaIter = getSofaIterator();
     while (sofaIter.hasNext()) {
       SofaFS sofa = sofaIter.next();
@@ -4830,7 +4830,7 @@ public JCasImpl getJCasImpl() {
   	}
 
   	if (this.svd.trackingMarkList == null) {
-  	  this.svd.trackingMarkList = new ArrayList<MarkerImpl>();
+  	  this.svd.trackingMarkList = new ArrayList<>();
   	} else {errorMultipleMarkers();}
   	this.svd.trackingMarkList.add(this.svd.trackingMark);
   	return this.svd.trackingMark;

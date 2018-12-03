@@ -444,7 +444,7 @@ public class SerializationReinitTest extends TestCase {
     String line;
 //    BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer(10000);
-    List<String> docs = new ArrayList<String>();
+    List<String> docs = new ArrayList<>();
     Matcher m = nlPattern.matcher(moby);
     while (m.find()) {
       line = m.group();

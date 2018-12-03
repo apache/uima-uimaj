@@ -281,7 +281,7 @@ public class SerDesTest4 extends SerDesTstCommon {
       this.cas2 = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
       deserCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
       deltaCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
-      lfs = new ArrayList<FeatureStructure>();
+      lfs = new ArrayList<>();
       lfs2 = new ArrayList<>();
     } catch (Exception e) {
       assertTrue(false);
@@ -533,7 +533,7 @@ public class SerDesTest4 extends SerDesTstCommon {
   }
 
   public void testArrayAux() {
-    ArrayList<FeatureStructure> fsl = new ArrayList<FeatureStructure>();
+    ArrayList<FeatureStructure> fsl = new ArrayList<>();
     /**
      * Strings, non-array Long/Double:
      * Make equal items,
@@ -862,7 +862,7 @@ public class SerDesTest4 extends SerDesTstCommon {
    * @param r -
    */
   private void makeRandomFss(int n, List<FeatureStructure> fss, Random r) {
-    List<FeatureStructure> lfss = new ArrayList<FeatureStructure>();
+    List<FeatureStructure> lfss = new ArrayList<>();
     for (int i = 0; i < n; i++) {
       FeatureStructure fs = makeAkof(r);
       lfss.add(fs);

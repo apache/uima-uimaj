@@ -198,7 +198,7 @@ public class CASMgrSerializer implements Serializable {
     this.typeOrder = ir.getDefaultTypeOrder().getOrder();
     // Collect the index labels in a list, as we don't know how many there
     // are.
-    final List<String> names = new ArrayList<String>();
+    final List<String> names = new ArrayList<>();
     // Create an iterator over the names.
     final Iterator<String> namesIt = ir.getLabels();
     // Add the names to the list, filtering out auto-indexes.
@@ -222,7 +222,7 @@ public class CASMgrSerializer implements Serializable {
     }
     // Create a vector of the indexes, and build the name-to-index map.
     this.nameToIndexMap = new int[numNames];
-    Vector<FSIndex<FeatureStructure>> indexVector = new Vector<FSIndex<FeatureStructure>>();
+    Vector<FSIndex<FeatureStructure>> indexVector = new Vector<>();
     FSIndex<FeatureStructure> index;
     int pos;
     for (int i = 0; i < numNames; i++) {
@@ -306,7 +306,7 @@ public class CASMgrSerializer implements Serializable {
     final int size = list.size();
     this.stringSubtypes = new int[size];
     this.stringSubtypeValuePos = new int[size];
-    List<String> strVals = new ArrayList<String>();
+    List<String> strVals = new ArrayList<>();
     TypeImpl_string type;
     int pos = 0, typeCode;
     String[] stringSet;

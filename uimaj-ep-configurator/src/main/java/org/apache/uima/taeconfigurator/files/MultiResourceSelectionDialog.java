@@ -340,7 +340,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
       throw new InternalErrorCDE("unhandled CoreException while getting classpaths to populate by-location list", e);
     }
     String [] cps = cp.split(PATH_SEPARATOR);
-    List<CandidateAndSource> candidates = new ArrayList<CandidateAndSource>(100);
+    List<CandidateAndSource> candidates = new ArrayList<>(100);
     
     for (String jarOrDir : cps) {
       if (jarOrDir.toLowerCase().endsWith(".jar")) {
@@ -413,10 +413,10 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
   }
   
   /** The saw jar. */
-  private static Map<String, Long> sawJar = new TreeMap<String, Long>();
+  private static Map<String, Long> sawJar = new TreeMap<>();
   
   /** The cached cs. */
-  private static Map<String, List<CandidateAndSource>> cachedCs = new TreeMap<String, List<CandidateAndSource>>();
+  private static Map<String, List<CandidateAndSource>> cachedCs = new TreeMap<>();
   
   /**
    * Adds the jar candidates.
@@ -434,7 +434,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
         lastModified.longValue() != fileLastModified ||
         null == css) {
       JarInputStream jarIn;
-      css = new ArrayList<CandidateAndSource>();
+      css = new ArrayList<>();
       try {
         jarIn = new JarInputStream(new BufferedInputStream(new FileInputStream(jarPath)));
       } catch (FileNotFoundException e) {

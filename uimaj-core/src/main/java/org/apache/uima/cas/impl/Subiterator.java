@@ -384,7 +384,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   private void convertToListForm() {
     moveToStart();  // moves to the start annotation, including moving past equals for annot style, 
                     // and accommodating strict
-    this.list = new ArrayList<Annotation>();
+    this.list = new ArrayList<>();
     while (isValid()) {
       list.add((Annotation) it.getNvc());
       moveToNext();  // does all the adjustments, so list has only appropriate elements
@@ -1181,15 +1181,15 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   @Override
   public FSIterator<T> copy() {
-    Subiterator<T> copy = new Subiterator<T>(
-        this.it.copy(), 
-        this.boundingAnnot, 
-        ! this.isUnambiguous,
+    Subiterator<T> copy = new Subiterator<>(
+        this.it.copy(),
+        this.boundingAnnot,
+        !this.isUnambiguous,
         this.isStrict,
         this.boundsUse,
-        this.isUseTypePriority, 
+        this.isUseTypePriority,
         this.isSkipSameBeginEndType,
-        
+
         this.startId,
         this.isEmpty,
         this.coveringStartPos,

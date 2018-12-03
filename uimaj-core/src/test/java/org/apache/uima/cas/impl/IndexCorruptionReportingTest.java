@@ -68,7 +68,7 @@ public class IndexCorruptionReportingTest extends TestCase {
   
   private FsIndex_bag<TOP> cbi() {
     FSIndexComparator comparatorForIndexSpecs = new FSIndexComparatorImpl();
-    return new FsIndex_bag<TOP>(cas, ts.getTopType(), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs );
+    return new FsIndex_bag<>(cas, ts.getTopType(), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
   }
 
   protected void tearDown() throws Exception {

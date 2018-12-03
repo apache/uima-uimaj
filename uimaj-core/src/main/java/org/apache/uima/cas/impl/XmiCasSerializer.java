@@ -731,7 +731,7 @@ public class XmiCasSerializer {
       if (fsArray instanceof StringArray && ((StringArray)fsArray).size() != 0) {
 
         // string arrays are encoded as elements, in case they contain whitespace
-        List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
+        List<XmlElementNameAndContents> childElements = new ArrayList<>();
         stringArrayToElementList("elements", (StringArray) fsArray, childElements);
         startElement(xmlElementName, workAttrs, childElements.size());
         sendElementEvents(childElements);
@@ -868,7 +868,7 @@ public class XmiCasSerializer {
      */
     private List<XmlElementNameAndContents> encodeFeatures(TOP fs, AttributesImpl attrs, boolean insideListNode)
             throws SAXException {
-      List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
+      List<XmlElementNameAndContents> childElements = new ArrayList<>();
 //      int heapValue = cds.cas.getHeapValue(addr);
 //      int[] feats = cds.tsi.ll_getAppropriateFeatures(heapValue);
 

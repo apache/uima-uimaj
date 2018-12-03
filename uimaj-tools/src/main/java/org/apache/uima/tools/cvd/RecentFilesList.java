@@ -48,7 +48,7 @@ public class RecentFilesList {
    */
   public RecentFilesList(int maxSize) {
     super();
-    this.list = new ArrayList<File>();
+    this.list = new ArrayList<>();
     this.max = maxSize;
   }
 
@@ -121,7 +121,7 @@ public class RecentFilesList {
    * @return The file list as a list of absolute file names.
    */
   public List<String> toStringList() {
-    List<String> out = new ArrayList<String>();
+    List<String> out = new ArrayList<>();
     for (File file : this.list) {
       out.add(file.getAbsolutePath());
     }

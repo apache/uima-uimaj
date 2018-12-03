@@ -106,7 +106,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
                              : ignoreType
                                 ? idx.comparatorNoTypeWithoutID
                                 : idx.comparatorWithoutID;
-    return new FsIterator_subtypes_snapshot<T>(this, comp);
+    return new FsIterator_subtypes_snapshot<>(this, comp);
   }
 
   /* (non-Javadoc)

@@ -141,7 +141,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
     }
     // treat names as a space-separated list
     StringTokenizer tokenizer = new StringTokenizer(names, " \t");
-    List<String> nameList = new ArrayList<String>();
+    List<String> nameList = new ArrayList<>();
     while (tokenizer.hasMoreTokens()) {
       nameList.add(tokenizer.nextToken());
     }

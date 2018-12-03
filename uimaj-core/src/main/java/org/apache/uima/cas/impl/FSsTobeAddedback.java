@@ -130,7 +130,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
     /**
      * list of views where the FS was removed; used when adding the fs back
      */
-    final List<FSIndexRepositoryImpl> views = new ArrayList<FSIndexRepositoryImpl>();
+    final List<FSIndexRepositoryImpl> views = new ArrayList<>();
     
     @Override
     void recordRemove(FSIndexRepositoryImpl view) {
@@ -183,7 +183,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
     /**
      * For each FS, the list of views where it was removed. 
      */
-    final Map<TOP, List<?>> fss2views = new HashMap<TOP, List<?>>();
+    final Map<TOP, List<?>> fss2views = new HashMap<>();
     
     /**
      * An arbitrary cas view or base cas
@@ -200,7 +200,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
       @SuppressWarnings("unchecked")
       List<FSIndexRepositoryImpl> irList = (List<FSIndexRepositoryImpl>) fss2views.get(fs);
       if (null == irList) {
-        fss2views.put(fs,  irList = new ArrayList<FSIndexRepositoryImpl>());
+        fss2views.put(fs,  irList = new ArrayList<>());
       }
       irList.add(view);
     }

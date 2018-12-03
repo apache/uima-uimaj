@@ -105,7 +105,7 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     ds.setBasedir(jCasGenDirectory);
     ds.setIncludes(new String[] { "**/*.java" });
     ds.scan();
-    List<File> files = new ArrayList<File>();
+    List<File> files = new ArrayList<>();
     for (String scannedFile : ds.getIncludedFiles()) {
       files.add(new File(ds.getBasedir(), scannedFile));
     }

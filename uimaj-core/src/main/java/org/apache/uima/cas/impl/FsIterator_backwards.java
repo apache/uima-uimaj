@@ -119,7 +119,7 @@ class FsIterator_backwards<T extends FeatureStructure>
 
   @Override
   public FSIterator<T> copy() {
-    return new FsIterator_backwards<T>(it.copy());
+    return new FsIterator_backwards<>(it.copy());
   }
 
   /* (non-Javadoc)

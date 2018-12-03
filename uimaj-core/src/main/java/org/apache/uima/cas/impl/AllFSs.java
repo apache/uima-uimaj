@@ -21,7 +21,6 @@ package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.function.Predicate;
 
 import org.apache.uima.UimaSerializableFSs;
@@ -43,7 +42,7 @@ class AllFSs {
   final private MarkerImpl mark;
   final private PositiveIntSet foundFSs = new PositiveIntSet_impl(4096, 1, 4096);
   final private PositiveIntSet foundFSsBelowMark;
-  final private ArrayList<TOP> toBeScanned = new ArrayList<TOP>();
+  final private ArrayList<TOP> toBeScanned = new ArrayList<>();
   final private Predicate<TOP> includeFilter;
   final private CasTypeSystemMapper typeMapper;
   
@@ -68,7 +67,7 @@ class AllFSs {
   }
     
   ArrayList<TOP> getAllFSsSorted() {
-    Collections.sort(toBeScanned, FeatureStructureImplC::compare);
+    toBeScanned.sort(FeatureStructureImplC::compare);
     return toBeScanned;
   }
   

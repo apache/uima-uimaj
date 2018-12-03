@@ -90,7 +90,7 @@ public class IntBitSetTest extends TestCase {
     ibs = new IntBitSet(64,1000);
     ibs.add(1064);
     IntListIterator it = ibs.iterator();
-    List<Integer> ints = new ArrayList<Integer>();
+    List<Integer> ints = new ArrayList<>();
     while (it.hasNext()) {
       ints.add(it.nextNvc());
     }

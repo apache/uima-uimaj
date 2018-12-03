@@ -502,7 +502,7 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
         
         if (batchSize > 1) {
           // Sort the items to add 
-          Collections.sort(batch, comparatorWithID);
+          batch.sort(comparatorWithID);
           TOP prev = batch.get(batchSize - 1);
         
 //          nbrNewSlots = batch.size();

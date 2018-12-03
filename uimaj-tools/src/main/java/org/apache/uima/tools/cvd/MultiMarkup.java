@@ -100,7 +100,7 @@ public abstract class MultiMarkup {
    */
   public static AnnotationExtent[] createAnnotationMarkups(FSIterator it, int textLen,
           Map<String, Style> styleMap) {
-    List<AnnotExtent> list = new ArrayList<AnnotExtent>();
+    List<AnnotExtent> list = new ArrayList<>();
     list.add(new AnnotExtent(0, textLen, 0, null));
     AnnotationFS fs;
     AnnotExtent ext;
@@ -205,7 +205,7 @@ public abstract class MultiMarkup {
    */
   public static MarkupExtent[] createMarkupExtents(FSIterator it, int textLen) {
 
-    List<Extent> list = new ArrayList<Extent>();
+    List<Extent> list = new ArrayList<>();
     list.add(new Extent(0, textLen, 0));
     AnnotationFS fs;
     Extent ext;

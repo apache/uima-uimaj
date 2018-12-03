@@ -364,7 +364,7 @@ public class AnalysisEngine_implTest extends TestCase {
       System.setProperty("UimaExternalOverrides", "missing file");  // Will fail if used
       in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateWithExternalOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
-      Map<String,Object> additionalParams = new HashMap<String,Object>();
+      Map<String,Object> additionalParams = new HashMap<>();
       Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
       FileInputStream fis = new FileInputStream(new File(resDir,"testExternalOverride2.settings"));
       extSettings.load(fis);
@@ -1123,7 +1123,7 @@ public class AnalysisEngine_implTest extends TestCase {
       cas.reset();
       cas.setDocumentText("One\tTwo\nThree\tFour");
       iter = ae.processAndOutputNewCASes(cas);
-      Set<String> expectedOutputs = new HashSet<String>();
+      Set<String> expectedOutputs = new HashSet<>();
       expectedOutputs.add("One");
       expectedOutputs.add("Two\nThree");
       expectedOutputs.add("Four");
@@ -1144,7 +1144,7 @@ public class AnalysisEngine_implTest extends TestCase {
                               .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenter.xml")));
       
       ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
-      Map<String, Object> params = new HashMap<String, Object>();
+      Map<String, Object> params = new HashMap<>();
       AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
       AnalysisEngine ae2 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
       

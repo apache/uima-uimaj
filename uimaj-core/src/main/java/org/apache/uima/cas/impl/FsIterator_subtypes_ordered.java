@@ -486,7 +486,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    */
   @Override
   public FSIterator<T> copy() {
-    FsIterator_subtypes_ordered<T> it = new FsIterator_subtypes_ordered<T>(iicp, comparatorMaybeNoTypeWithoutId);
+    FsIterator_subtypes_ordered<T> it = new FsIterator_subtypes_ordered<>(iicp, comparatorMaybeNoTypeWithoutId);
     if (!isValid()) {
       it.moveToPrevious();  // mark new one also invalid
     } else {

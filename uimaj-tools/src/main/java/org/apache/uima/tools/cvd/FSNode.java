@@ -240,7 +240,7 @@ public class FSNode extends FSTreeNode {
 //      } else {
 //        nodeClass1 = FSNode.STD_FS;
 //      }
-      List<FSNode> arrayNodes = new ArrayList<FSNode>(arrayLength);
+      List<FSNode> arrayNodes = new ArrayList<>(arrayLength);
       SlotKind kind = type.getComponentSlotKind();
       int nc = k2nc(kind);
       switch (kind) {
@@ -294,7 +294,7 @@ public class FSNode extends FSTreeNode {
       
       this.children = FSTreeModel.createArrayChildren(0, arrayLength, arrayNodes, this.fSTreeModel);
     } else {
-      this.children = new ArrayList<FSTreeNode>(type.getNumberOfFeatures());
+      this.children = new ArrayList<>(type.getNumberOfFeatures());
       FeatureImpl[] feats = type.getFeatureImpls();
       for (FeatureImpl f : feats) {
         SlotKind kind = f.getSlotKind();

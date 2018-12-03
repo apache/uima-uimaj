@@ -491,7 +491,7 @@ public class FileUtil {
    *              If any I/O exception occurs.
    */
   public static Collection<File> createDirList(File rootDir, boolean includeSubdirs) throws IOException {
-    ArrayList<File> listOfDirs = new ArrayList<File>();
+    ArrayList<File> listOfDirs = new ArrayList<>();
     File[] allDirFiles = rootDir.listFiles();
     if (allDirFiles == null)
       throw new FileNotFoundException("invalid directory specified");
@@ -519,7 +519,7 @@ public class FileUtil {
    *           If any I/O exception occurs.
    */
   public static Collection<File> createDirList(JarFile archive) throws IOException {
-    ArrayList<File> listOfDirs = new ArrayList<File>();
+    ArrayList<File> listOfDirs = new ArrayList<>();
     // set root_dir_path = archive_file_path (w/o file name extension)
     int nameEndIndex = archive.getName().lastIndexOf('.');
     String rootDirPath = (nameEndIndex > 0) ? archive.getName().substring(0, nameEndIndex)
@@ -577,7 +577,7 @@ public class FileUtil {
    *              If any I/O exception occurs.
    */
   public static Collection<File> createFileList(File filesDir, boolean includeSubdirs) throws IOException {
-    ArrayList<File> listOfFiles = new ArrayList<File>();
+    ArrayList<File> listOfFiles = new ArrayList<>();
     File[] allDirFiles = filesDir.listFiles();
     if (allDirFiles == null)
       throw new FileNotFoundException("invalid directory specified");
@@ -603,7 +603,7 @@ public class FileUtil {
    *           If any I/O exception occurs.
    */
   public static Collection<File> createFileList(JarFile archive) throws IOException {
-    ArrayList<File> listOfFiles = new ArrayList<File>();
+    ArrayList<File> listOfFiles = new ArrayList<>();
     // set root_dir_path = archive_file_path (w/o file name extension)
     int nameEndIndex = archive.getName().lastIndexOf('.');
     String rootDirPath = (nameEndIndex > 0) ? archive.getName().substring(0, nameEndIndex)
@@ -988,7 +988,7 @@ public class FileUtil {
    */
   public static String[] loadListOfStrings(BufferedReader iStream) throws IOException {
     String[] outputArray = null;
-    List<String> outputList = new ArrayList<String>();
+    List<String> outputList = new ArrayList<>();
     String line = null;
     while ((line = iStream.readLine()) != null) {
       String string = line.trim();
@@ -1415,7 +1415,7 @@ public class FileUtil {
    * @return The list of files sorted by the 'last modified' time in the descending order.
    */
   public static SortedSet<File> sortFileListByTime(Collection<File> fileList) {
-    TreeSet<File> set = new TreeSet<File>(new FileTimeComparator());
+    TreeSet<File> set = new TreeSet<>(new FileTimeComparator());
     set.addAll(fileList);
     return set;
   }

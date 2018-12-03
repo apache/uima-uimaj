@@ -362,7 +362,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * 
      * Contrast with fs2addr and addr2fs in csds - these use the pseudo v2 addresses as the int
      */    
-    private final Obj2IntIdentityHashMap<TOP> fs2seq = new Obj2IntIdentityHashMap<TOP>(TOP.class, TOP._singleton);
+    private final Obj2IntIdentityHashMap<TOP> fs2seq = new Obj2IntIdentityHashMap<>(TOP.class, TOP._singleton);
 //    private final Int2ObjHashMap<TOP, TOP> seq2fs = new Int2ObjHashMap<>(TOP.class);
     /**
      * 
@@ -907,7 +907,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       deflater.setStrategy(compressStrategy.strat);
       int nbrEntries = 0;
       
-      List<Integer> idxAndLen = new ArrayList<Integer>();
+      List<Integer> idxAndLen = new ArrayList<>();
 
       for (int i = 0; i < baosZipSources.length; i++) {
         ByteArrayOutputStream baos = baosZipSources[i];

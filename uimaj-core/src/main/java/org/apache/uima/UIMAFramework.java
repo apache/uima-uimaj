@@ -331,9 +331,9 @@ public abstract class UIMAFramework {
     // add ResourceManager to aAdditionalParams map
     if (aResourceManager != null) {
       if (aAdditionalParams == null) {
-        aAdditionalParams = new HashMap<String, Object>();
+        aAdditionalParams = new HashMap<>();
       } else {  // copy to avoid modifying the original which might be immutable
-        aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
+        aAdditionalParams = new HashMap<>(aAdditionalParams);
       }
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
     }
@@ -495,7 +495,7 @@ public abstract class UIMAFramework {
   public static AnalysisEngine produceAnalysisEngine(ResourceSpecifier aSpecifier,
           int aMaxSimultaneousRequests, int aTimeoutPeriod) throws ResourceInitializationException {
     // add parameters to the aAdditionalParams map
-    Map<String, Object> aAdditionalParams = new HashMap<String, Object>();
+    Map<String, Object> aAdditionalParams = new HashMap<>();
 
     aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
             aMaxSimultaneousRequests));
@@ -648,7 +648,7 @@ public abstract class UIMAFramework {
   public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
           int aMaxSimultaneousRequests, int aTimeoutPeriod) throws ResourceInitializationException {
     // add parameters to the aAdditionalParams map
-    Map<String, Object> aAdditionalParams = new HashMap<String, Object>();
+    Map<String, Object> aAdditionalParams = new HashMap<>();
 
     aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
             aMaxSimultaneousRequests));
@@ -987,10 +987,10 @@ public abstract class UIMAFramework {
           throws ResourceInitializationException {
     if (aResourceManager != null) {
       if (aAdditionalParams == null) {
-        aAdditionalParams = new HashMap<String, Object>();
+        aAdditionalParams = new HashMap<>();
       } else {
         // copy to avoid modifying original, which might be immutable, etc.
-        aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
+        aAdditionalParams = new HashMap<>(aAdditionalParams);
       }
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
     }
@@ -1088,8 +1088,8 @@ public abstract class UIMAFramework {
   
   // ugly way to pass vars to 0-arg constructors
   //    for root uima context
-  public static final ThreadLocal<ResourceManager> newContextResourceManager = new ThreadLocal<ResourceManager>();
-  public static final ThreadLocal<ConfigurationManager> newContextConfigManager = new ThreadLocal<ConfigurationManager>();
+  public static final ThreadLocal<ResourceManager> newContextResourceManager = new ThreadLocal<>();
+  public static final ThreadLocal<ConfigurationManager> newContextConfigManager = new ThreadLocal<>();
   
   /**
    * Gets a new instance of a {@link UimaContext}. Applications do not generally need to call this

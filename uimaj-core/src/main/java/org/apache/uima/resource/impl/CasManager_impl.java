@@ -67,13 +67,13 @@ public class CasManager_impl implements CasManager {
    * 
    * Threading: This list is always accessed under the class instance lock.
    */
-  private final List<ProcessingResourceMetaData> mMetaDataList = new ArrayList<ProcessingResourceMetaData>();
+  private final List<ProcessingResourceMetaData> mMetaDataList = new ArrayList<>();
 
-  private final Map<String, CasPool> mRequestorToCasPoolMap = Collections.synchronizedMap(new HashMap<String, CasPool>());
+  private final Map<String, CasPool> mRequestorToCasPoolMap = Collections.synchronizedMap(new HashMap<>());
 
-  private final Map<CAS, CasPool> mCasToCasPoolMap = Collections.synchronizedMap(new HashMap<CAS, CasPool>());
+  private final Map<CAS, CasPool> mCasToCasPoolMap = Collections.synchronizedMap(new HashMap<>());
   
-  private final Map<CAS, UimaContext> mCasToUimaContextMap = Collections.synchronizedMap(new HashMap<CAS, UimaContext>());
+  private final Map<CAS, UimaContext> mCasToUimaContextMap = Collections.synchronizedMap(new HashMap<>());
 
   private volatile CasDefinition mCasDefinition = null;  // once goes non-null, stays
   
@@ -84,7 +84,7 @@ public class CasManager_impl implements CasManager {
   private volatile String mMBeanNamePrefix;
   
   private final List<CasPoolManagementImpl> casPoolMBeans = 
-      Collections.synchronizedList(new ArrayList<CasPoolManagementImpl>());
+      Collections.synchronizedList(new ArrayList<>());
 
   public CasManager_impl(ResourceManager aResourceManager) {
     mResourceManager = aResourceManager;

@@ -969,9 +969,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     //    1) key not in map
     //    2) key in map, but value is "seen once"  - first time value seen
     //    3) key in map, value is #nnnn - when value is seen more than once
-    private Map<FeatureStructure, String> tree = new HashMap<FeatureStructure, String>();
+    private Map<FeatureStructure, String> tree = new HashMap<>();
 
-    private Set<FeatureStructure> seen = new HashSet<FeatureStructure>();
+    private Set<FeatureStructure> seen = new HashSet<>();
 
     private int count;
 

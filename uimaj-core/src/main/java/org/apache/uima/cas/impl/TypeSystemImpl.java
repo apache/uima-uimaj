@@ -188,7 +188,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   /**
    * Map from component name to built-in array name
    */
-  private final static Map<String, String> builtInArrayComponentName2ArrayTypeName = new HashMap<String, String>(9);
+  private final static Map<String, String> builtInArrayComponentName2ArrayTypeName = new HashMap<>(9);
 
   static {
     builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_TOP, CAS.TYPE_NAME_FS_ARRAY);
@@ -278,7 +278,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   /**
    * Map from built-in array name to component Type
    */
-  private final Map<String, TypeImpl> arrayName2ComponentType = new HashMap<String, TypeImpl>(9);
+  private final Map<String, TypeImpl> arrayName2ComponentType = new HashMap<>(9);
   
   // not static in general because need different instances for each type system
   // because instances have direct subtypes
@@ -735,7 +735,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   public Vector<Feature> getIntroFeatures(Type type) {
-    Vector<Feature> feats = new Vector<Feature>();
+    Vector<Feature> feats = new Vector<>();
     List<Feature> appropFeats = type.getFeatures();
     final int max = appropFeats.size();
     Feature feat;
@@ -1052,7 +1052,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public Vector<Type> getDirectlySubsumedTypes(Type type) {
-    return new Vector<Type>(getDirectSubtypes(type));
+    return new Vector<>(getDirectSubtypes(type));
   }
 
   @Override
@@ -2070,8 +2070,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * The map itself is not synchronized, because all accesses to it are
    * from the synchronized getTypeSystemMapper method
    *********************************************************/
-  public final Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers = 
-      new WeakHashMap<TypeSystemImpl, CasTypeSystemMapper>();
+  public final Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers =
+      new WeakHashMap<>();
    
   synchronized CasTypeSystemMapper getTypeSystemMapper(TypeSystemImpl tgtTs) {
     CasTypeSystemMapper ctsm = getTypeSystemMapperInner(tgtTs);

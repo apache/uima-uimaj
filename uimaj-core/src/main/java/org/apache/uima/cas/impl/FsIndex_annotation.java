@@ -52,14 +52,14 @@ public class FsIndex_annotation <T extends AnnotationFS>
     }
     // return non-constrained, non-strict, unambiguous iterator
     boolean strict = false;  // https://issues.apache.org/jira/browse/UIMA-5063
-    return new Subiterator<T>(iterator(), 
-                              null, 
-                              ambiguous, 
-                              strict, 
-                              null, // no BoundsUse
-                              true, // type priority used
-                              true // ignored
-                             ); 
+    return new Subiterator<>(iterator(),
+        null,
+        ambiguous,
+        strict,
+        null, // no BoundsUse
+        true, // type priority used
+        true // ignored
+    );
   }
   
   /**
@@ -74,14 +74,14 @@ public class FsIndex_annotation <T extends AnnotationFS>
       return iterator(orderNotNeeded, ignoreType);
     }
     // return non-constrained, non-strict, unambiguous iterator
-    return new Subiterator<T>(iterator(orderNotNeeded, ignoreType), 
-                              null,   // no bounding fs
-                              ambiguous, 
-                              strict, 
-                              null, // no BoundsUse
-                              ! ignoreType, // type priority used
-                              true // ignored - only for coveredBy or covering
-                             ); 
+    return new Subiterator<>(iterator(orderNotNeeded, ignoreType),
+        null,   // no bounding fs
+        ambiguous,
+        strict,
+        null, // no BoundsUse
+        !ignoreType, // type priority used
+        true // ignored - only for coveredBy or covering
+    );
   }
 
   /*
@@ -102,14 +102,14 @@ public class FsIndex_annotation <T extends AnnotationFS>
    */
   @Override
   public FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
-    return new Subiterator<T>(iterator(), 
+    return new Subiterator<>(iterator(),
         (Annotation) annot,
-        ambiguous, 
-        strict, 
+        ambiguous,
+        strict,
         BoundsUse.coveredBy,  // isBounded 
         true,  // uses type priority
         true  // skip returning results equal to annot
-        );
+    );
   }
 
   /*
@@ -119,8 +119,8 @@ public class FsIndex_annotation <T extends AnnotationFS>
    */
   @Override
   public AnnotationTree<T> tree(T annot) {
-    AnnotationTreeImpl<T> tree = new AnnotationTreeImpl<T>();
-    AnnotationTreeNodeImpl<T> root = new AnnotationTreeNodeImpl<T>();
+    AnnotationTreeImpl<T> tree = new AnnotationTreeImpl<>();
+    AnnotationTreeNodeImpl<T> root = new AnnotationTreeNodeImpl<>();
     tree.setRoot(root);
     root.set(annot);
     addChildren(root, subiterator(annot, false, true));
@@ -132,7 +132,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
     T annot;
     while (it.isValid()) {
       annot = it.nextNvc();
-      dtr = new AnnotationTreeNodeImpl<T>();
+      dtr = new AnnotationTreeNodeImpl<>();
       dtr.set(annot);
       node.addChild(dtr);
       addChildren(dtr, subiterator(annot, false, true));

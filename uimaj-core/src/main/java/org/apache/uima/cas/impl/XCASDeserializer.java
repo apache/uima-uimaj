@@ -205,12 +205,12 @@ public class XCASDeserializer {
       this.cas = aCAS.getBaseCAS();
       // Reset the CAS.
       cas.resetNoQuestions();
-      this.fsTree = new RedBlackTree<FSInfo>();
-      this.idLess = new ArrayList<FSInfo>();
+      this.fsTree = new RedBlackTree<>();
+      this.idLess = new ArrayList<>();
       this.buffer = new StringBuffer();
       this.outOfTypeSystemData = ootsData;
-      this.indexRepositories = new ArrayList<FSIndexRepository>();
-      this.views = new ArrayList<CAS>();
+      this.indexRepositories = new ArrayList<>();
+      this.views = new ArrayList<>();
       // using the baseCas for indexing Sofas
       indexRepositories.add(this.cas.getBaseIndexRepository());
       // There should always be another index for the Initial View
@@ -652,11 +652,7 @@ public class XCASDeserializer {
       if (feat == null) { // feature does not exist in typesystem
         if (outOfTypeSystemData != null) {
           // Add to Out-Of-Typesystem data (APL)
-          List<Pair<String, Object>> ootsAttrs = outOfTypeSystemData.extraFeatureValues.get(fs);
-          if (ootsAttrs == null) {
-            ootsAttrs = new ArrayList<Pair<String, Object>>();
-            outOfTypeSystemData.extraFeatureValues.put(fs, ootsAttrs);
-          }
+          List<Pair<String, Object>> ootsAttrs = outOfTypeSystemData.extraFeatureValues.computeIfAbsent(fs, k -> new ArrayList<>());
           ootsAttrs.add(new Pair(featName, featVal));
         } else if (!lenient) {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
@@ -898,11 +894,7 @@ public class XCASDeserializer {
         // this feature may be a ref to an out-of-typesystem FS.
         // add it to the Out-of-typesystem features list (APL)
         if (extId != 0 && outOfTypeSystemData != null) {
-          List<Pair<String, Object>> ootsAttrs = outOfTypeSystemData.extraFeatureValues.get(fs);
-          if (ootsAttrs == null) {
-            ootsAttrs = new ArrayList<Pair<String, Object>>();
-            outOfTypeSystemData.extraFeatureValues.put(fs, ootsAttrs);
-          }
+          List<Pair<String, Object>> ootsAttrs = outOfTypeSystemData.extraFeatureValues.computeIfAbsent(fs, k -> new ArrayList<>());
           String featFullName = fi.getName();
           int separatorOffset = featFullName.indexOf(TypeSystem.FEATURE_SEPARATOR);
           String featName = "_ref_" + featFullName.substring(separatorOffset + 1);
@@ -945,11 +937,7 @@ public class XCASDeserializer {
         // this element may be a ref to an out-of-typesystem FS.
         // add it to the Out-of-typesystem array elements list (APL)
         if (extId != 0 && outOfTypeSystemData != null) {
-          List<ArrayElement> ootsElements = outOfTypeSystemData.arrayElements.get(fs);
-          if (ootsElements == null) {
-            ootsElements = new ArrayList<ArrayElement>();
-            outOfTypeSystemData.arrayElements.put(fs, ootsElements);
-          }
+          List<ArrayElement> ootsElements = outOfTypeSystemData.arrayElements.computeIfAbsent(fs, k -> new ArrayList<>());
           // the "value" of the reference is the ID, but we prefix with a letter to indicate
           // that this ID refers to an array OOTS FS
           ArrayElement ootsElem = new ArrayElement(pos, "a" + Integer.toString(extId));

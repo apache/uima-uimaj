@@ -84,13 +84,13 @@ public class XmiSerializationSharedData {
    * List of OotsElementData objects, each of which captures information about
    * incoming XMI elements that did not correspond to any type in the type system.
    */
-  private List<OotsElementData> ootsFs = new ArrayList<OotsElementData>();
+  private List<OotsElementData> ootsFs = new ArrayList<>();
   
   /**
    * Map from the xmi:id (String) of a Sofa to a List of xmi:id's (Strings) for
    * the out-of-typesystem FSs that are members of that Sofa's view.
    */
-  private Map<String, List<String>> ootsViewMembers = new HashMap<String, List<String>>();
+  private Map<String, List<String>> ootsViewMembers = new HashMap<>();
 
   /** Map from Feature Structures to OotsElementData object, capturing information 
    * about out-of-typesystem features that were part of an in-typesystem FS.  These include both
@@ -221,11 +221,7 @@ public class XmiSerializationSharedData {
    *   a member of the view for the given Sofa
    */
   public void addOutOfTypeSystemViewMember(String sofaXmiId, String memberXmiId) {
-    List<String> membersList = this.ootsViewMembers.get(sofaXmiId);
-    if (membersList == null) {
-      membersList = new ArrayList<String>();
-      this.ootsViewMembers.put(sofaXmiId, membersList);
-    }
+    List<String> membersList = this.ootsViewMembers.computeIfAbsent(sofaXmiId, k -> new ArrayList<>());
     membersList.add(memberXmiId);
   }
   
@@ -324,11 +320,7 @@ public class XmiSerializationSharedData {
    * @param xmiId xmi:id of the out-of-typesystem element that is the value at the given index
    */
   public void addOutOfTypeSystemArrayElement(FSArray fsarray, int index, int xmiId) {
-    List<XmiArrayElement> list = this.ootsArrayElements.get(fsarray);
-    if (list == null) {
-      list = new ArrayList<XmiArrayElement>();
-      this.ootsArrayElements.put(fsarray, list);
-    }
+    List<XmiArrayElement> list = this.ootsArrayElements.computeIfAbsent(fsarray, k -> new ArrayList<>());
     list.add(new XmiArrayElement(index, Integer.toString(xmiId)));
   }
   
@@ -415,7 +407,7 @@ public class XmiSerializationSharedData {
     /**
      * List of XmlAttribute objects each holding name and value of an attribute.
      */
-    final public List<XmlAttribute> attributes = new ArrayList<XmlAttribute>();
+    final public List<XmlAttribute> attributes = new ArrayList<>();
     
     /**
      * List of XmlElementNameAndContents objects each describing one of the

@@ -200,9 +200,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    *  only used when processing updates in batch mode
    */
   private static class ProcessedIndexInfo {
-    final private Set<TOP> fsAddedToIndex     = new ObjHashSet<TOP>(TOP.class, TOP._singleton);
-    final private Set<TOP> fsDeletedFromIndex = new ObjHashSet<TOP>(TOP.class, TOP._singleton); 
-    final private Set<TOP> fsReindexed        = new ObjHashSet<TOP>(TOP.class, TOP._singleton);
+    final private Set<TOP> fsAddedToIndex     = new ObjHashSet<>(TOP.class, TOP._singleton);
+    final private Set<TOP> fsDeletedFromIndex = new ObjHashSet<>(TOP.class, TOP._singleton);
+    final private Set<TOP> fsReindexed        = new ObjHashSet<>(TOP.class, TOP._singleton);
   }
   
   /**
@@ -346,8 +346,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * speedup for annotation index accessing by type, lazily initialized
    */
-  final private Map<TypeImpl, FsIndex_annotation<Annotation>> annotationIndexes = 
-      new IdentityHashMap<TypeImpl, FsIndex_annotation<Annotation>>();
+  final private Map<TypeImpl, FsIndex_annotation<Annotation>> annotationIndexes =
+      new IdentityHashMap<>();
 
   // the next are for journaling updates to indexes
   final private List<TOP> indexUpdates;
@@ -452,7 +452,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final int numTypes = ts.getNumberOfTypes() + 1;
 //    this.detectIllegalIndexUpdates = new int[numTypes];
 //    this.flattenedIndexValid = new ConcurrentBits(numTypes);
-    this.name2indexMap = new HashMap<String, FsIndex_iicp<TOP>>();
+    this.name2indexMap = new HashMap<>();
     this.indexUpdates = new ArrayList<>();
     this.indexUpdateOperation = new BitSet();
     this.logProcessed = false;
@@ -482,7 +482,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //    this.detectIllegalIndexUpdates = new int[numTypes];
 //    this.flattenedIndexValid = new ConcurrentBits(numTypes);
     
-    this.name2indexMap = new HashMap<String, FsIndex_iicp<TOP>>();
+    this.name2indexMap = new HashMap<>();
     this.indexUpdates = new ArrayList<>();
     this.indexUpdateOperation = new BitSet();
     this.logProcessed = false;
@@ -712,10 +712,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     FsIndex_iicp<T> iicp = null;
     if (isAnnotationIndex(comparator, indexType)) {
       FsIndex_singletype<Annotation> index = addNewIndexCore(comparator, initialSize, indexType);
-      iicp = (FsIndex_iicp<T>) new FsIndex_annotation<Annotation>(index); 
+      iicp = (FsIndex_iicp<T>) new FsIndex_annotation<>(index);
     } else {
       FsIndex_singletype<TOP> index = addNewIndexCore(comparator, initialSize, indexType);
-      iicp = (FsIndex_iicp<T>) new FsIndex_iicp<TOP>(index); 
+      iicp = (FsIndex_iicp<T>) new FsIndex_iicp<>(index);
     }
     final Type type = comparator.getType();
     final int typeCode = ((TypeImpl) type).getCode();
@@ -764,7 +764,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     switch (indexingStrategy) {
     
     case FSIndex.SET_INDEX: 
-      ind = new FsIndex_set_sorted<T>(this.cas, type, indexingStrategy, comparatorForIndexSpecs); // false = is set
+      ind = new FsIndex_set_sorted<>(this.cas, type, indexingStrategy, comparatorForIndexSpecs); // false = is set
       break;
     
 //    case FSIndex.FLAT_INDEX: 
@@ -773,12 +773,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     case FSIndex.BAG_INDEX:
     case FSIndex.DEFAULT_BAG_INDEX: 
-      ind = new FsIndex_bag<T>(this.cas, type, initialSize, indexingStrategy, comparatorForIndexSpecs);
+      ind = new FsIndex_bag<>(this.cas, type, initialSize, indexingStrategy, comparatorForIndexSpecs);
       break;
     
     default: 
       // SORTED_INDEX is the default. We don't throw any errors, if the code is unknown, we just create a sorted index.
-      ind = new FsIndex_set_sorted<T>(this.cas, type, FSIndex.SORTED_INDEX, comparatorForIndexSpecs); // true = is sorted
+      ind = new FsIndex_set_sorted<>(this.cas, type, FSIndex.SORTED_INDEX, comparatorForIndexSpecs); // true = is sorted
       break;
  
     }
@@ -950,7 +950,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
   
   public Iterator<LowLevelIndex> ll_getIndexes() {
-    ArrayList<LowLevelIndex> indexList = new ArrayList<LowLevelIndex>();
+    ArrayList<LowLevelIndex> indexList = new ArrayList<>();
     final Iterator<String> it = this.getLabels();
     String label;
     while (it.hasNext()) {
@@ -976,7 +976,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @return An iterator over the labels.
    */
   public <T extends FeatureStructure> Iterator<String> getLabels(FSIndexComparator comp) {
-    final ArrayList<String> labels = new ArrayList<String>();
+    final ArrayList<String> labels = new ArrayList<>();
     final Iterator<String> it = this.getLabels();
     String label;
     while (it.hasNext()) {
@@ -1146,7 +1146,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         fss.add(fs);
       }
     }
-    Collections.sort(fss, (fs1, fs2) -> Integer.compare(fs1._id, fs2._id));
+    fss.sort((fs1, fs2) -> Integer.compare(fs1._id, fs2._id));
     for (TOP fs : fss) {
       action.accept(fs);
     }
@@ -1475,7 +1475,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     
     LowLevelIterator<T>[] ia = new LowLevelIterator[iteratorListSize];
-    return new FsIterator_aggregation_common<T>(iteratorList.toArray(ia), null, null);
+    return new FsIterator_aggregation_common<>(iteratorList.toArray(ia), null, null);
   }
 
   private final <T extends FeatureStructure> void getAllIndexedFS(Type type, List<LowLevelIterator<T>> iteratorList) {

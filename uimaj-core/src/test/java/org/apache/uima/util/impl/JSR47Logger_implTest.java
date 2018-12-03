@@ -33,7 +33,7 @@ import junit.framework.TestCase;
  */
 public class JSR47Logger_implTest extends TestCase {
 
-  private static HashMap<String, Level> logLevels = new HashMap<String, Level>(9);
+  private static HashMap<String, Level> logLevels = new HashMap<>(9);
   static {
     logLevels.put("OFF", Level.OFF);
     logLevels.put("SEVERE", Level.SEVERE);

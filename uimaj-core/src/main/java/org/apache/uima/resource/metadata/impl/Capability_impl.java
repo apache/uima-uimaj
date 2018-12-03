@@ -21,7 +21,6 @@ package org.apache.uima.resource.metadata.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.UIMAFramework;
@@ -160,20 +159,14 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    */
   public void setLanguagesSupported(String[] aLanguageIDs) {
     // create a list of existing preconditions
-    List<Precondition> preconditions = new ArrayList<Precondition>();
+    List<Precondition> preconditions = new ArrayList<>();
     Precondition[] precondArray = getPreconditions();
     if (precondArray != null) {
       preconditions.addAll(Arrays.asList(precondArray));
     }
 
     // remove any existing LanguagePrecondtiions
-    Iterator<Precondition> i = preconditions.iterator();
-    while (i.hasNext()) {
-      Precondition p = i.next();
-      if (p instanceof LanguagePrecondition) {
-        i.remove();
-      }
-    }
+    preconditions.removeIf(p -> p instanceof LanguagePrecondition);
 
     // add new precondition
     if (aLanguageIDs != null && aLanguageIDs.length > 0) {
@@ -193,20 +186,14 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    */
   public void setMimeTypesSupported(String[] aMimeTypes) {
     // create a list of existing preconditions
-    List<Precondition> preconditions = new ArrayList<Precondition>();
+    List<Precondition> preconditions = new ArrayList<>();
     Precondition[] precondArray = getPreconditions();
     if (precondArray != null) {
       preconditions.addAll(Arrays.asList(precondArray));
     }
 
     // remove any existing MimeTypePrecondtiions
-    Iterator<Precondition> i = preconditions.iterator();
-    while (i.hasNext()) {
-      Precondition p = i.next();
-      if (p instanceof MimeTypePrecondition) {
-        i.remove();
-      }
-    }
+    preconditions.removeIf(p -> p instanceof MimeTypePrecondition);
 
     // add new precondition
     if (aMimeTypes != null && aMimeTypes.length > 0) {

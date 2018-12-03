@@ -53,7 +53,7 @@ public class TypeSystemReinitTest extends TestCase {
       TypeSystemDescription tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(getClass().getResource("/org/apache/uima/examples/SourceDocumentInformation.xml")));
 
-      List<MetaDataObject> l = new ArrayList<MetaDataObject>();
+      List<MetaDataObject> l = new ArrayList<>();
       l.add(aed);
       l.add(tsd);
       CAS cas1 = CasCreationUtils.createCas(l);

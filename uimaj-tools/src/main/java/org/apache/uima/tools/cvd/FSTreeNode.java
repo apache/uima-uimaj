@@ -46,7 +46,7 @@ public abstract class FSTreeNode {
    * Removes the all children.
    */
   void removeAllChildren() {
-    this.children = new ArrayList<FSTreeNode>();
+    this.children = new ArrayList<>();
   }
 
   /**

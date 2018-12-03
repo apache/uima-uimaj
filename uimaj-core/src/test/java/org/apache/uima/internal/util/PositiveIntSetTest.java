@@ -43,7 +43,7 @@ public class PositiveIntSetTest extends TestCase {
   }
   
   private R r = new R();
-  private Set<Integer> cs = new HashSet<Integer>();
+  private Set<Integer> cs = new HashSet<>();
   private PositiveIntSet s;
   private int gi;
   
@@ -309,7 +309,7 @@ public class PositiveIntSetTest extends TestCase {
    */
   private void runRandomTests() { 
     s = r.useInitParms ? new PositiveIntSet_impl(r.initSize, r.estMin, r.estMax) : new PositiveIntSet_impl();
-    cs = new HashSet<Integer>();
+    cs = new HashSet<>();
     dadd(r.firstValue);
     
     for (int i = 0; i < 10000; i++) {

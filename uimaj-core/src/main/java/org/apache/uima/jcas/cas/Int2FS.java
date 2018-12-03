@@ -110,7 +110,7 @@ public class Int2FS <T extends TOP> extends TOP implements
    */
   public Int2FS(TypeImpl type, CASImpl casImpl) {
     super(type, casImpl);
-    int2FS = new Int2ObjHashMap<TOP, T>(TOP.class);
+    int2FS = new Int2ObjHashMap<>(TOP.class);
 
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
@@ -122,7 +122,7 @@ public class Int2FS <T extends TOP> extends TOP implements
    */
   public Int2FS(JCas jcas) {
     super(jcas);
-    int2FS = new Int2ObjHashMap<TOP, T>(TOP.class);
+    int2FS = new Int2ObjHashMap<>(TOP.class);
     
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
@@ -138,7 +138,7 @@ public class Int2FS <T extends TOP> extends TOP implements
   public Int2FS(JCas jcas, int length) {
     super(jcas);
     _casView.validateArraySize(length);
-    int2FS = new Int2ObjHashMap<TOP, T>(TOP.class, length);
+    int2FS = new Int2ObjHashMap<>(TOP.class, length);
 
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
@@ -214,7 +214,7 @@ public class Int2FS <T extends TOP> extends TOP implements
       IntegerArray ia = getIntArray();         
       int newSize = int2FS.size();
       if (fsa == null || fsa.size() != newSize) {
-        fsa = new FSArray<T>(_casView.getJCasImpl(), newSize);
+        fsa = new FSArray<>(_casView.getJCasImpl(), newSize);
         setFsArray(fsa);
         ia = new IntegerArray(_casView.getJCasImpl(), newSize);
         setIntArray(ia);

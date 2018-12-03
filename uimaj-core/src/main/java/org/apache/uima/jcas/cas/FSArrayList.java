@@ -805,7 +805,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
    * @return -
    */
   public static <E extends TOP, F extends FeatureStructure> FSArrayList<E> create(JCas jcas, F[] a) {
-    FSArrayList<E> fsa = new FSArrayList<E>(jcas, a.length);
+    FSArrayList<E> fsa = new FSArrayList<>(jcas, a.length);
     fsa.copyFromArray(a, 0, 0, a.length);  // does pear and journaling actions as needed
     return fsa;
   }

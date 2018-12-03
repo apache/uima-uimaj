@@ -928,7 +928,7 @@ public class IteratorTest extends TestCase {
     assertTrue(sortedIndex.size() == v.size());
 
     // Test moveTo()
-    List<AnnotationFS> list = new ArrayList<AnnotationFS>();
+    List<AnnotationFS> list = new ArrayList<>();
     FSIterator<AnnotationFS> it2 = this.cas.getAnnotationIndex().iterator();
     for (it2.moveToFirst(); it2.isValid(); it2.moveToNext()) {
       list.add(it2.get());

@@ -195,7 +195,7 @@ public class XmiCasDeserializer {
 
     // map from namespace prefixes to URIs. Allows namespace resolution even
     // with a non-namespace-enabled SAX parser.
-    private Map<String, String> nsPrefixToUriMap = new HashMap<String, String>();
+    private Map<String, String> nsPrefixToUriMap = new HashMap<>();
 
     // container for data shared between the XmiCasSerialier and
     // XmiDeserializer, to support things such as consistency of IDs across
@@ -314,8 +314,8 @@ public class XmiCasDeserializer {
         this.nextSofaNum = this.casBeingFilled.getViewCount() + 1; 
       }
       this.buffer = new StringBuilder();
-      this.indexRepositories = new ArrayList<FSIndexRepository>();
-      this.views = new ArrayList<CAS>();
+      this.indexRepositories = new ArrayList<>();
+      this.views = new ArrayList<>();
       indexRepositories.add(this.casBeingFilled.getBaseIndexRepository());
       // There should always be another index for the Initial View
       indexRepositories.add(this.casBeingFilled.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
@@ -448,7 +448,7 @@ public class XmiCasDeserializer {
             //correctly.
             if (this.outOfTypeSystemElement != null) {
               XmlElementName elemName = new XmlElementName(nameSpaceURI, localName, qualifiedName);
-              List<XmlAttribute> ootsAttrs = new ArrayList<XmlAttribute>();
+              List<XmlAttribute> ootsAttrs = new ArrayList<>();
               ootsAttrs.add(new XmlAttribute("href", href));
               XmlElementNameAndContents elemWithContents = new XmlElementNameAndContents(elemName, null, ootsAttrs);
               this.outOfTypeSystemElement.childElements.add(elemWithContents);
@@ -458,11 +458,7 @@ public class XmiCasDeserializer {
               //the integer value, which will be interpreted as a reference later.
               //NOTE: this will end up causing it to be reserialized as an attribute
               //rather than an element, but that is not in violation of the XMI spec.
-              ArrayList<String> valueList = this.multiValuedFeatures.get(qualifiedName);
-              if (valueList == null) {
-                valueList = new ArrayList<String>();
-                this.multiValuedFeatures.put(qualifiedName, valueList);
-              }
+              ArrayList<String> valueList = this.multiValuedFeatures.computeIfAbsent(qualifiedName, k -> new ArrayList<>());
               valueList.add(href.substring(1));
             }                         
             state = REF_FEAT_STATE;
@@ -967,7 +963,7 @@ public class XmiCasDeserializer {
         else {
           // this logic mimics the way version 2 did this.
           if (isDoingDeferredChildElements) {
-            ArrayList<String> featValAsArrayList = new ArrayList<String>(1);
+            ArrayList<String> featValAsArrayList = new ArrayList<>(1);
             featValAsArrayList.add(featVal);
             sharedData.addOutOfTypeSystemChildElements(fs, featName, featValAsArrayList);
           } else {
@@ -1676,11 +1672,7 @@ public class XmiCasDeserializer {
         case FEAT_CONTENT_STATE: {
           // We have just processed one of possibly many values for a feature.
           // Store this value in the multiValuedFeatures map for later use.
-          ArrayList<String> valueList = this.multiValuedFeatures.get(qualifiedName);
-          if (valueList == null) {
-            valueList = new ArrayList<String>();
-            this.multiValuedFeatures.put(qualifiedName, valueList);
-          }
+          ArrayList<String> valueList = this.multiValuedFeatures.computeIfAbsent(qualifiedName, k -> new ArrayList<>());
           valueList.add(buffer.toString());
 
           // go back to the state where we're expecting a feature
@@ -2069,7 +2061,7 @@ public class XmiCasDeserializer {
   
   private TypeSystemImpl ts;
 
-  private Map<String, String> xmiNamespaceToUimaNamespaceMap = new HashMap<String, String>();
+  private Map<String, String> xmiNamespaceToUimaNamespaceMap = new HashMap<>();
   
   /**
    * Create a new deserializer from a type system.

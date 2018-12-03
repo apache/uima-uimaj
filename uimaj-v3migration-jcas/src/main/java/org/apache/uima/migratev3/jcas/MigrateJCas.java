@@ -1444,7 +1444,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 //    //   find the list of CommonConverteds - one per each different version
 //    //     create it if null
     List<CommonConverted> commonConverteds = classname2multiSources
-        .computeIfAbsent(fqcn_slash, k -> new ArrayList<CommonConverted>());
+        .computeIfAbsent(fqcn_slash, k -> new ArrayList<>());
 
     // search to see if this instance already in the set
     //   if so, add the path to the set of identicals
@@ -1877,12 +1877,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private class removeEmptyStmts extends VoidVisitorAdapter<Object> {
     @Override
     public void visit(BlockStmt n, Object ignore) {
-      Iterator<Statement> it = n.getStatements().iterator();
-      while (it.hasNext()) {
-        if (it.next() instanceof EmptyStmt) {
-          it.remove();
-        }
-      }
+      n.getStatements().removeIf(statement -> statement instanceof EmptyStmt);
       super.visit(n,  ignore);
     }
     
@@ -2155,14 +2150,13 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    * @param items
    */
   private <T, U> void sortReport2(List<? extends Report2<T, U>> items) {
-    Collections.sort(items, 
-        (o1, o2) -> {
-          int r = protectedCompare(o1.getFirst(), o2.getFirst());           
-          if (r == 0) {
-            r = protectedCompare(o1.getSecond(), o2.getSecond());
-          }
-          return r;
-        });
+    items.sort((o1, o2) -> {
+      int r = protectedCompare(o1.getFirst(), o2.getFirst());
+      if (r == 0) {
+        r = protectedCompare(o1.getSecond(), o2.getSecond());
+      }
+      return r;
+    });
   }
         
   /**

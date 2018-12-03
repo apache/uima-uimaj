@@ -96,7 +96,7 @@ public class UIMAClassLoader extends URLClassLoader {
     StringTokenizer tok = new StringTokenizer(classpath, File.pathSeparator);
     
     // pathList of the classpath entries
-    List<String> pathList = new ArrayList<String>();
+    List<String> pathList = new ArrayList<>();
 
     // extract all classpath entries and add them to the pathList
     while (tok.hasMoreTokens()) {

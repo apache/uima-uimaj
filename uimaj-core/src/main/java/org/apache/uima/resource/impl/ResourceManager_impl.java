@@ -213,23 +213,23 @@ public class ResourceManager_impl implements ResourceManager {
   //   Because internal users do a sync, only one thread at a time is using this
   //   (for internal calls) anyways, so there's no advantage to the extra overhead
   //   of making this a ConcurrentHashMap  (March 2014)
-  private Map<String, XMLizable> importCache = Collections.synchronizedMap(new HashMap<String,XMLizable>());
+  private Map<String, XMLizable> importCache = Collections.synchronizedMap(new HashMap<>());
   
   /**
    * Cache of imported descriptor URLs from which the parsed objects in importCache
    * were created, so that these URLs are not re-parsed if the same URL is imported again.
    */
-  private Map<String, Set<String>> importUrlsCache = Collections.synchronizedMap(new HashMap<String,Set<String>>());
+  private Map<String, Set<String>> importUrlsCache = Collections.synchronizedMap(new HashMap<>());
   
   /**
    * Creates a new <code>ResourceManager_impl</code>.
    */
   public ResourceManager_impl() {
-    mResourceMap = Collections.synchronizedMap(new HashMap<String, Object>());
-    mInternalResourceRegistrationMap = new ConcurrentHashMap<String, ResourceRegistration>();
-    mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<?>>();
-    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<?>>();
-    mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Object>();
+    mResourceMap = Collections.synchronizedMap(new HashMap<>());
+    mInternalResourceRegistrationMap = new ConcurrentHashMap<>();
+    mParameterizedResourceImplClassMap = new ConcurrentHashMap<>();
+    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<>();
+    mParameterizedResourceInstanceMap = new ConcurrentHashMap<>();
     mRelativePathResolver = new RelativePathResolver_impl(); 
   }
 
@@ -239,11 +239,11 @@ public class ResourceManager_impl implements ResourceManager {
    * @param aClassLoader -
    */
   public ResourceManager_impl(ClassLoader aClassLoader) {
-    mResourceMap = Collections.synchronizedMap(new HashMap<String, Object>());
-    mInternalResourceRegistrationMap = new ConcurrentHashMap<String, ResourceRegistration>();
-    mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<?>>();
-    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<?>>();
-    mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Object>();
+    mResourceMap = Collections.synchronizedMap(new HashMap<>());
+    mInternalResourceRegistrationMap = new ConcurrentHashMap<>();
+    mParameterizedResourceImplClassMap = new ConcurrentHashMap<>();
+    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<>();
+    mParameterizedResourceInstanceMap = new ConcurrentHashMap<>();
     mRelativePathResolver = new RelativePathResolver_impl(aClassLoader);
   }
 
@@ -437,7 +437,7 @@ public class ResourceManager_impl implements ResourceManager {
     }
 
     // see if we've already encountered this DataResource under this resource name
-    List<Object> nameAndResource = new ArrayList<Object>(2);
+    List<Object> nameAndResource = new ArrayList<>(2);
     nameAndResource.add(aName);
     nameAndResource.add(dr);
     Object resourceInstance = mParameterizedResourceInstanceMap.get(nameAndResource);
@@ -589,7 +589,7 @@ public class ResourceManager_impl implements ResourceManager {
     // resource manager as the value returned from their getResourceManager call
     // see https://issues.apache.org/jira/browse/UIMA-5148
     if (null == aAdditionalParams) {
-      aAdditionalParams = new HashMap<String, Object>();
+      aAdditionalParams = new HashMap<>();
     }
     if (!aAdditionalParams.containsKey(Resource.PARAM_RESOURCE_MANAGER)) {
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, this);
@@ -724,8 +724,8 @@ public class ResourceManager_impl implements ResourceManager {
   private void registerResource(String aName, ExternalResourceDescription aResourceDescription,
           String aDefiningContext, Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     // add the relative path resolver to the resource init. params
-    Map<String, Object> initParams = (aResourceInitParams == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(
-            aResourceInitParams);
+    Map<String, Object> initParams = (aResourceInitParams == null) ? new HashMap<>() : new HashMap<>(
+        aResourceInitParams);
     initParams.put(DataResource.PARAM_RELATIVE_PATH_RESOLVER, getRelativePathResolver());
     
     // determine if verification mode is on.  If so, we don't want to load the resource data

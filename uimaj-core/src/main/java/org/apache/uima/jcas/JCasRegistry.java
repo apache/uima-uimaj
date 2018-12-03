@@ -98,12 +98,12 @@ public class JCasRegistry {
 //        availableFeatureIndexes.addLast(it.next());
 //      }
       
-      loadedJCasClasses.set(i, new WeakRefInt<Class<? extends TOP>>(aJCasCoverClass, releasedQueue, i));
+      loadedJCasClasses.set(i, new WeakRefInt<>(aJCasCoverClass, releasedQueue, i));
       return i;
     }
      
     int i = loadedJCasClasses.size();
-    loadedJCasClasses.add(new WeakRefInt<Class<? extends TOP>>(aJCasCoverClass, releasedQueue, i));
+    loadedJCasClasses.add(new WeakRefInt<>(aJCasCoverClass, releasedQueue, i));
     return i;
   }
   

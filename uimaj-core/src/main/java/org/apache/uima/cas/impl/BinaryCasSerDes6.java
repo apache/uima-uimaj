@@ -391,7 +391,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   /**
    * FSs being processed, including below-the-line deltas.
    */
-  final private List<TOP> toBeScanned = new ArrayList<TOP>();
+  final private List<TOP> toBeScanned = new ArrayList<>();
 //  private HashSetInt ffssBelowMark;  // sorted fss's found below the mark
 //  final private int[] typeCodeHisto = new int[ts.getTypeArraySize()]; 
 
@@ -1115,7 +1115,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     deflater.setStrategy(compressStrategy.strat);
     int nbrEntries = 0;
     
-    List<Integer> idxAndLen = new ArrayList<Integer>();
+    List<Integer> idxAndLen = new ArrayList<>();
 
     for (int i = 0; i < baosZipSources.length; i++) {
       ByteArrayOutputStream baos = baosZipSources[i];

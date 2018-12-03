@@ -383,13 +383,13 @@ public class CasSerializerSupport {
      * map from a namespace expanded form to the namespace prefix, to identify potential collisions when
      *   generating a namespace string
      */
-    public final Map<String, String> nsUriToPrefixMap = new HashMap<String, String>();
+    public final Map<String, String> nsUriToPrefixMap = new HashMap<>();
            
     /**
      * the set of all namespace prefixes used, to disallow some if they are 
      *   in use already in set-aside data (xmi serialization) being merged back in
      */
-    public final Set<String> nsPrefixesUsed = new HashSet<String>();
+    public final Set<String> nsPrefixesUsed = new HashSet<>();
     
     /**
      * Used to tell if a FS was created before or after mark.
@@ -423,7 +423,7 @@ public class CasSerializerSupport {
     public TypeSystemImpl filterTypeSystem_inner;
     
     // map to reduce string usage by reusing equal string representations; lives just for one serialize call
-    private final Map<String, String> uniqueStrings = new HashMap<String, String>();
+    private final Map<String, String> uniqueStrings = new HashMap<>();
 
     public final boolean isFormattedOutput_inner;
     

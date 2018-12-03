@@ -369,7 +369,7 @@ public class TypeSystemTest extends TestCase {
   public void testGetTypeIterator() {
     Iterator<Type> it = this.ts.getTypeIterator();
     // Put the type names in a vector and do some spot checks.
-    ArrayList<String> v = new ArrayList<String>();
+    List<String> v = new ArrayList<>();
     while (it.hasNext()) {
       v.add(it.next().getName());
     }
@@ -383,7 +383,7 @@ public class TypeSystemTest extends TestCase {
   public void testGetFeatures() {
     Iterator<Feature> it = this.ts.getFeatures();
     // Put feature names in vector and test for some known features.
-    List<String> v = new ArrayList<String>();
+    List<String> v = new ArrayList<>();
     while (it.hasNext()) {
       v.add(it.next().getName());
     }

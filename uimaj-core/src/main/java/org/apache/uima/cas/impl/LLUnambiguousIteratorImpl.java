@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -43,7 +44,7 @@ public class LLUnambiguousIteratorImpl<T extends FeatureStructure> extends FsIte
   
   // this is static because can't have instance method call before super call in constructor
   private static Annotation[] createItemsArray(LowLevelIterator<FeatureStructure> it) {
-    ArrayList<Annotation> items = new ArrayList<Annotation>();
+    List<Annotation> items = new ArrayList<>();
     int lastSeenEnd = 0;
     it.moveToFirst();
     // Iterate over the input iterator.

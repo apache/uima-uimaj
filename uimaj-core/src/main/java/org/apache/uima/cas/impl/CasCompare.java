@@ -347,7 +347,7 @@ public class CasCompare {
   /* ****************************************************
    * Data Structures for converting lists to arrays
    * ****************************************************/
-  private static final CommonList removed_list_marker = new NonEmptyFSList<TOP>();
+  private static final CommonList removed_list_marker = new NonEmptyFSList<>();
   
   /** 
    * key = _id, value = arraylist holding well-formed list with this node in it 
@@ -364,8 +364,8 @@ public class CasCompare {
    * a map from list nodes which might be removed, to their place in the fss array list
    *   The index is 1 more, to avoid colliding with the 0 value, used for missing value
    */
-  final private Obj2IntIdentityHashMap<CommonList> node_indexes = 
-      new Obj2IntIdentityHashMap<CommonList>(CommonList.class, removed_list_marker);
+  final private Obj2IntIdentityHashMap<CommonList> node_indexes =
+      new Obj2IntIdentityHashMap<>(CommonList.class, removed_list_marker);
   
   final private PositiveIntSet list_successor_seen = new PositiveIntSet_impl();
   
@@ -1283,7 +1283,7 @@ public class CasCompare {
     
     // both are not null
     // do a recursive check 
-    Pair<TOP, TOP> refs = new Pair<TOP, TOP>(rfs1, rfs2);
+    Pair<TOP, TOP> refs = new Pair<>(rfs1, rfs2);
     Integer prevComp = prevCompare.get(refs);
      if (prevComp != null) {  
        int v = prevComp.intValue();
@@ -1510,8 +1510,7 @@ public class CasCompare {
     clearPrevFss();
 
     try {
-      Collections.sort(fss,  
-            (afs1, afs2) -> sortCompare(afs1, afs2));
+      fss.sort((afs1, afs2) -> sortCompare(afs1, afs2));
 //            (afs1, afs2) -> Integer.compare(afs1._id, afs2._id));
     } finally {
       inSortContext = false;

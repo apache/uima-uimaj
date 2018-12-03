@@ -92,7 +92,7 @@ public class Int2IntRBTtest extends TestCase {
   public void testFastLookup() {
     Int2IntRBT ia = new Int2IntRBT();
     Random r = new Random();
-    Set<Integer> keys = new HashSet<Integer>(1000);
+    Set<Integer> keys = new HashSet<>(1000);
     
     for (int i = 0; i < 1000; i++) {
       int k = r.nextInt(1000);

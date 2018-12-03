@@ -73,7 +73,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    } 
    
   public NonEmptyFSList<T> createNonEmptyNode() {
-   return new NonEmptyFSList<T>(this._casView.getJCasImpl());
+   return new NonEmptyFSList<>(this._casView.getJCasImpl());
   }
   
   public NonEmptyFSList<T> pushNode() {
@@ -161,7 +161,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    * @return the new list, with this item as the head value of the first element
    */
   public NonEmptyFSList<T> push(T item) {
-    return new NonEmptyFSList<T>(_casView.getJCasImpl(), item, this);
+    return new NonEmptyFSList<>(_casView.getJCasImpl(), item, this);
   }
 
   /**

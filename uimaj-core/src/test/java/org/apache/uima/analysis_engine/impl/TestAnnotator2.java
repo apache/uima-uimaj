@@ -196,7 +196,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
         //XMLInputSource in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
         XMLInputSource in = new XMLInputSource(new File(resDir, "AnnotatorWithExternalOverrides.xml"));
         AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
-        Map<String, Object> additionalParams = new HashMap<String, Object>();
+        Map<String, Object> additionalParams = new HashMap<>();
         Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
         FileInputStream fis = new FileInputStream(new File(resDir, "testExternalOverride2.settings"));
         extSettings.load(fis);

@@ -409,7 +409,7 @@ public class SerializationNoMDTest extends TestCase {
     String line;
     BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer();
-    List<String> docs = new ArrayList<String>();
+    List<String> docs = new ArrayList<>();
     while ((line = br.readLine()) != null) {
       if (line.startsWith(".. <p")) {
         docs.add(buf.toString());

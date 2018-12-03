@@ -303,8 +303,8 @@ public class CasCopier {
     srcTsi = originalSrcCas.getTypeSystemImpl();
     tgtTsi = originalTgtCas.getTypeSystemImpl();
 
-    src2TgtType = (srcTsi == tgtTsi) ? null : new Int2ObjListMap<TypeImpl>(srcTsi.getTypeArraySize());
-    src2TgtFeat = (srcTsi == tgtTsi) ? null : new Int2ObjListMap<FeatureImpl>(srcTsi.getNumberOfFeatures() + 1);
+    src2TgtType = (srcTsi == tgtTsi) ? null : new Int2ObjListMap<>(srcTsi.getTypeArraySize());
+    src2TgtFeat = (srcTsi == tgtTsi) ? null : new Int2ObjListMap<>(srcTsi.getNumberOfFeatures() + 1);
     
 
 //    tInfoArray = new TypeInfo[srcTsi.getLargestTypeCode() + 1];

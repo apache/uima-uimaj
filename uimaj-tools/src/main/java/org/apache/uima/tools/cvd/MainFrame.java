@@ -172,7 +172,7 @@ public class MainFrame extends JFrame {
   private static final long serialVersionUID = -1357410768440678886L;
 
   /** The log levels. */
-  public static List<Level> logLevels = new ArrayList<Level>(9);
+  public static List<Level> logLevels = new ArrayList<>(9);
   static {
     logLevels.add(Level.OFF);
     logLevels.add(Level.SEVERE);
@@ -480,7 +480,7 @@ public class MainFrame extends JFrame {
   public static final String DEFAULT_STYLE_NAME = "defaultStyle";
 
   /** The style map. */
-  private Map<String, Style> styleMap = new HashMap<String, Style>();
+  private Map<String, Style> styleMap = new HashMap<>();
 
   /** The Constant maxRecentSize. */
   // For recently used text and descriptor files.
@@ -490,17 +490,17 @@ public class MainFrame extends JFrame {
   private final RecentFilesList recentTextFiles = new RecentFilesList(maxRecentSize);
 
   /** The text file name list. */
-  private final List<String> textFileNameList = new ArrayList<String>();
+  private final List<String> textFileNameList = new ArrayList<>();
 
   /** The recent desc files. */
   private final RecentFilesList recentDescFiles = new RecentFilesList(maxRecentSize);
 
   /** The desc file name list. */
-  private final List<String> descFileNameList = new ArrayList<String>();
+  private final List<String> descFileNameList = new ArrayList<>();
 
   /** The cursor owning components. */
   // For cursor handling (busy cursor). Is there a better way?
-  private List<Component> cursorOwningComponents = new ArrayList<Component>();
+  private List<Component> cursorOwningComponents = new ArrayList<>();
 
   /** The cursor cache. */
   private List<Cursor> cursorCache = null;
@@ -1026,7 +1026,7 @@ public class MainFrame extends JFrame {
    * @return the hash map
    */
   private HashMap<Object, Action> createEditActionMap() {
-    HashMap<Object, Action> map = new HashMap<Object, Action>();
+    HashMap<Object, Action> map = new HashMap<>();
     Action[] ar = this.textArea.getActions();
     for (int i = 0; i < ar.length; i++) {
       Action a = ar[i];
@@ -1190,7 +1190,7 @@ public class MainFrame extends JFrame {
    */
   private final void setWaitCursor() {
     this.setEnabled(false);
-    this.cursorCache = new ArrayList<Cursor>();
+    this.cursorCache = new ArrayList<>();
     for (int i = 0; i < this.cursorOwningComponents.size(); i++) {
       Component comp = this.cursorOwningComponents.get(i);
       this.cursorCache.add(comp.getCursor());
@@ -1220,7 +1220,7 @@ public class MainFrame extends JFrame {
     Map<String, Charset> charsetMap = Charset.availableCharsets();
     String sysCodePage = Charset.defaultCharset().name();
     
-    this.codePages = new ArrayList<String>();
+    this.codePages = new ArrayList<>();
 
     if (sysCodePage != null) {
       this.codePages.add(sysCodePage);
@@ -1332,7 +1332,7 @@ public class MainFrame extends JFrame {
    * Creates the languages.
    */
   public void createLanguages() {
-    this.languages = new ArrayList<String>();
+    this.languages = new ArrayList<>();
     if (this.languagePrefsList == null) {
       this.languagePrefsList = defaultLanguages;
     }
@@ -1992,7 +1992,7 @@ public class MainFrame extends JFrame {
    * @return the annotations at pos
    */
   private ArrayList<FSNode> getAnnotationsAtPos(int pos, List<FSNode> annots) {
-    ArrayList<FSNode> res = new ArrayList<FSNode>();
+    ArrayList<FSNode> res = new ArrayList<>();
     FSNode annot;
     final int max = annots.size();
     for (int i = 0; i < max; i++) {
@@ -2169,7 +2169,7 @@ public class MainFrame extends JFrame {
    * @return the list
    */
   private static final List<String> stringToArrayList(String s) {
-    List<String> list = new ArrayList<String>();
+    List<String> list = new ArrayList<>();
     if (s.length() > 0) {
       StringTokenizer tok = new StringTokenizer(s, ",");
       while (tok.hasMoreTokens()) {

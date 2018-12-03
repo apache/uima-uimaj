@@ -71,7 +71,7 @@ public class JCasHashMapCompareTest extends TestCase {
     
 //    stats("custom", runCustom(numberOfThreads));  // not accurate, use yourkit retained size instead
 //    stats("concur", runConCur(numberOfThreads));
-    Set<Integer> ints = new HashSet<Integer>();
+    Set<Integer> ints = new HashSet<>();
     for (Entry<Integer, TOP> e : concurrentMap.entrySet()) {
       assertFalse(ints.contains(Integer.valueOf(e.getKey())));
       assertEquals(e.getValue()._id(), (int)(e.getKey()));
@@ -85,8 +85,8 @@ public class JCasHashMapCompareTest extends TestCase {
   }
   
   private int runConCur(int numberOfThreads) throws Exception {
-    final ConcurrentMap<Integer, TOP> m = 
-        new ConcurrentHashMap<Integer, TOP>(200, 0.75F, numberOfThreads);
+    final ConcurrentMap<Integer, TOP> m =
+        new ConcurrentHashMap<>(200, 0.75F, numberOfThreads);
     concurrentMap = m;
     
     final int numberOfWaiters = numberOfThreads*2;

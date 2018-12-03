@@ -117,7 +117,7 @@ public class ResultSpecification_implTest extends TestCase {
       capabilities = new Capability[] { cap1, cap2, cap3 };
 
       // make languages array
-      languages = new Vector<String[]>(3);
+      languages = new Vector<>(3);
       languages.add(0, languages1);
       languages.add(1, languages2);
       languages.add(2, languages3);

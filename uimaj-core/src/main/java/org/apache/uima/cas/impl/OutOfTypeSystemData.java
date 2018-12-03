@@ -42,7 +42,7 @@ public class OutOfTypeSystemData {
   /**
    * List of FSData objects for out-of-typesystem FSs.
    */
-  final List<FSData> fsList = new ArrayList<FSData>();
+  final List<FSData> fsList = new ArrayList<>();
 
   /**
    * Map from Feature Structure to List of String arrays holding feature names and values for
@@ -61,7 +61,7 @@ public class OutOfTypeSystemData {
    * Map used during re-serialization. Stores mapping from out-of-typesystem FS IDs to the actual
    * IDs used in the generated XCAS.
    */
-  final Map<String, String> idMap = new HashMap<String, String>();
+  final Map<String, String> idMap = new HashMap<>();
   
   /**
    * For debugging purposes only.

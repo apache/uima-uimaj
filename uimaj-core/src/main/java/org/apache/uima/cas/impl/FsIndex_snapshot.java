@@ -83,7 +83,7 @@ public class FsIndex_snapshot <T extends FeatureStructure>
   @Override
   public LowLevelIterator<T> iterator(boolean orderNotNeeded, boolean ignoreType) {
     Comparator<TOP> comparatorMaybeNoTypeWithoutID = ignoreType ? comparatorNoTypeWithoutId : comparatorWithoutId;
-    return new FsIterator_subtypes_snapshot<T>(new FsIndex_flat<T>(wrapped), comparatorMaybeNoTypeWithoutID);
+    return new FsIterator_subtypes_snapshot<>(new FsIndex_flat<>(wrapped), comparatorMaybeNoTypeWithoutID);
   }
   
   /* (non-Javadoc)
@@ -98,7 +98,7 @@ public class FsIndex_snapshot <T extends FeatureStructure>
    */
   @Override
   public FSIndex<T> withSnapshotIterators() {
-    return new FsIndex_snapshot<T>(wrapped, comparatorWithoutId, comparatorNoTypeWithoutId);
+    return new FsIndex_snapshot<>(wrapped, comparatorWithoutId, comparatorNoTypeWithoutId);
   }
 
   /* (non-Javadoc)
@@ -119,7 +119,7 @@ public class FsIndex_snapshot <T extends FeatureStructure>
     LowLevelIterator<T> it = iterator(IS_ORDERED, IS_TYPE_ORDER);
     return ambiguous 
             ? it
-            : new LLUnambiguousIteratorImpl<T>(it);
+            : new LLUnambiguousIteratorImpl<>(it);
   }
 
   @Override

@@ -102,7 +102,7 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
                   getImplementationName(), CasConsumer.class.getName(), getSourceUrlString() });
     }
     // try to create a CAS
-    List<ProcessingResourceMetaData> metadata = new ArrayList<ProcessingResourceMetaData>();
+    List<ProcessingResourceMetaData> metadata = new ArrayList<>();
     metadata.add(getCasConsumerMetaData());
     CasCreationUtils.createCas(metadata);
   }

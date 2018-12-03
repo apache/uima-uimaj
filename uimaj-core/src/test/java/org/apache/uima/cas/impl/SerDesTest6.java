@@ -195,7 +195,7 @@ public class SerDesTest6 extends SerDesTstCommon {
     /** table, by two types, then sparse table, each slot not empty is a feature indexed by corresponding featureNameRoots */
     Feature[][] featureTable = new Feature[Types.values().length][featureNameRoots.size()];
     /** short-name to types map: e.g. Aint -> array of int  */
-    Map<String, Type>     mapString2Type      = new HashMap<String, Type>();
+    Map<String, Type>     mapString2Type      = new HashMap<>();
     public TypeSystemImpl ts;
     public CASImpl cas;  // the Cas setup as part of initialization                                                                    // the
     private boolean isUpdateAfterCommit = false; // only needed for v3, ignored for v2
@@ -296,7 +296,7 @@ public class SerDesTest6 extends SerDesTstCommon {
     for (int i = 0; i < nbrAltTs; i++) {
       alternateTTypeSystems[i] = setupTTypeSystem(tss[i]);
     }
-    lfs = new ArrayList<FeatureStructure>();
+    lfs = new ArrayList<>();
 //    System.out.format("Debug SerDesTest6 setup time: %d micros%n", 
 //        (System.nanoTime() - startTime)/1000L);
 
@@ -716,7 +716,7 @@ public class SerDesTest6 extends SerDesTstCommon {
     ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
 
-    lfs = new ArrayList<FeatureStructure>();
+    lfs = new ArrayList<>();
     loadCas(remoteCas, m);
 
     List<FeatureStructure> lfs2 = getIndexedFSs(remoteCas, m);
@@ -833,7 +833,7 @@ public class SerDesTest6 extends SerDesTstCommon {
   }
 
   public void testArrayAux() {
-    ArrayList<FeatureStructure> fsList = new ArrayList<FeatureStructure>();
+    ArrayList<FeatureStructure> fsList = new ArrayList<>();
     /**
      * Strings, non-array Long/Double:
      * Make equal items,
@@ -1071,7 +1071,7 @@ public class SerDesTest6 extends SerDesTstCommon {
   }
 
   private void makeRandomFss(CASImpl cas, TTypeSystem m, Types typeKind, int n) {
-    List<FeatureStructure> lfss = new ArrayList<FeatureStructure>();
+    List<FeatureStructure> lfss = new ArrayList<>();
     for (int i = 0; i < n; i++) {
       FeatureStructure fs = makeAkof(cas, m, typeKind);
       if (random.nextBoolean()) {
@@ -1614,7 +1614,7 @@ public class SerDesTest6 extends SerDesTstCommon {
 
   private List<FeatureStructure> getIndexedFSs(CASImpl cas, TTypeSystem m) {
     Collection<TOP> c = cas.getIndexRepository().getIndexedFSs(m.getType(Akof1));
-    List<FeatureStructure> lfs = new ArrayList<FeatureStructure>();
+    List<FeatureStructure> lfs = new ArrayList<>();
     for (TOP fs : c) {
       lfs.add(fs);
     }

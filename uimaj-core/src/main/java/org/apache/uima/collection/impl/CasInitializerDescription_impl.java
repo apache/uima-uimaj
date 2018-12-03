@@ -102,7 +102,7 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
                   getImplementationName(), CasInitializer.class.getName(), getSourceUrlString() });
     }
     // try to create a CAS
-    List<ProcessingResourceMetaData> metadata = new ArrayList<ProcessingResourceMetaData>();
+    List<ProcessingResourceMetaData> metadata = new ArrayList<>();
     metadata.add(getCasInitializerMetaData());
     CasCreationUtils.createCas(metadata);
   }

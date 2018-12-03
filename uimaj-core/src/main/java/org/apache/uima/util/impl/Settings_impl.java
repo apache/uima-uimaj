@@ -63,7 +63,7 @@ public class Settings_impl implements Settings {
   // Thread-local map of properties being resolved +for detecting circular references.
   private ThreadLocal<HashMap<String, Integer>> tlResolving = new ThreadLocal<HashMap<String, Integer>>() {
     protected synchronized HashMap<String, Integer> initialValue() {
-      return new HashMap<String, Integer>();
+      return new HashMap<>();
     }
   };
 
@@ -74,7 +74,7 @@ public class Settings_impl implements Settings {
   private Pattern evalPattern = Pattern.compile("\\$\\{.*?\\}");
 
   public Settings_impl() {
-    map = new HashMap<String, String>();
+    map = new HashMap<>();
   }
 
   /**

@@ -36,14 +36,14 @@ import org.apache.uima.cas.TypeSystem;
  */
 public class RsFullFeatNames {
     
-  private static final ConcurrentHashMap<String, ConcurrentHashMap<String, String>> typeName2TypeFeats = 
-      new ConcurrentHashMap<String, ConcurrentHashMap<String, String>>();  
+  private static final ConcurrentHashMap<String, ConcurrentHashMap<String, String>> typeName2TypeFeats =
+      new ConcurrentHashMap<>();
   
   public static String getFullFeatName(String typeName, String shortFeatName) {
     
     ConcurrentHashMap<String, String> tf = typeName2TypeFeats.get(typeName), tfOther;
     if (null == tf) {
-      tfOther = typeName2TypeFeats.putIfAbsent(typeName, tf = new ConcurrentHashMap<String, String>());
+      tfOther = typeName2TypeFeats.putIfAbsent(typeName, tf = new ConcurrentHashMap<>());
       tf = (tfOther != null) ? tfOther : tf; 
     }
     String s = tf.get(shortFeatName), otherString;

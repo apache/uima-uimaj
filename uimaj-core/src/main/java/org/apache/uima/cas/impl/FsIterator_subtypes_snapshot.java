@@ -205,9 +205,9 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
    */
   @Override
   public FSIterator<T> copy() {
-    FsIterator_subtypes_snapshot<T> it = new FsIterator_subtypes_snapshot<T>(
-        this.snapshot, 
-        this.indexForComparator, 
+    FsIterator_subtypes_snapshot<T> it = new FsIterator_subtypes_snapshot<>(
+        this.snapshot,
+        this.indexForComparator,
         this.is_unordered,
         this.comparatorMaybeNoTypeWithoutId);
     it.pos = pos;

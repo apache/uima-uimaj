@@ -175,7 +175,7 @@ public class Jg {
       }
       String typeName = type.getName();
       List<Feature> fs = type.getFeatures();
-      List<Feature> features = new ArrayList<Feature>(fs.size());
+      List<Feature> features = new ArrayList<>(fs.size());
       // get list of features defined in this type excluding those defined in supertypes
       for (int i = 0; i < fs.size(); i++) {
         Feature f = fs.get(i);
@@ -334,7 +334,7 @@ public class Jg {
   private Type tcasAnnotationType;
 
   /** The merged types adding features. */
-  private Map<String, Set<String>> mergedTypesAddingFeatures = new TreeMap<String, Set<String>>(); // a Map of types and the xml files that were merged to create them 
+  private Map<String, Set<String>> mergedTypesAddingFeatures = new TreeMap<>(); // a Map of types and the xml files that were merged to create them
 
   /** The project path dir. */
   private String projectPathDir;  

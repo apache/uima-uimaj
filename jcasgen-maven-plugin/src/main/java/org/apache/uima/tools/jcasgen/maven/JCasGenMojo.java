@@ -157,7 +157,7 @@ public class JCasGenMojo extends AbstractMojo {
 
     // Create a merged type system and check if any of the files has a delta
     TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
-    List<Import> imports = new ArrayList<Import>();
+    List<Import> imports = new ArrayList<>();
     boolean contextDelta = false;
     for (String descriptorLocation : ds.getIncludedFiles()) {
       File descriptorFile = new File(ds.getBasedir(), descriptorLocation);
@@ -204,7 +204,7 @@ public class JCasGenMojo extends AbstractMojo {
       return;
     }
 
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     if (limitToProject) {
       File limitToDirectory = project.getBasedir().getAbsoluteFile();
       getLog().info("JCasGen: Limiting generation to descriptors in '" + limitToDirectory + "'");
@@ -302,7 +302,7 @@ public class JCasGenMojo extends AbstractMojo {
     File buildOutputDirectory = new File(this.project.getBuild().getOutputDirectory());
 
     // map each resource from its target location to its source location
-    Map<File, File> targetToSource = new HashMap<File, File>();
+    Map<File, File> targetToSource = new HashMap<>();
     for (Resource resource : this.project.getResources()) {
       File resourceDir = new File(resource.getDirectory());
       if (resourceDir.exists()) {

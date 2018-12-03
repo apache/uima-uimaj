@@ -255,7 +255,7 @@ public class UimaContext_implTest extends TestCase {
   public void testGetConfigurationGroupNames() {
     String[] names = mContext2.getConfigurationGroupNames();
     Assert.assertEquals(5, names.length);
-    ArrayList<String> l = new ArrayList<String>(Arrays.asList(names));
+    ArrayList<String> l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("en"));
     Assert.assertTrue(l.contains("en-US"));
     Assert.assertTrue(l.contains("de"));
@@ -265,7 +265,7 @@ public class UimaContext_implTest extends TestCase {
     // try on something with both groups and groupless parameters
     names = mContext3.getConfigurationGroupNames();
     Assert.assertEquals(5, names.length);
-    l = new ArrayList<String>(Arrays.asList(names));
+    l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("en"));
     Assert.assertTrue(l.contains("en-US"));
     Assert.assertTrue(l.contains("de"));
@@ -301,7 +301,7 @@ public class UimaContext_implTest extends TestCase {
   public void testGetConfigParameterNamesString() {
     String[] names = mContext2.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
-    ArrayList<String> l = new ArrayList<String>(Arrays.asList(names));
+    ArrayList<String> l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("StringParam"));
     Assert.assertTrue(l.contains("StringArrayParam"));
     Assert.assertTrue(l.contains("IntegerParam"));
@@ -318,7 +318,7 @@ public class UimaContext_implTest extends TestCase {
     // try on something with both groups and groupless params
     names = mContext3.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
-    l = new ArrayList<String>(Arrays.asList(names));
+    l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("StringParam"));
     Assert.assertTrue(l.contains("StringArrayParam"));
     Assert.assertTrue(l.contains("IntegerParam"));

@@ -259,7 +259,7 @@ public class Misc {
   };
 
   public static URL[] getURLs(String s) throws MalformedURLException, IOException, URISyntaxException {
-    List<URL> urls = new ArrayList<URL>();
+    List<URL> urls = new ArrayList<>();
     String[] spaths = s.split(File.pathSeparator);
     for (String p : spaths) {
       addUrlsFromPath(p, urls);
@@ -827,7 +827,7 @@ public class Misc {
     synchronized (cache) {
       WeakReference<T> r = cache.get(obj);
       if (r == null || (v = r.get()) == null) {
-        cache.put(obj, new WeakReference<T>(obj));
+        cache.put(obj, new WeakReference<>(obj));
         return obj;
       }
       return v;      

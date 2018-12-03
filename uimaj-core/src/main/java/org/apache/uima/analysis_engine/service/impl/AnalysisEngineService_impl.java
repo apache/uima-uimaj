@@ -87,7 +87,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, int aNumSimultaneousRequests,
           int aTimeout) throws ResourceInitializationException {
-    Map<String, Object> initParams = new HashMap<String, Object>();
+    Map<String, Object> initParams = new HashMap<>();
     initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
             aNumSimultaneousRequests));
     initParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(aTimeout));

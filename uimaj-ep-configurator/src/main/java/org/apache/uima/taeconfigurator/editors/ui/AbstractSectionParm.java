@@ -110,7 +110,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
   protected final String nameHeader = "  Name: "; //$NON-NLS-1$
 
   /** The Constant typeNamesW. */
-  protected final static Map<String,String> typeNamesW = new HashMap<String,String>(4);
+  protected final static Map<String,String> typeNamesW = new HashMap<>(4);
   static { // map extra spaces to get these to take the same
     typeNamesW.put("Boolean", "Boolean "); //$NON-NLS-1$ //$NON-NLS-2$
     typeNamesW.put("Float",   "Float      "); //$NON-NLS-1$ //$NON-NLS-2$

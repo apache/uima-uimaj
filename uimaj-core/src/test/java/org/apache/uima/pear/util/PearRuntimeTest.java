@@ -123,7 +123,7 @@ public class PearRuntimeTest extends TestCase {
    }
 
   private Import [] installPears(String [] pears) throws IOException {
-    List<Import> result = new ArrayList<Import>();
+    List<Import> result = new ArrayList<>();
     for (String s : pears) {
       result.add(installPear(s));
     }

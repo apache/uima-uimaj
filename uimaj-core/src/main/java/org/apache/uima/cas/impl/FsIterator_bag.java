@@ -134,7 +134,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public FsIterator_bag<T> copy() {
-    FsIterator_bag<T> copy = new FsIterator_bag<T>(this.fsBagIndex, this.ti, bag);
+    FsIterator_bag<T> copy = new FsIterator_bag<>(this.fsBagIndex, this.ti, bag);
     copyCommonSetup(copy);
     return copy;
   }

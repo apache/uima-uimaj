@@ -84,7 +84,7 @@ public class CasCopierTest extends TestCase {
     TypeDescription fooType = additionalTypes.addType("test.Foo", "Test Type",
             "uima.tcas.Annotation");
     fooType.addFeature("bar", "Test Feature", "uima.cas.String");
-    ArrayList<TypeSystemDescription> destTypeSystems = new ArrayList<TypeSystemDescription>();
+    ArrayList<TypeSystemDescription> destTypeSystems = new ArrayList<>();
     destTypeSystems.add(additionalTypes);
     destTypeSystems.add(typeSystem);
     CAS destCas2 = CasCreationUtils.createCas(destTypeSystems);
@@ -150,7 +150,7 @@ public class CasCopierTest extends TestCase {
     TypeDescription fooType = additionalTypes.addType("test.Foo", "Test Type",
             "uima.tcas.Annotation");
     fooType.addFeature("bar", "Test Feature", "uima.cas.String");
-    ArrayList<TypeSystemDescription> destTypeSystems = new ArrayList<TypeSystemDescription>();
+    ArrayList<TypeSystemDescription> destTypeSystems = new ArrayList<>();
     destTypeSystems.add(additionalTypes);
     destTypeSystems.add(typeSystem);
     CAS destCas2 = CasCreationUtils.createCas(destTypeSystems);
@@ -164,7 +164,7 @@ public class CasCopierTest extends TestCase {
             "uima.tcas.Annotation");
     fooType.addFeature("bar", "Test Feature", "uima.cas.Float");
     
-    ArrayList<TypeSystemDescription> srcTypeSystems = new ArrayList<TypeSystemDescription>();
+    ArrayList<TypeSystemDescription> srcTypeSystems = new ArrayList<>();
     srcTypeSystems.add(additionalTypes);
     srcTypeSystems.add(typeSystem);
     

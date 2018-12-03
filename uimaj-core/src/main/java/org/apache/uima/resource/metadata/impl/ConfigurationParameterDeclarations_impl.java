@@ -173,7 +173,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
    * @see ConfigurationParameterDeclarations#getConfigurationGroupDeclarations(String)
    */
   public ConfigurationGroup[] getConfigurationGroupDeclarations(String aGroupName) {
-    List<ConfigurationGroup> results = new ArrayList<ConfigurationGroup>();
+    List<ConfigurationGroup> results = new ArrayList<>();
     ConfigurationGroup[] grps = getConfigurationGroups();
     if (grps != null) {
       for (int i = 0; i < grps.length; i++) {
@@ -310,8 +310,8 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     }
 
     // read parameters, commonParameters, and configurationGroups
-    List<XMLizable> params = new ArrayList<XMLizable>();
-    List<XMLizable> groups = new ArrayList<XMLizable>();
+    List<XMLizable> params = new ArrayList<>();
+    List<XMLizable> groups = new ArrayList<>();
     NodeList childNodes = aElement.getChildNodes();
     for (int i = 0; i < childNodes.getLength(); i++) {
       Node curNode = childNodes.item(i);

@@ -42,7 +42,7 @@ class FsIterator_bag_pear<T extends FeatureStructure> extends FsIterator_bag<T> 
   
   @Override
   public FsIterator_bag_pear<T> copy() {
-    FsIterator_bag_pear<T> copy = new FsIterator_bag_pear<T>(this.fsBagIndex, this.ti, this.bag );
+    FsIterator_bag_pear<T> copy = new FsIterator_bag_pear<>(this.fsBagIndex, this.ti, this.bag);
     copyCommonSetup(copy);
     return copy;
   }

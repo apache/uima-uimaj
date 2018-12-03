@@ -240,7 +240,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
   private class Graph {
 
     // Map type names to graph nodes.
-    private final HashMap<String, Node> nodeMap = new HashMap<String, Node>();
+    private final Map<String, Node> nodeMap = new HashMap<>();
 
     private int size() {
       return this.nodeMap.size();
@@ -297,7 +297,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       // an
       // in-degree of 0, we don't need to worry about in-arcs.
       // Node node = (Node) this.nodeMap.get(name);
-      ArrayList<Node> rank0s = new ArrayList<Node>();
+      ArrayList<Node> rank0s = new ArrayList<>();
       // if (node == null) {
       // return ;
       // }
@@ -314,7 +314,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     }
 
     private boolean pathFromTo(Node n1, Node n2) {
-      final HashMap<Node, Node> map = new HashMap<Node, Node>();
+      final HashMap<Node, Node> map = new HashMap<>();
       return pathFromTo(n1, n2, map);
     }
 
@@ -384,7 +384,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
   }
 
   private void addInheritanceTypes() {
-    List<Type> typesToModify = new ArrayList<Type>();
+    List<Type> typesToModify = new ArrayList<>();
 
     for (Iterator<Type> tsi = this.ts.getTypeIterator(); tsi.hasNext();) {
       Type bottomType = tsi.next();

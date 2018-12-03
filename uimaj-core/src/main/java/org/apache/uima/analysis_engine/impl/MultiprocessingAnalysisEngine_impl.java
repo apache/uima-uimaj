@@ -74,9 +74,9 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     // (First copy it so we can modify it and send the parameters on to
     // each Analysis Engine in the pool.)
     if (aAdditionalParams == null) {
-      aAdditionalParams = new HashMap<String, Object>();
+      aAdditionalParams = new HashMap<>();
     } else {
-      aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
+      aAdditionalParams = new HashMap<>(aAdditionalParams);
     }
 
     // get or create ResourceManager

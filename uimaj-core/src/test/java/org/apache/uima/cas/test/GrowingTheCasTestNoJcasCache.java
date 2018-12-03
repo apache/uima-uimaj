@@ -75,7 +75,7 @@ public class GrowingTheCasTestNoJcasCache extends TestCase {
             "false");
       // Create a wrapper properties object that can
       // be passed to the framework.
-      Map<String, Object> additionalParams = new HashMap<String, Object>();
+      Map<String, Object> additionalParams = new HashMap<>();
       // Set the performance tuning properties as value to
       // the appropriate parameter.
       additionalParams.put(

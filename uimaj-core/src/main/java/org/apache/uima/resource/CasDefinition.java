@@ -60,9 +60,9 @@ public class CasDefinition {
   public CasDefinition(Collection<? extends ProcessingResourceMetaData> aMetaDataToMerge, ResourceManager aResourceManager)
           throws ResourceInitializationException {
     // extract TypeSystems, TypePriorities, and FsIndexes from metadata
-    List<TypeSystemDescription> typeSystems = new ArrayList<TypeSystemDescription>();
-    List<TypePriorities> typePrioritiesList = new ArrayList<TypePriorities>();
-    List<FsIndexCollection> fsIndexes = new ArrayList<FsIndexCollection>();
+    List<TypeSystemDescription> typeSystems = new ArrayList<>();
+    List<TypePriorities> typePrioritiesList = new ArrayList<>();
+    List<FsIndexCollection> fsIndexes = new ArrayList<>();
     Iterator<? extends ProcessingResourceMetaData> it = aMetaDataToMerge.iterator();
     while (it.hasNext()) {
       ProcessingResourceMetaData md = it.next();

@@ -144,7 +144,7 @@ public class CasToInlineXml {
     // annotations, and if an annotation contains other annotations, we
     // push the parent annotation on the stack, process the children, and
     // then come back to the parent later.
-    List<AnnotationFS> stack = new ArrayList<AnnotationFS>();
+    List<AnnotationFS> stack = new ArrayList<>();
     int pos = 0;
 
     try {

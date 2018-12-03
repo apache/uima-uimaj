@@ -95,7 +95,7 @@ class FsIterator_limited<T extends FeatureStructure>
 
   @Override
   public FSIterator<T> copy() {
-    return new FsIterator_limited<T>(iterator.copy(), limit);
+    return new FsIterator_limited<>(iterator.copy(), limit);
   }
 
   @Override

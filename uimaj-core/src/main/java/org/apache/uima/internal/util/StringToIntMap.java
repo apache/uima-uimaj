@@ -40,7 +40,7 @@ public class StringToIntMap {
    */
   public StringToIntMap() {
     super();
-    this.map = new HashMap<String, Integer>();
+    this.map = new HashMap<>();
   }
 
   /**

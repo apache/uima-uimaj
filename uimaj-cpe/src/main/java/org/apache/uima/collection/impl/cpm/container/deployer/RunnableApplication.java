@@ -50,7 +50,7 @@ public class RunnableApplication {
   protected Execute exec;
 
   /** The environment. */
-  protected ArrayList<String> environment = new ArrayList<String>();
+  protected ArrayList<String> environment = new ArrayList<>();
 
   /** The arg list. */
   protected List argList = new ArrayList();

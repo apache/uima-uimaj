@@ -56,7 +56,7 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
    */
   @Override
   public void makeReadOnlyCopy() {
-    this.set = new OrderedFsSet_array<T>(set, true); // true = make read only copy
+    this.set = new OrderedFsSet_array<>(set, true); // true = make read only copy
     this.a = (T[]) set.a;
   }
 

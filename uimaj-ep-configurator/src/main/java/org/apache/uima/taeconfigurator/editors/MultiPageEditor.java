@@ -232,7 +232,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   private TypeSystemDescription mergedTypeSystemDescription = null;
   
   /** The merged types adding features. */
-  private Map<String, Set<String>> mergedTypesAddingFeatures = new TreeMap<String, Set<String>>();
+  private Map<String, Set<String>> mergedTypesAddingFeatures = new TreeMap<>();
 
   /** The imported type system description. */
   private TypeSystemDescription importedTypeSystemDescription = null;
@@ -781,7 +781,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     IExtensionPoint point = Platform.getExtensionRegistry()
                 .getExtensionPoint(TAEConfiguratorPlugin.pluginId, EXTENSION_POINT_ID);
     
-    externalEditorConfigurations = new ArrayList<IConfigurationElement>();
+    externalEditorConfigurations = new ArrayList<>();
     
     // check: Any <extension> tags for our extension-point?
     if (point != null) {
@@ -1464,7 +1464,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   private String cachedRMclassPath = null; 
   
   /** The cached R mcl. */
-  private SoftReference<UIMAClassLoader> cachedRMcl = new SoftReference<UIMAClassLoader>(null);
+  private SoftReference<UIMAClassLoader> cachedRMcl = new SoftReference<>(null);
 
   /**
    * Creates the resource manager.
@@ -1502,7 +1502,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
             classPath, 
             true);
         cachedRMclassPath = classPath;
-        cachedRMcl = new SoftReference<UIMAClassLoader>((UIMAClassLoader) resourceManager.getExtensionClassLoader());
+        cachedRMcl = new SoftReference<>((UIMAClassLoader) resourceManager.getExtensionClassLoader());
       }
       
       // in any case, set the data path

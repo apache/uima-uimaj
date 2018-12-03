@@ -66,7 +66,7 @@ public class ConstraintFactoryImpl extends ConstraintFactory {
 	@Override
   public FSMatchConstraint embedConstraint(FeaturePath featPath,
 			FSConstraint constraint) {
-		ArrayList<String> path = new ArrayList<String>();
+		ArrayList<String> path = new ArrayList<>();
 		for (int i = 0; i < featPath.size(); i++) {
 			path.add(featPath.getFeature(i).getShortName());
 		}

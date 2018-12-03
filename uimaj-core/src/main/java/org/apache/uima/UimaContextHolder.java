@@ -29,7 +29,7 @@ package org.apache.uima;
  */
 public class UimaContextHolder {
   
-  private static InheritableThreadLocal<UimaContext> threadLocalContext = new InheritableThreadLocal<UimaContext>();
+  private static InheritableThreadLocal<UimaContext> threadLocalContext = new InheritableThreadLocal<>();
   
   /**
    * Get the UimaContext for this thread

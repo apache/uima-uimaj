@@ -161,7 +161,7 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
   /**
    * an empty iterator
    */
-  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator_empty<FeatureStructure>();
+  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator_empty<>();
   
   /**
    * Internal use constants

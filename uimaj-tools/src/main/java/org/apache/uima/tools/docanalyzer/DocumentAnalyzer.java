@@ -1370,7 +1370,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
       // save AE output types for later use in configuring viewer
       if (aeSpecifier instanceof AnalysisEngineDescription) {
-        ArrayList<String> outputTypeList = new ArrayList<String>();
+        ArrayList<String> outputTypeList = new ArrayList<>();
         Capability[] capabilities = ((AnalysisEngineDescription) aeSpecifier)
                 .getAnalysisEngineMetaData().getCapabilities();
         for (int i = 0; i < capabilities.length; i++) {

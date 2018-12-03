@@ -91,12 +91,12 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    // note: all accesses to this are synchronized
    static private Map<ResourceManager, Map<StringPair, ResourceManager>> cachedResourceManagers =
-     new WeakHashMap<ResourceManager, Map<StringPair, ResourceManager>>(4);
+       new WeakHashMap<>(4);
 
    private AnalysisEngine ae = null;
 
    private Map<StringPair, ResourceManager> createRMmap(StringPair sp, ResourceManager rm) {
-      Map<StringPair, ResourceManager> result = new HashMap<StringPair, ResourceManager>(4);
+      Map<StringPair, ResourceManager> result = new HashMap<>(4);
       result.put(sp, rm);
       UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG,
             this.getClass().getName(), "createRMmap", LOG_RESOURCE_BUNDLE,
@@ -288,8 +288,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       // modified, and the aAdditionalParameters original object
       // is re-used by the ASB_impl - a caller of this method,
       // for other delegates.
-      Map<String, Object> clonedAdditionalParameters = (aAdditionalParams == null) ? 
-          new HashMap<String, Object>() : new HashMap<String, Object>(aAdditionalParams);
+      Map<String, Object> clonedAdditionalParameters = (aAdditionalParams == null) ?
+          new HashMap<>() : new HashMap<>(aAdditionalParams);
       // clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
       clonedAdditionalParameters.remove(Resource.PARAM_RESOURCE_MANAGER);
       this.ae = UIMAFramework.produceAnalysisEngine(specifier, innerRM, clonedAdditionalParameters);

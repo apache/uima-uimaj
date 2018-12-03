@@ -72,11 +72,11 @@ public class InstallationProcessor {
   // Attributes
   private String _mainRootPath;
 
-  private Hashtable<String, String> _installationTable = new Hashtable<String, String>();
+  private Hashtable<String, String> _installationTable = new Hashtable<>();
 
-  private Hashtable<String, String> _urlSubstitutionTable = new Hashtable<String, String>();
+  private Hashtable<String, String> _urlSubstitutionTable = new Hashtable<>();
 
-  private Hashtable<String, String> _pathSubstitutionTable = new Hashtable<String, String>();
+  private Hashtable<String, String> _pathSubstitutionTable = new Hashtable<>();
 
   private InstallationDescriptor _insdObject = null;
 

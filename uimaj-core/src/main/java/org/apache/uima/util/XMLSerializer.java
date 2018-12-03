@@ -232,7 +232,7 @@ public class XMLSerializer {
       this.indentDelta = indentDelta;
     }
 
-    private List<Node> mLastOutputNode = new ArrayList<Node>();  // the last output node for repeated subelement nodes
+    private List<Node> mLastOutputNode = new ArrayList<>();  // the last output node for repeated subelement nodes
     
     public void lastOutputNodeAddLevel() {
       mLastOutputNode.add(null);

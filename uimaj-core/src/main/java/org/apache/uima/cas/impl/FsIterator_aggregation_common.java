@@ -248,7 +248,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
    */
   @Override
   public FsIterator_aggregation_common<T> copy() {
-    return new FsIterator_aggregation_common<T>(this);
+    return new FsIterator_aggregation_common<>(this);
   }
 
   @Override

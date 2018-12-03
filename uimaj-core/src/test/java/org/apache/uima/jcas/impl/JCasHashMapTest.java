@@ -148,7 +148,7 @@ public class JCasHashMapTest extends TestCase {
     System.out.format("test JCasHashMap with compare with up to %d threads%n", numberOfThreads);
 
     final ConcurrentMap<Integer, TOP> check = // one check map, run on multiple threads
-        new ConcurrentHashMap<Integer, TOP>(SIZE, .5F, numberOfThreads * 2);
+        new ConcurrentHashMap<>(SIZE, .5F, numberOfThreads * 2);
     
     for (int th = 2; th <= numberOfThreads; th *= 2) {
       JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
