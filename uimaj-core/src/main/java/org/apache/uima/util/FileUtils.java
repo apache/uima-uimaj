@@ -29,9 +29,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -282,7 +284,10 @@ public class FileUtils {
    *          Prefix of the directory names to be created.
    * @return A file object corresponding to the newly created dir, or <code>null</code> if none
    *         could be created for some reason (e.g., if the parent is not writable).
+   * @deprecated use Java 7 methods for this see
+   *             {@link java.nio.file.Files#createTempDirectory(Path, String, FileAttribute ...)}
    */
+  @Deprecated
   public static final File createTempDir(File parent, String prefix) {
     Random rand = new Random();
     File tempDir;
@@ -298,6 +303,11 @@ public class FileUtils {
     }
   }
 
+  /**
+   * @deprecated use Java 7 methods for this see
+   *             {@link java.nio.file.File#createTempFile(String, String, File)}
+   */
+  @Deprecated
   public static final File createTempFile(String prefix, String suffix, File tempDir)
       throws IOException {
     File file = File.createTempFile(prefix, suffix, tempDir);
@@ -323,7 +333,9 @@ public class FileUtils {
    *           For various reason: if <code>file</code> does not exist or is not readable, if the
    *           destination directory does not exist or isn't a directory, or if the file can't be
    *           copied for any reason.
+   * @deprecated use Java 7 for this see {@link java.nio.file.Files#copy(Path, Path, CopyOption...)}
    */
+  @Deprecated
   public static final void copyFile(File file, File dir) throws IOException {
     if (!file.exists() || !file.canRead()) {
       throw new IOException("File does not exist or is not readable: " + file.getAbsolutePath());

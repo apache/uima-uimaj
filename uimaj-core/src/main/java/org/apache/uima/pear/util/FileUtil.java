@@ -39,6 +39,9 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.CopyOption;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -381,9 +384,11 @@ public class FileUtil {
    *         otherwise.
    * @throws IOException
    *           If any I/O exception occurred.
+   * @deprecated use Java 7 for this see {@link java.nio.file.Files#copy(Path, Path, CopyOption...)}
    */
+  @Deprecated
   public static boolean copyFile(File source, File destination) throws IOException {
-    boolean completed = false;
+    boolean completed;
     BufferedInputStream iStream = null;
     BufferedOutputStream oStream = null;
     try {
@@ -425,7 +430,9 @@ public class FileUtil {
    *         otherwise.
    * @throws IOException
    *           If any I/O exception occurred.
+   * @deprecated use Java 7 for this see {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}
    */
+  @Deprecated
   public static boolean copyFile(URL sourceUrl, File destination) throws IOException {
     boolean completed = false;
     BufferedInputStream iStream = null;
@@ -634,7 +641,10 @@ public class FileUtil {
    * @return The <code>File</code> object denoting the newly created file.
    * @throws IOException
    *           If a temporary directory not found or other I/O exception occurred.
+   * @deprecated use Java 7 method for this see
+   *             {@link java.nio.file.Files#createTempFile(String, String, FileAttribute ...)}
    */
+  @Deprecated
   public static File createTempFile(String prefix, String suffix) throws IOException {
     String tempDirPath = System.getProperty("java.io.tmpdir");
     if (tempDirPath == null)
@@ -842,7 +852,9 @@ public class FileUtil {
    * @param fileLocation
    *          The given file location - local file path or URL.
    * @return The given file size, if the specified file can be accessed, -1 otherwise.
+   * @deprecated use Java 7 method for this see {@link java.nio.file.Files#size(Path)}
    */
+  @Deprecated
   public static long getFileSize(String fileLocation) {
     long fileSize = 0;
     // choose file size method: local FS or HTTP
@@ -1011,7 +1023,9 @@ public class FileUtil {
    * @return The array of non-empty strings loaded from the given text file.
    * @throws IOException
    *           If any I/O exception occurred.
+   * @deprecated use Java 7 method for this see {@link java.nio.file.Files#readAllLines(Path, Charset)}
    */
+  @Deprecated
   public static String[] loadListOfStrings(File textFile) throws IOException {
     BufferedReader iStream = null;
     String[] outputArray = null;
@@ -1137,7 +1151,11 @@ public class FileUtil {
    *          The given text file.
    * @throws IOException
    *           If any I/O exception occurs.
+   * @deprecated use main file util for this, see
+   *             {@link org.apache.uima.util.FileUtils#file2String(File)} 
+   *             if using the default charset is OK
    */
+  @Deprecated
   public static String loadTextFile(File textFile) throws IOException {
     BufferedReader iStream = null;
     String content = null;
@@ -1167,7 +1185,11 @@ public class FileUtil {
    *          The given text file encoding name.
    * @throws IOException
    *           If any I/O exception occurs.
+   * @deprecated use main file util for this, see
+   *             {@link org.apache.uima.util.FileUtils#file2String(File, String)}
+   *             if using the default Charset is OK
    */
+  @Deprecated
   public static String loadTextFile(File textFile, String encoding) throws IOException {
     BufferedReader iStream = null;
     String content = null;
@@ -1301,7 +1323,9 @@ public class FileUtil {
    *         otherwise.
    * @throws IOException
    *           If any I/O exception occurred.
+   * @deprecated use Java 7 for this see {@link java.nio.file.Files#move(Path, Path, CopyOption...)}
    */
+  @Deprecated
   public static boolean moveFile(File source, File destinationDir) throws IOException {
     boolean completed = false;
     File destination = new File(destinationDir, source.getName());

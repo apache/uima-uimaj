@@ -32,6 +32,9 @@ import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -718,7 +721,7 @@ public class InstallationController {
           File targetDir, InstallationController controller, boolean cleanTarget)
           throws IOException {
     // get PEAR file size
-    long fileSize = FileUtil.getFileSize(pearFileLocation);
+    long fileSize = Files.size(Paths.get(pearFileLocation));
     // create root directory
     if (!targetDir.isDirectory() && !targetDir.mkdirs()) {
       //create localized error message
@@ -767,9 +770,15 @@ public class InstallationController {
                   + pearFileUrl.toExternalForm() + " to " + targetDir.getAbsolutePath());
         String pearFileName = (new File(pearFileUrl.getFile())).getName();
         pearFile = new File(targetDir, pearFileName);
-        if (!FileUtil.copyFile(pearFileUrl, pearFile))
+
+        try (InputStream pearIn = pearFileUrl.openStream()) {
+          Files.copy(pearIn, pearFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        catch (IOException e) {
           throw new IOException("cannot copy " + pearFileUrl + " to file "
-                  + pearFile.getAbsolutePath());
+                  + pearFile.getAbsolutePath(), e);
+        }
+
         removeLocalCopy = true;
       }
       if (controller != null) // write message to OUT msg queue
