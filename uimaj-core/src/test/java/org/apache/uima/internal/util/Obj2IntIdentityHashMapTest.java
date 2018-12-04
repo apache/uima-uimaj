@@ -40,7 +40,7 @@ public class Obj2IntIdentityHashMapTest extends TestCase {
   Map<Integer, Integer> im = new HashMap<>();
   
   public void setUp() {
-    ihm = new Obj2IntIdentityHashMap<>(Integer.class, new Integer(Integer.MIN_VALUE));
+    ihm = new Obj2IntIdentityHashMap<>(Integer.class, Integer.MIN_VALUE);
   }
 
   public void testBasic() {

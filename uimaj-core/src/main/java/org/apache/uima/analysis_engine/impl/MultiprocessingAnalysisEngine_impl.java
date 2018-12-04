@@ -101,11 +101,11 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
 
     // determine size of Analysis Engine pool and timeout period
     Integer poolSizeInteger = (Integer) aAdditionalParams.get(PARAM_NUM_SIMULTANEOUS_REQUESTS);
-    int poolSize = (poolSizeInteger != null) ? poolSizeInteger.intValue()
+    int poolSize = (poolSizeInteger != null) ? poolSizeInteger
             : DEFAULT_NUM_SIMULTANEOUS_REQUESTS;
 
     Integer timeoutInteger = (Integer) aAdditionalParams.get(PARAM_TIMEOUT_PERIOD);
-    mTimeout = (timeoutInteger != null) ? timeoutInteger.intValue() : DEFAULT_TIMEOUT_PERIOD;
+    mTimeout = (timeoutInteger != null) ? timeoutInteger : DEFAULT_TIMEOUT_PERIOD;
 
     // Share resource manager, but don't share uima-context
 //    // add UimaContext to params map so that all AEs in pool will share it
@@ -127,7 +127,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     AnalysisEngine ae = mPool.getAnalysisEngine(mTimeout);
     if (ae == null) { // timeout elapsed
       throw new AnalysisEngineProcessException(AnalysisEngineProcessException.TIMEOUT_ELAPSED,
-         new Object[] { Integer.valueOf(getTimeout()) });
+         new Object[] {getTimeout()});
     }       
     return ae;
   }

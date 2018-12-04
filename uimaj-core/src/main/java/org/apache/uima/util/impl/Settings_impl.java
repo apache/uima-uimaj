@@ -223,7 +223,7 @@ public class Settings_impl implements Settings {
     }
 
     // Add the name for the duration of the lookup
-    resolving.put(name, new Integer(resolving.size()));
+    resolving.put(name, resolving.size());
     try {
       return resolve(from, map.get(name));
     } finally {

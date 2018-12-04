@@ -1286,7 +1286,7 @@ public class CasCompare {
     Pair<TOP, TOP> refs = new Pair<>(rfs1, rfs2);
     Integer prevComp = prevCompare.get(refs);
      if (prevComp != null) {  
-       int v = prevComp.intValue();
+       int v = prevComp;
        if (v == 0) {
          return compareRefResult(rfs1, rfs2); // stop recursion, return based on loops
        } else {

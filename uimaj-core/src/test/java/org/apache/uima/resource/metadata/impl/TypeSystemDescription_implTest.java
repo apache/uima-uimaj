@@ -94,7 +94,7 @@ public class TypeSystemDescription_implTest extends TestCase {
       assertEquals("Direct references to sentences in this paragraph", features[0].getDescription());
       assertEquals("uima.cas.FSArray", features[0].getRangeTypeName());
       assertEquals("Sentence", features[0].getElementType());
-      assertFalse(features[0].getMultipleReferencesAllowed().booleanValue());
+      assertFalse(features[0].getMultipleReferencesAllowed());
 
       // ts.toXML(System.out);
     } catch (Exception e) {

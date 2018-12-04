@@ -49,7 +49,6 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.impl.UIMAFramework_impl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
@@ -320,7 +319,7 @@ public class TypeSection extends AbstractImportablePartSection {
     if (isArrayOrListType(rangeType)) {
       Boolean mra = fd.getMultipleReferencesAllowed();
       fItem.setImage(MULTIPLE_REF_OK_COL,
-              (null != mra && mra.booleanValue()) ? TAEConfiguratorPlugin
+              (null != mra && mra) ? TAEConfiguratorPlugin
                       .getImage(TAEConfiguratorPlugin.IMAGE_MREFOK) : TAEConfiguratorPlugin
                       .getImage(TAEConfiguratorPlugin.IMAGE_NOMREF));
     } else {
@@ -405,7 +404,7 @@ public class TypeSection extends AbstractImportablePartSection {
         if (item.getBounds(MULTIPLE_REF_OK_COL).contains(event.x, event.y)
                 && isArrayOrListType(fd.getRangeTypeName())) {
           Boolean mra = fd.getMultipleReferencesAllowed();
-          setToolTipText(tt, (mra != null && mra.booleanValue()) ? "Multiple References Allowed"
+          setToolTipText(tt, (mra != null && mra) ? "Multiple References Allowed"
                   : "Multiple References Not Allowed");
         } else
           setToolTipText(tt, fd.getDescription());

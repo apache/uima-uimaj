@@ -145,8 +145,8 @@ public class UimaContext_implTest extends TestCase {
       Integer integer = (Integer) mContext.getConfigParameterValue("IntegerParam");
       Assert.assertEquals(Integer.valueOf(42), integer);
       Integer[] intArr = (Integer[]) mContext.getConfigParameterValue("IntegerArrayParam");
-      Assert.assertEquals(Arrays.asList(new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
-          Integer.valueOf(3) }), Arrays.asList(intArr));
+      Assert.assertEquals(Arrays.asList(new Integer[] {1, 2,
+          3}), Arrays.asList(intArr));
       Float flt = (Float) mContext.getConfigParameterValue("FloatParam");
       Assert.assertEquals(Float.valueOf(3.14F), flt);
 
@@ -235,7 +235,7 @@ public class UimaContext_implTest extends TestCase {
       Assert.assertEquals(3, intArr3[2].intValue());
 
       Float floatVal3 = (Float) mContext2.getConfigParameterValue("zh", "FloatParam");
-      Assert.assertEquals(3.14, floatVal3.floatValue(), 0.0001);
+      Assert.assertEquals(3.14, floatVal3, 0.0001);
 
       // testing duplicate groups
       assertEquals("common-a", mContext4.getConfigParameterValue("a", "CommonParam"));

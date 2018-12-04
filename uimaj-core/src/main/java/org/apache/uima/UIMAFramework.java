@@ -497,9 +497,8 @@ public abstract class UIMAFramework {
     // add parameters to the aAdditionalParams map
     Map<String, Object> aAdditionalParams = new HashMap<>();
 
-    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
-            aMaxSimultaneousRequests));
-    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(aTimeoutPeriod));
+    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, aMaxSimultaneousRequests);
+    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, aTimeoutPeriod);
 
     AnalysisEngine ae = null;
     //	Fetch current time to compute initialization time
@@ -650,9 +649,8 @@ public abstract class UIMAFramework {
     // add parameters to the aAdditionalParams map
     Map<String, Object> aAdditionalParams = new HashMap<>();
 
-    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
-            aMaxSimultaneousRequests));
-    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(aTimeoutPeriod));
+    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, aMaxSimultaneousRequests);
+    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, aTimeoutPeriod);
 
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
             aAdditionalParams);

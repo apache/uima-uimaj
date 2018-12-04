@@ -19,8 +19,6 @@
 
 package org.apache.uima.tutorial.ex4;
 
-import java.util.Iterator;
-
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -49,7 +47,7 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // Get config. parameter value
-    mWindowSize = ((Integer) aContext.getConfigParameterValue("WindowSize")).intValue();
+    mWindowSize = (Integer) aContext.getConfigParameterValue("WindowSize");
   }
 
   /**

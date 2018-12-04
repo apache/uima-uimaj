@@ -141,7 +141,7 @@ public class AxisResourceServiceManager {
       // create and initialize the service implementation
       serviceImpl = (ResourceService_impl) aServiceImplClass.newInstance();
       HashMap initParams = new HashMap();
-      initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(numInstances));
+      initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, numInstances);
       serviceImpl.initialize(resourceSpecifier, initParams);
 
       // disable logging for Analysis Engines if deployer so indicated

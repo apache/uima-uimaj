@@ -87,7 +87,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
     lastDocument = null;
     lastResultSpec = null;
 
-    this.nToGen = ((Integer) aContext.getConfigParameterValue("NumberToGenerate")).intValue();
+    this.nToGen = (Integer) aContext.getConfigParameterValue("NumberToGenerate");
     FileInputStream fis = null;
     try {
       String filename = ((String) aContext.getConfigParameterValue("InputFile")).trim();

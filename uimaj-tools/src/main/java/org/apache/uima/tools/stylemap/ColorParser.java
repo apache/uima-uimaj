@@ -179,7 +179,7 @@ public class ColorParser {
         if (tf.equals("true")) {
           checked = true;
         }
-        sme.setChecked(Boolean.valueOf(checked));
+        sme.setChecked(checked);
       }
     } else {
       sme.setChecked(Boolean.TRUE);// default to Checked
@@ -203,7 +203,7 @@ public class ColorParser {
         if (tf.equals("true")) {
           checked = true;
         }
-        sme.setHidden(Boolean.valueOf(checked));
+        sme.setHidden(checked);
       }
     } else {
       sme.setHidden(Boolean.FALSE); // Default to not hidden

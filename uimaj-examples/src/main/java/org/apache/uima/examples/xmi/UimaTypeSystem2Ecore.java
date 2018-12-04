@@ -300,7 +300,7 @@ public class UimaTypeSystem2Ecore {
           Map aOptions) {
     String range = aFeature.getRangeTypeName();
     boolean multiRefAllowed = aFeature.getMultipleReferencesAllowed() == null ? false : aFeature
-            .getMultipleReferencesAllowed().booleanValue();
+        .getMultipleReferencesAllowed();
     EStructuralFeature efeat;
     // map primitive types to EAttributes
     if (CAS.TYPE_NAME_STRING.equals(range)) {

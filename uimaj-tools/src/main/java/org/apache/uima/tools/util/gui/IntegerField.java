@@ -47,11 +47,11 @@ public class IntegerField extends JFormattedTextField {
     super();
 
     NumberFormatter formatter = new NumberFormatter(numberFormat);
-    formatter.setMinimum(new Integer(min));
-    formatter.setMaximum(new Integer(max));
+    formatter.setMinimum(min);
+    formatter.setMaximum(max);
     formatter.setCommitsOnValidEdit(true);
     setFormatter(formatter);
 
-    setValue(new Integer(initialValue));
+    setValue(initialValue);
   }
 }

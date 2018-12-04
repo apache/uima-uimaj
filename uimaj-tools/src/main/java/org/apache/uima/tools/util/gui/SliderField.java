@@ -77,10 +77,10 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
   @Override
   public void stateChanged(ChangeEvent e) {
     int sliderValue = slider.getValue();
-    textField.setValue(new Integer(sliderValue));
+    textField.setValue(sliderValue);
 
     if (!slider.getValueIsAdjusting())
-      textField.setValue(new Integer(sliderValue));
+      textField.setValue(sliderValue);
     else
       // value is adjusting; just set the text
       textField.setText(String.valueOf(sliderValue));
@@ -114,7 +114,7 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
    */
   public int getValue() {
     Integer value = (Integer) textField.getValue();
-    return value.intValue();
+    return value;
   }
 
   /**

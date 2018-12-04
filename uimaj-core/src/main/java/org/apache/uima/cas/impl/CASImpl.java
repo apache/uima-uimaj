@@ -2614,10 +2614,10 @@ public JCasImpl getJCasImpl() {
 
   private final void checkTypeHasFeature(TypeImpl domainType, FeatureImpl feature) {
     if (!domainType.isAppropriateFeature(feature)) {
-      throw new LowLevelException(LowLevelException.FEAT_DOM_ERROR, 
-          Integer.valueOf(domainType.getCode()), 
+      throw new LowLevelException(LowLevelException.FEAT_DOM_ERROR,
+          domainType.getCode(),
           domainType.getName(),
-          Integer.valueOf(feature.getCode()),
+          feature.getCode(),
           feature.getName());
     }
   }
@@ -2638,9 +2638,9 @@ public JCasImpl getJCasImpl() {
     checkTypeHasFeature(domainTi, fi);
     if (!((TypeImpl) fi.getRange()).subsumes((TypeImpl) ranType)) {
       throw new LowLevelException(LowLevelException.FEAT_RAN_ERROR,
-          Integer.valueOf(fi.getCode()),
+          fi.getCode(),
           feat.getName(),
-          Integer.valueOf(((TypeImpl)ranType).getCode()),
+          ((TypeImpl) ranType).getCode(),
           ranType.getName());
     }
   }
@@ -2654,7 +2654,7 @@ public JCasImpl getJCasImpl() {
   private final void checkFsRan(FeatureImpl fi) throws LowLevelException {
     if (!fi.getRangeImpl().isRefType) {
       throw new LowLevelException(LowLevelException.FS_RAN_TYPE_ERROR,
-          Integer.valueOf(fi.getCode()),
+          fi.getCode(),
           fi.getName(),
           fi.getRange().getName());
     }
@@ -2662,7 +2662,7 @@ public JCasImpl getJCasImpl() {
 
   private final void checkFeature(int featureCode) {
     if (!getTypeSystemImpl().isFeature(featureCode)) {
-      throw new LowLevelException(LowLevelException.INVALID_FEATURE_CODE, Integer.valueOf(featureCode));
+      throw new LowLevelException(LowLevelException.INVALID_FEATURE_CODE, featureCode);
     }
   }
   
@@ -2684,7 +2684,7 @@ public JCasImpl getJCasImpl() {
       if (fsRef == 0) {
         return null;
       }
-      LowLevelException e = new LowLevelException(LowLevelException.INVALID_FS_REF, Integer.valueOf(fsRef));
+      LowLevelException e = new LowLevelException(LowLevelException.INVALID_FS_REF, fsRef);
       // this form to enable seeing this even if the 
       //   throwable is silently handled.
 //      System.err.println("debug " + e);      
@@ -2714,7 +2714,7 @@ public JCasImpl getJCasImpl() {
     TypeImpl ti = (TypeImpl) getTypeSystemImpl().ll_getTypeForCode(typeCode);
     if (doCheck) {
       if (ti == null || !ti.isCreatableAndNotBuiltinArray()) {
-        throw new LowLevelException(LowLevelException.CREATE_FS_OF_TYPE_ERROR, Integer.valueOf(typeCode));
+        throw new LowLevelException(LowLevelException.CREATE_FS_OF_TYPE_ERROR, typeCode);
       }
     }
     TOP fs = (TOP) createFS(ti);
@@ -2835,10 +2835,10 @@ public JCasImpl getJCasImpl() {
     TypeImpl ti = getTypeFromCode_checked(typeCode);
     if (doChecks) {
       if (!ti.isArray()) {
-        throw new LowLevelException(LowLevelException.CREATE_ARRAY_OF_TYPE_ERROR, Integer.valueOf(typeCode), ti.getName());
+        throw new LowLevelException(LowLevelException.CREATE_ARRAY_OF_TYPE_ERROR, typeCode, ti.getName());
       }
       if (arrayLength < 0) {
-        throw new LowLevelException(LowLevelException.ILLEGAL_ARRAY_LENGTH, Integer.valueOf(arrayLength));
+        throw new LowLevelException(LowLevelException.ILLEGAL_ARRAY_LENGTH, arrayLength);
       }
     }
     TOP fs = createArray(ti, arrayLength);
@@ -3585,8 +3585,8 @@ public JCasImpl getJCasImpl() {
 
   private void throwAccessTypeError(int fsRef, int typeCode) {
     throw new LowLevelException(LowLevelException.ACCESS_TYPE_ERROR,
-                 Integer.valueOf(fsRef), 
-                 Integer.valueOf(typeCode), 
+        fsRef,
+        typeCode,
                  getTypeSystemImpl().ll_getTypeForCode(typeCode).getName(),
                  getTypeSystemImpl().ll_getTypeForCode(ll_getFSRefType(fsRef)).getName());
   }

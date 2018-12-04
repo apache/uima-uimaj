@@ -196,8 +196,8 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
       if (item.getText(1).equals(checkedIndicator(1))
               || item.getText(2).equals(checkedIndicator(2))) {
         names.add(item.getText(0));
-        ins.add(Boolean.valueOf(item.getText(1).equals(checkedIndicator(1))));
-        outs.add(Boolean.valueOf(item.getText(2).equals(checkedIndicator(2))));
+        ins.add(item.getText(1).equals(checkedIndicator(1)));
+        outs.add(item.getText(2).equals(checkedIndicator(2)));
       }
     }
 
@@ -205,8 +205,8 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
     inputs = new boolean[features.length];
     outputs = new boolean[features.length];
     for (int i = 0; i < features.length; i++) {
-      inputs[i] = ((Boolean) ins.get(i)).booleanValue();
-      outputs[i] = ((Boolean) outs.get(i)).booleanValue();
+      inputs[i] = (Boolean) ins.get(i);
+      outputs[i] = (Boolean) outs.get(i);
     }
 
     TableItem item = table.getItem(0);

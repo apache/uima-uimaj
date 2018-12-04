@@ -1444,7 +1444,7 @@ public class VinciTAP {
    * @return - service port
    */
   public int getServicePort() {
-    return Integer.valueOf(servicePort).intValue();
+    return Integer.valueOf(servicePort);
   }
 
   /**

@@ -867,7 +867,7 @@ public class CasCreationUtils {
               if (multiRefAllowed == null) {
                 multiRefAllowed = Boolean.FALSE; // default to false if unspecified
               }
-              typeSystemMgr.addFeature(featName, type, rangeType, multiRefAllowed.booleanValue());
+              typeSystemMgr.addFeature(featName, type, rangeType, multiRefAllowed);
             }
           }
         }
@@ -1737,7 +1737,7 @@ public class CasCreationUtils {
         // not ok otherwise
 
         if (!(((mra1 == null) && (mra2 == null)) || ((mra1 != null) && mra1.equals(mra2))
-            || ((mra1 == null) && !mra2.booleanValue()) || ((mra2 == null) && !mra1.booleanValue()))) {
+            || ((mra1 == null) && !mra2) || ((mra2 == null) && !mra1))) {
           throw new ResourceInitializationException(
               ResourceInitializationException.INCOMPATIBLE_MULTI_REFS, new Object[] {
                   aType.getName() + ":" + feat.getName(), aType.getSourceUrlString() });

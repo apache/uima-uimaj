@@ -58,13 +58,11 @@ public class JgPluginRunner implements IPlatformRunnable {
         }
       };
       workspace.run(runnable, null);
-      return Integer.valueOf(0);
+      return 0;
     } catch (Exception exception) {
       exception.printStackTrace();
     }
 
-    return Integer.valueOf(1);
-
+    return 1;
   }
-
 }

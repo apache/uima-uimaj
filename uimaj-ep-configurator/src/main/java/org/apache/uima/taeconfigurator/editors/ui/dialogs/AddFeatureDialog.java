@@ -163,7 +163,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
       featureNameUI.setText(originalFeatureName = existingFd.getName());
       featureRangeNameUI.setText(existingFd.getRangeTypeName());
       Boolean mra = existingFd.getMultipleReferencesAllowed();
-      multiRefUI.select((null == mra) ? 0 : (mra.booleanValue()) ? 2 : 1);
+      multiRefUI.select((null == mra) ? 0 : (mra) ? 2 : 1);
       String ert = existingFd.getElementType();
       elementRangeNameUI.setText((null == ert) ? "" : ert);
 

@@ -283,7 +283,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
                 // match found; extract locations of start and end of match
                 // (or of entire containing annotation, if that option is on)
                 int annotStart, annotEnd;
-                if (mAnnotateEntireContainingAnnotation.booleanValue()) {
+                if (mAnnotateEntireContainingAnnotation) {
                   annotStart = startPos;
                   annotEnd = endPos;
                 } else {

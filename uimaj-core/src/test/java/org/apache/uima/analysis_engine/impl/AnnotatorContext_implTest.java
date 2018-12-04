@@ -252,7 +252,7 @@ public class AnnotatorContext_implTest extends TestCase {
       Assert.assertEquals(3, intArr3[2].intValue());
 
       Float floatVal3 = (Float) mAC1.getConfigParameterValue("zh", "FloatParam");
-      Assert.assertEquals(3.14, floatVal3.floatValue(), 0.0001);
+      Assert.assertEquals(3.14, floatVal3, 0.0001);
 
       // test override
       String str4 = (String) mAC2.getConfigParameterValue("en", "StringParam");

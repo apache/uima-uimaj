@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.naming.ConfigurationException;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContextAdmin;
@@ -437,7 +435,7 @@ public class CPEFactory {
       }
       // Provide CollectionReader with the number of documents to process
       ((ConfigurableResource_ImplBase) colreader).setConfigParameterValue("processSize",
-              Integer.valueOf((int)numDocs2Process) );
+          (int) numDocs2Process);
       CpeConfiguration cpeType = getCpeDescriptor().getCpeConfiguration();
       if (cpeType != null && cpeType.getStartingEntityId() != null
               && cpeType.getStartingEntityId().trim().length() > 0) {

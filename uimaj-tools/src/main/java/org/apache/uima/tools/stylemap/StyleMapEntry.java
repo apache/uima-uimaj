@@ -86,7 +86,7 @@ public class StyleMapEntry {
    * @param hid the new hidden
    */
   public void setHidden(Boolean hid) {
-    isHidden = hid.booleanValue();
+    isHidden = hid;
   }
 
   /**
@@ -104,7 +104,7 @@ public class StyleMapEntry {
    * @param chk the new checked
    */
   public void setChecked(Boolean chk) {
-    isChecked = chk.booleanValue();
+    isChecked = chk;
   }
 
   /**

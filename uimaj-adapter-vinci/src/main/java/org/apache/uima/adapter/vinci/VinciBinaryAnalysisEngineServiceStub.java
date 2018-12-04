@@ -138,7 +138,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       
       //store timeout for use in later RPC calls
       if (timeout != null) {
-        mTimeout = timeout.intValue();
+        mTimeout = timeout;
       } else {
        mTimeout = mVinciClient.getSocketTimeout(); //default
       }

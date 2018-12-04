@@ -161,7 +161,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       defaultProcessTrace = true;
       cpeFactory.parse();
     } else {
-      defaultProcessTrace = mode.booleanValue();
+      defaultProcessTrace = mode;
       cpeFactory.parse(aDescriptor);
     }
     init(mode == null, UIMAFramework.getDefaultPerformanceTuningProperties());
@@ -1185,7 +1185,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
                         .intValue()), 0, null);
                 if (System.getProperty("SHOW_CUSTOM_STATS") != null)
                   UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                          "Custom Integer Stat-" + key + " Value=" + ((Integer) o).intValue());
+                          "Custom Integer Stat-" + key + " Value=" + o);
               } else {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                   UIMAFramework.getLogger(this.getClass()).log(

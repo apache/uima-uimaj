@@ -19,7 +19,6 @@
 
 package org.apache.uima.internal.util;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import junit.framework.TestCase;
@@ -32,7 +31,7 @@ public class ObjHashSetTest extends TestCase {
   Random random;
   
   public void setUp() {
-    ihs = new ObjHashSet<>(Integer.class, new Integer(Integer.MIN_VALUE));
+    ihs = new ObjHashSet<>(Integer.class, Integer.MIN_VALUE);
   }
   
   public void testBasic() {
@@ -41,7 +40,7 @@ public class ObjHashSetTest extends TestCase {
     ihs.add(188);
     Integer[] sv = ihs.toArray();
     assertEquals(2, sv.length);
-    assertEquals(15 + 188, sv[0].intValue() + sv[1].intValue());
+    assertEquals(15 + 188, sv[0] + sv[1]);
     
     // test most positive / negative
     ihs.clear();
@@ -94,7 +93,7 @@ public class ObjHashSetTest extends TestCase {
     /** Test with 2 byte numbers */
     checkRemovedReuse(true);
     
-    ihs = new ObjHashSet<>(Integer.class, new Integer(Integer.MIN_VALUE));
+    ihs = new ObjHashSet<>(Integer.class, Integer.MIN_VALUE);
     for (int i = 1; i < 99; i++) {
       ihs.add(i);
     }

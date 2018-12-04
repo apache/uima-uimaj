@@ -920,14 +920,14 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           DeflaterOutputStream cds = new DeflaterOutputStream(baosZipped, deflater, zipBufSize);       
           baos.writeTo(cds);
           cds.close();
-          idxAndLen.add(Integer.valueOf(i));
+          idxAndLen.add(i);
           if (doMeasurement) {
-            idxAndLen.add(Integer.valueOf((int)(sm.statDetails[i].afterZip = deflater.getBytesWritten())));            
-            idxAndLen.add(Integer.valueOf((int)(sm.statDetails[i].beforeZip = deflater.getBytesRead())));
+            idxAndLen.add((int) (sm.statDetails[i].afterZip = deflater.getBytesWritten()));
+            idxAndLen.add((int) (sm.statDetails[i].beforeZip = deflater.getBytesRead()));
             sm.statDetails[i].zipTime = System.currentTimeMillis() - startTime;
           } else {
-            idxAndLen.add(Integer.valueOf((int)deflater.getBytesWritten()));            
-            idxAndLen.add(Integer.valueOf((int)deflater.getBytesRead()));
+            idxAndLen.add((int) deflater.getBytesWritten());
+            idxAndLen.add((int) deflater.getBytesRead());
           }
         } 
       }

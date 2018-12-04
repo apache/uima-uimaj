@@ -157,9 +157,9 @@ public class CommonSerDesSequential {
     for (TOP fs : filtered) {
       addFS1(fs, nextAddr);   // doesn't update sortedFSs, that will be done below in batch
       if (TRACE_SETUP) {
-          System.out.format("Cmn serDes sequential setup: add FS id: %,4d addr: %,5d  type: %s%n", 
-              Integer.valueOf(fs._id), 
-              Integer.valueOf(nextAddr), 
+          System.out.format("Cmn serDes sequential setup: add FS id: %,4d addr: %,5d  type: %s%n",
+              fs._id,
+              nextAddr,
               fs._getTypeImpl().getShortName());
       }
       nextAddr += BinaryCasSerDes.getFsSpaceReq(fs, fs._getTypeImpl());  

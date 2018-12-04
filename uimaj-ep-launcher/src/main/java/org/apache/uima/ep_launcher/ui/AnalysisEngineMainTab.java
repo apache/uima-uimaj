@@ -460,8 +460,8 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     config.setAttribute(LauncherConstants.ATTR_DESCRIPTOR_NAME, descriptorText.getText());
     
     config.setAttribute(LauncherConstants.ATTR_INPUT_NAME, inputText.getText());
-    config.setAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME, 
-            Boolean.valueOf(recursivelyButton.getSelection()));
+    config.setAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME,
+        recursivelyButton.getSelection());
     
     String formatName;
     if (casButton.getSelection()) {
@@ -482,7 +482,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     
     config.setAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, outputFolderText.getText());
     config.setAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME,
-            Boolean.valueOf(clearFolderButton.getSelection()));
+        clearFolderButton.getSelection());
   }
 
   public void setDefaults(ILaunchConfigurationWorkingCopy config) {

@@ -562,7 +562,7 @@ public class BinaryCasSerDes {
       
       if (h.isCompressed) {
         if (TRACE_DESER) {
-          System.out.format("BinDeser version = %d%n", Integer.valueOf(h.v));
+          System.out.format("BinDeser version = %d%n", h.v);
         }
         if (h.form4) {
           BinaryCasSerDes4 bcsd4 = new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false);
@@ -703,7 +703,7 @@ public class BinaryCasSerDes {
       }
       if (TRACE_DESER) {
         System.out.format("BinDes Plain %s startPos: %,d mainHeapSize: %d%n", 
-            delta ? "Delta" : "", Integer.valueOf(startPos), Integer.valueOf(fsheapsz));
+            delta ? "Delta" : "", startPos, fsheapsz);
       }
             
       // add new heap slots
@@ -778,7 +778,7 @@ public class BinaryCasSerDes {
           modWords[i] = r.readInt();
         }
         if (TRACE_DESER) {
-          System.out.format("BinDes modified heap slot count: %,d%n", Integer.valueOf(fsmodssz2 / 2));
+          System.out.format("BinDes modified heap slot count: %,d%n", fsmodssz2 / 2);
         }
       } else {
         fsmodssz2 = 0; // not used but must be set to make "final" work
@@ -789,19 +789,19 @@ public class BinaryCasSerDes {
       // indexed FSs
       int fsindexsz = r.readInt();
       int[] fsindexes = new int[fsindexsz];
-      if (TRACE_DESER) System.out.format("BinDes indexedFSs count: %,d%n", Integer.valueOf(fsindexsz));
+      if (TRACE_DESER) System.out.format("BinDes indexedFSs count: %,d%n", fsindexsz);
       for (int i = 0; i < fsindexsz; i++) {
         fsindexes[i] = r.readInt();
         if (TRACE_DESER) {
-          if (i % 5 == 0) System.out.format("%n i: %5d ", Integer.valueOf(i));
-          System.out.format("%15d ", Integer.valueOf(fsindexes[i]));
+          if (i % 5 == 0) System.out.format("%n i: %5d ", i);
+          System.out.format("%15d ", fsindexes[i]);
         }
       }
       if (TRACE_DESER) System.out.println("");
 
       // byte heap
       int heapsz = r.readInt();
-      if (TRACE_DESER) System.out.format("BinDes ByteHeap size: %,d%n", Integer.valueOf(heapsz));
+      if (TRACE_DESER) System.out.format("BinDes ByteHeap size: %,d%n", heapsz);
       
       if (!delta) {
         byteHeap.heap = new byte[Math.max(16, heapsz)]; // must be > 0
@@ -817,7 +817,7 @@ public class BinaryCasSerDes {
 
       // short heap
       heapsz = r.readInt();
-      if (TRACE_DESER) System.out.format("BinDes ShortHeap size: %,d%n", Integer.valueOf(heapsz));
+      if (TRACE_DESER) System.out.format("BinDes ShortHeap size: %,d%n", heapsz);
       
       if (!delta) {
         shortHeap.heap = new short[Math.max(16, heapsz)]; // must be > 0
@@ -839,7 +839,7 @@ public class BinaryCasSerDes {
 
       // long heap
       heapsz = r.readInt();
-      if (TRACE_DESER) System.out.format("BinDes LongHeap size: %,d%n", Integer.valueOf(heapsz));
+      if (TRACE_DESER) System.out.format("BinDes LongHeap size: %,d%n", heapsz);
       
       if (!delta) {
         longHeap.heap = new long[Math.max(16, heapsz)]; // must be > 0
@@ -1612,7 +1612,7 @@ public class BinaryCasSerDes {
 //      }
       type = tsi.getTypeForCode(heap.heap[heapIndex]);
       if (type == null) {
-        throw new CASRuntimeException(CASRuntimeException.deserialized_type_not_found, Integer.valueOf(heap.heap[heapIndex]));
+        throw new CASRuntimeException(CASRuntimeException.deserialized_type_not_found, heap.heap[heapIndex]);
       }
       if (type.isArray()) {
         final int len = heap.heap[heapIndex + arrayLengthFeatOffset];

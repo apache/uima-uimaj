@@ -94,7 +94,7 @@ public class IntBitSetTest extends TestCase {
     while (it.hasNext()) {
       ints.add(it.nextNvc());
     }
-    assertTrue(Arrays.equals(ints.toArray(), new Object[]{Integer.valueOf(1064)}));
+    assertTrue(Arrays.equals(ints.toArray(), new Object[]{1064}));
     
     ibs.add(1063);
     it = ibs.iterator();

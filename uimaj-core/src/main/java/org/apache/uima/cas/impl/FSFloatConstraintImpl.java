@@ -59,31 +59,31 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
     for (int i = 0; i < max; i++) {
       switch (this.codes.get(i)) {
         case LT: {
-          if (f >= (this.values.get(i)).floatValue()) {
+          if (f >= this.values.get(i)) {
             return false;
           }
           break;
         }
         case LEQ: {
-          if (f > (this.values.get(i)).floatValue()) {
+          if (f > this.values.get(i)) {
             return false;
           }
           break;
         }
         case EQ: {
-          if (f != (this.values.get(i)).floatValue()) {
+          if (f != this.values.get(i)) {
             return false;
           }
           break;
         }
         case GEQ: {
-          if (f < (this.values.get(i)).floatValue()) {
+          if (f < this.values.get(i)) {
             return false;
           }
           break;
         }
         case GT: {
-          if (f <= (this.values.get(i)).floatValue()) {
+          if (f <= this.values.get(i)) {
             return false;
           }
           break;
@@ -106,7 +106,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
   @Override
   public void eq(float f) {
     this.codes.add(EQ);
-    this.values.add(Float.valueOf(f));
+    this.values.add(f);
   }
 
   /**
@@ -118,7 +118,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
   @Override
   public void lt(float f) {
     this.codes.add(LT);
-    this.values.add(Float.valueOf(f));
+    this.values.add(f);
   }
 
   /**
@@ -130,7 +130,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
   @Override
   public void leq(float f) {
     this.codes.add(LEQ);
-    this.values.add(Float.valueOf(f));
+    this.values.add(f);
   }
 
   /**
@@ -142,7 +142,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
   @Override
   public void gt(float f) {
     this.codes.add(GT);
-    this.values.add(Float.valueOf(f));
+    this.values.add(f);
   }
 
   /**
@@ -154,7 +154,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
   @Override
   public void geq(float f) {
     this.codes.add(GEQ);
-    this.values.add(Float.valueOf(f));
+    this.values.add(f);
   }
 
   @Override

@@ -318,7 +318,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
           char[] tmp = new char[logPath.length()];
           for (int i = 0; i < logPath.length(); i++) {
             if (logPath.charAt(i) == '\\') {
-              tmp[i] = new Character(System.getProperty("file.separator").charAt(0)).charValue();
+              tmp[i] = new Character(System.getProperty("file.separator").charAt(0));
             } else {
               tmp[i] = logPath.charAt(i);
             }
@@ -1580,8 +1580,8 @@ public boolean isIntegrated() {
       if (statMap.containsKey(aStatName)) {
         Object stat = statMap.remove(aStatName);
         if (stat instanceof Integer) {
-          int newValue = aStat.intValue() + ((Integer) stat).intValue();
-          aStat = Integer.valueOf(newValue);
+          int newValue = aStat + (Integer) stat;
+          aStat = newValue;
         }
       }
       statMap.put(aStatName, aStat);

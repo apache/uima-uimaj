@@ -1253,8 +1253,8 @@ public class VNS extends VinciServableAdapter {
     synchronized (hits) {
       Integer I = (Integer) hits.get(type);
       if (I == null)
-        I = new Integer(0);
-      I = new Integer(I.intValue() + 1);
+        I = 0;
+      I = I + 1;
 
       hits.put(type, I);
       totalhits++;

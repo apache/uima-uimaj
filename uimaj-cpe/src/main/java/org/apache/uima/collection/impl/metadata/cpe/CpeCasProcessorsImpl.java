@@ -319,8 +319,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     try {
-      setDropCasOnException(Boolean.valueOf(aElement.getAttribute("dropCasOnException"))
-              .booleanValue());
+      setDropCasOnException(Boolean.valueOf(aElement.getAttribute("dropCasOnException")));
     } catch (Exception e) {
       throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {

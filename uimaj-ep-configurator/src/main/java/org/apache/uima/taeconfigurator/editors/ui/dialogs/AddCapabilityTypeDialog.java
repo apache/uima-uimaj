@@ -217,8 +217,8 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
               || item.getText(OUTPUT).equals(checkedIndicator(OUTPUT))) {
         names.add(capabilitySection.getFullyQualifiedName(item.getText(NAMESPACE), item
                 .getText(NAME)));
-        ins.add(Boolean.valueOf(item.getText(INPUT).equals(checkedIndicator(INPUT))));
-        outs.add(Boolean.valueOf(item.getText(OUTPUT).equals(checkedIndicator(OUTPUT))));
+        ins.add(item.getText(INPUT).equals(checkedIndicator(INPUT)));
+        outs.add(item.getText(OUTPUT).equals(checkedIndicator(OUTPUT)));
       }
     }
 
@@ -227,8 +227,8 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
     outputs = new boolean[types.length];
 
     for (int i = 0; i < types.length; i++) {
-      inputs[i] = ((Boolean) ins.get(i)).booleanValue();
-      outputs[i] = ((Boolean) outs.get(i)).booleanValue();
+      inputs[i] = (Boolean) ins.get(i);
+      outputs[i] = (Boolean) outs.get(i);
     }
   }
 

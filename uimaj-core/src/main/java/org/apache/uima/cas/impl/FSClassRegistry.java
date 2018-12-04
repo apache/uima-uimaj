@@ -1243,9 +1243,9 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
             add2errors(errorSet, 
                        new CASRuntimeException(CASRuntimeException.JCAS_FIELD_ADJ_OFFSET_CHANGED,
                           clazz.getName(), 
-                          fi.getName(), 
-                          Integer.valueOf(staticOffsetInClass), 
-                          Integer.valueOf(fi.getAdjustedOffset())),
+                          fi.getName(),
+                           staticOffsetInClass,
+                           fi.getAdjustedOffset()),
                        staticOffsetInClass != -1);  // throw unless static offset is -1, in that case, a runtime error will occur if it is usedd
           }  // end of offset changed
         }  // end of feature check

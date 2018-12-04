@@ -286,19 +286,19 @@ public class DebugFSLogicalStructure {
       DebugNameValuePair nv = new DebugNameValuePair(feat.getShortName(), null);
       String rangeTypeName = feat.getRange().getName();
       if ("uima.cas.Integer".equals(rangeTypeName))
-        nv.setValue(Integer.valueOf(fs.getIntValue(feat)));
+        nv.setValue(fs.getIntValue(feat));
       else if ("uima.cas.Float".equals(rangeTypeName))
-        nv.setValue(Float.valueOf(fs.getFloatValue(feat)));
+        nv.setValue(fs.getFloatValue(feat));
       else if ("uima.cas.Boolean".equals(rangeTypeName))
-        nv.setValue(Boolean.valueOf(fs.getBooleanValue(feat)));
+        nv.setValue(fs.getBooleanValue(feat));
       else if ("uima.cas.Byte".equals(rangeTypeName))
-        nv.setValue(Byte.valueOf(fs.getByteValue(feat)));
+        nv.setValue(fs.getByteValue(feat));
       else if ("uima.cas.Short".equals(rangeTypeName))
-        nv.setValue(Short.valueOf(fs.getShortValue(feat)));
+        nv.setValue(fs.getShortValue(feat));
       else if ("uima.cas.Long".equals(rangeTypeName))
-        nv.setValue(Long.valueOf(fs.getLongValue(feat)));
+        nv.setValue(fs.getLongValue(feat));
       else if ("uima.cas.Double".equals(rangeTypeName))
-        nv.setValue(Double.valueOf(fs.getDoubleValue(feat)));
+        nv.setValue(fs.getDoubleValue(feat));
       else if ("uima.cas.String".equals(rangeTypeName))
         nv.setValue(fs.getStringValue(feat));
       else
@@ -454,7 +454,7 @@ public class DebugFSLogicalStructure {
     Set<FeatureStructure> alreadySeen = new HashSet<>();
     FeatureStructure nextFs;
     for (FeatureStructure currentFs = fs; currentFs.getType() != emptyFSList; currentFs = nextFs) {
-      list.add(Float.valueOf(currentFs.getFloatValue(headFeature)));
+      list.add(currentFs.getFloatValue(headFeature));
       nextFs = currentFs.getFeatureValue(tailFeature);
       if (alreadySeen.contains(nextFs)) {
         return loopInList(list);
@@ -463,7 +463,7 @@ public class DebugFSLogicalStructure {
     }
     float[] floatArray = new float[list.size()];
     for (int i = 0; i < floatArray.length; i++) {
-      floatArray[i] = list.get(i).floatValue();
+      floatArray[i] = list.get(i);
     }
     return floatArray;
   }
@@ -478,7 +478,7 @@ public class DebugFSLogicalStructure {
     Set<FeatureStructure> alreadySeen = new HashSet<>();
     FeatureStructure nextFs;
     for (FeatureStructure currentFs = fs; currentFs.getType() != emptyFSList; currentFs = nextFs) {
-      list.add(Integer.valueOf(currentFs.getIntValue(headFeature)));
+      list.add(currentFs.getIntValue(headFeature));
       nextFs = currentFs.getFeatureValue(tailFeature);
       if (alreadySeen.contains(nextFs)) {
         return loopInList(list);
@@ -487,7 +487,7 @@ public class DebugFSLogicalStructure {
     }
     int[] intArray = new int[list.size()];
     for (int i = 0; i < intArray.length; i++) {
-      intArray[i] = list.get(i).intValue();
+      intArray[i] = list.get(i);
     }
     return intArray;
   }

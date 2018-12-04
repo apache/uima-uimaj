@@ -124,7 +124,7 @@ public class MetaDataPanel extends FormPanel {
 
       if (type.equals("Boolean"))
         field = new JCheckBox((String) null, (parameterValue == null) ? false
-                : ((Boolean) parameterValue).booleanValue());
+                : (Boolean) parameterValue);
       else if (multiValued == false) {
         if (requiresFileSelector == false) {
           String stringValue = (parameterValue == null) ? "" : parameterValue.toString();

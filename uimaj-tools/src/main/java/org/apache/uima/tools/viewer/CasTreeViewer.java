@@ -167,10 +167,10 @@ public class CasTreeViewer extends JPanel {
         tableModel.addRow(new Object[] { featName, strVal });
       } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
         int intVal = aAnnotation.getIntValue(feat);
-        tableModel.addRow(new Object[] { featName, new Integer(intVal) });
+        tableModel.addRow(new Object[] { featName, intVal});
       } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
         float floatVal = aAnnotation.getFloatValue(feat);
-        tableModel.addRow(new Object[] { featName, new Float(floatVal) });
+        tableModel.addRow(new Object[] { featName, floatVal});
       } else if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
         StringArrayFS arrayFS = (StringArrayFS) aAnnotation.getFeatureValue(feat);
         StringBuffer displayVal = new StringBuffer();

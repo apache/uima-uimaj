@@ -132,7 +132,7 @@ public class ConfigField {
       } else
         return fieldString;
     } else if (fieldComponent instanceof JCheckBox)
-      return Boolean.valueOf(((JCheckBox) fieldComponent).isSelected());
+      return ((JCheckBox) fieldComponent).isSelected();
     else if (fieldComponent instanceof FileSelector)
       return ((FileSelector) fieldComponent).getSelected();
     else if (fieldComponent instanceof ListSelector) {

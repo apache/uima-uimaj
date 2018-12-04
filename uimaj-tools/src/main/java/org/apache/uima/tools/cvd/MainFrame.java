@@ -994,7 +994,7 @@ public class MainFrame extends JFrame {
     HashMap<Object, Action> actionMap = createEditActionMap();
     // Cut
     this.cutAction = actionMap.get(DefaultEditorKit.cutAction);
-    this.cutAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
+    this.cutAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_T);
     this.cutAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X,
         InputEvent.CTRL_MASK));
     this.cutAction.setEnabled(false);
@@ -1003,7 +1003,7 @@ public class MainFrame extends JFrame {
     this.editMenu.add(cutItem);
     // Copy
     this.copyAction = actionMap.get(DefaultEditorKit.copyAction);
-    this.copyAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+    this.copyAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
     this.copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
         InputEvent.CTRL_MASK));
     this.copyAction.setEnabled(false);
@@ -1012,7 +1012,7 @@ public class MainFrame extends JFrame {
     this.editMenu.add(copyItem);
     // Paste
     Action pasteAction = actionMap.get(DefaultEditorKit.pasteAction);
-    pasteAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
+    pasteAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_P);
     pasteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V,
         InputEvent.CTRL_MASK));
     JMenuItem pasteItem = new JMenuItem(pasteAction);

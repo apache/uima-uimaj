@@ -1663,8 +1663,8 @@ public void asynchStop() {
       if (collectionReader.getProcessingResourceMetaData().getConfigurationParameterSettings()
               .getParameterValue("fetchSize") != null) {
         try {
-          readerFetchSize = ((Integer) collectionReader.getProcessingResourceMetaData()
-                  .getConfigurationParameterSettings().getParameterValue("fetchSize")).intValue();
+          readerFetchSize = (Integer) collectionReader.getProcessingResourceMetaData()
+              .getConfigurationParameterSettings().getParameterValue("fetchSize");
         } catch (NumberFormatException nfe) {
           readerFetchSize = 1; // restore default
         }
@@ -1755,7 +1755,7 @@ public void asynchStop() {
         Class[] args = new Class[] { int.class, String.class, CPMEngine.class };
         Class cpClass = Class.forName(outputQueueClass);
         Constructor constructor = cpClass.getConstructor(args);
-        Object[] oArgs = new Object[] { Integer.valueOf(aQueueSize), "Sequenced Output Queue", this };
+        Object[] oArgs = new Object[] {aQueueSize, "Sequenced Output Queue", this };
         outputQueue = (BoundedWorkQueue) constructor.newInstance(oArgs);
       }
     } else {
@@ -1923,8 +1923,8 @@ public void asynchStop() {
       readerFetchSize = 1;
       if (collectionReader.getProcessingResourceMetaData().getConfigurationParameterSettings()
               .getParameterValue("fetchSize") != null) {
-        readerFetchSize = ((Integer) collectionReader.getProcessingResourceMetaData()
-                .getConfigurationParameterSettings().getParameterValue("fetchSize")).intValue();
+        readerFetchSize = (Integer) collectionReader.getProcessingResourceMetaData()
+            .getConfigurationParameterSettings().getParameterValue("fetchSize");
       }
       if (System.getProperty("DEBUG_CONTROL") != null) {
         startDebugControlThread();

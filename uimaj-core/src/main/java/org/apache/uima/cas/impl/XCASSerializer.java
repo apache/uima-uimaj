@@ -227,7 +227,7 @@ public class XCASSerializer {
      */
     private int isQueued(TOP fs, int value) {
       Integer v = this.queued.get(fs);
-      return (null == v) ? KEY_NOT_FOUND : (value == v.intValue()) ? KEY_AND_VALUE_MATCH : KEY_ONLY_MATCH;
+      return (null == v) ? KEY_NOT_FOUND : (value == v) ? KEY_AND_VALUE_MATCH : KEY_ONLY_MATCH;
     }
 
     /*

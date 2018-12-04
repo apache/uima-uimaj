@@ -265,7 +265,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     return sb;
   }
   
-  private static final Integer INTEGER0 = Integer.valueOf(0);
+  private static final Integer INTEGER0 = 0;
   
   private static int nextContainerId = 0;
   /******************************************************************
@@ -2129,9 +2129,9 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
             prevFirst = p.getFirst();
             logPrintNl(String.format("\n  For: %s", p.getFirst()), bw);
           } 
-          logPrintNl(String.format("    %5d   %s", Integer.valueOf(i), p.getSecond()), bw);
+          logPrintNl(String.format("    %5d   %s", i, p.getSecond()), bw);
         } else {
-          logPrintNl(String.format("%5d %-" +max+ "s %s", Integer.valueOf(i), p.getFirst(), p.getSecond()), bw);
+          logPrintNl(String.format("%5d %-" +max+ "s %s", i, p.getFirst(), p.getSecond()), bw);
         }
         i++;
       }

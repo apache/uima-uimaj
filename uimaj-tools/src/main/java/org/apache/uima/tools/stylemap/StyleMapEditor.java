@@ -490,8 +490,8 @@ public class StyleMapEditor extends JDialog implements ActionListener {
         // data[x][StyleConstants.FEATURE_VALUE_COLUMN] = e.getFeatureValue();
         data[x][StyleConstants.BG_COLUMN] = e.getBackground();
         data[x][StyleConstants.FG_COLUMN] = e.getForeground();
-        data[x][StyleConstants.CHECK_COLUMN] = Boolean.valueOf(e.getChecked());
-        data[x][StyleConstants.HIDDEN_COLUMN] = Boolean.valueOf(e.getHidden());
+        data[x][StyleConstants.CHECK_COLUMN] = e.getChecked();
+        data[x][StyleConstants.HIDDEN_COLUMN] = e.getHidden();
       }
 
       tableModel.set(data);
@@ -544,8 +544,8 @@ public class StyleMapEditor extends JDialog implements ActionListener {
         // data[x][StyleConstants.FEATURE_VALUE_COLUMN] = e.getFeatureValue();
         data[x][StyleConstants.BG_COLUMN] = e.getBackground();
         data[x][StyleConstants.FG_COLUMN] = e.getForeground();
-        data[x][StyleConstants.CHECK_COLUMN] = Boolean.valueOf(e.getChecked());
-        data[x][StyleConstants.HIDDEN_COLUMN] = Boolean.valueOf(e.getHidden());
+        data[x][StyleConstants.CHECK_COLUMN] = e.getChecked();
+        data[x][StyleConstants.HIDDEN_COLUMN] = e.getHidden();
 
         // Calculate adequate column widths:
         int typeNameWidth = fm.stringWidth(e.getAnnotationTypeName());

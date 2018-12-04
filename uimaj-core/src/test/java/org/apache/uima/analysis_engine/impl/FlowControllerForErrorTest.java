@@ -53,7 +53,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
     mSequence = ((FixedFlow) flowConstraints).getFixedFlow();
     Boolean paramVal = (Boolean)aContext.getConfigParameterValue(PARAM_CONTINUE_ON_FAILURE);
-    mContinueOnFailure = paramVal != null && paramVal.booleanValue(); 
+    mContinueOnFailure = paramVal != null && paramVal;
   }
 
   /*

@@ -227,8 +227,8 @@ public class ArtifactProducer extends Thread {
             .getParameterValue("fetchSize") != null) {
       // Determines how many at a time this Collection Reader will return
       // for each fetch
-      readerFetchSize = ((Integer) collectionReader.getProcessingResourceMetaData()
-              .getConfigurationParameterSettings().getParameterValue("fetchSize")).intValue();
+      readerFetchSize = (Integer) collectionReader.getProcessingResourceMetaData()
+          .getConfigurationParameterSettings().getParameterValue("fetchSize");
     }
   }
 
@@ -451,7 +451,7 @@ public class ArtifactProducer extends Thread {
           if (cpmStatTable != null) {
             Progress[] progress = collectionReader.getProgress();
             cpmStatTable.put("COLLECTION_READER_PROGRESS", progress);
-            cpmStatTable.put("COLLECTION_READER_TIME", Long.valueOf(totalFetchTime));
+            cpmStatTable.put("COLLECTION_READER_TIME", totalFetchTime);
           }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -644,7 +644,7 @@ public class ArtifactProducer extends Thread {
     if (cpmStatTable != null) {
       Progress[] progress = collectionReader.getProgress();
       cpmStatTable.put("COLLECTION_READER_PROGRESS", progress);
-      cpmStatTable.put("COLLECTION_READER_TIME", Long.valueOf(totalFetchTime));
+      cpmStatTable.put("COLLECTION_READER_TIME", totalFetchTime);
     }
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
