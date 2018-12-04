@@ -22,6 +22,7 @@ package org.apache.uima.caseditor.editor;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.uima.caseditor.core.model.DefaultColors;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -209,9 +210,8 @@ public final class AnnotationStyle {
     } else if (object instanceof AnnotationStyle) {
       AnnotationStyle style = (AnnotationStyle) object;
       
-      boolean isConfigEqual = configuration == style.configuration ||
-          (configuration != null ? false : configuration.equals(style.configuration));
-      
+      boolean isConfigEqual = Objects.equals(configuration, style.configuration);
+
       isEqual = annotation.equals(style.annotation) && this.style.equals(style.style)
               && color.equals(style.color) && layer == style.layer && isConfigEqual;
     } else {

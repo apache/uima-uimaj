@@ -19,12 +19,13 @@
 
 package org.apache.uima.caseditor.core.model.dotcorpus;
 
-import static org.junit.Assert.assertEquals;
-
 import java.awt.Color;
 
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Unit test for the {@link AnnotationStyle} class.
@@ -42,6 +43,11 @@ public class AnnotationStyleTest {
             255, 255, 0), 0);
 
     assertEquals(a, b);
+
+    AnnotationStyle c = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
+        255, 255, 0), 0, "config");
+
+    assertNotEquals(a, c);
   }
 
   /**
