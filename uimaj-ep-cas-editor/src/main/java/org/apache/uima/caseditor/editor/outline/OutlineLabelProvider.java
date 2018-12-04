@@ -31,19 +31,13 @@ import org.eclipse.swt.graphics.Image;
  * This <code>OutlineLabelProvider</code> returns the covered text of an <code>AnnotationFS</code>.
  */
 class OutlineLabelProvider extends LabelProvider implements ITableLabelProvider {
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-   */
+
   @Override
   public Image getColumnImage(Object element, int columnIndex) {
     // no image available, just return null
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
-   */
   @Override
   public String getColumnText(Object element, int columnIndex) {
     // there is only one column, if column index something

@@ -93,7 +93,7 @@ public class DefaultColors {
    */
   public static Collection<AnnotationStyle> assignColors(TypeSystem ts, Collection<AnnotationStyle> styles) {
     
-    Map<String, Color> typeNameToColorMap = new HashMap<String, Color>();
+    Map<String, Color> typeNameToColorMap = new HashMap<>();
     
     for (AnnotationStyle style : styles) {
       typeNameToColorMap.put(style.getAnnotation(), style.getColor());
@@ -106,7 +106,7 @@ public class DefaultColors {
       }
     }
     
-    Set<AnnotationStyle> newStyles = new HashSet<AnnotationStyle>();
+    Set<AnnotationStyle> newStyles = new HashSet<>();
     
     for (AnnotationStyle style : styles) {
       typeNameToColorMap.remove(style.getAnnotation());

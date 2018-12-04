@@ -47,16 +47,13 @@ public final class LowerLeftAnnotationSideAction extends BaseSelectionListenerAc
    * @param editor the editor
    */
   public LowerLeftAnnotationSideAction(ICasEditor editor) {
-    super("LowerLeftAnnotationSide");
+    super(ID);
 
     this.editor = editor;
 
     setEnabled(false);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
-   */
   @Override
   protected boolean updateSelection(IStructuredSelection selection) {
     AnnotationSelection annotation = new AnnotationSelection(selection);

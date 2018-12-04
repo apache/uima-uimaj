@@ -19,7 +19,6 @@
 
 package org.apache.uima.caseditor.editor;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,13 +83,10 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     IActionBars actionBars = getSite().getActionBars();
     actionBars.clearGlobalActionHandlers();
 
-    Map newActionHandlers = subActionBar
-        .getGlobalActionHandlers();
+    Map newActionHandlers = subActionBar.getGlobalActionHandlers();
     if (newActionHandlers != null) {
-      Set keys = newActionHandlers.entrySet();
-      Iterator iter = keys.iterator();
-      while (iter.hasNext()) {
-        Map.Entry entry = (Map.Entry) iter.next();
+      Set<Map.Entry> keys = newActionHandlers.entrySet();
+      for (Map.Entry entry : keys) {
         actionBars.setGlobalActionHandler((String) entry.getKey(),
             (IAction) entry.getValue());
       }
@@ -98,18 +94,12 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
   }
 
   // These are called from the outside, even if the page is not active ...
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-   */
   // this leads to the processing of events which should not be processed!
   @Override
   public void addSelectionChangedListener(ISelectionChangedListener listener) {
     selectionChangedListeners.add(listener);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-   */
   @Override
   public void removeSelectionChangedListener(ISelectionChangedListener listener) {
     selectionChangedListeners.remove(listener);
@@ -136,9 +126,6 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     }
   }
   
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
-   */
   @Override
   public ISelection getSelection() {
     if (casViewPage != null && casViewPage.getSite().getSelectionProvider() != null) {
@@ -149,9 +136,6 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
-   */
   @Override
   public void setSelection(ISelection selection) {
     if (casViewPage != null && casViewPage.getSite().getSelectionProvider() != null) {
@@ -159,9 +143,6 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     }
   }
   
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   public void createControl(Composite parent) {
     book = new PageBook(parent, SWT.NONE);
@@ -190,13 +171,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
         
         // Note: If page is in background event listening must be disabled!
         ISelectionProvider selectionProvider = page.getSite().getSelectionProvider();
-        selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
-          
-          @Override
-          public void selectionChanged(SelectionChangedEvent event) {
-            CasEditorViewPage.this.selectionChanged(event);
-          }
-        });
+        selectionProvider.addSelectionChangedListener(CasEditorViewPage.this::selectionChanged);
         
         subActionBar = (SubActionBars) casViewPage.getSite().getActionBars();
         
@@ -233,25 +208,16 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     initializeAndShowPage(page);
   }
   
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#getControl()
-   */
   @Override
   public Control getControl() {
     return book;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#setFocus()
-   */
   @Override
   public void setFocus() {
     book.setFocus();
   }
   
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#dispose()
-   */
   @Override
   public void dispose() {
     super.dispose();

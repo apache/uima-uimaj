@@ -207,14 +207,9 @@ public abstract class AbstractDocument implements ICasDocument {
       });
     }
   }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.ICasDocument#getTypeSystemText()
-   */
+
   @Override
   public String getTypeSystemText() {
     return null;
   }
-  
-  
 }

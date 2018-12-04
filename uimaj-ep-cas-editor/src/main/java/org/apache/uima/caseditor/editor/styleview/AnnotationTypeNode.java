@@ -63,10 +63,7 @@ public class AnnotationTypeNode implements IAdaptable{
   public Type getAnnotationType() {
     return type;
   }
-  
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
+
   @Override
   public boolean equals(Object obj) {
     
@@ -79,18 +76,12 @@ public class AnnotationTypeNode implements IAdaptable{
     
     return false;
   }
-  
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
+
   @Override
   public int hashCode() {
     return type.hashCode();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-   */
   @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     

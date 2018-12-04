@@ -26,7 +26,7 @@ import org.apache.uima.cas.Type;
 
 
 /**
- * Matches all annoations of an added type.
+ * Matches all annotations of an added type.
  */
 public class StrictTypeConstraint implements FSConstraint, FSMatchConstraint {
   
@@ -46,7 +46,7 @@ public class StrictTypeConstraint implements FSConstraint, FSMatchConstraint {
   }
 
   /**
-   * Checks if the given {@link FeatureStructure} matchs this constraint.
+   * Checks if the given {@link FeatureStructure} matches this constraint.
    *
    * @param candidateFS the candidate FS
    * @return true, if successful

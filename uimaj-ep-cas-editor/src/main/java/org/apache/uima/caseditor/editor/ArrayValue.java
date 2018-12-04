@@ -110,7 +110,7 @@ public class ArrayValue implements IAdaptable {
       StringArrayFS array = (StringArrayFS) arrayFS;
       array.set(slot, value);
     } else {
-      throw new CasEditorError("Unkown array type!");
+      throw new CasEditorError("Unknown array type!");
     }
   }
 
@@ -156,13 +156,10 @@ public class ArrayValue implements IAdaptable {
       ArrayFS array = (ArrayFS) arrayFS;
       return array.get(slot);
     } else {
-      throw new CasEditorError("Unkown array type!");
+      throw new CasEditorError("Unknown array type!");
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-   */
   @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 
@@ -185,9 +182,6 @@ public class ArrayValue implements IAdaptable {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     return Integer.toString(slot()) ;

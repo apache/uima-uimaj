@@ -47,9 +47,6 @@ public class DeleteFeatureStructureAction extends BaseSelectionListenerAction {
     setEnabled(false);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
-   */
   @Override
   protected boolean updateSelection(IStructuredSelection selection) {
     FeatureStructureSelection featureStructures =

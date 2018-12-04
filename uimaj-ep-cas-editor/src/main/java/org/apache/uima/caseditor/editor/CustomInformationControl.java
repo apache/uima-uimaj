@@ -84,50 +84,32 @@ public class CustomInformationControl implements IInformationControl, IInformati
     return mShell;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#setInformation(java.lang.String)
-   */
   @Override
   public void setInformation(String information) {
     // this method is replaced by the extension interface
     // method setInput(...)
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#setSizeConstraints(int, int)
-   */
   @Override
   public void setSizeConstraints(int maxWidth, int maxHeight) {
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#computeSizeHint()
-   */
   @Override
   public Point computeSizeHint() {
     return mShell.computeSize(SWT.DEFAULT, SWT.DEFAULT);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#setVisible(boolean)
-   */
   @Override
   public void setVisible(boolean visible) {
     mControl.setVisible(visible);
     mShell.setVisible(visible);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#setSize(int, int)
-   */
   @Override
   public void setSize(int width, int height) {
     // mShell.setSize(width, height);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#setLocation(org.eclipse.swt.graphics.Point)
-   */
   @Override
   public void setLocation(Point location) {
     Rectangle trim = mShell.computeTrim(0, 0, 0, 0);
@@ -139,9 +121,6 @@ public class CustomInformationControl implements IInformationControl, IInformati
     mShell.setLocation(location);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#dispose()
-   */
   @Override
   public void dispose() {
     if (mShell != null && !mShell.isDisposed()) {
@@ -149,77 +128,49 @@ public class CustomInformationControl implements IInformationControl, IInformati
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#addDisposeListener(org.eclipse.swt.events.DisposeListener)
-   */
   @Override
   public void addDisposeListener(DisposeListener listener) {
     mShell.addDisposeListener(listener);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#removeDisposeListener(org.eclipse.swt.events.DisposeListener)
-   */
   @Override
   public void removeDisposeListener(DisposeListener listener) {
     mShell.removeDisposeListener(listener);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#setForegroundColor(org.eclipse.swt.graphics.Color)
-   */
   @Override
   public void setForegroundColor(Color foreground) {
     mShell.setForeground(foreground);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#setBackgroundColor(org.eclipse.swt.graphics.Color)
-   */
   @Override
   public void setBackgroundColor(Color background) {
     mShell.setBackground(background);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#isFocusControl()
-   */
   @Override
   public boolean isFocusControl() {
     return mShell.isFocusControl();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#setFocus()
-   */
   @Override
   public void setFocus() {
     mShell.setFocus();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#addFocusListener(org.eclipse.swt.events.FocusListener)
-   */
   @Override
   public void addFocusListener(FocusListener listener) {
     mShell.addFocusListener(listener);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControl#removeFocusListener(org.eclipse.swt.events.FocusListener)
-   */
   @Override
   public void removeFocusListener(FocusListener listener) {
     mShell.removeFocusListener(listener);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.IInformationControlExtension2#setInput(java.lang.Object)
-   */
   @Override
   public void setInput(Object input) {
     mContentHandler.setInput(this, input);
-
   }
 
   /**

@@ -92,18 +92,12 @@ class TextDocumentProvider extends AbstractDocumentProvider {
       }
     });
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.texteditor.AbstractDocumentProvider#createAnnotationModel(java.lang.Object)
-   */
+
   @Override
-  protected IAnnotationModel createAnnotationModel(Object element) throws CoreException {
+  protected IAnnotationModel createAnnotationModel(Object element) {
     return new org.eclipse.jface.text.source.AnnotationModel();
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.texteditor.AbstractDocumentProvider#createDocument(java.lang.Object)
-   */
+
   @Override
   protected IDocument createDocument(Object element) throws CoreException {
     ICasDocument casDocument =  documentProvider.createDocument(element);
@@ -118,9 +112,6 @@ class TextDocumentProvider extends AbstractDocumentProvider {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.texteditor.AbstractDocumentProvider#doSaveDocument(org.eclipse.core.runtime.IProgressMonitor, java.lang.Object, org.eclipse.jface.text.IDocument, boolean)
-   */
   @Override
   protected void doSaveDocument(IProgressMonitor monitor, Object element, IDocument document,
           boolean overwrite) throws CoreException {
@@ -133,17 +124,11 @@ class TextDocumentProvider extends AbstractDocumentProvider {
     // else throw exception ->
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.texteditor.AbstractDocumentProvider#getOperationRunner(org.eclipse.core.runtime.IProgressMonitor)
-   */
   @Override
   protected IRunnableContext getOperationRunner(IProgressMonitor monitor) {
     return null;
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.texteditor.AbstractDocumentProvider#createElementInfo(java.lang.Object)
-   */
+
   @Override
   protected ElementInfo createElementInfo(Object element) throws CoreException {
     
@@ -153,10 +138,7 @@ class TextDocumentProvider extends AbstractDocumentProvider {
     
     return casElementInfo;
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.texteditor.AbstractDocumentProvider#disposeElementInfo(java.lang.Object, org.eclipse.ui.texteditor.AbstractDocumentProvider.ElementInfo)
-   */
+
   @Override
   protected void disposeElementInfo(Object element, ElementInfo info) {
     
@@ -165,10 +147,7 @@ class TextDocumentProvider extends AbstractDocumentProvider {
     CasElementInfo casElementInfo = (CasElementInfo) info;
     documentProvider.disposeElementInfo(element, casElementInfo.casInfo);
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.texteditor.AbstractDocumentProvider#getStatus(java.lang.Object)
-   */
+
   @Override
   public IStatus getStatus(Object element) {
     IStatus status = documentProvider.getStatus(element);

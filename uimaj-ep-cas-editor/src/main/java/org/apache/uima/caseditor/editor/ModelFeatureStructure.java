@@ -119,18 +119,15 @@ public class ModelFeatureStructure implements IAdaptable {
    */
   public static List<ModelFeatureStructure> create(ICasDocument document,
           List<AnnotationFS> annotations) {
-    List<ModelFeatureStructure> structres = new ArrayList<ModelFeatureStructure>(annotations.size());
+    List<ModelFeatureStructure> structures = new ArrayList<>(annotations.size());
 
     for (AnnotationFS annotation : annotations) {
-      structres.add(new ModelFeatureStructure(document, annotation));
+      structures.add(new ModelFeatureStructure(document, annotation));
     }
 
-    return structres;
+    return structures;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-   */
   @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     if (FeatureStructure.class.equals(adapter)) {
@@ -149,9 +146,6 @@ public class ModelFeatureStructure implements IAdaptable {
     mDocument.update(mFeatureStructre);
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj) {
 
@@ -167,9 +161,6 @@ public class ModelFeatureStructure implements IAdaptable {
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
   @Override
   public int hashCode() {
     return mFeatureStructre.hashCode();

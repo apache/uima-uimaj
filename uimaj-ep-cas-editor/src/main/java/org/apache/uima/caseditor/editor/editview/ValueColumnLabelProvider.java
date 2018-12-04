@@ -33,10 +33,7 @@ import org.eclipse.jface.viewers.ViewerCell;
  * Provides the labels for the edit view.
  */
 final class ValueColumnLabelProvider extends CellLabelProvider {
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
-   */
+
   @Override
   public void update(ViewerCell cell) {
 
@@ -79,7 +76,7 @@ final class ValueColumnLabelProvider extends CellLabelProvider {
       }
     }
     else {
-      throw new CasEditorError("Unkown element!");
+      throw new CasEditorError("Unknown element!");
     }
   }
 }

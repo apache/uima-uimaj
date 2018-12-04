@@ -45,7 +45,7 @@ class CasDocumentProviderFactory {
 
   /** The document providers. */
   // map class_name to provider
-  private Map<String, CasDocumentProvider> documentProviders = new HashMap<String, CasDocumentProvider>();
+  private Map<String, CasDocumentProvider> documentProviders = new HashMap<>();
   
   /**
    * Instantiates a new cas document provider factory.
@@ -67,7 +67,7 @@ class CasDocumentProviderFactory {
         try {
           documentProviderObject = element.createExecutableExtension("class");
         } catch (CoreException e) {
-          CasEditorPlugin.log("Failed to load doucment provider with id: " + id, e);
+          CasEditorPlugin.log("Failed to load document provider with id: " + id, e);
           documentProviderObject = null;
         }
         
@@ -94,7 +94,7 @@ class CasDocumentProviderFactory {
     
     // First try to match the input type to the editor input type
     // or one of its super class
-    List<Class<?>> classList = new ArrayList<Class<?>>();
+    List<Class<?>> classList = new ArrayList<>();
     
     for (Class<?> inputClass = input.getClass(); inputClass != null;) {
       classList.add(inputClass);

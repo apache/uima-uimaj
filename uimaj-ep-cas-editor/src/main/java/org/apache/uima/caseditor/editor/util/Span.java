@@ -86,12 +86,7 @@ public class Span implements Comparable<Span> {
       return false;
     }
 
-    boolean isEndContaining = getEnd() >= containingSpan.getEnd();
-    if (!isEndContaining) {
-      return false;
-    }
-
-    return true;
+    return getEnd() >= containingSpan.getEnd();
   }
 
   /**
@@ -140,11 +135,7 @@ public class Span implements Comparable<Span> {
       return false;
     }
 
-    if (getLength() != span.getLength()) {
-      return false;
-    }
-
-    return true;
+    return getLength() == span.getLength();
   }
 
   /**

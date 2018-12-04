@@ -42,10 +42,10 @@ public class DotCorpus {
   private String mTypeSystemFileName;
 
   /** names of the corpus folders. */
-  private Set<String> mCorpusFolders = new HashSet<String>();
+  private Set<String> mCorpusFolders = new HashSet<>();
 
   /** Names of the configuration source folders. */
-  private Set<String> mCasProcessorFolders = new HashSet<String>();
+  private Set<String> mCasProcessorFolders = new HashSet<>();
 
   /**
    * Length hint of the lines in the editor.
@@ -55,12 +55,12 @@ public class DotCorpus {
   /**
    * Maps style names to style objects.
    */
-  private HashMap<String, AnnotationStyle> mStyleMap = new HashMap<String, AnnotationStyle>();
+  private HashMap<String, AnnotationStyle> mStyleMap = new HashMap<>();
 
   /**
    * Contains names of types which are visible/shown.
    */
-  private Set<String> shownTypes = new HashSet<String>();
+  private Set<String> shownTypes = new HashSet<>();
   
   /**
    * Retrieves type system name parameter.
@@ -301,11 +301,7 @@ public class DotCorpus {
     if (a != null && b != null) {
       result = a.equals(b);
     } else {
-      if (a == null && b == null) {
-        result = true;
-      } else {
-        result = false;
-      }
+      result = a == null && b == null;
     }
 
     return result;

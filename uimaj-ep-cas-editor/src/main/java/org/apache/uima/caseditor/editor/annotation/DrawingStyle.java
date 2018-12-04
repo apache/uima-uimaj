@@ -36,7 +36,7 @@ public class DrawingStyle {
 
   /** The stateless styles. */
   private static Map<AnnotationStyle.Style, IDrawingStrategy> statelessStyles =
-      new HashMap<AnnotationStyle.Style, IDrawingStrategy>();
+      new HashMap<>();
   
   static {
     statelessStyles.put(Style.BACKGROUND, new BackgroundDrawingStrategy());

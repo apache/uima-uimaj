@@ -126,9 +126,6 @@ class FindAnnotateDialog extends Dialog {
     this.modeType = modeType;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.dialogs.Dialog#create()
-   */
   @Override
   public void create() {
     // calls createContents first
@@ -375,9 +372,6 @@ class FindAnnotateDialog extends Dialog {
     return panel;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.dialogs.Dialog#createContents(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   protected Control createContents(Composite parent) {
 
@@ -424,7 +418,7 @@ class FindAnnotateDialog extends Dialog {
 
     boolean isForwardSearch = forwardRadioButton.getSelection();
 
-    int textOffset = -1;
+    int textOffset;
 
     if (isForwardSearch) {
       textOffset = findReplaceTarget.getSelection().x + findReplaceTarget.getSelection().y;
@@ -456,9 +450,6 @@ class FindAnnotateDialog extends Dialog {
     return newAnnotation;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
-   */
   @Override
   protected void buttonPressed(int buttonID) {
 

@@ -30,10 +30,7 @@ import org.eclipse.jface.viewers.ViewerCell;
  * The Class FeatureColumnLabelProvider.
  */
 final class FeatureColumnLabelProvider extends CellLabelProvider {
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
-   */
+
   @Override
   public void update(ViewerCell cell) {
 

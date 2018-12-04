@@ -74,10 +74,10 @@ class QuickTypeSelectionDialog extends PopupDialog {
   private Text filterText;
 
   /** The shortcut type map. */
-  private Map<Character, Type> shortcutTypeMap = new HashMap<Character, Type>();
+  private Map<Character, Type> shortcutTypeMap = new HashMap<>();
 
   /** The type shortcut map. */
-  private Map<Type, Character> typeShortcutMap = new HashMap<Type, Character>();
+  private Map<Type, Character> typeShortcutMap = new HashMap<>();
 
   /**
    * Initializes the current instance.
@@ -96,15 +96,15 @@ class QuickTypeSelectionDialog extends PopupDialog {
 
     String shortcutsString = "qwertzuiopasdfghjklyxcvbnm1234567890";
 
-    Set<Character> shortcuts = new HashSet<Character>();
+    Set<Character> shortcuts = new HashSet<>();
 
     for (int i = 0; i < shortcutsString.length(); i++) {
       shortcuts.add(shortcutsString.charAt(i));
     }
 
-    List<Type> types = new ArrayList<Type>();
+    List<Type> types = new ArrayList<>();
     Collections.addAll(types, getTypes());
-    Collections.sort(types, new Comparator<Type>() {
+    types.sort(new Comparator<Type>() {
       @Override
       public int compare(Type o1, Type o2) {
         return o1.getName().compareTo(o2.getName());
@@ -210,9 +210,6 @@ class QuickTypeSelectionDialog extends PopupDialog {
     QuickTypeSelectionDialog.this.close();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.dialogs.PopupDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent);
@@ -394,9 +391,6 @@ class QuickTypeSelectionDialog extends PopupDialog {
     return composite;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.dialogs.PopupDialog#getInitialSize()
-   */
   @Override
   protected Point getInitialSize() {
     return new Point(250, 300);

@@ -41,13 +41,13 @@ import org.eclipse.swt.widgets.MenuItem;
 public class ShowAnnotationsMenu extends TypeMenu {
 
 	/** The listeners. */
-	private Set<IShowAnnotationsListener> listeners = new HashSet<IShowAnnotationsListener>();
+	private Set<IShowAnnotationsListener> listeners = new HashSet<>();
 
 	/**
 	 * This collection contains all type names which are displayed in the
 	 * editor.
 	 */
-	private Collection<Type> typesToDisplay = new HashSet<Type>();
+	private Collection<Type> typesToDisplay = new HashSet<>();
 
 	/**
 	 * Editor annotation mode type. This variable is only set if the editor
@@ -65,9 +65,7 @@ public class ShowAnnotationsMenu extends TypeMenu {
 	public ShowAnnotationsMenu(TypeSystem typeSystem, Collection<Type> shownTypes) {
 		super(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION), typeSystem);
 
-		for (Type type : shownTypes) {
-			typesToDisplay.add(type);
-		}
+		typesToDisplay.addAll(shownTypes);
 	}
 
 	/**
@@ -88,9 +86,6 @@ public class ShowAnnotationsMenu extends TypeMenu {
 		listeners.remove(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.caseditor.editor.contextmenu.TypeMenu#insertAction(org.apache.uima.cas.Type, org.eclipse.swt.widgets.Menu)
-	 */
 	@Override
 	protected void insertAction(final Type type, Menu parentMenu) {
 		final MenuItem actionItem = new MenuItem(parentMenu, SWT.CHECK);
@@ -128,15 +123,13 @@ public class ShowAnnotationsMenu extends TypeMenu {
 	 * @return the selected types
 	 */
 	public Collection<Type> getSelectedTypes() {
-		Collection<Type> selectedTypes = new LinkedList<Type>();
+		Collection<Type> selectedTypes = new LinkedList<>();
 
 		if (editorAnnotationMode != null) {
 			selectedTypes.add(editorAnnotationMode);
 		}
-		
-		for (Type type : typesToDisplay) {
-			selectedTypes.add(type);
-		}
+
+		selectedTypes.addAll(typesToDisplay);
 
 		return Collections.unmodifiableCollection(selectedTypes);
 	}
@@ -178,11 +171,8 @@ public class ShowAnnotationsMenu extends TypeMenu {
 	 * @param types the new selected types
 	 */
 	public void setSelectedTypes(Collection<Type> types) {
-		typesToDisplay = new HashSet<Type>();
-
-		for (Type type : types) {
-			typesToDisplay.add(type);
-		}
+		typesToDisplay = new HashSet<>();
+		typesToDisplay.addAll(types);
 
 		for (IShowAnnotationsListener listener : listeners) {
 			listener.selectionChanged(getSelectedTypes());

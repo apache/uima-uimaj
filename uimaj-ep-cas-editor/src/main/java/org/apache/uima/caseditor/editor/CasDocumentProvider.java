@@ -69,7 +69,7 @@ public abstract class CasDocumentProvider {
   public static final int TYPE_SYSTEM_NOT_AVAILABLE_STATUS_CODE = 12;
 
   /** The element state listeners. */
-  private Set<IElementStateListener> elementStateListeners = new HashSet<IElementStateListener>();
+  private Set<IElementStateListener> elementStateListeners = new HashSet<>();
 
   /**
    * The method {@link #createDocument(Object)} put error status objects for the given element in
@@ -77,7 +77,7 @@ public abstract class CasDocumentProvider {
    * 
    * The method {@link #getStatus(Object)} can then retrieve and return the status.
    */
-  protected Map<Object, IStatus> elementErrorStatus = new HashMap<Object, IStatus>();
+  protected Map<Object, IStatus> elementErrorStatus = new HashMap<>();
 
   /**
    * Creates the element info.

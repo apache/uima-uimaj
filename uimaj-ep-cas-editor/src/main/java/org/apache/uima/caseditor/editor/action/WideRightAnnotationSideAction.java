@@ -47,16 +47,13 @@ public final class WideRightAnnotationSideAction extends BaseSelectionListenerAc
    * @param editor the editor
    */
   public WideRightAnnotationSideAction(ICasEditor editor) {
-    super("WideRightAnnotationSide");
+    super(ID);
 
     this.editor = editor;
 
     setEnabled(false);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
-   */
   @Override
   protected boolean updateSelection(IStructuredSelection selection) {
     AnnotationSelection annotation = new AnnotationSelection(selection);

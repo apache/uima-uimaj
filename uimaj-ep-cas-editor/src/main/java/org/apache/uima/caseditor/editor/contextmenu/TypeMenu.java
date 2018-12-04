@@ -19,7 +19,6 @@
 
 package org.apache.uima.caseditor.editor.contextmenu;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.cas.Type;
@@ -94,11 +93,7 @@ abstract class TypeMenu extends ContributionItem {
 
         insertAction(parentType, newSubMenu);
 
-        Iterator<Type> childsIterator = childs.iterator();
-
-        while (childsIterator.hasNext()) {
-          Type child = childsIterator.next();
-
+        for (Type child : childs) {
           fillTypeMenu(child, newSubMenu, true);
         }
       }
@@ -116,5 +111,4 @@ abstract class TypeMenu extends ContributionItem {
      * @param parentMenu the parent menu
      */
     protected abstract void insertAction(final Type type, Menu parentMenu);
-
   }

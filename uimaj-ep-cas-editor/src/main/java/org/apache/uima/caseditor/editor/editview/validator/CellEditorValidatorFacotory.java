@@ -31,8 +31,7 @@ import org.eclipse.jface.viewers.ICellEditorValidator;
 public class CellEditorValidatorFacotory {
   
   /** The s validator map. */
-  private static Map<Class<?>, ICellEditorValidator> sValidatorMap = 
-	  	new HashMap<Class<?>, ICellEditorValidator>();
+  private static Map<Class<?>, ICellEditorValidator> sValidatorMap = new HashMap<>();
 
   static {
     sValidatorMap.put(Byte.class, new ByteCellEditorValidator());

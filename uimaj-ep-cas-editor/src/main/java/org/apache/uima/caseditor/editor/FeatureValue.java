@@ -79,9 +79,6 @@ public final class FeatureValue implements IAdaptable {
     return mStructure.getFeatureValue(mFeature);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-   */
   @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     if (AnnotationFS.class.equals(adapter)) {
@@ -99,16 +96,13 @@ public final class FeatureValue implements IAdaptable {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object object) {
     boolean result = false;
 
     if (this == object) {
       result = true;
-    } else if (object != null && object instanceof FeatureValue) {
+    } else if (object instanceof FeatureValue) {
       FeatureValue valueToCompare = (FeatureValue) object;
 
       result = valueToCompare.mStructure.equals(mStructure)
@@ -118,9 +112,6 @@ public final class FeatureValue implements IAdaptable {
     return result;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
   @Override
   public int hashCode() {
     return mStructure.hashCode() | mFeature.hashCode();

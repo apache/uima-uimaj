@@ -26,9 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 
-/**
- * TODO: add javadoch here.
- */
 public class AnnotationEditingControl extends Composite {
 
   /**
@@ -53,8 +50,5 @@ public class AnnotationEditingControl extends Composite {
    * @param structure the structure
    */
   public void displayFeatureStructure(FeatureStructure structure) {
-
-
-
   }
 }

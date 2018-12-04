@@ -282,9 +282,6 @@ class AnnotationDocument extends Document implements ICasDocument {
     return mDocument.getType(type);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.ICasDocument#switchView(java.lang.String)
-   */
   @Override
   public void switchView(String viewName) {
 
@@ -301,13 +298,10 @@ class AnnotationDocument extends Document implements ICasDocument {
     getTracker().set(text);
 
     // Note: Sends out view update notification
-    ((DocumentUimaImpl) mDocument).switchView(viewName);
+    mDocument.switchView(viewName);
 
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.ICasDocument#getTypeSystemText()
-   */
   @Override
   public String getTypeSystemText() {
     if(mDocument != null) {
@@ -315,6 +309,4 @@ class AnnotationDocument extends Document implements ICasDocument {
     }
     return null;
   }
-
-
 }

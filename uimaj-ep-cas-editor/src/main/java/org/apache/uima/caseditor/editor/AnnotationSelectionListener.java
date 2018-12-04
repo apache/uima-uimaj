@@ -33,9 +33,6 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public abstract class AnnotationSelectionListener implements ISelectionListener {
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
-   */
   @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
   }

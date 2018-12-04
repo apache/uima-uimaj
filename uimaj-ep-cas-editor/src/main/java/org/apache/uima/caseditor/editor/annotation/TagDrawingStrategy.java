@@ -73,9 +73,6 @@ class TagDrawingStrategy implements IDrawingStrategy {
     this.featureName = featureName;
   }
   
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy#draw(org.eclipse.jface.text.source.Annotation, org.eclipse.swt.graphics.GC, org.eclipse.swt.custom.StyledText, int, int, org.eclipse.swt.graphics.Color)
-   */
   @Override
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
           Color color) {

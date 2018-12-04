@@ -47,90 +47,57 @@ class AnnotationEditorSelection implements ITextSelection, IStructuredSelection 
     this.textSelection = textSelection;
     this.structuredSelection = structuredSelection;
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.ITextSelection#getOffset()
-   */
+
   @Override
   public int getOffset() {
     return textSelection.getOffset();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.ITextSelection#getLength()
-   */
   @Override
   public int getLength() {
     return textSelection.getLength();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.ITextSelection#getStartLine()
-   */
   @Override
   public int getStartLine() {
     return textSelection.getStartLine();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.ITextSelection#getEndLine()
-   */
   @Override
   public int getEndLine() {
     return textSelection.getEndLine();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.ITextSelection#getText()
-   */
   @Override
   public String getText() {
     return textSelection.getText();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ISelection#isEmpty()
-   */
   @Override
   public boolean isEmpty() {
     return structuredSelection.isEmpty() && textSelection.isEmpty();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IStructuredSelection#getFirstElement()
-   */
   @Override
   public Object getFirstElement() {
     return structuredSelection.getFirstElement();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IStructuredSelection#iterator()
-   */
   @Override
   public Iterator iterator() {
     return structuredSelection.iterator();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IStructuredSelection#size()
-   */
   @Override
   public int size() {
     return structuredSelection.size();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IStructuredSelection#toArray()
-   */
   @Override
   public Object[] toArray() {
     return structuredSelection.toArray();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IStructuredSelection#toList()
-   */
   @Override
   public List toList() {
     return structuredSelection.toList();

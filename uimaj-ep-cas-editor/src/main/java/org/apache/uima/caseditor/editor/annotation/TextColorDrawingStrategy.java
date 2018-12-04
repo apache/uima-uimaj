@@ -32,17 +32,13 @@ import org.eclipse.swt.graphics.Rectangle;
  */
 public class TextColorDrawingStrategy implements IDrawingStrategy {
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy#draw(org.eclipse.jface.text.source.Annotation, org.eclipse.swt.graphics.GC, org.eclipse.swt.custom.StyledText, int, int, org.eclipse.swt.graphics.Color)
-   */
   @Override
-  public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length, Color color) {
+  public void draw(Annotation annotation, GC gc, StyledText textWidget, int start, int length, Color color) {
     if (length > 0) {
       if (annotation instanceof EclipseAnnotationPeer) {
         if (gc != null) {
 
-          int start = offset;
-          int end = offset + length - 1;
+          int end = start + length - 1;
 
           Rectangle bounds = textWidget.getTextBounds(start, end);
 
@@ -51,7 +47,7 @@ public class TextColorDrawingStrategy implements IDrawingStrategy {
           gc.drawText(textWidget.getText(start, end), bounds.x, bounds.y, true);
 
         } else {
-          textWidget.redrawRange(offset, length, true);
+          textWidget.redrawRange(start, length, true);
         }
       }
     }

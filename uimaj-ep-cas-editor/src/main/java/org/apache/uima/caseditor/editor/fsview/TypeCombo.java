@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Composite;
 public class TypeCombo extends Composite {
   
   /** The listeners. */
-  private Set<ITypePaneListener> listeners = new HashSet<ITypePaneListener>();
+  private Set<ITypePaneListener> listeners = new HashSet<>();
 
   /** The type system. */
   private TypeSystem typeSystem;
@@ -91,7 +91,7 @@ public class TypeCombo extends Composite {
           Collection<Type> filterTypes) {
     this.typeSystem = typeSystem;
     
-    typeNameList = new LinkedList<String>();
+    typeNameList = new LinkedList<>();
 
     typeNameList.add(superType.getName());
 
@@ -115,7 +115,7 @@ public class TypeCombo extends Composite {
    * @param typeSystem the type system
    */
   public void setInput(Type superType, TypeSystem typeSystem) {
-    setInput(superType, typeSystem, Collections.<Type>emptyList());
+    setInput(superType, typeSystem, Collections.emptyList());
   }
   
   /**

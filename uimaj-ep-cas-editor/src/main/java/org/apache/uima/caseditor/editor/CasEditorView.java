@@ -53,11 +53,11 @@ public abstract class CasEditorView extends PageBookView {
 
   /** The editor listener map. */
   private Map<ICasEditor, ICasEditorInputListener> editorListenerMap =
-          new HashMap<ICasEditor, ICasEditorInputListener>();
+      new HashMap<>();
   
   /** The document listener map. */
   private Map<ICasEditor, ICasDocumentListener> documentListenerMap =
-          new HashMap<ICasEditor, ICasDocumentListener>();
+      new HashMap<>();
   
   /**
    * Instantiates a new cas editor view.
@@ -84,10 +84,7 @@ public abstract class CasEditorView extends PageBookView {
   protected boolean isRecreatePageOnCASViewSwitch() {
     return false;
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.PageBookView#createDefaultPage(org.eclipse.ui.part.PageBook)
-   */
+
   @Override
   protected IPage createDefaultPage(PageBook book) {
     MessagePage page = new MessagePage();
@@ -129,10 +126,7 @@ public abstract class CasEditorView extends PageBookView {
       casViewPageBookedPage.setCASViewPage(null);
     }
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.PageBookView#doCreatePage(org.eclipse.ui.IWorkbenchPart)
-   */
+
   @Override
   protected final PageRec doCreatePage(final IWorkbenchPart part) {
 
@@ -197,17 +191,11 @@ public abstract class CasEditorView extends PageBookView {
     return result;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.PageBookView#getBootstrapPart()
-   */
   @Override
   protected IWorkbenchPart getBootstrapPart() {
     return getSite().getPage().getActiveEditor();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.PageBookView#doDestroyPage(org.eclipse.ui.IWorkbenchPart, org.eclipse.ui.part.PageBookView.PageRec)
-   */
   @Override
   protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {
     
@@ -231,9 +219,6 @@ public abstract class CasEditorView extends PageBookView {
     pageRecord.dispose();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.PageBookView#isImportant(org.eclipse.ui.IWorkbenchPart)
-   */
   @Override
   protected boolean isImportant(IWorkbenchPart part) {
     // only interested in annotation editors
@@ -249,10 +234,7 @@ public abstract class CasEditorView extends PageBookView {
   public void partBroughtToTop(IWorkbenchPart part) {
     partActivated(part);
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.PageBookView#dispose()
-   */
+
   @Override
   public void dispose() {
     

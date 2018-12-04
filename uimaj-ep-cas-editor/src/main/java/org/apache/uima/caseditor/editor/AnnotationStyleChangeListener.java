@@ -35,9 +35,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 public abstract class AnnotationStyleChangeListener
     implements IPropertyChangeListener, IAnnotationStyleListener {
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-   */
   @Override
   public void propertyChange(PropertyChangeEvent event) {
     if (event.getProperty().endsWith(".style")) {

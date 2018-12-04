@@ -49,7 +49,7 @@ public class AnnotationSelection {
    * @param structures the structures
    */
   public AnnotationSelection(Collection<FeatureStructure> structures) {
-    mAnnotations = new ArrayList<AnnotationFS>(structures.size());
+    mAnnotations = new ArrayList<>(structures.size());
 
     for (FeatureStructure structure : structures) {
       if (structure instanceof AnnotationFS) {
@@ -57,7 +57,7 @@ public class AnnotationSelection {
       }
     }
 
-    Collections.sort(mAnnotations, new AnnotationComparator());
+    mAnnotations.sort(new AnnotationComparator());
   }
 
   /**
@@ -71,7 +71,7 @@ public class AnnotationSelection {
    */
   public AnnotationSelection(IStructuredSelection selection) {
 
-    mAnnotations = new ArrayList<AnnotationFS>(selection.size());
+    mAnnotations = new ArrayList<>(selection.size());
 
     for (Iterator<FeatureStructure> it = new FeatureStructureSelectionIterator(selection);
         it.hasNext();) {
@@ -82,7 +82,7 @@ public class AnnotationSelection {
       }
     }
 
-    Collections.sort(mAnnotations, new AnnotationComparator());
+    mAnnotations.sort(new AnnotationComparator());
 
     mAnnotations = Collections.unmodifiableList(mAnnotations);
   }

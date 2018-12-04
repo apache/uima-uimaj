@@ -66,9 +66,6 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
   /** The is array size displayed. */
   private boolean isArraySizeDisplayed;
 
-  /** The type selection. */
-  private TypeCombo typeSelection;
-
   /** The selected type. */
   private Type selectedType;
 
@@ -98,7 +95,7 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
       message = "Please enter the size of the array.";
     }
 
-    filterTypes = new HashSet<Type>();
+    filterTypes = new HashSet<>();
     filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_ARRAY_BASE));
     filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_BYTE));
     filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION_BASE));
@@ -113,10 +110,6 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
     filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_STRING));
   }
 
-
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
-   */
   @Override
   protected void configureShell(Shell newShell) {
     newShell.setText(title);
@@ -172,9 +165,6 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   protected Control createDialogArea(final Composite parent) {
 
@@ -197,8 +187,8 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
       
       Label typeLabel = new Label(typePanel, SWT.NONE);
       typeLabel.setText("Type: ");
-      
-      typeSelection = new TypeCombo(typePanel);
+
+      TypeCombo typeSelection = new TypeCombo(typePanel);
       typeSelection.setInput(superType, typeSystem, filterTypes);
 
       selectedType = typeSelection.getType();
@@ -234,18 +224,13 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
     return labelAndText;
   }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
-     */
-    @Override
+
+  @Override
   protected void createButtonsForButtonBar(Composite parent) {
     createButton(parent, IDialogConstants.OK_ID, "Create", true);
     createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.dialogs.IconAndMessageDialog#getImage()
-   */
   @Override
   protected Image getImage() {
     return getShell().getDisplay().getSystemImage(SWT.ICON_QUESTION);

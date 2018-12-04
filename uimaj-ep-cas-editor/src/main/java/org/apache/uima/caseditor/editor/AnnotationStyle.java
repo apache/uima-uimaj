@@ -279,7 +279,7 @@ public final class AnnotationStyle {
    * @return the map
    */
   private static Map<String, String> parseProperties(String line) {
-    Map<String, String> properties = new HashMap<String, String>();
+    Map<String, String> properties = new HashMap<>();
     
     String keyValueStrings[] = line.split(";");
     
@@ -306,7 +306,7 @@ public final class AnnotationStyle {
     Color color = new Color(style.getColor().getRed(), style.getColor().getGreen(),
             style.getColor().getBlue());
     
-    Map<String, String> styleProperties = new HashMap<String, String>();
+    Map<String, String> styleProperties = new HashMap<>();
     
     styleProperties.put("color", Integer.toString(color.getRGB()));
     styleProperties.put("strategy", style.getStyle().toString());

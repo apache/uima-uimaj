@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -49,8 +48,7 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 
 	/** The name annotation type node map. */
 	// map of AnnotationTypeTreeNode
-	private Map<String, AnnotationTypeTreeNode> nameAnnotationTypeNodeMap = 
-			new HashMap<String, AnnotationTypeTreeNode>();
+	private Map<String, AnnotationTypeTreeNode> nameAnnotationTypeNodeMap = new HashMap<>();
 
 	/**
 	 * Instantiates a new type grouped content provider.
@@ -61,10 +59,7 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 	TypeGroupedContentProvider(AnnotationEditor editor, TreeViewer viewer) {
 		super(editor, viewer);
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#addedAnnotation(java.util.Collection)
-	 */
+
 	@Override
 	protected void addedAnnotation(Collection<AnnotationFS> annotations) {
 
@@ -81,13 +76,10 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#removedAnnotation(java.util.Collection)
-	 */
 	@Override
 	protected void removedAnnotation(Collection<AnnotationFS> annotations) {
 
-	  Set<AnnotationTreeNode> removeAnnotations = new HashSet<AnnotationTreeNode>();
+	  Set<AnnotationTreeNode> removeAnnotations = new HashSet<>();
 	  
 		for (AnnotationFS annotation : annotations) {
 			String name = annotation.getType().getName();
@@ -108,18 +100,12 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		viewer.remove(removeAnnotations.toArray());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-	 */
 	@Override
   public Object[] getElements(Object inputElement) {
 	
 		return nameAnnotationTypeNodeMap.values().toArray();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-	 */
 	@Override
   public Object getParent(Object element) {
 	
@@ -148,9 +134,6 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-	 */
 	@Override
   public boolean hasChildren(Object element) {
 		if (element instanceof AnnotationTypeTreeNode) {
@@ -162,9 +145,6 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-	 */
 	@Override
   public Object[] getChildren(Object parentElement) {
 
@@ -173,18 +153,12 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		return typeNode.getAnnotations();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#viewChanged(java.lang.String, java.lang.String)
-	 */
 	@Override
   public void viewChanged(String oldViewName, String newViewName) {
 		changed();
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#changed()
-	 */
-	@Override
+
+@Override
   public void changed() {
 		nameAnnotationTypeNodeMap.clear();
 		
@@ -204,12 +178,10 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 			CAS cas = mInputDocument.getCAS();
 			
 			AnnotationIndex<AnnotationFS> index = cas.getAnnotationIndex(type);
-			
-			for (FSIterator<AnnotationFS> it = index.iterator(); it.hasNext(); ) {
-				AnnotationFS annotation = it.next();
-				
+
+			for (AnnotationFS annotation : index) {
 				if (annotation.getType().equals(type)) {
-				  typeNode.add(new AnnotationTreeNode(mInputDocument, annotation));
+					typeNode.add(new AnnotationTreeNode(mInputDocument, annotation));
 				}
 			}
 		}

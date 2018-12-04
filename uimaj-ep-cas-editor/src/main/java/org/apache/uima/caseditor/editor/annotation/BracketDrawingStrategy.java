@@ -29,7 +29,7 @@ import org.eclipse.swt.graphics.Rectangle;
 
 
 /**
- * Draws brackets arround an annotation.
+ * Draws brackets around an annotation.
  */
 public class BracketDrawingStrategy implements IDrawingStrategy {
   

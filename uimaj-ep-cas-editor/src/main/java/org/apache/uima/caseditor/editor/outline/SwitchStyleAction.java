@@ -39,18 +39,12 @@ public class SwitchStyleAction extends Action {
 	SwitchStyleAction(AnnotationOutline outline) {
 		this.outline = outline;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.Action#getText()
-	 */
+
 	@Override
 	public String getText() {
 		return "Switch style";
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
+
 	@Override
 	public void run() {
 		
@@ -61,7 +55,7 @@ public class SwitchStyleAction extends Action {
 			outline.switchStyle(OutlineStyles.MODE);
 		}
 		else {
-			throw new CasEditorError("Unkown style!");
+			throw new CasEditorError("Unknown style!");
 		}
 	}	
 }

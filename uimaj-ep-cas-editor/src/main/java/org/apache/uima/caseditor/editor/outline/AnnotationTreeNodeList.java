@@ -40,7 +40,7 @@ import org.apache.uima.caseditor.editor.ICasDocument;
 public class AnnotationTreeNodeList {
   
   /** The m elements. */
-  private List<AnnotationTreeNode> mElements = new ArrayList<AnnotationTreeNode>();
+  private List<AnnotationTreeNode> mElements = new ArrayList<>();
 
   /** The m document. */
   private ICasDocument mDocument;

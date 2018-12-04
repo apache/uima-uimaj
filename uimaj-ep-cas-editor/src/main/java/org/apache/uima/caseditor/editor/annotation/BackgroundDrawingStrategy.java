@@ -50,12 +50,11 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
    * @param color the color
    */
   @Override
-  public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
+  public void draw(Annotation annotation, GC gc, StyledText textWidget, int annotationBegin, int length,
           Color color) {
     if (length != 0) {
       if (gc != null) {
-    	int annotationBegin = offset;
-    	int annotationEnd = offset + length;
+    	int annotationEnd = annotationBegin + length;
     	  
         Rectangle bounds = textWidget.getTextBounds(annotationBegin, annotationEnd - 1);
 
@@ -73,12 +72,12 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
         // The z offsets should be drawn, the X offsets should not be overdrawn. That is solved
         // by drawing for every z offset area one background rectangle.
         
-        List<Span> dontOverDrawSpans = new ArrayList<Span>();
+        List<Span> dontOverDrawSpans = new ArrayList<>();
         
-        Span annotationSpan = new Span(offset, length);
+        Span annotationSpan = new Span(annotationBegin, length);
         
         // add all style ranges to the list in the range of the annotation
-        for (StyleRange styleRange : textWidget.getStyleRanges(offset, length)) {
+        for (StyleRange styleRange : textWidget.getStyleRanges(annotationBegin, length)) {
         	Span styleRangeSpan = new Span(styleRange.start, styleRange.length);
         	if (styleRangeSpan.getLength() > 0)
         	    dontOverDrawSpans.add(styleRangeSpan);
@@ -99,7 +98,7 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
         gc.setBackground(color);
         
         if (dontOverDrawSpans.size() > 0) {
-	        int zBegin = offset;
+	        int zBegin = annotationBegin;
 	    	for (Span xSpan : dontOverDrawSpans) {
 	    	  if (xSpan.getLength() > 0 && zBegin < xSpan.getStart()) {
 	    		  Rectangle selectionBounds = textWidget.getTextBounds(zBegin, xSpan.getStart() -1);
@@ -121,13 +120,12 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
 		      gc.fillRectangle(selectionBounds);
         }
         
-        int start = offset;
-        int end = offset + length - 1;
+        int end = annotationBegin + length - 1;
 
         gc.setForeground(new Color(gc.getDevice(), 0, 0, 0));
         
         // Instead of a tab draw textWidget.getTabs() spaces
-        String annotationText = textWidget.getText(start, end);
+        String annotationText = textWidget.getText(annotationBegin, end);
         
         if (annotationText.contains("\t")) {
         	char replacementSpaces[] = new char[textWidget.getTabs()];
@@ -139,7 +137,7 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
         gc.drawText(annotationText, bounds.x, bounds.y, true);
       } 
       else {
-        textWidget.redrawRange(offset, length, true);
+        textWidget.redrawRange(annotationBegin, length, true);
       }
     }
   }

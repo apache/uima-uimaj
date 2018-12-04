@@ -116,7 +116,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
   /**
    * Returns the plugin's resource bundle.
    *
-   * @return the ResourceBbundle or null if missing
+   * @return the ResourceBundle or null if missing
    */
   public ResourceBundle getResourceBundle() {
     try {

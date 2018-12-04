@@ -42,23 +42,17 @@ public final class FeatureStructureBrowserView extends CasEditorView {
     super("The instance view is currently not available.");
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.CasEditorView#doCreatePage(org.apache.uima.caseditor.editor.ICasEditor)
-   */
   @Override
   protected IPageBookViewPage doCreatePage(ICasEditor editor) {
 
     IPageBookViewPage result = null;
 
-		ICasDocument document = editor.getDocument();
+    ICasDocument document = editor.getDocument();
 
-		if (document != null) {
-			FeatureStructureBrowserViewPage page = new FeatureStructureBrowserViewPage(
-					editor);
+    if (document != null) {
+      result = new FeatureStructureBrowserViewPage(editor);
+    }
 
-			result = page;
-		}
-
-		return result;
-	}
+    return result;
+  }
 }

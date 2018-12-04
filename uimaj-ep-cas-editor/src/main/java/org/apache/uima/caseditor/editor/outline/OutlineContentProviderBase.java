@@ -97,7 +97,7 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
 	 */
 	@Override
 	protected void updatedAnnotation(Collection<AnnotationFS> featureStructres) {
-	  Collection<AnnotationFS> annotations = new ArrayList<AnnotationFS>(featureStructres.size());
+	  Collection<AnnotationFS> annotations = new ArrayList<>(featureStructres.size());
 	
 	  for (FeatureStructure structure : featureStructres) {
 	    if (structure instanceof AnnotationFS) {

@@ -113,9 +113,6 @@ final class EditViewPage extends Page implements ISelectionListener {
       super(viewer);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.EditingSupport#canEdit(java.lang.Object)
-     */
     @Override
     protected boolean canEdit(Object element) {
 
@@ -146,9 +143,6 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.EditingSupport#getCellEditor(java.lang.Object)
-     */
     @Override
     protected CellEditor getCellEditor(Object element) {
 
@@ -209,7 +203,7 @@ final class EditViewPage extends Page implements ISelectionListener {
             // no validator needed
           }
           else {
-            throw new CasEditorError("Unkown array type: " + arrayFS.getClass().getName());
+            throw new CasEditorError("Unknown array type: " + arrayFS.getClass().getName());
           }
         }
 
@@ -220,9 +214,6 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.EditingSupport#getValue(java.lang.Object)
-     */
     @Override
     protected Object getValue(Object element) {
 
@@ -257,9 +248,6 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.EditingSupport#setValue(java.lang.Object, java.lang.Object)
-     */
     @Override
     protected void setValue(Object element, Object value) {
 
@@ -322,9 +310,6 @@ final class EditViewPage extends Page implements ISelectionListener {
       setEnabled(false);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
       IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
@@ -350,9 +335,6 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
-     */
     @Override
     protected boolean updateSelection(IStructuredSelection selection) {
 
@@ -414,27 +396,37 @@ final class EditViewPage extends Page implements ISelectionListener {
       TypeSystem ts = document.getCAS().getTypeSystem();
 
       if (type.isArray()) {
-          if (type.getName().equals(CAS.TYPE_NAME_BOOLEAN_ARRAY)) {
-              fs = document.getCAS().createBooleanArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_BYTE_ARRAY)) {
-              fs = document.getCAS().createByteArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_SHORT_ARRAY)) {
-              fs = document.getCAS().createShortArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)) {
-              fs = document.getCAS().createIntArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_LONG_ARRAY)) {
-              fs = document.getCAS().createLongArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_FLOAT_ARRAY)) {
-              fs = document.getCAS().createFloatArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_DOUBLE_ARRAY)) {
-              fs = document.getCAS().createDoubleArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_STRING_ARRAY)) {
-              fs = document.getCAS().createStringArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_FS_ARRAY)) {
-              fs = document.getCAS().createArrayFS(arraySize);
-            } else {
-              throw new CasEditorError("Unkown array type: " + type.getName() + "!");
-            }
+        switch (type.getName()) {
+          case CAS.TYPE_NAME_BOOLEAN_ARRAY:
+            fs = document.getCAS().createBooleanArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_BYTE_ARRAY:
+            fs = document.getCAS().createByteArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_SHORT_ARRAY:
+            fs = document.getCAS().createShortArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_INTEGER_ARRAY:
+            fs = document.getCAS().createIntArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_LONG_ARRAY:
+            fs = document.getCAS().createLongArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_FLOAT_ARRAY:
+            fs = document.getCAS().createFloatArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_DOUBLE_ARRAY:
+            fs = document.getCAS().createDoubleArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_STRING_ARRAY:
+            fs = document.getCAS().createStringArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_FS_ARRAY:
+            fs = document.getCAS().createArrayFS(arraySize);
+            break;
+          default:
+            throw new CasEditorError("Unkown array type: " + type.getName() + "!");
+        }
       }
       else if (ts.subsumes(ts.getType(CAS.TYPE_NAME_ANNOTATION), type)) {
 
@@ -463,9 +455,6 @@ final class EditViewPage extends Page implements ISelectionListener {
       return fs;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
       IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
@@ -550,9 +539,6 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
-     */
     @Override
     protected boolean updateSelection(IStructuredSelection selection) {
 
@@ -629,9 +615,6 @@ final class EditViewPage extends Page implements ISelectionListener {
 
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   public void createControl(Composite parent) {
 
@@ -812,17 +795,11 @@ final class EditViewPage extends Page implements ISelectionListener {
     return viewer.getControl();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#setFocus()
-   */
   @Override
   public void setFocus() {
     viewer.getControl().setFocus();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#setActionBars(org.eclipse.ui.IActionBars)
-   */
   @Override
   public void setActionBars(IActionBars actionBars) {
     // pin action
@@ -850,9 +827,6 @@ final class EditViewPage extends Page implements ISelectionListener {
             ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
-   */
   @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
@@ -873,9 +847,6 @@ final class EditViewPage extends Page implements ISelectionListener {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#dispose()
-   */
   @Override
   public void dispose() {
     getSite().getPage().removeSelectionListener(this);

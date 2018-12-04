@@ -46,7 +46,7 @@ public class FeatureStructureSelection {
    * @param selection the selection
    */
   public FeatureStructureSelection(IStructuredSelection selection) {
-    mFeatureStructures = new ArrayList<FeatureStructure>(selection.size());
+    mFeatureStructures = new ArrayList<>(selection.size());
 
     for (Object item : selection.toList()) {
       FeatureStructure annotation = (FeatureStructure) Platform.getAdapterManager().getAdapter(

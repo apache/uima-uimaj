@@ -75,10 +75,8 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
    * component's <code>addCustomStyleConfigChangeListener</code> method. When
    * the customStyleConfigChange event occurs, that object's appropriate
    * method is invoked.
-   *
-   * @see CustomStyleConfigChangeEvent
    */
-  private static interface CustomStyleConfigChangeListener {
+  private interface CustomStyleConfigChangeListener {
     
     /**
      * Style changed.
@@ -95,7 +93,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     
     /** The listeners. */
     private Set<CustomStyleConfigChangeListener> listeners =
-        new HashSet<CustomStyleConfigChangeListener>();
+        new HashSet<>();
     
     /**
      * Instantiates a new custom style config widget.
@@ -156,7 +154,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   /**
    * The Class TagStyleConfigWidget.
    */
-  // TODO: needs one label plus combo to select the combinded drawing style
+  // TODO: needs one label plus combo to select the combined drawing style
   private static class TagStyleConfigWidget extends CustomStyleConfigWidget {
     
     /** The feature combo. */
@@ -171,7 +169,6 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       super(parent);
       
       // Add a warning, that tag style is still experimental
-      
       
       // group layout must fill everything .. ?!
       setLayout(new FillLayout());
@@ -211,10 +208,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       
       group.pack();
     }
-    
-    /* (non-Javadoc)
-     * @see org.apache.uima.caseditor.ui.property.AnnotationPropertyPage.CustomStyleConfigWidget#getConfiguration()
-     */
+
     @Override
     String getConfiguration() {
       String configString = featureCombo.getText();
@@ -224,10 +218,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       else
         return configString;
     }
-    
-    /* (non-Javadoc)
-     * @see org.apache.uima.caseditor.ui.property.AnnotationPropertyPage.CustomStyleConfigWidget#setStyle(org.apache.uima.caseditor.editor.AnnotationStyle, org.apache.uima.cas.Type)
-     */
+
     @Override
     void setStyle(AnnotationStyle style, Type selectedType) {
       featureCombo.removeAll();
@@ -276,7 +267,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   private CustomStyleConfigWidget styleConfigurationWidget;
   
   /** The changed styles. */
-  private Map<Type, AnnotationStyle> changedStyles = new HashMap<Type, AnnotationStyle>();
+  private Map<Type, AnnotationStyle> changedStyles = new HashMap<>();
 
   /**
    * Gets the selected type.
@@ -304,7 +295,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
    * @param type the type
    * @return the working copy annotation style
    */
-  private final AnnotationStyle getWorkingCopyAnnotationStyle(Type type) {
+  private AnnotationStyle getWorkingCopyAnnotationStyle(Type type) {
     AnnotationStyle style = changedStyles.get(type);
     
     if (style == null)
@@ -314,7 +305,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   }
   
   // does not make sense, just give it a list with new annotation styles,
-  // to save them and notify other about the chagne
+  // to save them and notify other about the change
   
   /**
    * Sets the annotation style.
@@ -389,8 +380,6 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       styleConfigurationWidget.setVisible(false);
     }
   }
-  
-
   
   /**
    * Creates the annotation property page controls.
@@ -524,7 +513,6 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
         
         setAnnotationStyle(newStyle);
       }
-        
 
       @Override
       public void widgetDefaultSelected(SelectionEvent e) {

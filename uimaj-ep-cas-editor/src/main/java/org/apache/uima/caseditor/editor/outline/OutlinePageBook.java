@@ -46,9 +46,6 @@ public class OutlinePageBook extends CasEditorViewPage
     super("An outline it not available!");
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.CasEditorViewPage#initializeAndShowPage(org.eclipse.ui.part.IPageBookViewPage)
-   */
   @Override
   protected void initializeAndShowPage(final IPageBookViewPage page) {
     

@@ -92,17 +92,11 @@ class AnnotationStyleViewPage extends Page {
     AnnotationTypeContentProvider(AnnotationEditor editor) {
       this.editor = editor;
     }
-    
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-     */
+
     @Override
     public void dispose() {
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       
@@ -125,33 +119,21 @@ class AnnotationStyleViewPage extends Page {
       
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-     */
     @Override
     public Object[] getElements(Object inputElement) {
       return annotationTypes;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-     */
     @Override
     public Object[] getChildren(Object parentElement) {
       return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-     */
     @Override
     public Object getParent(Object element) {
       return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-     */
     @Override
     public boolean hasChildren(Object element) {
       return false;
@@ -180,47 +162,29 @@ class AnnotationStyleViewPage extends Page {
     AnnotationStylingLabelProvider(AnnotationEditor editor) {
       this.editor = editor;
     }
-    
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-     */
+
     @Override
     public void addListener(ILabelProviderListener listener) {
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-     */
     @Override
     public void dispose() {
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
-     */
     @Override
     public boolean isLabelProperty(Object element, String property) {
       return false;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-     */
     @Override
     public void removeListener(ILabelProviderListener listener) {
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-     */
     @Override
     public Image getColumnImage(Object element, int columnIndex) {
       return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
-     */
     @Override
     public String getColumnText(Object element, int columnIndex) {
       
@@ -238,21 +202,15 @@ class AnnotationStyleViewPage extends Page {
         return style.getStyle().toString();
       }
       else {
-        throw new IllegalStateException("Unkown column!");
+        throw new IllegalStateException("Unknown column!");
       }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
-     */
     @Override
     public Color getForeground(Object element) {
       return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
-     */
     @Override
     public Color getBackground(Object element) {
       
@@ -307,10 +265,7 @@ class AnnotationStyleViewPage extends Page {
     
     return selectedNodes;
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
-   */
+
   @Override
   public void createControl(Composite parent) {
 
@@ -338,10 +293,10 @@ class AnnotationStyleViewPage extends Page {
     typeColumn.setText("Type");
     typeColumn.setWidth(120);
     
-    TableColumn stlyeColumn = new TableColumn(table, SWT.LEFT);
-    stlyeColumn.setAlignment(SWT.LEFT);
-    stlyeColumn.setText("Style");
-    stlyeColumn.setWidth(100);
+    TableColumn styleColumn = new TableColumn(table, SWT.LEFT);
+    styleColumn.setAlignment(SWT.LEFT);
+    styleColumn.setText("Style");
+    styleColumn.setWidth(100);
 
     treeViewer.setContentProvider(new AnnotationTypeContentProvider(editor));
     treeViewer.setLabelProvider(new AnnotationStylingLabelProvider(editor));
@@ -418,9 +373,6 @@ class AnnotationStyleViewPage extends Page {
     // create a action handle to push changes to editor
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#makeContributions(org.eclipse.jface.action.IMenuManager, org.eclipse.jface.action.IToolBarManager, org.eclipse.jface.action.IStatusLineManager)
-   */
   @Override
   public void makeContributions(IMenuManager menuManager, IToolBarManager toolBarManager,
           IStatusLineManager statusLineManager) {
@@ -453,26 +405,17 @@ class AnnotationStyleViewPage extends Page {
     
     toolBarManager.add(action);
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#getControl()
-   */
+
   @Override
   public Control getControl() {
     return treeViewer.getControl();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#setFocus()
-   */
   @Override
   public void setFocus() {
     treeViewer.getControl().setFocus();
   }
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#dispose()
-   */
+
   @Override
   public void dispose() {
     super.dispose();

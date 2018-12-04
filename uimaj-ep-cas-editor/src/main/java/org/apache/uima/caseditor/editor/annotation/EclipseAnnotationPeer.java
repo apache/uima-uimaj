@@ -51,17 +51,12 @@ public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotat
     return annotation;
   }
   
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
+
   @Override
   public int hashCode() {
     return annotation._id();
   }
-  
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
+
   @Override
   public boolean equals(Object obj) {
     if (obj == this) {
@@ -76,10 +71,7 @@ public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotat
       return false;
     }
   }
-  
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
+
   @Override
   public String toString() {
     return annotation.toString();

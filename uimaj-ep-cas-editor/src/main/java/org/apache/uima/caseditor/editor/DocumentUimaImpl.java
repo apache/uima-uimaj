@@ -115,9 +115,6 @@ public class DocumentUimaImpl extends AbstractDocument {
     return mCAS;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.AbstractDocument#getTypeSystemText()
-   */
   @Override
   public String getTypeSystemText() {
     return typeSystemText;
@@ -144,9 +141,6 @@ public class DocumentUimaImpl extends AbstractDocument {
     fireAddedFeatureStructure(annotation);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.ICasDocument#addFeatureStructures(java.util.Collection)
-   */
   @Override
   public void addFeatureStructures(Collection<? extends FeatureStructure> annotations) {
     for (FeatureStructure annotation : annotations) {
@@ -216,9 +210,6 @@ public class DocumentUimaImpl extends AbstractDocument {
     fireUpdatedFeatureStructure(annotations);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.ICasDocument#changed()
-   */
   @Override
   public void changed() {
     fireChanged();
@@ -249,7 +240,7 @@ public class DocumentUimaImpl extends AbstractDocument {
    * @return the collection
    */
   static Collection<AnnotationFS> fsIteratorToCollection(FSIterator<AnnotationFS> iterator) {
-    LinkedList<AnnotationFS> annotations = new LinkedList<AnnotationFS>();
+    LinkedList<AnnotationFS> annotations = new LinkedList<>();
     while (iterator.hasNext()) {
       AnnotationFS annotation = iterator.next();
 
@@ -270,9 +261,6 @@ public class DocumentUimaImpl extends AbstractDocument {
     return getCAS().getTypeSystem().getType(type);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.ICasDocument#switchView(java.lang.String)
-   */
   @Override
   public void switchView(String viewName) {
     String oldViewName = mCAS.getViewName();
@@ -336,14 +324,12 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Gets the virgin CAS.
    *
-   * @param typeSystemFile the type system file
+   * @param extensionTypeSystemFile the type system file
    * @return the virgin CAS
    * @throws CoreException the core exception
    */
-  public static CAS getVirginCAS(IFile typeSystemFile) throws CoreException {
+  public static CAS getVirginCAS(IFile extensionTypeSystemFile) throws CoreException {
     ResourceSpecifierFactory resourceSpecifierFactory = UIMAFramework.getResourceSpecifierFactory();
-
-    IFile extensionTypeSystemFile = typeSystemFile;
 
     InputStream inTypeSystem;
 
@@ -363,10 +349,10 @@ public class DocumentUimaImpl extends AbstractDocument {
     try {
       typeSystemDesciptor = (TypeSystemDescription) xmlParser.parse(xmlTypeSystemSource);
 
-      IProject project = typeSystemFile.getProject();
+      IProject project = extensionTypeSystemFile.getProject();
       ClassLoader classLoader = getProjectClassLoader(project);
       
-      ResourceManager resourceManager = null;
+      ResourceManager resourceManager;
       if(classLoader != null) {
         resourceManager = new ResourceManager_impl(classLoader);
       } else {
@@ -379,11 +365,7 @@ public class DocumentUimaImpl extends AbstractDocument {
         resourceManager.setDataPath(dataPath);
       }
       typeSystemDesciptor.resolveImports(resourceManager);
-    } catch (InvalidXMLException e) {
-      String message = e.getMessage() != null ? e.getMessage() : "";
-      IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-      throw new CoreException(s);
-    } catch (MalformedURLException e) {
+    } catch (InvalidXMLException | MalformedURLException e) {
       String message = e.getMessage() != null ? e.getMessage() : "";
       IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
       throw new CoreException(s);
@@ -423,8 +405,7 @@ public class DocumentUimaImpl extends AbstractDocument {
       
       String[] runtimeClassPath = JavaRuntime.computeDefaultRuntimeClassPath(javaProject);
       List<URL> urls = new ArrayList<>();
-      for (int i = 0; i < runtimeClassPath.length; i++) {
-        String cp = runtimeClassPath[i];
+      for (String cp : runtimeClassPath) {
         try {
           urls.add(Paths.get(cp).toUri().toURL());
         } catch (MalformedURLException e) {
@@ -435,5 +416,4 @@ public class DocumentUimaImpl extends AbstractDocument {
     } 
     return null;
   }
-
 }

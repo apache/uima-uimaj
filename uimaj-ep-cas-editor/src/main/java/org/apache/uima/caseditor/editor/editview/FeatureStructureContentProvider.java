@@ -97,9 +97,6 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     return size;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-   */
   @Override
   public Object[] getElements(Object inputElement) {
 
@@ -111,7 +108,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
       if (!type.isArray()) {
 
-        Collection<FeatureValue> featureValues = new LinkedList<FeatureValue>();
+        Collection<FeatureValue> featureValues = new LinkedList<>();
 
         for (Feature feature : type.getFeatures()) {
           featureValues.add(new FeatureValue(mDocument, featureStructure, feature));
@@ -136,50 +133,30 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-   */
   @Override
   public void dispose() {
     if (mDocument != null)
       mDocument.removeChangeListener(this);
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-   */
   @Override
   public void inputChanged(final Viewer viewer, Object oldInput, Object newInput) {
     this.viewer = viewer;
 
     if (newInput != null) {
-      Display.getDefault().syncExec(new Runnable() {
-        @Override
-        public void run() {
-          viewer.refresh();
-        }
-      });
+      Display.getDefault().syncExec(viewer::refresh);
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#added(java.util.Collection)
-   */
   @Override
   public void added(Collection<FeatureStructure> newFeatureStructure) {
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#viewChanged(java.lang.String, java.lang.String)
-   */
   @Override
   public void viewChanged(String oldViewName, String newViewName) {
     changed();
   }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#changed()
-   */
+
   @Override
   public void changed() {
 
@@ -191,9 +168,6 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     });
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#removed(java.util.Collection)
-   */
   @Override
   public void removed(Collection<FeatureStructure> deletedFeatureStructure) {
     for(FeatureStructure fs : deletedFeatureStructure) {
@@ -205,9 +179,6 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#updated(java.util.Collection)
-   */
   @Override
   public void updated(Collection<FeatureStructure> featureStructure) {
     Display.getDefault().syncExec(new Runnable() {
@@ -219,9 +190,6 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     });
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-   */
   @Override
   public Object[] getChildren(Object parentElement) {
 
@@ -248,9 +216,6 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-   */
   @Override
   public Object getParent(Object element) {
     return null;
@@ -282,9 +247,6 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     return result;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-   */
   @Override
   public boolean hasChildren(Object element) {
 

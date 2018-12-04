@@ -25,42 +25,32 @@ import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.ui.part.IPageBookViewPage;
 
 
-/**
- * TODO: add javadoc here.
- */
 public final class EditView extends CasEditorView {
   
-	/**
-	 * The ID of the feature structure view.
-	 */
-	public static final String ID = "org.apache.uima.caseditor.editview";
-	
-	/** The Constant ID_2. */
-	public static final String ID_2 = "org.apache.uima.caseditor.editview2";
+  /**
+   * The ID of the feature structure view.
+   */
+  public static final String ID = "org.apache.uima.caseditor.editview";
 
-	/**
-	 * Instantiates a new edits the view.
-	 */
-	public EditView() {
-		super("The edit view is currently not available.");
-	}
-  
-	/* (non-Javadoc)
-	 * @see org.apache.uima.caseditor.editor.CasEditorView#doCreatePage(org.apache.uima.caseditor.editor.ICasEditor)
-	 */
-	@Override
-	protected IPageBookViewPage doCreatePage(ICasEditor editor) {
+  /** The Constant ID_2. */
+  public static final String ID_2 = "org.apache.uima.caseditor.editview2";
 
-	  IPageBookViewPage result = null;
+  /**
+   * Instantiates a new edits the view.
+   */
+  public EditView() {
+      super("The edit view is currently not available.");
+  }
 
-		ICasDocument document = editor.getDocument();
+  @Override
+  protected IPageBookViewPage doCreatePage(ICasEditor editor) {
+    IPageBookViewPage result = null;
 
-		if (document != null) {
-			EditViewPage page = new EditViewPage(this, editor, document);
+    ICasDocument document = editor.getDocument();
+    if (document != null) {
+      result = new EditViewPage(this, editor, document);
+    }
 
-			result = page;
-		}
-
-		return result;
-	}
+    return result;
+  }
 }

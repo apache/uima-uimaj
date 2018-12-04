@@ -37,7 +37,7 @@ public class ContainingConstraint implements FSMatchConstraint {
   private static final long serialVersionUID = 1;
 
   /** The m containing annotations. */
-  private Collection<AnnotationFS> mContainingAnnotations = new LinkedList<AnnotationFS>();
+  private Collection<AnnotationFS> mContainingAnnotations = new LinkedList<>();
 
   /**
    * Adds an annotation in which the an other annotations must be contained to match this
@@ -81,15 +81,7 @@ public class ContainingConstraint implements FSMatchConstraint {
    * @return true, if is containing
    */
   private boolean isContaining(AnnotationFS annotation, AnnotationFS containing) {
-    boolean isContaining;
-
-    if (containing.getBegin() <= annotation.getBegin()
-            && containing.getEnd() >= annotation.getEnd()) {
-      isContaining = true;
-    } else {
-      isContaining = false;
-    }
-
-    return isContaining;
+    return containing.getBegin() <= annotation.getBegin()
+        && containing.getEnd() >= annotation.getEnd();
   }
 }

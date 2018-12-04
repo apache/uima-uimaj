@@ -22,7 +22,6 @@ package org.apache.uima.caseditor.editor.fsview;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.FeatureValue;
-import org.apache.uima.jcas.cas.TOP;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -33,10 +32,7 @@ import org.eclipse.swt.graphics.Image;
  * Provide the labels for the given {@link FeatureStructure}s.
  */
 public final class FeatureStructureLabelProvider implements ILabelProvider {
-  
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-   */
+
   @Override
   public String getText(Object element) {
     if (element instanceof FeatureValue) {
@@ -67,7 +63,7 @@ public final class FeatureStructureLabelProvider implements ILabelProvider {
       }
 
       return structure.getType().getShortName() + " (id=" +
-      		((TOP) structure)._id() + ")";
+      		structure._id() + ")";
     }
     else {
       assert false : "Unexpected element!";
@@ -76,39 +72,24 @@ public final class FeatureStructureLabelProvider implements ILabelProvider {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
-   */
   @Override
   public Image getImage(Object element) {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
-   */
   @Override
   public boolean isLabelProperty(Object element, String property) {
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-   */
   @Override
   public void addListener(ILabelProviderListener listener) {
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-   */
   @Override
   public void removeListener(ILabelProviderListener listener) {
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-   */
   @Override
   public void dispose() {
   }

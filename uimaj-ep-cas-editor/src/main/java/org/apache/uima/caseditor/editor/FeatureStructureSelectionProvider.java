@@ -44,7 +44,7 @@ class FeatureStructureSelectionProvider implements ISelectionProvider {
   private IStructuredSelection mCurrentSelection = new StructuredSelection();
 
   /** The m listeners. */
-  private Set<ISelectionChangedListener> mListeners = new HashSet<ISelectionChangedListener>();
+  private Set<ISelectionChangedListener> mListeners = new HashSet<>();
 
   /**
    * Adds an {@link ISelectionChangedListener} to this provider.
@@ -88,9 +88,7 @@ class FeatureStructureSelectionProvider implements ISelectionProvider {
   public void setSelection(ISelection selection) {
     Assert.isNotNull(selection);
 
-    IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-
-    mCurrentSelection = structuredSelection;
+    mCurrentSelection = (IStructuredSelection) selection;
 
     for (ISelectionChangedListener listener : mListeners) {
       SelectionChangedEvent event = new SelectionChangedEvent(this, mCurrentSelection);

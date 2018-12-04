@@ -40,12 +40,12 @@ public interface IAnnotationEditorModifyListener {
    *
    * @param newMode the new mode
    */
-  public void annotationModeChanged(Type newMode);
+  void annotationModeChanged(Type newMode);
 
   /**
    * Called when the shown annotation types in the editor are changed.
    *
    * @param shownAnnotationTypes the shown annotation types
    */
-  public void showAnnotationsChanged(Collection<Type> shownAnnotationTypes);
+  void showAnnotationsChanged(Collection<Type> shownAnnotationTypes);
 }

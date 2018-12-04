@@ -42,7 +42,7 @@ public class ModeMenu extends TypeMenu {
   private AnnotationEditor editor;
   
   /** The listeners. */
-  private Set<IModeMenuListener> listeners = new HashSet<IModeMenuListener>();
+  private Set<IModeMenuListener> listeners = new HashSet<>();
 
   /**
    * Initializes a new instance.
@@ -72,10 +72,7 @@ public class ModeMenu extends TypeMenu {
   public void removeListener(IModeMenuListener listener) {
 	  listeners.remove(listener);
   }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.contextmenu.TypeMenu#insertAction(org.apache.uima.cas.Type, org.eclipse.swt.widgets.Menu)
-   */
+
   @Override
   protected void insertAction(final Type type, Menu parentMenu) {
     MenuItem actionItem = new MenuItem(parentMenu, SWT.CHECK);

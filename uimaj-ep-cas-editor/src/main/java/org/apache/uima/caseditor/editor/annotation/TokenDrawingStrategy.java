@@ -44,15 +44,9 @@ public class TokenDrawingStrategy implements IDrawingStrategy {
    * @return true, if is whitespace
    */
   private static boolean isWhitespace(String text, int offset) {
-
-    char character = text.charAt(offset);
-
-    return Character.isWhitespace(character);
+    return Character.isWhitespace(text.charAt(offset));
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy#draw(org.eclipse.jface.text.source.Annotation, org.eclipse.swt.graphics.GC, org.eclipse.swt.custom.StyledText, int, int, org.eclipse.swt.graphics.Color)
-   */
   @Override
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
           Color color) {

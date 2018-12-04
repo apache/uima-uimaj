@@ -46,9 +46,6 @@ public abstract class AnnotationEditorView extends PageBookView {
     this.editorNotAvailableMessage = editorNotAvailableMessage;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.PageBookView#createDefaultPage(org.eclipse.ui.part.PageBook)
-   */
   @Override
   protected IPage createDefaultPage(PageBook book) {
     MessagePage page = new MessagePage();
@@ -66,9 +63,6 @@ public abstract class AnnotationEditorView extends PageBookView {
    */
   protected abstract PageRec doCreatePage(ICasEditor editor);
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.PageBookView#doCreatePage(org.eclipse.ui.IWorkbenchPart)
-   */
   @Override
   protected final PageRec doCreatePage(IWorkbenchPart part) {
 
@@ -81,17 +75,11 @@ public abstract class AnnotationEditorView extends PageBookView {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.PageBookView#getBootstrapPart()
-   */
   @Override
   protected IWorkbenchPart getBootstrapPart() {
     return getSite().getPage().getActiveEditor();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.PageBookView#doDestroyPage(org.eclipse.ui.IWorkbenchPart, org.eclipse.ui.part.PageBookView.PageRec)
-   */
   @Override
   protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {
     pageRecord.page.dispose();
@@ -99,9 +87,6 @@ public abstract class AnnotationEditorView extends PageBookView {
     pageRecord.dispose();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.PageBookView#isImportant(org.eclipse.ui.IWorkbenchPart)
-   */
   @Override
   protected boolean isImportant(IWorkbenchPart part) {
     // only interested in annotation editors

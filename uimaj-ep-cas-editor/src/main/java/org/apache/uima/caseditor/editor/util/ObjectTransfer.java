@@ -29,84 +29,56 @@ import org.eclipse.swt.dnd.TransferData;
  * This class is able to transfer an {@link Object} object. The object gets
  * saved and only an Id is transfered.
  */
-public abstract class ObjectTransfer extends ByteArrayTransfer
-{
+public abstract class ObjectTransfer extends ByteArrayTransfer {
     
-    /** The m id generator. */
-    private IDGenerator mIdGenerator = IDGenerator.getInstance();
+  /** The m id generator. */
+  private IDGenerator mIdGenerator = IDGenerator.getInstance();
 
-    /** The m transfer name. */
-    private String mTransferName;
+  /** The m transfer name. */
+  private String mTransferName;
 
-    /** The m transfer ID. */
-    private int mTransferID;
+  /** The m transfer ID. */
+  private int mTransferID;
 
-    /** The m current ID. */
-    private byte[] mCurrentID;
+  /** The m current ID. */
+  private byte[] mCurrentID;
 
-    /** The m object. */
-    private Object mObject;
+  /** The m object. */
+  private Object mObject;
 
-    /**
-     * Initializes a new instance with a name.
-     *
-     * @param name - the name of current instance.
-     */
-    protected ObjectTransfer(String name)
-    {
-        mTransferName = name;
+  /**
+   * Initializes a new instance with a name.
+   *
+   * @param name - the name of current instance.
+   */
+  protected ObjectTransfer(String name) {
+    mTransferName = name;
+    mTransferID = registerType(mTransferName);
+  }
 
-        mTransferID = registerType(mTransferName);
+  @Override
+  protected void javaToNative(Object object, TransferData transferData) {
+    mCurrentID = mIdGenerator.nextUniqueID();
+    mObject = object;
+
+    if (transferData != null) {
+      super.javaToNative(mCurrentID, transferData);
     }
+  }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.swt.dnd.ByteArrayTransfer#javaToNative(java.lang.Object, org.eclipse.swt.dnd.TransferData)
-     */
-    @Override
-    protected void javaToNative(Object object, TransferData transferData)
-    {
-        mCurrentID = mIdGenerator.nextUniqueID();
+  @Override
+  protected Object nativeToJava(TransferData transferData) {
+    byte bytes[] = (byte[]) super.nativeToJava(transferData);
+    return Arrays.equals(mCurrentID, bytes) ? mObject : null;
+  }
 
-        mObject = object;
+  @Override
+  protected int[] getTypeIds() {
+    return new int[] {mTransferID};
+  }
 
-        if (transferData != null)
-        {
-            super.javaToNative(mCurrentID, transferData);
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see org.eclipse.swt.dnd.ByteArrayTransfer#nativeToJava(org.eclipse.swt.dnd.TransferData)
-     */
-    @Override
-    protected Object nativeToJava(TransferData transferData)
-    {
-        byte bytes[] = (byte[]) super.nativeToJava(transferData);
-
-        return Arrays.equals(mCurrentID, bytes) ? mObject : null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.eclipse.swt.dnd.Transfer#getTypeIds()
-     */
-    @Override
-    protected int[] getTypeIds()
-    {
-        return new int[]
-            {
-                mTransferID
-            };
-    }
-
-    /* (non-Javadoc)
-     * @see org.eclipse.swt.dnd.Transfer#getTypeNames()
-     */
-    @Override
-    protected String[] getTypeNames()
-    {
-        return new String[]
-                {
-                    mTransferName
-                };
-    }
+  @Override
+  protected String[] getTypeNames() {
+    return new String[] {mTransferName};
+  }
 }

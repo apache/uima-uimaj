@@ -111,12 +111,12 @@ public class DotCorpusSerializer {
    * @throws CoreException -
    */
   public static DotCorpus parseDotCorpus(InputStream dotCorpusStream) throws CoreException {
-    DocumentBuilderFactory documentBuilderFacoty = XMLUtils.createDocumentBuilderFactory();
+    DocumentBuilderFactory documentBuilderFactory = XMLUtils.createDocumentBuilderFactory();
 
     DocumentBuilder documentBuilder;
 
     try {
-      documentBuilder = documentBuilderFacoty.newDocumentBuilder();
+      documentBuilder = documentBuilderFactory.newDocumentBuilder();
     } catch (ParserConfigurationException e) {
       String message = "This should never happen:" + (e.getMessage() != null ? e.getMessage() : "");
 
@@ -129,13 +129,7 @@ public class DotCorpusSerializer {
 
     try {
       dotCorpusDOM = documentBuilder.parse(dotCorpusStream);
-    } catch (SAXException e) {
-      String message = e.getMessage() != null ? e.getMessage() : "";
-
-      IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-      throw new CoreException(s);
-    } catch (IOException e) {
+    } catch (SAXException | IOException e) {
       String message = e.getMessage() != null ? e.getMessage() : "";
 
       IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
@@ -268,8 +262,8 @@ public class DotCorpusSerializer {
         styleAttributes.addAttribute("", "", STYLE_STYLE_ATTRIBUTE, "", style.getStyle().name());
 
         Color color = style.getColor();
-        Integer colorInt = new Color(color.getRed(), color.getGreen(), color.getBlue()).getRGB();
-        styleAttributes.addAttribute("", "", STYLE_COLOR_ATTRIBUTE, "", colorInt.toString());
+        int colorInt = new Color(color.getRed(), color.getGreen(), color.getBlue()).getRGB();
+        styleAttributes.addAttribute("", "", STYLE_COLOR_ATTRIBUTE, "", Integer.toString(colorInt));
         styleAttributes.addAttribute("", "", STYLE_LAYER_ATTRIBUTE, "", Integer.toString(style
                 .getLayer()));
         if (style.getConfiguration() != null) {

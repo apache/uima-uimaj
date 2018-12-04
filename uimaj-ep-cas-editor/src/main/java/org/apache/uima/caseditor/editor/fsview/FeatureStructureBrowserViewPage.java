@@ -22,6 +22,7 @@ package org.apache.uima.caseditor.editor.fsview;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -90,9 +91,6 @@ public final class FeatureStructureBrowserViewPage extends Page {
       mDocument = document;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-     */
     @Override
     public Object[] getElements(Object inputElement) {
       if (mCurrentType == null) {
@@ -101,36 +99,30 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
       StrictTypeConstraint typeConstrain = new StrictTypeConstraint(mCurrentType);
 
-      FSIterator<FeatureStructure> strictTypeIterator =mDocument.getCAS().createFilteredIterator(
+      FSIterator<FeatureStructure> strictTypeIterator = mDocument.getCAS().createFilteredIterator(
               mDocument.getCAS().getIndexRepository().getAllIndexedFS(mCurrentType), typeConstrain);
 
-      LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
+      List<ModelFeatureStructure> featureStructureList = new LinkedList<>();
 
       while (strictTypeIterator.hasNext()) {
-        featureStrucutreList.add(new ModelFeatureStructure(mDocument,
+        featureStructureList.add(new ModelFeatureStructure(mDocument,
                 strictTypeIterator.next()));
       }
 
-      ModelFeatureStructure[] featureStructureArray = new ModelFeatureStructure[featureStrucutreList
+      ModelFeatureStructure[] featureStructureArray = new ModelFeatureStructure[featureStructureList
               .size()];
 
-      featureStrucutreList.toArray(featureStructureArray);
+      featureStructureList.toArray(featureStructureArray);
 
       return featureStructureArray;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-     */
     @Override
     public void dispose() {
       if (mDocument != null)
         mDocument.removeChangeListener(this);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
@@ -164,7 +156,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
      */
     @Override
     public Object[] getChildren(Object parentElement) {
-      Collection<Object> childs = new LinkedList<Object>();
+      Collection<Object> childs = new LinkedList<>();
 
       FeatureStructure featureStructure;
 
@@ -191,17 +183,11 @@ public final class FeatureStructureBrowserViewPage extends Page {
       return childs.toArray();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-     */
     @Override
     public Object getParent(Object element) {
       return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-     */
     @Override
     public boolean hasChildren(Object element) {
       if (element instanceof IAdaptable
@@ -220,16 +206,12 @@ public final class FeatureStructureBrowserViewPage extends Page {
           if (value instanceof StringArray) {
             StringArray array = (StringArray) featureValue.getValue();
 
-            if (array.size() > 0) {
-              return true;
-            } else {
-              return false;
-            }
+            return array.size() > 0;
           }
 
           return false;
         } else {
-          return featureValue.getValue() != null ? true : false;
+          return featureValue.getValue() != null;
         }
       } else {
         assert false : "Unexpected element";
@@ -238,116 +220,91 @@ public final class FeatureStructureBrowserViewPage extends Page {
       }
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#addedAnnotation(java.util.Collection)
-     */
     @Override
     protected void addedAnnotation(Collection<AnnotationFS> annotations) {
 
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+      final List<ModelFeatureStructure> featureStructureList = new LinkedList<>();
 
       for (AnnotationFS annotation : annotations) {
         if (annotation.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mDocument, annotation));
+          featureStructureList.add(new ModelFeatureStructure(mDocument, annotation));
         }
       }
 
       Display.getDefault().syncExec(new Runnable() {
         @Override
         public void run() {
-          mFSList.add(featureStrucutreList.toArray());
+          mFSList.add(featureStructureList.toArray());
         }
       });
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#added(java.util.Collection)
-     */
     @Override
-    public void added(Collection<FeatureStructure> structres) {
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+    public void added(Collection<FeatureStructure> structures) {
+      final LinkedList<ModelFeatureStructure> featureStructureList =
+          new LinkedList<>();
 
-      for (FeatureStructure structure : structres) {
+      for (FeatureStructure structure : structures) {
         if (structure.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mDocument, structure));
+          featureStructureList.add(new ModelFeatureStructure(mDocument, structure));
         }
       }
 
       Display.getDefault().syncExec(new Runnable() {
         @Override
         public void run() {
-          mFSList.add(featureStrucutreList.toArray());
+          mFSList.add(featureStructureList.toArray());
         }
       });
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#removedAnnotation(java.util.Collection)
-     */
     @Override
     protected void removedAnnotation(Collection<AnnotationFS> annotations) {
 
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+      final List<ModelFeatureStructure> featureStructureList = new LinkedList<>();
 
       for (AnnotationFS annotation : annotations) {
         if (annotation.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mDocument, annotation));
+          featureStructureList.add(new ModelFeatureStructure(mDocument, annotation));
         }
       }
 
       Display.getDefault().syncExec(new Runnable() {
         @Override
         public void run() {
-          mFSList.remove(featureStrucutreList.toArray());
+          mFSList.remove(featureStructureList.toArray());
         }
       });
-
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#removed(java.util.Collection)
-     */
     @Override
-    public void removed(Collection<FeatureStructure> structres) {
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+    public void removed(Collection<FeatureStructure> structures) {
+      final List<ModelFeatureStructure> featureStructureList = new LinkedList<>();
 
-      for (FeatureStructure structure : structres) {
+      for (FeatureStructure structure : structures) {
         if (structure.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mDocument, structure));
+          featureStructureList.add(new ModelFeatureStructure(mDocument, structure));
         }
       }
 
       Display.getDefault().syncExec(new Runnable() {
         @Override
         public void run() {
-          mFSList.remove(featureStrucutreList.toArray());
+          mFSList.remove(featureStructureList.toArray());
         }
       });
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#updatedAnnotation(java.util.Collection)
-     */
     @Override
     protected void updatedAnnotation(Collection<AnnotationFS> annotations) {
       // ignore
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#viewChanged(java.lang.String, java.lang.String)
-     */
     @Override
     public void viewChanged(String oldViewName, String newViewName) {
       changed();
     }
-    
-    /* (non-Javadoc)
-     * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#changed()
-     */
+
     @Override
     public void changed() {
       mFSList.refresh();
@@ -358,10 +315,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
    * The Class CreateAction.
    */
   private class CreateAction extends Action {
-    
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.action.Action#run()
-     */
+
     // TOOD: extract it and add setType(...)
     @Override
     public void run() {
@@ -385,10 +339,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
    * The Class SelectAllAction.
    */
   private class SelectAllAction extends Action {
-    
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.action.Action#run()
-     */
+
     @Override
     public void run() {
       mFSList.getList().selectAll();
@@ -420,7 +371,6 @@ public final class FeatureStructureBrowserViewPage extends Page {
   /** The filter types. */
   private Collection<Type> filterTypes;
 
-
   /**
    * Initializes a new instance.
    *
@@ -441,7 +391,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     TypeSystem ts = mDocument.getCAS().getTypeSystem();
 
-    filterTypes = new HashSet<Type>();
+    filterTypes = new HashSet<>();
     filterTypes.add(ts.getType(CAS.TYPE_NAME_ARRAY_BASE));
     filterTypes.add(ts.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY));
     filterTypes.add(ts.getType(CAS.TYPE_NAME_BYTE_ARRAY));
@@ -479,9 +429,6 @@ public final class FeatureStructureBrowserViewPage extends Page {
     filterTypes.add(ts.getType(CAS.TYPE_NAME_STRING_LIST));
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
-   */
   @Override
   public void createControl(Composite parent) {
     mInstanceComposite = new Composite(parent, SWT.NONE);

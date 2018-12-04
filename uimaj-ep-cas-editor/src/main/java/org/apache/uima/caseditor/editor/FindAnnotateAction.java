@@ -48,9 +48,6 @@ public class FindAnnotateAction extends Action {
     this.target = target;
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.action.Action#run()
-   */
   @Override
   public void run() {
     FindAnnotateDialog dialog = new FindAnnotateDialog(

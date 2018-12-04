@@ -43,18 +43,13 @@ public class AnnotationStyleView extends CasEditorView {
   public AnnotationStyleView() {
     super("The annotation style view is currently not available.");
   }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.caseditor.editor.CasEditorView#doCreatePage(org.apache.uima.caseditor.editor.ICasEditor)
-   */
+
   @Override
   protected IPageBookViewPage doCreatePage(ICasEditor editor) {
     IPageBookViewPage result = null;
 
     if (editor.getDocument() != null && editor instanceof AnnotationEditor) {
-      AnnotationStyleViewPage page = new AnnotationStyleViewPage((AnnotationEditor) editor);
-      
-      result = page;
+      result = new AnnotationStyleViewPage((AnnotationEditor) editor);
     }
 
     return result;

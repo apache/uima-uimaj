@@ -42,9 +42,6 @@ public class AnnotationTreeNode implements IAdaptable {
   /** The m annotation. */
   private final AnnotationFS mAnnotation;
 
-  /** The m document. */
-  private final ICasDocument mDocument;
-
   /**
    * Instantiates a new annotation tree node.
    *
@@ -53,12 +50,11 @@ public class AnnotationTreeNode implements IAdaptable {
    */
   AnnotationTreeNode(ICasDocument document, AnnotationFS annotation) {
     Assert.isNotNull(document);
-    mDocument = document;
 
     Assert.isNotNull(annotation);
     mAnnotation = annotation;
 
-    mChildren = new AnnotationTreeNodeList(mDocument);
+    mChildren = new AnnotationTreeNodeList(document);
   }
 
   /**
@@ -112,9 +108,7 @@ public class AnnotationTreeNode implements IAdaptable {
     mChildren.buildTree();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-   */
+
   @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     // TODO:
@@ -130,24 +124,11 @@ public class AnnotationTreeNode implements IAdaptable {
     }
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
   @Override
   public int hashCode() {
-    
-//    final int PRIME = 31;
-//    int result = 1;
-//    result = PRIME * result + (mAnnotation == null ? 0 : mAnnotation.hashCode());
-//    result = PRIME * result + (mChildren == null ? 0 : mChildren.hashCode());
-//    result = PRIME * result + (mParent == null ? 0 : mParent.hashCode());
-    
     return mAnnotation._id();
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj) {
     

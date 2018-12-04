@@ -89,9 +89,6 @@ public final class AnnotationOutline extends ContentOutlinePage
       mTableViewer.refresh();
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.uima.caseditor.editor.IAnnotationEditorModifyListener#showAnnotationsChanged(java.util.Collection)
-     */
     @Override
     public void showAnnotationsChanged(Collection<Type> shownAnnotationTypes) {
       mTableViewer.refresh();
@@ -102,6 +99,7 @@ public final class AnnotationOutline extends ContentOutlinePage
    * Selects all elements in the tree viewer.
    */
   private class SelectAllAction extends Action {
+
     /**
      * Selects all elements in the tree viewer.
      */
@@ -312,7 +310,7 @@ public final class AnnotationOutline extends ContentOutlinePage
 		  mTableViewer.setContentProvider(new TypeGroupedContentProvider(
 				  editor, mTableViewer));
 	  } else {
-		  throw new CasEditorError("Unkown style!");
+		  throw new CasEditorError("Unknown style!");
 	  }
 
 		mTableViewer.refresh();
@@ -376,11 +374,8 @@ public final class AnnotationOutline extends ContentOutlinePage
 			
 			if (element instanceof AnnotationTypeTreeNode) {
 				AnnotationTypeTreeNode typeNode = (AnnotationTypeTreeNode) element;
-				
-				if (shownTypes.contains(typeNode.getType()))
-					return true;
-				else
-					return false;
+
+                return shownTypes.contains(typeNode.getType());
 			}
 			else if (element instanceof AnnotationTreeNode) {
 				AnnotationTreeNode annotationNode = (AnnotationTreeNode) element;
@@ -388,7 +383,7 @@ public final class AnnotationOutline extends ContentOutlinePage
 				return shownTypes.contains(annotationNode.getAnnotation().getType());
 			}
 			else {
-				throw new CasEditorError("Unxexpected element type!");
+				throw new CasEditorError("Unexpected element type!");
 			}
 		}}});
     
@@ -401,9 +396,6 @@ public final class AnnotationOutline extends ContentOutlinePage
     // set input element here ... this is the document
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
-   */
   @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
     
@@ -434,9 +426,6 @@ public final class AnnotationOutline extends ContentOutlinePage
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.ui.part.Page#dispose()
-   */
   @Override
   public void dispose() {
     getSite().setSelectionProvider(null);
