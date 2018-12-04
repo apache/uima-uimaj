@@ -285,7 +285,7 @@ public class FileUtils {
    * @return A file object corresponding to the newly created dir, or <code>null</code> if none
    *         could be created for some reason (e.g., if the parent is not writable).
    * @deprecated use Java 7 methods for this see
-   *             {@link java.nio.file.Files#createTempDirectory(Path, String, FileAttribute ...)}
+   *             {@link java.nio.file.Files#createTempDirectory(Path, String, FileAttribute...)}
    */
   @Deprecated
   public static final File createTempDir(File parent, String prefix) {
@@ -305,7 +305,12 @@ public class FileUtils {
 
   /**
    * @deprecated use Java 7 methods for this see
-   *             {@link java.nio.file.File#createTempFile(String, String, File)}
+   *             {@link java.io.File#createTempFile(String, String, File)}
+   * @param prefix -
+   * @param suffix -
+   * @param tempDir -
+   * @return the file
+   * @throws IOException
    */
   @Deprecated
   public static final File createTempFile(String prefix, String suffix, File tempDir)
