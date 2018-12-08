@@ -19,6 +19,7 @@
 package org.apache.uima.fit.util;
 
 import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.util.CasUtil.getAnnotationType;
 import static org.apache.uima.fit.util.CasUtil.getType;
 import static org.apache.uima.fit.util.CasUtil.iterator;
@@ -27,12 +28,16 @@ import static org.apache.uima.fit.util.CasUtil.select;
 import static org.apache.uima.fit.util.CasUtil.selectByIndex;
 import static org.apache.uima.fit.util.CasUtil.selectFS;
 import static org.apache.uima.fit.util.CasUtil.toText;
+import static org.apache.uima.fit.util.CasUtil.exists;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
@@ -42,6 +47,7 @@ import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.util.CasCreationUtils;
 import org.junit.Test;
 
 /**
@@ -185,5 +191,18 @@ public class CasUtilTest extends ComponentTestBase {
 
     assertEquals(asList("Rot", "wood", "cheeses", "dew?"),
             toText((Iterable<AnnotationFS>) (Iterable) selectFS(cas, getType(cas, Token.class))));
+  }
+  
+  @Test
+  public void testExists() throws UIMAException {
+    CAS cas = CasCreationUtils.createCas(createTypeSystemDescription(), null, null);
+
+    Type tokenType = CasUtil.getAnnotationType(cas, Token.class);
+    
+    assertFalse(exists(cas, tokenType));
+
+    cas.addFsToIndexes(cas.createAnnotation(tokenType, 0, 1));
+
+    assertTrue(exists(cas, tokenType));
   }
 }

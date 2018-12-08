@@ -46,6 +46,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.Subiterator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
@@ -1184,6 +1185,21 @@ public final class CasUtil {
     return followingAnnotations;
   }
 
+  /**
+   * Test if a CAS contains an annotation of the given type.
+   * 
+   * @param <T>
+   *          the annotation type.
+   * @param aCas
+   *          a CAS.
+   * @param aType
+   *          a annotation type.
+   * @return {@code true} if there is at least one annotation of the given type in the CAS.
+   */
+  public static <T extends TOP> boolean exists(CAS aCas, Type aType) {
+    return CasUtil.iterator(aCas, aType).hasNext();
+  }
+  
   /**
    * Convenience method to get the specified view or a default view if the requested view does not
    * exist. The default can also be {@code null}.
