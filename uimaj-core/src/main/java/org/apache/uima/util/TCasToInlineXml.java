@@ -20,7 +20,7 @@
 package org.apache.uima.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -209,10 +209,8 @@ public class TCasToInlineXml implements TCasFormatter {
       handler.endDocument();
 
       // return XML string
-      return new String(byteArrayOutputStream.toByteArray(),"UTF-8");
+      return new String(byteArrayOutputStream.toByteArray(), StandardCharsets.UTF_8);
     } catch (SAXException e) {
-      throw new UIMARuntimeException(e);
-    } catch (UnsupportedEncodingException e) {
       throw new UIMARuntimeException(e);
     }
   }

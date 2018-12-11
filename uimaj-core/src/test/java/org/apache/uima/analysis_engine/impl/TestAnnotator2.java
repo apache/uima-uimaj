@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +40,6 @@ import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.UimaContextHolderTest;
 import org.apache.uima.util.XMLInputSource;
@@ -123,7 +123,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
                 "loop3 = three ${loop1} \n" ;
       InputStream is;
       try {
-        is = new ByteArrayInputStream(lines.getBytes("UTF-8"));
+        is = new ByteArrayInputStream(lines.getBytes(StandardCharsets.UTF_8));
         testSettings.load(is);
         is.close();
         String val = testSettings.lookUp("foo");

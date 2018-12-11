@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -103,7 +104,8 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
 			}
 			try
 			{
-				this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false), "UTF-8");
+				this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false),
+								StandardCharsets.UTF_8);
 			}
 			catch (IOException e)
 			{
@@ -365,7 +367,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
 							new Object[] { oPath, "outputFile" });
 				}
 				//write result specification to the output file
-				this.fileWriter = new OutputStreamWriter(new FileOutputStream(oFile, false), "UTF-8");
+				this.fileWriter = new OutputStreamWriter(new FileOutputStream(oFile, false), StandardCharsets.UTF_8);
 			}
 			catch (IOException e)
 			{

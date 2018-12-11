@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -99,7 +100,7 @@ public class Settings_impl implements Settings {
    */
   public void load(InputStream in) throws IOException {
     // Process each logical line (after blanks & comments removed and continuations extended)
-    rdr = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+    rdr = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
     String line;
     final String legalPunc = "./-~_";   // Acceptable punctuation characters
     while ((line = getLine()) != null) {

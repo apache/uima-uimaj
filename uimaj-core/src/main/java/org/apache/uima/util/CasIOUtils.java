@@ -18,9 +18,6 @@
  */
 package org.apache.uima.util;
 
-import static org.apache.uima.cas.impl.Serialization.serializeCAS;
-import static org.apache.uima.cas.impl.Serialization.serializeWithCompression;
-
 import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.DataInputStream;
@@ -30,6 +27,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
@@ -51,6 +49,9 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.xml.sax.SAXException;
+
+import static org.apache.uima.cas.impl.Serialization.serializeCAS;
+import static org.apache.uima.cas.impl.Serialization.serializeWithCompression;
 
 /**
  * <p>A collection of static methods aimed at making it easy to</p>
@@ -358,7 +359,7 @@ public class CasIOUtils {
     byte[] firstPartOfFile = new byte[6];
     int bytesReadCount = casInputStream.read(firstPartOfFile);
     casInputStream.reset();
-    String start = new String(firstPartOfFile, 0, bytesReadCount, "UTF-8").toLowerCase();
+    String start = new String(firstPartOfFile, 0, bytesReadCount, StandardCharsets.UTF_8).toLowerCase();
 
     if (start.startsWith("<?xml ")) {  // could be XCAS or XMI
       try {

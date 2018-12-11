@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -193,7 +194,7 @@ public class TypeOrderTest extends TestCase {
     Assert.assertNotNull(refFile);
     File outputFile = new File(JUnitExtension.getFile("CASTests"), "CasTypeOderTest_testouput.txt");
     OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(
-            outputFile , false), "UTF-8");
+            outputFile , false), StandardCharsets.UTF_8);
     Assert.assertNotNull(fileWriter);   
     
     for (int i = 0; i < 10; i++) {

@@ -21,6 +21,7 @@ package org.apache.uima.resource.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
@@ -67,7 +68,7 @@ public class ConfigurableDataResourceSpecifier_implTest extends TestCase {
       String xmlStr = sw.getBuffer().toString();
 
       // parse back
-      ByteArrayInputStream inStream = new ByteArrayInputStream(xmlStr.getBytes("UTF-8"));
+      ByteArrayInputStream inStream = new ByteArrayInputStream(xmlStr.getBytes(StandardCharsets.UTF_8));
       XMLInputSource in = new XMLInputSource(inStream, null);
       ConfigurableDataResourceSpecifier_impl parsedSpec = (ConfigurableDataResourceSpecifier_impl) UIMAFramework
               .getXMLParser().parse(in);

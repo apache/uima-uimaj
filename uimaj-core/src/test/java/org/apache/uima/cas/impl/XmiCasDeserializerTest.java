@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 
@@ -2154,7 +2155,7 @@ public class XmiCasDeserializerTest extends TestCase {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();    
     XmiCasSerializer.serialize(cas, null, baos, false, serSharedData);
     baos.close();
-    String xmiStr = new String(baos.toByteArray(), "UTF-8");   //note by default XmiCasSerializer generates UTF-8
+    String xmiStr = new String(baos.toByteArray(), StandardCharsets.UTF_8);   //note by default XmiCasSerializer generates UTF-8
     
     //workaround for newline serialization problem in Sun Java 1.4.2
     //this test file should contain CRLF line endings, but Sun Java loses them
@@ -2171,7 +2172,7 @@ public class XmiCasDeserializerTest extends TestCase {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();    
     XmiCasSerializer.serialize(cas, null, baos, false, serSharedData, marker);
     baos.close();
-    String xmiStr = new String(baos.toByteArray(), "UTF-8");   //note by default XmiCasSerializer generates UTF-8
+    String xmiStr = new String(baos.toByteArray(), StandardCharsets.UTF_8);   //note by default XmiCasSerializer generates UTF-8
     
     //workaround for newline serialization problem in Sun Java 1.4.2
     //this test file should contain CRLF line endings, but Sun Java loses them
@@ -2184,14 +2185,14 @@ public class XmiCasDeserializerTest extends TestCase {
   
   /** Utility method for deserializing a CAS from an XMI String */
   private void deserialize(String xmlStr, CAS cas, XmiSerializationSharedData sharedData, boolean lenient, int mergePoint) throws FactoryConfigurationError, ParserConfigurationException, SAXException, IOException {
-    byte[] bytes = xmlStr.getBytes("UTF-8"); //this assumes the encoding is UTF-8, which is the default output encoding of the XmiCasSerializer
+    byte[] bytes = xmlStr.getBytes(StandardCharsets.UTF_8); //this assumes the encoding is UTF-8, which is the default output encoding of the XmiCasSerializer
     ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
     XmiCasDeserializer.deserialize(bais, cas, lenient, sharedData, mergePoint);
     bais.close();
   }
   
   private void deserialize(String xmlStr, CAS cas, XmiSerializationSharedData sharedData, boolean lenient, int mergePoint, AllowPreexistingFS allow) throws FactoryConfigurationError, ParserConfigurationException, SAXException, IOException {
-    byte[] bytes = xmlStr.getBytes("UTF-8"); //this assumes the encoding is UTF-8, which is the default output encoding of the XmiCasSerializer
+    byte[] bytes = xmlStr.getBytes(StandardCharsets.UTF_8); //this assumes the encoding is UTF-8, which is the default output encoding of the XmiCasSerializer
     ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
     XmiCasDeserializer.deserialize(bais, cas, lenient, sharedData, mergePoint, allow);
     bais.close();

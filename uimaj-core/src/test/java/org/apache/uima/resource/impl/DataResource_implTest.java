@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import org.apache.uima.resource.ResourceInitializationException;
@@ -107,7 +108,7 @@ public class DataResource_implTest extends TestCase {
 
       // try to get an input stream and read from the file
       InputStream inStr = dr.getInputStream();
-      BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr, "utf-8"));
+      BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr, StandardCharsets.UTF_8));
       String result = bufRdr.readLine();
       inStr.close();
 

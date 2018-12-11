@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -542,7 +543,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
         casToInlineXml.setFormattedOutput(false);
         String xmlAnnotations = casToInlineXml.generateXML(defaultView);
         FileOutputStream outStream = new FileOutputStream(inlineXmlFile);
-        outStream.write(xmlAnnotations.getBytes("UTF-8"));
+        outStream.write(xmlAnnotations.getBytes(StandardCharsets.UTF_8));
         outStream.close();
 
         if (xmlRBisSelected) // JMP passed in

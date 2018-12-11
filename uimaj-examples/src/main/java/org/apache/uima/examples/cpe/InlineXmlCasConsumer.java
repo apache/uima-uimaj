@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -114,7 +115,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
     try {
       String xmlAnnotations = cas2xml.generateXML(aCAS);
       FileOutputStream outStream = new FileOutputStream(outFile);
-      outStream.write(xmlAnnotations.getBytes("UTF-8"));
+      outStream.write(xmlAnnotations.getBytes(StandardCharsets.UTF_8));
       outStream.close();
     } catch (CASException e) {
       throw new ResourceProcessException(e);

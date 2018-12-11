@@ -21,6 +21,7 @@ package org.apache.uima.pear.nature;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.pear.PearException;
 import org.apache.uima.pear.insd.edit.PearInstallationDescriptor;
@@ -185,7 +186,7 @@ public class ProjectCustomizer {
           boolean overrideContentIfExist) throws PearException {
     InputStream is = null;
     try {
-      is = new ByteArrayInputStream(s.getBytes("UTF-8"));
+      is = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
       return createFile(project, fileName, is, overrideContentIfExist);
     } catch (Throwable e) {
       PearException subEx = new PearException(fileName + " could not be created/saved properly.", e);

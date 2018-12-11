@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -65,7 +66,8 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
     this.outFile = new File(testBaseDir, "CpmOutput.txt");
 
     try {
-      this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false), "UTF-8");
+      this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false),
+              StandardCharsets.UTF_8);
     } catch (Exception e) {
       throw new ResourceInitializationException(e);
     }

@@ -32,6 +32,7 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -205,7 +206,7 @@ public class XMLToXTalk {
     Writer xml_os = null;
     if (xml_filename != null) {
       xml_os = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(xml_filename),
-              "UTF-8"));
+              StandardCharsets.UTF_8));
     }
     File file = new File(filename);
     OutputStream os = new BufferedOutputStream(new FileOutputStream(file));

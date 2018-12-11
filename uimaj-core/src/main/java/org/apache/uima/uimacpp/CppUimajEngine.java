@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -112,7 +113,7 @@ public class CppUimajEngine {
       serializer.stringSubtypeValues = stringSubTypeValues;
       serializer.stringSubtypeValuePos = stringSubTypeValuePos;
 
-      byte[] bar = config.getBytes("UTF-16");
+      byte[] bar = config.getBytes(StandardCharsets.UTF_16);
       ByteArrayInputStream bais = new ByteArrayInputStream(bar);
       XMLInputSource in = new XMLInputSource(bais, null);
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
@@ -313,7 +314,7 @@ public class CppUimajEngine {
 
     try {
       byte[] bar;
-      bar = inDesc.getBytes("UTF-16");
+      bar = inDesc.getBytes(StandardCharsets.UTF_16);
       ByteArrayInputStream bais = new ByteArrayInputStream(bar);
       XMLInputSource in = new XMLInputSource(bais, null);
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);

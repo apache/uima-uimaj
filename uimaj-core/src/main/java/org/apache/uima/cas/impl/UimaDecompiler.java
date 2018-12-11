@@ -25,12 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.uima.internal.util.Misc;
 
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.Buffer;
@@ -39,6 +36,7 @@ import com.strobel.assembler.metadata.ITypeLoader;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
+import org.apache.uima.internal.util.Misc;
 
 /**
  * Decompiler
@@ -68,12 +66,7 @@ public class UimaDecompiler {
    */
   private final static byte[] errorMsg;
   static {
-    byte[] temp = null;
-    try {
-      temp = "!!! ERROR: Failed to load class".getBytes("UTF-8");
-    } catch (UnsupportedEncodingException e) {
-    }
-    errorMsg = temp;
+    errorMsg = "!!! ERROR: Failed to load class".getBytes(StandardCharsets.UTF_8);
   }
 
   private final DecompilerSettings decompilerSettings = DecompilerSettings.javaDefaults();

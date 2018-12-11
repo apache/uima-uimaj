@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.UIMARuntimeException;
 
@@ -167,7 +168,7 @@ public class CommonSerDes {
       bytebuf[1] = dis.readByte(); // I
       bytebuf[2] = dis.readByte(); // M
       bytebuf[3] = dis.readByte(); // A
-      String s = new String(bytebuf, "UTF-8");
+      String s = new String(bytebuf, StandardCharsets.UTF_8);
       return s.equals("UIMA") || s.equals("AMIU");
     } catch (IOException e) {
       return false;
