@@ -34,6 +34,7 @@ import java.lang.invoke.MethodType;
 import java.lang.invoke.MutableCallSite;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -1661,11 +1662,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     if (null != sd) {
       ByteArrayInputStream bis;
-      try {
-        bis = new ByteArrayInputStream(sd.getBytes("UTF-8"));
-      } catch (UnsupportedEncodingException e) {
-        throw new RuntimeException(e);  // never happen 
-      }
+      bis = new ByteArrayInputStream(sd.getBytes(StandardCharsets.UTF_8));
       return bis;
       
     } else if (null != aSofa.getLocalFSData()) {
@@ -1683,11 +1680,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           }
           sb.append(theArray[i]);
         }
-        try {
-          return new ByteArrayInputStream(sb.toString().getBytes("UTF-8") );
-        } catch (UnsupportedEncodingException e) {
-          throw new RuntimeException(e);  // never happen 
-        }
+        return new ByteArrayInputStream(sb.toString().getBytes(StandardCharsets.UTF_8) );
       }
       case intArrayTypeCode: {
         final int[] theArray = ((IntegerArray) fs)._getTheArray();
@@ -1765,7 +1758,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //      System.out.format("debug committing ts %s classLoader %s%n", ts.hashCode(), cl);
       if (!ts.isCommitted()) {
         ts.set_skip_loading_user_jcas(skip_loading_user_jcas);
-        TypeSystemImpl tsc = ts.commit(getJCasClassLoader());
+        TypeSystemImpl tsc = ts.commit(cl);
         if (tsc != ts) {
           installTypeSystemInAllViews(tsc);
           ts = tsc;
