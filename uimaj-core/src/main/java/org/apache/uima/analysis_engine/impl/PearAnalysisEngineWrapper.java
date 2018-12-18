@@ -668,4 +668,3 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       }
    }
 }
-
