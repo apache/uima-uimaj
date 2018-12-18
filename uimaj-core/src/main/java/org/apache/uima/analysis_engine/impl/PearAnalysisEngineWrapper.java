@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -60,14 +60,14 @@ import org.apache.uima.util.XMLInputSource;
 /**
  * UIMA pear runtime analysis engine wrapper. With this wrapper implementation
  * it is possible to run installed pear files out of the box in UIMA.
- * 
+ *
  * Calls to the wrapper that are part of the public APIs of its superclasses
  * are forwarded to the contained AE - this makes it possible to have the
- * pear as a top level component.  
- * 
- * For instance, if you do an ae.getCas() - it will get a CAS with the type system of the 
+ * pear as a top level component.
+ *
+ * For instance, if you do an ae.getCas() - it will get a CAS with the type system of the
  * contained ae.  Or if you set parameters, it will set parameters of the contained ae.
- * 
+ *
  */
 public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
@@ -76,7 +76,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    // key = resourceManager instance associated with this call
    // value = map <String_Pair, ResourceManager>
    // value = resourceManager instance created by this class
-  
+
    // The reason we do this: For cases involving Cas Pools and multiple
    //  threads, we want to share the resource manager - otherwise
    //  there could be multiple instances of the classes for this pear
@@ -85,7 +85,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    // incoming Resource Manager, and a second map.
    // The second map (allows for multiple Pears in a pipeline)
    // maps (for the given incoming Resource Manager), using a key
-   // consisting of the "class path" and "data path", the 
+   // consisting of the "class path" and "data path", the
    // Resource Manager for that combination.
 
    // note: all accesses to this are synchronized
@@ -151,17 +151,17 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#initialize(org.apache.uima.resource.ResourceSpecifier,
     *      java.util.Map)
-    *      
-    * (Nov 2008) initialize is called as a normal part of produceResource.  
-    * There are 2 cases: 
+    *
+    * (Nov 2008) initialize is called as a normal part of produceResource.
+    * There are 2 cases:
     *   1) The Pear is the top level component
     *   2) The Pear is contained in an aggregate.
-    *   
+    *
     *   In Case (1), the aAdditionalParams passed in does *not* contain a UIMA_CONTEXT
-    *   In Case (2), the aAdditionalParams passed in contains a child UIMA_CONTEXT 
+    *   In Case (2), the aAdditionalParams passed in contains a child UIMA_CONTEXT
     *     created for this component.
     */
   @Override
@@ -261,7 +261,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
       // Parse the resource specifier
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      
+
       AnalysisEngineDescription analysisEngineDescription = (AnalysisEngineDescription) specifier;
       AnalysisEngineMetaData analysisEngineMetaData = analysisEngineDescription
               .getAnalysisEngineMetaData();
@@ -287,7 +287,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       // modified, and the aAdditionalParameters original object
       // is re-used by the ASB_impl - a caller of this method,
       // for other delegates.
-      Map<String, Object> clonedAdditionalParameters = (aAdditionalParams == null) ? 
+      Map<String, Object> clonedAdditionalParameters = (aAdditionalParams == null) ?
           new HashMap<String, Object>() : new HashMap<String, Object>(aAdditionalParams);
       // clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
       clonedAdditionalParameters.remove(Resource.PARAM_RESOURCE_MANAGER);
@@ -318,7 +318,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.resource.Resource_ImplBase#getMetaData()
     */
    @Override
@@ -328,7 +328,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.analysis_engine.AnalysisEngine#batchProcessComplete()
     */
    @Override
@@ -338,7 +338,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.analysis_engine.AnalysisEngine#collectionProcessComplete()
     */
    @Override
@@ -349,7 +349,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.analysis_engine.AnalysisEngine#processAndOutputNewCASes(org.apache.uima.cas.CAS)
     */
    @Override
@@ -383,6 +383,19 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
 
       this.ae.destroy();
+      destroyAllResourceManagers();
+      cachedResourceManagers.clear();
+   }
+
+   private void destroyAllResourceManagers() {
+
+	   for (Map<StringPair, ResourceManager> classPathToResourceManagers : cachedResourceManagers.values()) {
+
+		   for (ResourceManager resourceManager : classPathToResourceManagers.values()) {
+			   resourceManager.destroy();
+		   }
+		   classPathToResourceManagers.clear();
+	   }
    }
 
    /* (non-Javadoc)
@@ -397,7 +410,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
   // This class implements the methods from its super classes, just where necessary to get
   // the implementation to forward to the contained PEAR.
-   
+
   // Many of the superclass methods are OK.
 
   /* (non-Javadoc)
@@ -458,7 +471,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
   // finalize method not forwarded
   // finalize will be called on the object by the GC
-  
+
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#getMBeanNamePrefix()
    */
@@ -524,10 +537,10 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
   protected void setMetaData(ResourceMetaData aMetaData) {
     ((AnalysisEngineImplBase) ae).setMetaData(aMetaData);
   }
-  
+
   /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#setResultSpecification(org.apache.uima.analysis_engine.ResultSpecification)
     */
    @Override
@@ -537,7 +550,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#batchProcessComplete(org.apache.uima.util.ProcessTrace)
     */
    @Override
@@ -548,7 +561,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
     */
    @Override
@@ -559,7 +572,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#createResultSpecification()
     */
    @Override
@@ -569,7 +582,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#createResultSpecification(org.apache.uima.cas.TypeSystem)
     */
    @Override
@@ -579,7 +592,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#getProcessingResourceMetaData()
     */
    @Override
@@ -589,7 +602,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#newCAS()
     */
    @Override
@@ -608,7 +621,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    /**
     * inner class StringPair
-    * 
+    *
     */
    static private class StringPair {
 
@@ -655,3 +668,4 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       }
    }
 }
+
