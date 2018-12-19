@@ -25,10 +25,10 @@ import java.util.HashMap;
 import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.pear.util.FileUtil;
-import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.PearSpecifier;
-import org.apache.uima.resource.impl.Parameter_impl;
 import org.apache.uima.resource.impl.PearSpecifier_impl;
+import org.apache.uima.resource.metadata.NameValuePair;
+import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.Assert;
 
@@ -86,13 +86,13 @@ public class PearAnalysisEngineWrapperTest extends TestCase {
 
   private PearSpecifier createPearSpecifierWithParameters() {
 
-    Parameter parameterStringParam = new Parameter_impl();
-    parameterStringParam.setName(PearAnalysisEngineWrapperTest.PARAMETER_NAME);
-    parameterStringParam.setValue(PearAnalysisEngineWrapperTest.PARAMETER_VALUE_OVERRIDE);
+	NameValuePair pearParameterStringParam = new NameValuePair_impl();
+    pearParameterStringParam.setName(PearAnalysisEngineWrapperTest.PARAMETER_NAME);
+    pearParameterStringParam.setValue(PearAnalysisEngineWrapperTest.PARAMETER_VALUE_OVERRIDE);
 
     PearSpecifier_impl pearSpecifier_impl = new PearSpecifier_impl();
     pearSpecifier_impl.setPearPath(this.installedPearPackage.getRootDirectory().toString());
-    pearSpecifier_impl.setParameters(new Parameter[] { parameterStringParam });
+    pearSpecifier_impl.setPearParameters(new NameValuePair[] { pearParameterStringParam });
     return pearSpecifier_impl;
   }
 
