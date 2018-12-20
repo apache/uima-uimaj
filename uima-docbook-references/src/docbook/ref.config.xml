@@ -220,7 +220,7 @@ under the License.
                   Updates that occur next-to trace information for the same Feature Structure are combined.
                   </para>
            
-                  <para>This can generate a lot of output, and definately slows down execution.</para>
+                  <para>This can generate a lot of output, and definitely slows down execution.</para>
             </entry>
             
             <entry><para>2.10.1</para></entry>
