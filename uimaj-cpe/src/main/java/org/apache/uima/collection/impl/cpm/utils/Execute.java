@@ -21,7 +21,7 @@ package org.apache.uima.collection.impl.cpm.utils;
 
 
 /**
- * Contains command line and environment for launching a seperate process.
+ * Contains command line and environment for launching a separate process.
  * 
  * 
  */

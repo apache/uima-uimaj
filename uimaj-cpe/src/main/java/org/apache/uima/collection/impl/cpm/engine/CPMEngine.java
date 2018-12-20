@@ -1148,7 +1148,7 @@ public void asynchStop() {
   /**
    * Classify based on Cas Processor capability to run in parallel. Some Cas Processors need to run
    * as single instance only. It scans the list of Cas Processors backwords and moves those Cas
-   * Processors that are not parallelizable to a separate single-threade pipeline. This process of
+   * Processors that are not parallelizable to a separate single-thread pipeline. This process of
    * moving CPs continues until the first parallelizable Cas Processor is found. Beyond this all Cas
    * Processors are moved to a parallelizable pipeline. If the non-parallelizable CP is in the
    * parallelizable pipeline there simply will be a single instance of it that will be shared by all
