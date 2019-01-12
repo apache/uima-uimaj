@@ -7,7 +7,7 @@
     <version>12</version>
   </parent>
   <artifactId>uimafit-parent</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Apache UIMA uimaFIT - Parent</name>
   <url>${uimaWebsiteUrl}</url>
@@ -436,8 +436,4 @@
       </build>
     </profile>
   </profiles>
-
-  <scm>
-    <tag>uimafit-3.0.0</tag>
-  </scm>
 </project>
