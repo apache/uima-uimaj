@@ -412,7 +412,7 @@ public class Misc {
     
   
     int origLength = sb.length();
-    
+    if (c == null) return sb.append("<null>");
     if (c.size() == 0) {       // empty case
       return sb.append("[]");
     }
