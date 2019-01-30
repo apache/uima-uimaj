@@ -35,6 +35,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
+import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper;
+import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper.StringPair;
 import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.resource.CasManager;
@@ -897,6 +899,18 @@ public class ResourceManager_impl implements ResourceManager {
         UIMAFramework.getLogger().logrb(Level.WARNING, ResourceManager_impl.class.getName(),
             "destroy", LOG_RESOURCE_BUNDLE, "UIMA_Classloader_close_exception", e);
       }      
+    }
+    
+    // https://issues.apache.org/jira/browse/UIMA-5935
+    Map<ResourceManager, Map<PearAnalysisEngineWrapper.StringPair, ResourceManager>> cachedResourceManagers =
+        PearAnalysisEngineWrapper.getCachedResourceManagers();
+    synchronized(cachedResourceManagers) {
+      Map<StringPair, ResourceManager> c1 = cachedResourceManagers.get(this);
+      if (c1 != null) {
+        for (ResourceManager rm : c1.values()) {
+          rm.destroy();
+        }
+      }
     }
     
     // no destroy of caspool at this time
