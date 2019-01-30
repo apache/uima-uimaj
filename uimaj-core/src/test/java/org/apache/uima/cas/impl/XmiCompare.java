@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -196,7 +197,7 @@ public class XmiCompare {
       throw new RuntimeException(e);
     }
              
-    compareNumberOfFSsByType();
+    compareNumberOfFSsByType(c1, c2);
     
     cc = new CasCompare(c1, c2);
     cc.compareAll(true);
@@ -215,9 +216,11 @@ public class XmiCompare {
 
   } 
   
-  private void compareNumberOfFSsByType() {
-    Iterator<FsIndex_singletype<TOP>> il1 = c1.indexRepository.streamNonEmptyIndexes(TOP.class).collect(Collectors.toList()).iterator();
-    Iterator<FsIndex_singletype<TOP>> il2 = c2.indexRepository.streamNonEmptyIndexes(TOP.class).collect(Collectors.toList()).iterator();
+  public static void compareNumberOfFSsByType(CAS cas1, CAS cas2) {
+    CASImpl ci1 = (CASImpl)cas1;
+    CASImpl ci2 = (CASImpl)cas2;
+    Iterator<FsIndex_singletype<TOP>> il1 = ci1.indexRepository.streamNonEmptyIndexes(TOP.class).collect(Collectors.toList()).iterator();
+    Iterator<FsIndex_singletype<TOP>> il2 = ci2.indexRepository.streamNonEmptyIndexes(TOP.class).collect(Collectors.toList()).iterator();
 
     StringBuilder sb = new StringBuilder();
     StringBuilder sba = new StringBuilder();
