@@ -86,7 +86,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
    * @param v -
    * @param tail -
    */
-  public NonEmptyIntegerList(JCas jcas, int v, CommonList tail) {
+  public NonEmptyIntegerList(JCas jcas, int v, IntegerList tail) {
     this(jcas);
     setHead(v);
     setTail(tail);

@@ -84,7 +84,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
    * @param v -
    * @param tail -
    */
-  public NonEmptyFloatList(JCas jcas, float v, CommonList tail) {
+  public NonEmptyFloatList(JCas jcas, float v, FloatList tail) {
     this(jcas);
     setHead(v);
     setTail(tail);

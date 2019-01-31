@@ -86,7 +86,7 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
    * @param head -
    * @param tail -
    */
-  public NonEmptyFSList(JCas jcas, T head, CommonList tail) {
+  public NonEmptyFSList(JCas jcas, T head, FSList<?> tail) {
     this(jcas);
     setHead(head);
     setTail(tail);
