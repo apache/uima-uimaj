@@ -322,7 +322,14 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   public String toString(int indent) {
     StringBuilder sb = new StringBuilder();
-    sb.append(this.getClass().getSimpleName() + " [name: ").append(name).append(", superType: ").append((superType == null) ? "<null>" :superType.getName()).append(", ");
+    sb.append(this.getClass().getSimpleName() + " [name: ").append(name).append(", superTypes: ");
+    if (superType == null) {
+      sb.append("<null>");
+    } else { 
+      for (TypeImpl supert = superType; supert != null; supert = supert.superType) {
+        sb.append(supert.getName()).append(", ");
+      }
+    }
     prettyPrintList(sb, "directSubtypes", directSubtypes, (sbx, ti) -> sbx.append(ti.getName()));
     sb.append(", ");
     appendIntroFeats(sb, indent);
@@ -915,10 +922,10 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
                           : 0);
   }  
     
-  void initAdjOffset2FeatureMaps(List<FeatureImpl> tmpIntFis, List<FeatureImpl> tmpRefFis, List<FeatureImpl> tmpNsr) {
-    tmpIntFis.addAll(Arrays.asList(superType.staticMergedIntFeaturesList));
-    tmpRefFis.addAll(Arrays.asList(superType.staticMergedRefFeaturesList));
-    tmpNsr   .addAll(Arrays.asList(superType.staticMergedNonSofaFsRefs));
+  void initAdjOffset2FeatureMaps(List<FeatureImpl> tempIntFis, List<FeatureImpl> tempRefFis, List<FeatureImpl> tempNsr) {
+    tempIntFis.addAll(Arrays.asList(superType.staticMergedIntFeaturesList));
+    tempRefFis.addAll(Arrays.asList(superType.staticMergedRefFeaturesList));
+    tempNsr   .addAll(Arrays.asList(superType.staticMergedNonSofaFsRefs));
   }
   
   FeatureImpl getFeatureByAdjOffset(int adjOffset, boolean isInInt) {
