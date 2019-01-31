@@ -23,13 +23,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import org.apache.uima.List_of_ints;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
@@ -153,6 +155,8 @@ public class CasCompare {
   
   private final static boolean IS_DEBUG_STOP_ON_MISCOMPARE = true;
   private final static boolean IS_MEAS_LIST_2_ARRAY = false;
+  private static final String BLANKS_89 = Misc.blanks.substring(0, 89);
+
 
   /**
    * Compare 2 CASes, with perhaps different type systems.
@@ -708,7 +712,7 @@ public class CasCompare {
    * @param fsArray the array to be sorted
    * @return a runnable, which (when invoked) updates the original array with the sorted result.
    */
-  public Runnable sortFSArray(FSArray fsArray) {
+  public Runnable sortFSArray(FSArray<?> fsArray) {
     if (fsArray == null || fsArray.size() < 2) {
       return null;
     }
@@ -807,7 +811,7 @@ public class CasCompare {
       int i = 0;
       for (CommonList n : al) {
         assert !n.isEmpty();
-        fsa.set(i++, ((NonEmptyFSList)n).getHead());
+        fsa.set(i++, ((NonEmptyFSList<?>)n).getHead());
         fss.set(node_indexes.get(n) - 1, null);
       }
       fss.add(fsa);
@@ -856,7 +860,7 @@ public class CasCompare {
    * @param al -
    * @return false if loop found
    */
-  private boolean addSuccessors(CommonList node, ArrayList al) {
+  private boolean addSuccessors(CommonList node, ArrayList<CommonList> al) {
     try {
       list_successor_seen.add(node._id());  // starts reset, reset at end
       
@@ -1070,8 +1074,8 @@ public class CasCompare {
 //    }
   
   private int compareFssArray(TOP fs1, TOP fs2, TypeImpl callerTi, FeatureImpl callerFi) {
-    CommonArrayFS a1 = (CommonArrayFS) fs1;
-    CommonArrayFS a2 = (CommonArrayFS) fs2;
+    CommonArrayFS<?> a1 = (CommonArrayFS<?>) fs1;
+    CommonArrayFS<?> a2 = (CommonArrayFS<?>) fs2;
     int r;
     
     int len1 = a1.size();
@@ -1125,8 +1129,8 @@ public class CasCompare {
                                                                     CASImpl.double2long(((DoubleArray)a1).get(i)), 
                                                                     CASImpl.double2long(((DoubleArray)a2).get(i))));
       break;
-    case Slot_HeapRef: r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs( ((FSArray) a1).get(i), 
-                                                                           ((FSArray) a2).get(i), 
+    case Slot_HeapRef: r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs((TOP) ((FSArray<?>) a1).get(i), 
+                                                                          (TOP) ((FSArray<?>) a2).get(i), 
                                                                            callerTi, 
                                                                            callerFi));
       break;
@@ -1562,4 +1566,60 @@ public class CasCompare {
     fs.prettyPrintShort(sb);
     return sb.toString();
   }
+  
+  /**
+   * Counts and compares the number of Feature Structures, by type, and generates a report
+   * @param cas1
+   * @param cas2
+   * @return a StringBuilder with a report
+   */
+  public static StringBuilder compareNumberOfFSsByType(CAS cas1, CAS cas2) {
+    CASImpl ci1 = (CASImpl)cas1;
+    CASImpl ci2 = (CASImpl)cas2;
+    Iterator<FsIndex_singletype<TOP>> il1 = ci1.indexRepository.streamNonEmptyIndexes(TOP.class).collect(Collectors.toList()).iterator();
+    Iterator<FsIndex_singletype<TOP>> il2 = ci2.indexRepository.streamNonEmptyIndexes(TOP.class).collect(Collectors.toList()).iterator();
+
+    StringBuilder sb = new StringBuilder();
+    StringBuilder sba = new StringBuilder();
+    boolean isSame = il1.hasNext() || il2.hasNext();
+    while( il1.hasNext() || il2.hasNext()) {
+      sb.setLength(0);
+      String ts1 = null, ts2 = null;
+      int sz1 = 0, sz2 = 0;
+      FsIndex_singletype<TOP> idx;
+      if (il1.hasNext()) {
+        idx = il1.next();
+        ts1 = idx.getType().getName();
+        sz1 = idx.size();
+        sb.append(String.format("%-83s %,5d", ts1, sz1));
+      } else {
+        isSame = false;
+        sb.append(BLANKS_89);
+      }
+      if (il2.hasNext()) {
+        idx = il2.next();
+        ts2 = idx.getType().getName();
+        sz2 = idx.size();
+        String m = (ts2.equals(ts1) && sz2 == sz1) 
+                     ? "same"
+                     : ts2;
+        sb.append(String.format(" %,5d %s", sz2, m));
+      } else {
+        isSame = false;
+      }
+      sba.append(sb).append('\n');
+      if (isSame) {
+        isSame = ts1.equals(ts2) && sz1 == sz2;
+      }
+    }
+
+    if (isSame) {
+      sba.setLength(0);
+      sba.append("Same number of types");
+    } else {
+      sba.append("\nDifferent numbers of types");
+    }
+    return sba;
+  }
+
 }
