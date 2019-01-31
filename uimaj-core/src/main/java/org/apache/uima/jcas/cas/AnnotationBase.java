@@ -26,6 +26,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.impl.AnnotationBaseImpl;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
@@ -117,8 +118,9 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
   // * Sofa reference of the annotation
   /*
    * getter for sofa - gets Sofaref for annotation
+   * Return type is SofaFS for binary backwards compatibility with UIMA v2 https://issues.apache.org/jira/browse/UIMA-5974
    */
-  public Sofa getSofa() { return (Sofa) _getFeatureValueNc(wrapGetIntCatchException(_FH_sofa)); }
+  public SofaFS getSofa() { return (Sofa) _getFeatureValueNc(wrapGetIntCatchException(_FH_sofa)); }
   
   // There is no setter for this
   //   The value is set and is fixed when this is created
