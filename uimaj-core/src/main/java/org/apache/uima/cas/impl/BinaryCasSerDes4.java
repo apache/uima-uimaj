@@ -812,7 +812,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     
     private int getPrevArray0HeapRef() {
       if (isNoPrevArrayValue((CommonArrayFS)prevFs)) return 0;      
-      return fs2seq(((FSArray)prevFs).get(0));
+      return fs2seq((TOP)((FSArray)prevFs).get(0));
     }
     
     private int getPrevArray0Int() {
@@ -1391,7 +1391,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
               break;
               
             case Slot_HeapRef:
-              int v = fs2seq(((FSArray)fs).get(i));
+              int v = fs2seq((TOP)((FSArray)fs).get(i));
               writeDiff(kindi, v, vPrevModHeapRef);
               vPrevModHeapRef = v;
               break;

@@ -547,7 +547,7 @@ public class XCASSerializer {
         String val = null;
         // xmlStack.pushTextNode(ARRAY_ELEMENT_TAG);
         // xmlStack.commitNode();
-        TOP element = fs.get(i);
+        TOP element = (TOP)fs.get(i);
         if (null == element && mOutOfTypeSystemData != null) {
           // This array element may have been a reference to an OOTS FS.
           

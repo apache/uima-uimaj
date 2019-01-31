@@ -115,7 +115,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
 
   /** return the indexed value from the corresponding Cas FSArray as a Java Model object. */
   @Override
-  public <U extends TOP> U get(int i) {
+  public <U extends FeatureStructure> U get(int i) {
     return (U) _maybeGetPearFs(theArray[i]);
   }
   
@@ -324,6 +324,5 @@ public final class FSArray<T extends FeatureStructure> extends TOP
     System.arraycopy(theArray, 0, a, 0, size());
     return a;
   }
-
  
 }

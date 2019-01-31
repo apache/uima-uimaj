@@ -36,7 +36,7 @@ public interface ArrayFS<E extends FeatureStructure> extends CommonArrayFS<E> {
    * @exception ArrayIndexOutOfBoundsException
    *              If the index is out of bounds.
    */
-  <U extends TOP> U get(int i) throws ArrayIndexOutOfBoundsException;
+  <U extends FeatureStructure> U get(int i) throws ArrayIndexOutOfBoundsException;
 
   /**
    * Set the i-th value.

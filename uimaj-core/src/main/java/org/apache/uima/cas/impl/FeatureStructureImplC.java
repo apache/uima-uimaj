@@ -1443,7 +1443,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     indent += incr;
     for (int i = 0; i < arraylen; i++) {
       Misc.indent(buf, indent);
-      ppval(fsarray.get(i), indent, incr, buf, useShortNames, printRefs, isShortForm);
+      ppval((TOP)fsarray.get(i), indent, incr, buf, useShortNames, printRefs, isShortForm);
     }
     Misc.indent(buf, indent - incr);
     buf.append(']');
@@ -1640,7 +1640,13 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   }
 
   private void _setRefValueCommon(FeatureImpl fi, Object v) {
-    _setRefValueCommon(fi.getAdjustedOffset(), v);
+    final int adjOffset = fi.getAdjustedOffset();
+//    if (adjOffset >= _refData.length) {
+//      System.out.format("Debug feature %s has adjusted Offset: %d but length of refs is %d%n", fi.getName(), adjOffset, _refData.length);
+//      System.out.format("Debug domain: %s, highest def type: %s%n", ((TypeImpl)fi.getDomain()).toString(2), fi.getHighestDefiningType());
+//    }
+    
+    _setRefValueCommon(adjOffset, v);
   }
   
   public void  _setRefValueCommon(int adjOffset, Object v) {

@@ -1618,7 +1618,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           case Slot_Int: vPrevModInt = writeDiff(int_i, ((IntegerArray)fs).get(index), vPrevModInt); break;
           case Slot_Float: writeFloat(CASImpl.float2int(((FloatArray)fs).get(index))); break;
           case Slot_HeapRef: {
-            final int v = getTgtSeqFromSrcFS(((FSArray)fs).get(index)); 
+            final int v = getTgtSeqFromSrcFS((TOP)((FSArray)fs).get(index)); 
             vPrevModHeapRef = writeDiff(heapRef_i, v, vPrevModHeapRef); break;
           }
           case Slot_StrRef: writeString(((StringArray)fs).get(index)); break;

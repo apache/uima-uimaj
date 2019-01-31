@@ -743,7 +743,7 @@ public class CASSerializer implements Serializable {
 
         case Slot_HeapRef:
           fsChange.arrayUpdates.forAllInts(index -> {
-            TOP tgtFs = ((FSArray)fs).get(index);
+            TOP tgtFs = (TOP)((FSArray)fs).get(index);
             chgMainAvs.add(new AddrPlusValue(convertArrayIndexToMainHeapAddr(index, fs, fs2addr), fs2addr.get(tgtFs)));
           });
           break;
