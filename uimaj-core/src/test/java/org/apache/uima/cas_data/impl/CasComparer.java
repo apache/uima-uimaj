@@ -232,7 +232,7 @@ public class CasComparer {
                                                                                         Float.floatToRawIntBits   (((FloatArray )fs2).get(i))),    "Miscompare Float Arrays %n%s%n%s", fs1, fs2);
         case Slot_DoubleRef:  return compareAllArrayElements(len1, i -> Long   .compare(Double.doubleToRawLongBits(((DoubleArray)fs1).get(i)), 
                                                                                         Double.doubleToRawLongBits(((DoubleArray)fs2).get(i))),    "Miscompare Double Arrays %n%s%n%s", fs1, fs2);
-        case Slot_HeapRef: return    compareAllArrayElements(len1, i ->        compare1(((FSArray       )fs1).get(i), ((FSArray     )fs2).get(i), visited), "Miscompare FS Arrays %n%s%n%s", fs1, fs2);
+        case Slot_HeapRef: return    compareAllArrayElements(len1, i ->        compare1((TOP)((FSArray<?>       )fs1).get(i), (TOP)((FSArray<?> )fs2).get(i), visited), "Miscompare FS Arrays %n%s%n%s", fs1, fs2);
         case Slot_StrRef:  return    compareAllArrayElements(len1, i -> Misc.compareStrings(((StringArray   )fs1).get(i), ((StringArray )fs2).get(i)), "Miscompare String Arrays %n%s%n%s", fs1, fs2);
         default: 
           Misc.internalError(); return 0;  // only to avoid a compile error
@@ -402,7 +402,7 @@ public class CasComparer {
     switch(getArrayType(arrayFS1)) {
     case FS:
       for (int j = 0; j < len; j++) {
-        if (0 != (r = compare1(((FSArray)arrayFS1).get(j), ((FSArray)arrayFS2).get(j), visited))) return r;
+        if (0 != (r = compare1((TOP)((FSArray)arrayFS1).get(j), (TOP)((FSArray)arrayFS2).get(j), visited))) return r;
       }
       break;
     case BOOLEAN:
