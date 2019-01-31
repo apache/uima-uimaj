@@ -1295,7 +1295,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
  
     if (!isAddback && (!IS_DISABLE_ENHANCED_WRONG_INDEX_CHECK) && ti.isAnnotationBaseType()) {
-      Sofa sofa = ((AnnotationBase)fs).getSofa();
+      Sofa sofa = (Sofa)((AnnotationBase)fs).getSofa();
       if (sofa == null) {
         throw new CASRuntimeException(
             CASRuntimeException.SOFAREF_NOT_SET, fs.toString(3));            
