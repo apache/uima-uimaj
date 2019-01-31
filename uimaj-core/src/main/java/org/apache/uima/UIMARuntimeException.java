@@ -35,7 +35,7 @@ import java.util.Locale;
  * <p>
  * The thrower may specify the name of the <code>ResourceBundle</code> in which to find the
  * exception message. Any name may be used. If the name is omitted, the resource bundle identified
- * by {@link #resource_file} will be used. This contains the standard UIMA exception
+ * by {@link #STANDARD_MESSAGE_CATALOG} will be used. This contains the standard UIMA exception
  * messages.
  * 
  * 
@@ -48,7 +48,7 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
    * The name of the {@link java.util.ResourceBundle ResourceBundle} containing the standard UIMA
    * Exception messages.
    */
-  public static final String resource_file = "org.apache.uima.UIMAException_Messages";
+  public static final String STANDARD_MESSAGE_CATALOG = "org.apache.uima.UIMAException_Messages";
   
   /**
    * Message key for a standard UIMA exception message: CasManager.releaseCas(CAS) was called with a
@@ -172,7 +172,7 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
   /**
    * the message bundle to use for this exception
    */
-  private String mMessageBundle = resource_file; 
+  private String mMessageBundle = STANDARD_MESSAGE_CATALOG; 
   /**
    * An identifier that maps to the message for this exception.
    */
@@ -222,7 +222,7 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
   }
 
   /**
-   * Creates a new exception with a message from the {@link #resource_file}.
+   * Creates a new exception with a message from the {@link #STANDARD_MESSAGE_CATALOG}.
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain

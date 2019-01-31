@@ -104,7 +104,7 @@ public class UIMA_IllegalArgumentException extends UIMARuntimeException {
   }
 
   /**
-   * Creates a new exception with a message from the {@link #resource_file}.
+   * Creates a new exception with a message from the {@link #STANDARD_MESSAGE_CATALOG}.
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
@@ -120,7 +120,7 @@ public class UIMA_IllegalArgumentException extends UIMARuntimeException {
 
   /**
    * Creates a new exception with the specified cause and a message from the
-   * {@link #resource_file}.
+   * {@link #STANDARD_MESSAGE_CATALOG}.
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
