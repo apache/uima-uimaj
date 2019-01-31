@@ -70,7 +70,6 @@ import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonList;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.EmptyFloatList;
@@ -127,6 +126,7 @@ import org.apache.uima.util.impl.Constants;
 public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSystem {  
   
   private static final boolean IS_TRACE_JCAS_EXPAND = false;  // set to show jcas expands of types
+  private final boolean debug = false;  // flag to set on when hit entity annotation
   
   /**
    * Define this JVM property to disable equal type system consolidation.  
@@ -148,7 +148,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   public static final boolean IS_DISABLE_TYPESYSTEM_CONSOLIDATION = // true || // debug
       Misc.getNoValueSystemProperty(DISABLE_TYPESYSTEM_CONSOLIDATION);
- 
+   
 //  private final static String DECOMPILE_JCAS = "uima.decompile.jcas";
 //  private final static boolean IS_DECOMPILE_JCAS = Misc.getNoValueSystemProperty(DECOMPILE_JCAS);
 //  private final static Set<String> decompiled = (IS_DECOMPILE_JCAS) ? new HashSet<String>(256) : null;
@@ -402,6 +402,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //  private final IntRedBlackTree stringSetMap = new IntRedBlackTree();
 
   // Is the type system locked?
+  //   Not supported: multiple threads working on the *same* type system at a time.
   private boolean locked = false;
 
 //  private int numTypeNames = 0;
@@ -453,6 +454,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   private Lookup lookup;
   private ClassLoader cl_for_commit;
   private boolean skip_loading_user_jcas = false;
+
 
   public TypeSystemImpl() {
 
@@ -1389,6 +1391,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
           if (null != prev) {            
             // the following is a no-op if the generators already set up for this class loader
             prev.getGeneratorsForClassLoader(cl, false);  // false - is not pear
+            
+            if (IS_TRACE_JCAS_EXPAND) {
+              System.out.format("debug type system impl commit: consolidated a type system with a previous one, %d%n", prev.hashCode());
+              System.out.println(Misc.getCallers(1, 50).toString());
+            }
 
             return prev;
           }
@@ -1434,6 +1441,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // This call internally calls the code to load JCas classes for this class loader.
       getGeneratorsForClassLoader(cl, false);  // false - is not pear    
 //      FSClassRegistry.loadJCasForTSandClassLoader(this, true, cl);
+      
+      if (IS_TRACE_JCAS_EXPAND) {
+        System.out.format("debug type system impl commited new type system and loaded JCas %d%n", this.hashCode());
+        System.out.println(Misc.getCallers(1, 50).toString());
+      }
+
       return this;
     } // of sync block 
   }  
@@ -1493,13 +1506,14 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
         addJCasOffsetsWithSupers(jcci.jcasClass, tempIntFis, tempRefFis, tempNsr);
       }
     }
-        
+      
     for (final FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
       if (fi.getAdjustedOffset() == -1) {
         // wasn't set due to jcas class, above
         setFeatureAdjustedOffset(fi, tempIntFis, tempRefFis, tempNsr);
-      } else {
-        
+        if (debug) {
+          System.out.println("debug setting adjOffset for feat: " + fi.getShortName() + " to " + fi.getAdjustedOffset());
+        }
       }
     }
         
@@ -1630,8 +1644,14 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
           added.add(fi);
         }
       }
-      assert fi.getAdjustedOffset() == -1;
-      setFeatureAdjustedOffset(fi, tempIntFis, tempRefFis, tempNsrFis);
+      if (fi.getAdjustedOffset() != -1) {
+        if (debug) {
+	        System.out.println("debug fi adjusted offset not -1, is " + fi.getAdjustedOffset());
+  	      System.out.println("debug " + fi.toString());
+  	    }
+      } else {
+        setFeatureAdjustedOffset(fi, tempIntFis, tempRefFis, tempNsrFis);
+      }
     }
     
     if (IS_TRACE_JCAS_EXPAND && added.size() > 0) {
@@ -1640,10 +1660,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     }
   }
   
-  void setFeatureAdjustedOffset(FeatureImpl fi, List<FeatureImpl> tmpIntFis, List<FeatureImpl> tmpRefFis, List<FeatureImpl> tmpNsr) {
+  void setFeatureAdjustedOffset(FeatureImpl fi, List<FeatureImpl> tempIntFis, List<FeatureImpl> tempRefFis, List<FeatureImpl> tempNsr) {
     boolean isInt = fi.isInInt;
     fi.setAdjustedOffset(isInt ? nextI : nextR);
-    setOffset2Feat(tmpIntFis, tmpRefFis, tmpNsr, fi, isInt ? (nextI++) : (nextR++));
+    setOffset2Feat(tempIntFis, tempRefFis, tempNsr, fi, isInt ? (nextI++) : (nextR++));
     if (fi.isLongOrDouble) {
       nextI ++;
     }        
@@ -2875,6 +2895,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     
   /**
    * Called when switching or initializing CAS's shared-view-data instance of FsGenerator[]
+   * generators are kept in a map, unique for each type system, keyed by classloader.
    * @param cl the class loader
    * @param isPear -
    * @return the generators
@@ -2887,7 +2908,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       if (g == null && ! skip_loading_user_jcas) {
         g = FSClassRegistry.getGeneratorsForClassLoader(cl, isPear, this);
         gByC.put(cl, g);
-      }
+      } 
       return g;
     }
   }
