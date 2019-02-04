@@ -79,24 +79,7 @@ under the License.
           Annotators), Addons (where you can find many extensions), and uimaFIT supplying a Java centric
           set of friendlier interfaces and avoiding XML.</para>
         </listitem>
-      </varlistentry>
-     
-      <!-- 
-      <varlistentry id="ugr.faqs.include_semantic_search">
-        <term><emphasis role="bold">
-          Does UIMA include a semantic search engine?
-        </emphasis></term>
-        <listitem><para>
-          The Apache UIMA project does not itself include a semantic search engine.  
-          It can interface with the semantic search engine
-            component (available from <ulink
-              url="http://www.alphaworks.ibm.com/tech/uima"/> for indexing and querying over
-            the results of analysis. Over time, we expect that additional search engines will
-            add support for semantic searching.
-          </para>
-        </listitem>
-      </varlistentry>
-      --> 
+      </varlistentry> 
       
       <varlistentry id="ugr.faqs.what_is_an_annotation">
         
@@ -402,10 +385,8 @@ under the License.
         <term><emphasis role="bold">Is UIMA Open Source?</emphasis></term>
         <listitem><para>Yes. As of version 2, UIMA development has moved to Apache and is being
           developed within the Apache open source processes. It is licensed under the Apache
-          version 2 license. Previous versions are available on the IBM alphaWorks site (
-            <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>) and the source
-          code for previous version of the UIMA framework is available on SourceForge (
-            <ulink url="http://uima-framework.sourceforge.net/"/>).</para>
+          version 2 license. 
+            </para>
         </listitem>
       </varlistentry>
       
@@ -425,24 +406,6 @@ under the License.
           </para></listitem>
       </varlistentry>
       
-      <!-- 
-      <varlistentry id="ugr.faqs.commercial_products">
-        <term><emphasis role="bold">Do any commercial products support the UIMA framework or include
-          it as part of their product?</emphasis></term>
-        <listitem><para>Yes. IBM's WebSphere Information Integration Omnifind Edition
-          product (<ulink
-            url="http://www.ibm.com/developerworks/db2/zones/db2ii"/> or <ulink
-            url="http://www-306.ibm.com/software/data/integration/db2ii/editions_womnifind.html"/>
-          ) has UIMA <quote>inside</quote> and supports adding UIMA annotators to the
-          processing pipeline. We are actively seeking other product embeddings. </para>
-        </listitem>
-      </varlistentry>
-       -->
-      <!--
-      <varlistentry>
-      <term><emphasis role="bold"></emphasis></term>
-      <listitem><para></para></listitem>
-      </varlistentry>
-      -->
+
  </variablelist>
 </chapter>
