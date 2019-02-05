@@ -2928,6 +2928,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         + "  [-classesRoots <One-or-more-directories-or-jars-or-pears-separated-by-Path-separator>]\n"
         + "  [-outputDirectory a-writable-directory-path (optional)\n"
         + "     if omitted, a temporary directory is used\n"
+        + "     if not omitted, the directory contents WILL BE ERASED at the start.\n"
         + "  [-migrateClasspath a-class-path to use in decompiling, when -classesRoots is specified\n"
         + "                     also used when compiling the migrated classes.\n"
         + "  NOTE: either -sourcesRoots or -classesRoots is required, but only one may be specified.\n"
