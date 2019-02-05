@@ -26,10 +26,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -369,13 +369,8 @@ public class AnnotationViewGenerator {
   public void autoGenerateStyleMapFile(AnalysisEngineMetaData aMetaData, File aStyleMapFile)
           throws IOException {
     String xmlStr = autoGenerateStyleMap(aMetaData);
-    FileWriter out = null;
-    try {
-      out = new FileWriter(aStyleMapFile);
+    try (Writer out = new FileWriter(aStyleMapFile)) {
       out.write(xmlStr);
-    } finally {
-      if (out != null)
-        out.close();
     }
   }
 
@@ -390,13 +385,8 @@ public class AnnotationViewGenerator {
   public void autoGenerateStyleMapFile(TypeSystemDescription aTypeSystem, File aStyleMapFile)
           throws IOException {
     String xmlStr = autoGenerateStyleMap(aTypeSystem);
-    FileWriter out = null;
-    try {
-      out = new FileWriter(aStyleMapFile);
+    try (Writer out = new FileWriter(aStyleMapFile)) {
       out.write(xmlStr);
-    } finally {
-      if (out != null)
-        out.close();
     }
   }
 }

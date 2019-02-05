@@ -28,6 +28,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -1037,12 +1038,9 @@ public class Jg {
       } else
         progressMonitorGenerateClass.subTask(getString("creatingTarget",
                 new Object[] { qualifiedClassName }));
-      (new File(targetContainer)).mkdirs();
-      FileWriter fw = new FileWriter(targetPath);
-      try {
+      new File(targetContainer).mkdirs();
+      try (Writer fw = new FileWriter(targetPath)) {
         fw.write(sourceContents);
-      } finally {
-        fw.close();
       }
     }
   }

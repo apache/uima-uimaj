@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -499,13 +500,8 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
       CAS cas = CasCreationUtils.createCas(Collections.EMPTY_LIST, typeSystem, UIMAFramework
               .getDefaultPerformanceTuningProperties());
       // deserialize XCAS into CAS
-      FileInputStream xcasInStream = null;
-      try {
-        xcasInStream = new FileInputStream(xcasFile);
+      try (InputStream xcasInStream = new FileInputStream(xcasFile)) {
         XmlCasDeserializer.deserialize(xcasInStream, cas, true);
-      } finally {
-        if (xcasInStream != null)
-          xcasInStream.close();
       }
       
       //get the specified view
