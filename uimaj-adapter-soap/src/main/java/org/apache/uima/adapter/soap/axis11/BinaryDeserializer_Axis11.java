@@ -98,11 +98,8 @@ public class BinaryDeserializer_Axis11 extends DeserializerImpl {
                   .getActivationDataHandler((org.apache.axis.Part) ref);
           Object content = dataHandler.getContent();
           // System.out.println(content.getClass().getName());
-          ObjectInputStream objStream = new ObjectInputStream((InputStream) content);
-          try {
+          try (ObjectInputStream objStream = new ObjectInputStream((InputStream) content)) {
             setValue(objStream.readObject());
-          } finally {
-            objStream.close();
           }
         } catch (org.apache.axis.AxisFault e) {
           throw new SAXException(e.getMessage());

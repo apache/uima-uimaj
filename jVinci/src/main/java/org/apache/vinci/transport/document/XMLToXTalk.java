@@ -253,16 +253,12 @@ public class XMLToXTalk {
         xml_os.close();
       }
     }
-    RandomAccessFile raf = new RandomAccessFile(filename, "rw");
-    try {
+    try (RandomAccessFile raf = new RandomAccessFile(filename, "rw")) {
       raf.skipBytes(7);
       // int return_val =
       updateElement(raf, handler.countList, 0);
       // Debug.p("Return val: " + return_val);
-    } finally {
-      raf.close();
     }
-
   }
 
   static private int updateElement(RandomAccessFile raf, ArrayList counts, int index)
