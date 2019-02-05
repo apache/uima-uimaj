@@ -122,19 +122,9 @@ public class InstallationProcessor {
   public static void generateVSDescriptor(InstallationDescriptor insdObject, File mainRootDir)
           throws IOException {
     File vsDescriptorFile = new File(mainRootDir, VS_DESCRIPTOR_PATH);
-    PrintWriter oWriter = null;
-    try {
-      oWriter = new PrintWriter(new FileWriter(vsDescriptorFile));
+    try (PrintWriter oWriter = new PrintWriter(new FileWriter(vsDescriptorFile))) {
       String xmlContent = generateVSDescriptorContent(insdObject);
       oWriter.println(xmlContent);
-      oWriter.close();
-    } finally {
-      if (oWriter != null) {
-        try {
-          oWriter.close();
-        } catch (Exception e) {
-        }
-      }
     }
   }
 

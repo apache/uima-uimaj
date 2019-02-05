@@ -366,9 +366,9 @@ public class AnalysisEngine_implTest extends TestCase {
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       Map<String,Object> additionalParams = new HashMap<>();
       Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
-      FileInputStream fis = new FileInputStream(new File(resDir,"testExternalOverride2.settings"));
-      extSettings.load(fis);
-      fis.close();
+      try (FileInputStream fis = new FileInputStream(new File(resDir,"testExternalOverride2.settings"))) {
+        extSettings.load(fis);
+      }
       additionalParams.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
       UIMAFramework.produceAnalysisEngine(desc, additionalParams);
       System.clearProperty("UimaExternalOverrides");
@@ -1642,19 +1642,19 @@ public class AnalysisEngine_implTest extends TestCase {
 
     // Write out descriptor
     File cloneFile = new File(inFile.getParentFile(), "CopyOfAggregateWithManyDelegates.xml");
-    BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(cloneFile));
-    XMLSerializer xmlSerializer = new XMLSerializer(false);
-    xmlSerializer.setOutputStream(os);
-    // set the amount to a value which will show up if used
-    // indent should not be used because we're using a parser mode which preserves
-    // comments and ignorable white space.
-    // NOTE: Saxon appears to force the indent to be 3 - which is what the input file now uses.
-    xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-    ContentHandler contentHandler = xmlSerializer.getContentHandler();
-    contentHandler.startDocument();
-    desc.toXML(contentHandler, true);
-    contentHandler.endDocument();
-    os.close();
+    try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(cloneFile))) {
+      XMLSerializer xmlSerializer = new XMLSerializer(false);
+      xmlSerializer.setOutputStream(os);
+      // set the amount to a value which will show up if used
+      // indent should not be used because we're using a parser mode which preserves
+      // comments and ignorable white space.
+      // NOTE: Saxon appears to force the indent to be 3 - which is what the input file now uses.
+      xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+      ContentHandler contentHandler = xmlSerializer.getContentHandler();
+      contentHandler.startDocument();
+      desc.toXML(contentHandler, true);
+      contentHandler.endDocument();
+    }
     
     String inXml = FileCompare.file2String(inFile);
     String cloneXml = FileCompare.file2String(cloneFile);

@@ -1754,19 +1754,9 @@ public class InstallationController {
     PearSpecifier pearSpec = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
     pearSpec.setPearPath(mainComponentRootPath);
     File outputFile = new File(mainComponentRootPath, mainComponentId + PEAR_DESC_FILE_POSTFIX);
-    FileOutputStream fos = null;
 
-    try
-    {
-        fos = new FileOutputStream(outputFile);
-        pearSpec.toXML(fos);
-    }
-    finally
-    {
-        if (fos != null)
-        {
-            fos.close();
-        }
+    try (OutputStream fos = new FileOutputStream(outputFile)) {
+      pearSpec.toXML(fos);
     }
   }
 
@@ -1779,9 +1769,7 @@ public class InstallationController {
    */
   protected synchronized void generateSetEnvFile() throws IOException {
     File setEnvFile = new File(_mainComponentRoot, SET_ENV_FILE);
-    PrintWriter fWriter = null;
-    try {
-      fWriter = new PrintWriter(new FileWriter(setEnvFile));
+    try (PrintWriter fWriter = new PrintWriter(new FileWriter(setEnvFile))) {
       fWriter.println("### Add the following environment variables");
       fWriter.println("### to appropriate existing environment variables");
       fWriter.println("### to run the " + _mainComponentId + " component");
@@ -1802,16 +1790,8 @@ public class InstallationController {
         String varValue = envVarTable.getProperty(varName);
         // add env.var. setting
         if (varName.length() > 0 && varValue.length() > 0
-                && !varName.equalsIgnoreCase(CLASSPATH_VAR) && !varName.equalsIgnoreCase(PATH_VAR)) {
+              && !varName.equalsIgnoreCase(CLASSPATH_VAR) && !varName.equalsIgnoreCase(PATH_VAR)) {
           fWriter.println(varName + "=" + varValue);
-        }
-      }
-    } finally {
-      if (fWriter != null) {
-        try {
-          fWriter.close();
-        } catch (Exception e) {
-          // ignore close exception
         }
       }
     }
@@ -1829,18 +1809,8 @@ public class InstallationController {
     File packageConfigFile = new File(_mainComponentRoot, PACKAGE_CONFIG_FILE);
     if (packageConfigFile.exists()) {
       // loading existing pear config file
-      InputStream iStream = null;
-      try {
-        iStream = new FileInputStream(packageConfigFile);
+      try (InputStream iStream = new FileInputStream(packageConfigFile)) {
         packageConfig.load(iStream);
-      } finally {
-        if (iStream != null) {
-          try {
-            iStream.close();
-          } catch (Exception e) {
-            // ignore close exception
-          }
-        }
       }
     }
     // set local config params
@@ -1854,19 +1824,9 @@ public class InstallationController {
       packageConfig.setProperty(idRoot, _installationTable.get(id).replace('\\', '/'));
     }
     // save pear config file
-    OutputStream oStream = null;
-    try {
+    try (OutputStream oStream = new FileOutputStream(packageConfigFile)) {
       String header = _mainComponentId;
-      oStream = new FileOutputStream(packageConfigFile);
       packageConfig.store(oStream, header);
-    } finally {
-      if (oStream != null) {
-        try {
-          oStream.close();
-        } catch (Exception e) {
-          // ignore close exception
-        }
-      }
     }
   }
 

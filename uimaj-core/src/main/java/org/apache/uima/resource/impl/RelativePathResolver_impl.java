@@ -165,19 +165,10 @@ public class RelativePathResolver_impl implements RelativePathResolver {
    * Utility method that checks to see if a file exists at the specified URL.
    */
   protected boolean fileExistsAtUrl(URL aUrl) {
-    InputStream testStream = null;
-    try {
-      testStream = aUrl.openStream();
+    try (InputStream testStream = aUrl.openStream()) {
       return true;
     } catch (IOException e) {
       return false;
-    } finally {
-      if (testStream != null) {
-        try {
-          testStream.close();
-        } catch (IOException e) {
-        }
-      }
     }
   }
 

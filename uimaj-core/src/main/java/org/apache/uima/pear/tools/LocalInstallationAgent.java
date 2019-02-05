@@ -287,21 +287,13 @@ public class LocalInstallationAgent {
     System.out.println("[LocalInstallationAgent]: " + "loaded installation descriptor");
     // load PEAR configuration
     File packageConfigFile = new File(_mainRootDir, InstallationController.PACKAGE_CONFIG_FILE);
-    InputStream iStream = null;
-    try {
-      iStream = new FileInputStream(packageConfigFile);
+    try (InputStream iStream = new FileInputStream(packageConfigFile)) {
       _packageConfig.load(iStream);
-      iStream.close();
-      System.out.println("[LocalInstallationAgent]: " + "loaded PEAR configuration");
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-          //ignore close exception
-        }
-      }
     }
+
+    System.out.println("[LocalInstallationAgent]: " + "loaded PEAR configuration");
+
+    //ignore close exception
     // check that package configuration has required properties
     if (checkPackageConfig(_packageConfig, _insdObject)) {
       // localize files in conf and desc dirs

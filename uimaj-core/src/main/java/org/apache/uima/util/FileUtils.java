@@ -187,15 +187,9 @@ public class FileUtils {
    *           If for any reason the file can't be written.
    */
   public static void saveString2File(String s, File file, String encoding) throws IOException {
-    BufferedWriter writer = null;
-    try {
-      writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding));
+    try (BufferedWriter writer = new BufferedWriter(
+        new OutputStreamWriter(new FileOutputStream(file), encoding))) {
       writer.write(s);
-      writer.close();
-    } finally {
-      if (writer != null) {
-        writer.close();
-      }
     }
   }
 
@@ -354,11 +348,8 @@ public class FileUtils {
       throw new IOException("Can't write output file: " + outFile);
     }
     byte[] bytes = new byte[(int) file.length()];
-    FileInputStream is = null;
-    FileOutputStream os = null;
-    try {
-      is = new FileInputStream(file);
-      os = new FileOutputStream(outFile);
+    try (FileInputStream is = new FileInputStream(file);
+         FileOutputStream os = new FileOutputStream(outFile)) {
 
       while (true) {
         int count = is.read(bytes);
@@ -366,13 +357,6 @@ public class FileUtils {
           break;
         }
         os.write(bytes, 0, count);
-      }
-    } finally {
-      if (null != is) {
-        is.close();
-      }
-      if (null != os) {
-        os.close();
       }
     }
   }

@@ -571,11 +571,8 @@ public class Ecore2UimaTypeSystem {
     // options.put(OPTION_GENERATE_UIMA_LIST_TYPES, Boolean.TRUE);
     TypeSystemDescription tsDesc = ecore2UimaTypeSystem(args[0], options);
 
-    FileOutputStream os = new FileOutputStream(args[1]);
-    try {
+    try (FileOutputStream os = new FileOutputStream(args[1])) {
       tsDesc.toXML(os);
-    } finally {
-      os.close();
     }
 
     // test creating a CAS

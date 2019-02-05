@@ -398,21 +398,14 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    */
   public static void saveInstallationDescriptor(InstallationDescriptor insdObject, File xmlFile)
           throws IOException {
-    PrintWriter oWriter = null;
-    try {
-      oWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(xmlFile), StandardCharsets.UTF_8));
+    try (PrintWriter oWriter = new PrintWriter(
+                                 new OutputStreamWriter(
+                                   new FileOutputStream(xmlFile), StandardCharsets.UTF_8))) {
       oWriter.println(XML_HEADER);
       printInstallationDescriptor(insdObject, oWriter);
     } catch (IOException exc) {
       throw exc;
-    } finally {
-      if (oWriter != null) {
-        try {
-          oWriter.close();
-        } catch (Exception e) {
-        }
-      }
-    }
+    }    
   }
 
   /**

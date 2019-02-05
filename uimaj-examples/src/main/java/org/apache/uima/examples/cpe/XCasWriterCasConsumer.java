@@ -31,9 +31,11 @@ package org.apache.uima.examples.cpe;
  *               which uses the current XMI format for XML externalizations of the CAS
  *******************************************************************************************               
  */
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -144,18 +146,11 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
    * @throws SAXException           if an error occurs generating the XML text
    */
   private void writeXCas(CAS aCas, File name) throws IOException, SAXException {
-    FileOutputStream out = null;
 
-    try {
-      out = new FileOutputStream(name);
+    try (OutputStream out = new FileOutputStream(name)) {
       XCASSerializer ser = new XCASSerializer(aCas.getTypeSystem());
       XMLSerializer xmlSer = new XMLSerializer(out, false);
       ser.serialize(aCas, xmlSer.getContentHandler());
-    } finally {
-      if (out != null) {
-        out.close();
-      }
     }
   }
-
 }

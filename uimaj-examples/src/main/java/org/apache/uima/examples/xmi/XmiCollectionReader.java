@@ -22,6 +22,7 @@ package org.apache.uima.examples.xmi;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.apache.uima.cas.CAS;
@@ -95,13 +96,10 @@ public class XmiCollectionReader extends CollectionReader_ImplBase {
    */
   public void getNext(CAS aCAS) throws IOException, CollectionException {
     File currentFile = (File) mFiles.get(mCurrentIndex++);
-    FileInputStream inputStream = new FileInputStream(currentFile);
-    try {
-    	XmiCasDeserializer.deserialize(inputStream, aCAS, ! mFailOnUnknownType);
+    try (InputStream inputStream = new FileInputStream(currentFile)) {
+      XmiCasDeserializer.deserialize(inputStream, aCAS, !mFailOnUnknownType);
     } catch (SAXException e) {
       throw new CollectionException(e);
-    } finally {
-      inputStream.close();
     }
   }
 

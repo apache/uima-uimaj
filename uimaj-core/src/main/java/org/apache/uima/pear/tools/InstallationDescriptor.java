@@ -1106,19 +1106,10 @@ public class InstallationDescriptor implements Serializable {
    */
   public String toString() {
     StringWriter sWriter = new StringWriter();
-    PrintWriter oWriter = null;
-    try {
-      oWriter = new PrintWriter(sWriter);
+    try (PrintWriter oWriter = new PrintWriter(sWriter)) {
       InstallationDescriptorHandler.printInstallationDescriptor(this, oWriter);
       oWriter.flush();
     } catch (Exception exc) {
-    } finally {
-      if (oWriter != null) {
-        try {
-          oWriter.close();
-        } catch (Exception e) {
-        }
-      }
     }
     return sWriter.toString();
   }

@@ -24,7 +24,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 
+import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -56,8 +58,6 @@ import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.xml.sax.SAXException;
-
-import junit.framework.TestCase;
 
 public class JsonCasSerializerTest extends TestCase {
   /*********************************************************************
@@ -551,9 +551,9 @@ public class JsonCasSerializerTest extends TestCase {
       File d = new File (generateDirPlus);
       d.mkdirs();
       File file = new File (generateDirPlus  + expectedResultsName);
-      FileWriter writer = new FileWriter(file);
-      writer.write(r);
-      writer.close();
+      try (Writer writer = new FileWriter(file)) {
+        writer.write(r);
+      }
       return r;
     } else {
     File expectedResultsFile = JUnitExtension.getFile("CasSerialization/expected/" + ((doJson) ? "json/" : "xmi/") + expectedResultsName);

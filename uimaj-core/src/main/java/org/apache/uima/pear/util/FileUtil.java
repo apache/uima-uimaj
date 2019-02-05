@@ -388,35 +388,15 @@ public class FileUtil {
    */
   @Deprecated
   public static boolean copyFile(File source, File destination) throws IOException {
-    boolean completed;
-    BufferedInputStream iStream = null;
-    BufferedOutputStream oStream = null;
-    try {
-      iStream = new BufferedInputStream(new FileInputStream(source));
-      oStream = new BufferedOutputStream(new FileOutputStream(destination));
+    try (BufferedInputStream iStream = new BufferedInputStream(new FileInputStream(source));
+         BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(destination))) {
       byte[] block = new byte[4096];
       int bCount = 0;
       while ((bCount = iStream.read(block)) > 0) {
         oStream.write(block, 0, bCount);
       }
-      iStream.close();
-      oStream.close();
-      completed = true;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
-      if (oStream != null) {
-        try {
-          oStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
-    return completed;
+    return true;
   }
 
   /**
@@ -434,35 +414,15 @@ public class FileUtil {
    */
   @Deprecated
   public static boolean copyFile(URL sourceUrl, File destination) throws IOException {
-    boolean completed = false;
-    BufferedInputStream iStream = null;
-    BufferedOutputStream oStream = null;
-    try {
-      iStream = new BufferedInputStream(sourceUrl.openStream());
-      oStream = new BufferedOutputStream(new FileOutputStream(destination));
+    try (BufferedInputStream iStream = new BufferedInputStream(sourceUrl.openStream());
+         BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(destination))) {
       byte[] block = new byte[4096];
       int bCount = 0;
       while ((bCount = iStream.read(block)) > 0) {
         oStream.write(block, 0, bCount);
       }
-      iStream.close();
-      oStream.close();
-      completed = true;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
-      if (oStream != null) {
-        try {
-          oStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
-    return completed;
+    return true;
   }
 
   /**
@@ -776,31 +736,12 @@ public class FileUtil {
         File dir = file.getParentFile();
         if (!dir.exists() && !dir.mkdirs())
           throw new IOException("could not create directory " + dir.getAbsolutePath());
-        BufferedInputStream iStream = null;
-        BufferedOutputStream oStream = null;
-        try {
-          iStream = new BufferedInputStream(jarFile.getInputStream(jarEntry));
-          oStream = new BufferedOutputStream(new FileOutputStream(file));
+        try (BufferedInputStream iStream = new BufferedInputStream(jarFile.getInputStream(jarEntry));
+             BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(file))) {
           int bCount = 0;
           while ((bCount = iStream.read(block)) > 0) {
             totalBytes += bCount;
             oStream.write(block, 0, bCount);
-          }
-          iStream.close();
-          oStream.close();
-        } finally {
-          // close streams
-          if (iStream != null) {
-            try {
-              iStream.close();
-            } catch (Exception e) {
-            }
-          }
-          if (oStream != null) {
-            try {
-              oStream.close();
-            } catch (Exception e) {
-            }
           }
         }
       }
@@ -1027,20 +968,9 @@ public class FileUtil {
    */
   @Deprecated
   public static String[] loadListOfStrings(File textFile) throws IOException {
-    BufferedReader iStream = null;
-    String[] outputArray = null;
-    try {
-      iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile)));
+    String[] outputArray;
+    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile)))) {
       outputArray = loadListOfStrings(iStream);
-    } catch (IOException exc) {
-      throw exc;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
     return (outputArray != null) ? outputArray : Constants.EMPTY_STRING_ARRAY;
   }
@@ -1058,20 +988,9 @@ public class FileUtil {
     URLConnection urlConnection = textFileURL.openConnection();
     // See https://issues.apache.org/jira/browse/UIMA-1746
     urlConnection.setUseCaches(false);
-    BufferedReader iStream = null;
-    String[] outputArray = null;
-    try {
-      iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+    String[] outputArray;
+    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
       outputArray = loadListOfStrings(iStream);
-    } catch (IOException exc) {
-      throw exc;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
     return (outputArray != null) ? outputArray : Constants.EMPTY_STRING_ARRAY;
   }
@@ -1094,18 +1013,9 @@ public class FileUtil {
     String name = propFilePath.replace('\\', '/');
     JarEntry jarEntry = jarFile.getJarEntry(name);
     if (jarEntry != null) {
-      InputStream iStream = null;
-      try {
-        iStream = jarFile.getInputStream(jarEntry);
+      try (InputStream iStream = jarFile.getInputStream(jarEntry)) {
         properties = new Properties();
         properties.load(iStream);
-      } finally {
-        if (iStream != null) {
-          try {
-            iStream.close();
-          } catch (Exception e) {
-          }
-        }
       }
     }
     return properties;
@@ -1157,20 +1067,9 @@ public class FileUtil {
    */
   @Deprecated
   public static String loadTextFile(File textFile) throws IOException {
-    BufferedReader iStream = null;
-    String content = null;
-    try {
-      iStream = new BufferedReader(new FileReader(textFile));
+    String content;
+    try (BufferedReader iStream = new BufferedReader(new FileReader(textFile))) {
       content = loadTextFile(iStream);
-    } catch (IOException exc) {
-      throw exc;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
     return content;
   }
@@ -1191,22 +1090,9 @@ public class FileUtil {
    */
   @Deprecated
   public static String loadTextFile(File textFile, String encoding) throws IOException {
-    BufferedReader iStream = null;
-    String content = null;
-    try {
-      iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), encoding));
-      content = loadTextFile(iStream);
-    } catch (IOException exc) {
-      throw exc;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
+    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), encoding))) {
+      return loadTextFile(iStream);
     }
-    return content;
   }
 
   /**
@@ -1235,24 +1121,11 @@ public class FileUtil {
    *           If any I/O exception occurs.
    */
   public static String loadTextFile(URLConnection urlConnection) throws IOException {
-    BufferedReader iStream = null;
-    String content = null;
     // See https://issues.apache.org/jira/browse/UIMA-1746
-    urlConnection.setUseCaches(false);    
-    try {
-      iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-      content = loadTextFile(iStream);
-    } catch (IOException exc) {
-      throw exc;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
+    urlConnection.setUseCaches(false);
+    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
+      return loadTextFile(iStream);
     }
-    return content;
   }
 
   /**
@@ -1272,17 +1145,8 @@ public class FileUtil {
     String name = filePath.replace('\\', '/');
     JarEntry jarEntry = jarFile.getJarEntry(name);
     if (jarEntry != null) {
-      BufferedReader iStream = null;
-      try {
-        iStream = new BufferedReader(new InputStreamReader(jarFile.getInputStream(jarEntry)));
+      try (BufferedReader iStream = new BufferedReader(new InputStreamReader(jarFile.getInputStream(jarEntry)))) {
         content = loadTextFile(iStream);
-      } finally {
-        if (iStream != null) {
-          try {
-            iStream.close();
-          } catch (Exception e) {
-          }
-        }
       }
     }
     return content;
@@ -1473,21 +1337,12 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static File zipDirectory(File dir2zip, File zippedFile) throws IOException {
-    ZipOutputStream zoStream = null;
-    try {
+    try (ZipOutputStream zoStream = new ZipOutputStream(new FileOutputStream(zippedFile))) {
       // open compressed output stream
-      zoStream = new ZipOutputStream(new FileOutputStream(zippedFile));
       // add output zip file to exclusions
       File[] excludeFiles = new File[1];
       excludeFiles[0] = zippedFile;
       zipDirectory(dir2zip, zoStream, dir2zip, excludeFiles);
-    } finally {
-      if (zoStream != null) {
-        try {
-          zoStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
     return zippedFile;
   }

@@ -200,14 +200,11 @@ public class Checkpoint implements Runnable {
       rename(fileName);
       rename(synchPointFileName);
       // This stream is for the ProcessTrace part of the Checkppoint
-      FileOutputStream out = null;
       // This stream is for the SynchPoint part of the Checkpoint
-      FileOutputStream synchPointOut = null;
       ObjectOutputStream s = null;
 
-      try {
-        out = new FileOutputStream(fileName);
-        synchPointOut = new FileOutputStream(synchPointFileName);
+      try (FileOutputStream out = new FileOutputStream(fileName);
+           FileOutputStream synchPointOut = new FileOutputStream(synchPointFileName)) {
         s = new ObjectOutputStream(out);
         SynchPoint synchPoint = cpm.getSynchPoint();
 
@@ -217,17 +214,17 @@ public class Checkpoint implements Runnable {
           if (synchPoint != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_checkpoint_with_synchpoint__FINEST",
-                      new Object[] { Thread.currentThread().getName() });
+                    this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_checkpoint_with_synchpoint__FINEST",
+                    new Object[] {Thread.currentThread().getName()});
             }
             targetToSave = new CheckpointData(pTrace, synchPoint);
           } else {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_checkpoint_with_pt__FINEST",
-                      new Object[] { Thread.currentThread().getName() });
+                    this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_checkpoint_with_pt__FINEST",
+                    new Object[] {Thread.currentThread().getName()});
             }
             targetToSave = new CheckpointData(pTrace);
           }
@@ -243,24 +240,9 @@ public class Checkpoint implements Runnable {
         }
       } catch (Exception e) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_exception_when_checkpointing__FINEST",
-                new Object[] { Thread.currentThread().getName(), e.getMessage() });
-      } finally {
-        if (out != null) {
-          try {
-            out.close();
-            s.close();
-
-          } catch (Exception e) {
-          }
-        }
-        if (synchPointOut != null) {
-          try {
-            synchPointOut.close();
-          } catch (Exception e) {
-          }
-        }
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_exception_when_checkpointing__FINEST",
+              new Object[] {Thread.currentThread().getName(), e.getMessage()});
       }
 
     } catch (Exception e) {
