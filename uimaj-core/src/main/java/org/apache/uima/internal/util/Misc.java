@@ -461,7 +461,7 @@ public class Misc {
       }
       appender.accept(sb, i);
       
-      if (sb.length() - origLength > 60) {
+      if (sb.length() - origLength > 120) {
         sb.setLength(origLength);  // is too long to present on one line, change to multi-line format
         return style2(sb, size, limit, indent, incr, appender);
       }
