@@ -156,7 +156,7 @@
     <maven.surefire.java9 />
     
     <jacoco.argLine />
-    <api_check_oldVersion>3.0.0</api_check_oldVersion>
+    <api_check_oldVersion>3.0.1</api_check_oldVersion>
   </properties>
   
   <dependencyManagement>

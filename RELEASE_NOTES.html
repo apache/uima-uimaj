@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v3.0.1 Release Notes</title>
+  <title>Apache UIMA v3.0.2 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.1 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.2 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -81,7 +81,7 @@
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 
-<p>Version 3.0.1 is a minor update to 3.0.0.</p>
+<p>Version 3.0.2 is a minor update to 3.0.1.</p>
 <p>
 When migrating from v2, if non-built-in JCas cover classes are being used,
 a one-time regeneration or migration step is required for these.  
@@ -125,17 +125,18 @@ Previously the Context Class Loader was never consulted.</li>
 <li>Implemented a destroy() method for ResourceManager which closes its UIMAClassLoader</li>
 </ul>
 
-<p>Specific changes in this release unique to version 3 include</p>
+<p>Specific changes in relese 3.0.2 vs 3.0.1 include</p>
 <ul>
-  <li>Multiple small tweaks to edge cases for the select framework, to make it match what 
-     uimaFIT does.</li>
-  <li>bug fixes for several of the select methods, with associated documentation and javadoc updates/fixes</li>
+  <li>supporting additional JCas use cases, where (due to changes in type systems) some feature might migrate
+      over time from subclasses to superclasses.</li>
+  <li>removing some changes to APIs so the v3 APIs more closely match v2 for binary compatibility, meaning 
+      (except for JCas classes) you don't need to recompile the JARs built with UIMA v2 - they should run in UIMA V3</li>
 </ul>
  
 <h3>API changes</h3>
  <p>There is an API compatibility report covering the non-internal APIs;
    see <a href="api-change-report.html">change report</a> for the list of API changes
-   since version 3.0.0.
+   since version 3.0.1.
  </p>
  
 <h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
