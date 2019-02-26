@@ -125,12 +125,13 @@ Previously the Context Class Loader was never consulted.</li>
 <li>Implemented a destroy() method for ResourceManager which closes its UIMAClassLoader</li>
 </ul>
 
-<p>Specific changes in relese 3.0.2 vs 3.0.1 include</p>
+<p>Specific changes in release 3.0.2 versus 3.0.1 include</p>
 <ul>
   <li>supporting additional JCas use cases, where (due to changes in type systems) some feature might migrate
       over time from subclasses to superclasses.</li>
-  <li>removing some changes to APIs so the v3 APIs more closely match v2 for binary compatibility, meaning 
-      (except for JCas classes) you don't need to recompile the JARs built with UIMA v2 - they should run in UIMA V3</li>
+  <li>removing some changes to APIs so the v3 APIs more closely match v2 for binary compatibility.
+      Binary compatibility improves the ability to run using UIMA v3 without recompiling classes / Jars
+      built using UIMA v2 (except for JCas classes).</li>
 </ul>
  
 <h3>API changes</h3>
