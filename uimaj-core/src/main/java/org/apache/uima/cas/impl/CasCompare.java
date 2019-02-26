@@ -1429,12 +1429,13 @@ public class CasCompare {
       break;
     case Slot_HeapRef: {
       if (! inSortContext) {
+        boolean prevIsSkipMismatch = isSkipMismatch;  // support recursion
         isSkipMismatch = true;
         r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs((TOP) ((FSArray<?>) a1).get(i), 
             (TOP) ((FSArray<?>) a2).get(i), 
              callerTi, 
              callerFi), callerTi, callerFi);
-        isSkipMismatch = false;
+        isSkipMismatch = prevIsSkipMismatch;
         if (r != 0) { // a miscompare - see if we were supposed to sort these
           if (fsArraysToSort.contains(callerFi.getName())) {
             sortFSArray((FSArray<?>) a1)
@@ -1463,7 +1464,7 @@ public class CasCompare {
     }
     case Slot_StrRef: {
       if (! inSortContext) {
-        isSkipMismatch = true;
+        isSkipMismatch = true;  // no recursion possible
         r = compareAllArrayElements(fs1, fs2, len1, i -> compareStringsWithNull(
             ((StringArray)a1).get(i), 
             ((StringArray)a2).get(i), 
