@@ -602,7 +602,7 @@ public class FileUtil {
    * @throws IOException
    *           If a temporary directory not found or other I/O exception occurred.
    * @deprecated use Java 7 method for this see
-   *             {@link java.nio.file.Files#createTempFile(String, String, FileAttribute<?> ...)}
+   *             {@link java.io.File#createTempFile(String, String, File)}
    */
   @Deprecated
   public static File createTempFile(String prefix, String suffix) throws IOException {
