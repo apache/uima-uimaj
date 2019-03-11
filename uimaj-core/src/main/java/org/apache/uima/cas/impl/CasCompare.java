@@ -524,10 +524,10 @@ public class CasCompare {
    * Before comparing, you can create pending values for specific types / features, and return
    * a list of runnables, which when run, plug in those pending values.
    * 
-   * @param typeName
-   * @param featureBaseName
-   * @param c
-   * @return
+   * @param typeName the type 
+   * @param featureBaseName the feature of the type
+   * @param c the code to run for this type and feature
+   * @return a list of runnables, for both CASs
    */
   public List<Runnable> type_feature_to_runnable(String typeName, String featureBaseName, BiFunction<TOP, Feature, Runnable> c) {
     List<Runnable> r = new ArrayList<>();
@@ -594,7 +594,7 @@ public class CasCompare {
    * 
    * Calling this disables any includeOnlyTheseTypesFromIndexes call;
    * 
-   * @param excluded_typeNames
+   * @param excluded_typeNames type names to exclude
    */
   public void excludeRootTypesFromIndexes(Set<String> excluded_typeNames) {
     includedTypeNames.clear();
@@ -617,7 +617,6 @@ public class CasCompare {
    * 
    * Calling this disables any includeOnlyTheseTypesFromIndexes call;
    * 
-   * @param filter
    */
   public void excludeCollectionsTypesFromIndexes() {
     includedTypeNames.clear();
@@ -1006,7 +1005,7 @@ public class CasCompare {
    * Instead, a Runnable is returned, which may be invoked later to update the original array with the sorted copy.
    * This allows sorting to be done while keeping the original values until a later time
    *
-   * @param fsArray the array to be sorted
+   * @param stringArray the array to be sorted
    * @return null or a runnable, which (when invoked) updates the original array with the sorted result.
    *         callers should insure the runnable is garbage collected after use 
    */
@@ -1943,8 +1942,8 @@ public class CasCompare {
   
   /**
    * Counts and compares the number of Feature Structures, by type, and generates a report
-   * @param cas1
-   * @param cas2
+   * @param cas1 first CAS to compare
+   * @param cas2 second CAS to compare
    * @return a StringBuilder with a report
    */
   public static StringBuilder compareNumberOfFSsByType(CAS cas1, CAS cas2) {

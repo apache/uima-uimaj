@@ -304,7 +304,7 @@ public class FileUtils {
    * @param suffix -
    * @param tempDir -
    * @return the file
-   * @throws IOException
+   * @throws IOException -
    */
   @Deprecated
   public static final File createTempFile(String prefix, String suffix, File tempDir)
