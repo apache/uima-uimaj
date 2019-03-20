@@ -22,7 +22,7 @@
 package org.apache.uima.fit.util;
 
 import static java.util.Arrays.asList;
-import static org.apache.commons.lang.ArrayUtils.toObject;
+import static org.apache.commons.lang3.ArrayUtils.toObject;
 import static org.apache.uima.fit.util.FSCollectionFactory.create;
 import static org.apache.uima.fit.util.FSCollectionFactory.*;
 import static org.apache.uima.fit.util.FSCollectionFactory.createBooleanArrayFS;
