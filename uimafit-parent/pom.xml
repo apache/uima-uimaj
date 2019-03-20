@@ -23,7 +23,7 @@
      NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
     -->
     <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
-    <compat.previous.version>2.3.0</compat.previous.version>
+    <compat.previous.version>2.4.0</compat.previous.version>
   </properties>
   <!--
     - Only required while uimaFIT depends on unreleased versions of UIMA.
