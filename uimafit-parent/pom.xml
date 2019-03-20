@@ -220,6 +220,14 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <!-- 
+          Normally this only gets executed during releases, but we want licenses to be checked on
+          every build to make sure the licenses are included in the PRs.
+         -->
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -232,6 +240,9 @@
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <version>0.13</version>
+          <configuration>
+            <consoleOutput>true</consoleOutput>
+          </configuration>
           <executions>
             <execution>
               <id>default-cli</id>
@@ -239,12 +250,16 @@
                 <excludes>
                   <!-- Plain documentation -->
                   <exclude>README*</exclude>
+                  <!-- GitHub templates -->
+                  <exclude>.github/**</exclude>
                   <!-- Release files -->
                   <exclude>RELEASE_NOTES*</exclude>
                   <exclude>issuesFixed/**</exclude>
                   <exclude>release.properties</exclude>
                   <!-- Build controls -->
                   <exclude>.activate-enforce-compatibility</exclude>
+                  <!-- Logging configuration files -->
+                  <exclude>**/simplelogger.properties</exclude>
                 </excludes>
               </configuration>
             </execution>
