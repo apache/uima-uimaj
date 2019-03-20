@@ -18,7 +18,7 @@
     <uima.version>3.0.1</uima.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <compat.previous.version>2.1.0</compat.previous.version>
+    <compat.previous.version>2.4.0</compat.previous.version>
   </properties>
   <repositories>
     <!--
