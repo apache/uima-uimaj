@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -37,10 +36,12 @@ import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- */
 public final class TypeSystemDescriptionFactory {
+  private static final Logger LOG = LoggerFactory.getLogger(TypeSystemDescriptionFactory.class);
+  
   private static final Object SCAN_LOCK = new Object();
 
   private static String[] typeDescriptorLocations;
@@ -105,13 +106,11 @@ public final class TypeSystemDescriptionFactory {
       try {
         XMLInputSource xmlInputType1 = new XMLInputSource(location);
         tsdList.add(getXMLParser().parseTypeSystemDescription(xmlInputType1));
-        LogFactory.getLog(TypeSystemDescription.class).debug(
-                "Detected type system at [" + location + "]");
+        LOG.debug("Detected type system at [{}]", location);
       } catch (IOException e) {
         throw new ResourceInitializationException(e);
       } catch (InvalidXMLException e) {
-        LogFactory.getLog(TypeSystemDescription.class).warn(
-                "[" + location + "] is not a type file. Ignoring.", e);
+        LOG.warn("[{}] is not a type file. Ignoring.", location, e);
       }
     }
 
