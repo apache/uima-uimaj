@@ -1,4 +1,24 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements. See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership. The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied. See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -24,7 +44,7 @@
   <repositories>
     <!--
       - For UIMA/uimaFIT SNAPSHOTs
-      -->
+    -->
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
@@ -37,7 +57,7 @@
   <pluginRepositories>
     <!--
       - For UIMA/uimaFIT SNAPSHOTs
-      -->
+    -->
     <pluginRepository>
       <id>apache.snapshots.plugins</id>
       <name>Apache Snapshot Repository - Maven plugins</name>
@@ -53,7 +73,7 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
-    
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -128,15 +148,15 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
         <version>${spring.version}</version>
-        <!--  
-         - This is excluded in the assembly and not here to avoid unwanted side-effects
-         - on users' projects.
-        <exclusions>
+        <!--
+          - This is excluded in the assembly and not here to avoid unwanted side-effects
+          - on users' projects.
+          <exclusions>
           <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-aop</artifactId>
           </exclusion>
-        </exclusions>
+          </exclusions>
         -->
       </dependency>
       <dependency>
@@ -156,15 +176,28 @@
 
   <build>
     <plugins>
-      <!-- This should no longer be required with current versions of the maven-resources-plugin
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
-          <encoding>${project.build.sourceEncoding}</encoding>
+          <failOnWarning>true</failOnWarning>
+          <ignoredDependencies combine.children="append">
+            <!-- 
+              - Logging is used via reflection and cannot be detected by Maven
+            -->
+            <ignoredDependency>org.slf4j:slf4j-simple</ignoredDependency>
+          </ignoredDependencies>
         </configuration>
       </plugin>
-      -->
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>
@@ -179,10 +212,9 @@
             </goals>
             <configuration>
               <source>
-                def noticeFile = new File(project.basedir.path +
-                "/NOTICE");
+                def noticeFile = new File(project.basedir.path + "/NOTICE");
                 if (noticeFile.exists()) {
-                project.properties.postNoticeText = noticeFile.text;
+                  project.properties.postNoticeText = noticeFile.text;
                 }
               </source>
             </configuration>
@@ -192,70 +224,70 @@
     </plugins>
     <pluginManagement>
       <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.6</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.rat</groupId>
-                    <artifactId>apache-rat-plugin</artifactId>
-                    <version>0.11</version>
-                    <executions>
-                        <execution>
-                            <id>default-cli</id>
-                            <configuration>
-                                <excludes>
-                                    <!-- Plain documentation -->
-                                    <exclude>README*</exclude>
-                                    <!-- Release files -->
-                                    <exclude>RELEASE_NOTES*</exclude>
-                                    <exclude>issuesFixed/**</exclude>
-                                    <exclude>release.properties</exclude>
-                                    <!-- Build controls -->
-                                    <exclude>.activate-enforce-compatibility</exclude>
-                                </excludes>
-                            </configuration>
-                        </execution>
-                    </executions>
-                    <dependencies>
-                        <!-- https://issues.apache.org/jira/browse/RAT-158 -->
-                        <dependency>
-                            <groupId>org.apache.maven.doxia</groupId>
-                            <artifactId>doxia-core</artifactId>
-                            <version>1.7</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
-                    <configuration>
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                        <!--encoding>UTF-8</encoding this inherited from apache pom 7 -->
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.3</version> 
-                    <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <configuration>
-                                <source>${maven.compiler.source}</source>
-                            </configuration> 
-                        </execution>
-                        <execution>
-                            <id>default-cli</id>  <!-- Jenkins runs this apparently 3/2015 -->
-                            <configuration>
-                                <source>${maven.compiler.source}</source>
-                            </configuration> 
-                        </execution>
-                    </executions>
-                </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>0.11</version>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes>
+                  <!-- Plain documentation -->
+                  <exclude>README*</exclude>
+                  <!-- Release files -->
+                  <exclude>RELEASE_NOTES*</exclude>
+                  <exclude>issuesFixed/**</exclude>
+                  <exclude>release.properties</exclude>
+                  <!-- Build controls -->
+                  <exclude>.activate-enforce-compatibility</exclude>
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
+          <dependencies>
+            <!-- https://issues.apache.org/jira/browse/RAT-158 -->
+            <dependency>
+              <groupId>org.apache.maven.doxia</groupId>
+              <artifactId>doxia-core</artifactId>
+              <version>1.7</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.5.1</version>
+          <configuration>
+            <source>${maven.compiler.source}</source>
+            <target>${maven.compiler.target}</target>
+            <!--encoding>UTF-8</encoding this inherited from apache pom 7 -->
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.3</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <configuration>
+                <source>${maven.compiler.source}</source>
+              </configuration>
+            </execution>
+            <execution>
+              <id>default-cli</id>  <!-- Jenkins runs this apparently 3/2015 -->
+              <configuration>
+                <source>${maven.compiler.source}</source>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <groupId>org.apache.uima</groupId>
           <artifactId>jcasgen-maven-plugin</artifactId>
@@ -290,46 +322,46 @@
       </plugins>
     </pluginManagement>
   </build>
-    <profiles>
-        <profile>
-            <id>findbugs</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>findbugs-maven-plugin</artifactId>
-                            <version>3.0.3</version>
-                            <executions>
-                                <execution>
-                                    <phase>package</phase>
-                                    <goals>
-                                        <goal>findbugs</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>enforce-compatibility</id>
-            <activation>
+  <profiles>
+    <profile>
+      <id>findbugs</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>findbugs-maven-plugin</artifactId>
+              <version>3.0.3</version>
+              <executions>
+                <execution>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>findbugs</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>findbugs-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>enforce-compatibility</id>
+      <activation>
         <file>
           <exists>.activate-enforce-compatibility</exists>
         </file>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
               <groupId>org.apache.rat</groupId>
               <artifactId>apache-rat-plugin</artifactId>
               <executions>
@@ -354,11 +386,11 @@
             <version>0.9.3</version>
             <configuration>
               <oldVersion>
-                                <dependency>
+                <dependency>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>${project.artifactId}</artifactId>
                   <version>${compat.previous.version}</version>
-                                </dependency>
+                </dependency>
               </oldVersion>
               <parameter>
                 <onlyModified>true</onlyModified>
@@ -366,10 +398,10 @@
                 <postAnalysisScript>${project.basedir}/../uimafit-parent/src/main/groovy/api-report.groovy</postAnalysisScript>
               </parameter>
             </configuration>
-                            <executions>
-                                <execution>
-                                    <phase>verify</phase>
-                                    <goals>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
                   <goal>cmp</goal>
                 </goals>
               </execution>
@@ -385,8 +417,8 @@
                 <phase>install</phase>  <!-- must follow verify -->
                 <goals>
                   <goal>run</goal>
-                                    </goals>
-                                    <configuration>
+                </goals>
+                <configuration>
                   <target>
                     <taskdef name="if" classname="net.sf.antcontrib.logic.IfTask" />
                     <if>
@@ -398,12 +430,12 @@
                       </then>
                     </if>
                   </target>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-            </build>
-        </profile>
-    </profiles>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
