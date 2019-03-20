@@ -134,5 +134,31 @@
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
+    
+    <!-- Copy the API Change reports -->
+    <fileSet>
+      <directory>uimafit-core/api-change-report</directory>
+      <outputDirectory>uimafit-core/api-change-report</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
+    </fileSet>
+    <fileSet>
+      <directory>uimafit-cpe/api-change-report</directory>
+      <outputDirectory>uimafit-cpe/api-change-report</outputDirectory>
+      <directoryMode>755</directoryMode>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>uimafit-spring/api-change-report</directory>
+      <outputDirectory>uimafit-spring/api-change-report</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
+    </fileSet>
   </fileSets>
+  <files>
+    <file>
+      <source>api-change-report.html</source>
+      <outputDirectory>.</outputDirectory>
+    </file>
+  </files>
 </assembly>
