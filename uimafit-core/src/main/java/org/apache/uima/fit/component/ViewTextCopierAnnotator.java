@@ -59,7 +59,7 @@ public class ViewTextCopierAnnotator extends JCasAnnotator_ImplBase {
       JCas destinationView;
       try {
         destinationView = jCas.getView(destinationViewName);
-      } catch (CASRuntimeException ce) {
+      } catch (CASException | CASRuntimeException ce) {
         destinationView = jCas.createView(destinationViewName);
       }
       destinationView.setDocumentText(sourceView.getDocumentText());
