@@ -161,7 +161,7 @@ import org.apache.uima.util.IntEntry;
 
 public class CasCompare {
   
-  private final static boolean IS_DEBUG_STOP_ON_MISCOMPARE = true;
+  private final static boolean IS_DEBUG_STOP_ON_MISCOMPARE = false;
   private final static boolean IS_MEAS_LIST_2_ARRAY = false;
   private static final String BLANKS_89 = Misc.blanks.substring(0, 89);
 
@@ -234,6 +234,9 @@ public class CasCompare {
      */
     void rmvLast(TOP fs) {
       int toBeRemoved = fsList.size() - 1;
+      if (toBeRemoved == -1) {
+        System.out.println("debug stop wrong call to rmvLast");
+      }
       if (toBeRemoved == usize()) { // means removing the 1st item that looped back
         //  0 1 2 3 4 5 6
         //  a b c d e f g (c d e f g c d)  fsList
@@ -250,7 +253,10 @@ public class CasCompare {
         cycleLen = -1;   // since the loop is no more, reset the loop info
         cycleStart = -1;
       }
-      fsList.remove(toBeRemoved);     
+//      System.out.println("debug rmvlast sz b4: " + fsList.size());
+      if (toBeRemoved >= 0) {
+        fsList.remove(toBeRemoved);
+      }
     }
     
     void addTop() {
@@ -269,6 +275,7 @@ public class CasCompare {
           cycleStart = i;  // cycleStart is length up to but not including the start of the cycle
         }
       }
+//      System.out.println("debug add fs sz= "+ (fsList.size() + 1));
       fsList.add(fs);
     }
    
@@ -393,12 +400,13 @@ public class CasCompare {
     /** if true, continues comparison and reporting after finding the first miscompare */
   private boolean isCompareAll = false;
   private boolean isCompareIds = false;
-  final private Set<String> excludedRootNames = new HashSet(0);
-  final private Set<String> includedTypeNames = new HashSet(0);
-  /** key is feature long name (with type) */
-  final private Set<String> fsArraysToSort = new HashSet<>();
-  /** key is feature long name (with type) */
-  final private Set<String> stringArraysToSort = new HashSet<>();
+  private Pair<TOP, TOP> leafErrorReported = null;
+  final private Set<String> excludedRootNames = new HashSet<String>(0);
+  final private Set<String> includedTypeNames = new HashSet<String>(0);
+//  /** key is feature long name (with type) */
+//  final private Set<String> fsArraysToSort = new HashSet<>();
+//  /** key is feature long name (with type) */
+//  final private Set<String> stringArraysToSort = new HashSet<>();
   
 //    private boolean compareFSArraysAsSets = false;
     
@@ -409,11 +417,12 @@ public class CasCompare {
     /**
      * This is used 
      *   - to speed up the compare - avoid comparing the same things multiple times, instead just use previous result
-     *   - when doing the comparison to break recursion if asked to compare the same two things while comaring them.
+     *   - when doing the comparison to break recursion if asked to compare the same two things while comparing them.
      *   
      *   value is the result of previous comparison.
      */
   private final Map<Pair<TOP, TOP>, Integer> prevCompare = new HashMap<>();
+  private final Set<Pair<TOP, TOP>> prevReport = new HashSet<>();
   private final Prev prev1 = new Prev();
   private final Prev prev2 = new Prev();
   
@@ -433,10 +442,11 @@ public class CasCompare {
   
   private final Map<ScsKey, String[]> stringCongruenceSets = new HashMap<>();
   private boolean isUsingStringCongruenceSets = false;
-  private final TypeImpl fsArrayType;
     
   private int maxId1;
   private int maxId2;
+  private int miscompare_index;  // used to pass back additional value from compareAllArrayElements
+  private int s1maxLen = 0;
 
     
   /**
@@ -453,7 +463,6 @@ public class CasCompare {
     ts2 = c2.getTypeSystemImpl();
     typeMapper = ts1.getTypeSystemMapper(ts2);
     isTypeMapping = (null != typeMapper);
-    fsArrayType = ts1.fsArrayType;
   }
     
 //  public void compareStringArraysAsSets(boolean v) {
@@ -568,13 +577,13 @@ public class CasCompare {
   }
   
   public List<Runnable> sortFSArray(String typeName, String featureBaseName) {
-    fsArraysToSort.add(typeName + ":" + featureBaseName);
+//    fsArraysToSort.add(typeName + ":" + featureBaseName);
     return type_feature_to_runnable(typeName, featureBaseName, (fs, feat) ->
       sortFSArray((FSArray<?>)fs.getFeatureValue(feat)));
   }
   
   public List<Runnable> sortStringArray(String typeName, String featureBaseName) {
-    stringArraysToSort.add(typeName + ":" + featureBaseName);
+//    stringArraysToSort.add(typeName + ":" + featureBaseName);
     return type_feature_to_runnable(typeName, featureBaseName, (fs, feat) -> 
       sortStringArray((StringArray)fs.getFeatureValue(feat)));
   }
@@ -778,10 +787,13 @@ public class CasCompare {
       sort(c2FoundFSs);
      
 //      miscompares.clear();
+      prevReport.clear();
       
       while (i1 < sz1 && i2 < sz2) {
         TOP fs1 = c1FoundFSs.get(i1);  // assumes the elements are in same order??
         TOP fs2 = c2FoundFSs.get(i2);
+        
+        leafErrorReported = null;
 
         if (null == fs1) {  // nulls at end indicate list elements converted to arrays
           if (null != fs2) {
@@ -874,7 +886,14 @@ public class CasCompare {
             continue;
           }
         } else {  // not type mapping
-          if (0 != compareFss(fs1, fs2, null, null)) {
+          int rr = -1;
+          try {
+          rr = compareFss(fs1, fs2, null, null);
+          } catch (Throwable e) {
+            System.out.println("debug caught throwable");
+            e.printStackTrace();  
+          }
+          if (0 != rr) {
             
             mismatchFsDisplay();
             if (!isCompareAll) return false;
@@ -1279,7 +1298,7 @@ public class CasCompare {
       for (FeatureImpl fi1 : featSet) {
         if (0 != (r = compareFeature(fs1, fs2, ti1, fi1))) {
           if (! inSortContext && IS_DEBUG_STOP_ON_MISCOMPARE) {
-            System.out.println("debug stop");
+            System.out.println("debug stop feature miscompare " + fi1.getName());
           }
           return r;
         }
@@ -1427,79 +1446,79 @@ public class CasCompare {
                                                                     CASImpl.double2long(((DoubleArray)a2).get(i))), callerTi, callerFi);
       break;
     case Slot_HeapRef: {
-      if (! inSortContext) {
-        boolean prevIsSkipMismatch = isSkipMismatch;  // support recursion
-        isSkipMismatch = true;
-        r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs((TOP) ((FSArray<?>) a1).get(i), 
-            (TOP) ((FSArray<?>) a2).get(i), 
-             callerTi, 
-             callerFi), callerTi, callerFi);
-        isSkipMismatch = prevIsSkipMismatch;
-        if (r != 0) { // a miscompare - see if we were supposed to sort these
-          if (fsArraysToSort.contains(callerFi.getName())) {
-            sortFSArray((FSArray<?>) a1)
-               .run();
-            sortFSArray((FSArray<?>) a2)
-               .run();
-            inSortContext = false;  
-            r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs((TOP) ((FSArray<?>) a1).get(i), 
-                (TOP) ((FSArray<?>) a2).get(i), 
-                 callerTi, 
-                 callerFi), callerTi, callerFi);
-          } else { // no special sorting, but was unequal, redo to capture msg
-            r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs((TOP) ((FSArray<?>) a1).get(i), 
-                (TOP) ((FSArray<?>) a2).get(i), 
-                 callerTi, 
-                 callerFi), callerTi, callerFi);
-          }
-        } // else compared ==
-      } else { // was in sort context
+//      if (! inSortContext) {
+//        boolean prevIsSkipMismatch = isSkipMismatch;  // support recursion
+//        isSkipMismatch = true;
+//        r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs((TOP) ((FSArray<?>) a1).get(i), 
+//            (TOP) ((FSArray<?>) a2).get(i), 
+//             callerTi, 
+//             callerFi), callerTi, callerFi);
+//        isSkipMismatch = prevIsSkipMismatch;
+//        if (r != 0) { // a miscompare - see if we were supposed to sort these
+//          if (callerFi != null && fsArraysToSort.contains(callerFi.getName())) {
+//            sortFSArray((FSArray<?>) a1)
+//               .run();
+//            sortFSArray((FSArray<?>) a2)
+//               .run();
+//            inSortContext = false;  
+//            r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs((TOP) ((FSArray<?>) a1).get(i), 
+//                (TOP) ((FSArray<?>) a2).get(i), 
+//                 callerTi, 
+//                 callerFi), callerTi, callerFi);
+//          } else { // no special sorting, but was unequal, redo to capture msg
+//            r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs((TOP) ((FSArray<?>) a1).get(i), 
+//                (TOP) ((FSArray<?>) a2).get(i), 
+//                 callerTi, 
+//                 callerFi), callerTi, callerFi);
+//          }
+//        } // else compared ==
+//      } else { // was in sort context
         r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs((TOP) ((FSArray<?>) a1).get(i), 
                                                                           (TOP) ((FSArray<?>) a2).get(i), 
                                                                            callerTi, 
                                                                            callerFi), callerTi, callerFi);
-      }
+ //      }
       break;
     }
     case Slot_StrRef: {
-      if (! inSortContext) {
-        isSkipMismatch = true;  // no recursion possible
-        r = compareAllArrayElements(fs1, fs2, len1, i -> compareStringsWithNull(
-            ((StringArray)a1).get(i), 
-            ((StringArray)a2).get(i), 
-            callerTi, 
-            callerFi, 
-            i), callerTi, callerFi);
-        isSkipMismatch = false;
-        if (r != 0) {
-          if (stringArraysToSort.contains(callerFi.getName())) {          
-            String[] a = ((StringArray)a1)._getTheArray();
-            Arrays.sort(a);
-            a = ((StringArray)a2)._getTheArray();
-            Arrays.sort(a);
-            r = compareAllArrayElements(fs1, fs2, len1, i -> compareStringsWithNull(
-                ((StringArray)a1).get(i), 
-                ((StringArray)a2).get(i), 
-                callerTi, 
-                callerFi, 
-                i), callerTi, callerFi);
-          } else {  // no special sorting, but was unequal, redo to capture msg
-            r = compareAllArrayElements(fs1, fs2, len1, i -> compareStringsWithNull(
-                ((StringArray)a1).get(i), 
-                ((StringArray)a2).get(i), 
-                callerTi, 
-                callerFi, 
-                i), callerTi, callerFi);
-          }
-        } // r was 0, nothing more to do
-      } else { // was in sort context
+//      if (! inSortContext) {
+//        isSkipMismatch = true;  // no recursion possible
+//        r = compareAllArrayElements(fs1, fs2, len1, i -> compareStringsWithNull(
+//            ((StringArray)a1).get(i), 
+//            ((StringArray)a2).get(i), 
+//            callerTi, 
+//            callerFi, 
+//            i), callerTi, callerFi);
+//        isSkipMismatch = false;
+//        if (r != 0) {
+//          if (callerFi != null && stringArraysToSort.contains(callerFi.getName())) {          
+//            String[] a = ((StringArray)a1)._getTheArray();
+//            Arrays.sort(a);
+//            a = ((StringArray)a2)._getTheArray();
+//            Arrays.sort(a);
+//            r = compareAllArrayElements(fs1, fs2, len1, i -> compareStringsWithNull(
+//                ((StringArray)a1).get(i), 
+//                ((StringArray)a2).get(i), 
+//                callerTi, 
+//                callerFi, 
+//                i), callerTi, callerFi);
+//          } else {  // no special sorting, but was unequal, redo to capture msg
+//            r = compareAllArrayElements(fs1, fs2, len1, i -> compareStringsWithNull(
+//                ((StringArray)a1).get(i), 
+//                ((StringArray)a2).get(i), 
+//                callerTi, 
+//                callerFi, 
+//                i), callerTi, callerFi);
+//          }
+//        } // r was 0, nothing more to do
+//      } else { // was in sort context
         r = compareAllArrayElements(fs1, fs2, len1, i -> compareStringsWithNull(
             ((StringArray)a1).get(i), 
             ((StringArray)a2).get(i), 
             callerTi, 
             callerFi, 
             i), callerTi, callerFi);        
-      }
+//      }
       break;
     }
     default: 
@@ -1507,7 +1526,7 @@ public class CasCompare {
     }
     
     if (r != 0 && ! inSortContext && IS_DEBUG_STOP_ON_MISCOMPARE) {
-      System.out.println("debug stop");
+      System.out.println("debug stop FssArray");
     }
     return r;
   }
@@ -1609,7 +1628,7 @@ public class CasCompare {
           return 0;
         } else {
           if (! inSortContext && IS_DEBUG_STOP_ON_MISCOMPARE && !inSortContext) {
-            System.out.println("debug stop");
+            System.out.println("debug stop rfs1 is null, rfs2 is not");
           }
           return -1;
         }
@@ -1629,7 +1648,7 @@ public class CasCompare {
          return 0;
        } else {
          if (! inSortContext && IS_DEBUG_STOP_ON_MISCOMPARE && !inSortContext) {
-           System.out.println("debug stop");
+           System.out.println("debug stop rfs1 is not null rfs2 is null");
          } 
          return 1;
        }
@@ -1651,14 +1670,22 @@ public class CasCompare {
     
     // both are not null
     // do a recursive check 
+    // debug 
+//    if (rfs1._id == 1103 && ! inSortContext) {
+//      System.out.println("debug stop 1103");
+//    }
     Pair<TOP, TOP> refs = new Pair<>(rfs1, rfs2);
     Integer prevComp = prevCompare.get(refs);
      if (prevComp != null) {  
        int v = prevComp;
        if (v == 0) {
-         return compareRefResult(rfs1, rfs2); // stop recursion, return based on loops
+         v = compareRefResult(rfs1, rfs2); // stop recursion, return based on loops
+         if (v != 0 && ! inSortContext) {
+           mismatchFs(rfs1,  rfs2, callerTi, callerFi);
+         }
+         return v;
        } else {
-         if (! inSortContext && IS_DEBUG_STOP_ON_MISCOMPARE && !inSortContext) {
+         if (! inSortContext && IS_DEBUG_STOP_ON_MISCOMPARE) {
            System.out.println("debug stop");
          }
          return v;
@@ -1732,7 +1759,7 @@ public class CasCompare {
       int r = prev1.compareCycleLen(prev2);
       
       if (r != 0) {
-        if (! inSortContext && IS_DEBUG_STOP_ON_MISCOMPARE && !inSortContext) {
+        if (! inSortContext && IS_DEBUG_STOP_ON_MISCOMPARE) {
           System.out.println("debug stop");
         }
         return r;
@@ -1756,7 +1783,11 @@ public class CasCompare {
       r = c.applyAsInt(i);
       if (r != 0) {
         if (!inSortContext) {
-          mismatchFs(fs1, fs2, "Comparing array of length " + len, callerTi, callerFi);
+          //debug 
+//          System.out.println("debug compareAllArrayElements i = " + i);
+//          System.out.println("debug compareAllArrayElements, fs1: " + fs1.toString(3));
+          miscompare_index = i;
+          mismatchFs(fs1, fs2, "Comparing array of length " + len + ", miscompare on index " + i, callerTi, callerFi);
         }
         return r;
       }
@@ -1841,11 +1872,31 @@ public class CasCompare {
   }
   
   private void mismatchFs(TOP fs1, TOP fs2, TypeImpl callerTi, FeatureImpl callerFi) {
-    if (! isSkipMismatch) {
+    if (isSkipMismatch) return;
+    Pair<TOP, TOP> pair = new Pair<>(fs1, fs2);
+    
+    if (prevReport.contains(pair)) {
+      if (leafErrorReported == null) {
+        leafErrorReported = pair;
+      }
+      return; // already reported
+    }
+    prevReport.add(pair);
+    if (leafErrorReported == null) {
+      leafErrorReported = pair;
       mismatchSb.append(String.format("Mismatched Feature Structures refd from %s %s:%n %s%n %s%n", 
           (callerTi == null) ? "null" : callerTi.getName(), (callerFi == null) ? "null" : callerFi.getName(), 
               ps(fs1), ps(fs2)));
+    } else {
+      TOP ofs1 = leafErrorReported.t;
+      TOP ofs2 = leafErrorReported.u;
+      String s1 = String.format("  from: %s:%d, %s:%d", fs1.getType().getShortName(), fs1._id, fs2.getType().getShortName(), fs2._id);
+      s1maxLen = Math.max(s1.length() + 4, s1maxLen);
+      mismatchSb.append(String.format("%-"+s1maxLen+"s   original mismatch: %s:%d, %s, %d%n", s1, 
+          ofs1.getType().getShortName(), ofs1._id, ofs2.getType().getShortName(), ofs2._id));
     }
+    
+   
 //    // debug
 //    System.out.println("adding to miscompares: " + fs1._id + " " + fs2._id);
 //    miscompares.add(new Pair<>(fs1, fs2));
@@ -1863,20 +1914,58 @@ public class CasCompare {
 //    }
   
   private void mismatchFs(TOP fs1, TOP fs2, Feature fi, Feature fi2) {
-    if (! isSkipMismatch) {
+    if (isSkipMismatch) return;
+
+    Pair<TOP, TOP> pair = new Pair<>(fs1, fs2);
+    if (prevReport.contains(pair)) {
+      if (leafErrorReported == null) {
+        leafErrorReported = pair;
+      }
+      return; // already reported
+    }
+    prevReport.add(pair);
+    
+    if (leafErrorReported == null) {
+
+      leafErrorReported = pair;
       String mapmsg = fi.equals(fi2) 
                         ? ""
                         : "which mapped to target feature " + fi2.getShortName() + " ";
       mismatchSb.append(String.format("Mismatched Feature Structures in feature %s %s%n %s%n %s%n", 
           fi.getShortName(), mapmsg, ps(fs1), ps(fs2)));
+    } else {
+      TOP ofs1 = leafErrorReported.t;
+      TOP ofs2 = leafErrorReported.u;
+      String s1 = String.format("  from: %s:%d, %s:%d", fs1.getType().getShortName(), fs1._id, fs2.getType().getShortName(), fs2._id);
+      s1maxLen = Math.max(s1.length() + 4, s1maxLen);
+      mismatchSb.append(String.format("%-"+s1maxLen+"s   original mismatch: %s:%d, %s, %d%n", s1,
+          ofs1.getType().getShortName(), ofs1._id, ofs2.getType().getShortName(), ofs2._id));
     }
   }
   
   private void mismatchFs(TOP fs1, TOP fs2, String msg, TypeImpl callerTi, FeatureImpl callerFi) {
-    if (! isSkipMismatch) {
+    if (isSkipMismatch) return;
+    Pair<TOP, TOP> pair = new Pair<>(fs1, fs2);
+    if (prevReport.contains(pair)) {
+      if (leafErrorReported == null) {
+        leafErrorReported = pair;
+      }
+      return; // already reported
+    }
+    prevReport.add(pair);
+    
+    if (leafErrorReported == null) {
+      leafErrorReported = pair;
       mismatchSb.append(String.format("Mismatched Feature Structures refd from %s %s, %s%n %s%n %s%n",
           (callerTi == null) ? "null" : callerTi.getName(), (callerFi == null) ? "null" : callerFi.getName(),
           msg, ps(fs1), ps(fs2)));
+    } else {
+      TOP ofs1 = leafErrorReported.t;
+      TOP ofs2 = leafErrorReported.u;
+      String s1 = String.format("  from: %s:%d, %s:%d", fs1.getType().getShortName(), fs1._id, fs2.getType().getShortName(), fs2._id);
+      s1maxLen = Math.max(s1.length() + 4, s1maxLen);
+      mismatchSb.append(String.format("%-"+s1maxLen+"s   original mismatch: %s:%d, %s, %d%n", s1, 
+          ofs1.getType().getShortName(), ofs1._id, ofs2.getType().getShortName(), ofs2._id));
     }
   }
       
