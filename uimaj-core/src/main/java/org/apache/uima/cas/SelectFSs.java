@@ -94,6 +94,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * <p>
    * Default is to use feature structure identity comparison (same id()s), not equals, when 
    * doing the test to see if an annotation should be skipped.
+   * <p>
+   * This is identical to useAnnotationEquals(true).
    * @return the updated SelectFSs object
    */
   SelectFSs<T> skipWhenSameBeginEndType();                 

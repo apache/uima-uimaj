@@ -20,7 +20,9 @@
 package org.apache.uima.cas.test;
 
 import static org.apache.uima.cas.SelectFSs.select;
+import static org.apache.uima.cas.impl.Subiterator.BoundsUse.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +38,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
@@ -47,8 +50,16 @@ import org.apache.uima.jcas.tcas.Annotation;
 import junit.framework.TestCase;
 
 /**
- * Class comment for FilteredIteratorTest.java goes here.
- * 
+ * Setup:  all kinds of types, primitives and non-primitives
+ *         see CASTestSetup class
+ *         
+ *         Multiple Indexes, some sorted\
+ *         
+ *         setupTheCas - puts in tokens / phrases / sentences, overlapping
+ *           tokens 0-4, 1-5, 2-6, etc.
+ *           sentences 0-10, 5-15, 10-20, etc.    
+ *             + 12-31
+ *           phrases  0-5,  6-9,  10-16, 14-19, ...
  */
 public class AnnotationIteratorTest extends TestCase {
   
@@ -95,6 +106,9 @@ public class AnnotationIteratorTest extends TestCase {
   private List<Integer> fssStarts = new ArrayList<>();
 
   private int callCount = -1;
+  
+  private Type[] types = new Type[3];
+
 
   /**
    * Constructor for FilteredIteratorTest.
@@ -147,6 +161,10 @@ public class AnnotationIteratorTest extends TestCase {
     assertTrue(this.sentenceType != null);
     this.phraseType = this.ts.getType(CASTestSetup.PHRASE_TYPE);
     assertTrue(this.phraseType != null);
+    types[0] = sentenceType;
+    types[1] = phraseType;
+    types[2] = tokenType;
+
   }
 
   @Override
@@ -239,10 +257,10 @@ public class AnnotationIteratorTest extends TestCase {
    * @param annotCount
    * @param fss
    */
-  // called twice, the 2nd time should be with flattened indexes (List fss non empty the 2nd time)
+  // called twice, the 2nd time should be with flattened indexes (List afss non empty the 2nd time)
   private void iterateOverAnnotations(int annotCount, List<Annotation> afss) {
     this.fss = afss;
-    isSave = fss.size() == 0;
+    isSave = fss.size() == 0;   // on first call is 0, so save on first call
 //    int count;
     AnnotationIndex<Annotation> annotIndex = this.cas.getAnnotationIndex();
     AnnotationIndex<Annotation> sentIndex = this.cas.getAnnotationIndex(sentenceType);
@@ -255,15 +273,15 @@ public class AnnotationIteratorTest extends TestCase {
     assertEquals(annotCount, select(annotIndex).toArray().length);  // stream op
     assertEquals(annotCount, select(annotIndex).asArray(Annotation.class).length);  // select op
     
-    Annotation[] tokensAndSentences = annotIndex.select().asArray(Annotation.class);
+    Annotation[] tokensAndSentencesAndPhrases = annotIndex.select().asArray(Annotation.class);
     JCas jcas = null;
     try {
       jcas = cas.getJCas();
     } catch (CASException e) {
       assertTrue(false);
     }
-    FSArray<Annotation> fsa = FSArray.create(jcas, tokensAndSentences);
-    NonEmptyFSList<Annotation> fslhead =  (NonEmptyFSList<Annotation>) FSList.<Annotation, Annotation>create(jcas,  tokensAndSentences);
+    FSArray<Annotation> fsa = FSArray.create(jcas, tokensAndSentencesAndPhrases);
+    NonEmptyFSList<Annotation> fslhead =  (NonEmptyFSList<Annotation>) FSList.<Annotation, Annotation>create(jcas,  tokensAndSentencesAndPhrases);
     
     select_it = fsa.select().fsIterator();
     assertCount("fsa ambiguous select annot iterator", annotCount, select_it);
@@ -322,7 +340,7 @@ public class AnnotationIteratorTest extends TestCase {
     
     assertTrue(Arrays.equals(o1, l2r.toArray()));
     
-    it = annotIndex.subiterator(bigBound, false, true);  // unambiguous, strict
+    it = annotIndex.subiterator(bigBound, false, true);  // unambiguous, strict  bigBound= sentenceType 10-41
     assertCount("Subiterator over annot unambiguous strict", 3, it);
     select_it = annotIndex.select().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator();
     assertCount("Subiterator select over annot unambiguous strict", 3, select_it);
@@ -504,8 +522,10 @@ public class AnnotationIteratorTest extends TestCase {
     assertEquals(msg, expected, count);
   }
   
+  // called by assertCount
+  // called by asserCountLimit
   private int assertCountCmn(String msg, int expected, FSIterator<? extends Annotation> it) {
-    msg = flatStateMsg(msg);
+    msg = flatStateMsg(msg);   // add with-flattened-index if isSave is false
     int count = 0;
     callCount  ++;
     int fssStart;
@@ -518,7 +538,7 @@ public class AnnotationIteratorTest extends TestCase {
       ++count;
       Annotation fs = it.next();
       if (showFSs) {
-        System.out.format("%d " + msg + " fs begin: %d end: %d type: %s%n", count, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
+        System.out.format("assertCountCmn: %2d " + msg + "   %10s  %d - %d%n", count, fs.getType().getName(), fs.getBegin(), fs.getEnd() );
       }
       if (isSave) {
         fss.add(fs);
@@ -572,6 +592,9 @@ public class AnnotationIteratorTest extends TestCase {
     try {
       //                        0    0    1    1    2    2    3    3    4    4    5
       //                        0    5    0    5    0    5    0    5    0    5    0
+      //                        ------- sentence ---------
+      //                                                  -------- sentence ---------
+      //                                                                        -tk-
       this.cas.setDocumentText("Sentence A with no value. Sentence B with value 377.");
     } catch (CASRuntimeException e) {
       assertTrue(false);
@@ -607,7 +630,126 @@ public class AnnotationIteratorTest extends TestCase {
     }
 
   }
+  
+  /**
+   * Test subiterator edge cases
+   * 
+   *   skip over variations:                           -, i, t1, tn
+   *     no match                                             -
+   *     match - == id, using == id test                      i
+   *     match - != id, using type test,                      t1 or tn
+   *                  --  alternative: 1 or multiple to skip over 
+   * 
+   *   nothing before bound, nothing in bound, nothing after  n n n
+   *   nothing before, nothing in bound, stuff after          n n s
+   *   nothing before, something in bound, nothing after      n s n    skip over variation
+   *   nothing before, something in bound, something after    n s s
+   *                                                          
+   *   stuff before bound, nothing in bound, nothing after    s n n
+   *   stuff before bound, nothing in bound, stuff after      s n s
+   *   stuff before, something in bound, nothing after        s s n
+   *   stuff before, something in bound, something after      s s s
+   *   
+   *   test with bound before / after having their begin / end be different or the same
+   *     (if the same, have the same or different type;
+   *                   if the same type, have the equals-to-bound test be for the same type or same id
+   *          
+   *       begin end type idtst
+   *         d    d   -     -    
+   *         d    s   -     -
+   *         s    d   -     -
+   *         s    s   d     -  test with nnn, nns, nsn, nss, snn, sns, ssn, sss
+   *                     p-    test with or without type priority  
+   *         s    s   s     n    insure skip over both/multiple
+   *         s    s   s     y    insure skip over just 1
+   *      
+   *   test with type priorities:
+   *     skip (only covering)
+   *     skipoverbound: if type priority off, can have bound in middle 
+   *           
+   *   setup notation:  any number of tuples separated by ':'
+   *       xxx : yyy : zzz 
+   *     each is either - or x-y-t  where x == begin, y == end, t = 0 1 or 2 type order
+   *            
+   */
+  private void setupEdges(String s) {
+    String [] sa = s.split("\\:");
+    for (String x : sa) {
+      x = x.trim();
+      if ("-".equals(x)) {
+        continue;
+      }
+      String [] i3 = x.split("\\-");
+      indexNew(types[Integer.parseInt(i3[2])], Integer.parseInt(i3[0]), Integer.parseInt(i3[1]));
+    }
+    
+  }
+   
+  public void testEdges() {
+    Annotation ba = indexNew(phraseType, 10, 20);  // the bounding annotation
+    edge(ba, "-", coveredBy, "--:--:--:--", 0);
+    edge(ba, "-", covering, "--:--:--:--", 0);
+    edge(ba, "-", sameBeginEnd, "--:--:--:--", 0);
+    edge(ba, "-", notBounded, "--:--:--:--", 0);
+    
+    edge(ba, "0-10-2", coveredBy, "--:--:--:--", 0);
+    edge(ba, "0-10-2", covering, "--:--:--:--", 0);
 
+    edge(ba, "0-10-2:11-20-2", coveredBy, "--:--:--:--", 1);
+    edge(ba, "0-10-2:11-21-2", coveredBy, "--:--:--:--", 0);  
+    edge(ba, "0-10-2:11-21-2", coveredBy, "--:--:LE:--", 1);
+    
+
+    
+  }
+  
+  /**
+   * 
+   * @param ba
+   * @param setup
+   * @param boundsUse
+   * @param flags: TP  type priority
+   *               NO  non overlapping
+   *               LE  include annotation with ends beyond bounds
+   *               ST  skip when same begin end type
+   *               
+   * @param count
+   */
+  private void edge(Annotation ba, String setup, BoundsUse boundsUse, String flags, int count) {
+    String[] fa = flags.split("\\:");
+    cas.reset();
+    AnnotationIndex<Annotation> ai = cas.getAnnotationIndex();
+    FSIterator<Annotation> it;
+    SelectFSs<Annotation> sa;
+    
+    setupEdges(setup);
+    
+    switch (boundsUse) {
+    case notBounded: sa = ai.select(); break;
+    case coveredBy:  sa = ai.select().coveredBy(ba); break;
+    case sameBeginEnd: sa = ai.select().at(ba); break;
+    default:
+    case covering:   sa = ai.select().covering(ba); break;
+    }   
+    if (fa[0].equals("TP")) sa.typePriority();
+    if (fa[1].equals("NO")) sa.nonOverlapping();
+    if (fa[2].equals("LE")) sa.includeAnnotationsWithEndBeyondBounds();
+    if (fa[3].equals("ST")) sa.skipWhenSameBeginEndType();
+    
+    assertEquals(count, sa.fsIterator().size());
+  }
+  
+//  
+//  public void testEdges() {
+//    
+//  }
+
+  private Annotation indexNew(Type type, int begin, int end) {
+    Annotation a;
+    cas.addFsToIndexes(a = (Annotation) cas.createAnnotation(type, begin, end));
+    return a; 
+  }
+  
   private int setupTheCas() {
     
     

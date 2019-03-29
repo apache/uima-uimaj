@@ -40,8 +40,11 @@ import org.apache.uima.util.XMLParser;
 import junit.framework.TestCase;
 
 /**
- * Class comment for IteratorTest.java goes here.
- * 
+ * The setup:
+ *   Token (super = Annotation)
+ *   Sentence (super = Annotation)
+ *   
+ *   Annotator:  (in descr) SubIteratorAnnotator
  */
 public class SubiteratorTest extends TestCase {
 

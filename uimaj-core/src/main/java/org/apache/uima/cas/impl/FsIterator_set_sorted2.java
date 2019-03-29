@@ -29,7 +29,7 @@ import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
- * An interator for 1 type for a set or sorted index
+ * An interator for a single type for a set or sorted index
  * 
  * NOTE: This is the version used for set/sorted iterators
  *   It is built directly on top of a CopyOnWrite wrapper for OrderedFsSet_array
