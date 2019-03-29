@@ -447,8 +447,7 @@ startAt(begin, end, shifted) // same as above,
       possible; these are described in the next section.</para>
       
       <para>The returned Annotations exclude the one(s) which are <code>equal</code> to the bounding FS.  
-      There are several 
-      variations of how this <code>equal</code> test is done, discussed in the next section.</para>
+      There are several variations of how this <code>equal</code> test is done, discussed in the next section.</para>
             
       <variablelist>
         <varlistentry>
@@ -544,6 +543,7 @@ startAt(begin, end, shifted) // same as above,
             </para>
           </listitem>
         </varlistentry>
+        
         <varlistentry>
           <term><emphasis role="strong">includeAnnotationsWithEndBeyondBounds</emphasis></term>
           <listitem>
@@ -555,13 +555,19 @@ startAt(begin, end, shifted) // same as above,
             </para>
           </listitem>
         </varlistentry>
+        
         <varlistentry>
           <term><emphasis role="strong">skipSameBeginEndType</emphasis></term>
           <listitem>
             <para>While doing bounded iteration, if the Annotation being returned is identical (has the same
-            _id()) with the bounding Annotation, it is always skipped. But other annotations, which might 
-            have the same begin, end, and type values, are included by default.</para>
-            
+            _id()) with the bounding Annotation, it is always skipped. (Note: if you do not want this, 
+            just make a temporary annotation with the begin/end/type you want, and don't add it to the index;
+            it will never be found while iterating.)
+            </para>
+            <para> 
+            Other annotations, which might 
+            have the same begin, end, and type values, are not skipped, but instead, included, by default.</para>
+       
             <para>  
             When this configuration is specified, any Annotation which has the same begin, end, and type is also skipped.  
             </para>
