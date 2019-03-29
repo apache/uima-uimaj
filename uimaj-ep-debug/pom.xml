@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.1.0-SNAPSHOT</version>
+    <version>3.1.0</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -45,13 +45,13 @@ UIMA data structures to the Eclipse Debug displays</description>
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-ep-debug
+      scm:svn:http://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-3.1.0/uimaj-ep-debug
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-ep-debug
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-3.1.0/uimaj-ep-debug
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-ep-debug
+      http://svn.apache.org/viewvc/uima/uv3/uimaj-v3/tags/uimaj-3.1.0/uimaj-ep-debug
     </url>
   </scm>
   
