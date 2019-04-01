@@ -560,10 +560,9 @@ startAt(begin, end, shifted) // same as above,
           <term><emphasis role="strong">skipSameBeginEndType</emphasis></term>
           <listitem>
             <para>While doing bounded iteration, if the Annotation being returned is identical (has the same
-            _id()) with the bounding Annotation, it is always skipped. (Note: if you do not want this, 
-            just make a temporary annotation with the begin/end/type you want, and don't add it to the index;
-            it will never be found while iterating.)
+            _id()) with the bounding Annotation, it is always skipped. 
             </para>
+            
             <para> 
             Other annotations, which might 
             have the same begin, end, and type values, are not skipped, but instead, included, by default.</para>
@@ -571,6 +570,21 @@ startAt(begin, end, shifted) // same as above,
             <para>  
             When this configuration is specified, any Annotation which has the same begin, end, and type is also skipped.  
             </para>
+            
+            <note><para>
+            If you do not want any of the indexed annotations to be skipped, you can achieve 
+            this by 
+            <itemizedlist>
+              <listitem><para>insuring you haven't set <code>skipWhenSameBeginEndType()</code></para></listitem>
+              <listitem><para>making a bounding annotation with the begin / end / type you want for the bound</para></listitem>
+              <listitem><para>Don't add this bounding annotation to the index</para></listitem>
+            </itemizedlist>
+            </para>
+            <para>
+            Because the bounding annotation will not be equal (have the same Feature Structure ID) as any 
+            annotations in the index (because you haven't indexed it), it will never match any annotations
+            found in the index while iterating.
+            </para></note>
           </listitem>
         </varlistentry>
       </variablelist>
