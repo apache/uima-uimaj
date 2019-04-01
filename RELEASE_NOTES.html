@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v3.1.0 Release Notes</title>
+  <title>Apache UIMA v3.0.2 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v3.1.0 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.2 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -81,7 +81,7 @@
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 
-<p>Version 3.1.0 is a minor update to 3.0.1.</p>
+<p>Version 3.0.2 is a minor update to 3.0.1.</p>
 <p>
 When migrating from v2, if non-built-in JCas cover classes are being used,
 a one-time regeneration or migration step is required for these.  
@@ -125,20 +125,17 @@ Previously the Context Class Loader was never consulted.</li>
 <li>Implemented a destroy() method for ResourceManager which closes its UIMAClassLoader</li>
 </ul>
 
-<p>Specific changes in release 3.1.0 versus 3.0.1 include</p>
+<p>Specific changes in release 3.0.2 versus 3.0.1 include</p>
 <ul>
   <li>supporting additional JCas use cases, where (due to changes in type systems) some feature might migrate
       over time from subclasses to superclasses.</li>
-  <li>removing some changes to APIs so the v3 APIs more closely match v2 for binary compatibility.
+  <li>reverting some changes to APIs so the v3 APIs more closely match v2 for improved binary compatibility.
       Binary compatibility improves the ability to run using UIMA v3 without recompiling classes / Jars
       built using UIMA v2 (except for JCas classes).</li>
 </ul>
  
 <h3>API changes</h3>
 
- <p>Jira issue https://issues.apache.org/jira/browse/UIMA-5869 changed an exception that is thrown if
- a CAS View is missing, from an unchecked exception to a checked exception, which matches what the 
- JavaDoc for this has always indicated.  This may require an adjustment to user code.
  <p>There is an API compatibility report covering the non-internal APIs;
    see <a href="api-change-report.html">change report</a> for the list of API changes
    since version 3.0.1.
