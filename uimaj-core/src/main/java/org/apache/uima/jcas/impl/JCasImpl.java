@@ -944,11 +944,11 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getView(java.lang.String)
    */
   public JCas getView(String localViewName) throws CASException {
-    try {
+//    try {   // defer for release 3.0.2 because this change breaks test cases that test for specific exceptions being thrown; revisit when 2nd digit bumps
       return casImpl.getView(localViewName).getJCas();
-    } catch (CASRuntimeException e) {
-      throw new CASException(e); // https://issues.apache.org/jira/browse/UIMA-5869
-    }
+//    } catch (CASRuntimeException e) {
+//      throw new CASException(e); // https://issues.apache.org/jira/browse/UIMA-5869
+//    }
   }
 
   /*
