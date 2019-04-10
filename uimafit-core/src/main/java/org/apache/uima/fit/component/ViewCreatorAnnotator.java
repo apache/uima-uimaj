@@ -70,7 +70,7 @@ public class ViewCreatorAnnotator extends JCasAnnotator_ImplBase {
     try {
       try {
         return aJCas.getView(aViewName);
-      } catch (CASException | CASRuntimeException ce) {
+      } catch (CASRuntimeException ce) {
         return aJCas.createView(aViewName);
       }
     } catch (CASException ce) {
