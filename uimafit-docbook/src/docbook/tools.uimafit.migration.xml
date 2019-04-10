@@ -43,8 +43,14 @@
       specific causes of errors in client code.</para>
     </formalpara>
     <formalpara>
+      <title>CasUtil.selectSingle signature changed</title>
+      <para>Signature of <literal>CasUtil.selectSingle</literal> has been changed to return
+      <literal>AnnotationFS</literal>. The original signature is available as 
+      <literal>selectSingleFS</literal></para>
+    </formalpara>
+    <formalpara>
       <title>Version requirements</title>
-      <para>Depends on UIMA 3.0.0, Spring Framework 3.2.16 and Java 8.</para>
+      <para>Depends on UIMA 3.0.1, Spring Framework 4.3.22 and Java 8.</para>
     </formalpara>
   </section>
   <section>
