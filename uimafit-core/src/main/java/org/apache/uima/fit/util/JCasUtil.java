@@ -590,7 +590,7 @@ public final class JCasUtil {
    */
   @SuppressWarnings("unchecked")
   public static <T extends TOP> T selectSingle(JCas jCas, Class<T> type) {
-    return (T) CasUtil.selectSingle(jCas.getCas(), getType(jCas, type));
+    return (T) CasUtil.selectSingleFS(jCas.getCas(), getType(jCas, type));
   }
 
   /**

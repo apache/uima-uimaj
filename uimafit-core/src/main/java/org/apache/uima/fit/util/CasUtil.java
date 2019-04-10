@@ -943,7 +943,7 @@ public final class CasUtil {
   }
 
   /**
-   * Get the single instance of the specified type from the JCas.
+   * Get the single instance of the specified type from the CAS.
    * 
    * @param cas
    *          a CAS containing the annotation.
@@ -952,7 +952,33 @@ public final class CasUtil {
    * @return the single instance of the given type. throws IllegalArgumentException if not exactly
    *         one instance if the given type is present.
    */
-  public static FeatureStructure selectSingle(CAS cas, Type type) {
+  public static AnnotationFS selectSingle(CAS cas, Type type) {
+    FSIterator<AnnotationFS> iterator = cas.getAnnotationIndex(type).iterator();
+
+    if (!iterator.hasNext()) {
+      throw new IllegalArgumentException("CAS does not contain any [" + type.getName() + "]");
+    }
+
+    AnnotationFS result = iterator.next();
+
+    if (iterator.hasNext()) {
+      throw new IllegalArgumentException("CAS contains more than one [" + type.getName() + "]");
+    }
+
+    return result;
+  }
+  
+  /**
+   * Get the single instance of the specified type from the CAS.
+   * 
+   * @param cas
+   *          a CAS containing the annotation.
+   * @param type
+   *          a UIMA type.
+   * @return the single instance of the given type. throws IllegalArgumentException if not exactly
+   *         one instance if the given type is present.
+   */
+  public static FeatureStructure selectSingleFS(CAS cas, Type type) {
     FSIterator<FeatureStructure> iterator = cas.getIndexRepository().getAllIndexedFS(type);
 
     if (!iterator.hasNext()) {
