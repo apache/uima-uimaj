@@ -28,8 +28,14 @@
       compatible with UIMA 2.x anyway, the legacy module was removed now.</para>
     </formalpara>
     <formalpara>
+      <title>Method signatures changed</title>
+      <para>Several method signatures have changed to be better usable with generics (e.g. in  
+      <literal>FSCollectionFactory</literal>) or to align better with the overall 
+      method naming scheme (e.g. in <literal>FSCollectionFactory</literal>).</para>
+    </formalpara>
+    <formalpara>
       <title>Version requirements</title>
-      <para>Depends on UIMA 3.0.0, Spring Framework 3.2.16 and Java 7.</para>
+      <para>Depends on UIMA 3.0.1, Spring Framework 4.3.22 and Java 8.</para>
     </formalpara>
   </section>
   <section>
