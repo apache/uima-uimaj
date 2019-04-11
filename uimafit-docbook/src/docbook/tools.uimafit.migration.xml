@@ -49,6 +49,23 @@
       <literal>selectSingleFS</literal></para>
     </formalpara>
     <formalpara>
+      <title>Removal of deprecated methods</title>
+      <para>Various methods that were deprecated in uimaFIT 2.4.0 or earlier have been removed in
+      this release. For details, please refer to the <literal>api-change-report.html</literal>
+      file included in the release.</para>
+    </formalpara>
+    <formalpara>
+      <title>Changes to logging</title>
+      <para>UIMA v3 has is using SLF4J. As a consequence, the <literal>ExtendedLogger</literal>
+      which uimaFIT had returned on calls to <literal>getLogger()</literal> has been removed
+      and instead the regular UIMA v3 logger class is returned which offers methods quite compatible
+      with what <literal>ExtendedLogger</literal> offered before. However, it is recommended
+      that you go through all your logging calls and replace calls which use string concatenation
+      to construct the logging message with corresponding calls using placeholders. For example,
+      replace <literal>getLogger().error("Cannot access " + filename, exception);</literal> with
+      <literal>getLogger().error("Cannot access {}", filename, exception);</literal>.</para>
+    </formalpara>
+    <formalpara>
       <title>Version requirements</title>
       <para>Depends on UIMA 3.0.2, Spring Framework 4.3.22 and Java 8.</para>
     </formalpara>
