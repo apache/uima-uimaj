@@ -50,7 +50,7 @@
     </formalpara>
     <formalpara>
       <title>Version requirements</title>
-      <para>Depends on UIMA 3.0.1, Spring Framework 4.3.22 and Java 8.</para>
+      <para>Depends on UIMA 3.0.2, Spring Framework 4.3.22 and Java 8.</para>
     </formalpara>
   </section>
   <section>
