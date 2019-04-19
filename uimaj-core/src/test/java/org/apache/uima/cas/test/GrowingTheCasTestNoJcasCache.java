@@ -45,6 +45,8 @@ import junit.framework.TestCase;
  * 
  */
 public class GrowingTheCasTestNoJcasCache extends TestCase {
+  
+  private final static int REPETITIONS = 1;
 
   private AnalysisEngine ae = null;
 
@@ -116,7 +118,7 @@ public class GrowingTheCasTestNoJcasCache extends TestCase {
       e.printStackTrace();
       assertTrue(false);
     }
-    StringBuffer buf = new StringBuffer(text.length() * 10);
+    StringBuilder buf = new StringBuilder(text.length() * 10);
     for (int i = 0; i < 10; i++) {
       buf.append(text);
     }
@@ -131,35 +133,42 @@ public class GrowingTheCasTestNoJcasCache extends TestCase {
     jcas.setDocumentText(text);
     int numberOfSentences = 0;
     int numberOfTokens = 0;
-    try {
-      // long time = System.currentTimeMillis();
-      this.ae.process(jcas);
-      // time = System.currentTimeMillis() - time;
-      // System.out.println("Time for large CAS: " + new TimeSpan(time));
-      numberOfSentences = jcas.getAnnotationIndex(Sentence.type).size();
-      numberOfTokens = jcas.getAnnotationIndex(Token.type).size();
-      // System.out.println(numberOfSentences);
-      // System.out.println(numberOfTokens);
-    } catch (AnalysisEngineProcessException e) {
-      e.printStackTrace();
-      assertTrue(false);
+    for (int i = 0; i < REPETITIONS; i++) {
+      jcas.reset();
+      this.smallHeapCas.reset();
+      jcas.setDocumentText(text);
+      numberOfSentences = 0;
+      numberOfTokens = 0;
+      try {
+        // long time = System.currentTimeMillis();
+        this.ae.process(jcas);
+        // time = System.currentTimeMillis() - time;
+        // System.out.println("Time for large CAS: " + new TimeSpan(time));
+        numberOfSentences = jcas.getAnnotationIndex(Sentence.type).size();
+        numberOfTokens = jcas.getAnnotationIndex(Token.type).size();
+        // System.out.println(numberOfSentences);
+        // System.out.println(numberOfTokens);
+      } catch (AnalysisEngineProcessException e) {
+        e.printStackTrace();
+        assertTrue(false);
+      }
+      this.smallHeapCas.setDocumentText(text);
+      try {
+        // long time = System.currentTimeMillis();
+        this.ae.process(this.smallHeapCas);
+        // time = System.currentTimeMillis() - time;
+        // System.out.println("Time for small CAS: " + new TimeSpan(time));
+        assertTrue(this.getClass().toString() + ": number of sentences does not match",
+            numberOfSentences == this.smallHeapCas.getAnnotationIndex(Sentence.type).size());
+        assertTrue(this.getClass().toString() + ": number of tokens does not match",
+            numberOfTokens == this.smallHeapCas.getAnnotationIndex(Token.type).size());
+      } catch (AnalysisEngineProcessException e) {
+        e.printStackTrace();
+        assertTrue(false);
+      }
     }
-    this.smallHeapCas.setDocumentText(text);
-    try {
-      // long time = System.currentTimeMillis();
-      this.ae.process(this.smallHeapCas);
-      // time = System.currentTimeMillis() - time;
-      // System.out.println("Time for small CAS: " + new TimeSpan(time));
-      assertTrue(this.getClass().toString() + ": number of sentences does not match",
-          numberOfSentences == this.smallHeapCas.getAnnotationIndex(Sentence.type).size());
-      assertTrue(this.getClass().toString() + ": number of tokens does not match",
-          numberOfTokens == this.smallHeapCas.getAnnotationIndex(Token.type).size());
-    } catch (AnalysisEngineProcessException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    } finally {
-      smallHeapCas = null;  // some junit runners hold onto instances of test classes after the test finishes
-    }
+    smallHeapCas = null;  // some junit runners hold onto instances of test classes after the test finishes
+
   }
 
   public static void main(String[] args) {
