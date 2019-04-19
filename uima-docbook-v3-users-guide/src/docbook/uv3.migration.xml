@@ -140,14 +140,17 @@ under the License.
     </itemizedlist>
     
     Usually, if you have the source code it is best to migrate the sources.  Otherwise, you can migrate the compiled classes.
+    The compiled classes are run through a decompiler, and then the derived sources are migrated.  
   </para> 
   
-  <para>When migrating <emphasis role="strong">source</emphasis> files, you specify one or more "roots" - places in a file directory, 
-    and the tool scans those  
-    directories recursively (including inside Jars and PEARs), looking for JCas source files.  When it finds one, it copies it to the output spot 
+  <para>When migrating <emphasis role="strong">source</emphasis> files, you specify one or more "roots" - places in a file directory,
+    or a single java JCas source file (the one not ending in "_Type") 
+    and the tool scans those 
+    directories recursively (including inside Jars and PEARs), looking for JCas source files,
+    or works on just that one source file.  When it finds one, it copies it to the output spot 
     and migrates it. The output is arranged in parallel directories (before and after migration), 
     for easy side-by-side comparing in a tool such as Eclipse file compare.</para>
-    
+        
   <para>After checking the migration results, including comparing the files, you replace the original source with
     the migrated versions.  Also, the original V2 source would contain a source file for each JCas class ending in
     "_Type"; these are not used in version 3 and should be deleted.</para>
