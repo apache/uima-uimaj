@@ -56,7 +56,11 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
   private final static MethodHandle _FH_begin = _FC_begin.dynamicInvoker();
   private final static CallSite _FC_end = TypeSystemImpl.createCallSite(Annotation.class, "end");
   private final static MethodHandle _FH_end = _FC_end.dynamicInvoker();
-
+  
+  // hard code for performance, and because is likely to be right
+//  private final static int BEGIN_OFFSET = 0;
+//  private final static int END_OFFSET = 1;
+  
 //  static {
 //    _FC_begin.setTarget(MethodHandles.constant(int.class, TypeSystemImpl.getAdjustedFeatureOffset("begin")));
 //  }
@@ -97,13 +101,16 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * getter for begin - gets beginning of span of annotation
    */
 //  public int getBegin() { return _F_begin; }
-  public final int getBegin() { return _getIntValueNc( wrapGetIntCatchException(_FH_begin)); 
+  public final int getBegin() { return _getIntValueNc(wrapGetIntCatchException(_FH_begin)); 
+//  public final int getBegin() { return _getIntValueNc(BEGIN_OFFSET); //wrapGetIntCatchException(_FH_begin)); 
   }
 
   /*
    * setter for begin - sets beginning of span of annotation
    */
-  public final void setBegin(int v) { _setIntValueNfcCJ( wrapGetIntCatchException(_FH_begin), v); }
+//  public final void setBegin(int v) { _setIntValueNfcCJ(BEGIN_OFFSET, v);
+  public final void setBegin(int v) { _setIntValueNfcCJ(wrapGetIntCatchException(_FH_begin), v);
+  }
   
   // *------------------*
   // * Feature: end
@@ -114,6 +121,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    */
   public final int getEnd() { 
     return this._getIntValueNc(wrapGetIntCatchException(_FH_end));
+//    return this._getIntValueNc(END_OFFSET);
   }
 
   /*
@@ -121,6 +129,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    */
   public final void setEnd(int v) {
     this._setIntValueNfc(wrapGetIntCatchException(_FH_end),  v);
+//    this._setIntValueNfc(END_OFFSET,  v);
   }
   
   /**
@@ -131,8 +140,8 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    */
   public Annotation(JCas jcas, int begin, int end) {
     super(jcas); // forward to constructor
-    this._setIntValueNcNj( wrapGetIntCatchException(_FH_begin), begin);
-    this._setIntValueNcNj(wrapGetIntCatchException(_FH_end), end);
+    this.setBegin(begin);
+    this.setEnd(end);
   }
 
   /**
@@ -166,10 +175,12 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
   public final int compareAnnotation(Annotation other) {
     final int b = wrapGetIntCatchException(_FH_begin);
     int result = Integer.compare(_getIntValueNc(b), other._getIntValueNc(b));
+//    int result = Integer.compare(_getIntValueNc(BEGIN_OFFSET), other._getIntValueNc(BEGIN_OFFSET));
     if (result != 0) return result;
 
     final int e = wrapGetIntCatchException(_FH_end);
     result = Integer.compare(_getIntValueNc(e), other._getIntValueNc(e));
+//    result = Integer.compare(_getIntValueNc(END_OFFSET), other._getIntValueNc(END_OFFSET));
     return (result == 0) ? 0 : -result;  // reverse compare
   }
   
