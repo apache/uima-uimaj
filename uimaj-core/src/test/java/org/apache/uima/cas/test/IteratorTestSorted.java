@@ -73,6 +73,7 @@ import junit.framework.TestCase;
 public class IteratorTestSorted extends TestCase {
   static final int REPETITIONS = // 100_000_000; 1000 secs = 17 min
                                   100_000;  // 1 second + startup time ~ .8 sec
+//                                    1000000;
   static final int NBR_FSS_PER_LEVEL = 5;
   static final int MAX_LEVELS = 6;  // max is 6 unless adding to the types and JCas class for them
   
