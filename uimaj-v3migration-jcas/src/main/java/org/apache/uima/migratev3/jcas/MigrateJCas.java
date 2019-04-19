@@ -127,6 +127,7 @@ import com.github.javaparser.printer.PrettyPrinterConfiguration;
  *     <ul><li>converts these to v3</li></ul></li></ul>
  * 
  *   <li>also can receive a list of individual class names</li>
+ *   <li>also can do a single source file</li>
  * </ul>
  *   
  * <p>Creates summary and detailed reports of its actions.
@@ -206,7 +207,7 @@ import com.github.javaparser.printer.PrettyPrinterConfiguration;
  *       - compiles the results
  *       - does reassembly for Jars and PEARs, replacing the JCas classes.   
  *       
- *   Mode 2: Given sources-roots 
+ *   Mode 2: Given sources-roots or a single source java file
  *     scans the sources-routes looking for candidates
  *       - migrates that decompiled source.
  * </pre>
@@ -289,6 +290,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     final List<V3CompiledPathAndContainerItemPath> v3CompiledPathAndContainerItemPath = new ArrayList<>();
     final boolean isPear; 
     final boolean isJar;
+    final boolean isSingleJavaSource;
     /** can't use Path as the type, because the equals for Path is object == */
     final Set<String> _Types = new HashSet<>(); // has the non_Type path only if the _Type is found
     boolean haveDifferentCapitalizedNamesCollidingOnWindows = false;
@@ -309,6 +311,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       String s = root.toString().toLowerCase();
       isJar = s.endsWith(".jar");
       isPear = s.endsWith(".pear");
+      isSingleJavaSource = s.endsWith(".java");
       this.root = (isPear || isJar) 
                    ? installJarOrPear()
                    : root;
@@ -2205,13 +2208,16 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private void getAndProcessCandidatesInContainer(Container container) {
     
 //    current_paths2RootIds = top_paths2RootIds;  // don't do lower, that's called within Jars etc.
-    
-    try (Stream<Path> stream = Files.walk(container.root, FileVisitOption.FOLLOW_LINKS)) {  // needed to release file handles
-        stream.forEachOrdered(
-            // only puts into the RootIds possible Fqcn (ending in either .class or .java)
-          p -> getCandidates_processFile2(p, container));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    if (container.isSingleJavaSource) {
+      getCandidates_processFile2(container.root, container);
+    } else {
+      try (Stream<Path> stream = Files.walk(container.root, FileVisitOption.FOLLOW_LINKS)) {  // needed to release file handles
+          stream.forEachOrdered(
+              // only puts into the RootIds possible Fqcn (ending in either .class or .java)
+            p -> getCandidates_processFile2(p, container));
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
 
     // walk from root container, remove items not JCas candidates
@@ -2310,7 +2316,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 //          System.out.println("debug container._Types did contain " + candidate);
 //        }
 //      }
-      if (!container._Types.contains(candidate)) {
+      if (!container.isSingleJavaSource && !container._Types.contains(candidate)) {
           it.remove();
       }
     }    
@@ -2924,7 +2930,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private void printUsage() {
     System.out.println(
         "Usage: java org.apache.uima.migratev3.jcas.MigrateJCas \n"
-        + "  [-sourcesRoots <One-or-more-directories-or-jars-separated-by-Path-separator>]\n"
+        + "  [-sourcesRoots <One-or-more-directories-or-jars-separated-by-Path-separator, or a path to a single JCas source class>]\n"
         + "  [-classesRoots <One-or-more-directories-or-jars-or-pears-separated-by-Path-separator>]\n"
         + "  [-outputDirectory a-writable-directory-path (optional)\n"
         + "     if omitted, a temporary directory is used\n"
