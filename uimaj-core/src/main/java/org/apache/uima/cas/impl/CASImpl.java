@@ -558,6 +558,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      *    modify deserializers to create fss with ids the same as the serialized form (
      *      or the V2 "address" imputed from that)
      *    modify serializers to include reachables only found via id2fs table
+     *    
+     *    not static because is updated (see ll_enableV2IdRefs)
      */
     private boolean isId2Fs;
     
