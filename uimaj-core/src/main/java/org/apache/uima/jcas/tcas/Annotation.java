@@ -101,15 +101,25 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * getter for begin - gets beginning of span of annotation
    */
 //  public int getBegin() { return _F_begin; }
-  public final int getBegin() { return _getIntValueNc(wrapGetIntCatchException(_FH_begin)); 
+  public final int getBegin() { 
+    try {
+      return _getIntValueNc((int)_FH_begin.invokeExact());
+    } catch (Throwable e) {
+      throw new RuntimeException(e);  // never happen
+    }
 //  public final int getBegin() { return _getIntValueNc(BEGIN_OFFSET); //wrapGetIntCatchException(_FH_begin)); 
   }
-
+  
   /*
    * setter for begin - sets beginning of span of annotation
    */
 //  public final void setBegin(int v) { _setIntValueNfcCJ(BEGIN_OFFSET, v);
-  public final void setBegin(int v) { _setIntValueNfcCJ(wrapGetIntCatchException(_FH_begin), v);
+  public final void setBegin(int v) {
+    try {
+      _setIntValueNfcCJ((int)_FH_begin.invokeExact(), v);
+    } catch (Throwable e) {
+      throw new RuntimeException(e);  // never happen
+    }
   }
   
   // *------------------*
@@ -119,16 +129,24 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
   /*
    * getter for end - gets ending of span of annotation
    */
-  public final int getEnd() { 
-    return this._getIntValueNc(wrapGetIntCatchException(_FH_end));
+  public final int getEnd() {
+    try {
+      return this._getIntValueNc((int) _FH_end.invokeExact());
+    } catch (Throwable e) {
+      throw new RuntimeException(e);  // never happen
+    }  
 //    return this._getIntValueNc(END_OFFSET);
   }
-
+  
   /*
    * setter for end - sets ending of span of annotation
    */
   public final void setEnd(int v) {
-    this._setIntValueNfc(wrapGetIntCatchException(_FH_end),  v);
+    try {
+      this._setIntValueNfc((int) _FH_end.invokeExact(),  v);
+    } catch (Throwable e) {
+      throw new RuntimeException(e);  // never happen
+    }
 //    this._setIntValueNfc(END_OFFSET,  v);
   }
   
@@ -173,15 +191,19 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * @return -
    */
   public final int compareAnnotation(Annotation other) {
-    final int b = wrapGetIntCatchException(_FH_begin);
-    int result = Integer.compare(_getIntValueNc(b), other._getIntValueNc(b));
-//    int result = Integer.compare(_getIntValueNc(BEGIN_OFFSET), other._getIntValueNc(BEGIN_OFFSET));
-    if (result != 0) return result;
-
-    final int e = wrapGetIntCatchException(_FH_end);
-    result = Integer.compare(_getIntValueNc(e), other._getIntValueNc(e));
-//    result = Integer.compare(_getIntValueNc(END_OFFSET), other._getIntValueNc(END_OFFSET));
-    return (result == 0) ? 0 : -result;  // reverse compare
+    try {
+      final int b = (int) _FH_begin.invokeExact();
+      int result = Integer.compare(_getIntValueNc(b), other._getIntValueNc(b));
+  //    int result = Integer.compare(_getIntValueNc(BEGIN_OFFSET), other._getIntValueNc(BEGIN_OFFSET));
+      if (result != 0) return result;
+  
+      final int e = (int) _FH_end.invokeExact();
+      result = Integer.compare(_getIntValueNc(e), other._getIntValueNc(e));
+  //    result = Integer.compare(_getIntValueNc(END_OFFSET), other._getIntValueNc(END_OFFSET));
+      return (result == 0) ? 0 : -result;  // reverse compare on "end" value
+    } catch (Throwable e) {
+      throw new RuntimeException(e);  // never happen
+    }
   }
   
   /**
@@ -199,7 +221,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
 
 
   /**
-   * Compare two annotations, with type order, with id compare
+   * Compare two annotations, with id compare
    * @param other -
    * @return -
    */
