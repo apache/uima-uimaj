@@ -165,6 +165,7 @@ public class CasCompare {
   private final static boolean IS_MEAS_LIST_2_ARRAY = false;
   private static final String BLANKS_89 = Misc.blanks.substring(0, 89);
 
+  private static boolean IS_SHOW_PROGRESS = false;
 
   /**
    * Compare 2 CASes, with perhaps different type systems.
@@ -447,6 +448,7 @@ public class CasCompare {
   private int maxId2;
   private int miscompare_index;  // used to pass back additional value from compareAllArrayElements
   private int s1maxLen = 0;
+  private static int working_on;
 
     
   /**
@@ -540,7 +542,9 @@ public class CasCompare {
    */
   public List<Runnable> type_feature_to_runnable(String typeName, String featureBaseName, BiFunction<TOP, Feature, Runnable> c) {
     List<Runnable> r = new ArrayList<>();
+    working_on = 1;
     r.addAll(type_feature_to_runnable(c1, typeName, featureBaseName, c));
+    working_on = 2;
     r.addAll(type_feature_to_runnable(c2, typeName, featureBaseName, c));
     return r;
   }
@@ -582,6 +586,10 @@ public class CasCompare {
       sortFSArray((FSArray<?>)fs.getFeatureValue(feat)));
   }
   
+  public List<Runnable> sort_dedup_FSArray(String typeName, String featureBaseName) {
+    return type_feature_to_runnable(typeName, featureBaseName, (fs, feat) ->
+    sort_dedup_FSArray(fs, feat));
+  }
   public List<Runnable> sortStringArray(String typeName, String featureBaseName) {
 //    stringArraysToSort.add(typeName + ":" + featureBaseName);
     return type_feature_to_runnable(typeName, featureBaseName, (fs, feat) -> 
@@ -712,6 +720,13 @@ public class CasCompare {
   }
   
   /**
+   * call this to show progress of the compare - useful for long compares
+   */
+  public static void showProgress() {
+    IS_SHOW_PROGRESS = true;
+  }
+    
+  /**
    * This does the actual comparison operation of the previously specified CASes
    * @return true if compare is OK
    */
@@ -726,6 +741,7 @@ public class CasCompare {
       
 //        processIndexedFeatureStructures(c1, false);
       Predicate<TOP> includeFilter = isTypeMapping ? (fs -> isTypeInTgt(fs)) : null;
+      if (IS_SHOW_PROGRESS) System.out.println("Finding all FSs in cas 1");
       // this next call doesn't get just the indexed ones, it includes the "reachable" ones too
       c1FoundFSs = new AllFSs(c1, null, includeFilter, isTypeMapping ? typeMapper : null)
                         .getAllFSsAllViews_sofas_reachable()
@@ -734,6 +750,7 @@ public class CasCompare {
 //        c1FoundFSs = fssToSerialize;  // all reachable FSs, filtered by CAS1 -> CAS2 type systems.
       
 //        processIndexedFeatureStructures(c2, false);
+      if (IS_SHOW_PROGRESS) System.out.println("Finding all FSs in cas 2");
       c2FoundFSs = new AllFSs(c2, null, null, null)
                      .getAllFSsAllViews_sofas_reachable()
                      .getAllFSs(); // get just the indexed ones.
@@ -781,15 +798,31 @@ public class CasCompare {
       final int sz2 = c2FoundFSs.size();
 
       isSrcCas = true;   // avoids sorting on types/features not present in ts2
+      if (IS_SHOW_PROGRESS) System.out.println("Sorting FSs in cas 1");
       sort(c1FoundFSs);
       
       isSrcCas = false;  // avoids sorting on types/features not present in ts1
+      if (IS_SHOW_PROGRESS) System.out.println("Sorting FSs in cas 2");
       sort(c2FoundFSs);
      
 //      miscompares.clear();
       prevReport.clear();
       
+      int fsz = Math.max(sz1,  sz2);
+      int fsz100 = Math.max(1, fsz/100);
+      int prev_done = 0;
+      if (IS_SHOW_PROGRESS) {
+        System.out.format("Starting compare loop, for %,d FSs%n", Math.max(sz1,  sz2));
+      }
+      
       while (i1 < sz1 && i2 < sz2) {
+        if (IS_SHOW_PROGRESS) {
+          int done = Math.max(i1,  i2);
+          if (done - prev_done >= fsz100) {
+            System.out.format("percent done: %d%n", (int) Math.round((done * 100F)/fsz));
+            prev_done = done;
+          }
+        }
         TOP fs1 = c1FoundFSs.get(i1);  // assumes the elements are in same order??
         TOP fs2 = c2FoundFSs.get(i2);
         
@@ -1006,6 +1039,50 @@ public class CasCompare {
       return compareRefs(afs1, afs2, null, null);
     });
     return () -> System.arraycopy(a, 0, fsArray._getTheArray(), 0, fsArray.size());
+  }
+  
+  /**
+   * This is an optional pre-compare operation.
+   * 
+   * It is identical to the method above, except that
+   * after sorting, it removes duplicates. 
+
+   * @param fsArray the array to be sorted
+   * @return a runnable, which (when invoked) updates the original array with the sorted result.
+   */
+  public Runnable sort_dedup_FSArray(TOP fs, Feature feat) {
+    FSArray<?> fsArray = (FSArray<?>)(fs.getFeatureValue(feat));
+    if (fsArray == null || fsArray.size() < 2) {
+      return null;
+    }
+    TOP[] a = fsArray._getTheArray().clone();
+    clearPrevFss();
+    inSortContext = true;
+    Arrays.sort(a, (TOP afs1, TOP afs2) -> {
+      return compareRefs(afs1, afs2, null, null);
+    });
+    ArrayList<TOP> dedup = new ArrayList<>(a.length);
+    TOP prev = null;
+    for (TOP top : a) {
+      if (top == prev) {
+        continue;
+      }
+      prev = top;
+      dedup.add(top);
+    }
+    TOP[] r = dedup.toArray(new TOP[dedup.size()]);
+    if (r.length == a.length) {
+      return () -> System.arraycopy(a, 0, fsArray._getTheArray(), 0, fsArray.size());
+    } else {
+      CASImpl cas = fs.getCASImpl();
+      FSArray<?> fsa = (FSArray<?>) cas.createArray(fsArray._getTypeImpl(), r.length);
+//      FSArray<?> fsa = new FSArray<>(fs.getJCas(), r.length);
+      if (IS_SHOW_PROGRESS) {
+        System.out.format("Dedup found dup in cas %d for type/feature %s, removed %d%n", working_on, feat.getName(), a.length - r.length);
+      }
+      fsa.copyFromArray(r, 0, 0, r.length);
+      return () -> fs.setFeatureValue(feat, fsa);
+    }
   }
   
   /**
@@ -2036,6 +2113,9 @@ public class CasCompare {
    * @return a StringBuilder with a report
    */
   public static StringBuilder compareNumberOfFSsByType(CAS cas1, CAS cas2) {
+    if (IS_SHOW_PROGRESS) {
+      System.out.println("comparing the number of FSs by type");
+    }
     CASImpl ci1 = (CASImpl)cas1;
     CASImpl ci2 = (CASImpl)cas2;
     Iterator<FsIndex_singletype<TOP>> il1 = ci1.indexRepository.streamNonEmptyIndexes(TOP.class).collect(Collectors.toList()).iterator();
