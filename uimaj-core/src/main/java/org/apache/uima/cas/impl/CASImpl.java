@@ -594,9 +594,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     private volatile Thread current_one_thread_access = null;
     
-    private void updateCallSite(MutableCallSite c, MethodHandle mh, MutableCallSite[] cs) {
-      c.setTarget(mh);
-      MutableCallSite.syncAll(cs);
+    private void updateCallSite(boolean desired_state, MethodHandle tester, MutableCallSite c, MethodHandle mh, MutableCallSite[] cs) {
+      try {
+        if (((boolean)tester.invokeExact()) != desired_state) {
+          c.setTarget(mh);
+          MutableCallSite.syncAll(cs);
+        }
+      } catch (Throwable e) {
+        Misc.internalError(e);
+      }
     }
     
     private synchronized boolean setCasState(CasState state, Thread thread) {
@@ -609,13 +615,19 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
          {
             break;  // ignore readonly if no-access is set
         }
-          updateCallSite(is_updatable_callsite, mh_return_false, is_updatable_callsites);
+          updateCallSite(false, is_updatable, is_updatable_callsite, mh_return_false, is_updatable_callsites);
           break;
         case NO_ACCESS:
           current_one_thread_access = thread;
           MethodHandle mh = CasState.produce_one_thread_access_test(thread);
-          updateCallSite(is_updatable_callsite, mh, is_updatable_callsites);
-          updateCallSite(is_readable_callsite, mh, is_readable_callsites);
+          boolean b = true; // value ignored, needed to avoid compile warning
+          try {
+            b = (boolean) mh.invokeExact();
+          } catch (Throwable e) {
+            Misc.internalError(e);
+          }
+          updateCallSite(b, is_updatable, is_updatable_callsite, mh, is_updatable_callsites);
+          updateCallSite(b, is_readable, is_readable_callsite, mh, is_readable_callsites);
           break;
         default:
         }
@@ -631,12 +643,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           if (casState.contains(CasState.NO_ACCESS)) {
             break;
         } 
-          updateCallSite(is_updatable_callsite, mh_return_true, is_updatable_callsites);
+          updateCallSite(true, is_updatable, is_updatable_callsite, mh_return_true, is_updatable_callsites);
           break;
         case NO_ACCESS:
           current_one_thread_access = null;
-          updateCallSite(is_updatable_callsite, mh_return_true, is_updatable_callsites);
-          updateCallSite(is_readable_callsite, mh_return_true, is_readable_callsites);
+          updateCallSite(true, is_updatable, is_updatable_callsite, mh_return_true, is_updatable_callsites);
+          updateCallSite(true, is_readable, is_readable_callsite, mh_return_true, is_readable_callsites);
           break;
         default:
         }
@@ -716,8 +728,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       emptyBooleanArray = null;
   
       current_one_thread_access = null;
-      updateCallSite(is_updatable_callsite, mh_return_true, is_updatable_callsites);
-      updateCallSite(is_readable_callsite, mh_return_true, is_readable_callsites);
+      updateCallSite(true, is_updatable, is_updatable_callsite, mh_return_true, is_updatable_callsites);
+      updateCallSite(true, is_readable, is_readable_callsite, mh_return_true, is_readable_callsites);
       
       clearNonSharedInstanceData();
       
