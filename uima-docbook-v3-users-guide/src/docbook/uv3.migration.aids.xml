@@ -134,7 +134,7 @@ under the License.
          <row>
            <entry><para>Disabling runtime feature validation</para></entry>
            
-           <entry><para><code>uima.uima.disable_runtime_feature_validation</code></para>
+           <entry><para><code>uima.disable_runtime_feature_validation</code></para>
            
                   <para>Once code is running correctly, you may remove this check for performance
                     reasons by setting this property.</para></entry>
@@ -148,6 +148,33 @@ under the License.
                   <para>Default: features being set into FS features which are FSs are checked for proper type subsumption.</para>
                   <para>Once code is running correctly, you may remove this check for performance
                     reasons by setting this property.</para></entry>
+         </row>
+
+         <!-- ******************************************************************************* -->
+         <row>
+           <entry spanname="fullwidth"><emphasis role="bold">Reporting</emphasis></entry>
+         </row>
+         
+         <row>
+           <entry><para>Report feature structure pinning</para></entry>
+           <entry><para><code>uima.report.fs.pinning="nnn"</code></para>
+           
+              
+              <para>Default: not enabled; nnn is the maximum number of reports to produce.  If nnn is 
+              omitted, it defaults to 10.</para>
+
+              <para>When enabled, this flag will cause reports to System.out with call traces for the first nnn
+                    instances of actions which lead to pinning Feature Structures in memory.</para>
+              <para>Typically, this should not happen, and no-longer-reachable Feature Structures are 
+                    garbage collected.</para>
+              <para>But some operations (such as using the CAS low level APIs, which return
+                    integer handles representing Feature Structures) pin the Feature Structures, in case 
+                    code in the future uses those integer handles to access the Feature Structure.</para>
+                    
+              <para>It is recommended that code be improved over time to use JCas access methods, instead of low-level
+                    CAS APIs, to avoid pinning unreachable Feature Structures.  This report enables finding
+                    those parts of the code that are pinning Feature Structures.</para>
+           </entry>       
          </row>
 
        </tbody>
