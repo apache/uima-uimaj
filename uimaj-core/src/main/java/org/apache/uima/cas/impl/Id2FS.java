@@ -43,11 +43,27 @@ import org.apache.uima.util.IteratorNvc;
  * Threading: to support read-only views, concurrent with updates, needs to be thread safe
  */
 public class Id2FS implements Iterable<TOP> {
+  
+  
+  
   static final boolean MEASURE = false;
   private static final int MEASURE_STACK_SIZE = 10;
   private static Map<MeasureCaller, MeasureCaller> callers = MEASURE ? new HashMap<>() : null;
   private static Map<MeasureCaller, MeasureCaller> walkableCallers = MEASURE ? new HashMap<>() : null;
 
+  private static final String REPORT_FS_PINNING = "uima.report.fs.pinning";
+  private static final boolean IS_REPORT_PINNING;
+  private static int pinning_count;  // ignoring multithreading issues, not critical
+  static {
+    String s = //  "";  // debug 
+      System.getProperty(REPORT_FS_PINNING);
+    IS_REPORT_PINNING = (s != null);
+    if (IS_REPORT_PINNING) {
+      pinning_count = (s.length() == 0) ? 10 : Integer.parseInt(s);
+    }
+  }
+
+  
 //  /**
 //   * Set this JVM property to true for backwards compatibility, where an application retains
 //   * some references to Feature Structures held only using the low-level references (which are ints)..
@@ -64,11 +80,20 @@ public class Id2FS implements Iterable<TOP> {
     this.initialSize = Math.max(32, initialHeapSize >> 4);  // won't shrink below this
     id2fs = new JCasHashMap(initialSize); 
   }
+  
+  private void maybeReport() {
+    if (!IS_REPORT_PINNING) return;
+    pinning_count --;
+    if (pinning_count < 0) return;
+    System.out.println("UIMA Report: FS pinning " + pinning_count + " occuring here:");
+    new Throwable().printStackTrace(System.out);
+  }
 
   /** put but assert wasn't there before */
   void put(int id, TOP fs) {
     TOP prev = id2fs.put(id, fs);
     assert prev == null;
+    maybeReport();
   }
   
   /**
@@ -77,6 +102,7 @@ public class Id2FS implements Iterable<TOP> {
    */
   void putUnconditionally(TOP fs) {
     id2fs.put(fs._id, fs);
+    maybeReport();
   }
   
   /**
@@ -87,6 +113,7 @@ public class Id2FS implements Iterable<TOP> {
   void putChange(int id, TOP fs) {
     TOP prev = id2fs.put(id, fs);
     assert prev != null;  // changing a preexisting value
+    maybeReport();
   }
   
   void put (TOP fs) {
