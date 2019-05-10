@@ -1047,7 +1047,8 @@ public class CasCompare {
    * It is identical to the method above, except that
    * after sorting, it removes duplicates. 
 
-   * @param fsArray the array to be sorted
+   * @param fs the feature structure having the fsarray feature
+   * @param feat the feature having the fsarray
    * @return a runnable, which (when invoked) updates the original array with the sorted result.
    */
   public Runnable sort_dedup_FSArray(TOP fs, Feature feat) {
