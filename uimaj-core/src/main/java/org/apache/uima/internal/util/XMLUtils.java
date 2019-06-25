@@ -31,6 +31,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.Misc;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -44,9 +45,18 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * Some utilities for working with XML.
  * 
- * 
+ * abstract only to prevent instantiation - all methods are static
  */
 public abstract class XMLUtils {
+  
+  /** see https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.md */
+  
+  /**
+   * -Duima.xml.enable.doctype_decl   
+   * 
+   */
+  private static final String XML_ENABLE_DOCTYPE_DECL = "uima.xml.enable.doctype_decl";
+  private static final boolean IS_XML_ENABLE_DOCTYPE_DECL = Misc.getNoValueSystemProperty(XML_ENABLE_DOCTYPE_DECL);
   
   // constants - not all Java versions define these
   
@@ -57,6 +67,7 @@ public abstract class XMLUtils {
   private static final String LOAD_EXTERNAL_DTD = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
   private static final String EXTERNAL_GENERAL_ENTITIES = "http://xml.org/sax/features/external-general-entities";
   private static final String EXTERNAL_PARAMETER_ENTITIES = "http://xml.org/sax/features/external-parameter-entities";
+
   /**
    * Normalizes the given string for output to XML. This converts all special characters, e.g. &lt;,
    * %gt;, &amp;, to their XML representations, e.g. &amp;lt;, &amp;gt;, &amp;amp;. The normalized
@@ -542,7 +553,9 @@ public abstract class XMLUtils {
   public static SAXParserFactory createSAXParserFactory() {
     SAXParserFactory factory = SAXParserFactory.newInstance();
     try {
-      factory.setFeature(DISALLOW_DOCTYPE_DECL, true);
+      if ( ! IS_XML_ENABLE_DOCTYPE_DECL) {  // https://issues.apache.org/jira/browse/UIMA-6064
+        factory.setFeature(DISALLOW_DOCTYPE_DECL, true);
+      }
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
           "SAXParserFactory didn't recognize feature " + DISALLOW_DOCTYPE_DECL);
@@ -647,7 +660,9 @@ public abstract class XMLUtils {
   public static DocumentBuilderFactory createDocumentBuilderFactory() { 
     DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     try {
-      documentBuilderFactory.setFeature(DISALLOW_DOCTYPE_DECL, true);
+      if ( ! IS_XML_ENABLE_DOCTYPE_DECL) {  // https://issues.apache.org/jira/browse/UIMA-6064
+        documentBuilderFactory.setFeature(DISALLOW_DOCTYPE_DECL, true);
+      }
     } catch (ParserConfigurationException e1) {
       UIMAFramework.getLogger().log(Level.WARNING, 
           "DocumentBuilderFactory didn't recognize setting feature " + DISALLOW_DOCTYPE_DECL);

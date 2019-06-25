@@ -104,6 +104,21 @@ under the License.
 
          <!-- ******************************************************************************* -->
          <row>
+           <entry><para>XML: enable doctype declarations</para></entry>
+           <entry><para><code>uima.xml.enable.doctype_decl</code> (default is false)</para>
+
+           <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-6064">UIMA-6064</ulink>
+           Normally, this is turned off to avoid exposure to malicious XML; see
+           <ulink url="https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Processing">
+             XML External Entity processing vulnerability</ulink>.
+           </para>
+           </entry>
+           
+           <entry><para>2.10.4, 3.0.3</para></entry>
+         </row>
+           
+         <!-- ******************************************************************************* -->
+         <row>
            <entry><para>Allow duplicate addToIndexes for identical Feature Structures</para></entry>
            
            <entry><para><code>uima.allow_duplicate_add_to_indexes</code> (default is false)</para>
