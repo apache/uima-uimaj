@@ -102,6 +102,7 @@ under the License.
            <entry><emphasis role="bold">Since Version</emphasis></entry>
          </row>
 
+
          <!-- ******************************************************************************* -->
          <row>
            <entry><para>Use built-in Java Logger as default back-end</para></entry>
@@ -153,6 +154,21 @@ under the License.
            <entry><para>2.7.0</para></entry>
          </row>
          -->
+
+         <!-- ******************************************************************************* -->
+         <row>
+           <entry><para>XML: enable doctype declarations</para></entry>
+           <entry><para><code>uima.xml.enable.doctype_decl</code> (default is false)</para>
+
+           <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-6064">UIMA-6064</ulink>
+           Normally, this is turned off to avoid exposure to malicious XML; see
+           <ulink url="https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Processing">
+             XML External Entity processing vulnerability</ulink>.
+           </para>
+           </entry>
+           
+           <entry><para>2.10.4, 3.0.3</para></entry>
+         </row>
          
          <row>
            <entry spanname="fullwidth"><emphasis role="bold">Index protection properties</emphasis></entry>
