@@ -2882,14 +2882,29 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * 
    * This is determined by the range type of the feature referring to the array instance.
    * 
-   * A fixup is done when one of these feature references is set, that updates the type of the deserialized object
-   * from FSArray to the most restrictive (in case there are multiple refs) array type.
+   * A fixup is done when
+   *   - the arrayFs is not already subtyped (could be for 0 length arrays) 
+   *   - it's not disabled (for backward compatibility with v2)
+   * 
+   * If the feature is marked as multipleReferencesAllowed, the presumption is that all references
+   * are to the same subtype. 
+   * 
+   * 0-length arrays are created with the proper subtype already, and won't need fixing up
+   *   
+   * The fixup updates the type of the Feature Structure  
+   * from FSArray to the array type declared; no checking is done to insure the elements conform, however.
    */
   void fixupFSArrayTypes(TypeImpl featRange, TOP arrayFs) {
+    if (CASImpl.IS_DISABLE_SUBTYPE_FSARRAY_CREATION) {
+      return;  // for compatibility with V2
+    }
     if (arrayFs != null && featRange.isTypedFsArray() ) { // https://issues.apache.org/jira/browse/UIMA-5446
-      if (arrayFs._getTypeImpl().getComponentType().subsumesStrictly(featRange.getComponentType())) {
-        arrayFs._setTypeImpl(featRange);  // replace more general type with more specific type
+      TypeImpl array_type = arrayFs._getTypeImpl();
+      if (array_type.isTypedFsArray()) {
+         // don't change an already subtyped FSArray
+        return;
       }
+      arrayFs._setTypeImpl(featRange);  // replace more general type with more specific type
     }
   }
     
