@@ -35,6 +35,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -224,6 +225,7 @@ public class Jg {
     addBuiltInTypeInfo(casName, javaName, null);
   }
 
+  static private List<String> genericFeatureDescriptorTypes = Arrays.asList("uima.cas.FSArray", "uima.cas.FSList");
   // first type needed by fsArrayType; in hash map will be overwritten, though
   static {
 //    addBuiltInTypeInfo("uima.cas.TOP", "org.apache.uima.cas.FeatureStructure"); // overridden below
@@ -418,7 +420,7 @@ public class Jg {
     Prefs.get(gui);
     gui.pnG.taStatus.setLineWrap(true);
     gui.pnG.taStatus.setWrapStyleWord(true);
-    gui.show();
+    gui.setVisible(true);
     waiter = new Waiter();
     waiter.waitforGUI();
   }
@@ -1236,7 +1238,7 @@ public class Jg {
             continue;
         }
         collectImport(fd.getRangeTypeName(), false);
-        if (hasArrayRange(fd)) {
+        if (isRangeTypeGeneric(fd)) {
           collectImport(getJavaRangeArrayElementType(fd), false);
         }
       }
@@ -1260,6 +1262,20 @@ public class Jg {
       }
     }
     return getJavaName(rangeTypeNameCAS);
+  }
+
+  /**
+   * Gets the java range type, with generic types in <> as required.
+   *
+   * @param fd the fd
+   * @return the java range type
+   */
+  String getJavaRangeType2(FeatureDescription fd) {
+	  if (isRangeTypeGeneric(fd)) {
+		  String generic = getJavaRangeArrayElementType2(fd);
+		  return getJavaRangeType(fd) + "<" + (generic == null || generic.trim().isEmpty() ? "?" : generic) + ">";
+	  } else
+		  return getJavaRangeType(fd);
   }
 
   /**
@@ -1338,6 +1354,19 @@ public class Jg {
       return getJavaName(arrayElementCasNameWithNameSpace);
     }
     return getJavaName(bi.arrayElNameWithPkg);
+  }
+
+  /**
+   * Gets the java range array element type, with generic type or ? in <> as needed
+   *
+   * @param fd the fd
+   * @return the java range array element type
+   */
+  String getJavaRangeArrayElementType2(FeatureDescription fd) {
+	if(this.isElementTypeGeneric(fd))
+		return getJavaRangeArrayElementType(fd) + "<?>";
+	else
+		return getJavaRangeArrayElementType(fd);
   }
 
   // **************************************************
@@ -1492,7 +1521,7 @@ public class Jg {
   String getFeatureValue(FeatureDescription fd, TypeDescription td) {
     String getSetNamePart = getGetSetNamePart(fd);
     String core = simpleCore("get", getSetNamePart, fd.getName());
-    return castResult(getJavaRangeType(fd), core);
+    return castResult(getJavaRangeType2(fd), core);
   }
 
   /**
@@ -1515,8 +1544,8 @@ public class Jg {
    */
   String getArrayFeatureValue(FeatureDescription fd, TypeDescription td) {
     String getSetArrayNamePart = getGetSetArrayNamePart(fd);
-    String core = arrayCore("get", getSetArrayNamePart, getJavaRangeType(fd), fd.getName());
-    return castResult(getJavaRangeArrayElementType(fd), core);
+    String core = arrayCore("get", getSetArrayNamePart, getJavaRangeType2(fd), fd.getName());
+    return castResult(getJavaRangeArrayElementType2(fd), core);
   }
 
   /**
@@ -1527,7 +1556,7 @@ public class Jg {
    * @return the string
    */
   String setArrayFeatureValue(FeatureDescription fd, TypeDescription td) {
-    return arrayCore("set", getGetSetArrayNamePart(fd), getJavaRangeType(fd), fd.getName());
+    return arrayCore("set", getGetSetArrayNamePart(fd), getJavaRangeType2(fd), fd.getName());
   }
 
   /**
@@ -1537,7 +1566,7 @@ public class Jg {
    * @return the gets the set name part
    */
   String getGetSetNamePart(FeatureDescription fd) {
-    return sc(getJavaRangeType(fd));
+    return sc(getJavaRangeType2(fd));
   }
 
   /**
@@ -1646,5 +1675,12 @@ public class Jg {
     
     return (range.equals("Feature")) ? "NcWj" : "Nfc";  
   }
+  
+  boolean isRangeTypeGeneric(FeatureDescription fd) {
+	  return fd == null ? false : genericFeatureDescriptorTypes.contains(fd.getRangeTypeName());
+  }
 
+  boolean isElementTypeGeneric(FeatureDescription fd) {
+	  return fd == null ? false : genericFeatureDescriptorTypes.contains(fd.getElementType());
+  }
 }

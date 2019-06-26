@@ -29,6 +29,14 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     StringBuilder stringBuilder = new StringBuilder();
 
     stringBuilder.append("\n\n");
+   
+/* ************************************************************************************************* 
+ * File generated from uimaj-tools project: /src/main/javajet/jcasgen/templates/JCasType.javajet
+ * Edit that file, and rerun the jet expander, found in the uimaj-jet-expander project in svn
+ *   Install that project into Eclipse using 
+ *     File -- import -- Projects from Folder or Archive  then select the uimaj-jet-expander folder
+ ***************************************************************************************************/
+
     Object [] args = (Object [])argument;
     Jg jg = (Jg)args[0];
     TypeDescription td = (TypeDescription)args[1]; 
@@ -39,15 +47,24 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
    if (0 != jg.packageName.length()) {
     stringBuilder.append("package ");
     stringBuilder.append(jg.packageName);
-    stringBuilder.append(";\n");
+    stringBuilder.append(";\n \n");
    } 
    else 
      jg.error.newError(IError.WARN, 
 		jg.getString("pkgMissing", new Object[] {td.getName()}), null); 
-    stringBuilder.append("\nimport java.lang.invoke.CallSite;\nimport java.lang.invoke.MethodHandle;\n\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.impl.TypeSystemImpl;\nimport org.apache.uima.jcas.JCas; \nimport org.apache.uima.jcas.JCasRegistry;\n\n\n");
-   for(Iterator i=jg.collectImports(td, false).iterator(); i.hasNext();) { 
+    stringBuilder.append("\n");
+   FeatureDescription[] fds = td.getFeatures();
+   if(fds.length > 0) { 
+    stringBuilder.append("import java.lang.invoke.CallSite;\nimport java.lang.invoke.MethodHandle;\n");
+   } 
+    stringBuilder.append("\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.TypeImpl;\n");
+  if (fds.length > 0) { 
+    stringBuilder.append("import org.apache.uima.cas.impl.TypeSystemImpl;\n");
+   } 
+    stringBuilder.append("import org.apache.uima.jcas.JCas; \nimport org.apache.uima.jcas.JCasRegistry;\n\n\n");
+   for(Iterator<String> i=jg.collectImports(td, false).iterator(); i.hasNext();) { 
     stringBuilder.append("import ");
-    stringBuilder.append((String)i.next());
+    stringBuilder.append(i.next());
     stringBuilder.append(";\n");
    } 
     stringBuilder.append("\n\n");
@@ -74,7 +91,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     
    featRegistry.append("  /* Feature Adjusted Offsets */\n");
    
-   for (FeatureDescription fd : td.getFeatures()) { 
+   for (FeatureDescription fd : fds) { 
 
      String featName = fd.getName();
      String featUName = jg.uc1(featName);  // upper case first letter
@@ -84,12 +101,6 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
                          null);
      }
 
-     String featDesc = jg.nullBlank(fd.getDescription());
-     String featDescCmt = featDesc;
-
-     String rangeType = jg.getJavaRangeType(fd);
-     String elemType = jg.getJavaRangeArrayElementType(fd);
-     
      localData   .append("  public final static String _FeatName_").append(featName).append(" = \"").append(featName).append("\";\n");
      
      featRegistry.append("  private final static CallSite _FC_").append(featName)
@@ -128,8 +139,12 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
      String featDesc = jg.nullBlank(fd.getDescription());
      String featDescCmt = featDesc;
 
-     String rangeType = jg.getJavaRangeType(fd);
-     String elemType = jg.getJavaRangeArrayElementType(fd);    
+     String rangeType = jg.getJavaRangeType2(fd);
+     String elemType = jg.getJavaRangeArrayElementType2(fd); 
+     boolean isRangeTypeGeneric = jg.isRangeTypeGeneric(fd);
+     boolean isElemTypeGeneric = jg.isElementTypeGeneric(fd);
+     
+
 
     stringBuilder.append(" \n    \n  //*--------------*\n  //* Feature: ");
     stringBuilder.append(featName);
@@ -137,13 +152,17 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(featName);
     stringBuilder.append(" - gets ");
     stringBuilder.append(featDescCmt);
-    stringBuilder.append("\n   * @generated\n   * @return value of the feature \n   */\n  public ");
+    stringBuilder.append("\n   * @generated\n   * @return value of the feature \n   */\n");
+  if (isRangeTypeGeneric) { 
+    stringBuilder.append("  @SuppressWarnings(\"unchecked\")\n");
+   } 
+    stringBuilder.append("  public ");
     stringBuilder.append(rangeType);
     stringBuilder.append(" get");
     stringBuilder.append(featUName);
-    stringBuilder.append("() { return ");
+    stringBuilder.append("() { \n    return ");
     stringBuilder.append(jg.getFeatureValue(fd, td));
-    stringBuilder.append(";}\n    \n  /** setter for ");
+    stringBuilder.append(";\n  }\n    \n  /** setter for ");
     stringBuilder.append(featName);
     stringBuilder.append(" - sets ");
     stringBuilder.append(featDescCmt);
@@ -159,17 +178,25 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(featName);
     stringBuilder.append(" - gets an indexed value - ");
     stringBuilder.append(featDescCmt);
-    stringBuilder.append("\n   * @generated\n   * @param i index in the array to get\n   * @return value of the element at index i \n   */\n  public ");
+    stringBuilder.append("\n   * @generated\n   * @param i index in the array to get\n   * @return value of the element at index i \n   */\n");
+  if (isRangeTypeGeneric || isElemTypeGeneric) {
+    stringBuilder.append("  @SuppressWarnings(\"unchecked\")\n");
+  }
+    stringBuilder.append("  public ");
     stringBuilder.append(elemType);
     stringBuilder.append(" get");
     stringBuilder.append(featUName);
     stringBuilder.append("(int i) {\n     return ");
     stringBuilder.append(jg.getArrayFeatureValue(fd, td));
-    stringBuilder.append(";} \n\n  /** indexed setter for ");
+    stringBuilder.append(";\n  } \n\n  /** indexed setter for ");
     stringBuilder.append(featName);
     stringBuilder.append(" - sets an indexed value - ");
     stringBuilder.append(featDescCmt);
-    stringBuilder.append("\n   * @generated\n   * @param i index in the array to set\n   * @param v value to set into the array \n   */\n  public void set");
+    stringBuilder.append("\n   * @generated\n   * @param i index in the array to set\n   * @param v value to set into the array \n   */\n");
+  if (isRangeTypeGeneric || isElemTypeGeneric) {
+    stringBuilder.append("  @SuppressWarnings(\"unchecked\")\n  ");
+   } 
+    stringBuilder.append("  public void set");
     stringBuilder.append(featUName);
     stringBuilder.append("(int i, ");
     stringBuilder.append(elemType);

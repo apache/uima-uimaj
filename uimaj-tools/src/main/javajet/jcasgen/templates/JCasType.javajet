@@ -18,7 +18,15 @@
  */
 <%@ jet package="org.apache.uima.tools.jcasgen" imports="java.util.Iterator org.apache.uima.resource.metadata.TypeDescription org.apache.uima.resource.metadata.FeatureDescription" class="JCasTypeTemplate" implements="Jg.IJCasTypeTemplate" %>
 
-<%  Object [] args = (Object [])argument;
+<% 
+/* ************************************************************************************************* 
+ * File generated from uimaj-tools project: /src/main/javajet/jcasgen/templates/JCasType.javajet
+ * Edit that file, and rerun the jet expander, found in the uimaj-jet-expander project in svn
+ *   Install that project into Eclipse using 
+ *     File -- import -- Projects from Folder or Archive  then select the uimaj-jet-expander folder
+ ***************************************************************************************************/
+
+    Object [] args = (Object [])argument;
     Jg jg = (Jg)args[0];
     TypeDescription td = (TypeDescription)args[1]; 
    jg.packageName = jg.getJavaPkg(td); %>
@@ -27,23 +35,29 @@
 
 <% if (0 != jg.packageName.length()) {%>
 package <%=jg.packageName%>;
+ 
 <% } 
    else 
      jg.error.newError(IError.WARN, 
 		jg.getString("pkgMissing", new Object[] {td.getName()}), null); %>
 
+<% FeatureDescription[] fds = td.getFeatures();
+   if(fds.length > 0) { %>
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
+<% } %>
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+<%if (fds.length > 0) { %>
 import org.apache.uima.cas.impl.TypeSystemImpl;
+<% } %>
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
 
 
-<% for(Iterator i=jg.collectImports(td, false).iterator(); i.hasNext();) { %>
-import <%=(String)i.next()%>;
+<% for(Iterator<String> i=jg.collectImports(td, false).iterator(); i.hasNext();) { %>
+import <%=i.next()%>;
 <% } %>
 
 
@@ -83,7 +97,7 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
     
    featRegistry.append("  /* Feature Adjusted Offsets */\n");
    
-   for (FeatureDescription fd : td.getFeatures()) { 
+   for (FeatureDescription fd : fds) { 
 
      String featName = fd.getName();
      String featUName = jg.uc1(featName);  // upper case first letter
@@ -93,12 +107,6 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
                          null);
      }
 
-     String featDesc = jg.nullBlank(fd.getDescription());
-     String featDescCmt = featDesc;
-
-     String rangeType = jg.getJavaRangeType(fd);
-     String elemType = jg.getJavaRangeArrayElementType(fd);
-     
      localData   .append("  public final static String _FeatName_").append(featName).append(" = \"").append(featName).append("\";\n");
      
      featRegistry.append("  private final static CallSite _FC_").append(featName)
@@ -175,8 +183,12 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
      String featDesc = jg.nullBlank(fd.getDescription());
      String featDescCmt = featDesc;
 
-     String rangeType = jg.getJavaRangeType(fd);
-     String elemType = jg.getJavaRangeArrayElementType(fd);    
+     String rangeType = jg.getJavaRangeType2(fd);
+     String elemType = jg.getJavaRangeArrayElementType2(fd); 
+     boolean isRangeTypeGeneric = jg.isRangeTypeGeneric(fd);
+     boolean isElemTypeGeneric = jg.isElementTypeGeneric(fd);
+     
+
 %> 
     
   //*--------------*
@@ -186,7 +198,12 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
    * @generated
    * @return value of the feature 
    */
-  public <%=rangeType%> get<%=featUName%>() { return <%=jg.getFeatureValue(fd, td)%>;}
+<%if (isRangeTypeGeneric) { %>
+  @SuppressWarnings("unchecked")
+<% } %>
+  public <%=rangeType%> get<%=featUName%>() { 
+    return <%=jg.getFeatureValue(fd, td)%>;
+  }
     
   /** setter for <%=featName%> - sets <%=featDescCmt%> 
    * @generated
@@ -203,14 +220,21 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
    * @param i index in the array to get
    * @return value of the element at index i 
    */
+<%if (isRangeTypeGeneric || isElemTypeGeneric) {%>
+  @SuppressWarnings("unchecked")
+<%}%>
   public <%=elemType%> get<%=featUName%>(int i) {
-     return <%=jg.getArrayFeatureValue(fd, td)%>;} 
+     return <%=jg.getArrayFeatureValue(fd, td)%>;
+  } 
 
   /** indexed setter for <%=featName%> - sets an indexed value - <%=featDescCmt%>
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
+<%if (isRangeTypeGeneric || isElemTypeGeneric) {%>
+  @SuppressWarnings("unchecked")
+  <% } %>
   public void set<%=featUName%>(int i, <%=elemType%> v) {
     <%=jg.setArrayFeatureValue(fd, td)%>;
   }  
