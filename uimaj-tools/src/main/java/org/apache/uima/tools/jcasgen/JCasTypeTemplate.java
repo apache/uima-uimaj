@@ -114,7 +114,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(localData);
     stringBuilder.append("\n\n");
     stringBuilder.append(featRegistry);
-    stringBuilder.append("\n   \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
+    stringBuilder.append("\n   \n  /** Never called.  Disable default constructor\n   * @generated */\n  @Deprecated\n  protected ");
     stringBuilder.append(typeName);
     stringBuilder.append("() {/* intentionally empty block */}\n    \n  /** Internal - constructor used by generator \n   * @generated\n   * @param casImpl the CAS this Feature Structure belongs to\n   * @param type the type of this Feature Structure \n   */\n  public ");
     stringBuilder.append(typeName);

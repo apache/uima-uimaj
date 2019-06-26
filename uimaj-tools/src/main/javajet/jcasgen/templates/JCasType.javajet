@@ -127,6 +127,7 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
    
   /** Never called.  Disable default constructor
    * @generated */
+  @Deprecated
   protected <%=typeName%>() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
