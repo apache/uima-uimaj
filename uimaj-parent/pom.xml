@@ -53,13 +53,13 @@
        element, and just changing the following two properties -->
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-parent
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-parent
     </connection>
     <developerConnection>
       scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-parent
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-parent
+      https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-parent
     </url>
   </scm>
 
@@ -76,7 +76,7 @@
       <id>eclipsePlugins</id>
       <name>Eclipse components</name>
       <layout>default</layout>
-      <url>http://repo1.maven.org/eclipse</url>
+      <url>https://repo1.maven.org/eclipse</url>
       
       <releases>
         <updatePolicy>never</updatePolicy>
@@ -94,7 +94,7 @@
       <id>central</id>
       <name>Maven Repository Switchboard</name>
       <layout>default</layout>
-      <url>http://repo1.maven.org/maven2</url>
+      <url>https://repo1.maven.org/maven2</url>
 
       <releases>
         <enabled>true</enabled>
@@ -111,7 +111,7 @@
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
-      <url>http://repository.apache.org/snapshots</url>
+      <url>https://repository.apache.org/snapshots</url>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -123,7 +123,7 @@
     <pluginRepository>
       <id>apache.snapshots.plugins</id>
       <name>Apache Snapshot Repository - Maven plugins</name>
-      <url>http://repository.apache.org/snapshots</url>
+      <url>https://repository.apache.org/snapshots</url>
       <layout>default</layout>
       <releases>
         <enabled>false</enabled>
