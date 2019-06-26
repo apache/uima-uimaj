@@ -81,6 +81,35 @@ under the License.
                     sometimes improve locality of reference, and therefore, performance. 
                     Setting this property disables this consolidation.</para></entry>
          </row>
+        <!-- ******************************************************************************* -->
+         <row>
+           <entry><para>Disable subtype of FSArray creation</para></entry>
+           
+           <entry><para><code>uima.disable_subtype_fsarray_creation</code></para>
+           
+                  <para>Default: Subtypes of FSArrays can be created and are created when deserializing CASes.</para>
+                  <para>UIMA has some limited support for typed arrays.  
+                    These are declared in type system descriptors by including an 
+                    elementType specification for a feature whose range is FSArray.
+                    See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor.type_system.features"/>.                  
+                  </para>
+                  
+                  <para>The XCAS and the Xmi serialization forms serialize these as FSArray, with
+                    no element type specification included in the serialized form.
+                    The deserialization code, when deserializing these, 
+                    looks at the type system's feature declaration to see if it has an elementType, and if so, 
+                    changes the type of the Feature Structure to that type.
+                  </para>
+                  
+                  <para>UIMA Version 2's CAS API did not have the ability to create typed FSArrays.
+                  This was added in V3, but will be disabled if this flag is set.</para>
+                  
+                                    
+                  <para>Setting this flag will cause all FSArray creations to be untyped.
+                  </para>
+           </entry>
+         </row>
+         -->
 
          <!-- ******************************************************************************* -->
          <row>
@@ -121,7 +150,7 @@ under the License.
                     <code>ll_enableV2IdRefs</code> mode to true.  This mode is is also programmatically
                       settable, which overrides this default.</para>
                   <para>For more details on how this setting operates and interacts with the associated APIs, 
-                    see <xref linkend="uv3.backwards_compatibility.preserve_v2_ids"/>
+                    <xref linkend="uv3.backwards_compatibility.preserve_v2_ids"/>
                   </para>                     
            </entry>
          </row>
