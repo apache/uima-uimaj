@@ -1265,13 +1265,22 @@ public interface CAS extends AbstractCas {
   };
 
   /** 
-   * @param <T> the type of the lements of the FSArray
-   * @return a lazily created shared (for this CAS) 0-length array
+   * @param <T> the type of the elements of the FSArray
+   * @return a lazily created shared (for this CAS) 0-length FSarray 
    */
   default <T extends FeatureStructure> FSArray<T> emptyFSArray() {
     return ((CASImpl)getLowLevelCAS()).emptyFSArray();
   };
-
+  
+  /**
+   * @param type the type of the elements of the FSArray 
+   * @param <T> the type of the elements of the FSArray
+   * @return a lazily created shared (for this CAS) 0-length subtype of FSarray holding elements of type element-type 
+   */
+  default <T extends FeatureStructure> FSArray<T> emptyFSArray(Type type) {
+    return ((CASImpl)getLowLevelCAS()).emptyFSArray(type);
+  };
+  
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
    */
