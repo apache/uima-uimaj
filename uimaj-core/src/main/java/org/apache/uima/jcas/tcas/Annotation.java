@@ -75,6 +75,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
 
   // Never called. Disable default constructor
   @Deprecated
+  @SuppressWarnings("deprecation")
   protected Annotation() {
   }
 
