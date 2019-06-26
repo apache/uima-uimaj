@@ -111,6 +111,18 @@ public final class FSArray<T extends FeatureStructure> extends TOP
       _casView.adjustLastFsV2Size_arrays(length);
     }    
   }
+  
+  /**
+   * Constructs an instance of a subtype of FSArray having the component type clazz
+   * Note: the array with this component type must already be specified in the 
+   * type system declaration as a feature whose range is FSArray with the specified elementType.
+   * @param clazz - the FSArray's element's class
+   * @param jcas -
+   * @param length -
+   */
+  public FSArray(Class<? extends TOP> clazz, JCas jcas, int length) {
+   this((TypeImpl)jcas.getCasType(clazz), jcas.getCasImpl(), length);
+  }
 
 
   /** return the indexed value from the corresponding Cas FSArray as a Java Model object. */
