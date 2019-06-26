@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -137,6 +136,10 @@ import org.apache.uima.util.Level;
  */
 public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLevelCAS, TypeSystemConstants {
 
+  private static final String DISABLE_SUBTYPE_FSARRAY_CREATION = "uima.disable_subtype_fsarray_creation";
+  static final boolean IS_DISABLE_SUBTYPE_FSARRAY_CREATION = 
+      Misc.getNoValueSystemProperty(DISABLE_SUBTYPE_FSARRAY_CREATION);
+  
   private static final String TRACE_FSS = "uima.trace_fs_creation_and_updating";
 //  public static final boolean IS_USE_V2_IDS = false;  // if false, ids increment by 1
   private static final boolean trace = false; // debug
@@ -504,7 +507,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private EmptyStringList emptyStringList;
     
     private FloatArray emptyFloatArray;
-    private FSArray emptyFSArray;
+    private final Map<Type, FSArray> emptyFSArrayMap = new HashMap<>();
     private IntegerArray emptyIntegerArray;
     private StringArray emptyStringArray;
     private DoubleArray emptyDoubleArray;
@@ -718,7 +721,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       emptyStringList = null;
       
       emptyFloatArray = null;
-      emptyFSArray = null;
+      emptyFSArrayMap.clear();
       emptyIntegerArray = null;
       emptyStringArray = null;
       emptyDoubleArray = null;
@@ -1437,7 +1440,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       default: throw Misc.internalError();
       }
     }
-    return (TOP) createArrayFS(array_type, arrayLength);
+//    return (TOP) createArrayFS(/* array_type, */ arrayLength);  // for backwards compat w/ v2, don't create typed arrays
+    if (IS_DISABLE_SUBTYPE_FSARRAY_CREATION) {
+      return (TOP) createArrayFS(arrayLength);
+    } else {
+      return (TOP) createArrayFS(array_type, arrayLength);
+    }
   }
 
   /* 
@@ -5118,11 +5126,14 @@ public FloatArray emptyFloatArray() {
   }
 
   @Override
-public <T extends FeatureStructure> FSArray<T> emptyFSArray() {
-    if (null == svd.emptyFSArray) {
-      svd.emptyFSArray = new FSArray<T>(this.getJCas(), 0);
-    }
-    return svd.emptyFSArray;
+  public <T extends FeatureStructure> FSArray<T> emptyFSArray() {
+    return emptyFSArray(null);
+  }
+  
+  public <T extends FeatureStructure> FSArray<T> emptyFSArray(Type type) {
+    return svd.emptyFSArrayMap.computeIfAbsent(type, t -> (t == null) 
+        ? new FSArray(this.getJCas(), 0)
+        : new FSArray((TypeImpl) getTypeSystemImpl().getArrayType(type), this, 0));
   }
   
   @Override
