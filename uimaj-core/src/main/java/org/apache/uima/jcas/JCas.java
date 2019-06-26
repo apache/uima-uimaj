@@ -67,6 +67,7 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
@@ -85,6 +86,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * You can create a <code>JCas</code> object from a CAS object by calling the getJCas()
  * method on the CAS object. 
  */
+@SuppressWarnings("deprecation")
 public interface JCas extends AbstractCas {
 
   /**
@@ -282,8 +284,9 @@ public interface JCas extends AbstractCas {
     return this.getCas().emptyStringArray();
   }
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same valuee because it is not
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a StringArray
@@ -293,7 +296,8 @@ public interface JCas extends AbstractCas {
   }
 
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
@@ -305,7 +309,8 @@ public interface JCas extends AbstractCas {
     return this.getCas().emptyIntegerArray();
   }
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
@@ -316,7 +321,8 @@ public interface JCas extends AbstractCas {
   }
 
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
@@ -328,7 +334,8 @@ public interface JCas extends AbstractCas {
     return this.getCas().emptyFloatArray();
   }
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
@@ -339,7 +346,8 @@ public interface JCas extends AbstractCas {
   }
 
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
@@ -353,7 +361,8 @@ public interface JCas extends AbstractCas {
     return this.getCas().emptyFSArray();
   }
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
@@ -364,9 +373,26 @@ public interface JCas extends AbstractCas {
   default FSArray emptyFSArray() {
     return this.getCas().emptyFSArray();
   }
+  
+  /**
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance 
+   * of a 
+   * subtype of FSArray. Since this can be a common value, we
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
+   * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
+   * the CAS is reset.
+   * 
+   * See also the CAS API 
+   * @param clazz the class of the component type the array is to contain
+   * @return 0-length instance of a FSArray, which is associated with the element type T
+   */
+  default <T extends TOP> FSArray<T> emptyFSArray(Class<T> clazz) {
+    return this.getCas().emptyFSArray(((JCasImpl)this).getCasType(clazz));
+  }
 
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
@@ -377,7 +403,8 @@ public interface JCas extends AbstractCas {
   }
 
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
@@ -388,7 +415,8 @@ public interface JCas extends AbstractCas {
   }
 
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
@@ -399,7 +427,8 @@ public interface JCas extends AbstractCas {
   }
   
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
@@ -410,7 +439,8 @@ public interface JCas extends AbstractCas {
   }
   
   /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
+   * Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
