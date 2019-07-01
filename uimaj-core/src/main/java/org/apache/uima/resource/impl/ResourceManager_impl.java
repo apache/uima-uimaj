@@ -483,6 +483,7 @@ public class ResourceManager_impl implements ResourceManager {
   @Override
   @SuppressWarnings("unchecked")
   public Class<?> getResourceClass(String aName) {
+    checkDestroyed();
     Object r = mResourceMap.get(aName);
     if (r == null) // no such resource
     {
@@ -913,6 +914,12 @@ public class ResourceManager_impl implements ResourceManager {
       }
     }
     
+    // not clearing mResourcMap, mInternalResourceRegistrationMap, mParameterizedResourceImplClassMap, 
+    //   mInternalParameterizedResourceImplClassMap, mParameterizedResourceInstanceMap
+    //   because these could be shared with other resource managers
+    // not clearing importCache, importUrlsCache - might be in used by other Resource Managers (shared) 
+    
+       
     // no destroy of caspool at this time
     
   }
