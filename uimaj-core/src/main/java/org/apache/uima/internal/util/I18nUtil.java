@@ -26,6 +26,8 @@ import java.util.ResourceBundle;
 /**
  * Internationaliation utilities.
  * 
+ * Static methods only
+ * 
  */
 public class I18nUtil {
   /**
@@ -109,11 +111,38 @@ public class I18nUtil {
   public static String localizeMessage(String aResourceBundleName, Locale aLocale,
           String aMessageKey, Object[] aArguments, ClassLoader aLoader) {
     try {
-      if (aLoader == null) {
-        aLoader = MsgLocalizationClassLoader.getMsgLocalizationClassLoader();        
-      }
-      // locate the resource bundle for this exception's messages
-      ResourceBundle bundle =  ResourceBundle.getBundle(aResourceBundleName, aLocale, aLoader);
+      ResourceBundle bundle =  resolveResourceBundle(aResourceBundleName, aLocale, aLoader);
+      return localizeMessage(bundle, aLocale, aMessageKey, aArguments);
+    } catch (Exception e) {
+      return "MESSAGE LOCALIZATION FAILED: " + e.getMessage();
+    }
+  }
+  
+  public static ResourceBundle resolveResourceBundle(String aResourceBundleName, Locale aLocale, ClassLoader aLoader) {
+    if (aLoader == null) {
+      aLoader = MsgLocalizationClassLoader.getMsgLocalizationClassLoader();        
+    }
+    // locate the resource bundle for this exception's messages
+    return ResourceBundle.getBundle(aResourceBundleName, aLocale, aLoader);
+  }
+  
+  /**
+   * Localize a message to a specified Locale.
+   * 
+   * @param aResourceBundle
+   *          the resource bundle to use to resolve message keys
+   * @param aLocale
+   *          locale to which to localize
+   * @param aMessageKey
+   *          key of message to localize
+   * @param aArguments
+   *          arguments to message (may be null if none)
+   * 
+   * @return localized message. If an exception occurs, returns "MESSAGE LOCALIZATION FAILED:"
+   *         followed by the exception message.
+   */
+  public static String localizeMessage(ResourceBundle bundle, Locale aLocale, String aMessageKey, Object[] aArguments) {
+    try {
       String message = bundle.getString(aMessageKey);
       // if arguments exist, use MessageFormat to include them
       if (aArguments != null && aArguments.length > 0) {
@@ -124,7 +153,7 @@ public class I18nUtil {
         return message;
     } catch (Exception e) {
       return "MESSAGE LOCALIZATION FAILED: " + e.getMessage();
-    }
+    }    
   }
 
   public static void setTccl(ClassLoader tccl) {

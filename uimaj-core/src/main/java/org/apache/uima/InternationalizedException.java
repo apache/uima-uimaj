@@ -20,6 +20,7 @@
 package org.apache.uima;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.apache.uima.internal.util.I18nUtil;
 
@@ -75,6 +76,14 @@ public class InternationalizedException extends Exception {
     * Deserialized versions have null as their value, which is handled by the users
     */
    final transient private ClassLoader originalContextClassLoader;
+   
+   // see https://issues.apache.org/jira/browse/UIMA-5961
+   // the resourceBundle associated with the default locale, at the time of creation of this instance
+   final transient private ResourceBundle default_localized_resourceBundle;
+   // the default locale, at the time of creation of this instance
+   final transient private Locale default_locale;
+   // a user specified resource bundle, used when the default_locale is not appropriate
+   transient private ResourceBundle user_specified_resourceBundle = null;
 
    /**
     * Creates a new <code>InternationalizedException</code> with a null
@@ -135,6 +144,15 @@ public class InternationalizedException extends Exception {
            Object[] aArguments, Throwable aCause) {
       super();
       originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+      try {
+        I18nUtil.setTccl(originalContextClassLoader); 
+        default_locale = Locale.getDefault();
+        default_localized_resourceBundle = (aMessageKey == null) 
+            ? null 
+            : I18nUtil.resolveResourceBundle(aResourceBundleName, default_locale, null);      
+      } finally {
+        I18nUtil.removeTccl();        
+      }
       mCause = aCause;
       mResourceBundleName = aResourceBundleName;
       mMessageKey = aMessageKey;
@@ -221,8 +239,18 @@ public class InternationalizedException extends Exception {
     */
    public String getLocalizedMessage(Locale aLocale) {
       // check for null message
-      if (getMessageKey() == null)
+      if (getMessageKey() == null) {
          return null;
+      }
+      
+      if (default_localized_resourceBundle != null && aLocale == default_locale) {
+        return I18nUtil.localizeMessage(default_localized_resourceBundle, aLocale, getMessageKey(), getArguments());
+      }
+      
+      if (user_specified_resourceBundle != null) {
+        return I18nUtil.localizeMessage(user_specified_resourceBundle, aLocale, getMessageKey(), getArguments());
+      }
+      
       try {
         I18nUtil.setTccl(originalContextClassLoader);       
         return I18nUtil.localizeMessage(getResourceBundleName(), aLocale, getMessageKey(), getArguments());
@@ -249,7 +277,7 @@ public class InternationalizedException extends Exception {
 //         return "EXCEPTION MESSAGE LOCALIZATION FAILED: " + e.toString();
 //      }
    }
-
+   
    /**
     * Gets the cause of this Exception.
     * 
@@ -284,4 +312,23 @@ public class InternationalizedException extends Exception {
       return this;
    }
 
+   /**
+    * For the case where the default locale is not being used for getting messages,
+    * and the lookup path in the classpath for the resource bundle needs to be set 
+    * at a specific point, call this method to set the resource bundle at that point in the call stack.
+    * 
+    * Example: If in a Pear, and you are throwing an exception, which is defined in a bundle
+    * in the Pear context, but the catcher of the throw is up the stack above where the pear context
+    * exists (and therefore, is no longer present at "catch" time), and
+    * you don't want to use the default-locale for getting the message out of the message bundle,
+    * 
+    * then do something like this
+    *   Exception e = new AnalysisEngineProcessException(MESSAGE_BUNDLE, "TEST_KEY", objects);
+    *   e.setResourceBundle(my_locale);  // call this method, pass in the needed locale object
+    *   throw e;  // or whatever should be done with it
+    * @param aLocale the locale to use when getting the message from the message bundle at a later time
+    */
+   public void setResourceBundle(Locale aLocale) {
+     user_specified_resourceBundle = I18nUtil.resolveResourceBundle(mResourceBundleName, aLocale, null);
+   }
 }
