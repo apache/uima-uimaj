@@ -22,6 +22,7 @@ package org.apache.uima;
 import java.util.Locale;
 
 import org.apache.uima.internal.util.I18nUtil;
+import org.apache.uima.internal.util.I18nx_impl;
 
 /**
  * The <code>InternationalizedRuntimeException</code> class adds internationalization support to
@@ -49,36 +50,9 @@ public class InternationalizedRuntimeException extends RuntimeException {
 
   private static final long serialVersionUID = 6387360855459370559L;
 
-  /**
-   * The base name of the resource bundle in which the message for this exception is located.
-   */
-  private String mResourceBundleName;
+  private final I18nx_impl c;  // common code 
 
   /**
-   * An identifier that maps to the message for this exception.
-   */
-  private String mMessageKey;
-
-  /**
-   * The arguments to this exception's message, if any. This allows an
-   * <code>InternationalizedRuntimeException</code> to have a compound message, made up of
-   * multiple parts that are concatenated in a language-neutral way.
-   */
-  private Object[] mArguments;
-
-  /**
-   * The exception that caused this exception to occur.
-   */
-  private Throwable mCause;
-
-  /**
-   * the thread local class loader at creation time, see UIMA-4793
-   * Transient to allow exceptions to be serialized.
-   * Deserialized versions have null as their value, which is handled by the users
-   */
-  final transient private ClassLoader originalContextClassLoader;
-
-   /**
    * Creates a new <code>InternationalizedRuntimeException</code> with a null message.
    */
   public InternationalizedRuntimeException() {
@@ -135,23 +109,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
   public InternationalizedRuntimeException(String aResourceBundleName, String aMessageKey,
           Object[] aArguments, Throwable aCause) {
     super();
-    originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-    mCause = aCause;
-    mResourceBundleName = aResourceBundleName;
-    mMessageKey = aMessageKey;
-    mArguments = aArguments;
-    // if null message and mCause is Internationalized exception, "promote" message
-    if (mResourceBundleName == null && mMessageKey == null) {
-      if (mCause instanceof InternationalizedException) {
-        mResourceBundleName = ((InternationalizedException) mCause).getResourceBundleName();
-        mMessageKey = ((InternationalizedException) mCause).getMessageKey();
-        mArguments = ((InternationalizedException) mCause).getArguments();
-      } else if (mCause instanceof InternationalizedRuntimeException) {
-        mResourceBundleName = ((InternationalizedRuntimeException) mCause).getResourceBundleName();
-        mMessageKey = ((InternationalizedRuntimeException) mCause).getMessageKey();
-        mArguments = ((InternationalizedRuntimeException) mCause).getArguments();
-      }
-    }
+    c = new I18nx_impl(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 
   /**
@@ -161,7 +119,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
    *         message.
    */
   public String getResourceBundleName() {
-    return mResourceBundleName;
+    return c.getResourceBundleName();
   }
 
   /**
@@ -173,7 +131,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
    *         this exception has no message.
    */
   public String getMessageKey() {
-    return mMessageKey;
+    return c.getMessageKey();
   }
 
   /**
@@ -184,12 +142,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * @return the arguments to this exception's message.
    */
   public Object[] getArguments() {
-    if (mArguments == null)
-      return new Object[0];
-
-    Object[] result = new Object[mArguments.length];
-    System.arraycopy(mArguments, 0, result, 0, mArguments.length);
-    return result;
+    return c.getArguments();
   }
 
   /**
@@ -199,7 +152,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * @return the English detail message for this exception.
    */
   public String getMessage() {
-    return getLocalizedMessage(Locale.ENGLISH);
+    return c.getMessage();
   }
 
   /**
@@ -209,7 +162,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * @return this exception's detail message, localized for the default Locale.
    */
   public String getLocalizedMessage() {
-    return getLocalizedMessage(Locale.getDefault());
+    return c.getLocalizedMessage();
   }
 
   /**
@@ -221,30 +174,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * @return this exception's detail message, localized for the specified <code>Locale</code>.
    */
   public String getLocalizedMessage(Locale aLocale) {
-    // check for null message
-    if (getMessageKey() == null)
-      return null;
-
-    try {
-      I18nUtil.setTccl(originalContextClassLoader);
-      return I18nUtil.localizeMessage(getResourceBundleName(), aLocale, getMessageKey(), getArguments());
-    } finally {
-      I18nUtil.removeTccl();        
-    }   
-//      // locate the resource bundle for this exception's messages
-//      ResourceBundle bundle = ResourceBundle.getBundle(getResourceBundleName(), aLocale);
-//      // retrieve the message from the resource bundle
-//      String message = bundle.getString(getMessageKey());
-//      // if arguments exist, use MessageFormat to include them
-//      if (getArguments().length > 0) {
-//        MessageFormat fmt = new MessageFormat(message);
-//        fmt.setLocale(aLocale);
-//        return fmt.format(getArguments());
-//      } else
-//        return message;
-//    } catch (Exception e) {
-//      return "EXCEPTION MESSAGE LOCALIZATION FAILED: " + e.toString();
-//    }
+    return c.getLocalizedMessage(aLocale);
   }
 
   /**
@@ -254,12 +184,32 @@ public class InternationalizedRuntimeException extends RuntimeException {
    *         if there is no such cause.
    */
   public Throwable getCause() {
-    return mCause;
+    return c.getCause();
   }
 
   public synchronized Throwable initCause(Throwable cause) {
-    mCause = cause;
+    c.setCause(cause);
     return this;
+  }
+
+  /**
+   * For the case where the default locale is not being used for getting messages,
+   * and the lookup path in the classpath for the resource bundle needs to be set 
+   * at a specific point, call this method to set the resource bundle at that point in the call stack.
+   * 
+   * Example: If in a Pear, and you are throwing an exception, which is defined in a bundle
+   * in the Pear context, but the catcher of the throw is up the stack above where the pear context
+   * exists (and therefore, is no longer present at "catch" time), and
+   * you don't want to use the default-locale for getting the message out of the message bundle,
+   * 
+   * then do something like this
+   *   Exception e = new AnalysisEngineProcessException(MESSAGE_BUNDLE, "TEST_KEY", objects);
+   *   e.setResourceBundle(my_locale);  // call this method, pass in the needed locale object
+   *   throw e;  // or whatever should be done with it
+   * @param aLocale the locale to use when getting the message from the message bundle at a later time
+   */
+  public void setResourceBundle(Locale aLocale) {
+    c.setResourceBundle(aLocale);
   }
 
 }
