@@ -385,6 +385,7 @@ public interface JCas extends AbstractCas {
    * See also the CAS API 
    * @param clazz the class of the component type the array is to contain
    * @return 0-length instance of a FSArray, which is associated with the element type T
+   * @param <T> the particular FeatureStructure type   
    */
   default <T extends TOP> FSArray<T> emptyFSArray(Class<T> clazz) {
     return this.getCas().emptyFSArray(((JCasImpl)this).getCasType(clazz));

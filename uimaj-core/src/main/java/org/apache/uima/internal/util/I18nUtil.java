@@ -134,13 +134,13 @@ public class I18nUtil {
    * @return localized message. If an exception occurs, returns "MESSAGE LOCALIZATION FAILED:"
    *         followed by the exception message.
    */
-  public static String localizeMessage(ResourceBundle bundle, Locale aLocale, String aMessageKey, Object[] aArguments) {
+  public static String localizeMessage(ResourceBundle aResourceBundle, Locale aLocale, String aMessageKey, Object[] aArguments) {
     try {
-       String message = (bundle == null) 
+       String message = (aResourceBundle == null) 
                         ? ("Null ResourceBundle, key = \"" + aMessageKey + "\"")
-                        : bundle.getString(aMessageKey);
+                        : aResourceBundle.getString(aMessageKey);
       // if arguments exist, use MessageFormat to include them
-      if (bundle != null && aArguments != null && aArguments.length > 0) {
+      if (aResourceBundle != null && aArguments != null && aArguments.length > 0) {
         MessageFormat fmt = new MessageFormat(message);
         fmt.setLocale(aLocale);
         return fmt.format(aArguments);
