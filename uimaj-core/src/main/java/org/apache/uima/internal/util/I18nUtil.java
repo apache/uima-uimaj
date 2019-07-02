@@ -110,17 +110,16 @@ public class I18nUtil {
    */
   public static String localizeMessage(String aResourceBundleName, Locale aLocale,
           String aMessageKey, Object[] aArguments, ClassLoader aLoader) {
-    try {
-      ResourceBundle bundle =  resolveResourceBundle(aResourceBundleName, aLocale, aLoader);
-      return localizeMessage(bundle, aLocale, aMessageKey, aArguments);
-    } catch (Exception e) {
-      return "MESSAGE LOCALIZATION FAILED: " + e.getMessage();
-    }
+    ResourceBundle bundle =  resolveResourceBundle(aResourceBundleName, aLocale, aLoader);
+    return localizeMessage(bundle, aLocale, aMessageKey, aArguments);
   }
   
   public static ResourceBundle resolveResourceBundle(String aResourceBundleName, Locale aLocale, ClassLoader aLoader) {
     if (aLoader == null) {
       aLoader = MsgLocalizationClassLoader.getMsgLocalizationClassLoader();        
+    }
+    if (aResourceBundleName == null) {
+      return null;
     }
     // locate the resource bundle for this exception's messages
     return ResourceBundle.getBundle(aResourceBundleName, aLocale, aLoader);
@@ -143,9 +142,11 @@ public class I18nUtil {
    */
   public static String localizeMessage(ResourceBundle bundle, Locale aLocale, String aMessageKey, Object[] aArguments) {
     try {
-      String message = bundle.getString(aMessageKey);
+      String message = (null == bundle)
+                         ? ("Null ResourceBundle, key = \"" + aMessageKey + "\"")
+                         : bundle.getString(aMessageKey);
       // if arguments exist, use MessageFormat to include them
-      if (aArguments != null && aArguments.length > 0) {
+      if (bundle != null && aArguments != null && aArguments.length > 0) {
         MessageFormat fmt = new MessageFormat(message);
         fmt.setLocale(aLocale);
         return fmt.format(aArguments);
