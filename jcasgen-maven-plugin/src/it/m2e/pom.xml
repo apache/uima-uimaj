@@ -32,11 +32,11 @@
 		<repository>
 			<id>juno</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/juno</url>
+			<url>https://download.eclipse.org/releases/juno</url>
 		</repository>
 		<repository>
 			<id>m2e</id>
-			<url>http://download.eclipse.org/technology/m2e/releases/1.2</url>
+			<url>https://download.eclipse.org/technology/m2e/releases/1.2</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>
@@ -57,6 +57,23 @@
             <target>1.7</target>
           </configuration>
         </plugin>
+        
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-surefire-plugin</artifactId>
+          <version>${tycho-version}</version>
+          <configuration>
+            <!-- useUIHarness>true</useUIHarness -->
+            <includes>
+              <include>**/*Test.java</include>
+            </includes>
+            <argLine>${tycho.test.jvmArgs}</argLine>
+            <!-- kill test JVM it tests take more than 10 minutes (600 seconds)
+                         to finish -->
+            <forkedProcessTimeoutInSeconds>7200</forkedProcessTimeoutInSeconds>
+          </configuration>
+        </plugin>
+        
       </plugins>
     </pluginManagement>    
 		<plugins>
@@ -108,26 +125,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-surefire-plugin</artifactId>
-					<version>${tycho-version}</version>
-					<configuration>
-						<!-- useUIHarness>true</useUIHarness -->
-						<includes>
-							<include>**/*Test.java</include>
-						</includes>
-						<argLine>${tycho.test.jvmArgs}</argLine>
-						<!-- kill test JVM it tests take more than 10 minutes (600 seconds)
-                         to finish -->
-						<forkedProcessTimeoutInSeconds>7200</forkedProcessTimeoutInSeconds>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
 	</build>
 	<profiles>
 		<profile>
@@ -135,7 +132,7 @@
 			<activation>
 				<property>
 					<name>java.vendor.url</name>
-					<value>http://java.sun.com/</value>
+					<value>https://java.sun.com/</value>
 				</property>
 			</activation>
 			<properties>
@@ -147,7 +144,7 @@
 			<activation>
 				<property>
 					<name>java.vendor.url</name>
-					<value>http://www.apple.com/</value>
+					<value>https://www.apple.com/</value>
 				</property>
 			</activation>
 			<properties>
