@@ -108,7 +108,7 @@
       <version>3.2.0</version>      
       <scope>provided</scope>
     </dependency>
-    <!-- next one causes NPE with maven 2.0.7.  Might be related to http://jira.codehaus.org/browse/MNG-3086 -->   
+    <!-- next one causes NPE with maven 2.0.7.  Might be related to https://jira.codehaus.org/browse/MNG-3086 -->   
     <!--dependency>
       <groupId>org.eclipse.ui</groupId>
       <artifactId>org.eclipse.ui</artifactId>

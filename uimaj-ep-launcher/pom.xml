@@ -81,7 +81,7 @@
     </dependency>
     
     <!-- next dependency is commented out due to Maven 2.0.7 throwing NPE 
-         Might be related to http://jira.codehaus.org/browse/MNG-3086 -->
+         Might be related to https://jira.codehaus.org/browse/MNG-3086 -->
 		<!--dependency>
 			<groupId>org.eclipse.ui</groupId>
 			<artifactId>org.eclipse.ui</artifactId>
