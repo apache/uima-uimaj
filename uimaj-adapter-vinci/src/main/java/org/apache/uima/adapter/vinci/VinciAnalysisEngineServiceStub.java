@@ -200,6 +200,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
   /**
    * @see CasObjectProcessor#processCas(CAS)
+   * @return -
+   * @throws ResourceServiceException -
    */
   public void callProcessCas(CAS aCAS) throws ResourceServiceException {
     doProcess(aCAS);
@@ -278,6 +280,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
   /**
    * @see CasObjectProcessor#isReadOnly()
+   * @return -
+   * @throws ResourceServiceException -
    */
   public boolean callIsReadOnly() throws ResourceServiceException {
     try {
@@ -297,6 +301,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
   /**
    * @see CasObjectProcessor#isStateless()
+   * @return -
+   * @throws ResourceServiceException -
    */
   public boolean callIsStateless() throws ResourceServiceException {
     try {

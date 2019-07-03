@@ -75,8 +75,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * Instantiate Analysis Engine from a given descriptor, debug mode, and instance Id
    * 
    * @param serviceConfigPath descriptor location
-   * @param debug
-   * @param instanceId
+   * @param debug -
+   * @param instanceId -
    * @throws Exception passthru
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath, boolean debug, String instanceId)
@@ -89,7 +89,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * Instantiate Analysis Engine service from a given descriptor - possibly in debug mode.
    * 
    * @param serviceConfigPath descriptor location
-   * @param debug
+   * @param debug -
+   * @throws Exception -
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath, boolean debug) throws Exception {
     this.debug = debug;

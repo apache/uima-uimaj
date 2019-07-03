@@ -78,10 +78,10 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * This constructor is used on the service side - a CAS Pool reference is provided. We don't check
    * a CAS out of the pool until we get a request.
    * 
-   * @param casPool
-   * @param outOfTypeSystemData
-   * @param uimaContext
-   * @param includeDocText
+   * @param casPool -
+   * @param outOfTypeSystemData -
+   * @param uimaContext -
+   * @param includeDocText -
    */
   public CASTransportable(CasPool casPool, OutOfTypeSystemData outOfTypeSystemData,
           UimaContext uimaContext, boolean includeDocText) {
@@ -98,10 +98,10 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * This constructor is used on the client side, where we have a dedicated CAS instance for the
    * request.
    * 
-   * @param cas
-   * @param outOfTypeSystemData
-   * @param uimaContext
-   * @param includeDocText
+   * @param cas -
+   * @param outOfTypeSystemData -
+   * @param uimaContext -
+   * @param includeDocText -
    */
   public CASTransportable(CAS cas, OutOfTypeSystemData outOfTypeSystemData,
           UimaContext uimaContext, boolean includeDocText) {

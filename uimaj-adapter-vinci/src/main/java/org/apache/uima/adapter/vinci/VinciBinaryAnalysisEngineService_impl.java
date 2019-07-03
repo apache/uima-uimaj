@@ -84,8 +84,9 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * Instantiate Analysis Engine from a given descriptor - possibly in debug mode.
    * 
    * @param serviceConfigPath descriptor location
-   * @param debug
-   * @param instanceId
+   * @param debug -
+   * @param instanceId -
+   * @throws Exception -
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath, boolean debug,
           String instanceId) throws Exception {
@@ -98,7 +99,8 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * Instantiate Analysis Engine from a given descriptor - possibly in debug mode.
    * 
    * @param serviceConfigPath descriptor location
-   * @param debug
+   * @param debug -
+   * @throws Exception -
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath, boolean debug)
           throws Exception {
@@ -133,6 +135,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * Instantiate Analysis Engine from a given descriptor.
    * 
    * @param serviceConfigPath descriptor location
+   * @throws Exception -
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath) throws Exception {
     this(serviceConfigPath, false);

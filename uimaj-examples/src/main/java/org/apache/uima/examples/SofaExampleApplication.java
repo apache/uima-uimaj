@@ -44,6 +44,9 @@ public class SofaExampleApplication {
   /**
    * Main program
    * 
+   * @param args the arguments
+   * @throws UIMAException the UIMA exception
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static void main(String[] args) throws UIMAException, IOException {
     // parse AnalysisEngine descriptor
