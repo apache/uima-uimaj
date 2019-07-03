@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-ep-configurator
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-ep-configurator
     </connection>
     <developerConnection>
       scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-ep-configurator
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-ep-configurator
+      https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-ep-configurator
     </url>
   </scm>
   
@@ -127,7 +127,7 @@
 
     <!-- ui -->
         <!-- next one causes NPE with maven 2.0.7.
-      Might be related to http://jira.codehaus.org/browse/MNG-3086
+      Might be related to https://jira.codehaus.org/browse/MNG-3086
       Workaround - change version from 3.2.0 to 3.2.1  as of 2/2008 is OK-->
     <!--dependency>
       <groupId>org.eclipse.ui</groupId>
