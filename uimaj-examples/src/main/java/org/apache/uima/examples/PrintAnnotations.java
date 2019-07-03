@@ -240,11 +240,11 @@ public class PrintAnnotations {
   }
 
   /**
-   * Main program for testing this class. Ther are two required arguments - the path to the XML
+   * Main program for testing this class. There are two required arguments - the path to the XML
    * descriptor for the TAE to run and an input file. Additional arguments are Type or Feature names
    * to be included in the ResultSpecification passed to the TAE.
    *
-   * @param args the arguments
+   * @param args - see above
    */
   public static void main(String[] args) {
     try {
