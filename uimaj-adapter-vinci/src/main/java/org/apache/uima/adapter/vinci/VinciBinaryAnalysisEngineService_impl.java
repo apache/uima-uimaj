@@ -57,7 +57,6 @@ import org.apache.vinci.transport.VinciServableAdapter;
 import org.apache.vinci.transport.VinciServer;
 import org.apache.vinci.transport.document.AFrame;
 
-// TODO: Auto-generated Javadoc
 /**
  * Main class for a Vinci Analysis Engine service that uses the binary CAS serialization, rather
  * than XCAS. This class can also be used to deploy CAS Consumers as Vinci Services.
