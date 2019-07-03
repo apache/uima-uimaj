@@ -79,7 +79,10 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
 
   /**
    * Overridden to read "key" and "value" attributes.
-   * 
+   * @param aElement -
+   * @param aParser -
+   * @param aOptions -
+   * @throws InvalidXMLException -
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -92,7 +95,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
 
   /**
    * Overridden to handle "key" and "value" attributes.
-   * 
+   * @return -
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
   protected AttributesImpl getXMLAttributes() {
@@ -118,7 +121,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setValue(String string) {
     value = string;
@@ -132,7 +135,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setKey(String string) {
     key = string;

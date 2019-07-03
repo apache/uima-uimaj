@@ -59,7 +59,10 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
 
   /**
    * Overridden to read "max" and "default" attributes.
-   * 
+   * @param aElement -
+   * @param aParser -
+   * @param aOptions -
+   * @throws InvalidXMLException -
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -71,7 +74,7 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
 
   /**
    * Overridden to handle "max" and "default" attributes.
-   * 
+   * @return -
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
   protected AttributesImpl getXMLAttributes() {
@@ -113,14 +116,14 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setDefaultTimeout(String string) {
     defaultTimeout = string;
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setMax(String string) {
     max = string;
