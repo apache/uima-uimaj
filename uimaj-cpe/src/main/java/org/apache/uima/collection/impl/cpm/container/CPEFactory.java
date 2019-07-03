@@ -128,6 +128,7 @@ public class CPEFactory {
 
   /**
    * Create a new CPEFactory on which we will later call parse(String) to parse a CPE descriptor.
+   * @param aResourceManager -
    */
   public CPEFactory(ResourceManager aResourceManager) {
     if (aResourceManager == null) {
@@ -140,10 +141,11 @@ public class CPEFactory {
   /**
    * Create a new CPEFactory for a CpeDescription that's already been parsed.
    * 
-   * @param aDescriptor
-   * @param aResourceManager
+   * @param aDescriptor -
+   * @param aResourceManager 
    *          the resource manager that all components of this CPE will share If null, a new
    *          ResourceManager will be created.
+   * @throws ResourceInitializationException -
    */
   public CPEFactory(CpeDescription aDescriptor, ResourceManager aResourceManager)
           throws ResourceInitializationException {
@@ -280,7 +282,7 @@ public class CPEFactory {
    * 
    * @return CollectionReader instance
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   public BaseCollectionReader getCollectionReader() throws ResourceConfigurationException {
     checkForErrors();
@@ -1132,7 +1134,7 @@ public class CPEFactory {
    * </ul>
    * 
    * @return Global CPE Configuration
-   * @throws InstantiationException
+   * @throws InstantiationException -
    */
   public CpeConfiguration getCPEConfig() throws InstantiationException {
     try {
@@ -1313,6 +1315,7 @@ public class CPEFactory {
    * 
    * @param aCasProcessor -
    *          CasProcessor to add
+   * @throws ResourceConfigurationException -
    */
   public void addCasProcessor(CasProcessor aCasProcessor) throws ResourceConfigurationException {
     if (!initialized) {
@@ -1418,7 +1421,7 @@ public class CPEFactory {
 
   /**
    * 
-   * @param aList
+   * @param aList -
    * @return the cpe descriptor constructed from the list
    * @throws ResourceConfigurationException -
    */

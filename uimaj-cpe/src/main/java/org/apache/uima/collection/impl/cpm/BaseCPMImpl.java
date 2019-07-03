@@ -117,6 +117,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    *          ResourceManager instance to be used by the CPE
    * @param aDefaultProcessTrace -
    *          ProcessTrace instance to capture events and stats
+   * @param aProps -
    * @throws Exception -
    */
   public BaseCPMImpl(CpeDescription aDescriptor, ResourceManager aResourceManager,
@@ -156,7 +157,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   /**
    * Plugs in custom perfomance tunning parameters
    * 
-   * @param aPerformanceTuningSettings
+   * @param aPerformanceTuningSettings -
    */
   public void setPerformanceTuningSettings(Properties aPerformanceTuningSettings) {
     cpEngine.setPerformanceTuningSettings(aPerformanceTuningSettings);
@@ -178,7 +179,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * use at the end of processing. Jedii-style reporting shows a summary for this run. The CPM
    * default report shows more detail information.
    * 
-   * @param aUseJediiReport
+   * @param aUseJediiReport -
    */
   public void setJediiReport(boolean aUseJediiReport) {
     mEventTypeMap = new HashMap();
@@ -192,6 +193,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * Instantiates and initializes a CPE.
    * 
    * @param aDummyCasProcessor -
+   * @param aProps -
    * 
    * @throws Exception -
    */
@@ -559,6 +561,8 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#process()
    * @deprecated
+   * @param aCollectionReader -
+   * @throws ResourceInitializationException -
    */
   @Deprecated
 public void process(BaseCollectionReader aCollectionReader)
@@ -612,6 +616,9 @@ public void process(BaseCollectionReader aCollectionReader)
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#process()
    * @deprecated
+   * @param aCollectionReader -
+   * @param aBatchSize -
+   * @throws ResourceInitializationException -
    */
   @Deprecated
 public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
@@ -891,8 +898,8 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
   /**
    * Helper method to help build the CPM report
    * 
-   * @param aEvent
-   * @param aTotalTime
+   * @param aEvent -
+   * @param aTotalTime -
    */
   public void buildEventTree(ProcessTraceEvent aEvent, int aTotalTime) {
     // Skip reporting the CPM time.This time has already been acquired by summing up
@@ -1137,6 +1144,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    *          list of components
    * 
    * @return - descriptor populated with a given components
+   * @throws ResourceConfigurationException -
    */
   public String getDescriptor(List aList) throws ResourceConfigurationException {
     return cpeFactory.getDescriptor(aList);

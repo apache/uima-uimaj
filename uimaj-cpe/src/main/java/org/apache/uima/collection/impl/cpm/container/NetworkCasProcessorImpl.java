@@ -72,7 +72,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
   /**
    * Initializes this instance with configuration defined in the CPE descriptor.
    * 
-   * @param aCasProcessorType
+   * @param aCasProcessorType -
    */
   public NetworkCasProcessorImpl(CpeCasProcessor aCasProcessorType) {
     casProcessorType = aCasProcessorType;

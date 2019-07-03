@@ -290,6 +290,7 @@ public class VinciTAP {
    * 
    * @param aServiceName -
    *          name of the service
+   * @throws ServiceConnectionException -
    */
   public void connect(String aServiceName) throws ServiceConnectionException {
     // To locate the service by name the VNS is critical. Make sure we know where it is
@@ -415,6 +416,8 @@ public class VinciTAP {
    *          Vinci Frame containing request
    * 
    * @return AFrame - Frame containing result
+   * @throws ServiceConnectionException -
+   * @throws ServiceException -
    */
   public AFrame sendAndReceive(AFrame aFrame) throws ServiceException, ServiceConnectionException {
     int currentTimeout = 0;
@@ -1051,7 +1054,8 @@ public class VinciTAP {
   /**
    * Returns Cas Processor metadata as it is returned from the remote Cas Processor running as vinci
    * service.
-   * 
+   * @return -
+   * @throws ResourceServiceException -
    */
   public ProcessingResourceMetaData getAnalysisEngineMetaData() throws ResourceServiceException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1142,6 +1146,7 @@ public class VinciTAP {
   /**
    * Let the remote service now that end of batch marker has been reached, the notification is
    * one-way meaning the CPE does not expect anything back from the service.
+   * @throws ResourceServiceException -
    */
   public void batchProcessComplete() throws ResourceServiceException {
     // For some installations, like WF, dont bother sending end-of-batch marker.

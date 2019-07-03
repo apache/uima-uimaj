@@ -66,6 +66,7 @@ public interface SocketTransport {
    *           CasProcessor
    * @throws
    *           SocketException - connection broken
+   * @throws AnalysisEngineProcessException -
    * 
    */
   public CAS process(Socket aSocket, CAS aCas) throws SocketTimeoutException, SocketException,

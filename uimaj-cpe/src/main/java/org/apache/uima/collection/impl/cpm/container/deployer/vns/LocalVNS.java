@@ -68,6 +68,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    *          an ending port # for clients( services)
    * @param aVNSPort -
    *          port on which this VNS will listen on
+   * @throws PortUnreachableException -
    */
   public LocalVNS(String aStartPort, String aEndPort, String aVNSPort)
           throws PortUnreachableException {
@@ -182,6 +183,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    * successful returns false.
    * 
    * @param port number to check
+   * @return -
    */
   public boolean isAvailable(int port) {
     ServerSocket socket = null;

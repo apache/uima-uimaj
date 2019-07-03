@@ -165,6 +165,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    *          CasProcessor configuration as defined in cpe descriptor
    * @param aCasProcessorPool -
    *          pool of CasProcessor instances
+   * @param aMetaData -
+   * @throws ResourceConfigurationException -
    */
   public ProcessingContainer_Impl(CasProcessorConfiguration aCasProcessorConfig,
           ProcessingResourceMetaData aMetaData, ServiceProxyPool aCasProcessorPool)
@@ -183,7 +185,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
 
   /**
    * Returns component's input/output capabilities
-   * 
+   * @return component's input/output capabilities
    */
   public ProcessingResourceMetaData getMetadata() {
     return metadata;

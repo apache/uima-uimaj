@@ -59,10 +59,10 @@ public class DATACasUtils {
 
   /**
    * 
-   * @param dataCas
-   * @param featureType
-   * @param featureName
-   * @param featureValue
+   * @param dataCas -
+   * @param featureType -
+   * @param featureName -
+   * @param featureValue -
    */
   public static void addFeatureStructure(CasData dataCas, String featureType, String featureName,
           String featureValue) {
@@ -75,7 +75,7 @@ public class DATACasUtils {
 
   /**
    * 
-   * @param aDataCas
+   * @param aDataCas -
    * @return true if the data cas is empty
    */
   public static boolean isCasEmpty(CasData aDataCas) {
@@ -88,10 +88,10 @@ public class DATACasUtils {
 
   /**
    * 
-   * @param dataCas
-   * @param featureType
-   * @param featureName
-   * @param featureValue
+   * @param dataCas -
+   * @param featureType -
+   * @param featureName -
+   * @param featureValue -
    */
   public static void addFeature(CasData dataCas, String featureType, String featureName,
           String featureValue) {
@@ -107,7 +107,7 @@ public class DATACasUtils {
 
   /**
    * 
-   * @param aDataCas
+   * @param aDataCas -
    * @return the byte count
    * @throws Exception -
    */
@@ -132,8 +132,8 @@ public class DATACasUtils {
 
   /**
    * 
-   * @param aCAS
-   * @param aFilterList
+   * @param aCAS -
+   * @param aFilterList -
    * @return true if this cas should be analyzed
    */
   public static boolean shouldAnalyzeCAS(CasData aCAS, LinkedList aFilterList) {
@@ -185,8 +185,8 @@ public class DATACasUtils {
 
   /**
    * 
-   * @param aKey
-   * @param dropKeyList
+   * @param aKey -
+   * @param dropKeyList -
    * @return true if this key is in the dropKeyList
    */
   public static boolean dropIt(String aKey, String[] dropKeyList) {

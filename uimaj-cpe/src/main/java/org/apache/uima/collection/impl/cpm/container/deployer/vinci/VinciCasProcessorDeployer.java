@@ -134,7 +134,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   /**
    * Instantiaes the class and gives it access to CPE configuration.
    * 
-   * @param aCpeFactory
+   * @param aCpeFactory -
    */
   public VinciCasProcessorDeployer(CPEFactory aCpeFactory) {
     cpeFactory = aCpeFactory;
@@ -148,8 +148,10 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * 
    * @param aCasProcessorList - list containing instantiated Cas Processors
    * @param redeploy - true when redeploying failed Cas Processor
+   * @param aEngine -
    * 
    * @return - ProcessingContainer containing pool of CasProcessors
+   * @throws ResourceConfigurationException -
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, CPMEngine aEngine,
           boolean redeploy) throws ResourceConfigurationException {

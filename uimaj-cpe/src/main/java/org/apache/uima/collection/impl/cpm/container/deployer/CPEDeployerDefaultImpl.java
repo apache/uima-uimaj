@@ -77,6 +77,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * @param redeploy - true when redeploying failed Cas Processor
    * 
    * @return - ProcessingContainer containing pool of CasProcessors
+   * @throws ResourceConfigurationException -
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, CPMEngine aEngine,
           boolean redeploy) throws ResourceConfigurationException {

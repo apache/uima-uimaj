@@ -86,6 +86,8 @@ public class VinciCasDataConverter {
    *          CasData to convert
    * @param aParentFrame
    *          VinciFrame to be the parent of the frame created from the CasData
+   * @throws SAXException -
+   * @throws IOException -
    */
   public void casDataToVinciFrame(CasData aCasData, AFrame aParentFrame) throws IOException,
           SAXException {
@@ -123,6 +125,7 @@ public class VinciCasDataConverter {
    *          CasData to which FeatureStructures from XCAS will be appended
    * 
    * @deprecated Use appendVinciFrameToCasData(Aframe, CasData) or vinciFrameToCasData(AFrame)
+   * @throws SAXException -
    */
   @Deprecated
 public void vinciFrameToCasData(AFrame aCasFrame, CasData aCasData) throws SAXException {
@@ -136,6 +139,7 @@ public void vinciFrameToCasData(AFrame aCasFrame, CasData aCasData) throws SAXEx
    *          VinciFrame containing XCAS
    * 
    * @return a new CasData corrsponding to the XCAS in aCasFrame
+   * @throws SAXException -
    */
   public CasData vinciFrameToCasData(AFrame aCasFrame) throws SAXException {
     CasData casData = new CasDataImpl();
@@ -150,6 +154,7 @@ public void vinciFrameToCasData(AFrame aCasFrame, CasData aCasData) throws SAXEx
    *          VinciFrame containing XCAS
    * @param aCasData
    *          CasData to which FeatureStructures from XCAS will be appended
+   * @throws SAXException -
    */
   public void appendVinciFrameToCasData(AFrame aCasFrame, CasData aCasData) throws SAXException {
     // Use VinciSaxParser to generate SAX events from VinciFrame, and send
