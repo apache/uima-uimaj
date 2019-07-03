@@ -143,6 +143,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
   /**
    * @see ResourceServiceStub#callGetMetaData()
+   * @return -
    */
   public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     try {
@@ -193,6 +194,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
   /**
    * @see AnalysisEngineServiceStub#callProcess(CAS)
+   * @param aCAS theCAS
+   * @throws ResourceServiceException the resource service exception
    */
   public void callProcess(CAS aCAS) throws ResourceServiceException {
     doProcess(aCAS);
@@ -200,7 +203,6 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
   /**
    * @see CasObjectProcessor#processCas(CAS)
-   * @return -
    * @throws ResourceServiceException -
    */
   public void callProcessCas(CAS aCAS) throws ResourceServiceException {
