@@ -203,8 +203,8 @@ public class AnnotatorTester {
    /**
     * does configuration parameter test
     * 
-    * @param configDescFilePath
-    * @return AnalysisEngine
+    * @param configDescFilePath -
+    * @return AnalysisEngine 
     * 
     * @throws Exception passthru
     */
