@@ -262,6 +262,7 @@ public class CPMEngine extends Thread {
    *          instance of the ProcessTrace where the CPM accumulates stats
    * @param aCheckpointData -
    *          checkpoint object facillitating restart from the last known point
+   * @throws Exception -
    */
   public CPMEngine(CPMThreadGroup aThreadGroup, CPEFactory aCpeFactory, ProcessTrace aProcTr,
           CheckpointData aCheckpointData) throws Exception {
@@ -302,7 +303,7 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Returns a list of Processing Containers for Analysis Engines. Each CasProcessor is managed by
+   * @return a list of Processing Containers for Analysis Engines. Each CasProcessor is managed by
    * its own container.
    * 
    */
@@ -311,7 +312,7 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Returns a list of All Processing Containers. Each CasProcessor is managed by its own container.
+   * @return a list of All Processing Containers. Each CasProcessor is managed by its own container.
    * 
    */
   public LinkedList getAllProcessingContainers() {
@@ -1138,6 +1139,7 @@ public void asynchStop() {
    * 
    * @param aCasProcessor
    *          CASProcessor to be added to the processing pipeline
+   * @throws ResourceConfigurationException -         
    */
   public void addCasProcessor(CasProcessor aCasProcessor) throws ResourceConfigurationException {
 
@@ -1171,6 +1173,7 @@ public void asynchStop() {
    *          CASProcessor to be added to the processing pipeline
    * @param aIndex -
    *          insertion point for a given CasProcessor
+   * @throws ResourceConfigurationException -
    */
   public void addCasProcessor(CasProcessor aCasProcessor, int aIndex)
           throws ResourceConfigurationException {
@@ -1256,7 +1259,7 @@ public void asynchStop() {
   }
 
   /**
-   * Returns all CASProcesors in the processing pipeline
+   * @return all CASProcesors in the processing pipeline
    */
   public CasProcessor[] getCasProcessors() {
     if (casprocessorList != null) {
@@ -1352,7 +1355,8 @@ public void asynchStop() {
   /**
    * Deploys CasProcessor and associates it with a {@link ProcessingContainer}
    * 
-   * @param aProcessingContainer
+   * @param aProcessingContainer -
+   * @throws Exception -
    */
   public void redeployAnalysisEngine(ProcessingContainer aProcessingContainer) throws Exception {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1465,7 +1469,7 @@ public void asynchStop() {
   /**
    * Starts CASProcessor containers one a time. During this phase the container deploys a TAE as
    * local,remote, or integrated CasProcessor.
-   * 
+   * @throws AbortCPMException -
    */
   public void deployCasProcessors() throws AbortCPMException {
     try {
@@ -1535,7 +1539,7 @@ public void asynchStop() {
   }
 
   /**
-   * Returns a global flag indicating if this Thread is in processing state
+   * @return a global flag indicating if this Thread is in processing state
    * 
    */
   public boolean isRunning() {
@@ -1543,7 +1547,7 @@ public void asynchStop() {
   }
 
   /**
-   * Returns a global flag indicating if this Thread is in pause state
+   * @return a global flag indicating if this Thread is in pause state
    */
   public boolean isPaused() {
     synchronized (lockForPause) {
@@ -1623,6 +1627,7 @@ public void asynchStop() {
 
   /**
    * Defines the size of the batch
+   * @param aNumToProcess -
    */
 
   public void setNumToProcess(long aNumToProcess) {
@@ -1630,7 +1635,7 @@ public void asynchStop() {
   }
 
   /**
-   * Returns Id of the last document processed
+   * @return Id of the last document processed
    */
   public String getLastProcessedDocId() {
     return producer.getLastDocId();
@@ -2846,6 +2851,7 @@ public void asynchStop() {
    * Stops All Cas Processors and optionally changes the status according to kill flag
    * 
    * @param kill - true if CPE has been stopped before completing normally
+   * @throws CasProcessorDeploymentException -
    */
 
   public void stopCasProcessors(boolean kill) throws CasProcessorDeploymentException {
@@ -2903,7 +2909,7 @@ public void asynchStop() {
   }
 
   /**
-   * Returns collectionReader progress.
+   * @return collectionReader progress.
    */
   public Progress[] getProgress() {
     if (collectionReader == null) {
@@ -3002,7 +3008,7 @@ public void asynchStop() {
 
   /**
    * 
-   * @param aPca
+   * @param aPca -
    */
   public void setProcessControllerAdapter(ProcessControllerAdapter aPca) {
     pca = aPca;

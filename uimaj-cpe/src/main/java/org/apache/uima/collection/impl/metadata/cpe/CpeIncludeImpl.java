@@ -85,13 +85,15 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("include",
           new PropertyXmlInfo[0]);
 
-  /** METHODS CALLED BY THE PARSER * */
+  /** METHODS CALLED BY THE PARSER *
+   * @return - 
+   */
   public String getHref() {
     return href;
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setHref(String string) {
     href = string;

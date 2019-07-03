@@ -56,6 +56,8 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   /**
    * This is needed for XMLParser.parseCpeDesription() to work. Typically users should use
    * CpeDescriptorFactory.produceDescriptor() instead. - APL
+   * @param aInput -
+   * @throws InvalidXMLException -
    */
   public CpeDescriptionImpl(XMLInputSource aInput) throws InvalidXMLException {
     try {

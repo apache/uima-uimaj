@@ -641,6 +641,7 @@ public class ProcessingUnit extends Thread {
   /**
    * Consumes the input queue to make sure all bundles still there get processede before CPE
    * terminates.
+   * @return -
    */
   public boolean consumeQueue() {
     Object artifact = null;
@@ -687,6 +688,12 @@ public class ProcessingUnit extends Thread {
    * 
    * @param aCasObjectList - bundle of Cas to analyze
    * @param pTrTemp - object used to aggregate stats
+   * @return -
+   * @throws AbortCPMException -
+   * @throws ResourceProcessException -
+   * @throws CollectionException -
+   * @throws IOException -
+   * @throws KillPipelineException -
    */
   protected boolean processNext(Object[] aCasObjectList, ProcessTrace pTrTemp)
           throws ResourceProcessException, IOException, CollectionException, AbortCPMException,
@@ -1756,7 +1763,7 @@ public class ProcessingUnit extends Thread {
 
   /**
    * 
-   * @param anArtifact
+   * @param anArtifact -
    */
   protected void process(Object anArtifact) {
     if (anArtifact instanceof Object[]) {
@@ -1769,13 +1776,13 @@ public class ProcessingUnit extends Thread {
 
   /**
    * 
-   * @param aCasList
+   * @param aCasList -
    */
   protected void showMetadata(Object[] aCasList) {
   }
 
   /**
-   * Check if the CASProcessor status is available for processing
+   * @return true if the CASProcessor status is available for processing
    */
   protected boolean isProcessorReady(int aStatus) {
     if (aStatus == Constants.CAS_PROCESSOR_READY || aStatus == Constants.CAS_PROCESSOR_RUNNING) {
@@ -1805,7 +1812,7 @@ public class ProcessingUnit extends Thread {
   }
 
   /**
-   * @param aPool
+   * @param aPool -
    */
   public void setCasPool(CPECasPool aPool) {
     casPool = aPool;
@@ -1847,7 +1854,8 @@ public class ProcessingUnit extends Thread {
    *          a list of CASes to analyze
    * @param pTrTemp -
    *          process trace where statistics are added during analysis
-   * 
+   * @throws Exception -
+   * @return -
    */
   protected boolean analyze(Object[] aCasObjectList, ProcessTrace pTrTemp) throws Exception // throws
   // ResourceProcessException,

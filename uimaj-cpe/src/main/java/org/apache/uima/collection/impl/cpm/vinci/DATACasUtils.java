@@ -201,8 +201,8 @@ public class DATACasUtils {
 
   /**
    * 
-   * @param aKey
-   * @param typeList
+   * @param aKey -
+   * @param typeList -
    * @return true if tbd 
    */
   public static boolean isValidType(String aKey, String[] typeList) {
@@ -228,8 +228,8 @@ public class DATACasUtils {
 
   /**
    * 
-   * @param aCAS
-   * @param featureName
+   * @param aCAS -
+   * @param featureName -
    * @return true if
    */
   public static boolean hasFeature(CasData aCAS, String featureName) {
@@ -249,8 +249,8 @@ public class DATACasUtils {
 
   /**
    * 
-   * @param aCAS
-   * @param aName
+   * @param aCAS -
+   * @param aName -
    * @return true if tbd
    */
   public static boolean hasFeatureStructure(CasData aCAS, String aName) {
@@ -271,7 +271,7 @@ public class DATACasUtils {
 
   /**
    * 
-   * @param aCAS
+   * @param aCAS -
    */
   public static void dumpFeatures(CasData aCAS) {
     Iterator it = aCAS.getFeatureStructures();
@@ -310,8 +310,8 @@ public class DATACasUtils {
 
   /**
    * 
-   * @param aCAS
-   * @param featureName
+   * @param aCAS -
+   * @param featureName -
    * @return true if tbd
    */
   public static String getFeatureValueByType(CasData aCAS, String featureName) {

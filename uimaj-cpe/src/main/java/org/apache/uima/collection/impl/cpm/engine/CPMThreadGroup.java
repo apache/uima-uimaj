@@ -41,7 +41,7 @@ public class CPMThreadGroup extends ThreadGroup {
   private ProcessTrace procTr = null;
 
   /**
-   * @param name
+   * @param name -
    */
   public CPMThreadGroup(String name) {
     super(name);

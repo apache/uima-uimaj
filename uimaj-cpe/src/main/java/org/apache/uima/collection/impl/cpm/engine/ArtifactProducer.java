@@ -104,7 +104,7 @@ public class ArtifactProducer extends Thread {
   /**
    * Instantiates and initializes this instance.
    * 
-   * @param acpm
+   * @param acpm -
    */
   public ArtifactProducer(CPMEngine acpm) {
     cpm = acpm;
@@ -217,7 +217,7 @@ public class ArtifactProducer extends Thread {
    * Add table that will contain statistics gathered while reading entities from a Collection This
    * table is used for non-uima reports.
    * 
-   * @param aStatTable
+   * @param aStatTable -
    */
   public void setCPMStatTable(Map aStatTable) {
     cpmStatTable = aStatTable;
@@ -246,6 +246,7 @@ public class ArtifactProducer extends Thread {
    * Fills the queue up to capacity. This is called before activating ProcessingPipeline as means of
    * optimizing processing. When pipelines start up there are already entities in the work queue to
    * process.
+   * @throws Exception -
    */
   public void fillQueue() throws Exception {
     // Create an array holding CAS'es. Configuration of the Reader may

@@ -575,14 +575,14 @@ public class NonThreadedProcessingUnit {
 
   /**
    * 
-   * @param aFlag
+   * @param aFlag -
    */
   public void setReleaseCASFlag(boolean aFlag) {
     relaseCAS = aFlag;
   }
 
   /**
-   * @param aPool
+   * @param aPool -
    */
   public void setCasPool(CPECasPool aPool) {
     casPool = aPool;
@@ -1204,6 +1204,8 @@ public class NonThreadedProcessingUnit {
 
   /**
    * Check if the CASProcessor status is available for processing
+   * @param aStatus -
+   * @return -
    */
   protected boolean isProcessorReady(int aStatus) {
     if (aStatus == Constants.CAS_PROCESSOR_READY || aStatus == Constants.CAS_PROCESSOR_RUNNING) {

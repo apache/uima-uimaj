@@ -87,14 +87,14 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
   }
 
   /**
-   * @param i
+   * @param i -
    */
   public void setDequeueTimeout(int i) {
     dequeueTimeout = i;
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setQueueClass(String string) {
     queueClass = string;
