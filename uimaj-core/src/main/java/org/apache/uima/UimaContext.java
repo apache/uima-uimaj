@@ -527,6 +527,7 @@ public interface UimaContext {
    * @param <T> the type of the CAS interface (CAS or JCas)
    * 
    * @return an empty CAS. This will be an implementation of <code>aCasInterface</code>.
+   *      The CAS will be unlocked (can be reset) but will have switched Class Loaders if needed.
    */
   public <T extends AbstractCas> T getEmptyCas(Class<T> aCasInterface);
   

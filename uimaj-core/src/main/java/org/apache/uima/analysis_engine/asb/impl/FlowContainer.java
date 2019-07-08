@@ -109,6 +109,7 @@ public class FlowContainer {
       mFlow.aborted();
     } finally {
       mCAS.restoreClassLoaderUnlockCas();
+      mCAS.restoreClassLoaderUnlockCas();  // this one unlocks the aborted CAS itself
     }
   }
   
@@ -118,6 +119,7 @@ public class FlowContainer {
       return mFlow.continueOnFailure(failedAeKey, failure);
     } finally {
       mCAS.restoreClassLoaderUnlockCas();
+      mCAS.restoreClassLoaderUnlockCas();  // this one unlocks the failed CAS itself
     }
   }
 
