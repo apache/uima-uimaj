@@ -109,6 +109,8 @@ public class FlowContainer {
       mFlow.aborted();
     } finally {
       mCAS.restoreClassLoaderUnlockCas();
+      // https://issues.apache.org/jira/browse/UIMA-6057
+      mCAS.restoreClassLoaderUnlockCas();  // this one unlocks the aborted CAS itself
     }
   }
   
@@ -118,6 +120,8 @@ public class FlowContainer {
       return mFlow.continueOnFailure(failedAeKey, failure);
     } finally {
       mCAS.restoreClassLoaderUnlockCas();
+      // https://issues.apache.org/jira/browse/UIMA-6057
+      mCAS.restoreClassLoaderUnlockCas();  // this one unlocks the failed CAS itself
     }
   }
 

@@ -34,11 +34,13 @@ import java.lang.invoke.MutableCallSite;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -310,7 +312,22 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return ((FsChange)obj).fs._id == fs._id;
     }
   }
+ 
+  /**
+   * Instances are put into a Stack, to remember previous state to switch back to,
+   * when switching class loaders and locking the CAS
+   * https://issues.apache.org/jira/browse/UIMA-6057
+   */
+  static class SwitchControl {
+    final boolean wasLocked;
+    boolean wasSwitched = false;
     
+    SwitchControl(boolean wasLocked) {
+      this.wasLocked = wasLocked;
+    }
+  }
+  
+
   // fields shared among all CASes belong to views of a common base CAS
   static class SharedViewData {
     /**
@@ -566,6 +583,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      */
     private boolean isId2Fs;
     
+    /**
+     * a stack used to remember and restore previous state of cas lock and class loaders
+     * when switching classloaders and locking the cas
+     * https://issues.apache.org/jira/browse/UIMA-6057
+     */
+    private final Deque<SwitchControl> switchControl = new ArrayDeque<>();
+    
     /******************************************************************************************
      * C A S   S T A T E    management                                                        *
      *    Cas state is implemented in a way to allow the Java to efficiently                  * 
@@ -806,8 +830,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       traceFSid = 0;
       if (traceFSs) {
         traceFScreationSb.setLength(0);
-    }
+      }
       componentInfo = null; // https://issues.apache.org/jira/browse/UIMA-5097
+      switchControl.clear();  //  https://issues.apache.org/jira/browse/UIMA-6057
     }
     
     private void flushIndexRepositoriesAllViews() {
@@ -852,7 +877,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       trackingMarkList = null;
     }
     
-    void switchClassLoader(ClassLoader newClassLoader) {
+    // switches ClassLoader but does not lock CAS
+    void switchClassLoader(ClassLoader newClassLoader, boolean wasLocked) {
+      //    https://issues.apache.org/jira/browse/UIMA-6057
+      SwitchControl switchControlInstance = new SwitchControl(wasLocked);  
+      switchControl.push(switchControlInstance);
+      
       if (null == newClassLoader) { // is null if no cl set
         return;
       }
@@ -865,6 +895,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         // System.out.println("Switching to new class loader");
         previousJCasClassLoader = jcasClassLoader;
         jcasClassLoader = newClassLoader;
+        switchControlInstance.wasSwitched = true;
         generators = tsi.getGeneratorsForClassLoader(newClassLoader, true); // true - isPear
         
         assert null == id2tramp;  // is null outside of a pear
@@ -878,15 +909,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
     }
     
-    void restoreClassLoader() {
+    void restoreClassLoader(boolean empty_switchControl, SwitchControl switchControlInstance) {
       if (null == previousJCasClassLoader) {
         return;
       }
-      // System.out.println("Switching back to previous class loader");
-      jcasClassLoader = previousJCasClassLoader;
-      previousJCasClassLoader = null;
-      generators = baseGenerators;
-      id2tramp = null;
+      
+      if ((empty_switchControl || switchControlInstance.wasSwitched) && previousJCasClassLoader != jcasClassLoader) {
+        // System.out.println("Switching back to previous class loader");
+        jcasClassLoader = previousJCasClassLoader;
+        previousJCasClassLoader = null;
+        generators = baseGenerators;
+        id2tramp = null;
+      }
     }
     
     /**
@@ -1034,6 +1068,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // package protected to let other things share this info
   final SharedViewData svd; // shared view data
 
+  // public only for cross package access
+  public boolean isCasLocked() {
+    return ! svd.flushEnabled;
+  }
+  
   /** The index repository. Referenced by XmiCasSerializer */
   FSIndexRepositoryImpl indexRepository;
 
@@ -1839,7 +1878,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   @Override
   public void reset() {
-    if (!this.svd.flushEnabled) {
+    if (isCasLocked()) {
       throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
     }
     if (this == this.svd.baseCAS) {
@@ -3814,6 +3853,10 @@ public JCasImpl getJCasImpl() {
   public void setJCasClassLoader(ClassLoader classLoader) {
     this.svd.jcasClassLoader = classLoader;
   }
+  
+  public void switchClassLoader(ClassLoader newClassLoader, boolean wasLocked) {
+    this.svd.switchClassLoader(newClassLoader, wasLocked);
+  }
 
   // Internal use only, public for cross package use
   // Assumes: The JCasClassLoader for a CAS is set up initially when the CAS is
@@ -3833,9 +3876,10 @@ public JCasImpl getJCasImpl() {
   }
 
   public void switchClassLoaderLockCasCL(ClassLoader newClassLoader) {
+    boolean wasLocked = isCasLocked();
     // lock out CAS functions to which annotator should not have access
     enableReset(false);
-    svd.switchClassLoader(newClassLoader);
+    svd.switchClassLoader(newClassLoader, wasLocked);
   }
 
 //  // internal use, public for cross-package ref
@@ -3844,10 +3888,14 @@ public JCasImpl getJCasImpl() {
 //  }
 
   public void restoreClassLoaderUnlockCas() {
-    // unlock CAS functions
-    enableReset(true);
+    boolean empty_switchControl = this.svd.switchControl.isEmpty();
+    SwitchControl switchControlInstance = empty_switchControl ? null :this.svd.switchControl.pop();
+    if (empty_switchControl || ! switchControlInstance.wasLocked) {
+      // unlock CAS functions
+      enableReset(true);
+    }
     // this might be called without the switch ever being called
-    svd.restoreClassLoader();
+    svd.restoreClassLoader(empty_switchControl, switchControlInstance);
 
   }
   
@@ -4832,8 +4880,8 @@ public JCasImpl getJCasImpl() {
    */
   @Override
   public Marker createMarker() {
-    if (!this.svd.flushEnabled) {
-	  throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
+    if (isCasLocked()) {
+	    throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
   	}
   	this.svd.trackingMark = new MarkerImpl(this.getLastUsedFsId() + 1, 
   			this);
