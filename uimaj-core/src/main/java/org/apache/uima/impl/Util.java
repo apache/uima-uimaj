@@ -85,6 +85,7 @@ public class Util {
     // This cas will be unlocked and its class loader restored when the
     //   next() method returns it
     // Insure the same view is passed for switching/restoring  https://issues.apache.org/jira/browse/UIMA-2211
+    // https://issues.apache.org/jira/browse/UIMA-6057
     boolean wasLocked = ci.isCasLocked();
     ci.switchClassLoader(resourceManager.getExtensionClassLoader(), wasLocked);    
     return r;

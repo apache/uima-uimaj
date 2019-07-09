@@ -236,6 +236,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // Static classes representing shared instance data
   // - shared data is computed once for all views
 
+  /**
+   * Instances are put into a Stack, to remember previous state to switch back to,
+   * when switching class loaders and locking the CAS
+   * https://issues.apache.org/jira/browse/UIMA-6057
+   */
   static class SwitchControl {
     final boolean wasLocked;
     boolean wasSwitched = false;
@@ -381,6 +386,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     private final EnumSet<CasState> casState = EnumSet.noneOf(CasState.class); 
     
+    /**
+     * a stack used to remember and restore previous state of cas lock and class loaders
+     * when switching classloaders and locking the cas
+     * https://issues.apache.org/jira/browse/UIMA-6057
+     */
     private final Deque<SwitchControl> switchControl = new ArrayDeque<>();
     
     private SharedViewData(boolean useFSCache, Heap heap, CASImpl baseCAS, CASMetadata casMetadata) {
@@ -399,6 +409,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // package protected to let other things share this info
   final SharedViewData svd; // shared view data
   
+  // public only for cross package access
   public boolean isCasLocked() {
     return ! svd.flushEnabled;
   }
@@ -1213,7 +1224,7 @@ public void reset() {
       this.svd.traceFScreationSb.setLength(0);
     }
     this.svd.componentInfo = null; // https://issues.apache.org/jira/browse/UIMA-5097
-    this.svd.switchControl.clear();
+    this.svd.switchControl.clear();  // https://issues.apache.org/jira/browse/UIMA-6057
   }
 
   /**
@@ -4474,6 +4485,7 @@ public void setJCasClassLoader(ClassLoader classLoader) {
     if (null == this.svd.previousJCasClassLoader) {
       return;
     }
+    // https://issues.apache.org/jira/browse/UIMA-6057
     if ((empty_switchControl || switchControl.wasSwitched) && this.svd.previousJCasClassLoader != this.svd.jcasClassLoader) {
       // System.out.println("Switching back to previous class loader");
       this.svd.jcasClassLoader = this.svd.previousJCasClassLoader;
