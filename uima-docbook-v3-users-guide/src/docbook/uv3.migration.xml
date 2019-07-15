@@ -144,11 +144,11 @@ under the License.
   </para> 
   
   <para>When migrating <emphasis role="strong">source</emphasis> files, you specify one or more "roots" - places in a file directory,
-    or a single java JCas source file (the one not ending in "_Type") 
-    and the tool scans those 
-    directories recursively (including inside Jars and PEARs), looking for JCas source files,
-    or works on just that one source file.  When it finds one, it copies it to the output spot 
-    and migrates it. The output is arranged in parallel directories (before and after migration), 
+    or a single java JCas source file (the one not ending in "_Type").  When directories are specified,  
+    the tool scans those 
+    directories recursively (including inside Jars and PEARs), looking for JCas source files.  If just one source file is specified, 
+    it work on just that one source file.  When a source file is processed, it is copied to the output spot 
+    and migrated. The output is arranged in parallel directories (before and after migration), 
     for easy side-by-side comparing in a tool such as Eclipse file compare.</para>
         
   <para>After checking the migration results, including comparing the files, you replace the original source with
@@ -271,7 +271,7 @@ under the License.
 		  </para>
 		  
 		  <para>There are also a pair of Eclipse launch configurations 
-        (one for migrating source files, the other for compiled classes and JARs and PEARs), 
+        (one for migrating source file(s), the other for compiled classes and JARs and PEARs), 
         which are available if you have the uimaj-examples project
         (included in the binary distribution of UIMA) in your Eclipse workspace.
       </para>
@@ -294,12 +294,14 @@ under the License.
             <itemizedlist spacing="compact">
               <listitem><para>First select the eclipse project containing the source code to transform; 
                 this project's "build path" will also supply the 
-                classpath used during migration.</para></listitem>
+                classpath used during migration.</para>
+                <para>Alternatively, you may select just one source file to migrate.</para></listitem>
               <listitem><para>run the migrate-from-sources launcher.
               </para></listitem>
             </itemizedlist>
             This will scan the directory tree of the project, looking for source files which are JCas files, and 
-            migrate them.  No existing files are modified; everything is written to the output directory.
+            migrate them, or alternatively, just work on the single selected source file.  
+            No existing files are modified; everything is written to the output directory.
   		  </para>
         
         <para>
@@ -331,7 +333,8 @@ under the License.
   		        <term><emphasis role="strong">"-sourcesRoots"</emphasis></term>
   		        <listitem>
   		          <para>a list of one or more directories, separated by the
-  		            a path separator character (";" for Windows, ":" for others). 
+  		            a path separator character (";" for Windows, ":" for others), or
+                  a single source file
   		          </para>
   		          <para>Migrates each candidate source file found in any of the file tree roots,
   		            skipping over non-JCas classes.</para>
