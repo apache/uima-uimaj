@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.0.3</version>
+    <version>3.0.4-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-3.0.3/uimaj-ep-runtime
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-ep-runtime
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-3.0.3/uimaj-ep-runtime
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-ep-runtime
     </developerConnection>
     <url>
-      https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/tags/uimaj-3.0.3/uimaj-ep-runtime
+      https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-ep-runtime
     </url>
   </scm>
   
