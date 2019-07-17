@@ -314,7 +314,7 @@
             </Export-Package>
             <Bundle-Activator>org.apache.uima.taeconfigurator.TAEConfiguratorPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.desceditor;singleton:=true</Bundle-SymbolicName>
-            <Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
+            <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
 
             <!-- handle split packages in Eclipse.
               We do this by using Require-Bundle, and excluding from the Import-Package those

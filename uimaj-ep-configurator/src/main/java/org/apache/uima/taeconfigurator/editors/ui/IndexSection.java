@@ -34,51 +34,80 @@ import org.apache.uima.taeconfigurator.wizards.FsIndexCollectionNewWizard;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableTree;
 import org.eclipse.swt.custom.TableTreeItem;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
+
+/**
+ * The Class IndexSection.
+ */
 public class IndexSection extends AbstractSection {
 
+  /** The Constant ANNOTATION_INDEX_BUILT_IN. */
   public static final String ANNOTATION_INDEX_BUILT_IN = "Annotation Index (Built-in)";
 
+  /** The Constant INDEX_NAME_COL. */
   public final static int INDEX_NAME_COL = 0;
 
+  /** The Constant INDEX_TYPE_COL. */
   public final static int INDEX_TYPE_COL = 1;
 
+  /** The Constant ASC_DES_COL. */
   public final static int ASC_DES_COL = 1;
 
+  /** The Constant INDEX_KIND_COL. */
   public final static int INDEX_KIND_COL = 2;
 
-  public TableTree tt; // accessed by inner class
+  /** The tt. */
+  public Tree tt; // accessed by inner class
 
+  /** The add index button. */
   private Button addIndexButton;
 
+  /** The add key button. */
   private Button addKeyButton;
 
+  /** The edit button. */
   private Button editButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /** The up button. */
   private Button upButton;
 
+  /** The down button. */
   private Button downButton;
 
+  /** The m built in index description. */
   FsIndexDescription m_builtInIndexDescription = null;
 
+  /** The export button. */
   private Button exportButton;
 
+  /** The index import section. */
   private IndexImportSection indexImportSection;
 
+  /**
+   * Instantiates a new index section.
+   *
+   * @param editor the editor
+   * @param parent the parent
+   */
   public IndexSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Indexes",
             "The following indexes are defined on the type system for this engine.");
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+   */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
 
@@ -86,13 +115,13 @@ public class IndexSection extends AbstractSection {
     Composite sectionClient = new2ColumnComposite(getSection());
     enableBorders(sectionClient);
 
-    tt = newTableTree(sectionClient, SWT.SINGLE | SWT.FULL_SELECTION);
+    tt = newTree(sectionClient, SWT.SINGLE | SWT.FULL_SELECTION);
 
-    final Table table = tt.getTable();
-    table.setHeaderVisible(true);
-    newTableColumn(table).setText("Name");
-    newTableColumn(table).setText("Type");
-    newTableColumn(table).setText("Kind");
+//    final Table table = tt.getTable();
+    tt.setHeaderVisible(true);
+    newTreeColumn(tt).setText("Name");
+    newTreeColumn(tt).setText("Type");
+    newTreeColumn(tt).setText("Kind");
 
     final Composite buttonContainer = newButtonContainer(sectionClient);
     addIndexButton = newPushButton(buttonContainer, "Add Index", "Click here to add a new index.");
@@ -105,7 +134,7 @@ public class IndexSection extends AbstractSection {
     exportButton = newPushButton(buttonContainer, S_EXPORT, S_EXPORT_TIP);
 
     // in addition to normal keyup and mouse up:
-    table.addListener(SWT.MouseHover, this);
+    tt.addListener(SWT.MouseHover, this);
 
     toolkit.paintBordersFor(sectionClient);
   }
@@ -115,6 +144,7 @@ public class IndexSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
+  @Override
   public void refresh() {
     if (null == indexImportSection)
       indexImportSection = editor.getIndexesPage().getIndexImportSection();
@@ -122,20 +152,26 @@ public class IndexSection extends AbstractSection {
     tt.removeAll();
 
     // add built-in annotation index
-    updateIndexSpec(new TableTreeItem(tt, SWT.NONE), getBuiltInIndexDescription());
+    updateIndexSpec(new TreeItem(tt, SWT.NONE), getBuiltInIndexDescription());
 
     FsIndexDescription[] fsIndexes = getAnalysisEngineMetaData().getFsIndexes();
 
     if (fsIndexes != null) {
       for (int i = 0; i < fsIndexes.length; i++) {
-        updateIndexSpec(new TableTreeItem(tt, SWT.NONE), fsIndexes[i]);
+        updateIndexSpec(new TreeItem(tt, SWT.NONE), fsIndexes[i]);
       }
     }
-    packTable(tt.getTable());
+    packTree(tt);
     enable();
   }
 
-  private void updateIndexSpec(TableTreeItem item, FsIndexDescription ndx) {
+  /**
+   * Update index spec.
+   *
+   * @param item the item
+   * @param ndx the ndx
+   */
+  private void updateIndexSpec(TreeItem item, FsIndexDescription ndx) {
     item.setText(INDEX_NAME_COL, ndx.getLabel());
     item.setText(INDEX_TYPE_COL, formatName(ndx.getTypeName()));
     item.setText(INDEX_KIND_COL, handleDefaultIndexKind(ndx.getKind()));
@@ -144,11 +180,17 @@ public class IndexSection extends AbstractSection {
     FsIndexKeyDescription[] keys = ndx.getKeys();
     if (null != keys)
       for (int i = 0; i < keys.length; i++) {
-        updateKeySpec(new TableTreeItem(item, SWT.NONE), keys[i]);
+        updateKeySpec(new TreeItem(item, SWT.NONE), keys[i]);
       }
   }
 
-  private void updateKeySpec(TableTreeItem item, FsIndexKeyDescription key) {
+  /**
+   * Update key spec.
+   *
+   * @param item the item
+   * @param key the key
+   */
+  private void updateKeySpec(TreeItem item, FsIndexKeyDescription key) {
     String name = key.getFeatureName();
     item.setText(INDEX_NAME_COL, null == name ? "TYPE PRIORITY" : name);
     item.setText(ASC_DES_COL,
@@ -156,10 +198,20 @@ public class IndexSection extends AbstractSection {
     item.setData(key);
   }
 
+  /**
+   * Creates the fs index key description.
+   *
+   * @return the fs index key description
+   */
   public FsIndexKeyDescription createFsIndexKeyDescription() {
     return UIMAFramework.getResourceSpecifierFactory().createFsIndexKeyDescription();
   }
 
+  /**
+   * Gets the built in index description.
+   *
+   * @return the built in index description
+   */
   public FsIndexDescription getBuiltInIndexDescription() {
     if (m_builtInIndexDescription == null) {
       m_builtInIndexDescription = UIMAFramework.getResourceSpecifierFactory()
@@ -184,6 +236,12 @@ public class IndexSection extends AbstractSection {
     return m_builtInIndexDescription;
   }
 
+  /**
+   * Not allowed.
+   *
+   * @param message the message
+   * @return true, if successful
+   */
   private boolean notAllowed(String message) {
     if (isIndexDescriptor() && !editor.getIsContextLoaded()) {
       Utility
@@ -201,6 +259,7 @@ public class IndexSection extends AbstractSection {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
 
     if (event.widget == addIndexButton) {
@@ -221,15 +280,16 @@ public class IndexSection extends AbstractSection {
 
       addFsIndexDescription(id);
 
-      updateIndexSpec(new TableTreeItem(tt, SWT.NONE), id);
+      updateIndexSpec(new TreeItem(tt, SWT.NONE), id);
 
-      tt.getTable().setSelection(tt.getTable().getItemCount() - 1);
-      packTable(tt.getTable());
+      TreeItem[] items = tt.getItems();
+      tt.setSelection(items[items.length - 1]);
+      packTree(tt);
       setFileDirty();
     } else if (event.widget == addKeyButton) {
       if (notAllowed("Adding an Index"))
         return;
-      TableTreeItem parent = tt.getSelection()[0];
+      TreeItem parent = tt.getSelection()[0];
       if (null != parent.getParentItem())
         parent = parent.getParentItem();
       if (foolingAroundWithAnnotationIndex(parent))
@@ -240,12 +300,12 @@ public class IndexSection extends AbstractSection {
       FsIndexKeyDescription newKey = addOrEditIndexKey(dialog, null);
       if (null != newKey) {
         addFsIndexKeyDescription(fsid, newKey);
-        updateKeySpec(new TableTreeItem(parent, SWT.NONE), newKey);
+        updateKeySpec(new TreeItem(parent, SWT.NONE), newKey);
         parent.setExpanded(true);
         setFileDirty();
       }
     } else if (event.widget == removeButton) {
-      TableTreeItem item = tt.getSelection()[0];
+      TreeItem item = tt.getSelection()[0];
       if (foolingAroundWithAnnotationIndex(item))
         return;
       Object o = item.getData();
@@ -258,11 +318,13 @@ public class IndexSection extends AbstractSection {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Remove",
                 "Do you want to remove this key?", MessageDialog.WARNING))
           return;
-        TableTreeItem parent = item.getParentItem();
+        TreeItem parent = item.getParentItem();
         FsIndexDescription fsid = getFsIndexDescriptionFromTableTreeItem(parent);
         removeFsIndexKeyDescription(fsid, (FsIndexKeyDescription) o);
       }
-      tt.getTable().setSelection(tt.getTable().getSelectionIndex() - 1);
+      TreeItem selectionItem = tt.getSelection()[0];
+//      tt.setSelection(tt.getTable().getSelectionIndex() - 1);
+      tt.setSelection(tt.getItems()[tt.indexOf(selectionItem) - 1]);
       item.dispose();
       setFileDirty();
     } else if (event.widget == editButton || event.type == SWT.MouseDoubleClick) {
@@ -270,7 +332,7 @@ public class IndexSection extends AbstractSection {
         return;
       if (tt.getSelectionCount() != 1)
         return;
-      TableTreeItem item = tt.getSelection()[0];
+      TreeItem item = tt.getSelection()[0];
       if (foolingAroundWithAnnotationIndex(item))
         return;
       Object o = item.getData();
@@ -289,14 +351,14 @@ public class IndexSection extends AbstractSection {
         updateIndexSpec(item, fsid);
 
         if (valueChanged) {
-          packTable(tt.getTable());
+          packTree(tt);
           setFileDirty();
         }
       } else { // editing a key
         if (notAllowed("Adding an Index"))
           return;
         FsIndexKeyDescription key = (FsIndexKeyDescription) o;
-        TableTreeItem parent = item.getParentItem();
+        TreeItem parent = item.getParentItem();
         FsIndexDescription fsid = getFsIndexDescriptionFromTableTreeItem(parent);
         AddIndexKeyDialog dialog = new AddIndexKeyDialog(this, fsid.getTypeName(),
                 handleDefaultIndexKind(fsid.getKind()), getAlreadyUsedFeatures(fsid), key);
@@ -304,7 +366,7 @@ public class IndexSection extends AbstractSection {
         addOrEditIndexKey(dialog, key);
         if (valueChanged) {
           updateKeySpec(item, key);
-          packTable(tt.getTable());
+          packTree(tt);
           setFileDirty();
         }
       }
@@ -315,7 +377,7 @@ public class IndexSection extends AbstractSection {
     } else if (event.widget == downButton) {
       int i = getIndex(tt.getSelection()[0]);
 
-      TableTreeItem[] items = tt.getSelection()[0].getParentItem().getItems();
+      TreeItem[] items = tt.getSelection()[0].getParentItem().getItems();
       swapIndexKeys(items[i + 1], i + 1);
     } else if (event.widget == exportButton) {
       try {
@@ -328,7 +390,13 @@ public class IndexSection extends AbstractSection {
     enable();
   }
 
-  private boolean foolingAroundWithAnnotationIndex(TableTreeItem item) {
+  /**
+   * Fooling around with annotation index.
+   *
+   * @param item the item
+   * @return true, if successful
+   */
+  private boolean foolingAroundWithAnnotationIndex(TreeItem item) {
     while (null != item.getParentItem())
       item = item.getParentItem();
 
@@ -341,6 +409,12 @@ public class IndexSection extends AbstractSection {
     return false;
   }
 
+  /**
+   * Adds the fs index key description.
+   *
+   * @param fsid the fsid
+   * @param key the key
+   */
   public void addFsIndexKeyDescription(FsIndexDescription fsid, FsIndexKeyDescription key) {
     FsIndexKeyDescription[] prevKeys = fsid.getKeys();
     FsIndexKeyDescription[] newKeys = new FsIndexKeyDescription[prevKeys == null ? 1
@@ -351,6 +425,11 @@ public class IndexSection extends AbstractSection {
     fsid.setKeys(newKeys);
   }
 
+  /**
+   * Adds the fs index description.
+   *
+   * @param fsid the fsid
+   */
   public void addFsIndexDescription(FsIndexDescription fsid) {
     FsIndexDescription[] oldFsIndexes = getAnalysisEngineMetaData().getFsIndexes();
     FsIndexDescription[] newFsIndexes = new FsIndexDescription[oldFsIndexes == null ? 1
@@ -361,19 +440,36 @@ public class IndexSection extends AbstractSection {
     getAnalysisEngineMetaData().setFsIndexes(newFsIndexes);
   }
 
+  /**
+   * Removes the fs index description.
+   *
+   * @param fsid the fsid
+   */
   public void removeFsIndexDescription(FsIndexDescription fsid) {
     getAnalysisEngineMetaData().setFsIndexes(
             (FsIndexDescription[]) Utility.removeElementFromArray(getAnalysisEngineMetaData()
                     .getFsIndexes(), fsid, FsIndexDescription.class));
   }
 
+  /**
+   * Removes the fs index key description.
+   *
+   * @param fsid the fsid
+   * @param key the key
+   */
   public void removeFsIndexKeyDescription(FsIndexDescription fsid, FsIndexKeyDescription key) {
     fsid.setKeys((FsIndexKeyDescription[]) Utility.removeElementFromArray(fsid.getKeys(), key,
             FsIndexKeyDescription.class));
   }
 
-  public List getAlreadyUsedFeatures(FsIndexDescription ndx) {
-    List result = new ArrayList();
+  /**
+   * Gets the already used features.
+   *
+   * @param ndx the ndx
+   * @return the already used features
+   */
+  public List<String> getAlreadyUsedFeatures(FsIndexDescription ndx) {
+    List<String> result = new ArrayList<>();
     FsIndexKeyDescription[] items = ndx.getKeys();
     if (null == items)
       return result;
@@ -383,6 +479,13 @@ public class IndexSection extends AbstractSection {
     return result;
   }
 
+  /**
+   * Adds the or edit index key.
+   *
+   * @param dialog the dialog
+   * @param key the key
+   * @return the fs index key description
+   */
   public FsIndexKeyDescription addOrEditIndexKey(AddIndexKeyDialog dialog, FsIndexKeyDescription key) {
     if (dialog.open() == Window.CANCEL) {
       return null;
@@ -401,9 +504,10 @@ public class IndexSection extends AbstractSection {
   }
 
   /**
-   * This has to check the resolvedImports, mergedWithDelegates version of the fsindexes
-   * 
-   * @param indexLabel
+   * This has to check the resolvedImports, mergedWithDelegates version of the fsindexes.
+   *
+   * @param indexLabel the index label
+   * @return true, if is duplicate index label
    */
   public boolean isDuplicateIndexLabel(String indexLabel) {
     FsIndexDescription[] indexes = getAnalysisEngineMetaData().getFsIndexes();
@@ -418,10 +522,14 @@ public class IndexSection extends AbstractSection {
     return false;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
+   */
+  @Override
   public void enable() {
     boolean selected = tt.getSelectionCount() == 1;
-    TableTreeItem item = null;
-    TableTreeItem parent = null;
+    TreeItem item = null;
+    TreeItem parent = null;
     if (selected) {
       item = tt.getSelection()[0];
       parent = item.getParentItem();
@@ -441,8 +549,8 @@ public class IndexSection extends AbstractSection {
     downButton.setEnabled(false);
     if (selected) {
       if (null != parent && notBuiltInSelected) {
-        TableTreeItem firstItem = parent.getItems()[0];
-        TableTreeItem lastItem = parent.getItems()[parent.getItems().length - 1];
+        TreeItem firstItem = parent.getItems()[0];
+        TreeItem lastItem = parent.getItems()[parent.getItems().length - 1];
         upButton.setEnabled(item != firstItem);
         downButton.setEnabled(item != lastItem);
       }
