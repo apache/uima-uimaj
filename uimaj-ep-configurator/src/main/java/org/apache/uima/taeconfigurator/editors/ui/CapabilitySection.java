@@ -41,13 +41,14 @@ import org.apache.uima.taeconfigurator.editors.ui.dialogs.CommonInputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableTree;
-import org.eclipse.swt.custom.TableTreeItem;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
 
@@ -129,7 +130,7 @@ public class CapabilitySection extends AbstractSection {
   public final static int NAMESPACE_COL = 4;
 
   /** The tt. */
-  TableTree tt; // for inner class access
+  Tree tt; // for inner class access
 
   /** The add capability button. */
   private Button addCapabilityButton;
@@ -183,18 +184,18 @@ public class CapabilitySection extends AbstractSection {
     enableBorders(sectionClient);
     toolkit.paintBordersFor(sectionClient);
 
-    tt = newTableTree(sectionClient, SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
-    Table table = tt.getTable();
+    tt = newTree(sectionClient, SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
+//    Table table = tt.getTable();
 
     // work around for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=65865
-    new TableColumn(table, SWT.NONE).setText("                 ");
+    new TreeColumn(tt, SWT.NONE).setText("                 ");
 
-    newTableColumn(table, SWT.NONE).setText(NAME_TITLE); // type or feat name
-    newTableColumn(table, SWT.NONE).setText(INPUT);
-    newTableColumn(table, SWT.NONE).setText(OUTPUT);
-    newTableColumn(table, SWT.NONE).setText(NAMESPACE_TITLE); // rest of typename
-    table.setHeaderVisible(true);
-    table.setLinesVisible(true);
+    newTreeColumn(tt, SWT.NONE).setText(NAME_TITLE); // type or feat name
+    newTreeColumn(tt, SWT.NONE).setText(INPUT);
+    newTreeColumn(tt, SWT.NONE).setText(OUTPUT);
+    newTreeColumn(tt, SWT.NONE).setText(NAMESPACE_TITLE); // rest of typename
+    tt.setHeaderVisible(true);
+    tt.setLinesVisible(true);
     tt.addListener(SWT.MouseHover, this); // to show description
 
     final Composite buttonContainer = newButtonContainer(sectionClient);
@@ -231,14 +232,14 @@ public class CapabilitySection extends AbstractSection {
     Capability[] cs = getCapabilities();
     if (null != cs) {
       for (int i = 0; i < cs.length; i++) {
-        TableTreeItem item = new TableTreeItem(tt, SWT.NONE);
+        TreeItem item = new TreeItem(tt, SWT.NONE);
         item.setText(TITLE_COL, CAPABILITY_SET);
         item.setData(cs[i]);
-        tt.setSelection(new TableTreeItem[] { item }); // set default selection
+        tt.setSelection(new TreeItem[] { item }); // set default selection
         fillCapability(item, cs[i]);
         // if (0 == i) {
         item.setExpanded(true);
-        TableTreeItem[] types = item.getItems();
+        TreeItem[] types = item.getItems();
         if (types != null)
           for (int j = 0; j < types.length; j++) {
             types[j].setExpanded(true);
@@ -246,7 +247,7 @@ public class CapabilitySection extends AbstractSection {
         // }
       }
     }
-    packTable(tt.getTable());
+    packTree(tt);
     enable();
     tt.getParent().setRedraw(true);
   }
@@ -287,8 +288,8 @@ public class CapabilitySection extends AbstractSection {
    * @param parent the parent
    * @return the table tree item
    */
-  private TableTreeItem createLanguageHeaderGui(TableTreeItem parent) {
-    TableTreeItem langHdr = new TableTreeItem(parent, SWT.NONE);
+  private TreeItem createLanguageHeaderGui(TreeItem parent) {
+    TreeItem langHdr = new TreeItem(parent, SWT.NONE);
     langHdr.setText(TITLE_COL, LANGS_TITLE);
     langHdr.setData(LANGS_TITLE);
     return langHdr;
@@ -300,8 +301,8 @@ public class CapabilitySection extends AbstractSection {
    * @param parent the parent
    * @return the table tree item
    */
-  private TableTreeItem createSofaHeaderGui(TableTreeItem parent) {
-    TableTreeItem sofaHdr = new TableTreeItem(parent, SWT.NONE);
+  private TreeItem createSofaHeaderGui(TreeItem parent) {
+    TreeItem sofaHdr = new TreeItem(parent, SWT.NONE);
     sofaHdr.setText(TITLE_COL, SOFAS_TITLE);
     sofaHdr.setData(SOFAS_TITLE);
     return sofaHdr;
@@ -313,30 +314,30 @@ public class CapabilitySection extends AbstractSection {
    * @param parent the parent
    * @param c the c
    */
-  private void fillCapability(TableTreeItem parent, Capability c) {
+  private void fillCapability(TreeItem parent, Capability c) {
     // first output language capabilities
-    TableTreeItem langHdr = createLanguageHeaderGui(parent);
+    TreeItem langHdr = createLanguageHeaderGui(parent);
     String[] languages = c.getLanguagesSupported();
     if (null != languages) {
       for (int i = 0; i < languages.length; i++) {
-        TableTreeItem lItem = new TableTreeItem(langHdr, SWT.NONE);
+        TreeItem lItem = new TreeItem(langHdr, SWT.NONE);
         lItem.setData(LANG_TITLE);
         lItem.setText(NAME_COL, languages[i]);
       }
     }
 
     // second, output Sofas
-    TableTreeItem sofaHdr = createSofaHeaderGui(parent);
+    TreeItem sofaHdr = createSofaHeaderGui(parent);
     String[] inputSofaNames = c.getInputSofas();
     String[] outputSofaNames = c.getOutputSofas();
     Arrays.sort(inputSofaNames);
     Arrays.sort(outputSofaNames);
     for (int i = 0; i < inputSofaNames.length; i++) {
-      TableTreeItem item = new TableTreeItem(sofaHdr, SWT.NONE);
+      TreeItem item = new TreeItem(sofaHdr, SWT.NONE);
       setGuiSofaName(item, inputSofaNames[i], true);
     }
     for (int i = 0; i < outputSofaNames.length; i++) {
-      TableTreeItem item = new TableTreeItem(sofaHdr, SWT.NONE);
+      TreeItem item = new TreeItem(sofaHdr, SWT.NONE);
       setGuiSofaName(item, outputSofaNames[i], false);
     }
 
@@ -394,7 +395,7 @@ public class CapabilitySection extends AbstractSection {
       String typeName = (String) entry.getKey();
       tc = (TypeCapability) entry.getValue();
 
-      TableTreeItem item = new TableTreeItem(parent, SWT.NONE);
+      TreeItem item = new TreeItem(parent, SWT.NONE);
       setGuiTypeName(item, typeName);
       if (tc.isInputType)
         item.setText(INPUT_COL, INPUT);
@@ -406,7 +407,7 @@ public class CapabilitySection extends AbstractSection {
         String featName = (String) fEntry.getKey();
         fc = (FeatureCapability) fEntry.getValue();
 
-        TableTreeItem fItem = new TableTreeItem(item, SWT.NONE);
+        TreeItem fItem = new TreeItem(item, SWT.NONE);
         fItem.setData(FEAT_TITLE);
         fItem.setText(NAME_COL, featName);
         if (fc.isInputFeature)
@@ -424,7 +425,7 @@ public class CapabilitySection extends AbstractSection {
    * @param item the item
    * @param typeName the type name
    */
-  private void setGuiTypeName(TableTreeItem item, String typeName) {
+  private void setGuiTypeName(TreeItem item, String typeName) {
     item.setText(TITLE_COL, TYPE_TITLE);
     item.setText(NAME_COL, getShortName(typeName));
     item.setText(NAMESPACE_COL, getNameSpace(typeName));
@@ -437,7 +438,7 @@ public class CapabilitySection extends AbstractSection {
    * @param sofaName the sofa name
    * @param isInput the is input
    */
-  private void setGuiSofaName(TableTreeItem item, String sofaName, boolean isInput) {
+  private void setGuiSofaName(TreeItem item, String sofaName, boolean isInput) {
     item.setData(SOFA_TITLE);
     item.setText(NAME_COL, sofaName);
     if (isInput) {
@@ -505,7 +506,7 @@ public class CapabilitySection extends AbstractSection {
       return;
     }
 
-    TableTreeItem selItem = tt.getSelection()[0];
+    TreeItem selItem = tt.getSelection()[0];
     int itemKind = getItemKind(selItem);
 
     if (event.widget == addLangButton) {
@@ -519,7 +520,7 @@ public class CapabilitySection extends AbstractSection {
     } else if (event.widget == editButton || event.type == SWT.MouseDoubleClick) {
       handleEdit(selItem, itemKind);
     } else if (event.widget == removeButton
-            || (event.widget == tt.getTable() && event.type == SWT.KeyUp && event.character == SWT.DEL)) {
+            || (event.widget == tt && event.type == SWT.KeyUp && event.character == SWT.DEL)) {
       handleRemove(selItem, itemKind);
     }
 
@@ -533,16 +534,16 @@ public class CapabilitySection extends AbstractSection {
     Capability newCset = addCapabilitySet();
 
     // update the GUI
-    TableTreeItem item = new TableTreeItem(tt, SWT.NONE);
+    TreeItem item = new TreeItem(tt, SWT.NONE);
     item.setText(CAPABILITY_SET);
     item.setData(newCset);
     createLanguageHeaderGui(item);
     createSofaHeaderGui(item);
 
     item.setExpanded(true);
-    tt.setSelection(new TableTreeItem[] { item });
+    tt.setSelection(new TreeItem[] { item });
     if (tt.getItemCount() == 1)
-      tt.getTable().getColumn(TITLE_COL).pack();
+      tt.getColumn(TITLE_COL).pack();
     finishAction();
   }
 
@@ -554,10 +555,10 @@ public class CapabilitySection extends AbstractSection {
    * @param inOrOut the in or out
    * @return the or create all feat item
    */
-  private void getOrCreateAllFeatItem(TableTreeItem editItem, int column, String inOrOut) {
-    TableTreeItem allFeatItem = getAllFeatItem(editItem);
+  private void getOrCreateAllFeatItem(TreeItem editItem, int column, String inOrOut) {
+    TreeItem allFeatItem = getAllFeatItem(editItem);
     if (null == allFeatItem) {
-      allFeatItem = new TableTreeItem(editItem, SWT.NONE, 0);
+      allFeatItem = new TreeItem(editItem, SWT.NONE, 0);
       allFeatItem.setData(FEAT_TITLE);
       allFeatItem.setText(NAME_COL, ALL_FEATURES);
     }
@@ -570,11 +571,11 @@ public class CapabilitySection extends AbstractSection {
    * @param editItem the edit item
    * @return the all feat item
    */
-  private TableTreeItem getAllFeatItem(TableTreeItem editItem) {
-    TableTreeItem[] subItems = editItem.getItems();
+  private TreeItem getAllFeatItem(TreeItem editItem) {
+    TreeItem[] subItems = editItem.getItems();
     if (null == subItems || subItems.length == 0)
       return null;
-    TableTreeItem item = subItems[0];
+    TreeItem item = subItems[0];
     if (ALL_FEATURES.equals(item.getText(NAME_COL)))
       return item;
     return null;
@@ -586,8 +587,8 @@ public class CapabilitySection extends AbstractSection {
    * @param editItem the edit item
    * @param column the column
    */
-  private void removeAllFeatItemGui(TableTreeItem editItem, int column) {
-    TableTreeItem allFeatItem = getAllFeatItem(editItem);
+  private void removeAllFeatItemGui(TreeItem editItem, int column) {
+    TreeItem allFeatItem = getAllFeatItem(editItem);
     if (null == allFeatItem)
       // throw new InternalErrorCDE("invalid state");
       return; // happens when no allfeat is set
@@ -603,7 +604,7 @@ public class CapabilitySection extends AbstractSection {
    * @param editItem the edit item
    * @param itemKind the item kind
    */
-  private void handleEdit(TableTreeItem editItem, int itemKind) {
+  private void handleEdit(TreeItem editItem, int itemKind) {
     Capability c = getCapability(editItem);
     switch (itemKind) {
       case SOFA_ITEM: {
@@ -724,7 +725,7 @@ public class CapabilitySection extends AbstractSection {
       }
 
       case FEAT: {
-        TableTreeItem typeItem = editItem.getParentItem();
+        TreeItem typeItem = editItem.getParentItem();
         String typeName = getFullyQualifiedName(typeItem);
 
         // using the CAS to get all the inherited features
@@ -767,16 +768,18 @@ public class CapabilitySection extends AbstractSection {
    * @param removeItem the remove item
    * @param itemKind the item kind
    */
-  private void handleRemove(TableTreeItem removeItem, int itemKind) {
-    Table table = tt.getTable();
-    int previousSelection = table.getSelectionIndex() - 1;
+  private void handleRemove(TreeItem removeItem, int itemKind) {
+//    Table table = tt.getTable();
+//    int previousSelection = tt.getSelectionIndex() - 1;
+    int selectionIndex = tt.indexOf(tt.getSelection()[0]);
+    int previousSelection = selectionIndex - 1;
     Capability c = getCapability(removeItem);
     switch (itemKind) {
       case CS: {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Remove",
                 "This action will remove an entire capability set.  Please confirm.",
                 MessageDialog.WARNING)) {
-          table.setSelection(table.getSelectionIndex() + 1);
+          tt.setSelection(tt.getItems()[selectionIndex + 1]);
           return;
         }
         removeCapabilitySet(c);
@@ -795,7 +798,7 @@ public class CapabilitySection extends AbstractSection {
                         "Confirm Removal of Sofa",
                         "This action will remove this Sofa as a capability, and delete its mappings if no other capability set declares this Sofa."
                                 + "  Please confirm.", MessageDialog.WARNING)) {
-          table.setSelection(table.getSelectionIndex() + 1);
+          tt.setSelection(tt.getItems()[selectionIndex + 1]);
           return;
         }
         String sofaName = removeItem.getText(NAME_COL);
@@ -831,10 +834,10 @@ public class CapabilitySection extends AbstractSection {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Removal of Type",
                 "This action will remove this type as a capability.  Please confirm.",
                 MessageDialog.WARNING)) {
-          table.setSelection(table.getSelectionIndex() + 1);
+          tt.setSelection(tt.getItems()[selectionIndex + 1]);
           return;
         }
-        TableTreeItem[] features = removeItem.getItems();
+        TreeItem[] features = removeItem.getItems();
         if (null != features)
           for (int i = 0; i < features.length; i++) {
             removeFeature(c, features[i]);
@@ -856,7 +859,7 @@ public class CapabilitySection extends AbstractSection {
         throw new InternalErrorCDE("invalid state");
     }
 
-    table.setSelection(previousSelection);
+    tt.setSelection(tt.getItems()[previousSelection]);
     finishAction();
   }
 
@@ -881,7 +884,7 @@ public class CapabilitySection extends AbstractSection {
    * @param item the item
    * @return true, if is input
    */
-  private boolean isInput(TableTreeItem item) {
+  private boolean isInput(TreeItem item) {
     return INPUT.equals(item.getText(INPUT_COL)); // works if getText() returns null
   }
 
@@ -891,7 +894,7 @@ public class CapabilitySection extends AbstractSection {
    * @param item the item
    * @return true, if is output
    */
-  private boolean isOutput(TableTreeItem item) {
+  private boolean isOutput(TreeItem item) {
     return OUTPUT.equals(item.getText(OUTPUT_COL));
   }
 
@@ -923,7 +926,7 @@ public class CapabilitySection extends AbstractSection {
    * @param c the c
    * @param removeItem the remove item
    */
-  private void removeFeature(Capability c, TableTreeItem removeItem) {
+  private void removeFeature(Capability c, TreeItem removeItem) {
     String shortFeatureName = removeItem.getText(NAME_COL);
     if (shortFeatureName.equals(ALL_FEATURES)) {
       if (isInput(removeItem)) {
@@ -953,7 +956,7 @@ public class CapabilitySection extends AbstractSection {
    * @param item the item
    * @return the capability from table tree item
    */
-  public Capability getCapabilityFromTableTreeItem(TableTreeItem item) {
+  public Capability getCapabilityFromTreeItem(TreeItem item) {
     return (Capability) item.getData();
   }
 
@@ -963,7 +966,7 @@ public class CapabilitySection extends AbstractSection {
    * @param selItem the sel item
    * @param itemKind the item kind
    */
-  private void handleAddLang(TableTreeItem selItem, int itemKind) {
+  private void handleAddLang(TreeItem selItem, int itemKind) {
     if (itemKind == CS)
       selItem = selItem.getItems()[0]; // lang is 1st item in capability set
     else if (itemKind == LANG_ITEM)
@@ -972,7 +975,7 @@ public class CapabilitySection extends AbstractSection {
       selItem = selItem.getParentItem().getItems()[0];
     else if (itemKind == FEAT || itemKind == SOFA_ITEM)
       selItem = selItem.getParentItem().getParentItem().getItems()[0];
-    Capability c = getCapabilityFromTableTreeItem(selItem.getParentItem());
+    Capability c = getCapabilityFromTreeItem(selItem.getParentItem());
     CommonInputDialog dialog = new CommonInputDialog(
             this,
             "Add Language",
@@ -984,7 +987,7 @@ public class CapabilitySection extends AbstractSection {
     c.setLanguagesSupported(stringArrayAdd(c.getLanguagesSupported(), dialog.getValue()));
 
     // update GUI
-    TableTreeItem lItem = new TableTreeItem(selItem, SWT.NONE);
+    TreeItem lItem = new TreeItem(selItem, SWT.NONE);
     lItem.setData(LANG_TITLE);
     lItem.setText(NAME_COL, dialog.getValue());
     selItem.setExpanded(true);
@@ -998,12 +1001,12 @@ public class CapabilitySection extends AbstractSection {
    * @param selItem the sel item
    * @param itemKind the item kind
    */
-  private void handleAddType(TableTreeItem selItem, int itemKind) {
+  private void handleAddType(TreeItem selItem, int itemKind) {
     if (itemKind == LANG || itemKind == TYPE || itemKind == SOFA)
       selItem = selItem.getParentItem();
     else if (itemKind == LANG_ITEM || itemKind == FEAT || itemKind == SOFA_ITEM)
       selItem = selItem.getParentItem().getParentItem();
-    Capability c = getCapabilityFromTableTreeItem(selItem);
+    Capability c = getCapabilityFromTreeItem(selItem);
     AddCapabilityTypeDialog dialog = new AddCapabilityTypeDialog(this, c);
     if (dialog.open() == Window.CANCEL)
       return;
@@ -1016,12 +1019,12 @@ public class CapabilitySection extends AbstractSection {
       if (dialog.outputs[i])
         c.addOutputType(dialog.types[i], dialog.outputs[i]);
 
-      TableTreeItem item = new TableTreeItem(selItem, SWT.NONE);
+      TreeItem item = new TreeItem(selItem, SWT.NONE);
       setGuiTypeName(item, dialog.types[i]);
       item.setText(INPUT_COL, dialog.inputs[i] ? INPUT : "");
       item.setText(OUTPUT_COL, dialog.outputs[i] ? OUTPUT : "");
 
-      TableTreeItem fItem = new TableTreeItem(item, SWT.NONE);
+      TreeItem fItem = new TreeItem(item, SWT.NONE);
       fItem.setData(FEAT_TITLE);
       fItem.setText(NAME_COL, ALL_FEATURES);
       fItem.setText(INPUT_COL, dialog.inputs[i] ? INPUT : "");
@@ -1040,7 +1043,7 @@ public class CapabilitySection extends AbstractSection {
    * @param selItem the sel item
    * @param itemKind the item kind
    */
-  private void handleAddSofa(TableTreeItem selItem, int itemKind) {
+  private void handleAddSofa(TreeItem selItem, int itemKind) {
     if (itemKind == CS)
       selItem = selItem.getItems()[1];
     else if (itemKind == LANG || itemKind == TYPE)
@@ -1048,7 +1051,7 @@ public class CapabilitySection extends AbstractSection {
     else if (itemKind == LANG_ITEM || itemKind == FEAT || itemKind == SOFA_ITEM)
       selItem = selItem.getParentItem().getParentItem().getItems()[1];
 
-    Capability c = getCapabilityFromTableTreeItem(selItem.getParentItem());
+    Capability c = getCapabilityFromTreeItem(selItem.getParentItem());
     AddSofaDialog dialog = new AddSofaDialog(this, c);
     if (dialog.open() == Window.CANCEL)
       return;
@@ -1059,7 +1062,7 @@ public class CapabilitySection extends AbstractSection {
     else
       c.setOutputSofas(stringArrayAdd(c.getOutputSofas(), dialog.sofaName));
 
-    TableTreeItem item = new TableTreeItem(selItem, SWT.NONE);
+    TreeItem item = new TreeItem(selItem, SWT.NONE);
     setGuiSofaName(item, dialog.sofaName, dialog.isInput);
     selItem.setExpanded(true);
     pack04();
@@ -1074,11 +1077,11 @@ public class CapabilitySection extends AbstractSection {
    * @param selItem the sel item
    * @param itemKind the item kind
    */
-  private void handleAddEditFeature(TableTreeItem selItem, int itemKind) {
+  private void handleAddEditFeature(TreeItem selItem, int itemKind) {
     if (itemKind == FEAT)
       selItem = selItem.getParentItem();
 
-    Capability c = getCapabilityFromTableTreeItem(selItem.getParentItem());
+    Capability c = getCapabilityFromTreeItem(selItem.getParentItem());
     String typeName = getFullyQualifiedName(selItem);
 
     // using the CAS to get all the inherited features
@@ -1101,7 +1104,7 @@ public class CapabilitySection extends AbstractSection {
    */
   private void addOrEditFeature(AddCapabilityFeatureDialog dialog, String typeName, // fully
           // qualified
-          TableTreeItem parentItem, Capability c) {
+          TreeItem parentItem, Capability c) {
     // set the <all features> flag on the type in the model, for input and output
     c.setInputs(setAllFeatures(c.getInputs(), typeName, dialog.allFeaturesInput));
     // The logic for output features is complicated. Output features are always listed in the
@@ -1125,14 +1128,14 @@ public class CapabilitySection extends AbstractSection {
     } else
       c.setOutputs(setAllFeatures(c.getOutputs(), typeName, dialog.allFeaturesOutput));
 
-    TableTreeItem[] prevFeatGUI = parentItem.getItems();
+    TreeItem[] prevFeatGUI = parentItem.getItems();
     for (int i = 0; i < prevFeatGUI.length; i++) {
       prevFeatGUI[i].dispose();
     }
 
     // update GUI for <all features> - add element if needed
     if (dialog.allFeaturesInput || dialog.allFeaturesOutput) {
-      TableTreeItem item = new TableTreeItem(parentItem, SWT.NONE);
+      TreeItem item = new TreeItem(parentItem, SWT.NONE);
       item.setData(FEAT_TITLE);
       item.setText(NAME_COL, ALL_FEATURES);
       item.setText(INPUT_COL, dialog.allFeaturesInput ? INPUT : "");
@@ -1149,15 +1152,15 @@ public class CapabilitySection extends AbstractSection {
       if (dialog.outputs[i])
         outputsL.add(newFeature(fullName));
       // update the GUI
-      TableTreeItem item = new TableTreeItem(parentItem, SWT.NONE);
+      TreeItem item = new TreeItem(parentItem, SWT.NONE);
       item.setData(FEAT_TITLE);
       item.setText(NAME_COL, dialog.features[i]);
       item.setText(INPUT_COL, dialog.inputs[i] ? INPUT : "");
       item.setText(OUTPUT_COL, dialog.outputs[i] ? OUTPUT : "");
     }
     parentItem.setExpanded(true);
-    tt.getTable().getColumn(NAME_COL).pack();
-    tt.setSelection(new TableTreeItem[] { parentItem });
+    tt.getColumn(NAME_COL).pack();
+    tt.setSelection(new TreeItem[] { parentItem });
 
     c.setInputs(replaceFeaturesKeepingTypes(c.getInputs(), typeName, inputsL));
     c.setOutputs(replaceFeaturesKeepingTypes(c.getOutputs(), typeName, outputsL));
@@ -1184,7 +1187,7 @@ public class CapabilitySection extends AbstractSection {
    * @param item the item
    * @return the fully qualified name
    */
-  public String getFullyQualifiedName(TableTreeItem item) {
+  public String getFullyQualifiedName(TreeItem item) {
     String namespace = item.getText(NAMESPACE_COL);
     String name = item.getText(NAME_COL);
     return "".equals(namespace) ? name : namespace + "." + name;
@@ -1266,9 +1269,9 @@ public class CapabilitySection extends AbstractSection {
    * Pack 04.
    */
   private void pack04() {
-    tt.getTable().getColumn(TITLE_COL).pack();
-    tt.getTable().getColumn(NAME_COL).pack();
-    tt.getTable().getColumn(NAMESPACE_COL).pack();
+    tt.getColumn(TITLE_COL).pack();
+    tt.getColumn(NAME_COL).pack();
+    tt.getColumn(NAMESPACE_COL).pack();
   }
 
   /**
@@ -1277,7 +1280,7 @@ public class CapabilitySection extends AbstractSection {
    * @param item the item
    * @return the item kind
    */
-  private int getItemKind(TableTreeItem item) {
+  private int getItemKind(TreeItem item) {
     String itemID = item.getText(TITLE_COL);
 
     if (CAPABILITY_SET.equals(itemID))
@@ -1306,7 +1309,7 @@ public class CapabilitySection extends AbstractSection {
     addCapabilityButton.setEnabled(true);
 
     boolean selectOK = tt.getSelectionCount() == 1;
-    TableTreeItem item = selectOK ? tt.getSelection()[0] : null;
+    TreeItem item = selectOK ? tt.getSelection()[0] : null;
     int kind = selectOK ? getItemKind(item) : 0;
 
     addLangButton.setEnabled(selectOK);
@@ -1354,10 +1357,10 @@ public class CapabilitySection extends AbstractSection {
    * @param item the item
    * @return the capability
    */
-  private Capability getCapability(TableTreeItem item) {
+  private Capability getCapability(TreeItem item) {
     while (null != item.getParentItem())
       item = item.getParentItem();
-    return getCapabilityFromTableTreeItem(item);
+    return getCapabilityFromTreeItem(item);
   }
 
 }

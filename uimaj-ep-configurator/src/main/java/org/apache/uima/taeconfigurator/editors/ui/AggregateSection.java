@@ -44,7 +44,6 @@ import org.apache.uima.taeconfigurator.editors.ui.dialogs.PickTaeForTypesDialog;
 import org.apache.uima.taeconfigurator.files.MultiResourceSelectionDialogWithFlowOption;
 import org.apache.uima.taeconfigurator.model.FlowNodes;
 import org.apache.uima.util.XMLizable;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;

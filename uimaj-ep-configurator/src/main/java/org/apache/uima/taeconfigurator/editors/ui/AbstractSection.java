@@ -91,8 +91,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.PopupList;
-import org.eclipse.swt.custom.TableTree;
-import org.eclipse.swt.custom.TableTreeItem;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -108,6 +106,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.AbstractFormPart;
@@ -734,11 +733,11 @@ implements Listener, StandardStrings {
    * @return the tree
    */
   protected Tree newTree(Composite parent) {
-    Tree tree = toolkit.createTree(parent, SWT.SINGLE);
-    tree.setLayoutData(new GridData(GridData.FILL_BOTH));
-    tree.addListener(SWT.Selection, this);
-    tree.addListener(SWT.KeyUp, this);
-    return tree;
+    Tree local_tree = toolkit.createTree(parent, SWT.SINGLE);
+    local_tree.setLayoutData(new GridData(GridData.FILL_BOTH));
+    local_tree.addListener(SWT.Selection, this);
+    local_tree.addListener(SWT.KeyUp, this);
+    return local_tree;
   }
 
   /**
@@ -774,19 +773,19 @@ implements Listener, StandardStrings {
   }
 
   /**
-   * New table tree.
+   * New tree.
    *
    * @param parent the parent
    * @param style          SWT.SINGLE SWT.MULTI SWT.CHECK SWT.FULL_SELECTION
    * @return the TableTree
    */
-  protected TableTree newTableTree(Composite parent, int style) {
-    TableTree tt = new TableTree(parent, style);
+  protected Tree newTree(Composite parent, int style) {
+    Tree tt = new Tree(parent, style);
     tt.setLayoutData(new GridData(GridData.FILL_BOTH));
     toolkit.adapt(tt, true, true);
     tt.addListener(SWT.Selection, this);
-    tt.getTable().addListener(SWT.KeyUp, this); // for delete key
-    tt.getTable().addListener(SWT.MouseDoubleClick, this); // for edit
+    tt.addListener(SWT.KeyUp, this); // for delete key
+    tt.addListener(SWT.MouseDoubleClick, this); // for edit
     tt.addListener(SWT.Expand, this);
     tt.addListener(SWT.Collapse, this);
  
@@ -803,6 +802,19 @@ implements Listener, StandardStrings {
    */
   public void packTable(Table table) {
     TableColumn[] columns = table.getColumns();
+    for (int i = 0; i < columns.length; i++) {
+      columns[i].pack();
+    }
+  }
+
+  
+  /**
+   * Pack tree.
+   *
+   * @param table the table
+   */
+  public void packTree(Tree p_tree) {
+    TreeColumn[] columns = p_tree.getColumns();
     for (int i = 0; i < columns.length; i++) {
       columns[i].pack();
     }
@@ -830,9 +842,9 @@ implements Listener, StandardStrings {
    * @param item the item
    * @return the index
    */
-  public static int getIndex(TableTreeItem item) {
-    TableTreeItem parent = item.getParentItem();
-    TableTreeItem[] items = (null == parent) ? item.getParent().getItems() : parent.getItems();
+  public static int getIndex(TreeItem item) {
+    TreeItem parent = item.getParentItem();
+    TreeItem[] items = (null == parent) ? item.getParent().getItems() : parent.getItems();
     for (int i = items.length - 1; i >= 0; i--) {
       if (items[i] == item)
         return i;
@@ -840,18 +852,18 @@ implements Listener, StandardStrings {
     throw new InternalErrorCDE("invalid state"); //$NON-NLS-1$
   }
 
-  /**
-   * Removes the children.
-   *
-   * @param item the item
-   */
-  protected void removeChildren(TableTreeItem item) {
-    TableTreeItem[] items = item.getItems();
-    if (null != items)
-      for (int i = 0; i < items.length; i++) {
-        items[i].dispose();
-      }
-  }
+//  /**
+//   * Removes the children.
+//   *
+//   * @param item the item
+//   */
+//  protected void removeChildren(TreeItem item) {
+//    TreeItem[] items = item.getItems();
+//    if (null != items)
+//      for (int i = 0; i < items.length; i++) {
+//        items[i].dispose();
+//      }
+//  }
 
   /**
    * Removes the children.
@@ -878,6 +890,18 @@ implements Listener, StandardStrings {
   protected TableColumn newTableColumn(Table table) {
     return newTableColumn(table, ""); //$NON-NLS-1$
   }
+  
+  /**
+   * New tree column.
+   *
+   * @param p_tree the tree
+   * @return the tree column
+   */
+  // **********************************
+  protected TreeColumn newTreeColumn(Tree p_tree) {
+    return newTreeColumn(p_tree, ""); //$NON-NLS-1$
+  }
+
 
   /**
    * New table column.
@@ -889,6 +913,18 @@ implements Listener, StandardStrings {
   protected TableColumn newTableColumn(Table container, String header) {
     return newTableColumn(container, 50, SWT.LEFT, header);
   }
+  
+  /**
+   * New tree column.
+   *
+   * @param container the container
+   * @param header the header
+   * @return the tree column
+   */
+  protected TreeColumn newTreeColumn(Tree container, String header) {
+    return newTreeColumn(container, 50, SWT.LEFT, header);
+  }
+
 
   /**
    * New table column.
@@ -907,6 +943,25 @@ implements Listener, StandardStrings {
     tc.setWidth(width);
     return tc;
   }
+  
+  /**
+   * New tree column.
+   *
+   * @param container the container
+   * @param width the width
+   * @param alignment the alignment
+   * @param header the header
+   * @return the tree column
+   */
+  protected TreeColumn newTreeColumn(Tree container, int width, int alignment, String header) {
+    TreeColumn tc = new TreeColumn(container, alignment);
+    if (header != null && (!header.equals(""))) { //$NON-NLS-1$
+      tc.setText(header);
+    }
+    tc.setWidth(width);
+    return tc;
+  }
+  
 
   /**
    * New table column.
@@ -917,6 +972,17 @@ implements Listener, StandardStrings {
    */
   protected TableColumn newTableColumn(Table container, int width) {
     return newTableColumn(container, width, SWT.LEFT, Messages.getString("AbstractSection.0")); //$NON-NLS-1$
+  }
+
+  /**
+   * New tree column.
+   *
+   * @param container the container
+   * @param width the width
+   * @return the tree column
+   */
+  protected TreeColumn newTreeColumn(Tree container, int width) {
+    return newTreeColumn(container, width, SWT.LEFT, Messages.getString("AbstractSection.0")); //$NON-NLS-1$
   }
 
   // **************************************************
@@ -1715,24 +1781,24 @@ implements Listener, StandardStrings {
   }
 
   /**
-   * Swap table tree items.
+   * Swap tree items.
    *
    * @param itemBelow the item below
    * @param newSelection the new selection
    */
-  public static void swapTableTreeItems(TableTreeItem itemBelow, int newSelection) {
-    TableTreeItem parent = itemBelow.getParentItem();
+  public static void swapTreeItems(TreeItem itemBelow, int newSelection) {
+    TreeItem parent = itemBelow.getParentItem();
     if (null == parent)
       throw new InternalErrorCDE("invalid arg");
     int i = getIndex(itemBelow);
-    TableTreeItem itemAbove = parent.getItems()[i - 1];
-    TableTreeItem newItemAbove = new TableTreeItem(parent, SWT.NONE, i - 1);
-    copyTableTreeItem(newItemAbove, itemBelow);
-    TableTreeItem newItemBelow = new TableTreeItem(parent, SWT.NONE, i);
-    copyTableTreeItem(newItemBelow, itemAbove);
+    TreeItem itemAbove = parent.getItems()[i - 1];
+    TreeItem newItemAbove = new TreeItem(parent, SWT.NONE, i - 1);
+    copyTreeItem(newItemAbove, itemBelow);
+    TreeItem newItemBelow = new TreeItem(parent, SWT.NONE, i);
+    copyTreeItem(newItemBelow, itemAbove);
     itemAbove.dispose();
     itemBelow.dispose();
-    parent.getParent().setSelection(new TableTreeItem[] { parent.getItems()[newSelection] });
+    parent.getParent().setSelection(new TreeItem[] { parent.getItems()[newSelection] });
   }
 
   /**
@@ -1741,8 +1807,8 @@ implements Listener, StandardStrings {
    * @param target the target
    * @param source the source
    */
-  public static void copyTableTreeItem(TableTreeItem target, TableTreeItem source) {
-    int columnCount = target.getParent().getTable().getColumnCount();
+  public static void copyTreeItem(TreeItem target, TreeItem source) {
+    int columnCount = target.getParent().getColumnCount();
     for (int i = 0; i < columnCount; i++) {
       String text = source.getText(i);
       if (null != text)
@@ -1757,8 +1823,8 @@ implements Listener, StandardStrings {
    * @param itemBelow the item below
    * @param newSelection the new selection
    */
-  public static void swapIndexKeys(TableTreeItem itemBelow, int newSelection) {
-    TableTreeItem parent = itemBelow.getParentItem();
+  public static void swapIndexKeys(TreeItem itemBelow, int newSelection) {
+    TreeItem parent = itemBelow.getParentItem();
     FsIndexDescription fsid = getFsIndexDescriptionFromTableTreeItem(parent);
     int i = getIndex(itemBelow);
     FsIndexKeyDescription[] keys = fsid.getKeys();
@@ -1767,7 +1833,7 @@ implements Listener, StandardStrings {
     keys[i - 1] = temp;
 
     // swap items in the GUI
-    swapTableTreeItems(itemBelow, newSelection);
+    swapTreeItems(itemBelow, newSelection);
   }
 
   /**
@@ -1811,7 +1877,7 @@ implements Listener, StandardStrings {
    * @param item the item
    * @return the fs index description from table tree item
    */
-  public static FsIndexDescription getFsIndexDescriptionFromTableTreeItem(TableTreeItem item) {
+  public static FsIndexDescription getFsIndexDescriptionFromTableTreeItem(TreeItem item) {
     return (FsIndexDescription) item.getData();
   }
 

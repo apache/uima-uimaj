@@ -70,13 +70,13 @@ import org.apache.uima.taeconfigurator.wizards.TypeSystemNewWizard;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableTree;
-import org.eclipse.swt.custom.TableTreeItem;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
 
@@ -115,7 +115,7 @@ public class TypeSection extends AbstractImportablePartSection {
   public static final String HEADER_ALLOWED_VALUE = "Allowed Value:";
 
   /** The tt. */
-  private TableTree tt;
+  private Tree tt;
 
   /** The add type button. */
   private Button addTypeButton;
@@ -172,14 +172,14 @@ public class TypeSection extends AbstractImportablePartSection {
     enableBorders(sectionClient);
     toolkit.paintBordersFor(sectionClient);
 
-    tt = newTableTree(sectionClient, SWT.SINGLE | SWT.FULL_SELECTION);
-    new TableColumn(tt.getTable(), SWT.NONE).setText("Type Name or Feature Name");
-    new TableColumn(tt.getTable(), SWT.NONE).setText("SuperType or Range");
-    new TableColumn(tt.getTable(), SWT.NONE).setText(" "); // space for icon
-    new TableColumn(tt.getTable(), SWT.NONE).setText("Element Type");
-    tt.getTable().setHeaderVisible(true);
+    tt = newTree(sectionClient, SWT.SINGLE | SWT.FULL_SELECTION);
+    new TreeColumn(tt, SWT.NONE).setText("Type Name or Feature Name");
+    new TreeColumn(tt, SWT.NONE).setText("SuperType or Range");
+    new TreeColumn(tt, SWT.NONE).setText(" "); // space for icon
+    new TreeColumn(tt, SWT.NONE).setText("Element Type");
+    tt.setHeaderVisible(true);
 
-    tt.getTable().addListener(SWT.MouseHover, this); // to show description and more
+    tt.addListener(SWT.MouseHover, this); // to show description and more
 
     Composite buttonContainer = newButtonContainer(sectionClient);
     addTypeButton = newPushButton(buttonContainer, "Add Type", "Click here to add a new type.");
@@ -220,8 +220,8 @@ public class TypeSection extends AbstractImportablePartSection {
     }
 
     if (tt.getItemCount() > 0)
-      tt.setSelection(new TableTreeItem[] { tt.getItems()[0] });
-    packTable(tt.getTable());
+      tt.setSelection(tt.getItems()[0]);
+    packTree(tt);
     enable();
   }
 
@@ -237,7 +237,7 @@ public class TypeSection extends AbstractImportablePartSection {
       return featureDescriptionArray0;
     if (null == subset)
       return all;
-    List result = new ArrayList();
+    List<FeatureDescription> result = new ArrayList<>();
 
     outer: for (int i = 0; i < all.length; i++) {
       String name = all[i].getName();
@@ -256,7 +256,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param td the td
    */
   private void addTypeToGUI(TypeDescription td) {
-    TableTreeItem item = new TableTreeItem(tt, SWT.NONE);
+    TreeItem item = new TreeItem(tt, SWT.NONE);
     item.setText(NAME_COL, formatName(td.getName()));
     item.setText(SUPER_COL, formatName(td.getSupertypeName()));
     item.setData(td);
@@ -275,7 +275,7 @@ public class TypeSection extends AbstractImportablePartSection {
     AllowedValue[] avs = td.getAllowedValues();
     if (null != avs) {
       for (int i = 0; i < avs.length; i++) {
-        TableTreeItem avItem = new TableTreeItem(item, SWT.NONE);
+        TreeItem avItem = new TreeItem(item, SWT.NONE);
         avItem.setText(NAME_COL, HEADER_ALLOWED_VALUE);
         avItem.setText(AV_COL, convertNull(avs[i].getString()));
         avItem.setData(avs[i]);
@@ -293,11 +293,11 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    * @param features the features
    */
-  private void addFeaturesToGui(TypeDescription td, TableTreeItem item,
+  private void addFeaturesToGui(TypeDescription td, TreeItem item,
           FeatureDescription[] features) {
     if (null != features) {
       for (int i = 0; i < features.length; i++) {
-        TableTreeItem fItem = new TableTreeItem(item, SWT.NONE);
+        TreeItem fItem = new TreeItem(item, SWT.NONE);
         updateGuiFeature(fItem, features[i], td);
       }
     }
@@ -310,7 +310,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param fd the fd
    * @param td the td
    */
-  private void updateGuiFeature(TableTreeItem fItem, FeatureDescription fd, TypeDescription td) {
+  private void updateGuiFeature(TreeItem fItem, FeatureDescription fd, TypeDescription td) {
     String rangeType;
     fItem.setText(NAME_COL, fd.getName());
     fItem.setText(RANGE_COL, formatName(rangeType = fd.getRangeTypeName()));
@@ -338,7 +338,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    * @param isLocal the is local
    */
-  private void setItemColor(TableTreeItem item, boolean isLocal) {
+  private void setItemColor(TreeItem item, boolean isLocal) {
     if (isLocal)
       return;
     item.setForeground(editor.getFadeColor());
@@ -354,7 +354,7 @@ public class TypeSection extends AbstractImportablePartSection {
     if (event.widget == addTypeButton) {
       handleAddType();
     } else if (event.widget == addButton) {
-      TableTreeItem parent = tt.getSelection()[0];
+      TreeItem parent = tt.getSelection()[0];
       if (null != parent.getParentItem())
         parent = parent.getParentItem();
 
@@ -391,7 +391,7 @@ public class TypeSection extends AbstractImportablePartSection {
    */
   public void handleHover(Event event) {
     // next getItem call requires that table have SWT.FULL_SELECTION Style
-    TableTreeItem item = tt.getItem(new Point(event.x, event.y));
+    TreeItem item = tt.getItem(new Point(event.x, event.y));
     if (null != item) {
       Object o = item.getData();
       if (null == o)
@@ -421,7 +421,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    * @return the type description from table tree item
    */
-  public TypeDescription getTypeDescriptionFromTableTreeItem(TableTreeItem item) {
+  public TypeDescription getTypeDescriptionFromTableTreeItem(TreeItem item) {
     return (TypeDescription) item.getData();
   }
 
@@ -431,7 +431,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param parent the parent
    */
   // disabled unless type having String as supertype is selected
-  public void handleAddAllowedValue(TableTreeItem parent) {
+  public void handleAddAllowedValue(TreeItem parent) {
     boolean refreshNeeded = false;
 
     TypeDescription td = getTypeDescriptionFromTableTreeItem(parent);
@@ -456,7 +456,7 @@ public class TypeSection extends AbstractImportablePartSection {
     if (refreshNeeded)
       refresh();
     else {
-      TableTreeItem item = new TableTreeItem(parent, SWT.NONE);
+      TreeItem item = new TreeItem(parent, SWT.NONE);
       item.setText(NAME_COL, HEADER_ALLOWED_VALUE);
       item.setText(AV_COL, convertNull(av.getString()));
       item.setData(av);
@@ -497,7 +497,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param parent the parent
    */
   // disabled unless type is selected
-  public void handleAddFeature(TableTreeItem parent) {
+  public void handleAddFeature(TreeItem parent) {
 
     TypeDescription td = getTypeDescriptionFromTableTreeItem(parent);
     // guaranteed non-null - otherwise add button disabled
@@ -532,7 +532,7 @@ public class TypeSection extends AbstractImportablePartSection {
     } else {
       fd = td.addFeature(null, null, null);
       featureUpdate(fd, dialog);
-      TableTreeItem item = new TableTreeItem(parent, SWT.NONE);
+      TreeItem item = new TreeItem(parent, SWT.NONE);
       updateGuiFeature(item, fd, td);
       parent.setExpanded(true);
       finishActionPack();
@@ -545,10 +545,10 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param td the td
    */
   private void selectTypeInGui(TypeDescription td) {
-    TableTreeItem[] items = tt.getItems();
+    TreeItem[] items = tt.getItems();
     for (int i = 0; i < items.length; i++) {
       if (td.getName().equals(((TypeDescription) items[i].getData()).getName())) {
-        tt.setSelection(new TableTreeItem[] { items[i] });
+        tt.setSelection(new TreeItem[] { items[i] });
         return;
       }
     }
@@ -629,7 +629,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * Finish action pack.
    */
   private void finishActionPack() {
-    packTable(tt.getTable());
+    packTree(tt);
     finishAction();
   }
 
@@ -649,8 +649,8 @@ public class TypeSection extends AbstractImportablePartSection {
    * Handle edit.
    */
   private void handleEdit() {
-    TableTreeItem item = tt.getSelection()[0];
-    TableTreeItem parentType = item.getParentItem();
+    TreeItem item = tt.getSelection()[0];
+    TreeItem parentType = item.getParentItem();
 
     if (null == parentType) { // editing a type, not a feature
       editType(item);
@@ -667,7 +667,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    * @return the feature description from table tree item
    */
-  public FeatureDescription getFeatureDescriptionFromTableTreeItem(TableTreeItem item) {
+  public FeatureDescription getFeatureDescriptionFromTableTreeItem(TreeItem item) {
     return (FeatureDescription) item.getData();
   }
 
@@ -677,7 +677,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    * @param parent the parent
    */
-  private void editFeature(TableTreeItem item, TableTreeItem parent) {
+  private void editFeature(TreeItem item, TreeItem parent) {
     boolean remergeNeeded = false;
     boolean refreshNeeded = false;
     TypeDescription td = getTypeDescriptionFromTableTreeItem(parent);
@@ -743,7 +743,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    * @return the allowed value from table tree item
    */
-  public AllowedValue getAllowedValueFromTableTreeItem(TableTreeItem item) {
+  public AllowedValue getAllowedValueFromTableTreeItem(TreeItem item) {
     return (AllowedValue) item.getData();
   }
 
@@ -753,7 +753,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    * @param parent the parent
    */
-  private void editAllowedValue(TableTreeItem item, TableTreeItem parent) {
+  private void editAllowedValue(TreeItem item, TreeItem parent) {
 
     TypeDescription td = getTypeDescriptionFromTableTreeItem(parent);
     AllowedValue av = getAllowedValueFromTableTreeItem(item);
@@ -854,7 +854,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    */
   // type is always local; could be merging with import(s) or built-in
-  private void editType(TableTreeItem item) {
+  private void editType(TreeItem item) {
 
     boolean mergeAndRefreshNeeded = false;
     boolean refreshNeeded = false;
@@ -933,7 +933,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    * @param td the td
    */
-  private void updateGuiType(TableTreeItem item, TypeDescription td) {
+  private void updateGuiType(TreeItem item, TypeDescription td) {
     item.setText(NAME_COL, formatName(td.getName()));
     item.setText(SUPER_COL, formatName(td.getSupertypeName()));
   }
@@ -984,8 +984,8 @@ public class TypeSection extends AbstractImportablePartSection {
    * Note that the Remove action is disabled if the item selected is imported only
    */
   private void handleRemove() {
-    TableTreeItem item = tt.getSelection()[0];
-    TableTreeItem parent = item.getParentItem();
+    TreeItem item = tt.getSelection()[0];
+    TreeItem parent = item.getParentItem();
 
     if (null == parent)
       handleRemoveType(item);
@@ -1000,7 +1000,7 @@ public class TypeSection extends AbstractImportablePartSection {
    *
    * @param item the item
    */
-  private void handleRemoveAllowedValue(TableTreeItem item) {
+  private void handleRemoveAllowedValue(TreeItem item) {
     TypeDescription td = getTypeDescriptionFromTableTreeItem(item.getParentItem());
     AllowedValue av = getAllowedValueFromTableTreeItem(item);
     // guaranteed non-null -otherwise remove button disabled
@@ -1009,7 +1009,9 @@ public class TypeSection extends AbstractImportablePartSection {
       removeAllowedValue(td, av);
 
       // update GUI
-      tt.getTable().setSelection(tt.getTable().getSelectionIndex() - 1);
+      TreeItem selectedItem = tt.getSelection()[0];
+      tt.setSelection(tt.getItems()[tt.indexOf(selectedItem) - 1]);
+//      tt.setSelection(tt.getTable().getSelectionIndex() - 1);
       item.dispose();
     } else {
       refresh();
@@ -1026,7 +1028,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    */
   // same - for built-in <could be created outside of the CDE>
-  private void handleRemoveFeature(TableTreeItem item) {
+  private void handleRemoveFeature(TreeItem item) {
     TypeDescription td = getTypeDescriptionFromTableTreeItem(item.getParentItem());
     FeatureDescription fd = getFeatureDescriptionFromTableTreeItem(item);
 
@@ -1053,7 +1055,9 @@ public class TypeSection extends AbstractImportablePartSection {
         refresh();
       else {
         // update GUI
-        tt.getTable().setSelection(tt.getTable().getSelectionIndex() - 1);
+        TreeItem selectedItem = tt.getSelection()[0];
+        tt.setSelection(tt.getItems()[tt.indexOf(selectedItem) - 1]);    
+//        tt.getTable().setSelection(tt.getTable().getSelectionIndex() - 1);
         item.dispose();
       }
     }
@@ -1152,7 +1156,7 @@ public class TypeSection extends AbstractImportablePartSection {
    *
    * @param item the item
    */
-  private void handleRemoveType(TableTreeItem item) {
+  private void handleRemoveType(TreeItem item) {
 
     TypeDescription td = getTypeDescriptionFromTableTreeItem(item);
 
@@ -1186,7 +1190,9 @@ public class TypeSection extends AbstractImportablePartSection {
     } else {
       removeType(td, getMergedTypeSystemDescription());
       // update GUI
-      tt.getTable().setSelection(tt.getTable().getSelectionIndex() - 1);
+      TreeItem selectedItem = tt.getSelection()[0];
+      tt.setSelection(tt.getItems()[tt.indexOf(selectedItem) - 1]);
+//      tt.getTable().setSelection(tt.getTable().getSelectionIndex() - 1);
       item.dispose();
     }
 
@@ -1351,7 +1357,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    * @return true, if is subtype of string
    */
-  private boolean isSubtypeOfString(TableTreeItem item) {
+  private boolean isSubtypeOfString(TreeItem item) {
     TypeDescription td = getTypeDescriptionFromTableTreeItem(item);
     return CAS.TYPE_NAME_STRING.equals(td.getSupertypeName());
   }

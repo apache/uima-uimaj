@@ -25,6 +25,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
@@ -53,7 +55,7 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
   protected static final String UNCHECKED = "";
 
   /** The table. */
-  Table table;
+  Tree f_tree;
 
   /** The enable col 1. */
   protected boolean enableCol1 = true;
@@ -80,9 +82,9 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
    */
   @Override
   public void handleEvent(Event event) {
-    if (event.type == SWT.MouseDown && event.widget == table) {
+    if (event.type == SWT.MouseDown && event.widget == f_tree) {
       Point mousePosition = new Point(event.x, event.y);
-      TableItem item = table.getItem(mousePosition);
+      TreeItem item = f_tree.getItem(mousePosition);
       if (null == item) {
         jitHowTo(event.widget);
         return;
@@ -132,6 +134,22 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
     else
       numberChecked--;
   }
+  
+  /**
+   * Toggle value.
+   *
+   * @param item the item
+   * @param col the col
+   */
+  protected void toggleValue(TreeItem item, int col) {
+    item.setText(col, item.getText(col).equals(checkedIndicator(col)) ? UNCHECKED
+            : checkedIndicator(col));
+    if (item.getText(col).equals(checkedIndicator(col)))
+      numberChecked++;
+    else
+      numberChecked--;
+  }
+
 
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
@@ -165,4 +183,21 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
     else if (!value && prevChecked)
       numberChecked--;
   }
+  
+  /**
+   * Sets the checked.
+   *
+   * @param item the item
+   * @param col the col
+   * @param value the value
+   */
+  protected void setChecked(TreeItem item, int col, boolean value) {
+    boolean prevChecked = checkedIndicator(col).equals(item.getText(col));
+    item.setText(col, value ? checkedIndicator(col) : UNCHECKED);
+    if (value && !prevChecked)
+      numberChecked++;
+    else if (!value && prevChecked)
+      numberChecked--;
+  }
+
 }

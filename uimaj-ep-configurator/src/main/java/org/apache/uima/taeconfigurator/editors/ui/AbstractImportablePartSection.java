@@ -27,6 +27,7 @@ import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.apache.uima.taeconfigurator.model.BuiltInTypes;
 import org.eclipse.swt.custom.TableTreeItem;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TreeItem;
 
 
 /**
@@ -56,7 +57,7 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
    * @return true, if is local item
    */
   // ********************************
-  protected boolean isLocalItem(TableTreeItem item) {
+  protected boolean isLocalItem(TreeItem item) {
     return !item.getForeground().equals(editor.getFadeColor());
   }
 

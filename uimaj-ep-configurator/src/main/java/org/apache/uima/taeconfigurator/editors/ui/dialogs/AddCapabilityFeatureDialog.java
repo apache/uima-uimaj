@@ -23,14 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
@@ -38,6 +30,15 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.CapabilitySection;
 import org.apache.uima.taeconfigurator.editors.ui.Utility;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 
 
 /**
@@ -111,15 +112,15 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent);
 
-    table = newTable(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION);
-    ((GridData) table.getLayoutData()).heightHint = 100;
-    table.setHeaderVisible(true);
-    table.setLinesVisible(true);
-    new TableColumn(table, SWT.NONE).setText("Feature Name");
-    new TableColumn(table, SWT.NONE).setText("Input");
-    new TableColumn(table, SWT.NONE).setText("Output");
+    Tree tree = newTree(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION);
+    ((GridData) tree.getLayoutData()).heightHint = 100;
+    tree.setHeaderVisible(true);
+    tree.setLinesVisible(true);
+    new TreeColumn(tree, SWT.NONE).setText("Feature Name");
+    new TreeColumn(tree, SWT.NONE).setText("Input");
+    new TreeColumn(tree, SWT.NONE).setText("Output");
 
-    TableItem item = new TableItem(table, SWT.NONE);
+    TreeItem item = new TreeItem(tree, SWT.NONE);
     item.setText(0, CapabilitySection.ALL_FEATURES);
     TypeOrFeature tof = AbstractSection.getTypeOrFeature(capability.getInputs(), selectedType
             .getName());
@@ -128,15 +129,15 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
     setChecked(item, 2, null == tof ? false : tof.isAllAnnotatorFeatures());
 
     for (int i = 0; i < allFeatures.length; i++) {
-      item = new TableItem(table, SWT.NONE);
+      item = new TreeItem(tree, SWT.NONE);
       item.setText(0, allFeatures[i].getShortName());
       setChecked(item, 1, CapabilitySection.isInput(getTypeFeature(allFeatures[i]), capability));
       setChecked(item, 2, CapabilitySection.isOutput(getTypeFeature(allFeatures[i]), capability));
     }
 
-    table.removeListener(SWT.Selection, this);
-    table.addListener(SWT.MouseDown, this); // for i / o toggling
-    section.packTable(table);
+    tree.removeListener(SWT.Selection, this);
+    tree.addListener(SWT.MouseDown, this); // for i / o toggling
+    section.packTree(tree);
     newErrorMessage(composite);
     return composite;
   }
@@ -167,7 +168,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
       if (item.getText(0).equals(CapabilitySection.ALL_FEATURES))
         uncheckAllOtherFeatures(col);
       else
-        setChecked(table.getItem(0), col, false); // uncheck all-features
+        setChecked(f_tree.getItem(0), col, false); // uncheck all-features
   }
 
   /**
@@ -176,7 +177,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
    * @param column the column
    */
   private void uncheckAllOtherFeatures(int column) {
-    TableItem[] items = table.getItems();
+    TreeItem[] items = f_tree.getItems();
     for (int i = 1; i < items.length; i++) {
       setChecked(items[i], column, false);
     }
@@ -187,12 +188,12 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
    */
   @Override
   public void copyValuesFromGUI() {
-    List names = new ArrayList();
-    List ins = new ArrayList();
-    List outs = new ArrayList();
+    List<String> names = new ArrayList<>();
+    List<Boolean> ins = new ArrayList<>();
+    List<Boolean> outs = new ArrayList<>();
 
-    for (int i = table.getItemCount() - 1; i >= 1; i--) {
-      TableItem item = table.getItem(i);
+    for (int i = f_tree.getItemCount() - 1; i >= 1; i--) {
+      TreeItem item = f_tree.getItem(i);
       if (item.getText(1).equals(checkedIndicator(1))
               || item.getText(2).equals(checkedIndicator(2))) {
         names.add(item.getText(0));
@@ -209,7 +210,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
       outputs[i] = (Boolean) outs.get(i);
     }
 
-    TableItem item = table.getItem(0);
+    TreeItem item = f_tree.getItem(0);
     allFeaturesInput = item.getText(1).equals(checkedIndicator(1));
     allFeaturesOutput = item.getText(2).equals(checkedIndicator(2));
   }

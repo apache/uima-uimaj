@@ -46,9 +46,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 
 
 /**
@@ -411,6 +411,8 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     Tree tree = new Tree(parent, style | SWT.BORDER);
     GridData gd = new GridData(GridData.FILL_BOTH);
     tree.setLayoutData(gd);
+    tree.addListener(SWT.Selection, this);
+    tree.addListener(SWT.KeyUp, this); // delete key
     return tree;
   }
 
@@ -437,7 +439,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    * @param p the p
    * @return the hit column
    */
-  public int getHitColumn(TableItem item, Point p) {
+  public int getHitColumn(TreeItem item, Point p) {
     for (int i = item.getParent().getColumnCount() - 1; i >= 0; i--) {
       Rectangle columnBounds = item.getBounds(i);
       if (columnBounds.contains(p))
