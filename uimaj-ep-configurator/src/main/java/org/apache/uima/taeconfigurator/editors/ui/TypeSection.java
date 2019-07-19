@@ -548,7 +548,7 @@ public class TypeSection extends AbstractImportablePartSection {
     TreeItem[] items = tt.getItems();
     for (int i = 0; i < items.length; i++) {
       if (td.getName().equals(((TypeDescription) items[i].getData()).getName())) {
-        tt.setSelection(new TreeItem[] { items[i] });
+        tt.setSelection( items[i]);
         return;
       }
     }
@@ -1009,9 +1009,7 @@ public class TypeSection extends AbstractImportablePartSection {
       removeAllowedValue(td, av);
 
       // update GUI
-      TreeItem selectedItem = tt.getSelection()[0];
-      tt.setSelection(tt.getItems()[tt.indexOf(selectedItem) - 1]);
-//      tt.setSelection(tt.getTable().getSelectionIndex() - 1);
+      setSelectionOneUp(tt, item);
       item.dispose();
     } else {
       refresh();
@@ -1028,7 +1026,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param item the item
    */
   // same - for built-in <could be created outside of the CDE>
-  private void handleRemoveFeature(TreeItem item) {
+  private void handleRemoveFeature(final TreeItem item) {
     TypeDescription td = getTypeDescriptionFromTableTreeItem(item.getParentItem());
     FeatureDescription fd = getFeatureDescriptionFromTableTreeItem(item);
 
@@ -1055,8 +1053,7 @@ public class TypeSection extends AbstractImportablePartSection {
         refresh();
       else {
         // update GUI
-        TreeItem selectedItem = tt.getSelection()[0];
-        tt.setSelection(tt.getItems()[tt.indexOf(selectedItem) - 1]);    
+        setSelectionOneUp(tt, item);
 //        tt.getTable().setSelection(tt.getTable().getSelectionIndex() - 1);
         item.dispose();
       }
@@ -1156,7 +1153,7 @@ public class TypeSection extends AbstractImportablePartSection {
    *
    * @param item the item
    */
-  private void handleRemoveType(TreeItem item) {
+  private void handleRemoveType(final TreeItem item) {
 
     TypeDescription td = getTypeDescriptionFromTableTreeItem(item);
 
@@ -1190,9 +1187,7 @@ public class TypeSection extends AbstractImportablePartSection {
     } else {
       removeType(td, getMergedTypeSystemDescription());
       // update GUI
-      TreeItem selectedItem = tt.getSelection()[0];
-      tt.setSelection(tt.getItems()[tt.indexOf(selectedItem) - 1]);
-//      tt.getTable().setSelection(tt.getTable().getSelectionIndex() - 1);
+      setSelectionOneUp(tt, item);
       item.dispose();
     }
 
