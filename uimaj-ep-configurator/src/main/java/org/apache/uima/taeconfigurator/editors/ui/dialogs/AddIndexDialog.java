@@ -256,6 +256,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
    */
   @Override
+  //   2019-7  never called
   public void handleEvent(Event event) {
     if (event.widget == indexKindUI) {
       boolean showKeys = "sorted".equals(indexKindUI.getText())
