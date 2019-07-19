@@ -811,7 +811,7 @@ implements Listener, StandardStrings {
   /**
    * Pack tree.
    *
-   * @param table the table
+   * @param p_tree the tree
    */
   public void packTree(Tree p_tree) {
     TreeColumn[] columns = p_tree.getColumns();
