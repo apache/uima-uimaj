@@ -44,8 +44,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -235,7 +233,7 @@ public class CapabilitySection extends AbstractSection {
         TreeItem item = new TreeItem(tt, SWT.NONE);
         item.setText(TITLE_COL, CAPABILITY_SET);
         item.setData(cs[i]);
-        tt.setSelection(new TreeItem[] { item }); // set default selection
+        tt.setSelection( item ); // set default selection
         fillCapability(item, cs[i]);
         // if (0 == i) {
         item.setExpanded(true);
@@ -541,7 +539,7 @@ public class CapabilitySection extends AbstractSection {
     createSofaHeaderGui(item);
 
     item.setExpanded(true);
-    tt.setSelection(new TreeItem[] { item });
+    tt.setSelection( item );
     if (tt.getItemCount() == 1)
       tt.getColumn(TITLE_COL).pack();
     finishAction();
@@ -769,17 +767,14 @@ public class CapabilitySection extends AbstractSection {
    * @param itemKind the item kind
    */
   private void handleRemove(TreeItem removeItem, int itemKind) {
-//    Table table = tt.getTable();
-//    int previousSelection = tt.getSelectionIndex() - 1;
     int selectionIndex = tt.indexOf(tt.getSelection()[0]);
-    int previousSelection = selectionIndex - 1;
     Capability c = getCapability(removeItem);
     switch (itemKind) {
       case CS: {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Remove",
                 "This action will remove an entire capability set.  Please confirm.",
                 MessageDialog.WARNING)) {
-          tt.setSelection(tt.getItems()[selectionIndex + 1]);
+          maybeSetSelection(tt, selectionIndex + 1);
           return;
         }
         removeCapabilitySet(c);
@@ -798,7 +793,7 @@ public class CapabilitySection extends AbstractSection {
                         "Confirm Removal of Sofa",
                         "This action will remove this Sofa as a capability, and delete its mappings if no other capability set declares this Sofa."
                                 + "  Please confirm.", MessageDialog.WARNING)) {
-          tt.setSelection(tt.getItems()[selectionIndex + 1]);
+          maybeSetSelection(tt, selectionIndex + 1);
           return;
         }
         String sofaName = removeItem.getText(NAME_COL);
@@ -834,7 +829,7 @@ public class CapabilitySection extends AbstractSection {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Removal of Type",
                 "This action will remove this type as a capability.  Please confirm.",
                 MessageDialog.WARNING)) {
-          tt.setSelection(tt.getItems()[selectionIndex + 1]);
+          maybeSetSelection(tt, selectionIndex + 1);
           return;
         }
         TreeItem[] features = removeItem.getItems();
@@ -859,7 +854,7 @@ public class CapabilitySection extends AbstractSection {
         throw new InternalErrorCDE("invalid state");
     }
 
-    tt.setSelection(tt.getItems()[previousSelection]);
+    maybeSetSelection(tt, selectionIndex - 1);
     finishAction();
   }
 
@@ -1160,7 +1155,7 @@ public class CapabilitySection extends AbstractSection {
     }
     parentItem.setExpanded(true);
     tt.getColumn(NAME_COL).pack();
-    tt.setSelection(new TreeItem[] { parentItem });
+    tt.setSelection( parentItem );
 
     c.setInputs(replaceFeaturesKeepingTypes(c.getInputs(), typeName, inputsL));
     c.setOutputs(replaceFeaturesKeepingTypes(c.getOutputs(), typeName, outputsL));

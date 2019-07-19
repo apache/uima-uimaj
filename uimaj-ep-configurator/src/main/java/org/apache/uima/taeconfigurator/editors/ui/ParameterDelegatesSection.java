@@ -137,10 +137,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
       if (null != fcd) {
         addDelegateToGUI(fcd.getKey(), fcd.getSpecifier());
       }
-      TreeItem[] items = tree.getItems();
-      if (items.length > 0)
-        // scrolls to top, also
-        tree.setSelection(new TreeItem[] { items[0] });
+      maybeSetSelection(tree, 0);
     }
     enable();
   }

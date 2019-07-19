@@ -146,7 +146,7 @@ public class SofaMapSection extends AbstractSection {
 
       fillMap(inputAggrSofas, INPUT);
       fillMap(outputSofaNames, OUTPUT);
-      tree.setSelection(new TreeItem[] { tree.getItems()[0] });
+      maybeSetSelection(tree, 0);
 
       if (0 == (inputAggrSofas.length + outputSofaNames.length)) {
         getSection().setText("Sofa Mappings (No Sofas are defined)");

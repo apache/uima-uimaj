@@ -2552,4 +2552,20 @@ implements Listener, StandardStrings {
       return "sorted";
     return indexKind;
   }
+  
+  /**
+   * set the selection one above this item, unless it's the top one already.
+   * Used when removing the item
+   */
+  public static void setSelectionOneUp(Tree tt, TreeItem item) {
+    int itemIndex = tt.indexOf(item);
+    maybeSetSelection(tt, itemIndex - 1);
+  }
+  
+  public static void maybeSetSelection(Tree tt, int itemIndex) {
+    TreeItem[] items = tt.getItems();
+    if (itemIndex >= 0 && itemIndex < items.length) {
+      tt.setSelection(items[itemIndex]);
+    }
+  }
 }

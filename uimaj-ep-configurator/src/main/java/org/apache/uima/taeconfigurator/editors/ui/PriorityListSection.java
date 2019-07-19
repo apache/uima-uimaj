@@ -135,8 +135,7 @@ public class PriorityListSection extends AbstractSection {
         item.setExpanded(true);
       }
     }
-    if (tree.getItemCount() > 0)
-      tree.setSelection(new TreeItem[] { tree.getItems()[0] });
+    maybeSetSelection(tree, 0);
     enable();
   }
 
@@ -172,7 +171,7 @@ public class PriorityListSection extends AbstractSection {
       TreeItem item = new TreeItem(tree, SWT.NONE);
       item.setText(PRIORITY_LIST);
 
-      tree.setSelection(new TreeItem[] { item });
+      tree.setSelection( item );
       setFileDirty();
     } else if (event.widget == addButton) { // add type to set
       if (editor.isTypePriorityDescriptor() && !editor.getIsContextLoaded()) {
@@ -235,7 +234,7 @@ public class PriorityListSection extends AbstractSection {
       TreeItem previousSelection = getPreviousSelection(parent == null ? tree.getItems() : parent
               .getItems(), item);
       if (null != previousSelection)
-        tree.setSelection(new TreeItem[] { previousSelection });
+        tree.setSelection(previousSelection);
       item.dispose();
       setFileDirty();
     }
@@ -257,7 +256,7 @@ public class PriorityListSection extends AbstractSection {
         new TreeItem(parent, SWT.NONE, i).setText(formatName(types[i]));
         TreeItem t = new TreeItem(parent, SWT.NONE, i + 1);
         t.setText(formatName(types[i + 1]));
-        tree.setSelection(new TreeItem[] { t });
+        tree.setSelection( t);
 
         items[i].dispose();
         items[i + 1].dispose();
@@ -268,7 +267,7 @@ public class PriorityListSection extends AbstractSection {
 
         TreeItem t = new TreeItem(parent, SWT.NONE, i - 1);
         t.setText(formatName(types[i - 1]));
-        tree.setSelection(new TreeItem[] { t });
+        tree.setSelection( t);
         new TreeItem(parent, SWT.NONE, i).setText(formatName(types[i]));
 
         items[i - 1].dispose();

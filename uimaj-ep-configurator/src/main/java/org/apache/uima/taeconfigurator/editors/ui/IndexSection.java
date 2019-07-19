@@ -34,7 +34,6 @@ import org.apache.uima.taeconfigurator.wizards.FsIndexCollectionNewWizard;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableTreeItem;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -282,8 +281,8 @@ public class IndexSection extends AbstractSection {
 
       updateIndexSpec(new TreeItem(tt, SWT.NONE), id);
 
-      TreeItem[] items = tt.getItems();
-      tt.setSelection(items[items.length - 1]);
+      
+      maybeSetSelection(tt, tt.getItemCount() - 1);
       packTree(tt);
       setFileDirty();
     } else if (event.widget == addKeyButton) {
@@ -322,9 +321,8 @@ public class IndexSection extends AbstractSection {
         FsIndexDescription fsid = getFsIndexDescriptionFromTableTreeItem(parent);
         removeFsIndexKeyDescription(fsid, (FsIndexKeyDescription) o);
       }
-      TreeItem selectionItem = tt.getSelection()[0];
+      setSelectionOneUp(tt, item);
 //      tt.setSelection(tt.getTable().getSelectionIndex() - 1);
-      tt.setSelection(tt.getItems()[tt.indexOf(selectionItem) - 1]);
       item.dispose();
       setFileDirty();
     } else if (event.widget == editButton || event.type == SWT.MouseDoubleClick) {
@@ -549,8 +547,9 @@ public class IndexSection extends AbstractSection {
     downButton.setEnabled(false);
     if (selected) {
       if (null != parent && notBuiltInSelected) {
-        TreeItem firstItem = parent.getItems()[0];
-        TreeItem lastItem = parent.getItems()[parent.getItems().length - 1];
+        TreeItem[] items = parent.getItems();
+        TreeItem firstItem = items[0];
+        TreeItem lastItem = items[items.length - 1];
         upButton.setEnabled(item != firstItem);
         downButton.setEnabled(item != lastItem);
       }

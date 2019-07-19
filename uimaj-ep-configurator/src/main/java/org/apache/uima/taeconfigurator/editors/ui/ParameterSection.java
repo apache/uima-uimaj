@@ -298,7 +298,7 @@ public class ParameterSection extends AbstractSectionParm {
     splitGroupNames = false;
     clearAndRefillTree(usingGroupsButton.getSelection());
 
-    tree.setSelection(new TreeItem[] { tree.getItems()[0] });
+    maybeSetSelection(tree, 0);
     enable();
 
     // sync settings page to catch use case of switching from sourceEditor
@@ -784,7 +784,7 @@ public class ParameterSection extends AbstractSectionParm {
     // fill(commonParms, item); // don't add common parsm, they're added by definition
     addGroupToModel(cg);
     cg.setNames(groupNameArray);
-    tree.setSelection(new TreeItem[] { item });
+    tree.setSelection( item );
     return new ConfigGroup(cpd, cg);
   }
 
@@ -858,7 +858,7 @@ public class ParameterSection extends AbstractSectionParm {
 
     }
 
-    tree.setSelection(new TreeItem[] { item });
+    tree.setSelection( item );
     return true;
   }
 
