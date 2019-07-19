@@ -87,14 +87,21 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
 
   /**
    * Returns configuration parameter settings for this CollectionReader.
+   *
+   * @return the configuration parameter settings
    */
+  @Override
   public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings() {
     return collectionIterator.getConfigurationParameterSettings();
   }
 
   /**
    * Sets configuration parameter settings for this CollectionReader.
+   *
+   * @param aParams the new configuration parameter settings
+   * @throws CpeDescriptorException the cpe descriptor exception
    */
+  @Override
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aParams)
           throws CpeDescriptorException {
     collectionIterator.setConfigurationParameterSettings(aParams);
@@ -109,8 +116,11 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
               new PropertyXmlInfo("casInitializer", null), });
 
   /**
-   * @param iterator
+   * Sets the collection iterator.
+   *
+   * @param iterator the new collection iterator
    */
+  @Override
   public void setCollectionIterator(CpeCollectionReaderIterator iterator) {
     collectionIterator = iterator;
   }
