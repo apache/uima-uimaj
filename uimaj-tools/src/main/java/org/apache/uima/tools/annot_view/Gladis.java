@@ -31,7 +31,9 @@ import org.apache.uima.tools.cvd.CVD;
 public class Gladis {
 
   /**
-   * @param args
+   * The main method.
+   *
+   * @param args the arguments
    */
   public static void main(String[] args) {
     CVD.main(args);

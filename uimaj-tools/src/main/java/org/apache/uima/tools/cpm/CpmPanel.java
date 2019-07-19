@@ -653,13 +653,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
    * Called by createCpeDescription to add configuration parameter overrides to the CpeDescription
    * being constructed, based on the user's changes in the GUI.
    * 
-   * @param aSettings
-   *          the CasProcessorConfigurationParameterSettings element that will be modified
-   * @param aPanel
-   *          the GUI panel representing settings for the CAS Processor
-   * @param aClearDirty
-   *          whether to clear the dirty bit of each field. This should be set to true when this
-   *          method is called during the act of saving the CPE descriptor.
+   * @param aSettings          the CasProcessorConfigurationParameterSettings element that will be modified
+   * @param aPanel          the GUI panel representing settings for the CAS Processor
+   * @throws CpeDescriptorException the cpe descriptor exception
    */
   private void createParameterOverrides(CasProcessorConfigurationParameterSettings aSettings,
           MetaDataPanel aPanel) throws CpeDescriptorException {
@@ -966,8 +962,11 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   /**
-   * @param descriptor
-   * @param cpeDescSaveFile
+   * Update import.
+   *
+   * @param descriptor the descriptor
+   * @param cpeDescSaveFile the cpe desc save file
+   * @throws Exception the exception
    */
   private void updateImport(CpeComponentDescriptor descriptor, File cpeDescSaveFile) throws Exception {
     //don't touch import by name
@@ -995,6 +994,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Utility method for convertion a URL to a File name, taking care of
    * proper escaping.
+   *
    * @param url a URL
    * @return File corresponding to that URL
    */
@@ -1034,7 +1034,11 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     }
   }
 
-  /** Ask user to confirm exist. Return true if they confirm, false if not. */
+  /**
+   *  Ask user to confirm exist. Return true if they confirm, false if not.
+   *
+   * @return true, if successful
+   */
   public boolean confirmExit() {
     mShuttingDown = true;
     // ask for confirm if CPM is processing
@@ -1812,7 +1816,10 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   /**
-   * @param specifier
+   * Checks if is cas consumer specifier.
+   *
+   * @param specifier the specifier
+   * @return true, if is cas consumer specifier
    */
   private boolean isCasConsumerSpecifier(ResourceSpecifier specifier) {
     if (specifier instanceof CasConsumerDescription) {

@@ -296,8 +296,10 @@ public class AnnotationViewerMain extends JFrame {
   }
 
   /**
-   * @param tad 
-   * @param descFileName
+   * Gets the style map file.
+   *
+   * @param tad the tad
+   * @param descFileName the desc file name
    * @return the style map file
    * @throws IOException -
    */
@@ -317,8 +319,10 @@ public class AnnotationViewerMain extends JFrame {
   }
 
   /**
-   * @param tsd
-   * @param descFileName
+   * Gets the style map file.
+   *
+   * @param tsd the tsd
+   * @param descFileName the desc file name
    * @return the style map file
    * @throws IOException -
    */

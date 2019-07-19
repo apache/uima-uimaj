@@ -74,8 +74,8 @@ public class CasTreeViewer extends JPanel {
   /**
    * Creates a CAS Tree Viewer.
    * 
-   * @param aCAS
-   *          the CAS containing the annotations to be displayed in the tree viewer GUI
+   * @param aCAS          the CAS containing the annotations to be displayed in the tree viewer GUI
+   * @throws CASException the CAS exception
    */
   public CasTreeViewer(CAS aCAS) throws CASException {
     super();
@@ -229,10 +229,9 @@ public class CasTreeViewer extends JPanel {
   /**
    * Builds a tree from a CAS.
    * 
-   * @param aRootNode
-   *          an existing root node for the tree
-   * @param aCAS
-   *          CAS from which annotations will be extracted
+   * @param aCAS          CAS from which annotations will be extracted
+   * @return the tree node
+   * @throws CASException the CAS exception
    */
   private TreeNode buildTree(CAS aCAS) throws CASException {
     // get iterator over all annotations
@@ -373,10 +372,8 @@ public class CasTreeViewer extends JPanel {
    * <code>&lt;TEXT%gt;Process this text.&lt;/TEXT%gt;</code>, then only the text within those
    * tags is returned. Otherwise the whole document is returned.
    * 
-   * @param aFile
-   *          file to process
-   * @param aTAE
-   *          Text Analysis Engine that will process the file
+   * @param text the text
+   * @return the text
    */
   static private String getText(String text) {
     int start = text.indexOf("<TEXT>");
@@ -397,6 +394,9 @@ public class CasTreeViewer extends JPanel {
   }
 
   /**
+   * Sets the size.
+   *
+   * @param d the new size
    * @see java.awt.Component#setSize(Dimension)
    */
   public void setSize(Dimension d) {

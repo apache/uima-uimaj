@@ -51,8 +51,11 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @param descriptor
+   * Sets the descriptor.
+   *
+   * @param descriptor the new descriptor
    */
+  @Override
   public void setDescriptor(CpeComponentDescriptor descriptor) {
     this.descriptor = descriptor;
   }
@@ -78,8 +81,11 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @param settings
+   * Sets the configuration parameter settings.
+   *
+   * @param settings the new configuration parameter settings
    */
+  @Override
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings) {
     configurationParameterSettings = settings;
     if (settings != null && settings.getParameterSettings() != null) {
@@ -118,7 +124,9 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @param settings
+   * Sets the config parameter settings.
+   *
+   * @param settings the new config parameter settings
    */
   public void setConfigParameterSettings(ConfigurationParameterSettings settings) {
     configParameterSettings = settings;
@@ -136,8 +144,11 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @param mappings
+   * Sets the sofa name mappings.
+   *
+   * @param mappings the new sofa name mappings
    */
+  @Override
   public void setSofaNameMappings(CpeSofaMappings mappings) {
     sofaNameMappings = mappings;
   }

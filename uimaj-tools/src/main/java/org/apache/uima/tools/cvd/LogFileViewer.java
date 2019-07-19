@@ -57,30 +57,38 @@ public class LogFileViewer extends JFrame {
 	private JTextArea textArea;
 
 	/**
-   * @throws java.awt.HeadlessException
+	 * Instantiates a new log file viewer.
+	 *
+	 * @throws java.awt.HeadlessException the java.awt. headless exception
    */
 	public LogFileViewer() {
 		super();
 	}
 
 	/**
-   * @param arg0
+	 * Instantiates a new log file viewer.
+	 *
+	 * @param arg0 the arg 0
    */
 	public LogFileViewer(GraphicsConfiguration arg0) {
 		super(arg0);
 	}
 
 	/**
-   * @param arg0
-   * @throws java.awt.HeadlessException
+	 * Instantiates a new log file viewer.
+	 *
+	 * @param arg0 the arg 0
+	 * @throws java.awt.HeadlessException the java.awt. headless exception
    */
 	public LogFileViewer(String arg0) {
 		super(arg0);
 	}
 
 	/**
-   * @param arg0
-   * @param arg1
+	 * Instantiates a new log file viewer.
+	 *
+	 * @param arg0 the arg 0
+	 * @param arg1 the arg 1
    */
 	public LogFileViewer(String arg0, GraphicsConfiguration arg1) {
 		super(arg0, arg1);

@@ -78,8 +78,7 @@ public class Jg {
 
   private final static boolean IS_TRACE_LIMITED = false;
   /**
-   * Interface implemeted by JCAS code generation's templates
-   *
+   * Interface implemented by JCAS code generation's templates.
    */
   public interface IJCasTypeTemplate {
     public String generate(Object argument);
@@ -286,6 +285,9 @@ public class Jg {
 
   /**
    * Returns the string from the plugin's resource bundle, or 'key' if not found.
+   *
+   * @param key the key
+   * @return the resource string
    */
   public String getResourceString(String key) {
     ResourceBundle bundle = getResourceBundle();
@@ -301,7 +303,9 @@ public class Jg {
   }
 
   /**
-   * Returns the plugin's resource bundle,
+   * Returns the plugin's resource bundle,.
+   *
+   * @return the resource bundle
    */
   public ResourceBundle getResourceBundle() {
     return resourceBundle;
@@ -430,7 +434,9 @@ public class Jg {
    *   -jcasgenoutput  xxxx
    *   -jcasgenclasspath xxxx
    *   
-   * @param arguments
+   *
+   * @param arguments the arguments
+   * @return the int
    */
   public int main1(String[] arguments) {
     boolean hadError = false;
@@ -712,7 +718,11 @@ public class Jg {
   /**
    * return true if td is not defined in this project, or
    *   it is defined, but is also in merged and any of the other
-   *   merged urls are not defined in this project
+   *   merged urls are not defined in this project.
+   *
+   * @param td the td
+   * @param projectDirPath the project dir path
+   * @return true, if is out of scope
    */
   private boolean isOutOfScope(TypeDescription td, String projectDirPath) {
     URI typeDefinitionUri;
@@ -795,9 +805,6 @@ public class Jg {
    * @param jcasTypeInstance          Template instance used to generate class
    * @param jcas_TypeInstance         Template instance used to generate class
    * @throws IOException -
-   * @throws InstantiationException -
-   * @throws IllegalAccessException -
-   * @return void
    */
   private void generateClassesFromTemplate(TypeDescription td, String outputDirectory,
           IJCasTypeTemplate jcasTypeInstance, IJCasTypeTemplate jcas_TypeInstance)

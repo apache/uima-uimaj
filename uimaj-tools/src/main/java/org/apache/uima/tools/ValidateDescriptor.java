@@ -33,8 +33,8 @@ public class ValidateDescriptor {
   /**
    * Runs the ValidateDescriptor tool.
    * 
-   * @param args
-   *          takes one argument, the path to a descriptor file.
+   * @param args          takes one argument, the path to a descriptor file.
+   * @throws Exception the exception
    */
   public static void main(String[] args) throws Exception {
     if (args.length != 1) {
