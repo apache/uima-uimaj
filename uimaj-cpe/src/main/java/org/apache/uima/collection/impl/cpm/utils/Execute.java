@@ -65,7 +65,7 @@ public class Execute {
   /**
    * Copies Cas Processor environment
    * 
-   * @param strings
+   * @param strings the new environment
    */
   public void setEnvironment(String[] strings) {
     environment = strings;

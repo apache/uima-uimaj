@@ -33,7 +33,10 @@ public class QueueEntity {
   private Object entity = null;
 
   /**
-   * Initialize the instance with the Entity (CAS) and the timeout
+   * Initialize the instance with the Entity (CAS) and the timeout.
+   *
+   * @param anEntity the an entity
+   * @param hasTimedOut the has timed out
    */
   public QueueEntity(Object anEntity, boolean hasTimedOut) {
     timedOut = hasTimedOut;

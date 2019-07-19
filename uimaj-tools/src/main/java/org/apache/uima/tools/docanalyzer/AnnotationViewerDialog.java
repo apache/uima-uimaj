@@ -139,28 +139,21 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   private String defaultCasViewName = CAS.NAME_DEFAULT_SOFA;
 
   /**
-   * Create an AnnotationViewer Dialog
-   * 
-   * @param aParentFrame
-   *          frame containing this panel
-   * @param aDialogTitle
-   *          title to display for the dialog
-   * @param med
+   * Create an AnnotationViewer Dialog.
    *         
-   * @param aStyleMapFile
-   *          filename of style map to be used to view files in HTML
-   * @param aPerformanceStats
-   *          string representaiton of performance statistics, optional.
-   * @param aTypeSystem
-   *          the CAS Type System to which the XCAS files must conform.
-   * @param aTypesToDisplay
-   *          array of types that should be highlighted in the viewer. This can be set to the output
+   * @param aParentFrame          frame containing this panel
+   * @param aDialogTitle          title to display for the dialog
+   * @param med the med
+   * @param aStyleMapFile          filename of style map to be used to view files in HTML
+   * @param aPerformanceStats          string representaiton of performance statistics, optional.
+   * @param aTypeSystem          the CAS Type System to which the XCAS files must conform.
+   * @param aTypesToDisplay          array of types that should be highlighted in the viewer. This can be set to the output
    *          types of the Analysis Engine. A value of null means to display all types.
-   * @param interactiveTempFN
-   * @param javaViewerRBisSelected
-   * @param javaViewerUCRBisSelected
-   * @param xmlRBisSelected
-   * @param cas
+   * @param interactiveTempFN the interactive temp FN
+   * @param javaViewerRBisSelected the java viewer R bis selected
+   * @param javaViewerUCRBisSelected the java viewer UCR bis selected
+   * @param xmlRBisSelected the xml R bis selected
+   * @param cas the cas
    */
   public AnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
@@ -417,6 +410,8 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   /**
    * Gets the name of the CAS View that will be displayed first in 
    * the annotation viewer.
+   *
+   * @return the default cas view name
    */
   public String getDefaultCasViewName() {
     return defaultCasViewName;
@@ -425,6 +420,8 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   /**
    * Sets the name of the CAS View that will be displayed first in 
    * the annotation viewer.  It not set, defaults to {@link CAS#NAME_DEFAULT_SOFA}.
+   *
+   * @param defaultCasViewName the new default cas view name
    */
   public void setDefaultCasViewName(String defaultCasViewName) {
     this.defaultCasViewName = defaultCasViewName;
@@ -529,6 +526,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   /**
    * Assumes node has a text field and extracts its value. JMP
+   *
+   * @param node the node
+   * @return the text value
    */
   static public String getTextValue(Node node) {
     Node first = node.getFirstChild();
@@ -541,6 +541,10 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   /**
    * Gets the first child with a given name. JMP
+   *
+   * @param node the node
+   * @param name the name
+   * @return the first child by name
    */
   static public Node getFirstChildByName(Node node, String name) {
     NodeList children = node.getChildNodes();
@@ -555,6 +559,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   /**
    * Reads in annotation-color associations from stylemap file. JMP Also reads checked value if
    * present.
+   *
+   * @param viewer the viewer
+   * @param aStyleMapFile the a style map file
    */
 
   public void getColorsForTypesFromFile(CasAnnotationViewer viewer, File aStyleMapFile) {
@@ -709,6 +716,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    * AnalysisEngineDescription object.
    * 
    * @return the selected AnalysisEngineDescription, null if the user cancelled
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws InvalidXMLException the invalid XML exception
+   * @throws ResourceInitializationException the resource initialization exception
    */
   protected AnalysisEngineDescription promptForAE() throws IOException, InvalidXMLException,
           ResourceInitializationException {

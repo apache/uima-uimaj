@@ -41,6 +41,11 @@ public class ExpirationTimer extends Thread {
   /**
    * Constructs a Timer that expires after a given interval. It keeps the map from growing
    * indefinitely. Its main purpose is to remove entries from a given map using a provided key.
+   *
+   * @param aTimeout the a timeout
+   * @param aMap the a map
+   * @param aKey the a key
+   * @param aCpm the a cpm
    */
   public ExpirationTimer(long aTimeout, HashMap aMap, String aKey, CPMEngine aCpm) {
     super();
