@@ -145,8 +145,8 @@
      NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
      -->
     <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
-    <compat.previous.version>2.10.2</compat.previous.version>
-    <api_check_oldVersion>2.10.2</api_check_oldVersion>
+    <compat.previous.version>2.10.3</compat.previous.version>
+    <api_check_oldVersion>2.10.3</api_check_oldVersion>
 
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
