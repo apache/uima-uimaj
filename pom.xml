@@ -279,7 +279,7 @@
               <phase>verify</phase>
               <!-- default configuration -->
               <configuration>
-                <excludes>
+                <excludes combine.children="append">
                   <exclude>release.properties</exclude> <!-- generated file -->
                   <exclude>README*</exclude>
                   <exclude>RELEASE_NOTES*</exclude>

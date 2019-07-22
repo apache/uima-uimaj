@@ -102,7 +102,7 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes>
+                <excludes combine.children="append">
                   <exclude>release.properties</exclude> <!-- release generated artifact -->
                   <exclude>checkpoint_synchPoint.xml*</exclude> <!-- test data -->
                   <exclude>checkpoint.dat*</exclude> <!-- test data -->

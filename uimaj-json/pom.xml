@@ -76,7 +76,7 @@
 	            <execution>
 	              <id>default-cli</id>
 	              <configuration>
-	                <excludes>
+	                <excludes combine.children="append">
 	                  <exclude>release.properties</exclude> <!-- generated file -->
 	                  <exclude>src/test/resources/CasSerialization/expected/json/*.txt</exclude>                  
                     <exclude>src/test/resources/CasSerialization/expected/xmi/*.xml</exclude>                  

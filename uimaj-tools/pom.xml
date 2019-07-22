@@ -101,7 +101,7 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes>
+                <excludes combine.children="append">
                   <exclude>release.properties</exclude> <!-- release generated artifact -->
                   <exclude>src/main/resources/org/apache/uima/tools/migration/*</exclude> <!-- data for migration code -->
                   <exclude>src/main/resources/org/apache/uima/tools/util/gui/about.txt</exclude>
