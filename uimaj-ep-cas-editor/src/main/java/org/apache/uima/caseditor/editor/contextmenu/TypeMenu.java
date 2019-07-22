@@ -19,7 +19,6 @@
 
 package org.apache.uima.caseditor.editor.contextmenu;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.cas.Type;
@@ -29,19 +28,23 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
+
 /**
  * Abstract base class for menus which display the type hierarchy.
  */
 abstract class TypeMenu extends ContributionItem {
+    
+    /** The m parent type. */
     private Type mParentType;
 
+    /** The m type system. */
     private TypeSystem mTypeSystem;
 
     /**
      * Initializes a new instance.
      *
-     * @param parentType
-     * @param typeSystem
+     * @param parentType the parent type
+     * @param typeSystem the type system
      */
     TypeMenu(Type parentType, TypeSystem typeSystem) {
       mParentType = parentType;
@@ -51,14 +54,21 @@ abstract class TypeMenu extends ContributionItem {
     /**
      * Fills the menu with type entries.
      *
-     * @param menu
-     * @param index
+     * @param menu the menu
+     * @param index the index
      */
     @Override
     public void fill(Menu menu, int index) {
       fillTypeMenu(mParentType, menu, false);
     }
 
+    /**
+     * Fill type menu.
+     *
+     * @param parentType the parent type
+     * @param parentMenu the parent menu
+     * @param isParentIncluded the is parent included
+     */
     private void fillTypeMenu(Type parentType, Menu parentMenu, 
     		boolean isParentIncluded) {
      
@@ -83,11 +93,7 @@ abstract class TypeMenu extends ContributionItem {
 
         insertAction(parentType, newSubMenu);
 
-        Iterator<Type> childsIterator = childs.iterator();
-
-        while (childsIterator.hasNext()) {
-          Type child = childsIterator.next();
-
+        for (Type child : childs) {
           fillTypeMenu(child, newSubMenu, true);
         }
       }
@@ -100,10 +106,9 @@ abstract class TypeMenu extends ContributionItem {
     /**
      * Implementing classes must implement this method to insert
      * actions into the type menu.
-     * 
-     * @param type
-     * @param parentMenu
+     *
+     * @param type the type
+     * @param parentMenu the parent menu
      */
     protected abstract void insertAction(final Type type, Menu parentMenu);
-
   }

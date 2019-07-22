@@ -85,6 +85,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.part.Page;
 
+
 /**
  * The {@link EditViewPage} provides basic editing support for {@link FeatureStructure}s.
  * It shows always the selected {@link FeatureStructure}, but for editing a certain
@@ -98,7 +99,16 @@ import org.eclipse.ui.part.Page;
  */
 final class EditViewPage extends Page implements ISelectionListener {
 
+  /**
+   * The Class ValueEditingSupport.
+   */
   private final class ValueEditingSupport extends EditingSupport {
+    
+    /**
+     * Instantiates a new value editing support.
+     *
+     * @param viewer the viewer
+     */
     private ValueEditingSupport(ColumnViewer viewer) {
       super(viewer);
     }
@@ -193,7 +203,7 @@ final class EditViewPage extends Page implements ISelectionListener {
             // no validator needed
           }
           else {
-            throw new CasEditorError("Unkown array type: " + arrayFS.getClass().getName());
+            throw new CasEditorError("Unknown array type: " + arrayFS.getClass().getName());
           }
         }
 
@@ -286,8 +296,14 @@ final class EditViewPage extends Page implements ISelectionListener {
   }
 
 
+  /**
+   * The Class DeleteFeatureStructureValue.
+   */
   final class DeleteFeatureStructureValue extends BaseSelectionListenerAction {
 
+    /**
+     * Instantiates a new delete feature structure value.
+     */
     protected DeleteFeatureStructureValue() {
       super("Delete");
 
@@ -347,8 +363,14 @@ final class EditViewPage extends Page implements ISelectionListener {
     }
   }
 
+  /**
+   * The Class CreateFeatureStructrueValue.
+   */
   private final class CreateFeatureStructrueValue extends BaseSelectionListenerAction {
 
+    /**
+     * Instantiates a new creates the feature structrue value.
+     */
     protected CreateFeatureStructrueValue() {
       super("Create");
 
@@ -356,6 +378,13 @@ final class EditViewPage extends Page implements ISelectionListener {
     }
 
 
+    /**
+     * Creates the FS.
+     *
+     * @param type the type
+     * @param arraySize the array size
+     * @return the feature structure
+     */
     FeatureStructure createFS(Type type, int arraySize) {
 
       if (type.isPrimitive()) {
@@ -367,27 +396,37 @@ final class EditViewPage extends Page implements ISelectionListener {
       TypeSystem ts = document.getCAS().getTypeSystem();
 
       if (type.isArray()) {
-          if (type.getName().equals(CAS.TYPE_NAME_BOOLEAN_ARRAY)) {
-              fs = document.getCAS().createBooleanArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_BYTE_ARRAY)) {
-              fs = document.getCAS().createByteArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_SHORT_ARRAY)) {
-              fs = document.getCAS().createShortArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)) {
-              fs = document.getCAS().createIntArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_LONG_ARRAY)) {
-              fs = document.getCAS().createLongArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_FLOAT_ARRAY)) {
-              fs = document.getCAS().createFloatArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_DOUBLE_ARRAY)) {
-              fs = document.getCAS().createDoubleArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_STRING_ARRAY)) {
-              fs = document.getCAS().createStringArrayFS(arraySize);
-            } else if (type.getName().equals(CAS.TYPE_NAME_FS_ARRAY)) {
-              fs = document.getCAS().createArrayFS(arraySize);
-            } else {
-              throw new CasEditorError("Unkown array type: " + type.getName() + "!");
-            }
+        switch (type.getName()) {
+          case CAS.TYPE_NAME_BOOLEAN_ARRAY:
+            fs = document.getCAS().createBooleanArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_BYTE_ARRAY:
+            fs = document.getCAS().createByteArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_SHORT_ARRAY:
+            fs = document.getCAS().createShortArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_INTEGER_ARRAY:
+            fs = document.getCAS().createIntArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_LONG_ARRAY:
+            fs = document.getCAS().createLongArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_FLOAT_ARRAY:
+            fs = document.getCAS().createFloatArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_DOUBLE_ARRAY:
+            fs = document.getCAS().createDoubleArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_STRING_ARRAY:
+            fs = document.getCAS().createStringArrayFS(arraySize);
+            break;
+          case CAS.TYPE_NAME_FS_ARRAY:
+            fs = document.getCAS().createArrayFS(arraySize);
+            break;
+          default:
+            throw new CasEditorError("Unkown array type: " + type.getName() + "!");
+        }
       }
       else if (ts.subsumes(ts.getType(CAS.TYPE_NAME_ANNOTATION), type)) {
 
@@ -529,21 +568,41 @@ final class EditViewPage extends Page implements ISelectionListener {
     }
   }
 
+  /**
+   * The Class PinAction.
+   */
   private static final class PinAction extends Action {
+    
+    /**
+     * Instantiates a new pin action.
+     */
     PinAction() {
       super("PinAction", IAction.AS_CHECK_BOX);
     }
   }
 
+  /** The viewer. */
   private TreeViewer viewer;
 
+  /** The document. */
   private ICasDocument document;
+  
+  /** The editor. */
   private ICasEditor editor;
 
+  /** The pin action. */
   private PinAction pinAction;
 
+  /** The edit view. */
   private final EditView editView;
 
+  /**
+   * Instantiates a new edits the view page.
+   *
+   * @param editView the edit view
+   * @param editor the editor
+   * @param document the document
+   */
   EditViewPage(EditView editView, ICasEditor editor, ICasDocument document) {
 
 	if (editView == null || document == null) {
@@ -593,6 +652,7 @@ final class EditViewPage extends Page implements ISelectionListener {
 
     viewer.addDropSupport(DND.DROP_COPY, typesDropSupport, new DropTargetListener() {
 
+      @Override
       public void dragEnter(DropTargetEvent event) {
         // only the FeatureStructureTransfer is supported
         // set currentTransferType to FeatureStructureTransfer, if possible
@@ -604,12 +664,15 @@ final class EditViewPage extends Page implements ISelectionListener {
         }
       }
 
+      @Override
       public void dragLeave(DropTargetEvent event) {
       }
 
+      @Override
       public void dragOperationChanged(DropTargetEvent event) {
       }
 
+      @Override
       public void dragOver(DropTargetEvent event) {
 
         // TODO: check range type during drag over, like its done in drop()
@@ -621,6 +684,7 @@ final class EditViewPage extends Page implements ISelectionListener {
         }
       }
 
+      @Override
       public void drop(DropTargetEvent event) {
         if (FeatureStructureTransfer.getInstance().isSupportedType(event.currentDataType)) {
 
@@ -672,6 +736,7 @@ final class EditViewPage extends Page implements ISelectionListener {
         }
       }
 
+      @Override
       public void dropAccept(DropTargetEvent event) {
       }
     });
@@ -684,6 +749,7 @@ final class EditViewPage extends Page implements ISelectionListener {
     source.addDragListener(new DragSourceListener() {
       TreeItem dragSourceItem = null;
 
+      @Override
       public void dragStart(DragSourceEvent event) {
 
         event.doit = false;
@@ -701,12 +767,14 @@ final class EditViewPage extends Page implements ISelectionListener {
         }
       }
 
+      @Override
       public void dragSetData(DragSourceEvent event) {
         IAdaptable adaptable = (IAdaptable) dragSourceItem.getData();
 
         event.data = adaptable.getAdapter(FeatureStructure.class);
       }
 
+      @Override
       public void dragFinished(DragSourceEvent event) {
         // not needed
       }
@@ -719,6 +787,8 @@ final class EditViewPage extends Page implements ISelectionListener {
 
   /**
    * Retrieves the main control of the edit view.
+   *
+   * @return the control
    */
   @Override
   public Control getControl() {
@@ -757,6 +827,7 @@ final class EditViewPage extends Page implements ISelectionListener {
             ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
   }
 
+  @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
     if (getSite().getPage().getActiveEditor() == editor) {

@@ -37,13 +37,24 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
+
+/**
+ * The Class FeatureStructureContentProvider.
+ */
 final class FeatureStructureContentProvider extends AbstractDocumentListener
         implements ITreeContentProvider {
 
+  /** The m document. */
   private ICasDocument mDocument;
 
+  /** The viewer. */
   private Viewer viewer;
 
+  /**
+   * Instantiates a new feature structure content provider.
+   *
+   * @param document the document
+   */
   FeatureStructureContentProvider(ICasDocument document) {
 
     if (document == null) {
@@ -53,6 +64,12 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     mDocument = document;
   }
 
+  /**
+   * Array size.
+   *
+   * @param value the value
+   * @return the int
+   */
   private int arraySize(FeatureStructure value) {
 
     if (!value.getType().isArray()) {
@@ -80,6 +97,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     return size;
   }
 
+  @Override
   public Object[] getElements(Object inputElement) {
 
     if (inputElement != null) {
@@ -90,7 +108,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
       if (!type.isArray()) {
 
-        Collection<FeatureValue> featureValues = new LinkedList<FeatureValue>();
+        Collection<FeatureValue> featureValues = new LinkedList<>();
 
         for (Feature feature : type.getFeatures()) {
           featureValues.add(new FeatureValue(mDocument, featureStructure, feature));
@@ -115,39 +133,42 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     }
   }
 
+  @Override
   public void dispose() {
     if (mDocument != null)
       mDocument.removeChangeListener(this);
   }
 
+  @Override
   public void inputChanged(final Viewer viewer, Object oldInput, Object newInput) {
     this.viewer = viewer;
 
     if (newInput != null) {
-      Display.getDefault().syncExec(new Runnable() {
-        public void run() {
-          viewer.refresh();
-        }
-      });
+      Display.getDefault().syncExec(viewer::refresh);
     }
   }
 
+  @Override
   public void added(Collection<FeatureStructure> newFeatureStructure) {
   }
 
+  @Override
   public void viewChanged(String oldViewName, String newViewName) {
     changed();
   }
-  
+
+  @Override
   public void changed() {
 
     Display.getDefault().syncExec(new Runnable() {
+      @Override
       public void run() {
         viewer.setInput(null);
       }
     });
   }
 
+  @Override
   public void removed(Collection<FeatureStructure> deletedFeatureStructure) {
     for(FeatureStructure fs : deletedFeatureStructure) {
       if (viewer.getInput() == fs) {
@@ -158,8 +179,10 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
   }
 
+  @Override
   public void updated(Collection<FeatureStructure> featureStructure) {
     Display.getDefault().syncExec(new Runnable() {
+      @Override
       public void run() {
         viewer.setSelection(viewer.getSelection());
         viewer.refresh();
@@ -167,6 +190,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     });
   }
 
+  @Override
   public Object[] getChildren(Object parentElement) {
 
     if (parentElement instanceof FeatureValue) {
@@ -192,10 +216,17 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     }
   }
 
+  @Override
   public Object getParent(Object element) {
     return null;
   }
 
+  /**
+   * Checks for children.
+   *
+   * @param value the value
+   * @return true, if successful
+   */
   private boolean hasChildren(FeatureStructure value) {
 
     boolean result;
@@ -216,6 +247,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     return result;
   }
 
+  @Override
   public boolean hasChildren(Object element) {
 
     if (element instanceof FeatureValue) {

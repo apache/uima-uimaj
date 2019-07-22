@@ -25,57 +25,80 @@ import java.util.List;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
+
+/**
+ * The Class AnnotationEditorSelection.
+ */
 class AnnotationEditorSelection implements ITextSelection, IStructuredSelection {
 
+  /** The text selection. */
   private ITextSelection textSelection;
   
+  /** The structured selection. */
   private IStructuredSelection structuredSelection;
   
+  /**
+   * Instantiates a new annotation editor selection.
+   *
+   * @param textSelection the text selection
+   * @param structuredSelection the structured selection
+   */
   AnnotationEditorSelection(ITextSelection textSelection, IStructuredSelection structuredSelection) {
     this.textSelection = textSelection;
     this.structuredSelection = structuredSelection;
   }
-  
+
+  @Override
   public int getOffset() {
     return textSelection.getOffset();
   }
 
+  @Override
   public int getLength() {
     return textSelection.getLength();
   }
 
+  @Override
   public int getStartLine() {
     return textSelection.getStartLine();
   }
 
+  @Override
   public int getEndLine() {
     return textSelection.getEndLine();
   }
 
+  @Override
   public String getText() {
     return textSelection.getText();
   }
 
+  @Override
   public boolean isEmpty() {
     return structuredSelection.isEmpty() && textSelection.isEmpty();
   }
 
+  @Override
   public Object getFirstElement() {
     return structuredSelection.getFirstElement();
   }
 
+  @Override
   public Iterator iterator() {
     return structuredSelection.iterator();
   }
 
+  @Override
   public int size() {
     return structuredSelection.size();
   }
 
+  @Override
   public Object[] toArray() {
     return structuredSelection.toArray();
   }
 
+  @Override
   public List toList() {
     return structuredSelection.toList();
   }

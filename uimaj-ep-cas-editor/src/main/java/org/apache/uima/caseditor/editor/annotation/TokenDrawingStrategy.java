@@ -27,16 +27,27 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
+
+/**
+ * The Class TokenDrawingStrategy.
+ */
 public class TokenDrawingStrategy implements IDrawingStrategy {
+  
+  /** The Constant BRACKET_WIDTH. */
   private static final int BRACKET_WIDTH = 5;
 
+  /**
+   * Checks if is whitespace.
+   *
+   * @param text the text
+   * @param offset the offset
+   * @return true, if is whitespace
+   */
   private static boolean isWhitespace(String text, int offset) {
-
-    char character = text.charAt(offset);
-
-    return Character.isWhitespace(character);
+    return Character.isWhitespace(text.charAt(offset));
   }
 
+  @Override
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
           Color color) {
     if (length > 0) {

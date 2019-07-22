@@ -27,14 +27,21 @@ import org.eclipse.ui.part.MessagePage;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 
+
 /**
  * Base view for views which show information about the {@link CAS} opened
  * in the editor.
  */
 public abstract class AnnotationEditorView extends PageBookView {
 
+  /** The editor not available message. */
   private final String editorNotAvailableMessage;
 
+  /**
+   * Instantiates a new annotation editor view.
+   *
+   * @param editorNotAvailableMessage the editor not available message
+   */
   public AnnotationEditorView(String editorNotAvailableMessage) {
     this.editorNotAvailableMessage = editorNotAvailableMessage;
   }
@@ -48,6 +55,12 @@ public abstract class AnnotationEditorView extends PageBookView {
     return page;
   }
 
+  /**
+   * Do create page.
+   *
+   * @param editor the editor
+   * @return the page rec
+   */
   protected abstract PageRec doCreatePage(ICasEditor editor);
 
   @Override
@@ -83,7 +96,7 @@ public abstract class AnnotationEditorView extends PageBookView {
   /**
    * Look at {@link IPartListener#partBroughtToTop(IWorkbenchPart)}.
    *
-   * @param part
+   * @param part the part
    */
   @Override
   public void partBroughtToTop(IWorkbenchPart part) {

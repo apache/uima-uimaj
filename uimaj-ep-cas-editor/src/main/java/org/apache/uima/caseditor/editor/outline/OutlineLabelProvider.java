@@ -26,15 +26,19 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+
 /**
  * This <code>OutlineLabelProvider</code> returns the covered text of an <code>AnnotationFS</code>.
  */
 class OutlineLabelProvider extends LabelProvider implements ITableLabelProvider {
+
+  @Override
   public Image getColumnImage(Object element, int columnIndex) {
     // no image available, just return null
     return null;
   }
 
+  @Override
   public String getColumnText(Object element, int columnIndex) {
     // there is only one column, if column index something
     // else than 0, then there is an error
@@ -61,6 +65,12 @@ class OutlineLabelProvider extends LabelProvider implements ITableLabelProvider 
     return "Unkown type";
   }
 
+  /**
+   * Gets the string without new line.
+   *
+   * @param string the string
+   * @return the string without new line
+   */
   private static String getStringWithoutNewLine(String string) {
     StringBuilder stringBuilder = new StringBuilder(string.length());
 

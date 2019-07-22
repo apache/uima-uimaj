@@ -28,11 +28,12 @@ import org.apache.uima.caseditor.editor.util.Primitives;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 
+
 /**
  * Provides the labels for the edit view.
  */
 final class ValueColumnLabelProvider extends CellLabelProvider {
-  
+
   @Override
   public void update(ViewerCell cell) {
 
@@ -75,7 +76,7 @@ final class ValueColumnLabelProvider extends CellLabelProvider {
       }
     }
     else {
-      throw new CasEditorError("Unkown element!");
+      throw new CasEditorError("Unknown element!");
     }
   }
 }

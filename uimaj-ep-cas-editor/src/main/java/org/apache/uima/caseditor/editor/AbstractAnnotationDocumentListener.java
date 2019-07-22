@@ -25,16 +25,23 @@ import java.util.Collection;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 
+
 /**
  * This listener listens only for {@link AnnotationFS} change events. All other change events for
  * {@link FeatureStructure}s are filtered.
  */
 public abstract class AbstractAnnotationDocumentListener extends AbstractDocumentListener {
 
-  private Collection<AnnotationFS> filterAnnotations(Collection<FeatureStructure> strcutres) {
-    Collection<AnnotationFS> annotations = new ArrayList<AnnotationFS>(strcutres.size());
+  /**
+   * Filter annotations.
+   *
+   * @param structures the structures
+   * @return the collection
+   */
+  private Collection<AnnotationFS> filterAnnotations(Collection<FeatureStructure> structures) {
+    Collection<AnnotationFS> annotations = new ArrayList<>(structures.size());
 
-    for (FeatureStructure structure : strcutres) {
+    for (FeatureStructure structure : structures) {
       if (structure instanceof AnnotationFS) {
         annotations.add((AnnotationFS) structure);
       }
@@ -45,9 +52,12 @@ public abstract class AbstractAnnotationDocumentListener extends AbstractDocumen
 
   /**
    * Add notification.
+   *
+   * @param structures the structures
    */
-  public void added(Collection<FeatureStructure> structres) {
-    Collection<AnnotationFS> annotations = filterAnnotations(structres);
+  @Override
+  public void added(Collection<FeatureStructure> structures) {
+    Collection<AnnotationFS> annotations = filterAnnotations(structures);
 
     if (!annotations.isEmpty()) {
       addedAnnotation(annotations);
@@ -56,9 +66,12 @@ public abstract class AbstractAnnotationDocumentListener extends AbstractDocumen
 
   /**
    * Remove notification.
+   *
+   * @param structures the structures
    */
-  public void removed(Collection<FeatureStructure> structres) {
-    Collection<AnnotationFS> annotations = filterAnnotations(structres);
+  @Override
+  public void removed(Collection<FeatureStructure> structures) {
+    Collection<AnnotationFS> annotations = filterAnnotations(structures);
 
     if (!annotations.isEmpty()) {
       removedAnnotation(annotations);
@@ -67,18 +80,36 @@ public abstract class AbstractAnnotationDocumentListener extends AbstractDocumen
 
   /**
    * Update notification.
+   *
+   * @param structures the structures
    */
-  public void updated(Collection<FeatureStructure> structres) {
-    Collection<AnnotationFS> annotations = filterAnnotations(structres);
+  @Override
+  public void updated(Collection<FeatureStructure> structures) {
+    Collection<AnnotationFS> annotations = filterAnnotations(structures);
 
     if (!annotations.isEmpty()) {
       updatedAnnotation(annotations);
     }
   }
 
+  /**
+   * Added annotation.
+   *
+   * @param annotations the annotations
+   */
   protected abstract void addedAnnotation(Collection<AnnotationFS> annotations);
 
+  /**
+   * Removed annotation.
+   *
+   * @param annotations the annotations
+   */
   protected abstract void removedAnnotation(Collection<AnnotationFS> annotations);
 
+  /**
+   * Updated annotation.
+   *
+   * @param annotations the annotations
+   */
   protected abstract void updatedAnnotation(Collection<AnnotationFS> annotations);
 }

@@ -24,26 +24,34 @@ import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 
+
 /**
- * Matches all annoations of an added type.
+ * Matches all annotations of an added type.
  */
 public class StrictTypeConstraint implements FSConstraint, FSMatchConstraint {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1;
 
+  /** The m match. */
   private Type mMatch;
 
   /**
    * Initializes the current instance.
    *
-   * @param match
+   * @param match the match
    */
   public StrictTypeConstraint(Type match) {
     mMatch = match;
   }
 
   /**
-   * Checks if the given {@link FeatureStructure} matchs this constraint.
+   * Checks if the given {@link FeatureStructure} matches this constraint.
+   *
+   * @param candidateFS the candidate FS
+   * @return true, if successful
    */
+  @Override
   public boolean match(FeatureStructure candidateFS) {
     return candidateFS.getType().getName().equals(mMatch.getName());
   }

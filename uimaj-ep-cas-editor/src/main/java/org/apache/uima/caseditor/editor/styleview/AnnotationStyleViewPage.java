@@ -65,23 +65,39 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.internal.dialogs.PropertyDialog;
 import org.eclipse.ui.part.Page;
 
+
 // TODO: Subscribe to style change events
+/**
+ * The Class AnnotationStyleViewPage.
+ */
 // create new listener interface for this
 class AnnotationStyleViewPage extends Page {
 
+  /**
+   * The Class AnnotationTypeContentProvider.
+   */
   static class AnnotationTypeContentProvider implements ITreeContentProvider {
 
+    /** The annotation types. */
     private AnnotationTypeNode[] annotationTypes;
     
+    /** The editor. */
     private AnnotationEditor editor;
     
+    /**
+     * Instantiates a new annotation type content provider.
+     *
+     * @param editor the editor
+     */
     AnnotationTypeContentProvider(AnnotationEditor editor) {
       this.editor = editor;
     }
-    
+
+    @Override
     public void dispose() {
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       
       if (newInput instanceof TypeSystem) {
@@ -103,51 +119,73 @@ class AnnotationStyleViewPage extends Page {
       
     }
 
+    @Override
     public Object[] getElements(Object inputElement) {
       return annotationTypes;
     }
 
+    @Override
     public Object[] getChildren(Object parentElement) {
       return null;
     }
 
+    @Override
     public Object getParent(Object element) {
       return null;
     }
 
+    @Override
     public boolean hasChildren(Object element) {
       return false;
     }
   }
   
+  /**
+   * The Class AnnotationStylingLabelProvider.
+   */
   static class AnnotationStylingLabelProvider implements ITableLabelProvider, IColorProvider {
 
+    /** The type name column. */
     private static int TYPE_NAME_COLUMN = 0;
+    
+    /** The style name column. */
     private static int STYLE_NAME_COLUMN = 1;
     
+    /** The editor. */
     private AnnotationEditor editor;
     
+    /**
+     * Instantiates a new annotation styling label provider.
+     *
+     * @param editor the editor
+     */
     AnnotationStylingLabelProvider(AnnotationEditor editor) {
       this.editor = editor;
     }
-    
+
+    @Override
     public void addListener(ILabelProviderListener listener) {
     }
 
+    @Override
     public void dispose() {
     }
 
+    @Override
     public boolean isLabelProperty(Object element, String property) {
       return false;
     }
 
+    @Override
     public void removeListener(ILabelProviderListener listener) {
     }
 
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
       return null;
     }
 
+    @Override
     public String getColumnText(Object element, int columnIndex) {
       
       AnnotationTypeNode typeNode = (AnnotationTypeNode) element;
@@ -164,14 +202,16 @@ class AnnotationStyleViewPage extends Page {
         return style.getStyle().toString();
       }
       else {
-        throw new IllegalStateException("Unkown column!");
+        throw new IllegalStateException("Unknown column!");
       }
     }
 
+    @Override
     public Color getForeground(Object element) {
       return null;
     }
 
+    @Override
     public Color getBackground(Object element) {
       
       AnnotationTypeNode typeNode = (AnnotationTypeNode) element;
@@ -185,18 +225,34 @@ class AnnotationStyleViewPage extends Page {
     }
   }
   
+  /** The editor. */
   private AnnotationEditor editor;
 
+  /** The editor listener. */
   private IAnnotationEditorModifyListener editorListener;
   
+  /** The change listener. */
   private AnnotationStyleChangeListener changeListener;
   
+  /** The tree viewer. */
   private CheckboxTableViewer treeViewer;
 
+  /**
+   * Instantiates a new annotation style view page.
+   *
+   * @param editor the editor
+   */
   AnnotationStyleViewPage(AnnotationEditor editor) {
     this.editor = editor;
   }
 
+  /**
+   * Types to nodes.
+   *
+   * @param types the types
+   * @param editor the editor
+   * @return the annotation type node[]
+   */
   private static AnnotationTypeNode[] typesToNodes(Collection<Type> types, AnnotationEditor editor) {
     Collection<Type> shownTypes = editor.getShownAnnotationTypes();
     
@@ -209,7 +265,7 @@ class AnnotationStyleViewPage extends Page {
     
     return selectedNodes;
   }
-  
+
   @Override
   public void createControl(Composite parent) {
 
@@ -221,6 +277,7 @@ class AnnotationStyleViewPage extends Page {
     final Color defaultForegroundColor = table.getForeground();
     
     table.addListener(SWT.EraseItem, new Listener() {
+      @Override
       public void handleEvent(Event event) {
           if((event.detail & SWT.SELECTED) != 0 ){
               event.detail &= ~SWT.SELECTED;
@@ -236,10 +293,10 @@ class AnnotationStyleViewPage extends Page {
     typeColumn.setText("Type");
     typeColumn.setWidth(120);
     
-    TableColumn stlyeColumn = new TableColumn(table, SWT.LEFT);
-    stlyeColumn.setAlignment(SWT.LEFT);
-    stlyeColumn.setText("Style");
-    stlyeColumn.setWidth(100);
+    TableColumn styleColumn = new TableColumn(table, SWT.LEFT);
+    styleColumn.setAlignment(SWT.LEFT);
+    styleColumn.setText("Style");
+    styleColumn.setWidth(100);
 
     treeViewer.setContentProvider(new AnnotationTypeContentProvider(editor));
     treeViewer.setLabelProvider(new AnnotationStylingLabelProvider(editor));
@@ -250,6 +307,7 @@ class AnnotationStyleViewPage extends Page {
     changeListener = new AnnotationStyleChangeListener() {
       
       
+      @Override
       public void annotationStylesChanged(Collection<AnnotationStyle> styles) {
         
         // Update all changed style elements in the table
@@ -276,6 +334,7 @@ class AnnotationStyleViewPage extends Page {
     
     treeViewer.addCheckStateListener(new ICheckStateListener() {
       
+      @Override
       public void checkStateChanged(CheckStateChangedEvent event) {
         
        AnnotationTypeNode typeNode = (AnnotationTypeNode) event.getElement();
@@ -294,10 +353,12 @@ class AnnotationStyleViewPage extends Page {
     
     editorListener = new IAnnotationEditorModifyListener() {
       
+      @Override
       public void showAnnotationsChanged(Collection<Type> shownAnnotationTypes) {
         treeViewer.setCheckedElements(typesToNodes(shownAnnotationTypes, editor));
       }
       
+      @Override
       public void annotationModeChanged(Type newMode) {
         // maybe slow if there are many types
         treeViewer.setAllGrayed(false); 
@@ -344,7 +405,7 @@ class AnnotationStyleViewPage extends Page {
     
     toolBarManager.add(action);
   }
-  
+
   @Override
   public Control getControl() {
     return treeViewer.getControl();
@@ -354,7 +415,7 @@ class AnnotationStyleViewPage extends Page {
   public void setFocus() {
     treeViewer.getControl().setFocus();
   }
-  
+
   @Override
   public void dispose() {
     super.dispose();

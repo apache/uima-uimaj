@@ -33,21 +33,26 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+
 /**
- * TODO: add javadoc here
+ * TODO: add javadoc here.
  */
 public class CustomInformationControl implements IInformationControl, IInformationControlExtension2 {
+  
+  /** The m shell. */
   private Shell mShell;
 
+  /** The m control. */
   private Control mControl;
 
+  /** The m content handler. */
   private ICustomInformationControlContentHandler mContentHandler;
 
   /**
    * Initializes a new instance.
    *
-   * @param parent
-   * @param contentHandler
+   * @param parent the parent
+   * @param contentHandler the content handler
    */
   public CustomInformationControl(Shell parent,
           ICustomInformationControlContentHandler contentHandler) {
@@ -61,9 +66,9 @@ public class CustomInformationControl implements IInformationControl, IInformati
   }
 
   /**
-   * Sets the viewer control
+   * Sets the viewer control.
    *
-   * @param viewerControl
+   * @param viewerControl the new control
    */
   public void setControl(Control viewerControl) {
     mControl = viewerControl;
@@ -79,27 +84,33 @@ public class CustomInformationControl implements IInformationControl, IInformati
     return mShell;
   }
 
+  @Override
   public void setInformation(String information) {
     // this method is replaced by the extension interface
     // method setInput(...)
   }
 
+  @Override
   public void setSizeConstraints(int maxWidth, int maxHeight) {
   }
 
+  @Override
   public Point computeSizeHint() {
     return mShell.computeSize(SWT.DEFAULT, SWT.DEFAULT);
   }
 
+  @Override
   public void setVisible(boolean visible) {
     mControl.setVisible(visible);
     mShell.setVisible(visible);
   }
 
+  @Override
   public void setSize(int width, int height) {
     // mShell.setSize(width, height);
   }
 
+  @Override
   public void setLocation(Point location) {
     Rectangle trim = mShell.computeTrim(0, 0, 0, 0);
 
@@ -110,51 +121,60 @@ public class CustomInformationControl implements IInformationControl, IInformati
     mShell.setLocation(location);
   }
 
+  @Override
   public void dispose() {
     if (mShell != null && !mShell.isDisposed()) {
       mShell.dispose();
     }
   }
 
+  @Override
   public void addDisposeListener(DisposeListener listener) {
     mShell.addDisposeListener(listener);
   }
 
+  @Override
   public void removeDisposeListener(DisposeListener listener) {
     mShell.removeDisposeListener(listener);
   }
 
+  @Override
   public void setForegroundColor(Color foreground) {
     mShell.setForeground(foreground);
   }
 
+  @Override
   public void setBackgroundColor(Color background) {
     mShell.setBackground(background);
   }
 
+  @Override
   public boolean isFocusControl() {
     return mShell.isFocusControl();
   }
 
+  @Override
   public void setFocus() {
     mShell.setFocus();
   }
 
+  @Override
   public void addFocusListener(FocusListener listener) {
     mShell.addFocusListener(listener);
   }
 
+  @Override
   public void removeFocusListener(FocusListener listener) {
     mShell.removeFocusListener(listener);
   }
 
+  @Override
   public void setInput(Object input) {
     mContentHandler.setInput(this, input);
-
   }
 
   /**
-   * Retrieves the control
+   * Retrieves the control.
    *
    * @return the control
    */

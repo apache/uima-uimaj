@@ -71,26 +71,31 @@ import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+
 /**
  * This document implementation is based on an uima cas object.
  */
 public class DocumentUimaImpl extends AbstractDocument {
 
+  /** The Constant JAVA_NATURE. */
   public static final String JAVA_NATURE = "org.eclipse.jdt.core.javanature";
   
+  /** The m CAS. */
   private CAS mCAS;
 
+  /** The format. */
   private SerialFormat format = SerialFormat.XMI;
 
+  /** The type system text. */
   private final String typeSystemText;
 
   /**
    * Initializes a new instance.
-   * 
-   * @param cas
-   * @param casFile
-   * @param typeSystemText
-   *          type system string
+   *
+   * @param cas the cas
+   * @param casFile the cas file
+   * @param typeSystemText          type system string
+   * @throws CoreException the core exception
    */
   public DocumentUimaImpl(CAS cas, IFile casFile, String typeSystemText) throws CoreException {
     mCAS = cas;
@@ -102,7 +107,10 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   /**
    * Retrieves the {@link CAS}.
+   *
+   * @return the cas
    */
+  @Override
   public CAS getCAS() {
     return mCAS;
   }
@@ -114,8 +122,8 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   /**
    * Internally removes an annotation from the {@link CAS}.
-   * 
-   * @param featureStructure
+   *
+   * @param featureStructure the feature structure
    */
   private void addFeatureStructureInternal(FeatureStructure featureStructure) {
     getCAS().getIndexRepository().addFS(featureStructure);
@@ -123,13 +131,17 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   /**
    * Adds the given annotation to the {@link CAS}.
+   *
+   * @param annotation the annotation
    */
+  @Override
   public void addFeatureStructure(FeatureStructure annotation) {
     addFeatureStructureInternal(annotation);
 
     fireAddedFeatureStructure(annotation);
   }
 
+  @Override
   public void addFeatureStructures(Collection<? extends FeatureStructure> annotations) {
     for (FeatureStructure annotation : annotations) {
       addFeatureStructureInternal(annotation);
@@ -142,8 +154,8 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   /**
    * Internally removes an annotation from the {@link CAS}.
-   * 
-   * @param featureStructure
+   *
+   * @param featureStructure the feature structure
    */
   private void removeAnnotationInternal(FeatureStructure featureStructure) {
     getCAS().getIndexRepository().removeFS(featureStructure);
@@ -151,7 +163,10 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   /**
    * Removes the annotations from the {@link CAS}.
+   *
+   * @param annotation the annotation
    */
+  @Override
   public void removeFeatureStructure(FeatureStructure annotation) {
     removeAnnotationInternal(annotation);
 
@@ -160,7 +175,10 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   /**
    * Removes the given annotations from the {@link CAS}.
+   *
+   * @param annotationsToRemove the annotations to remove
    */
+  @Override
   public void removeFeatureStructures(Collection<? extends FeatureStructure> annotationsToRemove) {
 
     for (FeatureStructure annotationToRemove : annotationsToRemove) {
@@ -174,25 +192,36 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   /**
    * Notifies clients about the changed annotation.
+   *
+   * @param annotation the annotation
    */
+  @Override
   public void update(FeatureStructure annotation) {
     fireUpdatedFeatureStructure(annotation);
   }
 
   /**
    * Notifies clients about the changed annotation.
+   *
+   * @param annotations the annotations
    */
+  @Override
   public void updateFeatureStructure(Collection<? extends FeatureStructure> annotations) {
     fireUpdatedFeatureStructure(annotations);
   }
 
+  @Override
   public void changed() {
     fireChanged();
   }
 
   /**
    * Retrieves annotations of the given type from the {@link CAS}.
+   *
+   * @param type the type
+   * @return the annotations
    */
+  @Override
   public Collection<AnnotationFS> getAnnotations(Type type) {
     FSIndex<AnnotationFS> annotationIndex = mCAS.getAnnotationIndex(type);
 
@@ -204,10 +233,16 @@ public class DocumentUimaImpl extends AbstractDocument {
     return fsIteratorToCollection(strictTypeIterator);
   }
 
+  /**
+   * Fs iterator to collection.
+   *
+   * @param iterator the iterator
+   * @return the collection
+   */
   static Collection<AnnotationFS> fsIteratorToCollection(FSIterator<AnnotationFS> iterator) {
-    LinkedList<AnnotationFS> annotations = new LinkedList<AnnotationFS>();
+    LinkedList<AnnotationFS> annotations = new LinkedList<>();
     while (iterator.hasNext()) {
-      AnnotationFS annotation = (AnnotationFS) iterator.next();
+      AnnotationFS annotation = iterator.next();
 
       annotations.addFirst(annotation);
     }
@@ -217,11 +252,16 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   /**
    * Retrieves the given type from the {@link TypeSystem}.
+   *
+   * @param type the type
+   * @return the type
    */
+  @Override
   public Type getType(String type) {
     return getCAS().getTypeSystem().getType(type);
   }
 
+  @Override
   public void switchView(String viewName) {
     String oldViewName = mCAS.getViewName();
 
@@ -232,6 +272,9 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   /**
    * Sets the content. The XCAS {@link InputStream} gets parsed.
+   *
+   * @param casFile the new content
+   * @throws CoreException the core exception
    */
   private void setContent(IFile casFile) throws CoreException {
 
@@ -252,6 +295,12 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   }
 
+  /**
+   * Throw core exception.
+   *
+   * @param e the e
+   * @throws CoreException the core exception
+   */
   private void throwCoreException(Exception e) throws CoreException {
     String message = e.getMessage() != null ? e.getMessage() : "";
     IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
@@ -260,6 +309,9 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   /**
    * Serializes the {@link CAS} to the given {@link OutputStream} in the XCAS format.
+   *
+   * @param out the out
+   * @throws CoreException the core exception
    */
   public void serialize(OutputStream out) throws CoreException {
     try {
@@ -269,10 +321,15 @@ public class DocumentUimaImpl extends AbstractDocument {
     }
   }
   
-  public static CAS getVirginCAS(IFile typeSystemFile) throws CoreException {
+  /**
+   * Gets the virgin CAS.
+   *
+   * @param extensionTypeSystemFile the type system file
+   * @return the virgin CAS
+   * @throws CoreException the core exception
+   */
+  public static CAS getVirginCAS(IFile extensionTypeSystemFile) throws CoreException {
     ResourceSpecifierFactory resourceSpecifierFactory = UIMAFramework.getResourceSpecifierFactory();
-
-    IFile extensionTypeSystemFile = typeSystemFile;
 
     InputStream inTypeSystem;
 
@@ -292,10 +349,10 @@ public class DocumentUimaImpl extends AbstractDocument {
     try {
       typeSystemDesciptor = (TypeSystemDescription) xmlParser.parse(xmlTypeSystemSource);
 
-      IProject project = typeSystemFile.getProject();
+      IProject project = extensionTypeSystemFile.getProject();
       ClassLoader classLoader = getProjectClassLoader(project);
       
-      ResourceManager resourceManager = null;
+      ResourceManager resourceManager;
       if(classLoader != null) {
         resourceManager = new ResourceManager_impl(classLoader);
       } else {
@@ -308,11 +365,7 @@ public class DocumentUimaImpl extends AbstractDocument {
         resourceManager.setDataPath(dataPath);
       }
       typeSystemDesciptor.resolveImports(resourceManager);
-    } catch (InvalidXMLException e) {
-      String message = e.getMessage() != null ? e.getMessage() : "";
-      IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-      throw new CoreException(s);
-    } catch (MalformedURLException e) {
+    } catch (InvalidXMLException | MalformedURLException e) {
       String message = e.getMessage() != null ? e.getMessage() : "";
       IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
       throw new CoreException(s);
@@ -338,6 +391,13 @@ public class DocumentUimaImpl extends AbstractDocument {
     return cas;
   }
 
+  /**
+   * Gets the project class loader.
+   *
+   * @param project the project
+   * @return the project class loader
+   * @throws CoreException the core exception
+   */
   public static ClassLoader getProjectClassLoader(IProject project) throws CoreException {
     IProjectNature javaNature = project.getNature(JAVA_NATURE);
     if (javaNature != null) {
@@ -345,8 +405,7 @@ public class DocumentUimaImpl extends AbstractDocument {
       
       String[] runtimeClassPath = JavaRuntime.computeDefaultRuntimeClassPath(javaProject);
       List<URL> urls = new ArrayList<>();
-      for (int i = 0; i < runtimeClassPath.length; i++) {
-        String cp = runtimeClassPath[i];
+      for (String cp : runtimeClassPath) {
         try {
           urls.add(Paths.get(cp).toUri().toURL());
         } catch (MalformedURLException e) {
@@ -357,5 +416,4 @@ public class DocumentUimaImpl extends AbstractDocument {
     } 
     return null;
   }
-
 }

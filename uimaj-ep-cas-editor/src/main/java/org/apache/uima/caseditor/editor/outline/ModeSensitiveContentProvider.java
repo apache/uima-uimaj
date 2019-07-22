@@ -27,124 +27,136 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
 
+
 /**
    * This <code>OutlineContentProvider</code> synchronizes the <code>AnnotationFS</code>s with
    * the <code>TableViewer</code>.
    */
-  class ModeSensitiveContentProvider extends OutlineContentProviderBase {
+class ModeSensitiveContentProvider extends OutlineContentProviderBase {
 	  
-    private AnnotationTreeNodeList mAnnotationNodeList;
+  /** The m annotation node list. */
+  private AnnotationTreeNodeList mAnnotationNodeList;
 
-    protected ModeSensitiveContentProvider(AnnotationEditor editor, TreeViewer viewer) {
-    	super(editor, viewer);
-    	this.viewer = viewer;
-    }
+  /**
+   * Instantiates a new mode sensitive content provider.
+   *
+   * @param editor the editor
+   * @param viewer the viewer
+   */
+  protected ModeSensitiveContentProvider(AnnotationEditor editor, TreeViewer viewer) {
+      super(editor, viewer);
+      this.viewer = viewer;
+  }
 
-    /**
-     * Adds the added annotations to the viewer.
-     *
-     * @param annotations
-     */
-    @Override
-    public void addedAnnotation(Collection<AnnotationFS> annotations) {
-      for (AnnotationFS annotation : annotations) {
-        if (!annotation.getType().getName().equals(mEditor.getAnnotationMode().getName())) {
-          return;
-        }
-
-        final AnnotationTreeNode annotationNode = new AnnotationTreeNode(mEditor.getDocument(),
-                annotation);
-
-        mAnnotationNodeList.add(annotationNode);
-        // mAnnotationNodeList.buildTree();
-
-        Display.getDefault().syncExec(new Runnable() {
-          public void run() {
-        	  viewer.add(annotationNode.getParent() != null ? annotationNode.getParent()
-                    : mInputDocument, annotationNode);
-          }
-        });
-      }
-    }
-
-    /**
-     * Removes the removed annotations from the viewer.
-     *
-     * @param deletedAnnotations
-     */
-    @Override
-    public void removedAnnotation(Collection<AnnotationFS> deletedAnnotations) {
-      // TODO: what happens if someone removes an annoation which
-      // is not an element of this list e.g in the featruestructure view ?
-      final AnnotationTreeNode[] items = new AnnotationTreeNode[deletedAnnotations.size()];
-
-      int i = 0;
-      for (AnnotationFS annotation : deletedAnnotations) {
-        // TODO: maybe it is a problem if the parent is not correctly set!
-        items[i] = new AnnotationTreeNode(mEditor.getDocument(), annotation);
-        mAnnotationNodeList.remove(items[i]);
-        i++;
+  /**
+   * Adds the added annotations to the viewer.
+   *
+   * @param annotations the annotations
+   */
+  @Override
+  public void addedAnnotation(Collection<AnnotationFS> annotations) {
+    for (AnnotationFS annotation : annotations) {
+      if (!annotation.getType().getName().equals(mEditor.getAnnotationMode().getName())) {
+        return;
       }
 
+      final AnnotationTreeNode annotationNode = new AnnotationTreeNode(mEditor.getDocument(),
+              annotation);
+
+      mAnnotationNodeList.add(annotationNode);
+      // mAnnotationNodeList.buildTree();
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
-        	viewer.remove(items);
+            viewer.add(annotationNode.getParent() != null ? annotationNode.getParent()
+                  : mInputDocument, annotationNode);
         }
       });
-    }
-
-    public void viewChanged(String oldViewName, String newViewName) {
-    	changed();
-    }
-    
-    public void changed() {
-
-      Collection<AnnotationFS> annotations = mEditor.getDocument().getAnnotations(
-              mEditor.getAnnotationMode());
-
-      mAnnotationNodeList = annotations != null ? new AnnotationTreeNodeList(mEditor
-              .getDocument(), annotations) : null;
-
-      Display.getDefault().syncExec(new Runnable() {
-        public void run() {
-        	viewer.refresh();
-        }
-      });
-    }
-
-    /**
-	 * Retrieves all children of the {@link NlpModel}. That are the {@link NlpProject}s and
-	 * {@link IProject}s.
-	 *
-	 * @param inputElement
-	 *          the {@link NlpModel}
-	 *          
-	 * @return the nlp-projects and non-nlp projects
-	 */
-	public Object[] getElements(Object inputElement) {
-	  if (mAnnotationNodeList == null) {
-	    return new Object[0];
-	  }
-	
-	  return mAnnotationNodeList.getElements().toArray();
-	}
-
-	public Object getParent(Object element) {
-	  AnnotationTreeNode node = (AnnotationTreeNode) element;
-	
-	  return node.getParent();
-	}
-
-	public boolean hasChildren(Object element) {
-	  AnnotationTreeNode node = (AnnotationTreeNode) element;
-	
-	  return node.getChildren().size() > 0;
-	}
-
-	public Object[] getChildren(Object parentElement) {
-      AnnotationTreeNode node = (AnnotationTreeNode) parentElement;
-
-      return node.getChildren().toArray();
     }
   }
+
+  /**
+   * Removes the removed annotations from the viewer.
+   *
+   * @param deletedAnnotations the deleted annotations
+   */
+  @Override
+  public void removedAnnotation(Collection<AnnotationFS> deletedAnnotations) {
+    // TODO: what happens if someone removes an annoation which
+    // is not an element of this list e.g in the featruestructure view ?
+    final AnnotationTreeNode[] items = new AnnotationTreeNode[deletedAnnotations.size()];
+
+    int i = 0;
+    for (AnnotationFS annotation : deletedAnnotations) {
+      // TODO: maybe it is a problem if the parent is not correctly set!
+      items[i] = new AnnotationTreeNode(mEditor.getDocument(), annotation);
+      mAnnotationNodeList.remove(items[i]);
+      i++;
+    }
+
+
+    Display.getDefault().syncExec(new Runnable() {
+      @Override
+      public void run() {
+          viewer.remove(items);
+      }
+    });
+  }
+
+  @Override
+  public void viewChanged(String oldViewName, String newViewName) {
+      changed();
+}
+
+  @Override
+  public void changed() {
+    Collection<AnnotationFS> annotations = mEditor.getDocument().getAnnotations(
+            mEditor.getAnnotationMode());
+
+    mAnnotationNodeList = annotations != null ? new AnnotationTreeNodeList(mEditor
+            .getDocument(), annotations) : null;
+
+    Display.getDefault().syncExec(new Runnable() {
+      @Override
+      public void run() {
+          viewer.refresh();
+      }
+    });
+  }
+
+  /**
+   * Retrieves all children of the NlpModel. That are the NlpProjects and
+   * {@link IProject}s.
+   *
+   * @param inputElement the input element
+   *
+   * @return the nlp-projects and non-nlp projects
+   */
+  @Override
+  public Object[] getElements(Object inputElement) {
+    if (mAnnotationNodeList == null) {
+      return new Object[0];
+    }
+
+    return mAnnotationNodeList.getElements().toArray();
+  }
+
+  @Override
+  public Object getParent(Object element) {
+    AnnotationTreeNode node = (AnnotationTreeNode) element;
+    return node.getParent();
+  }
+
+  @Override
+  public boolean hasChildren(Object element) {
+    AnnotationTreeNode node = (AnnotationTreeNode) element;
+    return node.getChildren().size() > 0;
+  }
+
+  @Override
+  public Object[] getChildren(Object parentElement) {
+    AnnotationTreeNode node = (AnnotationTreeNode) parentElement;
+    return node.getChildren().toArray();
+  }
+}

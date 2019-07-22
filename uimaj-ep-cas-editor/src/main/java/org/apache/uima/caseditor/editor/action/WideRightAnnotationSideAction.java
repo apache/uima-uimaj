@@ -29,22 +29,25 @@ import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
+
 /**
  * Widens the right side of the currently selected annotation by one.
  */
 public final class WideRightAnnotationSideAction extends BaseSelectionListenerAction {
   
+  /** The Constant ID. */
   public static final String ID = "WideRightAnnotationSide";
   
+  /** The editor. */
   private ICasEditor editor;
 
   /**
    * Initializes a new instance.
    *
-   * @param editor
+   * @param editor the editor
    */
   public WideRightAnnotationSideAction(ICasEditor editor) {
-    super("WideRightAnnotationSide");
+    super(ID);
 
     this.editor = editor;
 
@@ -58,6 +61,12 @@ public final class WideRightAnnotationSideAction extends BaseSelectionListenerAc
     return annotation.size() == 1;
   }
 
+  /**
+   * Wide right annotation side.
+   *
+   * @param document the document
+   * @param annotation the annotation
+   */
   public static void wideRightAnnotationSide(ICasDocument document, AnnotationFS annotation) {
     Type annotationType = annotation.getType();
     Feature endFeature = annotationType.getFeatureByBaseName("end");

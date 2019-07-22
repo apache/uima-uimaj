@@ -19,7 +19,6 @@
 
 package org.apache.uima.caseditor.editor;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,37 +41,52 @@ import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.part.PageBook;
 
+
+/**
+ * The Class CasEditorViewPage.
+ */
 public class CasEditorViewPage extends Page implements ISelectionProvider {
 
+  /** The selection changed listeners. */
   private ListenerList selectionChangedListeners = new ListenerList();
   
+  /** The not available message. */
   private final String notAvailableMessage;
   
+  /** The book. */
   protected PageBook book;
   
+  /** The cas view page. */
   protected IPageBookViewPage casViewPage;
 
+  /** The sub action bar. */
   private SubActionBars subActionBar;
   
+  /** The message text. */
   private Text messageText;
   
+  /**
+   * Instantiates a new cas editor view page.
+   *
+   * @param notAvailableMessage the not available message
+   */
   protected CasEditorViewPage(String notAvailableMessage) {
     this.notAvailableMessage = notAvailableMessage;
   }
   
+  /**
+   * Refresh action handlers.
+   */
   @SuppressWarnings("rawtypes")
   private void refreshActionHandlers() {
 
     IActionBars actionBars = getSite().getActionBars();
     actionBars.clearGlobalActionHandlers();
 
-    Map newActionHandlers = subActionBar
-        .getGlobalActionHandlers();
+    Map newActionHandlers = subActionBar.getGlobalActionHandlers();
     if (newActionHandlers != null) {
-      Set keys = newActionHandlers.entrySet();
-      Iterator iter = keys.iterator();
-      while (iter.hasNext()) {
-        Map.Entry entry = (Map.Entry) iter.next();
+      Set<Map.Entry> keys = newActionHandlers.entrySet();
+      for (Map.Entry entry : keys) {
         actionBars.setGlobalActionHandler((String) entry.getKey(),
             (IAction) entry.getValue());
       }
@@ -81,14 +95,21 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
 
   // These are called from the outside, even if the page is not active ...
   // this leads to the processing of events which should not be processed!
+  @Override
   public void addSelectionChangedListener(ISelectionChangedListener listener) {
     selectionChangedListeners.add(listener);
   }
 
+  @Override
   public void removeSelectionChangedListener(ISelectionChangedListener listener) {
     selectionChangedListeners.remove(listener);
   }
   
+  /**
+   * Selection changed.
+   *
+   * @param event the event
+   */
   public void selectionChanged(final SelectionChangedEvent event) {
     
     for (Object listener : selectionChangedListeners.getListeners()) {
@@ -97,6 +118,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
               (ISelectionChangedListener) listener;
       
       SafeRunner.run(new SafeRunnable() {
+        @Override
         public void run() {
           selectionChangedListener.selectionChanged(event);
         }
@@ -104,6 +126,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     }
   }
   
+  @Override
   public ISelection getSelection() {
     if (casViewPage != null && casViewPage.getSite().getSelectionProvider() != null) {
       return casViewPage.getSite().getSelectionProvider().getSelection();
@@ -113,6 +136,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     }
   }
 
+  @Override
   public void setSelection(ISelection selection) {
     if (casViewPage != null && casViewPage.getSite().getSelectionProvider() != null) {
       casViewPage.getSite().getSelectionProvider().setSelection(selection);
@@ -136,8 +160,8 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
   /**
    * Creates and shows the page, if page is null
    * the not available message will be shown.
-   * 
-   * @param page
+   *
+   * @param page the page
    */
   protected void initializeAndShowPage(IPageBookViewPage page) {
     if (book != null) {
@@ -147,12 +171,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
         
         // Note: If page is in background event listening must be disabled!
         ISelectionProvider selectionProvider = page.getSite().getSelectionProvider();
-        selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
-          
-          public void selectionChanged(SelectionChangedEvent event) {
-            CasEditorViewPage.this.selectionChanged(event);
-          }
-        });
+        selectionProvider.addSelectionChangedListener(CasEditorViewPage.this::selectionChanged);
         
         subActionBar = (SubActionBars) casViewPage.getSite().getActionBars();
         
@@ -172,6 +191,11 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     }
   }
   
+  /**
+   * Sets the CAS view page.
+   *
+   * @param page the new CAS view page
+   */
   public void setCASViewPage(IPageBookViewPage page) {
     
     if (book != null && casViewPage != null) {

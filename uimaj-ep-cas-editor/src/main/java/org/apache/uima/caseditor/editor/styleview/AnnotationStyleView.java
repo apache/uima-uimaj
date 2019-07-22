@@ -24,7 +24,11 @@ import org.apache.uima.caseditor.editor.CasEditorView;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.ui.part.IPageBookViewPage;
 
+
 // Tree Table, one column contains a tree, representing the tree structure
+/**
+ * The Class AnnotationStyleView.
+ */
 // of the uima types
 public class AnnotationStyleView extends CasEditorView {
 
@@ -33,18 +37,19 @@ public class AnnotationStyleView extends CasEditorView {
    */
   public static final String ID = "org.apache.uima.caseditor.styleview";
   
+  /**
+   * Instantiates a new annotation style view.
+   */
   public AnnotationStyleView() {
     super("The annotation style view is currently not available.");
   }
-  
+
   @Override
   protected IPageBookViewPage doCreatePage(ICasEditor editor) {
     IPageBookViewPage result = null;
 
     if (editor.getDocument() != null && editor instanceof AnnotationEditor) {
-      AnnotationStyleViewPage page = new AnnotationStyleViewPage((AnnotationEditor) editor);
-      
-      result = page;
+      result = new AnnotationStyleViewPage((AnnotationEditor) editor);
     }
 
     return result;

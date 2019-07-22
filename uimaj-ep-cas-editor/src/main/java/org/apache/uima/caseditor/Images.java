@@ -69,7 +69,7 @@ public enum Images {
 
   private final String mPath;
 
-  private Images(String path) {
+  Images(String path) {
     mPath = path;
   }
 

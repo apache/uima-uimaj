@@ -33,21 +33,25 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 
+
 /**
  * This class is a {@link ISelectionProvider} and informs its listeners about the currently selected
  * {@link FeatureStructure}s.
  */
 class FeatureStructureSelectionProvider implements ISelectionProvider {
 
+  /** The m current selection. */
   private IStructuredSelection mCurrentSelection = new StructuredSelection();
 
-  private Set<ISelectionChangedListener> mListeners = new HashSet<ISelectionChangedListener>();
+  /** The m listeners. */
+  private Set<ISelectionChangedListener> mListeners = new HashSet<>();
 
   /**
    * Adds an {@link ISelectionChangedListener} to this provider.
    *
-   * @param listener
+   * @param listener the listener
    */
+  @Override
   public void addSelectionChangedListener(ISelectionChangedListener listener) {
     Assert.isNotNull(listener);
 
@@ -59,6 +63,7 @@ class FeatureStructureSelectionProvider implements ISelectionProvider {
    *
    * @return selection
    */
+  @Override
   public ISelection getSelection() {
     return mCurrentSelection;
   }
@@ -69,6 +74,7 @@ class FeatureStructureSelectionProvider implements ISelectionProvider {
    * @param listener
    *          the listener to remove
    */
+  @Override
   public void removeSelectionChangedListener(ISelectionChangedListener listener) {
     mListeners.remove(listener);
   }
@@ -76,14 +82,13 @@ class FeatureStructureSelectionProvider implements ISelectionProvider {
   /**
    * Sets the current selection.
    *
-   * @param selection
+   * @param selection the new selection
    */
+  @Override
   public void setSelection(ISelection selection) {
     Assert.isNotNull(selection);
 
-    IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-
-    mCurrentSelection = structuredSelection;
+    mCurrentSelection = (IStructuredSelection) selection;
 
     for (ISelectionChangedListener listener : mListeners) {
       SelectionChangedEvent event = new SelectionChangedEvent(this, mCurrentSelection);
@@ -95,7 +100,8 @@ class FeatureStructureSelectionProvider implements ISelectionProvider {
   /**
    * Sets the current selection to the given {@link AnnotationFS} object.
    *
-   * @param annotation
+   * @param document the document
+   * @param annotation the annotation
    */
   public void setSelection(ICasDocument document, AnnotationFS annotation) {
     if (annotation == null) {
@@ -105,6 +111,12 @@ class FeatureStructureSelectionProvider implements ISelectionProvider {
     setSelection(new StructuredSelection(new ModelFeatureStructure(document, annotation)));
   }
 
+  /**
+   * Sets the selection.
+   *
+   * @param document the document
+   * @param selection the selection
+   */
   public void setSelection(ICasDocument document, List<AnnotationFS> selection) {
     setSelection(new StructuredSelection(ModelFeatureStructure.create(document, selection)));
   }
