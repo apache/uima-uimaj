@@ -94,7 +94,7 @@ public class PearPackagingMojo extends AbstractMojo {
   /**
    * The maven project.
    */
-  @Component
+  @Parameter( defaultValue = "${project}", readonly = true )
   private MavenProject      project;
 
   // the PEAR packaging directory contains all the stuff that is added to
@@ -180,8 +180,8 @@ public class PearPackagingMojo extends AbstractMojo {
          //   2) remove duplicates
          //   3) paths that are generated are in form $main_root/lib/jar-name
          
-         classpathsInOrder = new ArrayList<String>();
-         classpathsDefined = new HashSet<String>();
+         classpathsInOrder = new ArrayList<>();
+         classpathsDefined = new HashSet<>();
          
          String pathToLib = String.format("$main_root/%s", InstallationController.PACKAGE_LIB_DIR);
          log.debug("pear pathToLib = " + pathToLib);
