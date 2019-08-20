@@ -19,6 +19,7 @@
 package org.apache.uima.util;
 
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -29,16 +30,13 @@ import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.CommonArrayFS;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.impl.TypeSystemConstants;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.internal.util.Int2ObjListMap;
-import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.cas.AnnotationBase;
@@ -253,10 +251,10 @@ public class CasCopier {
 
   /**
    * key is source FS, value is target FS 
-   * Target not set for DocumentAnnotation or SofaFSs
+   * Target not set for SofaFSs
    * Target not set if lenient specified and src type isn't in target
    */
-  final private Map<TOP, TOP> mFsMap;
+  final private Map<TOP, TOP> mFsMap;  // is identity hash map
   
   /**
    * Deferred calls to copy Features of a FS
@@ -576,11 +574,10 @@ public class CasCopier {
       //   FSs when doing a full CAS copy with multiple views - the 2nd and subsequent
       //   views don't copy, but they do index.
       
-      FSIterator<TOP> it = srcCasViewImpl.getIndexRepository().getAllIndexedFS(srcTsi.getTopType());
+      Collection<TOP> c = srcCasViewImpl.getIndexRepository().getIndexedFSs();
   //    LowLevelIterator it = ((FSIndexRepositoryImpl)(srcCasViewImpl.getIndexRepository())).ll_getAllIndexedFS(srcTsi.getTopType());
   
-      while (it.hasNext()) {
-        final TOP fs = it.nextNvc();
+      for (final TOP fs : c) {
   //      System.out.format("debug  id: %,d  type: %s%n", fs.id(), fs._getTypeImpl().getShortName());
   //    Iterator<LowLevelIndex> indexes = srcCasViewImpl.getIndexRepository().ll_getIndexes();
   //    while (indexes.hasNext()) {
@@ -611,10 +608,7 @@ public class CasCopier {
   //          }
   //        }
   
-          // also don't index the DocumentAnnotation (it's indexed by default)
-          if (!isDocumentAnnotation(fs)) {
-            tgtCasViewImpl.getIndexRepository().addFS(copyOfFs);
-          }
+          tgtCasViewImpl.getIndexRepository().addFS(copyOfFs);
           indexedFsAlreadyCopied.add(fs._id());
         }
       }
@@ -733,44 +727,57 @@ public class CasCopier {
       tgtView = tgtCasViewImpl;
     }
     
-    // DocumentAnnotation - instead of creating a new instance, reuse the automatically created
-    // instance in the destination view.
-    if (isDocumentAnnotation(srcFs)) {
-      if (srcFs instanceof UimaSerializable) {
-        ((UimaSerializable)srcFs)._save_to_cas_data();
-      }
-//      Annotation da = (Annotation) srcFs;
-//      String destViewNamex = getDestSofaId(da.getView().getViewName());
-
-      // the DocumentAnnotation could be indexed in a different view than the one being copied
-      //   if it was ref'd for the 1st time from a cross-indexed fs
-      // Note: The view might not exist in the target
-      //   but this is unlikely.  To have this case this would require
-      //   indexing some other feature structure in this view, which, in turn,
-      //   has a reference to the DocumentAnnotation FS belonging to another view
-//      CASImpl destView = (CASImpl) getOrCreateView(originalTgtCas, destViewName);
-      // do the no-create style so we can create it without adding it to the index yet
-      Annotation destDocAnnot = tgtView.getDocumentAnnotationNoCreate();  
-      if (destDocAnnot == null) {
-        destDocAnnot = tgtView.createDocumentAnnotationNoRemoveNoIndex(0);
-        copyFeatures(srcFs, destDocAnnot);
-        tgtView.getIndexRepository().addFS(destDocAnnot);
-      } else {   
-        try (AutoCloseable ac = tgtView.protectIndexes()) {
-          copyFeatures(srcFs, destDocAnnot);
-        } catch (Exception e) {
-          Misc.internalError(e);
-        }
-      }
-      if (destDocAnnot instanceof UimaSerializable) {
-        ((UimaSerializable)destDocAnnot)._init_from_cas_data();
-      }
-
-      // note not put into mFsMap, because each view needs a separate copy
-      // and multiple creations (due to multiple refs) won't happen because
-      //   the create is bypassed if it already exists
-      return destDocAnnot;
+    TypeImpl tgtTi = getTargetType(((TOP)srcFs)._getTypeImpl());
+    if (null == tgtTi) {
+      return null; // not in target, no FS to create
     }
+
+    // DocumentAnntation or subtype:
+    if (isDocumentAnnotation(srcFs)) {
+      Annotation destDocAnnot = tgtView.getDocumentAnnotationNoCreate();
+      if (destDocAnnot != null) {
+        destDocAnnot.removeFromIndexes(); // deleting this one, will be using the copy of the new one
+        // NOTE at this point, if the target cas type system doesn't define the new type, we
+        // won't get to this code.
+        // Fall thru to let normal FS copying happen
+      }
+    }
+//    // DocumentAnnotation - instead of creating a new instance, reuse the automatically created
+//    // instance in the destination view.
+//    if (isDocumentAnnotation(srcFs)) {
+//      if (srcFs instanceof UimaSerializable) {
+//        ((UimaSerializable)srcFs)._save_to_cas_data();
+//      }
+////      Annotation da = (Annotation) srcFs;
+////      String destViewNamex = getDestSofaId(da.getView().getViewName());
+//
+//      // the DocumentAnnotation could be indexed in a different view than the one being copied
+//      //   if it was ref'd for the 1st time from a cross-indexed fs
+//      // Note: The view might not exist in the target
+//      //   but this is unlikely.  To have this case this would require
+//      //   indexing some other feature structure in this view, which, in turn,
+//      //   has a reference to the DocumentAnnotation FS belonging to another view
+////      CASImpl destView = (CASImpl) getOrCreateView(originalTgtCas, destViewName);
+//      // do the no-create style so we can create it without adding it to the index yet
+//      Annotation destDocAnnot = tgtView.getDocumentAnnotationNoCreate();  
+//      if (destDocAnnot == null) {
+//        destDocAnnot = tgtView.createDocumentAnnotationNoRemoveNoIndex(0);
+//        copyFeatures(srcFs, destDocAnnot);
+//        tgtView.getIndexRepository().addFS(destDocAnnot);
+//      } else {   
+//        try (AutoCloseableNoException ac = tgtView.protectIndexes()) {
+//          copyFeatures(srcFs, destDocAnnot);
+//        }
+//      }
+//      if (destDocAnnot instanceof UimaSerializable) {
+//        ((UimaSerializable)destDocAnnot)._init_from_cas_data();
+//      }
+//
+//      // note not put into mFsMap, because each view needs a separate copy
+//      // and multiple creations (due to multiple refs) won't happen because
+//      //   the create is bypassed if it already exists
+//      return destDocAnnot;
+//    }
 
     // Arrays - need to be created a populated differently than "normal" FS
     if (srcFs instanceof CommonArrayFS) {
@@ -781,10 +788,6 @@ public class CasCopier {
       return copy;
     }
 
-    TypeImpl tgtTi = getTargetType(((TOP)srcFs)._getTypeImpl());
-    if (null == tgtTi) {
-      return null; // not in target, no FS to create
-    }
 //    final TypeInfo tInfo = getTypeInfo(srcTypeCode);
 //    final int tgtTypeCode = tInfo.tgtTypeCode;
 //    if (tgtTypeCode == 0) {
@@ -1046,11 +1049,12 @@ public class CasCopier {
   
   /**
    * Determines whether the given FS is the DocumentAnnotation in the srcCasView.  
-   * This is more than just a type check; we actually check if it is the one "special"
-   * DocumentAnnotation that CAS.getDocumentAnnotation() would return.
+   * Supports subtypes of DocumentAnnotation.
+   * Returns true if the FS is the actual one that is being used by the source CAS
+   * as the Document Annotation instance.
    */
   private <T extends FeatureStructure> boolean isDocumentAnnotation(T aFS) {
-    if (((TOP)aFS)._getTypeCode() != TypeSystemConstants.docTypeCode) {
+    if ( ! srcTsi.docType.subsumes(aFS.getType()) ) {
       return false;
     }
     if (srcCasDocumentAnnotation == null) {

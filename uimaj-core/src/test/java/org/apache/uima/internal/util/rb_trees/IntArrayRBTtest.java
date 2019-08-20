@@ -31,7 +31,8 @@ public class IntArrayRBTtest extends TestCase {
   private final static int NIL = 0;
   static final Random rand = new Random();    
   static {  
-     long seed = -585739628489294672L /* rand.nextLong() */ ;
+//     long seed = -585739628489294672L;
+     long seed = rand.nextLong();
      rand.setSeed(seed);
      System.out.println("IntArrayRBTtest seed is " + seed);
   }

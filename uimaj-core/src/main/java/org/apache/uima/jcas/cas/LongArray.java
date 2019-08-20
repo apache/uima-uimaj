@@ -23,10 +23,11 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator.OfLong;
 import java.util.Spliterator;
+import java.util.function.LongConsumer;
 import java.util.stream.LongStream;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
-import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LongArrayFSImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -34,10 +35,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for LongArray */
-public final class LongArray extends TOP implements CommonPrimitiveArray, LongArrayFSImpl, Iterable<Long> {
+public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, LongArrayFSImpl, Iterable<Long> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.cas.jcas.LongArray";
+  public final static String _TypeName = CAS.TYPE_NAME_LONG_ARRAY;
 
   
   /**
@@ -54,6 +55,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -76,8 +78,8 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
-      _casView.adjustLastFsV2size(2); // space for length and ref
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
 
@@ -94,14 +96,15 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
-      _casView.adjustLastFsV2size(2); // space for length and ref
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
   
   /**
    * @see org.apache.uima.cas.LongArrayFS#get(int)
    */
+  @Override
   public long get(int i) {
     return theArray[i];
   }
@@ -109,6 +112,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   /**
    * @see org.apache.uima.cas.LongArrayFS#set(int , long)
    */
+  @Override
   public void set(int i, long v) {
     theArray[i] = v;
     _casView.maybeLogArrayUpdate(this, null, i);
@@ -117,6 +121,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   /**
    * @see org.apache.uima.cas.LongArrayFS#copyFromArray(long[], int, int, int)
    */
+  @Override
   public void copyFromArray(long[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
     _casView.maybeLogArrayUpdates(this, destPos, length);
@@ -125,6 +130,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   /**
    * @see org.apache.uima.cas.LongArrayFS#copyToArray(int, long[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, long[] dest, int destPos, int length) {
     System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
@@ -132,11 +138,13 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   /**
    * @see org.apache.uima.cas.LongArrayFS#toArray()
    */
+  @Override
   public long[] toArray() {
-    return theArray.clone();
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
+  @Override
   public int size() {
     return theArray.length;
   }
@@ -144,6 +152,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   /**
    * @see org.apache.uima.cas.LongArrayFS#copyToArray(int, String[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
@@ -154,6 +163,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   /**
    * @see org.apache.uima.cas.LongArrayFS#copyFromArray(String[], int, int, int)
    */
+  @Override
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, destPos, length);
     for (int i = 0; i < length; i++) {
@@ -185,6 +195,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
     set(i, Long.parseLong(v));
   }
   
+  @Override
   public Spliterator.OfLong spliterator() {
     return Arrays.spliterator(theArray);
   }
@@ -199,12 +210,12 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
         return i < size();
       }
 
-      @Override
-      public Long next() {
-        if (!hasNext())
-          throw new NoSuchElementException();
-        return get(i++);
-      }
+//      @Override   // using default
+//      public Long next() {
+//        if (!hasNext())
+//          throw new NoSuchElementException();
+//        return get(i++);
+//      }
 
       @Override
       public long nextLong() {
@@ -227,10 +238,34 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static LongArray createFromArray(JCas jcas, long[] a) {
+  public static LongArray create(JCas jcas, long[] a) {
     LongArray longArray = new LongArray(jcas, a.length);
     longArray.copyFromArray(a, 0, 0, a.length);
     return longArray;
+  }
+  
+  /**
+   * Non Boxing
+   * @param action to be performed on each element
+   */
+  public void forEach(LongConsumer action) {
+    for (long l : theArray) {
+      action.accept(l);
+    }
+  }
+
+
+  /**
+   * @param item the item to see if is in the array
+   * @return true if the item is in the array
+   */
+  public boolean contains(long item) {
+    for (long b : theArray) {
+      if (b == item) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

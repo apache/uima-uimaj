@@ -30,6 +30,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.internal.util.Timer;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.tools.cvd.MainFrame;
 
 
@@ -72,7 +73,8 @@ public class XCASFileOpenEventHandler implements ActionListener {
           this.main.setXcasFileOpenDir(xcasFile.getParentFile());
           Timer time = new Timer();
           time.start();
-          SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+          SAXParserFactory saxParserFactory = XMLUtils.createSAXParserFactory();
+          SAXParser parser = saxParserFactory.newSAXParser();
           XCASDeserializer xcasDeserializer = new XCASDeserializer(this.main.getCas()
               .getTypeSystem());
           this.main.getCas().reset();

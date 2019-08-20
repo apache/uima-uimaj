@@ -19,6 +19,7 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.ArrayFS;
+import org.apache.uima.cas.FeatureStructure;
 
 /**
  * For backwards compatibility with V2, only
@@ -26,6 +27,6 @@ import org.apache.uima.cas.ArrayFS;
  * @deprecated use FSArray instead
  */
 @Deprecated
-public interface ArrayFSImpl extends ArrayFS {
+public interface ArrayFSImpl<E extends FeatureStructure> extends ArrayFS<E> {
   
 }

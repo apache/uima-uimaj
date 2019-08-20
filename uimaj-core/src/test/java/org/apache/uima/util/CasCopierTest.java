@@ -304,7 +304,8 @@ public class CasCopierTest extends TestCase {
 
     CasComparer cci = new CasComparer();
     // copy all entities
-    Iterator<TOP> it = srcCas.getIndexRepository().getAllIndexedFS(srcCas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity"));
+    Iterator<TOP> it = srcCas.getIndexRepository().getIndexedFSs(srcCas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity")).iterator();
+//    Iterator<TOP> it = srcCas.getIndexRepository().getAllIndexedFS(srcCas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity"));
 //    while(it.hasNext()) {
       TOP fs = it.next();
       TOP fsc = (TOP) copier.copyFs(fs);

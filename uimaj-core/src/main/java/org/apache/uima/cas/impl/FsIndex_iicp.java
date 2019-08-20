@@ -19,15 +19,17 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.stream.Stream;
 
 import org.apache.uima.cas.FSIndex;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * FsIndex_iicp (iicp)
@@ -47,9 +49,10 @@ import org.apache.uima.cas.admin.FSIndexComparator;
  * For Internal Use
  */  
 class FsIndex_iicp<T extends FeatureStructure> 
+          extends AbstractCollection<T>
           implements Comparable<FsIndex_iicp<? extends FeatureStructure>>,
                      Comparator<FeatureStructure>,
-                     LowLevelIndex<T> {
+                     LowLevelIndex<T> {  
 
 //  private final static boolean DEBUG = false;
 
@@ -67,7 +70,7 @@ class FsIndex_iicp<T extends FeatureStructure>
    * 
    * This is set up lazily on first need, to avoid extra work when won't be accessed
    */
-  FsIndex_singletype<FeatureStructure>[] cachedSubFsLeafIndexes = null;
+  FsIndex_singletype<TOP>[] cachedSubFsLeafIndexes = null;
   
   // VOLATILE to permit double-checked locking technique
   private volatile boolean isIteratorCacheSetup = false;
@@ -92,7 +95,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     } else {  
       int len = Math.min(3,  cachedSubFsLeafIndexes.length);
       for (int i = 0; i < len; i++) {
-        FsIndex_singletype<FeatureStructure> lii = cachedSubFsLeafIndexes[i]; 
+        FsIndex_singletype<TOP> lii = cachedSubFsLeafIndexes[i]; 
         sb.append("  cache ").append(i++);
         sb.append("  ").append(lii).append('\n');
       }
@@ -225,6 +228,8 @@ class FsIndex_iicp<T extends FeatureStructure>
   /**
    * Maybe not used 3/2015
    * 
+   * Compares two instances of FsIndex_iicp, for ordering.
+   * 
    * Compares first using the type code of the main types
    *   If those are equal,
    *   Compares using the comparatorForIndexSpecs objects
@@ -253,18 +258,19 @@ class FsIndex_iicp<T extends FeatureStructure>
   public int size() {
     createIndexIteratorCache();  // does nothing if already created
     int size = 0;
-    for (FsIndex_singletype<FeatureStructure> iicp : cachedSubFsLeafIndexes) {
+    for (FsIndex_singletype<TOP> iicp : cachedSubFsLeafIndexes) {
       size += iicp.size();
     }
     return size;
   }
   
+  @Override
   public int ll_maxAnnotSpan() {
     createIndexIteratorCache();  // does nothing if already created
     int span = -1;
     FsIndex_singletype<T> idx = getFsIndex_singleType();
     if (idx instanceof FsIndex_set_sorted && ((FsIndex_set_sorted)idx).isAnnotIdx) {
-      for (FsIndex_singletype<FeatureStructure> subIndex : cachedSubFsLeafIndexes) {
+      for (FsIndex_singletype<TOP> subIndex : cachedSubFsLeafIndexes) {
         int s = ((FsIndex_set_sorted)subIndex).ll_maxAnnotSpan(); 
         if (s > span) {
           span = s;
@@ -276,26 +282,14 @@ class FsIndex_iicp<T extends FeatureStructure>
   
   public boolean isEmpty() {
     createIndexIteratorCache();  
-    for (FsIndex_singletype<FeatureStructure> index : cachedSubFsLeafIndexes) {
+    for (FsIndex_singletype<TOP> index : cachedSubFsLeafIndexes) {
       if (index.size() > 0) {
         return false;
       }
     }
     return true;
   }
-  
-  boolean has1OrMoreEntries() {
-    createIndexIteratorCache();  // does nothing if already created
-    final FsIndex_singletype<FeatureStructure>[] localIc = this.cachedSubFsLeafIndexes;
-    final int len = localIc.length;
-    for (int i = 0; i < len; i++) {
-      if (localIc[i].size() > 0) {
-        return true;
-      };
-    }
-    return false;
-  }
-  
+    
   /**
    * A faster version of size() when there are lots of subtypes
    * The cache must be already set up
@@ -306,7 +300,7 @@ class FsIndex_iicp<T extends FeatureStructure>
    * @return a guess at the size, done quickly
    */
   int guessedSize() {
-    final FsIndex_singletype<FeatureStructure>[] localIc = this.cachedSubFsLeafIndexes;
+    final FsIndex_singletype<TOP>[] localIc = this.cachedSubFsLeafIndexes;
     final int len = localIc.length;
     final int lim = Math.min(3, len);
     int size = 0;
@@ -351,9 +345,9 @@ class FsIndex_iicp<T extends FeatureStructure>
 //          detectIllegalIndexUpdates[typeCode];
 //    }
     
-  boolean subsumes(int superType, int subType) {
-    return getCasImpl().getTypeSystemImpl().subsumes(superType,  subType);
-  }
+//  boolean subsumes(int superType, int subType) {
+//    return getCasImpl().getTypeSystemImpl().subsumes(superType,  subType);
+//  }
   
   // for flat index support
 //    void addToIteratedSortedIndexes() {
@@ -369,19 +363,19 @@ class FsIndex_iicp<T extends FeatureStructure>
 //      }
 //    }
   
-  <T2 extends FeatureStructure> FsIndex_singletype<T2> getNoSubtypeIndexForType(Type type) {
-    createIndexIteratorCache();
-    for (FsIndex_singletype<FeatureStructure> noSubtypeIndex : cachedSubFsLeafIndexes) {
-      if (noSubtypeIndex.getType() == type) {
-        return (FsIndex_singletype<T2>) noSubtypeIndex;
-      }
-    }
-    return null;
-  }
+//  <T2 extends FeatureStructure> FsIndex_singletype<T2> getNoSubtypeIndexForType(Type type) {
+//    createIndexIteratorCache();
+//    for (FsIndex_singletype<FeatureStructure> noSubtypeIndex : cachedSubFsLeafIndexes) {
+//      if (noSubtypeIndex.getType() == type) {
+//        return (FsIndex_singletype<T2>) noSubtypeIndex;
+//      }
+//    }
+//    return null;
+//  }
   
-  FSIndexRepositoryImpl getFSIndexRepositoryImpl() {
-    return fsIndexRepositoryImpl;
-  }
+//  FSIndexRepositoryImpl getFSIndexRepositoryImpl() {
+//    return fsIndexRepositoryImpl;
+//  }
 
   FsIndex_singletype<T> getFsIndex_singleType() {
     return fsIndex_singletype;
@@ -405,6 +399,14 @@ class FsIndex_iicp<T extends FeatureStructure>
     return fsIndex_singletype.getIndexingStrategy();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIndex#getComparator()
+   */
+  @Override
+  public Comparator<TOP> getComparator() {
+    return fsIndex_singletype.comparatorWithoutID;
+  }
+
   @Override
   public FSIndexComparator getComparatorForIndexSpecs() {
     return fsIndex_singletype.getComparatorForIndexSpecs();
@@ -416,8 +418,14 @@ class FsIndex_iicp<T extends FeatureStructure>
 
   @Override
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-    return fsIndex_singletype.compare(fs1,  fs2);
+    return fsIndex_singletype.comparatorWithoutID.compare((TOP)fs1, (TOP)fs2);
   }
+  
+//  @Override
+//  public int compare(FeatureStructure fs1, FeatureStructure fs2, boolean ignoreType) {
+//    return fsIndex_singletype.compare(fs1,  fs2, ignoreType);
+//  }
+  
     
   @Override
   public boolean contains(FeatureStructure fs) {
@@ -428,7 +436,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   public T find(FeatureStructure fs) {
     createIndexIteratorCache();  // does nothing if already created
     
-    for (FsIndex_singletype<FeatureStructure> idx : cachedSubFsLeafIndexes) {
+    for (FsIndex_singletype<TOP> idx : cachedSubFsLeafIndexes) {
      FeatureStructure result = idx.find(fs);
       if (result != null) {
         return (T) result;
@@ -452,22 +460,54 @@ class FsIndex_iicp<T extends FeatureStructure>
   }
   
   @Override
-  public FSIterator<T> iterator() {
-    createIndexIteratorCache();  
-   
-    return (cachedSubFsLeafIndexes.length == 1)
-           ? (FSIterator<T>) fsIndex_singletype.iterator()
-           : fsIndex_singletype.isSorted()
-             ? new FsIterator_subtypes_ordered<T>(this)
-             : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).allIterators, fsIndex_singletype);
+  public boolean isSorted() {
+    return fsIndex_singletype.isSorted();
+  }
+  
+  /**
+   *  Iterator varieties
+   *  
+   *  All iterators are over a Type + subtypes (because that's the purpose of this class)
+   *    - ambiguous / unambiguous  (for AnnotationIndex)
+   *    - not strict / strict      (for AnnotationIndex)
+   *    - ignoring type priorities or not  (for any index)
+   *    - "unordered" - no need to preserve order
+   *  
+   *  These may be combined.  
+   */
+  
+  
+  
+  @Override
+  public LowLevelIterator<T> iterator() {
+    return iterator(false, false);
   } 
   
-  public FSIterator<T> iteratorUnordered() {
-    createIndexIteratorCache();  
+//  public LowLevelIterator<T> iterator(boolean orderNotNeeded) {
+//    return iterator(orderNotNeeded, false);
+//  }
+//  
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIndex#iterator(boolean, boolean)
+   *   orderNotNeeded is ignored, because would never be here unless order was needed
+   */
+  @Override
+  public LowLevelIterator<T> iterator(boolean orderNotNeeded, boolean ignoreType) {
+    createIndexIteratorCache(); 
+
+    if (cachedSubFsLeafIndexes.length == 1) {
+      return fsIndex_singletype.iterator(IS_ORDERED, ignoreType);  
+    }
+
+    FsIndex_singletype<T> idx = getFsIndex_singleType();    
+    Comparator<TOP> comparatorMaybeNoTypeWithoutId = ignoreType ? idx.comparatorNoTypeWithoutID : idx.comparatorWithoutID;
     
-    return (cachedSubFsLeafIndexes.length == 1)
-           ? (FSIterator<T>) fsIndex_singletype.iterator()
-           : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).allIterators, fsIndex_singletype); 
+    if (! fsIndex_singletype.isSorted() ||  // is a set index, or 
+                         orderNotNeeded) {  // order is not needed 
+      return new FsIterator_aggregation_common<T>(getIterators(), this, comparatorMaybeNoTypeWithoutId); 
+    }
+    
+    return new FsIterator_subtypes_ordered<T>(this, comparatorMaybeNoTypeWithoutId);   
   }
 
   /**
@@ -481,11 +521,10 @@ class FsIndex_iicp<T extends FeatureStructure>
    */
   @Override
   public LowLevelIterator<T> ll_iterator(boolean ambiguous) {
-    if (!ambiguous) {
-      return new LLUnambiguousIteratorImpl<T>((LowLevelIterator<FeatureStructure>) iterator());
-     } else {
-       return (LowLevelIterator<T>) iterator();
-     }
+    LowLevelIterator<T> it = iterator(IS_ORDERED, IS_TYPE_ORDER);
+    return ambiguous
+             ? it
+             : new LLUnambiguousIteratorImpl<T>(it);
   }
   
 //  /* ***********************************
@@ -510,13 +549,41 @@ class FsIndex_iicp<T extends FeatureStructure>
     
   @Override
   public FSIndex<T> withSnapshotIterators() {
-    return new FsIndex_snapshot<>(this);
+    FsIndex_singletype<T> idx = getFsIndex_singleType();
+    return new FsIndex_snapshot<>(this, idx.comparatorWithoutID, idx.comparatorNoTypeWithoutID);
   }
 
   public FSIndexRepositoryImpl getFsRepositoryImpl() {
     return getCasImpl().indexRepository;
   }
 
+  /**
+   * @return a stream of FSIndex_singletype, for all non-empty indexes
+   */
+  public Stream<FsIndex_singletype<TOP>> streamNonEmptyIndexes() {
+    createIndexIteratorCache();
+    return Arrays.stream(cachedSubFsLeafIndexes).filter(idx -> idx.size() > 0);
+  }
+  
+  void collectCowIndexParts(ArrayList<CopyOnWriteIndexPart<T>> indexes) {
+    createIndexIteratorCache();
+    for (FsIndex_singletype idx : cachedSubFsLeafIndexes) {
+      if (idx.size() > 0) {
+        indexes.add(idx.getNonNullCow());
+      }
+    }
+  }
+  
+  LowLevelIterator<T>[] getIterators() {
+    createIndexIteratorCache();
+    LowLevelIterator<T>[] r = new LowLevelIterator[cachedSubFsLeafIndexes.length];
+    int i = 0;
+    for (FsIndex_singletype<TOP> idx : cachedSubFsLeafIndexes) {
+      r[i++] = (LowLevelIterator<T>) idx.iterator();
+    }
+    return r;    
+  }
+  
 //  /* (non-Javadoc)
 //   * @see org.apache.uima.cas.FSIndex#select()
 //   */

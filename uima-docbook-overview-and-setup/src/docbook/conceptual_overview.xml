@@ -954,7 +954,7 @@ under the License.
       of the same audio segment). A Sofa may
       be associated with CAS Views. A particular CAS will have one or more views, each view
       corresponding to a particular subject of analysis, together with a set of the defined
-      indexes that index the metadata created in that view.</para>
+      indexes that index the metadata (that is, Feature Structures) created in that view.</para>
     
     <para>Analysis results can be indexed in, or <quote>belong</quote> to, a specific view.
       UIMA components may be written in <quote>Multi-View</quote> mode - able to create and

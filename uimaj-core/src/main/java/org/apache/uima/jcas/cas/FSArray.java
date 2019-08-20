@@ -26,6 +26,7 @@ import java.util.Spliterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FeatureStructure;
@@ -34,11 +35,17 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-/** Java Class model for Cas FSArray type */
-public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, SelectViaCopyToArray {
+/** Java Class model for Cas FSArray type
+ *  extends FeatureStructure for backwards compatibility 
+ *  when using FSArray with no typing. 
+ */
+public final class FSArray<T extends FeatureStructure> extends TOP 
+                           implements ArrayFSImpl<T>,
+                                      Iterable<T>,                                      
+                                      SelectViaCopyToArray<T> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.cas.jcas.FSArray";
+  public final static String _TypeName = CAS.TYPE_NAME_FS_ARRAY;
 
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
@@ -54,6 +61,7 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -79,8 +87,8 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
-      _casView.adjustLastFsV2size(length);
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2Size_arrays(length);
     }    
   }
   
@@ -99,29 +107,43 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
-      _casView.adjustLastFsV2size(length);
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2Size_arrays(length);
     }    
   }
 
 
   /** return the indexed value from the corresponding Cas FSArray as a Java Model object. */
-  public TOP get(int i) {
-    return _maybeGetPearFs(theArray[i]);
+  @Override
+  public <U extends TOP> U get(int i) {
+    return (U) _maybeGetPearFs(theArray[i]);
+  }
+  
+  // internal use
+  TOP get_without_PEAR_conversion(int i) {
+    return theArray[i];
   }
 
   /** updates the Cas, setting the indexed value with the corresponding Cas FeatureStructure. */
-  public void set(int i, FeatureStructure v) {
-    TOP vt = (TOP) v;
-    if (vt != null && _casView.getBaseCAS() != vt._casView.getBaseCAS()) {
+  @Override
+  public void set(int i, T av) {
+    TOP v = (TOP) av;
+    if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
-      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, vt, vt._casView, _casView);
+      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
     }
-    theArray[i] = _maybeGetBaseForPearFs(vt);
+    theArray[i] = _maybeGetBaseForPearFs(v);
+    _casView.maybeLogArrayUpdate(this, null, i);
+  }
+  
+  // internal use
+  void set_without_PEAR_conversion(int i, TOP v) {
+    theArray[i] = v;
     _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /** return the size of the array. */
+  @Override
   public int size() {
     return theArray.length;
   }
@@ -129,7 +151,8 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
   /**
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
-  public void copyFromArray(FeatureStructure[] src, int srcPos, int destPos, int length) {
+  @Override
+  public <U extends FeatureStructure> void copyFromArray(U[] src, int srcPos, int destPos, int length) {
     int srcEnd = srcPos + length;
     int destEnd = destPos + length;
     if (srcPos < 0 ||
@@ -142,14 +165,15 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
     // doing this element by element to get pear conversions done if needed, and 
     // to get journaling done
     for (;srcPos < srcEnd && destPos < destEnd;) {
-      set(destPos++, src[srcPos++]);
+      set(destPos++, (T) src[srcPos++]);
     }
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
-  public void copyToArray(int srcPos, FeatureStructure[] dest, int destPos, int length) {
+  @Override
+  public <U extends FeatureStructure> void copyToArray(int srcPos, U[] dest, int destPos, int length) {
     int srcEnd = srcPos + length;
     int destEnd = destPos + length;
     if (srcPos < 0 ||
@@ -159,24 +183,27 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
           String.format("FSArray.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
     for (;srcPos < srcEnd && destPos < destEnd;) {
-      dest[destPos++] = _maybeGetPearFs(get(srcPos++));
+      dest[destPos++] = (U) _maybeGetPearFs(get(srcPos++));
     }
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#toArray()
    */
+  @Override
   public FeatureStructure[] toArray() {
     FeatureStructure[] r = new FeatureStructure[size()];
     copyToArray(0, r, 0, size());
     return r;
   }
   
+  @Override
   public FeatureStructure[] _toArrayForSelect() { return toArray(); }
 
   /**
    * Not supported, will throw UnsupportedOperationException
    */
+  @Override
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     throw new UnsupportedOperationException();
   }
@@ -198,6 +225,7 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
    *                    <code>length &gt; size()</code> or
    *                    <code>destPos + length &gt; destArray.length</code>.
    */
+  @Override
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
@@ -218,8 +246,8 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
    * no conversion to Pear trampolines done
    */
   @Override
-  public void copyValuesFrom(CommonArrayFS v) {
-    FSArray bv = (FSArray) v;
+  public void copyValuesFrom(CommonArrayFS<T> v) {
+    FSArray<T> bv = (FSArray<T>) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
@@ -228,17 +256,18 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
    * Convenience - create a FSArray from an existing FeatureStructure[]
    * @param jcas -
    * @param a -
+   * @param <U> the element type of the FSArray, subtype of FeatureStructure
    * @return -
    */
-  public static FSArray create(JCas jcas, FeatureStructure[] a) {
-    FSArray fsa = new FSArray(jcas, a.length);
+  public static <U extends FeatureStructure> FSArray<U> create(JCas jcas, FeatureStructure[] a) {
+    FSArray<U> fsa = new FSArray<U>(jcas, a.length);
     fsa.copyFromArray(a, 0, 0, a.length);
     return fsa;
   }
 
   @Override
-  public Iterator<TOP> iterator() {
-    return new Iterator<TOP>() {
+  public Iterator<T> iterator() {
+    return new Iterator<T>() {
       int i = 0;
       
       @Override
@@ -247,21 +276,54 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
       }
 
       @Override
-      public TOP next() {
+      public T next() {
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
-        return get(i++);  // does trampoline conversion
+        return (T) get(i++);  // does trampoline conversion
       }
     };
   }
   
   @Override
-  public Spliterator<TOP> spliterator() {
-    return Arrays.spliterator(theArray);
+  public Spliterator<T> spliterator() {
+    return (Spliterator<T>) Arrays.spliterator(theArray);
   }
   
-  public <T extends TOP> Stream<T> stream() {
-    return (Stream<T>) StreamSupport.stream(spliterator(), false);
+  public Stream<T> stream() {
+    return StreamSupport.stream(spliterator(), false);
   }
+
+  public boolean contains(Object o) {
+    if (null == o) {
+      for (TOP e : theArray) {
+        if (e == null) {
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    if (!(o instanceof TOP)) {
+      return false;
+    }
+    TOP item = (TOP) o;
+    for (TOP e : theArray) {
+      if (item.equals(e)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public <U extends TOP> U[] toArray(U[] a) {
+    final int sz = size();
+    if (a.length < sz) {
+      return (U[]) Arrays.copyOf(theArray, sz, a.getClass());
+    }
+    System.arraycopy(theArray, 0, a, 0, size());
+    return a;
+  }
+
+ 
 }

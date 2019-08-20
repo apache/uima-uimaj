@@ -88,6 +88,9 @@ public class IntBitSet implements PositiveIntSet {
   public IntBitSet(int maxAdjKey, int offset) {
     set = new BitSet(Math.max(1, maxAdjKey));
     this.offset = offset;
+    if (IS_TRACE_MODE_SWITCH) {
+      System.out.println("TRACE_MODE new IntBitSet, maxAdjKey = " + maxAdjKey + ", offset= " + offset);
+    }
   }
   
   /**
@@ -209,14 +212,12 @@ public class IntBitSet implements PositiveIntSet {
     public final boolean hasNext() {
       return (curKey >= 0);
     }
-
-    public final int next() {
-      if (!hasNext()) {
-        throw new NoSuchElementException();
-      }
+    
+    @Override
+    public final int nextNvc() {
       final int r = curKey;
       curKey = set.nextSetBit(curKey + 1);
-      return r + offset;
+      return r + offset;      
     }
 
     /**
@@ -225,14 +226,12 @@ public class IntBitSet implements PositiveIntSet {
     public boolean hasPrevious() {
       throw new UnsupportedOperationException();
     }
-
-    /**
-     * @see org.apache.uima.internal.util.IntListIterator#previous()
-     */
-    public int previous() {
+ 
+    @Override
+    public int previousNvc() {
       throw new UnsupportedOperationException();
     }
-
+    
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToEnd()
      */

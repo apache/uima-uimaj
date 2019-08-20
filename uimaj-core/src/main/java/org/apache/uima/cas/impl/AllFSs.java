@@ -20,9 +20,9 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import org.apache.uima.UimaSerializableFSs;
 import org.apache.uima.cas.CommonArrayFS;
@@ -30,11 +30,12 @@ import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.IteratorNvc;
 
 /**
  * support for collecting all FSs in a CAS
  *   -  over all views
- *   -  both indexed, and reachable
+ *   -  both indexed, and (optionally) reachable
  */
 class AllFSs {
   
@@ -52,10 +53,8 @@ class AllFSs {
     foundFSsBelowMark = (mark != null) ? new PositiveIntSet_impl(1024, 1, 1024) : null;
     this.includeFilter = includeFilter;
     this.typeMapper = typeMapper;
-    
-    getAllIndexedFSsAllViews();
   }
-  
+    
   PositiveIntSet getAllBelowMark() {
     return foundFSsBelowMark;
   }
@@ -82,32 +81,42 @@ class AllFSs {
     this.mark = null;
     foundFSsBelowMark = null;
     this.includeFilter = null;
-    this.typeMapper = null;
-    getAllIndexedFSsAllViews();    
+    this.typeMapper = null; 
   }
-  
-  void getAllIndexedFSsAllViews() {
+
+  private AllFSs getAllFSsAllViews_sofas() {
     cas.forAllSofas(sofa -> enqueueFS(sofa));
-    cas.forAllViews(view -> 
-       getFSsForView(view.indexRepository.<TOP>getAllIndexedFS(cas.getTypeSystemImpl().topType).stream()));
+    cas.forAllViews(view -> getFSsForView(view.indexRepository.getIndexedFSs()));
+    return this;
+  }
+
+  
+  public AllFSs getAllFSsAllViews_sofas_reachable() {
+    getAllFSsAllViews_sofas();
+    
     for (int i = 0; i < toBeScanned.size(); i++) {
       enqueueFeatures(toBeScanned.get(i));
     }
     
-//    // add FSs that are in the CAS and held-on-to explicitly
-     // maybe needed for a test case - SerDesTest4 for delta CAS with previous v2 data ?
-//    Int2ObjHashMap<TOP> allKeptFSs = cas.getId2FSs();
-//    if (null != allKeptFSs && allKeptFSs.size() > 0) {
-//      Iterator<TOP> it = allKeptFSs.values();
-//      while (it.hasNext()) {
-//        enqueueFS(it.next());
-//      }
-//    }
-
+    // https://issues.apache.org/jira/browse/UIMA-5662  include kept fss if mode is set
+    if (cas.isId2Fs()) {
+      // add FSs that are in the CAS and held-on-to explicitly
+      Id2FS table = cas.getId2FSs();
+      if (null != table) {
+        IteratorNvc<TOP> it = cas.getId2FSs().iterator();
+        while (it.hasNext()) {
+          enqueueFS(it.nextNvc());
+        }
+      }
+      
+    }
+    return this;
   }
   
-  private void getFSsForView(Stream<TOP> fss) {
-    fss.forEach(fs -> enqueueFS(fs));
+  private void getFSsForView(Collection<TOP> fss) {
+    for (TOP fs : fss) {
+      enqueueFS(fs);
+    }
   }
   
   private void enqueueFS(TOP fs) {

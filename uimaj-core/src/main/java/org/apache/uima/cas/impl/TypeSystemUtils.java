@@ -414,4 +414,17 @@ public abstract class TypeSystemUtils {
     return PathValid.NEVER;
   }
 
+  /**
+   * Classify types into FS type, array type etc. For the full list of return types, see the
+   * <code>LowLevelCAS.TYPE_CLASS*</code> constants, as well as the documentation for
+   * {@link LowLevelCAS#ll_getTypeClass(int) LowLevelCAS.ll_getTypeClass(int)}.
+   * 
+   * @param type
+   *                The type to classify.
+   * @return An integer encoding the the type class. See above.
+   */
+  public static final int classifyType(Type type) {
+    return TypeSystemImpl.getTypeClass((TypeImpl) type);
+  }
+
 }

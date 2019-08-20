@@ -21,9 +21,12 @@ package org.apache.uima.jcas.cas;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCas;
 
 public abstract class StringList extends TOP implements CommonList, Iterable<String> {
@@ -69,8 +72,8 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
   } 
   
   @Override
-  public EmptyStringList getEmptyList() {
-    return this._casView.getEmptyStringList();
+  public EmptyStringList emptyList() {
+    return this._casView.emptyStringList();
   }
 
   /**
@@ -79,12 +82,30 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
    * @param a the array of Strings to populate the list with
    * @return an StringList, with the elements from the array
    */
-  public static StringList createFromArray(JCas jcas, String[] a) {
-    StringList stringList = jcas.getCasImpl().getEmptyStringList();   
+  public static StringList create(JCas jcas, String[] a) {
+    StringList stringList = jcas.getCasImpl().emptyStringList();   
     for (int i = a.length - 1; i >= 0; i--) {
       stringList = stringList.push(a[i]);
     }   
     return stringList;
   }
   
+  /**
+   * @return a stream over this FSList
+   */
+  public Stream<String> stream() {
+    return StreamSupport.stream(spliterator(), false);
+  }
+ 
+  public boolean contains(String v) {
+    StringList node = this;
+    while (node instanceof NonEmptyStringList) {
+      NonEmptyStringList n = (NonEmptyStringList) node;
+      if (Misc.equalStrings(v, n.getHead())) {
+        return true;
+      }
+      node = n.getTail();
+    }
+    return false;
+  }
 }

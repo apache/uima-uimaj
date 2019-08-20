@@ -99,7 +99,9 @@ public class ResourceManager_impl implements ResourceManager {
    */
   protected static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
   
-  protected static final Class<Resource> EMPTY_RESOURCE_CLASS = Resource.class; 
+  protected static final Class<Resource> EMPTY_RESOURCE_CLASS = Resource.class;
+
+  private static final URL[] emptyURLarray = new URL[0]; 
 
   private AtomicBoolean isDestroyed = new AtomicBoolean(false);
   /**
@@ -327,6 +329,19 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
+  // https://issues.apache.org/jira/browse/UIMA-5553
+  // https://issues.apache.org/jira/browse/UIMA-5609
+  // synchronized because the other methods that set the extension class loader are.
+  public synchronized void setExtensionClassLoaderImpl(ClassLoader classLoader, boolean resolveResource) {
+    uimaCL = (classLoader instanceof UIMAClassLoader) 
+               ? ((UIMAClassLoader) classLoader)
+               : new UIMAClassLoader(emptyURLarray, classLoader);
+    if (resolveResource) {
+      // set UIMA extension ClassLoader also to resolve resources
+      getRelativePathResolver().setPathResolverClassLoader(uimaCL);
+    }
+  }
+  
   /**
    * @see org.apache.uima.resource.ResourceManager#getExtensionClassLoader()
    */

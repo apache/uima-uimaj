@@ -21,8 +21,10 @@ package org.apache.uima.cas;
 
 /**
  * Common parts of the Array interfaces.
+ * Doesn't implement AbstactNonModifiableCollection because
+ *   the specializations of things like toArray using primitives don't work
  */
-public interface CommonArrayFS extends FeatureStructure {
+public interface CommonArrayFS<E> extends FeatureStructure {
 
   /**
    * Return the size of the array.
@@ -105,5 +107,12 @@ public interface CommonArrayFS extends FeatureStructure {
    * Copy values from another array of the same kind
    * @param v the other array
    */
-  void copyValuesFrom(CommonArrayFS v);
+  void copyValuesFrom(CommonArrayFS<E> v);
+  
+  /**
+   * @return true if the array is empty
+   */
+  default boolean isEmpty() {
+    return size() == 0;
+  }
 }

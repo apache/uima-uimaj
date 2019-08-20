@@ -19,19 +19,21 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Implements a filtered iterator.
  */
-class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
+class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T> {
 
   // The base iterator.
-  private FSIterator<T> it;
+  private LowLevelIterator<T> it;
 
   // The filter constraint.
   private FSMatchConstraint cons;
@@ -46,7 +48,7 @@ class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
    */
   FilteredIterator(FSIterator<T> it, FSMatchConstraint cons) {
     this();
-    this.it = it;
+    this.it = (LowLevelIterator<T>) it;
     this.cons = cons;
     moveToFirst();
   }
@@ -74,19 +76,14 @@ class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
   }
   
 
-  public void moveToFirst() {
-    this.it.moveToFirst();
+  public void moveToFirstNoReinit() {
+    this.it.moveToFirstNoReinit();
     adjustForConstraintForward();
   }
 
-  public void moveToLast() {
+  public void moveToLastNoReinit() {
     this.it.moveToLast();
     adjustForConstraintBackward();
-  }
-
-  public void moveToNext() {
-    this.it.moveToNext();
-    adjustForConstraintForward();
   }
 
   public void moveToNextNvc() {
@@ -94,19 +91,9 @@ class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
     adjustForConstraintForward();
   }
 
-  public void moveToPrevious() {
-    this.it.moveToPrevious();
-    adjustForConstraintBackward();
-  }
-
   public void moveToPreviousNvc() {
     this.it.moveToPreviousNvc();
     adjustForConstraintBackward();
-  }
-
-  public T get() throws NoSuchElementException {
-    // This may throw an exception.
-    return this.it.get();
   }
 
   public T getNvc() {
@@ -123,9 +110,46 @@ class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
   /**
    * @see org.apache.uima.cas.FSIterator#moveTo(FeatureStructure)
    */
-  public void moveTo(FeatureStructure fs) {
-    this.it.moveTo(fs);
+  public void moveToNoReinit(FeatureStructure fs) {
+    this.it.moveToNoReinit(fs);
     adjustForConstraintForward();
+  }
+  
+//  @Override
+//  public void moveToExactNoReinit(FeatureStructure fs) {
+//    this.it.moveToExactNoReinit(fs);
+//    adjustForConstraintForward();
+//  }
+
+
+  @Override
+  public int ll_indexSizeMaybeNotCurrent() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public LowLevelIndex<T> ll_getIndex() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public int ll_maxAnnotSpan() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean isIndexesHaveBeenUpdated() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean maybeReinitIterator() {
+    return this.it.maybeReinitIterator();
+  }
+
+  @Override
+  public Comparator<TOP> getComparator() {
+    return it.getComparator();
   }
 
 //  /* (non-Javadoc)

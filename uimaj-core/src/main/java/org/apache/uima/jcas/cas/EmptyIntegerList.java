@@ -19,6 +19,7 @@
 
 package org.apache.uima.jcas.cas;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeImpl_list;
@@ -28,7 +29,7 @@ import org.apache.uima.jcas.JCasRegistry;
 public class EmptyIntegerList extends IntegerList implements EmptyList {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.jcas.cas.EmptyIntegerList";
+  public final static String _TypeName = CAS.TYPE_NAME_EMPTY_INTEGER_LIST;
 
   public final static int typeIndexID = JCasRegistry.register(EmptyIntegerList.class);
 

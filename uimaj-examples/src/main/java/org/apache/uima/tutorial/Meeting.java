@@ -18,6 +18,9 @@
  */
 package org.apache.uima.tutorial;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -26,14 +29,18 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
 
-/**
- * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004 XML source: C:/Program
- * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- *
- * @generated
- */
+/** 
+ * Updated by JCasGen Sun Oct 08 19:34:17 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * @generated */
 public class Meeting extends Annotation {
 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.tutorial.Meeting";
+  
     /**
      * The Constant typeIndexID.
      *
@@ -56,30 +63,38 @@ public class Meeting extends Annotation {
      * @return the type index ID
      * @generated 
      */
-    public int getTypeIndexID() {
-        return typeIndexID;
-    }
+    public int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_room = "room";
+  public final static String _FeatName_date = "date";
+  public final static String _FeatName_startTime = "startTime";
+  public final static String _FeatName_endTime = "endTime";
 
-    /** The Constant _FI_room. */
-    public static final int _FI_room = TypeSystemImpl.getAdjustedFeatureOffset("room");
 
-    /** The Constant _FI_date. */
-    public static final int _FI_date = TypeSystemImpl.getAdjustedFeatureOffset("date");
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_room = TypeSystemImpl.createCallSite(Meeting.class, "room");
+  private final static MethodHandle _FH_room = _FC_room.dynamicInvoker();
+  private final static CallSite _FC_date = TypeSystemImpl.createCallSite(Meeting.class, "date");
+  private final static MethodHandle _FH_date = _FC_date.dynamicInvoker();
+  private final static CallSite _FC_startTime = TypeSystemImpl.createCallSite(Meeting.class, "startTime");
+  private final static MethodHandle _FH_startTime = _FC_startTime.dynamicInvoker();
+  private final static CallSite _FC_endTime = TypeSystemImpl.createCallSite(Meeting.class, "endTime");
+  private final static MethodHandle _FH_endTime = _FC_endTime.dynamicInvoker();
 
-    /** The Constant _FI_startTime. */
-    public static final int _FI_startTime = TypeSystemImpl.getAdjustedFeatureOffset("startTime");
-
-    /** The Constant _FI_endTime. */
-    public static final int _FI_endTime = TypeSystemImpl.getAdjustedFeatureOffset("endTime");
+   
 
     /**
    * Never called. Disable default constructor
    *
    * @generated
    */
-    protected  Meeting() {
-    }
-
+    protected  Meeting() {/* intentionally empty block */}
+    
     /**
      * Internal - constructor used by generator.
      *
@@ -88,10 +103,10 @@ public class Meeting extends Annotation {
      * @generated 
      */
     public  Meeting(TypeImpl type, CASImpl casImpl) {
-        super(type, casImpl);
-        readObject();
-    }
-
+    super(type, casImpl);
+    readObject();
+  }
+  
     /**
      * Instantiates a new meeting.
      *
@@ -99,9 +114,10 @@ public class Meeting extends Annotation {
      * @generated 
      */
     public  Meeting(JCas jcas) {
-        super(jcas);
-        readObject();
-    }
+    super(jcas);
+    readObject();   
+  } 
+
 
     /**
      * Instantiates a new meeting.
@@ -117,11 +133,10 @@ public class Meeting extends Annotation {
         readObject();
     }
 
-    /**
-     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
-     *
-     * @generated modifiable
-     */
+  /** 
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->*
+   * @generated modifiable 
+   */
     private void readObject() {
     }
 
@@ -133,10 +148,8 @@ public class Meeting extends Annotation {
      * @return the room
      * @generated 
      */
-    public RoomNumber getRoom() {
-        return (RoomNumber) (_getFeatureValueNc(_FI_room));
-    }
-
+    public RoomNumber getRoom() { return (RoomNumber)(_getFeatureValueNc(wrapGetIntCatchException(_FH_room)));}
+    
     /**
      * setter for room - sets.
      *
@@ -144,9 +157,11 @@ public class Meeting extends Annotation {
      * @generated 
      */
     public void setRoom(RoomNumber v) {
-        _setFeatureValueNcWj(_FI_room, v);
-    }
-
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_room), v);
+  }    
+    
+   
+    
     // *--------------*
     // * Feature: date
     /**
@@ -155,10 +170,8 @@ public class Meeting extends Annotation {
      * @return the date
      * @generated 
      */
-    public DateAnnot getDate() {
-        return (DateAnnot) (_getFeatureValueNc(_FI_date));
-    }
-
+    public DateAnnot getDate() { return (DateAnnot)(_getFeatureValueNc(wrapGetIntCatchException(_FH_date)));}
+    
     /**
      * setter for date - sets.
      *
@@ -166,9 +179,11 @@ public class Meeting extends Annotation {
      * @generated 
      */
     public void setDate(DateAnnot v) {
-        _setFeatureValueNcWj(_FI_date, v);
-    }
-
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_date), v);
+  }    
+    
+   
+    
     // *--------------*
     // * Feature: startTime
     /**
@@ -177,10 +192,8 @@ public class Meeting extends Annotation {
      * @return the start time
      * @generated 
      */
-    public TimeAnnot getStartTime() {
-        return (TimeAnnot) (_getFeatureValueNc(_FI_startTime));
-    }
-
+    public TimeAnnot getStartTime() { return (TimeAnnot)(_getFeatureValueNc(wrapGetIntCatchException(_FH_startTime)));}
+    
     /**
      * setter for startTime - sets.
      *
@@ -188,9 +201,11 @@ public class Meeting extends Annotation {
      * @generated 
      */
     public void setStartTime(TimeAnnot v) {
-        _setFeatureValueNcWj(_FI_startTime, v);
-    }
-
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_startTime), v);
+  }    
+    
+   
+    
     // *--------------*
     // * Feature: endTime
     /**
@@ -199,10 +214,8 @@ public class Meeting extends Annotation {
      * @return the end time
      * @generated 
      */
-    public TimeAnnot getEndTime() {
-        return (TimeAnnot) (_getFeatureValueNc(_FI_endTime));
-    }
-
+    public TimeAnnot getEndTime() { return (TimeAnnot)(_getFeatureValueNc(wrapGetIntCatchException(_FH_endTime)));}
+    
     /**
      * setter for endTime - sets.
      *
@@ -210,10 +223,10 @@ public class Meeting extends Annotation {
      * @generated 
      */
     public void setEndTime(TimeAnnot v) {
-        _setFeatureValueNcWj(_FI_endTime, v);
-    }
-
-    /**
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_endTime), v);
+  }    
+    
+        /**
      *  Custom constructor taking all parameters.
      *
      * @param jcas the jcas

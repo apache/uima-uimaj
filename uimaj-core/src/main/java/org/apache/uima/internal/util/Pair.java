@@ -67,5 +67,13 @@ public class Pair<T, U> {
     }
     return true;
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "Pair [t=" + t + ", u=" + u + "]";
+  }
   
 }

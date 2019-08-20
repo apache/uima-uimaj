@@ -102,7 +102,7 @@ public class CASRuntimeException extends UIMARuntimeException {
 	/** JCas Class's supertypes for "{0}", "{1}" and the corresponding UIMA Supertypes for "{2}", "{3}" don't have an intersection. */
   public static final String JCAS_CAS_MISMATCH_SUPERTYPE = "JCAS_CAS_MISMATCH_SUPERTYPE";
 
-  /** The JCas class: "{0}" has supertype: "{1}" which doesn't match the UIMA type "{2}"''s supertype "{3}". */
+  /** The JCas class: "{0}" has supertypes: "{1}" which do not match the UIMA type "{2}"''s supertypes "{3}". */
   public static final String JCAS_MISMATCH_SUPERTYPE = "JCAS_MISMATCH_SUPERTYPE";
 	/**
    * JCas type "{0}" used in Java code, but was not declared in the XML type descriptor.
@@ -123,11 +123,18 @@ public class CASRuntimeException extends UIMARuntimeException {
    * this component.
    */
 	public static final String JCAS_UNKNOWN_TYPE_NOT_IN_CAS = "JCAS_UNKNOWN_TYPE_NOT_IN_CAS";
-
-	/*A JCas class field "{0}" is being initialized by non-framework (user) code before Type System Commit 
-	 * for a type system with a corresponding type. 
-	 * Either change the user load code to not do initialize, or to defer it until after the type system commit.*/
-	public static final String JCAS_CLASS_INITIALIZED_BEFORE_TYPE_SYSTEM_COMMIT = "JCAS_CLASS_INITIALIZED_BEFORE_TYPE_SYSTEM_COMMIT";
+	
+	/* The JCas class being loaded was generated for the "alpha" level of UIMA v3,
+   * and is not supported for Beta and later levels.
+   * 
+   * This can be fixed by regenerating this using the current v3 version of UIMA tooling
+   * (JCasgen, or the migration tooling to migrate from v2).
+   */
+	public static final String JCAS_ALPHA_LEVEL_NOT_SUPPORTED = "JCAS_ALPHA_LEVEL_NOT_SUPPORTED";
+	
+	/** Cas class {0} with feature {1} but is mssing a 0 argument getter.  This feature will not be used to maybe expand the type's feature set.*/
+	public static final String JCAS_MISSING_GETTER = "JCAS_MISSING_GETTER";
+	
 	/**
    * JCas getNthElement method called via invalid object - an empty list: {0}.
    */
@@ -158,6 +165,9 @@ public class CASRuntimeException extends UIMARuntimeException {
    * a CAS, but rather just with a base CAS.
    */
 	public static final String JCAS_UNSUPPORTED_OP_NOT_CAS = "JCAS_UNSUPPORTED_OP_NOT_CAS";
+	
+	/** The Class "{0}" matches a UIMA Type, and is a subtype of uima.cas.TOP, but is missing the JCas typeIndexId.*/
+	public static final String JCAS_MISSING_TYPEINDEX = "JCAS_MISSING_TYPEINDEX";
 
 	/** A sofaFS with name {0} has already been created. */
 	public static final String SOFANAME_ALREADY_EXISTS = "SOFANAME_ALREADY_EXISTS";
@@ -310,6 +320,9 @@ public class CASRuntimeException extends UIMARuntimeException {
   
   /** Subiterator {0} has bound type: {1}, begin: {2}, end: {3}, for coveredBy, not using type priorities, matching FS with same begin end and different type {4}, cannot order these*/
   public static final String SUBITERATOR_AMBIGUOUS_POSITION_DIFFERENT_TYPES = "SUBITERATOR_AMBIGUOUS_POSITION_DIFFERENT_TYPES";
+  
+  /** Deserializing Compressed Form 6, a type code: {0} has no corresponding type. currentFsId: {1} nbrFSs: {2} nextFsAddr: {3} */
+  public static final String DESER_FORM_6_BAD_TYPE_CODE = "DESER_FORM_6_BAD_TYPE_CODE";
   /**
    * The constructors are organized
    * 
@@ -327,7 +340,7 @@ public class CASRuntimeException extends UIMARuntimeException {
 	}
 	
 	public CASRuntimeException(String aMessageKey, Object[] aArguments, Throwable aCause) {
-		super(aMessageKey, aArguments, aCause);
+		super(aCause, aMessageKey, aArguments);
 	}
 	
   public CASRuntimeException(Throwable aCause, String aMessageKey, Object ... aArguments) {
@@ -340,7 +353,7 @@ public class CASRuntimeException extends UIMARuntimeException {
 
 	public CASRuntimeException(String aResourceBundleName, String aMessageKey, Object[] aArguments,
 			Throwable aCause) {
-		super(aResourceBundleName, aMessageKey, aArguments, aCause);
+		super(aCause, aResourceBundleName, aMessageKey, aArguments);
 	}
 
 	/**

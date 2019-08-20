@@ -44,6 +44,7 @@ import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.CommonList;
+import org.apache.uima.jcas.cas.EmptyStringList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
@@ -727,7 +728,7 @@ public class XmiCasSerializer {
     protected void writeArrays(TOP fsArray, int typeCode, int typeClass) throws SAXException {
       XmlElementName xmlElementName = cds.typeCode2namespaceNames[typeCode];
       
-      if (fsArray instanceof StringArray) {
+      if (fsArray instanceof StringArray && ((StringArray)fsArray).size() != 0) {
 
         // string arrays are encoded as elements, in case they contain whitespace
         List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
@@ -926,8 +927,11 @@ public class XmiCasSerializer {
           // special case for StringArrays, which stored values as child elements rather
           // than attributes.
         case LowLevelCAS.TYPE_CLASS_STRINGARRAY: 
+          StringArray stringArray = (StringArray) fs.getFeatureValue(fi);
           if (cds.isStaticMultiRef(fi)) {
-            attrValue = cds.getXmiId(fs.getFeatureValue(fi));
+            attrValue = cds.getXmiId(stringArray);
+          } else if (stringArray != null && stringArray.size() == 0) {
+            attrValue = "";  //https://issues.apache.org/jira/browse/UIMA-5558
           } else {
             stringArrayToElementList(featName, (StringArray) fs.getFeatureValue(fi), childElements);
             attrValue = null;
@@ -962,17 +966,23 @@ public class XmiCasSerializer {
             // it is not safe to use a space-separated attribute, which would
             // break for strings containing spaces. So use child elements instead.
             StringList stringList = (StringList) fs.getFeatureValue(fi);
-            if (stringList != null) {
-              List<String> listOfStrings = stringList.anyListToStringList(null, cds);
+            if (stringList == null) {
+              attrValue = null;
+            } else {
+              if (stringList instanceof EmptyStringList) {
+                attrValue = "";
+              } else {
+                List<String> listOfStrings = stringList.anyListToStringList(null, cds);
 //              if (array.length > 0 && !arrayAndListFSs.put(featVal, featVal)) {
 //                reportWarning("Warning: multiple references to a ListFS.  Reference identity will not be preserved.");
 //              }
-              for (String string : listOfStrings) {
-                childElements.add(new XmlElementNameAndContents(new XmlElementName("", featName,
-                        featName), string));
+                for (String string : listOfStrings) {
+                  childElements.add(new XmlElementNameAndContents(new XmlElementName("", featName,
+                          featName), string));
+                }
+                attrValue = null;
               }
             }
-            attrValue = null;
           }
           break;
         

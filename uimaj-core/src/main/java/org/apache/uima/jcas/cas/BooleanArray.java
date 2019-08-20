@@ -19,10 +19,11 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.uima.cas.BooleanArrayFS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.impl.BooleanArrayFSImpl;
 import org.apache.uima.cas.impl.CASImpl;
@@ -31,10 +32,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for BooleanArray */
-public final class BooleanArray extends TOP implements CommonPrimitiveArray, BooleanArrayFSImpl, Iterable<Boolean> {
+public final class BooleanArray extends TOP implements CommonPrimitiveArray<Boolean>, BooleanArrayFSImpl, Iterable<Boolean> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.cas.jcas.BooleanArray";
+  public final static String _TypeName = CAS.TYPE_NAME_BOOLEAN_ARRAY;
 
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
@@ -76,8 +77,8 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
     if (CASImpl.traceFSs) {  // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
-      _casView.adjustLastFsV2size(2); // space for length and ref
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
   
@@ -93,8 +94,8 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
-      _casView.adjustLastFsV2size(2); // space for length and ref
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
 
@@ -132,7 +133,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
    * @see org.apache.uima.cas.BooleanArrayFS#toArray()
    */
   public boolean[] toArray() {
-    return theArray.clone();
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
@@ -170,7 +171,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArrayFS v) {
+  public void copyValuesFrom(CommonArrayFS<Boolean> v) {
     BooleanArray bv = (BooleanArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());
@@ -209,9 +210,10 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static BooleanArray createFromArray(JCas jcas, boolean[] a) {
+  public static BooleanArray create(JCas jcas, boolean[] a) {
     BooleanArray booleanArray = new BooleanArray(jcas, a.length);
     booleanArray.copyFromArray(a, 0, 0, a.length);
     return booleanArray;
   }
+  
 }

@@ -33,10 +33,15 @@ import org.apache.uima.jcas.tcas.Annotation;
  */
 public class LLUnambiguousIteratorImpl<T extends FeatureStructure> extends FsIterator_subtypes_snapshot<T> {
 
-  public LLUnambiguousIteratorImpl(LowLevelIterator<FeatureStructure> it) {
-    super((T[]) createItemsArray(it), (LowLevelIndex<T>) it.ll_getIndex(), false);
+  public LLUnambiguousIteratorImpl(LowLevelIterator<T> it) {
+    super((T[]) createItemsArray(
+        (LowLevelIterator<FeatureStructure>) it), 
+        (LowLevelIndex<T>) it.ll_getIndex(), 
+        IS_ORDERED, 
+        it.getComparator());
   }
   
+  // this is static because can't have instance method call before super call in constructor
   private static Annotation[] createItemsArray(LowLevelIterator<FeatureStructure> it) {
     ArrayList<Annotation> items = new ArrayList<Annotation>();
     int lastSeenEnd = 0;

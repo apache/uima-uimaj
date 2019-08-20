@@ -18,6 +18,9 @@
  */
 package org.apache.uima.examples.tokenizer;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -31,6 +34,12 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
  */
 public class Sentence extends Annotation {
 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.examples.tokenizer.Sentence";
+  
     /** The Constant typeIndexID. */
     public static final int typeIndexID = JCasRegistry.register(Sentence.class);
 
@@ -80,4 +89,13 @@ public class Sentence extends Annotation {
     public  Sentence(JCas jcas, int start, int end) {
         super(jcas, start, end);
     }
+  /** 
+   * <!-- begin-user-doc -->
+   * Write your own initialization here
+   * <!-- end-user-doc -->
+   *
+   * @generated modifiable 
+   */
+  private void readObject() {/*default - does nothing empty block */}
+     
 }

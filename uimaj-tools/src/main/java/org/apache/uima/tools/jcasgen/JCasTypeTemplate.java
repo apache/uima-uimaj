@@ -23,16 +23,8 @@ import java.util.Iterator;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.FeatureDescription;
 
-
-/**
- * The Class JCasTypeTemplate.
- */
 public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.tools.jcasgen.Jg.IJCasTypeTemplate#generate(java.lang.Object)
-   */
-  @Override
   public String generate(Object argument) {
     StringBuilder stringBuilder = new StringBuilder();
 
@@ -52,7 +44,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
    else 
      jg.error.newError(IError.WARN, 
 		jg.getString("pkgMissing", new Object[] {td.getName()}), null); 
-    stringBuilder.append("\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.impl.TypeSystemImpl;\nimport org.apache.uima.jcas.JCas; \nimport org.apache.uima.jcas.JCasRegistry;\n\n\n");
+    stringBuilder.append("\nimport java.lang.invoke.CallSite;\nimport java.lang.invoke.MethodHandle;\n\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.impl.TypeSystemImpl;\nimport org.apache.uima.jcas.JCas; \nimport org.apache.uima.jcas.JCasRegistry;\n\n\n");
    for(Iterator i=jg.collectImports(td, false).iterator(); i.hasNext();) { 
     stringBuilder.append("import ");
     stringBuilder.append((String)i.next());
@@ -99,8 +91,12 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
      String elemType = jg.getJavaRangeArrayElementType(fd);
      
      localData   .append("  public final static String _FeatName_").append(featName).append(" = \"").append(featName).append("\";\n");
-     featRegistry.append("  public final static int _FI_").append(featName).append(" = TypeSystemImpl.getAdjustedFeatureOffset(\"")
-                 .append(featName).append("\");\n");   
+     
+     featRegistry.append("  private final static CallSite _FC_").append(featName)
+                 .append(" = TypeSystemImpl.createCallSite(").append(typeName).append(".class, ")
+                 .append("\"").append(featName).append("\");\n"); 
+     featRegistry.append("  private final static MethodHandle _FH_").append(featName)
+                 .append(" = _FC_").append(featName).append(".dynamicInvoker();\n"); 
       
    } /* of Features iteration */ 
     stringBuilder.append("\n  /* *******************\n   *   Feature Offsets *\n   * *******************/ \n   \n");

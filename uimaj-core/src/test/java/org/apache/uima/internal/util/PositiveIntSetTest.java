@@ -85,9 +85,9 @@ public class PositiveIntSetTest extends TestCase {
     
     IntListIterator it = s.getOrderedIterator();
     assertTrue(it.hasNext());
-    assertEquals(128, it.next());
+    assertEquals(128, it.nextNvc());
     assertTrue(it.hasNext());
-    assertEquals(128128, it.next());
+    assertEquals(128128, it.nextNvc());
     assertFalse(it.hasNext());
 
     // test offset
@@ -352,7 +352,7 @@ public class PositiveIntSetTest extends TestCase {
     IntListIterator it2 = s.iterator();
     i = 0;
     while (it2.hasNext()) {
-      v1[i++] = it2.next();
+      v1[i++] = it2.nextNvc();
     }
     Arrays.sort(v1);
     assertTrue(Arrays.equals(v1, v2));    

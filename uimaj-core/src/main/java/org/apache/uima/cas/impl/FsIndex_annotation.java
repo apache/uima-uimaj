@@ -21,8 +21,6 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
@@ -48,23 +46,41 @@ public class FsIndex_annotation <T extends AnnotationFS>
    * @see org.apache.uima.cas.text.AnnotationIndex#iterator(boolean)
    */
   @Override
-  public FSIterator<T> iterator(boolean ambiguous) {
+  public LowLevelIterator<T> iterator(boolean ambiguous) {
     if (ambiguous) {
       return iterator();
     }
     // return non-constrained, non-strict, unambiguous iterator
     boolean strict = false;  // https://issues.apache.org/jira/browse/UIMA-5063
-    boolean isBounded = false;
     return new Subiterator<T>(iterator(), 
                               null, 
                               ambiguous, 
                               strict, 
                               null, // no BoundsUse
                               true, // type priority used
-                              true, // ignored
-                              true, // ignored
-                              
-                              this.getFsRepositoryImpl().getAnnotationFsComparator()
+                              true // ignored
+                             ); 
+  }
+  
+  /**
+   * @param ambiguous false for unambiguous
+   * @param strict true for strict
+   * @param orderNotNeeded true for unordered
+   * @param ignoreType -
+   * @return - 
+   */
+  public LowLevelIterator<T> iterator(boolean ambiguous, boolean strict, boolean orderNotNeeded, boolean ignoreType) {
+    if (ambiguous) {
+      return iterator(orderNotNeeded, ignoreType);
+    }
+    // return non-constrained, non-strict, unambiguous iterator
+    return new Subiterator<T>(iterator(orderNotNeeded, ignoreType), 
+                              null,   // no bounding fs
+                              ambiguous, 
+                              strict, 
+                              null, // no BoundsUse
+                              ! ignoreType, // type priority used
+                              true // ignored - only for coveredBy or covering
                              ); 
   }
 
@@ -92,9 +108,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
         strict, 
         BoundsUse.coveredBy,  // isBounded 
         true,  // uses type priority
-        true,  // position uses type - ignored
-        true,  // skip returning results equal to annot
-        this.getFsRepositoryImpl().getAnnotationFsComparator()
+        true  // skip returning results equal to annot
         );
   }
 
@@ -127,7 +141,9 @@ public class FsIndex_annotation <T extends AnnotationFS>
 
   @Override
   public FSIndex<T> withSnapshotIterators() {
-    return new FsIndex_snapshot<>(this);
+    FsIndex_singletype<T> idx = getFsIndex_singleType();
+    return new FsIndex_snapshot<>(this, idx.comparatorWithoutID, 
+                                        idx.comparatorNoTypeWithoutID);
   }
   
  }

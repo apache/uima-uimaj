@@ -45,14 +45,14 @@ public class Id2FSTest extends TestCase {
   public void testId2fs() throws InterruptedException {
     
     TOP fs1 = new TOP(jcas);
-    cas.setId2FSs(fs1);
+    cas.setId2FSsMaybeUnconditionally(fs1);
 
     int lastUsedId = fs1._id();
     assertEquals(fs1, cas.<TOP>getFsFromId(lastUsedId));
     // make 20 more that could be gc'd
     
     for (int i = 0; i < 20; i++) {
-      cas.setId2FSs(new TOP(jcas));
+      cas.setId2FSsMaybeUnconditionally(new TOP(jcas));
     }
    
     // verify they can be found by id #
@@ -83,13 +83,13 @@ public class Id2FSTest extends TestCase {
     
     cas.reset();
     fs1 = new TOP(jcas);
-    cas.setId2FSs(fs1);
+    cas.setId2FSsMaybeUnconditionally(fs1);
        
     lastUsedId = fs1._id();
     assertEquals(fs1, cas.getFsFromId(lastUsedId));
     
     for (int i = 0; i < 20; i++) {
-      cas.setId2FSs(new TOP(jcas));
+      cas.setId2FSsMaybeUnconditionally(new TOP(jcas));
     }
     // verify they can be found by id #
     for (int i = 0; i < 20; i++) {

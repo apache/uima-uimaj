@@ -1,9 +1,29 @@
-
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
    
-/* Apache UIMA v3 - First created by JCasGen Fri Dec 16 10:23:12 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
 
 package aa;
+
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -16,8 +36,8 @@ import org.apache.uima.jcas.cas.TOP;
 
 
 /** 
- * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class MissingFeatureInCas extends TOP {
  
@@ -54,9 +74,12 @@ public class MissingFeatureInCas extends TOP {
 
 
   /* Feature Adjusted Offsets */
-  public final static int _FI_haveThisOne = TypeSystemImpl.getAdjustedFeatureOffset("haveThisOne");
-  public final static int _FI_missingThisOne = TypeSystemImpl.getAdjustedFeatureOffset("missingThisOne");
-  public final static int _FI_changedFType = TypeSystemImpl.getAdjustedFeatureOffset("changedFType");
+  private final static CallSite _FC_haveThisOne = TypeSystemImpl.createCallSite(MissingFeatureInCas.class, "haveThisOne");
+  private final static MethodHandle _FH_haveThisOne = _FC_haveThisOne.dynamicInvoker();
+  private final static CallSite _FC_missingThisOne = TypeSystemImpl.createCallSite(MissingFeatureInCas.class, "missingThisOne");
+  private final static MethodHandle _FH_missingThisOne = _FC_missingThisOne.dynamicInvoker();
+  private final static CallSite _FC_changedFType = TypeSystemImpl.createCallSite(MissingFeatureInCas.class, "changedFType");
+  private final static MethodHandle _FH_changedFType = _FC_changedFType.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -100,14 +123,14 @@ public class MissingFeatureInCas extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public int getHaveThisOne() { return _getIntValueNc(_FI_haveThisOne);}
+  public int getHaveThisOne() { return _getIntValueNc(wrapGetIntCatchException(_FH_haveThisOne));}
     
   /** setter for haveThisOne - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setHaveThisOne(int v) {
-    _setIntValueNfc(_FI_haveThisOne, v);
+    _setIntValueNfc(wrapGetIntCatchException(_FH_haveThisOne), v);
   }    
     
    
@@ -119,14 +142,14 @@ public class MissingFeatureInCas extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public float getMissingThisOne() { return _getFloatValueNc(_FI_missingThisOne);}
+  public float getMissingThisOne() { return _getFloatValueNc(wrapGetIntCatchException(_FH_missingThisOne));}
     
   /** setter for missingThisOne - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setMissingThisOne(float v) {
-    _setFloatValueNfc(_FI_missingThisOne, v);
+    _setFloatValueNfc(wrapGetIntCatchException(_FH_missingThisOne), v);
   }    
     
    
@@ -138,14 +161,14 @@ public class MissingFeatureInCas extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public String getChangedFType() { return _getStringValueNc(_FI_changedFType);}
+  public String getChangedFType() { return _getStringValueNc(wrapGetIntCatchException(_FH_changedFType));}
     
   /** setter for changedFType - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setChangedFType(String v) {
-    _setStringValueNfc(_FI_changedFType, v);
+    _setStringValueNfc(wrapGetIntCatchException(_FH_changedFType), v);
   }    
     
   }

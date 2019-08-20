@@ -104,6 +104,26 @@ under the License.
 
          <!-- ******************************************************************************* -->
          <row>
+           <entry><para>Use built-in Java Logger as default back-end</para></entry>
+           
+           <entry><para><code>uima.use_jul_as_default_uima_logger</code></para>
+           
+                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-5381">UIMA-5381</ulink>.
+                  The standard UIMA logger uses an slf4j implementation, which, in turn hooks up to 
+                  a back end implementation based on what can be found in the class path (see slf4j documentation).
+                  If no backend implementation is found, the slf4j default is to use a NOP logger back end 
+                  which discards all logging.</para>
+                  
+                  <para>When this flag is specified, the behavior of the UIMA logger 
+                        is altered to use the built-in-to-Java logging implementation 
+                        as the back end for the UIMA logger.
+                  </para></entry>
+           <entry><para>3.0.0</para></entry>
+         </row>
+
+         <!-- ******************************************************************************* -->
+         <!-- 
+         <row>
            <entry><para>Allow duplicate addToIndexes for identical Feature Structures</para></entry>
            
            <entry><para><code>uima.allow_duplicate_add_to_indexes</code> (default is false)</para>
@@ -115,8 +135,10 @@ under the License.
                         may be restored by this property.</para></entry>
            <entry><para>2.7.0</para></entry>
          </row>
+         -->
          
          <!-- ******************************************************************************* -->
+         <!-- 
          <row>
            <entry><para>adding Annotation to wrong View</para></entry>
            
@@ -130,7 +152,8 @@ under the License.
                         for backward compatibility.</para></entry>
            <entry><para>2.7.0</para></entry>
          </row>
-
+         -->
+         
          <row>
            <entry spanname="fullwidth"><emphasis role="bold">Index protection properties</emphasis></entry>
          </row>         
@@ -204,11 +227,30 @@ under the License.
            <entry><para>2.7.0</para></entry>
          </row>
 
+
          <row>
-           <entry spanname="fullwidth"><emphasis role="bold">Measurement properties</emphasis></entry>
+           <entry spanname="fullwidth"><emphasis role="bold">Measurement / Tracing properties</emphasis></entry>
          </row>         
          <!-- ******************************************************************************* -->
-         <!--   DISABLED FOR NOW 
+      
+         <row>
+           <entry><para>Trace Feature Structure Creation/Updating</para></entry>
+           
+           <entry><para><code>uima.trace_fs_creation_and_updating</code></para>
+                  <para>This causes a trace file to be produced in the current working directory.
+                  The file has one line for each Feature Structure that is created, and include
+                  information on the cas/cas-view, and the features that are set for the Feature Structure.
+                  There is, additionally, one line for each Feature Structure update.
+                  Updates that occur next-to trace information for the same Feature Structure are combined.
+                  </para>
+           
+                  <para>This can generate a lot of output, and definitely slows down execution.</para>
+            </entry>
+            
+            <entry><para>2.10.1</para></entry>
+         </row>    
+         
+                    
          <row>
            <entry><para>Measure index flattening optimization</para></entry>
            
@@ -228,7 +270,7 @@ under the License.
        </tbody>
      </tgroup>
    </informaltable>
-    
+   <para>Some additional global flags intended for helping v3 migration are documented in the V3 user's guide.</para> 
   </section>
   
 </chapter>

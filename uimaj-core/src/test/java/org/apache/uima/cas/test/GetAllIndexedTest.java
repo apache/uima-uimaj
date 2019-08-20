@@ -21,6 +21,7 @@ package org.apache.uima.cas.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -29,6 +30,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -218,6 +220,8 @@ public class GetAllIndexedTest extends TestCase {
     assertNotNull(tokenType);
     FSIterator<FeatureStructure> tokenIter = this.cas.getIndexRepository().getAllIndexedFS(tokenType);
     assertFalse(tokenIter.hasNext());
+    Iterator<TOP> tokenIter2 = this.cas.getIndexedFSs(tokenType).iterator();
+    assertFalse( tokenIter2.hasNext());
   }
 
   public static void main(String[] args) {

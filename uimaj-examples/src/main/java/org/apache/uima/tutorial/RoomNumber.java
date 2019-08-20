@@ -18,6 +18,9 @@
  */
 package org.apache.uima.tutorial;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -26,14 +29,18 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
 
-/**
- * Updated by JCasGen Mon Nov 29 15:02:37 EST 2004 XML source: C:/Program
- * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- *
- * @generated
- */
+/** 
+ * Updated by JCasGen Sun Oct 08 19:34:17 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * @generated */
 public class RoomNumber extends Annotation {
 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.tutorial.RoomNumber";
+  
     /**
      * The Constant typeIndexID.
      *
@@ -56,21 +63,27 @@ public class RoomNumber extends Annotation {
      * @return the type index ID
      * @generated 
      */
-    public int getTypeIndexID() {
-        return typeIndexID;
-    }
+    public int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_building = "building";
 
-    /** The Constant _FI_building. */
-    public static final int _FI_building = TypeSystemImpl.getAdjustedFeatureOffset("building");
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_building = TypeSystemImpl.createCallSite(RoomNumber.class, "building");
+  private final static MethodHandle _FH_building = _FC_building.dynamicInvoker();
 
     /**
    * Never called. Disable default constructor
    *
    * @generated
    */
-    protected  RoomNumber() {
-    }
-
+    protected  RoomNumber() {/* intentionally empty block */}
+    
     /**
      * Internal - constructor used by generator.
      *
@@ -79,10 +92,10 @@ public class RoomNumber extends Annotation {
      * @generated 
      */
     public  RoomNumber(TypeImpl type, CASImpl casImpl) {
-        super(type, casImpl);
-        readObject();
-    }
-
+    super(type, casImpl);
+    readObject();
+  }
+  
     /**
      * Instantiates a new room number.
      *
@@ -90,9 +103,10 @@ public class RoomNumber extends Annotation {
      * @generated 
      */
     public  RoomNumber(JCas jcas) {
-        super(jcas);
-        readObject();
-    }
+    super(jcas);
+    readObject();   
+  } 
+
 
     /**
      * Instantiates a new room number.
@@ -108,11 +122,10 @@ public class RoomNumber extends Annotation {
         readObject();
     }
 
-    /**
-     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
-     *
-     * @generated modifiable
-     */
+  /** 
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->*
+   * @generated modifiable 
+   */
     private void readObject() {
     }
 
@@ -124,10 +137,8 @@ public class RoomNumber extends Annotation {
      * @return the building
      * @generated 
      */
-    public String getBuilding() {
-        return _getStringValueNc(_FI_building);
-    }
-
+    public String getBuilding() { return _getStringValueNc(wrapGetIntCatchException(_FH_building));}
+    
     /**
      * setter for building - sets Building containing this room.
      *
@@ -135,6 +146,7 @@ public class RoomNumber extends Annotation {
      * @generated 
      */
     public void setBuilding(String v) {
-        _setStringValueNfc(_FI_building, v);
-    }
-}
+    _setStringValueNfc(wrapGetIntCatchException(_FH_building), v);
+  }    
+    
+  }

@@ -23,10 +23,23 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXTransformerFactory;
+
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.util.Level;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Some utilities for working with XML.
@@ -34,7 +47,16 @@ import org.w3c.dom.Text;
  * 
  */
 public abstract class XMLUtils {
-
+  
+  // constants - not all Java versions define these
+  
+  private static final String ACCESS_EXTERNAL_STYLESHEET = "http://javax.xml.XMLConstants/property/accessExternalStylesheet";
+  private static final String ACCESS_EXTERNAL_DTD = "http://javax.xml.XMLConstants/property/accessExternalDTD";
+  
+  private static final String DISALLOW_DOCTYPE_DECL = "http://apache.org/xml/features/disallow-doctype-decl";
+  private static final String LOAD_EXTERNAL_DTD = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
+  private static final String EXTERNAL_GENERAL_ENTITIES = "http://xml.org/sax/features/external-general-entities";
+  private static final String EXTERNAL_PARAMETER_ENTITIES = "http://xml.org/sax/features/external-parameter-entities";
   /**
    * Normalizes the given string for output to XML. This converts all special characters, e.g. &lt;,
    * %gt;, &amp;, to their XML representations, e.g. &amp;lt;, &amp;gt;, &amp;amp;. The normalized
@@ -517,4 +539,131 @@ public abstract class XMLUtils {
         (c >= 0xE000 && c <= 0xFFFD));
   }
 
+  public static SAXParserFactory createSAXParserFactory() {
+    SAXParserFactory factory = SAXParserFactory.newInstance();
+    try {
+      factory.setFeature(DISALLOW_DOCTYPE_DECL, true);
+    } catch (SAXNotRecognizedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXParserFactory didn't recognize feature " + DISALLOW_DOCTYPE_DECL);
+    } catch (SAXNotSupportedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXParserFactory doesn't support feature " + DISALLOW_DOCTYPE_DECL);
+    } catch (ParserConfigurationException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXParserFactory doesn't support feature " + DISALLOW_DOCTYPE_DECL);
+    }
+    
+    try {
+      factory.setFeature(LOAD_EXTERNAL_DTD, false);
+    } catch (SAXNotRecognizedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXParserFactory didn't recognize feature " + LOAD_EXTERNAL_DTD);
+    } catch (SAXNotSupportedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXParserFactory doesn't support feature " + LOAD_EXTERNAL_DTD);
+    } catch (ParserConfigurationException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXParserFactory doesn't support feature " + LOAD_EXTERNAL_DTD);
+    }
+    
+    factory.setXIncludeAware(false);
+    return factory;
+  }
+  
+  public static XMLReader createXMLReader() throws SAXException {
+    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    try {
+      xmlReader.setFeature(EXTERNAL_GENERAL_ENTITIES, false);
+    } catch (SAXNotRecognizedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "XMLReader didn't recognize feature " + EXTERNAL_GENERAL_ENTITIES);
+    } catch (SAXNotSupportedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "XMLReader doesn't support feature " + EXTERNAL_GENERAL_ENTITIES);
+    }
+
+    try {
+      xmlReader.setFeature(EXTERNAL_PARAMETER_ENTITIES, false);
+    } catch (SAXNotRecognizedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "XMLReader didn't recognize feature " + EXTERNAL_PARAMETER_ENTITIES);
+    } catch (SAXNotSupportedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "XMLReader doesn't support feature " + EXTERNAL_PARAMETER_ENTITIES);
+    }
+
+    try {
+      xmlReader.setFeature(LOAD_EXTERNAL_DTD,false);
+    } catch (SAXNotRecognizedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "XMLReader didn't recognized feature " + LOAD_EXTERNAL_DTD);
+    } catch (SAXNotSupportedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "XMLReader doesn't support feature " + LOAD_EXTERNAL_DTD);
+    }
+
+    return xmlReader;
+  }
+  
+  public static SAXTransformerFactory createSaxTransformerFactory() {
+    SAXTransformerFactory saxTransformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();    
+    try {
+      saxTransformerFactory.setAttribute(ACCESS_EXTERNAL_DTD, "");
+    } catch (IllegalArgumentException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXTransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_DTD);
+    }
+
+    try {
+      saxTransformerFactory.setAttribute(ACCESS_EXTERNAL_STYLESHEET, "");
+    } catch (IllegalArgumentException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXTransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_STYLESHEET);
+    }
+
+    return saxTransformerFactory;
+  }
+
+  public static TransformerFactory createTransformerFactory() {
+    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    try {
+      transformerFactory.setAttribute(ACCESS_EXTERNAL_DTD, "");
+    } catch (IllegalArgumentException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "TransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_DTD);
+    }
+    
+    try {
+      transformerFactory.setAttribute(ACCESS_EXTERNAL_STYLESHEET, "");
+    } catch (IllegalArgumentException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "TransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_STYLESHEET);
+    }
+
+    return transformerFactory;
+  }
+  
+  public static DocumentBuilderFactory createDocumentBuilderFactory() { 
+    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    try {
+      documentBuilderFactory.setFeature(DISALLOW_DOCTYPE_DECL, true);
+    } catch (ParserConfigurationException e1) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "DocumentBuilderFactory didn't recognize setting feature " + DISALLOW_DOCTYPE_DECL);
+    }
+    
+    try {
+      documentBuilderFactory.setFeature(LOAD_EXTERNAL_DTD, false);
+    } catch (ParserConfigurationException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "DocumentBuilderFactory doesn't support feature " + LOAD_EXTERNAL_DTD);
+    }
+    
+    documentBuilderFactory.setXIncludeAware(false);
+    documentBuilderFactory.setExpandEntityReferences(false);
+    
+    return documentBuilderFactory;
+  }
 }
+

@@ -100,6 +100,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.internal.util.Timer;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.tools.cpm.PerformanceReportDialog;
@@ -724,7 +725,8 @@ public class MainFrame extends JFrame {
       setXcasFileOpenDir(xmiCasFile.getParentFile());
       Timer time = new Timer();
       time.start();
-      SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+      SAXParserFactory saxParserFactory = XMLUtils.createSAXParserFactory();
+      SAXParser parser = saxParserFactory.newSAXParser();
       XmiCasDeserializer xmiCasDeserializer = new XmiCasDeserializer(getCas().getTypeSystem());
       getCas().reset();
       parser.parse(xmiCasFile, xmiCasDeserializer.getXmiCasHandler(getCas(), true));

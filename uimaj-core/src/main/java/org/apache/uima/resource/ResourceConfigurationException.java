@@ -107,6 +107,11 @@ public class ResourceConfigurationException extends UIMAException {
   public static final String EXTERNAL_OVERRIDE_NUMERIC_ERROR = "external_override_numeric_error";
   
   /**
+   * Message key for a standard UIMA exception message: External override variable "{0}" has a circular reference to itself
+   */
+  public static final String EXTERNAL_OVERRIDE_CIRCULAR_REFERENCE = "external_override_circular_reference";
+  
+  /**
    * Creates a new exception with a null message.
    */
   public ResourceConfigurationException() {

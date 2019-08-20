@@ -26,7 +26,7 @@
  It is not part of the Maven build (at this time).
  
  To get it into your Eclipse workspace, use the SVN Repo view, and
- do an eclipse SVN checkout.
+ do an eclipse SVN checkout as uimaj-jet-expander
 
  It is set up with launchers for use within the Eclipse
  IDE.  There are 2 launchers - one creates Java code

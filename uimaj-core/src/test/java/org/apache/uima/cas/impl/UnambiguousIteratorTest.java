@@ -124,7 +124,7 @@ public class UnambiguousIteratorTest extends TestCase {
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       ++size;
     }
-    assertEquals(size, it.ll_indexSize());
+    assertEquals(size, it.ll_indexSizeMaybeNotCurrent());
     return size;
   }
 

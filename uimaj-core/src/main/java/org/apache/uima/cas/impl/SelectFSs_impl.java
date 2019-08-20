@@ -69,12 +69,41 @@ import org.apache.uima.jcas.tcas.Annotation;
  * shift handled in this routine
  * Comment codes:
  *   AI = implies AnnotationIndex
+ *   
+ * Iterator varieties and impl
+ * 
+ *   bounded?  type      order not unambig? strict? skipEq    
+ *             Priority? Needed? 
+ *     no
+ *   coveredBy
+ *   covering
+ *   sameas
+ *   
+ *   for not-bounded, 
+ *     - ignore strict and skipEq
+ *     - order-not-needed only applies if iicp size &gt; 1
+ *     - unambig ==&gt; use Subiterator
+ *         -- subiterator wraps: according to typePriority and order-not-needed
+ *     - no Type Priority - need to pass in as arg to fsIterator_multiple_indexes
+ *        == if no type priority, need to prevent rattling off the == type while comparate is equal
+ *        == affects both FsIterator_aggregation_common and FsIterator_subtypes_ordered
+ *   for 3 other boundings:
+ *     - use subiterator, pass in strict and skipeq
+ *     
+   finish this javadoc comment edit
+ *   extends FeatureStructure, not TOP, because of ref from FSIndex 
+ *      which uses FeatureStructure for backwards compatibility                  
  */
 public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T> {
   
+  private final static boolean IS_UNORDERED = true;
+  private final static boolean IS_ORDERED = false;
+  private final static boolean IS_UNAMBIGUOUS = false;
+  private final static boolean IS_NOT_STRICT = false;
+  
   private CASImpl view;
   private JCasImpl jcas;
-  private FSIndex<T> index; 
+  private LowLevelIndex<T> index; 
   private TypeImpl ti;
   private int shift; 
   private int limit = -1;
@@ -83,9 +112,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private FSList  sourceFSList  = null;  // alternate source
   
   private boolean isTypePriority = false;
-  private boolean isPositionUsesType = false;
-  private boolean isUseAnnotationEquals = false; // for boundsUse only
-  private boolean isNonOverlapping = false;
+//  private boolean isPositionUsesType = false;
+  private boolean isSkipSameBeginEndType = false; // for boundsUse only
+  private boolean isNonOverlapping = IS_UNAMBIGUOUS;
   private boolean isIncludeAnnotBeyondBounds = false;
   private boolean isAllViews = false;
   private boolean isNullOK = false;
@@ -99,7 +128,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   private BoundsUse boundsUse = null; 
   
-  private TOP startingFs = null;
+  private TOP startingFs = null; // this is used for non-annotation positioning too
   private AnnotationFS boundingFs = null;
   
   
@@ -141,17 +170,16 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * INDEX
    * If not specified, defaults to all FSs (orderNotNeeded) unless AnnotationIndex implied
    * @param indexName -
-   * @param <N> type of returned Feature Structures
    * @return -
    */
-  public <N extends FeatureStructure> SelectFSs_impl<N> index(String indexName) {
+  public SelectFSs_impl<T> index(String indexName) {
     this.index = view.indexRepository.getIndex(indexName);
-    return (SelectFSs_impl<N>) this;
+    return this;
   }
   
-  public <N extends FeatureStructure> SelectFSs_impl<N> index(FSIndex<N> aIndex) {
-    this.index = (FSIndex<T>) aIndex;
-    return (SelectFSs_impl<N>) this;
+  public SelectFSs_impl<T> index(FSIndex<T> aIndex) {
+    this.index =  (LowLevelIndex<T>) aIndex;
+    return this;
   }
 
   /*
@@ -159,22 +187,22 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * if not specified defaults to the index's uppermost type.  
    */
   
-  public <N extends FeatureStructure> SelectFSs_impl<N> type(Type uimaType) {
+  public <N extends T> SelectFSs_impl<N> type(Type uimaType) {
     this.ti = (TypeImpl) uimaType;
     return (SelectFSs_impl<N>) this;
   }
   
-  public <N extends FeatureStructure> SelectFSs_impl<N> type(String fullyQualifiedTypeName) {
+  public <N extends T> SelectFSs_impl<N> type(String fullyQualifiedTypeName) {
     this.ti = view.getTypeSystemImpl().getType(fullyQualifiedTypeName);
     return (SelectFSs_impl<N>) this;
   }
 
-  public <N extends FeatureStructure> SelectFSs_impl<N> type(int jcasClass_dot_type) {
+  public <N extends T> SelectFSs_impl<N> type(int jcasClass_dot_type) {
     this.ti = (TypeImpl) view.getJCas().getCasType(jcasClass_dot_type);
     return (SelectFSs_impl<N>) this;
   }
 
-  public <N extends FeatureStructure> SelectFSs_impl<N> type(Class<N> jcasClass_dot_class) {
+  public <N extends T> SelectFSs_impl<N> type(Class<N> jcasClass_dot_class) {
     this.ti = (TypeImpl) view.getJCasImpl().getCasType(jcasClass_dot_class);
     return (SelectFSs_impl<N>) this;
   }  
@@ -201,30 +229,30 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * boolean operations
    *********************************/
   
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.SelectFSs#positionUsesType()
-   */
-  @Override
-  public SelectFSs<T> positionUsesType() {
-    this.isPositionUsesType = true;
-    return this;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.SelectFSs#positionUsesType(boolean)
-   */
-  @Override
-  public SelectFSs<T> positionUsesType(boolean aPositionUsesType) {
-    this.isPositionUsesType = aPositionUsesType;
-    return this;
-  }
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.SelectFSs#positionUsesType()
+//   */
+//  @Override
+//  public SelectFSs<T> positionUsesType() {
+//    this.isPositionUsesType = true;
+//    return this;
+//  }
+//
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.SelectFSs#positionUsesType(boolean)
+//   */
+//  @Override
+//  public SelectFSs<T> positionUsesType(boolean aPositionUsesType) {
+//    this.isPositionUsesType = aPositionUsesType;
+//    return this;
+//  }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#skipEquals()
    */
   @Override
-  public SelectFSs<T> useAnnotationEquals() {
-    this.isUseAnnotationEquals = true;
+  public SelectFSs<T> skipWhenSameBeginEndType() {
+    this.isSkipSameBeginEndType = true;
     return this;
   }
 
@@ -233,7 +261,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> useAnnotationEquals(boolean useAnnotationEquals) {
-    this.isUseAnnotationEquals = useAnnotationEquals;
+    this.isSkipSameBeginEndType = useAnnotationEquals;
     return this;
   }
 
@@ -342,6 +370,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     this.startingFs = fs;
     return this;
   } 
+  
   @Override
   public SelectFSs_impl<T> startAt(int begin, int end) {  // AI
     this.startingFs = makePosAnnot(begin, end);
@@ -362,8 +391,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }  
   
   @Override
-  public SelectFSs_impl<T> limit(int limit) {
-    this.limit = limit;
+  public SelectFSs_impl<T> limit(int alimit) {
+    this.limit = alimit;
     return this;
   }
     
@@ -449,14 +478,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return sb.toString();
   }
   
-  /**
-   * prepare terminal operations
-   */
-  
-  /**
-   * Default type Annotation if not specified and annotation index is implied.
-   * 
-   */
   private void prepareTerminalOp() {
     if (boundsUse == null) {
       boundsUse = BoundsUse.notBounded;
@@ -467,7 +488,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     final boolean isUseAnnotationIndex = 
         ((index != null) && (index instanceof AnnotationIndex)) ||
         isNonOverlapping ||
-        isPositionUsesType ||
+//        isPositionUsesType ||
         isTypePriority ||
         isIncludeAnnotBeyondBounds || 
         boundsUse != BoundsUse.notBounded ||
@@ -477,9 +498,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       forceAnnotationIndex();  // throws if non-null index not an annotation index
     }
     
-    if (isTypePriority) {
-      isPositionUsesType = true;
-    }
+//    if (isTypePriority) {
+//      isPositionUsesType = true;
+//    }
         
     if (ti == null) {
       if (index != null) {
@@ -497,6 +518,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     
     if (ti == null) {
       ti = view.getTypeSystemImpl().getTopType();
+    }
+    
+    if (boundsUse == BoundsUse.covering) {
+      isIncludeAnnotBeyondBounds = true;  
     }
     
   }
@@ -523,14 +548,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     }
   }
   
-  private void decr(FSIterator<T> it) {
-    if (isBackwards) {
-      it.moveToNext();
-    } else {
-      it.moveToPrevious();
-    }
-  }
-  
+//  private void decr(FSIterator<T> it) {
+//    if (isBackwards) {
+//      it.moveToNext();
+//    } else {
+//      it.moveToPrevious();
+//    }
+//  }
+//  
   /*********************************
    * terminal operations
    * returning other than SelectFSs
@@ -553,8 +578,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   public FSIterator<T> fsIterator() {
     if (isFollowing && isBackwards) {
       isBackwards = false;
-      T[] a = (T[]) asArray(fsIterator1());
-      FSIterator<T> it = new FsIterator_backwards<>(new FsIterator_subtypes_snapshot<T>(a, (LowLevelIndex<T>) index, false));
+      LowLevelIterator<T> baseIterator = fsIterator1();
+      T[] a = (T[]) asArray(baseIterator);
+      FSIterator<T> it = new FsIterator_backwards<>(
+                           new FsIterator_subtypes_snapshot<T>(
+                               a, 
+                               (LowLevelIndex<T>) index, 
+                               IS_ORDERED,
+                               baseIterator.getComparator()));
       return (limit == 0)
           ? it
             // rewrap with limit - needs to be outer shell to get right invalid behavior
@@ -564,8 +595,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     if (isPreceding) {
       boolean bkwd = isBackwards;
       isBackwards = true;
-      T[] a = (T[]) asArray(fsIterator1());
-      FSIterator<T> it = new FsIterator_subtypes_snapshot<T>(a, (LowLevelIndex<T>) index, false);
+      LowLevelIterator<T> baseIterator = fsIterator1();
+      T[] a = (T[]) asArray(baseIterator);
+      FSIterator<T> it = new FsIterator_subtypes_snapshot<T>(
+                               a,
+                               (LowLevelIndex<T>) index,
+                               IS_ORDERED,
+                               baseIterator.getComparator());
       if (!bkwd) {
         it = new FsIterator_backwards<>(it); // because array is backwards
       }
@@ -575,13 +611,15 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
           : new FsIterator_limited<>(it, limit); 
     }
     
+    // all others, including isFollowing but not backwards
     return fsIterator1();
   }
   
-  private FSIterator<T> fsIterator1() {
+  private LowLevelIterator<T> fsIterator1() {
     prepareTerminalOp();
-    FSIterator<T> it = isAllViews 
-                      ? new FsIterator_aggregation_common<T>(getPlainIteratorsForAllViews(), null)
+    LowLevelIterator<T> it = isAllViews 
+                      ? //new FsIterator_aggregation_common<T>(getPlainIteratorsForAllViews(), )
+                        createFsIterator_for_all_views()
                       : plainFsIterator(index, view);
 
     maybePosition(it);
@@ -589,18 +627,36 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return (limit == -1) ? it : new FsIterator_limited<>(it, limit);    
   }
   
-  
-  
-  private FSIterator<T>[] getPlainIteratorsForAllViews() {
+  /**
+   * for a selected index, return an iterator over all the views for that index
+   * @return iterator over all views for that index, unordered
+   */
+  private FsIterator_aggregation_common<T> createFsIterator_for_all_views() {
     final int nbrViews = view.getNumberOfViews();
-    FSIterator<T>[] ita = new FSIterator[nbrViews];
+    LowLevelIterator<T>[] ita = new LowLevelIterator[nbrViews];
+//    LowLevelIndex<T>[] indexes = new LowLevelIndex[nbrViews];
     
     for (int i = 1; i <= nbrViews; i++) {
       CASImpl v = (i == 1) ? view.getInitialView() : (CASImpl) view.getView(i);
-      ita[i - 1] = plainFsIterator(getIndexForView(v), v);
+      LowLevelIndex<T> index_local = (LowLevelIndex<T>) getIndexForView(v);
+      ita[i - 1] = plainFsIterator(index_local, v);
+//      indexes[i - 1] = index;
     }
-    return ita;
+//    return new FsIterator_aggregation_common<T>(ita, new FsIndex_aggr<>(indexes));
+    return new FsIterator_aggregation_common<T>(ita, null, null);
+
   }
+  
+//  private LowLevelIterator<T>[] getPlainIteratorsForAllViews() {
+//    final int nbrViews = view.getNumberOfViews();
+//    LowLevelIterator<T>[] ita = new LowLevelIterator[nbrViews];
+//    
+//    for (int i = 1; i <= nbrViews; i++) {
+//      CASImpl v = (i == 1) ? view.getInitialView() : (CASImpl) view.getView(i);
+//      ita[i - 1] = plainFsIterator(getIndexForView(v), v);
+//    }
+//    return ita;
+//  }
   
   /** 
    * gets the index for a view that corresponds to the specified index
@@ -608,7 +664,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @param v -
    * @return -
    */
-  private FSIndex<T> getIndexForView(CASImpl v) {
+  private LowLevelIndex<T> getIndexForView(CASImpl v) {
     if (index == null) {
       return null;
     }
@@ -622,8 +678,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return ir.getIndexBySpec(idx.getTypeCode(), idx.getIndexingStrategy(), idx.getComparatorImplForIndexSpecs());
   }
   
-  
-  private FSIterator<T> plainFsIterator(FSIndex<T> idx, CASImpl v) {
+  /**
+   * 
+   * @param idx the index selected, corresponds to a type + its subtypes, 
+   *        or if null, either an alternate source or means all types
+   * @param v the cas
+   * @return an iterator
+   */
+  private LowLevelIterator<T> plainFsIterator(LowLevelIndex<T> idx, CASImpl v) {
     if (null == idx) { 
       // no bounds, not ordered
       // type could be null
@@ -638,34 +700,38 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       }
     }
     
-    final boolean isIndexOrdered = idx.getIndexingStrategy() == FSIndex.SORTED_INDEX;
+    final boolean isSortedIndex = idx.getIndexingStrategy() == FSIndex.SORTED_INDEX;
     final boolean isAnnotationIndex = idx instanceof AnnotationIndex;
-    final AnnotationIndex ai = isAnnotationIndex ? (AnnotationIndex)idx: null;
-    FSIterator<T> it;
+    final FsIndex_annotation<Annotation> ai = isAnnotationIndex ? (FsIndex_annotation)idx: null;
+    LowLevelIterator<T> it;
     if (boundsUse == BoundsUse.notBounded) {
-      if (!isIndexOrdered) {
-        it = idx.iterator();       
+      if (!isSortedIndex) {
+        // set index
+        it = (LowLevelIterator<T>) idx.iterator();       
       } else {
-        // index is ordered but no bounds are being used - return plain fsIterator or maybe nonOverlapping version
-        it = (isAnnotationIndex && isNonOverlapping)
-               ? ai.iterator(false)
-               : (isUnordered && idx instanceof FsIndex_iicp) 
-                   ? ((FsIndex_iicp<T>)idx).iteratorUnordered()
-                   : idx.iterator();
+        // index is sorted but no bounds are being used.  Varieties:
+        //   - AnnotationIndex:
+        //     - overlapping / non-overlapping  (ambiguous, unambiguous)
+        //   - any sorted index including AnnotationIndex:
+        //     - typePriority / ignore typePriority
+        //     - orderNotNecessary / 
+
+        it = (isAnnotationIndex) 
+               ? (LowLevelIterator<T>) ai.iterator( ! isNonOverlapping, IS_NOT_STRICT /* because unbounded */, isUnordered, ! isTypePriority)
+               : idx.iterator(isUnordered, ! isTypePriority);
       }
     } else {
-    // bounds in use, index must be annotation index, is ordered
-    it = (FSIterator<T>) new Subiterator<>(
-        (FSIterator<AnnotationFS>)idx.iterator(), 
-        boundingFs, 
-        !isNonOverlapping,  // ambiguous
-        !isIncludeAnnotBeyondBounds,  // strict 
-        boundsUse,
-        isTypePriority, 
-        isPositionUsesType, 
-        isUseAnnotationEquals,              
-        v.indexRepository.getAnnotationFsComparator());
+      // bounds in use, index must be annotation index, is ordered
+      it = (LowLevelIterator<T>) new Subiterator<Annotation>(
+          (FSIterator<Annotation>) idx.iterator(isUnordered, ! isTypePriority), 
+          boundingFs, 
+          !isNonOverlapping,  // ambiguous
+          !isIncludeAnnotBeyondBounds,  // strict 
+          boundsUse,
+          isTypePriority,  
+          isSkipSameBeginEndType);
     }
+    
     
     it = isBackwards ? new FsIterator_backwards<>(it) : it;
     if (isBackwards) {
@@ -674,7 +740,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return it;
   }
     
-  private FSIterator<T> altSourceIterator() {
+  private LowLevelIterator<T> altSourceIterator() {
     T[] filtered;
     if (sourceFSList != null) {
       List<T> filteredItems = new ArrayList<T>();
@@ -694,7 +760,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       // skip filtering if nullOK and no subsumption test needed because type = TOP or higher
       boolean noTypeFilter = ti == view.getTypeSystemImpl().topType;
       if (!isNullOK && noTypeFilter) {
-        return new FsIterator_subtypes_snapshot<T>((T[]) sourceFSArray, null, true); 
+        return new FsIterator_subtypes_snapshot<T>((T[]) sourceFSArray, null, IS_UNORDERED, null); 
       }
       
       List<T> filteredItems = new ArrayList<T>();
@@ -711,12 +777,20 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       }
       
       if (noTypeFilter && !noNullsWereFiltered) {
-        return new FsIterator_subtypes_snapshot<T>((T[]) sourceFSArray, null, true);         
+        return new FsIterator_subtypes_snapshot<T>(
+            (T[]) sourceFSArray, 
+            null, 
+            IS_UNORDERED,
+            null);         
       }
       
       filtered = filteredItems.toArray((T[]) Array.newInstance(FeatureStructure.class, filteredItems.size()));                    
     }        
-    return new FsIterator_subtypes_snapshot<T>(filtered, null, true);  // items not sorted 
+    return new FsIterator_subtypes_snapshot<T>(
+        filtered, 
+        null, 
+        IS_UNORDERED,
+        null);  // items not sorted 
   }
   
   @Override
@@ -731,8 +805,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return new AbstractSequentialList<N>() {
       
       @Override
-      public ListIterator<N> listIterator(int index) {
-        return (ListIterator<N>) fsIterator();
+      public ListIterator<N> listIterator(int startingIndex) {
+        ListIterator<N> it = (ListIterator<N>) fsIterator();
+        for (int i = 0; i < startingIndex; i++) {
+          it.next();
+        }
+        return it;
       }
 
       @Override
@@ -846,7 +924,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
       @Override
       public long estimateSize() {
-        return ((characteristics & Spliterator.SIZED) == Spliterator.SIZED) ? localIndex.size() : Long.MAX_VALUE;
+        return ((characteristics & Spliterator.SIZED) == Spliterator.SIZED && localIndex != null) ? localIndex.size() : Long.MAX_VALUE;
       }
 
       @Override
@@ -914,7 +992,11 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     FSIterator<T> it = fsIterator();
     if (it.isValid()) {
       T v = it.getNvc();
-      it.moveToNext();
+      if (shift >= 0) {
+        it.moveToNext();
+      } else {
+        it.moveToPrevious();
+      }
       if (it.isValid()) {
         throw new CASRuntimeException(CASRuntimeException.SELECT_GET_TOO_MANY_INSTANCES, ti.getName(), maybeMsgPosition());
       }
@@ -1029,31 +1111,33 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @param it iterator to position
    * @return it positioned if needed
    */
-  public FSIterator<T> maybePosition(FSIterator<T> it) {
+  private FSIterator<T> maybePosition(FSIterator<T> it) {
     if (!it.isValid() || startingFs == null || boundsUse != BoundsUse.notBounded) {
       return it;
     }
     
     it.moveTo(startingFs);
     
-    if (index != null && index instanceof AnnotationIndex && !isFollowing && !isPreceding) {
-      if (!isTypePriority) {
-        int begin = ((Annotation)startingFs).getBegin();
-        int end = ((Annotation)startingFs).getEnd();
-        Type type = startingFs.getType();
-        Annotation fs = (Annotation) it.get();
-        while (begin == fs.getBegin() && end == fs.getEnd() 
-               && (!isPositionUsesType || type == fs.getType())) {
-          it.moveToPreviousNvc();
-          if (!it.isValid()) {
-            it.moveToFirst();
-            return it;
-          }
-          fs = (Annotation) it.get();
-        }
-        it.moveToNext();
-      }
-    }
+    // next commented out because the underlying iterator already does this
+//    if (index != null && index instanceof AnnotationIndex && !isFollowing && !isPreceding) {
+//      if (!isTypePriority) {
+//        int begin = ((Annotation)startingFs).getBegin();
+//        int end = ((Annotation)startingFs).getEnd();
+//        Type type = startingFs.getType();
+//        Annotation fs = (Annotation) it.get();
+//        while (begin == fs.getBegin() && end == fs.getEnd() 
+////               && (!isPositionUsesType || type == fs.getType())
+//               ) {
+//          it.moveToPreviousNvc();
+//          if (!it.isValid()) {
+//            it.moveToFirst();
+//            return it;
+//          }
+//          fs = (Annotation) it.get();
+//        }
+//        it.moveToNext();
+//      }
+//    }
     
     if (isFollowing) {
       final int end = ((Annotation)startingFs).getEnd();
@@ -1096,23 +1180,26 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @see org.apache.uima.cas.SelectFSs#following(org.apache.uima.jcas.cas.TOP)
    */
   @Override
-  public SelectFSs<T> following(TOP fs) {
-    return commonFollowing(fs, 0);
+  public SelectFSs<T> following(Annotation fs) {
+    return following(fs, 0);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#following(int, int)
    */
   @Override
-  public SelectFSs<T> following(int begin, int end) {
-    return commonFollowing(makePosAnnot(begin, end), 0);
+  public SelectFSs<T> following(int position) {
+    return following(position, 0);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#following(org.apache.uima.jcas.cas.TOP, int)
    */
   @Override
-  public SelectFSs<T> following(TOP fs, int offset) {
+  public SelectFSs<T> following(Annotation fs, int offset) {
+    if (fs.getBegin() < fs.getEnd()) {
+      fs = makePosAnnot(fs.getEnd(), fs.getEnd());
+    }
     return commonFollowing(fs, offset);
   }
 
@@ -1120,40 +1207,43 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @see org.apache.uima.cas.SelectFSs#following(int, int, int)
    */
   @Override
-  public SelectFSs<T> following(int begin, int end, int offset) {
-    return commonFollowing(makePosAnnot(begin, end), offset);
+  public SelectFSs<T> following(int position, int offset) {
+    return commonFollowing(makePosAnnot(position, position), offset);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#preceding(org.apache.uima.jcas.cas.TOP)
    */
   @Override
-  public SelectFSs<T> preceding(TOP fs) {
-    return commonPreceding(fs, 0);
+  public SelectFSs<T> preceding(Annotation fs) {
+    return preceding(fs, 0);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#preceding(int, int)
    */
   @Override
-  public SelectFSs<T> preceding(int begin, int end) {
-    return commonPreceding(makePosAnnot(begin, end), 0);
+  public SelectFSs<T> preceding(int position) {
+    return preceding(position, 0);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#preceding(org.apache.uima.jcas.cas.TOP, int)
    */
   @Override
-  public SelectFSs<T> preceding(TOP fs, int offset) {
-    return commonPreceding(fs, offset);
+  public SelectFSs<T> preceding(Annotation annotation, int offset) {
+    if (annotation.getEnd() < Integer.MAX_VALUE) {
+      annotation = makePosAnnot(annotation.getBegin(), Integer.MAX_VALUE);
+    }
+    return commonPreceding(annotation, offset);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#preceding(int, int, int)
    */
   @Override
-  public SelectFSs<T> preceding(int begin, int end, int offset) {
-    return commonPreceding(makePosAnnot(begin, end), offset);
+  public SelectFSs<T> preceding(int position, int offset) {
+    return commonPreceding(makePosAnnot(position, Integer.MAX_VALUE), offset);
   }
 
    
@@ -1190,16 +1280,16 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 //    }
 //  }
   
-  private SelectFSs<T> commonFollowing(TOP fs, int offset) {
-    this.startingFs = fs;
+  private SelectFSs<T> commonFollowing(Annotation annotation, int offset) {
+    this.startingFs = annotation;
     this.shift = offset;
     isFollowing = true;
     return this;
   }
 
-  private SelectFSs<T> commonPreceding(TOP fs, int offset) {
+  private SelectFSs<T> commonPreceding(Annotation annotation, int offset) {
 //    validateSinglePosition(fs, offset);
-    this.startingFs = fs;
+    this.startingFs = annotation;
     this.shift = offset;
     isPreceding = true;
     isBackwards = true; // always iterate backwards
@@ -1208,7 +1298,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   private void forceAnnotationIndex() {
     if (index == null) {
-      index = (FSIndex<T>) view.getAnnotationIndex();
+      index = (LowLevelIndex<T>) view.getAnnotationIndex();
     } else {
       if (!(index instanceof AnnotationIndex)) {
         /** Index "{0}" must be an AnnotationIndex. */ 

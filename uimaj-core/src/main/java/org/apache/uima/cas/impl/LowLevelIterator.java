@@ -19,10 +19,14 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.internal.util.Misc;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Low-level FS iterator. Returns FS references, instead of FS objects.
@@ -59,11 +63,11 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
   
 
   /**
-   * Return the size of the underlying index.
-   * 
-   * @return The size of the index.
+   * @return The size of the index.  In case of copy-on-write, this returns the size of the
+   *         index at the time the iterator was created, or at the last moveTo, moveToFirst, or moveToLast.
+   *         To get the current index size, use ll_getIndex().getSize()
    */
-  int ll_indexSize();
+  int ll_indexSizeMaybeNotCurrent();
 
   /**
    * Get the index for just the top most type of this iterator (excludes subtypes).
@@ -83,42 +87,89 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
    *   This includes empty iterators becoming non-empty.
    */
   boolean isIndexesHaveBeenUpdated();
+ 
+  /**
+   * Internal use
+   * @return true if the iterator was refreshed to match the current index
+   */
+  boolean maybeReinitIterator();
+ 
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIterator#moveToFirst()
+   */
+  @Override
+  default void moveToFirst() {
+    maybeReinitIterator();
+    moveToFirstNoReinit();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIterator#moveToLast()
+   */
+  @Override
+  default void moveToLast() {
+    maybeReinitIterator();
+    moveToLastNoReinit();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
+   */
+  @Override
+  default void moveTo(FeatureStructure fs) {
+    maybeReinitIterator();
+    moveToNoReinit(fs);
+  }
+    
+
+  /**
+   * Internal use
+   * same as moveToFirst, but won't reset to use current contents of index if index has changed
+   */
+  void moveToFirstNoReinit();
+  
+  /**
+   * Internal use
+   * same as moveToLast, but won't reset to use current contents of index if index has changed
+   */
+  void moveToLastNoReinit();
+
+  /**
+   * Internal use
+   * same as moveTo(fs), but won't reset to use current contents of index if index has changed
+   * @param fs the fs to use as the template identifying the place to move to
+   */
+  void moveToNoReinit(FeatureStructure fs);
+  
+  /**
+   * @return the comparator used by this iterator.  It is always a withoutID style, and may be
+   *         either a withType or NoType style.  
+   */
+  Comparator<TOP> getComparator();
+    
+  default void ll_remove() {
+    LowLevelIndex<T> idx = ll_getIndex();
+    if (null == idx) {
+      UIMAFramework.getLogger().warn("remove called on UIMA iterator but iterator not over any index");
+    } else {
+      idx.getCasImpl().removeFsFromIndexes(get());
+    }
+  }
+
+
   /**
    * an empty iterator
    */
-  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator<FeatureStructure> () {
-    @Override
-    public boolean isValid() { return false; }
-    @Override
-    public FeatureStructure get() throws NoSuchElementException { throw new NoSuchElementException(); }
-    @Override
-    public FeatureStructure getNvc() { throw new NoSuchElementException(); }
-    @Override
-    public void moveTo(int i) {}
-    @Override
-    public void moveToFirst() {}
-    @Override
-    public void moveToLast() {}
-    @Override
-    public LowLevelIterator<FeatureStructure> copy() { return this; }
-    @Override
-    public void moveToNext() {}
-    @Override
-    public void moveToNextNvc() {}
-    @Override
-    public void moveToPrevious() {}
-    @Override
-    public void moveToPreviousNvc() {}
-    @Override
-    public void moveTo(FeatureStructure fs) {}
-    @Override
-    public int ll_indexSize() { return 0; }
-    @Override
-    public int ll_maxAnnotSpan() { return Integer.MAX_VALUE; }
-    @Override
-    public LowLevelIndex<FeatureStructure> ll_getIndex() { return null; }
-    @Override
-    public boolean isIndexesHaveBeenUpdated() { return false; }    
-  };
+  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator_empty();
+  
+  /**
+   * Internal use constants
+   */
+  static final boolean IS_ORDERED = false;
+  
+  /**
+   * @return false if this iterator is over an unordered collection or set or bag
+   */
+  default boolean isMoveToSupported() { return false; }
 }

@@ -43,13 +43,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0/uimaj-core
+      scm:svn:http://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-3.0.0/uimaj-core
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0/uimaj-core
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-3.0.0/uimaj-core
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-3.0.0/uimaj-core
+      http://svn.apache.org/viewvc/uima/uv3/uimaj-v3/tags/uimaj-3.0.0/uimaj-core
     </url>
   </scm>
   
@@ -57,25 +57,81 @@
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
     <maven.surefire.heap>650M</maven.surefire.heap>
-    
-    <!-- 
-     BACKWARD_COMPATIBLE_IMPLEMENTER - patch version (=.=.+)
-     BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
-     NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
-     -->
-    <compat.level>NON_BACKWARD_COMPATIBLE</compat.level>
-    <compat.previous.version>2.9.0</compat.previous.version>
-    
   </properties>
   
 	<dependencies>
-	  <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.8</version>
+    
+    <!-- Loggers -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>  <!-- core, not api, because need to set log level via api -->
+      <version>${log4j.version}</version>
+      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
+            "test" fails in maven compile - cannot compile -->
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
+
+    <!-- dependency>  moved to surefire configuration
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId-->  <!-- core, not api, because need to set log level via api -->
+      <!-- version>${log4j.version}</version-->
+      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
+            "test" fails in maven compile - cannot compile -->
+      <!-- scope>test</scope>
+    </dependency-->
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
+            "test" fails in maven compile - cannot compile -->
+      <scope>provided</scope>  
+    </dependency>
+
+     <!-- dependency>  moved to surefire configuration
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+      <scope>test</scope>  
+    </dependency-->
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    
+    <!-- needed to convert slf4j markers into log4j markers 
+         and for running the test --> 
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+      <!-- scope provided: put in compile classpath, excluded from test classpath, not passed along -->
+      <scope>provided</scope> 
+    </dependency>
+
+     <!-- dependency>  moved to surefire configuration  
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+      <scope>test</scope> 
+    </dependency-->
+
+    <!--  causes build error: package org.apache.logging.slf4j does not exist
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+                     -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-test-util</artifactId>
@@ -124,7 +180,7 @@
     <dependency>  <!-- Apache v2 license  2016 checked -->
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-compilertools</artifactId>
-      <version>0.5.28</version>
+      <version>0.5.32</version>
     </dependency>
     
     <!-- Apache v2 license  2016 checked. Also transitive include from above, 
@@ -132,7 +188,7 @@
     <dependency>  
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-core</artifactId>
-      <version>0.5.28</version>
+      <version>0.5.32</version>
     </dependency>
     
     <!-- for reading / transforming / generating JCas cover classes -->
@@ -261,8 +317,17 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-          <!-- testing on 64 bit Linux requires larger heap -->
-					<argLine>-Xmx650M</argLine>
+          <!-- set the heap using the property maven.surefire.heap -->
+          <!--  include dependencies that are for logging but specified as "provided" -->
+          <additionalClasspathElements>
+            <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-core/${log4j.version}/log4j-core-${log4j.version}.jar</additionalClasspathElement>
+            <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-api/${log4j.version}/log4j-api-${log4j.version}.jar</additionalClasspathElement>
+            <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-slf4j-impl/${log4j.version}/log4j-slf4j-impl-${log4j.version}.jar</additionalClasspathElement>
+          </additionalClasspathElements>
+          <!-- exclude log4j slf bridge for testing 
+          <classpathDependencyExcludes>
+            <classpathDependencyExclude>org.apache.logging.log4j:log4j-slf4j-impl</classpathDependencyExclude>
+          </classpathDependencyExcludes>          -->
 				</configuration>
 			</plugin>
 		</plugins>

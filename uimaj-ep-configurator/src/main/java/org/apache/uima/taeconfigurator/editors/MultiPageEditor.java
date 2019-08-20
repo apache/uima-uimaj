@@ -2828,7 +2828,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
           try {
             jg.mainForCde(new MergerImpl(), new JCasGenProgressMonitor(progressMonitor),
                     jCasGenThrower, inputFile, outputDirectory, types, (CASImpl) getCurrentView(),
-                    getProject().getLocationURI().getPath(),
+                    getProject().getLocation().toString(),  // https://issues.apache.org/jira/browse/UIMA-5715
+                         // getLocationURI().getPath(),  // on linux/mars, was returning /default/project.name etc
                     limitJCasGenToProjectScope,
                     mergedTypesAddingFeatures);
           } catch (IOException e) {

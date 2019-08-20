@@ -21,10 +21,13 @@ package org.apache.uima.cas.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
@@ -36,6 +39,7 @@ import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Pair;
 import org.apache.uima.internal.util.StringUtils;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.FSArray;
@@ -50,7 +54,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * XCAS Deserializer. Takes an XCAS and reads it into a CAS.
@@ -191,6 +194,11 @@ public class XCASDeserializer {
 
     // working with initial view
     private int nextIndex;
+    
+    private TOP highestIdFs = null;
+
+    /** the fsId read from the _id attribute */
+    private int fsId;
 
     private XCASDeserializerHandler(CASImpl aCAS, OutOfTypeSystemData ootsData) {
       super();
@@ -225,6 +233,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#startDocument()
      */
+    @Override
     public void startDocument() throws SAXException {
       // Do setup work in the constructor.
       this.state = DOC_STATE;
@@ -238,6 +247,7 @@ public class XCASDeserializer {
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
      *      java.lang.String, org.xml.sax.Attributes)
      */
+    @Override
     public void startElement(String nameSpaceURI, String localName, String qualifiedName,
             Attributes attrs) throws SAXException {
       // org.apache.vinci.debug.Debug.p("startElement: " + qualifiedName);
@@ -294,12 +304,15 @@ public class XCASDeserializer {
 
     // Create a new FS.
     private void readFS(String qualifiedName, Attributes attrs) throws SAXParseException {
+      // get the FeatureStructure id
+      fsId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
+      
       if (qualifiedName.equals("uima.cas.SofA")) {
         qualifiedName = "uima.cas.Sofa";  // fix for XCAS written with pre-public version of Sofas
       }
       
       String typeName = getCasTypeName(qualifiedName);
-      TypeImpl type = (TypeImpl) ts.getType(typeName);
+      TypeImpl type = ts.getType(typeName);
       
       if (type == null) {
         if (this.outOfTypeSystemData == null) {
@@ -345,7 +358,7 @@ public class XCASDeserializer {
         final int extSofaNum = Integer.parseInt(sofaNum);
         
         // get the sofa's FeatureStructure id
-        final int sofaExtId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
+//        final int sofaExtId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
         
 
         // create some maps to handle v1 format XCAS ...
@@ -402,20 +415,20 @@ public class XCASDeserializer {
         // Now update the mapping from annotation int to ref values
         if (this.sofaRefMap.size() == extSofaNum) {
           // Sofa received in sofaNum order, add new one
-          this.sofaRefMap.add(sofaExtId);
+          this.sofaRefMap.add(fsId);
         } else if (this.sofaRefMap.size() > extSofaNum) {
           // new Sofa has lower sofaNum than last one
-          this.sofaRefMap.set(extSofaNum, sofaExtId);
+          this.sofaRefMap.set(extSofaNum, fsId);
         } else {
           // new Sofa has skipped ahead more than 1
           this.sofaRefMap.setSize(extSofaNum + 1);
-          this.sofaRefMap.set(extSofaNum, sofaExtId);
+          this.sofaRefMap.set(extSofaNum, fsId);
         }
 
         // get the sofa's mimeType
         String sofaMimeType = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFAMIME);
-
-        fs = cas.createSofa(this.indexMap.get(extSofaNum), sofaID, sofaMimeType);
+        String finalSofaId = sofaID;
+        fs = maybeCreateWithV2Id(fsId, () -> cas.createSofa(this.indexMap.get(extSofaNum), finalSofaId, sofaMimeType));        
       } else {  // not a Sofa
         if (type.isAnnotationBaseType()) {
           
@@ -437,18 +450,19 @@ public class XCASDeserializer {
             }
             casView = cas.getView((Sofa) (fsTree.get(Integer.parseInt(extSofaRefString)).fs));
           }
-          if (ts.docType.subsumes(type)) {
-            fs = casView.getDocumentAnnotation();
+          if (type.getCode() == TypeSystemConstants.docTypeCode) {
+            fs = maybeCreateWithV2Id(fsId, () -> casView.getDocumentAnnotation());
+//            fs = casView.getDocumentAnnotation();
             cas.removeFromCorruptableIndexAnyView(fs, cas.getAddbackSingle());
           } else {
-            fs = casView.createFS(type);
+            fs = maybeCreateWithV2Id(fsId, () -> casView.createFS(type));
             if (currentFs instanceof UimaSerializable) {
               UimaSerializable ufs = (UimaSerializable) currentFs;
               uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
             }
           }
         } else {  // not an annotation base
-          fs = cas.createFS(type);
+          fs = maybeCreateWithV2Id(fsId, () -> cas.createFS(type));
           if (currentFs instanceof UimaSerializable) {
             UimaSerializable ufs = (UimaSerializable) currentFs;
             uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
@@ -506,7 +520,7 @@ public class XCASDeserializer {
         }
       }
 
-      if (ts.docType.subsumes(type)) {
+      if (type.getCode() == TypeSystemConstants.docTypeCode) {
         cas.addbackSingle(fs);
       }
       
@@ -576,7 +590,9 @@ public class XCASDeserializer {
           throw createException(XCASParsingException.ILLEGAL_ARRAY_ATTR, attrName);
         }
       }
-      TOP fs = (TOP) cas.createArray(type, size);
+      final int finalSize = size;
+      TOP fs = maybeCreateWithV2Id(fsId, () -> cas.createArray(type, finalSize));
+//      TOP fs = cas.createArray(type, size);
       
       FSInfo fsInfo = new FSInfo(fs, indexRep);
       if (id >= 0) {
@@ -654,7 +670,7 @@ public class XCASDeserializer {
          
           fixupToDos.add( () -> finalizeRefValue(Integer.parseInt(featVal), fs, feat));
         } else {  // is not a ref type.
-          cas.setFeatureValueFromString(fs, feat, featVal);
+          CASImpl.setFeatureValueFromStringNoDocAnnotUpdate(fs, feat, featVal);
         }
 
       }
@@ -670,6 +686,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
+    @Override
     public void characters(char[] chars, int start, int length) throws SAXException {
       switch (this.state) {
         case DOC_TEXT_STATE:
@@ -699,6 +716,7 @@ public class XCASDeserializer {
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
      *      java.lang.String)
      */
+    @Override
     public void endElement(String nsURI, String localName, String qualifiedName)
             throws SAXException {
       switch (this.state) {
@@ -744,8 +762,9 @@ public class XCASDeserializer {
         }
         case DOC_TEXT_STATE: {
           // Assume old style CAS with one text Sofa
-          Sofa newSofa = cas.createInitialSofa("text");
-          CASImpl initialView = (CASImpl) cas.getInitialView();
+          Sofa newSofa = (Sofa) maybeCreateWithV2Id(1, () -> cas.createInitialSofa("text"));
+//          Sofa newSofa = cas.createInitialSofa("text");
+          CASImpl initialView = cas.getInitialView();
           initialView.registerView(newSofa);
           // Set the document text without creating a documentAnnotation
           initialView.setDocTextFromDeserializtion(buffer.toString());
@@ -808,6 +827,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#endDocument()
      */
+    @Override
     public void endDocument() throws SAXException {
       // time = System.currentTimeMillis() - time;
       // System.out.println("Done reading xml data in " + new TimeSpan(time));
@@ -888,7 +908,7 @@ public class XCASDeserializer {
           String featName = "_ref_" + featFullName.substring(separatorOffset + 1);
           ootsAttrs.add(new Pair(featName, Integer.toString(extId)));
         }
-        fs.setFeatureValue(fi, null);
+        CASImpl.setFeatureValueMaybeSofa(fs, fi, null);
       } else {
         // the sofa ref in annotationBase is set when the fs is created, not here
         if (fi.getCode() != TypeSystemConstants.annotBaseSofaFeatCode) { 
@@ -897,14 +917,14 @@ public class XCASDeserializer {
             Sofa sofa = (Sofa) fs;
             switch (fi.getRangeImpl().getCode()) {
             case TypeSystemConstants.sofaArrayFeatCode: sofa.setLocalSofaData(fsInfo.fs); break;
-            default: throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR);
+            default: throw new CASRuntimeException(UIMARuntimeException.INTERNAL_ERROR);
             }
             return;
           }
           
           // handle case where feature is xyz[] (an array ref, not primitive) but the value of fs is FSArray
           ts.fixupFSArrayTypes(fi.getRangeImpl(), fsInfo.fs);
-          fs.setFeatureValue(fi, fsInfo.fs);
+          CASImpl.setFeatureValueMaybeSofa(fs, fi, fsInfo.fs);
         }
       }
     }
@@ -1045,6 +1065,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
+    @Override
     public void error(SAXParseException e) throws SAXException {
       throw e;
     }
@@ -1054,6 +1075,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
      */
+    @Override
     public void fatalError(SAXParseException e) throws SAXException {
       throw e;
     }
@@ -1063,6 +1085,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
      */
+    @Override
     public void ignorableWhitespace(char[] arg0, int arg1, int arg2) throws SAXException {
       // Since we're not validating, we don't need to do anything; this won't
       // be called.
@@ -1073,6 +1096,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#setDocumentLocator(org.xml.sax.Locator)
      */
+    @Override
     public void setDocumentLocator(Locator loc) {
       // System.out.println("Setting document locator.");
       this.locator = loc;
@@ -1083,6 +1107,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
+    @Override
     public void warning(SAXParseException e) throws SAXException {
       throw e;
     }
@@ -1157,6 +1182,25 @@ public class XCASDeserializer {
         // Note: This is really slow so we avoid if possible. -- RJB
         return StringUtils.replaceAll(StringUtils.replaceAll(aTagName, ":", "_colon_"), "-",
                 "_dash_");
+      }
+    }
+    
+    TOP maybeCreateWithV2Id(int id, Supplier<TOP> create) {
+      if (cas.is_ll_enableV2IdRefs()) {
+        cas.set_reuseId(id);
+        try {
+          TOP fs = create.get();
+          if (highestIdFs == null) {
+            highestIdFs = fs;
+          } else if (highestIdFs._id < fs._id) {
+            highestIdFs = fs;  // for setting up getNextId at end
+          } 
+          return fs;
+        } finally {           
+          cas.set_reuseId(0); // in case of error throw
+        }
+      } else {
+        return create.get();          
       }
     }
   }
@@ -1266,6 +1310,28 @@ public class XCASDeserializer {
   /**
    * Deserializes an XCAS from a stream.
    * 
+   * @param aReader
+   *          Reader from which to read the XCAS XML document
+   * @param aCAS
+   *          CAS into which to deserialize. This CAS must be set up with a type system that is
+   *          compatible with that in the XCAS.
+   * @param aLenient
+   *          if true, unknown Types will be ignored. If false, unknown Types will cause an
+   *          exception. The default is false.
+   * 
+   * @throws SAXException
+   *           if an XML Parsing error occurs
+   * @throws IOException
+   *           if an I/O failure occurs
+   */
+  public static void deserialize(Reader aReader, CAS aCAS, boolean aLenient)
+          throws SAXException, IOException {
+    deserialize(new InputSource(aReader), aCAS, aLenient);
+  }
+
+  /**
+   * Deserializes an XCAS from a stream.
+   * 
    * @param aStream
    *          input stream from which to read the XCAS XML document
    * @param aCAS
@@ -1282,7 +1348,13 @@ public class XCASDeserializer {
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
           throws SAXException, IOException {
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    deserialize(new InputSource(aStream), aCAS, aLenient);
+  }
+  
+  public static void deserialize(InputSource aSource, CAS aCAS, boolean aLenient)
+      throws SAXException, IOException {
+
+    XMLReader xmlReader = XMLUtils.createXMLReader();
     XCASDeserializer deser = new XCASDeserializer(aCAS.getTypeSystem());
     ContentHandler handler;
     if (aLenient) {
@@ -1291,7 +1363,16 @@ public class XCASDeserializer {
       handler = deser.getXCASHandler(aCAS);
     }
     xmlReader.setContentHandler(handler);
-    xmlReader.parse(new InputSource(aStream));
+    xmlReader.parse(aSource);
+
+    CASImpl casImpl = ((CASImpl) aCAS.getLowLevelCAS());
+    if (casImpl.is_ll_enableV2IdRefs()) {
+      TOP highest_fs = ((XCASDeserializerHandler) handler).highestIdFs;
+
+      casImpl.setLastUsedFsId(highest_fs._id);
+      casImpl.setLastFsV2Size(highest_fs._getTypeImpl().getFsSpaceReq(highest_fs));
+    }
   }
+  
 
 }

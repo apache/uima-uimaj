@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,7 @@ import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.impl.SerializationMeasures;
 
@@ -73,10 +75,21 @@ import junit.framework.TestCase;
  */
 public class SerDesTest6 extends SerDesTstCommon {
 
+  /**
+   * TwoType, EqTwoTypes, TwoTypesSubsetFeatures, TwoTypesNoFeatures have Akof1 and Akof2
+   *   
+   *
+   */
   enum TypeSystems {
-    TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, TwoTypesNoFeatures,
+    TwoTypes,    // two types, Akof1 Akof2, with all features, one type system
+    EqTwoTypes,  // two typesystems, made up of a copy of TwoTypes
+    OneType,     // one type, all features
+    TwoTypesSubsetFeatures, // two types, but has only a subset of the features
+    OneTypeSubsetFeatures,  // one type, but has a subset of features
+    TwoTypesNoFeatures,     // two types, no features
   }
 
+  /** the two types Akof1 and Akof2 */
   enum Types {
     Akof1, Akof2,
   }
@@ -96,7 +109,7 @@ public class SerDesTest6 extends SerDesTstCommon {
 
     public TTypeSystem   m;
     public TypeSystemMgr tsm;
-    final TypeSystems    kind;
+    final TypeSystems    kind; // enum TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, TwoTypesNoFeatures
 
     public CASTestSetup(TypeSystems kind) {
       this.kind = kind;
@@ -169,14 +182,19 @@ public class SerDesTest6 extends SerDesTstCommon {
     public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     }
   }
+  
+  /** list of all feature value kinds e.g. Int, Fs, Float, Afloat, Astring */
   static final List<String> featureNameRoots = Arrays.asList(new String[] { 
     "Int", "Fs", "Float", "Double", "Long", "Short", "Byte", "Boolean", "String", 
           "Aint", "Afs", "Afloat", "Adouble", "Along", "Ashort", "Abyte", "Aboolean", "Astring" });
-
+  
+  /** have 2 instances of this, one per type system */
   static class TTypeSystem {
-    final TypeSystems     kind;
+    final TypeSystems     kind; // enum TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, TwoTypesNoFeatures,
     TypeSystemMgr tsm;
+    /** table, by two types, then sparse table, each slot not empty is a feature indexed by corresponding featureNameRoots */
     Feature[][] featureTable = new Feature[Types.values().length][featureNameRoots.size()];
+    /** short-name to types map: e.g. Aint -> array of int  */
     Map<String, Type>     mapString2Type      = new HashMap<String, Type>();
     public TypeSystemImpl ts;
     public CASImpl cas;  // the Cas setup as part of initialization                                                                    // the
@@ -188,37 +206,45 @@ public class SerDesTest6 extends SerDesTstCommon {
       this.ts = (TypeSystemImpl) tsm;
     }
 
+    /** add existing type by short name to the map, e.g. Aint -> array of int */
     void addType(Type type, String shortName) {
       mapString2Type.put(shortName, type);
     }
 
+    /** add new type with super type */
     void addType(String type, String superType) {
       addType(tsm.addType(type, getType(superType)), type);
     }
 
+    /** get type by short name */
     Type getType(String shortName) {
       return mapString2Type.get(shortName);
     }
 
+    /** get type by enum Akof1, Akof2 */
     Type getType(Types type) {
       return getType(type.name());
     }
 
+    /** add feature to type, feat = one of feature value kinds e.g. Int, Fs, Float, Afloat, Astring */
     void add(Type type, String featNameRoot) {
       String typeName = type.getShortName();
       int i2 = featureNameRoots.indexOf(featNameRoot);
       featureTable[Types.valueOf(typeName).ordinal()][i2] = tsm.addFeature(typeName + featNameRoot,
           type, mapString2Type.get(featNameRoot));
     }
-
+    
+    /** add feature to type, arg1 is enum, feat = one of feature value kinds e.g. Int, Fs, Float, Afloat, Astring */
     void add(Types typeKind, String featNameRoot) {
       add(getType(typeKind.name()), featNameRoot);
     }
 
+    /** get feature for type by typeEnum + one of feature value kinds: Int, Fs, Float, Afloat, Astring */
     Feature getFeature(Types typeKind, String featNameRoot) {
       return featureTable[typeKind.ordinal()][featureNameRoots.indexOf(featNameRoot)];
     }
 
+    /** get feature for type of FS, + one of feature value kinds: Int, Fs, Float, Afloat, Astring */
     Feature getFeature(FeatureStructure fs, String featNameRoot) {
       Type t = fs.getType();
       return getFeature(Types.valueOf(t.getShortName()), featNameRoot);
@@ -372,6 +398,13 @@ public class SerDesTest6 extends SerDesTstCommon {
           break;
         }
       }
+    }
+  }
+  
+  public void testAllKindsV2() {
+    try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs();
+         AutoCloseableNoException b = casSrc.ll_enableV2IdRefs()) { // because casSrc set in setup
+      testAllKinds();
     }
   }
 
@@ -741,6 +774,20 @@ public class SerDesTest6 extends SerDesTstCommon {
 
   }
 
+  // change tst to test to run this as a looper to catch infrequent errors
+  public void tstLoop() {
+    Random seeder = new Random();
+    for (int i = 0; i < 800; i++) {
+      long seed = seeder.nextLong();
+//          -670766016644278339L;  20, 33 IntegerArray miscompare
+//      -5294919707375572185L;   -28, 33  IntegerArray miscompare
+//      7169526779687013172L;   // ref miscompare
+      System.out.println("i: " + i + "  seed: " + seed);
+      random.setSeed(seed);
+      runCaptureSet();
+    }
+  }
+  
   public void captureGenerated() {
     capture = true;
     initWriteSavedInts();
@@ -1366,6 +1413,14 @@ public class SerDesTest6 extends SerDesTstCommon {
   }
 
   // casSrc -> remoteCas
+  /**
+   * 
+   * @param casSrc -
+   * @param casTgt -
+   * @param ri -
+   * @param mark -
+   * @return [0] is serialize reuse info, [1] is deserialize reuse info
+   */
   private ReuseInfo[] serializeDeserialize(CASImpl casSrc, CASImpl casTgt, ReuseInfo ri,
       MarkerImpl mark) {
     ReuseInfo[] riToReturn = new ReuseInfo[2];
@@ -1554,10 +1609,10 @@ public class SerDesTest6 extends SerDesTstCommon {
   }
 
   private List<FeatureStructure> getIndexedFSs(CASImpl cas, TTypeSystem m) {
-    FSIterator<FeatureStructure> it = cas.getIndexRepository().getAllIndexedFS(m.getType(Akof1));
+    Collection<TOP> c = cas.getIndexRepository().getIndexedFSs(m.getType(Akof1));
     List<FeatureStructure> lfs = new ArrayList<FeatureStructure>();
-    while (it.hasNext()) {
-      lfs.add(it.next());
+    for (TOP fs : c) {
+      lfs.add(fs);
     }
     return lfs;
   }

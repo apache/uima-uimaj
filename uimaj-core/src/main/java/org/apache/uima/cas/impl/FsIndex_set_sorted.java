@@ -19,13 +19,12 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NavigableSet;
 
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
@@ -43,52 +42,29 @@ import org.apache.uima.jcas.tcas.Annotation;
  *   
  * This is an index over just one type (excluding subtypes)
  * 
- * Uses a NavigableSet as the index (of FSs).  
- *   For sorted, because this is a set, to allow multiple (different) FSs having
- *     the same key values to be in the index, the key used for the index is augmented by a least-significant
- *     key which is the _id field of the FS itself.
+ * Uses key augmented by a least-significant additional key: the _id field of the FS itself,
+ *   to allow multiple otherwise equal (but not ==) FSs to be in the index.
  * 
  * @param <T> the Java class type for this index
  */
-public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_singletype<T> {
+final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_singletype<T> {
   
-//  /**
+//  /**h
 //   * This impl of sorted set interface allows using the bulk add operation implemented in Java's 
 //   * TreeSet - that tests if the argument being passed in is an instance of SortedSet and does a fast insert.
 //   */
 
 
-  // The index, a NavigableSet. 
-  final private OrderedFsSet_array indexedFSs;
-  
+  // The index, a custom high-performance array impl 
+  final private OrderedFsSet_array<T> indexedFSs;
     
-  final private Comparator<TOP> comparatorWithID;
-  final private Comparator<TOP> comparatorWithoutID;
-  
   // only an optimization used for select.covering for AnnotationIndexes
   private int maxAnnotSpan = -1;
-  public final boolean isAnnotIdx;
      
-  FsIndex_set_sorted(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs, boolean useSorted) {
+  FsIndex_set_sorted(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs) {
     super(cas, type, indexType, comparatorForIndexSpecs);
-    FSIndexRepositoryImpl ir = this.casImpl.indexRepository;
     
-    if (ir.isAnnotationIndex(comparatorForIndexSpecs, indexType)) {
-      comparatorWithID = ir.getAnnotationFsComparatorWithId(); 
-      comparatorWithoutID = ir.getAnnotationFsComparator();
-      isAnnotIdx = true;
-    } else {
-      isAnnotIdx = false;
-      comparatorWithoutID = (o1, o2) -> compare(o1,  o2);
-      comparatorWithID = useSorted   
-          ? (o1, o2) -> {
-              final int c = compare(o1,  o2); 
-              // augment normal comparator with one that compares IDs if everything else equal
-              return (c == 0) ? (Integer.compare(o1._id(), o2._id())) : c;} 
-          : comparatorWithoutID;
-    }          
-    
-    this.indexedFSs = new OrderedFsSet_array(comparatorWithID, comparatorWithoutID);
+    this.indexedFSs = new OrderedFsSet_array<T>(comparatorNoTypeWithID, comparatorNoTypeWithoutID);
   }
 
   @Override
@@ -122,7 +98,9 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
         maxAnnotSpan = span;
       }
     }
-    indexedFSs.add((TOP)fs);
+    indexedFSs.add(fs, isSorted() 
+                              ? comparatorNoTypeWithID 
+                              : comparatorNoTypeWithoutID);
   }
 
   /**
@@ -145,57 +123,67 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
    */
   @Override
   public T find(FeatureStructure templateKey) {
-    if (null == templateKey || this.indexedFSs.isEmpty()) {
-      return null;
-    }
-    TOP found;
-    TOP templateKeyTop = (TOP) templateKey;
-    TOP fs1GEfs = this.indexedFSs.ceiling(templateKeyTop);
-    
-    if (fs1GEfs == null) {  // then all elements are less-that the templateKey
-      found = indexedFSs.lower(templateKeyTop);  //highest of elements less-than the template key
-      return (found == null) 
-               ? null 
-               : (comparatorWithoutID.compare(found, templateKeyTop) == 0) 
-                   ? (T)found 
-                   : null;
-    }
-    
-    // fs1GEfs is the least element that is greater-than-or-equal to the template key, using the fine-grained comparator
-    if (0 == comparatorWithoutID.compare(fs1GEfs, templateKeyTop)) {
-      return (T) fs1GEfs; 
-    }
-    
-    // fs1GEfs not null, GreaterThan the templateKey using comparatorWithoutID
-    // Therefore, the ones preceding it are LE using comparatorWithoutID
-    found = indexedFSs.lower(templateKeyTop);  // the greatest element in this set strictly less than the templateKey
-    return (found == null) 
-              ? null 
-              : (comparatorWithoutID.compare(found, templateKeyTop) == 0) 
-                   ? (T)found 
-                   : null;
+    int pos = this.indexedFSs.findWithoutID((TOP)templateKey);
+    return (pos >= 0)
+             ? this.indexedFSs.getAtPos(pos)
+             : null;
   }
-
-  public T findLeftmost(TOP templateKey) {
-    // descending iterator over elements LessThan templateKey
-    // iterator is over TOP, not T, to make compare easier
-    Iterator<TOP> it = indexedFSs.headSet(templateKey, false).descendingIterator();
   
-    TOP elementBefore = null;
-    TOP lastEqual = null;
-    // move to left until run out or have element not equal using compareWihtoutID to templateKey
-    while (it.hasNext()) {
-      if (0 != comparatorWithoutID.compare(elementBefore = it.next(), templateKey)) {
-        break;
-      }
-      lastEqual = elementBefore;
-    }
   
-    if (!it.hasNext()) { // moved past beginning
-      return (T) elementBefore;  // might return null to indicate not found
-    }
-    return (T) lastEqual;
-  }
+  
+//  @Override
+//  public T find(FeatureStructure templateKey) {
+//    if (null == templateKey || this.indexedFSs.isEmpty()) {
+//      return null;
+//    }
+//    TOP found;
+//    TOP templateKeyTop = (TOP) templateKey;
+//    TOP fs1GEfs = this.indexedFSs.ceiling(templateKeyTop);
+//    
+//    if (fs1GEfs == null) {  // then all elements are less-that the templateKey
+//      found = indexedFSs.lower(templateKeyTop);  //highest of elements less-than the template key
+//      return (found == null) 
+//               ? null 
+//               : (comparatorWithoutID.compare(found, templateKeyTop) == 0) 
+//                   ? (T)found 
+//                   : null;
+//    }
+//    
+//    // fs1GEfs is the least element that is greater-than-or-equal to the template key, using the fine-grained comparator
+//    if (0 == comparatorWithoutID.compare(fs1GEfs, templateKeyTop)) {
+//      return (T) fs1GEfs; 
+//    }
+//    
+//    // fs1GEfs not null, GreaterThan the templateKey using comparatorWithoutID
+//    // Therefore, the ones preceding it are LE using comparatorWithoutID
+//    found = indexedFSs.lower(templateKeyTop);  // the greatest element in this set strictly less than the templateKey
+//    return (found == null) 
+//              ? null 
+//              : (comparatorWithoutID.compare(found, templateKeyTop) == 0) 
+//                   ? (T)found 
+//                   : null;
+//  }
+//
+//  public T findLeftmost(TOP templateKey) {
+//    // descending iterator over elements LessThan templateKey
+//    // iterator is over TOP, not T, to make compare easier
+//    Iterator<TOP> it = indexedFSs.headSet(templateKey, false).descendingIterator();
+//  
+//    TOP elementBefore = null;
+//    TOP lastEqual = null;
+//    // move to left until run out or have element not equal using compareWihtoutID to templateKey
+//    while (it.hasNext()) {
+//      if (0 != comparatorWithoutID.compare(elementBefore = it.next(), templateKey)) {
+//        break;
+//      }
+//      lastEqual = elementBefore;
+//    }
+//  
+//    if (!it.hasNext()) { // moved past beginning
+//      return (T) elementBefore;  // might return null to indicate not found
+//    }
+//    return (T) lastEqual;
+//  }
 
   /**
    * @see org.apache.uima.cas.FSIndex#size()
@@ -218,6 +206,11 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
    */
   @Override
   public boolean deleteFS(T fs) {
+    if (((TOP)fs)._getTypeImpl() != this.type) {
+      throw new IllegalArgumentException(
+          String.format("Wrong type %s passed to deleteFS of index over type %s", 
+            ((TOP)fs)._getTypeImpl().getName(), this.type.getName()));
+    }
 //    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     maybeCopy();
     return this.indexedFSs.remove(fs);
@@ -225,22 +218,44 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   
   @Override
   protected void bulkAddTo(List<T> v) {
-    v.addAll((Collection<? extends T>) indexedFSs);
+    Collection<T> coll = new AbstractCollection<T>() {
+
+      @Override
+      public Iterator<T> iterator() { return null; }
+
+      @Override
+      public int size() { return FsIndex_set_sorted.this.size(); }
+
+      /* (non-Javadoc)
+       * @see java.util.AbstractCollection#toArray()
+       */
+      @Override
+      public T[] toArray() {
+        return (T[]) indexedFSs.toArray();
+      }
+    };
+    v.addAll(coll);
   }
-  
-  
-  NavigableSet<T> getNavigableSet() { //used by FsIterator_set_sorted to compute various derivitive nav sets
-    return (NavigableSet<T>) indexedFSs;
-  }
-   
+     
   @Override
-  public FSIterator<T> iterator() {
-    setupIteratorCopyOnWrite();
-    return casImpl.inPearContext()
-             ? new FsIterator_set_sorted_pear<>(this, type, this)
-             : new FsIterator_set_sorted     <>(this, type, this);
+  public LowLevelIterator<T> iterator() {
+    return iterator(IS_ORDERED, IS_TYPE_ORDER);
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.FsIndex_singletype#iterator(boolean, boolean)
+   *   orderNotNeeded - ignored, because for a single index type, order always used
+   */
+  @Override
+  public LowLevelIterator<T> iterator(boolean orderNotNeeded, boolean ignoreType) {
+    CopyOnWriteIndexPart cow_wrapper = getNonNullCow();
+    // if index is empty, return never-the-less a real iterator,
+    //   not an empty one, because it may become non-empty
+    Comparator<TOP> comparatorMaybeNoTypeWithoutID = ignoreType ? comparatorNoTypeWithoutID : comparatorWithoutID;
+    return casImpl.inPearContext()
+             ? new FsIterator_set_sorted_pear<T>(this, cow_wrapper, comparatorMaybeNoTypeWithoutID)
+             : new FsIterator_set_sorted2<T>(this, cow_wrapper, comparatorMaybeNoTypeWithoutID);  }
+
   @Override
   protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {
     if (CASImpl.traceCow) {
@@ -249,7 +264,18 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
     return new CopyOnWriteOrderedFsSet_array(indexedFSs);
   }
   
+  @Override
   public int ll_maxAnnotSpan() {
     return maxAnnotSpan;
   }
+
+  /* (non-Javadoc)
+   * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+   */
+  @Override
+  public int compare(FeatureStructure o1, FeatureStructure o2) {
+    return comparatorWithoutID.compare((TOP)o1, (TOP)o2);
+  }
+  
+  
 }

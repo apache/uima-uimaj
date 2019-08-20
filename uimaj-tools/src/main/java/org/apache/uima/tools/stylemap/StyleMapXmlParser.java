@@ -28,6 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.uima.internal.util.XMLUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -71,7 +72,9 @@ public class StyleMapXmlParser extends DefaultHandler {
   public StyleMapXmlParser(String xmlFile) {
     try {
       // create new SAX Parser
-      SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+      SAXParserFactory saxParserFactory = XMLUtils.createSAXParserFactory();
+      SAXParser parser = saxParserFactory.newSAXParser();
+
       XMLReader reader = parser.getXMLReader();
       // set the content handler
       reader.setContentHandler(this);

@@ -152,43 +152,7 @@ under the License.
       <fileMode>644</fileMode> 
       <directoryMode>755</directoryMode>        
     </dependencySet>
-    
-    <dependencySet>
-      <includes>
-        <include>org.bitbucket.mstrobel:procyon-compilertools</include>
-      </includes>
-      <unpack>false</unpack>
-      <scope>runtime</scope>
-      <outputDirectory>lib</outputDirectory>
-      <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
-    </dependencySet>
-
-    <dependencySet>
-      <includes>
-        <include>org.bitbucket.mstrobel:procyon-core</include>
-      </includes>
-      <unpack>false</unpack>
-      <scope>runtime</scope>
-      <outputDirectory>lib</outputDirectory>
-      <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
-    </dependencySet>
-    
-     <dependencySet>
-      <includes>
-        <include>com.github.javaparser:javaparser-core</include>
-      </includes>
-      <unpack>false</unpack>
-      <scope>runtime</scope>
-      <outputDirectory>lib</outputDirectory>
-      <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
-      <directoryMode>755</directoryMode>        
-    </dependencySet>
-    
+        
     <!-- Copy each eclipse plugin into the /eclipsePlugins dir of the distribution -->
     <dependencySet>
       <includes>
@@ -205,6 +169,29 @@ under the License.
       <scope>runtime</scope>
       <outputDirectory>eclipsePlugins</outputDirectory>
       <outputFileNameMapping>${artifact.build.finalName}.jar</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
+    </dependencySet>
+    
+    <!--  loggers and other lib 3rd party jars not renamed -->
+    <dependencySet>
+      <includes>
+        <include>org.bitbucket.mstrobel:procyon-compilertools</include>      
+        <include>org.bitbucket.mstrobel:procyon-core</include>
+        <include>com.github.javaparser:javaparser-core</include>
+        <include>org.slf4j:slf4j-api</include>
+                <!--  log4j not default included 
+        <include>org.apache.logging.log4j:log4j-slf4j-impl</include>
+        <include>org.apache.logging.log4j:log4j-core</include>
+        <include>org.apache.logging.log4j:log4j-api</include>
+         -->
+        <!-- hook to built-in Java backend for slf4j included -->
+        <include>org.slf4j:slf4j-jdk14</include> 
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode> 
       <directoryMode>755</directoryMode>        
@@ -287,6 +274,12 @@ under the License.
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
+    <fileSet>
+      <directory>uima-docbook-v3-users-guide/target/site</directory>
+      <outputDirectory>docs</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
+    </fileSet>
     
     <!-- examples -->
     <fileSet>
@@ -321,17 +314,32 @@ under the License.
            and we want to eliminate failures due to write permissions -->
       <directoryMode>777</directoryMode>        
     </fileSet>
+    
+    <!-- Copy the API Change reports -->
+    <fileSet>
+      <directory>uimaj-core/api-change-report</directory>
+      <outputDirectory>uimaj-core/api-change-report</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
+    </fileSet>
+    <fileSet>
+      <directory>uimaj-cpe/api-change-report</directory>
+      <outputDirectory>uimaj-cpe/api-change-report</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
+    </fileSet>
+
   </fileSets>
  
   <files>
     <!-- copy bin distr license and notice -->
     <file>
-      <source>src/main/readme/LICENSE</source>
+      <source>src/main/bin_distr_license_notices/LICENSE</source>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>
     </file>
     <file> 
-      <source>src/main/readme/NOTICE-without-jackson</source>
+      <source>src/main/bin_distr_license_notices/NOTICE-without-jackson</source>
       <outputDirectory></outputDirectory>
       <destName>NOTICE</destName>
       <fileMode>644</fileMode>    
@@ -369,6 +377,10 @@ under the License.
       <source>uimaj-examples/src/main/java/org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</source>
       <outputDirectory>examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
       <fileMode>644</fileMode> 
+    </file>
+    <file>
+      <source>api-change-report.html</source>
+      <outputDirectory>.</outputDirectory>
     </file>
   </files>
 </assembly>

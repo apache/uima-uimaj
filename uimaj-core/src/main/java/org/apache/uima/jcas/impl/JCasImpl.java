@@ -55,9 +55,13 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
+import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.LongArray;
+import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
@@ -151,32 +155,11 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // * We keep one copy per CAS view set          *
   // **********************************************/
   
-  private static class JCasSharedView {
-    // ********************************************************
-    // * Access to this data is assumed to be single threaded *
-    // ********************************************************
-
-    /* convenience holders of CAS constants that may be useful *
-     * initialization done lazily - on first call to getter    *
-     *   Can't be static because needs ref to a JCas instance  */
-
-    public StringArray stringArray0L = null;
-
-    public IntegerArray integerArray0L = null;
-
-    public FloatArray floatArray0L = null;
-
-    public FSArray fsArray0L = null;
-       
-  }
-
   // *******************
   // * Data per (J)CAS *
   // * There may be multiples of these for one base CAS - one per "view"
   // * Access to this data is assumed to be single threaded
   // *******************
-
-  private final JCasSharedView sharedView;
 
   // not public to protect it from accidents
   private final CASImpl casImpl;
@@ -286,7 +269,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
   // never called, but have to set values to null because they're final
   private JCasImpl() {
-    sharedView = null;
     casImpl = null;
     ll_IndexRepository = null;
     throw new RuntimeException("JCas constructor with no args called, should never be called.");
@@ -311,20 +293,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     // * that will be loaded.
 
     this.casImpl = cas;
-    
-    /**
-     * create the shared view only for the base case.
-     *   if not the base cas, 
-     *     switch to the base cas, 
-     *     create the shared view if needed
-     *     use that as the shared view
-     */
-    if (casImpl != casImpl.getBaseCAS()) {
-      sharedView = ((JCasImpl) casImpl.getBaseCAS().getJCas()).sharedView;
-    } else {
-      sharedView = new JCasSharedView();
-    }
-
+ 
     this.ll_IndexRepository = casImpl.ll_getIndexRepository();
     this.jfsIndexRepository = new JFSIndexRepositoryImpl(this, cas.getIndexRepository());
   }
@@ -655,19 +624,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * associations. 
    */
   public static void clearData(CAS cas) {
-//    JCasImpl jcas = (JCasImpl) ((CASImpl) cas).getExistingJCas();
-//    final JCasSharedView sv = jcas.sharedView;
-//    for (Iterator<Map.Entry<ClassLoader, JCasHashMap>> it = sv.cAddr2JfsByClassLoader.entrySet().iterator(); it.hasNext();) {
-//      Map.Entry<ClassLoader, JCasHashMap> e = it.next();
-//      sv.cAddr2Jfs = e.getValue();
-//      sv.cAddr2Jfs.clear();  // implements resize as well
-//      sv.stringArray0L = null;
-//      sv.floatArray0L = null;
-//      sv.fsArray0L = null;
-//      sv.integerArray0L = null;
-//    }
-//    sv.cAddr2Jfs = sv.cAddr2JfsByClassLoader
-//        .get(((CASImpl) cas).getJCasClassLoader());
   }
 
   /*
@@ -678,7 +634,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public void reset() {
     casImpl.reset();
   }
-
+  
 //  /*
 //   * (non-Javadoc)
 //   * 
@@ -910,45 +866,44 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getStringArray0L()
+   * @deprecated use emptyXXXArray() instead
    */
-
+  @Deprecated
   public StringArray getStringArray0L() {
-    if (null == sharedView.stringArray0L)
-      sharedView.stringArray0L = new StringArray(this, 0);
-    return sharedView.stringArray0L;
+    return this.getCas().emptyStringArray();
   }
 
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getIntegerArray0L()
+   * @deprecated use emptyXXXArray() instead
    */
+  @Deprecated
   public IntegerArray getIntegerArray0L() {
-    if (null == sharedView.integerArray0L)
-      sharedView.integerArray0L = new IntegerArray(this, 0);
-    return sharedView.integerArray0L;
+    return this.getCas().emptyIntegerArray();
   }
 
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getFloatArray0L()
+   * @deprecated use emptyXXXArray() instead
    */
+  @Deprecated
   public FloatArray getFloatArray0L() {
-    if (null == sharedView.floatArray0L)
-      sharedView.floatArray0L = new FloatArray(this, 0);
-    return sharedView.floatArray0L;
+    return this.getCas().emptyFloatArray();
   }
-
+  
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getFSArray0L()
+   * @deprecated use emptyXXXArray() instead
    */
+  @Deprecated
   public FSArray getFSArray0L() {
-    if (null == sharedView.fsArray0L)
-      sharedView.fsArray0L = new FSArray(this, 0);
-    return sharedView.fsArray0L;
+    return this.getCas().emptyFSArray();
   }
 
   /*
@@ -1198,6 +1153,4 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public <T extends TOP> FSIndex<T> getIndex(String label, Class<T> clazz) {
     return getFSIndexRepository().getIndex(label, getCasType(clazz));
   }
-
-  
 }

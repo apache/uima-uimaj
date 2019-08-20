@@ -18,10 +18,13 @@
  */
 package org.apache.uima.impl;
 
+import org.apache.uima.UimaContext;
+import org.apache.uima.UimaContextHolder;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.ComponentInfo;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.internal.util.function.Runnable_withException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.CasManager_impl;
 
@@ -89,5 +92,46 @@ public class Util {
     return r;
   }
   
+  /**
+   * Calls userCode and then restores the context holder
+   * @param userCode run this code within the current context
+   */
+  public static void preserveContextHolder(Runnable userCode) {
+    UimaContext prevContext = UimaContextHolder.getContext();
+    try {
+      userCode.run();
+    } finally {
+      UimaContextHolder.setContext(prevContext);
+    }
+  }
+
+  /**
+   * Calls userCode with specified context, then restores the context holder
+   * @param context to use while running the userCode
+   * @param userCode the code to run.
+   */
+  public static void withContextHolder(UimaContext context, Runnable userCode) {
+    UimaContext prevContext = UimaContextHolder.setContext(context);
+    try {
+      userCode.run();
+    } finally {
+      UimaContextHolder.setContext(prevContext);
+    }
+  }
+  
+  /**
+   * Calls userCode with specified context, then restores the context holder
+   * @param context to use while running the userCode
+   * @param userCode the code to run.
+   * @throws Exception -
+   */
+  public static void withContextHolderX(UimaContext context, Runnable_withException userCode) throws Exception {
+    UimaContext prevContext = UimaContextHolder.setContext(context);
+    try {
+      userCode.run();
+    } finally {
+      UimaContextHolder.setContext(prevContext);
+    }
+  }  
 
 }

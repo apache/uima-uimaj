@@ -580,6 +580,7 @@ public class CasCreationUtils {
     
     
     // Check Jcas cache performance setting.  Defaults to true.
+    // in v3, JCasCache is ignored
     boolean useJcasCache = true;
     if (aPerformanceTuningSettings != null) {
       String useJcasCacheString = aPerformanceTuningSettings.getProperty(
@@ -588,7 +589,7 @@ public class CasCreationUtils {
         useJcasCache = false;
       }
     }
-
+    
     // create CAS using either aTypeSystem or aTypeSystemDesc
     CASMgr casMgr;
     if (aTypeSystem != null) {
@@ -601,6 +602,12 @@ public class CasCreationUtils {
 
     } else // no TypeSystem to reuse - create a new one
     {
+      boolean skip_loading_user_jcas = false;
+      if (aPerformanceTuningSettings != null) {
+        String v = aPerformanceTuningSettings.getProperty(UIMAFramework.SKIP_USER_JCAS_LOADING, "false");
+        skip_loading_user_jcas = "true".equalsIgnoreCase(v);
+      }
+
       casMgr = CASFactory.createCAS();
  
       if (aResourceManager.getExtensionClassLoader() != null) {
@@ -610,7 +617,7 @@ public class CasCreationUtils {
       // install type system
       setupTypeSystem(casMgr, aTypeSystemDesc);
       // Commit the type system
-      ((CASImpl) casMgr).commitTypeSystem();
+      ((CASImpl) casMgr).commitTypeSystem(skip_loading_user_jcas);
     }
 
     try {

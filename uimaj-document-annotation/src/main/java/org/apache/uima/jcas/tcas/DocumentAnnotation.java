@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.tcas;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -35,6 +38,10 @@ import org.apache.uima.jcas.JCasRegistry;
  */
 public class DocumentAnnotation extends Annotation {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = CAS.TYPE_NAME_DOCUMENT_ANNOTATION;
+  public final static String _FeatName_language = "language";
+  
   public final static int typeIndexID = JCasRegistry.register(DocumentAnnotation.class);
 
   public final static int type = typeIndexID;
@@ -43,7 +50,8 @@ public class DocumentAnnotation extends Annotation {
     return typeIndexID;
   }
 
-  public final static int _FI_language = TypeSystemImpl.getAdjustedFeatureOffset("language"); 
+  private final static CallSite _FC_language = TypeSystemImpl.createCallSite(DocumentAnnotation.class, "language");
+  private final static MethodHandle _FH_language = _FC_language.dynamicInvoker();
         
   // Never called. Disable default constructor
   protected DocumentAnnotation() {
@@ -70,13 +78,13 @@ public class DocumentAnnotation extends Annotation {
    * getter for language
    * @return the language
    */
-  public String getLanguage() { return _getStringValueNc(_FI_language); }
+  public String getLanguage() { return _getStringValueNc(wrapGetIntCatchException(_FH_language)); }
 
   /**
    * setter for language
    * @param v the language
    */
   public void setLanguage(String v) {
-    _setStringValueNfc(_FI_language, v);
+    _setStringValueNfc(wrapGetIntCatchException(_FH_language), v);
   }
 }

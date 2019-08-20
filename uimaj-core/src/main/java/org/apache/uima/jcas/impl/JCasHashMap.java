@@ -19,10 +19,12 @@
 
 package org.apache.uima.jcas.impl;
 
+import java.util.NoSuchElementException;
 import java.util.function.IntFunction;
 
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.IteratorNvc;
 
 /**
  * Version 3 (2016, for Java 8) of map between id's (ints) JCasCover Objects
@@ -114,7 +116,7 @@ import org.apache.uima.jcas.cas.TOP;
  *   putIfAbsent(value-to-be-computed, as an IntSupplier)
  *   get
  */
-public class JCasHashMap {
+public class JCasHashMap implements Iterable<TOP> {
 
   // set to true to collect statistics for tuning
   // you have to also put a call to jcas.showJfsFromCaddrHistogram() at the end of the run
@@ -282,7 +284,7 @@ public class JCasHashMap {
     return (null != oneSubmap) ? oneSubmap : subMaps[hash & concurrencyBitmask];
   }
   
-  public TOP putIfAbsent(int key, IntFunction<TOP> creator) {
+  public final TOP putIfAbsent(int key, IntFunction<TOP> creator) {
     final int hash = hashInt(key);
     final TOP r = getSubMap(hash).putIfAbsent(key, hash >>> concurrencyLevelBits, creator);
     return r;
@@ -292,7 +294,7 @@ public class JCasHashMap {
    * @param key -
    * @return the item or null
    */
-  public TOP get(int key) {
+  public final TOP get(int key) {
     final int hash = hashInt(key);
     final TOP r = getSubMap(hash).get(key, hash >>> concurrencyLevelBits);
     return r;
@@ -302,7 +304,7 @@ public class JCasHashMap {
    * @param value -
    * @return previous value or null
    */
-  public TOP put(TOP value) {
+  public final TOP put(TOP value) {
     return put (value._id(), value);
   }
   
@@ -328,12 +330,12 @@ public class JCasHashMap {
   private static final int C2 = 0x1b873593;
   private static final int seed = 0x39c2ab57;  // arbitrary bunch of bits
 
-  public static int hashInt(int k1) {
+  public static final int hashInt(int k1) {
     k1 *= C1;
     k1 = Integer.rotateLeft(k1, 15);
     k1 *= C2;
     
-    int h1 = seed ^ k1;
+    int h1 = seed ^ k1;  // bitwise exclusive or
     h1 = Integer.rotateLeft(h1, 13);
     h1 = h1 * 5 + 0xe6546b64;
     
@@ -351,6 +353,16 @@ public class JCasHashMap {
     int i = 0;
     for (JCasHashMapSubMap subMap : subMaps) {
       r[i++] = subMap.table.length;
+    }
+    return r;
+  }
+  
+  // test case use
+  int[] getSubSizes() {
+    int[] r = new int[subMaps.length];
+    int i = 0;
+    for (JCasHashMapSubMap subMap : subMaps) {
+      r[i++] = subMap.size;
     }
     return r;
   }
@@ -408,6 +420,44 @@ public class JCasHashMap {
   
   public int getConcurrencyLevel() {
     return concurrencyLevel;
+  }
+
+  @Override
+  public IteratorNvc<TOP> iterator() {
+    return new IteratorNvc<TOP>() {
+      int i_submap = 0;
+      IteratorNvc<TOP> current_iterator = subMaps[0].iterator();
+      
+      { maybeMoveToNextValidSubmap(); }
+      
+      void maybeMoveToNextValidSubmap() {
+        while (!current_iterator.hasNext()) {
+          i_submap ++;
+          if (i_submap >= subMaps.length) {
+            return;
+          }
+          current_iterator = subMaps[i_submap].iterator();
+        }
+      }
+      
+      @Override
+      public boolean hasNext() {
+        maybeMoveToNextValidSubmap();
+        return i_submap < subMaps.length;
+      }
+
+      @Override
+      public TOP next() {
+        if (!hasNext()) throw new NoSuchElementException();
+        return nextNvc(); 
+      }
+      
+      @Override
+      public TOP nextNvc() {
+        return current_iterator.nextNvc();
+      }
+      
+    };
   }
     
 //  private static final Thread dumpMeasurements = MEASURE_CACHE ? new Thread(new Runnable() {

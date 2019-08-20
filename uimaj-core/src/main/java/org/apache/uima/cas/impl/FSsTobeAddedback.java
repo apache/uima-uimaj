@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.AutoCloseableNoException;
 
 
 /**
@@ -40,7 +41,7 @@ import org.apache.uima.jcas.cas.TOP;
  *      a) without count
  *      b) with count   
  */
-abstract class FSsTobeAddedback implements AutoCloseable {
+abstract class FSsTobeAddedback implements AutoCloseableNoException {
   
   final static boolean SHOW = false;
   final static AtomicInteger removes = new AtomicInteger(0);
@@ -48,6 +49,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
   /**
    * does an add back if needed 
    */
+  @Override
   public void close() { addback();}
 
   protected void logPart(FSIndexRepository view) {

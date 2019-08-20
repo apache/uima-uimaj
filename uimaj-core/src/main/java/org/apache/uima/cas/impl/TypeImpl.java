@@ -25,11 +25,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Vector;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
-import org.apache.uima.cas.BuiltinTypeKinds;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Feature;
@@ -57,6 +57,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
         
   private final String name;                // x.y.Foo
   private final String shortName;           //     Foo
+  private final String jcasClassName;       // chande prefix, maybe
   
   private final short typeCode;               // subtypes always have typecodes > this one and < typeCodeNextSibling
   private       short depthFirstCode;         // assigned at commit time
@@ -83,6 +84,13 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   protected final boolean isLongOrDouble;  // for code generation
   
+  /**
+   * when set, processing skipped for
+   *   - augment features from jcas
+   *   - conformance checking between jcas and type system
+   *   - validating the superclass chain upon load of jcas class
+   */
+  protected boolean isBuiltIn;  // for avoiding repetitive work
   
   int nbrOfLongOrDoubleFeatures = 0; 
   
@@ -156,12 +164,13 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    
   // for journalling allocation: This is a 0-based offset for all features in feature order
   int highestOffset = -1;
-  
+    
 //  FeatureImpl featUimaUID = null;  // null or the feature named uimaUID with range type long
 
   private TypeImpl() {
     this.name = null;
     this.shortName = null;
+    this.jcasClassName = null;
     this.superType = null;
     
     this.isInheritanceFinal = false;
@@ -178,6 +187,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     
     slotKind = TypeSystemImpl.getSlotKindFromType(this);
     this.allSuperTypes = null;
+    this.hashCodeNameLong = Misc.hashStringLong(name);
   }
   
   /**
@@ -195,6 +205,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }
     
     this.name = name;
+    this.jcasClassName = Misc.typeName2ClassName(name);
     final int pos = this.name.lastIndexOf(TypeSystem.NAMESPACE_SEPARATOR);
     this.shortName = (pos >= 0) ? this.name.substring(pos + 1) : name;
     this.superType = supertype;
@@ -265,6 +276,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     slotKind = TypeSystemImpl.getSlotKindFromType(this);
     
     hasRefFeature = name.equals(CAS.TYPE_NAME_FS_ARRAY);  // initialization of other cases done at commit time
+    this.hashCodeNameLong = Misc.hashStringLong(name);
   }
 
   /**
@@ -276,6 +288,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   public String getName() {
     return this.name;
   }
+  
+  public String getJCasClassName() {
+    return this.jcasClassName;
+  }
+  
   
   /**
    * Get the super type.
@@ -306,22 +323,19 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   public String toString(int indent) {
     StringBuilder sb = new StringBuilder();
     sb.append(this.getClass().getSimpleName() + " [name: ").append(name).append(", superType: ").append((superType == null) ? "<null>" :superType.getName()).append(", ");
-    prettyPrintList(sb, "directSubtypes", directSubtypes, ti -> sb.append(ti.getName()));
+    prettyPrintList(sb, "directSubtypes", directSubtypes, (sbx, ti) -> sbx.append(ti.getName()));
     sb.append(", ");
     appendIntroFeats(sb, indent);
     return sb.toString();
   }
   
-  private <T> void prettyPrintList(StringBuilder sb, String title, List<T> items, Consumer<T> appender) {
+  private <T> void prettyPrintList(StringBuilder sb, String title, List<T> items, BiConsumer<StringBuilder, T> appender) {
     sb.append(title).append(": ");
     Misc.addElementsToStringBuilder(sb, items, appender);
   }
   
-  private static final char[] blanks = new char[80];
-  static {Arrays.fill(blanks,  ' ');}
-
   public void prettyPrint(StringBuilder sb, int indent) {
-    indent(sb, indent).append(name).append(": super: ").append((null == superType) ? "<null>" : superType.getName());
+    Misc.indent(sb, indent).append(name).append(": super: ").append((null == superType) ? "<null>" : superType.getName());
     
     if (staticMergedFeaturesIntroducedByThisType.size() > 0) {
       sb.append(", ");
@@ -329,11 +343,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }
     sb.append('\n');
   }
-  
-  private StringBuilder indent(StringBuilder sb, int indent) {
-    return sb.append(blanks, 0, Math.min(indent,  blanks.length));
-  }
-  
+    
   public void prettyPrintWithSubTypes(StringBuilder sb, int indent) {
     prettyPrint(sb, indent);
     int nextIndent = indent + 2;
@@ -342,7 +352,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   private void appendIntroFeats(StringBuilder sb, int indent) {
     prettyPrintList(sb, "FeaturesIntroduced/Range/multiRef", staticMergedFeaturesIntroducedByThisType,
-        fi -> indent(sb.append('\n'), indent + 2).append(fi.getShortName()).append('/')
+        (sbx, fi) -> Misc.indent(sbx.append('\n'), indent + 2).append(fi.getShortName()).append('/')
                 .append(fi.getRange().getName()).append('/')
                 .append(fi.isMultipleReferencesAllowed() ? 'T' : 'F') );
   }
@@ -413,7 +423,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   public FeatureImpl getFeatureByBaseName(String featureShortName) {
     return staticMergedFeatures.get(featureShortName);
   }
-
+  
   /**
    * @see org.apache.uima.cas.Type#getShortName()
    */
@@ -445,6 +455,10 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   void setInheritanceFinal() {
     this.isInheritanceFinal = true;
+  }
+  
+  void setBuiltIn() {
+    this.isBuiltIn = true;
   }
   
   public boolean isLongOrDouble() {
@@ -503,6 +517,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }    
   }
   
+  /**
+   * Sets hasRefFeature and nbrOfLongOrDoubleFeatures
+   */
   private void computeHasXxx() {
     nbrOfLongOrDoubleFeatures = superType.getNbrOfLongOrDoubleFeatures();
     if (superType.hasRefFeature) {
@@ -531,7 +548,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @param fi feature to be added
    */
   void addFeature(FeatureImpl fi) {
-    checkExistingFeatureCompatible(staticMergedFeatures.get(fi.getShortName()), fi.getRange());
+    // next already checked by caller "addFeature" in TypeSystemImpl
+//    checkExistingFeatureCompatible(staticMergedFeatures.get(fi.getShortName()), fi.getRange());
     checkAndAdjustFeatureInSubtypes(this, fi);
 
     staticMergedFeatures.put(fi.getShortName(), fi);
@@ -896,31 +914,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
                           ? ((CommonArrayFS)fs).size()  
                           : 0);
   }  
-
-  
-  void setOffset2Feat(List<FeatureImpl> tempIntFis, 
-                      List<FeatureImpl> tempRefFis,
-                      List<FeatureImpl> tempNsr,
-                      FeatureImpl fi, 
-                      int next) {
-    if (fi.isInInt) {     
-      assert tempIntFis.size() == next;
-      tempIntFis.add(fi);
-      if (fi.getRangeImpl().isLongOrDouble) {
-        tempIntFis.add(null);  
-      }
-    } else {
-      assert tempRefFis.size() == next;
-      tempRefFis.add(fi);
-      TypeImpl range = fi.getRangeImpl();
-        
-      if (range.isRefType && 
-          range.typeCode != TypeSystemConstants.sofaTypeCode) {
-        tempNsr.add(fi);
-      }
-    }
-  }
-  
+    
   void initAdjOffset2FeatureMaps(List<FeatureImpl> tmpIntFis, List<FeatureImpl> tmpRefFis, List<FeatureImpl> tmpNsr) {
     tmpIntFis.addAll(Arrays.asList(superType.staticMergedIntFeaturesList));
     tmpRefFis.addAll(Arrays.asList(superType.staticMergedRefFeaturesList));
@@ -944,38 +938,48 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   public final static TypeImpl singleton = new TypeImpl();
 
-  private int hashCode = 0;
-  private boolean hasHashCode = false;
+  private long hashCodeLong = 0;
+  private final long hashCodeNameLong;
+  private boolean hasHashCodeLong = false;
   
   @Override
   public int hashCode() {
-    if (hasHashCode) return hashCode;
-    synchronized (this) {
-      int h = computeHashCode();
-      if (tsi.isCommitted()) {
-        hashCode = h;
-        hasHashCode = true;
+    return (int) hashCodeLong();
+  }
+    
+  private long hashCodeLong() {
+    if (!hasHashCodeLong) {
+      synchronized (this) {
+        this.hashCodeLong = computeHashCodeLong();
+        if (this.getTypeSystem().isCommitted()) {
+          hasHashCodeLong = true; // no need to recompute
+        }
       }
-      return h;
     }
+    return hashCodeLong;
   }
   
+  public long hashCodeNameLong() {
+    return hashCodeNameLong;
+  }
+    
   /**
    * works across type systems
+   * a long so the hash code can be reliably used for quick equal compare.
+   * 
+   * Hash code is not a function of subtypes; otherwise two Type Systems
+   * with different types would have unequal TOP types, for example
    * @return -
    */
-  private int computeHashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + name.hashCode();
-    result = prime * result + ((superType == null) ? 0 : superType.name.hashCode());
-    for (TypeImpl ti : directSubtypes) {
-      result = prime * result + ti.name.hashCode();
-    }
+  private long computeHashCodeLong() {
+    final long prime = 31;
+    long result;
+    result = 31 + hashCodeNameLong;
+    result = prime * result + ((superType == null) ? 0 : superType.hashCodeLong());
     result = prime * result + (isFeatureFinal ? 1231 : 1237);
     result = prime * result + (isInheritanceFinal ? 1231 : 1237);
     for (FeatureImpl fi : getFeatureImpls()) {
-      result = prime * result + fi.hashCode();
+      result = prime * result + fi.hashCodeLong();
     }
     return result;
   }
@@ -990,68 +994,63 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     if (obj == null || !(obj instanceof TypeImpl)) return false;
 
     TypeImpl other = (TypeImpl) obj;
-    if (hashCode() != other.hashCode()) return false;
-    
-    if (!name.equals(other.name)) return false;
-    
-    if (superType == null) {
-      if (other.superType != null) return false;
-    } else {
-      if (other.superType == null) return false;
-      if (!superType.name.equals(other.superType.name)) return false;
-    }
-    
-    if (directSubtypes.size() != other.directSubtypes.size()) return false;
-    
-    if (isFeatureFinal != other.isFeatureFinal) return false;
-    if (isInheritanceFinal != other.isInheritanceFinal) return false;
-    
-    if (this.getNumberOfFeatures() != other.getNumberOfFeatures()) return false;
-    
-    final FeatureImpl[] fis1 = getFeatureImpls();
-    final FeatureImpl[] fis2 = other.getFeatureImpls();
-    if (!Arrays.equals(fis1,  fis2)) return false;
-    
-    for (int i = 0; i < directSubtypes.size(); i++) {
-      if (!directSubtypes.get(i).name.equals(other.directSubtypes.get(i).name)) return false;
-    }
-    
-    return true;
+    return hashCodeLong() == other.hashCodeLong();
+//    if (hashCode() != other.hashCode()) return false;
+//    
+//    if (!name.equals(other.name)) return false;
+//    
+//    if (superType == null) {
+//      if (other.superType != null) return false;
+//    } else {
+//      if (other.superType == null) return false;
+//      if (!superType.name.equals(other.superType.name)) return false;
+//    }
+//    
+//    if (directSubtypes.size() != other.directSubtypes.size()) return false;
+//    
+//    if (isFeatureFinal != other.isFeatureFinal) return false;
+//    if (isInheritanceFinal != other.isInheritanceFinal) return false;
+//    
+//    if (this.getNumberOfFeatures() != other.getNumberOfFeatures()) return false;
+//    
+//    final FeatureImpl[] fis1 = getFeatureImpls();
+//    final FeatureImpl[] fis2 = other.getFeatureImpls();
+//    if (!Arrays.equals(fis1,  fis2)) return false;
+//    
+//    for (int i = 0; i < directSubtypes.size(); i++) {
+//      if (!directSubtypes.get(i).name.equals(other.directSubtypes.get(i).name)) return false;
+//    }
+//    
+//    return true;
   }
   
   /**
    * compareTo must return 0 for "equal" types
+   *    equal means same name, same flags, same supertype chain, same subtypes, and same features
+   * Makes use of hashcodelong to probablistically shortcut computation for equal case
    * 
-   * use the fully qualified names as the comparison
-   * Note: you can only compare types from the same type system. If you compare types from different
-   * type systems, the result is undefined.
+   * for not equal types, do by parts
    */
   @Override
   public int compareTo(TypeImpl t) {
-    if (this == t) {
-      return 0;
-    }
     
-    int c = this.name.compareTo(t.name);
-    if (c != 0) return c;
-        
-    c = Integer.compare(this.hashCode(), t.hashCode());
-    if (c != 0) return c;
+    if (this == t) return 0;
+    long hcl = this.hashCodeLong();
+    long thcl = t.hashCodeLong();
+    if (hcl == thcl) return 0;
     
-    // if get here, we have two types of the same name, and same hashcode
-    //   may or may not be equal
-    //   check the parts.
+    // can't use hashcode for non equal compare -violates compare contract
 
+    int c = Long.compare(hashCodeNameLong, t.hashCodeNameLong);
+    if (c != 0) return c;
+            
     if (this.superType == null || t.superType == null) {
-      Misc.internalError();
+      throw Misc.internalError();
     };
     
-    c = this.superType.name.compareTo(t.superType.name);
+    c = Long.compare(this.superType.hashCodeNameLong, t.superType.hashCodeNameLong);
     if (c != 0) return c;
-    
-    c = Integer.compare(this.directSubtypes.size(), t.directSubtypes.size());
-    if (c != 0) return c;
-    
+        
     c = Integer.compare(this.getNumberOfFeatures(),  t.getNumberOfFeatures());
     if (c != 0) return c;
     
@@ -1063,17 +1062,16 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     final FeatureImpl[] fis1 = getFeatureImpls();
     final FeatureImpl[] fis2 = t.getFeatureImpls();
     
+    c = Integer.compare(fis1.length, fis2.length);
+    if (c != 0) return c;
+    
     for (int i = 0; i < fis1.length; i++) {
       c = fis1[i].compareTo(fis2[i]);
       if (c != 0) return c;      
     }
     
-    for (int i = 0; i < directSubtypes.size(); i++) {
-      c = this.directSubtypes.get(i).compareTo(t.directSubtypes.get(i));
-      if (c != 0) return c;      
-    }
-
-    return 0;
+    // never get here, because would imply equal, and hashcodelongs would have been equal above.
+    throw Misc.internalError();
   }
 
   boolean isPrimitiveArrayType() {
@@ -1139,6 +1137,31 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 //  FsGenerator getGenerator() {
 //    return generator;
 //  }
+
+  @Override
+  public Iterator<Feature> iterator() {
+    final FeatureImpl[] fia = getFeatureImpls();
+    final int l = fia.length;
+    
+    return new Iterator<Feature>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < l;
+      }
+
+      @Override
+      public Feature next() {
+        if (hasNext()) {
+          return fia[i++];
+        } else {
+          throw new NoSuchElementException();
+        }
+      }
+      
+    };
+  }
 
 //  /**
 //   * @return the jcasClassInfo

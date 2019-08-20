@@ -22,7 +22,7 @@ package org.apache.uima;
 import java.util.Locale;
 
 /**
- * This is the superclass for all checked exceptions in UIMA.
+ * This is the superclass for all unchecked exceptions in UIMA.
  * 
  * It adds use of a "standard" bundle resource, if the subclasses don't define this.
  * 
@@ -233,6 +233,11 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
 
   public UIMARuntimeException(String messageBundle, String messageKey, Object[] arguments) {
     this(messageKey, arguments);
+    mMessageBundle = messageBundle;
+  }
+  
+  public UIMARuntimeException(Throwable aCause, String messageBundle, String messageKey, Object ... aArguments) {
+    this(aCause, messageKey, aArguments);
     mMessageBundle = messageBundle;
   }
   

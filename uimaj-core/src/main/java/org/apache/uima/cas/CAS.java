@@ -20,15 +20,34 @@
 package org.apache.uima.cas;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
 
 import org.apache.uima.cas.admin.CASAdminException;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.SelectFSs_impl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.BooleanArray;
+import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.cas.EmptyFSList;
+import org.apache.uima.jcas.cas.EmptyFloatList;
+import org.apache.uima.jcas.cas.EmptyIntegerList;
+import org.apache.uima.jcas.cas.EmptyList;
+import org.apache.uima.jcas.cas.EmptyStringList;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FloatArray;
+import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.LongArray;
+import org.apache.uima.jcas.cas.ShortArray;
+import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Object-oriented CAS (Common Analysis System) API.
@@ -61,9 +80,6 @@ import org.apache.uima.jcas.JCas;
  * {@link TypeSystem TypeSystem} object, you can access the {@link Type Type} and
  * {@link Feature Feature} objects for the CAS built-in types. Note that this interface also
  * provides constants for the names of the built-in types and features.
- * 
- * 
- * 
  */
 public interface CAS extends AbstractCas {
 
@@ -513,6 +529,12 @@ public interface CAS extends AbstractCas {
    */
   <T extends FeatureStructure> T createFS(Type type) throws CASRuntimeException;
 
+  /* 
+   * ===============  These next methods might be deprecated in favor of
+   * ===============  new FSArray(jcas, length) etc.
+   * ===============  except that these run with the CAS, not JCas 
+   */
+  
   /**
    * Create a new feature structure array.
    * 
@@ -595,13 +617,21 @@ public interface CAS extends AbstractCas {
   DoubleArrayFS createDoubleArrayFS(int length) throws CASRuntimeException;
 
   /**
-   * Get the JCas for this CAS.
+   * Get the JCas view for this CAS view
    * 
-   * @return The JCas for this CAS.
-   * @throws CASException -
+   * @return The JCas view for this CAS view
+   * @throws CASException not thrown in v3, but kept for backwards compatibility
    */
   JCas getJCas() throws CASException;
 
+  /**
+   * Get the JCasImpl view for this CAS view
+   * @return the JCasImpl view for this CAS view
+   */
+  default JCasImpl getJCasImpl() {
+    return ((CASImpl)this.getLowLevelCAS()).getJCasImpl();
+  }
+  
   /**
    * Get the Cas view that the current component should use.  This
    * should only be used by single-view components.
@@ -759,6 +789,20 @@ public interface CAS extends AbstractCas {
   <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex(Type type) throws CASRuntimeException;
   
   /**
+   * Get the standard annotation index restricted to a specific annotation type.
+   * 
+   * @param clazz
+   *          The annotation type the index is restricted to, specified as a JCas class
+   * @param <T> the topmost Java class corresponding to the type
+   * @return The standard annotation index, restricted to <code>type</code>.
+   * @exception CASRuntimeException When <code>type</code> is not an annotation type.
+   */
+  default <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex(Class<T> clazz) 
+      throws CASRuntimeException {
+    return getAnnotationIndex(getCasType((Class) clazz));
+  }
+  
+  /**
    * Create a new annotation. Note that you still need to insert the annotation into the index
    * repository yourself.
    * 
@@ -774,7 +818,7 @@ public interface CAS extends AbstractCas {
   <T extends AnnotationFS> AnnotationFS createAnnotation(Type type, int begin, int end);
 
   /**
-   * Get the document annotation. The document has a string-valued feature called "language" where
+   * Get the Document Annotation. The Document Annotation has a string-valued feature called "language" where
    * the document language is specified.
    * 
    * @param <T> the Java class for the document annotation.  Could be the JCas cover class or FeatureStructure
@@ -1122,23 +1166,234 @@ public interface CAS extends AbstractCas {
    */
   void protectIndexes(Runnable runnable);
 
-  default <T extends FeatureStructure> SelectFSs<T> select() {
+  /**
+   * @param <T> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures
+   */  
+  default <T extends TOP> SelectFSs<T> select() {
     return new SelectFSs_impl<>(this);
   }
 
-  default <T extends FeatureStructure> SelectFSs<T> select(Type type) {
+  /**
+   * @param type specifies the type (and subtypes of that type) to access
+   * @param <T> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  default <T extends TOP> SelectFSs<T> select(Type type) {
     return new SelectFSs_impl<>(this).type(type);
   }
 
-  default <T extends FeatureStructure> SelectFSs<T> select(Class<T> clazz) {
+  /**
+   * @param clazz a JCas class corresponding to the type (and subtypes of that type) to access
+   * @param <T> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  default <T extends TOP> SelectFSs<T> select(Class<T> clazz) {
     return new SelectFSs_impl<>(this).type(clazz);
   }
 
-  default <T extends FeatureStructure> SelectFSs<T> select(int jcasType) {
+  /**
+   * @param jcasType the "type" field from the JCas class corresponding to the type (and subtypes of that type) to access
+   * @param <T> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  default <T extends TOP> SelectFSs<T> select(int jcasType) {
     return new SelectFSs_impl<>(this).type(jcasType);
   }
 
-  default <T extends FeatureStructure> SelectFSs<T> select(String fullyQualifiedTypeName) {
+  /**
+   * @param fullyQualifiedTypeName the string name of the type to access
+   * @param <T> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  default <T extends TOP> SelectFSs<T> select(String fullyQualifiedTypeName) {
     return new SelectFSs_impl<>(this).type(fullyQualifiedTypeName);
+  }
+  
+  /**
+   * @param <T> the type of the element of the list
+   * @param clazz a JCas class corresponding to the type (and subtypes of that type) to access
+   * @return a lazily created shared (for this CAS) empty list
+   */
+  default <T extends TOP> EmptyList emptyList(Class<T> clazz) {
+    return ((CASImpl)this.getLowLevelCAS()).emptyListFromTypeCode(((TypeImpl)getCasType(clazz)).getCode());
+  }
+  
+  /** 
+   * @return a lazily created shared (for this CAS) empty list
+   */
+  default EmptyFloatList emptyFloatList() {
+    return ((CASImpl)getLowLevelCAS()).emptyFloatList();
+  };
+  
+  /** 
+   * @param <T> the type of the elements of the FSList
+   * @return a lazily created shared (for this CAS) empty list
+   */
+  default <T extends TOP> EmptyFSList<T> emptyFSList() {
+    return ((CASImpl)getLowLevelCAS()).emptyFSList();
+  };
+  
+  /** 
+   * @return a lazily created shared (for this CAS) empty list
+   */
+  default EmptyIntegerList emptyIntegerList() {
+    return ((CASImpl)getLowLevelCAS()).emptyIntegerList();
+  };
+
+  /** 
+   * @return a lazily created shared (for this CAS) empty list
+   */
+  default EmptyStringList emptyStringList() {
+    return ((CASImpl)getLowLevelCAS()).emptyStringList();
+  };
+
+  /**
+   * @param <T> the type of the elements of the array
+   * @param clazz the class of the elements of the array
+   * @return a lazily created shared (for this CAS) 0-length array
+   */
+  default <T extends TOP> CommonArrayFS<T> emptyArray(Class<T> clazz) {
+    return ((CASImpl)getLowLevelCAS()).emptyArray(getCasType(clazz));
+  }
+  
+  /** 
+   * @return a lazily created shared (for this CAS) 0-length array
+   */
+  default FloatArray emptyFloatArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyFloatArray();
+  };
+
+  /** 
+   * @param <T> the type of the lements of the FSArray
+   * @return a lazily created shared (for this CAS) 0-length array
+   */
+  default <T extends FeatureStructure> FSArray<T> emptyFSArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyFSArray();
+  };
+
+  /** 
+   * @return a lazily created shared (for this CAS) 0-length array
+   */
+  default IntegerArray emptyIntegerArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyIntegerArray();
+  };
+
+  /** 
+   * @return a lazily created shared (for this CAS) 0-length array
+   */
+  default StringArray emptyStringArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyStringArray();
+  };
+
+  /** 
+   * @return a lazily created shared (for this CAS) 0-length array
+   */
+  default DoubleArray emptyDoubleArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyDoubleArray();
+  };
+
+  /** 
+   * @return a lazily created shared (for this CAS) 0-length array
+   */
+  default LongArray emptyLongArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyLongArray();
+  };
+
+  /** 
+   * @return a lazily created shared (for this CAS) 0-length array
+   */
+  default ShortArray emptyShortArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyShortArray();
+  };
+
+  /** 
+   * @return a lazily created shared (for this CAS) 0-length array
+   */
+  default ByteArray emptyByteArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyByteArray();
+  };
+
+  /** 
+   * @return a lazily created shared (for this CAS) 0-length array
+   */
+  default BooleanArray emptyBooleanArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyBooleanArray();
+  };
+  
+  /**
+   * @param clazz - a JCas class
+   * @param <T> the type of the JCas class
+   * @return the corresponding Type, for this CAS
+   */
+  default <T extends TOP> Type getCasType(Class<T> clazz) {
+    return this.getJCasImpl().getCasType(clazz);
+  }
+  
+  /**
+   * Gets an iterator over all indexed (in this CAS view) FeatureStructures of the specified Type (and any of its
+   * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
+   * are not removed.
+   *
+   * @param clazz - the JCas Java class specifing which type and subtypes are included
+   * @param <T> the Java clazz
+   *  
+   * @return An iterator that returns all indexed FeatureStructures of the Type and its subtypes, 
+   *    corresponding to the JCas clazz, in no particular order.
+   */
+  default <T extends TOP> FSIterator<T> getAllIndexedFS(Class<T> clazz) {
+    return getAllIndexedFS(getCasType(clazz));
+  }
+  
+  /**
+   * Gets an iterator over all indexed (in this CAS view) FeatureStructures of the specified Type (and any of its
+   * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
+   * are not removed.
+   *
+   * @param type the type of Feature Structures to include (including subtypes)
+   * @param <T> the JCas class the iterator uses
+   *  
+   * @return An iterator that returns all indexed FeatureStructures of the Type and its subtypes, 
+   *    corresponding to the JCas clazz, in no particular order.
+   */
+  default <T extends TOP> FSIterator<T> getAllIndexedFS(Type type) {
+    return this.getIndexRepository().getAllIndexedFS(type);
+  }
+
+  /**
+   * Returns an unmodifiable collection of all the FSs that are indexed in this view, in an arbitrary order.  
+   * Subsequent modifications to the indexes do not affect this collection.
+   * @param type the type of Feature Structures to include (including subtypes)
+   * @param <T> The Java class associated with type
+   * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
+   *         of the specified type (including subtypes)
+   */
+  default <T extends TOP> Collection<T> getIndexedFSs(Type type) {
+    return this.getIndexRepository().getIndexedFSs(type);
+  }
+  
+  /**
+   * Returns an unmodifiable collection of all of the FSs
+   * that are indexed in this view, in an arbitrary order.  
+   * Subsequent modifications to the indexes do not affect this collection.
+   * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
+   *         of the specified type (including subtypes)
+   */
+  default Collection<TOP> getIndexedFSs() { 
+    return this.getIndexRepository().getIndexedFSs();
+  }
+
+  
+  /**
+   * Returns a collection of all the FSs that are indexed in this view, in an arbitrary order.  
+   * Subsequent modifications to the indexes do not affect this collection.
+   * @param clazz
+   *          The JCas class corresponding to the type
+   * @param <T> The Java class associated with type
+   * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
+   *         of the specified type (including subtypes)
+   */
+  default <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz) {
+    return this.getIndexRepository().getIndexedFSs(clazz);
   }
 }

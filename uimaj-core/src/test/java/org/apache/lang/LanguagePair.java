@@ -1,9 +1,12 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Fri Dec 16 10:23:12 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
 
 package org.apache.lang;
+
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -16,8 +19,8 @@ import org.apache.uima.jcas.cas.TOP;
 
 
 /** 
- * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class LanguagePair extends TOP {
  
@@ -54,9 +57,12 @@ public class LanguagePair extends TOP {
 
 
   /* Feature Adjusted Offsets */
-  public final static int _FI_lang1 = TypeSystemImpl.getAdjustedFeatureOffset("lang1");
-  public final static int _FI_lang2 = TypeSystemImpl.getAdjustedFeatureOffset("lang2");
-  public final static int _FI_description = TypeSystemImpl.getAdjustedFeatureOffset("description");
+  private final static CallSite _FC_lang1 = TypeSystemImpl.createCallSite(LanguagePair.class, "lang1");
+  private final static MethodHandle _FH_lang1 = _FC_lang1.dynamicInvoker();
+  private final static CallSite _FC_lang2 = TypeSystemImpl.createCallSite(LanguagePair.class, "lang2");
+  private final static MethodHandle _FH_lang2 = _FC_lang2.dynamicInvoker();
+  private final static CallSite _FC_description = TypeSystemImpl.createCallSite(LanguagePair.class, "description");
+  private final static MethodHandle _FH_description = _FC_description.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -100,14 +106,14 @@ public class LanguagePair extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public String getLang1() { return _getStringValueNc(_FI_lang1);}
+  public String getLang1() { return _getStringValueNc(wrapGetIntCatchException(_FH_lang1));}
     
   /** setter for lang1 - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setLang1(String v) {
-    _setStringValueNfc(_FI_lang1, v);
+    _setStringValueNfc(wrapGetIntCatchException(_FH_lang1), v);
   }    
     
    
@@ -119,14 +125,14 @@ public class LanguagePair extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public String getLang2() { return _getStringValueNc(_FI_lang2);}
+  public String getLang2() { return _getStringValueNc(wrapGetIntCatchException(_FH_lang2));}
     
   /** setter for lang2 - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setLang2(String v) {
-    _setStringValueNfc(_FI_lang2, v);
+    _setStringValueNfc(wrapGetIntCatchException(_FH_lang2), v);
   }    
     
    
@@ -138,14 +144,14 @@ public class LanguagePair extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public String getDescription() { return _getStringValueNc(_FI_description);}
+  public String getDescription() { return _getStringValueNc(wrapGetIntCatchException(_FH_description));}
     
   /** setter for description - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setDescription(String v) {
-    _setStringValueNfc(_FI_description, v);
+    _setStringValueNfc(wrapGetIntCatchException(_FH_description), v);
   }    
     
   }

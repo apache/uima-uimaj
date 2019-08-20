@@ -60,6 +60,7 @@ import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.impl.SerializationMeasures;
 
@@ -211,7 +212,7 @@ public class SerDesTest4 extends SerDesTstCommon {
       akofAstring = tsm.addFeature("akofAstring", akof, typeArrayString);
     }
 
-    public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
+    public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem typeSystem) {
     }
 
     void reinitTypeSystem(TypeSystemImpl tsm) {
@@ -275,7 +276,7 @@ public class SerDesTest4 extends SerDesTstCommon {
 
     try {
       CASTestSetup cts = new CASTestSetup();
-      this.cas = (CASImpl) CASInitializer.initCas(cts, ts -> cts.reinitTypeSystem(ts));
+      this.cas = (CASImpl) CASInitializer.initCas(cts, t -> cts.reinitTypeSystem(t));
       this.ts = (TypeSystemImpl) this.cas.getTypeSystem();
       this.cas2 = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
       deserCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
@@ -302,7 +303,22 @@ public class SerDesTest4 extends SerDesTstCommon {
 
   public void testAllKinds() {
     loadCas(lfs);
-    verify("AllKinds");
+    // uncomment this to test toString()
+//    int i = 0;
+//    for (TOP item : cas.getIndexRepository().getAllIndexedFS(TOP.class)) {
+//      System.out.println(Integer.toString(i++) + ": " + item.toString());
+//    }
+    verify("AllKinds");   
+  }
+  
+  public void testAllKindsV2() {
+    try (AutoCloseableNoException a = cas.ll_enableV2IdRefs();
+         AutoCloseableNoException b = deserCas.ll_enableV2IdRefs()) {
+      loadCas(lfs);
+      int id = newAkof(lfs)._id();  // an unreachable fs
+      verify("AllKindsV2");
+      assertEquals(id, deserCas.getLowLevelCAS().ll_getFSForRef(id)._id());
+    }
   }
 
   /**
@@ -336,7 +352,7 @@ public class SerDesTest4 extends SerDesTstCommon {
     FeatureStructure fs = createFS(cas, akof);
     if (includeUid) fs.setIntValue(akofUid, aint.getAndAdd(1));
     fs.setFeatureValue(akofFs, lfs2.get(0));
-    ArrayFS fsafs = createArrayFS(cas, 4);
+    ArrayFS<FeatureStructure> fsafs = createArrayFS(cas, 4);
     fsafs.set(1, lfs2.get(1));
     fsafs.set(2, lfs2.get(2));
     fsafs.set(3, lfs2.get(3));
@@ -429,7 +445,7 @@ public class SerDesTest4 extends SerDesTstCommon {
     
     // debug compare before mark
 //    BinaryCasSerDes4 bcs = new BinaryCasSerDes4(ts, false);
-//    assertTrue(bcs.getCasCompare().compareCASes(cas, cas2));
+//    assertTrue(CasCompare.compareCASes(cas, cas2));
     
     marker = (MarkerImpl) cas.createMarker();
 
@@ -1028,7 +1044,7 @@ public class SerDesTest4 extends SerDesTstCommon {
         bais = new ByteArrayInputStream(readIn(fname));
       }
       deserCas.getBinaryCasSerDes().reinit(bais);
-      assertTrue(bcs.getCasCompare().compareCASes(cas, deserCas));
+      assertTrue(CasCompare.compareCASes(cas, deserCas));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -1073,7 +1089,7 @@ public class SerDesTest4 extends SerDesTstCommon {
 
       BinaryCasSerDes bcsd_cas1 = cas.getBinaryCasSerDes();
       bcsd_cas1.reinit(bais);
-      assertTrue(bcs.getCasCompare().compareCASes(cas, cas2));
+      assertTrue(CasCompare.compareCASes(cas, cas2));
 
       // verify indexed fs same; the order may be different so sort first
       // currently seems broken... not comparing anything of use
@@ -1124,7 +1140,7 @@ public class SerDesTest4 extends SerDesTstCommon {
       
       BinaryCasSerDes bcsd_cas2 = cas2.getBinaryCasSerDes();
       bcsd_cas2.reinit(bais);
-      assertTrue(bcs.getCasCompare().compareCASes(cas, cas2));
+      assertTrue(CasCompare.compareCASes(cas, cas2));
 
       // verify indexed fs same; the order may be different so sort first
       // currently seems broken... not comparing anything of use
@@ -1199,7 +1215,7 @@ public class SerDesTest4 extends SerDesTstCommon {
   //
   // BinaryCasSerDes bcsd_deltaCas = deltaCas.getBinaryCasSerDes();
   // bcsd_deltaCas.reinit(bais);
-  // assertTrue(bcs.getCasCompare().compareCASes(cas, deltaCas));
+  // assertTrue(CasCompare.compareCASes(cas, deltaCas));
   //
   // // verify indexed fs same; the order may be different so sort first
   //
@@ -1359,40 +1375,40 @@ public class SerDesTest4 extends SerDesTstCommon {
     return ((CASImpl)cas).createArray((TypeImpl)type, length);
   }
   
-  private ArrayFS createArrayFS(CAS cas, int length) {
-    return (ArrayFS) createArray(cas, ((CASImpl)cas).getTypeSystemImpl().fsArrayType, length);
+  private ArrayFS<FeatureStructure> createArrayFS(CAS c, int length) {
+    return (ArrayFS<FeatureStructure>) createArray(c, ((CASImpl)c).getTypeSystemImpl().fsArrayType, length);
   }
   
-  private StringArrayFS createStringArrayFS(CAS cas, int length) {
-    return (StringArrayFS) createArray(cas, ((CASImpl)cas).getTypeSystemImpl().stringArrayType, length);    
+  private StringArrayFS createStringArrayFS(CAS c, int length) {
+    return (StringArrayFS) createArray(c, ((CASImpl)c).getTypeSystemImpl().stringArrayType, length);    
   }
   
-  private IntArrayFS createIntArrayFS(CAS cas, int length) {
-    return (IntArrayFS) createArray(cas, ((CASImpl)cas).getTypeSystemImpl().intArrayType, length);    
+  private IntArrayFS createIntArrayFS(CAS c, int length) {
+    return (IntArrayFS) createArray(c, ((CASImpl)c).getTypeSystemImpl().intArrayType, length);    
   }
 
-  private FloatArrayFS createFloatArrayFS(CAS cas, int length) {
-    return (FloatArrayFS) createArray(cas, ((CASImpl)cas).getTypeSystemImpl().floatArrayType, length);    
+  private FloatArrayFS createFloatArrayFS(CAS c, int length) {
+    return (FloatArrayFS) createArray(c, ((CASImpl)c).getTypeSystemImpl().floatArrayType, length);    
   }
 
-  private DoubleArrayFS createDoubleArrayFS(CAS cas, int length) {
-    return (DoubleArrayFS) createArray(cas, ((CASImpl)cas).getTypeSystemImpl().doubleArrayType, length);    
+  private DoubleArrayFS createDoubleArrayFS(CAS c, int length) {
+    return (DoubleArrayFS) createArray(c, ((CASImpl)c).getTypeSystemImpl().doubleArrayType, length);    
   }
 
-  private LongArrayFS createLongArrayFS(CAS cas, int length) {
-    return (LongArrayFS) createArray(cas, ((CASImpl)cas).getTypeSystemImpl().longArrayType, length);    
+  private LongArrayFS createLongArrayFS(CAS c, int length) {
+    return (LongArrayFS) createArray(c, ((CASImpl)c).getTypeSystemImpl().longArrayType, length);    
   }
 
-  private ShortArrayFS createShortArrayFS(CAS cas, int length) {
-    return (ShortArrayFS) createArray(cas, ((CASImpl)cas).getTypeSystemImpl().shortArrayType, length);    
+  private ShortArrayFS createShortArrayFS(CAS c, int length) {
+    return (ShortArrayFS) createArray(c, ((CASImpl)c).getTypeSystemImpl().shortArrayType, length);    
   }
 
-  private ByteArrayFS createByteArrayFS(CAS cas, int length) {
-    return (ByteArrayFS) createArray(cas, ((CASImpl)cas).getTypeSystemImpl().byteArrayType, length);    
+  private ByteArrayFS createByteArrayFS(CAS c, int length) {
+    return (ByteArrayFS) createArray(c, ((CASImpl)c).getTypeSystemImpl().byteArrayType, length);    
   }
   
-  private BooleanArrayFS createBooleanArrayFS(CAS cas, int length) {
-    return (BooleanArrayFS) createArray(cas, ((CASImpl)cas).getTypeSystemImpl().booleanArrayType, length);    
+  private BooleanArrayFS createBooleanArrayFS(CAS c, int length) {
+    return (BooleanArrayFS) createArray(c, ((CASImpl)c).getTypeSystemImpl().booleanArrayType, length);    
   }
 
   @Override

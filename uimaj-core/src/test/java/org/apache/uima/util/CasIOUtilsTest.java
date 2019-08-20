@@ -28,21 +28,22 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SerialFormat;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.Assert;
+
 import junit.framework.TestCase;
 
 public class CasIOUtilsTest extends TestCase{
@@ -117,12 +118,12 @@ public class CasIOUtilsTest extends TestCase{
   
   public void testXCAS() throws Exception
   {
-    testXMI(false);
+    testXCAS(false);
   }
 
   public void testXCASLenient() throws Exception
   {
-    testXMI(true);
+    testXCAS(true);
   }
 
   public void testXCAS(boolean leniently) throws Exception {
@@ -218,11 +219,14 @@ public class CasIOUtilsTest extends TestCase{
     }
     
     List<String> fsTypes = new ArrayList<>();
-    FSIterator<FeatureStructure> fsi = cas.getIndexRepository()
-            .getAllIndexedFS(cas.getTypeSystem().getTopType());
+//    FSIterator<FeatureStructure> fsi = cas.getIndexRepository()
+//            .getAllIndexedFS(cas.getTypeSystem().getTopType());
+    Collection<TOP> s = cas.getIndexedFSs();
+    Iterator<TOP> fsi = s.iterator();
     int fsCount = 0;
     while (fsi.hasNext()) {
-      String typeName = fsi.next().getType().getName();
+      TOP fs = (TOP) fsi.next();
+      String typeName = fs.getType().getName();
       if (!fsTypes.contains(typeName)) {
         fsTypes.add(typeName);
       }

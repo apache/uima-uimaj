@@ -19,9 +19,12 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
+
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Version 2 compatibility only, not used internally in version 3 
@@ -29,7 +32,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  * by java.util.Iterator.
  * Users writing their own iterator implementations may extend this class
  */
-public abstract class FSIteratorImplBase<T extends FeatureStructure> implements FSIterator<T> {
+public abstract class FSIteratorImplBase<T extends FeatureStructure> implements LowLevelIterator<T> {
 
   // Jira UIMA-464: add annotation comparator to be able to use Collections.binarySearch() on
   // annotation list.
@@ -94,5 +97,12 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
    */
   <TT extends AnnotationFS> void moveTo(int begin, int end) {
     throw new UnsupportedOperationException();
+  }
+  
+  /**
+   * default implementation of getComparator
+   */
+  public Comparator<TOP> getComparator() {
+    return ll_getIndex().getComparator();
   }
 }

@@ -30,6 +30,7 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -49,11 +50,12 @@ public class ResultSpecTest extends TestCase {
   
   // types
   
-  private static final TypeSystemMgr ts = CASFactory.createTypeSystem();
-  private static final Type t1 = ts.addType("T1", ts.getTopType());
-  private static final Feature f1 = ts.addFeature("F1", t1, t1);
-  private static final Feature f1a = ts.addFeature("F1a", t1, t1);
-  static {ts.commit();};
+  private static final TypeSystemMgr tsm = CASFactory.createTypeSystem();
+  private static final Type t1 = tsm.addType("T1", tsm.getTopType());
+  private static final Feature f1 = tsm.addFeature("F1", t1, t1);
+  private static final Feature f1a = tsm.addFeature("F1a", t1, t1);
+  private static final TypeSystem ts;
+  static {ts = tsm.commit();};
 
   /**
    * Tests for https://issues.apache.org/jira/browse/UIMA-1840

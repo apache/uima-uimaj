@@ -26,7 +26,7 @@ import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
- * Used by Binary serialization form 6
+ * Used by Binary serialization form 4 and 6
  * 
  * Manage the conversion of FSs to relative sequential index number, and back 
  * Manage the difference in two type systems

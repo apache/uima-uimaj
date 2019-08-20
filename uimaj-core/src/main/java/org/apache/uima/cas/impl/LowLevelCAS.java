@@ -21,6 +21,7 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.AutoCloseableNoException;
 
 /**
  * Defines the low-level CAS APIs. The low-level CAS APIs provide no access to feature structure
@@ -75,6 +76,7 @@ import org.apache.uima.jcas.cas.TOP;
  * 
  */
 public interface LowLevelCAS {
+  
   /**
    * Not a valid type. Type class constant returned by
    * {@link #ll_getTypeClass(int) ll_getTypeClass()}.
@@ -144,10 +146,6 @@ public interface LowLevelCAS {
 
   public static final int TYPE_CLASS_DOUBLEARRAY = 18;
   
-  public static final int TYPE_CLASS_JAVAOBJECT = 19;
-  
-  public static final int TYPE_CLASS_JAVAOBJECTARRAY = 20;
-
   static final int NULL_FS_REF = 0;
 
   /**
@@ -835,5 +833,49 @@ public interface LowLevelCAS {
   CASImpl ll_getSofaCasView(int addr);
   
   int ll_getSofa();
+    
+  /**
+   * Enables the id_to_fs_map mode. 
+   * @return an AutoClosable whose close method doesn't throw an exception
+   *   that will reset the mode to what it was when it was changed
+   */
+  default AutoCloseableNoException ll_enableV2IdRefs() {
+    return ll_enableV2IdRefs(true);
+  }
+  
+  /**
+   * Enables or disables the id_to_fs_map mode. 
+   * @param enable true to enable, false to disable
+   * @return an AutoClosable whose close method doesn't throw an exception
+   *   that will reset the mode to what it was when it was changed
+   */
+  AutoCloseableNoException ll_enableV2IdRefs(boolean enable);
+  
+  /**
+   * @return true if the id_to_fs_map mode is enabled
+   */
+  boolean is_ll_enableV2IdRefs();
+  
+  /**
+   * Defaults new CASs to have the id_to_fs_map enabled
+   * @return an AutoCloseable which restores the previous setting
+   */
+  static AutoCloseableNoException ll_defaultV2IdRefs() {
+    return ll_defaultV2IdRefs(true);
+  }
+  
+  /**
+   * Sets the defaults for new CASs to have the id_to_fs_map enabled.
+   * @param enable true to enable, false to disable
+   * @return an AutoCloseable which restores the previous setting
+   */
+  static AutoCloseableNoException ll_defaultV2IdRefs(boolean enable) {
+    final ThreadLocal<Boolean> tl = CASImpl.getDefaultV2IdRefs(); 
+    final Boolean prev = tl.get();  // could be null, true or false
+    AutoCloseableNoException r = () -> tl.set(prev);     
+    tl.set(enable);
+    return r;
+  }
+
 }
 

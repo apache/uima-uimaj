@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -40,10 +40,12 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.analysis_component.AnalysisComponent_ImplBase;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.CollectionProcessingManager;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.internal.util.I18nUtil;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -53,6 +55,7 @@ import org.apache.uima.util.SimpleResourceFactory;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.impl.Constants;
+import org.apache.uima.util.impl.Logger_common_impl;
 import org.apache.uima.util.impl.XMLParser_impl;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -158,8 +161,8 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * HashMap includes all log wrapper classes
    */
-  private HashMap mLoggers;
-
+  private ConcurrentHashMap<String, Logger> mLoggers;
+  
   /**
    * Creates a new UIMAFramework_impl.
    */
@@ -169,6 +172,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_initialize()
    */
+  @Override
   protected void _initialize() throws Exception {
     // attempt to improve initialization performance
     Introspector.setBeanInfoSearchPath(Constants.EMPTY_STRING_ARRAY);
@@ -185,12 +189,13 @@ public class UIMAFramework_impl extends UIMAFramework {
             .getResourceAsStream("performanceTuning.properties"));
 
     // create new HashMap for the LogWrappers
-    mLoggers = new HashMap(200, 1.0f);
+    mLoggers = new ConcurrentHashMap<>(200, 1.0f);
   }
 
   /**
    * @see org.apache.uima.UIMAFramework#_getMajorVersion()
    */
+  @Override
   public short _getMajorVersion() {
     return UimaVersion.getMajorVersion(); // major version
   }
@@ -198,6 +203,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_getMinorVersion()
    */
+  @Override
   public short _getMinorVersion() {
     return UimaVersion.getMinorVersion(); // minor version
   }
@@ -205,6 +211,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_getBuildRevision()
    */
+  @Override
   public short _getBuildRevision() {
     return UimaVersion.getBuildRevision(); // build revision
   }
@@ -215,6 +222,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return the <code>ResourceFactory</code> to be used by the application
    */
+  @Override
   protected CompositeResourceFactory _getResourceFactory() {
     return mResourceFactory;
   }
@@ -225,6 +233,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return the <code>ResourceSpecifierFactory</code> to be used by the application.
    */
+  @Override
   protected ResourceSpecifierFactory _getResourceSpecifierFactory() {
     return mResourceSpecifierFactory;
   }
@@ -235,6 +244,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return the <code>XMLParser</code> to be used by the application.
    */
+  @Override
   protected XMLParser _getXMLParser() {
     return mXMLParser;
   }
@@ -242,6 +252,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#newCollectionProcessingManager()
    */
+  @Override
   protected CollectionProcessingManager _newCollectionProcessingManager(
           ResourceManager aResourceManager) {
     try {
@@ -263,6 +274,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return the <code>Logger</code> to be used by the application.
    */
+  @Override
   protected Logger _getLogger() {
     return mDefaultLogger;
   }
@@ -273,40 +285,56 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return the <code>Logger</code> of the specified source class
    */
+  @Override
   protected Logger _getLogger(Class component) {
+    
+    
     // search for the source class logger in the HashMap
-    Object o = mLoggers.get(component.getName());
+    Logger o = mLoggers.get(component.getName());
 
     if (o == null) // source class logger not available
     {
-      // create new Logger for the source class
-      // set method argument type
-      Class[] argumentTypes = { Class.class };
-      // set argument value
-      Object[] arguments = { component };
-      try {
-        // get static method getInstance(Class component)
-        Method instanceMethod = mLoggerClass.getMethod("getInstance", argumentTypes);
-        // invoke getInstance(Class component) method and retrieve logger object
-        o = instanceMethod.invoke(null, arguments);
-      } catch (NoSuchMethodException e) {
-        throw new UIMARuntimeException(e);
-      } catch (InvocationTargetException e) {
-        throw new UIMARuntimeException(e);
-      } catch (IllegalAccessException e) {
-        throw new UIMARuntimeException(e);
-      }
+      synchronized (this) {
+        o = mLoggers.get(component.getName());
 
-      // put created logger to the HashMap
-      mLoggers.put(component.getName(), o);
+        if (o == null) { // source class logger not available
+      
+          // create new Logger for the source class
+          // set method argument type
+          Class[] argumentTypes = { Class.class };
+          // set argument value
+          Object[] arguments = { component };
+          try {
+            // get static method getInstance(Class component)
+            Method instanceMethod = mLoggerClass.getMethod("getInstance", argumentTypes);
+            // invoke getInstance(Class component) method and retrieve logger object
+            o = (Logger) instanceMethod.invoke(null, arguments);
+            if (AnalysisComponent_ImplBase.class.isAssignableFrom(component) || 
+                // Watch out: next Annotat_ImplBase class exists in 2 packages, this one is old one, needed for backwards compat.
+                org.apache.uima.analysis_engine.annotator.Annotator_ImplBase.class.isAssignableFrom(component)) {  
+              ((Logger_common_impl)o).setAnnotatorLogger(true); 
+            } 
+          } catch (NoSuchMethodException e) {
+            throw new UIMARuntimeException(e);
+          } catch (InvocationTargetException e) {
+            throw new UIMARuntimeException(e);
+          } catch (IllegalAccessException e) {
+            throw new UIMARuntimeException(e);
+          }
+    
+          // put created logger to the HashMap
+          mLoggers.put(component.getName(), o);
+        }
+      }
     }
 
-    return (Logger) o;
+    return o;
   }
 
   /**
    * @see org.apache.uima.UIMAFramework#_newLogger()
    */
+  @Override
   protected Logger _newLogger() {
     try {
       // get static method getInstance()
@@ -328,6 +356,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return a new <code>ResourceManager</code> to be used by the application.
    */
+  @Override
   protected ResourceManager _newDefaultResourceManager() {
     try {
       return (ResourceManager) Class.forName(mResourceManagerImplClassName).newInstance();
@@ -346,6 +375,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return a new <code>ResourceManager</code> to be used by the application.
    */
+  @Override
   protected ResourceManager _newDefaultResourceManagerPearWrapper() {
     try {
       return (ResourceManager) Class.forName(mResourceManagerPearWrapperImplClassName).newInstance();
@@ -364,6 +394,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return a new <code>ConfigurationManager</code> to be used by the application.
    */
+  @Override
   protected ConfigurationManager _newConfigurationManager() {
     try {
       return (ConfigurationManager) Class.forName(mConfigurationManagerImplClassName).newInstance();
@@ -379,6 +410,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_newUimaContext()
    */
+  @Override
   protected UimaContextAdmin _newUimaContext() {
     try {
       return (UimaContextAdmin) Class.forName(mUimaContextImplClassName).newInstance();
@@ -394,6 +426,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_newTimer()
    */
+  @Override
   protected UimaTimer _newTimer() {
     try {
       return (UimaTimer) Class.forName(mTimerClassName).newInstance();
@@ -412,6 +445,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * @see org.apache.uima.UIMAFramework#_produceCollectionProcessingEngine(org.apache.uima.collection.metadata.cpeDescription,
    *      java.util.Map)
    */
+  @Override
   protected CollectionProcessingEngine _produceCollectionProcessingEngine(
           CpeDescription aCpeDescription, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
@@ -434,6 +468,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @see org.apache.uima.UIMAFramework#_getDefaultPerformanceTuningProperties()
    */
+  @Override
   protected Properties _getDefaultPerformanceTuningProperties() {
     return (Properties) mDefaultPerformanceTuningProperties.clone();
   }
@@ -457,7 +492,8 @@ public class UIMAFramework_impl extends UIMAFramework {
     // TOOD: Need UtilityClassLoader here? I don't think we do; this works
     // with XML4J v3. This is a good thing, since the UtilityClassLoader writes
     // to the logger, which isn't created yet!
-    SAXParserFactory factory = SAXParserFactory.newInstance();
+
+    SAXParserFactory factory = XMLUtils.createSAXParserFactory();
     SAXParser parser = factory.newSAXParser();
     XMLReader reader = parser.getXMLReader();
 
@@ -493,6 +529,7 @@ public class UIMAFramework_impl extends UIMAFramework {
     /**
      * @see org.xml.sax.ContentHandler#startDocument()
      */
+    @Override
     public void startDocument() throws SAXException {
       context = CONTEXT_NONE;
     }
@@ -501,6 +538,7 @@ public class UIMAFramework_impl extends UIMAFramework {
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
      *      java.lang.String, org.xml.sax.Attributes)
      */
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)
             throws SAXException {
       if ("logger".equals(qName)) {
@@ -663,6 +701,7 @@ public class UIMAFramework_impl extends UIMAFramework {
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
      *      java.lang.String)
      */
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
       if ("factoryConfig".equals(qName)) {
         context = CONTEXT_NONE;
@@ -684,6 +723,7 @@ public class UIMAFramework_impl extends UIMAFramework {
     /**
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
+    @Override
     public void warning(SAXParseException e) throws SAXException {
       if (_getLogger() != null) {
         UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "warning",
@@ -694,6 +734,7 @@ public class UIMAFramework_impl extends UIMAFramework {
     /**
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
+    @Override
     public void error(SAXParseException e) throws SAXException {
       throw new UIMARuntimeException(e);
     }

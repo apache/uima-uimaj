@@ -108,6 +108,8 @@ public class CASTestSetup  implements AnnotatorInitializer {
   // Index name constants.
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
 
+  public static final String ANNOT_SET_INDEX_NO_TYPEORDER = "Annotation Set Index No Type Order";
+
   public static final String ANNOT_BAG_INDEX = "Annotation Bag Index";
 
   public static final String ANNOT_SORT_INDEX = "Annotation Sort Index";
@@ -197,7 +199,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
     Type arrayOfIntArray = tsm.getArrayType(intArrayType);
   }
 
-  public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
+  private FSIndexComparator makeComp(FSIndexRepositoryMgr irm, TypeSystem ts) {
     FSIndexComparator comp = irm.createComparator();
     Type annotation = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
@@ -205,6 +207,12 @@ public class CASTestSetup  implements AnnotatorInitializer {
             FSIndexComparator.STANDARD_COMPARE);
     comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END),
             FSIndexComparator.REVERSE_STANDARD_COMPARE);
+    return comp;
+  }
+
+  public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
+    FSIndexComparator compNoTypeOrder = makeComp(irm, ts);
+    FSIndexComparator comp = makeComp(irm, ts);
     LinearTypeOrderBuilder tob = irm.createTypeSortOrder();
     try {
       tob.add(new String[] { CAS.TYPE_NAME_ANNOTATION, SENT_TYPE, TOKEN_TYPE });
@@ -215,6 +223,6 @@ public class CASTestSetup  implements AnnotatorInitializer {
     irm.createIndex(comp, ANNOT_BAG_INDEX, FSIndex.BAG_INDEX);
     irm.createIndex(comp, ANNOT_SET_INDEX, FSIndex.SET_INDEX);
     irm.createIndex(comp, ANNOT_SORT_INDEX, FSIndex.SORTED_INDEX);
-
+    irm.createIndex(compNoTypeOrder, ANNOT_SET_INDEX_NO_TYPEORDER, FSIndex.SET_INDEX);
   }
 }

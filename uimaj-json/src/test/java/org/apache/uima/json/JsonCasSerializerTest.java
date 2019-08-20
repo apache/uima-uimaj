@@ -25,8 +25,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -42,14 +40,12 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.FSArray;
-import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.IntegerList;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.NonEmptyIntegerList;
 import org.apache.uima.json.JsonCasSerializer.JsonContextFormat;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.test.AllTypes;
 import org.apache.uima.test.RefTypes;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
@@ -60,6 +56,8 @@ import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.xml.sax.SAXException;
+
+import junit.framework.TestCase;
 
 public class JsonCasSerializerTest extends TestCase {
   /*********************************************************************
@@ -236,9 +234,9 @@ public class JsonCasSerializerTest extends TestCase {
     Type a2t = tsMgr.getType(CAS.TYPE_NAME_ANNOTATION);
     // filter out the 2 types causing namespaces to be needed.
     tsMgr.addType("org.apache.uima.test.Token", a2t);
-    tsMgr.commit();
+    TypeSystemImpl tsi = (TypeSystemImpl) tsMgr.commit();
     jcs = new JsonCasSerializer().setOmit0Values(true);
-    jcs.setFilterTypes((TypeSystemImpl) tsMgr);
+    jcs.setFilterTypes(tsi);
     serializeAndCompare("nameSpaceNoCollsionFiltered.txt");
     
     // filter, but not enough - should have 1 collison
@@ -247,8 +245,8 @@ public class JsonCasSerializerTest extends TestCase {
     // filter out the 2 types causing namespaces to be needed.
     tsMgr.addType("org.apache.uima.test.Token", a2t);
     tsMgr.addType("org.apache.uimax.test.Token", a2t);
-    tsMgr.commit();
-    jcs.setFilterTypes((TypeSystemImpl) tsMgr);
+    tsi = (TypeSystemImpl) tsMgr.commit();
+    jcs.setFilterTypes(tsi);
     serializeAndCompare("nameSpaceCollsionFiltered.txt");    
     
   }
@@ -345,6 +343,11 @@ public class JsonCasSerializerTest extends TestCase {
   }
 
   public void arrayOrListRefstst(boolean tstArray) throws Exception {
+    
+    // using dynamic embedding
+    // an element is multiply-referenced if it is both in the index (referenced by the "view") and is referenced 
+    //   by an FSRef in a feature or a slot in an FSArray
+    
     jcas.reset();
     
     //  make root FS that is indexed and has a ref 
@@ -374,16 +377,18 @@ public class JsonCasSerializerTest extends TestCase {
     l2.setHead(refa3);;
          
     if (tstArray) {
-      root.setAArrayFS(a);
+      root.setAArrayFS(a);  // is not (yet) multiply referenced
     } else {
       root.setAListFs(l0);
     }
     
     String sfx = (tstArray) ? "a" : "l";
     // all embeddable:
+    //   because ref1,2,3 are not index, and FSArray isn't either
     serializeAndCompare("array-all-embeddable-" + sfx + ".txt");
     // 1 not embeddable, at all 3 positions
     refa1.addToIndexes();
+    //   ref1 is multiply indexed
     serializeAndCompare("array-a1-not-" + sfx + ".txt");
     refa1.removeFromIndexes();
     refa2.addToIndexes();

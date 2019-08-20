@@ -26,6 +26,7 @@ import java.util.Spliterator;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.IntArrayFSImpl;
@@ -34,10 +35,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** The Java Class model corresponding to the Cas IntegerArray_JCasImpl type. */
-public final class IntegerArray extends TOP implements CommonPrimitiveArray, IntArrayFSImpl, Iterable<Integer> {
+public final class IntegerArray extends TOP implements CommonPrimitiveArray<Integer>, IntArrayFSImpl, Iterable<Integer> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.cas.jcas.IntegerArray";
+  public final static String _TypeName = CAS.TYPE_NAME_INTEGER_ARRAY;
 
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
@@ -53,6 +54,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -75,8 +77,8 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
-      _casView.adjustLastFsV2size(length);
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2Size_arrays(length);
     }    
   }
 
@@ -93,14 +95,15 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
-      _casView.adjustLastFsV2size(length);
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2Size_arrays(length);
     }    
   }
 
   /**
    * return the indexed value from the corresponding Cas IntegerArray_JCasImpl as an int.
    */
+  @Override
   public int get(int i) {
     return theArray[i];
   }
@@ -108,6 +111,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   /**
    * update the Cas, setting the indexed value to the passed in Java int value.
    */
+  @Override
   public void set(int i, int v) {
     theArray[i] = v;
     _casView.maybeLogArrayUpdate(this, null, i);
@@ -117,6 +121,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
    * @see org.apache.uima.cas.IntArrayFS#copyFromArray(int[], int, int, int)
    * 
    */
+  @Override
   public void copyFromArray(int[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
     _casView.maybeLogArrayUpdates(this, destPos,  length);
@@ -125,6 +130,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   /**
    * @see org.apache.uima.cas.IntArrayFS#copyToArray(int, int[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, int[] dest, int destPos, int length) {
     System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
@@ -132,11 +138,13 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   /**
    * @see org.apache.uima.cas.IntArrayFS#toArray()
    */
+  @Override
   public int[] toArray() {
-    return theArray.clone();
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
+  @Override
   public int size() {
     return theArray.length;
   }
@@ -144,6 +152,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   /**
    * @see org.apache.uima.cas.IntArrayFS#copyToArray(int, String[], int, int)
    */
+  @Override
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
     _casView.checkArrayBounds(theArray.length, srcOffset, length);
     for (int i = 0; i < length; i++) {
@@ -154,6 +163,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   /**
    * @see org.apache.uima.cas.IntArrayFS#copyFromArray(String[], int, int, int)
    */
+  @Override
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
     _casView.checkArrayBounds(theArray.length, srcOffset, length);
     for (int i = 0; i < length; i++) {
@@ -240,10 +250,34 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static IntegerArray createFromArray(JCas jcas, int[] a) {
+  public static IntegerArray create(JCas jcas, int[] a) {
     IntegerArray intArray = new IntegerArray(jcas, a.length);
     intArray.copyFromArray(a, 0, 0, a.length);
     return intArray;
+  }
+  
+  /**
+   * non boxing version 
+   * @param action -
+   */
+  public void forEach(IntConsumer action) {
+    for (int d : theArray) {
+      action.accept(d);
+    }
+  }
+
+
+  /**
+   * @param item the item to see if is in the array
+   * @return true if the item is in the array
+   */
+  public boolean contains(int item) {
+    for (int b : theArray) {
+      if (b == item) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

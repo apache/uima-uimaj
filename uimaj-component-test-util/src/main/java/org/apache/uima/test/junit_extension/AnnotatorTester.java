@@ -31,6 +31,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.collection.CasConsumer;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -360,7 +361,7 @@ public class AnnotatorTester {
          CAS cas = CasCreationUtils.createCas(tsDesc, null,
                new FsIndexDescription[0]);
 
-         SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+         SAXParser parser = XMLUtils.createSAXParserFactory().newSAXParser();
          XCASDeserializer xcasDeserializer = new XCASDeserializer(cas
                .getTypeSystem());
          parser.parse(xcasFile, xcasDeserializer.getXCASHandler(cas));

@@ -22,6 +22,7 @@ package org.apache.uima.cas;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
 
 /**
@@ -42,8 +43,10 @@ import org.apache.uima.cas.impl.LowLevelTypeSystem;
  * feature is appropriate for which type is available through the {@link Type Type} and
  * {@link Feature Feature} classes.
  * 
+ * Implements Iterable to allow iterating over all types
+ * 
  */
-public interface TypeSystem {
+public interface TypeSystem extends Iterable<Type> {
 
   /**
    * This is the character that separates a type name from a feature name. Ex.:
@@ -80,7 +83,7 @@ public interface TypeSystem {
    *          The type of the elements of the resulting array type. This can be any type, even
    *          another array type.
    * @return The array type with the corresponding component type.
-   *         If it doesn't exist, a new TypeImplArray is created for it.
+   *         If it doesn't exist, a new TypeImpl_array is created for it.
    */
   Type getArrayType(Type componentType);
 

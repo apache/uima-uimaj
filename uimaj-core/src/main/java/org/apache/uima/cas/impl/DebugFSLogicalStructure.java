@@ -303,6 +303,9 @@ public class DebugFSLogicalStructure {
         nv.setValue(fs.getStringValue(feat));
       else
         nv.setValue(fs.getFeatureValue(feat));
+      if (nv.getValue() == null) {
+        nv.setValue("null");
+      }
       result[i++] = nv;
     }
   }

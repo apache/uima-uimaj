@@ -229,7 +229,7 @@ public class FeatureStructureTest extends TestCase {
     fsl.addToIndexes(); // otherwise won't be replaced later
     
     Annotation token = this.cas.createFS(tokenType);
-    cas.setId2FSs(token);  
+    cas.setId2FSsMaybeUnconditionally(token);  
     
     // set up some refs; these must be updated if the type changes in a way to require a new FS
     fsa.set(0, token);   // set the 0th  element of a FS Array to point to the "token"
@@ -410,7 +410,7 @@ public class FeatureStructureTest extends TestCase {
 			token.setFloatValue(this.sentLenFeat, 0.0f);
 		} catch (CASRuntimeException e) {
 			caughtExc = true;
-			assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_FEAT));
+			assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE));
 		}
 		assertTrue(caughtExc);
 		assertTrue(token.getFloatValue(this.tokenFloatFeat) == f);
@@ -611,14 +611,16 @@ public class FeatureStructureTest extends TestCase {
 	public void testToString() {
 		FeatureStructure listFS = this.cas.createFS(this.neListType);
 		listFS.setFeatureValue(this.tlFeature, listFS);
-		// System.out.println(listFS.toString());
+		System.out.println("toString for fslist, tail -> node, head is null");
+		System.out.println(listFS.toString());
 
 		FeatureStructure value = this.cas.createFS(this.tokenType);
 		FeatureStructure newList = this.cas.createFS(this.neListType);
 		newList.setFeatureValue(this.tlFeature, listFS);
 		newList.setFeatureValue(this.hdFeature, value);
 		listFS.setFeatureValue(this.hdFeature, value);
-		// System.out.println("\n" + newList.toString());
+		System.out.println("toString for fslist, tail is prev, prev's head: new token, head is same as rpev's head");
+		System.out.println(newList.toString());
 	}
 
 	public static void main(String[] args) {

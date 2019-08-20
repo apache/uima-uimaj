@@ -26,6 +26,8 @@ import java.util.function.IntConsumer;
  */
 public interface PositiveIntSet {
 
+  static final boolean IS_TRACE_MODE_SWITCH = false;  // for debugging
+
   /**
    * remove all members of the set
    */
@@ -125,7 +127,7 @@ public interface PositiveIntSet {
   default void forAllInts(IntConsumer v) {
     IntListIterator it = iterator();
     while (it.hasNext()) {
-      v.accept(it.next());
+      v.accept(it.nextNvc());
     }
   }
 }

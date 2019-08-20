@@ -73,10 +73,12 @@ public class InternationalizedRuntimeException extends RuntimeException {
 
   /**
    * the thread local class loader at creation time, see UIMA-4793
+   * Transient to allow exceptions to be serialized.
+   * Deserialized versions have null as their value, which is handled by the users
    */
-  final private ClassLoader originalContextClassLoader;
+  final transient private ClassLoader originalContextClassLoader;
 
-  /**
+   /**
    * Creates a new <code>InternationalizedRuntimeException</code> with a null message.
    */
   public InternationalizedRuntimeException() {

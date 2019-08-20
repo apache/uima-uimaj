@@ -193,15 +193,12 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     public final boolean hasNext() {
       return (this.currentNode != NIL);
     }
-
+    
     @Override
-    public final int next() {
-      if (!hasNext()) {
-        throw new NoSuchElementException();
-      }
+    public final int nextNvc() {
       int r = IntArrayRBT.this.getKeyForNode(this.currentNode);
       this.currentNode = nextNode(this.currentNode);
-      return r;
+      return r;      
     }
 
     /**
@@ -209,7 +206,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
      */
     @Override
     public boolean hasPrevious() {
-      return (previousNode(this.currentNode) != NIL);
+      return previousNode(this.currentNode) != NIL;
     }
 
     /**
@@ -222,6 +219,12 @@ public class IntArrayRBT extends IntArrayRBTcommon {
         return getKey(this.currentNode);
       }
       throw new NoSuchElementException();
+    }
+    
+    @Override
+    public int previousNvc() {
+      this.currentNode = previousNode(this.currentNode);
+      return getKey(this.currentNode);
     }
 
     /**

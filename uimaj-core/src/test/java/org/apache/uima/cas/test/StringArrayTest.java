@@ -188,7 +188,7 @@ public class StringArrayTest extends TestCase {
      final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
      assertTrue(lemmaList != null);
      StringArrayFS casArray = this.cas.createStringArrayFS(3);
-     ((CASImpl)(casArray.getCAS())).setId2FSs(casArray);
+     ((CASImpl)(casArray.getCAS())).setId2FSsMaybeUnconditionally(casArray);
      casArray.set(0, "1");
      casArray.set(1, null);
      casArray.set(2, "3");

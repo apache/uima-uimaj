@@ -21,8 +21,9 @@ package org.apache.uima.jcas.cas;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
@@ -76,8 +77,8 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
   }
   
   @Override
-  public EmptyFloatList getEmptyList() {
-    return this._casView.getEmptyFloatList();
+  public EmptyFloatList emptyList() {
+    return this._casView.emptyFloatList();
   }
   
   /**
@@ -86,12 +87,27 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
    * @param a the array of Floats to populate the list with
    * @return an FloatList, with the elements from the array
    */
-  public static FloatList createFromArray(JCas jcas, Float[] a) {
-    FloatList floatList = jcas.getCasImpl().getEmptyFloatList();   
+  public static FloatList create(JCas jcas, Float[] a) {
+    FloatList floatList = jcas.getCasImpl().emptyFloatList();   
     for (int i = a.length - 1; i >= 0; i--) {
       floatList = floatList.push(a[i]);
     }   
     return floatList;
   }
-
+  
+  public Stream<Float> stream() {
+    return StreamSupport.stream(spliterator(), false);
+  }
+  
+  public boolean contains(float v) {
+    FloatList node = this;
+    while (node instanceof NonEmptyFloatList) {
+      NonEmptyFloatList n = (NonEmptyFloatList) node;
+      if (n.getHead() == v) {
+        return true;
+      }
+      node = n.getTail();
+    }
+    return false;
+  }
 }

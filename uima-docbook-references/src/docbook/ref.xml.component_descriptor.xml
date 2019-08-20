@@ -154,16 +154,25 @@ under the License.
       <programlisting>
 ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
 resMgr.setDataPath(yourPathString);
-AnalysisEngine ae = UIMAFramework.produceAE(desc, resMgr, null);
+AnalysisEngine ae = 
+  UIMAFramework.produceAnalysisEngine(desc, resMgr, null);
 </programlisting></para>
     
     <para>The default datapath for the entire JVM can be set via the
       <literal>uima.datapath</literal> Java system property, but this feature should
       only be used for standalone applications that don&apos;t need to run in the same JVM as
       other code that may need a different datapath.</para>
+
+    <para>The value of a name or location attribute may be parameterized with references to external
+    override variables using the <literal>${variable-name}</literal> syntax.
+    <programlisting>&lt;import location="Annotator${with}ExternalOverrides.xml" /&gt;</programlisting>
+	If a variable is undefined the value is left unmodified and a warning message identifies the missing
+	variable.</para>
+
     <para>Previous versions of UIMA also supported XInclude. That support didn't work in
       many situations, and it is no longer supported. To include other files, please use
       &lt;import&gt;.</para>
+
     <!--
     <para>The UIMA SDK also supports XInclude, a W3C candidate recommendation,
     to include XML files within other XML files.  However, it is recommended that the import syntax be used instead, as it
@@ -682,7 +691,8 @@ uima.tcas.Annotation.</programlisting>
               Information in the CAS is always accessed through an index. There is a built-in default annotation
               index declared which can be used to access instances of type
               <literal>uima.tcas.Annotation</literal> (or its subtypes), sorted based on their
-              <literal>begin</literal> and <literal>end</literal> features. For all other types, there is a
+              <literal>begin</literal> and <literal>end</literal> features, and the type priority ordering (if specified). 
+              For all other types, there is a
               default, unsorted (bag) index. If there is a need for a specialized index it must be declared in this
               element of the descriptor. See <olink targetdoc="&uima_docs_ref;"
                 targetptr="ugr.ref.cas.indexes_and_iterators"/> for details on FS indexes.</para>
@@ -731,7 +741,7 @@ uima.tcas.Annotation.</programlisting>
               <literal>&lt;kind&gt;</literal> of index. Sorted indexes enforce an
               ordering of feature structures, based on defined keys.  Bag indexes do
               not enforce ordering, and have no defined keys. Set indexes do not
-              enforce ordering, but use defined keys to specify equivalnce classes; 
+              enforce ordering, but use defined keys to specify equivalence classes; 
               addToIndexes will not add a Feature Structure to a set index if its keys 
               match those of an entry of the same type already in the index.
               If the <literal>&lt;kind&gt;</literal>element is omitted, it will default to
@@ -1101,6 +1111,13 @@ uima.tcas.Annotation.</programlisting>
               it will complain that it can&apos;t connect to the host <quote>org</quote>
               </para>
             
+			<para>The URL value may contain references to external override variables using the
+ 		      <literal>${variable-name}</literal> syntax, 
+			  e.g. <literal>file:com/${dictUrl}.txt</literal>.
+			  If a variable is undefined the value is left unmodified and a warning message
+ 		      identifies the missing variable.
+			  </para>
+
             <para>Another option is a
               <literal>&lt;fileLanguageResourceSpecifier&gt;</literal>, which is
               intended to support resources, such as dictionaries, that depend on the
@@ -1945,9 +1962,12 @@ uima.tcas.Annotation.</programlisting>
             <para>
             The settings for all descriptors in a pipeline are usually loaded from one or more files
             whose names are obtained from the Java system property <emphasis>UimaExternalOverrides</emphasis>.
-            The value of the property must be a list of file names, each separated by a single comma 
-            e.g. <literal>&minus;DUimaExternalOverrides=file1.settings,file2.settings</literal>.
-            If a file is not in the filesystem and is a relative reference, both the datapath and classpath are searched.
+            The value of the property must be a comma-separated list of resource names.  If the name
+            has a prefix of "file:" or no prefix, the filesystem is searched.  If the name has a
+            prefix of "path:" the rest must be a Java-style dotted name, similar to the name
+            attribute for descriptor imports.  The dots are replaced by file separators and a suffix
+            of ".settings" is appended before searching the datapath and classpath.
+            e.g. <literal>&minus;DUimaExternalOverrides=/data/file1.settings,file:relative/file2.settings,path:org.apache.uima.resources.file3</literal>.
             </para>
 
             <para>
@@ -2072,6 +2092,16 @@ if (uimaContext != null) {
             </para>
           </section>
 
+          <section id="&tp;aes.other_uses_for_external_configuration_parameters">
+            <title>Other Uses for External Configuration Parameters</title>
+			<para>
+            Explicit references to shared configuration parameters can be specified as part of the
+            value of the name and location attributes of the <literal>import</literal> element
+			and in the value of the fileUrl for a <literal>fileResourceSpecifier</literal>
+			(see <xref linkend="&tp;imports"/> and <xref linkend="&tp;aes.primitive.resource_manager_configuration"/>).
+            </para>
+		  </section>
+
         </section>
       </section>
  
@@ -2120,7 +2150,7 @@ if (uimaContext != null) {
       <literal>resourceManagerConfiguration</literal> elements are exactly the same as
       in Primitive Analysis Engine Descriptors (see <xref
         linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
-        linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
+        linkend="&tp;aes.primitive.resource_manager_configuration"/>).</para>
     
   </section>
   
@@ -2216,7 +2246,7 @@ if (uimaContext != null) {
         <literal>resourceManagerConfiguration</literal> elements are exactly the same
         as in the Primitive Analysis Engine Descriptors (see <xref
           linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
-          linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
+          linkend="&tp;aes.primitive.resource_manager_configuration"/>).</para>
       
     </section>
     <section id="&tp;collection_processing_parts.cas_initializer">
@@ -2360,7 +2390,7 @@ if (uimaContext != null) {
         <literal>resourceManagerConfiguration</literal> elements are exactly the same
         as in Primitive Analysis Engine Descriptors (see <xref
           linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
-          linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
+          linkend="&tp;aes.primitive.resource_manager_configuration"/>).</para>
       
     </section>
   </section>

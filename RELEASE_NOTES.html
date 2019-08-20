@@ -20,31 +20,20 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v3.0.0-alpha Release Notes</title>
+  <title>Apache UIMA v3.0.0 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.0-alpha Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.0 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
-<a href="#alpha">Alpha release status notice</a><br/>
 <a href="#what.is.uima">What is UIMA?</a><br/>
 <a href="#major.changes">Major Changes in this Release</a><br/>
 <a href="#get.involved">How to Get Involved</a><br/>
 <a href="#report.issues">How to Report Issues</a><br/>
 <a href="#list.issues">List of JIRA Issues Fixed in this Release</a><br/>
 </p>  
-   
-<h2><a id="alpha">0. Alpha release status</a></h2>
-  <p>This is an alpha release, done in order to expand the 
-     community of people doing initial testing on this new release.
-     As such, it is possible that bugs or deficiencies may be found
-     which might require changes to APIs.</p>
-     
-  <p>Following a period of alpha testing, depending on the results,
-     we will proceed to more official releases.
-     </p>
-     
+        
 <h2><a id="what.is.uima">1. What is UIMA?</a></h2>
 
      <p>
@@ -92,45 +81,57 @@
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 
-<p>Version 3 is a major reimplementation of the internals of UIMA,
-with many significant changes.  A one-time migration step is required if 
-JCas cover classes are being used.  
+<p>Version 3 is a major reimplementation of the internals of 
+the Java version of UIMA to support better integration with
+Java 8, alignment with modern memory hierarchies for 
+better performance, and multiple functional enhancements and
+improvements.</p>
+<p>
+If non-built-in JCas cover classes are being used,
+a one-time regeneration or migration step is required for these.  
 Please read the Version 3 users guide located in the docs directory
-for information on these changes and the migration tool.
+for information on these changes and the migration tool which can
+aid in migrating existing JCas class definitions.
 </p>
 
-<p>A very brief summary of Version 3:
+<p>A very brief summary of Version 3:</p>
 <ul><li>Feature Structures become Java Objects, 
-and may be Garbage Collected.</li>
-<li>Many performance improvements</li>
+subject to Garbage Collection, just like any other objects, 
+when no longer reachable.</li>
 <li>Iterating over indexes no longer throws 
-ConcurrentModificationException</li>
-<li>Support for arbitrary Java Objects in the CAS</li>
-<li>Using above, new built-ins for ArrayList style
-lists of Feature Structures and ints, and a FSHashSet</li>
+ConcurrentModificationException.</li>
+<li>Support for arbitrary Java Objects in the CAS, 
+using special custom implementations of JCas cover classes for those.</li>
+<li>Using the above new capability, new semi-built-ins for three new types: ArrayList style
+lists of Feature Structures and ints, and an FSHashSet</li>
 <li>New "select" framework for flexible 
-access to Feature Structures</li>
+access to Feature Structures, that can ignore typeOrdering keys in indexes.</li>
 <li>Integration with Java 8 facilities such as Streams</li>
-</p>
+<li>Logging framework upgraded, supporting embedding UIMA in other frameworks using 
+popular logging APIs</li>
+<li>There are many performance improvements</li>
+</ul>
 
-<p>Please read the overview section of the Version 3 
-users guide for more.</p>
+
+<p>Please read the Version 3 users guide for more details.</p>
+
+<p>Specific changes in this release versus the previous beta release include</p>
+<ul>
+  <li>Support of a v2 id compatibility mode, for backwards compatibility, enables use of the LowLevelCAS API getFSForRef(int)
+  <li>Improved support for sharing a set of loaded JCas classes with different, but somewhat compatible type systems
+  <li>New semi-builtin types: a FSLinkedHashSet, and a map from "int"s to Feature Structures
+</ul>
  
 <h3>API changes</h3>
- <p>Many APIs were changed, typically by adding new capability.  
- However, we attempt to preserve existing APIs, for backward compatibility. 
+ <p>There is an API compatibility report covering the non-internal APIs;
+   see <a href="api-change-report.html">change report</a> for the list of API changes
+   since version 2.10.2.
  </p>
  
 <h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
 issues affecting this release.  
    
-<h2><a id="alpha">Alpha Release</a></h2>
-<p>Because this release makes major changes to UIMA internals,
-this is an alpha release of version 3.  It is being made to get 
-wider community involvement in testing and feedback.  
-The APIs may change, and features
-may be added or altered.<\p>
 
 <p>Please use the mailing lists 
 ( http://uima.apache.org/mail-lists.html ) 

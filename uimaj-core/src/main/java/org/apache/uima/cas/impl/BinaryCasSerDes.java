@@ -46,7 +46,6 @@ import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
 import org.apache.uima.internal.util.function.Consumer_T_int_withIOException;
-import org.apache.uima.internal.util.function.DeserBinaryIndexes;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.DoubleArray;
@@ -172,7 +171,7 @@ public class BinaryCasSerDes {
 //   * For delta, the addr is the modeled addr for the full CAS including both above and below the line.
 //   * 
 //   */
-//  final Int2ObjHashMap<TOP> addr2fs;  
+//  final Int2ObjHashMap<TOP, TOP> addr2fs;  
     
 //  /**
 //   * a map from a fs array of boolean/byte/short/long/double to its addr in the modeled aux heap
@@ -192,17 +191,15 @@ public class BinaryCasSerDes {
    * updated when delta deserializing.
    * reset at end of delta deserializings because multiple mods not supported
    */
-  final private Int2ObjHashMap<TOP> byteAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
-  final private Int2ObjHashMap<TOP> shortAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
-  final private Int2ObjHashMap<TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);      
+  final private Int2ObjHashMap<TOP, TOP> byteAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
+  final private Int2ObjHashMap<TOP, TOP> shortAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
+  final private Int2ObjHashMap<TOP, TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);   
   
   /**
-   * If true, adjust type codes in serialized forms
-   * to allow v2 type codes to be correctly read by v3 impls,
-   * because v3 impls have a greater number of built-in types 
+   *  used to calculate total heap size
    */
   boolean isBeforeV3 = false;  
-
+  
   public BinaryCasSerDes(CASImpl baseCAS) {
     this.baseCas = baseCAS;
   }
@@ -224,6 +221,8 @@ public class BinaryCasSerDes {
 
   /**
    * This is for deserializing (never delta) from a serialized java object representation or maybe from the JNI bridge
+   * 
+   * both callers do a cas reset of some kind
    * 
    * @param heapMetadata -
    * @param heapArray -
@@ -285,7 +284,7 @@ public class BinaryCasSerDes {
   
       // freshen the initial view
       initialView.refreshView(baseCas, null);
-      baseCas.setViewForSofaNbr(1, initialView);
+      baseCas.svd.setViewForSofaNbr(1, initialView);
       baseCas.svd.viewCount = 1;
     }
     return baseCas;
@@ -298,7 +297,17 @@ public class BinaryCasSerDes {
    */
   public void reinit(CASCompleteSerializer casCompSer) {
     TypeSystemImpl ts = casCompSer.getCASMgrSerializer().getTypeSystem();
-    baseCas.svd.clear();   
+    
+    /*
+     * Special clearing:
+     *   Skips the resetNoQuestions operation of flushing the indexes, 
+     *   since these will be reinitialized with potentially new definitions.
+     *   
+     *   Clears additional data related to having the
+     *   - type system potentially change
+     *   - the features belonging to indexes change
+     */
+    baseCas.svd.clear();  // does all clearing except index repositories which will be wiped out   
     baseCas.installTypeSystemInAllViews(ts);  // the commit (next) re-installs it if it changes
     baseCas.commitTypeSystem();
 
@@ -311,7 +320,7 @@ public class BinaryCasSerDes {
 
     // freshen the initial view
     initialView.refreshView(baseCas, null);  // sets jcas to null for the view, too
-    baseCas.setViewForSofaNbr(1, initialView);
+    baseCas.svd.setViewForSofaNbr(1, initialView);
     baseCas.svd.viewCount = 1;
 
     // deserialize heap
@@ -390,7 +399,7 @@ public class BinaryCasSerDes {
      * and then maybe remove the new one (and remember which views to re-add to).
      * @param heapAddr
      */
-    private void maybeAddBackAndRemoveFs(int heapAddr, Int2ObjHashMap<TOP> addr2fs) {
+    private void maybeAddBackAndRemoveFs(int heapAddr, Int2ObjHashMap<TOP, TOP> addr2fs) {
       if (fsStartAddr == -1) {
         fssIndex = -1;
         addrOfFsToBeAddedBack = -1;
@@ -415,7 +424,7 @@ public class BinaryCasSerDes {
      * @param heapAddr - the heap addr
      * @param bds -
      */
-    private void findCorrespondingFs(int heapAddr, Int2ObjHashMap<TOP> addr2fs) {
+    private void findCorrespondingFs(int heapAddr, Int2ObjHashMap<TOP, TOP> addr2fs) {
       if (fsStartAddr < heapAddr && heapAddr < fsEndAddr) {
         return;
       }
@@ -516,7 +525,7 @@ public class BinaryCasSerDes {
                              TypeSystemImpl ts) throws CASRuntimeException {
   
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
-
+    
     if (!h.isV3) {
       if (h.getSeqVersionNbr() < 2) {
         isBeforeV3 = true; // adjusts binary type numbers 
@@ -556,14 +565,15 @@ public class BinaryCasSerDes {
           System.out.format("BinDeser version = %d%n", Integer.valueOf(h.v));
         }
         if (h.form4) {
-          (new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false))
-            .deserialize(baseCas, dis, delta, h);
+          BinaryCasSerDes4 bcsd4 = new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false);
+          bcsd4.deserialize(baseCas, dis, delta, h);
           return h.typeSystemIndexDefIncluded ? SerialFormat.COMPRESSED_TSI : SerialFormat.COMPRESSED;
         } else {
+          // is form 6
           CASMgrSerializer cms = (embeddedCasMgrSerializer != null) ? embeddedCasMgrSerializer : casMgrSerializer; 
           TypeSystemImpl tsRead = (cms != null) ? cms.getTypeSystem() : null;
           if (null != tsRead) {
-            tsRead = tsRead.commit();  // no generators set up
+            tsRead = tsRead.commit(baseCas.getJCasClassLoader()); // https://issues.apache.org/jira/browse/UIMA-5598
           }
             
           TypeSystemImpl ts_for_decoding =
@@ -903,7 +913,7 @@ public class BinaryCasSerDes {
         IntListIterator it = csds.addr2fs.keyIterator();
         int iaa = 0;
         while (it.hasNext()) {
-          bds.fssAddrArray[iaa++] = it.next();
+          bds.fssAddrArray[iaa++] = it.nextNvc();
         }
         // iaa at this point refs the last entry in the table
         bds.fssAddrArray[iaa] = heap.getCellsUsed();
@@ -985,7 +995,7 @@ public class BinaryCasSerDes {
    * @return heapsz (used by caller to do word alignment)
    * @throws IOException 
    */
-  int updateAuxArrayMods(Reading r, Int2ObjHashMap<TOP> auxAddr2fsa, 
+  int updateAuxArrayMods(Reading r, Int2ObjHashMap<TOP, TOP> auxAddr2fsa, 
       Consumer_T_int_withIOException<TOP> setter) throws IOException {
     final int heapsz = r.readInt();
     if (heapsz > 0) {
@@ -1014,57 +1024,57 @@ public class BinaryCasSerDes {
     return heapsz;
   }
 
-  /**
-   * gets number of views, number of sofas,
-   * For all sofas, 
-   *   adds them to the index repo in the base index
-   *   registers the sofa
-   * insures initial view created
-   * for all views:
-   *   does the view action and updates the documentannotation
-   * @param fsIndex the index info except for the actual list of FSs to reindex
-   * @param fss the lists of FSs to reindex (concatenated add/remove, or just adds if not delta)
-   * @param viewAction
-   */
-  void reinitIndexedFSs_common(int[] fsIndex, List<TOP> fss, DeserBinaryIndexes viewAction) {
-    // Add FSs to index repository for base CAS
-    int numViews = fsIndex[0];
-    int loopLen = fsIndex[1]; // number of sofas, not necessarily the same as
-    // number of views
-    // because the initial view may not have a sofa
-    for (int i = 0; i < loopLen; i++) { // iterate over all the sofas,
-      baseCas.indexRepository.addFS(fss.get(i)); // add to base index
-    }
-    
-
-    baseCas.forAllSofas(sofa -> {
-      String id = sofa.getSofaID();
-      if (CAS.NAME_DEFAULT_SOFA.equals(id)) { // _InitialView
-        baseCas.registerInitialSofa();
-        baseCas.addSofaViewName(id);
-      }
-      // next line the getView as a side effect
-      // checks for dupl sofa name, and if not,
-      // adds the name to the sofaNameSet
-      ((CASImpl) baseCas.getView(sofa)).registerView(sofa);
-    });
-    
-    baseCas.getInitialView();  // done for side effect of creating the initial view if not present
-    // must be done before the next line, because it sets the
-    // viewCount to 1.
-    baseCas.setViewCount(numViews); // total number of views
-    
-    int fsIndexIdx = 2;
-    for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
-      CASImpl view = (viewNbr == 1) ? (CASImpl) baseCas.getInitialView() : (CASImpl) baseCas.getView(viewNbr);
-      if (view != null) {
-        fsIndexIdx += (1 + viewAction.apply(fsIndexIdx, view));
-        view.updateDocumentAnnotation();   // noop if sofa local data string == null
-      } else {
-        fsIndexIdx += 1;
-      }
-    }
-  }
+//  /**
+//   * gets number of views, number of sofas,
+//   * For all sofas, 
+//   *   adds them to the index repo in the base index
+//   *   registers the sofa
+//   * insures initial view created
+//   * for all views:
+//   *   does the view action and updates the documentannotation
+//   * @param fsIndex the index info except for the actual list of FSs to reindex
+//   * @param fss the lists of FSs to reindex (concatenated add/remove, or just adds if not delta)
+//   * @param viewAction
+//   */
+//  void reinitIndexedFSs_common(int[] fsIndex, List<TOP> fss, DeserBinaryIndexes viewAction) {
+//    // Add FSs to index repository for base CAS
+//    int numViews = fsIndex[0];
+//    int loopLen = fsIndex[1]; // number of sofas, not necessarily the same as
+//    // number of views
+//    // because the initial view may not have a sofa
+//    for (int i = 0; i < loopLen; i++) { // iterate over all the sofas,
+//      baseCas.indexRepository.addFS(fss.get(i)); // add to base index
+//    }
+//    
+//
+//    baseCas.forAllSofas(sofa -> {
+//      String id = sofa.getSofaID();
+//      if (CAS.NAME_DEFAULT_SOFA.equals(id)) { // _InitialView
+//        baseCas.registerInitialSofa();
+//        baseCas.addSofaViewName(id);
+//      }
+//      // next line the getView as a side effect
+//      // checks for dupl sofa name, and if not,
+//      // adds the name to the sofaNameSet
+//      ((CASImpl) baseCas.getView(sofa)).registerView(sofa);
+//    });
+//    
+//    baseCas.getInitialView();  // done for side effect of creating the initial view if not present
+//    // must be done before the next line, because it sets the
+//    // viewCount to 1.
+//    baseCas.setViewCount(numViews); // total number of views
+//    
+//    int fsIndexIdx = 2;
+//    for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
+//      CASImpl view = (viewNbr == 1) ? (CASImpl) baseCas.getInitialView() : (CASImpl) baseCas.getView(viewNbr);
+//      if (view != null) {
+//        fsIndexIdx += (1 + viewAction.apply(fsIndexIdx, view));
+//        view.updateDocumentAnnotation();   // noop if sofa local data string == null
+//      } else {
+//        fsIndexIdx += 1;
+//      }
+//    }
+//  }
   
   
   /**
@@ -1084,15 +1094,27 @@ public class BinaryCasSerDes {
    * @param fsIndex - array of fsRefs and counts, for sofas, and all views
    * @param isDeltaMods - true for calls which are for delta mods - these have adds/removes
    */
-  void reinitIndexedFSs(int[] fsIndex, boolean isDeltaMods, IntFunction<TOP> getFsFromAddr) {
-    int numViews = fsIndex[0];
+  void reinitIndexedFSs(int[] fsIndex, boolean isDeltaMods, IntFunction<TOP> getFsFromAddr) {   
+    int idx = reinitIndexedFSsSofas(fsIndex, isDeltaMods, getFsFromAddr);
+    reinitIndexedFSs(fsIndex, isDeltaMods, getFsFromAddr, fsIndex[0], idx);
+  }
+  
+  void reinitIndexedFSs(int[] fsIndex, boolean isDeltaMods, IntFunction<TOP> getFsFromAddr, IntFunction<TOP> getSofaFromAddr) {
+    int idx = reinitIndexedFSsSofas(fsIndex, isDeltaMods, getSofaFromAddr);
+    reinitIndexedFSs(fsIndex, isDeltaMods, getFsFromAddr, fsIndex[0], idx);
+  }
+  
+  int reinitIndexedFSsSofas(int[] fsIndex, boolean isDeltaMods, IntFunction<TOP> getFsFromAddr ) {
     int numSofas = fsIndex[1]; // number of sofas, not necessarily the same as number of views (initial view may not have a sofa)
     int idx = 2;
     int end1 = 2 + numSofas;
     for (; idx < end1; idx++) { // iterate over all the sofas,
       baseCas.indexRepository.addFS(getFsFromAddr.apply(fsIndex[idx])); // add to base index
     }
- 
+    return idx;
+  }
+  
+  void reinitIndexedFSs(int[] fsIndex, boolean isDeltaMods, IntFunction<TOP> getFsFromAddr, int numViews, int idx) {    
     baseCas.forAllSofas(sofa -> {
       String id = sofa.getSofaID();
       if (CAS.NAME_DEFAULT_SOFA.equals(id)) { // _InitialView
@@ -1216,7 +1238,7 @@ public class BinaryCasSerDes {
   // etc.
   int[] getIndexedFSs(Obj2IntIdentityHashMap<TOP> fs2addr) {
     IntVector v = new IntVector();
-    List<TOP> fss;
+    Collection<TOP> fss;
 
     int numViews = baseCas.getViewCount();
     v.add(numViews);
@@ -1228,7 +1250,7 @@ public class BinaryCasSerDes {
 
     // Get indexes for each view in the CAS
     baseCas.forAllViews(view -> 
-        addIdsToIntVector(view.indexRepository.getIndexedFSs(), v, fs2addr));
+        addIdsToIntVector(view.getIndexedFSs(), v, fs2addr));
     return v.toArray();
   }
 
@@ -1574,7 +1596,7 @@ public class BinaryCasSerDes {
    */
   private void createFSsFromHeaps(boolean isDelta, int startPos, CommonSerDesSequential csds) {
     final int heapsz = heap.getCellsUsed();
-    final Int2ObjHashMap<TOP> addr2fs = csds.addr2fs;
+    final Int2ObjHashMap<TOP, TOP> addr2fs = csds.addr2fs;
     tsi = baseCas.getTypeSystemImpl();
     TOP fs;
     TypeImpl type;
@@ -1763,7 +1785,7 @@ public class BinaryCasSerDes {
       FeatureImpl feat, 
       List<Runnable> fixups4forwardFsRefs, 
       Consumer<TOP> setter,
-      Int2ObjHashMap<TOP> addr2fs) {
+      Int2ObjHashMap<TOP, TOP> addr2fs) {
     int a = heapFeat(heapIndex, feat);
     if (a == 0) {
       return;
@@ -1785,7 +1807,7 @@ public class BinaryCasSerDes {
     return heap.heap[nextFsAddr + 1 + feat.getOffset()];
   }
   
-  private Sofa getSofaFromAnnotBase(int annotBaseAddr, StringHeap stringHeap2, Int2ObjHashMap<TOP> addr2fs,
+  private Sofa getSofaFromAnnotBase(int annotBaseAddr, StringHeap stringHeap2, Int2ObjHashMap<TOP, TOP> addr2fs,
                                     CommonSerDesSequential csds) {
     int sofaAddr = heapFeat(annotBaseAddr, tsi.annotBaseSofaFeat);
     if (0 == sofaAddr) {
@@ -1830,7 +1852,7 @@ public class BinaryCasSerDes {
    * @param slotAddr - the main heap slot addr being updated
    * @param slotValue - the new value
    */
-  private void updateHeapSlot(BinDeserSupport bds, int slotAddr, int slotValue, Int2ObjHashMap<TOP> addr2fs) {
+  private void updateHeapSlot(BinDeserSupport bds, int slotAddr, int slotValue, Int2ObjHashMap<TOP, TOP> addr2fs) {
     TOP fs = bds.fs;
     TypeImpl type = fs._getTypeImpl();
     if (type.isArray()) {
@@ -1902,9 +1924,10 @@ public class BinaryCasSerDes {
       if (feat == tsi.sofaString) {
         if (fixups4forwardFsRefs != null) {
           // has to be deferred because it updates docAnnot which might not be deser yet.
+          //   TODO no longer needed, calls the version which doesn't update docAnnot 9/2017
           Sofa capturedSofa = sofa;
           String capturedString = s;
-          fixups4forwardFsRefs.add(() -> capturedSofa.setLocalSofaData(capturedString));
+          fixups4forwardFsRefs.add(() -> capturedSofa.setLocalSofaDataNoDocAnnotUpdate(capturedString));
         } else {
           sofa.setLocalSofaData(s);
         }

@@ -19,13 +19,16 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.invoke.MethodHandle;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.IntFunction;
+import java.util.function.IntConsumer;
 
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.UIMA_IllegalStateException;
+import org.apache.uima.UimaSerializableFSs;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.CommonArrayFS;
@@ -33,9 +36,9 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Misc;
-import org.apache.uima.internal.util.StringUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
@@ -45,6 +48,7 @@ import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.ShortArray;
+import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasImpl;
@@ -78,6 +82,10 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public static final String DISABLE_RUNTIME_FEATURE_VALUE_VALIDATION = "uima.disable_runtime_feature_value_validation";
   public static final boolean IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION  = !Misc.getNoValueSystemProperty(DISABLE_RUNTIME_FEATURE_VALUE_VALIDATION);
  
+  public static final String V2_PRETTY_PRINT = "uima.v2_pretty_print_format";
+  public static final boolean IS_V2_PRETTY_PRINT = // debug true || 
+                                                   Misc.getNoValueSystemProperty(V2_PRETTY_PRINT);
+  
   private  static final boolean traceFSs = CASImpl.traceFSs;
     
   // next is for experiment (Not implemented) of allocating multiple int arrays for different fss
@@ -216,7 +224,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     if (null == _typeImpl) {
       throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, this.getClass().getName());
     }
-
+    
     if (_casView.maybeMakeBaseVersionForPear(this, _typeImpl)) {
       _setPearTrampoline();
     }
@@ -399,8 +407,17 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    *          For JCas setters: convert offset to feature
    **************************************/
   
+  private void checkFeatRange(Feature feat, String shortRangeName) {
+    if ( ! (feat.getRange().getShortName().equals(shortRangeName))) {
+      /*Trying to access value of feature "{0}" as "{1}", but range of feature is "{2}".*/
+      throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, feat.getName(), "uima.cas." + shortRangeName, feat.getRange().getName());
+    }
+
+  }
+  
   @Override
   public void setBooleanValue(Feature feat, boolean v) {
+   checkFeatRange(feat, "Boolean");
     _setIntValueCJ((FeatureImpl) feat, v ? 1 : 0);
   }
   
@@ -412,6 +429,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
  
   @Override
   public void setByteValue(Feature feat, byte v) {
+    checkFeatRange(feat, "Byte");
     _setIntValueCJ((FeatureImpl) feat, v);
   }
   
@@ -429,6 +447,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void setShortValue(Feature feat, short v) {
+    checkFeatRange(feat, "Short");
     _setIntValueCJ((FeatureImpl) feat, v);
   }
   
@@ -446,6 +465,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void setIntValue(Feature feat, int v) {
+    checkFeatRange(feat, "Integer");
     _setIntValueCJ((FeatureImpl) feat, v);
   }
   
@@ -463,6 +483,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void setLongValue(Feature feat, long v) {
+    checkFeatRange(feat, "Long");
     _setLongValueCJ((FeatureImpl) feat, v);
   }
 
@@ -483,7 +504,10 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   }
 
   @Override
-  public void setFloatValue(Feature feat, float v) { setIntValue(feat, CASImpl.float2int(v)); }
+  public void setFloatValue(Feature feat, float v) {
+    checkFeatRange(feat, "Float");
+    _setIntValueCJ((FeatureImpl) feat, CASImpl.float2int(v));
+  }
   
   protected void _setFloatValueNfc(int adjOffset, float v) { _setIntValueNfc(adjOffset, CASImpl.float2int(v)); }
 
@@ -499,7 +523,8 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void setDoubleValue(Feature feat, double v) {
-    setLongValue(feat, CASImpl.double2long(v)); 
+    checkFeatRange(feat, "Double");
+    _setLongValueCJ((FeatureImpl) feat, CASImpl.double2long(v));
   }
 
   protected void _setDoubleValueNfc(int adjOffset, double v) {
@@ -518,7 +543,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public void setStringValue(Feature feat, String v) {
 //    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);  // done by _setRefValueCJ
 //    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v); // verifies feat can take a string
-    subStringRangeCheck(feat, v);
+    subStringRangeCheck(feat, v);  
     _setRefValueCJ((FeatureImpl) feat, v);
   }
   
@@ -547,8 +572,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     FeatureImpl fi = (FeatureImpl) feat;
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
     if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
-
-    // no need to check for index corruption because fs refs can't be index keys
+     // no need to check for index corruption because fs refs can't be index keys
     _setRefValueCommon(fi, _maybeGetBaseForPearFs((TOP)v));
     _casView.maybeLogUpdate(this, fi);
   }
@@ -632,7 +656,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public void setFeatureValueFromString(Feature feat, String s) throws CASRuntimeException {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    _casView.setFeatureValueFromString(this, (FeatureImpl) feat, s);
+    CASImpl.setFeatureValueFromString(this, (FeatureImpl) feat, s);
   }
 
   /**
@@ -718,6 +742,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public boolean getBooleanValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    checkFeatRange(feat, "Boolean");
     return _getBooleanValueNc((FeatureImpl) feat);
   }
 
@@ -727,14 +752,18 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public boolean _getBooleanValueNc(int adjOffset) { return _getIntValueCommon(adjOffset) == 1; }
 
   @Override
-  public byte getByteValue(Feature feat) { return (byte) getIntValue(feat); }
+  public byte getByteValue(Feature feat) {
+    checkFeatRange(feat, "Byte");
+    return (byte) _getIntValueCommon((FeatureImpl)feat); }
 
   public byte _getByteValueNc(FeatureImpl feat) { return (byte) _getIntValueNc(feat); }
   
   public byte _getByteValueNc(int adjOffset) { return  (byte) _getIntValueNc(adjOffset); }
 
   @Override
-  public short getShortValue(Feature feat) { return (short) getIntValue(feat); }
+  public short getShortValue(Feature feat) {
+    checkFeatRange(feat, "Short");
+    return (short) _getIntValueCommon((FeatureImpl)feat); }
 
   public short _getShortValueNc(FeatureImpl feat) { return (short) _getIntValueNc(feat); }
 
@@ -743,6 +772,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public int getIntValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    checkFeatRange(feat, "Integer");
     return _getIntValueCommon((FeatureImpl)feat);
   }
     
@@ -754,6 +784,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public long getLongValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    checkFeatRange(feat, "Long");
     return _getLongValueNc((FeatureImpl) feat);
   }
   
@@ -772,6 +803,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public float getFloatValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    checkFeatRange(feat, "Float");
     return _getFloatValueNc(((FeatureImpl) feat).getAdjustedOffset());
   }
 
@@ -782,6 +814,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public double getDoubleValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    checkFeatRange(feat, "Double");
     return _getDoubleValueNc((FeatureImpl) feat); 
   }
   
@@ -792,6 +825,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public String getStringValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+//    checkFeatRange(feat, "String");
     return _getStringValueNc((FeatureImpl) feat);
   }
 
@@ -883,6 +917,39 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public int hashCode() {
     return _id;
   }
+  
+  
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   * must match hashCode
+   * must match comparator == 0, equal == true
+   * Only valid for FSs in same CAS
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof FeatureStructureImplC) {
+      FeatureStructureImplC c2 = (FeatureStructureImplC) obj;
+      
+      if (c2._id != this._id) return false;
+
+      return (_casView == null && c2._casView == null) ||
+             (_casView != null && c2._casView != null &&   
+              (_casView == c2._casView || _casView.getBaseCAS() == c2._casView.getBaseCAS()));
+      
+//      if (_casView == null && c2._casView == null) {
+//        return true;  // special case for removed marker
+//      }
+//      if (_casView != null && c2._casView != null &&   
+//           (_casView == c2._casView ||
+//            _casView.getBaseCAS() == c2._casView.getBaseCAS())) {
+//        return true;
+//      }
+    }
+//        throw new IllegalArgumentException("Can't invoke equals on two FS from different CASes.");
+    return false;
+  }
+
 
   // ///////////////////////////////////////////////////////////////////////////
   // Pretty printing.
@@ -951,6 +1018,14 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     getPrintRefs(printRefs, this);
   }
 
+  /**
+   * This is called, once, at the top level thing being printed.
+   * It recursively descends any references, and updates the
+   * PrintReferences with info needed to handle circular structures 
+   * 
+   * @param printRefs the PrintReferences to update
+   * @param fs the top level FS being pretty printed, to descend if needed
+   */
   private final void getPrintRefs(PrintReferences printRefs, FeatureStructureImplC fs) {
     if (null == fs) {
       return;
@@ -962,11 +1037,15 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     
     final TypeImpl ti = fs._typeImpl;
     if (ti != null) { // null for REMOVED marker
-      if (ti.isArray() && (fs instanceof FSArray)) {
+      // for v2 style, don't descend fs arrays; these are omitted
+      if (!IS_V2_PRETTY_PRINT && ti.isArray() && (fs instanceof FSArray)) {
         for (TOP item : ((FSArray)fs)._getTheArray()) {
           getPrintRefs(printRefs, item);
         }
       } else {
+        if (fs instanceof UimaSerializableFSs) {
+          ((UimaSerializableFSs)fs)._save_fsRefs_to_cas_data();
+        }
         ti.getFeaturesAsStream()
           .filter(fi -> fi.getRangeImpl().isRefType)     // is ref type
           .map(fi -> fs.getFeatureValue(fi)) // get the feature value
@@ -1004,6 +1083,18 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     prettyPrint(indent, incr, buf, useShortNames, null);
   }
 
+  /**
+   * Top level, does computation of self-ref
+   * Pretty prints this Feature Structure, no trailing nl
+   * Old form - uses string buffer.
+   * @param indent the indent amount
+   * @param incr the amount the indent is increased for a level
+   * @param buf where the resulting string is built
+   * @param useShortNames true to use short name
+   * @param s extra string to print
+   * @deprecated use form with StringBuilder (not StringBuffer)
+   */
+  @Deprecated
   @Override
   public void prettyPrint(int indent, int incr, StringBuffer buf, boolean useShortNames, String s) {
     PrintReferences printRefs = new PrintReferences();
@@ -1011,16 +1102,25 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     prettyPrint(indent, incr, buf, useShortNames, s, printRefs);
   }
   
+  /**
+   * Top level, does computation of self-ref
+   * Pretty prints this Feature Structure, no trailing nl
+   * @param indent the indent amount
+   * @param incr the amount the indent is increased for a level
+   * @param buf where the resulting string is built
+   * @param useShortNames true to use short name
+   * @param s extra string to print
+   */
   @Override
   public void prettyPrint(int indent, int incr, StringBuilder buf, boolean useShortNames, String s) {
     PrintReferences printRefs = new PrintReferences();
     getPrintRefs(printRefs);
-    prettyPrint(indent, incr, buf, useShortNames, s, printRefs);
+    prettyPrint(indent, incr, buf, useShortNames, s, printRefs);    
   }
 
   // old version from v2 using StringBuffer
   /**
-   * 
+   * Internal Use Only, public only for backwards compatibility
    * @param indent -
    * @param incr -
    * @param buf -
@@ -1029,6 +1129,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    * @param printRefs -
    * @deprecated because uses StringBuffer, not builder, for version 2 compatibility only
    */
+  @Deprecated
   public void prettyPrint(
       int indent, 
       int incr, 
@@ -1045,18 +1146,58 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   }
   
   public void prettyPrint(
-      int indent, 
-      int incr, 
+      int indent,  // the current indent position
+      int incr,    // the delta to indent this FS printing
       StringBuilder buf, 
       boolean useShortNames, 
-      String s, 
+      String s, // carries the "#123" id refs for others to use, labels this fs with that.
       PrintReferences printRefs) {
+    prettyPrint(indent, incr, buf, useShortNames, s, printRefs, false);
+  }
+  
+  /**
+   * 
+   * @param sb -
+   */
+  public void prettyPrintShort(StringBuilder sb) {
+    prettyPrint(0, 2, sb, true, "", new PrintReferences(), true);
+  }
+  
+  /**
+   * recursively called by ppval
+   * @param indent -
+   * @param incr -
+   * @param buf -
+   * @param useShortNames -
+   * @param s -
+   * @param printRefs -
+   * @param isShortForm_arg -
+   */
+  private void prettyPrint(
+      int indent,  // the current indent position
+      int incr,    // the delta to indent this FS printing
+      final StringBuilder buf, 
+      boolean useShortNames, 
+      String s, // carries the "#123" id refs for others to use, labels this fs with that.
+      PrintReferences printRefs,
+      boolean isShortForm_arg) {  // short form only prints type:_id for refs
+    
+
+    final boolean isShortForm = 
+//        isShortForm_arg;
+        // debug
+//        (this._id == 2512)
+//          ? false
+//          : 
+            isShortForm_arg;
+    
     try {
     indent += incr;
-    if (indent > 20) {
-      buf.append(" ... past indent 20 ... ");
+    if (!IS_V2_PRETTY_PRINT && indent > 20 * incr) {
+      buf.append(" ... past indent limit ... ");
       return;
     }
+      
     final int printInfo = printRefs.printInfo(this);
     if (printInfo != PrintReferences.NO_LABEL) {
       String label = printRefs.getLabel(this);
@@ -1064,7 +1205,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
         buf.append(printRefs.getLabel(this));
       }
       if (printInfo == PrintReferences.JUST_LABEL) {
-        buf.append('\n');
+        buf.append(IS_V2_PRETTY_PRINT ? ' ' : '\n');  
         return;
       }
       buf.append(' ');
@@ -1081,7 +1222,11 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       } else {
         buf.append(getType().getName());
       }
-      buf.append(':').append(_id);
+      
+      if (!IS_V2_PRETTY_PRINT) {
+        buf.append(':').append(_id);
+      }
+      
       if (s != null) {
         buf.append(" \"" + s + "\"");
       }
@@ -1096,80 +1241,108 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     switch (_getTypeCode()) {
     case TypeSystemConstants.stringArrayTypeCode: {
       StringArray a = (StringArray) this;
-      printArrayElements(a.size(), i -> a.get(i), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, a.get(i)), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.intArrayTypeCode: {
       IntegerArray a = (IntegerArray) this;
-      printArrayElements(a.size(), i -> Integer.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Integer.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.floatArrayTypeCode: {
       FloatArray a = (FloatArray) this;
-      printArrayElements(a.size(), i -> Float.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Float.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.booleanArrayTypeCode: {
       BooleanArray a = (BooleanArray) this;
-      printArrayElements(a.size(), i -> Boolean.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Boolean.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.byteArrayTypeCode: {
       ByteArray a = (ByteArray) this;
-      printArrayElements(a.size(), i -> Byte.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Byte.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.shortArrayTypeCode: {
       ShortArray a = (ShortArray) this;
-      printArrayElements(a.size(), i -> Short.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Short.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.longArrayTypeCode: {
       LongArray a = (LongArray) this;
-      printArrayElements(a.size(), i -> Long.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Long.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.doubleArrayTypeCode: {
       DoubleArray a = (DoubleArray) this;
-      printArrayElements(a.size(), i -> Double.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Double.toString(a.get(i))), indent, incr, buf);
       return;
     }
-    }    
+    case TypeSystemConstants.fsArrayTypeCode: {
+      if (IS_V2_PRETTY_PRINT) {
+        break;  // v2 did not descend to print FSArray contents
+      }
+      FSArray a = (FSArray) this;
+      printFSArrayElements(a, indent, incr, buf, useShortNames, printRefs, isShortForm);
+      
+      return;
+    }  // end of case
+    
+    }  // end of switch
+
+    // if get here, non of the cases in the above switch fit
+    
+    if (this instanceof FSArray) {  // catches instance of FSArrays which are "typed" to hold specific element types
+      if (IS_V2_PRETTY_PRINT) {
+        return; // v2 did not descend to print fs array contents
+      }
+      FSArray a = (FSArray) this;
+      printFSArrayElements(a, indent, incr, buf, useShortNames, printRefs, isShortForm);
+      return;
+    }
     
     for (FeatureImpl fi : _typeImpl.getFeatureImpls()) {
-      StringUtils.printSpaces(indent, buf);
+      Misc.indent(buf, indent);
       buf.append(fi.getShortName() + ": ");
       TypeImpl range = (TypeImpl) fi.getRange();
-      
-      if (range.isStringOrStringSubtype()) {
-        String stringVal = getStringValue(fi);
-        stringVal = (null == stringVal) ? "<null>" : "\"" + Misc.elideString(stringVal, 15) + "\"";
-        buf.append(stringVal + '\n');
+      if (range.isPrimitive()) {  // Strings and string subtypes are primitive
+        addStringOrPrimitive(buf, fi);
         continue;
       }
       
-      if (!range.isPrimitive()) {   
-        // not primitive
-        FeatureStructureImplC val = null;
-        boolean hadException = false;
-        try {
-          val = getFeatureValue(fi);
-        } catch (Exception e) {
-          buf.append("<exception ").append(e.getMessage()).append(">\n");
-          hadException = true;
-        }
-        if (!hadException) {
-          if (val != null && !val._typeImpl.getName().equals(CAS.TYPE_NAME_SOFA)) {
-            val.prettyPrint(indent, incr, buf, useShortNames, null, printRefs);
+      // not primitive
+      FeatureStructureImplC val = null;
+      boolean hadException = false;
+      try {
+        val = getFeatureValue(fi);
+      } catch (Exception e) {
+        buf.append("<exception ").append(e.getMessage()).append(">\n");
+        hadException = true;
+      }
+      if (!hadException) {
+        if (isShortForm) {
+          if (null == val) {
+            buf.append("<null>");
           } else {
-            buf.append((val == null) ? "<null>\n" : ((SofaFS) val).getSofaID() + '\n'); 
+            buf.append(val._getTypeImpl().getShortName()).append(':').append(val._id);
+          }
+        } else {
+          // treat sofa refs special, since they're pervasive
+          if (val instanceof Sofa) {
+            buf.append(((Sofa)val).getSofaID());
+          } else {
+            ppval(val, indent, incr, buf, useShortNames, printRefs, false);
           }
         }
-    
-      } else {  
-        // is primitive
-        buf.append(this.getFeatureValueAsString(fi) + "\n");
+        
+//          if (val != null && !val._typeImpl.getName().equals(CAS.TYPE_NAME_SOFA)) {
+//            val.prettyPrint(indent, incr, buf, useShortNames, null, printRefs);
+//          } else {
+//            buf.append((val == null) ? "<null>\n" : ((SofaFS) val).getSofaID() + '\n'); 
+//          }
       }
+    
     }
     } catch (Exception e) {
       buf.append("**Caught exception: ").append(e);
@@ -1178,32 +1351,106 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 //      buf.append(sw.toString());
     }    
   }
-
-  private void printArrayElements(int arrayLen, IntFunction<String> f, int indent, StringBuilder buf) {
-    StringUtils.printSpaces(indent, buf);
-    buf.append("Array length: " + arrayLen + "\n");
-    if (arrayLen > 0) {
-      StringUtils.printSpaces(indent, buf);
-      buf.append("Array elements: [");
-      int numToPrint = Math.min(15, arrayLen);  // print 15 or fewer elements
-
-      for (int i = 0; i < numToPrint; i++) {
-        if (i > 0) {
-          buf.append(", ");
-        }
-        String element = f.apply(i); //this._casView.ll_getStringArrayValue(this.getAddress(), i);
-        if (null == element) {
-          buf.append("null");
-        } else {
-          buf.append("\"" + Misc.elideString(element, 15) + "\"");
-        }
-      }
-      
-      if (arrayLen > numToPrint) {
-        buf.append(", ...");
-      }
-      buf.append("]\n");
+  
+  public StringBuilder addStringOrPrimitive(StringBuilder sb, FeatureImpl fi) {
+    TypeImpl range = (TypeImpl) fi.getRange();
+    
+    if (range.isStringOrStringSubtype()) {
+      String stringVal = getStringValue(fi);
+      stringVal = (null == stringVal) ? "<null>" : "\"" + Misc.elideString(stringVal, 80) + "\"";
+      sb.append(stringVal);  // caller adds nl
+    } else {
+      sb.append(this.getFeatureValueAsString(fi));
     }
+    return sb;
+  }
+  
+  private void ppval(FeatureStructureImplC val, 
+                     int indent, 
+                     int incr, 
+                     StringBuilder buf, 
+                     boolean useShortNames, 
+                     PrintReferences printRefs,
+                     boolean isShortForm) {
+    if (val != null && !val._typeImpl.getName().equals(CAS.TYPE_NAME_SOFA)) {
+      val.prettyPrint(indent, incr, buf, useShortNames, null, printRefs, isShortForm);
+    } else {
+      buf.append((val == null) ? "<null>" : "sofa id: " +((SofaFS) val).getSofaID()); 
+    }    
+  }
+  
+  /**
+   * For printing arrays except FSArrays; called after printing the type:nnn
+   *   prints the length
+   *   if the length = 0 that's all
+   *   otherwise:
+   *   uses Misc.addElementsToStringBuilder to output the elements.  This routine does
+   *       [ + array contents + ], unless the line is too long, in which case it switches to multi-line
+   * @param arrayLen the length
+   * @param f the feature structure
+   * @param indent the current indent
+   * @param incr the indent incr
+   * @param buf the stringbuilder where the result is added
+   */
+  private void printArrayElements(int arrayLen, IntConsumer f, int indent, int incr, StringBuilder buf) {
+    Misc.indent(buf, indent);
+    buf.append("Array length: " + arrayLen);
+    if (arrayLen == 0) {
+      return;
+    }
+
+    Misc.indent(buf, indent);
+    buf.append("Array elements: ");
+    if (IS_V2_PRETTY_PRINT) {
+      buf.append("[");
+      for (int i = 0; i < arrayLen; i++) {
+        if (i > 0) {
+            buf.append(", ");
+        }
+        f.accept(i); //this._casView.ll_getStringArrayValue(this.getAddress(), i);
+      }
+      buf.append("]");  // no extra new line
+    } else {
+      // no limit to size
+      Misc.addElementsToStringBuilder(buf, arrayLen, arrayLen, indent, incr, (sb, i) -> f.accept(i));
+    }
+  }
+  
+  /**
+   * For printing FSArrays; called after printing the type:nnn
+   * Only called if ! IS_V2_PRETTY_PRINT, since v2 didn't print the array contents
+   *   prints the length
+   *   if the length = 0 that's all
+   *   otherwise:
+   *   
+   * @param arrayLen the length
+   * @param f the feature structure
+   * @param indent the current indent
+   * @param incr the indent incr
+   * @param buf the stringbuilder where the result is added
+   */
+  private void printFSArrayElements(FSArray fsarray, int indent, int incr, StringBuilder buf, boolean useShortNames, PrintReferences printRefs, boolean isShortForm) {
+    Misc.indent(buf, indent);
+    int arraylen = fsarray.size();
+    buf.append("Array length: " + arraylen);
+    if (arraylen == 0) {
+      return;
+    }
+
+    Misc.indent(buf, indent);
+    buf.append("Array elements: [");
+    
+    indent += incr;
+    for (int i = 0; i < arraylen; i++) {
+      Misc.indent(buf, indent);
+      ppval(fsarray.get(i), indent, incr, buf, useShortNames, printRefs, isShortForm);
+    }
+    Misc.indent(buf, indent - incr);
+    buf.append(']');
+  }
+ 
+  private void appendOrNull(StringBuilder sb, String v) {
+    sb.append( (v == null) ? "null" : v);
   }
   
   public int getTypeIndexID() {
@@ -1308,7 +1555,11 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
         return Long.toString(getLongValue(feat));
       case TypeSystemConstants.doubleTypeCode :
         return Double.toString(getDoubleValue(feat));
-      default: // byte, short, int, 
+      case TypeSystemConstants.byteTypeCode:
+        return Byte.toString(getByteValue(feat));
+      case TypeSystemConstants.shortTypeCode:
+        return Short.toString(getShortValue(feat));
+      default: // int, 
         return Integer.toString(getIntValue(feat));
       }
     }
@@ -1555,16 +1806,25 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 //    _flags = (_flags & ~bitMaskRefOffset) | v << shiftRefOffset;
 //  }
 
-  public TypeImpl _getTypeImpl() {
+  public final TypeImpl _getTypeImpl() {
     return _typeImpl;
   }
   
-  protected void _setTypeImpl(TypeImpl ti) {
+  protected final void _setTypeImpl(TypeImpl ti) {
     _typeImpl = ti;
   }
   
   public static int compare(FeatureStructureImplC a, FeatureStructureImplC b) {
     return Integer.compare(a._id, b._id);
   }
+  
+  protected final static int wrapGetIntCatchException(MethodHandle mh) {
+    try {
+      return (int) mh.invokeExact();
+    } catch(Throwable t) {
+      throw new UIMA_IllegalStateException(UIMA_IllegalStateException.JCAS_NO_TYPE, null, t);
+    }
+  }
+
 
 }

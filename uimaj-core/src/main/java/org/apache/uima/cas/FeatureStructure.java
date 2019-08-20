@@ -19,7 +19,7 @@
 
 package org.apache.uima.cas;
 
-import org.apache.uima.cas.impl.FeatureStructureImplC;
+import org.apache.uima.jcas.JCas;
 
 /**
  * Interface for feature structures.
@@ -295,12 +295,17 @@ public interface FeatureStructure extends Cloneable {
   void setFeatureValueFromString(Feature feat, String s) throws CASRuntimeException;
 
   /**
-   * Return the CAS that this FS belongs to.
-   *
-   * @return The CAS.
+   * @return The CAS view where this Feature Structure was created
    */
   CAS getCAS();
 
+  /**
+   * @return the JCas view where this Feature Structure was created
+   */
+  default JCas getJCas() {
+    return getCAS().getJCasImpl();  // getJCas defined (from v2) to throw exception, this one doesn't
+  };
+  
   /**
    * return the unique (to this CAS) id of this feature structure
    * @return the id
@@ -321,7 +326,7 @@ public interface FeatureStructure extends Cloneable {
    * @return a FeatureStructure that is the cloned copy of this FeatureStructure.
    * @throws CASRuntimeException passthru
    */
-  FeatureStructureImplC clone() throws CASRuntimeException;
+  Object clone() throws CASRuntimeException;
   
   /**
    * Compatibility for v2 code.
@@ -332,5 +337,22 @@ public interface FeatureStructure extends Cloneable {
    */
   int getAddress(); 
   
+  /**
+   * A feature structure is equal to another feature structure iff it is identical in the underlying
+   * representation.
+   * 
+   * @exception ClassCastException
+   *              If <code>o</code> is not a FS.
+   */
+  boolean equals(Object o) throws ClassCastException;
+
+  /**
+   * Will return a hash code that's consistent with equality, i.e., if two FSs are equal, they will
+   * also return the same hash code.
+   * 
+   * @return The hash code.
+   */
+  int hashCode();
+
 }
 

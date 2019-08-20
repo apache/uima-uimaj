@@ -100,15 +100,14 @@ public interface TypeSystemConstants {
   /**
    * adjOffsets for builtin Features
    */
-  static final TypeSystemImpl staticTsi = TypeSystemImpl.staticTsi;
-  static final int sofaNumFeatAdjOffset = staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFANUM);  
-  static final int sofaIdFeatAdjOffset = staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAID);
-  static final int sofaStringFeatAdjOffset = staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFASTRING);
-  static final int sofaMimeFeatAdjOffset = staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAMIME);
-  static final int sofaUriFeatAdjOffset = staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAURI);
-  static final int sofaArrayFeatAdjOffset = staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAARRAY);
-  static final int annotBaseSofaFeatAdjOffset = staticTsi.annotBaseType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFA);
-  static final int beginFeatAdjOffset = staticTsi.annotType.getAdjOffset(CAS.FEATURE_BASE_NAME_BEGIN);
-  static final int endFeatAdjOffset = staticTsi.annotType.getAdjOffset(CAS.FEATURE_BASE_NAME_END);
-  static final int langFeatAdjOffset = staticTsi.docType.getAdjOffset(CAS.FEATURE_BASE_NAME_LANGUAGE);
+  static final int sofaNumFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFANUM);  
+  static final int sofaIdFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAID);
+  static final int sofaStringFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFASTRING);
+  static final int sofaMimeFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAMIME);
+  static final int sofaUriFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAURI);
+  static final int sofaArrayFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAARRAY);
+  static final int annotBaseSofaFeatAdjOffset = TypeSystemImpl.staticTsi.annotBaseType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFA);
+  static final int beginFeatAdjOffset = TypeSystemImpl.staticTsi.annotType.getAdjOffset(CAS.FEATURE_BASE_NAME_BEGIN);
+  static final int endFeatAdjOffset = TypeSystemImpl.staticTsi.annotType.getAdjOffset(CAS.FEATURE_BASE_NAME_END);
+  static final int langFeatAdjOffset = TypeSystemImpl.staticTsi.docType.getAdjOffset(CAS.FEATURE_BASE_NAME_LANGUAGE);
 }

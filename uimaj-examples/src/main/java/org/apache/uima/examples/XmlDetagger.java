@@ -20,7 +20,6 @@
 package org.apache.uima.examples;
 
 import java.io.InputStream;
-import java.util.Iterator;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -32,6 +31,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -52,8 +52,8 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
    */
   public static final String PARAM_XMLTAG = "XmlTagContainingText";
   
-  private SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-
+  private SAXParserFactory parserFactory = XMLUtils.createSAXParserFactory();
+ 
   private Type sourceDocInfoType;
 
   private String mXmlTagContainingText = null;
@@ -90,12 +90,15 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
 
     // Index the SourceDocumentInformation object, if there is one, in the new sofa.
     // This is needed by the SemanticSearchCasIndexer
-    Iterator iter = xmlCas.getAnnotationIndex(sourceDocInfoType).iterator();
-    if (iter.hasNext()) {
-      FeatureStructure sourceDocInfoFs = (FeatureStructure) iter.next();
-      plainTextView.getIndexRepository().addFS(sourceDocInfoFs);
-
+    FeatureStructure sourceDocInfoFs = xmlCas.select(sourceDocInfoType).singleOrNull();
+    if (null != sourceDocInfoFs) {
+      plainTextView.addFsToIndexes(sourceDocInfoFs);
     }
+//    Iterator iter = xmlCas.getAnnotationIndex(sourceDocInfoType).iterator();
+//    if (iter.hasNext()) {
+//      FeatureStructure sourceDocInfoFs = (FeatureStructure) iter.next();
+//      plainTextView.getIndexRepository().addFS(sourceDocInfoFs);
+//    }
 
   }
 

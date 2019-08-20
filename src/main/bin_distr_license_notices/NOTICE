@@ -11,6 +11,8 @@ licensed to the Apache Software Foundation under the
 "IBM UIMA License Agreement".
 Copyright (c) 2003, 2006 IBM Corporation.
 
+ResolverUtil.java Copyright 2005-2006 Tim Fennell
+
 # Jackson JSON processor NOTICE from the Jackson Jar 2.4.2
 
   Jackson is a high-performance, Free/Open Source JSON processing library.

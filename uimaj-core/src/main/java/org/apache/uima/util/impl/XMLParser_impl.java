@@ -105,6 +105,7 @@ public class XMLParser_impl implements XMLParser {
     SCHEMA_URL = schemaURL;
     }
 
+  
   /**
    * Map from XML element names to Class objects.
    */
@@ -155,7 +156,7 @@ public class XMLParser_impl implements XMLParser {
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     URL urlToParse = aInput.getURL();
     try {
-      SAXParserFactory factory = SAXParserFactory.newInstance();
+      SAXParserFactory factory = XMLUtils.createSAXParserFactory();
 
       // Turn on namespace support
       factory.setNamespaceAware(true);        

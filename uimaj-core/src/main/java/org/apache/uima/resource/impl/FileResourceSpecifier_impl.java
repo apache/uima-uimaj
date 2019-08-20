@@ -47,9 +47,19 @@ public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
   }
 
   /**
+   * UIMA-5274  Expand any references to external overrides when name and location are fetched.
+   * Cache the value if the evaluation succeeds (later fetches may not have the settings defined!)
+   * Leave value unmodified if any settings are undefined and log a warning message.
+   * 
    * @see org.apache.uima.resource.FileResourceSpecifier#getFileUrl()
    */
   public String getFileUrl() {
+    if (mFileUrl != null && mFileUrl.contains("${")) {
+      String value = resolveSettings(mFileUrl);
+      if (value != null) {
+        mFileUrl = value;
+      }
+    }
     return mFileUrl;
   }
 

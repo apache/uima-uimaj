@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0/jcasgen-maven-plugin
+      scm:svn:http://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-3.0.0/jcasgen-maven-plugin
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0/jcasgen-maven-plugin
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-3.0.0/jcasgen-maven-plugin
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-3.0.0/jcasgen-maven-plugin
+      http://svn.apache.org/viewvc/uima/uv3/uimaj-v3/tags/uimaj-3.0.0/jcasgen-maven-plugin
     </url>
   </scm>
 
@@ -91,6 +91,11 @@
 			<artifactId>maven-plugin-testing-harness</artifactId>
 			<version>2.0</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+		  <groupId>org.slf4j</groupId>
+		  <artifactId>slf4j-jdk14</artifactId>
+		  <scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>

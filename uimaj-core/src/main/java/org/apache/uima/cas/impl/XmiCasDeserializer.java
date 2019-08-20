@@ -51,6 +51,7 @@ import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
@@ -81,7 +82,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * XMI CAS deserializer. Used to read in a CAS from XML Metadata Interchange (XMI) format.
@@ -187,7 +187,7 @@ public class XmiCasDeserializer {
 
     // true if unknown types should be ignored; false if they should cause an error
     boolean lenient;
-
+    
     // number of oustanding startElement events that we are ignoring
     // we add 1 when an ignored element starts and subtract 1 when an ignored
     // element ends
@@ -290,7 +290,7 @@ public class XmiCasDeserializer {
      *   xmi:id is strictly greater than the mergePoint value will be
      *   deserialized. 
      */
-    private XmiCasDeserializerHandler(CASImpl aCAS, boolean lenient,
+    private XmiCasDeserializerHandler(CASImpl aCAS, boolean lenient, 
             XmiSerializationSharedData sharedData, int mergePoint, AllowPreexistingFS allowPreexistingFS) {
       super();
       this.casBeingFilled = aCAS.getBaseCAS();
@@ -701,6 +701,7 @@ public class XmiCasDeserializer {
             todo.add(fs);   // https://issues.apache.org/jira/browse/UIMA-4099
           } else {
             if (!lenient) {
+              if (xmiId == 0) report0xmiId();  //debug
               throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(xmiId));
             }
             else {
@@ -726,7 +727,8 @@ public class XmiCasDeserializer {
       }
       // translate sofa's xmi:id into its sofanum
       Sofa sofa = (Sofa) maybeGetFsForXmiId(sofaXmiId);
-      if (null == sofa) {        
+      if (null == sofa) {
+        if (sofaXmiId == 0) report0xmiId();  //debug
         throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(sofaXmiId));
       }
       return (FSIndexRepositoryImpl) indexRepositories.get(sofa.getSofaNum());
@@ -791,6 +793,7 @@ public class XmiCasDeserializer {
         	  localRemoves.add(fs);     // https://issues.apache.org/jira/browse/UIMA-4099
         	} else {
         	  if (!lenient) {
+        	    if (xmiId == 0) report0xmiId();  //debug
               throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(xmiId));
             } else {
         		//unknown view member may be an OutOfTypeSystem FS
@@ -883,7 +886,7 @@ public class XmiCasDeserializer {
         }
         
         
-        // before looping over features, set the xmi to fs correspondence for this FS, incase a 
+        // before looping over features, set the xmi to fs correspondence for this FS, in case a 
         //   feature does a self reference
         String idStr = attrs.getValue(ID_ATTR_NAME);
         final int extId;
@@ -948,7 +951,7 @@ public class XmiCasDeserializer {
      * called from readFS 751
      * called from processDeferred, to handle features specified as child elements
      * @param type -
-     * @param fsAddr the address of the FS
+     * @param fs the FS
      * @param featName the feature name
      * @param featVal the value of the feature
      * @param isNewFS  true if this is a new FS
@@ -1045,8 +1048,8 @@ public class XmiCasDeserializer {
         case LowLevelCAS.TYPE_CLASS_FLOAT:
         case LowLevelCAS.TYPE_CLASS_DOUBLE:
         case LowLevelCAS.TYPE_CLASS_STRING:
-        case LowLevelCAS.TYPE_CLASS_JAVAOBJECT: {
-          casBeingFilled.setFeatureValueFromString(fs, fi, featVal);  
+            {
+          CASImpl.setFeatureValueFromStringNoDocAnnotUpdate(fs, fi, featVal);  
           break;
         }
         case LowLevelCAS.TYPE_CLASS_FS: deserializeFsRef(featVal, fi, fs); break;
@@ -1077,7 +1080,7 @@ public class XmiCasDeserializer {
           
             ByteArray byteArray = createOrUpdateByteArray(featVal, -1, existingByteArray);
             if (byteArray != existingByteArray) {
-              fs.setFeatureValue(fi,  byteArray);
+              CASImpl.setFeatureValueMaybeSofa(fs, fi, byteArray);
             }
           } else {  // not ByteArray, but encoded locally
             String[] arrayVals = parseArray(featVal);
@@ -1108,14 +1111,14 @@ public class XmiCasDeserializer {
 
     private void deserializeFsRef(String featVal, FeatureImpl fi, TOP fs) {
       if (featVal == null || featVal.length() == 0) {
-        fs.setFeatureValue(fi, null);  
+        CASImpl.setFeatureValueMaybeSofa(fs, fi, null);  
       } else {
         int xmiId = Integer.parseInt(featVal); 
         TOP tgtFs = maybeGetFsForXmiId(xmiId);
         if (null == tgtFs) {
           fixupToDos.add( () -> finalizeRefValue(xmiId, fs, fi));
         } else {
-          fs.setFeatureValue(fi,  tgtFs);
+          CASImpl.setFeatureValueMaybeSofa(fs, fi, tgtFs);
           ts.fixupFSArrayTypes(fi.getRangeImpl(), tgtFs);
         }
       }
@@ -1188,7 +1191,7 @@ public class XmiCasDeserializer {
           CommonArrayFS existingArray = (CommonArrayFS) fs.getFeatureValue(fi);
           CommonArrayFS casArray = createOrUpdateArray(fi.getRangeImpl(), featVals, -1, existingArray);
           if (existingArray != casArray) {
-            fs.setFeatureValue(fi, casArray);
+            CASImpl.setFeatureValueMaybeSofa(fs, fi, (TOP)casArray);
           }
           //add to nonshared fs to encompassing FS map
           if (!fi.isMultipleReferencesAllowed()) {  // ! multiple refs => value is not shared
@@ -1205,7 +1208,7 @@ public class XmiCasDeserializer {
           if (featVals == null) {
             fs.setFeatureValue(fi,  null);
           } else if (featVals.size() == 0) {
-            fs.setFeatureValue(fi, casBeingFilled.getEmptyList(rangeCode));
+            fs.setFeatureValue(fi, casBeingFilled.emptyList(rangeCode));
           } else {
             CommonList existingList = (CommonList) fs.getFeatureValue(fi);
             CommonList theList = createOrUpdateList(fi.getRangeImpl(), featVals, -1, existingList);
@@ -1240,7 +1243,7 @@ public class XmiCasDeserializer {
         updateExistingList(values, existingList);
         return existingList;
       } else {
-        return createListFromStringValues(values, casBeingFilled.getEmptyListFromTypeCode(listType.getCode()));
+        return createListFromStringValues(values, casBeingFilled.emptyListFromTypeCode(listType.getCode()));
       }
     }
     
@@ -1309,7 +1312,9 @@ public class XmiCasDeserializer {
      */
     private CommonArrayFS createNewArray(TypeImpl type, List<String> values) {
       final int sz = values.size();
-      CommonArrayFS fs = (CommonArrayFS) casBeingFilled.createArray(type, sz);
+      CommonArrayFS fs = (sz == 0) 
+                           ? casBeingFilled.emptyArray(type)
+                           : (CommonArrayFS) casBeingFilled.createArray(type, sz);
       if (fs instanceof FSArray) {
         final FSArray fsArray = (FSArray) fs;
         for (int i = 0; i < sz; i++) {
@@ -1374,7 +1379,7 @@ public class XmiCasDeserializer {
         if (existingList instanceof EmptyList) {
           return existingList;
         } else {
-          return existingList.getEmptyList();
+          return existingList.emptyList();
         }
       }
           
@@ -1406,7 +1411,7 @@ public class XmiCasDeserializer {
       
         // got to the end of the values, but the existing list has more elements
         //   truncate the existing list
-        prevNode.setTail(existingList.getEmptyList());
+        prevNode.setTail(existingList.emptyList());
         return existingList;
       }
 
@@ -1428,7 +1433,7 @@ public class XmiCasDeserializer {
     
       // got to the end of the values, but the existing list has more elements
       //   truncate the existing list
-      prevNode.setTail(existingList.getEmptyList());
+      prevNode.setTail(existingList.emptyList());
       return existingList;
     }
 
@@ -1629,8 +1634,8 @@ public class XmiCasDeserializer {
         return (byte) (c - '0');
       else if ('A' <= c && c <= 'F')
         return (byte) (c - 'A' + 10);
-      else if ('1' <= c && c <= 'f')
-        return (byte) (c - '1' + 10);
+      else if ('a' <= c && c <= 'f')
+        return (byte) (c - 'a' + 10);
       else
         throw new NumberFormatException("Invalid hex char: " + c);
     }
@@ -1736,7 +1741,7 @@ public class XmiCasDeserializer {
               for(FeatureImpl fi : currentType.getFeatureImpls()) {
                 if (!(fi.getName().equals(CAS.FEATURE_FULL_NAME_SOFA))) {
                   if ( ! this.featsSeen.contains(fi.getCode())) {
-                    casBeingFilled.setFeatureValueFromString(currentFs,  fi, null);
+                    CASImpl.setFeatureValueFromStringNoDocAnnotUpdate(currentFs,  fi, null);
                   }
                 }
               }              
@@ -1816,24 +1821,24 @@ public class XmiCasDeserializer {
     
     private void finalizeRefValue(int xmiId, TOP fs, FeatureImpl fi) throws XCASParsingException {
       TOP tgtFs = maybeGetFsForXmiId(xmiId);
-      if (null == tgtFs) {
+      if (null == tgtFs && xmiId != 0) { // https://issues.apache.org/jira/browse/UIMA-5446
         if (!lenient) {
           throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(xmiId));
         } else {
           // the element may be out of typesystem.  In that case set it
           // to null, but record the id so we can add it back on next serialization.
           this.sharedData.addOutOfTypeSystemAttribute(fs, fi.getShortName(), Integer.toString(xmiId));
-          fs.setFeatureValue(fi,  null);
+          CASImpl.setFeatureValueMaybeSofa(fs, fi, null);
         }
       } else {
-        fs.setFeatureValue(fi,  tgtFs);
+        CASImpl.setFeatureValueMaybeSofa(fs, fi, tgtFs);
         ts.fixupFSArrayTypes(fi.getRangeImpl(), tgtFs);
       }
     }
    
     private void finalizeFSListRefValue(int xmiId, NonEmptyFSList neNode) throws XCASParsingException {
       TOP tgtFs = maybeGetFsForXmiId(xmiId);
-      if (null == tgtFs) {
+      if (null == tgtFs && xmiId != 0) { // https://issues.apache.org/jira/browse/UIMA-5446
         if (!lenient) {
           throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(xmiId));
         } else {
@@ -1850,7 +1855,7 @@ public class XmiCasDeserializer {
     
     private void finalizeFSArrayRefValue(int xmiId, FSArray fsArray, int index) throws XCASParsingException {
       TOP tgtFs = maybeGetFsForXmiId(xmiId);
-      if (null == tgtFs) {
+      if (null == tgtFs && xmiId != 0) {  // https://issues.apache.org/jira/browse/UIMA-5446
         if (!lenient) {
           throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(xmiId));
         } else {
@@ -2084,6 +2089,24 @@ public class XmiCasDeserializer {
   public XmiCasDeserializer(TypeSystem ts) {
     this(ts, null);
   }
+  
+  /* ========================================================= */
+  /*      getters for Xmi Cas Handler                          */
+  /*   Arguments:                                              */
+  /*     cas                                                   */
+  /*     lenient                                               */
+  /*     sharedData                                            */
+  /*     mergePoint (or -1)                                    */
+  /*     allow preexisting                                     */
+  /*                                                           */
+  /* existing variants:                                        */
+  /*     cas                                                   */
+  /*     cas, lenient                                          */
+  /*     cas, lenient, sharedData                              */
+  /*     cas, lenient, sharedData, mergePoint                  */
+  /*     cas, lenient, sharedData, mergePoint, allow           */
+  /* ========================================================= */
+ 
 
   /**
    * Create a default handler for deserializing a CAS from XMI.
@@ -2112,14 +2135,13 @@ public class XmiCasDeserializer {
    * @return The <code>DefaultHandler</code> to pass to the SAX parser.
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient) {
-    return new XmiCasDeserializerHandler((CASImpl) cas, lenient, null, -1, AllowPreexistingFS.ignore);
+    return getXmiCasHandler(cas, lenient, null); 
   }
+  
+  
 
   /**
-   * Create a default handler for deserializing a CAS from XMI. By default this is not lenient,
-   * meaning that if the XMI references Types that are not in the Type System, an Exception will be
-   * thrown. Use {@link XmiCasDeserializer#getXmiCasHandler(CAS,boolean)} to turn on lenient mode
-   * and ignore any unknown types.
+   * Create a default handler for deserializing a CAS from XMI. 
    * 
    * @param cas
    *          This CAS will be used to hold the data deserialized from the XMI
@@ -2134,14 +2156,11 @@ public class XmiCasDeserializer {
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient,
           XmiSerializationSharedData sharedData) {
-    return new XmiCasDeserializerHandler((CASImpl) cas, lenient, sharedData, -1, AllowPreexistingFS.ignore);
+    return getXmiCasHandler(cas, lenient, sharedData, -1);
   }
   
   /**
-   * Create a default handler for deserializing a CAS from XMI. By default this is not lenient,
-   * meaning that if the XMI references Types that are not in the Type System, an Exception will be
-   * thrown. Use {@link XmiCasDeserializer#getXmiCasHandler(CAS,boolean)} to turn on lenient mode
-   * and ignore any unknown types.
+   * Create a default handler for deserializing a CAS from XMI. 
    * 
    * @param cas
    *          This CAS will be used to hold the data deserialized from the XMI
@@ -2161,7 +2180,7 @@ public class XmiCasDeserializer {
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient,
           XmiSerializationSharedData sharedData, int mergePoint) {
-    return new XmiCasDeserializerHandler((CASImpl) cas, lenient, sharedData, mergePoint, AllowPreexistingFS.ignore);
+    return getXmiCasHandler(cas, lenient, sharedData, mergePoint, AllowPreexistingFS.ignore);
   }  
   
   /**
@@ -2191,6 +2210,7 @@ public class XmiCasDeserializer {
           XmiSerializationSharedData sharedData, int mergePoint, AllowPreexistingFS allow) {
     return new XmiCasDeserializerHandler((CASImpl) cas, lenient, sharedData, mergePoint, allow);
   }  
+
 
   /**
    * Deserializes a CAS from XMI.
@@ -2286,7 +2306,7 @@ public class XmiCasDeserializer {
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient,
           XmiSerializationSharedData aSharedData, int aMergePoint)
           throws SAXException, IOException {
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    XMLReader xmlReader = XMLUtils.createXMLReader();
     XmiCasDeserializer deser = new XmiCasDeserializer(aCAS.getTypeSystem());
     ContentHandler handler = deser.getXmiCasHandler(aCAS, aLenient, aSharedData, aMergePoint);
     xmlReader.setContentHandler(handler);
@@ -2360,7 +2380,7 @@ public class XmiCasDeserializer {
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient,
 		  XmiSerializationSharedData aSharedData, int aMergePoint, AllowPreexistingFS allowPreexistingFS)
   throws SAXException, IOException {
-	  XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+	  XMLReader xmlReader = XMLUtils.createXMLReader();
 	  XmiCasDeserializer deser = new XmiCasDeserializer(aCAS.getTypeSystem());
 	  ContentHandler handler = deser.getXmiCasHandler(aCAS, aLenient, aSharedData, aMergePoint, allowPreexistingFS);
 	  xmlReader.setContentHandler(handler);
@@ -2424,5 +2444,9 @@ public class XmiCasDeserializer {
     }
   }    
 
-
+  private void report0xmiId() {
+    Throwable t = new Throwable();
+    System.err.println("Debug 0 xmiId encountered where not expected");
+    t.printStackTrace();
+  }
 }

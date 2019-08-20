@@ -69,7 +69,6 @@ import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
@@ -120,7 +119,8 @@ import org.apache.uima.util.impl.SerializationMeasures;
  *   create appropriate unzip data input streams for these
  *   
  * Properties of Form 4:
- *   1) (Change from V2) Indexes are used to determine what gets serialized, because there's no "heap" to walk.
+ *   1) (Change from V2) Indexes are used to determine what gets serialized, because there's no "heap" to walk,
+ *      unless the v2-id-mode is in effect.
  *      
  *   2) The number used for references to FSs is a sequentially incrementing one, starting at 1
  *       This allows better compression.
@@ -205,77 +205,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       this.strat = strat;
     }
   }
-  
-//  /**
-//   * Define all the slot kinds.
-//   */
-//  public enum SlotKind {
-//    Slot_ArrayLength(! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//    Slot_HeapRef(    IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_Int(        IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_Byte(       ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//    Slot_Short(      IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_TypeCode(   ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//
-//    Slot_StrOffset(  ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, !IN_MAIN_HEAP),
-//    Slot_StrLength(  ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, !IN_MAIN_HEAP),
-//    Slot_Long_High(    IS_DIFF_ENCODE,           IGNORED, 0, !IN_MAIN_HEAP),
-//    Slot_Long_Low (    IS_DIFF_ENCODE,           IGNORED, 0, !IN_MAIN_HEAP),
-//
-//    // the next are not actual slot kinds, but instead
-//    // are codes used to control encoding of Floats and Doubles.
-//    Slot_Float_Mantissa_Sign( ! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-//    // exponent is 8 bits, and shifted in the expectation
-//    // that many values may be between 1 and 0 (e.g., normalized values)
-//    //   -- so sign moving is needed
-//    Slot_Float_Exponent(      ! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-//    
-//    Slot_Double_Mantissa_Sign(! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-//    Slot_Double_Exponent(     ! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-//    Slot_FsIndexes(             IS_DIFF_ENCODE,         IGNORED, 4, !IN_MAIN_HEAP),
-//    
-//    Slot_StrChars(            IGNORED,          IGNORED, 2, !IN_MAIN_HEAP),
-//    
-//    Slot_Control(             IGNORED,          IGNORED, 0, !IN_MAIN_HEAP),
-//    Slot_StrSeg(              ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 0, ! IN_MAIN_HEAP),
-//    
-//    // the next slots are not serialized
-//    Slot_StrRef(     IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_BooleanRef( ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//    Slot_ByteRef(    IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_ShortRef(   IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_LongRef(    IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_DoubleRef(  IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_Float(      ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//    Slot_Boolean(    ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//    // next used to capture original heap size
-//    Slot_MainHeap(   IGNORED,          IGNORED,           4, !IN_MAIN_HEAP),
-//
-//  //TODO fix this 
-//    Slot_JavaObjectRef(  IGNORED,      CAN_BE_NEGATIVE,   4, IN_MAIN_HEAP);
-//    ;
-//
-//    public final int i;
-//    public final boolean isDiffEncode;
-//    public final boolean canBeNegative;
-//    public final boolean inMainHeap;
-//    public final int elementSize;
-//    
-//    public static final int NBR_SLOT_KIND_ZIP_STREAMS;
-//    static {NBR_SLOT_KIND_ZIP_STREAMS = Slot_StrRef.i;}
-//    
-//    SlotKind(boolean isDiffEncode, 
-//             boolean canBeNegative, 
-//             int elementSize,
-//             boolean inMainHeap) {
-//      this.i = this.ordinal();
-//      this.isDiffEncode = isDiffEncode;
-//      this.canBeNegative = isDiffEncode ? true : canBeNegative;
-//      this.elementSize = elementSize; 
-//      this.inMainHeap = inMainHeap;
-//    }
-//  }
-  
+    
   /**
    * Things set up for one instance of this class, and
    * reuse-able
@@ -284,32 +214,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   final private boolean doMeasurements;
   
   final TypeImpl fsArrayType;
-
   
   /** 
    * Things shared between serialization and deserialization
    */
-    
-  // speedups
-//  final private static int arrayLength_i = Slot_ArrayLength.i;
-//  final private static int heapRef_i = Slot_HeapRef.i;
-//  final private static int int_i = Slot_Int.i;
-//  final private static int byte_i = Slot_Byte.ordinal();
-//  final private static int short_i = Slot_Short.i;
-//  final private static int typeCode_i = Slot_TypeCode.i;
-//  final private static int strOffset_i = Slot_StrOffset.i;
-//  final private static int strLength_i = Slot_StrLength.i;
-//  final private static int long_High_i = Slot_Long_High.i;
-//  final private static int long_Low_i = Slot_Long_Low.i;
-//  final private static int float_Mantissa_Sign_i = Slot_Float_Mantissa_Sign.i;
-//  final private static int float_Exponent_i = Slot_Float_Exponent.i;
-//  final private static int double_Mantissa_Sign_i = Slot_Double_Mantissa_Sign.i;
-//  final private static int double_Exponent_i = Slot_Double_Exponent.i;
-//  final private static int fsIndexes_i = Slot_FsIndexes.i;
-//  final private static int strChars_i = Slot_StrChars.i;
-//  final private static int control_i = Slot_Control.i;
-//  final private static int strSeg_i = Slot_StrSeg.i;
-  
+      
   /**
    * 
    * @param ts the type system
@@ -371,7 +280,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     Deserializer deserializer = new Deserializer(cas, in, isDelta);    
     deserializer.deserialize(h);
   }
-
+  
   /**
    * Class instantiated once per serialization
    * Multiple serializations in parallel supported, with
@@ -454,7 +363,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * Contrast with fs2addr and addr2fs in csds - these use the pseudo v2 addresses as the int
      */    
     private final Obj2IntIdentityHashMap<TOP> fs2seq = new Obj2IntIdentityHashMap<TOP>(TOP.class, TOP._singleton);
-//    private final Int2ObjHashMap<TOP> seq2fs = new Int2ObjHashMap<>(TOP.class);
+//    private final Int2ObjHashMap<TOP, TOP> seq2fs = new Int2ObjHashMap<>(TOP.class);
     /**
      * 
      * @param cas -
@@ -568,7 +477,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
        *   addr2fs - address to feature structure
        *   sortedFSs - sorted by addr (sorted by id)
        *******************************************************************************/
-      final int origHeapEnd = (null == csds) ? 0 : csds.getHeapEnd();
+      final int origHeapEnd = csds.getHeapEnd();  // csds guaranteed non-null by constructor
       if (isDelta) {
         csds.setup(mark, origHeapEnd);  // add additional above the line items to csds
       } // otherwise was initialized when initially set up 
@@ -580,6 +489,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       fs2seq.clear();
 //      seq2fs.clear();
       int seq = 1;  // origin 1
+      
       final List<TOP> localSortedFSs = csds.getSortedFSs();
       for (TOP fs : localSortedFSs) {
         fs2seq.put(fs, seq++);
@@ -589,6 +499,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         }
       }
       
+      // the sort order is on the id (e.g. creation order)
       List<TOP> newSortedFSs = CASImpl.filterAboveMark(csds.getSortedFSs(), mark);  // returns all if mark not set            
             
       /**************************
@@ -776,7 +687,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       int fi = 2;
       final int end1 = nbrSofas + 2;
       for (; fi < end1; fi++) {
-        writeVnumber(control_i, fsIndexes[fi]);
+        writeVnumber(control_i, fsIndexes[fi]);  // not converted to sequential
         
         if (doMeasurement) {
           sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(fsIndexes[fi]));
@@ -1456,7 +1367,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           
           IntListIterator it = fsChange.arrayUpdates.iterator();
           while (it.hasNext()) {
-            int i = it.next();
+            int i = it.nextNvc();
             // write the offset of the of the modified entry
             //   from the beginning of the fs addr
             //   i is already the 0 based offset, make it a 2 based one
@@ -1503,7 +1414,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         
         IntListIterator it = fsChange.arrayUpdates.iterator();
         while (it.hasNext()) {
-          int i = it.next();
+          int i = it.nextNvc();
                     
           writeVnumber(fsIndexes_dos, i - iPrevOffset);
           iPrevOffset = i;
@@ -1547,9 +1458,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //      return (s == 0) ? null : seq2fs.get(s);
 //    }
   
-    private int fs2addr(TOP fs) {
-      return (fs == null) ? 0 : csds.fs2addr.get(fs);
-    }
+//    private int fs2addr(TOP fs) {
+//      return (fs == null) ? 0 : csds.fs2addr.get(fs);
+//    }
     
   }  // end of class definition for Serializer
   
@@ -1573,9 +1484,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     private TOP currentFs;
 
     /** 
-     * the deferrals needed when deserializing a subtype of AnnotationBase before the sofa is known
-     * Also for Sofa creation where some fields are final
-     * */
+    * Deferred actions to set Feature Slots of feature structures.
+    * the deferrals needed when deserializing a subtype of AnnotationBase before the sofa is known
+    * Also for Sofa creation where some fields are final
+    */
     final private List<Runnable> singleFsDefer = new ArrayList<>(); 
     
     /** used for deferred creation */
@@ -1587,7 +1499,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     private int heapStart;
     private int heapEnd;
     
-    /** the "fixups" for relative heap refs */
+    /** the "fixups" for relative heap refs
+     *  actions set slot values 
+     */
     final private List<Runnable> fixupsNeeded = new ArrayList<>();
     final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
     
@@ -1661,7 +1575,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * Note: This may be identity map, but may not in the case for V3 where some FSs are GC'd
      */    
 //    private final Obj2IntIdentityHashMap<TOP> fs2seq = new Obj2IntIdentityHashMap<TOP>(TOP.class, TOP.singleton);
-    private final Int2ObjHashMap<TOP> seq2fs = new Int2ObjHashMap<>(TOP.class);
+    private final Int2ObjHashMap<TOP, TOP> seq2fs = new Int2ObjHashMap<>(TOP.class);
 
     /**
      * Called after header was read and determined that
@@ -1777,6 +1691,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
       /*******************************
        * walk main heap - deserialize
+       *   FS Creation:
+       *     - creatCurrentFs -> createFs
+       *     - createSofa
+       *     - createArray
        *******************************/
       TypeImpl type;
       int arraySize = 0;
@@ -1784,97 +1702,96 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
       if (TRACE_DES) System.out.println("Form4Deser heapStart: " + heapStart + "  heapEnd: " + heapEnd);
       for (int iHeap = heapStart; iHeap < heapEnd; iHeap += type.getFsSpaceReq(arraySize)) {
-        final int typeCode = readVnumber(typeCode_dis);
-//        final int adjTypeCode = typeCode + ((this.bcsd.isBeforeV3 && typeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
-//            ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
-//            : 0);
-         type = ts.getTypeForCode(typeCode);
-        
-        prevFs = prevFsByType[typeCode]; // could be null;
-        prevFsRefs = getPrevFsRef(type); // null or int[], only for things having fsrefs (array or not)
-        
-        if (type.isArray()) {
-          currentFs = readArray(iHeap, type);
-          arraySize = ((CommonArrayFS)currentFs).size();
-        } else {
-          if (!ts.annotBaseType.subsumes(type) &&  // defer subtypes of AnnotationBase
-              !(ts.sofaType == type)) {            // defer sofa types
-            currentFs = ivCas.createFS(type);
-            if (currentFs instanceof UimaSerializable) {
-              UimaSerializable ufs = (UimaSerializable) currentFs;
-              uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
-            }
-              
-          } else {
-            currentFs = null;
-            singleFsDefer.clear();
-            sofaRef = null;
-            sofaNum = -1;
-            sofaName = null;
-          }
-          for (FeatureImpl feat : type.getFeatureImpls()) {
-            readByKind(feat, type);
-          }
-//          for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
-//            readByKind(iHeap, i);
-//          }
-        }
-        
-        if (currentFs == null) {
+          final int typeCode = readVnumber(typeCode_dis);
+  //        final int adjTypeCode = typeCode + ((this.bcsd.isBeforeV3 && typeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
+  //            ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
+  //            : 0);
+           type = ts.getTypeForCode(typeCode);
           
-          /**
-           * Create single deferred FS
-           *   Either: Sofa (has final fields) or
-           *           Subtype of AnnotationBase - needs to be in the right view
-           *   
-           *   For the latter, handle document annotation specially
-           */
-
-          if (ts.sofaType == type) {
-            currentFs = baseCas.createSofa(sofaNum, sofaName, null);  
+          prevFs = prevFsByType[typeCode]; // could be null;
+          prevFsRefs = getPrevFsRef(type); // null or int[], only for things having fsrefs (array or not)
+          
+          if (type.isArray()) {
+            currentFs = readArray(iHeap, type);
+            arraySize = ((CommonArrayFS)currentFs).size();
           } else {
-            CASImpl view = (CASImpl) baseCas.getView(sofaRef);
-            if (type.getCode() == TypeSystemConstants.docTypeCode) {
-              currentFs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
-              // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
-              // would end up creating additional instances
+            if (!ts.annotBaseType.subsumes(type) &&  // defer subtypes of AnnotationBase
+                !(ts.sofaType == type)) {            // defer sofa types
+              createCurrentFs(type, ivCas);              
             } else {
-              currentFs = view.createFS(type);
-              if (currentFs instanceof UimaSerializable) {
-                UimaSerializable ufs = (UimaSerializable) currentFs;
-                uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+              currentFs = null;
+              singleFsDefer.clear();
+              sofaRef = null;
+              sofaNum = -1;
+              sofaName = null;
+            }
+            for (FeatureImpl feat : type.getFeatureImpls()) {
+              readByKind(feat, type);
+            }
+  //          for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
+  //            readByKind(iHeap, i);
+  //          }
+          }
+          
+          if (currentFs == null) {
+            
+            /**
+             * Create single deferred FS
+             *   Either: Sofa (has final fields) or
+             *           Subtype of AnnotationBase - needs to be in the right view
+             *   
+             *   For the latter, handle document annotation specially
+             */
+  
+            if (ts.sofaType == type) {
+              if (baseCas.hasView(sofaName)) {
+                // sofa was already created, by an annotationBase subtype deserialized prior to this one
+                currentFs = (TOP) baseCas.getView(sofaName).getSofa();
+              } else {
+                currentFs = baseCas.createSofa(sofaNum, sofaName, null);
+              }
+            } else {
+              
+              CASImpl view = (null == sofaRef) 
+                               ? baseCas.getInitialView() // https://issues.apache.org/jira/browse/UIMA-5588
+                               : baseCas.getView(sofaRef);
+                               
+  //            if (type.getCode() == TypeSystemConstants.docTypeCode) {
+  //              currentFs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
+  //              // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
+  //              // would end up creating additional instances
+  //            } else {
+                createCurrentFs(type, view);
+  //            }
+            }
+            if (type.getCode() == TypeSystemConstants.docTypeCode) { 
+              boolean wasRemoved = baseCas.checkForInvalidFeatureSetting(currentFs, baseCas.getAddbackSingle());
+              for (Runnable r : singleFsDefer) {
+                r.run();
+              }
+              baseCas.addbackSingleIfWasRemoved(wasRemoved, currentFs);
+            } else {
+              for (Runnable r : singleFsDefer) {
+                r.run();
               }
             }
           }
-          if (type.getCode() == TypeSystemConstants.docTypeCode) { 
-            boolean wasRemoved = baseCas.checkForInvalidFeatureSetting(currentFs, baseCas.getAddbackSingle());
-            for (Runnable r : singleFsDefer) {
-              r.run();
-            }
-            baseCas.addbackSingleIfWasRemoved(wasRemoved, currentFs);
-          } else {
-            for (Runnable r : singleFsDefer) {
-              r.run();
-            }
-          }
-        }
-        
-        assert(currentFs != null);
-//        System.out.format("Adding %,d to csds%n", iHeap);
-//        if (isDelta) {
-//          System.out.format("debug adding iHeap: %,d afterAdd: %,d%n", iHeap, iHeap + nextHeapAddrAfterMark);
-//        }
-        csds.addFS(currentFs, iHeap);
-        int s2 = 1 + seq2fs.size();  
-//        fs2seq.put(currentFs, s2);  // 1 origin to match v2
-        seq2fs.put(s2, currentFs);
-        
-        prevFsByType[typeCode] = currentFs;
+          
+          assert(currentFs != null);
+  //        System.out.format("Adding %,d to csds%n", iHeap);
+  //        if (isDelta) {
+  //          System.out.format("debug adding iHeap: %,d afterAdd: %,d%n", iHeap, iHeap + nextHeapAddrAfterMark);
+  //        }
+          csds.addFS(currentFs, iHeap);
+          int s2 = 1 + seq2fs.size();  
+  //        fs2seq.put(currentFs, s2);  // 1 origin to match v2
+          seq2fs.put(s2, currentFs);
+          
+          prevFsByType[typeCode] = currentFs;
       }
-      
       csds.setHeapEnd(heapEnd);
-      
-      if (TRACE_DES) System.out.println("Form4Deser running deferred fixups after all FSs deserialized");
+
+//      if (TRACE_DES) System.out.println("Form4Deser running deferred fixups after all FSs deserialized");
       for (Runnable r : fixupsNeeded) {
         r.run();
       }
@@ -1895,9 +1812,17 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //      System.out.format("Deserialize took %,d ms%n", System.currentTimeMillis() - startTime1);
     }
     
+    private void createCurrentFs(TypeImpl type, CASImpl view) {
+      currentFs = view.createFS(type);
+      if (currentFs instanceof UimaSerializable) {
+        UimaSerializable ufs = (UimaSerializable) currentFs;
+        uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+      }
+    }
+    
     private TOP readArray(int iHeap, TypeImpl type) throws IOException { 
       final int length = readArrayLength();
-      TOP fs = ivCas.createArray(type, length);
+      TOP fs = ivCas.createArray(type, length); // create in default view - initial view (iv)cas
       if (length == 0) {
         return fs;
       }
@@ -2032,10 +1957,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       case Slot_HeapRef:
         final int vh = readDiffWithPrevTypeSlot(kind, feat);
         if (ts.annotBaseSofaFeat == feat) {
-          sofaRef = (Sofa) seq2fs(vh);  // invalid if returns null
-                                                  // forward refs are not possible for sofas
-          assert(sofaRef != null);
-        } else {
+          sofaRef = (Sofa) seq2fs(vh);  // if sofa hasn't yet been deserialized, will be null
+                            // use case: create annot , without sofa - causes create sofa
+                            // but binary serialization keeps creation order
+        }
+        if (ts.annotBaseSofaFeat != feat || sofaRef == null) { https://issues.apache.org/jira/browse/UIMA-5588
           maybeStoreOrDefer(lfs -> {
             // in addition to deferring if currentFs is null, 
             // heap refs may need deferring if forward refs
@@ -2067,7 +1993,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
             break;
           }
           if (feat == ts.sofaString) {
-            maybeStoreOrDefer(lfs -> ((Sofa)lfs).setLocalSofaData(s));
+            maybeStoreOrDefer(lfs -> ((Sofa)lfs).setLocalSofaDataNoDocAnnotUpdate(s));
             break;
           }
         }
@@ -2103,7 +2029,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       fsIndexes.add(nbrViews);
       fsIndexes.add(nbrSofas);
       for (int i = 0; i < nbrSofas; i++) {
-        fsIndexes.add(readVnumber(control_dis));
+        fsIndexes.add(readVnumber(control_dis));  // this is the v2 addr style
       }
         
       for (int i = 0; i < nbrViews; i++) {
@@ -2116,7 +2042,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
       bcsd.reinitIndexedFSs(fsIndexes.getArray(), isDelta,
           i ->  
-               seq2fs.get(i)); // written on separate line for Eclipse breakpoint control
+              seq2fs.get(i),  // written on separate line for Eclipse breakpoint control
+          i -> 
+              csds.addr2fs.get(i)  // https://issues.apache.org/jira/browse/UIMA-5593
+                 ); 
     }
 
     /** 
@@ -2341,7 +2270,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     
       final int vh = readDiff(long_High_dis, (int) (prev >>> 32));
       final int vl = readDiff(long_Low_dis, (int) prev);
-      final long v = (((long)vh) << 32) | (0xffffffffL & (long)vl);
+      final long v = (((long)vh) << 32) | (0xffffffffL & vl);
       return v;
     }
     
@@ -2650,9 +2579,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       return (s == 0) ? null : seq2fs.get(s);
     }
     
-    private TOP addr2fs(int s) {
-      return (s == 0) ? null : csds.addr2fs.get(s);
-    }
+//    private TOP addr2fs(int s) {
+//      return (s == 0) ? null : csds.addr2fs.get(s);
+//    }
   }
 
   /* ******************************************************************
@@ -2682,284 +2611,26 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //    }
 //    fsStartIndexes.finishSetup();
 //  }  
-
-  // this method is required, instead of merely making
-  // a "new" instance, so that
-  // the containing instance of BinaryCasSerDes4 can be
-  // accessed for the type info
   
-  public CasCompare getCasCompare() {
-    return new CasCompare();
-  }
-  
-  public class CasCompare {
-//    /** 
-//     * Compare 2 CASes for equal
-//     * The layout of refs to aux heaps does not have to match
-//     */
-//      private CASImpl c1;
-//      private CASImpl c2;
-//      private Heap c1HO;
-//      private Heap c2HO;
-//      private int[] c1heap;
-//      private int[] c2heap;
-//      private int iHeap;
-
-    /**
-     * Trampolines to Form6 compare
-     * There's no reliable way to get the set of FSs for 2 different form4 CASs, since the 
-     * method used is to take the FSs from the id2fs weakReferences, and therefore some 
-     * unreferenced items may appear in one and not the other.
-     * @param c1 a cas to compare
-     * @param c2 the cas to compare to
-     * @return true if they compare equal
-     */
-    public boolean compareCASes(CASImpl c1, CASImpl c2) {
-      BinaryCasSerDes6 bcsd6;
-      try {
-        bcsd6 = new BinaryCasSerDes6(c1);
-      } catch (ResourceInitializationException e) {
-        // never thrown
-        throw new RuntimeException(e);
-      }
-      return bcsd6.compareCASes(c1,  c2);
-//      this.c1 = c1;
-//      this.c2 = c2;
-//      c1HO = c1.getHeap();
-//      c2HO = c2.getHeap();
-//      final int endi = c1HO.getCellsUsed();
-//      final int end2 = c2HO.getCellsUsed();
-//      if (endi != end2) {
-//        System.err.format("CASes have different heap cells used: %,d %,d%n", endi, end2);
-//      }
-//      c1heap = c1HO.heap;
-//      c2heap = c2HO.heap;
-      
-//      final ComprItemRefs fsStartIndexes = new ComprItemRefs();
-//      initFsStartIndexes(fsStartIndexes, c1heap, 1, endi, null);
-      
-//      final int endsi = fsStartIndexes.getNbrOfItems();
-//      for (int i = 1; i < endsi; i++) {
-//        iHeap = fsStartIndexes.getItemAddr(i);
-////        System.out.println("");
-//        if (!compareFss()) {
-//          return false;
-//        }
-//      }
-//      
-//      int[] ifs1 = c1.getIndexedFSs();
-//      int[] ifs2 = c2.getIndexedFSs();
-//      
-//      return Arrays.equals(ifs1, ifs2);
-//    }
+//  public CasCompare getCasCompare() {
+//    return new CasCompare();
+//  }
+//  
+//  public class CasCompare {
 //
-//    private boolean compareFss() {
-//      int tCode = c1heap[iHeap];
-//      typeInfo = getTypeInfo(tCode);
-//      if (tCode != c2heap[iHeap]) {
-//        return mismatchFs();
-//      }
-//      if (typeInfo.isArray) {
-//        return compareFssArray();
-//      } else {
-//        for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
-//          if (!compareSlot(i)) {
-//            return mismatchFs();
-//          }
-//        }
-//        return true;
-//      }
+//    /**
+//     * Trampolines to CasCompare 
+//     * There's no reliable way to get the set of FSs for 2 different form4 CASs, since the 
+//     * method used is to take the FSs from the id2fs weakReferences, and therefore some 
+//     * unreferenced items may appear in one and not the other.
+//     * @param c1 a cas to compare
+//     * @param c2 the cas to compare to
+//     * @return true if they compare equal
+//     */
+//    public boolean compareCASes(CASImpl c1, CASImpl c2) {
+//      return org.apache.uima.cas.impl.CasCompare.compareCASes(c1, c2);
 //    }
-//      
-//    private boolean compareFssArray() {
-//      int len1 = c1heap[iHeap + 1];
-//      int len2 = c2heap[iHeap + 1];
-//      if (len1 != len2) {
-//        return false;
-//      }
-//      for (int i = 0; i < len1; i++) {
-//        SlotKind kind = typeInfo.getSlotKind(2);
-//        if (typeInfo.isHeapStoredArray) {
-//          if (kind == Slot_StrRef) {
-//            if (! compareStrings(c1.getStringForCode(c1heap[iHeap + 2 + i]),
-//                                 c2.getStringForCode(c2heap[iHeap + 2 + i]))) {
-//              return mismatchFs();
-//            }
-//          } else if (c1heap[iHeap + 2 + i] != c2heap[iHeap + 2 + i]) {
-//            return mismatchFs();
-//          }
-//        } else {  // not heap stored array
-//          switch (kind) {
-//          case Slot_BooleanRef: case Slot_ByteRef:
-//            if (c1.getByteHeap().getHeapValue(c1heap[iHeap + 2] + i) !=
-//                c2.getByteHeap().getHeapValue(c2heap[iHeap + 2] + i)) {
-//              return mismatchFs(); 
-//            }
-//            break;
-//          case Slot_ShortRef:
-//            if (c1.getShortHeap().getHeapValue(c1heap[iHeap + 2] + i) !=
-//                c2.getShortHeap().getHeapValue(c2heap[iHeap + 2] + i)) {
-//              return mismatchFs();
-//            }
-//            break;
-//          case Slot_LongRef: case Slot_DoubleRef: {
-//            if (c1.getLongHeap().getHeapValue(c1heap[iHeap + 2] + i)  !=
-//                c2.getLongHeap().getHeapValue(c2heap[iHeap + 2] + i)) {
-//              return mismatchFs();
-//            }
-//            break;
-//          }
-//          default: throw new RuntimeException("internal error");
-//          }
-//        }
-//      } // end of for
-//      return true;
-//    }
-//    
-//    private boolean compareSlot(int offset) {
-//      SlotKind kind = typeInfo.getSlotKind(offset);
-//      switch (kind) {
-//      case Slot_Int: case Slot_Short: case Slot_Boolean: case Slot_Byte: 
-//      case Slot_Float: case Slot_HeapRef:
-//        return c1heap[iHeap + offset] == c2heap[iHeap + offset];
-//      case Slot_StrRef:
-//        return compareStrings(c1.getStringForCode(c1heap[iHeap + offset]),
-//                              c2.getStringForCode(c2heap[iHeap + offset]));
-//      case Slot_LongRef: case Slot_DoubleRef:
-//        return c1.getLongHeap().getHeapValue(c1heap[iHeap + offset]) ==
-//               c2.getLongHeap().getHeapValue(c2heap[iHeap + offset]);
-//      default: throw new RuntimeException("internal error");      
-//      }
-//    }
-//    
-//    private boolean compareStrings(String s1, String s2) {
-//      if (null == s1) {
-//        return null == s2;
-//      }
-//      return s1.equals(s2);
-//    }
-//     
-//    private boolean mismatchFs() {
-//      System.err.format("Mismatched Feature Structures:%n %s%n %s%n", 
-//          dumpHeapFs(c1), dumpHeapFs(c2));
-//      return false;
-//    }
-//    
-//    private StringBuilder dumpHeapFs(CASImpl cas) {
-//      StringBuilder sb = new StringBuilder();
-//      typeInfo = getTypeInfo(cas.getHeap().heap[iHeap]);
-//      sb.append(typeInfo);
-//  
-//      if (typeInfo.isHeapStoredArray) {
-//        sb.append(dumpHeapStoredArray(cas));
-//      } else if (typeInfo.isArray) {
-//        sb.append(dumpNonHeapStoredArray(cas));
-//      } else {
-//        sb.append("   Slots:\n");
-//        for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
-//          sb.append("  ").append(typeInfo.getSlotKind(i)).append(": ")
-//              .append(dumpByKind(cas, i)).append('\n');
-//        }
-//      }
-//      return sb;
-//    }
-//    
-//    private StringBuilder dumpHeapStoredArray(CASImpl cas) {
-//      StringBuilder sb = new StringBuilder();
-//      int[] heap = cas.getHeap().heap;
-//      final int length = heap[iHeap + 1];
-//      sb.append("Array Length: ").append(length).append('[');
-//      SlotKind arrayElementKind = typeInfo.slotKinds[1];
-//      switch (arrayElementKind) {
-//      case Slot_HeapRef: case Slot_Int: case Slot_Short: case Slot_Byte: 
-//      case Slot_Boolean: case Slot_Float:
-//        for (int i = iHeap + 2; i < iHeap + length + 2; i++) {
-//          if (i > iHeap + 2) {
-//            sb.append(", ");
-//          }
-//          sb.append(heap[i]);
-//        }
-//        break;   
-//      case Slot_StrRef:
-//        StringHeap sh = cas.getStringHeap();
-//        for (int i = iHeap + 2; i < iHeap + length + 2; i++) {
-//          if (i > iHeap + 2) {
-//            sb.append(", ");
-//          }
-//          sb.append(sh.getStringForCode(heap[i]));        
-//        }
-//        break;
-//      default: throw new RuntimeException("internal error");
-//      }
-//      sb.append("] ");
-//      return sb;
-//    }
-//  
-//    private StringBuilder dumpNonHeapStoredArray(CASImpl cas) {
-//      StringBuilder sb = new StringBuilder();
-//      int[] heap = cas.getHeap().heap;
-//      final int length = heap[iHeap + 1];
-//      sb.append("Array Length: ").append(length).append('[');
-//      SlotKind arrayElementKind = typeInfo.slotKinds[1];
-//      
-//      for (int i = 0; i < length; i++) {
-//        if (i > 0) {
-//          sb.append(", ");
-//        }
-//        switch (arrayElementKind) {
-//        case Slot_BooleanRef: case Slot_ByteRef:
-//          sb.append(cas.getByteHeap().getHeapValue(heap[iHeap + 2 + i]));
-//          break;
-//        case Slot_ShortRef:
-//          sb.append(cas.getShortHeap().getHeapValue(heap[iHeap + 2 + i]));
-//          break;
-//        case Slot_LongRef: case Slot_DoubleRef: {
-//          long v = cas.getLongHeap().getHeapValue(heap[iHeap + 2 + i]);
-//          if (arrayElementKind == Slot_DoubleRef) {
-//            sb.append(CASImpl.long2double(v));
-//          } else {
-//            sb.append(String.format("%,d", v));
-//          }
-//          break;
-//        }
-//        default: throw new RuntimeException("internal error");
-//        }
-//      }
-//      sb.append("] ");
-//      return sb;      
-//    }
-//  
-//    private StringBuilder dumpByKind(CASImpl cas, int offset) {
-//      StringBuilder sb = new StringBuilder();
-//      int[] heap = cas.getHeap().heap;
-//      SlotKind kind = typeInfo.getSlotKind(offset);
-//      switch (kind) {
-//      case Slot_Int:
-//        return sb.append(heap[iHeap + offset]);
-//      case Slot_Short: 
-//        return sb.append((short)heap[iHeap + offset]);
-//      case Slot_Byte: 
-//        return sb.append((byte)heap[iHeap + offset]);
-//      case Slot_Boolean:  
-//        return sb.append(((heap[iHeap + offset]) == 0) ? false : true);
-//      case Slot_Float: {
-//        int v = heap[iHeap + offset];
-//        return sb.append(Float.intBitsToFloat(v)).append(' ').append(Integer.toHexString(v));
-//      }
-//      case Slot_HeapRef:
-//        return sb.append("HeapRef[").append(heap[iHeap + offset]).append(']');
-//      case Slot_StrRef:
-//        return sb.append(cas.getStringForCode(heap[iHeap + offset]));
-//      case Slot_LongRef:
-//        return sb.append(String.format("%,d", cas.getLongHeap().getHeapValue(heap[iHeap + offset])));
-//      case Slot_DoubleRef: {
-//        long v = cas.getLongHeap().getHeapValue(heap[iHeap + offset]);
-//        return sb.append(CASImpl.long2double(v)).append(' ').append(Long.toHexString(v));
-//      }
-//      default: throw new RuntimeException("internal error");      
-//      }
-    }
-  }
+//  }
   
   /**
    * 

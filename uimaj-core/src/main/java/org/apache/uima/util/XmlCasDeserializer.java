@@ -27,6 +27,7 @@ import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.impl.OutOfTypeSystemData;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
+import org.apache.uima.internal.util.XMLUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -34,11 +35,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Deserializes a CAS from a standoff-XML format. This class can read the XMI format introduced in
  * UIMA v1.4 as well as the XCAS format from previous versions.
+ * 
+ * This class is abstract, because it only has static methods and should never be instantiated 
  */
 public abstract class XmlCasDeserializer {
   /**
@@ -78,10 +80,7 @@ public abstract class XmlCasDeserializer {
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
           throws SAXException, IOException {
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-    XmlCasDeserializerHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
-    xmlReader.setContentHandler(handler);
-    xmlReader.parse(new InputSource(aStream));
+    deserializeR(aStream, aCAS, aLenient);
   }
 
   /**
@@ -104,7 +103,7 @@ public abstract class XmlCasDeserializer {
    */
   static SerialFormat deserializeR(InputStream aStream, CAS aCAS, boolean aLenient)
       throws SAXException, IOException {
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    XMLReader xmlReader = XMLUtils.createXMLReader();
     XmlCasDeserializerHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
     xmlReader.setContentHandler(handler);
     xmlReader.parse(new InputSource(aStream));
@@ -119,7 +118,7 @@ public abstract class XmlCasDeserializer {
     private boolean mLenient;
 
     private ContentHandler mDelegateHandler; // will be set to either XMI or XCAS
-
+    
     XmlCasDeserializerHandler(CAS cas, boolean lenient) {
       mCAS = cas;
       mLenient = lenient;

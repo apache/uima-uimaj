@@ -21,10 +21,13 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 import java.util.Arrays;
+import java.util.PrimitiveIterator.OfInt;
 import java.util.RandomAccess;
 import java.util.Spliterator;
-import java.util.PrimitiveIterator.OfInt;
+import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
@@ -38,12 +41,8 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-
-
-import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.cas.IntegerArray;
 
 
 /** an expandable array of ints
@@ -57,6 +56,7 @@ import org.apache.uima.jcas.cas.IntegerArray;
  *   - it is adjustable, like ArrayList
  *   
  * Implementation notes:
+ *   - implements Iterable + stream, not Collection, because stream returns IntStream
  *   - Uses UimaSerializable APIs
  *   - two implementations of the array list:
  *     -- one uses the original IntegerArray, via a variant of the asList wrapper that returns ints
@@ -69,14 +69,14 @@ import org.apache.uima.jcas.cas.IntegerArray;
 
 public class IntegerArrayList extends TOP implements 
                           Iterable<Integer>,
-                          UimaSerializable, CommonArrayFS, 
+                          UimaSerializable, CommonArrayFS<Integer>, 
                           RandomAccess, Cloneable {
  
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.jcas.type.IntegerArrayList";
+  public final static String _TypeName = "org.apache.uima.jcas.cas.IntegerArrayList";
   
   /** @generated
    * @ordered 
@@ -118,7 +118,9 @@ public class IntegerArrayList extends TOP implements
 
 
   /* Feature Adjusted Offsets */
-  public final static int _FI_intArray = TypeSystemImpl.getAdjustedFeatureOffset("intArray");
+//  public final static int _FI_intArray = TypeSystemImpl.getAdjustedFeatureOffset("intArray");
+  private final static CallSite _FC_intArray = TypeSystemImpl.createCallSite(IntegerArrayList.class, "intArray");
+  private final static MethodHandle _FH_intArray = _FC_intArray.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -173,14 +175,14 @@ public class IntegerArrayList extends TOP implements
    * @generated
    * @return value of the feature 
    */
-  private IntegerArray getIntArray() { return (IntegerArray)(_getFeatureValueNc(_FI_intArray));}
+  private IntegerArray getIntArray() { return (IntegerArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_intArray)));}
     
   /** setter for intArray - sets internal use - holds the ints 
    * @generated
    * @param v value to set into the feature 
    */
   private void setIntArray(IntegerArray v) {
-    _setFeatureValueNcWj(_FI_intArray, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_intArray), v);
   }    
     
   private void maybeStartUsingIntegerArrayList() {
@@ -339,7 +341,7 @@ public class IntegerArrayList extends TOP implements
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArrayFS v) {
+  public void copyValuesFrom(CommonArrayFS<Integer> v) {
     clear();
     Spliterator.OfInt si;
     
@@ -355,7 +357,7 @@ public class IntegerArrayList extends TOP implements
   }
   
   /**
-   * Convenience - create a IntegerArrayList from an existing FeatureStructure[]
+   * Convenience - create a IntegerArrayList from an existing array.
    * @param jcas -
    * @param a -
    * @return -
@@ -369,14 +371,6 @@ public class IntegerArrayList extends TOP implements
   @Override
   public FeatureStructureImplC _superClone() {return clone();}  // enable common clone
   
-  /**
-   * @return -
-   * @see java.util.ArrayList#isEmpty()
-   */
-  public boolean isEmpty() {
-    return size() == 0;
-  }
-
   /**
    * @param i -
    * @return -
@@ -557,7 +551,17 @@ public class IntegerArrayList extends TOP implements
   public IntStream stream() {
     return StreamSupport.intStream(spliterator(), false);
   }
-  
+
+  /**
+   * Version of forEach that doesn't box
+   * @param action -
+   */
+  public void forEach(IntConsumer action) {
+    OfInt ii = iterator();
+    while (ii.hasNext()) {
+      action.accept(ii.nextInt());
+    }
+  }
     
 }
 

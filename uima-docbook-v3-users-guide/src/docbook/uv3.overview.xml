@@ -112,11 +112,10 @@ under the License.
 	    </varlistentry>
 	    
 	    <varlistentry>
-	      <term><emphasis role="strong">New UIMA built-in types, built using the custom Java object support</emphasis></term>
+	      <term><emphasis role="strong">New UIMA semi-built-in types, built using the custom Java object support</emphasis></term>
 	      <listitem>
 	        <para>The new support that allows custom serialization of arbitrary Java objects so they can be transported
-            in the CAS (above) is used to implement several new built-in UIMA types.  These are implemented in a 
-            "lazy" style, avoiding extra computation until needed. 
+            in the CAS (above) is used to implement several new semi-built-in UIMA types.  
 	        <variablelist>
 	          <varlistentry>
 	            <term><emphasis role="strong">FSArrayList</emphasis></term>
@@ -131,9 +130,9 @@ under the License.
 	            </listitem>
 	          </varlistentry>
     	      <varlistentry>
-	            <term><emphasis role="strong">FSHashSet</emphasis></term>
+	            <term><emphasis role="strong">FSHashSet, FSLinkedHashSet</emphasis></term>
 	            <listitem>
-	              <para>a Java HashSet containing Feature Structures. This JCas class implements the Set API.</para>
+	              <para>a Java HashSet or LinkedHashSet containing Feature Structures. This JCas class implements the Set API.</para>
 	            </listitem>
 	          </varlistentry>
  
@@ -152,6 +151,11 @@ under the License.
             both forwards and backwards while iterating, moving to specific positions, and doing various kinds
             of specialized Annotation selection such as working with Annotations spanned by another annotation.
           </para>
+          <para>By default, when sorted iterators are set up by the select framework, they ignore typePriorities;
+            this addresses a need of many use cases, and makes operation when there are many annotations spanning
+            the same begin and end more reliable.  Each select can specify to use typePriority as
+            part of the ordering when required.</para>
+            
           <para>This user's guide has a chapter devoted to this new framework.
           </para>
         </listitem>
@@ -166,12 +170,42 @@ under the License.
           <para>Note that the automatic index corruption avoidance introduced in more recent versions of UIMA could
           be automatically removing Feature Structures from indexes and adding them back, if the user was updating
           some Feature of a Feature Structure that was part of an index specification for inclusion or ordering purposes.</para>
+          
           <blockquote><para>In version 2, you would accomplish this using a two pass scheme:
           Pass 1 would iterate and merely collect the Feature Structures to be updated into a Java collection of some kind.
           Pass 2 would use a plain Java iterator over that collection and modify the Feature Structures and/or the UIMA indexes.
           This is no longer needed in version 3; UIMA iterators use a copy-on-write technique to allow index updating,
           while doing whatever minimal copying is needed to continue iteration over the original index.</para>
           </blockquote>
+          
+          <para>In both version 2 and 3, there are 3 iterator movement APIs which have a side effect of insuring the
+            iterator is operating correctly over the current index contents.  These are the <code>moveToFirst, 
+            moveToLast, and moveTo(some_feature_structure)</code> API calls.  In version 3, using these will
+            reinitialize the iterator (if needed) so that it is iterating over the current index contents;
+            if the index has not been modified, no reinitialization is needed (or done).</para>
+            
+          <para>CAS reset and index removeAll operations clear the index without preserving any existing
+            iteration.  If you try to continue an iteration over an index cleared by these operations, the results
+            are undefined, and may throw exceptions.</para>  
+        </listitem>
+      </varlistentry>
+      
+      <varlistentry>
+        <term><emphasis role="strong">Logging updated</emphasis></term>
+        <listitem>
+          <para>The UIMA logger is a facade that can be hooked up at deploy time to one of several logging backends.
+          It has been extended to implement all of the Logger API calls provided in the SLF4j <code>Logger</code>
+          interface, and has been changed to use SLF4j as its back-end.  SLF4j, in turn, 
+          requires a logging back-end which it 
+          determines by examining what's available in the classpath, at deploy time.  This design
+          allows UIMA to be more easily embedded in other systems which have their own logging frameworks.</para>
+          
+          <para>Modern loggers support MDC/NDC and Markers; these are supported now via the slf4j facade.  
+          UIMA itself is extended to use these to provide contexts around logging.
+          </para> 
+
+          <para>See the following chapter on logging for details.</para>
+                  
         </listitem>
       </varlistentry>
 
@@ -238,6 +272,16 @@ under the License.
         </listitem>
       </varlistentry>
 
+      <varlistentry>
+        <term><emphasis role="strong">Programming convenience</emphasis></term>
+        <listitem>
+          <para>Many APIs have been made more consistent and better integrated; see the chapter on new and extended APIs.
+            Examples:  UIMA Indexes now implement Iterable, so you can use the Java "extended for" construct directly;
+            UIMA Lists have new push and pushNode methods to create and link a new node onto the front of a list;
+            there are new methods on the CAS and JCas to get a shared instance of common immutable objects, like
+            0-length arrays and empty lists.</para>
+        </listitem>
+      </varlistentry>
 	  </variablelist>
   </para>
   
@@ -287,6 +331,6 @@ a feature called <code>category</code> which returns a String denoting the categ
 
 <section id="uv3.overview.java8">
   <title>Java 8 is required</title>
-  <para>The UIMA Java SDK Version 3 requires Java 8 or later.</para>
+  <para>The UIMA Java SDK Version 3 requires Java 8.</para>
 </section>      
 </chapter>

@@ -20,7 +20,6 @@
 package org.apache.uima;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator.OfInt;
 
@@ -209,11 +208,11 @@ public interface List_of_ints extends Iterable<Integer> {
           @Override
           public boolean hasNext() {return false;}
           @Override
-          public int next() throws NoSuchElementException {throw new NoSuchElementException();}
+          public int nextNvc() {throw new IllegalStateException();}
           @Override
           public boolean hasPrevious() {return false;}
           @Override
-          public int previous() {throw new NoSuchElementException();}
+          public int previousNvc() {throw new IllegalStateException();}
           @Override
           public void moveToStart() {}
           @Override
@@ -359,28 +358,21 @@ public interface List_of_ints extends Iterable<Integer> {
           public boolean hasNext() {
             return pos >= 0 && pos < size();
           }
-
+          
           @Override
-          public int next() throws NoSuchElementException {
-            if (!hasNext()) {
-              throw new NoSuchElementException();
-            }
+          public int nextNvc() {
             return get(pos++);
           }
 
           @Override
           public boolean hasPrevious() {
-            return pos >= 0 && pos < size();  // same as has next
+            return pos > 0 && pos < size(); 
           }
 
           @Override
-          public int previous() {
-            if (!hasPrevious()) {
-              throw new NoSuchElementException();
-            }
-            return get(pos--);
+          public int previousNvc() {
+            return get(--pos);
           }
-
           @Override
           public void moveToStart() {
             pos = 0;

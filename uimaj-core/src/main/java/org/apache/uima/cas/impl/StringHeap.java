@@ -192,7 +192,7 @@ final class StringHeap {
   
   public String[] toArray() {
     String[] r = new String[stringList.size()];
-    return (String[]) stringList.toArray(r);
+    return stringList.toArray(r);
   }
 
 }

@@ -19,10 +19,11 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.uima.cas.ByteArrayFS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.impl.ByteArrayFSImpl;
 import org.apache.uima.cas.impl.CASImpl;
@@ -31,10 +32,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for ByteArray */
-public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteArrayFSImpl, Iterable<Byte> {
+public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, ByteArrayFSImpl, Iterable<Byte> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.cas.jcas.ByteArray";
+  public final static String _TypeName = CAS.TYPE_NAME_BYTE_ARRAY;
 
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
@@ -72,8 +73,8 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
-      _casView.adjustLastFsV2size(2); // space for length and ref
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
 
@@ -90,8 +91,8 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
-      _casView.adjustLastFsV2size(2); // space for length and ref
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
 
@@ -129,7 +130,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
    * @see org.apache.uima.cas.ByteArrayFS#toArray()
    */
   public byte[] toArray() {
-    return theArray.clone();
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
@@ -167,7 +168,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArrayFS v) {
+  public void copyValuesFrom(CommonArrayFS<Byte> v) {
     ByteArray bv = (ByteArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());
@@ -205,10 +206,22 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static ByteArray createFromArray(JCas jcas, byte[] a) {
+  public static ByteArray create(JCas jcas, byte[] a) {
     ByteArray byteArray = new ByteArray(jcas, a.length);
     byteArray.copyFromArray(a, 0, 0, a.length);
     return byteArray;
   }
 
+  /**
+   * @param item the item to see if is in the array
+   * @return true if the item is in the array
+   */
+  public boolean contains(byte item) {
+    for (byte b : theArray) {
+      if (b == item) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

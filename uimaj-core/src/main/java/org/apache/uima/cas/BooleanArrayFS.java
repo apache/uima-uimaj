@@ -21,11 +21,10 @@ package org.apache.uima.cas;
 
 /**
  * Boolean array interface. To create a boolean array object, use
- * {@link org.apache.uima.cas.CAS#createBooleanArrayFS CAS.createBooleanArrayFS()}.
- * 
- * 
+ * {@link org.apache.uima.cas.CAS#createBooleanArrayFS CAS.createBooleanArrayFS(int)} or
+ * new BooleanArray(aJCas, length) 
  */
-public interface BooleanArrayFS extends CommonArrayFS {
+public interface BooleanArrayFS extends CommonArrayFS<Boolean> {
 
   /**
    * Get the i-th string from the array.

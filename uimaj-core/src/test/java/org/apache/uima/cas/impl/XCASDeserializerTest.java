@@ -39,18 +39,20 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas_data.impl.CasComparer;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import junit.framework.TestCase;
 
@@ -125,6 +127,13 @@ public class XCASDeserializerTest extends TestCase {
     doTestDeserializeAndReserialize(false);
     doTestDeserializeAndReserialize(true);
   }
+  
+  public void testDeserializeAndReserializeV2Ids() throws Exception {
+    try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
+      doTestDeserializeAndReserialize(false);
+      doTestDeserializeAndReserialize(true);      
+    }
+  }
 
   private void doTestDeserializeAndReserialize(boolean useJCas) throws Exception {
     // deserialize a complex CAS
@@ -136,13 +145,17 @@ public class XCASDeserializerTest extends TestCase {
     TypeSystemImpl tsi = casImpl.getTypeSystemImpl();
     
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
-    XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
-    ContentHandler deserHandler = deser.getXCASHandler(cas);
-    SAXParserFactory fact = SAXParserFactory.newInstance();
-    SAXParser parser = fact.newSAXParser();
-    XMLReader xmlReader = parser.getXMLReader();
-    xmlReader.setContentHandler(deserHandler);
-    xmlReader.parse(new InputSource(serCasStream));
+    
+    XCASDeserializer.deserialize(serCasStream, cas, false);  // not lenient
+    
+    // next is missing the support for v2 ids
+//    XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
+//    ContentHandler deserHandler = deser.getXCASHandler(cas);
+//    SAXParserFactory fact = SAXParserFactory.newInstance();
+//    SAXParser parser = fact.newSAXParser();
+//    XMLReader xmlReader = parser.getXMLReader();
+//    xmlReader.setContentHandler(deserHandler);
+//    xmlReader.parse(new InputSource(serCasStream));
     serCasStream.close();
 
 //    //print some statistics to aid in verifying deserialization was correct
@@ -208,22 +221,33 @@ public class XCASDeserializerTest extends TestCase {
       cas2.getJCas();
     }
 
+    XCASDeserializer.deserialize(new StringReader(xml), cas2, false);  // not lenient
+
+    // next doesn't handle v2 form
     // deserialize into another CAS
-    XCASDeserializer deser2 = new XCASDeserializer(cas2.getTypeSystem());
-    ContentHandler deserHandler2 = deser2.getXCASHandler(cas2);
-    xmlReader.setContentHandler(deserHandler2);
-//    // debug
-//    PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream("debug.log.txt", false)));
-//    ps.println(xml);
-//    ps.close();
-    xmlReader.parse(new InputSource(new StringReader(xml)));
+//    XCASDeserializer deser2 = new XCASDeserializer(cas2.getTypeSystem());
+//    ContentHandler deserHandler2 = deser2.getXCASHandler(cas2);
+//    xmlReader.setContentHandler(deserHandler2);
+////    // debug
+////    PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream("debug.log.txt", false)));
+////    ps.println(xml);
+////    ps.close();
+//    xmlReader.parse(new InputSource(new StringReader(xml)));
 
     // compare
 //    if (cas.getAnnotationIndex().size() != cas2.getAnnotationIndex().size()) {
 //      System.out.println("debug");
 //    }
     assertEquals(cas.getAnnotationIndex().size(), cas2.getAnnotationIndex().size());
-    // CasComparer.assertEquals(cas,cas2);
+    if (XmiCasDeserializerTest.IS_CAS_COMPARE) {
+      long start = System.nanoTime();
+      CasCompare cc = new CasCompare((CASImpl)cas, (CASImpl)cas2);
+      cc.compareIds(((CASImpl)cas).is_ll_enableV2IdRefs());
+      assertTrue(cc.compareCASes());
+      System.out.format("compareCASes, time: %,d millisec%n",(System.nanoTime() - start) / 1000000L);
+    } else {
+      CasComparer.assertEquals(cas,cas2);
+    }
   }
 
   public void testOutOfTypeSystem2() throws Exception {
@@ -283,7 +307,7 @@ public class XCASDeserializerTest extends TestCase {
             + "<uima.tcas.DocumentAnnotation _indexed=\"1\" _id=\"8\" sofa=\"1\" begin=\"0\" end=\"13\" language=\"en\"/>"
             + "<foo.Bar _indexed=\"1\" _id=\"2\" sofa=\"1\" begin=\"0\" end=\"0\" baz=\"blah\">this is the value feature</foo.Bar></CAS>";
     OutOfTypeSystemData ootsd = new OutOfTypeSystemData();
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    XMLReader xmlReader = XMLUtils.createXMLReader();
     XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
     ContentHandler handler = deser.getXCASHandler(cas, ootsd);
     xmlReader.setContentHandler(handler);

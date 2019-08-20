@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -41,6 +42,7 @@ import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -86,7 +88,7 @@ public class AnnotationViewGenerator {
    */
   public AnnotationViewGenerator(File aOutputDir) {
     mOutputDir = aOutputDir;
-    mTFactory = TransformerFactory.newInstance();
+    mTFactory = XMLUtils.createTransformerFactory();
 
     // the viewer uses several files located via the classpath
     // parse xsl files into templates

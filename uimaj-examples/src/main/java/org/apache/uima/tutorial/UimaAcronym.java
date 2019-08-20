@@ -18,6 +18,9 @@
  */
 package org.apache.uima.tutorial;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -26,14 +29,18 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
 
-/**
- * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004 XML source: C:/Program
- * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- *
- * @generated
- */
+/** 
+ * Updated by JCasGen Sun Oct 08 19:34:17 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * @generated */
 public class UimaAcronym extends Annotation {
 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.tutorial.UimaAcronym";
+  
     /**
      * The Constant typeIndexID.
      *
@@ -56,21 +63,28 @@ public class UimaAcronym extends Annotation {
      * @return the type index ID
      * @generated 
      */
-    public int getTypeIndexID() {
-        return typeIndexID;
-    }
+    public int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_expandedForm = "expandedForm";
 
-    /** The Constant _FI_expandedForm. */
-    public static final int _FI_expandedForm = TypeSystemImpl.getAdjustedFeatureOffset("expandedForm");
 
-    /**
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_expandedForm = TypeSystemImpl.createCallSite(UimaAcronym.class, "expandedForm");
+  private final static MethodHandle _FH_expandedForm = _FC_expandedForm.dynamicInvoker();
+
+   
+  /**
    * Never called. Disable default constructor
    *
    * @generated
    */
-    protected  UimaAcronym() {
-    }
-
+    protected  UimaAcronym() {/* intentionally empty block */}
+    
     /**
      * Internal - constructor used by generator.
      *
@@ -79,10 +93,10 @@ public class UimaAcronym extends Annotation {
      * @generated 
      */
     public  UimaAcronym(TypeImpl type, CASImpl casImpl) {
-        super(type, casImpl);
-        readObject();
-    }
-
+    super(type, casImpl);
+    readObject();
+  }
+  
     /**
      * Instantiates a new uima acronym.
      *
@@ -90,9 +104,10 @@ public class UimaAcronym extends Annotation {
      * @generated 
      */
     public  UimaAcronym(JCas jcas) {
-        super(jcas);
-        readObject();
-    }
+    super(jcas);
+    readObject();   
+  } 
+
 
     /**
      * Instantiates a new uima acronym.
@@ -108,11 +123,10 @@ public class UimaAcronym extends Annotation {
         readObject();
     }
 
-    /**
-     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
-     *
-     * @generated modifiable
-     */
+  /** 
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->*
+   * @generated modifiable 
+   */
     private void readObject() {
     }
 
@@ -124,10 +138,8 @@ public class UimaAcronym extends Annotation {
      * @return the expanded form
      * @generated 
      */
-    public String getExpandedForm() {
-        return _getStringValueNc(_FI_expandedForm);
-    }
-
+    public String getExpandedForm() { return _getStringValueNc(wrapGetIntCatchException(_FH_expandedForm));}
+    
     /**
      * setter for expandedForm - sets.
      *
@@ -135,10 +147,10 @@ public class UimaAcronym extends Annotation {
      * @generated 
      */
     public void setExpandedForm(String v) {
-        _setStringValueNfc(_FI_expandedForm, v);
-    }
-
-    /**
+    _setStringValueNfc(wrapGetIntCatchException(_FH_expandedForm), v);
+  }    
+    
+        /**
      *  Custom constructor taking all parameters.
      *
      * @param jcas the jcas

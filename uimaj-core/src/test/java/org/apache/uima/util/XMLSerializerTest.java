@@ -20,10 +20,12 @@ package org.apache.uima.util;
 
 import java.io.ByteArrayOutputStream;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 
+import org.apache.uima.internal.util.XMLUtils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -57,7 +59,8 @@ public class XMLSerializerTest extends TestCase {
 //    if (xmlStr.contains("1.0")) {
     // useful to investigate issues when bad XML output is produced
     //   related to which Java implementation is being used
-      Transformer t = TransformerFactory.newInstance().newTransformer();
+      TransformerFactory transformerFactory = XMLUtils.createTransformerFactory();
+      Transformer t = transformerFactory.newTransformer();
       t.setOutputProperty(OutputKeys.VERSION, "1.1");
       
       System.out.println("Java version is " + 
@@ -86,7 +89,7 @@ public class XMLSerializerTest extends TestCase {
       ch.characters(data, 0, 4);
     } catch (SAXParseException e) {
       String msg = e.getMessage();
-      String expected = "Trying to serialize non-XML 1.0 character: " + (char)5 + ", 0x5 at offset 2";
+      String expected = "Trying to serialize non-XML 1.0 character: " + "0x5 at offset 2";
       assertEquals(msg.substring(0, expected.length()), expected);
       eh = true;
     }  
@@ -126,7 +129,7 @@ public class XMLSerializerTest extends TestCase {
     } catch (SAXParseException e) {
       String msg = e.getMessage();
       System.out.println(msg);
-      String expected = "Trying to serialize non-XML 1.1 character: " + (char)0 + ", 0x0 at offset 2";
+      String expected = "Trying to serialize non-XML 1.1 character: " + "0x0 at offset 2";
       assertEquals(msg.substring(0, expected.length()), expected);
       eh = true;
     }  

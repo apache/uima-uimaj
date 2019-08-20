@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.UimaContextHolder;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -73,9 +74,12 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * 
    * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
+   *      
+   * UIMA-5043 Set & restore the UimaContextHolder around calls to user code so it can be used to access the External Settings
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
+    UimaContext prevContext = setContextHolder();   // Get this early so the restore in correct
     try {
       // specifier must be a FlowControllerDescription. (Eventually, we
       // might support remote specifiers, but not yet)
@@ -125,7 +129,6 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
               "UIMA_flow_controller_init_begin__CONFIG", getMetaData().getName());
       
       // initialize FlowController
-      UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
       mFlowController.initialize(getFlowControllerContext());
 
       mMBeanServer = null;
@@ -149,7 +152,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     } catch (ResourceConfigurationException e) {
       throw new ResourceInitializationException(e);
     } finally {
-      UimaContextHolder.clearContext();
+      UimaContextHolder.setContext(prevContext);
     }
   }
 
@@ -178,13 +181,13 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @see org.apache.uima.resource.ConfigurableResource_ImplBase#reconfigure()
    */
   public void reconfigure() throws ResourceConfigurationException {
+    UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
-      UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
       mFlowController.reconfigure();
     } catch (ResourceInitializationException e) {
       throw new ResourceConfigurationException(e);
     } finally {
-      UimaContextHolder.clearContext();
+      UimaContextHolder.setContext(prevContext);
     }
   }
 
@@ -194,9 +197,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @see org.apache.uima.resource.Resource_ImplBase#destroy()
    */
   public void destroy() {
-    UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
-    mFlowController.destroy();
-    UimaContextHolder.clearContext();
+    withContextHolder(() -> mFlowController.destroy());
     super.destroy();
   }
 
@@ -215,11 +216,11 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   public FlowContainer computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     mTimer.startIt();
     CAS view = null;
+    UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
       view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
 
       // now get the right interface(e.g. CAS or JCAS)
-      UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
       Class<? extends AbstractCas> requiredInterface = mFlowController.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);    
       ((CASImpl)view).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
@@ -241,7 +242,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());
       getMBean().incrementCASesProcessed();
-      UimaContextHolder.clearContext();
+      UimaContextHolder.setContext(prevContext);
     }
   }
 
@@ -249,12 +250,12 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @return  the required CAS interface of the FlowController
    */
   public Class<? extends AbstractCas> getRequiredCasInterface() {
-    try {
-      UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
-      return mFlowController.getRequiredCasInterface();
-    } finally {
-      UimaContextHolder.clearContext();
-    }
+//    UimaContext prevContext = setContextHolder();  // for use by POJOs
+//    try {
+      return mFlowController.getRequiredCasInterface(); // not likely to have user code
+//    } finally {
+//      UimaContextHolder.setContext(prevContext);
+//    }
   }
 
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
@@ -274,9 +275,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @param aKeys the keys for the delegates
    */
   public void addAnalysisEngines(Collection<String> aKeys) {
-    UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
-    mFlowController.addAnalysisEngines(aKeys);
-    UimaContextHolder.clearContext();
+    withContextHolder(() -> mFlowController.addAnalysisEngines(aKeys));
   }
 
   /**
@@ -286,11 +285,11 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @throws AnalysisEngineProcessException - 
    */
   public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
+    UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
-      UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
       mFlowController.removeAnalysisEngines(aKeys);
     } finally {
-      UimaContextHolder.clearContext();
+      UimaContextHolder.setContext(prevContext);
     }
   }
 
@@ -332,11 +331,11 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   }
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     if ( mFlowController != null ) {
+      UimaContext prevContext = setContextHolder();  // for use by POJOs
       try {
-        UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
         mFlowController.collectionProcessComplete();
       } finally {
-        UimaContextHolder.clearContext();
+        UimaContextHolder.setContext(prevContext);
       }
     }
   }

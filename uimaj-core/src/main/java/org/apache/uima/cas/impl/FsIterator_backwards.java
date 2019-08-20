@@ -19,10 +19,12 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Wraps FSIterator<T>, runs it backwards
@@ -38,8 +40,8 @@ class FsIterator_backwards<T extends FeatureStructure>
   }
 
   @Override
-  public int ll_indexSize() {
-    return it.ll_indexSize();
+  public int ll_indexSizeMaybeNotCurrent() {
+    return it.ll_indexSizeMaybeNotCurrent();
   }
 
   @Override
@@ -58,18 +60,8 @@ class FsIterator_backwards<T extends FeatureStructure>
   }
 
   @Override
-  public T get() throws NoSuchElementException {
-    return it.get();
-  }
-
-  @Override
   public T getNvc() {
     return it.getNvc();
-  }
-
-  @Override
-  public void moveToNext() {
-    it.moveToPrevious();
   }
 
   @Override
@@ -78,28 +70,23 @@ class FsIterator_backwards<T extends FeatureStructure>
   }
 
   @Override
-  public void moveToPrevious() {
-    it.moveToNext();
-  }
-
-  @Override
   public void moveToPreviousNvc() {
     it.moveToNextNvc();
   }
 
   @Override
-  public void moveToFirst() {
-    it.moveToLast();
+  public void moveToFirstNoReinit() {
+    it.moveToLastNoReinit();
   }
 
   @Override
-  public void moveToLast() {
-    it.moveToFirst();
+  public void moveToLastNoReinit() {
+    it.moveToFirstNoReinit();
   }
 
   @Override
-  public void moveTo(FeatureStructure fs) {
-    it.moveTo(fs);  // moves to left most of equal, or one greater
+  public void moveToNoReinit(FeatureStructure fs) {
+    it.moveToNoReinit(fs);  // moves to left most of equal, or one greater
     LowLevelIndex<T> lli = ll_getIndex();
     if (isValid()) {
       if (lli.compare(get(), fs) == 0) {
@@ -113,7 +100,7 @@ class FsIterator_backwards<T extends FeatureStructure>
         if (isValid()) {
           it.moveToPreviousNvc();
         } else {
-          it.moveToLast();
+          it.moveToLastNoReinit();
         }
       } else {
         // is valid, but not equal - went to wrong side
@@ -121,9 +108,14 @@ class FsIterator_backwards<T extends FeatureStructure>
       }
     } else {
       // moved to one past the end.  Backwards: would be at the (backwards) first position
-      it.moveToLast();
+      it.moveToLastNoReinit();
     }
   }
+
+//  @Override
+//  public void moveToExactNoReinit(FeatureStructure fs) {
+//    it.moveToExactNoReinit(fs); 
+//  }
 
   @Override
   public FSIterator<T> copy() {
@@ -136,6 +128,16 @@ class FsIterator_backwards<T extends FeatureStructure>
   @Override
   public boolean isIndexesHaveBeenUpdated() {
     return it.isIndexesHaveBeenUpdated();
+  }
+
+  @Override
+  public boolean maybeReinitIterator() {
+    return it.maybeReinitIterator();
+  }
+
+  @Override
+  public Comparator<TOP> getComparator() {
+    return it.getComparator();
   }
 
 }

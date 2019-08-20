@@ -19,14 +19,31 @@
 
 package org.apache.uima.jcas.cas;
 
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator.OfInt;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 
 public abstract class IntegerList extends TOP implements CommonList, Iterable<Integer> {
+  
+  public static OfInt EMPTY_INT_ITERATOR = new OfInt() {
+
+    @Override
+    public boolean hasNext() {
+      return false;
+    }
+
+    @Override
+    public int nextInt() {
+      throw new NoSuchElementException();
+    }
+  };
 
 	// Never called.
 	protected IntegerList() { // Disable default constructor
@@ -66,10 +83,11 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
   
   /* (non-Javadoc)
    * @see java.lang.Iterable#iterator()
+   * overridden by NonEmptyIntegerList
    */
   @Override
-  public Iterator<Integer> iterator() {
-    return Collections.emptyIterator();  // overridden by NonEmptyXxList
+  public OfInt iterator() {
+    return EMPTY_INT_ITERATOR;
   }
 
   /**
@@ -82,8 +100,8 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
   }
    
   @Override
-  public EmptyIntegerList getEmptyList() {
-    return this._casView.getEmptyIntegerList();
+  public EmptyIntegerList emptyList() {
+    return this._casView.emptyIntegerList();
   }
 
   /**
@@ -92,11 +110,32 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
    * @param a the array of ints to populate the list with
    * @return an IntegerList, with the elements from the array
    */
-  public static IntegerList createFromArray(JCas jcas, int[] a) {
-    IntegerList integerList = jcas.getCasImpl().getEmptyIntegerList();   
+  public static IntegerList create(JCas jcas, int[] a) {
+    IntegerList integerList = jcas.getCasImpl().emptyIntegerList();   
     for (int i = a.length - 1; i >= 0; i--) {
       integerList = integerList.push(a[i]);
     }   
     return integerList;
+  }
+    
+  public Stream<Integer> stream() {
+    return StreamSupport.stream(spliterator(), false);
+  }
+  
+  @Override
+  public Spliterator.OfInt spliterator() {
+    return Spliterators.spliterator(iterator(), Long.MAX_VALUE, 0);
+  } 
+  
+  public boolean contains(int v) {
+    IntegerList node = this;
+    while (node instanceof NonEmptyIntegerList) {
+      NonEmptyIntegerList n = (NonEmptyIntegerList) node;
+      if (n.getHead() == v) {
+        return true;
+      }
+      node = n.getTail();
+    }
+    return false;
   }
 }

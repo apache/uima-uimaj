@@ -34,6 +34,9 @@ import org.apache.uima.jcas.cas.TOP;
  * The internals maintain a weak reference to the loaded class in order to allow the 
  * index value to be reused if the associated JCas class is garbaged collected.
  * 
+ *   This could happen if the JCas classes are loaded under a class loader which is a child
+ *   of the class loader of this framework class, and that child classloader later gets GC'd.
+ * 
  * The register method is called from JCas cover class static initialization and
  * returns the unique index value for this class.
  * 

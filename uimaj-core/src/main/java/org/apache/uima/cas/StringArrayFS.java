@@ -21,11 +21,10 @@ package org.apache.uima.cas;
 
 /**
  * String array interface. To create a string array object, use
- * {@link org.apache.uima.cas.CAS#createStringArrayFS CAS.createStringArrayFS()}.
- * 
- * 
+ * {@link org.apache.uima.cas.CAS#createStringArrayFS CAS.createStringArrayFS(int)}
+ * or new StringArray(aJCas, length)
  */
-public interface StringArrayFS extends CommonArrayFS {
+public interface StringArrayFS extends CommonArrayFS<String> {
 
   /**
    * Get the i-th string from the array.

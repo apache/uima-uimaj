@@ -20,6 +20,7 @@
 package org.apache.uima.cas_data.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
@@ -127,8 +128,8 @@ public class CasComparer {
     
     // allow for different ordering in the getAllIndexedFSs
     
-    List<TOP> list1 = populate(c1.getIndexRepository().getAllIndexedFS(c1.getTypeSystem().getTopType()), alreadyCompared);
-    List<TOP> list2 = populate(c2.getIndexRepository().getAllIndexedFS(c2.getTypeSystem().getTopType()), alreadyCompared);
+    List<TOP> list1 = populate(c1.getIndexRepository().getIndexedFSs(), alreadyCompared);
+    List<TOP> list2 = populate(c2.getIndexRepository().getIndexedFSs(), alreadyCompared);
     
     Assert.assertEquals(list1.size(),  list2.size());
     
@@ -370,10 +371,9 @@ public class CasComparer {
   /* 
    * When populating, skip items already visted and compared in other views (but always include sofas)
    */
-  private static List<TOP> populate(FSIterator<TOP> it, Set<TOP> visited) {
+  private static List<TOP> populate(Collection<TOP> items, Set<TOP> visited) {
     List<TOP> s = new ArrayList<TOP>();
-    while (it.hasNext()) {
-      TOP fs = it.next();
+    for (TOP fs : items) {
       if (!(fs instanceof Sofa) && !visited.contains(fs)) {
         s.add(fs);
       }

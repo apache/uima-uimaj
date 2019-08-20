@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
 import org.apache.uima.internal.util.ObjHashSet;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * implements ObjHashSet partially, for iterator use
@@ -33,9 +34,15 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
   
   private ObjHashSet<T> ohs;
   
+  private ObjHashSet<T> original;
+  
+  private final int original_size;
+  
   
   public CopyOnWriteObjHashSet(ObjHashSet<T> original) {
     this.ohs = original;    
+    this.original = original;
+    this.original_size = original.size();
   }
 
   /**
@@ -58,12 +65,7 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
   public int find(T obj) {
     return ohs.find(obj);
   }
-  
-//  @Override
-//  public int size() {
-//    
-//  }
-  
+    
   /**
    * For iterator use
    * @param index a magic number returned by the internal find
@@ -148,13 +150,13 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
     return ohs.toString();
   }
 
-  /**
-   * @see ObjHashSet#getModificationCount()
-   * @return the modification count
-   */
-  public int getModificationCount() {
-    return ohs.getModificationCount();
-  }
+//  /**
+//   * @see ObjHashSet#getModificationCount()
+//   * @return the modification count
+//   */
+//  public int getModificationCount() {
+//    return ohs.getModificationCount();
+//  }
 
   /**
    * @see ObjHashSet#getCapacity()
@@ -168,8 +170,30 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
    * @see ObjHashSet#size()
    * @return the size
    */
-  public int size() {
-    return ohs.size();
+  final public int size() {
+    return original_size;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#isOriginal(java.lang.Object)
+   */
+  @Override
+  public boolean isOriginal() {
+    return ohs == original;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#copyToArray(org.apache.uima.jcas.cas.TOP[], int)
+   */
+  @Override
+  public int copyToArray(TOP[] target, int startingIndexInTarget) {
+    Iterator<T> it = iterator();
+    int i = startingIndexInTarget;
+    while (it.hasNext()) {
+      target[i++] = (TOP) it.next();
+    }
+    return i;
+  }
+
+  
 }

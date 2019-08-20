@@ -30,7 +30,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CasSerializerSupport;
-import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.XmiSerializationSharedData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.XmlAttribute;
@@ -74,6 +73,11 @@ public interface CommonList extends FeatureStructure {
 		}
 	}
 	
+	/**
+	 * Like GetNthNode, but throws exception if empty
+	 * @param i - 
+	 * @return -
+	 */
 	default CommonList getNonEmptyNthNode(int i) {
 	  CommonList node = getNthNode(i);
     if (node instanceof EmptyList) {
@@ -89,34 +93,68 @@ public interface CommonList extends FeatureStructure {
 	 */
 	default int getLength() {
 	  final int[] length = {0};
-	  try {
-      walkList( n -> length[0]++, () -> {});
-    } catch (SAXException e) {
-      // never happen
-    }
+    walkList(n -> length[0]++, () -> {});
 	  return length[0];
 	}
 	
-	default void walkList(Consumer_withSaxException<NonEmptyList> consumer, Runnable foundLoop) throws SAXException {
-	  final Set<CommonList> visited = Collections.newSetFromMap(new IdentityHashMap<>());
-	  CommonList node = this;
-	  while (node instanceof NonEmptyList) {
-	    consumer.accept((NonEmptyList) node);
-	    node = node.getCommonTail();
-	    if (node == null) {
-	      break;
-	    }
-	    if (visited.contains(node) && foundLoop != null) {
-	      foundLoop.run();
-	    }
-	  }
-	}
-	
+	/**
+	 * Walks a list, executing the consumer on each element.
+	 * If a loop is found, the foundloop method is run.
+	 * @param consumer  a Consumer with Sax Exception 
+	 * @param foundLoop run if a loop happens
+	 * @throws SAXException -
+	 */
+  default void walkList_saxException(Consumer_withSaxException<NonEmptyList> consumer, Runnable foundLoop)
+      throws SAXException {
+    final Set<CommonList> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+    CommonList node = this;
+    while (node instanceof NonEmptyList) {
+      consumer.accept((NonEmptyList) node);
+      node = node.getCommonTail();
+      if (node == null) {
+        break;
+      }
+      if (visited.contains(node) && foundLoop != null) {
+        foundLoop.run();
+      }
+    }
+  }
+
+  /**
+   * Walks a list, executing the consumer on each element.
+   * If a loop is found, the foundloop method is run.
+   * @param consumer  a Consumer (with no declared exceptions) 
+   * @param foundLoop run if a loop happens
+   */
+  default void walkList(Consumer<NonEmptyList> consumer, Runnable foundLoop) {
+    final Set<CommonList> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+    CommonList node = this;
+    while (node instanceof NonEmptyList) {
+      consumer.accept((NonEmptyList) node);
+      node = node.getCommonTail();
+      if (node == null) {
+        break;
+      }
+      if (visited.contains(node) && foundLoop != null) {
+        foundLoop.run();
+      }
+    }
+  }
+
+  
+	/**
+	 * Creates a non empty node
+	 * @return a new non empty node
+	 */
 	CommonList createNonEmptyNode();
 	
-	CommonList getEmptyList();
+	/**
+	 * @return a shared instance of the empty node.
+	 */
+	CommonList emptyList();
 	
 	/**
+	 * Internal use
    * overridden in nonempty nodes
 	 * Return the head value of a list as a string suitable for serialization.
 	 * 
@@ -128,6 +166,7 @@ public interface CommonList extends FeatureStructure {
 	};
 	
 	/**
+	 * Internal use
    * overridden in nonempty nodes
    * used when deserializing
    * @param v value to set, as a string
@@ -188,14 +227,15 @@ public interface CommonList extends FeatureStructure {
   //   the default impl throws UnsupportedOperationException;
   //   each kind of non-empty list class has its own impl
   /**
-   * default 
-   * @param v -
+   * sets the tail of this node 
+   * @param v the tail
    */
   default void setTail(CommonList v) {
     throw new UnsupportedOperationException();
   }
 
   /**
+   * Internal Use.
    * List to String for XMI and JSON serialization, for the special format where
    *   all the list elements are in one serialized item
    * 
@@ -256,18 +296,23 @@ public interface CommonList extends FeatureStructure {
     } // end of while loop
   } 
   
+  /**
+   * Internal use
+   * @param sharedData -
+   * @param cds -
+   * @return -
+   */
   default List<String> anyListToStringList(XmiSerializationSharedData sharedData, CasSerializerSupport.CasDocSerializer cds) {
     final List<String> list = new ArrayList<String>();
     anyListToOutput(sharedData, cds, s -> list.add(s)); 
     return list;
   }
-    
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.FeatureStructure#id()
+  
+  /**
+   * @return true if this object represents an empty list
    */
-  @Override
-  default int _id() {
-    return ((FeatureStructureImplC)this)._id();
+  default boolean isEmpty() {
+    return this instanceof EmptyList;
   }
-
+    
 }

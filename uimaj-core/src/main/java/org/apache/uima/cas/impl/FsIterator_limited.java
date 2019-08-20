@@ -19,10 +19,10 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.NoSuchElementException;
-
+import java.util.Comparator;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Wraps FSIterator<T>, limits results to n gets
@@ -41,72 +41,70 @@ class FsIterator_limited<T extends FeatureStructure>
 
   private void maybeMakeInvalid() {
     if (count == limit) {
-      iterator.moveToFirst();
+      iterator.moveToFirstNoReinit();
       iterator.moveToPrevious();
     }
   }
   
-  public T get() throws NoSuchElementException {
-    maybeMakeInvalid();
-    T r = iterator.get();
-    count++;  
-    return r;
-  }
-
+  @Override
   public T getNvc() {
     maybeMakeInvalid();
-    T r = iterator.getNvc();
+    T r = iterator.get();  // not getNvc because of above line
     count++;
     return r;
   }
 
-  public void moveToNext() {
-    maybeMakeInvalid();
-    iterator.moveToNext();
-  }
-
+  @Override
   public void moveToNextNvc() {
     maybeMakeInvalid();
-    iterator.moveToNextNvc();
+    iterator.moveToNext();   // not getNvc because of above line
   }
 
-  public void moveToPrevious() {
-    maybeMakeInvalid();
-    iterator.moveToPrevious();
-  }
-
+  @Override
   public void moveToPreviousNvc() {
     maybeMakeInvalid();
-    iterator.moveToPreviousNvc();
+    iterator.moveToPrevious();  // not getNvc because of above line
   }
 
-  public void moveToFirst() {
-    iterator.moveToFirst();
+  @Override
+  public void moveToFirstNoReinit() {
+    iterator.moveToFirstNoReinit();
     maybeMakeInvalid();
   }
 
-  public void moveToLast() {
-    iterator.moveToLast();
+  @Override
+  public void moveToLastNoReinit() {
+    iterator.moveToLastNoReinit();
     maybeMakeInvalid();
   }
 
-  public void moveTo(FeatureStructure fs) {
-    iterator.moveTo(fs);
+  @Override
+  public void moveToNoReinit(FeatureStructure fs) {
+    iterator.moveToNoReinit(fs);
     maybeMakeInvalid();
   }
 
+//  @Override
+//  public void moveToExactNoReinit(FeatureStructure fs) {
+//    iterator.moveToExactNoReinit(fs);
+//    maybeMakeInvalid();
+//  }
+
+
+  @Override
   public FSIterator<T> copy() {
     return new FsIterator_limited<T>(iterator.copy(), limit);
   }
 
+  @Override
   public boolean isValid() {
     maybeMakeInvalid();
     return iterator.isValid();
   }
 
   @Override
-  public int ll_indexSize() {
-    return iterator.ll_indexSize();
+  public int ll_indexSizeMaybeNotCurrent() {
+    return iterator.ll_indexSizeMaybeNotCurrent();
   }
 
   @Override
@@ -125,6 +123,16 @@ class FsIterator_limited<T extends FeatureStructure>
   @Override
   public boolean isIndexesHaveBeenUpdated() {
     return iterator.isIndexesHaveBeenUpdated();
+  }
+
+  @Override
+  public boolean maybeReinitIterator() {
+    return iterator.maybeReinitIterator();
+  }
+
+  @Override
+  public Comparator<TOP> getComparator() {
+    return iterator.getComparator();
   }
 
 }

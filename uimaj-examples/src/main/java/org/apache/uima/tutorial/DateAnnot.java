@@ -18,6 +18,9 @@
  */
 package org.apache.uima.tutorial;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.cas.impl.CASImpl;
@@ -25,14 +28,18 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
 
-/**
- * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004 XML source: C:/Program
- * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- *
- * @generated
- */
+/** 
+ * Updated by JCasGen Sun Oct 08 19:34:17 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * @generated */
 public class DateAnnot extends DateTimeAnnot {
 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.tutorial.DateAnnot";
+  
     /**
      * The Constant typeIndexID.
      *
@@ -55,18 +62,16 @@ public class DateAnnot extends DateTimeAnnot {
      * @return the type index ID
      * @generated 
      */
-    public int getTypeIndexID() {
-        return typeIndexID;
-    }
-
+    public int getTypeIndexID() {return typeIndexID;}
+ 
+ 
     /**
    * Never called. Disable default constructor
    *
    * @generated
    */
-    protected  DateAnnot() {
-    }
-
+    protected  DateAnnot() {/* intentionally empty block */}
+    
     /**
      * Internal - constructor used by generator.
      *
@@ -75,10 +80,10 @@ public class DateAnnot extends DateTimeAnnot {
      * @generated 
      */
     public  DateAnnot(TypeImpl type, CASImpl casImpl) {
-        super(type, casImpl);
-        readObject();
-    }
-
+    super(type, casImpl);
+    readObject();
+  }
+  
     /**
      * Instantiates a new date annot.
      *
@@ -86,9 +91,10 @@ public class DateAnnot extends DateTimeAnnot {
      * @generated 
      */
     public  DateAnnot(JCas jcas) {
-        super(jcas);
-        readObject();
-    }
+    super(jcas);
+    readObject();   
+  } 
+
 
     /**
      * Instantiates a new date annot.
@@ -104,11 +110,10 @@ public class DateAnnot extends DateTimeAnnot {
         readObject();
     }
 
-    /**
-     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
-     *
-     * @generated modifiable
-     */
+  /** 
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->*
+   * @generated modifiable 
+   */
     private void readObject() {
     }
 }
