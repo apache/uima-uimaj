@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>3.1.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   <artifactId>uimaj-json</artifactId>
@@ -30,9 +30,9 @@
   <description>JSON support for UIMA SDK</description>
   
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-json</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-json</developerConnection>
-    <url>https://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-json</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-json</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-json</developerConnection>
+    <url>https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-json</url>
   </scm>
   
   <properties>
@@ -49,19 +49,19 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.4.2</version>
+      <version>${jackson.version}</version>
     </dependency>
-    
-    <dependency>
-       <groupId>junit</groupId>
-       <artifactId>junit</artifactId>
-       <scope>test</scope>
-     </dependency>
     
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-test-util</artifactId>
       <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -76,7 +76,7 @@
 	            <execution>
 	              <id>default-cli</id>
 	              <configuration>
-	                <excludes>
+	                <excludes combine.children="append">
 	                  <exclude>release.properties</exclude> <!-- generated file -->
 	                  <exclude>src/test/resources/CasSerialization/expected/json/*.txt</exclude>                  
                     <exclude>src/test/resources/CasSerialization/expected/xmi/*.xml</exclude>                  

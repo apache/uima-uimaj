@@ -87,9 +87,9 @@ public class MessageRouter implements Runnable {
 
   private Thread _thread;
 
-  private List<String> _stdHistory = new ArrayList<String>();
+  private List<String> _stdHistory = new ArrayList<>();
 
-  private List<StdChannelListener> _stdListeners = new ArrayList<StdChannelListener>();
+  private List<StdChannelListener> _stdListeners = new ArrayList<>();
 
   /**
    * Default constructor for the <code>MessageRouter</code> class. This constructor allocates all

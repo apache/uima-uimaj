@@ -21,28 +21,62 @@ package org.apache.uima.collection.impl.cpm.utils;
 
 import org.apache.uima.util.UimaTimer;
 
+
 /**
+ * The Interface Timer.
+ *
  * @deprecated replaced by {@link UimaTimer}
- * 
  */
 
 @Deprecated
 public interface Timer {
+  
+  /**
+   * Start.
+   */
   // starts the time
   public void start();
 
+  /**
+   * End.
+   */
   // ends the timer
   public void end();
 
+  /**
+   * Gets the duration.
+   *
+   * @return the duration
+   */
   // returns duration (in ms) between start() and end() calls
   public long getDuration();
 
+  /**
+   * Gets the time in secs.
+   *
+   * @return the time in secs
+   */
   public long getTimeInSecs();
 
+  /**
+   * Gets the time in millis.
+   *
+   * @return the time in millis
+   */
   public long getTimeInMillis();
 
+  /**
+   * Gets the time in micros.
+   *
+   * @return the time in micros
+   */
   public long getTimeInMicros();
 
+  /**
+   * Gets the resolution.
+   *
+   * @return the resolution
+   */
   public long getResolution();
 
 }

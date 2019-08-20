@@ -22,6 +22,7 @@ package org.apache.uima.tools.annot_view;
 
 import org.apache.uima.tools.cvd.CVD;
 
+
 /**
  * Compatibility class, delegates to the new {@link org.apache.uima.tools.cvd.CVD org.apache.uima.tools.cvd.CVD}.
  * 

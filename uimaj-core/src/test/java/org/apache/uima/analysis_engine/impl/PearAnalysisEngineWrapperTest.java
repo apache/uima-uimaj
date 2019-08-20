@@ -73,7 +73,7 @@ public class PearAnalysisEngineWrapperTest extends TestCase {
     PearSpecifier pearSpecifier = this.createPearSpecifierWithParameters();
 
     boolean initialized = this.pearAnalysisEngineWrapper.initialize(pearSpecifier,
-            new HashMap<String, Object>());
+        new HashMap<>());
 
     Assert.assertTrue("Pear was not initialized", initialized);
 
@@ -101,7 +101,7 @@ public class PearAnalysisEngineWrapperTest extends TestCase {
     PearSpecifier pearSpecifier = this.createPearSpecifierWithoutParameters();
 
     boolean initialized = this.pearAnalysisEngineWrapper.initialize(pearSpecifier,
-            new HashMap<String, Object>());
+        new HashMap<>());
 
     Assert.assertTrue("Pear was not initialized", initialized);
 

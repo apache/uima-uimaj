@@ -20,12 +20,12 @@ package org.apache.uima.impl;
 
 import java.util.Collections;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
+
+import junit.framework.TestCase;
 
 
 public class AnalysisEngineFactory_implTest extends TestCase {

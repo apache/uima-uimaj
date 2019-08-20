@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.3</version>  <!-- change to non-snapshot version after release of uimaj-parent -->
+    <version>3.0.1</version>
     <relativePath />
   </parent>
 
   <artifactId>uimaj-eclipse-update-site</artifactId>
-  <version>2.10.5-SNAPSHOT</version>
+  <version>3.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
@@ -37,13 +37,13 @@
 
   <scm>
     <connection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-eclipse-update-site
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-update-site
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-eclipse-update-site
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-update-site
     </developerConnection>
     <url>
-      https://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-eclipse-update-site
+      https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-update-site
     </url>
   </scm>
 
@@ -53,8 +53,8 @@
 
     <eclipseUpdateSiteComponent>uimaj</eclipseUpdateSiteComponent>
 
-    <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
-    
+    <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site-v3/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
+
     <dropPrevVersions>false</dropPrevVersions>
 
   </properties>
@@ -125,7 +125,7 @@
            <!--       moved to uima-wide parent pom 10/2018          -->
            <!-- ==================================================== -->
  
-          <execution>
+           <execution>
             <id>BuildUpdateSite-pack-svnget-buildMetadata-commit-to-dev</id>
             <phase>package</phase>
             <goals>
@@ -149,41 +149,35 @@
                 <fail unless="eclipse.home" message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse" />
                 <fail unless="uima-eclipse-jar-processor" message="********** Please add to your settings.xml file the property uima-eclipse-jar-processor, point to this within an Eclipse installation at level 4.2 or later, e.g. \$\{uima-maven-build-eclipse-home\}/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.200.v20110808-1657.jar" />
                 <!--  skip this when dropping previous versions -->
-                <if> 
+                <if>
                     <equals arg1="${dropPrevVersions}" arg2="false" />
                   <then>
 	                  <if>
 	                      <equals arg1="${isApacheRelease}" arg2="true" />
-	                      <then>
-	    
+                  <then>
+                    
 	                        <echo>checking out eclipse update subsite ${eclipseUpdateSiteComponent} from dist ...release...</echo>
 	                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
 	                        <exec executable="svn" failonerror="true">
-	                          <arg value="checkout" />
-	                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
-	                          <arg value="${eclipseUpdateSubSite}" />
-	                        </exec> 
-	                        
-	                        <!-- abandon safety for now
-	                        <echo>switching this checkout to ...dev... for safety</echo>
-	                        <exec executable="svn">
-	                          <arg value="switch" />
-	                          <arg value="- -force" />  remove space between 2 dashes if uncommented
-	                          <arg value="- -accept" />  remove space between 2 dashes if uncommented
-	                          <arg value="mine-full" />
-	                          <arg value="${distsvnroot}repos/dist/dev/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
-	                          <arg value="${eclipseUpdateSubSite}" />
-	                        </exec> 
-	                         -->
-	                      </then>
-	                      <else>
-	                        <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
-	                        <!-- https://issues.apache.org/jira/browse/UIMA-3501 -->
-	                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
-	                      </else>
-	                    </if>
-                   </then>
+                      <arg value="checkout" />
+	                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site-v3/${eclipseUpdateSiteComponent}" />
+                      <arg value="${eclipseUpdateSubSite}" />
+                    </exec>
+                    
+                    <echo>Saving original content and artifacts for the site</echo>
+                    <copy todir="${project.build.directory}/saved" failonerror="true"> 
+                      <fileset dir="${eclipseUpdateSubSite}" includes="content.jar,artifacts.jar" />
+                    </copy>
+                    
+                  </then>
+                  <else>
+                    <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
+	                <!-- https://issues.apache.org/jira/browse/UIMA-3501 -->
+	                <delete dir="${eclipseUpdateSubSite}" quiet="true" />
+                  </else>
                 </if>
+              </then>
+            </if>
                     
                 <echo>Compress plugin Jars using pack200 - this may take a minute or 2</echo>
                 <java fork="true" maxmemory="256m" jar="${uima-eclipse-jar-processor}" failonerror="true">
@@ -234,7 +228,6 @@
                         <include name="**/*.jar" />
                       </fileset>
                     </checksum>
-                    
                     <echo message="Generating gpg signatures for new features and plugins" />
                     <apply failonerror="true" dir="${eusWork}" executable="gpg">
                       <arg value="--detach-sign" />
@@ -278,32 +271,6 @@
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>ant-contrib</groupId>
-            <artifactId>ant-contrib</artifactId>
-            <version>1.0b3</version>
-            <scope>runtime</scope>
-            <exclusions>
-              <exclusion>
-                <artifactId>ant</artifactId>
-                <groupId>ant</groupId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-apache-regexp</artifactId>
-            <version>1.9.2</version>
-            <scope>compile</scope>
-          </dependency>
-          <dependency>
-            <groupId>jakarta-regexp</groupId>
-            <artifactId>jakarta-regexp</artifactId>
-            <version>1.4</version>
-            <scope>compile</scope>
-          </dependency>
-        </dependencies>
       </plugin>
 
    </plugins>

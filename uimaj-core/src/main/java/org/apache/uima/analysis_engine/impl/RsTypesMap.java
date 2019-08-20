@@ -32,7 +32,7 @@ public class RsTypesMap implements Iterable<RsType> {
   private final Map<String, RsType> types;  
   
   RsTypesMap() {
-    types = new HashMap<String, RsType>();
+    types = new HashMap<>();
   }
   
   /**
@@ -40,7 +40,7 @@ public class RsTypesMap implements Iterable<RsType> {
    * @param src
    */
   RsTypesMap(RsTypesMap src) {
-    types = new HashMap<String, RsType>(src.types);
+    types = new HashMap<>(src.types);
     for (Map.Entry<String, RsType> e : types.entrySet()) {
       e.setValue(new RsType(e.getValue()));  // copy
     }

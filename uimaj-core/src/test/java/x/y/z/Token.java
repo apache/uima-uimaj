@@ -1,170 +1,211 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+
+
+   
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
 
 package x.y.z;
 
-import org.apache.uima.jcas.JCas;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.cas.StringArray;
-import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
 
-/* comment 2 of 14 */
+
+/** 
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * @generated */
 public class Token extends Annotation {
-
-  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(Token.class);
-
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "x.y.z.Token";
+  
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static int typeIndexID = JCasRegistry.register(Token.class);
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
+  /** @generated
+   * @return index of the type  
+   */
+  @Override
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_ttype = "ttype";
+  public final static String _FeatName_tokenFloatFeat = "tokenFloatFeat";
+  public final static String _FeatName_lemma = "lemma";
+  public final static String _FeatName_lemmaList = "lemmaList";
 
-  public int getTypeIndexID() {
-    return typeIndexID;
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_ttype = TypeSystemImpl.createCallSite(Token.class, "ttype");
+  private final static MethodHandle _FH_ttype = _FC_ttype.dynamicInvoker();
+  private final static CallSite _FC_tokenFloatFeat = TypeSystemImpl.createCallSite(Token.class, "tokenFloatFeat");
+  private final static MethodHandle _FH_tokenFloatFeat = _FC_tokenFloatFeat.dynamicInvoker();
+  private final static CallSite _FC_lemma = TypeSystemImpl.createCallSite(Token.class, "lemma");
+  private final static MethodHandle _FH_lemma = _FC_lemma.dynamicInvoker();
+  private final static CallSite _FC_lemmaList = TypeSystemImpl.createCallSite(Token.class, "lemmaList");
+  private final static MethodHandle _FH_lemmaList = _FC_lemmaList.dynamicInvoker();
+
+   
+  /** Never called.  Disable default constructor
+   * @generated */
+  protected Token() {/* intentionally empty block */}
+    
+  /** Internal - constructor used by generator 
+   * @generated
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
+   */
+  public Token(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
+    readObject();
   }
-
-  // Never called. Disable default constructor
-  protected Token() {
-  }
-
- /* Internal - Constructor used by generator */
-  public Token(int addr, TOP_Type type) {
-    super(addr, type);
-  }
-
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
+   */
   public Token(JCas jcas) {
     super(jcas);
-  }
+    readObject();   
+  } 
 
+
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs
+   * @param begin offset to the begin spot in the SofA
+   * @param end offset to the end spot in the SofA 
+  */  
   public Token(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
     readObject();
-  }
+  }   
 
-  /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   * 
-   * @generated modifiable
+  /** 
+   * <!-- begin-user-doc -->
+   * Write your own initialization here
+   * <!-- end-user-doc -->
+   *
+   * @generated modifiable 
    */
-  private void readObject() {
-  }
+  private void readObject() {/*default - does nothing empty block */}
+     
+ 
+    
+  //*--------------*
+  //* Feature: ttype
 
-  // *------------------*
-  // * Feature: ttype
-  /* getter for ttype * */
-  public TokenType getTtype() {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_ttype == null)
-      this.jcasType.jcas.throwFeatMissing("ttype", "x.y.z.Token");
-    return (TokenType) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Token_Type) jcasType).casFeatCode_ttype)));
-  }
-
-  /* setter for ttype * */
+  /** getter for ttype - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public TokenType getTtype() { return (TokenType)(_getFeatureValueNc(wrapGetIntCatchException(_FH_ttype)));}
+    
+  /** setter for ttype - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
   public void setTtype(TokenType v) {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_ttype == null)
-      this.jcasType.jcas.throwFeatMissing("ttype", "x.y.z.Token");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Token_Type) jcasType).casFeatCode_ttype, jcasType.ll_cas
-            .ll_getFSRef(v));
-  }
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_ttype), v);
+  }    
+    
+   
+    
+  //*--------------*
+  //* Feature: tokenFloatFeat
 
-  // *------------------*
-  // * Feature: tokenFloatFeat
-  /* getter for tokenFloatFeat * */
-  public float getTokenFloatFeat() {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_tokenFloatFeat == null)
-      this.jcasType.jcas.throwFeatMissing("tokenFloatFeat", "x.y.z.Token");
-    return jcasType.ll_cas.ll_getFloatValue(addr,
-            ((Token_Type) jcasType).casFeatCode_tokenFloatFeat);
-  }
-
-  /* setter for tokenFloatFeat * */
+  /** getter for tokenFloatFeat - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public float getTokenFloatFeat() { return _getFloatValueNc(wrapGetIntCatchException(_FH_tokenFloatFeat));}
+    
+  /** setter for tokenFloatFeat - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
   public void setTokenFloatFeat(float v) {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_tokenFloatFeat == null)
-      this.jcasType.jcas.throwFeatMissing("tokenFloatFeat", "x.y.z.Token");
-    jcasType.ll_cas.ll_setFloatValue(addr, ((Token_Type) jcasType).casFeatCode_tokenFloatFeat, v);
-  }
+    _setFloatValueNfc(wrapGetIntCatchException(_FH_tokenFloatFeat), v);
+  }    
+    
+   
+    
+  //*--------------*
+  //* Feature: lemma
 
-  // *------------------*
-  // * Feature: lemma
-  /* getter for lemma * */
-  public String getLemma() {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_lemma == null)
-      this.jcasType.jcas.throwFeatMissing("lemma", "x.y.z.Token");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((Token_Type) jcasType).casFeatCode_lemma);
-  }
-
-  /* setter for lemma * */
+  /** getter for lemma - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public String getLemma() { return _getStringValueNc(wrapGetIntCatchException(_FH_lemma));}
+    
+  /** setter for lemma - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
   public void setLemma(String v) {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_lemma == null)
-      this.jcasType.jcas.throwFeatMissing("lemma", "x.y.z.Token");
-    jcasType.ll_cas.ll_setStringValue(addr, ((Token_Type) jcasType).casFeatCode_lemma, v);
-  }
+    _setStringValueNfc(wrapGetIntCatchException(_FH_lemma), v);
+  }    
+    
+   
+    
+  //*--------------*
+  //* Feature: lemmaList
 
-  // *------------------*
-  // * Feature: sentenceLength
-  /* getter for sentenceLength * */
-//  public int getSentenceLength() {
-//    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_sentenceLength == null)
-//      this.jcasType.jcas.throwFeatMissing("sentenceLength", "x.y.z.Token");
-//    return jcasType.ll_cas.ll_getIntValue(addr, ((Token_Type) jcasType).casFeatCode_sentenceLength);
-//  }
-
-  /* setter for sentenceLength * */
-//  public void setSentenceLength(int v) {
-//    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_sentenceLength == null)
-//      this.jcasType.jcas.throwFeatMissing("sentenceLength", "x.y.z.Token");
-//    jcasType.ll_cas.ll_setIntValue(addr, ((Token_Type) jcasType).casFeatCode_sentenceLength, v);
-//  }
-
-  // *------------------*
-  // * Feature: lemmaList
-  /* getter for lemmaList * */
-  public StringArray getLemmaList() {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_lemmaList == null)
-      this.jcasType.jcas.throwFeatMissing("lemmaList", "x.y.z.Token");
-    return (StringArray) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Token_Type) jcasType).casFeatCode_lemmaList)));
-  }
-
-  /** indexed getter for lemmaList * */
-  public String getLemmaList(int i) {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_lemmaList == null)
-      this.jcasType.jcas.throwFeatMissing("lemmaList", "x.y.z.Token");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Token_Type) jcasType).casFeatCode_lemmaList), i);
-    return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Token_Type) jcasType).casFeatCode_lemmaList), i);
-  }
-
-  /* setter for lemmaList * */
+  /** getter for lemmaList - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public StringArray getLemmaList() { return (StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_lemmaList)));}
+    
+  /** setter for lemmaList - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
   public void setLemmaList(StringArray v) {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_lemmaList == null)
-      this.jcasType.jcas.throwFeatMissing("lemmaList", "x.y.z.Token");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Token_Type) jcasType).casFeatCode_lemmaList,
-            jcasType.ll_cas.ll_getFSRef(v));
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_lemmaList), v);
+  }    
+    
+    
+  /** indexed getter for lemmaList - gets an indexed value - 
+   * @generated
+   * @param i index in the array to get
+   * @return value of the element at index i 
+   */
+  public String getLemmaList(int i) {
+     return ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_lemmaList)))).get(i);} 
+
+  /** indexed setter for lemmaList - sets an indexed value - 
+   * @generated
+   * @param i index in the array to set
+   * @param v value to set into the array 
+   */
+  public void setLemmaList(int i, String v) {
+    ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_lemmaList)))).set(i, v);
+  }  
   }
 
-  /** indexed setter for lemmaList * */
-  public void setLemmaList(int i, String v) {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_lemmaList == null)
-      this.jcasType.jcas.throwFeatMissing("lemmaList", "x.y.z.Token");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Token_Type) jcasType).casFeatCode_lemmaList), i);
-    jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Token_Type) jcasType).casFeatCode_lemmaList), i, v);
-  }
-}
+    

@@ -22,8 +22,17 @@ package org.apache.uima.adapter.vinci.util;
 import org.apache.vinci.transport.VinciClient;
 import org.apache.vinci.transport.VinciFrame;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Shutdown.
+ */
 public class Shutdown {
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
   public static void main(String[] args) {
     System.out.println("Shutting down the service...");
     try {

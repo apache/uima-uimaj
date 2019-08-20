@@ -1,0 +1,873 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/version_3_users_guide/select/">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="uv3.select">
+  <title>The select framework for working with CAS data</title>
+  <titleabbrev>Select framework</titleabbrev>
+  
+  <para>The <emphasis>select</emphasis> framework provides a concise way to work with
+  Feature Structure data stored in the CAS. It is integrated with the Java 8 <emphasis>stream</emphasis>
+  framework, and provides additional capabilities supported by the underlying 
+  UIMA framework, including the ability to move both forwards and backwards while iterating,
+  moving to specific positions, and doing various kinds of specialized Annotation 
+  selection such as working with Annotations spanned by another annotation (think of a Paragraph
+  annotation, and the Sentences or Tokens within that).
+  </para>
+  
+  <para>There are 3 main parts to this framework:</para>
+  
+  <itemizedlist spacing="compact">
+    <listitem>
+      <para>The source
+      </para>
+    </listitem>
+    <listitem>
+      <para>what to select, ordering
+      </para>
+    </listitem>
+    <listitem>
+      <para>what to do
+      </para>
+    </listitem>
+  </itemizedlist>
+  
+  <figure id="uv3.select.big_picture">
+          <title>Select - the big picture</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata width="5.7in" format="PNG" fileref="&imgroot;select_big_pic.png"/>
+            </imageobject>
+            <textobject><phrase>Select composed of sources, what to select, and what to do</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+  
+  <para>These are described in code using a builder pattern to specify the many options and parameters.
+  Some of the very common parameters are also available as positional arguments in some contexts.
+  Most of the variations are defaulted so that in the common use cases, they may be omitted.
+  </para>
+  
+  <section id="uv3.select.builder_pattern">
+    <title>Select&apos;s use of the builder pattern</title>
+    
+    <para>The various options and specifications are specified using the builder pattern.
+    Each specification has a name, which is a Java method name, sometimes having further parameters.
+    These methods return an instance of SelectFSs; this instance is updated by each builder method.
+    </para>
+    
+    <para>A common approach is to chain these methods together.  When this is done, each subsequent method
+    updates the SelectFSs instance.  This means that the last method in case there are 
+    multiple method calls specifying the same specification is the one that is used.
+    </para>
+    
+    <para>For example,
+    <programlisting>a_cas.select().typePriority(true).typePriority(false).typePriority(true)</programlisting>
+    would configure the select to be using typePriority (described later).</para>
+    
+    <para>Some parameters are specified as positional parameters, for example, a UIMA Type, or a starting position or
+    shift-offset.</para>
+  </section>
+  
+  <section id="uv3.select.sources">
+    <title>Sources of Feature Structures</title>
+    
+    <para>Feature Structures are kept in the CAS, and may be accessed using UIMA Indexes.
+    Note that not all Feature Structures in the CAS are in the UIMA indexes; only those that the 
+    user had "added to the indexes" are. Feature Structures not in the indexes are not 
+    included when using the CAS as the source for the select framework.</para>
+    
+    <para>  
+    Feature Structures may, additionally, be kept in <code>FSArrays</code>, <code>FSLists</code>,
+    and many additional collection-style objects that implement <code>SelectViaCopyToArray</code> interface.
+    This interface is implemented by the new semi-built-in types <code>FSArrayList</code>, 
+    <code>FSHashSet</code> and <code>FSLinkedHashSet</code>;
+    user-defined JCas classes for user types may also choose to implement this.
+    All of these sources may be used with <code>select</code>.</para>
+    
+    <figure id="uv3.select.source_type">
+      <title>select method with type</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata width="5.5in" format="PNG" fileref="&imgroot;select_source_type.png"/>
+        </imageobject>
+        <textobject><phrase>Sources have select method, which has optional type argument</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+  
+    <para>For CAS sources, if Views are being used, there is a separate set of indexes per CAS view.
+    When there are multiple views, only one view's set of indexed Feature Structures is accessed - the
+    view implied by the CAS being used.  Note that there is a way to specify aggregating over all views; see
+    <code>allViews</code> described later.</para>
+    
+    <para>For CAS sources, users may specify all Feature Structures in a view, or restrict this in two ways:
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>specifying an index: Users may define their own indexes, in additional to the built in ones, and 
+        then specify which index to use.
+        </para>
+      </listitem>
+      <listitem>
+        <para>specifying a type: Only Feature Structures of this type (or its subtypes) are included.
+        </para>
+      </listitem>
+    </itemizedlist>
+    </para>
+    
+    <para>It is possible to specify both of these, using the form <code>myIndex.select(myType)</code>; 
+        in that case the type must be the type or a subtype of
+        the index's top most type.
+    </para>
+        
+    <para>If no index is specified, the default is 
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>to use all Feature Structures in a CAS View, or</para>
+      </listitem>
+      <listitem>
+        <para>to use all Feature Structures in the view&apos;s AnnotationIndex,
+        if the selection and ordering specifications require an AnnotationIndex.</para>
+      </listitem>
+    </itemizedlist></para>
+    
+    <para>Note that the non-CAS collection sources (e.g. the FSArray and FSList sources are considered ordered, but non-sorted, 
+          and therefore cannot be used for an operations which require a sorted order.</para>
+      
+    <para>There are 4 kinds of sources of Feature Structures supported:</para>
+
+    <itemizedlist spacing="compact">
+	    <listitem>
+	      <para>a CAS view: all the FSs that were added to the indexes for this view.
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>an Index over a CAS view. Note that the AnnotationIndex is often implied by other 
+	            <code>select</code> specifications, so it is often not necessary to supply this.
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>Feature Structures from a (semi) built-in UIMA Collection instance, such as instances of the types
+	      <code>FSArray, FSArrayList, FSHashSet,</code> etc.
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>Feature Structures from a user-defined UIMA Collection instance.
+	      </para>
+	    </listitem>
+	  </itemizedlist>
+	  
+    <para>UIMA Collection sources have somewhat limited configurability,
+    because they are considered non-sorted, 
+    and therefore cannot be used for an operations which require a sorted order, such as
+    the various bounding selections (e.g. <code>coveredBy</code>) 
+    or positioning operations (e.g. <code>startAt</code>).</para>
+
+	  <para>Each of these sources has a new API method, <code>select(...)</code>, which initiates the select specification.
+	  The select method can take an optional parameter, specifying the UIMA type to return.
+	  If supplied, the type must must be the type or subtype of the index 
+	  (if one is specified or implied); it serves to further restrict the types selected beyond whatever the 
+	  index (if specified) has as its top-most type.</para>
+	    
+  <section id="uv3.select.sources.type">
+    <title>Use of Type in selection of sources</title>
+	  <para>
+	  The optional type argument for <code>select(...)</code> specifies a UIMA type.  This restricts the Feature Structures
+	  to just those of the specified type or any of its subtypes.  If omitted, if an index is used as a source, 
+	  its type specification is used; otherwise all types are included.</para>
+	  
+	  <para>Type specifications may be specified in multiple ways.  
+	  The best practice, if you have a JCas cover class
+	  defined for the type, is to use the form <code>MyJCasClass.class</code>.  This has the advantage of setting the 
+	  expected generic type of the select to that Java type.
+	  </para>
+	  
+	  <para>The type may also be specified by using the actual UIMA type instance (useful if not using the 
+	  JCas), using a fully qualified type name as a string, or using the JCas class static <code>type</code> field.</para>
+  </section>
+  
+  <section id="uv3.select.sources.generics">
+    <title>Sources and generic typing</title>
+    <para>The select method results in a generically typed object, which is used to have subsequent operations
+    make use of the generic type, which may reduce the need for casting.</para>
+    
+    <para>The generic type can come from arguments or from where a value is being assigned, 
+    if that target has a generic type.  This latter source is only partially available in Java, as it does not
+    propagate past the first object in a chain of calls; this becomes a problem when using <code>select</code> with
+    generically typed index variables.
+    </para>
+    
+    <para>There is also a static version of the <code>select</code> method which takes a 
+    generically typed index as an argument.</para>
+    <informalexample>  <?dbfo keep-together="always"?>  
+    <programlisting>// this works
+// the generic type for Token is passed as an argument to select
+FSIterator&lt;Token&gt; token_it = cas.select(Token.class).fsIterator();
+
+FSIndex&lt;Token&gt; token_index = ... ; // generically typed
+
+// this next fails because the
+// Token generic type from the index variable being assigned
+// doesn't get passed to the select().
+FSIterator&lt;Token&gt; token_iterator = token_index.select().fsIterator();
+
+// You can overcome this in two ways:
+// pass in the type as an argument to select
+// using the JCas cover type.  
+FSIterator&lt;Token&gt; token_iterator = 
+    token_index.select(Token.class).fsIterator();
+
+// You can also use the static form of select
+// to avoid repeating the type information
+FSIterator&lt;Token&gt; token_iterator = 
+    SelectFSs.select(token_index).fsIterator();
+
+// Finally, you can also explicitly set the generic type 
+// that select() should use, like a special kind of type cast, like this:
+FSIterator&lt;Token&gt; token_iterator =
+    token_index.&lt;Token&gt;select().fsIterator();
+</programlisting>
+</informalexample>
+        
+    <para>Note: the static <code>select</code> method may be statically imported into code that uses it, to avoid repeatedly 
+    qualifying this with its class, <code>SelectFSs</code>.</para>
+    
+  <para>Any specification of an index may be further restricted to just a subType (including that
+  subtype&apos;s subtypes, if any) of that index&apos;s type.
+  For example, an AnnotationIndex may be specialized to just Sentences (and their subtypes):
+  <programlisting>FSIterator&lt;Token&gt; token_iterator = 
+    annotation_index.select(Token.class).fsIterator();
+</programlisting>
+  </para>  
+  </section>
+
+  </section>  <!-- end of section "sources" -->
+
+  <section id="uv3.select.selection_and_ordering">
+    <title>Selection and Ordering</title>
+    
+    <para>There are four sets of sub-selection and ordering specifications, grouped 
+    by what they apply to:
+	    <itemizedlist spacing="compact">
+		    <listitem>
+		      <para>all sources 
+		      </para>
+		    </listitem>
+		    <listitem>
+		      <para>Indexes or FSArrays or FSLists
+		      </para>
+		    </listitem>
+		    <listitem>
+		      <para>Ordered Indexes
+		      </para>
+		    </listitem>
+		    <listitem>
+		      <para>The Annotation Index
+		      </para>
+		    </listitem>
+  	  </itemizedlist>  
+    </para>
+    
+    <para>With some exceptions, configuration items to the left also apply to items on the right.
+    </para>
+
+    <para>When the same configuration item is specified multiple times, 
+          the last one specified is the one that is used.</para>
+
+    <figure id="uv3.select.fig.selection_and_ordering">
+      <title>Selection and Ordering</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata width="5.5in" format="PNG" fileref="&imgroot;select_selection_and_ordering.png"/>
+        </imageobject>
+        <textobject><phrase>Selection and Ordering configuration</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+        
+    <section id="uv3.select.boolean_properties">
+      <title>Boolean properties</title>
+	    <para>Many configuration items specify a boolean property.  These are named so the default (if you don't specify them)
+	    is generally what is desired, and the specification of the method with null parameter switches the property to the 
+	    other (non-default) value.</para>
+	    
+	    <para>For example, normally, when working with bounded limits within Annotation Indexes, type
+	    priorities are ignored when computing the bound positions.  
+	    Specifying typePriority() says to use type priorities.</para>
+	    
+	    <para>Additionally, the boolean configuration methods have an optional form where they take a boolean value; 
+	    true sets the property.  
+	    So, for example typePriority(true) is equivalent to typePriority(), and typePriority(false)
+	    is equivalent to omitting this configuration.</para>
+    </section>
+        
+    <section id="uv3.select.any_source">
+      <title>Configuration for any source</title>
+      
+      <variablelist>
+        <varlistentry>
+          <term><emphasis role="strong">limit</emphasis></term>
+          <listitem>
+            <para>a limit to the number of Feature Structures that will be produced or iterated over.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">mullOK</emphasis></term>
+          <listitem>
+            <para>changes the behavior for the terminal_form actions <code>get(...) and single(...)</code>, which would otherwise
+      throw an exception if a null result happened.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      
+    </section>
+    
+    <section id="uv3.select.any_index">
+      <title>Configuration for any index</title>
+    
+      <variablelist>
+        <varlistentry>
+          <term><emphasis role="strong">allViews</emphasis></term>
+          <listitem>
+            <para>Normally, only Feature Structures belonging to the particular CAS view are included in the selection. 
+			      If you want, instead, to include Feature Structures from all views, you can specify
+			      <code>allViews()</code>.
+			      </para>
+			      
+			      <para>When this is specified, it acts 
+				          as an aggregation of the underlying selections, one per view in the CAS.
+				          The ordering among the views is arbitrary; the ordering within each view
+				          is the same as if this setting wasn't in force.
+				          Because of this implementation, the items in the selection may not be unique -- 
+				          Feature Structures in the underlying selections that are in multiple views will appear multiple times.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+    </section>
+    
+    <section id="uv3.select.ordered_index">
+      <title>Configuration for sort-ordered indexes</title>
+
+      <para>When an index is sort-ordered, there are additional capabilities that can be configured, in particular positioning
+        to particular Feature Structures, and running various iterations backwards.
+      </para>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis role="strong">orderNotNeeded</emphasis></term>
+          <listitem>
+            <para>relaxes any iteration by allowing it to proceed in an unordered manner.  Specifying
+				      this may improve performance in some cases.  When this is specified, 
+				      the current implementation skips the work of keeping multiple
+				      iterators for a type and all of its subtypes in the proper synchronization.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="">startAt</emphasis></term>
+          <listitem>
+            <para>position the starting point of any iteration.  
+			        <code>startAt(xxx)</code> takes two forms, each of which has, in turn 2 subforms.  
+			        The form using <code>begin, end</code> is only valid for Annotation Indexes.
+			        <programlisting>startAt(fs);          // fs specifies a feature structure 
+                      // indicating the starting position
+             
+startAt(fs, shifted); // same as above, but after positioning, 
+                      // shift to the right or left by the shift 
+                      // amount which can be positive or negative
+             
+
+// the next two forms are only valid for AnnotationIndex sources
+   
+startAt(begin, end);  // start at the position indicated by begin/end
+
+startAt(begin, end, shifted) // same as above, 
+                             // but with a subsequent shift.
+                             // which can be positive or negative
+</programlisting>
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">backwards</emphasis></term>
+          <listitem>
+            <para>specifies a backwards order (from last to first position) for
+            subsequent operations
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+  
+    <section id="uv3.select.annot.subselect">
+      <title>Bounded sub-selection within an Annotation Index</title>
+      
+      <para>When selecting Annotations, frequently you may want to select only those which have
+      a relation to a bounding Annotation.  A commonly done selection is to select all Annotations 
+      (of a particular type including its subtypes) within the span of another bounding Annotation, 
+      for example, all <code>Tokens</code>
+      within a <code>Sentence</code>.</para>
+      
+      <para>There are four varieties of sub-selection within an annotation index.  They all are based on a 
+      bounding Annotation (except the <code>between</code> which is based on two bounding Annotations).
+      </para>
+      
+      <para>The bounding Annotations are specified using either a Annotation (or a subtype), or
+      by specifying the begin and end offsets that would be for the bounding Annotation.</para>
+      
+      <para>Leaving aside <code>between</code> as a special case, the bounding Annotation&apos;s 
+      <code>begin</code> and <code>end</code>
+      (and sometimes, its <code>type</code>) is used to specify where an iteration would start, where it would end, 
+      and possibly, which Annotations within those bounds would be filtered out.  There are many variations
+      possible; these are described in the next section.</para>
+      
+      <para>The returned Annotations exclude the one(s) which are <code>equal</code> to the bounding FS.  
+      There are several variations of how this <code>equal</code> test is done, discussed in the next section.</para>
+            
+      <variablelist>
+        <varlistentry>
+          <term><emphasis role="strong">coveredBy</emphasis></term>
+          <listitem>
+            <para>iterates over Annotations within the bound
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">covering</emphasis></term>
+          <listitem>
+            <para>iterates over Annotations that span the bound.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">at</emphasis></term>
+          <listitem>
+            <para>iterates over Annotations that have the same span (i.e., begin and end) as the bound.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">between</emphasis></term>
+          <listitem>
+            <para>uses two Annotations, and returns Annotations that are in between
+				      the two bounds, specified by Annotations.  If the bounds are backwards, then they are automatically used in reverse order.
+				      The meaning of between is that an included Annotation's begin has to be &gt;= the earlier bound's <code>end</code>, 
+				      and the Annotation's end has to be &lt;= the later bound's <code>begin</code>.
+            </para>            
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+    
+    <section id="uv3.select.annot.variations">
+      <title>Variations in Bounded sub-selection within an Annotation Index</title>
+      
+      <para>There are five variations you can specify.  
+      Two affect how the starting bound position is set; 
+      the other three affect skipping of some Annotations while iterating.
+      The defaults (summarized following) are designed to fit the popular use cases.</para>
+      
+      <variablelist>
+        <varlistentry>
+          <term><emphasis role="strong">typePriority</emphasis></term>
+          <listitem>
+            <para>The default is to ignore type priorities when setting the starting position, and just use
+            the begin / end position to locate the left-most equal spot.  If you want to respect type priorities,
+            specify this variant.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        
+        <!-- 
+        <varlistentry>
+          <term><emphasis role="strong">positionUsesType</emphasis></term>
+          <listitem>
+            <para>This only has a meaning when typePriority is false.</para>
+            
+                           This next is a fanciful idea that has no reasonable implementation, so delete it.
+                
+            <para>When type priorities are not being used, Annotations with the same begin and end and type
+            will be together in the index.  The starting position, when there are many Annotations 
+            which might compare equal, is the left-most (earliest) one of these.  In this comparison for 
+            equality, by default, the <code>type</code> of the bounding Annotation is ignored; 
+            only its begin and end values are used. 
+            If you want to include the type of the bounding Annotation in the equal comparison, set this to true.
+            </para>
+            
+             
+            <para>This setting only applies for bounded iterators with skipSameBeginEndType == true and typePriority false.
+            Bounded iterators skip over annotations which are "equal" to the bounding annotation.  The meaning of
+            "equal" is altered when this is set true: items whose type is not == to the bounds type will not be skipped.
+            </para>
+            
+          </listitem>
+        </varlistentry>
+        -->
+        
+        
+        <varlistentry>
+          <term><emphasis role="strong">nonOverlapping</emphasis></term>
+          <listitem>
+            <para>Normally, all Annotations satisfying the bounds are returned.  If this is set, 
+            annotations whose <code>begin</code> position is not &gt;= the previous annotation&apos;s (going forwards)
+            <code>end</code> position are skipped.  This is also called <emphasis>unambiguous</emphasis> iteration.
+            If the iterator is run backwards, it is first run forwards to locate all the items that would be in the
+            forward iteration following the rules; and then those are traversed backwards.
+            This variant is ignored for <code>covering</code> selection.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term><emphasis role="strong">includeAnnotationsWithEndBeyondBounds</emphasis></term>
+          <listitem>
+            <para>The Subiterator <emphasis>strict</emphasis> configuration is equivalent to the opposite of this.
+            This only applied to the <code>coveredBy</code> selection; 
+            if specified, then any Annotations whose
+            <code>end</code> position is &gt; the end position of the bounding Annotation are included;
+            normally they are skipped.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term><emphasis role="strong">skipSameBeginEndType</emphasis></term>
+          <listitem>
+            <para>While doing bounded iteration, if the Annotation being returned is identical (has the same
+            _id()) with the bounding Annotation, it is always skipped. 
+            </para>
+            
+            <para> 
+            Other annotations, which might 
+            have the same begin, end, and type values, are not skipped, but instead, included, by default.</para>
+       
+            <para>  
+            When this configuration is specified, any Annotation which has the same begin, end, and type is also skipped.  
+            </para>
+            
+            <note><para>
+            If you do not want any of the indexed annotations to be skipped, you can achieve 
+            this by 
+            <itemizedlist>
+              <listitem><para>insuring you haven't set <code>skipWhenSameBeginEndType()</code></para></listitem>
+              <listitem><para>making a bounding annotation with the begin / end / type you want for the bound</para></listitem>
+              <listitem><para>Don't add this bounding annotation to the index</para></listitem>
+            </itemizedlist>
+            </para>
+            <para>
+            Because the bounding annotation will not be equal (have the same Feature Structure ID) as any 
+            annotations in the index (because you haven't indexed it), it will never match any annotations
+            found in the index while iterating.
+            </para></note>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+ 
+       <section id="uv3.select.annot.subselect.defaults">
+        <title>Defaults for bounded selects</title>
+        <para>The ordinary core UIMA Subiterator implementation defaults to using type order as part of the bounds
+        determination.  uimaFIT, in contrast, doesn't use type order, and sets bounds according to 
+        the begin and end positions.</para>
+        
+        <para>This <code>select</code> implementation mostly follows the uimaFIT approach by default, but provides
+        the above configuration settings to flexibly alter this to the user&apos;s preferences.
+        For reference, here are the default settings, with some comparisons to the defaults for <code>Subiterators</code>:</para>
+        
+        <variablelist>
+          <varlistentry>
+            <term><emphasis role="strong">typePriority</emphasis></term>
+            <listitem>
+              <para>default: false; type priorities are not used when moving to left-most among equal items.
+              Subiterators created using the AnnotationIndex, in contrast, use type priorities.
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <!-- 
+          <varlistentry>
+            <term><emphasis role="strong">positionUsesType</emphasis></term>
+            <listitem>
+              <para>default: false; the type of the bounding Annotation is ignored 
+               when skipSameBeginEndType == true, for skipping equal-to-bound; 
+               only its begin and end position are used
+              </para>
+            </listitem>
+          </varlistentry>
+           -->
+           
+           
+          <varlistentry>
+            <term><emphasis role="strong">nonOverlapping</emphasis></term>
+            <listitem>
+              <para>default: false; no Annotations are skipped because they overlap.
+              This corresponds to the "ambiguous" mode in Subiterators.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">includeAnnotationsWithEndBeyondBounds</emphasis></term>
+            <listitem>
+              <para>default: (only applies to <code>coveredBy</code> selections; 
+              The default is to skip Annotations whose end position lies outside of the bounds; 
+              this corresponds to Subiterator&apos;s "strict" option.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">skipSameBeginEndType</emphasis></term>
+            <listitem>
+              <para>default: only the single Annotation with the same _id() is skipped when using 
+                a bounded iteration.
+                Use this setting to expand the set of skipped Annotations to include all those equal to the 
+                bound's begin, end and type.   
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+          
+      </section>
+    
+    <section id="uv3.select.annot.follow_precede">
+      <title>Following or Preceding</title>
+      
+      <para>For an Annotation Index, you can specify all Feature Structures following or preceding a position.
+      The position can be specified either as an Annotation or by specifying an annotation begin index.  
+      Both of these can have an additional shift offset amount as a 2nd parameter.
+      Note that the positioning arguments differ from the <code>startAt</code> specification, 
+      which uses both begin and end values.  
+      </para>
+            
+      <variablelist>
+        <varlistentry>
+          <term><emphasis role="strong">following</emphasis></term>
+          <listitem>
+            <para>Position the iterator according to the argument, 
+            and then move the iterator forwards until
+            the Annotation at that position has its begin value &gt;= to the positioning annotation's end value.
+            </para>
+            <para>If the position is specified as an int, move the iterator forwards until
+            the Annotation at that position has its begin value &gt;= the specified int.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">preceding</emphasis></term>
+          <listitem>
+            <para>Position the iterator according to the argument, 
+            and then move it backwards until
+            the Annotation&apos;s (at that position) <code>end</code> value is &lt;= to 
+            the positioning Annotation's <code>begin</code>value.
+            </para>
+            <para>If the position is specified as an int, treat this as the begin value.</para>
+            <para>Once positioned, the actual iteration starts at the beginning and ends at the last position.</para>            
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      
+      <para>The <code>preceding</code> iteration skips over annotations whose <code>end</code> values are &gt; 
+      the positioning annotation's begin value, or the positioning int's value.</para>
+    </section>  
+  </section>
+  
+  <section id="uv3.select.terminal_form_actions">
+    <title>Terminal Form actions</title>
+    
+    <para>After the sources and selection and ordering options have been specified, one 
+    terminal form action may be specified.  This can be an getting an iterator, array or list,
+    or a single value with various extra checks, or a Java stream.  Specifying any stream operation
+    (except limit) converts the object to a stream; from that point on, any stream operation may be used.</para>
+    
+    <figure id="uv3.select.fig.terminal_form_actions">
+      <title>Select Terminal Form Actions</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata width="5.5in" format="PNG" fileref="&imgroot;select_terminal_form_actions.png"/>
+        </imageobject>
+        <textobject><phrase>Terminal form actions for select</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+    
+    <section id="uv3.select.terminal_form_actions.iterators">
+      <title>Iterators</title>
+      
+      <variablelist>
+        <varlistentry>
+          <term><emphasis role="strong">(Iterable)</emphasis></term>
+          <listitem>
+            <para>The <code>SelectFSs</code> object directly implements <code>Iterable</code>, so it may be 
+            used in the extended Java <code>for</code> loop.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">fsIterator</emphasis></term>
+          <listitem>
+            <para>returns a configured fsIterator or subIterator.  
+            This iterator implements <code>ListIterator</code> as well (which, in turn,
+            implements Java <code>Iterator</code>).
+            Modifications to the list using <code>add</code> or <code>set</code> are not supported.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">iterator</emphasis></term>
+          <listitem>
+            <para>This is just the plain Java iterator, for convenience.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">spliterator</emphasis></term>
+          <listitem>
+            <para>This returns a spliterator, which can be marginally more efficient to use than a normal iterator.
+            It is configured to be sequential (not parallel), and has other characteristics set according to 
+            the sources and selection/ordering configuration.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+ 
+    </section>
+    <section id="uv3.select.terminal_form_actions.arrays_lists">
+      <title>Arrays and Lists</title>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis role="strong">asArray</emphasis></term>
+          <listitem>
+            <para>This takes 1 argument, the class of the returned array type, which must be the type or subtype of the
+            select.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">asList</emphasis></term>
+          <listitem>
+            <para>Returns a Java list, configured from the sources and selection and ordering specifications. 
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+    <section id="uv3.select.terminal_form_actions.single_items">
+      <title>Single Items</title>
+      <para>These methods return just a single item, according to the previously specified select configuration.
+      Variations may throw exceptions on empty or more than one item situations.</para>
+      
+      <para>These have no-argument forms as well as argument forms identical to <code>startAt</code> (see above).
+      When arguments are specified, they adjust the item returned by positioning within the index 
+      according to the arguments.</para>
+        
+      <note>
+        <para>Positioning arguments with a Annotation or begin and end require an Annotation Index.
+        Positioning using a Feature Structure, by contrast, only require that the index being use be sorted.
+        </para>
+      </note>
+      
+      <variablelist>
+        <varlistentry>
+          <term><emphasis role="strong">get</emphasis></term>
+          <listitem>
+            <para>If no argument is specified, then returns the first item.  If there is no item, then
+            an exception is thrown unless <code>nullOK</code> is set.
+            </para>
+            <para>If any positioning arguments are specified, then this returns the item at that position unless 
+            there is no item at that position, in which case it throws an exception unless <code>mullOK</code> is set.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">single</emphasis></term>
+          <listitem>
+            <para>returns the item at the position, but throws exceptions 
+            if there are more than one item in the selection,
+            or if there are no items in the selection.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">singleOrNull</emphasis></term>
+          <listitem>
+            <para>returns the item at the position, but throws an exception 
+            if there are more than one item in the selection.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis role="strong">isEmpty</emphasis></term>
+          <listitem>
+            <para>returns true if the selection is empty.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+    <section id="uv3.select.terminal_form_actions.streams">
+      <title>Streams</title>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis role="strong">any stream method</emphasis></term>
+          <listitem>
+            <para>Select supports all the stream methods.  The first occurance of a stream method converts the select
+            into a stream, using <code>spliterator</code>, and from then on, it behaves just like a stream object.
+            </para>
+            
+            <para>For example, here's a somewhat contrived example:  
+            you could do the following to collect the set of types appearing
+            within some bounding annotation, when considered in nonOverlapping style:
+            
+    <informalexample>  <?dbfo keep-together="always"?>
+<programlisting>Set&lt;Type&gt; foundTypes =
+    // items of MyType or subtypes 
+   myIndex.select(MyType.class)
+   .coveredBy(myBoundingAnnotation)
+   .nonOverlapping()
+   .map(fs -> fs.getType())
+   .collect(Collectors.toCollection(TreeSet::new));
+</programlisting>
+</informalexample>
+Or, to collect by category a set of frequency values:
+<informalexample>  <?dbfo keep-together="always"?>
+<programlisting>Map&lt;Category, Integer&gt; freqByCategory =
+   myIndex.select(MyType.class)
+   .collect(Collectors
+     .groupingBy(MyType::getCategory,
+                 Collectors.summingInt(MyType::getFreq)));
+</programlisting> 
+</informalexample>
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+  </section>
+    
+  </chapter>
+    
+  

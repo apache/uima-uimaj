@@ -39,24 +39,34 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.resource.metadata.Capability;
 
+
 /**
  * A tree view of Annotations and associated features.
  * 
  */
 public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -8028169177689821008L;
 
+  /** The Constant ROOT. */
   public static final String ROOT = "Root";
 
+  /** The scroll pane. */
   private JScrollPane scrollPane;
 
+  /** The tree. */
   private JTree tree;
 
+  /** The expand all button. */
   private JButton expandAllButton;
 
+  /** The collapse all button. */
   private JButton collapseAllButton;
 
+  /**
+   * Instantiates a new annotation features viewer.
+   */
   public AnnotationFeaturesViewer() {
 
     super();
@@ -83,6 +93,12 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
     add(buttonsPanel, BorderLayout.NORTH);
   }
 
+  /**
+   * Populate.
+   *
+   * @param analysisEngine the analysis engine
+   * @param aeMetaData the ae meta data
+   */
   public void populate(AnalysisEngine analysisEngine, AnalysisEngineMetaData aeMetaData) {
     tree = generateTreeView(analysisEngine, aeMetaData);
 
@@ -102,6 +118,13 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
     scrollPane.getViewport().add(tree, null);
   }
 
+  /**
+   * Generate tree view.
+   *
+   * @param analysisEngine the analysis engine
+   * @param aeMetaData the ae meta data
+   * @return the j tree
+   */
   private JTree generateTreeView(AnalysisEngine analysisEngine, AnalysisEngineMetaData aeMetaData) {
 
     DefaultMutableTreeNode root = new DefaultMutableTreeNode(ROOT);
@@ -137,6 +160,11 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
     return new JTree(root);
   }
 
+  /**
+   * Gets the selection.
+   *
+   * @return the selection
+   */
   public String getSelection() {
     TreePath treePath = tree.getSelectionPath();
     if (treePath != null) {
@@ -150,6 +178,10 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
       return null;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent e) {
     Object source = e.getSource();
     if (source == expandAllButton) {

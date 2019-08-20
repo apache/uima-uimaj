@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>3.1.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -42,13 +42,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/aggregate-uimaj-docbooks
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/aggregate-uimaj-docbooks
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/aggregate-uimaj-docbooks
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/aggregate-uimaj-docbooks
     </developerConnection>
     <url>
-      https://svn.apache.org/viewvc/uima/uimaj/trunk/aggregate-uimaj-docbooks
+      https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/aggregate-uimaj-docbooks
     </url>
   </scm>
   
@@ -85,6 +85,7 @@
     <module>../uima-docbook-references</module>
     <module>../uima-docbook-tools</module>
     <module>../uima-docbook-tutorials-and-users-guides</module>
+    <module>../uima-docbook-v3-users-guide</module>
     <!--module>../../branches/mavenAlign/PearPackagingMavenPlugin</module>  not used - is old version of doc -->
   </modules>  
 </project>

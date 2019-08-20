@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.10.4 Release Notes</title>
+  <title>Apache UIMA v3.1.0 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.10.4 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v3.1.0 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -33,8 +33,8 @@
 <a href="#report.issues">How to Report Issues</a><br/>
 <a href="#list.issues">List of JIRA Issues Fixed in this Release</a><br/>
 </p>  
-   
-<h2><a id="what.is.uima">1. What is UIMA?</a></h2>
+        
+<h2><a id="what.is.uima">What is UIMA?</a></h2>
 
      <p>
   			Unstructured Information Management applications are
@@ -80,21 +80,64 @@
 			</p>
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
-<p>The major changes in this release include:</p>
 
-<ul> 
-  <li>The Eclipse plugin for the Component Descriptor editor was fixed to work with
-      the latest version of Eclipse.</li>
-  <li>Internationalized Exceptions more reliably find their message bundles.</li>
-  <li>An additional use case for running pipeline within pipelines is now supported.</li>
-  <li>An override was added to enable using External DTDs in XML descriptors.</li>
-  <li>The destroy cleanups around PEARs was improved.</li>
+<p>Version 3.1.0 is a minor update to 3.0.2, mainly bug fixes.
+The major version was updated because the generated JCas classes 
+now include for FSArrays, the generic type of the component, if known.</p>
+<p>
+When migrating from v2, if non-built-in JCas cover classes are being used,
+a one-time regeneration or migration step is required for these.  
+Please read the Version 3 users guide located in the docs directory
+for information on these changes and the migration tool which can
+aid in migrating existing JCas class definitions.
+</p>
+
+<p>A very brief summary of version 3 vs version 2:</p>
+<ul><li>Feature Structures become Java Objects, 
+subject to Garbage Collection, just like any other objects, 
+when no longer reachable.</li>
+<li>Iterating over indexes no longer throws 
+ConcurrentModificationException.</li>
+<li>Support for arbitrary Java Objects in the CAS, 
+using special custom implementations of JCas cover classes for those.</li>
+<li>Using the above new capability, new semi-built-ins for three new types: ArrayList style
+lists of Feature Structures and ints, and an FSHashSet</li>
+<li>New "select" framework for flexible 
+access to Feature Structures, that can ignore typeOrdering keys in indexes.</li>
+<li>Integration with Java 8 facilities such as Streams</li>
+<li>Logging framework upgraded, supporting embedding UIMA in other frameworks using 
+popular logging APIs</li>
+<li>There are many performance improvements</li>
 </ul>
-  
-<h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
+
+
+<p>Please read the Version 3 users guide for more details.</p>
+
+<p>Specific changes in release 3.1.0 versus 3.0.2 include</p>
+<ul>
+  <li>Fixed a problem preventing the Component Descriptor editor from running with the lastest Eclipse 2019-6</li>
+  <li>Fixed a bug on deserialization of typed arrays edge case</li>
+  <li>Better support for control of class loader switching when running sub-pipelines, including PEARs</li>
+  <li>better support for shared 0-length typed FSArrays</li>
+  <li>Fixed a bug in Internationalized Messaging in PEARs and other contexts, edge case.</li>
+  <li>JCasGen now generates FSArray values with generic types, if the component type is specified.</li>
+</ul>
+ 
+<h3>API changes</h3>
+
+ <p>There is an API compatibility report covering the non-internal APIs;
+   see <a href="api-change-report.html">change report</a> for the list of API changes
+   since version 3.0.2.
+ </p>
+ 
+<h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
-issues fixed in this release.  
-   
+issues affecting this release.    
+
+<p>Please use the mailing lists 
+( http://uima.apache.org/mail-lists.html ) 
+for feedback.</p> 
+ 
 <h2><a id="get.involved">How to Get Involved</a></h2>
 <p>
 The Apache UIMA project really needs and appreciates any contributions, 

@@ -42,6 +42,7 @@ import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -126,7 +127,26 @@ public class CasAnnotationViewerTest extends TestCase {
             .getType(CAS.TYPE_NAME_DOUBLE_ARRAY), false);
 
     // Commit the type system.
-    ((CASImpl) casMgr).commitTypeSystem();
+    TypeSystemImpl tsi = ((CASImpl) casMgr).commitTypeSystem();
+    if (tsi != tsa) {
+      annotationType = tsi.refreshType(annotationType);
+      exampleType = tsi.refreshType(exampleType);
+      floatFeature = tsi.refreshFeature(floatFeature);
+      stringFeature = tsi.refreshFeature(stringFeature);
+      booleanFeature = tsi.refreshFeature(booleanFeature);
+      byteFeature = tsi.refreshFeature(byteFeature);
+      shortFeature = tsi.refreshFeature(shortFeature);
+      longFeature = tsi.refreshFeature(longFeature);
+      doubleFeature = tsi.refreshFeature(doubleFeature);
+      intArrayFeature = tsi.refreshFeature(intArrayFeature);
+      floatArrayFeature = tsi.refreshFeature(floatArrayFeature);
+      stringArrayFeature = tsi.refreshFeature(stringArrayFeature);
+      booleanArrayFeature = tsi.refreshFeature(booleanArrayFeature);
+      byteArrayFeature = tsi.refreshFeature(byteArrayFeature);
+      shortArrayFeature = tsi.refreshFeature(shortArrayFeature);
+      longArrayFeature = tsi.refreshFeature(longArrayFeature);
+      doubleArrayFeature = tsi.refreshFeature(doubleArrayFeature);     
+    }
 
     // Create the Base indexes.
     casMgr.initCASIndexes();

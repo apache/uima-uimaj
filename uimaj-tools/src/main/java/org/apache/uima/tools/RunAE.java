@@ -46,6 +46,7 @@ import org.apache.uima.tools.components.InlineXmlCasConsumer;
 import org.apache.uima.tools.components.XmlDetagger;
 import org.apache.uima.util.AnalysisEnginePerformanceReports;
 
+
 /**
  * An example application that reads documents from the file system, sends them though an Analysis
  * Engine(AE), and produces XML files with inline annotations. This application uses a
@@ -76,35 +77,50 @@ import org.apache.uima.util.AnalysisEnginePerformanceReports;
  */
 public class RunAE implements StatusCallbackListener {
 
+  /** The ae specifier file. */
   // Values read from cmd line args
   private File aeSpecifierFile = null;
 
+  /** The input dir. */
   private File inputDir = null;
 
+  /** The output dir. */
   private File outputDir = null;
 
+  /** The xml tag name. */
   private String xmlTagName = null;
 
+  /** The language. */
   private String language;
 
+  /** The encoding. */
   private String encoding;
 
+  /** The gen progress messages. */
   private boolean genProgressMessages = true;
 
+  /** The stats level. */
   private int statsLevel = 1;
 
+  /** The xcas input. */
   private boolean xcasInput = false;
 
+  /** The xmi input. */
   private boolean xmiInput = false;
   
+  /** The x lenient. */
   private boolean xLenient = false;
 
+  /** The docs processed. */
   int docsProcessed;
 
+  /** The m CPE. */
   private CollectionProcessingEngine mCPE;
 
   /**
    * Constructor. Sets up and runs an Analysis Engine.
+   *
+   * @param args the args
    */
   public RunAE(String[] args) {
     try {
@@ -234,8 +250,11 @@ public class RunAE implements StatusCallbackListener {
   }  
 
   /**
+   * Initialization complete.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#initializationComplete()
    */
+  @Override
   public void initializationComplete() {
   }
 
@@ -247,6 +266,7 @@ public class RunAE implements StatusCallbackListener {
    * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
    *      org.apache.uima.collection.EntityProcessStatus)
    */
+  @Override
   public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
     if (aStatus.isException()) {
       Iterator iter = aStatus.getExceptions().iterator();
@@ -271,22 +291,31 @@ public class RunAE implements StatusCallbackListener {
   }
 
   /**
+   * Aborted.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#aborted()
    */
+  @Override
   public void aborted() {
     System.out.println("Processing Aborted");
 
   }
 
   /**
+   * Batch process complete.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#batchProcessComplete()
    */
+  @Override
   public void batchProcessComplete() {
   }
 
   /**
+   * Collection process complete.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#collectionProcessComplete()
    */
+  @Override
   public void collectionProcessComplete() {
     // output performance stats
     if (statsLevel > 0) {
@@ -302,14 +331,20 @@ public class RunAE implements StatusCallbackListener {
   }
 
   /**
+   * Paused.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#paused()
    */
+  @Override
   public void paused() {
   }
 
   /**
+   * Resumed.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#resumed()
    */
+  @Override
   public void resumed() {
   }
 
@@ -341,7 +376,7 @@ public class RunAE implements StatusCallbackListener {
 
   /**
    * Reads command line arguments and sets static class variables appropriately.
-   * 
+   *
    * @param args the args
    * @return true if command line args were valid, false if not
    */
@@ -420,6 +455,11 @@ public class RunAE implements StatusCallbackListener {
     return (aeSpecifierFile != null) && (inputDir != null);
   }
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
   public static void main(String[] args) {
     new RunAE(args);
   }

@@ -18,9 +18,6 @@
  */
 package org.apache.uima.util;
 
-import static org.apache.uima.cas.impl.Serialization.serializeCAS;
-import static org.apache.uima.cas.impl.Serialization.serializeWithCompression;
-
 import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.DataInputStream;
@@ -30,7 +27,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
@@ -39,6 +36,7 @@ import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.AllowPreexistingFS;
+import org.apache.uima.cas.impl.BinaryCasSerDes;
 import org.apache.uima.cas.impl.BinaryCasSerDes4;
 import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.CASImpl;
@@ -51,6 +49,9 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.xml.sax.SAXException;
+
+import static org.apache.uima.cas.impl.Serialization.serializeCAS;
+import static org.apache.uima.cas.impl.Serialization.serializeWithCompression;
 
 /**
  * <p>A collection of static methods aimed at making it easy to</p>
@@ -168,7 +169,7 @@ public class CasIOUtils {
 
     return load(casUrl, null, aCAS, CasLoadMode.DEFAULT);
   }
-
+  
   /**
    * Loads a CAS from a URL source. The format is determined from the content.
    * 
@@ -311,7 +312,7 @@ public class CasIOUtils {
           CasLoadMode casLoadMode) throws IOException {
     return load(casInputStream, tsiInputStream, aCAS, casLoadMode, null);
   }
-  
+
   /**
    * This load variant can be used for loading Form 6 compressed CASes where the 
    * type system to use to deserialize is provided as an argument.  It can also load other formats,
@@ -345,23 +346,24 @@ public class CasIOUtils {
   
   private static SerialFormat load(InputStream casInputStream, InputStream tsiInputStream, CAS aCAS,
       CasLoadMode casLoadMode, TypeSystemImpl typeSystem) throws IOException {
-
+   
     if (!casInputStream.markSupported()) {
       casInputStream = new BufferedInputStream(casInputStream);
     }
     
     CASImpl casImpl = (CASImpl) aCAS;
+    BinaryCasSerDes bcsd = casImpl.getBinaryCasSerDes();
 
     // scan the first part of the file for known formats
     casInputStream.mark(6);
     byte[] firstPartOfFile = new byte[6];
     int bytesReadCount = casInputStream.read(firstPartOfFile);
     casInputStream.reset();
-    String start = new String(firstPartOfFile, 0, bytesReadCount, "UTF-8").toLowerCase();
+    String start = new String(firstPartOfFile, 0, bytesReadCount, StandardCharsets.UTF_8).toLowerCase();
 
     if (start.startsWith("<?xml ")) {  // could be XCAS or XMI
       try {
-        casImpl.setupCasFromCasMgrSerializer(readCasManager(tsiInputStream));
+        bcsd.setupCasFromCasMgrSerializer(readCasManager(tsiInputStream));
         // next call decides on XMI or XCAS via content
         return XmlCasDeserializer.deserializeR(casInputStream, aCAS, casLoadMode == CasLoadMode.LENIENT);
       } catch (SAXException e) {
@@ -377,7 +379,7 @@ public class CasIOUtils {
        * Binary, Compressed Binary (form 4 or 6)
        ******************************************/
       Header h = CommonSerDes.readHeader(deserIn);
-      return casImpl.reinit(h, casInputStream, readCasManager(tsiInputStream), casLoadMode, null, AllowPreexistingFS.allow, typeSystem);
+      return bcsd.reinit(h, casInputStream, readCasManager(tsiInputStream), casLoadMode, null, AllowPreexistingFS.allow, typeSystem);
     
     } else {
       
@@ -388,12 +390,12 @@ public class CasIOUtils {
       try {
         Object o = ois.readObject();
         if (o instanceof CASSerializer) {
-          casImpl.setupCasFromCasMgrSerializer(readCasManager(tsiInputStream));
-          casImpl.reinit((CASSerializer) o); // deserialize from object
+          bcsd.setupCasFromCasMgrSerializer(readCasManager(tsiInputStream));
+          bcsd.reinit((CASSerializer) o); // deserialize from object
           return SerialFormat.SERIALIZED;
         } else if (o instanceof CASCompleteSerializer) {
           // with a type system use that, ignore any supplied via tsiInputStream
-          casImpl.reinit((CASCompleteSerializer) o);
+          bcsd.reinit((CASCompleteSerializer) o);
           return SerialFormat.SERIALIZED_TSI;
         } else {
           /**Unrecognized serialized CAS format*/

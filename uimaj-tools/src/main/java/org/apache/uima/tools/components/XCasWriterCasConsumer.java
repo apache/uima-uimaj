@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -150,17 +150,11 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
    *           if an error occurs generating the XML text
    */
   private void writeXCas(CAS aCas, File name) throws IOException, SAXException {
-    FileOutputStream out = null;
 
-    try {
-      out = new FileOutputStream(name);
+    try (OutputStream out = new FileOutputStream(name)) {
       XCASSerializer ser = new XCASSerializer(aCas.getTypeSystem());
       XMLSerializer sax2xml = new XMLSerializer(out, false);
       ser.serialize(aCas, sax2xml.getContentHandler());
-    } finally {
-      if (out != null) {
-        out.close();
-      }
     }
   }
 

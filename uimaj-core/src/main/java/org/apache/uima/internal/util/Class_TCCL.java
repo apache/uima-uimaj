@@ -20,26 +20,27 @@
 package org.apache.uima.internal.util;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.apache.uima.resource.Resource;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 
 /**
  * Utilities supporting a unified approach to loading classes,
- * and resources
  * incorporating the resource manager's classloader if available,
  * and making use of the Thread Context Class Loader (TCCL)
- * 
+ *
  * For backwards compatibility, if a class is not found using the 
  * Thread Context Class Loader, 
  *   for classloading: try again using the 
  *                     class loader for this class since that's what the previous impl did,
  *                     and some applications will break otherwise, with class-not-found.
  *   for resourceloading: try again using the Classloader.getSystemClassLoader, 
- *                     since that's what the previous impl did.
+ *                     since that's what the previous impl did
  */
 public class Class_TCCL {
-  
+
   static public <T> Class<T> forName(String className) 
       throws ClassNotFoundException {
     return forName(className, null, true);
@@ -49,7 +50,7 @@ public class Class_TCCL {
       throws ClassNotFoundException {
     return forName(className, rm, true);
   }  
-
+  
   static public <T> Class<T> forName(String className, ResourceManager rm, boolean resolve) 
       throws ClassNotFoundException {
     try {
@@ -72,7 +73,7 @@ public class Class_TCCL {
     ClassLoader cl = (rm == null) ? null : rm.getExtensionClassLoader();
     
     if (cl == null) {
-      cl = get_parent_cl();
+      cl = get_parent_cl();Thread.currentThread().getContextClassLoader();
     }
     
     if (cl == null) { 
@@ -81,7 +82,7 @@ public class Class_TCCL {
     
     return cl;
   }
-    
+  
   static public ClassLoader get_parent_cl() {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     return (cl == null) 

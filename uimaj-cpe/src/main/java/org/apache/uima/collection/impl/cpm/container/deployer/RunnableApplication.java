@@ -37,24 +37,34 @@ import org.apache.uima.internal.util.SystemEnvReader;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.util.Level;
 
+
+/**
+ * The Class RunnableApplication.
+ */
 public class RunnableApplication {
+  
+  /** The executable. */
   protected String executable;
 
+  /** The exec. */
   protected Execute exec;
 
-  protected ArrayList<String> environment = new ArrayList<String>();
+  /** The environment. */
+  protected ArrayList<String> environment = new ArrayList<>();
 
+  /** The arg list. */
   protected List argList = new ArrayList();
   
+  /** The sys env vars. */
   private Properties sysEnvVars = null;
 
   /**
    * Sets up command line used to launch Cas Processor in a separate process. Combines environment
    * variables setup in the CPE descriptor with a System environment variables.
-   * 
+   *
    * @param aCasProcessorConfiguration -
    *          access to Cas Processor configuration
-   * @param aCasProcessor -
+   * @param aCasProcessor the a cas processor
    * @throws ResourceConfigurationException wraps Exception
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
@@ -159,8 +169,7 @@ public class RunnableApplication {
   }
 
   /**
-   * Displays current system environment settings
-   * 
+   * Displays current system environment settings.
    */
   private void printSysEnvironment() {
     Properties sysEnv = null;
@@ -182,8 +191,8 @@ public class RunnableApplication {
   }
 
   /**
-   * Returns a value of a given environment variable
-   * 
+   * Returns a value of a given environment variable.
+   *
    * @param aKey -
    *          name of the environment variable
    * @return - value correspnding to environment variable

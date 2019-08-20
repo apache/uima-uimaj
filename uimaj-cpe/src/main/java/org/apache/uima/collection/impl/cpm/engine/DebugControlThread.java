@@ -29,29 +29,53 @@ import org.apache.uima.collection.impl.cpm.utils.CpmLocalizedMessage;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Level;
 
+
+/**
+ * The Class DebugControlThread.
+ */
 public class DebugControlThread implements Runnable {
+  
+  /** The Constant NOTFOUND. */
   private final static String NOTFOUND = "NOT-FOUND";
 
+  /** The file name. */
   private String fileName = null;
 
+  /** The stop. */
   private volatile boolean stop = false;
 
+  /** The checkpoint frequency. */
   private int checkpointFrequency = 3000;
 
+  /** The pause. */
   // This variable guarded by lockForPause
   private boolean pause = false;
 
+  /** The lock for pause. */
   private final Object lockForPause = new Object();
 
+  /** The cpm. */
   // private boolean isRunning = false;
   private CPMEngine cpm = null;
 
+  /**
+   * Instantiates a new debug control thread.
+   *
+   * @param aCpm the a cpm
+   * @param aFilename the a filename
+   * @param aCheckpointFrequency the a checkpoint frequency
+   */
   public DebugControlThread(CPMEngine aCpm, String aFilename, int aCheckpointFrequency) {
     cpm = aCpm;
     fileName = aFilename;
     checkpointFrequency = aCheckpointFrequency;
   }
 
+  /**
+   * Start.
+   *
+   * @throws RuntimeException the runtime exception
+   */
   public void start() throws RuntimeException {
     if (fileName == null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -80,12 +104,19 @@ public class DebugControlThread implements Runnable {
     }
   }
 
+  /**
+   * Stop.
+   */
   public void stop() {
     stop = true;
     // isRunning = false;
     doCheckpoint();
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Runnable#run()
+   */
+  @Override
   public void run() {
     // isRunning = true;
     while (!stop && cpm.isRunning()) {
@@ -114,9 +145,9 @@ public class DebugControlThread implements Runnable {
   }
 
   /**
-   * 
-   * 
-   * @param aCommand
+   * Interpret and execute command.
+   *
+   * @param aCommand the a command
    */
   private void interpretAndExecuteCommand(String aCommand) {
     if (aCommand == null) {
@@ -170,6 +201,9 @@ public class DebugControlThread implements Runnable {
     }
   }
 
+  /**
+   * Delete checkpoint.
+   */
   public void deleteCheckpoint() {
     try {
       File inF = null;
@@ -183,10 +217,16 @@ public class DebugControlThread implements Runnable {
 
   }
 
+  /**
+   * Pause.
+   */
   public void pause() {
     pause = true;
   }
 
+  /**
+   * Resume.
+   */
   public void resume() {
     synchronized (lockForPause) {
       if (pause) {
@@ -200,6 +240,11 @@ public class DebugControlThread implements Runnable {
 
   }
 
+  /**
+   * Do checkpoint.
+   *
+   * @return the string
+   */
   public String doCheckpoint() {
     File inF = null;
     try {
@@ -232,6 +277,11 @@ public class DebugControlThread implements Runnable {
     return null;
   }
 
+  /**
+   * Exists.
+   *
+   * @return true, if successful
+   */
   public boolean exists() {
     try {
       new File(fileName);

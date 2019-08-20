@@ -72,11 +72,11 @@ public class InstallationProcessor {
   // Attributes
   private String _mainRootPath;
 
-  private Hashtable<String, String> _installationTable = new Hashtable<String, String>();
+  private Hashtable<String, String> _installationTable = new Hashtable<>();
 
-  private Hashtable<String, String> _urlSubstitutionTable = new Hashtable<String, String>();
+  private Hashtable<String, String> _urlSubstitutionTable = new Hashtable<>();
 
-  private Hashtable<String, String> _pathSubstitutionTable = new Hashtable<String, String>();
+  private Hashtable<String, String> _pathSubstitutionTable = new Hashtable<>();
 
   private InstallationDescriptor _insdObject = null;
 
@@ -122,19 +122,9 @@ public class InstallationProcessor {
   public static void generateVSDescriptor(InstallationDescriptor insdObject, File mainRootDir)
           throws IOException {
     File vsDescriptorFile = new File(mainRootDir, VS_DESCRIPTOR_PATH);
-    PrintWriter oWriter = null;
-    try {
-      oWriter = new PrintWriter(new FileWriter(vsDescriptorFile));
+    try (PrintWriter oWriter = new PrintWriter(new FileWriter(vsDescriptorFile))) {
       String xmlContent = generateVSDescriptorContent(insdObject);
       oWriter.println(xmlContent);
-      oWriter.close();
-    } finally {
-      if (oWriter != null) {
-        try {
-          oWriter.close();
-        } catch (Exception e) {
-        }
-      }
     }
   }
 

@@ -29,59 +29,91 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JButton;
 
+
+/**
+ * The Class PrefsMediator.
+ */
 public class PrefsMediator {
 
+  /** The input file selector. */
   private FileSelector inputFileSelector;
 
+  /** The output file selector. */
   private FileSelector outputFileSelector;
 
+  /** The xml file selector. */
   private FileSelector xmlFileSelector;
 
+  /** The view button. */
   private JButton runButton, interButton, viewButton;
 
+  /** The prefs. */
   private Preferences prefs;
 
+  /** The tae dir. */
   private String taeDir; // directory where TAE is located
 
+  /** The output dir. */
   private String outputDir; // where files are written
 
+  /** The input dir. */
   private String inputDir; // where original files are located
 
+  /** The default input dir. */
   private String defaultInputDir; // so we start with something
 
+  /** The default output dir. */
   private String defaultOutputDir;
 
+  /** The input file format. */
   private String inputFileFormat;
   
+  /** The language. */
   private String language;
 
+  /** The encoding. */
   private String encoding;
 
+  /** The view type. */
   private String viewType;
 
+  /** The xml tag. */
   private String xmlTag;
   
+  /** The lenient. */
   private boolean lenient;
 
+  /** The Constant VIEWTYPE. */
   // constants describing preference entries
   private static final String VIEWTYPE = "viewType";
 
+  /** The Constant ENCODING. */
   private static final String ENCODING = "encoding";
 
+  /** The Constant INPUTFILEFORMAT. */
   private static final String INPUTFILEFORMAT = "inputFileFormat";
   
+  /** The Constant LANGUAGE. */
   private static final String LANGUAGE = "language";
 
+  /** The Constant TAEDESCRIPTOR. */
   private static final String TAEDESCRIPTOR = "taeDescriptor";
 
+  /** The Constant OUTDIR. */
   private static final String OUTDIR = "outDir";
 
+  /** The Constant INDIR. */
   private static final String INDIR = "inDir";
   
+  /** The Constant XMLTAG. */
   private static final String XMLTAG = "xmlTag";
   
+  /** The Constant LENIENT. */
   private static final String LENIENT = "lenient";
 
+  /**
+   * Instantiates a new prefs mediator.
+   */
   public PrefsMediator() {
     // get the installed UIMA home directory
     defaultInputDir = "examples/data";
@@ -90,6 +122,9 @@ public class PrefsMediator {
     restorePreferences();
   }
 
+  /**
+   * Restore preferences.
+   */
   public void restorePreferences() {
     inputDir = prefs.get(INDIR, defaultInputDir);
     inputFileFormat = prefs.get(INPUTFILEFORMAT, "textDocument");
@@ -103,6 +138,9 @@ public class PrefsMediator {
 
   }
 
+  /**
+   * Save preferences.
+   */
   // saves current preferences
   public void savePreferences() {
     String t1 = inputFileSelector.getSelected();
@@ -114,6 +152,8 @@ public class PrefsMediator {
   }
 
   /**
+   * Gets the input dir.
+   *
    * @return Returns the inputDir.
    */
   public String getInputDir() {
@@ -121,8 +161,9 @@ public class PrefsMediator {
   }
 
   /**
-   * @param inputDir
-   *          The inputDir to set.
+   * Sets the input dir.
+   *
+   * @param inputDir          The inputDir to set.
    */
   public void setInputDir(String inputDir) {
     this.inputDir = inputDir;
@@ -131,6 +172,8 @@ public class PrefsMediator {
   }
 
   /**
+   * Gets the output dir.
+   *
    * @return Returns the outputDir.
    */
   public String getOutputDir() {
@@ -138,8 +181,9 @@ public class PrefsMediator {
   }
 
   /**
-   * @param outputDir
-   *          The outputDir to set.
+   * Sets the output dir.
+   *
+   * @param outputDir          The outputDir to set.
    */
   public void setOutputDir(String outputDir) {
     this.outputDir = outputDir;
@@ -163,6 +207,8 @@ public class PrefsMediator {
   }
 
   /**
+   * Gets the TA efile.
+   *
    * @return Returns the tAEdir.
    */
   public String getTAEfile() {
@@ -170,8 +216,8 @@ public class PrefsMediator {
   }
 
   /**
-   * get the path to the TAE that is where the StyleMap file should be written
-   * 
+   * get the path to the TAE that is where the StyleMap file should be written.
+   *
    * @return the TAE path
    */
   public String getTAEPath() {
@@ -184,6 +230,11 @@ public class PrefsMediator {
     }
   }
 
+  /**
+   * Gets the TAE file name root.
+   *
+   * @return the TAE file name root
+   */
   public String getTAEFileNameRoot() {
     String file;
     int index = indexOfLastFileSeparator(taeDir);
@@ -215,8 +266,9 @@ public class PrefsMediator {
   }
 
   /**
-   * @param edir
-   *          set the TAE directory
+   * Sets the TA efile.
+   *
+   * @param edir          set the TAE directory
    */
   public void setTAEfile(String edir) {
     taeDir = edir;
@@ -224,6 +276,8 @@ public class PrefsMediator {
   }
 
   /**
+   * Gets the encoding.
+   *
    * @return Returns the encoding.
    */
   public String getEncoding() {
@@ -231,8 +285,9 @@ public class PrefsMediator {
   }
 
   /**
-   * @param encoding
-   *          The encoding to set.
+   * Sets the encoding.
+   *
+   * @param encoding          The encoding to set.
    */
   public void setEncoding(String encoding) {
     this.encoding = encoding;
@@ -240,6 +295,8 @@ public class PrefsMediator {
   }
   
   /**
+   * Gets the input file format.
+   *
    * @return Returns the input file format.
    */
   public String getInputFileFormat() {
@@ -247,8 +304,9 @@ public class PrefsMediator {
   }
 
   /**
-   * @param inputFileFormat
-   *          The input file format to set.
+   * Sets the input file format.
+   *
+   * @param inputFileFormat          The input file format to set.
    */
   public void setInputFileFormat(String inputFileFormat) {
     this.inputFileFormat = inputFileFormat;
@@ -256,6 +314,8 @@ public class PrefsMediator {
   }
 
   /**
+   * Gets the language.
+   *
    * @return Returns the language.
    */
   public String getLanguage() {
@@ -263,8 +323,9 @@ public class PrefsMediator {
   }
 
   /**
-   * @param language
-   *          The language to set.
+   * Sets the language.
+   *
+   * @param language          The language to set.
    */
   public void setLanguage(String language) {
     this.language = language;
@@ -272,6 +333,8 @@ public class PrefsMediator {
   }
 
   /**
+   * Gets the view type.
+   *
    * @return Returns the view type.
    */
   public String getViewType() {
@@ -279,8 +342,9 @@ public class PrefsMediator {
   }
 
   /**
-   * @param viewType
-   *          The view type to set.
+   * Sets the view type.
+   *
+   * @param viewType          The view type to set.
    */
   public void setViewType(String viewType) {
     this.viewType = viewType;
@@ -288,6 +352,8 @@ public class PrefsMediator {
   }
 
   /**
+   * Gets the xml tag.
+   *
    * @return Returns the xmlTag.
    */
   public String getXmlTag() {
@@ -295,8 +361,9 @@ public class PrefsMediator {
   }
 
   /**
-   * @param xmlTag
-   *          The xmlTag to set.
+   * Sets the xml tag.
+   *
+   * @param xmlTag          The xmlTag to set.
    */
   public void setXmlTag(String xmlTag) {
     this.xmlTag = xmlTag;
@@ -304,6 +371,8 @@ public class PrefsMediator {
   }
 
   /**
+   * Gets the lenient.
+   *
    * @return Returns lenient.
    */
   public Boolean getLenient() {
@@ -311,8 +380,9 @@ public class PrefsMediator {
   }
 
   /**
-   * @param lenient
-   *          The lenient to set.
+   * Sets the lenient.
+   *
+   * @param lenient          The lenient to set.
    */
   public void setLenient(Boolean lenient) {
     this.lenient = lenient;
@@ -329,6 +399,13 @@ public class PrefsMediator {
     return new File(s);
   }
 
+  /**
+   * Sets the doc buttons.
+   *
+   * @param run the run
+   * @param inter the inter
+   * @param view the view
+   */
   // gets copies of buttonreference se it can mediate their on-ness
   public void setDocButtons(JButton run, JButton inter, JButton view) {
     runButton = run;
@@ -338,6 +415,13 @@ public class PrefsMediator {
     fieldFocusLost(); // sets any enabled that should be
   }
 
+  /**
+   * Sets the file selectors.
+   *
+   * @param input the input
+   * @param output the output
+   * @param xml the xml
+   */
   // sets the File Seelctors
   public void setFileSelectors(FileSelector input, FileSelector output, FileSelector xml) {
     inputFileSelector = input;
@@ -345,6 +429,9 @@ public class PrefsMediator {
     xmlFileSelector = xml;
   }
 
+  /**
+   * Field focus lost.
+   */
   // check all 3 text fields and adjust the enabling of the 3 buttons
   public void fieldFocusLost() {
     boolean enableRun = false;

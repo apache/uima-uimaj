@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>3.1.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-cpe
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-cpe
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-cpe
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-cpe
     </developerConnection>
     <url>
-      https://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-cpe
+      https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-cpe
     </url>
   </scm>
   
@@ -84,6 +84,11 @@
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <scope>test</scope>
+    </dependency>
 	</dependencies>
 	<build>
 		<finalName>uima-cpe</finalName>
@@ -97,7 +102,7 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes>
+                <excludes combine.children="append">
                   <exclude>release.properties</exclude> <!-- release generated artifact -->
                   <exclude>checkpoint_synchPoint.xml*</exclude> <!-- test data -->
                   <exclude>checkpoint.dat*</exclude> <!-- test data -->

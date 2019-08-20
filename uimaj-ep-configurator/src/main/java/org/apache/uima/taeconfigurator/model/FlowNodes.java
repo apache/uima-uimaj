@@ -23,16 +23,24 @@ import org.apache.uima.analysis_engine.metadata.CapabilityLanguageFlow;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.analysis_engine.metadata.FlowConstraints;
 
+
 /**
  * Instances of this class model the varients of flow nodes in a uniform way.
  * 
  */
 public class FlowNodes {
 
+  /** The fixed flow. */
   private FixedFlow fixedFlow;
 
+  /** The capability language flow. */
   private CapabilityLanguageFlow capabilityLanguageFlow;
 
+  /**
+   * Instantiates a new flow nodes.
+   *
+   * @param flow the flow
+   */
   public FlowNodes(FlowConstraints flow) {
     if (flow instanceof FixedFlow)
       fixedFlow = (FixedFlow) flow;
@@ -41,6 +49,11 @@ public class FlowNodes {
       // can be null if omitted
   }
 
+  /**
+   * Gets the flow.
+   *
+   * @return the flow
+   */
   public String[] getFlow() {
     if (fixedFlow != null)
       return fixedFlow.getFixedFlow();
@@ -50,6 +63,11 @@ public class FlowNodes {
     // throw new InternalErrorCDE("invalid state");
   }
 
+  /**
+   * Sets the flow.
+   *
+   * @param newFlow the new flow
+   */
   public void setFlow(String[] newFlow) {
     if (fixedFlow != null) {
       fixedFlow.setFixedFlow(newFlow);

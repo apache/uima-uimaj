@@ -29,13 +29,24 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
+
+/**
+ * The Class CasProcessorTimeoutImpl.
+ */
 public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasProcessorTimeout {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -8276573951395652039L;
 
+  /** The default timeout. */
   private String defaultTimeout = "-1";
 
+  /** The max. */
   private String max;
 
+  /**
+   * Instantiates a new cas processor timeout impl.
+   */
   public CasProcessorTimeoutImpl() {
   }
 
@@ -44,6 +55,7 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorTimeout#set(int)
    */
+  @Override
   public void set(int aFrequency) {
     max = String.valueOf(aFrequency);
   }
@@ -53,19 +65,22 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorTimeout#get()
    */
+  @Override
   public int get() {
     return Integer.parseInt(max);
   }
 
   /**
    * Overridden to read "max" and "default" attributes.
-   * @param aElement -
-   * @param aParser -
-   * @param aOptions -
-   * @throws InvalidXMLException -
+   *
+   * @param aElement the a element
+   * @param aParser the a parser
+   * @param aOptions the a options
+   * @throws InvalidXMLException the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     setMax(aElement.getAttribute("max"));
@@ -74,9 +89,11 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
 
   /**
    * Overridden to handle "max" and "default" attributes.
-   * @return -
+   *
+   * @return the XML attributes
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
+  @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     attrs.addAttribute("", "max", "max", "CDATA", getMax());
@@ -86,21 +103,32 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
     return attrs;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("timeout",
           new PropertyXmlInfo[0]);
 
   /**
+   * Gets the xmlization info.
+   *
    * @return the XMLization info
    */
   public static XmlizationInfo getXMLIZATION_INFO() {
     return XMLIZATION_INFO;
   }
 
-  /** PROTECTED METHODS USED BY THE PARSER */
+  /**
+   *  PROTECTED METHODS USED BY THE PARSER.
+   *
+   * @return the max
+   */
   /**
    * @return the max
    */
@@ -109,6 +137,8 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
   }
 
   /**
+   * Gets the default timeout.
+   *
    * @return the default timeout
    */
   public String getDefaultTimeout() {
@@ -116,14 +146,18 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
   }
 
   /**
-   * @param string -
+   * Sets the default timeout.
+   *
+   * @param string the new default timeout
    */
   public void setDefaultTimeout(String string) {
     defaultTimeout = string;
   }
 
   /**
-   * @param string -
+   * Sets the max.
+   *
+   * @param string the new max
    */
   public void setMax(String string) {
     max = string;

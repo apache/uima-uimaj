@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>3.1.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-runtime
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-ep-runtime
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-runtime
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-ep-runtime
     </developerConnection>
     <url>
-      https://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-ep-runtime
+      https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-ep-runtime
     </url>
   </scm>
   
@@ -67,6 +67,21 @@
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
       <scope>compile</scope>
+      <!-- exclude log4j -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+        </exclusion>       
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -147,6 +162,7 @@
                    org.apache.uima.analysis_engine.service.impl,
                    org.apache.uima.cas,
                    org.apache.uima.cas.admin,
+                   org.apache.uima.cas.function,
                    org.apache.uima.cas.impl,
                    org.apache.uima.cas.text,
                    org.apache.uima.cas_data,
@@ -220,7 +236,14 @@
                    org.apache.uima.adapter.soap,
                    org.apache.uima.adapter.soap.axis11,
                  -->
-                <Import-Package>org.apache.log4j;resolution:=optional,*
+                <Import-Package>org.slf4j*,
+                   !com.strobel.assembler,
+                   !com.strobel.assembler.metadata,
+                   !com.strobel.decompiler,
+                   !javax.annotation.meta,
+                   !org.apache.logging.slf4j*,
+                   !org.apache.logging.log4j*,
+                   *
                 </Import-Package>
                 <!-- causes the other Jars from the maven
                      dependencies, at the proper version, to be

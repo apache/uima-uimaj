@@ -29,14 +29,28 @@ import javax.swing.JFrame;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class CloseLogViewHandler.
+ */
 public class CloseLogViewHandler extends WindowAdapter implements WindowListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new close log view handler.
+   *
+   * @param frame the frame
+   */
   public CloseLogViewHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
+   */
+  @Override
   public void windowClosing(WindowEvent event) {
     JComponent contentPane = (JComponent) ((JFrame) event.getComponent()).getContentPane();
     final int x = contentPane.getWidth();

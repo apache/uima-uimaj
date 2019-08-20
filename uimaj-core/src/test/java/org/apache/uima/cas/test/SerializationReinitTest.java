@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
@@ -65,6 +63,8 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 /**
  * Test for binary serialization and deserialization (no compression)
@@ -289,7 +289,7 @@ public class SerializationReinitTest extends TestCase {
     try {
       cas.reset();
     } catch (CASAdminException e) {
-      assertTrue(e.getError() == CASAdminException.FLUSH_DISABLED);
+      assertTrue(e.getMessageKey() == CASAdminException.FLUSH_DISABLED);
       exc = true;
     }
     assertTrue(exc);
@@ -444,7 +444,7 @@ public class SerializationReinitTest extends TestCase {
     String line;
 //    BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer(10000);
-    List<String> docs = new ArrayList<String>();
+    List<String> docs = new ArrayList<>();
     Matcher m = nlPattern.matcher(moby);
     while (m.find()) {
       line = m.group();
@@ -545,7 +545,7 @@ public class SerializationReinitTest extends TestCase {
   int ll_shortarrayfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theShortArrayFeature);
   int ll_longfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theLongFeature);
   
-  for (int cycle=0; cycle<10; cycle+=2) {
+  for (int cycle = 0; cycle < 10; cycle +=2 ) {
     FeatureStructure newFS1 = cas.createFS(theTypeType); 
     newFS1.setIntValue(startFeature, cycle);
     newFS1.setIntValue(endFeature, cycle+1);
@@ -568,10 +568,13 @@ public class SerializationReinitTest extends TestCase {
     newFS2.setIntValue(startFeature, cycle+1);
     newFS2.setIntValue(endFeature, cycle+2);
     ir.addFS(newFS2);
+    CASImpl ci = (CASImpl) cas;
+    ci.setId2FSsMaybeUnconditionally(newFS2, newBA2, newSA2);
     // set string using lowlevel string create API
     final int llfs2 = ll_cas.ll_getFSRef(newFS2);
     final int llba2 = ll_cas.ll_getFSRef(newBA2);
     final int llsa2 = ll_cas.ll_getFSRef(newSA2);
+    
     ll_cas.ll_setCharBufferValue(llfs2, ll_strfeatcode,
             testString.toCharArray(), 0, testString.length());
     ll_cas.ll_setByteValue(llfs2, ll_bytefeatcode, (byte)(cycle+1));
@@ -591,7 +594,7 @@ public class SerializationReinitTest extends TestCase {
 
     FSIndex<AnnotationFS> idx = cas.getAnnotationIndex(theTypeType);
     FSIterator<AnnotationFS> iter = idx.iterator();
-    for (int tc=0; tc<cycle+1; tc++) {
+    for (int tc = 0; tc < cycle + 1; tc++) {
       FeatureStructure testFS = iter.get();
       iter.moveToNext();
       assertTrue(tc == testFS.getIntValue(startFeature));
@@ -858,6 +861,7 @@ public class SerializationReinitTest extends TestCase {
       //======================================================================
       //deserialize delta binary into cas1
       ByteArrayInputStream fisDelta = new ByteArrayInputStream(fosDelta.toByteArray());
+      CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = false;
       Serialization.deserializeCAS(cas1, fisDelta);
       
       //======================================================================

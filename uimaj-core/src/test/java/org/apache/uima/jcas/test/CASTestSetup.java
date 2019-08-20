@@ -19,8 +19,6 @@
 
 package org.apache.uima.jcas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.Type;
@@ -29,6 +27,8 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
+
+import junit.framework.TestCase;
 
 public class CASTestSetup implements AnnotatorInitializer {
 
@@ -106,6 +106,16 @@ public class CASTestSetup implements AnnotatorInitializer {
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
 
   public static final String ANNOT_BAG_INDEX = "Annotation Bag Index";
+  
+  public static final String INTEGER_ARRAY_LIST = "org.apache.uima.jcas.cas.IntegerArrayList";
+
+  public static final String FS_ARRAY_LIST = "org.apache.uima.jcas.cas.FSArrayList";
+
+  public static final String FS_HASH_SET = "org.apache.uima.jcas.cas.FSHashSet";
+  
+  public static final String FS_LINKED_HASH_SET = "org.apache.uima.jcas.cas.FSLinkedHashSet";
+  
+  public static final String INT_2_FS = "org.apache.uima.jcas.cas.Int2FS";
 
   /**
    * Constructor for CASTestSetup.
@@ -182,7 +192,8 @@ public class CASTestSetup implements AnnotatorInitializer {
     tsm.addFeature("plainDouble", typeRoot, typeDouble);
     tsm.addFeature("plainLong", typeRoot, typeLong);
     tsm.addFeature("plainString", typeRoot, typeString);
-    tsm.addFeature("plainRef", typeRoot, typeRef);
+//    tsm.addFeature("plainRef", typeRoot, typeRef);
+    tsm.addFeature("plainRef", typeRoot, typeRoot);
 
     if (bad != BAD_MISSING_TYPE_IN_CAS)
       tsm.addType("aa.MissingInCas", topType);
@@ -209,7 +220,7 @@ public class CASTestSetup implements AnnotatorInitializer {
     try {
       tsm.addType("some.new.Name", group1);
     } catch (CASAdminException e) {
-      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
+      TestCase.assertTrue(e.getMessageKey() == CASAdminException.TYPE_IS_INH_FINAL);
       exc = true;
     }
     TestCase.assertTrue(exc);
@@ -217,10 +228,22 @@ public class CASTestSetup implements AnnotatorInitializer {
     try {
       tsm.addFeature("some.new.Name", group1, typeString);
     } catch (CASAdminException e) {
-      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
+      TestCase.assertTrue(e.getMessageKey() == CASAdminException.TYPE_IS_FEATURE_FINAL);
       exc = true;
     }
     TestCase.assertTrue(exc);
+    
+    // add IntegerArrayList type, FSHashSet, FSArrayList
+    Type integerArrayListType = tsm.addType(INTEGER_ARRAY_LIST, topType);
+    tsm.addFeature("intArray", integerArrayListType, typeArrayInt);
+    Type fsArrayListType = tsm.addType(FS_ARRAY_LIST, topType);
+    tsm.addFeature("fsArray", fsArrayListType, typeArrayRef);
+    Type fsHashSetType = tsm.addType(FS_HASH_SET, topType);
+    tsm.addFeature("fsArray", fsHashSetType, typeArrayRef);
+    Type fsLinkedHashSetType = tsm.addType(FS_LINKED_HASH_SET, fsHashSetType);
+    Type int2FSType = tsm.addType(INT_2_FS, topType);
+    tsm.addFeature("fsArray", int2FSType, typeArrayRef);
+    tsm.addFeature("intArray",  int2FSType,  typeArrayInt);     
   }
 
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
