@@ -159,9 +159,29 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
       return false;
     }
     for (int i = 0; i < max; i++) {
-      if (this.keySpecs  .get(i) != comp.keySpecs  .get(i) ||
-          this.directions.get(i) != comp.directions.get(i)) {
-        return false;
+      Object keySpec1 = this.keySpecs.get(i);
+      Object keySpec2 = comp.keySpecs.get(i);
+      if (keySpec1 instanceof LinearTypeOrder) {
+        // equals compares the type codes in the ordered arrays for ==
+        if ( ! (((LinearTypeOrder)keySpec1).equals((LinearTypeOrder)keySpec2)) ) {
+          return false;
+        }
+      } else { 
+        FeatureImpl f1 = (FeatureImpl) keySpec1;
+        FeatureImpl f2 = (FeatureImpl) keySpec2;
+        boolean featimpl_match = f1.equals(f2)  // this compares 
+                                                //    shortName, 
+                                                //    multiplerefs allowed
+                                                //    highest defining type
+                                                //    range type name
+        // also need to confirm offsets are the same
+            && f1.getOffset() == f2.getOffset()
+            && f1.getAdjustedOffset() == f2.getAdjustedOffset()
+            && this.directions.get(i) == comp.directions.get(i);
+        
+        if (! featimpl_match) {
+          return false;
+        }
       }
     }
     return true;    
@@ -174,9 +194,19 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     result = prime * result + ((this.type == null) ? 31 : type.hashCode()); 
     final int max = this.getNumberOfKeys();
     for (int i = 0; i < max; i++) {
-      Object o = this.keySpecs.get(i);  // lto or feature
-      result = prime * result + o.hashCode();
-      result = prime * result + this.directions.get(i);
+      Object o = this.keySpecs.get(i);  // LinearTypeOrder or feature
+      if (o instanceof LinearTypeOrder) {
+        result = prime * result + ((LinearTypeOrderBuilderImpl.TotalTypeOrder)o).hashCode();
+      } else {
+        FeatureImpl f = (FeatureImpl)o;
+        result = prime * result + f.hashCode(); //    only shortName, 
+                                                               //    multiplerefs allowed
+                                                               //    highest defining type
+                                                               //    range type name
+        result = prime * result + f.getOffset();
+        result = prime * result + f.getAdjustedOffset();
+        result = prime * result + this.directions.get(i);
+      }
     }
     return result;
   }
