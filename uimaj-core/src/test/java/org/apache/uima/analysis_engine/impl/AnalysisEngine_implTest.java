@@ -26,11 +26,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,6 +89,7 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.FileCompare;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Settings;
@@ -431,6 +434,28 @@ public class AnalysisEngine_implTest extends TestCase {
     }
   }
 
+  // test for UIMA-6136    Commented out because it generates 2000 lines of output and takes about 5 seconds to run
+//  public void testLargeTS() throws Exception {
+//    TypeSystemDescription tsd = new TypeSystemDescription_impl();
+//
+//    for (int i = 0; i < 500; i++) {
+//        TypeDescription type = tsd.addType("Type_" + i, "", CAS.TYPE_NAME_ANNOTATION);
+//        for (int f = 0; f < 10; f++) {
+//            type.addFeature("Feature_" + f, "", CAS.TYPE_NAME_STRING);
+//        }
+//    }
+//    
+//    List<CAS> cas_s = new ArrayList<>();
+//    for (int i = 0; i < 2000; i++) {
+//        long start = System.currentTimeMillis();
+//        cas_s.add(CasCreationUtils.createCas(tsd, null, null));
+//        long duration = System.currentTimeMillis() - start;
+//        System.out.printf("%d - %d%n", i, duration);
+//    }
+//
+//  }
+  
+  
   public void testProcess() throws Exception {
     try {
       // test simple primitive TextAnalysisEngine (using TestAnnotator class)

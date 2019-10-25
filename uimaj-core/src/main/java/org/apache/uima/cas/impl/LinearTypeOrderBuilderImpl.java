@@ -50,7 +50,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
          * 
          * 
          */
-  private static class TotalTypeOrder implements LinearTypeOrder {
+  public static class TotalTypeOrder implements LinearTypeOrder {
 
     // The explicit order. We keep this since we need to return it. It would
     // be awkward and inefficient to compute it from lt.
