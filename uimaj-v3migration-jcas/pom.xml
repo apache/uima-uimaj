@@ -35,13 +35,13 @@
   
   <scm>
     <connection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-jcas
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-jcas
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-jcas
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-jcas
     </developerConnection>
     <url>
-      https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-jcas
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-jcas
     </url>
   </scm>
   

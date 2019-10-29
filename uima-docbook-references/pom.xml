@@ -42,13 +42,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uima-docbook-references
+      scm:git:https://github.com/apache/uima-uimaj/uima-docbook-references
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uima-docbook-references
+      scm:git:https://github.com/apache/uima-uimaj/uima-docbook-references
     </developerConnection>
     <url>
-      https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uima-docbook-references
+      https://github.com/apache/uima-uimaj/tree/master/uima-docbook-references
     </url>
   </scm>
   

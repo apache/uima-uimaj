@@ -37,13 +37,13 @@
 
   <scm>
     <connection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-update-site
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-eclipse-update-site
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-update-site
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-eclipse-update-site
     </developerConnection>
     <url>
-      https://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-update-site
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-eclipse-update-site
     </url>
   </scm>
 
