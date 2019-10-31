@@ -30,9 +30,9 @@
   <description>JSON support for UIMA SDK</description>
   
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-json</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-json</developerConnection>
-    <url>https://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-json</url>
+    <connection>scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-json</connection>
+    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-json</developerConnection>
+    <url>https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-json</url>
   </scm>
   
   <properties>
