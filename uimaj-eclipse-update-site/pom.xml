@@ -131,8 +131,8 @@
             <goals>
               <goal>run</goal>
             </goals>
-            <configuration combine.self="override">
-              <target>
+            <configuration>
+              <target combine.self="override">
                 <taskdef classname="net.sf.antcontrib.logic.IfTask" name="if" />
                 
                 <condition property="eclipse.home" value="${uima-maven-build-eclipse-home}">
