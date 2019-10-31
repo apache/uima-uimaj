@@ -81,53 +81,18 @@
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 
-<p>Version 3.1.0 is a minor update to 3.0.2, mainly bug fixes.
-The major version was updated because the generated JCas classes 
-now include for FSArrays, the generic type of the component, if known.</p>
-<p>
-When migrating from v2, if non-built-in JCas cover classes are being used,
-a one-time regeneration or migration step is required for these.  
-Please read the Version 3 users guide located in the docs directory
-for information on these changes and the migration tool which can
-aid in migrating existing JCas class definitions.
+<p>Version 3.1.1 is a minor update to 3.1.0.
 </p>
 
-<p>A very brief summary of version 3 vs version 2:</p>
-<ul><li>Feature Structures become Java Objects, 
-subject to Garbage Collection, just like any other objects, 
-when no longer reachable.</li>
-<li>Iterating over indexes no longer throws 
-ConcurrentModificationException.</li>
-<li>Support for arbitrary Java Objects in the CAS, 
-using special custom implementations of JCas cover classes for those.</li>
-<li>Using the above new capability, new semi-built-ins for three new types: ArrayList style
-lists of Feature Structures and ints, and an FSHashSet</li>
-<li>New "select" framework for flexible 
-access to Feature Structures, that can ignore typeOrdering keys in indexes.</li>
-<li>Integration with Java 8 facilities such as Streams</li>
-<li>Logging framework upgraded, supporting embedding UIMA in other frameworks using 
-popular logging APIs</li>
-<li>There are many performance improvements</li>
-</ul>
-
-
-<p>Please read the Version 3 users guide for more details.</p>
-
-<p>Specific changes in release 3.1.0 versus 3.0.2 include</p>
+<p>Specific changes in release 3.1.1 versus 3.1.0 include</p>
 <ul>
-  <li>Fixed a problem preventing the Component Descriptor editor from running with the lastest Eclipse 2019-6</li>
-  <li>Fixed a bug on deserialization of typed arrays edge case</li>
-  <li>Better support for control of class loader switching when running sub-pipelines, including PEARs</li>
-  <li>better support for shared 0-length typed FSArrays</li>
-  <li>Fixed a bug in Internationalized Messaging in PEARs and other contexts, edge case.</li>
-  <li>JCasGen now generates FSArray values with generic types, if the component type is specified.</li>
+  <li>Migrated to Git from SVN, updated poms to reflect this</li>
+  <li>Fixed a performance bug when working with 100's of CASs with the same type system</li>
 </ul>
  
 <h3>API changes</h3>
 
- <p>There is an API compatibility report covering the non-internal APIs;
-   see <a href="api-change-report.html">change report</a> for the list of API changes
-   since version 3.0.2.
+ <p>None this release.
  </p>
  
 <h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
