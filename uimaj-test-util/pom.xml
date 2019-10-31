@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/jvinci
+      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/jvinci
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/jvinci
+      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/jvinci
     </developerConnection>
     <url>
-      https://svn.apache.org/viewvc/uima/uimaj/trunk/jvinci
+      https://github.com/apache/uima-uimaj/tree/master-v2/jvinci
     </url>
   </scm>
   
