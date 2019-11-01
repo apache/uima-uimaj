@@ -37,7 +37,7 @@
 
   <artifactId>uimaj-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.1.1-SNAPSHOT</version>
+  <version>3.1.1</version>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the uimaj SDK</description>
   <url>${uimaWebsiteUrl}</url>
@@ -60,6 +60,7 @@
     <url>
       https://github.com/apache/uima-uimaj/tree/master/uimaj-parent
     </url>
+    <tag>uimaj-3.1.1</tag>
   </scm>
 
   <!-- The repositories and pluginRepositories section is duplicated from
