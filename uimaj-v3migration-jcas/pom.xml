@@ -35,13 +35,13 @@
   
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/uimaj-jcas
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-v3migration-jcas
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/uimaj-jcas
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-v3migration-jcas
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master/uimaj-jcas
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-v3migration-jcas
     </url>
   </scm>
   
