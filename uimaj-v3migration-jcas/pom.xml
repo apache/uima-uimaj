@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.1.1-SNAPSHOT</version>
+    <version>3.1.2-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -35,14 +35,15 @@
   
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/uimaj-v3migration-jcas
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-jcas
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/uimaj-v3migration-jcas
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-jcas
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master/uimaj-v3migration-jcas
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-jcas
     </url>
+    <tag>HEAD</tag>
   </scm>
   
   <properties>
