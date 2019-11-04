@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.1.1-SNAPSHOT</version>
+    <version>3.1.1</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   <artifactId>uimaj-json</artifactId>
@@ -33,7 +33,7 @@
     <connection>scm:git:https://github.com/apache/uima-uimaj/uimaj-json</connection>
     <developerConnection>scm:git:https://github.com/apache/uima-uimaj/uimaj-json</developerConnection>
     <url>https://github.com/apache/uima-uimaj/tree/master/uimaj-json</url>
-    <tag>HEAD</tag>
+    <tag>uimaj-3.1.1</tag>
   </scm>
   
   <properties>

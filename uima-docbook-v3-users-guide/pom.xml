@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.1.1-SNAPSHOT</version>
+    <version>3.1.1</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -50,7 +50,7 @@
     <url>
       https://github.com/apache/uima-uimaj/tree/master/uima-docbook-v3-users-guide
     </url>
-    <tag>HEAD</tag>
+    <tag>uimaj-3.1.1</tag>
   </scm>
   
   <properties>
