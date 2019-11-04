@@ -131,7 +131,7 @@
             <goals>
               <goal>run</goal>
             </goals>
-            <configuration>
+            <configuration combine.self="override">
               <target>
                 <taskdef classname="net.sf.antcontrib.logic.IfTask" name="if" />
                 
