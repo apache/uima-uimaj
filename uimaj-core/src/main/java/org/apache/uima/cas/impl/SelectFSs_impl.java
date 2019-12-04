@@ -112,7 +112,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private FSList  sourceFSList  = null;  // alternate source
   
   private boolean isTypePriority = false;
-//  private boolean isPositionUsesType = false;
+//  private boolean isPositionUsesType = false; // REMOVED see https://issues.apache.org/jira/browse/UIMA-5536 
   private boolean isSkipSameBeginEndType = false; // for boundsUse only
   private boolean isNonOverlapping = IS_UNAMBIGUOUS;
   private boolean isIncludeAnnotBeyondBounds = false;
@@ -229,6 +229,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * boolean operations
    *********************************/
   
+  // REMOVED see https://issues.apache.org/jira/browse/UIMA-5536
 //  /* (non-Javadoc)
 //   * @see org.apache.uima.cas.SelectFSs#positionUsesType()
 //   */
@@ -493,7 +494,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     final boolean isUseAnnotationIndex = 
         ((index != null) && (index instanceof AnnotationIndex)) ||
         isNonOverlapping ||
-//        isPositionUsesType ||
+//        isPositionUsesType ||  REMOVED see https://issues.apache.org/jira/browse/UIMA-5536
         isTypePriority ||
         isIncludeAnnotBeyondBounds || 
         boundsUse != BoundsUse.notBounded ||
@@ -502,7 +503,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     if (isUseAnnotationIndex) {
       forceAnnotationIndex();  // throws if non-null index not an annotation index
     }
-    
+    // REMOVED see https://issues.apache.org/jira/browse/UIMA-5536
 //    if (isTypePriority) {
 //      isPositionUsesType = true;
 //    }
@@ -1157,7 +1158,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * special processing for AnnotationIndex (only):
    *   - typePriority - use or ignore
    *     -- ignored: after moveTo(fs), moveToPrevious while begin and end ==
-   *       --- and if isPositionUsesType types are == 
+   *       // REMOVED see https://issues.apache.org/jira/browse/UIMA-5536 --- and if isPositionUsesType types are == 
    * @param it iterator to position
    * @return it positioned if needed
    */
