@@ -21,7 +21,6 @@ package org.apache.uima.internal.util;
 import java.util.Arrays;
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
-import java.util.function.IntSupplier;
 
 /**
  * A common superclass for hash maps and hash sets
@@ -32,6 +31,9 @@ public abstract class Common_hash_support {
   // set to true to collect statistics for tuning
   // you have to also put a call to showHistogram() at the end of the run
   protected static final boolean TUNE = false;
+  private static Common_hash_support tune_instance;
+
+  
   
   protected static final int MIN_SIZE = 10;   // 10 / .66 =15.15
   protected static final int MIN_CAPACITY = 16;
@@ -65,6 +67,7 @@ public abstract class Common_hash_support {
     this.loadFactor = factor;
     this.initialCapacity = tableSpace(initialSizeBeforeExpanding, factor);
     if (TUNE) {
+      tune_instance = this;
       histogram = new int[200];
       Arrays.fill(histogram, 0);
       maxProbe = 0;
@@ -418,11 +421,11 @@ public abstract class Common_hash_support {
   protected abstract void copy_to_new_table(int new_capacity, int old_capacity, CommonCopyOld2New r);
   
   protected void resetHistogram() {
-    if (TUNE) {
-      histogram = new int[200];
-      Arrays.fill(histogram, 0);
-      maxProbe = 0;
-    }    
+//    if (TUNE) {
+//      histogram = new int[200];
+//      Arrays.fill(histogram, 0);
+//      maxProbe = 0;
+//    }    
   }
 
   private void updateHistogram(int nbrProbes) {
@@ -454,6 +457,14 @@ public abstract class Common_hash_support {
           size(),
           (int) ((keys_length() >>> 1) * loadFactor),
           (int) (keys_length() * loadFactor));
+    }
+  }
+
+  static {
+    if (TUNE) {
+      Runtime.getRuntime().addShutdownHook(new Thread(null, () -> {
+        tune_instance.showHistogram();
+      }));     
     }
   }
 
