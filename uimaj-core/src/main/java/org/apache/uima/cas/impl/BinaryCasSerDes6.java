@@ -708,153 +708,156 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       throw new UnsupportedOperationException("Can't do Delta Serialization with different target TS");
     }
     
-    setupOutputStreams(out);
+    synchronized (cas.svd) { 
     
-    if (doMeasurements) {
-//      System.out.println(printCasInfo(cas));
-//      sm.origAuxBytes = cas.getByteHeap().getSize();
-//      sm.origAuxShorts = cas.getShortHeap().getSize() * 2;
-//      sm.origAuxLongs = cas.getLongHeap().getSize() * 8;
-      sm.totalTime = System.currentTimeMillis();
-    }
-
-    CommonSerDes.createHeader()
-    .form6()
-    .delta(isSerializingDelta)
-    .seqVer(2) // 2 == version 3 (or later)
-    .v3()
-    .typeSystemIncluded(isTsIncluded)
-    .typeSystemIndexDefIncluded(isTsiIncluded)
-    .write(serializedOut);
-    
-    if (isTsIncluded || isTsiIncluded) {
-      CasIOUtils.writeTypeSystem(cas, serializedOut, isTsiIncluded);
-    }
-    
-    os = new OptimizeStrings(doMeasurements);
- 
-    /******************************************************************
-     * Find all FSs to be serialized via the indexes
-     *   including those FSs referenced  
-     * For Delta Serialization - excludes those FSs below the line
-     ******************************************************************/
-
-    /** 
-     * Skip this, and use the reuse-info, only for the case of:
-     *   - reuse info is provided, and its not a delta serialization.
-     *   - This should only happen if the same identical CAS is being 
-     *     serialized multiple times (being sent to multiple remote services, for instance)
-     */
-    
-    if (!reuseInfoProvided || isSerializingDelta) {
-//      long start = System.currentTimeMillis();
-      processIndexedFeatureStructures(cas, false /* compute ref'd FSs, no write */);
-//      System.out.format("Time to enqueue reachable FSs: %,.3f seconds%n", (System.currentTimeMillis() - start)/ 1000f);
-    }
-    
-    
-    
-    /***************************
-     * Prepare to walk main heap
-     * We prescan the main heap and
-     *   1) identify any types that should be skipped
-     *      building a source and target fsStartIndexes table
-     *   2) add all strings to the string table, 
-     *      for strings above the mark
-     ***************************/
-   
-      // scan thru all fs (above the line if delta) and create a map from
-      //   the src id to the tgt id (some types may be missing, so is not identity map).
-      // Add all strings to string optimizer. 
-      //   Note: for delta cas, this only picks up strings 
-      //   referenced by FSs above the line
-    
-      // Note: does the UimaSerializable _save_to_cas_data call for above the line items
-   initSrcTgtIdMapsAndStrings();
-    
-    // add remaining strings for this case:
-    //   deltaCas, FS below the line modified, modification is new string.
-    //   use the deltaCasMod scanning
-    final SerializeModifiedFSs smfs = isSerializingDelta ? new SerializeModifiedFSs() : null;
-    if (isSerializingDelta) {
-      // Note: does the UimaSerializable _save_to_cas_data call for modified below the line items
-      smfs.addModifiedStrings();
-    }
-    
-
-    /**************************
-     * Strings
-     **************************/
-    
-    os.optimize();
-    writeStringInfo();
-    
-    /***************************
-     * Prepare to walk main heap
-     ***************************/
-    writeVnumber(control_dos, fssToSerialize.size());  // was totalMappedHeapSize  
-    
-//    Arrays.fill(prevFsByType, null);
-    Arrays.fill(prevHeapInstanceWithIntValues, null);
-    prevFsWithLongValues.clear();
-    
-    /***************************
-     * walk main heap
-     ***************************/
-   
-    for (TOP fs : fssToSerialize) {
-
-      final TypeImpl srcType = fs._getTypeImpl();
-      final int tCode = srcType.getCode();
-      final TypeImpl tgtType = isTypeMapping ? typeMapper.mapTypeSrc2Tgt(srcType) : srcType;
-      assert(null != tgtType); // because those are not put on queue for serialization
-     
-//      prevFs = prevFsByType[tCode];
+      setupOutputStreams(out);
       
-      if (TRACE_SER) {
-        System.out.format("Ser: %,d adr: %,8d tCode: %,3d %13s tgtTypeCode: %,3d %n", 
-            fs._id, fs._id, srcType.getCode(), srcType.getShortName(), tgtType.getCode());
+      if (doMeasurements) {
+  //      System.out.println(printCasInfo(cas));
+  //      sm.origAuxBytes = cas.getByteHeap().getSize();
+  //      sm.origAuxShorts = cas.getShortHeap().getSize() * 2;
+  //      sm.origAuxLongs = cas.getLongHeap().getSize() * 8;
+        sm.totalTime = System.currentTimeMillis();
       }
-
-      writeVnumber(typeCode_dos, tgtType.getCode());
-
-      if (fs instanceof CommonArrayFS) {
-        serializeArray(fs);
-      } else {
-        if (isTypeMapping) {
-          // Serialize out in the order the features are in the target
-          for (FeatureImpl tgtFeat : tgtType.getFeatureImpls()) {
-            FeatureImpl srcFeat = typeMapper.getSrcFeature(tgtType, tgtFeat);
-            assert(srcFeat != null); //for serialization, target is never a superset of features of src
-            serializeByKind(fs, srcFeat);
-          }
-        } else { // not type mapping
-          for (FeatureImpl srcFeat : srcType.getFeatureImpls()) {
-            serializeByKind(fs, srcFeat);
+  
+      CommonSerDes.createHeader()
+      .form6()
+      .delta(isSerializingDelta)
+      .seqVer(2) // 2 == version 3 (or later)
+      .v3()
+      .typeSystemIncluded(isTsIncluded)
+      .typeSystemIndexDefIncluded(isTsiIncluded)
+      .write(serializedOut);
+      
+      if (isTsIncluded || isTsiIncluded) {
+        CasIOUtils.writeTypeSystem(cas, serializedOut, isTsiIncluded);
+      }
+      
+      os = new OptimizeStrings(doMeasurements);
+   
+      /******************************************************************
+       * Find all FSs to be serialized via the indexes
+       *   including those FSs referenced  
+       * For Delta Serialization - excludes those FSs below the line
+       ******************************************************************/
+  
+      /** 
+       * Skip this, and use the reuse-info, only for the case of:
+       *   - reuse info is provided, and its not a delta serialization.
+       *   - This should only happen if the same identical CAS is being 
+       *     serialized multiple times (being sent to multiple remote services, for instance)
+       */
+      
+      if (!reuseInfoProvided || isSerializingDelta) {
+  //      long start = System.currentTimeMillis();
+        processIndexedFeatureStructures(cas, false /* compute ref'd FSs, no write */);
+  //      System.out.format("Time to enqueue reachable FSs: %,.3f seconds%n", (System.currentTimeMillis() - start)/ 1000f);
+      }
+      
+      
+      
+      /***************************
+       * Prepare to walk main heap
+       * We prescan the main heap and
+       *   1) identify any types that should be skipped
+       *      building a source and target fsStartIndexes table
+       *   2) add all strings to the string table, 
+       *      for strings above the mark
+       ***************************/
+     
+        // scan thru all fs (above the line if delta) and create a map from
+        //   the src id to the tgt id (some types may be missing, so is not identity map).
+        // Add all strings to string optimizer. 
+        //   Note: for delta cas, this only picks up strings 
+        //   referenced by FSs above the line
+      
+        // Note: does the UimaSerializable _save_to_cas_data call for above the line items
+     initSrcTgtIdMapsAndStrings();
+      
+      // add remaining strings for this case:
+      //   deltaCas, FS below the line modified, modification is new string.
+      //   use the deltaCasMod scanning
+      final SerializeModifiedFSs smfs = isSerializingDelta ? new SerializeModifiedFSs() : null;
+      if (isSerializingDelta) {
+        // Note: does the UimaSerializable _save_to_cas_data call for modified below the line items
+        smfs.addModifiedStrings();
+      }
+      
+  
+      /**************************
+       * Strings
+       **************************/
+      
+      os.optimize();
+      writeStringInfo();
+      
+      /***************************
+       * Prepare to walk main heap
+       ***************************/
+      writeVnumber(control_dos, fssToSerialize.size());  // was totalMappedHeapSize  
+      
+  //    Arrays.fill(prevFsByType, null);
+      Arrays.fill(prevHeapInstanceWithIntValues, null);
+      prevFsWithLongValues.clear();
+      
+      /***************************
+       * walk main heap
+       ***************************/
+     
+      for (TOP fs : fssToSerialize) {
+  
+        final TypeImpl srcType = fs._getTypeImpl();
+        final int tCode = srcType.getCode();
+        final TypeImpl tgtType = isTypeMapping ? typeMapper.mapTypeSrc2Tgt(srcType) : srcType;
+        assert(null != tgtType); // because those are not put on queue for serialization
+       
+  //      prevFs = prevFsByType[tCode];
+        
+        if (TRACE_SER) {
+          System.out.format("Ser: %,d adr: %,8d tCode: %,3d %13s tgtTypeCode: %,3d %n", 
+              fs._id, fs._id, srcType.getCode(), srcType.getShortName(), tgtType.getCode());
+        }
+  
+        writeVnumber(typeCode_dos, tgtType.getCode());
+  
+        if (fs instanceof CommonArrayFS) {
+          serializeArray(fs);
+        } else {
+          if (isTypeMapping) {
+            // Serialize out in the order the features are in the target
+            for (FeatureImpl tgtFeat : tgtType.getFeatureImpls()) {
+              FeatureImpl srcFeat = typeMapper.getSrcFeature(tgtType, tgtFeat);
+              assert(srcFeat != null); //for serialization, target is never a superset of features of src
+              serializeByKind(fs, srcFeat);
+            }
+          } else { // not type mapping
+            for (FeatureImpl srcFeat : srcType.getFeatureImpls()) {
+              serializeByKind(fs, srcFeat);
+            }
           }
         }
-      }
-      
-//      prevFsByType[tCode] = fs;
-      if (doMeasurements) {
-        sm.statDetails[typeCode_i].incr(DataIO.lengthVnumber(tCode));
-        sm.mainHeapFSs ++;
-      }    
-    } // end of FSs above the line walk
         
-    // write out views, sofas, indexes
-    processIndexedFeatureStructures(cas, true /* pass 2 */);
-
-    if (isSerializingDelta) {
-      smfs.serializeModifiedFSs();
+  //      prevFsByType[tCode] = fs;
+        if (doMeasurements) {
+          sm.statDetails[typeCode_i].incr(DataIO.lengthVnumber(tCode));
+          sm.mainHeapFSs ++;
+        }    
+      } // end of FSs above the line walk
+          
+      // write out views, sofas, indexes
+      processIndexedFeatureStructures(cas, true /* pass 2 */);
+  
+      if (isSerializingDelta) {
+        smfs.serializeModifiedFSs();
+      }
+  
+      collectAndZip();
+  
+      if (doMeasurements) {
+        sm.totalTime = System.currentTimeMillis() - sm.totalTime;
+      }
+      return sm;
     }
-
-    collectAndZip();
-
-    if (doMeasurements) {
-      sm.totalTime = System.currentTimeMillis() - sm.totalTime;
-    }
-    return sm;
   }
           
   private void serializeArray(TOP fs) throws IOException {

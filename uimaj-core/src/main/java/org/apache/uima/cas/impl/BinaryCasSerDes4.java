@@ -445,151 +445,154 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * @throws IOException
      */
     private void serialize() throws IOException {   
-
- //      if (doMeasurement) {
-//        System.out.println(printCasInfo(baseCas));
-//        sm.origAuxBytes = baseCas.getByteHeap().getSize();
-//        sm.origAuxShorts = baseCas.getShortHeap().getSize() * 2;
-//        sm.origAuxLongs = baseCas.getLongHeap().getSize() * 8;
-//        sm.totalTime = System.currentTimeMillis();
-//      }
       
-      
-      /************************
-       * Write standard header
-       ************************/
-      CommonSerDes.createHeader()
-        .v3()
-        .seqVer(2)    // 0 - original, 1 - UIMA-4743, 2 - v3 
-        .form4()
-        .delta(isDelta)
-        .typeSystemIndexDefIncluded(isTsi)
-        .write(serializedOut);
-     
-      if (isTsi) {
-        CasIOUtils.writeTypeSystem(baseCas, serializedOut, true);    
-      }
-      
-      if (TRACE_SER) System.out.println("Form4Ser start, delta: " + (isDelta ? "true" : "false"));
-      /*******************************************************************************
-       * Setup tables that map to v2 "addresses" - needed for backwards compatibility
-       *   fs2addr - feature structure to address
-       *   addr2fs - address to feature structure
-       *   sortedFSs - sorted by addr (sorted by id)
-       *******************************************************************************/
-      final int origHeapEnd = csds.getHeapEnd();  // csds guaranteed non-null by constructor
-      if (isDelta) {
-        csds.setup(mark, origHeapEnd);  // add additional above the line items to csds
-      } // otherwise was initialized when initially set up 
-      
-      /**
-       * prepare fs < -- > seq maps
-       * done for entire cas (in the case of a mark)
-       */
-      fs2seq.clear();
-//      seq2fs.clear();
-      int seq = 1;  // origin 1
-      
-      final List<TOP> localSortedFSs = csds.getSortedFSs();
-      for (TOP fs : localSortedFSs) {
-        fs2seq.put(fs, seq++);
-//        seq2fs.put(seq++, fs);
-        if (fs instanceof UimaSerializable) {
-          ((UimaSerializable)fs)._save_to_cas_data();
-        }
-      }
-      
-      // the sort order is on the id (e.g. creation order)
-      List<TOP> newSortedFSs = CASImpl.filterAboveMark(csds.getSortedFSs(), mark);  // returns all if mark not set            
-            
-      /**************************
-       * Strings
-       * For delta, to determine "new" strings that should be serialized, 
-       *   use the same method as used in Binary (plain) serialization.
-       **************************/
-      for (TOP fs : newSortedFSs) {
-        extractStrings(fs);
-      }
-
-      if (isDelta) {
-        FsChange[] fssModified = baseCas.getModifiedFSList();
-      
-        // also add in all modified strings
-        for (FsChange fsChange : fssModified) {
-          if (fsChange.fs instanceof UimaSerializable) {
-            ((UimaSerializable)fsChange.fs)._save_to_cas_data();
-          }
-          extractStringsFromModifications(fsChange);
-        }
-      }
-
-      os.optimize();
-      
-      writeStringInfo();
-            
-      /***************************
-       * Prepare to walk main heap
-       ***************************/
-      heapEnd = csds.getHeapEnd();
-      
-      heapStart = isDelta ? origHeapEnd : 0;
-//      
-//      
-//      if (isDelta) {
-//        // edge case - delta serializing with no new fs
-//        heapStart = (null == firstFS) ? heapEnd : csds.fs2addr.get(firstFS);
-//      } else {
-//        heapStart = 0; // not 1, in order to match v2 semantics
-//                       // is switched to 1 later
-//      }
-      
-//      if (isDelta) {
-//        // debug
-//        for (TOP fs : csds.sortedFSs) {
-//          System.out.format("debug heapAddr: %,d type: %s%n", csds.fs2addr.get(fs), fs._getTypeImpl().getShortName());
-//          if (csds.fs2addr.get(fs) == 439) {
-//            System.out.println("debug");
-//          }
-//        }
-//        System.out.format("debug End of debug scan, heapStart: %,d heapEnd: %,d%n%n", heapStart, heapEnd);
-//      }
-      
-      if (TRACE_SER) System.out.println("Form4Ser heapstart: " + heapStart + "  heapEnd: " + heapEnd);
-       
-      writeVnumber(control_dos, heapEnd - heapStart);   // used for delta heap size to grow the CAS and ending condition on deser loop
-      if (TRACE_SER) System.out.println("Form4Ser heapstart: " + heapStart + "  heapEnd: " + heapEnd);
-      Arrays.fill(prevFsByType, null);
-
-//      if (heapStart == 0) {
-//        heapStart = 1;  // slot 0 not serialized, it's null / 0
-//      }
-
-
-        // scan thru all fs and save their offsets in the heap
-        // to allow conversion from addr to sequential fs numbers
-//        initFsStartIndexes(fsStartIndexes, heap, heapStart, heapEnd, typeCodeHisto);
+      synchronized(baseCas.svd) {
+  
+   //      if (doMeasurement) {
+  //        System.out.println(printCasInfo(baseCas));
+  //        sm.origAuxBytes = baseCas.getByteHeap().getSize();
+  //        sm.origAuxShorts = baseCas.getShortHeap().getSize() * 2;
+  //        sm.origAuxLongs = baseCas.getLongHeap().getSize() * 8;
+  //        sm.totalTime = System.currentTimeMillis();
+  //      }
         
-      
-      /***************************
-       * walk all fs's
-       * For delta, just those above the line
-       ***************************/
-      for (TOP fs : newSortedFSs) {
-        writeFs(fs);
-      }
-
-      if (TRACE_SER) System.out.println("Form4Ser writing index info");
-      serializeIndexedFeatureStructures(csds);
-
-      if (isDelta) {
-        if (TRACE_SER) System.out.println("Form4Ser writing modified FSs");
-        (new SerializeModifiedFSs(csds)).serializeModifiedFSs();
-      }
-
-      collectAndZip();
-      
-      if (doMeasurement) {
-        sm.totalTime = System.currentTimeMillis() - sm.totalTime;
+        
+        /************************
+         * Write standard header
+         ************************/
+        CommonSerDes.createHeader()
+          .v3()
+          .seqVer(2)    // 0 - original, 1 - UIMA-4743, 2 - v3 
+          .form4()
+          .delta(isDelta)
+          .typeSystemIndexDefIncluded(isTsi)
+          .write(serializedOut);
+       
+        if (isTsi) {
+          CasIOUtils.writeTypeSystem(baseCas, serializedOut, true);    
+        }
+        
+        if (TRACE_SER) System.out.println("Form4Ser start, delta: " + (isDelta ? "true" : "false"));
+        /*******************************************************************************
+         * Setup tables that map to v2 "addresses" - needed for backwards compatibility
+         *   fs2addr - feature structure to address
+         *   addr2fs - address to feature structure
+         *   sortedFSs - sorted by addr (sorted by id)
+         *******************************************************************************/
+        final int origHeapEnd = csds.getHeapEnd();  // csds guaranteed non-null by constructor
+        if (isDelta) {
+          csds.setup(mark, origHeapEnd);  // add additional above the line items to csds
+        } // otherwise was initialized when initially set up 
+        
+        /**
+         * prepare fs < -- > seq maps
+         * done for entire cas (in the case of a mark)
+         */
+        fs2seq.clear();
+  //      seq2fs.clear();
+        int seq = 1;  // origin 1
+        
+        final List<TOP> localSortedFSs = csds.getSortedFSs();
+        for (TOP fs : localSortedFSs) {
+          fs2seq.put(fs, seq++);
+  //        seq2fs.put(seq++, fs);
+          if (fs instanceof UimaSerializable) {
+            ((UimaSerializable)fs)._save_to_cas_data();
+          }
+        }
+        
+        // the sort order is on the id (e.g. creation order)
+        List<TOP> newSortedFSs = CASImpl.filterAboveMark(csds.getSortedFSs(), mark);  // returns all if mark not set            
+              
+        /**************************
+         * Strings
+         * For delta, to determine "new" strings that should be serialized, 
+         *   use the same method as used in Binary (plain) serialization.
+         **************************/
+        for (TOP fs : newSortedFSs) {
+          extractStrings(fs);
+        }
+  
+        if (isDelta) {
+          FsChange[] fssModified = baseCas.getModifiedFSList();
+        
+          // also add in all modified strings
+          for (FsChange fsChange : fssModified) {
+            if (fsChange.fs instanceof UimaSerializable) {
+              ((UimaSerializable)fsChange.fs)._save_to_cas_data();
+            }
+            extractStringsFromModifications(fsChange);
+          }
+        }
+  
+        os.optimize();
+        
+        writeStringInfo();
+              
+        /***************************
+         * Prepare to walk main heap
+         ***************************/
+        heapEnd = csds.getHeapEnd();
+        
+        heapStart = isDelta ? origHeapEnd : 0;
+  //      
+  //      
+  //      if (isDelta) {
+  //        // edge case - delta serializing with no new fs
+  //        heapStart = (null == firstFS) ? heapEnd : csds.fs2addr.get(firstFS);
+  //      } else {
+  //        heapStart = 0; // not 1, in order to match v2 semantics
+  //                       // is switched to 1 later
+  //      }
+        
+  //      if (isDelta) {
+  //        // debug
+  //        for (TOP fs : csds.sortedFSs) {
+  //          System.out.format("debug heapAddr: %,d type: %s%n", csds.fs2addr.get(fs), fs._getTypeImpl().getShortName());
+  //          if (csds.fs2addr.get(fs) == 439) {
+  //            System.out.println("debug");
+  //          }
+  //        }
+  //        System.out.format("debug End of debug scan, heapStart: %,d heapEnd: %,d%n%n", heapStart, heapEnd);
+  //      }
+        
+        if (TRACE_SER) System.out.println("Form4Ser heapstart: " + heapStart + "  heapEnd: " + heapEnd);
+         
+        writeVnumber(control_dos, heapEnd - heapStart);   // used for delta heap size to grow the CAS and ending condition on deser loop
+        if (TRACE_SER) System.out.println("Form4Ser heapstart: " + heapStart + "  heapEnd: " + heapEnd);
+        Arrays.fill(prevFsByType, null);
+  
+  //      if (heapStart == 0) {
+  //        heapStart = 1;  // slot 0 not serialized, it's null / 0
+  //      }
+  
+  
+          // scan thru all fs and save their offsets in the heap
+          // to allow conversion from addr to sequential fs numbers
+  //        initFsStartIndexes(fsStartIndexes, heap, heapStart, heapEnd, typeCodeHisto);
+          
+        
+        /***************************
+         * walk all fs's
+         * For delta, just those above the line
+         ***************************/
+        for (TOP fs : newSortedFSs) {
+          writeFs(fs);
+        }
+  
+        if (TRACE_SER) System.out.println("Form4Ser writing index info");
+        serializeIndexedFeatureStructures(csds);
+  
+        if (isDelta) {
+          if (TRACE_SER) System.out.println("Form4Ser writing modified FSs");
+          (new SerializeModifiedFSs(csds)).serializeModifiedFSs();
+        }
+  
+        collectAndZip();
+        
+        if (doMeasurement) {
+          sm.totalTime = System.currentTimeMillis() - sm.totalTime;
+        }
       }
     }
     
