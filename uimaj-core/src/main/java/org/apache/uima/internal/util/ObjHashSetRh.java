@@ -117,8 +117,8 @@ public class ObjHashSetRh<T> extends Common_hash_support_rh implements Set<T> {
         // key hash
         Misc.hashInt(key.hashCode()),
         
-        // is_eq
-        i -> keys[i].equals(key));
+        // is_eq_or_not_present
+        i ->  keys[i] == null || keys[i].equals(key)); // keys[i] can be null  
   }
   
 
