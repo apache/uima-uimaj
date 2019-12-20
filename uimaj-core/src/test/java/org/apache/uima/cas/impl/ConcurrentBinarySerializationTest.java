@@ -20,7 +20,10 @@ package org.apache.uima.cas.impl;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static org.apache.uima.cas.SerialFormat.*;
+import static org.apache.uima.cas.SerialFormat.BINARY_TSI;
+import static org.apache.uima.cas.SerialFormat.COMPRESSED_FILTERED_TSI;
+import static org.apache.uima.cas.SerialFormat.COMPRESSED_TSI;
+import static org.apache.uima.cas.SerialFormat.SERIALIZED_TSI;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.CasIOUtils.load;
 import static org.apache.uima.util.CasIOUtils.save;
@@ -32,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -49,7 +51,10 @@ public class ConcurrentBinarySerializationTest
     /**
      * Serialization of the CAS is not inherently thread-safe. This test tries to run multiple
      * serializations of the CAS in parallel to trigger a situation where an invalid serialization
-     * is generated - to be found by deserializing again.
+     * is generated - to be found by deserializing again. To fix this, an internal synchronization
+     * in the CAS was added.
+     * 
+     * @see <a href="https://issues.apache.org/jira/browse/UIMA-6162">UIMA 6162</a>
      */
     @Test
     public void thatConcurrentSerializationWorks() throws Exception
@@ -87,16 +92,16 @@ public class ConcurrentBinarySerializationTest
             try {
                 SerialFormat fmt = formats[rnd.nextInt(formats.length)];
                 
-                System.out.printf("Serializing as %s...%n", fmt);
+                // System.out.printf("Serializing as %s...%n", fmt);
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 save(cas, bos, fmt);
                 
-                System.out.printf("Deserializing...%n");
+                // System.out.printf("Deserializing...%n");
                 CAS outCas = createCas((TypeSystemDescription) null, null, null);
                 load(new ByteArrayInputStream(bos.toByteArray()), outCas);
             }
             catch (Exception e) {
-                System.out.printf("Failure: %s%n", e.getMessage());
+                // System.out.printf("Failure: %s%n", e.getMessage());
                 return false;
             }
             return true;
