@@ -31,7 +31,7 @@ public class ObjHashSetPerfTestRh extends TestCase {
    * 
    * Tests both IntHashSet and IntBitSet
    */
-  final boolean SKIP = false;
+  final boolean SKIP = true;
   
   static int cacheLoadSize;
   
