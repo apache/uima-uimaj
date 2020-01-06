@@ -204,8 +204,13 @@
       <artifactId>asm-tree</artifactId>
       <version>5.0.4</version>
     </dependency>
- -->		
-
+ -->
+ 
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
 	</dependencies>
 	
 	<build>

@@ -92,6 +92,18 @@ public class CasCreationUtils {
   private final static FeatureDescription[] EMPTY_FEAT_DESC_ARRAY = new FeatureDescription[0];
   
   /**
+   * Creates a new CAS instance.
+   * 
+   * @return a new CAS instance
+   * 
+   * @throws ResourceInitializationException
+   *                 if CAS creation fails
+   */
+  public static CAS createCas() throws ResourceInitializationException {
+    return createCas((TypeSystemDescription) null, null, null);
+  }
+  
+  /**
    * Creates a new CAS instance. Note this method does not work for Aggregate Analysis Engine
    * descriptors -- use {@link #createCas(AnalysisEngineDescription)} instead.
    * 

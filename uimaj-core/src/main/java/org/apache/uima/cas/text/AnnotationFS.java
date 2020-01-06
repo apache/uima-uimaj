@@ -19,9 +19,9 @@
 
 package org.apache.uima.cas.text;
 
+import java.util.function.IntPredicate;
+
 import org.apache.uima.cas.AnnotationBaseFS;
-import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.impl.FeatureStructureImplC;
 
 /**
  * Interface for Annotation Feature Structures.
@@ -74,4 +74,20 @@ public interface AnnotationFS extends AnnotationBaseFS {
    */
   String getCoveredText();
 
- }
+  /**
+   * Strips leading and trailing whitespace by increasing/decreasing the begin/end offsets. This 
+   * method is aware of Unicode codepoints. It expects that the begin/end offsets point to valid
+   * codepoints.
+   */
+  default void trim() {
+      trim(Character::isWhitespace);
+  }
+  
+  /**
+   * Strips leading and trailing characters matching the given predicate by increasing/decreasing 
+   * the begin/end offsets.
+   * 
+   * @see #trim()
+   */
+  void trim(IntPredicate aPredicate);
+}

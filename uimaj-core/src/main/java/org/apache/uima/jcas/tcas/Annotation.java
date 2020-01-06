@@ -21,6 +21,7 @@ package org.apache.uima.jcas.tcas;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
+import java.util.function.IntPredicate;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.admin.LinearTypeOrder;
@@ -244,4 +245,39 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
     return Integer.compare(_id,  other._id);
   }
 
+  @Override
+  public void trim(IntPredicate aIsTrimChar) {
+    int begin = getBegin();
+    int end = getEnd();
+    String text = _casView.getDocumentText();
+      
+    // If the span is empty, there is nothing to trim
+    if (begin == end) {
+      return;
+    }
+      
+    // First we trim at the end. If a trimmed span is empty, we want to return the original 
+    // begin as the begin/end of the trimmed span
+    int backwardsSeekingCodepoint;
+    while (
+              (end > 0)
+              && end > begin
+              && aIsTrimChar.test(backwardsSeekingCodepoint = text.codePointBefore(end))
+    ) {
+      end -= Character.charCount(backwardsSeekingCodepoint);
+    }
+    
+    // Then, trim at the start
+    int forwardSeekingCodepoint;
+    while (
+              (begin < (text.length() - 1))
+              && begin < end
+              && aIsTrimChar.test(forwardSeekingCodepoint = text.codePointAt(begin))
+    ) {
+      begin += Character.charCount(forwardSeekingCodepoint);
+    }
+      
+    setBegin(begin);
+    setEnd(end);
+  }
 }
