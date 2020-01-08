@@ -251,11 +251,13 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
     int end = getEnd();
     String text = _casView.getDocumentText();
       
-    // If the span is empty, there is nothing to trim
-    if (begin == end) {
+    // If the span is empty, or there is no text, there is nothing to trim
+    if (begin == end || text == null) {
       return;
     }
-      
+    
+    final int saved_begin = begin;
+    final int saved_end = end;
     // First we trim at the end. If a trimmed span is empty, we want to return the original 
     // begin as the begin/end of the trimmed span
     int backwardsSeekingCodepoint;
@@ -277,7 +279,12 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
       begin += Character.charCount(forwardSeekingCodepoint);
     }
       
-    setBegin(begin);
-    setEnd(end);
+    if (savedBegin != begin || savedEnd != end) {
+    
+       _casView.protectIndexes(() -> {
+          setBegin(begin);
+          setEnd(end);
+       });
+    }
   }
 }
