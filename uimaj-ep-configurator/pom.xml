@@ -288,6 +288,7 @@
        <groupId>org.eclipse.platform</groupId>
        <artifactId>org.eclipse.ui</artifactId>
        <version>[3.108.1, 4.0.0)</version>
+       <scope>provided</scope>
        <exclusions>
          <exclusion>
            <groupId>org.eclipse.platform</groupId>
@@ -314,6 +315,7 @@
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>org.eclipse.jdt.ui</artifactId>
       <version>[3.12.0,4.0.0)</version>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
