@@ -80,6 +80,16 @@
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-compilertools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     			
     <!-- Eclipse dependencies 
@@ -108,6 +118,7 @@
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.jface</artifactId>
       <version>[3.16.0, 4.0.0)</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -145,6 +156,7 @@
         </exclusion>
         
       </exclusions>
+      <scope>provided</scope>
     </dependency>
     
     <!-- 
@@ -165,6 +177,7 @@
            <artifactId>org.eclipse.swt</artifactId>
          </exclusion>
        </exclusions>
+       <scope>provided</scope>
      </dependency>
      
     <!-- next one causes NPE with maven 2.0.7.  Might be related to https://jira.codehaus.org/browse/MNG-3086 -->   
