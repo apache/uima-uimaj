@@ -280,10 +280,12 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
     }
       
     if (saved_begin != begin || saved_end != end) {
+      int final_begin = begin;
+      int final_end = end;
     
        _casView.protectIndexes(() -> {
-          setBegin(begin);
-          setEnd(end);
+          setBegin(final_begin);
+          setEnd(final_end);
        });
     }
   }
