@@ -109,7 +109,7 @@
 		</dependency>
      -->
      
-         <dependency>
+    <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>org.eclipse.jdt.ui</artifactId>
       <version>[3.12.0,4.0.0)</version>
@@ -238,6 +238,7 @@
           <version>[1.0.0,1.0.1)</version>
        -->
        <version>[1.2.0,2.0.0)</version>
+       <scope>provided</scope>
 		</dependency>
 		
 	</dependencies>
