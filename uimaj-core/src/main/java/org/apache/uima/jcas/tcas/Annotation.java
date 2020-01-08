@@ -279,7 +279,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
       begin += Character.charCount(forwardSeekingCodepoint);
     }
       
-    if (savedBegin != begin || savedEnd != end) {
+    if (saved_begin != begin || saved_end != end) {
     
        _casView.protectIndexes(() -> {
           setBegin(begin);
