@@ -79,6 +79,16 @@
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-compilertools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     
     <!-- next dependency is commented out due to Maven 2.0.7 throwing NPE 
@@ -96,24 +106,28 @@
            was 3.3.0 
            because only 3.2.0 and 3.2.1 are in 
            repo -->
-			<version>[3.2.0.0,4.0.0)</version>
+			<version>[3.2.0,5.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jdt</groupId>
-			<artifactId>org.eclipse.jdt.debug.ui</artifactId>
-			<version>3.2.0</version>
-			<scope>provided</scope>
-			<!-- https://issues.apache.org/jira/browse/UIMA-5252 -->
+    
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.debug.ui</artifactId>
+      <version>[3.8.0, 4.0.0)</version>
+      <scope>provided</scope>
+      
+      <!-- https://issues.apache.org/jira/browse/UIMA-5252 -->
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.swt</artifactId>
         </exclusion>
+        <!-- 
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.ui.workbench</artifactId>
         </exclusion>
+         -->       
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.search</artifactId>
@@ -121,12 +135,57 @@
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.ui.ide</artifactId>
-        </exclusion>        
+        </exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.jface</artifactId>
+      <version>[3.16.0, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.ui</artifactId>
+      <version>[3.12.0,4.0.0)</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.search</artifactId>
+        </exclusion> 
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.debug.ui</artifactId>
+        </exclusion>               
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.compare</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.team</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.team.ui</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.jface</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.swt</artifactId>
+        </exclusion>
         
       </exclusions>
-		</dependency>
+    </dependency>
     
     <!-- dependencies added to overcome 3.6 maven central corrupted upload -->
+    <!-- 
     <dependency>
       <groupId>org.eclipse.core</groupId>
       <artifactId>org.eclipse.core.filesystem</artifactId>
@@ -204,7 +263,8 @@
       <artifactId>org.eclipse.core.runtime.compatibility.auth</artifactId>
       <version>3.2.0</version>
       <scope>provided</scope>      
-    </dependency>  
+    </dependency>
+     -->  
 	</dependencies>
   
 	<build> 
