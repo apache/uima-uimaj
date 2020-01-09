@@ -216,7 +216,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
         }
       }
       clear();
-      cas.dropProtectIndexesLevel();
+//      cas.dropProtectIndexesLevel(this); // callers who use the stack do this
     }
     
     @Override
