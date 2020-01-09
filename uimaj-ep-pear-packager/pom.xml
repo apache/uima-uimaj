@@ -80,9 +80,19 @@
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-compilertools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     			
-    <!-- Eclipse dependencies -->
+    <!-- Eclipse dependencies 
     <dependency>
       <groupId>org.eclipse.core</groupId>
       <artifactId>org.eclipse.core.resources</artifactId>
@@ -96,19 +106,80 @@
 			<version>3.2.0</version>
 			<scope>provided</scope>
 		</dependency>
-    
+    -->
 		<dependency>
 			<groupId>org.eclipse.jdt</groupId>
 			<artifactId>org.eclipse.jdt.core</artifactId>
-			<version>3.2.0</version>
+			<version>[3.12.0, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>	
+    
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.jface</artifactId>
+      <version>[3.16.0, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.ui</artifactId>
+      <version>[3.12.0,4.0.0)</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.search</artifactId>
+        </exclusion> 
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.debug.ui</artifactId>
+        </exclusion>               
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.compare</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.team</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.team.ui</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.jface</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.swt</artifactId>
+        </exclusion>
+        
+      </exclusions>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- 
     <dependency>
       <groupId>org.eclipse.ui</groupId>
       <artifactId>org.eclipse.ui.ide</artifactId>
       <version>3.2.0</version>      
       <scope>provided</scope>
     </dependency>
+     -->
+    <dependency>
+       <groupId>org.eclipse.platform</groupId>
+       <artifactId>org.eclipse.ui</artifactId>
+       <version>[3.108.1, 4.0.0)</version>
+       <exclusions>
+         <exclusion>
+           <groupId>org.eclipse.platform</groupId>
+           <artifactId>org.eclipse.swt</artifactId>
+         </exclusion>
+       </exclusions>
+       <scope>provided</scope>
+     </dependency>
+     
     <!-- next one causes NPE with maven 2.0.7.  Might be related to https://jira.codehaus.org/browse/MNG-3086 -->   
     <!--dependency>
       <groupId>org.eclipse.ui</groupId>
@@ -118,18 +189,19 @@
     
     <!-- the need for this one may go away when the ui dependency 
          can be included -->
-    <dependency>
+     
+   <dependency>
       <groupId>org.eclipse.swt</groupId>
       <artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
-      <version>3.2.0</version>
+      <version>[3.2.0,5.0.0)</version>
       <scope>provided</scope>
-    </dependency>   
-
+    </dependency>
+    
     <!-- These next dependencies are just to lock down the
          transitive dependencies of the above.
          This was done because on Sept 7 2010 somebody uploaded
          corrupted versions of these to maven central. -->
- 
+    <!-- 
     <dependency>
       <groupId>org.eclipse.equinox</groupId>
       <artifactId>org.eclipse.equinox.registry</artifactId>
@@ -195,7 +267,8 @@
       <artifactId>org.eclipse.core.variables</artifactId>
       <version>3.1.100</version>
       <scope>provided</scope>      
-    </dependency>    
+    </dependency>
+     -->    
 	</dependencies>
 	<build>
     

@@ -217,8 +217,15 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param fs a Feature Structure specifying a starting position.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> startAt(TOP fs);  // an ordered index not necessarily AnnotationIndex, not necessarily sorted
+  SelectFSs<T> startAt(TOP fs); // an ordered index not necessarily AnnotationIndex, not necessarily sorted
   
+  /**
+   * Starting Position specification - For ordered sources, specifies which FS to start at. 
+   * Requires an ordered index not necessarily AnnotationIndex, not necessarily sorted
+   * @param fs a Feature Structure specifying a starting position.
+   * @return the updated SelectFSs object
+   */
+  SelectFSs<T> startAt(FeatureStructure fs);
   /**
    * Starting Position specification - For Annotation Indexes, specifies which FS to start at. 
    * @param begin the begin bound
@@ -236,7 +243,20 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    *               normally would be returned are instead skipped.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> startAt(TOP fs, int shift);        // an ordered index not necessarily AnnotationIndex, not necessarily sorted
+  SelectFSs<T> startAt(TOP fs, int shift);  // an ordered index not necessarily AnnotationIndex, not necessarily sorted
+
+  /**
+   * Starting Position specification - A combination of startAt followed by a shift
+   * 
+   * Requires an ordered index not necessarily AnnotationIndex, not necessarily sorted
+   * This versions avoids a runtime cast check.
+   * @param fs a Feature Structure specifying a starting position.
+   * @param shift the amount to shift; this many Feature Structures which 
+   *               normally would be returned are instead skipped.
+   * @return the updated SelectFSs object
+   */
+
+  SelectFSs<T> startAt(FeatureStructure fs, int shift);        // an ordered index not necessarily AnnotationIndex, not necessarily sorted
   
   /**
    * Starting Position specification - A combination of startAt followed by a shift
@@ -518,16 +538,28 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   /**
    * Positions to the fs using moveTo(fs).
    * Get the element at that position or null if empty or the element at that position is null. 
-   * if nullOK is false, then throws CASRuntimeException if null would have been returned. 
+   * if nullOK is false, then throws CASRuntimeException if null would have been returned.
+   * This versions avoids a runtime cast check.
    * @param fs the positioning Feature Structure 
    * @return first element or null if empty
    * @throws CASRuntimeException (conditioned on nullOK == false) null being returned or the selection is empty.
    */
-  T get(TOP fs);          // returns first element or null if empty after positioning
+  T get(TOP fs);         // returns first element or null if empty after positioning
+
+  /**
+   * Positions to the fs using moveTo(fs).
+   * Get the element at that position or null if empty or the element at that position is null. 
+   * if nullOK is false, then throws CASRuntimeException if null would have been returned.
+   * @param fs the positioning Feature Structure 
+   * @return first element or null if empty
+   * @throws CASRuntimeException (conditioned on nullOK == false) null being returned or the selection is empty.
+   */
+  T get(FeatureStructure fs);          // returns first element or null if empty after positioning
   /**
    * Positions to the fs using moveTo(fs).
    * Get the element at that position or null if empty or the element at that position is null. 
    * if nullOK is false, then throws CASRuntimeException if null would have been returned. 
+   * This versions avoids a runtime cast check.
    * @param fs the positioning Feature Structure 
    * @return first element or null if empty
    * @throws CASRuntimeException if, after positioning, there is another element following the one being returned 
@@ -537,11 +569,41 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   /**
    * Positions to the fs using moveTo(fs).
    * Get the element at that position or null if empty or the element at that position is null. 
+   * if nullOK is false, then throws CASRuntimeException if null would have been returned. 
+   * @param fs the positioning Feature Structure 
+   * @return first element or null if empty
+   * @throws CASRuntimeException if, after positioning, there is another element following the one being returned 
+   *     or (conditioned on nullOK == false) and null being returned or the selection is empty.
+   */
+  T single(FeatureStructure fs);       // throws if not exactly 1 element
+  /**
+   * Positions to the fs using moveTo(fs).
+   * Get the element at that position or null if empty or the element at that position is null. 
+   * This versions avoids a runtime cast check.
    * @param fs the positioning Feature Structure 
    * @return first element or null if empty
    * @throws CASRuntimeException if, after positioning, there is another element following the one being returned 
    */
   T singleOrNull(TOP fs); // throws if more than 1 element, returns single or null
+  /**
+   * Positions to the fs using moveTo(fs).
+   * Get the element at that position or null if empty or the element at that position is null. 
+   * @param fs the positioning Feature Structure 
+   * @return first element or null if empty
+   * @throws CASRuntimeException if, after positioning, there is another element following the one being returned
+   */ 
+  T singleOrNull(FeatureStructure fs); // throws if more than 1 element, returns single or null
+  /**
+   * Positions to the fs using moveTo(fs), followed by a shifted(offset).
+   * Gets the element at that position or null if empty or the element at that position is null. 
+   * if nullOK is false, then throws CASRuntimeException if null would have been returned. 
+   * This versions avoids a runtime cast check.
+   * @param fs where to move to
+   * @param offset the offset move after positioning to fs, may be 0 or positive or negative
+   * @return the selected element or null if empty
+   * @throws CASRuntimeException (conditioned on nullOK == false) null being returned or the selection is empty.
+   */
+  T get(TOP fs, int offset);          // returns first element or null if empty
   /**
    * Positions to the fs using moveTo(fs), followed by a shifted(offset).
    * Gets the element at that position or null if empty or the element at that position is null. 
@@ -551,7 +613,24 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @return the selected element or null if empty
    * @throws CASRuntimeException (conditioned on nullOK == false) null being returned or the selection is empty.
    */
-  T get(TOP fs, int offset);          // returns first element or null if empty
+  T get(FeatureStructure fs, int offset);          // returns first element or null if empty
+  /**
+   * Positions to the fs using moveTo(fs), followed by a shifted(offset).
+   * Gets the element at that position or null if empty or the element at that position is null.
+   * <p>
+   * If, after positioning, there is another element next to the one being returned 
+   *   (in the forward direction if offset is positive or 0, reverse direction if offset is negative)
+   *   then throw an exception.
+   * <p>
+   * If nullOK is false, then throws CASRuntimeException if null would have been returned.
+   * This versions avoids a runtime cast check.
+   * @param fs the positioning Feature Structure 
+   * @param offset the offset adjustment, positive or negative.
+   * @return the selected element or null if empty
+   * @throws CASRuntimeException if, after positioning, there is another element following the one being returned
+   *     or (conditioned on nullOK == false) null being returned or the selection is empty.
+   */
+  T single(TOP fs, int offset);      // throws if not exactly 1 element
   /**
    * Positions to the fs using moveTo(fs), followed by a shifted(offset).
    * Gets the element at that position or null if empty or the element at that position is null.
@@ -567,7 +646,22 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @throws CASRuntimeException if, after positioning, there is another element following the one being returned
    *     or (conditioned on nullOK == false) null being returned or the selection is empty.
    */
-  T single(TOP fs, int offset);       // throws if not exactly 1 element
+  T single(FeatureStructure fs, int offset);       // throws if not exactly 1 element
+  /**
+   * Positions to the fs using moveTo(fs), followed by a shifted(offset).
+   * Gets the element at that position or null if empty or the element at that position is null.
+   * <p>
+   * If, after positioning, there is another element next to the one being returned 
+   *   (in the forward direction if offset is positive or 0, reverse direction if offset is negative)
+   *   then throw an exception.
+   * <p>
+   * This versions avoids a runtime cast check.
+   * @param fs the positioning Feature Structure 
+   * @param offset the offset adjustment, positive or negative.
+   * @return the selected element or null if empty
+   * @throws CASRuntimeException if, after positioning, there is another element next to the one being returned 
+   */
+  T singleOrNull(TOP fs, int offset); // throws if more than 1 element, returns single or null
   /**
    * Positions to the fs using moveTo(fs), followed by a shifted(offset).
    * Gets the element at that position or null if empty or the element at that position is null.
@@ -581,11 +675,12 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @return the selected element or null if empty
    * @throws CASRuntimeException if, after positioning, there is another element next to the one being returned 
    */
-  T singleOrNull(TOP fs, int offset); // throws if more than 1 element, returns single or null
+  T singleOrNull(FeatureStructure fs, int offset); // throws if more than 1 element, returns single or null
   /**
    * Position using a temporary Annotation with its begin and end set to the arguments.
    * Gets the element at that position or null if empty or the element at that position is null.
    * if nullOK is false, then throws CASRuntimeException if null would have been returned. 
+   * This versions avoids a runtime cast check.
    * @param begin the begin position of the temporary Annotation
    * @param end the end position of the temporary Annotation 
    * @return the selected element or null if empty
