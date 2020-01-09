@@ -52,6 +52,7 @@
     <url>
       https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-runtime
     </url>
+    <tag>HEAD</tag>
   </scm>
   
   <properties>

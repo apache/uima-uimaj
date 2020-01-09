@@ -52,6 +52,7 @@
     <url>
       https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-launcher
     </url>
+    <tag>HEAD</tag>
   </scm>
   
   <properties>
@@ -95,13 +96,13 @@
            was 3.3.0 
            because only 3.2.0 and 3.2.1 are in 
            repo -->
-			<version>[3.2.0.0,4.0.0)</version>
+			<version>[3.2.0,5.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jdt</groupId>
 			<artifactId>org.eclipse.jdt.debug.ui</artifactId>
-			<version>3.2.0</version>
+      <version>[3.8.0, 4.0.0)</version>
 			<scope>provided</scope>
 			<!-- https://issues.apache.org/jira/browse/UIMA-5252 -->
       <exclusions>
@@ -109,10 +110,12 @@
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.swt</artifactId>
         </exclusion>
+        <!-- 
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.ui.workbench</artifactId>
         </exclusion>
+         -->       
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.search</artifactId>
@@ -121,11 +124,56 @@
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.ui.ide</artifactId>
         </exclusion>        
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.jface</artifactId>
+      <version>[3.16.0, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+        
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.ui</artifactId>
+      <version>[3.12.0,4.0.0)</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.search</artifactId>
+        </exclusion> 
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.debug.ui</artifactId>
+        </exclusion>               
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.compare</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.team</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.team.ui</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.jface</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.swt</artifactId>
+        </exclusion>
         
       </exclusions>
 		</dependency>
     
     <!-- dependencies added to overcome 3.6 maven central corrupted upload -->
+    <!-- 
     <dependency>
       <groupId>org.eclipse.core</groupId>
       <artifactId>org.eclipse.core.filesystem</artifactId>
@@ -204,6 +252,7 @@
       <version>3.2.0</version>
       <scope>provided</scope>      
     </dependency>  
+     -->  
 	</dependencies>
   
 	<build>  
@@ -230,6 +279,9 @@
                 org.eclipse.core.runtime has combined apis (that were split in later 
                   point releases of 3.x)
             -->
+            <Bundle-Activator>org.apache.uima.ep_launcher.LauncherPlugin</Bundle-Activator>
+            <Bundle-SymbolicName>org.apache.uima.launcher;singleton:=true</Bundle-SymbolicName>
+            <!-- Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment invalid value : JavaSE-1.8 --> 
             <!-- NOTE: ANY CONTINUATION LINES for Require-Bundle MUST START IN Col1 else manifest is potentially wrong -->
             <Require-Bundle>org.eclipse.core.runtime</Require-Bundle>
             <Import-Package>
@@ -258,9 +310,9 @@
 			  org.eclipse.ui.plugin,
 			  org.osgi.framework;version="1.3"
             </Import-Package>
-			<Bundle-SymbolicName>org.apache.uima.launcher;singleton:=true</Bundle-SymbolicName>
-			<Bundle-Activator>org.apache.uima.ep_launcher.LauncherPlugin</Bundle-Activator>
+			
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
+            <Plugin-Class>org.apache.uima.ep_launcher.LauncherPlugin</Plugin-Class>
           </instructions>
         </configuration>
       </plugin>      		
