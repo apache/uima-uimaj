@@ -52,6 +52,7 @@
     <url>
       https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-configurator
     </url>
+    <tag>HEAD</tag>
   </scm>
   
   <properties>
@@ -90,6 +91,12 @@
            must be compile to get eclipse:eclipse to include
            them as Referenced Libraries -->
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.uima</groupId>
+          <artifactId>uimaj-cpe</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -180,13 +187,78 @@
       <scope>provided</scope>
     </dependency-->
 
+
+    <!--  
+     
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>org.eclipse.jdt.ui</artifactId>
-      <version>3.2.0</version>
+      <version>[3.20.0,4.0.0)</version>
+      <exclusions>
+        <! - -  
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.ui</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.jface</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.jface.text</artifactId>
+        </exclusion>
+        
+        - - >
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.ui.workbench</artifactId>
+        </exclusion>
+        
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.search</artifactId>
+        </exclusion>
+        
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.debug.ui</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.compare</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.team</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.swt.gtk.linux.aarch64</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.swt.gtk.linux.arm</artifactId>
+        </exclusion>
+      </exclusions>
+ 
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
+      <version>[3.113.0, 4.0.0)</version>
+      
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.swt</artifactId>
+        </exclusion>
+      </exclusions>
+      
+    </dependency>
+    -->
     <!-- misc -->
     <!--dependency>
       <groupId>org.eclipse.jface</groupId>
@@ -200,19 +272,81 @@
       <artifactId>org.eclipse.pde.ui</artifactId>
       <version>3.2.0</version>
       <scope>provided</scope>
-    </dependency-->
+    </dependency
 
+    
+     -->
     <dependency>
+       <groupId>org.eclipse.platform</groupId>
+       <artifactId>org.eclipse.ui</artifactId>
+       <version>[3.108.1, 4.0.0)</version>
+       <scope>provided</scope>
+       <exclusions>
+         <exclusion>
+           <groupId>org.eclipse.platform</groupId>
+           <artifactId>org.eclipse.swt</artifactId>
+         </exclusion>
+       </exclusions>
+     </dependency>
+     
+     <dependency>
       <groupId>org.eclipse.swt</groupId>
       <artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
-      <version>3.2.0</version>
+      <version>[3.2.0,5.0.0)</version>
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.jface</artifactId>
+      <version>[3.16.0, 4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.ui</artifactId>
+      <version>[3.12.0,4.0.0)</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.search</artifactId>
+        </exclusion> 
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.debug.ui</artifactId>
+        </exclusion>               
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.compare</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.team</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.team.ui</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.jface</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.swt</artifactId>
+        </exclusion>
+        
+      </exclusions>
+    </dependency>
     <!-- These next dependencies are just to lock down the
          transitive dependencies of the above.
          This was done because on Sept 7 2010 somebody uploaded
          corrupted versions of these to maven central. -->
+         
+             
+    <!--       
     <dependency>
       <groupId>org.eclipse.core</groupId>
       <artifactId>org.eclipse.core.runtime</artifactId>
@@ -222,7 +356,7 @@
      <dependency>
       <groupId>org.eclipse.equinox</groupId>
       <artifactId>org.eclipse.equinox.registry</artifactId>
-      <version>3.2.1</version>
+      <version>[3.2.1,4.0.0)</version>
       <scope>provided</scope>      
     </dependency>
     <dependency>
@@ -285,7 +419,7 @@
       <version>3.1.100</version>
       <scope>provided</scope>      
     </dependency>    
-
+  -->
   </dependencies>
 
   <build>
@@ -365,7 +499,6 @@ org.eclipse.core.runtime
               !org.eclipse.ui.dialogs,
               !org.eclipse.ui.part,
               !org.eclipse.core.runtime,
-              org.apache.uima.jcas.jcasgenp,
               org.eclipse.jdt.ui,
               *
             </Import-Package>
