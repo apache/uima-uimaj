@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource;
 
+import org.apache.uima.resource.metadata.NameValuePair;
+
 /**
  * A type of <code>ResourceSpecifier</code> that locate an installed pear <code>Resource</code>.
  * 
@@ -41,18 +43,16 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
   public void setPearPath(String aPearPath);
 
   /**
-   * Gets parameters that may be read by the pear resource class when it is initialized.
+   * Gets pearParameters that may be read by the pear resource class when it is initialized.
    * 
-   * @return an array of parameters.  This will never return <code>null</code>.
+   * @return an array of pearParameters.  This will never return <code>null</code>.
    */
-  public Parameter[] getParameters();
+  public NameValuePair[] getPearParameters();
 
   /**
-   * Sets parameters that may be read by the pear resource class when it is initialized.
+   * Sets pearParameters that may be read by the pear resource class when it is initialized.
    * 
-   * @param parameters the Parameters to set.
+   * @param pearParameters the pearParameters to set.
    */
-  public void setParameters(Parameter[] parameters);
-
-
+  public void setPearParameters(NameValuePair[] pearParameters);
 }

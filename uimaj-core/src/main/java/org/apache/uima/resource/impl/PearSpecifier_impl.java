@@ -18,9 +18,8 @@
  */
 
 package org.apache.uima.resource.impl;
-
-import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.PearSpecifier;
+import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
@@ -37,7 +36,7 @@ public class PearSpecifier_impl extends MetaDataObject_impl implements PearSpeci
   /** PEAR path setting */
   private String mPearPath;
 
-  private Parameter[] mParameters;
+  private NameValuePair[] mParameters;
 
   /**
    * Creates a new <code>PearSpecifier_impl</code>.
@@ -48,7 +47,7 @@ public class PearSpecifier_impl extends MetaDataObject_impl implements PearSpeci
   /**
    * @return Returns the Parameters.
    */
-  public Parameter[] getParameters() {
+  public NameValuePair[] getPearParameters() {
     return this.mParameters;
   }
 
@@ -56,8 +55,8 @@ public class PearSpecifier_impl extends MetaDataObject_impl implements PearSpeci
    * @param parameters
    *          The Parameters to set.
    */
-  public void setParameters(Parameter[] parameters) {
-    this.mParameters = parameters;
+  public void setPearParameters(NameValuePair[] pearParameters) {
+    this.mParameters = pearParameters;
   }
 
   /* (non-Javadoc)
@@ -79,5 +78,5 @@ public class PearSpecifier_impl extends MetaDataObject_impl implements PearSpeci
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("pearSpecifier",
-          new PropertyXmlInfo[] { new PropertyXmlInfo("pearPath"), new PropertyXmlInfo("parameters") });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("pearPath"), new PropertyXmlInfo("pearParameters") });
 }

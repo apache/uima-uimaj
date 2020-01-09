@@ -675,15 +675,10 @@
     <complexType>
       <sequence>
         <element name="pearPath" type="string"/>
-        <element name="parameters" minOccurs="0">
+        <element name="pearParameters" minOccurs="0">
           <complexType>
             <sequence>
-              <element name="parameter" minOccurs="0" maxOccurs="unbounded">
-                <complexType>
-                  <attribute name="name" type="string"/>
-                  <attribute name="value" type="string"/>
-                </complexType>
-              </element>
+              <element name="nameValuePair" type="rs:NameValuePairType" minOccurs="0" maxOccurs="unbounded" />
             </sequence>
           </complexType>
         </element>

@@ -40,7 +40,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.impl.ChildUimaContext_impl;
 import org.apache.uima.pear.tools.PackageBrowser;
-import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -50,6 +49,7 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
@@ -267,12 +267,12 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
               .getAnalysisEngineMetaData();
       ConfigurationParameterSettings configurationParameterSettings = analysisEngineMetaData
               .getConfigurationParameterSettings();
-      Parameter[] parameters = pearSpec.getParameters();
+      NameValuePair[] pearParameters = pearSpec.getPearParameters();
 
-      if (parameters != null) {
-        for (Parameter parameter : parameters) {
-          configurationParameterSettings.setParameterValue(parameter.getName(),
-                  parameter.getValue());
+      if (pearParameters != null) {
+        for (NameValuePair pearParameter : pearParameters) {
+          configurationParameterSettings.setParameterValue(pearParameter.getName(),
+        		  pearParameter.getValue());
         }
       }
 
