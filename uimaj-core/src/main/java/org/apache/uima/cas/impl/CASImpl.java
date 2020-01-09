@@ -5406,9 +5406,9 @@ public Iterator<CAS> getViewIterator(String localViewNamePrefix) {
     return r;
   }
   
-  void dropProtectIndexesLevel () {
-    svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() -1);
-  }
+//  void dropProtectIndexesLevel () {
+//    svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() -1);
+//  }
   
   /**
    * This design is to support normal operations where the
@@ -5432,18 +5432,27 @@ public Iterator<CAS> getViewIterator(String localViewNamePrefix) {
    * @param addbacks
    */
   void addbackModifiedFSs (FSsTobeAddedback addbacks) {
-    final List<FSsTobeAddedback> s =  svd.fssTobeAddedback;
-    if (s.get(s.size() - 1) == addbacks) {
-      s.remove(s.size());
-    } else {
-      int pos = s.indexOf(addbacks);
-      if (pos >= 0) {
-        for (int i = s.size() - 1; i > pos; i--) {
-          FSsTobeAddedback toAddBack = s.remove(i);
-          toAddBack.addback();
-        }
-      }      
-    }
+    final List<FSsTobeAddedback> listOfAddbackInfos =  svd.fssTobeAddedback;
+    
+    // case 1: the addbacks are the last in the stack:
+    if (listOfAddbackInfos.get(listOfAddbackInfos.size() - 1) == addbacks) {
+      listOfAddbackInfos.remove(listOfAddbackInfos.size() - 1);
+      addbacks.addback();
+      return;
+    } 
+     
+    int pos = listOfAddbackInfos.indexOf(addbacks);
+    
+    // case 2: the addbacks are in the stack, but there are others following it
+    if (pos >= 0) {
+      for (int i = listOfAddbackInfos.size() - 1; i >= pos; i--) {
+        FSsTobeAddedback toAddBack = listOfAddbackInfos.remove(i);
+        toAddBack.addback();
+      }
+      return;
+    }      
+    
+    // case 3: the addbacks are not in the list - just remove them, ignore the list
     addbacks.addback();
   }
   
