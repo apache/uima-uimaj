@@ -22,42 +22,55 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableTreeItem;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.CapabilitySection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 
+
+/**
+ * The Class AddCapabilityTypeDialog.
+ */
 public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
 
+  /** The types. */
   public String[] types; // this is the selection
 
+  /** The inputs. */
   public boolean[] inputs;
 
+  /** The outputs. */
   public boolean[] outputs;
 
+  /** The Constant NAME. */
   private static final int NAME = 0;
 
+  /** The Constant INPUT. */
   private static final int INPUT = 1;
 
+  /** The Constant OUTPUT. */
   private static final int OUTPUT = 2;
 
+  /** The Constant NAMESPACE. */
   private static final int NAMESPACE = 3;
 
+  /** The capability section. */
   CapabilitySection capabilitySection;
 
+  /** The capability. */
   private Capability capability;
 
-  private TableTreeItem existing = null;
+  /** The existing. */
+  private TreeItem existing = null;
 
-  private static List excludedTypes = new ArrayList();
+  /** The excluded types. */
+  private static List<String> excludedTypes = new ArrayList<>();
   {
     excludedTypes.add(CAS.TYPE_NAME_ARRAY_BASE);
     excludedTypes.add(CAS.TYPE_NAME_EMPTY_FS_LIST);
@@ -94,6 +107,12 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
     excludedTypes.add(CAS.TYPE_NAME_TOP);
   }
 
+  /**
+   * Instantiates a new adds the capability type dialog.
+   *
+   * @param aSection the a section
+   * @param c the c
+   */
   public AddCapabilityTypeDialog(AbstractSection aSection, Capability c) {
     super(aSection, "Add Types to a Capability Set", "Mark one or more types as "
             + ((aSection.isCasConsumerDescriptor()) ? "Input"
@@ -106,22 +125,33 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
     enableCol2 = !aSection.isCasConsumerDescriptor();
   }
 
-  public AddCapabilityTypeDialog(AbstractSection aSection, Capability c, TableTreeItem aExisting) {
+  /**
+   * Instantiates a new adds the capability type dialog.
+   *
+   * @param aSection the a section
+   * @param c the c
+   * @param aExisting the a existing
+   */
+  public AddCapabilityTypeDialog(AbstractSection aSection, Capability c, TreeItem aExisting) {
     this(aSection, c);
     existing = aExisting;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent, existing);
 
-    table = newTable(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION);
+    f_tree = newTree(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION);
     // ((GridData)table.getLayoutData()).heightHint = 100;
-    table.setHeaderVisible(true);
-    table.setLinesVisible(true);
-    new TableColumn(table, SWT.NONE).setText("Type Name");
-    new TableColumn(table, SWT.NONE).setText("Input");
-    new TableColumn(table, SWT.NONE).setText("Output");
-    new TableColumn(table, SWT.NONE).setText("Type Namespace");
+    f_tree.setHeaderVisible(true);
+    f_tree.setLinesVisible(true);
+    new TreeColumn(f_tree, SWT.NONE).setText("Type Name");
+    new TreeColumn(f_tree, SWT.NONE).setText("Input");
+    new TreeColumn(f_tree, SWT.NONE).setText("Output");
+    new TreeColumn(f_tree, SWT.NONE).setText("Type Namespace");
 
     if (null == existing) {
       String[] allTypes = getAllTypesAsSortedArray();
@@ -129,30 +159,37 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
       for (int i = 0; i < allTypes.length; i++) {
         if (!excludedTypes.contains(allTypes[i]) && !hasType(capability.getInputs(), allTypes[i])
                 && !hasType(capability.getOutputs(), allTypes[i])) {
-          TableItem item = new TableItem(table, SWT.NONE);
+          TreeItem item = new TreeItem(f_tree, SWT.NONE);
           setGuiTypeName(item, allTypes[i]);
         }
       }
     } else { // existing item being edited - just show one item
-      TableItem item = new TableItem(table, SWT.NONE);
+      TreeItem item = new TreeItem(f_tree, SWT.NONE);
       item.setText(NAME, existing.getText(CapabilitySection.NAME_COL));
       item.setText(NAMESPACE, existing.getText(CapabilitySection.NAMESPACE_COL));
-      TypeOrFeature tof = CapabilitySection.getTypeOrFeature(capability.getInputs(),
+      TypeOrFeature tof = AbstractSection.getTypeOrFeature(capability.getInputs(),
               capabilitySection.getFullyQualifiedName(existing));
       setChecked(item, 1, null != tof);
-      tof = CapabilitySection.getTypeOrFeature(capability.getOutputs(), capabilitySection
+      tof = AbstractSection.getTypeOrFeature(capability.getOutputs(), capabilitySection
               .getFullyQualifiedName(existing));
       setChecked(item, 2, null != tof);
     }
 
-    section.packTable(table);
+    section.packTree(f_tree);
     // can't use selection event because it doesn't return mouse position
-    table.removeListener(SWT.Selection, this);
-    table.addListener(SWT.MouseDown, this); // for i / o toggling
+    f_tree.removeListener(SWT.Selection, this);
+    f_tree.addListener(SWT.MouseDown, this); // for i / o toggling
     newErrorMessage(composite);
     return composite;
   }
 
+  /**
+   * Checks for type.
+   *
+   * @param items the items
+   * @param name the name
+   * @return true, if successful
+   */
   private boolean hasType(TypeOrFeature[] items, String name) {
     if (null == items)
       return false;
@@ -164,21 +201,22 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
   }
 
   /**
-   * Return values having at least one of input or output selected
+   * Return values having at least one of input or output selected.
    */
+  @Override
   public void copyValuesFromGUI() {
-    List names = new ArrayList();
-    List ins = new ArrayList();
-    List outs = new ArrayList();
+    List<String> names = new ArrayList<>();
+    List<Boolean> ins = new ArrayList<>();
+    List<Boolean> outs = new ArrayList<>();
 
-    for (int i = table.getItemCount() - 1; i >= 0; i--) {
-      TableItem item = table.getItem(i);
+    for (int i = f_tree.getItemCount() - 1; i >= 0; i--) {
+      TreeItem item = f_tree.getItem(i);
       if (item.getText(INPUT).equals(checkedIndicator(INPUT))
               || item.getText(OUTPUT).equals(checkedIndicator(OUTPUT))) {
         names.add(capabilitySection.getFullyQualifiedName(item.getText(NAMESPACE), item
                 .getText(NAME)));
-        ins.add(Boolean.valueOf(item.getText(INPUT).equals(checkedIndicator(INPUT))));
-        outs.add(Boolean.valueOf(item.getText(OUTPUT).equals(checkedIndicator(OUTPUT))));
+        ins.add(item.getText(INPUT).equals(checkedIndicator(INPUT)));
+        outs.add(item.getText(OUTPUT).equals(checkedIndicator(OUTPUT)));
       }
     }
 
@@ -187,17 +225,27 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
     outputs = new boolean[types.length];
 
     for (int i = 0; i < types.length; i++) {
-      inputs[i] = ((Boolean) ins.get(i)).booleanValue();
-      outputs[i] = ((Boolean) outs.get(i)).booleanValue();
+      inputs[i] = (Boolean) ins.get(i);
+      outputs[i] = (Boolean) outs.get(i);
     }
   }
 
+  /**
+   * Sets the gui type name.
+   *
+   * @param item the item
+   * @param typeName the type name
+   */
   // used by dialog
-  public void setGuiTypeName(TableItem item, String typeName) {
+  public void setGuiTypeName(TreeItem item, String typeName) {
     item.setText(NAME, AbstractSection.getShortName(typeName));
     item.setText(NAMESPACE, AbstractSection.getNameSpace(typeName));
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogMultiColTable#isValid()
+   */
+  @Override
   public boolean isValid() {
     for (int i = 0; i < types.length; i++) {
       if (!inputs[i]) {
@@ -219,10 +267,10 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
   }
 
   /**
-   * return true if the type has a feature (except all-features) marked as INPUT (OUTPUT)
-   * 
-   * @param typeName
-   * @param IO
+   * return true if the type has a feature (except all-features) marked as INPUT (OUTPUT).
+   *
+   * @param typeName the type name
+   * @param IO the io
    * @return true if the type has a feature (except all-features) marked as INPUT (OUTPUT)
    */
   private boolean someFeatureOnType(String typeName, int IO) {

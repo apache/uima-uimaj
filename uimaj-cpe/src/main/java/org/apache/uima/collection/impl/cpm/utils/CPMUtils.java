@@ -63,8 +63,9 @@ public class CPMUtils {
   }
 
   /**
+   * Sets the timer.
    * 
-   * @param aTimer
+   * @param aTimer the new timer
    */
   public static void setTimer(UimaTimer aTimer) {
     timer = aTimer;
@@ -79,10 +80,11 @@ public class CPMUtils {
   }
 
   /**
+   * Convert to absolute path.
    * 
-   * @param aSystemVar
-   * @param aExpr
-   * @param aPathToConvert
+   * @param aSystemVar the a system var
+   * @param aExpr the a expr
+   * @param aPathToConvert the a path to convert
    * @return absolute path
    */
   public static String convertToAbsolutePath(String aSystemVar, String aExpr, String aPathToConvert) {
@@ -96,8 +98,8 @@ public class CPMUtils {
    * Return timer to measure performace of the cpm. The timer can optionally be configured in the
    * CPE descriptor. If none defined, the method returns default timer.
    * 
+   * @param aTimerClass the a timer class
    * @return - customer timer or JavaTimer (default)
-   * 
    * @throws Exception -
    */
   public static UimaTimer getTimer(String aTimerClass) throws Exception {
@@ -110,7 +112,7 @@ public class CPMUtils {
   }
 
   /**
-   * Returns the total duration of a given event
+   * Returns the total duration of a given event.
    * 
    * @param aPT -
    *          Event container
@@ -168,6 +170,8 @@ public class CPMUtils {
    * Finds an occurance of the ##CPM_HOME in a value parameter and returns it with an expanded form
    * (ie.c:/cpm/...) based on the env variable CPM_HOME.
    * 
+   * @param value the value
+   * @return the string
    */
   public static String scrubThePath(String value) {
     if (value != null && value.indexOf(Constants.CPMPATH) > -1) {
@@ -187,7 +191,7 @@ public class CPMUtils {
    *          String - XPath path to a node
    * @return textual value of a node indicated in the XPath path
    * 
-   * @exception Exception
+   * @exception Exception -
    */
   private static String extractText(Node aNode) throws Exception {
     String text = null;
@@ -206,7 +210,7 @@ public class CPMUtils {
 
   /**
    * 
-   * @param entityNode
+   * @param entityNode the entity node
    * @return a configurable feature
    * @throws ConfigurationException -
    */
@@ -260,8 +264,9 @@ public class CPMUtils {
   }
 
   /**
+   * Gets the features.
    * 
-   * @param attributesNode
+   * @param attributesNode the attributes node
    * @return a list of features
    * @throws ConfigurationException -
    */
@@ -303,8 +308,9 @@ public class CPMUtils {
   }
 
   /**
+   * Find deploy directory.
    * 
-   * @param aServiceName
+   * @param aServiceName the a service name
    * @return the deploy directory
    * @throws Exception -
    */
@@ -387,6 +393,7 @@ public class CPMUtils {
    * @param aName -
    *          name of the feature
    * @return - value as String
+   * @throws Exception the exception
    */
   public static String getFeatureAsString(CAS aCas, Feature aFeature, String aName)
           throws Exception {

@@ -85,11 +85,11 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    // incoming Resource Manager, and a second map.
    // The second map (allows for multiple Pears in a pipeline)
    // maps (for the given incoming Resource Manager), using a key
-   // consisting of the "class path" and "data path", the 
+   // consisting of the the PEARs "class path" and "data path", the 
    // Resource Manager for that combination.
 
    // note: all accesses to this are synchronized
-   static private Map<ResourceManager, Map<StringPair, ResourceManager>> cachedResourceManagers =
+   static final private Map<ResourceManager, Map<StringPair, ResourceManager>> cachedResourceManagers =
      new WeakHashMap<ResourceManager, Map<StringPair, ResourceManager>>(4);
 
    private AnalysisEngine ae = null;
@@ -610,7 +610,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * inner class StringPair
     * 
     */
-   static private class StringPair {
+   static public class StringPair {
 
       private String classPath;
 
@@ -654,4 +654,11 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
          return true;
       }
    }
+
+  /**
+   * @return the cachedResourceManagers
+   */
+  static public Map<ResourceManager, Map<StringPair, ResourceManager>> getCachedResourceManagers() {
+    return cachedResourceManagers;
+  }
 }

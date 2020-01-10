@@ -112,7 +112,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
   }
 
   /**
-   * @param sofaMappings
+   * @param sofaMappings -
    */
   public void setSofaNameMappings(CpeSofaMapping[] sofaMappings) {
     for (int i = 0; sofaMappings != null && i < sofaMappings.length; i++) {

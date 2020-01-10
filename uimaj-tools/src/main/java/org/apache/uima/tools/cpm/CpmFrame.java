@@ -157,6 +157,8 @@ public class CpmFrame extends JFrame implements ActionListener {
 
   /**
    * Runs the application.
+   *
+   * @param args the arguments
    */
   public static void main(String[] args) {
     //GUI creation must be done in the event handler thread, because Swing is

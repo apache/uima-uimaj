@@ -29,7 +29,9 @@ import org.apache.uima.pear.tools.PackageInstallerException;
 public class InstallPearCli {
 
   /**
-   * @param args
+   * The main method.
+   *
+   * @param args the arguments
    */
   
   public static void main(String[] args) {

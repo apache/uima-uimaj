@@ -37,8 +37,10 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -234,6 +236,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // Static classes representing shared instance data
   // - shared data is computed once for all views
 
+  /**
+   * Instances are put into a Stack, to remember previous state to switch back to,
+   * when switching class loaders and locking the CAS
+   * https://issues.apache.org/jira/browse/UIMA-6057
+   */
+  static class SwitchControl {
+    final boolean wasLocked;
+    boolean wasSwitched = false;
+    
+    SwitchControl(boolean wasLocked) {
+      this.wasLocked = wasLocked;
+    }
+  }
+  
   // fields shared among all CASes belong to views of a common base CAS
   private static class SharedViewData {
 
@@ -370,6 +386,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     private final EnumSet<CasState> casState = EnumSet.noneOf(CasState.class); 
     
+    /**
+     * a stack used to remember and restore previous state of cas lock and class loaders
+     * when switching classloaders and locking the cas
+     * https://issues.apache.org/jira/browse/UIMA-6057
+     */
+    private final Deque<SwitchControl> switchControl = new ArrayDeque<>();
+    
     private SharedViewData(boolean useFSCache, Heap heap, CASImpl baseCAS, CASMetadata casMetadata) {
       this.useFSCache = useFSCache;
       this.heap = heap;
@@ -385,6 +408,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // package protected to let other things share this info
   final SharedViewData svd; // shared view data
+  
+  // public only for cross package access
+  public boolean isCasLocked() {
+    return ! svd.flushEnabled;
+  }
   
   void addbackSingle(int fsAddr) {
     svd.fsTobeAddedbackSingle.addback(fsAddr);
@@ -486,7 +514,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *      Internal use Never called Kept because it's in the interface.
    */
   @Override
-public void setCAS(CAS cas) {
+  public void setCAS(CAS cas) {
 
     // this.indexRepository = ((CASImpl)cas).indexRepository; // only for test
     // case, others override later
@@ -1107,7 +1135,7 @@ public TypeSystemMgr getTypeSystemMgr() {
 
   @Override
 public void reset() {
-    if (!this.svd.flushEnabled) {
+    if (isCasLocked()) {
       throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
     }
     if (this == this.svd.baseCAS) {
@@ -1196,6 +1224,7 @@ public void reset() {
       this.svd.traceFScreationSb.setLength(0);
     }
     this.svd.componentInfo = null; // https://issues.apache.org/jira/browse/UIMA-5097
+    this.svd.switchControl.clear();  // https://issues.apache.org/jira/browse/UIMA-6057
   }
 
   /**
@@ -4406,13 +4435,20 @@ public void setJCasClassLoader(ClassLoader classLoader) {
 
   public void switchClassLoaderLockCasCL(ClassLoader newClassLoader) {
     // lock out CAS functions to which annotator should not have access
+    boolean wasLocked = isCasLocked();
     enableReset(false);
 
-    switchClassLoader(newClassLoader);
+    switchClassLoader(newClassLoader, wasLocked);
   }
 
   // switches ClassLoader but does not lock CAS
-  public void switchClassLoader(ClassLoader newClassLoader) {
+  public void switchClassLoader(ClassLoader newClassLoader, boolean wasLocked) {
+    
+    SwitchControl switchControl = new SwitchControl(wasLocked);
+//    if (wasLocked) {
+//      System.out.println("debug was locked");
+//    }
+    this.svd.switchControl.push(switchControl);
     if (null == newClassLoader) { // is null if no cl set
       return;
     }
@@ -4422,10 +4458,12 @@ public void setJCasClassLoader(ClassLoader classLoader) {
         throw new CASRuntimeException(CASRuntimeException.SWITCH_CLASS_LOADER_NESTED, 
                                       new Object[] {this.svd.previousJCasClassLoader, this.svd.jcasClassLoader, newClassLoader});
       }
-      // System.out.println("Switching to new class loader");
+//      System.out.println("Debug Switching to new class loader " + newClassLoader + ", prev was " + this.svd.previousJCasClassLoader);
       this.svd.jcasClassLoader = newClassLoader;
+      switchControl.wasSwitched = true;
       if (null != this.jcas) {
         this.jcas.switchClassLoader(newClassLoader);
+        
       }
     }
   }
@@ -4437,12 +4475,18 @@ public void setJCasClassLoader(ClassLoader classLoader) {
 
   public void restoreClassLoaderUnlockCas() {
     // unlock CAS functions
-    enableReset(true);
+    
+    boolean empty_switchControl = this.svd.switchControl.isEmpty();
+    SwitchControl switchControl = empty_switchControl ? null :this.svd.switchControl.pop();
+    if (empty_switchControl || ! switchControl.wasLocked) {
+      enableReset(true);
+    }
     // this might be called without the switch ever being called
     if (null == this.svd.previousJCasClassLoader) {
       return;
     }
-    if (this.svd.previousJCasClassLoader != this.svd.jcasClassLoader) {
+    // https://issues.apache.org/jira/browse/UIMA-6057
+    if ((empty_switchControl || switchControl.wasSwitched) && this.svd.previousJCasClassLoader != this.svd.jcasClassLoader) {
       // System.out.println("Switching back to previous class loader");
       this.svd.jcasClassLoader = this.svd.previousJCasClassLoader;
       if (null != this.jcas) {
@@ -5362,9 +5406,9 @@ public Iterator<CAS> getViewIterator(String localViewNamePrefix) {
     return r;
   }
   
-  void dropProtectIndexesLevel () {
-    svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() -1);
-  }
+//  void dropProtectIndexesLevel () {
+//    svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() -1);
+//  }
   
   /**
    * This design is to support normal operations where the
@@ -5388,18 +5432,27 @@ public Iterator<CAS> getViewIterator(String localViewNamePrefix) {
    * @param addbacks
    */
   void addbackModifiedFSs (FSsTobeAddedback addbacks) {
-    final List<FSsTobeAddedback> s =  svd.fssTobeAddedback;
-    if (s.get(s.size() - 1) == addbacks) {
-      s.remove(s.size());
-    } else {
-      int pos = s.indexOf(addbacks);
-      if (pos >= 0) {
-        for (int i = s.size() - 1; i > pos; i--) {
-          FSsTobeAddedback toAddBack = s.remove(i);
-          toAddBack.addback();
-        }
-      }      
-    }
+    final List<FSsTobeAddedback> listOfAddbackInfos =  svd.fssTobeAddedback;
+    
+    // case 1: the addbacks are the last in the stack:
+    if (listOfAddbackInfos.get(listOfAddbackInfos.size() - 1) == addbacks) {
+      listOfAddbackInfos.remove(listOfAddbackInfos.size() - 1);
+      addbacks.addback();
+      return;
+    } 
+     
+    int pos = listOfAddbackInfos.indexOf(addbacks);
+    
+    // case 2: the addbacks are in the stack, but there are others following it
+    if (pos >= 0) {
+      for (int i = listOfAddbackInfos.size() - 1; i >= pos; i--) {
+        FSsTobeAddedback toAddBack = listOfAddbackInfos.remove(i);
+        toAddBack.addback();
+      }
+      return;
+    }      
+    
+    // case 3: the addbacks are not in the list - just remove them, ignore the list
     addbacks.addback();
   }
   
@@ -5429,7 +5482,7 @@ public Iterator<CAS> getViewIterator(String localViewNamePrefix) {
    */
   @Override
 public Marker createMarker() {
-    if (!this.svd.flushEnabled) {
+    if (isCasLocked()) {
 	  throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
   	}
   	this.svd.trackingMark = new MarkerImpl(this.getHeap().getNextId(), 

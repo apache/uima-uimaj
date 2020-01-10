@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
+import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper;
 import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.resource.CasManager;
@@ -466,6 +467,7 @@ public class ResourceManager_impl implements ResourceManager {
   @Override
   @SuppressWarnings("unchecked")
   public Class<?> getResourceClass(String aName) {
+    checkDestroyed();
     Object r = mResourceMap.get(aName);
     if (r == null) // no such resource
     {
@@ -884,6 +886,24 @@ public class ResourceManager_impl implements ResourceManager {
             "destroy", LOG_RESOURCE_BUNDLE, "UIMA_Classloader_close_exception", e);
       }      
     }
+    
+    // https://issues.apache.org/jira/browse/UIMA-5935
+    Map<ResourceManager, Map<PearAnalysisEngineWrapper.StringPair, ResourceManager>> cachedResourceManagers =
+        PearAnalysisEngineWrapper.getCachedResourceManagers();
+    synchronized(cachedResourceManagers) {
+      Map<PearAnalysisEngineWrapper.StringPair, ResourceManager> c1 = cachedResourceManagers.get(this);
+      if (c1 != null) {
+        for (ResourceManager rm : c1.values()) {
+          rm.destroy();
+        }
+      }
+    }
+
+    // not clearing mResourcMap, mInternalResourceRegistrationMap, mParameterizedResourceImplClassMap, 
+    //   mInternalParameterizedResourceImplClassMap, mParameterizedResourceInstanceMap
+    //   because these could be shared with other resource managers
+    // not clearing importCache, importUrlsCache - might be in used by other Resource Managers (shared)    
+    
     
     // no destroy of caspool at this time
     

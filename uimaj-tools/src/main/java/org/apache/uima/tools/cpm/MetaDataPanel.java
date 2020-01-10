@@ -184,6 +184,8 @@ public class MetaDataPanel extends FormPanel {
   /**
    * Returns whether this panel has been modified from its original configuration. Note that this is
    * not affected by saves. For that, use isDirty().
+   *
+   * @return true, if is modified
    */
   public boolean isModified() {
     List fields = getValues();

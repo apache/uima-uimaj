@@ -172,6 +172,7 @@ public class PrefsMediator {
   /**
    * get the path to the TAE that is where the StyleMap file should be written
    * 
+   * @return the TAE path
    */
   public String getTAEPath() {
     int index = indexOfLastFileSeparator(taeDir);
@@ -201,7 +202,8 @@ public class PrefsMediator {
   /**
    * Gets index of last file separator character in a file path.
    * Supports File.separator but also / on Windows.
-   * @param path
+   *
+   * @param path the path
    * @return index of the last file separator char.  Returns -1 if none.
    */
   private int indexOfLastFileSeparator(String path) {
@@ -317,7 +319,11 @@ public class PrefsMediator {
     prefs.putBoolean(LENIENT, lenient);
   }
   
-  /** returns the new edited stylemap file */
+  /**
+   *  returns the new edited stylemap file.
+   *
+   * @return the stylemap file
+   */
   public File getStylemapFile() {
     String s = getTAEPath() + getTAEFileNameRoot() + "StyleMap.xml";
     return new File(s);

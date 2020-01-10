@@ -93,7 +93,7 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setHref(String string) {
     href = string;

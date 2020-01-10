@@ -19,6 +19,7 @@
 
 package org.apache.uima.caseditor.editor.util;
 
+
 /**
  * This class usually specifies an continous are of text. This area has an start and end index. The
  * difference of the end and start is the length of the area.
@@ -37,8 +38,8 @@ public class Span implements Comparable<Span> {
   /**
    * Initializes a new <code>Span</code> instance.
    *
-   * @param start
-   * @param length
+   * @param start the start
+   * @param length the length
    */
   public Span(int start, int length) {
     mStart = start;
@@ -85,14 +86,15 @@ public class Span implements Comparable<Span> {
       return false;
     }
 
-    boolean isEndContaining = getEnd() >= containingSpan.getEnd();
-    if (!isEndContaining) {
-      return false;
-    }
-
-    return true;
+    return getEnd() >= containingSpan.getEnd();
   }
 
+  /**
+   * Checks if is intersecting.
+   *
+   * @param s the s
+   * @return true, if is intersecting
+   */
   public boolean isIntersecting(Span s) {
     int sstart = s.getStart();
     return this.isContaining(s) || s.isContaining(this) ||
@@ -102,13 +104,20 @@ public class Span implements Comparable<Span> {
   
   /**
    * Compares the current instance to another {@link Span} object.
+   *
+   * @param span the span
+   * @return the int
    */
+  @Override
   public int compareTo(Span span) {
     return span.getStart() - getStart();
   }
 
   /**
-   * Tests if the current instance is equal to o;
+   * Tests if the current instance is equal to o;.
+   *
+   * @param o the o
+   * @return true, if successful
    */
   @Override
   public boolean equals(Object o) {
@@ -126,15 +135,13 @@ public class Span implements Comparable<Span> {
       return false;
     }
 
-    if (getLength() != span.getLength()) {
-      return false;
-    }
-
-    return true;
+    return getLength() == span.getLength();
   }
 
   /**
    * Represents the current object as a <code>String</code>.
+   *
+   * @return the string
    */
   @Override
   public String toString() {
@@ -143,6 +150,8 @@ public class Span implements Comparable<Span> {
 
   /**
    * Generates a hash code of the current object.
+   *
+   * @return the int
    */
   @Override
   public int hashCode() {

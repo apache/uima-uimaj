@@ -617,6 +617,8 @@ public String getSOFA() {
 
   /**
    * Sets configuration parameter settings for this CasProcessor.
+   * @param settings -
+   * @throws CpeDescriptorException -
    */
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings)
           throws CpeDescriptorException {
@@ -646,7 +648,7 @@ public String getSOFA() {
   }
 
   /**
-   * @param settings
+   * @param settings -
    */
   public void setParameterSettings(ConfigurationParameterSettings settings) {
     parameterSettings = settings;
@@ -677,35 +679,35 @@ public String getSOFA() {
   }
 
   /**
-   * @return parameters
+   * @return parameters -
    */
   public Parameter[] getParameters() {
     return parameters;
   }
 
   /**
-   * @return filter
+   * @return filter -
    */
   public CasProcessorFilter getFilter() {
     return filter;
   }
 
   /**
-   * @param checkpoint
+   * @param checkpoint -
    */
   public void setCheckpoint(CpeCheckpoint checkpoint) {
     this.checkpoint = checkpoint;
   }
 
   /**
-   * @param aparameters
+   * @param aparameters -
    */
   public void setParameters(Parameter[] aparameters) {
     parameters = aparameters;
   }
 
   /**
-   * @param aFilter
+   * @param aFilter -
    */
   public void setFilter(CasProcessorFilter aFilter) {
     filter = aFilter;

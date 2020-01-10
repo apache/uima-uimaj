@@ -32,12 +32,24 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.eclipse.core.runtime.IAdaptable;
 
+
+/**
+ * The Class ArrayValue.
+ */
 public class ArrayValue implements IAdaptable {
 
+  /** The array FS. */
   private final FeatureStructure arrayFS;
 
+  /** The slot. */
   private final int slot;
 
+  /**
+   * Instantiates a new array value.
+   *
+   * @param arrayFS the array FS
+   * @param slot the slot
+   */
   public ArrayValue(FeatureStructure arrayFS, int slot) {
 
     if (!arrayFS.getType().isArray()) {
@@ -48,14 +60,29 @@ public class ArrayValue implements IAdaptable {
     this.slot = slot;
   }
 
+  /**
+   * Gets the feature structure.
+   *
+   * @return the feature structure
+   */
   public FeatureStructure getFeatureStructure() {
     return arrayFS;
   }
 
+  /**
+   * Slot.
+   *
+   * @return the int
+   */
   public int slot() {
     return slot;
   }
 
+  /**
+   * Sets the.
+   *
+   * @param value the value
+   */
   public void set(String value) {
 
     if (arrayFS instanceof BooleanArrayFS) {
@@ -83,10 +110,15 @@ public class ArrayValue implements IAdaptable {
       StringArrayFS array = (StringArrayFS) arrayFS;
       array.set(slot, value);
     } else {
-      throw new CasEditorError("Unkown array type!");
+      throw new CasEditorError("Unknown array type!");
     }
   }
 
+  /**
+   * Gets the.
+   *
+   * @return the object
+   */
   public Object get() {
 
     if (arrayFS instanceof BooleanArrayFS) {
@@ -124,10 +156,11 @@ public class ArrayValue implements IAdaptable {
       ArrayFS array = (ArrayFS) arrayFS;
       return array.get(slot);
     } else {
-      throw new CasEditorError("Unkown array type!");
+      throw new CasEditorError("Unknown array type!");
     }
   }
 
+  @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 
     if (FeatureStructure.class.equals(adapter)) {

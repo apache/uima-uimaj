@@ -22,9 +22,11 @@ package org.apache.uima.caseditor.editor;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.uima.caseditor.core.model.DefaultColors;
 import org.eclipse.jface.preference.IPreferenceStore;
+
 
 
 /**
@@ -72,6 +74,7 @@ public final class AnnotationStyle {
      */
     BRACKET,
     
+    /** The tag. */
     TAG
   }
 
@@ -85,16 +88,22 @@ public final class AnnotationStyle {
    */
   public static final Color DEFAULT_COLOR = new Color(0xff, 0, 0);
 
+  /** The Constant DEFAULT_LAYER. */
   public static final int DEFAULT_LAYER = 0;
 
+  /** The annotation. */
   private final String annotation;
 
+  /** The style. */
   private final Style style;
 
+  /** The color. */
   private final Color color;
 
+  /** The layer. */
   private final int layer;
 
+  /** The configuration. */
   private final String configuration;
   
   /**
@@ -129,6 +138,14 @@ public final class AnnotationStyle {
     this.configuration = configuration;
   }
 
+  /**
+   * Instantiates a new annotation style.
+   *
+   * @param annotation the annotation
+   * @param style the style
+   * @param color the color
+   * @param layer the layer
+   */
   public AnnotationStyle(String annotation, Style style, Color color, int layer) {
     this(annotation, style, color, layer, null);
   }
@@ -169,12 +186,20 @@ public final class AnnotationStyle {
     return layer;
   }
 
+  /**
+   * Gets the configuration.
+   *
+   * @return the configuration
+   */
   public String getConfiguration() {
     return configuration;
   }
   
   /**
    * Compares if current is equal to another object.
+   *
+   * @param object the object
+   * @return true, if successful
    */
   @Override
   public boolean equals(Object object) {
@@ -185,9 +210,8 @@ public final class AnnotationStyle {
     } else if (object instanceof AnnotationStyle) {
       AnnotationStyle style = (AnnotationStyle) object;
       
-      boolean isConfigEqual = configuration == style.configuration ||
-          (configuration != null ? false : configuration.equals(style.configuration));
-      
+      boolean isConfigEqual = Objects.equals(configuration, style.configuration);
+
       isEqual = annotation.equals(style.annotation) && this.style.equals(style.style)
               && color.equals(style.color) && layer == style.layer && isConfigEqual;
     } else {
@@ -198,7 +222,9 @@ public final class AnnotationStyle {
   }
 
   /**
-   * Generates a hash code using of toString()
+   * Generates a hash code using of toString().
+   *
+   * @return the int
    */
   @Override
   public int hashCode() {
@@ -207,6 +233,8 @@ public final class AnnotationStyle {
 
   /**
    * Represents this object as string.
+   *
+   * @return the string
    */
   @Override
   public String toString() {
@@ -223,6 +251,12 @@ public final class AnnotationStyle {
   // key -> type name + ."style"
   // value -> key/value pairs -> key=value; key=value;
   // split on ";" and then split on = to parse values into a map
+  /**
+   * Serialize properties.
+   *
+   * @param properties the properties
+   * @return the string
+   */
   // maybe make a util which can save a String, String map to a line, and load it from String ...
   private static String serializeProperties(Map<String, String> properties) {
     
@@ -238,8 +272,14 @@ public final class AnnotationStyle {
     return configString.toString();
   }
   
+  /**
+   * Parses the properties.
+   *
+   * @param line the line
+   * @return the map
+   */
   private static Map<String, String> parseProperties(String line) {
-    Map<String, String> properties = new HashMap<String, String>();
+    Map<String, String> properties = new HashMap<>();
     
     String keyValueStrings[] = line.split(";");
     
@@ -257,16 +297,16 @@ public final class AnnotationStyle {
   /**
    * Note: This method must not be called by user code! It is only public because the migration
    * code in the Cas Editor Ide Plugin needs to access this method.
-   * 
-   * @param store
-   * @param style
+   *
+   * @param store the store
+   * @param style the style
    */
   public static void putAnnotatationStyleToStore(IPreferenceStore store, AnnotationStyle style) {
     
     Color color = new Color(style.getColor().getRed(), style.getColor().getGreen(),
             style.getColor().getBlue());
     
-    Map<String, String> styleProperties = new HashMap<String, String>();
+    Map<String, String> styleProperties = new HashMap<>();
     
     styleProperties.put("color", Integer.toString(color.getRGB()));
     styleProperties.put("strategy", style.getStyle().toString());
@@ -284,9 +324,9 @@ public final class AnnotationStyle {
    * <p>
    * Note: This method must not be called by user code! It is only public because the migration
    * code in the Cas Editor Ide Plugin needs to access this method.
-   * 
-   * @param store
-   * @param typeName
+   *
+   * @param store the store
+   * @param typeName the type name
    * @return an annotation style from the provided preference store
    */
   public static AnnotationStyle getAnnotationStyleFromStore(IPreferenceStore store, String typeName) {

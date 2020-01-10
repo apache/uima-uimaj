@@ -28,64 +28,107 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 
+
 /**
  * TODO:
  * set feature value to null
  * delete feature value structure
- * create feature value structure
+ * create feature value structure.
  */
 public class ModelFeatureStructure implements IAdaptable {
+  
+  /** The m document. */
   private ICasDocument mDocument;
 
+  /** The m feature structre. */
   private FeatureStructure mFeatureStructre;
 
   /**
    * Initializes a new instance.
    *
-   * @param document
-   * @param featureStructre
+   * @param document the document
+   * @param featureStructre the feature structre
    */
   public ModelFeatureStructure(ICasDocument document, FeatureStructure featureStructre) {
     mDocument = document;
     mFeatureStructre = featureStructre;
   }
 
+  /**
+   * Gets the document.
+   *
+   * @return the document
+   */
   public ICasDocument getDocument() {
     return mDocument;
   }
 
+  /**
+   * Gets the structre.
+   *
+   * @return the structre
+   */
   public FeatureStructure getStructre() {
     return mFeatureStructre;
   }
 
+  /**
+   * Sets the feature null.
+   *
+   * @param feature the new feature null
+   */
   public void setFeatureNull(Feature feature) {
     mFeatureStructre.setFeatureValue(feature, null);
   }
 
+  /**
+   * Delete feature value.
+   *
+   * @param feature the feature
+   */
   public void deleteFeatureValue(Feature feature) {
     // get value and call remove
   }
 
+  /**
+   * Creates the feature value.
+   *
+   * @param feature the feature
+   */
   public void createFeatureValue(Feature feature) {
     // create, add and link
   }
 
+  /**
+   * Creates the feature value array.
+   *
+   * @param feature the feature
+   * @param size the size
+   */
   public void createFeatureValueArray(Feature feature, int size) {
     // create add and link
   }
 
 
+  /**
+   * Creates the.
+   *
+   * @param document the document
+   * @param annotations the annotations
+   * @return the list
+   */
   public static List<ModelFeatureStructure> create(ICasDocument document,
           List<AnnotationFS> annotations) {
-    List<ModelFeatureStructure> structres = new ArrayList<ModelFeatureStructure>(annotations.size());
+    List<ModelFeatureStructure> structures = new ArrayList<>(annotations.size());
 
     for (AnnotationFS annotation : annotations) {
-      structres.add(new ModelFeatureStructure(document, annotation));
+      structures.add(new ModelFeatureStructure(document, annotation));
     }
 
-    return structres;
+    return structures;
   }
 
+  @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     if (FeatureStructure.class.equals(adapter)) {
       return getStructre();
@@ -96,6 +139,9 @@ public class ModelFeatureStructure implements IAdaptable {
     }
   }
 
+  /**
+   * Update.
+   */
   public void update() {
     mDocument.update(mFeatureStructre);
   }

@@ -240,6 +240,10 @@ public class RunAE implements StatusCallbackListener {
   }
 
   /**
+   * Entity process complete.
+   *
+   * @param aCas the a cas
+   * @param aStatus the a status
    * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
    *      org.apache.uima.collection.EntityProcessStatus)
    */
@@ -338,6 +342,7 @@ public class RunAE implements StatusCallbackListener {
   /**
    * Reads command line arguments and sets static class variables appropriately.
    * 
+   * @param args the args
    * @return true if command line args were valid, false if not
    */
   private boolean processCmdLineArgs(String[] args) {

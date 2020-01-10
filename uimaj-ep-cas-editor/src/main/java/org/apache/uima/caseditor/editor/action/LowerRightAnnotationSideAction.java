@@ -29,22 +29,25 @@ import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
+
 /**
  * Lowers the right side of the currently selected annotation by one.
  */
 public final class LowerRightAnnotationSideAction extends BaseSelectionListenerAction {
   
+  /** The Constant ID. */
   public static final String ID = "LowerRightAnnotationSide";
   
+  /** The editor. */
   private ICasEditor editor;
 
   /**
    * Initializes the current instance.
    *
-   * @param editor
+   * @param editor the editor
    */
   public LowerRightAnnotationSideAction(ICasEditor editor) {
-    super("LowerRightAnnotationSide");
+    super(ID);
 
     this.editor = editor;
 
@@ -58,6 +61,12 @@ public final class LowerRightAnnotationSideAction extends BaseSelectionListenerA
     return annotation.size() == 1;
   }
 
+  /**
+   * Lower right annotation side.
+   *
+   * @param document the document
+   * @param annotation the annotation
+   */
   public static void lowerRightAnnotationSide(ICasDocument document, AnnotationFS annotation) {
     
     Type annotationType = annotation.getType();

@@ -847,6 +847,9 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
+   * Instantiates a new cas annotation viewer.
+   *
+   * @param aEntityViewEnabled the a entity view enabled
    * @deprecated use the zero-argument constructor
    */
   @Deprecated
@@ -862,8 +865,9 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
-   * @param userTypes
-   *          The userTypes to set.
+   * Sets the user types.
+   *
+   * @param userTypes          The userTypes to set.
    */
   public void setUserTypes(List<String> userTypes) {
     this.userTypes = userTypes;
@@ -1013,7 +1017,7 @@ public class CasAnnotationViewer extends JPanel {
    * mode makes for a cleaner legend at the expense of making it more difficult to toggle which
    * types are selected. There's also a button in the GUI that lets the user change this setting.
    * 
-   * @param aHideUnselected
+   * @param aHideUnselected the new hide unselected checkboxes
    */
   public void setHideUnselectedCheckboxes(boolean aHideUnselected) {
     this.hideUnselectedCheckBoxes = aHideUnselected;
@@ -1540,10 +1544,9 @@ public class CasAnnotationViewer extends JPanel {
    * Examine an annotation and add type/feature/value-related controls if
    * necessary.
    * 
-   * @param doc
-   * @param annotation
-   * @param firstType
-   *            If true, the annotation being examined has the first
+   * @param doc the doc
+   * @param annotation the annotation
+   * @param firstType            If true, the annotation being examined has the first
    *            type-related radio button that needs to be created and also
    *            set as selected.
    * @return If true, the annotation being examined has its type being
@@ -1616,11 +1619,11 @@ public class CasAnnotationViewer extends JPanel {
    * Examine one feature of the given annotation and create the
    * feature-related controls.
    * 
-   * @param doc
-   * @param annotation
-   * @param feature
-   * @param firstFeature
-   * @return
+   * @param doc the doc
+   * @param annotation the annotation
+   * @param feature the feature
+   * @param firstFeature the first feature
+   * @return true, if successful
    */
   private boolean processOneFeature(StyledDocument doc, Annotation annotation,
       Feature feature, boolean firstFeature) {
@@ -1680,10 +1683,10 @@ public class CasAnnotationViewer extends JPanel {
    * Examine one feature of the given annotation and create the
    * feature-value-related controls.
    * 
-   * @param doc
-   * @param annotation
-   * @param feature
-   * @return
+   * @param doc the doc
+   * @param annotation the annotation
+   * @param feature the feature
+   * @return true, if successful
    */
   private boolean processOneFeatureValue(StyledDocument doc,
       Annotation annotation, Feature feature) {
@@ -2026,8 +2029,8 @@ public class CasAnnotationViewer extends JPanel {
    * Check if an annotation matches the filters set by the user. If true, the
    * annotation will be added to the annotation tree display panel.
    * 
-   * @param annotation
-   * @return
+   * @param annotation the annotation
+   * @return true, if is match
    */
   private boolean isMatch(Annotation annotation) {
     Type type = annotation.getType();
@@ -2174,9 +2177,9 @@ public class CasAnnotationViewer extends JPanel {
    * Get feature value in string, if value is not another annotation and not
    * an array of annotations.
    * 
-   * @param aFS
-   * @param feature
-   * @return
+   * @param aFS the a FS
+   * @param feature the feature
+   * @return the feature value in string
    */
   private String getFeatureValueInString(FeatureStructure aFS, Feature feature) {
     if (this.cas == null || this.typeSystem == null || this.stringType == null || this.fsArrayType == null) {
@@ -2222,10 +2225,10 @@ public class CasAnnotationViewer extends JPanel {
    * default value. If longer than specified limit, take only the leading
    * substring that would fit in the limit.
    * 
-   * @param stringValue
-   * @param defaultIfNull
-   * @param maxLength
-   * @return
+   * @param stringValue the string value
+   * @param defaultIfNull the default if null
+   * @param maxLength the max length
+   * @return the string
    */
   private static String checkString(String stringValue, String defaultIfNull, int maxLength) {
     if (stringValue == null) {
@@ -2300,6 +2303,9 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
+   * Sets the size.
+   *
+   * @param d the new size
    * @see java.awt.Component#setSize(Dimension)
    */
   public void setSize(Dimension d) {

@@ -68,7 +68,7 @@ public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl im
   }
 
   /**
-   * @param executable
+   * @param executable -
    */
   public void setExec(CasProcessorExecutable executable) {
     exec = executable;

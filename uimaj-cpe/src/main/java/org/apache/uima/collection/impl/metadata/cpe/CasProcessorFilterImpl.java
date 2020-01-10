@@ -50,7 +50,10 @@ public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasPr
 
   /**
    * Overridden to read "name" and "value" attributes.
-   * 
+   * @param aElement -
+   * @param aParser -
+   * @param aOptions -
+   * @throws InvalidXMLException -
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -98,7 +101,7 @@ public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasPr
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setFilter(String string) {
     filter = string;

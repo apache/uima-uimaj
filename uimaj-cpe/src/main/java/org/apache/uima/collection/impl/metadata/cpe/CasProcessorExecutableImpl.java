@@ -111,14 +111,14 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setDir(String string) {
     dir = string;
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setExecutable(String string) {
     executable = string;
@@ -132,7 +132,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   }
 
   /**
-   * @param aargs
+   * @param aargs -
    */
   protected void setArgs(CasProcessorExecArg[] aargs) {
     for (int i = 0; aargs != null && i < aargs.length; i++) {
@@ -142,7 +142,10 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
 
   /**
    * Overridden to read "name" and "value" attributes.
-   * 
+   * @param aElement -
+   * @param aParser -
+   * @param aOptions -
+   * @throws InvalidXMLException -
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -233,7 +236,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   }
 
   /**
-   * @param params
+   * @param params -
    */
   public void setEnvs(ArrayList params) {
     envs = params;

@@ -49,12 +49,12 @@ public class RunnableApplication {
   private Properties sysEnvVars = null;
 
   /**
-   * Sets up command line used to launch Cas Processor in a seperate process. Combines environment
+   * Sets up command line used to launch Cas Processor in a separate process. Combines environment
    * variables setup in the CPE descriptor with a System environment variables.
    * 
    * @param aCasProcessorConfiguration -
    *          access to Cas Processor configuration
-   * @param aCasProcessor
+   * @param aCasProcessor -
    * @throws ResourceConfigurationException wraps Exception
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,

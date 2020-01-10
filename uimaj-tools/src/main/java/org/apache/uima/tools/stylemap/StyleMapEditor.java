@@ -114,6 +114,9 @@ public class StyleMapEditor extends JDialog implements ActionListener {
   /**
    * 
    * Creates a new `Editor.
+   *
+   * @param aOwner the a owner
+   * @param cas the cas
    */
   public StyleMapEditor(final JFrame aOwner, CAS cas) {
     super(aOwner, "Style Map Editor", true);
@@ -285,14 +288,12 @@ public class StyleMapEditor extends JDialog implements ActionListener {
    * Displays the StyleMapEditor GUI and allows the user to edit a style map. When the user has
    * finished, the new style map is returned.
    * 
-   * @param aAnalysisEngineMetaData
-   *          Metadata for the AnalysisEngine whose style map is to be edited. This contains the
+   * @param aAnalysisEngineMetaData          Metadata for the AnalysisEngine whose style map is to be edited. This contains the
    *          AE's capabilities and type system definition, which are needed by the editor.
-   * @param aStyleMapXml
-   *          An existing style map XML document that will be loaded into the editor. This is
+   * @param aStyleMapXml          An existing style map XML document that will be loaded into the editor. This is
    *          optional, if null is passed in, a default style map will be automatically generated
    *          from the AE metadata.
-   * 
+   * @param cas the cas
    * @return a new style map XML document. If the user cancels, null is returned.
    */
   public String launchEditor(AnalysisEngineMetaData aAnalysisEngineMetaData, String aStyleMapXml,
@@ -460,10 +461,9 @@ public class StyleMapEditor extends JDialog implements ActionListener {
   /**
    * Displays the Style Map Editor GUI and allows the user to interact with it.
    * 
-   * @param aStyleList
-   *          an ArrayList containing the style map entries to be edited. When the user modifies a
+   * @param aStyleList          an ArrayList containing the style map entries to be edited. When the user modifies a
    *          setting in the GUI, the elements of this List will be updated.
-   * 
+   * @param cas the cas
    * @return true if the user exits the dialog by clicking the OK button, false if the user has
    *         clicked the Cancel button.
    */

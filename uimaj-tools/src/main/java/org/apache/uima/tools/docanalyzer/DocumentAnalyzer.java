@@ -556,6 +556,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * documents and generates the output. Displays a progress bar while processing is occuring. When
    * processing is complete, allows the user to view the results. JMP added arg for input text to
    * analyze.
+   *
+   * @param analysisText the analysis text
    */
   public void analyzeDocuments(String analysisText) {
     // get field values from GUI
@@ -691,6 +693,10 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   }
 
   /**
+   * Entity process complete.
+   *
+   * @param aCas the a cas
+   * @param aStatus the a status
    * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
    *      org.apache.uima.collection.EntityProcessStatus)
    */
@@ -970,6 +976,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   /**
    * Runs the application.
+   *
+   * @param args the arguments
    */
   public static void main(String[] args) {
     final DocumentAnalyzer frame = new DocumentAnalyzer();
@@ -989,7 +997,10 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     private JTextPane textPane = new JTextPane();
 
     /**
-     * Constructor for dialog
+     * Constructor for dialog.
+     *
+     * @param aiDialog the ai dialog
+     * @param generatedStyleMap the generated style map
      */
     public TextAreaViewer(final JDialog aiDialog, boolean generatedStyleMap) {
 

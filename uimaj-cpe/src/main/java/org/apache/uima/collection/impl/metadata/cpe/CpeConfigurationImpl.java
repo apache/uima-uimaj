@@ -166,21 +166,27 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
   }
 
   /**
-   * @param string
+   * Sets the deploy as.
+   *
+   * @param string the new deploy as
    */
   public void setDeployAs(String string) {
     deployAs = string;
   }
 
   /**
-   * @param l
+   * Sets the num to process.
+   *
+   * @param l the new num to process
    */
   public void setNumToProcess(long l) {
     num2Process = l;
   }
 
   /**
-   * @param aStartAt
+   * Sets the start at.
+   *
+   * @param aStartAt the new start at
    */
   public void setStartAt(String aStartAt) {
 
@@ -188,7 +194,9 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
   }
 
   /**
-   * @param string
+   * Sets the timer impl.
+   *
+   * @param string the new timer impl
    */
   public void setTimerImpl(String string) {
     timerImpl = string;
@@ -206,7 +214,9 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
   }
 
   /**
-   * @param queue
+   * Sets the output queue.
+   *
+   * @param queue the new output queue
    */
   public void setOutputQueue(OutputQueue queue) {
     outputQueue = queue;

@@ -27,17 +27,24 @@ import org.apache.uima.caseditor.editor.util.Primitives;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 
+
+/**
+ * The Class FeatureValue.
+ */
 public final class FeatureValue implements IAdaptable {
+  
+  /** The m structure. */
   private FeatureStructure mStructure;
 
+  /** The m feature. */
   private Feature mFeature;
 
   /**
    * Initializes a new instance.
    *
-   * @param document
-   * @param structure
-   * @param feature
+   * @param document the document
+   * @param structure the structure
+   * @param feature the feature
    */
   public FeatureValue(ICasDocument document, FeatureStructure structure, Feature feature) {
     Assert.isNotNull(document);
@@ -50,10 +57,20 @@ public final class FeatureValue implements IAdaptable {
     mStructure = structure;
   }
 
+  /**
+   * Gets the feature structure.
+   *
+   * @return the feature structure
+   */
   public FeatureStructure getFeatureStructure() {
     return mStructure;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   public Object getValue() {
     if (mFeature.getRange().isPrimitive()) {
       return Primitives.getPrimitive(mStructure, mFeature);
@@ -62,6 +79,7 @@ public final class FeatureValue implements IAdaptable {
     return mStructure.getFeatureValue(mFeature);
   }
 
+  @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     if (AnnotationFS.class.equals(adapter)) {
       if (getValue() instanceof AnnotationFS) {
@@ -84,7 +102,7 @@ public final class FeatureValue implements IAdaptable {
 
     if (this == object) {
       result = true;
-    } else if (object != null && object instanceof FeatureValue) {
+    } else if (object instanceof FeatureValue) {
       FeatureValue valueToCompare = (FeatureValue) object;
 
       result = valueToCompare.mStructure.equals(mStructure)

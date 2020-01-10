@@ -45,18 +45,13 @@ public class SpringUtilities {
    * in a grid. Each component is as big as the maximum preferred width and height of the
    * components. The parent is made just big enough to fit them all.
    * 
-   * @param rows
-   *          number of rows
-   * @param cols
-   *          number of columns
-   * @param initialX
-   *          x location to start the grid at
-   * @param initialY
-   *          y location to start the grid at
-   * @param xPad
-   *          x padding between cells
-   * @param yPad
-   *          y padding between cells
+   * @param parent the parent
+   * @param rows          number of rows
+   * @param cols          number of columns
+   * @param initialX          x location to start the grid at
+   * @param initialY          y location to start the grid at
+   * @param xPad          x padding between cells
+   * @param yPad          y padding between cells
    */
   public static void makeGrid(Container parent, int rows, int cols, int initialX, int initialY,
           int xPad, int yPad) {
@@ -137,18 +132,13 @@ public class SpringUtilities {
    * components in that column; height is similarly determined for each row. The parent is made just
    * big enough to fit them all.
    * 
-   * @param rows
-   *          number of rows
-   * @param cols
-   *          number of columns
-   * @param initialX
-   *          x location to start the grid at
-   * @param initialY
-   *          y location to start the grid at
-   * @param xPad
-   *          x padding between cells
-   * @param yPad
-   *          y padding between cells
+   * @param parent the parent
+   * @param rows          number of rows
+   * @param cols          number of columns
+   * @param initialX          x location to start the grid at
+   * @param initialY          y location to start the grid at
+   * @param xPad          x padding between cells
+   * @param yPad          y padding between cells
    */
   public static void makeCompactGrid(Container parent, int rows, int cols, int initialX,
           int initialY, int xPad, int yPad) {

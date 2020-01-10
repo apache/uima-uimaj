@@ -86,7 +86,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setValue(String string) {
     value = string;
@@ -94,7 +94,10 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
 
   /**
    * Overridden to read "name" and "value" attributes.
-   * 
+   * @param aElement -
+   * @param aParser -
+   * @param aOptions -
+   * @throws InvalidXMLException -
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
@@ -115,7 +118,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
 
   /**
    * Overridden to handle "name" and "value" attributes.
-   * 
+   * @return -
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
   protected AttributesImpl getXMLAttributes() {
@@ -144,7 +147,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
   }
 
   /**
-   * @param i
+   * @param i -
    */
   public void setWaitTimeBetweenRetries(int i) {
     waitTimeBetweenRetries = i;

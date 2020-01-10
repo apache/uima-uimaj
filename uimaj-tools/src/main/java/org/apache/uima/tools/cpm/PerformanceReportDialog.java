@@ -56,7 +56,10 @@ public class PerformanceReportDialog extends JDialog {
   private Map mEventTypeMap;
 
   /**
-   * @throws java.awt.HeadlessException
+   * Instantiates a new performance report dialog.
+   *
+   * @param aFrame the a frame
+   * @throws HeadlessException the headless exception
    */
   public PerformanceReportDialog(Frame aFrame) throws HeadlessException {
     super(aFrame, true);

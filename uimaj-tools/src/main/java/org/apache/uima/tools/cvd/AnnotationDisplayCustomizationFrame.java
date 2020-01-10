@@ -187,30 +187,38 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
   private JTree tree;
 
   /**
-   * @throws java.awt.HeadlessException
+   * Instantiates a new annotation display customization frame.
+   *
+   * @throws java.awt.HeadlessException the java.awt. headless exception
    */
   public AnnotationDisplayCustomizationFrame() {
     super();
   }
 
   /**
-   * @param arg0
+   * Instantiates a new annotation display customization frame.
+   *
+   * @param arg0 the arg 0
    */
   public AnnotationDisplayCustomizationFrame(GraphicsConfiguration arg0) {
     super(arg0);
   }
 
   /**
-   * @param arg0
-   * @throws java.awt.HeadlessException
+   * Instantiates a new annotation display customization frame.
+   *
+   * @param arg0 the arg 0
+   * @throws java.awt.HeadlessException the java.awt. headless exception
    */
   public AnnotationDisplayCustomizationFrame(String arg0) {
     super(arg0);
   }
 
   /**
-   * @param arg0
-   * @param arg1
+   * Instantiates a new annotation display customization frame.
+   *
+   * @param arg0 the arg 0
+   * @param arg1 the arg 1
    */
   public AnnotationDisplayCustomizationFrame(String arg0, GraphicsConfiguration arg1) {
     super(arg0, arg1);

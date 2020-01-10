@@ -94,14 +94,14 @@ public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMa
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setComponentSofaName(String string) {
     componentSofaName = string;
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setCpeSofaName(String string) {
     cpeSofaName = string;

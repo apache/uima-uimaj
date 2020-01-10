@@ -71,6 +71,8 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
 
   /**
    * Returns configuration parameter settings for this CasInitializer.
+   *
+   * @return the configuration parameter settings
    */
   public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings() {
     return cfps;
@@ -78,7 +80,11 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
 
   /**
    * Sets configuration parameter settings for this CasInitializer.
+   *
+   * @param settings the new configuration parameter settings
+   * @throws CpeDescriptorException the cpe descriptor exception
    */
+  @Override
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings)
           throws CpeDescriptorException {
     cfps = settings;

@@ -35,30 +35,53 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
+
+/**
+ * The Class PriorityListSection.
+ */
 public class PriorityListSection extends AbstractSection {
 
+  /** The Constant PRIORITY_LIST. */
   public static final String PRIORITY_LIST = "<Priority List>";
 
+  /** The tree. */
   private Tree tree;
 
+  /** The add set button. */
   private Button addSetButton;
 
+  /** The add button. */
   private Button addButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /** The up button. */
   private Button upButton;
 
+  /** The down button. */
   private Button downButton;
 
+  /** The type priority import section. */
   private TypePriorityImportSection typePriorityImportSection;
 
+  /** The export button. */
   private Button exportButton;
 
+  /**
+   * Instantiates a new priority list section.
+   *
+   * @param editor the editor
+   * @param parent the parent
+   */
   public PriorityListSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Priority Lists", "This section shows the defined Prioirity Lists");
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+   */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
 
@@ -87,6 +110,7 @@ public class PriorityListSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
+  @Override
   public void refresh() {
     if (null == typePriorityImportSection)
       typePriorityImportSection = editor.getIndexesPage().getTypePriorityImportSection();
@@ -111,17 +135,26 @@ public class PriorityListSection extends AbstractSection {
         item.setExpanded(true);
       }
     }
-    if (tree.getItemCount() > 0)
-      tree.setSelection(new TreeItem[] { tree.getItems()[0] });
+    maybeSetSelection(tree, 0);
     enable();
   }
 
+  /**
+   * Gets the type priority list from tree item.
+   *
+   * @param item the item
+   * @return the type priority list from tree item
+   */
   public TypePriorityList getTypePriorityListFromTreeItem(TreeItem item) {
     TypePriorityList[] typePriorityLists = getAnalysisEngineMetaData().getTypePriorities()
             .getPriorityLists();
     return typePriorityLists[tree.indexOf(item)];
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+   */
+  @Override
   public void handleEvent(Event event) {
     if (event.widget == addSetButton) {
       TypePriorityList typePriorityList = UIMAFramework.getResourceSpecifierFactory()
@@ -138,7 +171,7 @@ public class PriorityListSection extends AbstractSection {
       TreeItem item = new TreeItem(tree, SWT.NONE);
       item.setText(PRIORITY_LIST);
 
-      tree.setSelection(new TreeItem[] { item });
+      tree.setSelection( item );
       setFileDirty();
     } else if (event.widget == addButton) { // add type to set
       if (editor.isTypePriorityDescriptor() && !editor.getIsContextLoaded()) {
@@ -201,7 +234,7 @@ public class PriorityListSection extends AbstractSection {
       TreeItem previousSelection = getPreviousSelection(parent == null ? tree.getItems() : parent
               .getItems(), item);
       if (null != previousSelection)
-        tree.setSelection(new TreeItem[] { previousSelection });
+        tree.setSelection(previousSelection);
       item.dispose();
       setFileDirty();
     }
@@ -223,7 +256,7 @@ public class PriorityListSection extends AbstractSection {
         new TreeItem(parent, SWT.NONE, i).setText(formatName(types[i]));
         TreeItem t = new TreeItem(parent, SWT.NONE, i + 1);
         t.setText(formatName(types[i + 1]));
-        tree.setSelection(new TreeItem[] { t });
+        tree.setSelection( t);
 
         items[i].dispose();
         items[i + 1].dispose();
@@ -234,7 +267,7 @@ public class PriorityListSection extends AbstractSection {
 
         TreeItem t = new TreeItem(parent, SWT.NONE, i - 1);
         t.setText(formatName(types[i - 1]));
-        tree.setSelection(new TreeItem[] { t });
+        tree.setSelection( t);
         new TreeItem(parent, SWT.NONE, i).setText(formatName(types[i]));
 
         items[i - 1].dispose();
@@ -252,6 +285,10 @@ public class PriorityListSection extends AbstractSection {
     enable();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
+   */
+  @Override
   public void enable() {
 
     if (tree.getSelectionCount() == 1) {

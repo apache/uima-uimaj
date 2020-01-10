@@ -81,6 +81,8 @@ public class StyleMapEntry {
    * This method returns a pattern representing either simply an annotation type or else an
    * annotation type/feature value. In the case of the latter: e.g.
    * SYNTAX_ANNOT_TYPE[@SYNTAXLABEL_STRING='NP']
+   *
+   * @return the pattern
    */
 
   public String getPattern() {
@@ -102,8 +104,9 @@ public class StyleMapEntry {
   }
 
   /**
-   * @param background
-   *          The background to set.
+   * Sets the background.
+   *
+   * @param background          The background to set.
    */
   public void setBackground(Color background) {
     this.background = background;

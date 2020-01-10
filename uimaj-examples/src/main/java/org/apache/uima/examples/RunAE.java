@@ -105,6 +105,7 @@ public class RunAE implements StatusCallbackListener {
 
   /**
    * Constructor. Sets up and runs an Analysis Engine.
+   * @param args -
    */
   public RunAE(String[] args) {
     try {

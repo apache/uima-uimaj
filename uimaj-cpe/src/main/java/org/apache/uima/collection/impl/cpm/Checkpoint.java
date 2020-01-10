@@ -63,9 +63,9 @@ public class Checkpoint implements Runnable {
    * Initialize the checkpoint with a reference to controlling cpe, the file where the checkpoint is
    * to be stored, and the frequency of checkpoints.
    * 
-   * @param aCpm
-   * @param aFilename
-   * @param aCheckpointFrequency
+   * @param aCpm -
+   * @param aFilename -
+   * @param aCheckpointFrequency -
    */
   public Checkpoint(BaseCPMImpl aCpm, String aFilename, long aCheckpointFrequency) {
     fileName = aFilename;

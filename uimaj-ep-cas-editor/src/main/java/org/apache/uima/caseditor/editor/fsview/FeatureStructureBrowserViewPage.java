@@ -22,6 +22,7 @@ package org.apache.uima.caseditor.editor.fsview;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -60,24 +61,37 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.Page;
 
+
 /**
  * The actual view page which contains the ui code for this view.
  */
 public final class FeatureStructureBrowserViewPage extends Page {
   
+  /** The Constant LAST_SELECTED_FS_TYPE. */
   private static final String LAST_SELECTED_FS_TYPE = "lastSelectedFeatureStructureBrowserViewType";
   
+  /**
+   * The Class FeatureStructureTreeContentProvider.
+   */
   final class FeatureStructureTreeContentProvider extends AbstractAnnotationDocumentListener
           implements ITreeContentProvider {
 
+    /** The m document. */
     private ICasDocument mDocument;
 
+    /** The m current type. */
     private Type mCurrentType;
 
+    /**
+     * Instantiates a new feature structure tree content provider.
+     *
+     * @param document the document
+     */
     FeatureStructureTreeContentProvider(ICasDocument document) {
       mDocument = document;
     }
 
+    @Override
     public Object[] getElements(Object inputElement) {
       if (mCurrentType == null) {
         return new Object[] {};
@@ -85,29 +99,31 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
       StrictTypeConstraint typeConstrain = new StrictTypeConstraint(mCurrentType);
 
-      FSIterator<FeatureStructure> strictTypeIterator =mDocument.getCAS().createFilteredIterator(
+      FSIterator<FeatureStructure> strictTypeIterator = mDocument.getCAS().createFilteredIterator(
               mDocument.getCAS().getIndexRepository().getAllIndexedFS(mCurrentType), typeConstrain);
 
-      LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
+      List<ModelFeatureStructure> featureStructureList = new LinkedList<>();
 
       while (strictTypeIterator.hasNext()) {
-        featureStrucutreList.add(new ModelFeatureStructure(mDocument,
+        featureStructureList.add(new ModelFeatureStructure(mDocument,
                 strictTypeIterator.next()));
       }
 
-      ModelFeatureStructure[] featureStructureArray = new ModelFeatureStructure[featureStrucutreList
+      ModelFeatureStructure[] featureStructureArray = new ModelFeatureStructure[featureStructureList
               .size()];
 
-      featureStrucutreList.toArray(featureStructureArray);
+      featureStructureList.toArray(featureStructureArray);
 
       return featureStructureArray;
     }
 
+    @Override
     public void dispose() {
       if (mDocument != null)
         mDocument.removeChangeListener(this);
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
       if (oldInput != null) {
@@ -125,6 +141,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
       mDocument.addChangeListener(this);
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           mFSList.refresh();
         }
@@ -134,11 +151,12 @@ public final class FeatureStructureBrowserViewPage extends Page {
     /**
      * Retrieves children for a FeatureStrcuture and for FeatureValues if they have children.
      *
-     * @param parentElement
+     * @param parentElement the parent element
      * @return the children
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
-      Collection<Object> childs = new LinkedList<Object>();
+      Collection<Object> childs = new LinkedList<>();
 
       FeatureStructure featureStructure;
 
@@ -165,10 +183,12 @@ public final class FeatureStructureBrowserViewPage extends Page {
       return childs.toArray();
     }
 
+    @Override
     public Object getParent(Object element) {
       return null;
     }
 
+    @Override
     public boolean hasChildren(Object element) {
       if (element instanceof IAdaptable
               && ((IAdaptable) element).getAdapter(FeatureStructure.class) != null) {
@@ -186,16 +206,12 @@ public final class FeatureStructureBrowserViewPage extends Page {
           if (value instanceof StringArray) {
             StringArray array = (StringArray) featureValue.getValue();
 
-            if (array.size() > 0) {
-              return true;
-            } else {
-              return false;
-            }
+            return array.size() > 0;
           }
 
           return false;
         } else {
-          return featureValue.getValue() != null ? true : false;
+          return featureValue.getValue() != null;
         }
       } else {
         assert false : "Unexpected element";
@@ -207,36 +223,37 @@ public final class FeatureStructureBrowserViewPage extends Page {
     @Override
     protected void addedAnnotation(Collection<AnnotationFS> annotations) {
 
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+      final List<ModelFeatureStructure> featureStructureList = new LinkedList<>();
 
       for (AnnotationFS annotation : annotations) {
         if (annotation.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mDocument, annotation));
+          featureStructureList.add(new ModelFeatureStructure(mDocument, annotation));
         }
       }
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
-          mFSList.add(featureStrucutreList.toArray());
+          mFSList.add(featureStructureList.toArray());
         }
       });
     }
 
     @Override
-    public void added(Collection<FeatureStructure> structres) {
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+    public void added(Collection<FeatureStructure> structures) {
+      final LinkedList<ModelFeatureStructure> featureStructureList =
+          new LinkedList<>();
 
-      for (FeatureStructure structure : structres) {
+      for (FeatureStructure structure : structures) {
         if (structure.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mDocument, structure));
+          featureStructureList.add(new ModelFeatureStructure(mDocument, structure));
         }
       }
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
-          mFSList.add(featureStrucutreList.toArray());
+          mFSList.add(featureStructureList.toArray());
         }
       });
     }
@@ -244,37 +261,36 @@ public final class FeatureStructureBrowserViewPage extends Page {
     @Override
     protected void removedAnnotation(Collection<AnnotationFS> annotations) {
 
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+      final List<ModelFeatureStructure> featureStructureList = new LinkedList<>();
 
       for (AnnotationFS annotation : annotations) {
         if (annotation.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mDocument, annotation));
+          featureStructureList.add(new ModelFeatureStructure(mDocument, annotation));
         }
       }
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
-          mFSList.remove(featureStrucutreList.toArray());
+          mFSList.remove(featureStructureList.toArray());
         }
       });
-
     }
 
     @Override
-    public void removed(Collection<FeatureStructure> structres) {
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+    public void removed(Collection<FeatureStructure> structures) {
+      final List<ModelFeatureStructure> featureStructureList = new LinkedList<>();
 
-      for (FeatureStructure structure : structres) {
+      for (FeatureStructure structure : structures) {
         if (structure.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mDocument, structure));
+          featureStructureList.add(new ModelFeatureStructure(mDocument, structure));
         }
       }
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
-          mFSList.remove(featureStrucutreList.toArray());
+          mFSList.remove(featureStructureList.toArray());
         }
       });
     }
@@ -284,16 +300,22 @@ public final class FeatureStructureBrowserViewPage extends Page {
       // ignore
     }
 
+    @Override
     public void viewChanged(String oldViewName, String newViewName) {
       changed();
     }
-    
+
+    @Override
     public void changed() {
       mFSList.refresh();
     }
   }
 
+  /**
+   * The Class CreateAction.
+   */
   private class CreateAction extends Action {
+
     // TOOD: extract it and add setType(...)
     @Override
     public void run() {
@@ -313,7 +335,11 @@ public final class FeatureStructureBrowserViewPage extends Page {
     }
   }
 
+  /**
+   * The Class SelectAllAction.
+   */
   private class SelectAllAction extends Action {
+
     @Override
     public void run() {
       mFSList.getList().selectAll();
@@ -321,27 +347,34 @@ public final class FeatureStructureBrowserViewPage extends Page {
     }
   }
 
+  /** The m document. */
   private ICasDocument mDocument;
 
+  /** The m cas editor. */
   private ICasEditor mCasEditor;
   
+  /** The m FS list. */
   private ListViewer mFSList;
 
+  /** The m instance composite. */
   private Composite mInstanceComposite;
 
+  /** The m current type. */
   private Type mCurrentType;
 
+  /** The m delete action. */
   private DeleteFeatureStructureAction mDeleteAction;
 
+  /** The m select all action. */
   private Action mSelectAllAction;
 
+  /** The filter types. */
   private Collection<Type> filterTypes;
-
 
   /**
    * Initializes a new instance.
    *
-   * @param editor
+   * @param editor the editor
    */
   public FeatureStructureBrowserViewPage(ICasEditor editor) {
 
@@ -358,7 +391,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     TypeSystem ts = mDocument.getCAS().getTypeSystem();
 
-    filterTypes = new HashSet<Type>();
+    filterTypes = new HashSet<>();
     filterTypes.add(ts.getType(CAS.TYPE_NAME_ARRAY_BASE));
     filterTypes.add(ts.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY));
     filterTypes.add(ts.getType(CAS.TYPE_NAME_BYTE_ARRAY));
@@ -445,6 +478,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     
     typeCombo.addListener(new ITypePaneListener() {
       
+      @Override
       public void typeChanged(Type newType) {
         store.setValue(LAST_SELECTED_FS_TYPE, newType.getName());
       }
@@ -463,6 +497,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     mFSList.setUseHashlookup(true);
 
     typeCombo.addListener(new ITypePaneListener() {
+      @Override
       public void typeChanged(Type newType) {
         mCurrentType = newType;
 
@@ -477,7 +512,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
   }
 
   /**
-   * Retrieves the control
+   * Retrieves the control.
    *
    * @return the control
    */
@@ -490,9 +525,9 @@ public final class FeatureStructureBrowserViewPage extends Page {
    * Adds the following actions to the toolbar: {@link FeatureStructureBrowserViewPage.CreateAction}
    * DeleteAction
    *
-   * @param menuManager
-   * @param toolBarManager
-   * @param statusLineManager
+   * @param menuManager the menu manager
+   * @param toolBarManager the tool bar manager
+   * @param statusLineManager the status line manager
    */
   @Override
   public void makeContributions(IMenuManager menuManager, IToolBarManager toolBarManager,
@@ -508,9 +543,9 @@ public final class FeatureStructureBrowserViewPage extends Page {
   }
 
   /**
-   * Sets global action handlers for: delete select all
+   * Sets global action handlers for: delete select all.
    *
-   * @param actionBars
+   * @param actionBars the new action bars
    */
   @Override
   public void setActionBars(IActionBars actionBars) {

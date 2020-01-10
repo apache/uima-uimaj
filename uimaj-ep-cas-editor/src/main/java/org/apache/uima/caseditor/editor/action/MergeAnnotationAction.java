@@ -28,6 +28,7 @@ import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
+
 /**
  * Merges two or more annotations.
  *
@@ -35,12 +36,14 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
  * in conflict case do nothing
  */
 public class MergeAnnotationAction extends BaseSelectionListenerAction {
+  
+  /** The editor. */
   private ICasEditor editor;
 
   /**
    * Initializes the current instance.
    *
-   * @param editor
+   * @param editor the editor
    */
   public MergeAnnotationAction(ICasEditor editor) {
     super("MergeAnnotationAction");
@@ -58,7 +61,7 @@ public class MergeAnnotationAction extends BaseSelectionListenerAction {
   }
 
   /**
-   * Executes the merge action
+   * Executes the merge action.
    */
   @Override
   public void run() {

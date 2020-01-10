@@ -25,7 +25,12 @@ import org.apache.uima.caseditor.editor.FeatureValue;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 
+
+/**
+ * The Class FeatureColumnLabelProvider.
+ */
 final class FeatureColumnLabelProvider extends CellLabelProvider {
+
   @Override
   public void update(ViewerCell cell) {
 

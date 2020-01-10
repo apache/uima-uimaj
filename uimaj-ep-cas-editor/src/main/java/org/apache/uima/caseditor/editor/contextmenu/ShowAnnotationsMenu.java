@@ -34,18 +34,20 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
+
 /**
  * Creates the show annotations context sub menu.
  */
 public class ShowAnnotationsMenu extends TypeMenu {
 
-	private Set<IShowAnnotationsListener> listeners = new HashSet<IShowAnnotationsListener>();
+	/** The listeners. */
+	private Set<IShowAnnotationsListener> listeners = new HashSet<>();
 
 	/**
 	 * This collection contains all type names which are displayed in the
 	 * editor.
 	 */
-	private Collection<Type> typesToDisplay = new HashSet<Type>();
+	private Collection<Type> typesToDisplay = new HashSet<>();
 
 	/**
 	 * Editor annotation mode type. This variable is only set if the editor
@@ -56,22 +58,30 @@ public class ShowAnnotationsMenu extends TypeMenu {
 
 	/**
 	 * Initializes a new instance.
-	 * 
-	 * @param typeSystem
-	 * @param shownTypes
+	 *
+	 * @param typeSystem the type system
+	 * @param shownTypes the shown types
 	 */
 	public ShowAnnotationsMenu(TypeSystem typeSystem, Collection<Type> shownTypes) {
 		super(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION), typeSystem);
 
-		for (Type type : shownTypes) {
-			typesToDisplay.add(type);
-		}
+		typesToDisplay.addAll(shownTypes);
 	}
 
+	/**
+	 * Adds the listener.
+	 *
+	 * @param listener the listener
+	 */
 	public void addListener(IShowAnnotationsListener listener) {
 		listeners.add(listener);
 	}
 
+	/**
+	 * Removes the listener.
+	 *
+	 * @param listener the listener
+	 */
 	public void removeListener(IShowAnnotationsListener listener) {
 		listeners.remove(listener);
 	}
@@ -93,7 +103,8 @@ public class ShowAnnotationsMenu extends TypeMenu {
 		// TODO: move this to an action
 		// do not access mTypesToDisplay directly !!!
 		actionItem.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
+			@Override
+      public void handleEvent(Event e) {
 				if (actionItem.getSelection()) {
 					typesToDisplay.add(type);
 
@@ -106,26 +117,38 @@ public class ShowAnnotationsMenu extends TypeMenu {
 		});
 	}
 
+	/**
+	 * Gets the selected types.
+	 *
+	 * @return the selected types
+	 */
 	public Collection<Type> getSelectedTypes() {
-		Collection<Type> selectedTypes = new LinkedList<Type>();
+		Collection<Type> selectedTypes = new LinkedList<>();
 
 		if (editorAnnotationMode != null) {
 			selectedTypes.add(editorAnnotationMode);
 		}
-		
-		for (Type type : typesToDisplay) {
-			selectedTypes.add(type);
-		}
+
+		selectedTypes.addAll(typesToDisplay);
 
 		return Collections.unmodifiableCollection(selectedTypes);
 	}
 
+	/**
+	 * Fire changed.
+	 */
 	private void fireChanged() {
 	   for (IShowAnnotationsListener listener : listeners) {
 	      listener.selectionChanged(getSelectedTypes());
 	    }
 	}
 	
+	/**
+	 * Sets the selected type.
+	 *
+	 * @param type the type
+	 * @param isShown the is shown
+	 */
 	public void setSelectedType(Type type, boolean isShown) {
 	  
 	  if (typesToDisplay.contains(type)) {
@@ -142,18 +165,25 @@ public class ShowAnnotationsMenu extends TypeMenu {
 	  }
 	}
 	
+	/**
+	 * Sets the selected types.
+	 *
+	 * @param types the new selected types
+	 */
 	public void setSelectedTypes(Collection<Type> types) {
-		typesToDisplay = new HashSet<Type>();
-
-		for (Type type : types) {
-			typesToDisplay.add(type);
-		}
+		typesToDisplay = new HashSet<>();
+		typesToDisplay.addAll(types);
 
 		for (IShowAnnotationsListener listener : listeners) {
 			listener.selectionChanged(getSelectedTypes());
 		}
 	}
 
+	/**
+	 * Sets the editor annotation mode.
+	 *
+	 * @param newMode the new editor annotation mode
+	 */
 	public void setEditorAnnotationMode(Type newMode) {
 
 		if (typesToDisplay.contains(newMode)) {

@@ -27,14 +27,23 @@ import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.styleview.AnnotationTypeNode;
 
+
+/**
+ * The Class EditorAnnotationPropertyPage.
+ */
 public class EditorAnnotationPropertyPage extends AnnotationPropertyPage {
 
+  /**
+   * Gets the editor.
+   *
+   * @return the editor
+   */
   AnnotationEditor getEditor() {
     AnnotationTypeNode typeNode = (AnnotationTypeNode) getElement().getAdapter(AnnotationTypeNode.class);
     
     return typeNode.getEditor();
   }
-  
+
   @Override
   protected AnnotationStyle getAnnotationStyle(Type type) {
     return getEditor().getAnnotationStyle(type);

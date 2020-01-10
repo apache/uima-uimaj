@@ -156,6 +156,8 @@ public class ConfigField {
   /**
    * Returns whether this field has been modified from its original value. This is not affected by
    * whether the user has saved the new value; for that use isDirty().
+   *
+   * @return true, if is modified
    */
   public boolean isModified() {
     Object currentValue = getFieldValue();
@@ -171,6 +173,8 @@ public class ConfigField {
 
   /**
    * Returns whether this field has been modified since the last time the CPE descriptor was saved.
+   *
+   * @return true, if is dirty
    */
   public boolean isDirty() {
     Object currentValue = getFieldValue();

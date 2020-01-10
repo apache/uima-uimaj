@@ -26,21 +26,26 @@ import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+
 /**
  * Preference page to manage preferences for the Annotation Editor.
  */
 public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
         implements IWorkbenchPreferencePage {
 
+  /** The m editor line length hint. */
   private IntegerFieldEditor mEditorLineLengthHint;
-  private IntegerFieldEditor mEditorTextSize;
-  private BooleanFieldEditor mEditorPartialTypeystem;
   
+  /** The m editor text size. */
+  private IntegerFieldEditor mEditorTextSize;
+
+  /**
+   * Instantiates a new annotation editor preference page.
+   */
   public AnnotationEditorPreferencePage() {
     setPreferenceStore(CasEditorPlugin.getDefault().getPreferenceStore());
     setDescription("UIMA Annotation Editor Preferences.");
   }
-  
 
   @Override
   protected void createFieldEditors() {
@@ -57,16 +62,17 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
     addField(mEditorTextSize);
     
     // load CAS with partial type system
-    mEditorPartialTypeystem = new BooleanFieldEditor(
-            AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM,
-            "Load CAS leniently (WARNING: only for experienced users)", getFieldEditorParent());
-    addField(mEditorPartialTypeystem);
+    BooleanFieldEditor editorPartialTypesystem = new BooleanFieldEditor(
+        AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM,
+        "Load CAS leniently (WARNING: only for experienced users)", getFieldEditorParent());
+    addField(editorPartialTypesystem);
     
   }
 
+  @Override
   public void init(IWorkbench workbench) {
   }
-  
+
   @Override
   protected void checkState() {
     super.checkState();
