@@ -204,7 +204,7 @@ public class AnnotationIteratorTest extends TestCase {
   
 
   public void testIterator1() {
-    int annotCount = setupTheCas();
+    final int annotCount = setupTheCas();
     FSIndexRepository ir = this.cas.getIndexRepository();
 
     /***************************************************
@@ -258,7 +258,7 @@ public class AnnotationIteratorTest extends TestCase {
    * @param fss
    */
   // called twice, the 2nd time should be with flattened indexes (List afss non empty the 2nd time)
-  private void iterateOverAnnotations(int annotCount, List<Annotation> afss) {
+  private void iterateOverAnnotations(final int annotCount, List<Annotation> afss) {
     this.fss = afss;
     isSave = fss.size() == 0;   // on first call is 0, so save on first call
 //    int count;
@@ -272,6 +272,8 @@ public class AnnotationIteratorTest extends TestCase {
     assertCount("Normal ambiguous select annot iterator", annotCount, select_it);
     assertEquals(annotCount, select(annotIndex).toArray().length);  // stream op
     assertEquals(annotCount, select(annotIndex).asArray(Annotation.class).length);  // select op
+    
+    assertEquals(annotCount - 5, annotIndex.select().startAt(2).asArray(Annotation.class).length);
     
     Annotation[] tokensAndSentencesAndPhrases = annotIndex.select().asArray(Annotation.class);
     JCas jcas = null;
@@ -761,6 +763,9 @@ public class AnnotationIteratorTest extends TestCase {
 //                      +--------+
 //  Sentences                +--------+
 //                                +----------+
+//  one xtr sent                    +-----------------+  (12, 31)
+//
+//  Phrases             some overlap, some dont, 3-7 length
 //
 //  bound4strict                   +------------------+            
 //  sentence4strict                 +-----------------------------+
@@ -802,16 +807,16 @@ public class AnnotationIteratorTest extends TestCase {
      }
    }
    
-   // create overlapping phrases
-   // begin =  0,  6,  10, 14, ...
-   // end   =  5,  9,  16, 19, ...
+   // create overlapping and non-overlapping phrases
+   // begin =  0,  6,  9,  15, 21, 24, 30, 36, ...
+   // end   =  5,  9,  16, 20, 24, 31, 35, 39, ...
    
    int beginAlt = 0, endAlt = 0;
    for (int i = 0; i < text.length() - 10; i += 5) {
      ++annotCount;
      ir.addFS(fs = this.cas.createAnnotation(this.phraseType,  i + beginAlt, i + 5 + endAlt));
-     beginAlt = (beginAlt == 1) ? -1 : beginAlt + 1;
-     endAlt = (endAlt == -1) ? 1 : endAlt - 1;
+     beginAlt = (beginAlt == 1) ? -1 : beginAlt + 1; // sequence: start @ 0, then 1, -1, 0, 1, ...
+     endAlt = (endAlt == -1) ? 1 : endAlt - 1; //sequence: start At 0, then -1, 1, 0, -1, ...
      if (showFSs) {
        System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
      }

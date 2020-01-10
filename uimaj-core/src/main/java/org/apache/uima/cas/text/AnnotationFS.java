@@ -88,6 +88,7 @@ public interface AnnotationFS extends AnnotationBaseFS {
    * the begin/end offsets.
    * 
    * @see #trim()
+   * @param aPredicate the predicate used to identify  whitespace
    */
   void trim(IntPredicate aPredicate);
 }
