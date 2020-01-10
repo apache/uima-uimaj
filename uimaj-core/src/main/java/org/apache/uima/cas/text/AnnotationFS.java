@@ -87,7 +87,8 @@ public interface AnnotationFS extends AnnotationBaseFS {
    * Strips leading and trailing characters matching the given predicate by increasing/decreasing 
    * the begin/end offsets.
    * 
-   * @see #trim()
+   * @see #trim()\
+   * @param aPredicate the predicate used to identify whitespace
    */
   void trim(IntPredicate aPredicate);
 }
