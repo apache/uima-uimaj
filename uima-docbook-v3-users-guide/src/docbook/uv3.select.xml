@@ -421,18 +421,20 @@ FSIterator&lt;Token&gt; token_iterator =
           <term><emphasis role="">startAt</emphasis></term>
           <listitem>
             <para>position the starting point of any iteration.  
-			        <code>startAt(xxx)</code> takes two forms, each of which has, in turn 2 subforms.  
-			        The form using <code>begin, end</code> is only valid for Annotation Indexes.
-			        <programlisting>startAt(fs);          // fs specifies a feature structure 
+			        <code>startAt(...)</code> can be used for general sorted indexes, and also has special
+			        formats only usable for Annotation Indexes.   
+			        <programlisting>// Forms for any sorted index
+startAt(fs);          // fs specifies a feature structure 
                       // indicating the starting position
              
 startAt(fs, shifted); // same as above, but after positioning, 
                       // shift to the right or left by the shift 
-                      // amount which can be positive or negative
-             
+                      // amount which can be positive or negative             
 
-// the next two forms are only valid for AnnotationIndex sources
-   
+// Forms for AnnotationIndex sources
+
+startAt(begin);       // sets no TypePriorities, and starts at the
+                      //   leftmost annotation whose begin is >= begin   
 startAt(begin, end);  // start at the position indicated by begin/end
 
 startAt(begin, end, shifted) // same as above, 

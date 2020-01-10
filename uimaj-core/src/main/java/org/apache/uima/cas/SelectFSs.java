@@ -226,6 +226,17 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @return the updated SelectFSs object
    */
   SelectFSs<T> startAt(FeatureStructure fs);
+  
+  /**
+   * Starting Position specification - For Annotation Indexes, specifies which FS to start at.
+   * Sets no typepriorities.
+   * Positions to the leftmost (if there are multiple equal ones) Annotation 
+   *   whose begin is >= begin 
+   * @param begin the begin bound
+   * @return the updated SelectFSs object
+   */
+  SelectFSs<T> startAt(int begin);   // requires Annotation Index, no type priorities
+
   /**
    * Starting Position specification - For Annotation Indexes, specifies which FS to start at. 
    * @param begin the begin bound

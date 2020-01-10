@@ -383,6 +383,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 //  }
 
   @Override
+  public SelectFSs_impl<T> startAt(int begin) {
+    this.isTypePriority = false;
+    this.startingFs = makePosAnnot(begin, Integer.MAX_VALUE);
+    return this;
+  }
+  
+  @Override
   public SelectFSs_impl<T> startAt(int begin, int end) {  // AI
     this.startingFs = makePosAnnot(begin, end);
     return this;
