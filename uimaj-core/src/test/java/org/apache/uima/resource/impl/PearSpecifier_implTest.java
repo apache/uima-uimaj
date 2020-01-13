@@ -19,6 +19,7 @@
 package org.apache.uima.resource.impl;
 
 import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -45,34 +46,42 @@ public class PearSpecifier_implTest extends TestCase {
   public void testProducePearResource() throws Exception {
     PearSpecifier specifier = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
     specifier.setPearPath("/home/user/uimaApp/installedPears/testpear");
-    NameValuePair[] pearParameters = new NameValuePair[2];
-    pearParameters[0] = UIMAFramework.getResourceSpecifierFactory().createNameValuePair();
-    pearParameters[0].setName("param1");
-    pearParameters[0].setValue("val1");
-    pearParameters[1] = UIMAFramework.getResourceSpecifierFactory().createNameValuePair();
-    pearParameters[1].setName("param2");
-    pearParameters[1].setValue("val2");
-    specifier.setPearParameters(pearParameters);  
+    specifier.setParameters(new Parameter_impl("legacyParam1", "legacyVal1"),
+        new Parameter_impl("legacyParam2", "legacyVal2"));
+    specifier.setPearParameters(new NameValuePair_impl("param1", "stringVal1"), 
+        new NameValuePair_impl("param2", "stringVal2"));
       
     //compare created specifier with available test specifier
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("XmlParserTest/TestPearSpecifier.xml"));
     PearSpecifier pearSpec = UIMAFramework.getXMLParser().parsePearSpecifier(in);
     
-    Assert.assertEquals(pearSpec.getPearPath(), specifier.getPearPath());
-    Assert.assertEquals(pearSpec.getPearParameters()[0].getValue(), specifier.getPearParameters()[0].getValue());
-    Assert.assertEquals(pearSpec.getPearParameters()[1].getValue(), specifier.getPearParameters()[1].getValue());   
+    assertThat(specifier.getPearPath()).isEqualTo(pearSpec.getPearPath());
+
+    assertThat(specifier.getParameters())
+        .usingElementComparatorOnFields("name", "value")
+        .containsExactly(pearSpec.getParameters());
+
+    assertThat(specifier.getPearParameters())
+        .usingElementComparatorOnFields("name", "value")
+        .containsExactly(pearSpec.getPearParameters());
+    
     
     //compare created specifier with a manually create pear specifier
     PearSpecifier manPearSpec = new PearSpecifier_impl();
     manPearSpec.setPearPath("/home/user/uimaApp/installedPears/testpear");
-    manPearSpec.setPearParameters(new NameValuePair[] { new NameValuePair_impl("param1", "val1"),
-        new NameValuePair_impl("param2", "val2") });
+    manPearSpec.setParameters(new Parameter_impl("legacyParam1", "legacyVal1"),
+            new Parameter_impl("legacyParam2", "legacyVal2"));
+    manPearSpec.setPearParameters(new NameValuePair_impl("param1", "stringVal1"),
+        new NameValuePair_impl("param2", "stringVal2"));
 
-    Assert.assertEquals(manPearSpec.getPearPath(), specifier.getPearPath());
-    Assert.assertEquals(manPearSpec.getPearParameters()[0].getValue(), specifier.getPearParameters()[0].getValue());
-    Assert.assertEquals(manPearSpec.getPearParameters()[1].getValue(), specifier.getPearParameters()[1].getValue());   
-
+    assertThat(specifier.getParameters())
+        .usingElementComparatorOnFields("name", "value")
+        .containsExactly(manPearSpec.getParameters());
+    
+    assertThat(specifier.getPearParameters())
+        .usingElementComparatorOnFields("name", "value")
+        .containsExactly(manPearSpec.getPearParameters());
   }
   
   /*
@@ -82,6 +91,8 @@ public class PearSpecifier_implTest extends TestCase {
     try {
       PearSpecifier pearSpec = new PearSpecifier_impl();
       pearSpec.setPearPath("/home/user/uimaApp/installedPears/testpear");
+      pearSpec.setParameters(new Parameter_impl("param1", "val1"),
+              new Parameter_impl("param2", "val2"));
       pearSpec.setPearParameters(new NameValuePair[] { new NameValuePair_impl("param1", "val1"),
           new NameValuePair_impl("param2", "val2") });
 

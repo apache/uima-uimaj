@@ -43,7 +43,46 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
   public void setPearPath(String aPearPath);
 
   /**
-   * Gets pearParameters that may be read by the pear resource class when it is initialized.
+   * Gets legacy string-valued parameters that may be read by the pear resource class when it is
+   * initialized. These parameters are represented as follows in the PEAR specifier XML:
+   * 
+   * <pre>{@code
+   * <parameters>
+   *   <parameter name="param1" value="val1"/>
+   * </parameters>  
+   * }</pre>
+   * 
+   * @return an array of parameters. This will never return <code>null</code>.
+   * 
+   * @deprecated These parameters only support string values. Better use
+   *             {@link #setPearParameters(NameValuePair[])}.
+   */
+  public Parameter[] getParameters();
+
+  /**
+   * Sets legacy string-valued parameters that may be read by the pear resource class when it is 
+   * initialized.
+   * 
+   * @param parameters the Parameters to set.
+   * 
+   * @see #getParameters()
+   * @deprecated These parameters only support string values. Better use
+   *             {@link #getPearParameters()}.
+   */
+  public void setParameters(Parameter... parameters);
+  
+  /**
+   * Gets parameters that may be read by the pear resource class when it is initialized. These 
+   * parameters are represented as follows in the PEAR specifier XML:
+   * 
+   * <pre>{@code
+   * <pearParameters>
+   *   <nameValuePair>
+   *    <name>param1</name>
+   *    <value><string>val1</string></value>
+   *   </nameValuePair>
+   * </pearParameters>
+   * }</pre>
    * 
    * @return an array of pearParameters.  This will never return <code>null</code>.
    */
@@ -53,6 +92,8 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
    * Sets pearParameters that may be read by the pear resource class when it is initialized.
    * 
    * @param pearParameters the pearParameters to set.
+   * 
+   * @see #getPearParameters()
    */
-  public void setPearParameters(NameValuePair[] pearParameters);
+  public void setPearParameters(NameValuePair... pearParameters);
 }

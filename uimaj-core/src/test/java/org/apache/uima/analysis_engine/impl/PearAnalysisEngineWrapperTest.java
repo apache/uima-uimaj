@@ -18,6 +18,8 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,8 +28,8 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.PearSpecifier;
+import org.apache.uima.resource.impl.Parameter_impl;
 import org.apache.uima.resource.impl.PearSpecifier_impl;
-import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.Assert;
@@ -36,6 +38,7 @@ import junit.framework.TestCase;
 
 public class PearAnalysisEngineWrapperTest extends TestCase {
 
+  // This parameter is defined in the PEAR specifier file!
   private final static String PARAMETER_NAME = "StringParam";
 
   private final static String PARAMETER_VALUE = "test";
@@ -70,30 +73,45 @@ public class PearAnalysisEngineWrapperTest extends TestCase {
 
   public void testInitializeWithOverride() throws Exception {
 
-    PearSpecifier pearSpecifier = this.createPearSpecifierWithParameters();
+    PearSpecifier_impl pearSpecifier = new PearSpecifier_impl();
+    pearSpecifier.setPearPath(this.installedPearPackage.getRootDirectory().toString());
+    pearSpecifier.setPearParameters(new NameValuePair_impl(PARAMETER_NAME, PARAMETER_VALUE_OVERRIDE));
 
-    boolean initialized = this.pearAnalysisEngineWrapper.initialize(pearSpecifier,
-            new HashMap<String, Object>());
+    boolean initialized = this.pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
 
-    Assert.assertTrue("Pear was not initialized", initialized);
-
-    String stringParamValue = (String) this.pearAnalysisEngineWrapper
-            .getConfigParameterValue(PearAnalysisEngineWrapperTest.PARAMETER_NAME);
-
-    Assert.assertEquals("The value of StringParam was not overridden",
-            PearAnalysisEngineWrapperTest.PARAMETER_VALUE_OVERRIDE, stringParamValue);
+    assertThat(initialized).isTrue().as("Pear was initialized");
+    assertThat(pearAnalysisEngineWrapper.getConfigParameterValue(PARAMETER_NAME))
+        .isEqualTo(PARAMETER_VALUE_OVERRIDE)
+        .as("The value of StringParam was overridden");
   }
 
-  private PearSpecifier createPearSpecifierWithParameters() {
+  public void testInitializeWithOverrideLegacy() throws Exception {
 
-	NameValuePair pearParameterStringParam = new NameValuePair_impl();
-    pearParameterStringParam.setName(PearAnalysisEngineWrapperTest.PARAMETER_NAME);
-    pearParameterStringParam.setValue(PearAnalysisEngineWrapperTest.PARAMETER_VALUE_OVERRIDE);
+    PearSpecifier_impl pearSpecifier = new PearSpecifier_impl();
+    pearSpecifier.setPearPath(this.installedPearPackage.getRootDirectory().toString());
+    pearSpecifier.setParameters(new Parameter_impl(PARAMETER_NAME, PARAMETER_VALUE_OVERRIDE));
 
-    PearSpecifier_impl pearSpecifier_impl = new PearSpecifier_impl();
-    pearSpecifier_impl.setPearPath(this.installedPearPackage.getRootDirectory().toString());
-    pearSpecifier_impl.setPearParameters(new NameValuePair[] { pearParameterStringParam });
-    return pearSpecifier_impl;
+    boolean initialized = this.pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
+
+    assertThat(initialized).isTrue().as("Pear was initialized");
+    assertThat(pearAnalysisEngineWrapper.getConfigParameterValue(PARAMETER_NAME))
+        .isEqualTo(PARAMETER_VALUE_OVERRIDE)
+        .as("The value of StringParam was overridden");
+  }
+
+  public void testInitializeWithOverrideModernTakingPrecedenceOverLegacy() throws Exception {
+
+    PearSpecifier_impl pearSpecifier = new PearSpecifier_impl();
+    pearSpecifier.setPearPath(this.installedPearPackage.getRootDirectory().toString());
+    pearSpecifier.setParameters(new Parameter_impl(PARAMETER_NAME, "legacy"));
+    pearSpecifier.setPearParameters(new NameValuePair_impl(PARAMETER_NAME, "modern"));
+
+    boolean initialized = this.pearAnalysisEngineWrapper.initialize(pearSpecifier, new HashMap<>());
+
+    assertThat(initialized).isTrue().as("Pear was initialized");
+    assertThat(pearAnalysisEngineWrapper.getConfigParameterValue(PARAMETER_NAME))
+        .isEqualTo("modern")
+        .as("The value of StringParam was overridden");
   }
 
   public void testInitializeWithoutOverride() throws Exception {

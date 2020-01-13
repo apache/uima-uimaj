@@ -19,6 +19,9 @@
 
 package org.apache.uima.util.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 import java.io.File;
 
 import javax.xml.parsers.SAXParser;
@@ -186,11 +189,13 @@ public class XMLParser_implTest extends TestCase {
             JUnitExtension.getFile("XmlParserTest/TestPearSpecifier.xml"));
     PearSpecifier pearSpec = this.mXmlParser.parsePearSpecifier(in);
     assertEquals("/home/user/uimaApp/installedPears/testpear", pearSpec.getPearPath());
-    NameValuePair[] pearParams = pearSpec.getPearParameters();
-    assertEquals(2, pearParams.length);
-    assertEquals("param1", pearParams[0].getName());
-    assertEquals("val1", pearParams[0].getValue());
-    assertEquals("param2", pearParams[1].getName());
-    assertEquals("val2", pearParams[1].getValue());  
+    
+    assertThat(pearSpec.getParameters())
+        .extracting(Parameter::getName, Parameter::getValue)
+        .containsExactly(tuple("param1", "val1"), tuple("param2", "val2"));
+
+    assertThat(pearSpec.getPearParameters())
+        .extracting(NameValuePair::getName, NameValuePair::getValue)
+        .containsExactly(tuple("param1", "stringVal1"), tuple("param2", "stringVal2"));
   }
 }

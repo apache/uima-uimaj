@@ -65,10 +65,13 @@
 			<artifactId>junit</artifactId>
 			<scope>compile</scope>  <!-- needed because dependency management has it as test -->
 		</dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
 		<dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
-      <version>1.6</version>
     </dependency>
 	</dependencies>
 </project>

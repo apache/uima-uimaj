@@ -18,14 +18,18 @@
  -->
 <pearSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
    <pearPath>/home/user/uimaApp/installedPears/testpear</pearPath>
+   <parameters>
+     <parameter name="legacyParam1" value="legacyVal1"/>
+     <parameter name="legacyParam2" value="legacyVal2"/>
+   </parameters>
    <pearParameters>
      <nameValuePair>
      	<name>param1</name>
-     	<value><string>val1</string></value>
+     	<value><string>stringVal1</string></value>
      </nameValuePair>
      <nameValuePair>
      	<name>param2</name>
-     	<value><string>val2</string></value>
+     	<value><string>stringVal2</string></value>
      </nameValuePair>
-   </pearParameters>  
+   </pearParameters>
 </pearSpecifier>

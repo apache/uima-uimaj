@@ -675,6 +675,18 @@
     <complexType>
       <sequence>
         <element name="pearPath" type="string"/>
+        <element name="parameters" minOccurs="0">
+          <complexType>
+            <sequence>
+              <element name="parameter" minOccurs="0" maxOccurs="unbounded">
+                <complexType>
+                  <attribute name="name" type="string"/>
+                  <attribute name="value" type="string"/>
+                </complexType>
+              </element>
+            </sequence>
+          </complexType>
+        </element>
         <element name="pearParameters" minOccurs="0">
           <complexType>
             <sequence>

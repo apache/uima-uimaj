@@ -40,6 +40,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.impl.ChildUimaContext_impl;
 import org.apache.uima.pear.tools.PackageBrowser;
+import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -267,6 +268,18 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
               .getAnalysisEngineMetaData();
       ConfigurationParameterSettings configurationParameterSettings = analysisEngineMetaData
               .getConfigurationParameterSettings();
+
+      // Legacy parameters that only support string values.
+      Parameter[] parameters = pearSpec.getParameters();
+
+      if (parameters != null) {
+        for (Parameter parameter : parameters) {
+          configurationParameterSettings.setParameterValue(parameter.getName(),
+                  parameter.getValue());
+        }
+      }      
+
+      // Parameters supporting arbitrary objects as values
       NameValuePair[] pearParameters = pearSpec.getPearParameters();
 
       if (pearParameters != null) {
