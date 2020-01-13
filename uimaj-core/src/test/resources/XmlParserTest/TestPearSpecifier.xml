@@ -25,7 +25,7 @@
      </nameValuePair>
      <nameValuePair>
       <name>param2</name>
-      <value><string>stringVal2</string></value>
+      <value><boolean>true</boolean></value>
      </nameValuePair>
    </pearParameters>
    <parameters>

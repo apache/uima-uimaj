@@ -49,7 +49,7 @@ public class PearSpecifier_implTest extends TestCase {
     specifier.setParameters(new Parameter_impl("legacyParam1", "legacyVal1"),
         new Parameter_impl("legacyParam2", "legacyVal2"));
     specifier.setPearParameters(new NameValuePair_impl("param1", "stringVal1"), 
-        new NameValuePair_impl("param2", "stringVal2"));
+        new NameValuePair_impl("param2", true));
       
     //compare created specifier with available test specifier
     XMLInputSource in = new XMLInputSource(
@@ -73,7 +73,7 @@ public class PearSpecifier_implTest extends TestCase {
     manPearSpec.setParameters(new Parameter_impl("legacyParam1", "legacyVal1"),
             new Parameter_impl("legacyParam2", "legacyVal2"));
     manPearSpec.setPearParameters(new NameValuePair_impl("param1", "stringVal1"),
-        new NameValuePair_impl("param2", "stringVal2"));
+        new NameValuePair_impl("param2", true));
 
     assertThat(specifier.getParameters())
         .usingElementComparatorOnFields("name", "value")
