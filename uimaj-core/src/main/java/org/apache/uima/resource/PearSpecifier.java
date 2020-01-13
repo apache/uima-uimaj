@@ -55,7 +55,7 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
    * @return an array of parameters. This will never return <code>null</code>.
    * 
    * @deprecated These parameters only support string values. Better use
-   *             {@link #setPearParameters(NameValuePair[])}.
+   *             {@link #getPearParameters}.
    */
   public Parameter[] getParameters();
 
@@ -67,7 +67,7 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
    * 
    * @see #getParameters()
    * @deprecated These parameters only support string values. Better use
-   *             {@link #getPearParameters()}.
+   *             {@link #setPearParameters}.
    */
   public void setParameters(Parameter... parameters);
   
