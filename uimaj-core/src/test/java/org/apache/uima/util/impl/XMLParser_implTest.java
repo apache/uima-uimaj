@@ -192,7 +192,7 @@ public class XMLParser_implTest extends TestCase {
     
     assertThat(pearSpec.getParameters())
         .extracting(Parameter::getName, Parameter::getValue)
-        .containsExactly(tuple("param1", "val1"), tuple("param2", "val2"));
+        .containsExactly(tuple("legacyParam1", "legacyVal1"), tuple("legacyParam2", "legacyVal2"));
 
     assertThat(pearSpec.getPearParameters())
         .extracting(NameValuePair::getName, NameValuePair::getValue)

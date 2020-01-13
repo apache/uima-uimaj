@@ -77,5 +77,5 @@ public class PearSpecifier_impl extends MetaDataObject_impl implements PearSpeci
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("pearSpecifier", new PropertyXmlInfo[] {
-      new PropertyXmlInfo("pearPath"), new PropertyXmlInfo("parameters"), new PropertyXmlInfo("pearParameters") });
+      new PropertyXmlInfo("pearPath"), new PropertyXmlInfo("pearParameters"), new PropertyXmlInfo("parameters") });
 }
