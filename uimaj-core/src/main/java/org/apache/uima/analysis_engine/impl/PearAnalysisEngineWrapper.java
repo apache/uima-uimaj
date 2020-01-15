@@ -50,6 +50,7 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
@@ -267,12 +268,24 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
               .getAnalysisEngineMetaData();
       ConfigurationParameterSettings configurationParameterSettings = analysisEngineMetaData
               .getConfigurationParameterSettings();
+
+      // Legacy parameters that only support string values.
       Parameter[] parameters = pearSpec.getParameters();
 
       if (parameters != null) {
         for (Parameter parameter : parameters) {
           configurationParameterSettings.setParameterValue(parameter.getName(),
                   parameter.getValue());
+        }
+      }      
+
+      // Parameters supporting arbitrary objects as values
+      NameValuePair[] pearParameters = pearSpec.getPearParameters();
+
+      if (pearParameters != null) {
+        for (NameValuePair pearParameter : pearParameters) {
+          configurationParameterSettings.setParameterValue(pearParameter.getName(),
+        		  pearParameter.getValue());
         }
       }
 

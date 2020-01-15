@@ -19,6 +19,9 @@
 
 package org.apache.uima.util.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 import java.io.File;
 
 import javax.xml.parsers.SAXParser;
@@ -34,6 +37,7 @@ import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.URISpecifier;
+import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
@@ -185,12 +189,13 @@ public class XMLParser_implTest extends TestCase {
             JUnitExtension.getFile("XmlParserTest/TestPearSpecifier.xml"));
     PearSpecifier pearSpec = this.mXmlParser.parsePearSpecifier(in);
     assertEquals("/home/user/uimaApp/installedPears/testpear", pearSpec.getPearPath());
-    Parameter[] params = pearSpec.getParameters();
-    assertEquals(2, params.length);
-    assertEquals("param1", params[0].getName());
-    assertEquals("val1", params[0].getValue());
-    assertEquals("param2", params[1].getName());
-    assertEquals("val2", params[1].getValue());  
-  }
+    
+    assertThat(pearSpec.getParameters())
+        .extracting(Parameter::getName, Parameter::getValue)
+        .containsExactly(tuple("legacyParam1", "legacyVal1"), tuple("legacyParam2", "legacyVal2"));
 
+    assertThat(pearSpec.getPearParameters())
+        .extracting(NameValuePair::getName, NameValuePair::getValue)
+        .containsExactly(tuple("param1", "stringVal1"), tuple("param2", true));
+  }
 }
