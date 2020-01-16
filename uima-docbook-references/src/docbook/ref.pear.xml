@@ -966,8 +966,14 @@ try {
     <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <pearSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
    <pearPath>/home/user/uimaApp/installedPears/testpear</pearPath>
-   <parameters>   <!-- optional -->
-      <parameter> <!-- any number, repeated -->
+   <pearParameters>     <!-- optional -->
+      <nameValuePair>   <!-- any number, repeated -->
+         <name>param1</name>
+         <value><string>stringVal1</string></value>
+      </nameValuePair>
+   </pearParameters>
+   <parameters>         <!-- optional legacy string-valued parameters -->
+      <parameter>       <!-- any number, repeated -->
         <name>name-of-the-parameter</name>
         <value>string-value</value>
       </parameter>
@@ -989,9 +995,20 @@ try {
       </para>
     </note>
     
-    <para>The optional <literal>parameters</literal> section, if used, specifies parameter values,
-      which are used to customize / override parameter values in the PEAR descriptor. 
+    <para>The optional <literal>pearParameters</literal> section, if used, specifies parameter values,
+      which are used to customize / override parameter values in the PEAR descriptor. The format
+      for parameter values used here is the same as in component parameters (see 
+      <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.aes.configuration_parameter_settings"/>).
       External Settings overrides continue to work for PEAR descriptors, and have precedence, if specified.
+    </para>
+
+    <para>Additionally, there can be a <literal>parameters</literal> section. This section supports
+    only string-valued parameters. Up to Apache UIMA version 2.10.4, this was the only way of
+    providing PEAR parameters. Starting with Apache UIMA version 2.10.4, this way of specifying
+    parameters is deprecated and should no longer be used. Support for will eventually be removed
+    in a future version of Apache UIMA. Parameters set in the <literal>pearParameters</literal> have
+    precedence over parameters defined in <literal>parameters</literal> section. For the time being,
+    both sections can be present simultaneously in a PEAR specifier.
     </para>
           
   </section>
