@@ -347,7 +347,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
                     : newClasspath + File.pathSeparator + parentClasspath;
         }        
         
-        FileSystem pfs = FileSystems.newFileSystem(theJarOrPear, null);
+        FileSystem pfs = FileSystems.newFileSystem(theJarOrPear, (ClassLoader) null);
         return pfs.getPath("/");
       } catch (IOException e) {
         throw new RuntimeException(e);
@@ -842,7 +842,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       Files.copy(container.rootOrig, pearOrJarCopy);    
 
       // put up a file system on the pear or jar
-      FileSystem pfs = FileSystems.newFileSystem(pearOrJarCopy, null);
+      FileSystem pfs = FileSystems.newFileSystem(pearOrJarCopy, (ClassLoader) null);
     
       // replace the .class files in this PEAR or Jar with corresponding v3 ones
       indent[0] += 2;
