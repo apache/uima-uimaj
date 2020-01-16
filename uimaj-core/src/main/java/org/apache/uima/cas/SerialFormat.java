@@ -96,6 +96,17 @@ public enum SerialFormat {
    *   used to reinitialize the CAS
    */
   COMPRESSED_TSI("bcas"),
+  
+  /**
+   * XML-serialized CAS, using xml version 1.1
+   */
+  XCAS_1_1("xcas"),
+
+  /**
+   * XML-serialized CAS, using xml version 1.1
+   */
+  XMI_1_1("xmi"),
+  
   ;
   
   private String defaultFileExtension;

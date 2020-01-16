@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.xml.transform.OutputKeys;
+
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
@@ -975,9 +977,32 @@ public class XCASSerializer {
    */
   public static void serialize(CAS aCAS, OutputStream aStream, boolean isFormattedOutput)
           throws SAXException, IOException {
-    XCASSerializer xcasSerializer = new XCASSerializer(aCAS.getTypeSystem());
-    XMLSerializer sax2xml = new XMLSerializer(aStream, isFormattedOutput);
-    xcasSerializer.serialize(aCAS, sax2xml.getContentHandler());
+    serialize(aCAS, aStream, isFormattedOutput, false);
   }
 
+  /**
+   * Serializes an XCAS to a stream.
+   * 
+   * @param aCAS
+   *          CAS to serialize.
+   * @param aStream
+   *          output stream to which to write the XCAS XML document
+   * @param isFormattedOutput
+   *          if true the XCAS will be serialized formatted   * 
+   * @param useXml_1_1
+   *          if true, the output serializer is set with the OutputKeys.VERSION to "1.1".         
+   * @throws SAXException
+   *           if a problem occurs during XCAS serialization
+   * @throws IOException
+   *           if an I/O failure occurs
+   */
+  public static void serialize(CAS aCAS, OutputStream aStream, boolean isFormattedOutput, boolean useXml_1_1)
+          throws SAXException, IOException {
+    XCASSerializer xcasSerializer = new XCASSerializer(aCAS.getTypeSystem());
+    XMLSerializer sax2xml = new XMLSerializer(aStream, isFormattedOutput);
+    if (useXml_1_1) {
+      sax2xml.setOutputProperty(OutputKeys.VERSION,"1.1");
+    }
+    xcasSerializer.serialize(aCAS, sax2xml.getContentHandler());
+  }
 }
