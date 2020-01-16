@@ -31,9 +31,11 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXNotRecognizedException;
@@ -99,7 +101,7 @@ public class XmiCasSerializerTest extends TestCase {
     assertTrue("XMI serialization of document text with bad XML 1.0 char should throw exception",
         caughtException);
     
-    //but when XML 1.1 output is being generated, don't fail on control chracters which are valid in 1.1.
+    //but when XML 1.1 output is being generated, don't fail on control characters which are valid in 1.1.
     if (XML1_1_SUPPORTED) {
       out = new FileOutputStream(this.outputFile);
       try {
@@ -110,6 +112,10 @@ public class XmiCasSerializerTest extends TestCase {
       finally {
         out.close();
       }
+      
+      this.outputFile.delete();
+      out = new FileOutputStream(this.outputFile);
+      CasIOUtils.save(cas, out, SerialFormat.XMI_1_1);
     }
   }
 

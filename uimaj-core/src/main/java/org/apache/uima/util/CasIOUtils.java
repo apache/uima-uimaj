@@ -30,7 +30,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.Arrays;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
@@ -57,7 +56,7 @@ import org.xml.sax.SAXException;
  * <ul>
  *   <li>save and load CASes, and to</li>
  *   <li>optionally include the CAS's Type System (abbreviated TS (only available for Compressed Form 6)) and optionally also include the CAS's indexes definition.</li>
- *   <li>The combinaton of Type System and Indexes definition is called TSI.
+ *   <li>The combinatison of Type System and Indexes definition is called TSI.
  *     <ul>
  *       <li>The TSI's purpose: to replace the CAS's existing type system and index definition.</li>
  *       <li>The TS's purpose: to specify the type system used in the serialized data for format Compressed Form 6, in order to allow deserializing into some other type system in the CAS, leniently.</li>
@@ -446,6 +445,9 @@ public class CasIOUtils {
       switch (format) {
         case XMI:
           XmiCasSerializer.serialize(aCas, docOS);
+          break;
+        case XMI_1_1:
+          XmiCasSerializer.serialize(aCas, null, docOS, false, null, null, true);
           break;
         case XCAS:
           XCASSerializer.serialize(aCas, docOS, true); // true = formatted output
