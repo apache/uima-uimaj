@@ -58,7 +58,7 @@ import static org.apache.uima.cas.impl.Serialization.serializeWithCompression;
  * <ul>
  *   <li>save and load CASes, and to</li>
  *   <li>optionally include the CAS's Type System (abbreviated TS (only available for Compressed Form 6)) and optionally also include the CAS's indexes definition.</li>
- *   <li>The combinaton of Type System and Indexes definition is called TSI.
+ *   <li>The combination of Type System and Indexes definition is called TSI.
  *     <ul>
  *       <li>The TSI's purpose: to replace the CAS's existing type system and index definition.</li>
  *       <li>The TS's purpose: to specify the type system used in the serialized data for format Compressed Form 6, in order to allow deserializing into some other type system in the CAS, leniently.</li>
@@ -449,8 +449,14 @@ public class CasIOUtils {
         case XMI:
           XmiCasSerializer.serialize(aCas, docOS);
           break;
+        case XMI_1_1:
+          XmiCasSerializer.serialize(aCas, null, docOS, false, null, null, true);
+          break;
         case XCAS:
           XCASSerializer.serialize(aCas, docOS, true); // true = formatted output
+          break;
+        case XCAS_1_1:
+          XCASSerializer.serialize(aCas, docOS, true, true); // true = formatted output, use xml 1.1
           break;
         case SERIALIZED:
           writeJavaObject(Serialization.serializeCAS(aCas), docOS);
