@@ -452,6 +452,9 @@ public class CasIOUtils {
         case XCAS:
           XCASSerializer.serialize(aCas, docOS, true); // true = formatted output
           break;
+        case XCAS_1_1:
+          XCASSerializer.serialize(aCas, docOS, true, true); // true = formatted output, xml 1.1
+          break;  
         case SERIALIZED:
           writeJavaObject(Serialization.serializeCAS(aCas), docOS);
           break;
