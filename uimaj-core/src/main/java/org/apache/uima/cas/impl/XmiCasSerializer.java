@@ -26,6 +26,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.OutputKeys;
+
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContext;
@@ -55,6 +59,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
@@ -128,7 +134,19 @@ public class XmiCasSerializer {
 
   /** Namespace URI to use for UIMA types that have no namespace (the "default pacakge" in Java) */
   public static final String DEFAULT_NAMESPACE_URI = "http:///uima/noNamespace.ecore"; 
-  
+
+//  public final static boolean XML1_1_SUPPORTED;  // assuming xml 1.1 is always supported in today's (2020) java's
+//  static {
+//    boolean v;
+//    try {
+//      v = SAXParserFactory.newInstance().getFeature("http://xml.org/sax/features/xml-1.1");
+//    } catch (SAXNotRecognizedException | SAXNotSupportedException
+//        | ParserConfigurationException e) {
+//      v = false;
+//    }
+//    XML1_1_SUPPORTED = v;
+//  }
+
   public final static String SYSTEM_LINE_FEED;
   static {
       String lf = System.getProperty("line.separator");
@@ -333,10 +351,47 @@ public class XmiCasSerializer {
   public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream, boolean aPrettyPrint, 
           XmiSerializationSharedData aSharedData, Marker aMarker)
           throws SAXException {
+    serialize(aCAS, aTargetTypeSystem, aStream, aPrettyPrint, aSharedData, aMarker, false);
+  }
+
+  /**
+   * Serializes a Delta CAS to an XMI stream.  This version of this method allows many options to be configured.
+   *     
+   *    
+   * @param aCAS
+   *          CAS to serialize.
+   * @param aTargetTypeSystem
+   *          type system to which the produced XMI will conform. Any types or features not in the
+   *          target type system will not be serialized.  A null value indicates that all types and features
+   *          will be serialized.
+   * @param aStream
+   *          output stream to which to write the XMI document
+   * @param aPrettyPrint
+   *          if true the XML output will be formatted with newlines and indenting.  If false it will be unformatted.
+   * @param aSharedData
+   *          an optional container for data that is shared between the {@link XmiCasSerializer} and the {@link XmiCasDeserializer}.
+   *          See the JavaDocs for {@link XmiSerializationSharedData} for details.
+   * @param aMarker
+   *          an optional object that is used to filter and serialize a Delta CAS containing only
+   *          those FSs and Views created after Marker was set and preexisting FSs and views that were modified.
+   *          See the JavaDocs for {@link Marker} for details.
+   * @param useXml_1_1
+   *          if true, the output serializer is set with the OutputKeys.VERSION to "1.1".         
+   * @throws SAXException
+   *           if a problem occurs during XMI serialization
+   */
+  public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream, boolean aPrettyPrint, 
+          XmiSerializationSharedData aSharedData, Marker aMarker, boolean useXml_1_1) 
+          throws SAXException {
     XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(aTargetTypeSystem);
     XMLSerializer sax2xml = new XMLSerializer(aStream, aPrettyPrint);
+    if (useXml_1_1) {
+      sax2xml.setOutputProperty(OutputKeys.VERSION,"1.1");
+    }
     xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData, aMarker);
-  } 
+  }
+  
+  
   
   /***************************************************
    *       non-static XMI Serializer methods         * 
