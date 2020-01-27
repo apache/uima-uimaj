@@ -113,8 +113,9 @@
             <id>default-cli</id>
             <configuration>
               <excludes combine.children="append">
-                <!-- These test files are unreasonable to bear a license header -->
+                <!-- These files are unreasonable to bear a license header -->
                 <exclude>.github/**/*</exclude>
+                <exclude>CONTRIBUTING.md</exclude>
               </excludes>
             </configuration>
           </execution>
