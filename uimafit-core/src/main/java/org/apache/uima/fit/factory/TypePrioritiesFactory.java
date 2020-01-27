@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.TypePriorities;
@@ -37,11 +37,12 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-
-/**
- */
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class TypePrioritiesFactory {
+  private static final Logger LOG = LoggerFactory.getLogger(TypePrioritiesFactory.class);
+    
   private static final Object SCAN_LOCK = new Object();
 
   private static String[] typePriorityDescriptorLocations;
@@ -57,9 +58,14 @@ public final class TypePrioritiesFactory {
    *          a sequence of ordered type classes
    * @return type priorities created from the ordered JCas classes
    */
-  public static TypePriorities createTypePriorities(Class<?>... prioritizedTypes) {
+  @SafeVarargs
+  public static TypePriorities createTypePriorities(Class<? extends TOP>... prioritizedTypes) {
     String[] typeNames = new String[prioritizedTypes.length];
     for (int i = 0; i < prioritizedTypes.length; i++) {
+      if (!TOP.class.isAssignableFrom(prioritizedTypes[i])) {
+        throw new IllegalArgumentException("[" + prioritizedTypes[i] + "] is not a JCas type");
+      }
+      
       String typeName = prioritizedTypes[i].getName();
       if (typeName.startsWith(UIMA_BUILTIN_JCAS_PREFIX)) {
         typeName = "uima." + typeName.substring(UIMA_BUILTIN_JCAS_PREFIX.length());
@@ -104,13 +110,11 @@ public final class TypePrioritiesFactory {
         TypePriorities typePriorities = getXMLParser().parseTypePriorities(xmlInput);
         typePriorities.resolveImports();
         typePrioritiesList.add(typePriorities);
-        LogFactory.getLog(TypePrioritiesFactory.class).debug(
-                "Detected type priorities at [" + location + "]");
+        LOG.debug("Detected type priorities at [{}]", location);
       } catch (IOException e) {
         throw new ResourceInitializationException(e);
       } catch (InvalidXMLException e) {
-        LogFactory.getLog(TypePrioritiesFactory.class).warn(
-                "[" + location + "] is not a type priorities descriptor file. Ignoring.", e);
+        LOG.warn("[{}] is not a type priorities descriptor file. Ignoring.", location, e);
       }
     }
 
