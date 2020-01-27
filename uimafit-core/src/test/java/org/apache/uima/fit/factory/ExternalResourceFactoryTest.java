@@ -22,10 +22,9 @@ package org.apache.uima.fit.factory;
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createDependencyAndBind;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -78,7 +77,8 @@ import org.springframework.mock.jndi.SimpleNamingContextBuilder;
  * 
  */
 public class ExternalResourceFactoryTest extends ComponentTestBase {
-  private static final String EX_URI = "http://dum.my";
+  // https://issues.apache.org/jira/browse/UIMA-5555
+  // private static final String EX_URI = "http://dum.my";
 
   private static final String EX_FILE_1 = "src/test/resources/data/docs/test.xcas";
 
@@ -133,7 +133,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   public void testAccessResourceFromAE() throws Exception {
     AnalysisEngine ae = createEngine(
             DummyAE3.class,
-            DummyAE3.RES_KEY_1, createExternalResourceDescription(
+            DummyAE3.RES_KEY_1, createNamedResourceDescription(
                     "lala", AnnotatedResource.class,
                     AnnotatedResource.PARAM_VALUE, "1"));
 
@@ -167,8 +167,8 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     bindResources(desc);
 
     // Bind external resources for DummyAE2 - necessary because autowiring is disabled
-    bindExternalResource(desc, DummyAE2.RES_INJECTED_POJO1, "pojoName1");
-    bindExternalResource(desc, DummyAE2.RES_INJECTED_POJO2, "pojoName2");
+    bindResource(desc, DummyAE2.RES_INJECTED_POJO1, "pojoName1");
+    bindResource(desc, DummyAE2.RES_INJECTED_POJO2, "pojoName2");
 
     // Create a custom resource manager that allows to inject any Java object as an external
     // dependency
@@ -213,7 +213,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
 
   @Test
   public void testMultiBinding() throws Exception {
-    ExternalResourceDescription extDesc = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc = createResourceDescription(ResourceWithAssert.class);
 
     // Binding external resource to each Annotator individually
     AnalysisEngineDescription aed1 = createEngineDescription(MultiBindAE.class,
@@ -235,10 +235,10 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   
   @Test
   public void testMultiBoundNested() throws Exception {
-    ExternalResourceDescription extDesc = createExternalResourceDescription(
+    ExternalResourceDescription extDesc = createResourceDescription(
             IntermediateResourceWithAssert.class,
             IntermediateResourceWithAssert.PARAM_NESTED_RESOURCE,
-            createExternalResourceDescription(ResourceWithAssert.class));
+            createResourceDescription(ResourceWithAssert.class));
 
     // Binding external resource to each Annotator individually
     AnalysisEngineDescription aed1 = createEngineDescription(MultiBindAE.class,
@@ -264,8 +264,8 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
    */
   @Test
   public void testMultiValue() throws Exception {
-    ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
-    ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc2 = createResourceDescription(ResourceWithAssert.class);
 
     AnalysisEngineDescription aed = createEngineDescription(MultiValuedResourceAE.class,
             MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2));
@@ -282,8 +282,8 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   public void testMultiValue2() throws Exception {
     MultiValuedResourceAE.resources.clear();
     
-    ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
-    ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc2 = createResourceDescription(ResourceWithAssert.class);
 
     AnalysisEngineDescription aed = createEngineDescription(
             createEngineDescription(MultiValuedResourceAE.class,
@@ -306,8 +306,8 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   public void testMultiValue3() throws Exception {
     MultiValuedResourceAE.resources.clear();
     
-    ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
-    ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc2 = createResourceDescription(ResourceWithAssert.class);
 
     AnalysisEngineDescription aed = createEngineDescription(
             createEngineDescription(MultiValuedResourceAE.class,
@@ -328,17 +328,17 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
    */
   @Test
   public void testMultiValue4() throws Exception {
-    ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
-    ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc2 = createResourceDescription(ResourceWithAssert.class);
     
-    ExternalResourceDescription extDesc3 = createExternalResourceDescription(ResourceWithAssert.class);
-    ExternalResourceDescription extDesc4 = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc3 = createResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc4 = createResourceDescription(ResourceWithAssert.class);
 
-    ExternalResourceDescription mv1 = createExternalResourceDescription(MultiValuedResource.class,
+    ExternalResourceDescription mv1 = createResourceDescription(MultiValuedResource.class,
             MultiValuedResource.RES_RESOURCE_LIST, new ExternalResourceDescription[] { extDesc1,
                 extDesc2 });
 
-    ExternalResourceDescription mv2 = createExternalResourceDescription(MultiValuedResource.class,
+    ExternalResourceDescription mv2 = createResourceDescription(MultiValuedResource.class,
             MultiValuedResource.RES_RESOURCE_LIST, new ExternalResourceDescription[] { extDesc3,
                 extDesc4 });
 
@@ -359,9 +359,11 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
             AnnotatedResource.PARAM_VALUE, "2");
     bindResource(desc, DummyAE.RES_KEY_3, AnnotatedParametrizedDataResource.class,
             AnnotatedParametrizedDataResource.PARAM_EXTENSION, ".lala");
-    bindResource(desc, DummySharedResourceObject.class, EX_URI,
-            DummySharedResourceObject.PARAM_VALUE, "3",
-            DummySharedResourceObject.PARAM_ARRAY_VALUE, new String[] {"1", "2", "3"});
+    // https://issues.apache.org/jira/browse/UIMA-5555
+    //    bindResource(desc, DummySharedResourceObject.class, EX_URI,
+    //            DummySharedResourceObject.PARAM_VALUE, "3",
+    //            DummySharedResourceObject.PARAM_ARRAY_VALUE, new String[] {"1", "2", "3"});
+    
     // An undefined URL may be used if the specified file/remote URL does not exist or if
     // the network is down.
     bindResource(desc, DummyAE.RES_SOME_URL, new File(EX_FILE_1).toURI().toURL());
@@ -369,9 +371,11 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     bindResource(desc, DummyAE.RES_SOME_FILE, new File(EX_FILE_1));
     bindResource(desc, DummyAE.RES_JNDI_OBJECT, JndiResourceLocator.class,
             JndiResourceLocator.PARAM_NAME, "dictionaries/german");
-    createDependencyAndBind(desc, "legacyResource", DummySharedResourceObject.class, EX_URI,
-            DummySharedResourceObject.PARAM_VALUE, "3",
-            DummySharedResourceObject.PARAM_ARRAY_VALUE, new String[] {"1", "2", "3"});
+
+    // https://issues.apache.org/jira/browse/UIMA-5555
+    //    createDependencyAndBind(desc, "legacyResource", DummySharedResourceObject.class, EX_URI,
+    //            DummySharedResourceObject.PARAM_VALUE, "3",
+    //            DummySharedResourceObject.PARAM_ARRAY_VALUE, new String[] {"1", "2", "3"});
   }
 
   public static class DummyAE extends JCasAnnotator_ImplBase {
@@ -390,8 +394,9 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
 
     static final String RES_KEY_3 = "Key3";
 
-    @ExternalResource
-    DummySharedResourceObject sharedObject;
+    // https://issues.apache.org/jira/browse/UIMA-5555
+    //    @ExternalResource
+    //    DummySharedResourceObject sharedObject;
 
     static final String RES_SOME_URL = "SomeUrl";
 
@@ -432,12 +437,13 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
         throw new AnalysisEngineProcessException(e);
       }
 
-      assertNotNull(sharedObject);
-      assertEquals("3", sharedObject.getValue());
-      assertEquals(asList("1", "2", "3"), asList(sharedObject.getArrayValue()));
-
-      assertNotNull(sharedObject);
-      assertEquals(EX_URI, sharedObject.getUrl().toString());
+      // https://issues.apache.org/jira/browse/UIMA-5555
+      //      assertNotNull(sharedObject);
+      //      assertEquals("3", sharedObject.getValue());
+      //      assertEquals(asList("1", "2", "3"), asList(sharedObject.getArrayValue()));
+      //
+      //      assertNotNull(sharedObject);
+      //      assertEquals(EX_URI, sharedObject.getUrl().toString());
 
       assertNotNull(jndiPropertes);
       assertEquals("proper noun", jndiPropertes.get("Hans"));
@@ -452,11 +458,12 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
       assertTrue("URL [" + someFile.getUrl() + "] should end in [" + EX_FILE_1 + "]", someFile
               .getUrl().toString().endsWith(EX_FILE_1));
 
-      try {
-        assertNotNull(getContext().getResourceObject("legacyResource"));
-      } catch (ResourceAccessException e) {
-        throw new AnalysisEngineProcessException(e);
-      }
+      // https://issues.apache.org/jira/browse/UIMA-5555
+      //      try {
+      //        assertNotNull(getContext().getResourceObject("legacyResource"));
+      //      } catch (ResourceAccessException e) {
+      //        throw new AnalysisEngineProcessException(e);
+      //      }
     }
   }
 
@@ -619,14 +626,17 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     @ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
     private String extension;
 
+    @Override
     public InputStream getInputStream() throws IOException {
       return null;
     }
 
+    @Override
     public URI getUri() {
       return URI.create(uri + extension);
     }
 
+    @Override
     public URL getUrl() {
       return null;
     }
@@ -639,11 +649,12 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     @ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
     private String extension;
 
+    @Override
     public DataResource getDataResource(String[] aParams) throws ResourceInitializationException {
       List<String> params = new ArrayList<String>(Arrays.asList(aParams));
       params.add(AnnotatedDataResource.PARAM_EXTENSION);
       params.add(extension);
-      ExternalResourceDescription desc = ExternalResourceFactory.createExternalResourceDescription(
+      ExternalResourceDescription desc = ExternalResourceFactory.createNamedResourceDescription(
               null, AnnotatedDataResource.class, params.toArray(new String[params.size()]));
       return (DataResource) UIMAFramework.produceResource(desc.getResourceSpecifier(), null);
     }
@@ -658,17 +669,21 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     @ConfigurationParameter(name = PARAM_ARRAY_VALUE, mandatory = true)
     private String[] arrayValue;
 
-    private URI uri;
+    // https://issues.apache.org/jira/browse/UIMA-5555
+    //    private URI uri;
 
+    @Override
     public void load(DataResource aData) throws ResourceInitializationException {
       ConfigurationParameterInitializer.initialize(this, aData);
-      assertEquals(EX_URI, aData.getUri().toString());
-      uri = aData.getUri();
+      // https://issues.apache.org/jira/browse/UIMA-5555
+      //      assertEquals(EX_URI, aData.getUri().toString());
+      //      uri = aData.getUri();
     }
 
-    public URI getUrl() {
-      return uri;
-    }
+    // https://issues.apache.org/jira/browse/UIMA-5555
+    //    public URI getUrl() {
+    //      return uri;
+    //    }
 
     public String getValue() {
       return value;

@@ -21,7 +21,6 @@ package org.apache.uima.fit.component;
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
-import org.apache.uima.fit.internal.ExtendedLogger;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
@@ -30,20 +29,6 @@ import org.apache.uima.resource.ResourceInitializationException;
  */
 public abstract class JCasAnnotator_ImplBase extends
         org.apache.uima.analysis_component.JCasAnnotator_ImplBase {
-  private ExtendedLogger logger;
-
-  /**
-   * Get the logger.
-   * 
-   * @return the logger.
-   */
-  public ExtendedLogger getLogger() {
-    if (logger == null) {
-      logger = new ExtendedLogger(getContext());
-    }
-    return logger;
-  }
-
   @Override
   public void initialize(final UimaContext context) throws ResourceInitializationException {
     super.initialize(context);

@@ -21,7 +21,7 @@ package org.apache.uima.fit.cpe;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -57,7 +57,7 @@ import org.junit.Test;
 public class ExternalResourceFactoryTest {
   @Test
   public void testMultiBinding() throws Exception {
-    ExternalResourceDescription extDesc = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc = createResourceDescription(ResourceWithAssert.class);
 
     // Binding external resource to each Annotator individually
     AnalysisEngineDescription aed1 = createEngineDescription(MultiBindAE.class,
@@ -76,8 +76,8 @@ public class ExternalResourceFactoryTest {
    */
   @Test
   public void testMultiValue() throws Exception {
-    ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
-    ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc2 = createResourceDescription(ResourceWithAssert.class);
 
     AnalysisEngineDescription aed = createEngineDescription(MultiValuedResourceAE.class,
             MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2));
@@ -92,8 +92,8 @@ public class ExternalResourceFactoryTest {
   public void testMultiValue2() throws Exception {
     MultiValuedResourceAE.resources.clear();
 
-    ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
-    ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc2 = createResourceDescription(ResourceWithAssert.class);
 
     AnalysisEngineDescription aed = createEngineDescription(
             createEngineDescription(MultiValuedResourceAE.class,
@@ -115,8 +115,8 @@ public class ExternalResourceFactoryTest {
   public void testMultiValue3() throws Exception {
     MultiValuedResourceAE.resources.clear();
 
-    ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
-    ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc2 = createResourceDescription(ResourceWithAssert.class);
 
     AnalysisEngineDescription aed = createEngineDescription(
             createEngineDescription(MultiValuedResourceAE.class,
@@ -136,17 +136,17 @@ public class ExternalResourceFactoryTest {
    */
   @Test
   public void testMultiValue4() throws Exception {
-    ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
-    ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc2 = createResourceDescription(ResourceWithAssert.class);
 
-    ExternalResourceDescription extDesc3 = createExternalResourceDescription(ResourceWithAssert.class);
-    ExternalResourceDescription extDesc4 = createExternalResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc3 = createResourceDescription(ResourceWithAssert.class);
+    ExternalResourceDescription extDesc4 = createResourceDescription(ResourceWithAssert.class);
 
-    ExternalResourceDescription mv1 = createExternalResourceDescription(MultiValuedResource.class,
+    ExternalResourceDescription mv1 = createResourceDescription(MultiValuedResource.class,
             MultiValuedResource.RES_RESOURCE_LIST, new ExternalResourceDescription[] { extDesc1,
                 extDesc2 });
 
-    ExternalResourceDescription mv2 = createExternalResourceDescription(MultiValuedResource.class,
+    ExternalResourceDescription mv2 = createResourceDescription(MultiValuedResource.class,
             MultiValuedResource.RES_RESOURCE_LIST, new ExternalResourceDescription[] { extDesc3,
                 extDesc4 });
 
@@ -262,14 +262,17 @@ public class ExternalResourceFactoryTest {
     @ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
     private String extension;
 
+    @Override
     public InputStream getInputStream() throws IOException {
       return null;
     }
 
+    @Override
     public URI getUri() {
       return URI.create(uri + extension);
     }
 
+    @Override
     public URL getUrl() {
       return null;
     }
@@ -282,11 +285,12 @@ public class ExternalResourceFactoryTest {
     @ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
     private String extension;
 
+    @Override
     public DataResource getDataResource(String[] aParams) throws ResourceInitializationException {
       List<String> params = new ArrayList<String>(Arrays.asList(aParams));
       params.add(AnnotatedDataResource.PARAM_EXTENSION);
       params.add(extension);
-      ExternalResourceDescription desc = ExternalResourceFactory.createExternalResourceDescription(
+      ExternalResourceDescription desc = ExternalResourceFactory.createNamedResourceDescription(
               null, AnnotatedDataResource.class, params.toArray(new String[params.size()]));
       return (DataResource) UIMAFramework.produceResource(desc.getResourceSpecifier(), null);
     }

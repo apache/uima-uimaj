@@ -26,8 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.IllegalClassException;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.fit.factory.ExternalResourceFactory.ResourceValueType;
 import org.apache.uima.fit.internal.ReflectionUtil;
@@ -382,7 +381,7 @@ public final class ConfigurationParameterFactory {
       Object value = configurationData[i * 2 + 1];
 
       if (value == null
-              || ExternalResourceFactory.getExternalResourceParameterType(value) != ResourceValueType.NO_RESOURCE) {
+              || ExternalResourceFactory.getResourceParameterType(value) != ResourceValueType.NO_RESOURCE) {
         continue;
       }
 
@@ -558,7 +557,7 @@ public final class ConfigurationParameterFactory {
         settings.put(p.getName(), p.getValue());
       }
     } else {
-      throw new IllegalClassException("Unsupported resource specifier class [" + spec.getClass()
+      throw new IllegalArgumentException("Unsupported resource specifier class [" + spec.getClass()
               + "]");
     }
     return settings;
@@ -574,13 +573,13 @@ public final class ConfigurationParameterFactory {
    *          the parameter name.
    * @param value
    *          the parameter value.
-   * @throws IllegalClassException
+   * @throws IllegalArgumentException
    *           if the value is not of a supported type for the given specifier.
    */
   public static void setParameter(ResourceSpecifier aSpec, String name, Object value) {
     if (aSpec instanceof CustomResourceSpecifier) {
       if (!(value instanceof String || value == null)) {
-        throw new IllegalClassException(String.class, value);
+        throw new IllegalArgumentException("Value must be a string");
       }
       CustomResourceSpecifier spec = (CustomResourceSpecifier) aSpec;
 
@@ -625,7 +624,7 @@ public final class ConfigurationParameterFactory {
       md.getConfigurationParameterSettings().setParameterValue(name,
               convertParameterValue(param, value));
     } else {
-      throw new IllegalClassException("Unsupported resource specifier class [" + aSpec.getClass()
+      throw new IllegalArgumentException("Unsupported resource specifier class [" + aSpec.getClass()
               + "]");
     }
   }
