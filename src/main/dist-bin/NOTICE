@@ -1,12 +1,12 @@
 Apache UIMA uimaFIT
-Copyright 2012-2016 The Apache Software Foundation
+Copyright 2012-2019 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
 
 
 Apache UIMA uimaFIT - Core
-Copyright 2013-2016 The Apache Software Foundation
+Copyright 2013-2019 The Apache Software Foundation
 
 Copyright 2009-2012 Regents of the University of Colorado.
 All rights reserved.
@@ -18,14 +18,14 @@ All rights reserved.
 
 Apache UIMA uimaFIT - Collection Processing Engine support
 Apache UIMA uimaFIT - Legacy uimaFIT support
-Copyright 2012-2016 The Apache Software Foundation
+Copyright 2012-2019 The Apache Software Foundation
 
 
 Apache UIMA Base: uimaj-core
 Apache UIMA Base: jVinci: Vinci Transport Library
 Apache UIMA Base: uimaj-adapter-vinci: Vinci Adapter
 Apache UIMA Base: uimaj-cpe: Collection Processing Engine
-Copyright 2006-2015 The Apache Software Foundation
+Copyright 2006-2019 The Apache Software Foundation
 
 Portions of Apache UIMA were originally developed by
 International Business Machines Corporation and are
@@ -36,19 +36,23 @@ Copyright (c) 2003, 2006 IBM Corporation.
 
 
 Apache Commons IO
-Copyright 2002-2012 The Apache Software Foundation
+Copyright 2002-2017 The Apache Software Foundation
 
 
 Apache Commons Lang
-Copyright 2001-2011 The Apache Software Foundation
+Copyright 2001-2018 The Apache Software Foundation
 
 
 Commons Logging
-Copyright 2003-2013 The Apache Software Foundation
+Copyright 2003-2014 The Apache Software Foundation
   
   
-Spring Framework 3.2.16.RELEASE
-Copyright (c) 2002-2015 Pivotal, Inc.
+Spring Framework 4.3.22.RELEASE
+Copyright (c) 2002-2019 Pivotal, Inc.
+
+This product is licensed to you under the Apache License, Version 2.0
+(the "License"). You may not use this product except in compliance with
+the License.
 
 This product may include a number of subcomponents with separate
 copyright notices and license terms. Your use of the source code for

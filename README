@@ -1,5 +1,5 @@
 
-      Apache uimaFIT (TM) v2.5.0
+      Apache uimaFIT (TM) v3.0.0
       --------------------------
 
 
@@ -37,20 +37,20 @@ following list highlights some of the features uimaFIT provides:
      SimplePipeline.runPipeline(reader, ae1, ..., aeN, consumer1, ... consumerN)
 
 
-What's New in 2.5.0
+What's New in 3.0.0
 -------------------
 
-uimaFIT 2.5.0 is a minor feature and bugfix release. It should should serve as a drop-in replacement
-for previous uimaFIT 2.x versions.
+uimaFIT 3.0.0 is a major release because it upgrades uimaFIT to UIMA v3. Upgrading to the new version 
+may require minor adjustments to the code depending on uimaFIT.
 
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
-  https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12310570&version=12339544
+  https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12310570&version=12332458
 
 Supported Platforms
 -------------------
 
-uimaFIT requires Java 1.8 or higher, UIMA 2.10.3 or higher, and the Spring Framework 3.2.16 or higher.
+uimaFIT requires Java 1.8 or higher, UIMA 3.0.2 or higher, and the Spring Framework 4.3.22 or higher.
 
 
 Availability
@@ -59,7 +59,7 @@ Availability
 uimaFIT is licensed under the Apache License 2.0 and is available from the Apache UIMA project:
 
   http://uima.apache.org
-  http://svn.apache.org/repos/asf/uima/uimafit
+  https://github.com/apache/uima-uimafit
 
 uimaFIT is available via Maven Central. If you use Maven for your build environment, then you can
 add uimaFIT as a dependency to your pom.xml file with the following:
@@ -67,7 +67,7 @@ add uimaFIT as a dependency to your pom.xml file with the following:
   <dependency>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimafit-core</artifactId>
-    <version>2.5.0</version>
+    <version>3.0.0</version>
   </dependency>
 
 
@@ -78,11 +78,6 @@ uimafit-core           - the main uimaFIT module
 uimafit-cpe            - support for the Collection Processing Engine (multi-threaded pipelines)
 uimafit-maven          - a Maven plugin to automatically enhance UIMA components with uimaFIT
                          metadata and to generate XML descriptors for uimaFIT-enabled components.
-uimafit-legacy-support - allows uimaFIT 2.x.0 to use uimaFIT 1.4.x meta data like Java annotations
-                         and META-INF/org.uimafit/types.txt files. Pipelines mixing uimaFIT 1.4.x
-                         and 2.x components MUST be created using the 2.x factories, because the
-                         1.4.x factories will NOT understand how to handle uimaFIT 2.x components
-                         or auto-configuration.
 uimafit-spring         - an experimental module serving as a proof-of-concept for the integration of
                          UIMA with the Spring Framework. It is currently not considered finished and
                          uses invasive reflection in order to patch the UIMA framework such that it

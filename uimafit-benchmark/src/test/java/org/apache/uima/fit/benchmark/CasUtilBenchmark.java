@@ -31,6 +31,7 @@ import static org.apache.uima.fit.util.CasUtil.selectFS;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,8 +64,16 @@ public class CasUtilBenchmark {
       .measure(() -> select(cas, getType(cas, TYPE_NAME_TOKEN)))
       .run();
 
+    new Benchmark("CAS select Token v3", template)
+      .measure(() -> cas.select(getType(cas, TYPE_NAME_TOKEN)))
+      .run();
+
     new Benchmark("CAS select Token and iterate", template)
       .measure(() -> select(cas, getType(cas, TYPE_NAME_TOKEN)).forEach(v -> {}))
+      .run();
+
+    new Benchmark("CAS select Token and iterate v3", template)
+      .measure(() -> cas.select(getType(cas, TYPE_NAME_TOKEN)).forEach(v -> {}))
       .run();
 
     new Benchmark("CAS select Sentence", template)
@@ -83,12 +92,20 @@ public class CasUtilBenchmark {
       .measure(() -> selectFS(cas, getType(cas, CAS.TYPE_NAME_TOP)).forEach(v -> {}))
       .run();
 
+    new Benchmark("CAS select TOP and iterate v3", template)
+      .measure(() -> cas.select(getType(cas, CAS.TYPE_NAME_TOP)).forEach(v -> {}))
+      .run();
+
     new Benchmark("CAS select ALL", template)
       .measure(() -> selectAll(cas))
       .run();
     
     new Benchmark("CAS select ALL and iterate", template)
       .measure(() -> selectAll(cas).forEach(v -> {}))
+      .run();
+
+    new Benchmark("CAS select ALL and iterate v3", template)
+      .measure(() -> cas.select().forEach(v -> {}))
       .run();
   }
   
@@ -105,6 +122,14 @@ public class CasUtilBenchmark {
         Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
         Type tokenType = getType(cas, TYPE_NAME_TOKEN);
         select(cas, sentenceType).forEach(s -> selectCovered(tokenType, s).forEach(t -> {}));
+      })
+      .run();
+
+    new Benchmark("CAS selectCovered v3", template)
+      .measure(() -> {
+        Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
+        Type tokenType = getType(cas, TYPE_NAME_TOKEN);
+        cas.select(sentenceType).forEach(s -> cas.select(tokenType).coveredBy((AnnotationFS) s).forEach(t -> {}));
       })
       .run();
 
@@ -135,6 +160,14 @@ public class CasUtilBenchmark {
         Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
         Type tokenType = getType(cas, TYPE_NAME_TOKEN);
         select(cas, tokenType).forEach(s -> selectCovering(sentenceType, s));
+      })
+      .run();
+
+    new Benchmark("CAS selectCovering v3", template)
+      .measure(() -> {
+        Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
+        Type tokenType = getType(cas, TYPE_NAME_TOKEN);
+        cas.select(tokenType).forEach(t -> cas.select(sentenceType).covering((AnnotationFS) t).forEach(s -> {}));
       })
       .run();
 

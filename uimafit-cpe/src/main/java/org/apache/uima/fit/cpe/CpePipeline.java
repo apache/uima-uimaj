@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
@@ -33,6 +32,8 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.InvalidXMLException;
 import org.xml.sax.SAXException;
 
 /**
@@ -59,12 +60,17 @@ public final class CpePipeline {
    *           referenced from the CPE descriptor
    * @throws CpeDescriptorException
    *           if there was a problem configuring the CPE descriptor
-   * @throws UIMAException
+   * @throws ResourceInitializationException 
    *           if there was a problem initializing or running the CPE.
+   * @throws InvalidXMLException 
+   *           if there was a problem initializing or running the CPE.
+   * @throws AnalysisEngineProcessException 
+   *           if there was a problem running the CPE.
    */
   public static void runPipeline(final CollectionReaderDescription readerDesc,
-          final AnalysisEngineDescription... descs) throws UIMAException, SAXException,
-          CpeDescriptorException, IOException {
+          final AnalysisEngineDescription... descs)
+          throws SAXException, CpeDescriptorException, IOException, ResourceInitializationException,
+          InvalidXMLException, AnalysisEngineProcessException {
     // Create AAE
     final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
 
@@ -98,6 +104,7 @@ public final class CpePipeline {
 
     private boolean isProcessing = true;
 
+    @Override
     public void entityProcessComplete(CAS arg0, EntityProcessStatus arg1) {
       if (arg1.isException()) {
         for (Exception e : arg1.getExceptions()) {
@@ -106,6 +113,7 @@ public final class CpePipeline {
       }
     }
 
+    @Override
     public void aborted() {
       synchronized (this) {
         if (isProcessing) {
@@ -115,10 +123,12 @@ public final class CpePipeline {
       }
     }
 
+    @Override
     public void batchProcessComplete() {
       // Do nothing
     }
 
+    @Override
     public void collectionProcessComplete() {
       synchronized (this) {
         if (isProcessing) {
@@ -128,14 +138,17 @@ public final class CpePipeline {
       }
     }
 
+    @Override
     public void initializationComplete() {
       // Do nothing
     }
 
+    @Override
     public void paused() {
       // Do nothing
     }
 
+    @Override
     public void resumed() {
       // Do nothing
     }
