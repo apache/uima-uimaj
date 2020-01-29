@@ -46,6 +46,12 @@ public class ResourceManagerFactory {
     return resourceManagerCreator.newResourceManager();
   }
   
+  /**
+   * Mind that returning a singleton resource manager from {@link ResourceManagerFactory} is
+   * generally a bad idea because it gets destroyed on a regular basis. For this reason, it is
+   * called {@link ResourceManagerFactory#newResourceManager()} and not
+   * {@code getResourceManager()}.
+   */
   public static synchronized void setResourceManagerCreator(
           ResourceManagerCreator resourceManagerCreator) {
     ResourceManagerFactory.resourceManagerCreator = resourceManagerCreator;

@@ -18,7 +18,11 @@
  */
 package org.apache.uima.fit.pipeline;
 
+import static org.apache.uima.UIMAFramework.produceAnalysisEngine;
+import static org.apache.uima.UIMAFramework.produceCollectionReader;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.internal.ResourceManagerFactory.newResourceManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,10 +30,12 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.util.LifeCycleUtil;
@@ -54,19 +60,82 @@ public class JCasIterator implements Iterator<JCas> {
 
   private final JCas jCas;
 
+  private final ResourceManager resMgr;
+  
   private boolean selfComplete = false;
 
   private boolean selfDestroy = false;
   
   private boolean destroyed = false;
   
-  private ResourceManager resMgr;
-  
   private boolean resourceManagerCreatedInternally = false;
 
   /**
+   * Iterate over the documents loaded by the given reader, running the analysis engines on each
+   * one before yielding them. By default, components <b>DO get</b> life-cycle events, such as
+   * collectionProcessComplete or destroy when this constructor is used.
+   * 
+   * @param aReader
+   *          The CollectionReader for loading documents.
+   * @param aEngines
+   *          The AnalysisEngines for processing documents.
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization of the components
+   * @throws CASException
+   *           if the JCas could not be initialized
+   */
+  public JCasIterator(final CollectionReaderDescription aReader,
+          final AnalysisEngineDescription... aEngines)
+          throws CASException, ResourceInitializationException {
+    this(null, aReader, aEngines);
+  }
+  
+  /**
+   * Iterate over the documents loaded by the given reader, running the analysis engines on each
+   * one before yielding them. By default, components <b>DO get</b> life-cycle events, such as
+   * collectionProcessComplete or destroy when this constructor is used.
+   * 
+   * @param aResMgr
+   *          The {@link ResourceManager} used to create the components and the JCas. If this
+   *          parameter is {@code null} then {@link ResourceManagerFactory#newResourceManager()}
+   *          will be used to obtain a resource manager. If a new resource manager was internally
+   *          created, it is destroyed at the end of the pipeline (if {@link #isSelfDestroy()}).
+   * @param aReader
+   *          The CollectionReader for loading documents.
+   * @param aEngines
+   *          The AnalysisEngines for processing documents.
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization of the components
+   * @throws CASException
+   *           if the JCas could not be initialized
+   */
+  public JCasIterator(final ResourceManager aResMgr, final CollectionReaderDescription aReader,
+          final AnalysisEngineDescription... aEngines)
+          throws CASException, ResourceInitializationException {
+    selfComplete = true;
+    selfDestroy = true;
+    
+    if (aResMgr == null) {
+      resMgr = newResourceManager();
+      resourceManagerCreatedInternally = true;
+    }
+    else {
+      resMgr = aResMgr;
+      resourceManagerCreatedInternally = false;
+    }
+    
+    collectionReader = produceCollectionReader(aReader, resMgr, null);
+
+    analysisEngines = new AnalysisEngine[] {
+        produceAnalysisEngine(createEngineDescription(aEngines), resMgr, null) };
+    
+    jCas = createCas(resMgr, collectionReader, analysisEngines);
+    collectionReader.typeSystemInit(jCas.getTypeSystem());
+  }
+  
+  /**
    * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
-   * one before yielding them. By default, components get no lifecycle events, such as
+   * one before yielding them. By default, components <b>do NOT get</b> life-cycle events, such as
    * collectionProcessComplete or destroy when this constructor is used.
    * 
    * @param aReader
@@ -85,40 +154,8 @@ public class JCasIterator implements Iterator<JCas> {
   }
 
   /**
-   * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
-   * one before yielding them. By default, components get no lifecycle events, such as
-   * collectionProcessComplete or destroy when this constructor is used.
-   * @param aResMgr 
-   *          The ResourceManager. Should be the one also used by the CollectionReader and 
-   *          AnalysisEngines.
-   * @param aReader
-   *          The CollectionReader for loading documents.
-   * @param aEngines
-   *          The AnalysisEngines for processing documents.
-   * @throws ResourceInitializationException
-   *           if a failure occurs during initialization of the components
-   * @throws CASException
-   *           if the JCas could not be initialized
-   */
-  public JCasIterator(final ResourceManager aResMgr, final CollectionReader aReader,
-          final AnalysisEngine... aEngines) throws CASException, ResourceInitializationException {
-    resMgr = aResMgr;
-    collectionReader = aReader;
-    analysisEngines = aEngines;
-
-    Collection<MetaDataObject> metaData = new ArrayList<MetaDataObject>();
-    metaData.add(aReader.getProcessingResourceMetaData());
-    for (AnalysisEngine ae : aEngines) {
-      metaData.add(ae.getProcessingResourceMetaData());
-    }
-
-    jCas = CasCreationUtils.createCas(metaData, null, aResMgr).getJCas();
-    collectionReader.typeSystemInit(jCas.getTypeSystem());
-  }
-
-  /**
    * Iterate over the documents loaded by the CollectionReader. (Uses an JCasAnnotatorAdapter to
-   * create the document JCas.) By default, components get no lifecycle events, such as
+   * create the document JCas.) By default, components <b>do NOT get</b> life-cycle events, such as
    * collectionProcessComplete or destroy when this constructor is used.
    * 
    * @param aReader
@@ -135,7 +172,57 @@ public class JCasIterator implements Iterator<JCas> {
           ResourceInitializationException {
     this(aReader, createEngine(NoOpAnnotator.class, aTypeSystemDescription));
   }
+  
+  /**
+   * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
+   * one before yielding them. By default, components <b>do NOT get</b> life-cycle events, such as
+   * collectionProcessComplete or destroy when this constructor is used.
+   * 
+   * @param aResMgr
+   *          The {@link ResourceManager} used to create the JCas. Should be the one also used by
+   *          the CollectionReader and the AnalysisEngines. If this parameter is {@code null} then
+   *          {@link ResourceManagerFactory#newResourceManager()} will be used to obtain a resource
+   *          manager. If a new resource manager was internally created, it is destroyed at the end
+   *          of the pipeline (if {@link #isSelfDestroy()}).
+   * @param aReader
+   *          The CollectionReader for loading documents.
+   * @param aEngines
+   *          The AnalysisEngines for processing documents.
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization of the components
+   * @throws CASException
+   *           if the JCas could not be initialized
+   */
+  public JCasIterator(final ResourceManager aResMgr, final CollectionReader aReader,
+          final AnalysisEngine... aEngines) throws CASException, ResourceInitializationException {
+    if (aResMgr == null) {
+      resMgr = newResourceManager();
+      resourceManagerCreatedInternally = true;
+    }
+    else {
+      resMgr = aResMgr;
+      resourceManagerCreatedInternally = false;
+    }
+    
+    collectionReader = aReader;
+    analysisEngines = aEngines;
 
+    jCas = createCas(resMgr, collectionReader, analysisEngines);
+    collectionReader.typeSystemInit(jCas.getTypeSystem());
+  }
+
+  private JCas createCas(final ResourceManager aResMgr, final CollectionReader aReader,
+          final AnalysisEngine... aEngines) throws CASException, ResourceInitializationException
+  {
+    Collection<MetaDataObject> metaData = new ArrayList<MetaDataObject>();
+    metaData.add(aReader.getProcessingResourceMetaData());
+    for (AnalysisEngine ae : aEngines) {
+      metaData.add(ae.getProcessingResourceMetaData());
+    }
+
+    return CasCreationUtils.createCas(metaData, null, aResMgr).getJCas();
+  }
+  
   @Override
   public boolean hasNext() {
     if (destroyed) {
