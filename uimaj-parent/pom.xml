@@ -420,11 +420,35 @@
                   <pluginExecutions>
                     <pluginExecution>
                       <pluginExecutionFilter>
+                        <!--
+                          - The Maven Dev Connector for Eclipse m2e is no longer maintained. We copy
+                          - the relevant part of the lifecycle mapping for the maven-plugin-plugin
+                          - here.
+                          -
+                          - See https://github.com/ifedorenko/com.ifedorenko.m2e.mavendev/blob/master/com.ifedorenko.m2e.mavendev/lifecycle-mapping-metadata.xml 
+                          -->
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-plugin-plugin</artifactId>
                         <versionRange>[3.5.2,)</versionRange>
                         <goals>
                           <goal>descriptor</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <execute>
+                          <runOnIncremental>false</runOnIncremental>
+                        </execute>
+                      </action>
+                    </pluginExecution>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <!--
+                          - See comment on maven-plugin-plugin descriptor goal mapping above.
+                          -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-plugin-plugin</artifactId>
+                        <versionRange>[3.5.2,)</versionRange>
+                        <goals>
                           <goal>helpmojo</goal>
                         </goals>
                       </pluginExecutionFilter>
