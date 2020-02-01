@@ -35,6 +35,7 @@ import org.apache.uima.fit.internal.propertyeditors.PropertyEditorUtil;
 import org.apache.uima.resource.ConfigurableDataResourceSpecifier;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
+import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.impl.Parameter_impl;
@@ -547,6 +548,10 @@ public final class ConfigurationParameterFactory {
       for (Parameter p : ((CustomResourceSpecifier) spec).getParameters()) {
         settings.put(p.getName(), p.getValue());
       }
+    } else if (spec instanceof PearSpecifier) {
+      for (Parameter p : ((PearSpecifier) spec).getParameters()) {
+        settings.put(p.getName(), p.getValue());
+      }
     } else if (spec instanceof ResourceCreationSpecifier) {
       for (NameValuePair p : ((ResourceCreationSpecifier) spec).getMetaData()
               .getConfigurationParameterSettings().getParameterSettings()) {
@@ -583,6 +588,27 @@ public final class ConfigurationParameterFactory {
         throw new IllegalClassException(String.class, value);
       }
       CustomResourceSpecifier spec = (CustomResourceSpecifier) aSpec;
+
+      // If the parameter is already there, update it
+      boolean found = false;
+      for (Parameter p : spec.getParameters()) {
+        if (p.getName().equals(name)) {
+          p.setValue((String) value);
+          found = true;
+        }
+      }
+
+      // If the parameter is not there, add it
+      if (!found) {
+        Parameter[] params = new Parameter[spec.getParameters().length + 1];
+        System.arraycopy(spec.getParameters(), 0, params, 0, spec.getParameters().length);
+        params[params.length - 1] = new Parameter_impl();
+        params[params.length - 1].setName(name);
+        params[params.length - 1].setValue((String) value);
+        spec.setParameters(params);
+      }
+    } else if (aSpec instanceof PearSpecifier) {
+      PearSpecifier spec = (PearSpecifier) aSpec;
 
       // If the parameter is already there, update it
       boolean found = false;

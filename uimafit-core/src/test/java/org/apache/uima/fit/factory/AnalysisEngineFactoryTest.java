@@ -66,7 +66,12 @@ import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.pear.tools.PackageBrowser;
+import org.apache.uima.pear.tools.PackageInstaller;
+import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
@@ -75,8 +80,10 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.XMLInputSource;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -561,5 +568,26 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     String expected = FileUtils.readFileToString(reference, "UTF-8");
     XMLAssert.assertXMLEqual(expected, actual);
 //    assertEquals(expected, actual);
+  }
+  
+  @Test
+  public void testPear() throws Exception {
+    // Install PEAR package
+    PackageBrowser instPear = PackageInstaller.installPackage(
+            new File("target/test-output/AnalysisEngineFactoryTest/testPear"), 
+            new File("src/test/resources/pear/DateTime.pear"), true);
+
+    // Create analysis engine from the installed PEAR package
+    XMLInputSource in = new XMLInputSource(instPear.getComponentPearDescPath());
+    PearSpecifier specifier = UIMAFramework.getXMLParser().parsePearSpecifier(in);
+    
+    AnalysisEngine ae = createEngine(createEngineDescription(specifier));
+    
+    
+    // Create a CAS with a sample document text and process the CAS   
+    CAS cas = ae.newCAS();
+    cas.setDocumentText("Sample text to process with a date 05/29/07 and a time 9:45 AM");
+    cas.setDocumentLanguage("en");
+    ae.process(cas);
   }
 }
