@@ -32,7 +32,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>13</version>
+    <version>14-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.uima</groupId>
@@ -90,7 +90,6 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-
     </repository>
     
     <repository>
@@ -141,11 +140,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.surefire.argLine />
-    <maven.surefire.java9 />
     
-    <jacoco.argLine />
-    <java.version>8</java.version>
+    <japicmp.postAnalysisScript>${project.basedir}/../uimaj-parent/src/main/groovy/api-report.groovy</japicmp.postAnalysisScript>
   </properties>
 
   <dependencyManagement>
@@ -168,238 +164,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
-  <build>
-    <pluginManagement>
-      <plugins>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <argLine>@{jacoco.argLine} -Xmx@{maven.surefire.heap} -Xms@{maven.surefire.heap} @{maven.surefire.argLine} @{maven.surefire.java9}</argLine>
-          </configuration>
-        </plugin>
-        
-        <!-- Code quality checking plugins mostly used for CI builds -->
-             
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.7.6.201602180812</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    
-    <plugins>
-    </plugins>
-  </build>
- 
-  <profiles>     
-    <profile>
-      <id>pmd</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>cpd</goal>
-                  <goal>pmd</goal>
-                </goals>
-                <configuration>
-                  <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-                  <targetJdk>${maven.compiler.target}</targetJdk>
-                  <linkXRef>false</linkXRef>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>findbugs</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>findbugs</goal>
-                </goals>
-                <configuration>
-                  <findbugsXmlOutput>true</findbugsXmlOutput>
-                  <xmlOutput>true</xmlOutput>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>cobertura</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>cobertura</goal>
-                </goals>
-                <configuration>
-                  <formats>
-                    <format>xml</format>
-                  </formats>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>jacoco</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <!-- Duplicates on classpath cause an exception in JaCoCo report -->
-                <exclude>**/org/apache/uima/examples/SourceDocumentInformation*</exclude>
-                <exclude>**/org/apache/uima/examples/SourceDocumentInformation_Type*</exclude>
-              </excludes>
-            </configuration>
-            <executions>
-              <execution>
-                <id>default-prepare-agent</id>
-                <goals>
-                  <goal>prepare-agent</goal>
-                </goals>
-                <configuration>
-                  <propertyName>jacoco.argLine</propertyName>
-                </configuration>
-              </execution>
-              <execution>
-                <id>default-report</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>report</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>default-check</id>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-                <configuration>
-                  <rules />
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    
-    <!-- **********  Backwards compatibility report generation profile ************** -->
-    <profile>
-      <id>enforce-compatibility</id>
-      <activation>
-        <file>
-          <exists>marker-file-identifying-api-compatibility-check</exists>
-        </file>
-      </activation>
-      <build>
-        
-        <pluginManagement>
-          <plugins>
-            <plugin>
-	            <groupId>org.apache.rat</groupId>
-		          <artifactId>apache-rat-plugin</artifactId>
-		          <executions>
-		            <execution>
-		              <id>default-cli</id>
-		              <configuration>
-		                <excludes combine.children="append">
-	                    <exclude>**/api-change-report/**/*.*</exclude>
-		                </excludes>
-		              </configuration>
-		            </execution>
-	          </executions>
-	          </plugin>
-          </plugins>
-        </pluginManagement> 
-        
-        <plugins>
-          <!-- https://siom79.github.io/japicmp/MavenPlugin.html -->
-          <plugin>              
-            <groupId>com.github.siom79.japicmp</groupId>
-            <artifactId>japicmp-maven-plugin</artifactId>
-            <version>0.13.0</version>
-            <configuration>
-              <oldVersion>
-                <dependency>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <version>${api_check_oldVersion}</version>
-                </dependency>
-              </oldVersion>
-              <parameter>
-                <onlyModified>true</onlyModified>
-                <!-- filter out classes with impl in their package or class name -->
-                <postAnalysisScript>${project.basedir}/../uimaj-parent/src/main/groovy/api-report.groovy</postAnalysisScript>                  
-              </parameter>
-            </configuration>
-            <executions>
-              <execution>
-                <phase>verify</phase>
-                <goals>
-                  <goal>cmp</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          
-          <!-- This copy is to have the api change report included in the source distribution -->
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-API-change-report</id>
-                <phase>install</phase>  <!-- must follow verify -->
-                <goals><goal>run</goal></goals>
-                <configuration>
-                  <target>
-                    <taskdef name="if" classname="net.sf.antcontrib.logic.IfTask" />
-                    <if>
-                      <available file="${project.build.directory}/japicmp/" />
-                      <then>
-                        <copy toDir="${basedir}/api-change-report">
-                          <fileset dir="${project.build.directory}/japicmp" />
-                        </copy>
-                      </then>
-                    </if>
-                  </target>
-                </configuration>
-              </execution>
-            </executions>
-            
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
