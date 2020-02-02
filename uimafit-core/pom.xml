@@ -79,6 +79,11 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <licenses>
     <license>
@@ -158,6 +163,7 @@
                   <exclude>src/test/resources/data/reference/JCasBuilderTest.dump</exclude>
                   <exclude>src/test/resources/data/reference/test.xmi.dump</exclude>
                   <exclude>src/test/resources/data/reference/SerializationTestAnnotator.xml</exclude>
+                  <exclude>src/test/resources/pear/DateTime.pear</exclude>
                   <!-- These configuration files cannot bear a license header -->
                   <exclude>src/test/resources/META-INF/org.apache.uima.fit/fsindexes.txt</exclude>
                   <exclude>src/test/resources/META-INF/org.apache.uima.fit/typepriorities.txt</exclude>

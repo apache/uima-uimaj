@@ -59,6 +59,7 @@ import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.Capability;
@@ -826,6 +827,45 @@ public final class AnalysisEngineFactory {
     return (AnalysisEngineDescription) specifier;
   }
 
+  /**
+   * Get an {@link AnalysisEngineDescription} from a PEAR and a set of configuration parameters.
+   * 
+   * @param pearSpecifier
+   *          The PEAR specifier.
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return The {@link AnalysisEngineDescription} created from the XML descriptor and the
+   *         configuration parameters.
+   * @throws IOException
+   *           if an I/O error occurs
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
+   */
+  public static AnalysisEngineDescription createEngineDescription(PearSpecifier pearSpecifier,
+          Object... configurationData) throws InvalidXMLException, IOException {
+    ConfigurationParameterFactory.ensureParametersComeInPairs(configurationData);
+    
+    if (configurationData != null) {
+      for (int i = 0; i < configurationData.length / 2; i++) {
+        String name = (String) configurationData[i * 2];
+        String value = (String) configurationData[i * 2 + 1];
+        ConfigurationParameterFactory.setParameter(pearSpecifier, name, value);
+      }
+    }
+    
+    AnalysisEngineDescription desc = new AnalysisEngineDescription_impl();
+    desc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+    desc.setPrimitive(false);
+    desc.getDelegateAnalysisEngineSpecifiersWithImports().put(pearSpecifier.getPearPath(),
+            pearSpecifier);
+    
+    FixedFlow fixedFlow = new FixedFlow_impl();
+    fixedFlow.setFixedFlow(new String[] { pearSpecifier.getPearPath() });
+    desc.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+    
+    return desc;
+  }
   /**
    * Get an {@link AnalysisEngineDescription} from an XML descriptor file and a set of configuration
    * parameters.
