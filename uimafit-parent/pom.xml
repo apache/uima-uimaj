@@ -24,6 +24,8 @@
     -->
     <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
     <api_check_oldVersion>2.4.0</api_check_oldVersion>
+    
+    <japicmp.postAnalysisScript>${project.basedir}/../uimafit-parent/src/main/groovy/api-report.groovy</japicmp.postAnalysisScript>
   </properties>
   <!--
     - Only required while uimaFIT depends on unreleased versions of UIMA.
