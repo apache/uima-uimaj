@@ -4,7 +4,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>13</version>
+    <version>14-SNAPSHOT</version>
   </parent>
   <artifactId>uimafit-parent</artifactId>
   <version>2.5.0-SNAPSHOT</version>
@@ -23,37 +23,39 @@
      NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
     -->
     <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
-    <compat.previous.version>2.4.0</compat.previous.version>
+    <api_check_oldVersion>2.4.0</api_check_oldVersion>
+    
+    <japicmp.postAnalysisScript>${project.basedir}/../uimafit-parent/src/main/groovy/api-report.groovy</japicmp.postAnalysisScript>
   </properties>
   <!--
     - Only required while uimaFIT depends on unreleased versions of UIMA.
-    <repositories>
+    -->
+  <repositories>
     <repository>
-    <id>apache.snapshots</id>
-    <name>Apache Snapshot Repository</name>
-    <url>http://repository.apache.org/snapshots</url>
-    <releases>
-    <enabled>false</enabled>
-    </releases>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Repository</name>
+      <url>http://repository.apache.org/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
     </repository>
-    </repositories>
-    <pluginRepositories>
+  </repositories>
+  <pluginRepositories>
     <pluginRepository>
-    <id>apache.snapshots.plugins</id>
-    <name>Apache Snapshot Repository - Maven plugins</name>
-    <url>http://repository.apache.org/snapshots</url>
-    <layout>default</layout>
-    <releases>
-    <enabled>false</enabled>
-    </releases>
-    <snapshots>
-    <enabled>true</enabled>
-    <checksumPolicy>fail</checksumPolicy>
-    <updatePolicy>never</updatePolicy>
-    </snapshots>
+      <id>apache.snapshots.plugins</id>
+      <name>Apache Snapshot Repository - Maven plugins</name>
+      <url>http://repository.apache.org/snapshots</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <checksumPolicy>fail</checksumPolicy>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
     </pluginRepository>
-    </pluginRepositories>
-  -->
+  </pluginRepositories>
 
   <dependencies>
     <dependency>
@@ -195,12 +197,11 @@
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
-          <version>0.11</version>
           <executions>
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes>
+                <excludes combine.children="append">
                   <!-- Plain documentation -->
                   <exclude>README*</exclude>
                   <!-- Release files -->
@@ -225,7 +226,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.5.1</version>
           <configuration>
             <source>${maven.compiler.source}</source>
             <target>${maven.compiler.target}</target>
@@ -235,7 +235,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.3</version>
           <executions>
             <execution>
               <id>attach-javadocs</id>
@@ -307,36 +306,15 @@
   </build>
   <profiles>
     <profile>
-      <id>spotbugs</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-maven-plugin</artifactId>
-            <version>3.1.12.2</version>
-            <executions>
-              <execution>
-                <id>default</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-                <configuration>
-                  <failOnError>false</failOnError>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
       <id>enforce-compatibility</id>
       <activation>
         <file>
-          <exists>.activate-enforce-compatibility</exists>
+          <exists>marker-file-identifying-api-compatibility-check</exists>
         </file>
       </activation>
+      <properties>
+        <japicmp.postAnalysisScript>${project.basedir}/../uimafit-parent/src/main/groovy/api-report.groovy</japicmp.postAnalysisScript>
+      </properties>
       <build>
         <pluginManagement>
           <plugins>
@@ -359,7 +337,7 @@
                   <configuration>
                     <rules>
                       <requireBackwardCompatibility implementation="org.semver.enforcer.RequireBackwardCompatibility">
-                        <previousVersion>${compat.previous.version}</previousVersion>
+                        <previousVersion>${api_check_oldVersion}</previousVersion>
                         <dumpDetails>true</dumpDetails>
                         <compatibilityType>${compat.level}</compatibilityType>
                       </requireBackwardCompatibility>
@@ -368,135 +346,16 @@
                 </execution>
               </executions>
             </plugin>
-
+            
+            <!-- https://siom79.github.io/japicmp/MavenPlugin.html -->
             <plugin>
-              <groupId>org.apache.rat</groupId>
-              <artifactId>apache-rat-plugin</artifactId>
-              <executions>
-                <execution>
-                  <id>default-cli</id>
-                  <configuration>
-                    <excludes combine.children="append">
-                      <exclude>**/api-change-report/**/*.*</exclude>
-                    </excludes>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-
-        <plugins>
-          <!-- https://siom79.github.io/japicmp/MavenPlugin.html -->
-          <plugin>
-            <groupId>com.github.siom79.japicmp</groupId>
-            <artifactId>japicmp-maven-plugin</artifactId>
-            <version>0.9.3</version>
-            <configuration>
-              <oldVersion>
-                <dependency>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <version>${compat.previous.version}</version>
-                </dependency>
-              </oldVersion>
-              <parameter>
-                <onlyModified>true</onlyModified>
-                <!-- filter out classes with impl in their package or class name -->
-                <postAnalysisScript>${project.basedir}/../uimafit-parent/src/main/groovy/api-report.groovy</postAnalysisScript>
-                <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
-                <reportOnlyFilename>true</reportOnlyFilename>
-              </parameter>
-            </configuration>
-            <executions>
-              <execution>
-                <phase>verify</phase>
-                <goals>
-                  <goal>cmp</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!-- This copy is to have the api change report included in the source distribution -->
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-API-change-report</id>
-                <phase>install</phase>  <!-- must follow verify -->
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <target>
-                    <taskdef name="if" classname="net.sf.antcontrib.logic.IfTask" />
-                    <if>
-                      <available file="${project.build.directory}/japicmp/" />
-                      <then>
-                        <copy toDir="${basedir}/api-change-report">
-                          <fileset dir="${project.build.directory}/japicmp" />
-                        </copy>
-                      </then>
-                    </if>
-                  </target>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>m2e</id>
-      <activation>
-        <property>
-          <name>m2e.version</name>
-        </property>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <!--
-              - This plugin's configuration is used to store Eclipse m2e settings only.
-              - It has no influence on the Maven build itself.
-            -->
-            <plugin>
-              <groupId>org.eclipse.m2e</groupId>
-              <artifactId>lifecycle-mapping</artifactId>
-              <version>1.0.0</version>
+              <groupId>com.github.siom79.japicmp</groupId>
+              <artifactId>japicmp-maven-plugin</artifactId>
               <configuration>
-                <lifecycleMappingMetadata>
-                  <pluginExecutions>
-                    <pluginExecution>
-                      <pluginExecutionFilter>
-                        <groupId>org.codehaus.gmaven</groupId>
-                        <artifactId>gmaven-plugin</artifactId>
-                        <versionRange>[1.5,)</versionRange>
-                        <goals>
-                          <goal>execute</goal>
-                        </goals>
-                      </pluginExecutionFilter>
-                      <action>
-                        <ignore />
-                      </action>
-                    </pluginExecution>
-                    <pluginExecution>
-                      <pluginExecutionFilter>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-plugin-plugin</artifactId>
-                        <versionRange>[3.5.2,)</versionRange>
-                        <goals>
-                          <goal>descriptor</goal>
-                          <goal>helpmojo</goal>
-                        </goals>
-                      </pluginExecutionFilter>
-                      <action>
-                        <ignore />
-                      </action>
-                    </pluginExecution>
-                  </pluginExecutions>
-                </lifecycleMappingMetadata>
+                <parameter combine.children="append">
+                  <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
+                  <reportOnlyFilename>true</reportOnlyFilename>
+                </parameter>
               </configuration>
             </plugin>
           </plugins>
