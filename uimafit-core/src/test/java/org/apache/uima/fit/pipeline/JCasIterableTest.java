@@ -21,12 +21,18 @@ package org.apache.uima.fit.pipeline;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
-import static org.apache.uima.fit.pipeline.SimplePipeline.iteratePipeline;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.apache.uima.fit.internal.ResourceManagerFactory.getResourceManagerCreator;
+import static org.apache.uima.fit.internal.ResourceManagerFactory.newResourceManager;
+import static org.apache.uima.fit.internal.ResourceManagerFactory.setResourceManagerCreator;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -36,44 +42,100 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.component.Resource_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
+import org.apache.uima.fit.internal.ResourceManagerFactory.ResourceManagerCreator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class JCasIterableTest {
 
-  @Test
-  public void test() throws Exception {
-    for (JCas jcas : iteratePipeline(createReaderDescription(ThreeDocsReader.class),
-            createEngineDescription(GetTextAE.class))) {
-      System.out.println(jcas.getDocumentText());
-    }
+  private ResourceManagerCreator originalResourceManagerCreator;
+  
+  @Before
+  public void setup() {
+    // We need to resort to static fields here because there is no way to use Mockito's spy on the
+    // component instances internally created by UIMA.
+    ThreeDocsReader.destroyed = false;
+    GetTextAE.complete = false;
+    GetTextAE.destroyed = false;
+    GetTextAE.resource = null;
+    ThreeDocsReader.resource = null;
     
-    assertEquals("Document 3", GetTextAE.lastText);
-    assertTrue(GetTextAE.complete);
-    assertTrue(GetTextAE.destroyed);
+    originalResourceManagerCreator = getResourceManagerCreator();
+  }
+  
+  @After
+  public void teardown() {
+    setResourceManagerCreator(originalResourceManagerCreator);
+  }
+  
+  @Test
+  public void thatComponentsGetDestroyed() throws Exception {
+    consume(new JCasIterable(
+            createReaderDescription(ThreeDocsReader.class),
+            createEngineDescription(GetTextAE.class)));
+    
+    assertThat(GetTextAE.complete).isTrue();
+    assertThat(GetTextAE.destroyed).isTrue();
+    assertThat(ThreeDocsReader.destroyed).isTrue();
+    assertThat(GetTextAE.lastText).isEqualTo("Document 3");
   }
 
   @Test
-  public void testResourceSharing() throws Exception {
-    ThreeDocsReader.resource = null;
-    GetTextAE.resource = null;
-    
+  public void thatResourceCanBeShared() throws Exception {
     ExternalResourceDescription res = createResourceDescription(DummySharedResource.class);
-    for (@SuppressWarnings("unused") JCas jcas : iteratePipeline(
+    
+    consume(new JCasIterable(
             createReaderDescription(ThreeDocsReader.class, "resource", res),
-            createEngineDescription(GetTextAE.class, "resource", res))) {
+            createEngineDescription(GetTextAE.class, "resource", res)));
+    
+    assertThat(ThreeDocsReader.resource)
+          .isNotNull()
+          .isEqualTo(GetTextAE.resource);
+  }
+  
+  @Test 
+  public void thatSharedResourceManagerIsNotDestroyed() throws Exception {
+    ResourceManager resMgr = spy(newResourceManager());
+    
+    consume(new JCasIterable(resMgr,
+            createReaderDescription(ThreeDocsReader.class),
+            createEngineDescription(GetTextAE.class)));
+    
+    verify(resMgr, never()).destroy();
+  }
+
+  /**
+   * Mind that returning a singleton resource manager from {@link ResourceManagerFactory} is
+   * generally a bad idea exactly because it gets destroyed on a regular basis. For this
+   * reason, it is called {@link ResourceManagerFactory#newResourceManager()} and not 
+   * {@code getResourceManager()}.
+   */
+  @Test 
+  public void thatInternallyCreatedResourceManagerIsDestroyed() throws Exception {
+    ResourceManager resMgr = spy(newResourceManager());
+    setResourceManagerCreator(() -> resMgr); 
+    
+    consume(new JCasIterable(
+            createReaderDescription(ThreeDocsReader.class),
+            createEngineDescription(GetTextAE.class)));
+    
+    verify(resMgr, times(1)).destroy();
+  }
+
+  private static void consume(Iterable<?> aIterable)
+  {
+    Iterator<?> i = aIterable.iterator();
+    while (i.hasNext()) {
+      i.next();
     }
-    
-    assertNotNull(ThreeDocsReader.resource);
-    assertNotNull(GetTextAE.resource);
-    assertTrue(ThreeDocsReader.resource == GetTextAE.resource);
-    
-    ThreeDocsReader.resource = null;
-    GetTextAE.resource = null;
   }
  
   public static final class DummySharedResource extends Resource_ImplBase {
@@ -86,8 +148,9 @@ public class JCasIterableTest {
     private final int N = 3;
     private int n = 0;
 
-    private boolean initTypeSystemCalled = false;
-
+    public boolean initTypeSystemCalled = false;
+    public static boolean destroyed = false;
+    
     @Override
     public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException {
       initTypeSystemCalled = true;
@@ -109,6 +172,12 @@ public class JCasIterableTest {
       n++;
       aJCas.setDocumentText("Document " + n);
     }
+    
+    @Override
+    public void destroy() {
+      super.destroy();
+      destroyed = true;
+    }
   }
   
   public static final class GetTextAE extends JCasAnnotator_ImplBase {
@@ -116,9 +185,7 @@ public class JCasIterableTest {
     private static DummySharedResource resource;
     
     public static String lastText = null;
-    
     public static boolean complete = false;
-
     public static boolean destroyed = false;
 
     @Override
