@@ -27,33 +27,33 @@
   </properties>
   <!--
     - Only required while uimaFIT depends on unreleased versions of UIMA.
-    <repositories>
+    -->
+  <repositories>
     <repository>
-    <id>apache.snapshots</id>
-    <name>Apache Snapshot Repository</name>
-    <url>http://repository.apache.org/snapshots</url>
-    <releases>
-    <enabled>false</enabled>
-    </releases>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Repository</name>
+      <url>http://repository.apache.org/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
     </repository>
-    </repositories>
-    <pluginRepositories>
+  </repositories>
+  <pluginRepositories>
     <pluginRepository>
-    <id>apache.snapshots.plugins</id>
-    <name>Apache Snapshot Repository - Maven plugins</name>
-    <url>http://repository.apache.org/snapshots</url>
-    <layout>default</layout>
-    <releases>
-    <enabled>false</enabled>
-    </releases>
-    <snapshots>
-    <enabled>true</enabled>
-    <checksumPolicy>fail</checksumPolicy>
-    <updatePolicy>never</updatePolicy>
-    </snapshots>
+      <id>apache.snapshots.plugins</id>
+      <name>Apache Snapshot Repository - Maven plugins</name>
+      <url>http://repository.apache.org/snapshots</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <checksumPolicy>fail</checksumPolicy>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
     </pluginRepository>
-    </pluginRepositories>
-  -->
+  </pluginRepositories>
 
   <dependencies>
     <dependency>
