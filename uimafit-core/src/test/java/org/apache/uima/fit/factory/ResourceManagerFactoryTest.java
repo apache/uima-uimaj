@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.fit.component.Resource_ImplBase;
