@@ -18,6 +18,21 @@
  */
 package org.apache.uima.fit.component.initialize;
 
+import static org.apache.uima.UIMAFramework.getLogger;
+import static org.apache.uima.UIMAFramework.newConfigurationManager;
+import static org.apache.uima.UIMAFramework.newUimaContext;
+import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
+import static org.apache.uima.fit.factory.ConfigurationParameterFactory.getConfigurationParameterName;
+import static org.apache.uima.fit.factory.ConfigurationParameterFactory.getDefaultValue;
+import static org.apache.uima.fit.factory.ConfigurationParameterFactory.getParameterSettings;
+import static org.apache.uima.fit.factory.ConfigurationParameterFactory.isConfigurationParameterField;
+import static org.apache.uima.fit.internal.ReflectionUtil.getAnnotation;
+import static org.apache.uima.fit.internal.ReflectionUtil.getFields;
+import static org.apache.uima.fit.internal.ResourceManagerFactory.newResourceManager;
+import static org.apache.uima.fit.internal.propertyeditors.PropertyEditorUtil.registerUimaFITEditors;
+import static org.springframework.beans.PropertyAccessorUtils.canonicalPropertyName;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,14 +40,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
-import org.apache.uima.fit.internal.ReflectionUtil;
-import org.apache.uima.fit.internal.ResourceManagerFactory;
-import org.apache.uima.fit.internal.propertyeditors.PropertyEditorUtil;
+import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
 import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.DataResource;
@@ -45,20 +57,14 @@ import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.PropertyAccessorUtils;
 import org.springframework.beans.PropertyValue;
-import org.springframework.util.ObjectUtils;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.ObjectError;
 
 /**
- * <p>
  * Initialize an instance of a class with fields that are annotated as
  * {@link ConfigurationParameter}s from the parameter values given in a {@link UimaContext}.
- * </p>
- * 
  */
-
 public final class ConfigurationParameterInitializer {
 
   private ConfigurationParameterInitializer() {
@@ -89,15 +95,15 @@ public final class ConfigurationParameterInitializer {
   public static void initialize(final Object component, final UimaContext context)
           throws ResourceInitializationException {
     MutablePropertyValues values = new MutablePropertyValues();
-    List<String> mandatoryValues = new ArrayList<String>();
+    List<String> mandatoryValues = new ArrayList<>();
 
-    for (Field field : ReflectionUtil.getFields(component)) { // component.getClass().getDeclaredFields())
-      if (ConfigurationParameterFactory.isConfigurationParameterField(field)) {
-        org.apache.uima.fit.descriptor.ConfigurationParameter annotation = ReflectionUtil
-                .getAnnotation(field, org.apache.uima.fit.descriptor.ConfigurationParameter.class);
+    for (Field field : getFields(component)) { // component.getClass().getDeclaredFields())
+      if (isConfigurationParameterField(field)) {
+        org.apache.uima.fit.descriptor.ConfigurationParameter annotation = getAnnotation(field,
+                org.apache.uima.fit.descriptor.ConfigurationParameter.class);
 
         Object parameterValue;
-        String parameterName = ConfigurationParameterFactory.getConfigurationParameterName(field);
+        String parameterName = getConfigurationParameterName(field);
 
         // Obtain either from the context - or - if the context does not provide the
         // parameter, check if there is a default value. Note there are three possibilities:
@@ -110,7 +116,7 @@ public final class ConfigurationParameterInitializer {
         // value.
         parameterValue = context.getConfigParameterValue(parameterName);
         if (parameterValue == null) {
-          parameterValue = ConfigurationParameterFactory.getDefaultValue(field);
+          parameterValue = getDefaultValue(field);
         }
 
         if (parameterValue != null) {
@@ -129,12 +135,11 @@ public final class ConfigurationParameterInitializer {
       @Override
       protected void checkRequiredFields(MutablePropertyValues mpvs) {
         String[] requiredFields = getRequiredFields();
-        if (!ObjectUtils.isEmpty(requiredFields)) {
-          Map<String, PropertyValue> propertyValues = new HashMap<String, PropertyValue>();
+        if (!isEmpty(requiredFields)) {
+          Map<String, PropertyValue> propertyValues = new HashMap<>();
           PropertyValue[] pvs = mpvs.getPropertyValues();
           for (PropertyValue pv : pvs) {
-            String canonicalName = PropertyAccessorUtils.canonicalPropertyName(pv.getName());
-            propertyValues.put(canonicalName, pv);
+            propertyValues.put(canonicalPropertyName(pv.getName()), pv);
           }
           for (String field : requiredFields) {
             PropertyValue pv = propertyValues.get(field);
@@ -166,9 +171,11 @@ public final class ConfigurationParameterInitializer {
       }
     };
     binder.initDirectFieldAccess();
-    PropertyEditorUtil.registerUimaFITEditors(binder);
+    registerUimaFITEditors(binder);
     binder.setRequiredFields(mandatoryValues.toArray(new String[mandatoryValues.size()]));
+    
     binder.bind(values);
+    
     if (binder.getBindingResult().hasErrors()) {
       StringBuilder sb = new StringBuilder();
       sb.append("Errors initializing [" + component.getClass() + "]");
@@ -200,9 +207,8 @@ public final class ConfigurationParameterInitializer {
     if (component instanceof Resource) {
       context = ((Resource) component).getUimaContextAdmin();
     } else {
-      ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
-      context = UIMAFramework.newUimaContext(UIMAFramework.getLogger(), resMgr,
-              UIMAFramework.newConfigurationManager());
+      ResourceManager resMgr = newResourceManager();
+      context = newUimaContext(getLogger(), resMgr, newConfigurationManager());
     }
 
     ConfigurationManager cfgMgr = context.getConfigurationManager();
@@ -228,7 +234,7 @@ public final class ConfigurationParameterInitializer {
    */
   public static void initialize(Object component, ResourceSpecifier spec)
           throws ResourceInitializationException {
-    initialize(component, ConfigurationParameterFactory.getParameterSettings(spec));
+    initialize(component, getParameterSettings(spec));
   }
 
   /**
@@ -244,7 +250,7 @@ public final class ConfigurationParameterInitializer {
    */
   public static void initialize(Object component, Parameter... parameters)
           throws ResourceInitializationException {
-    Map<String, Object> params = new HashMap<String, Object>();
+    Map<String, Object> params = new HashMap<>();
     for (Parameter p : parameters) {
       params.put(p.getName(), p.getValue());
     }
@@ -264,7 +270,7 @@ public final class ConfigurationParameterInitializer {
    */
   public static void initialize(Object component, NameValuePair... parameters)
           throws ResourceInitializationException {
-    Map<String, Object> params = new HashMap<String, Object>();
+    Map<String, Object> params = new HashMap<>();
     for (NameValuePair p : parameters) {
       params.put(p.getName(), p.getValue());
     }
@@ -287,5 +293,17 @@ public final class ConfigurationParameterInitializer {
     ResourceMetaData metaData = dataResource.getMetaData();
     ConfigurationParameterSettings settings = metaData.getConfigurationParameterSettings();
     initialize(component, settings.getParameterSettings());
+  }
+  
+  public static void initialize(Object component, Object... aParameters)
+          throws ResourceInitializationException {
+    ConfigurationData configurationData = createConfigurationData(aParameters);
+    Map<String, Object> params = new HashMap<>();
+    for (int i = 0; i < configurationData.configurationParameters.length; i++) {
+      String name = configurationData.configurationParameters[i].getName();
+      Object value = configurationData.configurationValues[i];
+      params.put(name, value);
+    }
+    initialize(component, params);
   }
 }

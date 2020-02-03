@@ -18,7 +18,14 @@
  */
 package org.apache.uima.fit.component.initialize;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_16;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
+import static java.util.regex.Pattern.compile;
+import static org.apache.commons.collections4.SetUtils.unmodifiableSet;
+import static org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer.initialize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,8 +38,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
@@ -53,10 +66,376 @@ import org.apache.uima.resource.metadata.impl.ConfigurationParameterSettings_imp
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-/**
- */
-
 public class ConfigurationParameterInitializerTest extends ComponentTestBase {
+
+  public static class PrimitiveTypesInjection {
+    private @ConfigurationParameter int intValue;
+    private @ConfigurationParameter boolean booleanValue;
+    private @ConfigurationParameter String stringValue;
+    private @ConfigurationParameter float floatValue;
+    private @ConfigurationParameter double doubleValue;
+  }
+  
+  @Test
+  public void thatPrimitiveTypesCanBeInjected() throws Exception {
+    PrimitiveTypesInjection target = new PrimitiveTypesInjection();
+    
+    initialize(target,
+            "intValue", 1,
+            "booleanValue", true,
+            "stringValue", "test",
+            "floatValue", 1.234f,
+            "doubleValue", 1.234d);
+    
+    assertThat(target.intValue).isEqualTo(1);
+    assertThat(target.booleanValue).isEqualTo(true);
+    assertThat(target.stringValue).isEqualTo("test");
+    assertThat(target.floatValue).isEqualTo(1.234f);
+    assertThat(target.doubleValue).isEqualTo(1.234d);
+  }
+  
+  public static class PrimitiveArraysInjection {
+    private @ConfigurationParameter int[] intValues;
+    private @ConfigurationParameter boolean[] booleanValues;
+    private @ConfigurationParameter String[] stringValues;
+    private @ConfigurationParameter float[] floatValues;
+    private @ConfigurationParameter double[] doubleValues;
+  }
+  
+  @Test
+  public void thatPrimitiveArraysCanBeInjected() throws Exception {
+    PrimitiveArraysInjection target = new PrimitiveArraysInjection();
+    
+    initialize(target,
+            "intValues", new int[] {1, 2, 3},
+            "booleanValues", new boolean[] {true, false, true},
+            "stringValues", new String[] { "test1", "test2", "test3" },
+            "floatValues", new float[] { 1.234f, 2.468f, 3.456f },
+            "doubleValues", new double[] { 1.234d, 2.468d, 3.456d });
+    
+    assertThat(target.intValues).containsExactly(1,2,3);
+    assertThat(target.booleanValues).containsExactly(true, false, true);
+    assertThat(target.stringValues).containsExactly("test1", "test2", "test3");
+    assertThat(target.floatValues).containsExactly(1.234f, 2.468f, 3.456f);
+    assertThat(target.doubleValues).containsExactly(1.234d, 2.468d, 3.456d);
+  }
+  
+  @Test
+  public void thatPrimitiveArraysCanBeInjectedAsLists() throws Exception {
+    PrimitiveArraysInjection target = new PrimitiveArraysInjection();
+    
+    initialize(target,
+            "intValues", asList(1, 2, 3),
+            "booleanValues", asList(true, false, true),
+            "stringValues", asList("test1", "test2", "test3"),
+            "floatValues", asList(1.234f, 2.468f, 3.456f),
+            "doubleValues", asList(1.234d, 2.468d, 3.456d));
+    
+    assertThat(target.intValues).containsExactly(1,2,3);
+    assertThat(target.booleanValues).containsExactly(true, false, true);
+    assertThat(target.stringValues).containsExactly("test1", "test2", "test3");
+    assertThat(target.floatValues).containsExactly(1.234f, 2.468f, 3.456f);
+    assertThat(target.doubleValues).containsExactly(1.234d, 2.468d, 3.456d);
+  }
+  
+  @Test
+  public void thatPrimitiveArraysCanBeInjectedAsValues() throws Exception {
+    PrimitiveArraysInjection target = new PrimitiveArraysInjection();
+    
+    initialize(target,
+            "intValues", 1,
+            "booleanValues", true,
+            "stringValues", "test",
+            "floatValues", 1.234f,
+            "doubleValues", 1.234d);
+    
+    assertThat(target.intValues).containsExactly(1);
+    assertThat(target.booleanValues).containsExactly(true);
+    assertThat(target.stringValues).containsExactly("test");
+    assertThat(target.floatValues).containsExactly(1.234f);
+    assertThat(target.doubleValues).containsExactly(1.234d);
+  }
+  
+  public static class FileInjection {
+    private @ConfigurationParameter File file;
+    private @ConfigurationParameter File fileFromString;
+    private @ConfigurationParameter File[] fileArray;
+    private @ConfigurationParameter File[] fileArrayFromString;
+    private @ConfigurationParameter List<File> fileList;
+    private @ConfigurationParameter List<File> fileFromStringList;
+    private @ConfigurationParameter Set<File> fileSet;
+  }
+  
+  @Test
+  public void thatFileObjectCanBeInjected() throws Exception {
+    FileInjection target = new FileInjection();
+    
+    initialize(target,
+            "file", new File("test"),
+            "fileFromString", "test",
+            "fileArray", new File[] {new File("test1"), new File("test2") },
+            "fileArrayFromString", new String[] {"test1", "test2"},
+            "fileList", asList(new File("test1"), new File("test2")),
+            "fileSet", unmodifiableSet(new File("test1"), new File("test2")),
+            "fileFromStringList", asList("test1", "test2"));
+    
+    assertThat(target.file).hasName("test");
+    assertThat(target.fileFromString).hasName("test");
+    assertThat(target.fileArray).extracting(File::getName).containsExactly("test1", "test2");
+    assertThat(target.fileArrayFromString).extracting(File::getName).containsExactly("test1",
+            "test2");
+    assertThat(target.fileList).extracting(File::getName).containsExactly("test1", "test2");
+    assertThat(target.fileFromStringList).extracting(File::getName).containsExactly(
+            "test1", "test2");
+    assertThat(target.fileSet).extracting(File::getName).containsExactlyInAnyOrder(
+            "test1", "test2");
+  }
+  
+  public static class ClassInjection {
+    private @ConfigurationParameter Class<?> clazz;
+    private @ConfigurationParameter Class<?> clazzFromString;
+    private @ConfigurationParameter Class<?>[] clazzArray;
+    private @ConfigurationParameter Class<?>[] clazzArrayFromString;
+    private @ConfigurationParameter List<Class<?>> clazzList;
+    private @ConfigurationParameter List<Class<?>> clazzListFromString;
+    private @ConfigurationParameter Set<Class<?>> clazzSet;
+  }
+  
+  @Test
+  public void thatClassObjectCanBeInjected() throws Exception {
+    ClassInjection target = new ClassInjection();
+    
+    initialize(target,
+            "clazz", Integer.class,
+            "clazzFromString", Integer.class.getName(),
+            "clazzArray", new Class<?>[] { Integer.class, Boolean.class, Float.class },
+            "clazzArrayFromString", new String[] { Integer.class.getName(), Boolean.class.getName(),
+                    Float.class.getName() },
+            "clazzList", asList(Integer.class, Boolean.class, Float.class),
+            "clazzListFromString", asList(Integer.class.getName(), Boolean.class.getName(), 
+                    Float.class.getName()),
+            "clazzSet", unmodifiableSet(Integer.class, Boolean.class, Float.class));
+    
+    assertThat(target.clazz).isEqualTo(Integer.class);
+    assertThat(target.clazzFromString).isEqualTo(Integer.class);
+    assertThat(target.clazzArray).containsExactly(Integer.class, Boolean.class, Float.class);
+    assertThat(target.clazzArrayFromString).containsExactly(Integer.class, Boolean.class,
+            Float.class);
+    assertThat(target.clazzList).containsExactly(Integer.class, Boolean.class, Float.class);
+    assertThat(target.clazzListFromString).containsExactly(Integer.class, Boolean.class,
+            Float.class);
+    assertThat(target.clazzSet).containsExactlyInAnyOrder(Integer.class, Boolean.class,
+            Float.class);
+  }
+  
+  public static class URIInjection {
+    private @ConfigurationParameter URI uri;
+    private @ConfigurationParameter URI uriFromString;
+    private @ConfigurationParameter URI[] uriArray;
+    private @ConfigurationParameter URI[] uriArrayFromString;
+    private @ConfigurationParameter List<URI> uriList;
+    private @ConfigurationParameter List<URI> uriListFromString;
+    private @ConfigurationParameter Set<URI> uriSet;
+  }
+  
+  @Test
+  public void thatURICanBeInjected() throws Exception {
+    URIInjection target = new URIInjection();
+    
+    initialize(target,
+            "uri", URI.create("file:test"),
+            "uriFromString", "file:test",
+            "uriArray", new URI[] { URI.create("file:test1"), URI.create("file:test2"), 
+                    URI.create("file:test3") },
+            "uriArrayFromString", new String[] { "file:test1", "file:test2", "file:test3" },
+            "uriList", asList(URI.create("file:test1"), URI.create("file:test2"), 
+                    URI.create("file:test3")),
+            "uriListFromString", asList("file:test1", "file:test2", "file:test3"),
+            "uriSet", unmodifiableSet(URI.create("file:test1"), URI.create("file:test2"), 
+                    URI.create("file:test3")));
+    
+    assertThat(target.uri).isEqualTo(URI.create("file:test"));
+    assertThat(target.uriFromString).isEqualTo(URI.create("file:test"));
+    assertThat(target.uriArray).containsExactly(URI.create("file:test1"), URI.create("file:test2"), 
+            URI.create("file:test3"));
+    assertThat(target.uriArrayFromString).containsExactly(URI.create("file:test1"), 
+            URI.create("file:test2"), URI.create("file:test3"));
+    assertThat(target.uriList).containsExactly(URI.create("file:test1"), URI.create("file:test2"), 
+            URI.create("file:test3"));
+    assertThat(target.uriListFromString).containsExactly(URI.create("file:test1"), 
+            URI.create("file:test2"), URI.create("file:test3"));
+    assertThat(target.uriSet).containsExactlyInAnyOrder(URI.create("file:test1"), 
+            URI.create("file:test2"), URI.create("file:test3"));
+  }
+  
+  public static class URLInjection {
+    private @ConfigurationParameter URL URL;
+    private @ConfigurationParameter URL URLFromString;
+    private @ConfigurationParameter URL[] URLArray;
+    private @ConfigurationParameter URL[] URLArrayFromString;
+    private @ConfigurationParameter List<URL> URLList;
+    private @ConfigurationParameter List<URL> URLListFromString;
+    private @ConfigurationParameter Set<URL> URLSet;
+  }
+  
+  @Test
+  public void thatURLCanBeInjected() throws Exception {
+    URLInjection target = new URLInjection();
+    
+    initialize(target,
+            "URL", new URL("file:test"),
+            "URLFromString", "file:test",
+            "URLArray", new URL[] { new URL("file:test1"), new URL("file:test2"), 
+                    new URL("file:test3") },
+            "URLArrayFromString", new String[] { "file:test1", "file:test2", "file:test3" },
+            "URLList", asList(new URL("file:test1"), new URL("file:test2"), 
+                    new URL("file:test3")),
+            "URLListFromString", asList("file:test1", "file:test2", "file:test3"),
+            "URLSet", unmodifiableSet(new URL("file:test1"), new URL("file:test2"), 
+                    new URL("file:test3")));
+    
+    assertThat(target.URL).isEqualTo(new URL("file:test"));
+    assertThat(target.URLFromString).isEqualTo(new URL("file:test"));
+    assertThat(target.URLArray).containsExactly(new URL("file:test1"), new URL("file:test2"), 
+            new URL("file:test3"));
+    assertThat(target.URLArrayFromString).containsExactly(new URL("file:test1"), 
+            new URL("file:test2"), new URL("file:test3"));
+    assertThat(target.URLList).containsExactly(new URL("file:test1"), new URL("file:test2"), 
+            new URL("file:test3"));
+    assertThat(target.URLListFromString).containsExactly(new URL("file:test1"), 
+            new URL("file:test2"), new URL("file:test3"));
+    assertThat(target.URLSet).containsExactlyInAnyOrder(new URL("file:test1"), 
+            new URL("file:test2"), new URL("file:test3"));
+  }
+  
+  public static class PatternInjection {
+    private @ConfigurationParameter Pattern pattern;
+    private @ConfigurationParameter Pattern patternFromString;
+    private @ConfigurationParameter Pattern[] patternArray;
+    private @ConfigurationParameter Pattern[] patternArrayFromString;
+    private @ConfigurationParameter List<Pattern> patternList;
+    private @ConfigurationParameter List<Pattern> patternListFromString;
+  }
+  
+  @Test
+  public void thatPatternCanBeInjected() throws Exception {
+    PatternInjection target = new PatternInjection();
+    
+    initialize(target,
+            "pattern", compile("^test$"),
+            "patternFromString", "^test$",
+            "patternArray", new Pattern[] { compile("test1"), compile("test2"), compile("test3") },
+            "patternArrayFromString", new String[] { "test1", "test2", "test3" },
+            "patternList", asList(compile("test1"), compile("test2"), compile("test3")),
+            "patternListFromString", asList("test1", "test2", "test3"));
+    
+    assertThat(target.pattern).matches(p -> p.matcher("test").matches());
+    assertThat(target.patternFromString).matches(p -> p.matcher("test").matches());
+    assertThat(target.patternArray).hasSize(3);
+    assertThat(target.patternArray[0]).matches(p -> p.matcher("test1").matches());
+    assertThat(target.patternArray[1]).matches(p -> p.matcher("test2").matches());
+    assertThat(target.patternArray[2]).matches(p -> p.matcher("test3").matches());
+    assertThat(target.patternArrayFromString).hasSize(3);
+    assertThat(target.patternArrayFromString[0]).matches(p -> p.matcher("test1").matches());
+    assertThat(target.patternArrayFromString[1]).matches(p -> p.matcher("test2").matches());
+    assertThat(target.patternArrayFromString[2]).matches(p -> p.matcher("test3").matches());
+    assertThat(target.patternList).hasSize(3);
+    assertThat(target.patternList.get(0)).matches(p -> p.matcher("test1").matches());
+    assertThat(target.patternList.get(1)).matches(p -> p.matcher("test2").matches());
+    assertThat(target.patternList.get(2)).matches(p -> p.matcher("test3").matches());
+    assertThat(target.patternList).hasSize(3);
+    assertThat(target.patternListFromString.get(0)).matches(p -> p.matcher("test1").matches());
+    assertThat(target.patternListFromString.get(1)).matches(p -> p.matcher("test2").matches());
+    assertThat(target.patternListFromString.get(2)).matches(p -> p.matcher("test3").matches());
+  }  
+
+  public static class CharsetInjection {
+    private @ConfigurationParameter Charset charset;
+    private @ConfigurationParameter String charsetAsString;
+    private @ConfigurationParameter Charset charsetFromString;
+    private @ConfigurationParameter Charset[] charsetArray;
+    private @ConfigurationParameter String[] charsetsAsStringArray;
+    private @ConfigurationParameter Charset[] charsetArrayFromString;
+    private @ConfigurationParameter List<Charset> charsetList;
+    private @ConfigurationParameter List<String> charsetAsStringList;
+    private @ConfigurationParameter List<Charset> charsetListFromString;
+    private @ConfigurationParameter Set<Charset> charsetSet;
+  }
+  
+  @Test
+  public void thatCharsetCanBeInjected() throws Exception {
+    CharsetInjection target = new CharsetInjection();
+    
+    initialize(target,
+            "charset", UTF_8,
+            "charsetAsString", UTF_8,
+            "charsetFromString", UTF_8.toString(),
+            "charsetArray", new Charset[] { UTF_8, UTF_16, US_ASCII },
+            "charsetsAsStringArray", new Charset[] { UTF_8, UTF_16, US_ASCII },
+            "charsetArrayFromString", new String[] { UTF_8.toString(), UTF_16.toString(), 
+                    US_ASCII.toString() },
+            "charsetList", asList(UTF_8, UTF_16, US_ASCII),
+            "charsetAsStringList", asList(UTF_8, UTF_16, US_ASCII),
+            "charsetListFromString", asList(UTF_8.toString(), UTF_16.toString(), 
+                    US_ASCII.toString()),
+            "charsetSet", unmodifiableSet(UTF_8, UTF_16, US_ASCII));
+    
+    assertThat(target.charset).isEqualTo(UTF_8);
+    assertThat(target.charsetAsString).isEqualTo(UTF_8.toString());
+    assertThat(target.charsetFromString).isEqualTo(UTF_8);
+    assertThat(target.charsetArray).containsExactly(UTF_8, UTF_16, US_ASCII);
+    assertThat(target.charsetsAsStringArray).containsExactly(UTF_8.toString(), UTF_16.toString(),
+            US_ASCII.toString());
+    assertThat(target.charsetArrayFromString).containsExactly(UTF_8, UTF_16, US_ASCII);
+    assertThat(target.charsetList).containsExactly(UTF_8, UTF_16, US_ASCII);
+    assertThat(target.charsetAsStringList).containsExactly(UTF_8.toString(), UTF_16.toString(),
+            US_ASCII.toString());
+    assertThat(target.charsetListFromString).containsExactly(UTF_8, UTF_16, US_ASCII);
+    assertThat(target.charsetSet).containsExactlyInAnyOrder(UTF_8, UTF_16, US_ASCII);
+  }
+
+
+  private static class CustomClassWithStringConstructor {
+    private String value;
+    
+    public CustomClassWithStringConstructor(String aValue) {
+      value = aValue;
+    }
+    
+    public String getValue() {
+      return value;
+    }
+  }
+  
+  public static class CustomClassWithStringConstructorInjection {
+    private @ConfigurationParameter CustomClassWithStringConstructor customFromString;
+    private @ConfigurationParameter CustomClassWithStringConstructor[] customArrayFromString;
+    private @ConfigurationParameter List<CustomClassWithStringConstructor> customListFromString;
+  }
+  
+  @Test
+  public void thatCustomClassWithStringConstructorObjectCanBeInjected() throws Exception {
+    CustomClassWithStringConstructorInjection target = 
+            new CustomClassWithStringConstructorInjection();
+    
+    initialize(target,
+            "customFromString", "test",
+            "customArrayFromString", new String[] { "test1", "test2", "test3" },
+            "customListFromString", asList("test1", "test2", "test3"));
+    
+    assertThat(target.customFromString)
+            .extracting(CustomClassWithStringConstructor::getValue)
+            .containsExactly("test");
+    assertThat(target.customArrayFromString)
+            .extracting(CustomClassWithStringConstructor::getValue)
+            .containsExactly("test1", "test2", "test3");
+    assertThat(target.customListFromString)
+            .extracting(CustomClassWithStringConstructor::getValue)
+            .containsExactly("test1", "test2", "test3");
+
+  }
+  
+  // --- Legacy unit tests below ---
 
   @Test
   public void testInitialize() throws ResourceInitializationException, SecurityException {

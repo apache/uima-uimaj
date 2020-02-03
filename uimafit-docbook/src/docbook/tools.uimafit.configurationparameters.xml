@@ -166,9 +166,20 @@
   }
 }</programlisting>
   <para>Fields that can be annotated with the <classname>@ConfigurationParameter</classname>
-    annotation are any array or collection types of primitive types (<type>int</type>,
-      <type>boolean</type>, <type>float</type>, <type>double</type>), any enum types, any types that
-    define a constructor accepting a single <classname>String</classname> (e.g.
-      <classname>File</classname>), as well as, fields of the types <classname>Pattern</classname>
-    and <classname>Locale</classname>.</para>
+    annotation are any array or collection types (including if they are only typed via interfaces
+    such as <type>List</type> or <type>Set</type>) of primitive types (<type>int</type>,
+      <type>boolean</type>, <type>float</type>, <type>double</type>). Enum types, as well as, 
+      fields of the types 
+      <classname>Charset</classname>, 
+      <classname>File</classname>, 
+      <classname>Locale</classname>, 
+      <classname>Pattern</classname>,
+      <classname>URI</classname>, and
+      <classname>URL</classname> can also be used. 
+      These can be initialized either using an object value (e.g. <code>StandardChartsets.UTF_8</code>)
+      or a string value (e.g. <code>"UTF-8"</code>).
+      Additionally it is possible to inject any fields of types that define a constructor accepting
+      a single <classname>String</classname>. These must be initialized from a string value.</para>
+  <para>Multi-valued parameters can be initialized from single values without having to wrap these
+      into a container.</para>
 </chapter>
