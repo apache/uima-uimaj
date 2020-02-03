@@ -20,6 +20,8 @@
 package org.apache.uima.fit.factory;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyMap;
+import static org.apache.uima.UIMAFramework.produceResource;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.canParameterBeSet;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
 
@@ -36,7 +38,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -107,8 +108,7 @@ public final class ExternalResourceFactory {
   }
 
   /**
-   * Create an external resource description for a custom resource. This is intended to be used
-   * together with ....
+   * Create an external resource description for a custom resource.
    * 
    * @param aInterface
    *          the interface the resource should implement.
@@ -1233,8 +1233,7 @@ public final class ExternalResourceFactory {
    * uimaFIT internal use. This method is required by the ConfigurationParameterFactory, so it is
    * package private instead of private.
    */
-  static ResourceValueType getResourceParameterType(Object aValue)
-  {
+  static ResourceValueType getResourceParameterType(Object aValue) {
     if (aValue == null) {
       return ResourceValueType.NO_RESOURCE;
     }
@@ -1248,16 +1247,55 @@ public final class ExternalResourceFactory {
             .iterator().next() instanceof ExternalResourceDescription);
     if (isResourcePrimitive) {
       return ResourceValueType.PRIMITIVE;
-    }
-    else if (isResourceArray) {
+    } else if (isResourceArray) {
       return ResourceValueType.ARRAY;
-    }
-    else if (isResourceCollection) {
+    } else if (isResourceCollection) {
       return ResourceValueType.COLLECTION;
-    }
-    else {
+    } else {
       return ResourceValueType.NO_RESOURCE;
     }
+  }
+  
+  /**
+   * Create an instance of a UIMA shared/external resource class.
+   * 
+   * @param <R>
+   *          the resource type.
+   * @param resourceClass
+   *          the class implementing the resource.
+   * @param params
+   *          parameters passed to the resource when it is created. Each parameter consists of two
+   *          arguments, the first being the name and the second being the parameter value
+   * @return the resource instance.
+   * @throws ResourceInitializationException
+   *           if there was a problem instantiating the resource.
+   */
+  public static <R> R createExternalResource(Class<? extends Resource> resourceClass,
+          Object... params) throws ResourceInitializationException {
+    return createExternalResource(resourceClass, null, params);
+  }
+
+  /**
+   * Create an instance of a UIMA shared/external resource class.
+   * 
+   * @param <R>
+   *          the resource type.
+   * @param resourceClass
+   *          the class implementing the resource.
+   * @param resMgr
+   *          a resource manager (optional).
+   * @param params
+   *          parameters passed to the resource when it is created. Each parameter consists of two
+   *          arguments, the first being the name and the second being the parameter value
+   * @return the resource instance.
+   * @throws ResourceInitializationException
+   *           if there was a problem instantiating the resource.
+   */
+  @SuppressWarnings("unchecked")
+  public static <R> R createExternalResource(Class<? extends Resource> resourceClass,
+          ResourceManager resMgr, Object... params) throws ResourceInitializationException {
+    ExternalResourceDescription res = createResourceDescription(resourceClass, params);
+    return (R) produceResource(resourceClass, res.getResourceSpecifier(), resMgr, emptyMap());
   }
   
   /**

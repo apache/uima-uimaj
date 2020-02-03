@@ -18,32 +18,24 @@
  */
 package org.apache.uima.fit.internal.propertyeditors;
 
+import java.beans.PropertyEditorSupport;
 import java.nio.charset.Charset;
-import java.util.LinkedList;
-import java.util.Locale;
-
-import org.springframework.beans.PropertyEditorRegistry;
-import org.springframework.beans.propertyeditors.CharsetEditor;
-import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 
 /**
  * INTERNAL API
+ * 
+ * Custom property editor for {@link Charset}.
  */
-public final class PropertyEditorUtil {
+public class ChatsetEditor extends PropertyEditorSupport {
 
-  private PropertyEditorUtil() {
-    // Utility class
+  @Override
+  public void setAsText(String text) {
+    setValue(Charset.forName(text));
   }
 
-  /**
-   * Register the property editors provided by uimaFIT in the given property editor registry.
-   * 
-   * @param aRegistry a property editor registry
-   */
-  public static void registerUimaFITEditors(PropertyEditorRegistry aRegistry) {
-    aRegistry.registerCustomEditor(Charset.class, new CharsetEditor());
-    aRegistry.registerCustomEditor(Locale.class, new LocaleEditor());
-    aRegistry.registerCustomEditor(String.class, new GetAsTextStringEditor(aRegistry));
-    aRegistry.registerCustomEditor(LinkedList.class, new CustomCollectionEditor(LinkedList.class));
+  @Override
+  public String getAsText() {
+    Object value = getValue();
+    return (value != null ? value.toString() : "");
   }
 }
