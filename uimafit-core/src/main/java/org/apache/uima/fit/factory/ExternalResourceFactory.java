@@ -1273,9 +1273,9 @@ public final class ExternalResourceFactory {
    * @throws ResourceInitializationException
    *           if there was a problem instantiating the resource.
    */
-  public static <R> R createExternalResource(Class<? extends Resource> resourceClass,
+  public static <R extends Resource> R createResource(Class<R> resourceClass,
           Object... params) throws ResourceInitializationException {
-    return createExternalResource(resourceClass, null, params);
+    return createResource(resourceClass, null, params);
   }
 
   /**
@@ -1295,7 +1295,7 @@ public final class ExternalResourceFactory {
    *           if there was a problem instantiating the resource.
    */
   @SuppressWarnings("unchecked")
-  public static <R> R createExternalResource(Class<? extends Resource> resourceClass,
+  public static <R extends Resource> R createResource(Class<R> resourceClass,
           ResourceManager resMgr, Object... params) throws ResourceInitializationException {
     ExternalResourceDescription res = createExternalResourceDescription(resourceClass, params);
     return (R) produceResource(resourceClass, res.getResourceSpecifier(), resMgr, emptyMap());

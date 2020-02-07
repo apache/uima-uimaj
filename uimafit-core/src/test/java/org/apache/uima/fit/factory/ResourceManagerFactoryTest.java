@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.fit.component.Resource_ImplBase;
@@ -32,7 +32,7 @@ public class ResourceManagerFactoryTest {
   
   @Test
   public void thatResourceCanBeCreated() throws Exception {
-    SimpleResource sut = createExternalResource(SimpleResource.class);
+    SimpleResource sut = createResource(SimpleResource.class);
     
     assertThat(sut).isInstanceOf(SimpleResource.class);
   }
@@ -44,7 +44,7 @@ public class ResourceManagerFactoryTest {
   
   @Test
   public void thatResourceCanBeParametrized() throws Exception {
-    ResourceWithParameters sut = createExternalResource(ResourceWithParameters.class,
+    ResourceWithParameters sut = createResource(ResourceWithParameters.class,
             "intValue", "1",
             "stringValue", "test");
     
