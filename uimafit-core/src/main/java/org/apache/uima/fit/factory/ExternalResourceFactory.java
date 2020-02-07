@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -818,7 +819,7 @@ public final class ExternalResourceFactory {
     if (!found) {
       setResourceDependencies(
               aDesc,
-              (ExternalResourceDependency[]) ArrayUtils.add(deps,
+              ArrayUtils.add(deps,
                       createResourceDependency(aKey, aApi, false, null)));
     }
   }
@@ -887,7 +888,7 @@ public final class ExternalResourceFactory {
       if (deps == null) {
         deps = new ExternalResourceDependency[] {};
       }
-      aDesc.setExternalResourceDependencies((ExternalResourceDependency[]) ArrayUtils.add(deps,
+      aDesc.setExternalResourceDependencies(ArrayUtils.add(deps,
               createResourceDependency(aKey, aImpl, false, null)));
     }
     bindResourceUsingUrl(aDesc, aKey, aImpl, aUrl, aParams);
