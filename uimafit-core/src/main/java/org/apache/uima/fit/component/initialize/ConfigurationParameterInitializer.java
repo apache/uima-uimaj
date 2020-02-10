@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -85,6 +85,7 @@ public final class ConfigurationParameterInitializer {
    * or to not provide one at all. If the context does not have a configuration parameter, then the
    * default value provided by the developer as specified by the defaultValue element of the
    * {@link ConfigurationParameter} will be used. See comments in the code for additional details.
+   *
    * @param component
    *          the component to initialize.
    * @param context
@@ -157,8 +158,8 @@ public final class ConfigurationParameterInitializer {
             // }
             if (empty) {
               // Use bind error processor to create FieldError.
-              getBindingErrorProcessor()
-                      .processMissingFieldError(field, getInternalBindingResult());
+              getBindingErrorProcessor().processMissingFieldError(field,
+                      getInternalBindingResult());
               // Remove property from property values to bind:
               // It has already caused a field error with a rejected value.
               if (pv != null) {
@@ -173,9 +174,9 @@ public final class ConfigurationParameterInitializer {
     binder.initDirectFieldAccess();
     registerUimaFITEditors(binder);
     binder.setRequiredFields(mandatoryValues.toArray(new String[mandatoryValues.size()]));
-    
+
     binder.bind(values);
-    
+
     if (binder.getBindingResult().hasErrors()) {
       StringBuilder sb = new StringBuilder();
       sb.append("Errors initializing [" + component.getClass() + "]");
@@ -191,7 +192,7 @@ public final class ConfigurationParameterInitializer {
 
   /**
    * Initialize a component from a map.
-   * 
+   *
    * @param component
    *          the component to initialize.
    * @param map
@@ -202,18 +203,19 @@ public final class ConfigurationParameterInitializer {
    */
   public static void initialize(final Object component, final Map<String, Object> map)
           throws ResourceInitializationException {
-    // If there is already a UimaContext then re-use that, otherwise create a new one.
-    UimaContextAdmin context;
+    // If there is already a ResourceManager then re-use that, otherwise create a new one.
+    ResourceManager resMgr;
     if (component instanceof Resource) {
-      context = ((Resource) component).getUimaContextAdmin();
+      resMgr = ((Resource) component).getResourceManager();
     } else {
-      ResourceManager resMgr = newResourceManager();
-      context = newUimaContext(getLogger(), resMgr, newConfigurationManager());
+      resMgr = newResourceManager();
     }
+
+    UimaContextAdmin context = newUimaContext(getLogger(), resMgr, newConfigurationManager());
 
     ConfigurationManager cfgMgr = context.getConfigurationManager();
     cfgMgr.setSession(context.getSession());
-    
+
     for (Entry<String, Object> e : map.entrySet()) {
       cfgMgr.setConfigParameterValue(context.getQualifiedContextName() + e.getKey(), e.getValue());
     }
@@ -223,7 +225,7 @@ public final class ConfigurationParameterInitializer {
 
   /**
    * Initialize a component from a {@link CustomResourceSpecifier}.
-   * 
+   *
    * @param component
    *          the component to initialize.
    * @param spec
@@ -239,7 +241,7 @@ public final class ConfigurationParameterInitializer {
 
   /**
    * Initialize a component from a {@link CustomResourceSpecifier}.
-   * 
+   *
    * @param component
    *          the component to initialize.
    * @param parameters
@@ -259,7 +261,7 @@ public final class ConfigurationParameterInitializer {
 
   /**
    * Initialize a component from a {@link ResourceMetaData}.
-   * 
+   *
    * @param component
    *          the component to initialize.
    * @param parameters
@@ -279,7 +281,7 @@ public final class ConfigurationParameterInitializer {
 
   /**
    * Initialize a component from a {@link ResourceMetaData}.
-   * 
+   *
    * @param component
    *          the component to initialize.
    * @param dataResource
@@ -294,7 +296,7 @@ public final class ConfigurationParameterInitializer {
     ConfigurationParameterSettings settings = metaData.getConfigurationParameterSettings();
     initialize(component, settings.getParameterSettings());
   }
-  
+
   public static void initialize(Object component, Object... aParameters)
           throws ResourceInitializationException {
     ConfigurationData configurationData = createConfigurationData(aParameters);
