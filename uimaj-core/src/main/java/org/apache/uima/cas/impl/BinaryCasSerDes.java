@@ -57,6 +57,7 @@ import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasLoadMode;
 
@@ -973,6 +974,8 @@ public class BinaryCasSerDes {
         msg = e.toString();
       }
       throw new CASRuntimeException(CASRuntimeException.BLOB_DESERIALIZATION, msg);
+    } finally {
+        baseCas.forAllViews(view -> view.set_deserialized_doc_annot_not_indexed(null));
     }
 
     return h.typeSystemIndexDefIncluded ? SerialFormat.BINARY_TSI : SerialFormat.BINARY;
@@ -1697,12 +1700,23 @@ public class BinaryCasSerDes {
                // start of normal non-array
         CASImpl view = null; 
         boolean isSofa = false;
+        boolean documentAnnotationPreviouslyIndexed = false;
         if (type.isAnnotationBaseType()) {
           Sofa sofa = getSofaFromAnnotBase(heapIndex, stringHeap, addr2fs, csds);  // creates sofa if needed and exists (forward ref case)
           view = (sofa == null) ? baseCas.getInitialView() : baseCas.getView(sofa);
           if (type == tsi.docType) {
-            fs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
-            view.removeFromCorruptableIndexAnyView(fs, view.getAddbackSingle());
+            Annotation documentAnnotationPrevious = view.getDocumentAnnotationNoCreate();
+            if (documentAnnotationPrevious == null) {
+              // document annotation not present
+              fs = view.createDocumentAnnotationNoRemoveNoIndex(0); // create but don't index
+              view.set_deserialized_doc_annot_not_indexed((Annotation)fs);  // for use by other code that sets length, if this is not indexed
+              // documentAnnotationPreviouslyIndex == false, preset above
+            } else {
+                fs = documentAnnotationPrevious;  
+                // remove from Corruptable indexes, because we'll be updating it.
+                view.removeFromCorruptableIndexAnyView(fs, view.getAddbackSingle());
+                documentAnnotationPreviouslyIndexed = true;
+            }
           } else {
             fs = view.createFS(type);
             if (fs instanceof UimaSerializable) {
@@ -1765,7 +1779,8 @@ public class BinaryCasSerDes {
           } // end of switch
         } // end of for-loop-over-all-features
         
-        if (type == tsi.docType) {
+        if (type == tsi.docType 
+            && documentAnnotationPreviouslyIndexed) {
           view.addbackSingle(fs);
         }
       } // end of non-array, normal fs
