@@ -1118,7 +1118,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   private volatile FSIterator<Annotation> docAnnotIter = null;
   
   // UIMA-6199 provides access to non-indexed doc annot 
-  //   to allow sofa setting to set the "length"
+  //   to allow sofa setting to set the "length" of the local sofa data string
+  //   @see updateDocumentAnnotation() updateDocumentAnnotation.
   private volatile Annotation deserialized_doc_annot_not_indexed = null;
   
 //  private StackTraceElement[] addbackSingleTrace = null;  // for debug use only, normally commented out  
@@ -4365,7 +4366,8 @@ public JCasImpl getJCasImpl() {
         }
       } else if (deserialized_doc_annot_not_indexed != null) {
         // UIMA-6199 provides access to non-indexed doc annot 
-        //   to allow sofa setting to set the "length"
+        //   to allow sofa setting to set the "length" of the local sofa data string
+        //   @see updateDocumentAnnotation() updateDocumentAnnotation.
         deserialized_doc_annot_not_indexed._setIntValueNfc(endFeatAdjOffset,  newDoc.length());
       } else {
         // not in the index (yet)
@@ -5994,7 +5996,8 @@ public AutoCloseableNoException ll_enableV2IdRefs(boolean enable) {
 //    return returnRefDataForAlloc;
 //  }
   // UIMA-6199 provides access to non-indexed doc annot 
-  //   to allow sofa setting to set the "length"
+  //   to allow sofa setting to set the "length" of the local sofa data string
+  //   @see updateDocumentAnnotation() updateDocumentAnnotation.
   public void set_deserialized_doc_annot_not_indexed(Annotation doc_annot) {
     deserialized_doc_annot_not_indexed = doc_annot;
   }
