@@ -975,6 +975,11 @@ public class BinaryCasSerDes {
       }
       throw new CASRuntimeException(CASRuntimeException.BLOB_DESERIALIZATION, msg);
     } finally {
+        // safety - not currently logically needed, since this field is only used in the case it has been set
+        //   (when there is no previous documentAnnotation, and we're adding a new one, and 
+        //    it may not be indexed)
+        //
+        //   If it is not indexed, removing this will allow the FS to garbage collected.
         baseCas.forAllViews(view -> view.set_deserialized_doc_annot_not_indexed(null));
     }
 
