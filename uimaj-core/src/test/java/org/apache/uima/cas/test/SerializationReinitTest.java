@@ -55,6 +55,7 @@ import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.internal.util.TextStringTokenizer;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -773,6 +774,9 @@ public class SerializationReinitTest extends TestCase {
       Serialization.deserializeCAS(cas2, fis);
       CasComparer.assertEquals(cas1, cas2);
  
+//      dumpDocAnnot(cas1);
+//      dumpDocAnnot(cas2);
+
       //=======================================================================
       //create Marker, add/modify fs and serialize in delta xmi format.
       Marker marker = cas2.createMarker();
@@ -789,7 +793,9 @@ public class SerializationReinitTest extends TestCase {
       
       // set document text of View1
       CAS cas2view1 = cas2.getView("View1");
+//      dumpDocAnnot(cas2);
       cas2view1.setDocumentText("This is the View1 document.");
+//      dumpDocAnnot(cas2);
       //create an annotation in View1
       AnnotationFS cas2view1Annot = cas2view1.createAnnotation(cas2.getAnnotationType(), 1, 5);
       cas2view1.getIndexRepository().addFS(cas2view1Annot);
@@ -862,7 +868,13 @@ public class SerializationReinitTest extends TestCase {
       //deserialize delta binary into cas1
       ByteArrayInputStream fisDelta = new ByteArrayInputStream(fosDelta.toByteArray());
       CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = false;
+      
+//      dumpDocAnnot(cas1);
+//      dumpDocAnnot(cas2);
+
       Serialization.deserializeCAS(cas1, fisDelta);
+//      dumpDocAnnot(cas1);
+//      CasComparer.assertEquals(cas1,  cas2);
       
       //======================================================================
       //serialize complete cas and deserialize into cas3 and compare with cas1.
@@ -870,6 +882,7 @@ public class SerializationReinitTest extends TestCase {
       Serialization.serializeCAS(cas2, fosFull);
       ByteArrayInputStream fisFull = new ByteArrayInputStream(fosFull.toByteArray());
       Serialization.deserializeCAS(cas3, fisFull);
+      CasComparer.assertEquals(cas2,  cas3);
       CasComparer.assertEquals(cas1, cas3); 
       //System.out.println("CAS1 " + serialize(cas1, new XmiSerializationSharedData()));
       //System.out.println("CAS2 " + serialize(cas2, new XmiSerializationSharedData()));
@@ -1037,4 +1050,15 @@ public class SerializationReinitTest extends TestCase {
 //    // System.out.println("Time taken over all: " + new TimeSpan(overallTime));
 //
 //  }
+  void dumpDocAnnot(CAS cas) {
+    CASImpl c = (CASImpl) cas;
+    c.forAllViews(view -> {
+      Annotation a = view.getDocumentAnnotationNoCreate();
+      System.out.format(
+          "docA for view %s : %s%n",
+          view.getViewName(),
+          ((a == null) ? "null" : a));
+      });
+    System.out.println("");
+  }
 }

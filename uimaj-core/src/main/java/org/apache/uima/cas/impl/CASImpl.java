@@ -1117,6 +1117,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   private volatile FSIterator<Annotation> docAnnotIter = null;
   
+  // UIMA-6199 provides access to non-indexed doc annot 
+  //   to allow sofa setting to set the "length" of the local sofa data string
+  //   @see updateDocumentAnnotation() updateDocumentAnnotation.
+  private volatile Annotation deserialized_doc_annot_not_indexed = null;
+  
 //  private StackTraceElement[] addbackSingleTrace = null;  // for debug use only, normally commented out  
 
   // CASImpl(TypeSystemImpl typeSystem) {
@@ -4359,6 +4364,11 @@ public JCasImpl getJCasImpl() {
         if (wasRemoved) {
           tobeAddedback.addback(docAnnot);
         }
+      } else if (deserialized_doc_annot_not_indexed != null) {
+        // UIMA-6199 provides access to non-indexed doc annot 
+        //   to allow sofa setting to set the "length" of the local sofa data string
+        //   @see updateDocumentAnnotation() updateDocumentAnnotation.
+        deserialized_doc_annot_not_indexed._setIntValueNfc(endFeatAdjOffset,  newDoc.length());
       } else {
         // not in the index (yet)
         createDocumentAnnotation(newDoc.length());
@@ -4731,7 +4741,7 @@ public JCasImpl getJCasImpl() {
    * iterate over all views in view order (by view number) 
    * @param processViews
    */
-  void forAllViews(Consumer<CASImpl> processViews) {
+  public void forAllViews(Consumer<CASImpl> processViews) {
     final int numViews = this.getNumberOfViews();
     for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
       CASImpl view = (viewNbr == 1) ? getInitialView() : (CASImpl) getView(viewNbr);
@@ -5985,5 +5995,10 @@ public AutoCloseableNoException ll_enableV2IdRefs(boolean enable) {
 //  Object[] getReturnRefDataForAlloc() {
 //    return returnRefDataForAlloc;
 //  }
-
+  // UIMA-6199 provides access to non-indexed doc annot 
+  //   to allow sofa setting to set the "length" of the local sofa data string
+  //   @see updateDocumentAnnotation() updateDocumentAnnotation.
+  public void set_deserialized_doc_annot_not_indexed(Annotation doc_annot) {
+    deserialized_doc_annot_not_indexed = doc_annot;
+  }
 }
