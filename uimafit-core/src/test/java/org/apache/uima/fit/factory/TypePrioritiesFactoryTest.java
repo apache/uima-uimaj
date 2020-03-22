@@ -21,6 +21,7 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.fit.type.Sentence;
@@ -54,8 +55,9 @@ public class TypePrioritiesFactoryTest {
     TypePriorities typePriorities = createTypePriorities();
 
     TypePriorityList[] typePrioritiesLists = typePriorities.getPriorityLists();
-    assertEquals(1, typePrioritiesLists.length);
-    assertEquals(Sentence.class.getName(), typePrioritiesLists[0].getTypes()[0]);
-    assertEquals(Token.class.getName(), typePrioritiesLists[0].getTypes()[1]);
+    assertThat(typePrioritiesLists.length).isEqualTo(1);
+    assertThat(typePrioritiesLists[0].getTypes())
+        .as("Type priorities auto-detection")
+        .containsExactly(Sentence.class.getName(), Token.class.getName());
   }
 }
