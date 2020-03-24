@@ -18,6 +18,7 @@
  */
 package org.apache.uima.fit.cpe;
 
+import static java.lang.Runtime.getRuntime;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.IOException;
@@ -43,7 +44,9 @@ public final class CpePipeline {
   }
   
   /**
-   * Run the CollectionReader and AnalysisEngines as a multi-threaded pipeline.
+   * Run the CollectionReader and AnalysisEngines as a multi-threaded pipeline. This call uses
+   * a number of threads equal to the number of available processors (as reported by Java, so 
+   * usually boiling down to cores) minus 1 - minimum of 1.
    * 
    * @param readerDesc
    *          The CollectionReader that loads the documents into the CAS.
@@ -61,10 +64,38 @@ public final class CpePipeline {
    *           if there was a problem configuring the CPE descriptor
    * @throws UIMAException
    *           if there was a problem initializing or running the CPE.
+   */  public static void runPipeline(final CollectionReaderDescription readerDesc,
+          final AnalysisEngineDescription... descs)
+          throws UIMAException, SAXException, CpeDescriptorException, IOException {
+
+    runPipeline(Math.max(1, getRuntime().availableProcessors() - 1), readerDesc, descs);
+  }
+
+  /**
+   * Run the CollectionReader and AnalysisEngines as a multi-threaded pipeline.
+   * 
+   * @param parallelism
+   *          Number of threads to use when running the analysis engines in the CPE.
+   * @param readerDesc
+   *          The CollectionReader that loads the documents into the CAS.
+   * @param descs
+   *          Primitive AnalysisEngineDescriptions that process the CAS, in order. If you have a mix
+   *          of primitive and aggregate engines, then please create the AnalysisEngines yourself
+   *          and call the other runPipeline method.
+   * @throws SAXException
+   *           if there was a XML-related problem materializing the component descriptors that are
+   *           referenced from the CPE descriptor
+   * @throws IOException
+   *           if there was a I/O-related problem materializing the component descriptors that are
+   *           referenced from the CPE descriptor
+   * @throws CpeDescriptorException
+   *           if there was a problem configuring the CPE descriptor
+   * @throws UIMAException
+   *           if there was a problem initializing or running the CPE.
    */
-  public static void runPipeline(final CollectionReaderDescription readerDesc,
-          final AnalysisEngineDescription... descs) throws UIMAException, SAXException,
-          CpeDescriptorException, IOException {
+  public static void runPipeline(final int parallelism,
+          final CollectionReaderDescription readerDesc, final AnalysisEngineDescription... descs)
+          throws UIMAException, SAXException, CpeDescriptorException, IOException {
     // Create AAE
     final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
 
@@ -98,6 +129,7 @@ public final class CpePipeline {
 
     private boolean isProcessing = true;
 
+    @Override
     public void entityProcessComplete(CAS arg0, EntityProcessStatus arg1) {
       if (arg1.isException()) {
         for (Exception e : arg1.getExceptions()) {
@@ -106,6 +138,7 @@ public final class CpePipeline {
       }
     }
 
+    @Override
     public void aborted() {
       synchronized (this) {
         if (isProcessing) {
@@ -115,10 +148,12 @@ public final class CpePipeline {
       }
     }
 
+    @Override
     public void batchProcessComplete() {
       // Do nothing
     }
 
+    @Override
     public void collectionProcessComplete() {
       synchronized (this) {
         if (isProcessing) {
@@ -128,14 +163,17 @@ public final class CpePipeline {
       }
     }
 
+    @Override
     public void initializationComplete() {
       // Do nothing
     }
 
+    @Override
     public void paused() {
       // Do nothing
     }
 
+    @Override
     public void resumed() {
       // Do nothing
     }
