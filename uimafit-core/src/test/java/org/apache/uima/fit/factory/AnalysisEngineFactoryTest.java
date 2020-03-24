@@ -21,6 +21,9 @@ package org.apache.uima.fit.factory;
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineFromPath;
+import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -60,6 +63,7 @@ import org.apache.uima.fit.factory.testAes.ParameterizedAE;
 import org.apache.uima.fit.factory.testAes.SerializationTestAnnotator;
 import org.apache.uima.fit.factory.testAes.ViewNames;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.fit.type.AnalyzedText;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.fit.util.CasIOUtil;
@@ -70,24 +74,18 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.XMLInputSource;
 import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Assert;
 import org.junit.Test;
-
-/**
- */
 
 public class AnalysisEngineFactoryTest extends ComponentTestBase {
 
@@ -106,8 +104,8 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
 
   @Test
   public void testCreateAnalysisEngineFromPath() throws UIMAException, IOException {
-    AnalysisEngine engine = AnalysisEngineFactory
-            .createEngineFromPath("src/main/resources/org/apache/uima/fit/component/NoOpAnnotator.xml");
+    AnalysisEngine engine = createEngineFromPath(
+            "src/main/resources/org/apache/uima/fit/component/NoOpAnnotator.xml");
     assertNotNull(engine);
   }
 
@@ -589,5 +587,34 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     cas.setDocumentText("Sample text to process with a date 05/29/07 and a time 9:45 AM");
     cas.setDocumentLanguage("en");
     ae.process(cas);
+  }
+  
+  @Test
+  public void thatCreateEngineDescriptorAutoDetectionWorks() throws Exception
+  {
+    AnalysisEngineDescription aed = createEngineDescription(NoOpAnnotator.class);
+    
+    TypeSystemDescription tsd = createTypeSystemDescription();
+    assertThat(tsd.getType(Token.class.getName()))
+        .as("Token type auto-detection")
+        .isNotNull();
+    assertThat(tsd.getType(Sentence.class.getName()))
+        .as("Sentence type auto-detection")
+        .isNotNull();
+    assertThat(tsd.getType(AnalyzedText.class.getName()))
+        .as("AnalyzedText type auto-detection")
+        .isNotNull();
+
+    TypePriorityList[] typePrioritiesLists = typePriorities.getPriorityLists();
+    assertThat(typePrioritiesLists.length).isEqualTo(1);
+    assertThat(typePrioritiesLists[0].getTypes())
+        .as("Type priorities auto-detection")
+        .containsExactly(Sentence.class.getName(), AnalyzedText.class.getName(), Token.class.getName());
+
+    FsIndexDescription[] indexes = aed.getAnalysisEngineMetaData().getFsIndexCollection().getFsIndexes();
+    assertThat(indexes.length).isEqualTo(1);
+    assertThat(indexes[0])
+        .extracting(FsIndexDescription::getLabel, FsIndexDescription::getTypeName, FsIndexDescription::getKind)
+        .containsExactly("Automatically Scanned Index", Token.class.getName(), FsIndexDescription.KIND_SORTED);
   }
 }
