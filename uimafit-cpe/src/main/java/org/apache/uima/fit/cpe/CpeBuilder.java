@@ -25,11 +25,13 @@ import static org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory.
 import static org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory.produceDescriptor;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Map;
+
+import javax.xml.transform.OutputKeys;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
@@ -48,6 +50,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.XMLSerializer;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
@@ -177,8 +181,14 @@ public class CpeBuilder {
     File tempDesc = File.createTempFile("desc", ".xml");
     tempDesc.deleteOnExit();
 
-    try (OutputStream os = new FileOutputStream(tempDesc)) {
-      resource.toXML(os);
+    // Write the descriptor using XML 1.1 to allow a wider range of characters for parameter values
+    try (OutputStream os = Files.newOutputStream(tempDesc.toPath())) {
+      XMLSerializer sax2xml = new XMLSerializer(os, true);
+      sax2xml.setOutputProperty(OutputKeys.VERSION, "1.1");
+      ContentHandler contentHandler = sax2xml.getContentHandler();
+      contentHandler.startDocument();
+      resource.toXML(sax2xml.getContentHandler(), true);
+      contentHandler.endDocument();
     }
 
     return tempDesc;
