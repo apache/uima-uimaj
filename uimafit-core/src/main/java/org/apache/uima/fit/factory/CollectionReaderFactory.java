@@ -449,8 +449,10 @@ public final class CollectionReaderFactory {
 
   /**
    * A simple factory method for creating a CollectionReaderDescription with a given class, type
-   * system description, and configuration data The type system is detected automatically using
-   * {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}.
+   * system description, and configuration data. The type system is detected automatically using
+   * {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}. Type priorities are
+   * detected automatically using {@link TypePrioritiesFactory#createTypePriorities()}. Indexes are
+   * detected automatically using {@link FsIndexFactory#createFsIndexCollection()}.
    * 
    * @param readerClass
    *          The class of the CollectionReader to be created.
@@ -465,8 +467,11 @@ public final class CollectionReaderFactory {
   public static CollectionReaderDescription createReaderDescription(
           Class<? extends CollectionReader> readerClass, Object... configurationData)
           throws ResourceInitializationException {
-    TypeSystemDescription tsd = createTypeSystemDescription();
-    return createReaderDescription(readerClass, tsd, (TypePriorities) null, configurationData);
+    TypeSystemDescription typeSystem = createTypeSystemDescription();
+    TypePriorities typePriorities = createTypePriorities();
+    FsIndexCollection fsIndexCollection = createFsIndexCollection();
+    return createReaderDescription(readerClass, typeSystem, typePriorities, fsIndexCollection,
+            (Capability[]) null, configurationData);
   }
 
   /**

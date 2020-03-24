@@ -28,6 +28,7 @@ import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypePriorities;
+import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Test;
 
@@ -65,8 +66,10 @@ public class TypePrioritiesFactoryTest {
   public void testAutoDetectTypePriorities() throws Exception {
     TypePriorities prio = createTypePriorities();
 
-    assertThat(prio.getPriorityLists()).hasSize(1);
-    assertThat(prio.getPriorityLists()[0].getTypes()).containsExactly(Sentence.class.getName(),
-            Token.class.getName());
+    TypePriorityList[] typePrioritiesLists = prio.getPriorityLists();
+    assertThat(typePrioritiesLists.length).isEqualTo(1);
+    assertThat(typePrioritiesLists[0].getTypes())
+        .as("Type priorities auto-detection")
+        .containsExactly(Sentence.class.getName(), Token.class.getName());
   }
 }
