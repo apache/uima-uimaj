@@ -19,6 +19,8 @@
 
 package org.apache.uima.flow.impl;
 
+import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,6 +44,12 @@ import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.SimpleStep;
 import org.apache.uima.flow.Step;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.metadata.Capability;
+import org.apache.uima.resource.metadata.ConfigurationParameter;
+import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
+import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.NameValuePair;
+import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
@@ -71,6 +79,8 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   private static final int ACTION_DROP = 2;
 
   private static final int ACTION_DROP_IF_NEW_CAS_PRODUCED = 3;
+  
+  private static FlowControllerDescription cachedDefaultDescription;
 
   // make final to work better in multi-thread case  UIMA-2373
   // working assumption: 
@@ -85,7 +95,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   //   on different threads. However, users will not re-initialize this with a different 
   //   flowControllerContext while this object is controlling CASes from the previous Object.
   // When this was a synchronized list, some contention observed between the "reads", which can be eliminated by
-  //   swtiching this to a copy-on-write kind of final list.
+  //   switching this to a copy-on-write kind of final list.
   //      -- this has the added "benefit" (maybe eventually) of having better semantics for letting existing
   //         Flow objects continue to use the "old" settings, and only the new ones picking up the new ones.
   final private List<String> mSequence = new CopyOnWriteArrayList<String>();  //UIMA-4013
@@ -158,15 +168,61 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   }
 
   public static FlowControllerDescription getDescription() {
+    if (cachedDefaultDescription == null) {
+      synchronized (FixedFlowController.class) {
+        cachedDefaultDescription = loadDefaultDescription();
+      }
+    }
+    
+    return (FlowControllerDescription) cachedDefaultDescription.clone();
+  }
+  
+  public static FlowControllerDescription makeDefaultDescription() {
+    FlowControllerDescription desc = getResourceSpecifierFactory().createFlowControllerDescription();
+    
+    desc.setImplementationName(FixedFlowController.class.getName());
+    
+    ProcessingResourceMetaData metaData = desc.getFlowControllerMetaData();
+    metaData.setName("Fixed Flow Controller");
+    metaData.setDescription("Simple FlowController that uses the FixedFlow element of the\n" + 
+        "\t\taggregate descriptor to determine a linear flow.");
+    metaData.setVendor("The Apache Software Foundation");
+    metaData.setVersion("1.0");
+    
+    Capability capability = getResourceSpecifierFactory().createCapability();
+    metaData.setCapabilities(new Capability[] { capability });
+   
+    ConfigurationParameter param = getResourceSpecifierFactory().createConfigurationParameter();
+    param.setName("ActionAfterCasMultiplier");
+    param.setType("String");
+    param.setDescription("The action to be taken after a CAS has been input to a CAS Multiplier and the CAS Multiplier has finished processing it.\n" + 
+        "\t\t Valid values are:\n" + 
+        "\t\t\tcontinue - the CAS continues on to the next element in the flow\n" + 
+        "\t\t\tstop - the CAS will no longer continue in the flow, and will be returned from the aggregate if possible.\n" + 
+        "\t\t\tdrop - the CAS will no longer continue in the flow, and will be dropped (not returned from the aggregate) if possible.\t \n" + 
+        "\t\t\tdropIfNewCasProduced (the default) - if the CAS multiplier produced a new CAS as a result of processing this CAS, then this\n" + 
+        "\t\t\t\tCAS will be dropped.  If not, then this CAS will continue.");
+    ConfigurationParameterDeclarations parameterDeclarations = getResourceSpecifierFactory().createConfigurationParameterDeclarations();
+    parameterDeclarations.setConfigurationParameters(new ConfigurationParameter[] { param });
+    metaData.setConfigurationParameterDeclarations(parameterDeclarations);
+    
+    NameValuePair paramSetting = getResourceSpecifierFactory().createNameValuePair();
+    paramSetting.setName("ActionAfterCasMultiplier");
+    paramSetting.setValue("dropIfNewCasProduced");
+    ConfigurationParameterSettings parameterSettings = getResourceSpecifierFactory().createConfigurationParameterSettings();
+    parameterSettings.setParameterSettings(new NameValuePair[] { paramSetting });
+    metaData.setConfigurationParameterSettings(parameterSettings);
+
+    return desc;
+  }
+  
+  private static FlowControllerDescription loadDefaultDescription() {
     URL descUrl = FixedFlowController.class
             .getResource("/org/apache/uima/flow/FixedFlowController.xml");
     FlowControllerDescription desc;
     try {
-      desc = (FlowControllerDescription) UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(descUrl));
-    } catch (InvalidXMLException e) {
-      throw new UIMARuntimeException(e);
-    } catch (IOException e) {
+      desc = (FlowControllerDescription) UIMAFramework.getXMLParser().parse(new XMLInputSource(descUrl));
+    } catch (InvalidXMLException | IOException e) {
       throw new UIMARuntimeException(e);
     }
     return desc;
