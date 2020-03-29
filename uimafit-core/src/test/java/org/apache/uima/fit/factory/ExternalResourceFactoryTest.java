@@ -22,8 +22,6 @@ package org.apache.uima.fit.factory;
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -49,6 +47,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.Resource_ImplBase;
@@ -58,6 +57,8 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.locator.JndiResourceLocator;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.fit.type.AnalyzedText;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.fit.util.SimpleNamedResourceManager;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.DataResource;
@@ -349,7 +350,53 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     ae.process(ae.newJCas());
     ae.collectionProcessComplete();
   }
-  
+
+  @Test
+  public void testNestedAggregateBinding() throws CASException, ResourceInitializationException, AnalysisEngineProcessException {
+    ExternalResourceDescription resourceDescription = createSharedResourceDescription("", DummyResource.class);
+//    ExternalResourceDescription resourceDescription = createExternalResourceDescription(DummyResource.class, ""); // This works with UIMA 2.10.4 and uimaFit 2.4.0
+    AggregateBuilder builder = new AggregateBuilder();
+    AnalysisEngineDescription analysisEngineDescription = AnalysisEngineFactory.createEngineDescription(ResourceDependent.class);
+    builder.add(analysisEngineDescription);
+    AnalysisEngineDescription aggregateDescription = builder.createAggregateDescription();
+    bindResource(aggregateDescription, DummyResource.RESOURCE_KEY, resourceDescription);
+    JCas jCas = JCasFactory.createJCas();
+    jCas.setDocumentText("Hello");
+    SimplePipeline.runPipeline(jCas, aggregateDescription);
+    for(AnalyzedText annotation: JCasUtil.select(jCas, AnalyzedText.class)) {
+      Assert.assertEquals("World", annotation.getText());
+    }
+  }
+
+  public static class DummyResource implements SharedResourceObject {
+
+      public static final String RESOURCE_KEY = "DummyResource";
+
+      public DummyResource() { }
+
+      @Override
+      public void load(DataResource aData) throws ResourceInitializationException {
+
+      }
+
+      public String getText() {
+          return "World";
+      }
+  }
+
+  public static class ResourceDependent extends JCasAnnotator_ImplBase {
+
+      @ExternalResource(key = DummyResource.RESOURCE_KEY)
+      private DummyResource dummyResource;
+
+      @Override
+      public void process(JCas aJCas) throws AnalysisEngineProcessException {
+        // Just marking up that the AE was executed as expected, so that it can be verified.
+        AnalyzedText annotation = new AnalyzedText(aJCas, 0, aJCas.getDocumentText().length());
+        annotation.setText(dummyResource.getText());
+        annotation.addToIndexes();
+      }
+  }
   
   private static void bindResources(AnalysisEngineDescription desc) throws Exception {
     bindResource(desc, ResourceWithAssert.class);
