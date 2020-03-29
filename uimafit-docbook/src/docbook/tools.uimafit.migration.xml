@@ -55,6 +55,21 @@
       file included in the release.</para>
     </formalpara>
     <formalpara>
+      <title>Changes to ExternalResourceFactory</title>
+      <para>Most methods in the <literal>ExternalResourceFactory</literal> have seen changes to 
+      their names and signature to avoid problematic ambiguities as well as to be shorter. In 
+      general, the <literal>External</literal> component of the method names was either
+      removed or replaced. So most methods called <literal>createExternalResourceDescription</literal>
+      are now called <literal>createResourceDescription</literal>. However, some have also been 
+      given a more specific name and/or a slightly different order of parameters. For example, this
+      method</para>
+      <programlisting>public static ExternalResourceDescription createExternalResourceDescription(
+  Class&lt;? extends SharedResourceObject&gt; aInterface, String aUrl, Object... aParams)</programlisting>
+      <para>was changed to</para>
+      <programlisting>public static ExternalResourceDescription createSharedResourceDescription(
+  String aUrl, Class&lt;? extends SharedResourceObject&gt; aInterface, Object... aParams)</programlisting>
+    </formalpara>
+    <formalpara>
       <title>Changes to logging</title>
       <para>UIMA v3 has is using SLF4J. As a consequence, the <literal>ExtendedLogger</literal>
       which uimaFIT had returned on calls to <literal>getLogger()</literal> has been removed
