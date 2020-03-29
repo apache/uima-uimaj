@@ -363,9 +363,12 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     JCas jCas = JCasFactory.createJCas();
     jCas.setDocumentText("Hello");
     SimplePipeline.runPipeline(jCas, aggregateDescription);
+    int count = 0;
     for(AnalyzedText annotation: JCasUtil.select(jCas, AnalyzedText.class)) {
       Assert.assertEquals("World", annotation.getText());
+      count++;
     }
+    Assert.assertEquals(1, count);
   }
 
   public static class DummyResource implements SharedResourceObject {
