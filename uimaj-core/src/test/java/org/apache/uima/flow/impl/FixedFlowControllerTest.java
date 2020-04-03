@@ -222,50 +222,12 @@ public class FixedFlowControllerTest {
   }
 
   @Test
-  public void howLongDescriptionCreationTakes() throws Exception
-  {
-    int testPeriod = 10_000;
-    long start;
-    long end;
-    
-    start = currentTimeMillis();
-    int countParsedFromXml = 0;
-    while ((end = currentTimeMillis()) < start + testPeriod) {
-      getDescriptionFromXml();
-      countParsedFromXml++;
-    }
-
-    start = currentTimeMillis();
-    int countWithCachingAndCloning = 0;
-    while ((end = currentTimeMillis()) < start + testPeriod) {
-      FixedFlowController.getDescription();
-      countWithCachingAndCloning++;
-    }
-
-    start = currentTimeMillis();
-    int countGeneratedInMemory = 0;
-    while ((end = currentTimeMillis()) < start + testPeriod) {
-      FixedFlowController.makeDefaultDescription();
-      countGeneratedInMemory++;
-    }
-
-    System.out.printf("[%d] FixedFlowController parsed from XML in [%d]ms%n",
-        countParsedFromXml, end - start );
-    System.out.printf("[%d] FixedFlowController parsed once, cached and cloned in [%d]ms%n",
-        countWithCachingAndCloning, end - start );
-    System.out.printf("[%d] FixedFlowController generated in memory in [%d]ms%n",
-        countGeneratedInMemory, end - start );
-  }
-
-  @Test
   public void thatGeneratedDefaultFlowDescriptionIsEqualToXmlDescription() throws Exception
   {
     FlowControllerDescription desc1 = FixedFlowController.getDescription();
     
-    URL descUrl = FixedFlowController.class
-        .getResource("/org/apache/uima/flow/FixedFlowController.xml");
     FlowControllerDescription desc2 = getXMLParser().parseFlowControllerDescription(
-        new XMLInputSource(descUrl));
+        new XMLInputSource("src/test/resources/FixedFlowControllerTest/FixedFlowController.xml"));
 
     StringWriter desc1Writer = new StringWriter();
     desc1.toXML(desc1Writer);
@@ -288,18 +250,5 @@ public class FixedFlowControllerTest {
     
     assertThat(desc2.getImplementationName()).isEqualTo(FixedFlowController.class.getName());
     assertThat(desc2.getMetaData().getName()).isEqualTo("Fixed Flow Controller");
-  }
-  
-  public static FlowControllerDescription getDescriptionFromXml() {
-    URL descUrl = FixedFlowController.class
-            .getResource("/org/apache/uima/flow/FixedFlowController.xml");
-    FlowControllerDescription desc;
-    try {
-      desc = (FlowControllerDescription) UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(descUrl));
-    } catch (InvalidXMLException | IOException e) {
-      throw new UIMARuntimeException(e);
-    }
-    return desc;
   }
 }

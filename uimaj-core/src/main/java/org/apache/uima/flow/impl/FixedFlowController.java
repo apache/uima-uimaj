@@ -80,8 +80,6 @@ public class FixedFlowController extends CasFlowController_ImplBase {
 
   private static final int ACTION_DROP_IF_NEW_CAS_PRODUCED = 3;
   
-  private static FlowControllerDescription cachedDefaultDescription;
-
   // make final to work better in multi-thread case  UIMA-2373
   // working assumption: 
   //   A single instance of this class may be used on multiple replications of a UIMA pipeline.
@@ -168,13 +166,42 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   }
 
   public static FlowControllerDescription getDescription() {
-    if (cachedDefaultDescription == null) {
-      synchronized (FixedFlowController.class) {
-        cachedDefaultDescription = loadDefaultDescription();
-      }
-    }
+    FlowControllerDescription desc = getResourceSpecifierFactory().createFlowControllerDescription();
     
-    return (FlowControllerDescription) cachedDefaultDescription.clone();
+    desc.setImplementationName(FixedFlowController.class.getName());
+    
+    ProcessingResourceMetaData metaData = desc.getFlowControllerMetaData();
+    metaData.setName("Fixed Flow Controller");
+    metaData.setDescription("Simple FlowController that uses the FixedFlow element of the\n" + 
+        "\t\taggregate descriptor to determine a linear flow.");
+    metaData.setVendor("The Apache Software Foundation");
+    metaData.setVersion("1.0");
+    
+    Capability capability = getResourceSpecifierFactory().createCapability();
+    metaData.setCapabilities(new Capability[] { capability });
+    
+    ConfigurationParameter param = getResourceSpecifierFactory().createConfigurationParameter();
+    param.setName("ActionAfterCasMultiplier");
+    param.setType("String");
+    param.setDescription("The action to be taken after a CAS has been input to a CAS Multiplier and the CAS Multiplier has finished processing it.\n" + 
+        "\t\t Valid values are:\n" + 
+        "\t\t\tcontinue - the CAS continues on to the next element in the flow\n" + 
+        "\t\t\tstop - the CAS will no longer continue in the flow, and will be returned from the aggregate if possible.\n" + 
+        "\t\t\tdrop - the CAS will no longer continue in the flow, and will be dropped (not returned from the aggregate) if possible.\t \n" + 
+        "\t\t\tdropIfNewCasProduced (the default) - if the CAS multiplier produced a new CAS as a result of processing this CAS, then this\n" + 
+        "\t\t\t\tCAS will be dropped.  If not, then this CAS will continue.");
+    ConfigurationParameterDeclarations parameterDeclarations = getResourceSpecifierFactory().createConfigurationParameterDeclarations();
+    parameterDeclarations.setConfigurationParameters(new ConfigurationParameter[] { param });
+    metaData.setConfigurationParameterDeclarations(parameterDeclarations);
+    
+    NameValuePair paramSetting = getResourceSpecifierFactory().createNameValuePair();
+    paramSetting.setName("ActionAfterCasMultiplier");
+    paramSetting.setValue("dropIfNewCasProduced");
+    ConfigurationParameterSettings parameterSettings = getResourceSpecifierFactory().createConfigurationParameterSettings();
+    parameterSettings.setParameterSettings(new NameValuePair[] { paramSetting });
+    metaData.setConfigurationParameterSettings(parameterSettings);
+    
+    return desc;
   }
   
   public static FlowControllerDescription makeDefaultDescription() {
