@@ -100,9 +100,7 @@ public abstract class FSCollectionFactory {
     if (ts.subsumes(cas.getAnnotationType(), type)) {
       return (List) create(cas.getAnnotationIndex(type));
     } else {
-      Collection<FeatureStructure> result = create(cas.getIndexRepository().getAllIndexedFS(type));
-      return asList(result.toArray(new FeatureStructure[result.size()]));
-      // return (List) cas.select(type).asList(); - This call is still buggy in UIMA 3.0.0
+      return (List) cas.select(type).asList();
     }
   }
 
@@ -133,10 +131,7 @@ public abstract class FSCollectionFactory {
    */
   @Deprecated
   public static <T extends AnnotationFS> List<T> create(AnnotationIndex<T> aIndex) {
-    // Was: return new AnnotationIndexAdapter<T>(aIndex);
-    // return aIndex.select().asList(); // That call is still buggy in UIMA 3.0.0
-    Collection<T> result = new AnnotationIndexAdapter<T>(aIndex);
-    return (List) asList(result.toArray());
+    return aIndex.select().asList();
   }
 
   /**
@@ -164,7 +159,7 @@ public abstract class FSCollectionFactory {
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static <T extends TOP> List<T> create(ArrayFS aArray, Class<T> aType) {
-    return (List) create(aArray, CasUtil.getType(aArray.getCAS(), aType));
+    return create(aArray, CasUtil.getType(aArray.getCAS(), aType));
   }
 
   /**
@@ -553,7 +548,7 @@ public abstract class FSCollectionFactory {
    * @return a new collection of all feature structures of the given type.
    */
   public static <T extends TOP> Collection<T> create(FSList<T> aList, Class<? extends T> aType) {
-    return (Collection<T>) create(aList, CasUtil.getType(aList.getCAS(), aType));
+    return create(aList, CasUtil.getType(aList.getCAS(), aType));
   }
 
   // Using TOP here because FSList is only available in the JCas.
