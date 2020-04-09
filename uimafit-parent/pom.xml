@@ -4,7 +4,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>14-SNAPSHOT</version>
+    <version>13</version>
   </parent>
   <artifactId>uimafit-parent</artifactId>
   <version>2.5.0-SNAPSHOT</version>
@@ -283,6 +283,42 @@
                     <versionRange>[1.4,)</versionRange>
                     <goals>
                       <goal>execute</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <!-- *********************************************** -->
+                <!-- The Maven Dev Connector for Eclipse m2e is no   -->
+                <!-- longer maintained. We copy the relevant part    --> 
+                <!-- of the lifecycle mapping for the                -->
+                <!-- maven-plugin-plugin here.                       -->
+                <!--                                                 -->
+                <!-- See https://github.com/ifedorenko/com.ifedorenko.m2e.mavendev/blob/master/com.ifedorenko.m2e.mavendev/lifecycle-mapping-metadata.xml -->
+                <!-- *********************************************** -->
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <versionRange>[3.5.2,)</versionRange>
+                    <goals>
+                      <goal>descriptor</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute>
+                      <runOnIncremental>false</runOnIncremental>
+                    </execute>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <versionRange>[3.5.2,)</versionRange>
+                    <goals>
+                      <goal>helpmojo</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>
