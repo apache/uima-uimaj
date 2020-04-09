@@ -13,8 +13,8 @@
   <url>${uimaWebsiteUrl}</url>
   <inceptionYear>2012</inceptionYear>
   <properties>
-    <spring.version>3.2.16.RELEASE</spring.version>
-    <uima.version>2.10.3</uima.version>
+    <spring.version>4.3.26.RELEASE</spring.version>
+    <uima.version>2.10.4</uima.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <!-- 
@@ -159,15 +159,22 @@
 
   <build>
     <plugins>
-      <!-- This should no longer be required with current versions of the maven-resources-plugin
-        <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
-        <encoding>${project.build.sourceEncoding}</encoding>
+          <failOnWarning>true</failOnWarning>
         </configuration>
-        </plugin>
-      -->
+      </plugin>
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>

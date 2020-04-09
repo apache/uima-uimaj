@@ -41,9 +41,5 @@
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
 	</dependencies>
 </project>
