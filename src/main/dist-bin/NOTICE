@@ -26,10 +26,10 @@ Copyright 2012-2020 The Apache Software Foundation
 
 ----------------------------------------------------------------
 
-Apache UIMA Base 3.1.1: uimaj-core
-Apache UIMA Base 3.1.1: jVinci: Vinci Transport Library
-Apache UIMA Base 3.1.1: uimaj-adapter-vinci: Vinci Adapter
-Apache UIMA Base 3.1.1: uimaj-cpe: Collection Processing Engine
+Apache UIMA Base 3.0.2: uimaj-core
+Apache UIMA Base 3.0.2: jVinci: Vinci Transport Library
+Apache UIMA Base 3.0.2: uimaj-adapter-vinci: Vinci Adapter
+Apache UIMA Base 3.0.2: uimaj-cpe: Collection Processing Engine
 Copyright 2006-2019 The Apache Software Foundation
 
 Portions of Apache UIMA were originally developed by
