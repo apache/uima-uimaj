@@ -21,7 +21,7 @@ package org.apache.uima.fit.factory;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.ensureParametersComeInPairs;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParameters;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResourceOnce;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDependencies;
 import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection;
 import static org.apache.uima.fit.factory.ResourceCreationSpecifierFactory.createResourceCreationSpecifier;
@@ -850,7 +850,7 @@ public final class CollectionReaderFactory {
     // Bind External Resources
     if (externalResources != null) {
       for (Entry<String, ExternalResourceDescription> e : externalResources.entrySet()) {
-        bindResource(desc, e.getKey(), e.getValue());
+        bindResourceOnce(desc, e.getKey(), e.getValue());
       }
     }
 
