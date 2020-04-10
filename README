@@ -40,10 +40,10 @@ following list highlights some of the features uimaFIT provides:
 What's New in 3.1.0
 -------------------
 
-uimaFIT 3.1.0 is a minor feature and bugfix release. It serve mostly as a drop-in replacement
-for previous uimaFIT 3.x versions. However, due to a clash in method signatures, you may notice
-incompatible changes in the methods provided ExternalResourceFactory. For details, please refer
-to the migration section in the documentation.
+uimaFIT 3.1.0 is a minor feature and bugfix release. On supported platforms, it serves mostly as 
+a drop-in replacement for previous uimaFIT 3.x versions. However, due to a clash in method
+signatures, you may notice incompatible changes in the methods provided ExternalResourceFactory.
+For details, please refer to the migration section in the documentation.
 
 Notable changes in this release include:
 
@@ -74,7 +74,7 @@ Availability
 
 uimaFIT is licensed under the Apache License 2.0 and is available from the Apache UIMA project:
 
-  http://uima.apache.org
+  https://uima.apache.org
   https://github.com/apache/uima-uimafit
 
 uimaFIT is available via Maven Central. If you use Maven for your build environment, then you can
