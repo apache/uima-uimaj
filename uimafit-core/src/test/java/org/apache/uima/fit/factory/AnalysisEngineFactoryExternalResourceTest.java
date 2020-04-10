@@ -21,8 +21,9 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.*;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResourceOnce;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createSharedResourceDescription;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
@@ -188,7 +189,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
     ExternalResourceDescription resDesc = createResourceDescription(
             TestExternalResource2.class, TestExternalResource.PARAM_VALUE,
             TestExternalResource.EXPECTED_VALUE);
-    bindResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
+    bindResourceOnce(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
 
     AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
@@ -208,7 +209,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
     ExternalResourceDescription resDesc = createResourceDescription(
             TestExternalResource2.class, TestExternalResource.PARAM_VALUE,
             TestExternalResource.EXPECTED_VALUE);
-    bindResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
+    bindResourceOnce(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
 
     AnalysisEngineDescription aeDesc1 = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
@@ -309,7 +310,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
             "http://dumm.my", TestSharedResourceObject2.class,
             TestSharedResourceObject2.PARAM_VALUE, TestSharedResourceObject2.EXPECTED_VALUE);
 
-    bindResource(res1, TestSharedResourceObject2.PARAM_RESOURCE, res2);
+    bindResourceOnce(res1, TestSharedResourceObject2.PARAM_RESOURCE, res2);
     
     AnalysisEngineDescription aeDesc =createEngineDescription(
             TestAnalysisEngineWithSharedResourceObject.class,
@@ -329,7 +330,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
     ExternalResourceDescription resDesc = createSharedResourceDescription(
             "http://dumm.my", TestSharedResourceObject2.class,
             TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE);
-    bindResource(resDesc, TestSharedResourceObject2.PARAM_RESOURCE, resDesc);
+    bindResourceOnce(resDesc, TestSharedResourceObject2.PARAM_RESOURCE, resDesc);
 
     AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithSharedResourceObject.class,

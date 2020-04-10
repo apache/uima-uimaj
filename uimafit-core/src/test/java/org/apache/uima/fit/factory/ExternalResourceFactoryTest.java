@@ -23,8 +23,9 @@ import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.*;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResourceOnceWithoutNested;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createNamedResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -167,8 +168,8 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     bindResources(desc);
 
     // Bind external resources for DummyAE2 - necessary because autowiring is disabled
-    bindResource(desc, DummyAE2.RES_INJECTED_POJO1, "pojoName1");
-    bindResource(desc, DummyAE2.RES_INJECTED_POJO2, "pojoName2");
+    bindResourceOnceWithoutNested(desc, DummyAE2.RES_INJECTED_POJO1, "pojoName1");
+    bindResourceOnceWithoutNested(desc, DummyAE2.RES_INJECTED_POJO2, "pojoName2");
 
     // Create a custom resource manager that allows to inject any Java object as an external
     // dependency
