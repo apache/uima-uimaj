@@ -43,6 +43,24 @@ What's New in 2.5.0
 uimaFIT 2.5.0 is a minor feature and bugfix release. It should should serve as a drop-in replacement
 for previous uimaFIT 2.x versions.
 
+Notable changes include:
+
+ * Added support for PEARs in AnalysisEngineFactory
+ * Added support for destroing auto-created resource managers if feasible
+ * Added CasFactory
+ * Added CasUtil.exists(...) method
+ * Added support for Charset-typed parameters in components
+ * Added ExternalResourceFactory.createResource(...) methods for instantiating resources
+ * Added ability to set number of threads in CpePipeline.runPipeline(...)
+ * Fixed FSUtil.getFeature(...) failing when called with Object.class on multi-valued features
+ * Fixed issue with non-XML 1.0 characters in parameter values when running CPEs
+ * Fixed JCasIterable.iterator() destroying the ResourceManager before it is even used
+ * Fixed CollectionReaderFactory.createReaderDescription(...) not discovering type prios and indexes
+ * Fixed issue causing component parameters to be used when initializing resources
+ * Upgraded to UIMA 2.10.4
+ * Upgraded to Spring 4.3.26
+ * No longer set extension classloader in DefaultResourceManagerCreator
+
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
   https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12310570&version=12339544
@@ -50,7 +68,7 @@ A full list of issues addressed in this release can be found on the Apache issue
 Supported Platforms
 -------------------
 
-uimaFIT requires Java 1.8 or higher, UIMA 2.10.3 or higher, and the Spring Framework 3.2.16 or higher.
+uimaFIT requires Java 1.8 or higher, UIMA 2.10.4 or higher, and the Spring Framework 4.3.26 or higher.
 
 
 Availability
