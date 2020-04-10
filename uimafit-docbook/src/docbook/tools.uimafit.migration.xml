@@ -20,6 +20,49 @@
   <title>Migration Guide</title>
   <para>This section provides helpful information on incompatible changes between versions.</para>
   <section>
+    <title>Version 3.0.x to 3.1.x</title>
+    <formalpara>
+      <title>Changes to ExternalResourceFactory</title>
+      <para>The renaming of methods in the <literal>ExternalResourceFactory</literal> had
+      unfortunately introduced another name clash between unrelated methods. To fix this
+      clash, the following methods have been renamed from <literal>bindResource</literal> to 
+      <literal>bindResourceOnce</literal>:
+        <itemizedlist>
+          <listitem><para>
+            <literal>void bindResource(ResourceCreationSpecifier aDesc, String aBindTo, ExternalResourceDescription aRes)</literal>
+            was <emphasis role="strong">removed</emphasis> and replaced by
+            <literal>void bindResourceOnce(ResourceCreationSpecifier aDesc, String aBindTo, ExternalResourceDescription aRes)</literal>
+          </para></listitem>
+          <listitem><para>
+            <literal>void bindResource(ExternalResourceDescription aRes, String aBindTo, ExternalResourceDescription aNestedRes)</literal>
+            was deprecated and replaced by
+            <literal>void bindResourceOnce(ExternalResourceDescription aRes, String aBindTo, ExternalResourceDescription aNestedRes)</literal>
+          </para></listitem>
+          <listitem><para>
+            <literal>void bindResource(ResourceManagerConfiguration aResMgrCfg, String aBindTo, ExternalResourceDescription aRes)</literal>
+            was deprecated and replaced by
+            <literal>void bindResourceOnce(ResourceManagerConfiguration aResMgrCfg, String aBindTo, ExternalResourceDescription aRes)</literal>
+          </para></listitem>
+          <listitem><para>
+            <literal>void bindResource(ResourceCreationSpecifier aDesc, String aBindTo, String aRes)</literal>
+            was <emphasis role="strong">removed</emphasis> and replaced by
+            <literal>void bindResourceOnceWithoutNested(ResourceCreationSpecifier aDesc, String aBindTo, String aRes)</literal>
+          </para></listitem>
+          <listitem><para>
+            <literal>void bindResource(ResourceManagerConfiguration aResMgrCfg, String aBindTo, String aRes)</literal>
+            was deprecated and replaced by
+            <literal>void bindResourceOnceWithoutNested(ResourceManagerConfiguration aResMgrCfg, String aBindTo, String aRes)</literal>
+          </para></listitem>
+          <listitem><para>
+            <literal>void bindResource(ResourceSpecifier aDesc, String aKey, String aUrl)</literal>
+            was deprecated and replaced by
+            <literal>void bindResourceUsingUrl(ResourceSpecifier aDesc, String aKey, String aUrl)</literal>
+          </para></listitem>
+        </itemizedlist>
+      </para>
+    </formalpara>
+  </section>
+  <section>
     <title>Version 2.x to 3.x</title>
     <formalpara>
       <title>Legacy support module removed</title>
@@ -53,6 +96,21 @@
       <para>Various methods that were deprecated in uimaFIT 2.4.0 or earlier have been removed in
       this release. For details, please refer to the <literal>api-change-report.html</literal>
       file included in the release.</para>
+    </formalpara>
+    <formalpara>
+      <title>Changes to ExternalResourceFactory</title>
+      <para>Most methods in the <literal>ExternalResourceFactory</literal> have seen changes to 
+      their names and signature to avoid problematic ambiguities as well as to be shorter. In 
+      general, the <literal>External</literal> component of the method names was either
+      removed or replaced. So most methods called <literal>createExternalResourceDescription</literal>
+      are now called <literal>createResourceDescription</literal>. However, some have also been 
+      given a more specific name and/or a slightly different order of parameters. For example, this
+      method</para>
+      <programlisting>public static ExternalResourceDescription createExternalResourceDescription(
+  Class&lt;? extends SharedResourceObject&gt; aInterface, String aUrl, Object... aParams)</programlisting>
+      <para>was changed to</para>
+      <programlisting>public static ExternalResourceDescription createSharedResourceDescription(
+  String aUrl, Class&lt;? extends SharedResourceObject&gt; aInterface, Object... aParams)</programlisting>
     </formalpara>
     <formalpara>
       <title>Changes to logging</title>

@@ -1,5 +1,5 @@
 
-      Apache uimaFIT (TM) v3.0.0
+      Apache uimaFIT (TM) v3.1.0
       --------------------------
 
 
@@ -37,20 +37,20 @@ following list highlights some of the features uimaFIT provides:
      SimplePipeline.runPipeline(reader, ae1, ..., aeN, consumer1, ... consumerN)
 
 
-What's New in 3.0.0
+What's New in 3.1.0
 -------------------
 
-uimaFIT 3.0.0 is a major release because it upgrades uimaFIT to UIMA v3. Upgrading to the new version 
+uimaFIT 3.1.0 is a major release because it upgrades uimaFIT to UIMA v3. Upgrading to the new version 
 may require minor adjustments to the code depending on uimaFIT.
 
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
-  https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12310570&version=12332458
+  https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12310570&version=12343882
 
 Supported Platforms
 -------------------
 
-uimaFIT requires Java 1.8 or higher, UIMA 3.0.2 or higher, and the Spring Framework 4.3.22 or higher.
+uimaFIT requires Java 1.8 or higher, UIMA 3.1.1 or higher, and the Spring Framework 4.3.26 or higher.
 
 
 Availability
@@ -67,7 +67,7 @@ add uimaFIT as a dependency to your pom.xml file with the following:
   <dependency>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimafit-core</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.0</version>
   </dependency>
 
 
