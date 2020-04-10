@@ -75,7 +75,7 @@ Availability
 
 uimaFIT is licensed under the Apache License 2.0 and is available from the Apache UIMA project:
 
-  http://uima.apache.org
+  https://uima.apache.org
   https://github.com/apache/uima-uimafit
 
 uimaFIT is available via Maven Central. If you use Maven for your build environment, then you can
