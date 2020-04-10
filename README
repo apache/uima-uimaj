@@ -40,13 +40,13 @@ following list highlights some of the features uimaFIT provides:
 What's New in 2.5.0
 -------------------
 
-uimaFIT 2.5.0 is a minor feature and bugfix release. It should should serve as a drop-in replacement
-for previous uimaFIT 2.x versions.
+uimaFIT 2.5.0 is a minor feature and bugfix release. On supported platforms, it should should serve
+as a drop-in replacement for previous uimaFIT 2.x versions.
 
 Notable changes include:
 
  * Added support for PEARs in AnalysisEngineFactory
- * Added support for destroing auto-created resource managers if feasible
+ * Added support for destroying auto-created resource managers if feasible
  * Added CasFactory
  * Added CasUtil.exists(...) method
  * Added support for Charset-typed parameters in components
@@ -59,7 +59,6 @@ Notable changes include:
  * Fixed issue causing component parameters to be used when initializing resources
  * Upgraded to UIMA 2.10.4
  * Upgraded to Spring 4.3.26
- * No longer set extension classloader in DefaultResourceManagerCreator
 
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
@@ -77,7 +76,7 @@ Availability
 uimaFIT is licensed under the Apache License 2.0 and is available from the Apache UIMA project:
 
   http://uima.apache.org
-  http://svn.apache.org/repos/asf/uima/uimafit
+  https://github.com/apache/uima-uimafit
 
 uimaFIT is available via Maven Central. If you use Maven for your build environment, then you can
 add uimaFIT as a dependency to your pom.xml file with the following:
