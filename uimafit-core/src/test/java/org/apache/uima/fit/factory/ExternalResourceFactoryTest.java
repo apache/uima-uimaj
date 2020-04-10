@@ -26,6 +26,9 @@ import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResourceOnceWithoutNested;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createNamedResourceDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createSharedResourceDescription;
+import static org.apache.uima.fit.factory.JCasFactory.createJCas;
+import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -59,6 +62,8 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.locator.JndiResourceLocator;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.fit.type.AnalyzedText;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.fit.util.SimpleNamedResourceManager;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.DataResource;
@@ -350,7 +355,61 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     ae.process(ae.newJCas());
     ae.collectionProcessComplete();
   }
-  
+
+  @Test
+  public void testNestedAggregateBinding() throws Exception {
+    ExternalResourceDescription resourceDescription = createSharedResourceDescription("",
+            DummyResource.class);
+
+    AggregateBuilder builder = new AggregateBuilder();
+    builder.add(createEngineDescription(ResourceDependent.class));
+    AnalysisEngineDescription aggregateDescription = builder.createAggregateDescription();
+
+    bindResource(aggregateDescription, DummyResource.RESOURCE_KEY, resourceDescription);
+
+    JCas jCas = createJCas();
+    jCas.setDocumentText("Hello");
+
+    runPipeline(jCas, aggregateDescription);
+    int count = 0;
+    for (AnalyzedText annotation : JCasUtil.select(jCas, AnalyzedText.class)) {
+      assertEquals("World", annotation.getText());
+      count++;
+    }
+
+    assertEquals(1, count);
+  }
+
+  public static class DummyResource implements SharedResourceObject {
+
+    public static final String RESOURCE_KEY = "DummyResource";
+
+    public DummyResource() {
+    }
+
+    @Override
+    public void load(DataResource aData) throws ResourceInitializationException {
+      // Nothing to do
+    }
+
+    public String getText() {
+      return "World";
+    }
+  }
+
+  public static class ResourceDependent extends JCasAnnotator_ImplBase {
+
+      @ExternalResource(key = DummyResource.RESOURCE_KEY)
+      private DummyResource dummyResource;
+
+      @Override
+      public void process(JCas aJCas) throws AnalysisEngineProcessException {
+        // Just marking up that the AE was executed as expected, so that it can be verified.
+        AnalyzedText annotation = new AnalyzedText(aJCas, 0, aJCas.getDocumentText().length());
+        annotation.setText(dummyResource.getText());
+        annotation.addToIndexes();
+      }
+  }
   
   private static void bindResources(AnalysisEngineDescription desc) throws Exception {
     bindResource(desc, ResourceWithAssert.class);
