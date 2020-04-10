@@ -40,9 +40,25 @@ following list highlights some of the features uimaFIT provides:
 What's New in 3.1.0
 -------------------
 
-uimaFIT 3.1.0 is a major release because it upgrades uimaFIT to UIMA v3. Upgrading to the new version 
-may require minor adjustments to the code depending on uimaFIT.
+uimaFIT 3.1.0 is a minor feature and bugfix release. It serve mostly as a drop-in replacement
+for previous uimaFIT 3.x versions. However, due to a clash in method signatures, you may notice
+incompatible changes in the methods provided ExternalResourceFactory. For details, please refer
+to the migration section in the documentation.
 
+Notable changes in this release include:
+
+ * Added support for PEARs in AnalysisEngineFactory
+ * Added ExternalResourceFactory.createResource(...) methods for instantiating resources
+ * Added support for Charset-typed parameters in components
+ * Added ability to set number of threads in CpePipeline.runPipeline(...)
+ * Fixed issue with non-XML 1.0 characters in parameter values when running CPEs
+ * Fixed JCasIterable.iterator() destroying the ResourceManager before it is even used
+ * Fixed issue causing component parameters to be used when initializing resources
+ * Fixed CollectionReaderFactory.createReaderDescription(...) not discovering type prios and indexes
+ * Fixed clashing method signatures of ExternalResourceFactory.bindResource(...)
+ * Upgraded to UIMA 3.1.1
+ * Upgraded to Spring 4.3.26
+ 
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
   https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12310570&version=12343882
