@@ -37,11 +37,12 @@ public class TestSharedResourceObject implements SharedResourceObject {
   private String value;
 
   public void assertConfiguredOk() {
-    System.out.println(getClass().getSimpleName() + ".assertConfiguredOk()");
+//    System.out.println(getClass().getSimpleName() + ".assertConfiguredOk()");
     // Ensure normal parameters get passed to External Resource
     assertEquals(EXPECTED_VALUE, value);
   }
 
+  @Override
   public void load(DataResource aData) throws ResourceInitializationException {
     ConfigurationParameterInitializer.initialize(this, aData);
   }

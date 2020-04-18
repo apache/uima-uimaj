@@ -147,9 +147,9 @@ public class JCasUtilTest extends ComponentTestBase {
         check(jcas, t, stem1, stem2);
         check(jcas, t, stem1, stem3);
       }
-      System.out.format("Speed up factor %.2f [naive:%d optimized:%d diff:%d]\n",
-              (double) timeNaive / (double) timeOptimized, timeNaive, timeOptimized, timeNaive
-                      - timeOptimized);
+//      System.out.format("Speed up factor %.2f [naive:%d optimized:%d diff:%d]\n",
+//              (double) timeNaive / (double) timeOptimized, timeNaive, timeOptimized, timeNaive
+//                      - timeOptimized);
     }
   }
 
@@ -182,8 +182,8 @@ public class JCasUtilTest extends ComponentTestBase {
       JCas jcas = cas.getJCas();
       List<Token> tokens = new ArrayList<Token>(select(jcas, Token.class));
 
-      long timeNaive = 0;
-      long timeOptimized = 0;
+//      long timeNaive = 0;
+//      long timeOptimized = 0;
       for (int j = 0; j < ITERATIONS; j++) {
         Token t1 = tokens.get(rnd.nextInt(tokens.size()));
         Token t2 = tokens.get(rnd.nextInt(tokens.size()));
@@ -191,32 +191,32 @@ public class JCasUtilTest extends ComponentTestBase {
         int left = Math.min(t1.getEnd(), t2.getEnd());
         int right = Math.max(t1.getBegin(), t2.getBegin());
 
-        long ti;
+//        long ti;
         List<Sentence> reference;
         if ((t1.getBegin() < t2.getBegin() && t2.getBegin() < t1.getEnd())
                 || (t1.getBegin() < t2.getEnd() && t2.getEnd() < t1.getEnd())
                 || (t2.getBegin() < t1.getBegin() && t1.getBegin() < t2.getEnd())
                 || (t2.getBegin() < t1.getEnd() && t1.getEnd() < t2.getEnd())) {
           // If the boundary annotations overlap, the result must be empty
-          ti = System.currentTimeMillis();
+//          ti = System.currentTimeMillis();
           reference = new ArrayList<Sentence>();
-          timeNaive += System.currentTimeMillis() - ti;
+//          timeNaive += System.currentTimeMillis() - ti;
         } else {
-          ti = System.currentTimeMillis();
+//          ti = System.currentTimeMillis();
           reference = selectCovered(jcas, Sentence.class, left, right);
-          timeNaive += System.currentTimeMillis() - ti;
+//          timeNaive += System.currentTimeMillis() - ti;
         }
 
-        ti = System.currentTimeMillis();
+//        ti = System.currentTimeMillis();
         List<Sentence> actual = selectBetween(Sentence.class, t1, t2);
-        timeOptimized += System.currentTimeMillis() - ti;
+//        timeOptimized += System.currentTimeMillis() - ti;
 
         assertEquals("Naive: Searching between " + t1 + " and " + t2, reference, actual);
       }
 
-      System.out.format("Speed up factor %.2f [naive:%d optimized:%d diff:%d]\n",
-              (double) timeNaive / (double) timeOptimized, timeNaive, timeOptimized, timeNaive
-                      - timeOptimized);
+//      System.out.format("Speed up factor %.2f [naive:%d optimized:%d diff:%d]\n",
+//              (double) timeNaive / (double) timeOptimized, timeNaive, timeOptimized, timeNaive
+//                      - timeOptimized);
     }
   }
 
@@ -328,10 +328,10 @@ public class JCasUtilTest extends ComponentTestBase {
     }
 
     // Print what is expected
-    for (FeatureStructure fs : allFS) {
-      System.out.println("Type: " + fs.getType().getName() + "]");
-    }
-    System.out.println("Tokens: [" + toText(select(jCas, Token.class)) + "]");
+//    for (FeatureStructure fs : allFS) {
+//      System.out.println("Type: " + fs.getType().getName() + "]");
+//    }
+//    System.out.println("Tokens: [" + toText(select(jCas, Token.class)) + "]");
 
     // Document Annotation, one sentence and 4 tokens.
     assertEquals(6, allFS.size());
@@ -365,10 +365,10 @@ public class JCasUtilTest extends ComponentTestBase {
     }
 
     // Print what is expected
-    for (FeatureStructure fs : allFS) {
-      System.out.println("Type: " + fs.getType().getName() + "]");
-    }
-    System.out.println("Tokens: [" + toText(select(jCas, Token.class)) + "]");
+//    for (FeatureStructure fs : allFS) {
+//      System.out.println("Type: " + fs.getType().getName() + "]");
+//    }
+//    System.out.println("Tokens: [" + toText(select(jCas, Token.class)) + "]");
 
     // Document Annotation, one sentence and 4 tokens.
     assertEquals(6, allFS.size());

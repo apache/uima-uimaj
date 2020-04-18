@@ -60,6 +60,7 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
    * This test basically demonstrates that the default view does not need to be initialized because
    * it is done automatically.
    */
+  @SuppressWarnings("javadoc")
   @Test
   public void testDefaultView() throws ResourceInitializationException,
           AnalysisEngineProcessException {
@@ -80,6 +81,7 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
    * some other view without initializing that other view first. This is the behavior that
    * SofaInitializerAnnotator addresses.
    */
+  @SuppressWarnings("javadoc")
   @Test(expected = AnalysisEngineProcessException.class)
   public void testOtherViewAware() throws ResourceInitializationException,
           AnalysisEngineProcessException {
@@ -97,13 +99,16 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
     AnalysisEngineDescription description = AnalysisEngineFactory.createEngineDescription(
             SofaUnawareAnnotator.class, typeSystemDescription);
     AnalysisEngine engine = AnalysisEngineFactory.createEngine(description, "myView");
+    HideOutput hider = new HideOutput();
     engine.process(jCas);
+    hider.restoreOutput();
   }
 
   /**
    * This test demonstrates that running the viewCreator is doing the right thing (i.e. initializing
    * the view "myView")
    */
+  @SuppressWarnings("javadoc")
   @Test
   public void testSofaInitializer() throws ResourceInitializationException,
           AnalysisEngineProcessException, CASException {

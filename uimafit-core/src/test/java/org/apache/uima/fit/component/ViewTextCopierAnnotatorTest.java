@@ -18,6 +18,8 @@
  */
 package org.apache.uima.fit.component;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -26,8 +28,10 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.testing.util.HideOutput;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
@@ -76,7 +80,7 @@ public class ViewTextCopierAnnotatorTest extends ComponentTestBase {
     assertNull(jCas.getDocumentText());
   }
 
-  @Test(expected = AnalysisEngineProcessException.class)
+  @Test
   public void testExceptions() throws ResourceInitializationException,
           AnalysisEngineProcessException {
 
@@ -87,6 +91,24 @@ public class ViewTextCopierAnnotatorTest extends ComponentTestBase {
             ViewTextCopierAnnotator.class, typeSystemDescription,
             ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, sourceViewName,
             ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, destinationViewName);
-    viewCreator.process(jCas);
+    
+    Throwable thrown = catchThrowable(() -> {
+      // Avoid exception being logged to the console
+      HideOutput hider = null;
+      try {
+        hider = new HideOutput();
+        viewCreator.process(jCas); 
+      }
+      finally {
+        if (hider != null) {
+          hider.restoreOutput();
+        }
+      }
+    });
+    
+    assertThat(thrown)
+        .as("Exception thrown when source view does not exist")
+        .hasRootCauseInstanceOf(CASRuntimeException.class)
+        .hasStackTraceContaining("No sofaFS with name SourceView found");
   }
 }
