@@ -31,7 +31,7 @@ import java.util.Arrays;
  * </p>
  * 
  * <p>
- * An instance of an annotation type may be obtained by subclassing <tt>AnnotationLiteral</tt>.
+ * An instance of an annotation type may be obtained by subclassing {@link AnnotationLiteral}.
  * </p>
  * 
  * <pre>
