@@ -307,7 +307,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>1.4.1</version>
+          <version>3.0.0-M3</version>
           <executions>
             <execution>
               <id>enforce-prerequisites</id>
@@ -336,10 +336,22 @@
           <exists>marker-file-identifying-api-compatibility-check</exists>
         </file>
       </activation>
-      <properties>
-        <japicmp.postAnalysisScript>${project.basedir}/../uimafit-parent/src/main/groovy/api-report.groovy</japicmp.postAnalysisScript>
-      </properties>
       <build>
+        <plugins>
+          <!-- https://siom79.github.io/japicmp/MavenPlugin.html -->
+          <plugin>
+            <groupId>com.github.siom79.japicmp</groupId>
+            <artifactId>japicmp-maven-plugin</artifactId>
+            <version>0.14.3</version>
+            <configuration>
+              <parameter combine.children="append">
+                <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
+                <reportOnlyFilename>true</reportOnlyFilename>
+                <postAnalysisScript>${project.basedir}/../uimafit-parent/src/main/groovy/api-report.groovy</postAnalysisScript>
+              </parameter>
+            </configuration>
+          </plugin>
+        </plugins>
         <pluginManagement>
           <plugins>
             <plugin>
