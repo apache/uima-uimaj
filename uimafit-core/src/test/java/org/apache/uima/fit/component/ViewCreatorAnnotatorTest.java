@@ -18,6 +18,8 @@
  */
 package org.apache.uima.fit.component;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -26,6 +28,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.descriptor.SofaCapability;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -60,9 +63,9 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
    * This test basically demonstrates that the default view does not need to be initialized because
    * it is done automatically.
    */
+  @SuppressWarnings("javadoc")
   @Test
-  public void testDefaultView() throws ResourceInitializationException,
-          AnalysisEngineProcessException {
+  public void testDefaultView() throws Exception {
     AnalysisEngine engine = AnalysisEngineFactory.createEngine(SofaAwareAnnotator.class,
             typeSystemDescription);
     engine.process(jCas);
@@ -80,33 +83,68 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
    * some other view without initializing that other view first. This is the behavior that
    * SofaInitializerAnnotator addresses.
    */
-  @Test(expected = AnalysisEngineProcessException.class)
-  public void testOtherViewAware() throws ResourceInitializationException,
-          AnalysisEngineProcessException {
+  @SuppressWarnings("javadoc")
+  @Test
+  public void testOtherViewAware() throws Exception {
     AnalysisEngineDescription description = AnalysisEngineFactory.createEngineDescription(
             SofaAwareAnnotator.class, typeSystemDescription);
     AnalysisEngine engine = AnalysisEngineFactory.createEngine(description, "myView");
-    HideOutput hider = new HideOutput();
-    engine.process(jCas);
-    hider.restoreOutput();
+    
+    Throwable thrown = catchThrowable(() -> {
+      // Avoid exception being logged to the console
+      HideOutput hider = null;
+      try {
+        hider = new HideOutput();
+        engine.process(jCas);
+      }
+      finally {
+        if (hider != null) {
+          hider.restoreOutput();
+        }
+      }
+    });
+    
+    assertThat(thrown)
+        .as("Exception thrown when view does not exist")
+        .hasRootCauseInstanceOf(CASRuntimeException.class)
+        .hasStackTraceContaining("No sofaFS with name myView found");
   }
 
-  @Test(expected = AnalysisEngineProcessException.class)
+  @Test
   public void testOtherViewUnaware() throws ResourceInitializationException,
           AnalysisEngineProcessException {
     AnalysisEngineDescription description = AnalysisEngineFactory.createEngineDescription(
             SofaUnawareAnnotator.class, typeSystemDescription);
     AnalysisEngine engine = AnalysisEngineFactory.createEngine(description, "myView");
-    engine.process(jCas);
+    
+    Throwable thrown = catchThrowable(() -> {
+      // Avoid exception being logged to the console
+      HideOutput hider = null;
+      try {
+        hider = new HideOutput();
+        engine.process(jCas);
+      }
+      finally {
+        if (hider != null) {
+          hider.restoreOutput();
+        }
+      }
+    });
+    
+    assertThat(thrown)
+        .as("Exception thrown when view does not exist")
+        .hasRootCauseInstanceOf(CASRuntimeException.class)
+        .hasStackTraceContaining("No sofaFS with name myView found");
+
   }
 
   /**
    * This test demonstrates that running the viewCreator is doing the right thing (i.e. initializing
    * the view "myView")
    */
+  @SuppressWarnings("javadoc")
   @Test
-  public void testSofaInitializer() throws ResourceInitializationException,
-          AnalysisEngineProcessException, CASException {
+  public void testSofaInitializer() throws Exception {
     AnalysisEngineDescription description = AnalysisEngineFactory.createEngineDescription(
             SofaAwareAnnotator.class, typeSystemDescription);
     AnalysisEngine engine = AnalysisEngineFactory.createEngine(description, "myView");

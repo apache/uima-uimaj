@@ -74,6 +74,7 @@ public class ExternalResourceFactoryTest {
   /**
    * Test resource list.
    */
+  @SuppressWarnings("javadoc")
   @Test
   public void testMultiValue() throws Exception {
     ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
@@ -88,6 +89,7 @@ public class ExternalResourceFactoryTest {
   /**
    * Test sharing a resource list between two AEs on the same aggregate.
    */
+  @SuppressWarnings("javadoc")
   @Test
   public void testMultiValue2() throws Exception {
     MultiValuedResourceAE.resources.clear();
@@ -111,6 +113,7 @@ public class ExternalResourceFactoryTest {
   /**
    * Test sharing a resource list across aggregates.
    */
+  @SuppressWarnings("javadoc")
   @Test
   public void testMultiValue3() throws Exception {
     MultiValuedResourceAE.resources.clear();
@@ -134,6 +137,7 @@ public class ExternalResourceFactoryTest {
   /**
    * Test nested resource lists.
    */
+  @SuppressWarnings("javadoc")
   @Test
   public void testMultiValue4() throws Exception {
     ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
@@ -178,8 +182,8 @@ public class ExternalResourceFactoryTest {
       resources.add(resourceArray[0]);
       resources.add(resourceArray[1]);
 
-      System.out.printf("Element object 0: %d%n", resourceArray[0].hashCode());
-      System.out.printf("Element object 1: %d%n", resourceArray[1].hashCode());
+//      System.out.printf("Element object 0: %d%n", resourceArray[0].hashCode());
+//      System.out.printf("Element object 1: %d%n", resourceArray[1].hashCode());
 
       for (ResourceWithAssert res : resourceArray) {
         res.doAsserts();
@@ -208,8 +212,8 @@ public class ExternalResourceFactoryTest {
       resources.add(resourceList.get(0));
       resources.add(resourceList.get(1));
 
-      System.out.printf("Element object 0: %d%n", resourceList.get(0).hashCode());
-      System.out.printf("Element object 1: %d%n", resourceList.get(1).hashCode());
+//      System.out.printf("Element object 0: %d%n", resourceList.get(0).hashCode());
+//      System.out.printf("Element object 1: %d%n", resourceList.get(1).hashCode());
 
       for (ResourceWithAssert res : resourceList) {
         res.doAsserts();
@@ -237,7 +241,7 @@ public class ExternalResourceFactoryTest {
         assertEquals(prevHashCode, res.hashCode());
       }
 
-      System.out.println(getClass().getSimpleName() + ": " + res);
+//      System.out.println(getClass().getSimpleName() + ": " + res);
     }
 
     public static void reset() {
@@ -262,14 +266,17 @@ public class ExternalResourceFactoryTest {
     @ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
     private String extension;
 
+    @Override
     public InputStream getInputStream() throws IOException {
       return null;
     }
 
+    @Override
     public URI getUri() {
       return URI.create(uri + extension);
     }
 
+    @Override
     public URL getUrl() {
       return null;
     }
@@ -282,6 +289,7 @@ public class ExternalResourceFactoryTest {
     @ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
     private String extension;
 
+    @Override
     public DataResource getDataResource(String[] aParams) throws ResourceInitializationException {
       List<String> params = new ArrayList<String>(Arrays.asList(aParams));
       params.add(AnnotatedDataResource.PARAM_EXTENSION);

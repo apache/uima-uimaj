@@ -343,7 +343,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>1.4.1</version>
+          <version>3.0.0-M3</version>
           <executions>
             <execution>
               <id>enforce-prerequisites</id>
@@ -378,6 +378,7 @@
           <plugin>
             <groupId>com.github.siom79.japicmp</groupId>
             <artifactId>japicmp-maven-plugin</artifactId>
+            <version>0.14.3</version>
             <configuration>
               <parameter combine.children="append">
                 <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>

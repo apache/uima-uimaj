@@ -40,10 +40,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.testRes.TestExternalResource;
 import org.apache.uima.fit.factory.testRes.TestSharedResourceObject;
-import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.apache.uima.resource.ResourceCreationSpecifier;
-import org.apache.uima.resource.metadata.ExternalResourceBinding;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Before;
@@ -87,8 +84,8 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
-    dumpResourceConfiguration(aeDesc1);
-    dumpResourceConfiguration(aeDesc2);
+//    dumpResourceConfiguration(aeDesc1);
+//    dumpResourceConfiguration(aeDesc2);
 
     AnalysisEngine ae1 = createEngine(aeDesc1);
     AnalysisEngine ae2 = createEngine(aeDesc2);
@@ -136,14 +133,14 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
-    dumpResourceConfiguration(aeDesc1);
+//    dumpResourceConfiguration(aeDesc1);
 
     AnalysisEngineDescription aeDesc2 = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
-    dumpResourceConfiguration(aeDesc1);
-    dumpResourceConfiguration(aeDesc2);
+//    dumpResourceConfiguration(aeDesc1);
+//    dumpResourceConfiguration(aeDesc2);
 
     AnalysisEngine ae1 = createEngine(aeDesc1);
     AnalysisEngine ae2 = createEngine(aeDesc2);
@@ -174,7 +171,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
                     TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE,
                     TestExternalResource2.PARAM_RESOURCE, resDesc)));
 
-    dumpResourceConfiguration(aeDesc);
+//    dumpResourceConfiguration(aeDesc);
 
     AnalysisEngine ae = createEngine(aeDesc);
     ae.process(ae.newCAS());
@@ -194,7 +191,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
-    dumpResourceConfiguration(aeDesc);
+//    dumpResourceConfiguration(aeDesc);
 
     AnalysisEngine ae = createEngine(aeDesc);
     ae.process(ae.newCAS());
@@ -218,8 +215,8 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
-    dumpResourceConfiguration(aeDesc1);
-    dumpResourceConfiguration(aeDesc2);
+//    dumpResourceConfiguration(aeDesc1);
+//    dumpResourceConfiguration(aeDesc2);
 
     AnalysisEngine ae1 = createEngine(aeDesc1);
     AnalysisEngine ae2 = createEngine(aeDesc2);
@@ -262,8 +259,8 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestAnalysisEngineWithSharedResourceObject.class,
             TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE, resDesc));
 
-    dumpResourceConfiguration(aeDesc1);
-    dumpResourceConfiguration(aeDesc2);
+//    dumpResourceConfiguration(aeDesc1);
+//    dumpResourceConfiguration(aeDesc2);
 
     AnalysisEngine ae1 = createEngine(aeDesc1);
     AnalysisEngine ae2 = createEngine(aeDesc2);
@@ -335,7 +332,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestAnalysisEngineWithSharedResourceObject.class,
             TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE, resDesc));
 
-    dumpResourceConfiguration(aeDesc);
+//    dumpResourceConfiguration(aeDesc);
 
     AnalysisEngine ae = createEngine(aeDesc);
     ae.process(ae.newCAS());
@@ -349,7 +346,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
 
     @Override
     public void afterResourcesInitialized() {
-      System.out.println(getClass().getSimpleName() + ".afterResourcesInitialized()");
+//      System.out.println(getClass().getSimpleName() + ".afterResourcesInitialized()");
       // Ensure the External Resource is bound
       assertNotNull(resource);
       if (this != resource) {
@@ -369,8 +366,9 @@ public class AnalysisEngineFactoryExternalResourceTest {
     @ConfigurationParameter(name = ExternalResourceFactory.PARAM_RESOURCE_NAME)
     private String resourceName;
 
+    @Override
     public void afterResourcesInitialized() {
-      System.out.println(getClass().getSimpleName() + ".afterResourcesInitialized()");
+//      System.out.println(getClass().getSimpleName() + ".afterResourcesInitialized()");
       // Ensure the External Resource is bound
       assertNotNull(resource);
       if (this != resource) {
@@ -379,6 +377,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
       assertConfiguredOk();
     }
 
+    @Override
     public String getResourceName() {
       return resourceName;
     }
@@ -393,7 +392,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
 
     @Override
     public void process(CAS aCAS) throws AnalysisEngineProcessException {
-      System.out.println(getClass().getSimpleName() + ".process()");
+//      System.out.println(getClass().getSimpleName() + ".process()");
       assertNotNull(resource);
       resource.assertConfiguredOk();
     }
@@ -408,7 +407,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
 
     @Override
     public void process(CAS aCAS) throws AnalysisEngineProcessException {
-      System.out.println(getClass().getSimpleName() + ".process()");
+//      System.out.println(getClass().getSimpleName() + ".process()");
       assertNotNull(resource);
       resource.assertConfiguredOk();
     }
@@ -422,24 +421,24 @@ public class AnalysisEngineFactoryExternalResourceTest {
             new XMLInputSource(new ByteArrayInputStream(bos.toByteArray()), null));
   }
 
-  private void dumpResourceConfiguration(ResourceCreationSpecifier aSpec) {
-    System.out.println("-- begin resource configuration");
-    for (ExternalResourceBinding b : aSpec.getResourceManagerConfiguration()
-            .getExternalResourceBindings()) {
-      System.out.printf("Binding : %s -> %s %n", b.getKey(), b.getResourceName());
-    }
-
-    for (ExternalResourceDescription r : aSpec.getResourceManagerConfiguration()
-            .getExternalResources()) {
-      if (r.getImplementationName() != null) {
-        System.out.printf("Resource: %s -> %s %n", r.getName(), r.getImplementationName());
-      } else {
-        System.out.printf("Resource: %s -> %s %n", r.getName(),
-                ((CustomResourceSpecifier) r.getResourceSpecifier()).getResourceClassName());
-      }
-    }
-    System.out.println("-- end resource configuration");
-  }
+//  private void dumpResourceConfiguration(ResourceCreationSpecifier aSpec) {
+//    System.out.println("-- begin resource configuration");
+//    for (ExternalResourceBinding b : aSpec.getResourceManagerConfiguration()
+//            .getExternalResourceBindings()) {
+//      System.out.printf("Binding : %s -> %s %n", b.getKey(), b.getResourceName());
+//    }
+//
+//    for (ExternalResourceDescription r : aSpec.getResourceManagerConfiguration()
+//            .getExternalResources()) {
+//      if (r.getImplementationName() != null) {
+//        System.out.printf("Resource: %s -> %s %n", r.getName(), r.getImplementationName());
+//      } else {
+//        System.out.printf("Resource: %s -> %s %n", r.getName(),
+//                ((CustomResourceSpecifier) r.getResourceSpecifier()).getResourceClassName());
+//      }
+//    }
+//    System.out.println("-- end resource configuration");
+//  }
 
   @Rule
   public TestName name = new TestName();
