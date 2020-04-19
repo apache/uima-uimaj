@@ -204,8 +204,8 @@
       </plugin>
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>gmaven-plugin</artifactId>
-        <version>1.5</version>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <version>2.1.1</version>
         <executions>
           <execution>
             <!-- Load postNoticeText from NOTICE file -->
@@ -219,11 +219,23 @@
                 def noticeFile = new File(project.basedir.path + "/NOTICE");
                 if (noticeFile.exists()) {
                   project.properties.postNoticeText = noticeFile.text;
+                  println "Loaded NOTICE file content into property [postNoticeText]"
+                }
+                else {
+                  println "No NOTICE file was found - content not loaded into property [postNoticeText]"
                 }
               </source>
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>3.0.3</version>
+            <type>pom</type>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.rat</groupId>
@@ -321,7 +333,7 @@
                 <pluginExecution>
                   <pluginExecutionFilter>
                     <groupId>org.codehaus.gmaven</groupId>
-                    <artifactId>gmaven-plugin</artifactId>
+                    <artifactId>groovy-maven-plugin</artifactId>
                     <versionRange>[1.4,)</versionRange>
                     <goals>
                       <goal>execute</goal>
