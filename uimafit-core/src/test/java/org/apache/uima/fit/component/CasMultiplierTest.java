@@ -95,7 +95,7 @@ public class CasMultiplierTest {
       generated++;
       aCAS.setDocumentText(Integer.toString(generated));
       aCAS.setDocumentLanguage(Integer.toString(generated));
-      System.out.printf("%nGenerated: %s%n", aCAS.getDocumentText());
+//      System.out.printf("%nGenerated: %s%n", aCAS.getDocumentText());
     }
 
     @Override
@@ -134,7 +134,7 @@ public class CasMultiplierTest {
       output.setDocumentText(Integer.toString(value+1));
       value = -1;
       
-      System.out.printf("  Out    : %s%n", output.getDocumentText());
+//      System.out.printf("  Out    : %s%n", output.getDocumentText());
       
       return output;
     }
@@ -146,7 +146,7 @@ public class CasMultiplierTest {
       
       value = Integer.valueOf(aCAS.getDocumentText());
       
-      System.out.printf("  In     : %s%n", aCAS.getDocumentText());
+//      System.out.printf("  In     : %s%n", aCAS.getDocumentText());
     }
   }    
 
@@ -171,11 +171,11 @@ public class CasMultiplierTest {
     @Override
     public void process(CAS aCAS) throws AnalysisEngineProcessException {
       int n = Integer.parseInt(aCAS.getDocumentLanguage());
-      System.out.printf("  In     : %s%n", aCAS.getDocumentLanguage());
+//      System.out.printf("  In     : %s%n", aCAS.getDocumentLanguage());
 
       n++;
       aCAS.setDocumentLanguage(Integer.toString(n));
-      System.out.printf("  Out    : %s%n", aCAS.getDocumentLanguage());
+//      System.out.printf("  Out    : %s%n", aCAS.getDocumentLanguage());
     }
   }
   
@@ -193,10 +193,10 @@ public class CasMultiplierTest {
     
     @Override
     public void process(CAS aCAS) throws AnalysisEngineProcessException {
-      System.out.printf("Text result   : %s%n", aCAS.getDocumentText());
+//      System.out.printf("Text result   : %s%n", aCAS.getDocumentText());
       textResult = Integer.valueOf(aCAS.getDocumentText());
       
-      System.out.printf("Feature result   : %s%n", aCAS.getDocumentLanguage());
+//      System.out.printf("Feature result   : %s%n", aCAS.getDocumentLanguage());
       try {
         featureResult = Integer.valueOf(aCAS.getDocumentLanguage());
       }
