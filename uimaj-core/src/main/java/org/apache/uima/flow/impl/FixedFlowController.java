@@ -21,15 +21,11 @@ package org.apache.uima.flow.impl;
 
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.uima.UIMAFramework;
-import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
@@ -50,8 +46,6 @@ import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
 
 /**
  * Simple FlowController that invokes components in a fixed sequence.
@@ -100,7 +94,8 @@ public class FixedFlowController extends CasFlowController_ImplBase {
 
   private int mActionAfterCasMultiplier;
 
-  public synchronized void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
+  @Override
+public synchronized void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     if (getContext() == aContext) {
       return;  // only do initialize once per instance of this and same context
     }
@@ -112,7 +107,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
       ArrayList<String> keysToAdd = new ArrayList<String>(sequence.length);
       for( String key : sequence ) {
     	  if( !aContext.getAnalysisEngineMetaDataMap().containsKey(key) )
-    		  throw new ResourceInitializationException(ResourceInitializationException.FLOW_CONTROLLER_MISSING_DELEGATE,
+            throw new ResourceInitializationException(ResourceInitializationException.FLOW_CONTROLLER_MISSING_DELEGATE,
                   new Object[]{this.getClass().getName(), key, aContext.getAggregateMetadata().getSourceUrlString()});
         keysToAdd.add(key);
       }
@@ -145,14 +140,16 @@ public class FixedFlowController extends CasFlowController_ImplBase {
    * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
-  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
+  @Override
+public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     return new FixedFlowObject(0);
   }
   
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#addAnalysisEngines(java.util.Collection)
    */
-  public void addAnalysisEngines(Collection<String> aKeys) {
+  @Override
+public void addAnalysisEngines(Collection<String> aKeys) {
     // Append new keys to end of Sequence
     mSequence.addAll(aKeys);
   }
@@ -160,7 +157,8 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#removeAnalysisEngines(java.util.Collection)
    */
-  public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
+  @Override
+public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
     //Remove keys from Sequence
     mSequence.removeAll(aKeys);
   }
@@ -243,18 +241,6 @@ public class FixedFlowController extends CasFlowController_ImplBase {
     return desc;
   }
   
-  private static FlowControllerDescription loadDefaultDescription() {
-    URL descUrl = FixedFlowController.class
-            .getResource("/org/apache/uima/flow/FixedFlowController.xml");
-    FlowControllerDescription desc;
-    try {
-      desc = (FlowControllerDescription) UIMAFramework.getXMLParser().parse(new XMLInputSource(descUrl));
-    } catch (InvalidXMLException | IOException e) {
-      throw new UIMARuntimeException(e);
-    }
-    return desc;
-  }
-
   class FixedFlowObject extends CasFlow_ImplBase {
     private int currentStep;
 
@@ -295,6 +281,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.Flow#next()
      */
+    @Override
     public Step next() throws AnalysisEngineProcessException {
       // if CAS was passed to a CAS multiplier on the last step, special processing
       // is needed according to the value of the ActionAfterCasMultiplier config parameter
@@ -336,6 +323,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(CAS, String)
      */
+    @Override
     public Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
       // record that the input CAS has been segmented (affects its subsequent flow)
       casMultiplierProducedNewCas = true;

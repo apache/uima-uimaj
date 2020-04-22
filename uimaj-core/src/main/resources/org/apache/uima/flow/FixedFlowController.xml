@@ -24,7 +24,7 @@
          as the default description for new FixedFlowControllers.
          Instead, the default description is created programmatically by
          org.apache.uima.flow.impl.FixedFlowController.getDescription().
-         In future versions of UIMA, this fill will be removed entirely.
+         In future versions of UIMA, this file will be removed entirely.
 -->
 
 <flowControllerDescription xmlns="http://uima.apache.org/resourceSpecifier">
