@@ -73,6 +73,11 @@
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!--  Uncomment one of these to add Saxon8 or 9 to the classpath for JUnit tests. 
 		      1 fails due to different formatting and a dropped xmlns attribute, 
