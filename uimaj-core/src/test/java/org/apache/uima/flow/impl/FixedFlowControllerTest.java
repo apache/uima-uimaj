@@ -18,6 +18,12 @@
  */
 package org.apache.uima.flow.impl;
 
+import static org.apache.uima.UIMAFramework.getXMLParser;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,26 +40,24 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.flow.FinalStep;
 import org.apache.uima.flow.Flow;
 import org.apache.uima.flow.FlowControllerContext;
+import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.SimpleStep;
 import org.apache.uima.flow.Step;
 import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.impl.OperationalProperties_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.XMLInputSource;
+import org.junit.Before;
+import org.junit.Test;
 
-import junit.framework.TestCase;
-
-
-public class FixedFlowControllerTest extends TestCase {
+public class FixedFlowControllerTest {
 
   private Map<String, AnalysisEngineMetaData> analysisEngineMetaDataMap;
   private FixedFlowController fixedFlowController;
   
-  /* (non-Javadoc)
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
+  @Before
+  public void setUp() throws Exception {
     analysisEngineMetaDataMap = new HashMap<>();
     AnalysisEngineMetaData delegateMd = new AnalysisEngineMetaData_impl();
     delegateMd.setOperationalProperties(new OperationalProperties_impl());
@@ -79,6 +83,7 @@ public class FixedFlowControllerTest extends TestCase {
     fixedFlowController.initialize(fcContext);    
   }
 
+  @Test
   public void testComputeFlow() throws Exception {
     CAS cas1 = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
     CAS cas2 = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
@@ -119,6 +124,7 @@ public class FixedFlowControllerTest extends TestCase {
     assertTrue(step instanceof FinalStep);
   }
   
+  @Test
   public void testAddAnalysisEngines() throws Exception {
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
     Flow flow = fixedFlowController.computeFlow(cas);
@@ -176,6 +182,7 @@ public class FixedFlowControllerTest extends TestCase {
     assertTrue(step instanceof FinalStep);
   }
   
+  @Test
   public void testRemoveAnalysisEngines() throws Exception {
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
     Flow flow = fixedFlowController.computeFlow(cas);
@@ -207,5 +214,36 @@ public class FixedFlowControllerTest extends TestCase {
     assertEquals("key3", ((SimpleStep)step).getAnalysisEngineKey());
     step = flow.next();
     assertTrue(step instanceof FinalStep);
+  }
+
+  @Test
+  public void thatGeneratedDefaultFlowDescriptionIsEqualToXmlDescription() throws Exception
+  {
+    FlowControllerDescription desc1 = FixedFlowController.getDescription();
+    
+    FlowControllerDescription desc2 = getXMLParser().parseFlowControllerDescription(
+        new XMLInputSource("src/test/resources/FixedFlowControllerTest/FixedFlowController.xml"));
+
+    StringWriter desc1Writer = new StringWriter();
+    desc1.toXML(desc1Writer);
+    
+    StringWriter desc2Writer = new StringWriter();
+    desc2.toXML(desc2Writer);
+    
+    assertThat(desc2.toString()).isEqualTo(desc1.toString());
+  }
+
+  @Test
+  public void thatChangesToDefaultFlowControllerDoNotCarryOver() throws Exception
+  {
+    FlowControllerDescription desc1 = FixedFlowController.getDescription();
+    
+    desc1.setImplementationName("otherImplementation");
+    desc1.getMetaData().setName("otherName");
+
+    FlowControllerDescription desc2 = FixedFlowController.getDescription();
+    
+    assertThat(desc2.getImplementationName()).isEqualTo(FixedFlowController.class.getName());
+    assertThat(desc2.getMetaData().getName()).isEqualTo("Fixed Flow Controller");
   }
 }
