@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	
-<!--
+        <!--
 	 ***************************************************************
 	 * Licensed to the Apache Software Foundation (ASF) under one
 	 * or more contributor license agreements.  See the NOTICE file
@@ -19,13 +19,7 @@
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 ***************************************************************
-   
-   NOTE: This file is deprecated. Since UIMA 2.10.5, It is no longer used
-         as the default description for new FixedFlowControllers.
-         Instead, the default description is created programmatically by
-         org.apache.uima.flow.impl.FixedFlowController.getDescription().
-         In future versions of UIMA, this file will be removed entirely.
--->
+	-->
 
 <flowControllerDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>

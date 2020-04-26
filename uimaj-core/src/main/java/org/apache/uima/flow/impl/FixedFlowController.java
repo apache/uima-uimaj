@@ -19,15 +19,13 @@
 
 package org.apache.uima.flow.impl;
 
-import java.io.IOException;
-import java.net.URL;
+import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.uima.UIMAFramework;
-import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
@@ -42,8 +40,12 @@ import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.SimpleStep;
 import org.apache.uima.flow.Step;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.resource.metadata.Capability;
+import org.apache.uima.resource.metadata.ConfigurationParameter;
+import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
+import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.NameValuePair;
+import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
  * Simple FlowController that invokes components in a fixed sequence.
@@ -71,7 +73,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   private static final int ACTION_DROP = 2;
 
   private static final int ACTION_DROP_IF_NEW_CAS_PRODUCED = 3;
-
+  
   // make final to work better in multi-thread case  UIMA-2373
   // working assumption: 
   //   A single instance of this class may be used on multiple replications of a UIMA pipeline.
@@ -85,14 +87,15 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   //   on different threads. However, users will not re-initialize this with a different 
   //   flowControllerContext while this object is controlling CASes from the previous Object.
   // When this was a synchronized list, some contention observed between the "reads", which can be eliminated by
-  //   swtiching this to a copy-on-write kind of final list.
+  //   switching this to a copy-on-write kind of final list.
   //      -- this has the added "benefit" (maybe eventually) of having better semantics for letting existing
   //         Flow objects continue to use the "old" settings, and only the new ones picking up the new ones.
   final private List<String> mSequence = new CopyOnWriteArrayList<>();  //UIMA-4013
 
   private int mActionAfterCasMultiplier;
 
-  public synchronized void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
+  @Override
+public synchronized void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     if (getContext() == aContext) {
       return;  // only do initialize once per instance of this and same context
     }
@@ -104,7 +107,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
       ArrayList<String> keysToAdd = new ArrayList<>(sequence.length);
       for( String key : sequence ) {
     	  if( !aContext.getAnalysisEngineMetaDataMap().containsKey(key) )
-    		  throw new ResourceInitializationException(ResourceInitializationException.FLOW_CONTROLLER_MISSING_DELEGATE,
+            throw new ResourceInitializationException(ResourceInitializationException.FLOW_CONTROLLER_MISSING_DELEGATE,
                   new Object[]{this.getClass().getName(), key, aContext.getAggregateMetadata().getSourceUrlString()});
         keysToAdd.add(key);
       }
@@ -137,14 +140,16 @@ public class FixedFlowController extends CasFlowController_ImplBase {
    * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
-  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
+  @Override
+public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     return new FixedFlowObject(0);
   }
   
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#addAnalysisEngines(java.util.Collection)
    */
-  public void addAnalysisEngines(Collection<String> aKeys) {
+  @Override
+public void addAnalysisEngines(Collection<String> aKeys) {
     // Append new keys to end of Sequence
     mSequence.addAll(aKeys);
   }
@@ -152,26 +157,90 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#removeAnalysisEngines(java.util.Collection)
    */
-  public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
+  @Override
+public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
     //Remove keys from Sequence
     mSequence.removeAll(aKeys);
   }
 
   public static FlowControllerDescription getDescription() {
-    URL descUrl = FixedFlowController.class
-            .getResource("/org/apache/uima/flow/FixedFlowController.xml");
-    FlowControllerDescription desc;
-    try {
-      desc = (FlowControllerDescription) UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(descUrl));
-    } catch (InvalidXMLException e) {
-      throw new UIMARuntimeException(e);
-    } catch (IOException e) {
-      throw new UIMARuntimeException(e);
-    }
+    FlowControllerDescription desc = getResourceSpecifierFactory().createFlowControllerDescription();
+    
+    desc.setImplementationName(FixedFlowController.class.getName());
+    
+    ProcessingResourceMetaData metaData = desc.getFlowControllerMetaData();
+    metaData.setName("Fixed Flow Controller");
+    metaData.setDescription("Simple FlowController that uses the FixedFlow element of the\n" + 
+        "\t\taggregate descriptor to determine a linear flow.");
+    metaData.setVendor("The Apache Software Foundation");
+    metaData.setVersion("1.0");
+    
+    Capability capability = getResourceSpecifierFactory().createCapability();
+    metaData.setCapabilities(new Capability[] { capability });
+    
+    ConfigurationParameter param = getResourceSpecifierFactory().createConfigurationParameter();
+    param.setName("ActionAfterCasMultiplier");
+    param.setType("String");
+    param.setDescription("The action to be taken after a CAS has been input to a CAS Multiplier and the CAS Multiplier has finished processing it.\n" + 
+        "\t\t Valid values are:\n" + 
+        "\t\t\tcontinue - the CAS continues on to the next element in the flow\n" + 
+        "\t\t\tstop - the CAS will no longer continue in the flow, and will be returned from the aggregate if possible.\n" + 
+        "\t\t\tdrop - the CAS will no longer continue in the flow, and will be dropped (not returned from the aggregate) if possible.\t \n" + 
+        "\t\t\tdropIfNewCasProduced (the default) - if the CAS multiplier produced a new CAS as a result of processing this CAS, then this\n" + 
+        "\t\t\t\tCAS will be dropped.  If not, then this CAS will continue.");
+    ConfigurationParameterDeclarations parameterDeclarations = getResourceSpecifierFactory().createConfigurationParameterDeclarations();
+    parameterDeclarations.setConfigurationParameters(new ConfigurationParameter[] { param });
+    metaData.setConfigurationParameterDeclarations(parameterDeclarations);
+    
+    NameValuePair paramSetting = getResourceSpecifierFactory().createNameValuePair();
+    paramSetting.setName("ActionAfterCasMultiplier");
+    paramSetting.setValue("dropIfNewCasProduced");
+    ConfigurationParameterSettings parameterSettings = getResourceSpecifierFactory().createConfigurationParameterSettings();
+    parameterSettings.setParameterSettings(new NameValuePair[] { paramSetting });
+    metaData.setConfigurationParameterSettings(parameterSettings);
+    
     return desc;
   }
+  
+  public static FlowControllerDescription makeDefaultDescription() {
+    FlowControllerDescription desc = getResourceSpecifierFactory().createFlowControllerDescription();
+    
+    desc.setImplementationName(FixedFlowController.class.getName());
+    
+    ProcessingResourceMetaData metaData = desc.getFlowControllerMetaData();
+    metaData.setName("Fixed Flow Controller");
+    metaData.setDescription("Simple FlowController that uses the FixedFlow element of the\n" + 
+        "\t\taggregate descriptor to determine a linear flow.");
+    metaData.setVendor("The Apache Software Foundation");
+    metaData.setVersion("1.0");
+    
+    Capability capability = getResourceSpecifierFactory().createCapability();
+    metaData.setCapabilities(new Capability[] { capability });
+   
+    ConfigurationParameter param = getResourceSpecifierFactory().createConfigurationParameter();
+    param.setName("ActionAfterCasMultiplier");
+    param.setType("String");
+    param.setDescription("The action to be taken after a CAS has been input to a CAS Multiplier and the CAS Multiplier has finished processing it.\n" + 
+        "\t\t Valid values are:\n" + 
+        "\t\t\tcontinue - the CAS continues on to the next element in the flow\n" + 
+        "\t\t\tstop - the CAS will no longer continue in the flow, and will be returned from the aggregate if possible.\n" + 
+        "\t\t\tdrop - the CAS will no longer continue in the flow, and will be dropped (not returned from the aggregate) if possible.\t \n" + 
+        "\t\t\tdropIfNewCasProduced (the default) - if the CAS multiplier produced a new CAS as a result of processing this CAS, then this\n" + 
+        "\t\t\t\tCAS will be dropped.  If not, then this CAS will continue.");
+    ConfigurationParameterDeclarations parameterDeclarations = getResourceSpecifierFactory().createConfigurationParameterDeclarations();
+    parameterDeclarations.setConfigurationParameters(new ConfigurationParameter[] { param });
+    metaData.setConfigurationParameterDeclarations(parameterDeclarations);
+    
+    NameValuePair paramSetting = getResourceSpecifierFactory().createNameValuePair();
+    paramSetting.setName("ActionAfterCasMultiplier");
+    paramSetting.setValue("dropIfNewCasProduced");
+    ConfigurationParameterSettings parameterSettings = getResourceSpecifierFactory().createConfigurationParameterSettings();
+    parameterSettings.setParameterSettings(new NameValuePair[] { paramSetting });
+    metaData.setConfigurationParameterSettings(parameterSettings);
 
+    return desc;
+  }
+  
   class FixedFlowObject extends CasFlow_ImplBase {
     private int currentStep;
 
@@ -212,6 +281,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.Flow#next()
      */
+    @Override
     public Step next() throws AnalysisEngineProcessException {
       // if CAS was passed to a CAS multiplier on the last step, special processing
       // is needed according to the value of the ActionAfterCasMultiplier config parameter
@@ -253,6 +323,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(CAS, String)
      */
+    @Override
     public Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
       // record that the input CAS has been segmented (affects its subsequent flow)
       casMultiplierProducedNewCas = true;

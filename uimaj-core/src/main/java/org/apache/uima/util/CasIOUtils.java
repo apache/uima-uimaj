@@ -18,6 +18,9 @@
  */
 package org.apache.uima.util;
 
+import static org.apache.uima.cas.impl.Serialization.serializeCAS;
+import static org.apache.uima.cas.impl.Serialization.serializeWithCompression;
+
 import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.DataInputStream;
@@ -49,9 +52,6 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.xml.sax.SAXException;
-
-import static org.apache.uima.cas.impl.Serialization.serializeCAS;
-import static org.apache.uima.cas.impl.Serialization.serializeWithCompression;
 
 /**
  * <p>A collection of static methods aimed at making it easy to</p>
