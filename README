@@ -40,8 +40,25 @@ following list highlights some of the features uimaFIT provides:
 What's New in 2.5.0
 -------------------
 
-uimaFIT 2.5.0 is a minor feature and bugfix release. It should should serve as a drop-in replacement
-for previous uimaFIT 2.x versions.
+uimaFIT 2.5.0 is a minor feature and bugfix release. On supported platforms, it should should serve
+as a drop-in replacement for previous uimaFIT 2.x versions.
+
+Notable changes include:
+
+ * Added support for PEARs in AnalysisEngineFactory
+ * Added support for destroying auto-created resource managers if feasible
+ * Added CasFactory
+ * Added CasUtil.exists(...) method
+ * Added support for Charset-typed parameters in components
+ * Added ExternalResourceFactory.createResource(...) methods for instantiating resources
+ * Added ability to set number of threads in CpePipeline.runPipeline(...)
+ * Fixed FSUtil.getFeature(...) failing when called with Object.class on multi-valued features
+ * Fixed issue with non-XML 1.0 characters in parameter values when running CPEs
+ * Fixed JCasIterable.iterator() destroying the ResourceManager before it is even used
+ * Fixed CollectionReaderFactory.createReaderDescription(...) not discovering type prios and indexes
+ * Fixed issue causing component parameters to be used when initializing resources
+ * Upgraded to UIMA 2.10.4
+ * Upgraded to Spring 4.3.26
 
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
@@ -50,7 +67,7 @@ A full list of issues addressed in this release can be found on the Apache issue
 Supported Platforms
 -------------------
 
-uimaFIT requires Java 1.8 or higher, UIMA 2.10.3 or higher, and the Spring Framework 3.2.16 or higher.
+uimaFIT requires Java 1.8 or higher, UIMA 2.10.4 or higher, and the Spring Framework 4.3.26 or higher.
 
 
 Availability
@@ -58,8 +75,8 @@ Availability
 
 uimaFIT is licensed under the Apache License 2.0 and is available from the Apache UIMA project:
 
-  http://uima.apache.org
-  http://svn.apache.org/repos/asf/uima/uimafit
+  https://uima.apache.org
+  https://github.com/apache/uima-uimafit
 
 uimaFIT is available via Maven Central. If you use Maven for your build environment, then you can
 add uimaFIT as a dependency to your pom.xml file with the following:
