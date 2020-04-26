@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Modifier;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -66,7 +67,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
    */
   @Parameter(defaultValue = "${project.build.directory}/classes", required = true)
   private File outputDirectory;
-  
+
   /**
    * Skip generation of META-INF/org.apache.uima.fit/components.txt
    */
@@ -97,7 +98,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
       outputDirectory.mkdirs();
       buildContext.refresh(outputDirectory);
     }
-    
+
     // Get the compiled classes from this project
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
             new String[] { "class" });
@@ -112,14 +113,19 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
       String base = file.substring(0, file.length() - 6);
       String clazzPath = base.substring(project.getBuild().getOutputDirectory().length() + 1);
       String clazzName = clazzPath.replace(File.separator, ".");
+
+      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       try {
         Class clazz = componentLoader.loadClass(clazzName);
-        
+
+        // Make the componentLoader available to uimaFIT e.g. to resolve imports
+        Thread.currentThread().setContextClassLoader(componentLoader);
+
         // Do not generate descriptors for abstract classes, they cannot be instantiated.
         if (Modifier.isAbstract(clazz.getModifiers())) {
           continue;
         }
-        
+
         ResourceCreationSpecifier desc = null;
         ProcessingResourceMetaData metadata = null;
         switch (Util.getType(componentLoader, clazz)) {
@@ -151,7 +157,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
           out.getParentFile().mkdirs();
           toXML(desc, out.getPath());
           countGenerated++;
-          
+
           // Remember component
           componentsManifest.append("classpath*:").append(clazzPath + ".xml").append('\n');
         }
@@ -163,12 +169,14 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         getLog().warn("Cannot analyze class [" + clazzName + "]", e);
       } catch (ResourceInitializationException e) {
         getLog().warn("Cannot generate descriptor for [" + clazzName + "]", e);
+      } finally {
+        Thread.currentThread().setContextClassLoader(classLoader);
       }
     }
-    
+
     getLog().info(
             "Generated " + countGenerated + " descriptor" + (countGenerated != 1 ? "s." : "."));
-    
+
     // Write META-INF/org.apache.uima.fit/components.txt unless skipped and unless there are no
     // components
     if (!skipComponentsManifest && componentsManifest.length() > 0) {
@@ -185,15 +193,9 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
 
   private void embedTypeSystems(ProcessingResourceMetaData metadata)
           throws ResourceInitializationException {
-    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(componentLoader);
-    try {
-      TypeSystemDescriptionFactory.forceTypeDescriptorsScan();
-      TypeSystemDescription tsDesc = TypeSystemDescriptionFactory.createTypeSystemDescription();
-      metadata.setTypeSystem(tsDesc);
-    } finally {
-      Thread.currentThread().setContextClassLoader(classLoader);
-    }
+    TypeSystemDescriptionFactory.forceTypeDescriptorsScan();
+    TypeSystemDescription tsDesc = TypeSystemDescriptionFactory.createTypeSystemDescription();
+    metadata.setTypeSystem(tsDesc);
   }
 
   /**
