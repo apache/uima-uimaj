@@ -19,7 +19,7 @@
 /**
  * Factories to create different kinds of UIMA resource specifiers.
  * 
- * <h3><a name="InstancesVsDescriptors">Why are descriptors better than component instances?</a></h3>
+ * <h2><a id="InstancesVsDescriptors">Why are descriptors better than component instances?</a></h2>
  * 
  * It is recommended to avoid instantiating components with uimaFIT outside of a running pipeline,
  * unless necessary and unless you are aware of the consequences.

@@ -34,7 +34,7 @@ public class TestExternalResource extends Resource_ImplBase {
   private String value;
 
   public void assertConfiguredOk() {
-    System.out.println(getClass().getSimpleName() + ".assertConfiguredOk()");
+//    System.out.println(getClass().getSimpleName() + ".assertConfiguredOk()");
     // Ensure normal parameters get passed to External Resource
     assertEquals(EXPECTED_VALUE, value);
   }

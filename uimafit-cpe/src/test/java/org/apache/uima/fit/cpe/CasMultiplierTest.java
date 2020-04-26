@@ -49,6 +49,7 @@ public class CasMultiplierTest {
    * Simulates a CPE with CAS multipliers that always read one CAS and always produce one CAS.
    * It actually appears to work despite CPE not supporting CAS multipliers.
    */
+  @SuppressWarnings("javadoc")
   @Test
   public void testRunPipeline() throws Exception {
     CollectionReaderDescription reader = createReaderDescription(Reader.class);
@@ -79,8 +80,8 @@ public class CasMultiplierTest {
     public void getNext(CAS aCAS) throws IOException, CollectionException {
       generated++;
       aCAS.setDocumentText(Integer.toString(generated));
-      System.out.printf("%n[%s] Generated: %s%n", Thread.currentThread().getName(),
-              aCAS.getDocumentText());
+//      System.out.printf("%n[%s] Generated: %s%n", Thread.currentThread().getName(),
+//              aCAS.getDocumentText());
     }
 
     @Override
@@ -119,8 +120,8 @@ public class CasMultiplierTest {
       output.setDocumentText(Integer.toString(value+1));
       value = -1;
       
-      System.out.printf("[%s]   Out    : %s%n", Thread.currentThread().getName(),
-              output.getDocumentText());
+//      System.out.printf("[%s]   Out    : %s%n", Thread.currentThread().getName(),
+//              output.getDocumentText());
 
       return output;
     }
@@ -132,8 +133,8 @@ public class CasMultiplierTest {
       
       value = Integer.valueOf(aCAS.getDocumentText());
       
-      System.out.printf("[%s]   In     : %s%n", Thread.currentThread().getName(),
-              aCAS.getDocumentText());
+//      System.out.printf("[%s]   In     : %s%n", Thread.currentThread().getName(),
+//              aCAS.getDocumentText());
     }
   }
   
@@ -149,7 +150,7 @@ public class CasMultiplierTest {
     
     @Override
     public void process(CAS aCAS) throws AnalysisEngineProcessException {
-      System.out.printf("Result   : %s%n", aCAS.getDocumentText());
+//      System.out.printf("Result   : %s%n", aCAS.getDocumentText());
       result.add(Integer.valueOf(aCAS.getDocumentText()));
     }
   }

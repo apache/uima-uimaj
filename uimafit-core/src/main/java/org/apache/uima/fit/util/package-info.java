@@ -19,14 +19,14 @@
 /**
  * Utility classes like {@link org.apache.uima.fit.util.CasUtil} and {@link org.apache.uima.fit.util.JCasUtil}.
  * 
- * <h3><a name="SortOrder">Sort order</a></h3>
+ * <H2><a id="SortOrder">Sort order</a></H2>
  * 
  * The various <em>select</em> methods in {@link org.apache.uima.fit.util.CasUtil} and 
  * {@link org.apache.uima.fit.util.JCasUtil} rely on the UIMA feature structure indexes. Their
  * behaviour differs depending on the type of feature structure being selected and where they are
  * selected from:
  * 
- * <h4>Selecting from a {@link org.apache.uima.cas.CAS}/{@link org.apache.uima.jcas.JCas}</h4>
+ * <H2>Selecting from a {@link org.apache.uima.cas.CAS}/{@link org.apache.uima.jcas.JCas}</H2>
  * <ol>
  * <li><b>Annotations</b> - if the type being selected is {@link org.apache.uima.jcas.tcas.Annotation}
  * or a sub-type thereof, the built-in annotation index is used. This index has the keys 
@@ -40,7 +40,7 @@
  * to access these feature structures.</li>
  * </ol>
  * 
- * <h4>Selecting from a {@link org.apache.uima.cas.ArrayFS ArrayFS/FSArray}/{@link org.apache.uima.jcas.cas.FSList}</h4>
+ * <H2>Selecting from a {@link org.apache.uima.cas.ArrayFS ArrayFS/FSArray}/{@link org.apache.uima.jcas.cas.FSList}</H2>
  * 
  * When selecting from a feature structure list or array, the order is determined by the order of
  * the annotations inside the list/array.

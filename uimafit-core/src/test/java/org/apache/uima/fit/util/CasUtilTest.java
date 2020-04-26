@@ -147,11 +147,11 @@ public class CasUtilTest extends ComponentTestBase {
     }
 
     // Print what is expected
-    for (FeatureStructure fs : allFS) {
-      System.out.println("Type: " + fs.getType().getName() + "]");
-    }
-    System.out
-            .println("Tokens: [" + toText(select(cas, getType(cas, Token.class.getName()))) + "]");
+//    for (FeatureStructure fs : allFS) {
+//      System.out.println("Type: " + fs.getType().getName() + "]");
+//    }
+//    System.out
+//            .println("Tokens: [" + toText(select(cas, getType(cas, Token.class.getName()))) + "]");
 
     // Document Annotation, one sentence and 4 tokens.
     assertEquals(6, allFS.size());
