@@ -84,9 +84,8 @@ import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.XMLInputSource;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
+import org.xmlunit.assertj.XmlAssert;
 
 public class AnalysisEngineFactoryTest extends ComponentTestBase {
 
@@ -565,9 +564,7 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     
     String actual = FileUtils.readFileToString(target, "UTF-8");
     String expected = FileUtils.readFileToString(reference, "UTF-8");
-    XMLUnit.setIgnoreWhitespace(true);
-    XMLAssert.assertXMLEqual(expected, actual);
-//    assertEquals(expected, actual);
+    XmlAssert.assertThat(actual).and(expected).ignoreWhitespace().areIdentical();
   }
   
   @Test
