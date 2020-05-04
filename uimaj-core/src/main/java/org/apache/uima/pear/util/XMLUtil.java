@@ -170,11 +170,13 @@ public class XMLUtil {
       do {
         nextByte = iStream.read();
         // store as possible UTF signature or BOM
-        if (byteCounter < 16)
-          prefix[byteCounter] = nextByte;
+        if (byteCounter < 16) {
+            prefix[byteCounter] = nextByte;
+        }
         byteCounter++;
-        if (nextByte < 0)
-          throw new IOException("cannot read file");
+        if (nextByte < 0) {
+            throw new IOException("cannot read file");
+        }
       } while (nextByte == 0xEF || nextByte == 0xBB || nextByte == 0xBF || nextByte == 0xFE
               || nextByte == 0xFF || nextByte == 0x00);
       int prefixLength = byteCounter < 17 ? byteCounter - 1 : 16;
@@ -185,12 +187,15 @@ public class XMLUtil {
       boolean utf32Signature = false;
       if (utfSignature != null) {
         // check signature name
-        if (utfSignature.startsWith("UTF-8"))
-          utf8Signature = true;
-        else if (utfSignature.startsWith("UTF-16"))
-          utf16Signature = true;
-        else if (utfSignature.startsWith("UTF-32"))
-          utf32Signature = true;
+        if (utfSignature.startsWith("UTF-8")) {
+            utf8Signature = true;
+        }
+        else if (utfSignature.startsWith("UTF-16")) {
+            utf16Signature = true;
+        }
+        else if (utfSignature.startsWith("UTF-32")) {
+            utf32Signature = true;
+        }
       }
       byte[] buffer = null;
       int bytes2put = 0;
@@ -199,15 +204,17 @@ public class XMLUtil {
         // UTF-16 - put 2 bytes of signature + 7x2 bytes
         bytes2put = 7 * 2; // <?xml?>
         buffer = new byte[prefixLength + bytes2put];
-        for (int i = 0; i < prefixLength; i++)
-          buffer[i] = (byte) prefix[i];
+        for (int i = 0; i < prefixLength; i++) {
+            buffer[i] = (byte) prefix[i];
+        }
         byteCounter = prefixLength;
       } else if (utf32Signature) {
         // UTF-32 - put 4 bytes of signature + 7x4 bytes
         bytes2put = 7 * 4; // <?xml?>
         buffer = new byte[prefixLength + bytes2put];
-        for (int i = 0; i < prefixLength; i++)
-          buffer[i] = (byte) prefix[i];
+        for (int i = 0; i < prefixLength; i++) {
+            buffer[i] = (byte) prefix[i];
+        }
         byteCounter = prefixLength;
       } else {
         // UTF8 or no signature - put only text characters
@@ -222,12 +229,14 @@ public class XMLUtil {
       int offset = 0;
       while (offset < (bytes2put - 1)) {
         int bytesRead = iStream.read(buffer, offset + byteCounter, bytes2put - 1 - offset);
-        if (bytesRead == -1)
-          break;
+        if (bytesRead == -1) {
+            break;
+        }
         offset += bytesRead;
       }
-      if (offset != (bytes2put - 1))
+      if (offset != (bytes2put - 1)) {
         throw new IOException("cannot read file");
+    }
       // check first XML header characters - '<?'
       // buffer is 7 bytes
       // some Javas won't properly decode an odd number of bytes for utf16 coding
@@ -237,20 +246,23 @@ public class XMLUtil {
       if (utf8Signature) {
         // check for UTF-8
         String test = new String(buffer, "UTF-8");
-        if (test.startsWith(FIRST_XML_CHARS))
-          encoding = "UTF-8";
+        if (test.startsWith(FIRST_XML_CHARS)) {
+            encoding = "UTF-8";
+        }
       } else if (utf16Signature) {
         // check for UTF-16
         String test = new String(buffer6, "UTF-16");
-        if (test.startsWith(FIRST_XML_CHARS))
-          encoding = "UTF-16";
+        if (test.startsWith(FIRST_XML_CHARS)) {
+            encoding = "UTF-16";
+        }
       } else if (utf32Signature) {
         // we don't support this
       } else {
         // no signature - check for UTF-8 in XML header characters
         String test = new String(buffer, "UTF-8");
-        if (test.startsWith(FIRST_XML_CHARS))
-          encoding = "UTF-8";
+        if (test.startsWith(FIRST_XML_CHARS)) {
+            encoding = "UTF-8";
+        }
         else {
           // next, check for UTF-16LE in XML header characters
           test = new String(buffer6, "UTF-16LE");
@@ -275,8 +287,9 @@ public class XMLUtil {
           while ((line = fReader.readLine()) != null) {
             String xmlLine = line.trim();
             if (xmlLine.length() > 0) {
-              if (xmlLine.charAt(0) == '<')
+              if (xmlLine.charAt(0) == '<') {
                 encoding = "UTF-8";
+            }
               break;
             }
           }
@@ -291,8 +304,9 @@ public class XMLUtil {
             while ((line = fReader.readLine()) != null) {
               String xmlLine = line.trim();
               if (xmlLine.length() > 0) {
-                if (xmlLine.charAt(0) == '<')
-                  encoding = "UTF-16";
+                if (xmlLine.charAt(0) == '<') {
+                    encoding = "UTF-16";
+                }
                 break;
               }
             }
@@ -306,16 +320,18 @@ public class XMLUtil {
     } catch (Throwable err) {
       throw new IOException(err.toString());
     } finally {
-      if (iStream != null)
+      if (iStream != null) {
         try {
           iStream.close();
         } catch (Exception e) {
         }
-      if (fReader != null)
+    }
+      if (fReader != null) {
         try {
           fReader.close();
         } catch (Exception e) {
         }
+    }
     }
     return encoding;
   } // detectXmlFileEncoding()
@@ -343,11 +359,12 @@ public class XMLUtil {
     } catch (SAXException err) {
       isValid = false;
     } finally {
-      if (iStream != null)
+      if (iStream != null) {
         try {
           iStream.close();
         } catch (Exception e) {
         }
+    }
     }
     return isValid;
   } // isValidXmlFile()
@@ -369,8 +386,9 @@ public class XMLUtil {
       String systemId = ex.getSystemId();
       if (systemId != null) {
         int index = systemId.lastIndexOf('/');
-        if (index != -1)
-          systemId = systemId.substring(index + 1);
+        if (index != -1) {
+            systemId = systemId.substring(index + 1);
+        }
         System.err.print(systemId);
       }
       System.err.print(':');
@@ -433,8 +451,9 @@ public class XMLUtil {
           String eValue = elements.getProperty(tag);
           if (eValue != null) {
             // print XML element(s)
-            if (multiValue)
-              printXMLElements(tag, eValue, valueDelimiter, oWriter, level);
+            if (multiValue) {
+                printXMLElements(tag, eValue, valueDelimiter, oWriter, level);
+            }
             else {
               printXMLElement(tag, eValue, oWriter, level);
               // insert new line
@@ -460,9 +479,10 @@ public class XMLUtil {
         if (!done) {
           // print XML element(s)
           String eValue = elements.getProperty(tag);
-          if (multiValue)
+          if (multiValue) {
             printXMLElements(tag, eValue, valueDelimiter, oWriter, level);
-          else {
+        }
+        else {
             printXMLElement(tag, eValue, oWriter, level);
             // insert new line
             oWriter.println();
@@ -725,17 +745,27 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElementValue(String elemValue, boolean putInCdataSection,
-          PrintWriter oWriter, int level) throws IOException {
+          PrintWriter oWriter, int level)
+      throws IOException
+  {
     // add marginal tabs
-    for (int l = 0; l < level; l++)
+    for (int l = 0; l < level; l++) {
       oWriter.print('\t');
+    }
+    
     if (elemValue != null) {
       // print XML element value
-      if (putInCdataSection)
+      if (putInCdataSection) {
         oWriter.print(CDATA_SECTION_BEG);
-      oWriter.print(elemValue.trim());
-      if (putInCdataSection)
+      }
+      
+      // Either put the element value into a CDATA section or escape special XML characters properly
+      oWriter.print(putInCdataSection ? elemValue.trim() : xmlEscape(elemValue.trim()));
+      
+      if (putInCdataSection) {
         oWriter.print(CDATA_SECTION_END);
+      }
+      
       oWriter.flush();
     }
   }
@@ -754,8 +784,9 @@ public class XMLUtil {
    */
   public static void printXMLHeader(String encoding, PrintWriter oWriter) throws IOException {
     oWriter.print(XML_HEADER_BEG);
-    if (encoding != null && encoding.length() > 0) // add encoding
-      oWriter.print(" " + XML_ENCODING_TAG + "=\"" + encoding + "\"");
+    if (encoding != null && encoding.length() > 0) {
+        oWriter.print(" " + XML_ENCODING_TAG + "=\"" + encoding + "\"");
+    }
     oWriter.println(XML_HEADER_END);
   }
 
@@ -801,13 +832,16 @@ public class XMLUtil {
   public static void printXMLTag(String tag, Properties attributes, PrintWriter oWriter,
           boolean tagEnd, int level) throws IOException {
     // add marginal tabs
-    for (int l = 0; l < level; l++)
-      oWriter.print('\t');
+    for (int l = 0; l < level; l++) {
+        oWriter.print('\t');
+    }
     // print XML tag prefix
-    if (tagEnd)
-      oWriter.print("</");
-    else
-      oWriter.print('<');
+    if (tagEnd) {
+        oWriter.print("</");
+    }
+    else {
+        oWriter.print('<');
+    }
     // print XML tag name
     oWriter.print(tag);
     if (!tagEnd && attributes != null) {
@@ -827,5 +861,19 @@ public class XMLUtil {
     // print XML tag suffix
     oWriter.print('>');
     oWriter.flush();
+  }
+  
+  private static String xmlEscape(String value)
+  {
+      if (value == null) {
+          return value;
+      }
+      
+      return value
+              .replace("&", "&amp;")
+              .replace("<", "&lt;")
+              .replace(">", "&gt;")
+              .replace("\"", "&quot;")
+              .replace("'", "&apos;");
   }
 }
