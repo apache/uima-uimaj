@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -26,6 +26,7 @@ import static org.apache.uima.fit.internal.ReflectionUtil.getInheritableAnnotati
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.WeakHashMap;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.descriptor.FsIndex;
@@ -42,6 +43,7 @@ import org.apache.uima.resource.metadata.impl.FsIndexKeyDescription_impl;
 import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.springframework.util.ClassUtils;
 
 /**
  */
@@ -61,6 +63,17 @@ public final class FsIndexFactory {
 
   private static final Object SCAN_LOCK = new Object();
 
+  private static final Object CREATE_LOCK = new Object();
+
+  private static WeakHashMap<ClassLoader, String[]> fsIndexLocationsByClassloader;
+
+  private static WeakHashMap<ClassLoader, FsIndexCollection> fsIndexCollectionsByClassloader;
+
+  static {
+    fsIndexLocationsByClassloader = new WeakHashMap<>();
+    fsIndexCollectionsByClassloader = new WeakHashMap<>();
+  }
+
   private FsIndexFactory() {
     // Factory class
   }
@@ -68,13 +81,13 @@ public final class FsIndexFactory {
   /**
    * Create index configuration data for a given class definition using reflection and the
    * configuration parameter annotation.
-   * 
+   *
    * @param componentClass
    *          the class to analyze
    * @return the index collection
    */
   public static FsIndexCollection createFsIndexCollection(Class<?> componentClass) {
-    List<FsIndex> anFsIndexList = new ArrayList<FsIndex>();
+    List<FsIndex> anFsIndexList = new ArrayList<>();
 
     // Check FsIndexCollection annotation
     org.apache.uima.fit.descriptor.FsIndexCollection anIndexCollection = getInheritableAnnotation(
@@ -88,10 +101,10 @@ public final class FsIndexFactory {
             componentClass);
     if (anFsIndex != null) {
       if (anIndexCollection != null) {
-        throw new IllegalStateException("Class [" + componentClass.getName() + "] must not "
-                + "declare "
-                + org.apache.uima.fit.descriptor.FsIndexCollection.class.getSimpleName() + " and "
-                + FsIndex.class.getSimpleName() + " at the same time.");
+        throw new IllegalStateException(
+                "Class [" + componentClass.getName() + "] must not " + "declare "
+                        + org.apache.uima.fit.descriptor.FsIndexCollection.class.getSimpleName()
+                        + " and " + FsIndex.class.getSimpleName() + " at the same time.");
       }
 
       anFsIndexList.add(anFsIndex);
@@ -102,7 +115,7 @@ public final class FsIndexFactory {
     // Process collected FsIndex annotations
     for (FsIndex anIdx : anFsIndexList) {
       // Collect index keys
-      List<FsIndexKeyDescription> keys = new ArrayList<FsIndexKeyDescription>();
+      List<FsIndexKeyDescription> keys = new ArrayList<>();
       for (FsIndexKey anIndexKey : anIdx.keys()) {
         keys.add(createFsIndexKeyDescription(anIndexKey.featureName(), anIndexKey.comparator()));
       }
@@ -158,7 +171,7 @@ public final class FsIndexFactory {
 
   /**
    * Create a index collection from a set of descriptions.
-   * 
+   *
    * @param descriptions
    *          the index descriptions
    * @return the index collection
@@ -185,7 +198,8 @@ public final class FsIndexFactory {
    *          the index comparator
    * @return the index key description
    */
-  public static FsIndexKeyDescription createFsIndexKeyDescription(String featureName, int comparator) {
+  public static FsIndexKeyDescription createFsIndexKeyDescription(String featureName,
+          int comparator) {
     FsIndexKeyDescription_impl key = new FsIndexKeyDescription_impl();
     key.setFeatureName(featureName);
     key.setComparator(comparator);
@@ -193,17 +207,15 @@ public final class FsIndexFactory {
     return key;
   }
 
-  private static String[] indexDescriptorLocations;
-
   /**
    * Creates a {@link FsIndexCollection} from descriptor names.
-   * 
+   *
    * @param descriptorNames
    *          The fully qualified, Java-style, dotted descriptor names.
    * @return a {@link FsIndexCollection} that includes the indexes from all of the specified files.
    */
   public static FsIndexCollection createFsIndexCollection(String... descriptorNames) {
-    List<Import> imports = new ArrayList<Import>();
+    List<Import> imports = new ArrayList<>();
     for (String descriptorName : descriptorNames) {
       Import imp = new Import_impl();
       imp.setName(descriptorName);
@@ -218,13 +230,13 @@ public final class FsIndexFactory {
 
   /**
    * Creates a {@link FsIndexCollection} from a descriptor file
-   * 
+   *
    * @param descriptorURIs
    *          The descriptor file paths.
    * @return A {@link FsIndexCollection} that includes the indexes from all of the specified files.
    */
   public static FsIndexCollection createTypeSystemDescriptionFromPath(String... descriptorURIs) {
-    List<Import> imports = new ArrayList<Import>();
+    List<Import> imports = new ArrayList<>();
     for (String descriptorURI : descriptorURIs) {
       Import imp = new Import_impl();
       imp.setLocation(descriptorURI);
@@ -241,46 +253,59 @@ public final class FsIndexFactory {
    * Creates a {@link FsIndexCollection} from all index descriptions that can be found via the
    * pattern specified in the system property {@code org.apache.uima.fit.fsindex.import_pattern} or
    * via the {@code META-INF/org.apache.uima.fit/fsindexes.txt} files in the classpath.
-   * 
+   *
    * @return the auto-scanned indexes.
    * @throws ResourceInitializationException
    *           if the index collection could not be assembled
    */
   public static FsIndexCollection createFsIndexCollection() throws ResourceInitializationException {
-    List<FsIndexDescription> fsIndexList = new ArrayList<FsIndexDescription>();
-    for (String location : scanIndexDescriptors()) {
-      try {
-        XMLInputSource xmlInput = new XMLInputSource(location);
-        FsIndexCollection fsIdxCol = getXMLParser().parseFsIndexCollection(xmlInput);
-        fsIdxCol.resolveImports();
-        fsIndexList.addAll(asList(fsIdxCol.getFsIndexes()));
-        LogFactory.getLog(FsIndexFactory.class).debug("Detected index at [" + location + "]");
-      } catch (IOException e) {
-        throw new ResourceInitializationException(e);
-      } catch (InvalidXMLException e) {
-        LogFactory.getLog(FsIndexFactory.class).warn(
-                "[" + location + "] is not a index descriptor file. Ignoring.", e);
+    ClassLoader cl = ClassUtils.getDefaultClassLoader();
+    FsIndexCollection aggFsIdxCol = fsIndexCollectionsByClassloader.get(cl);
+    if (aggFsIdxCol == null) {
+      synchronized (CREATE_LOCK) {
+        List<FsIndexDescription> fsIndexList = new ArrayList<>();
+        for (String location : scanIndexDescriptors()) {
+          try {
+            XMLInputSource xmlInput = new XMLInputSource(location);
+            FsIndexCollection fsIdxCol = getXMLParser().parseFsIndexCollection(xmlInput);
+            fsIdxCol.resolveImports();
+            fsIndexList.addAll(asList(fsIdxCol.getFsIndexes()));
+            LogFactory.getLog(FsIndexFactory.class).debug("Detected index at [" + location + "]");
+          } catch (IOException e) {
+            throw new ResourceInitializationException(e);
+          } catch (InvalidXMLException e) {
+            LogFactory.getLog(FsIndexFactory.class)
+                    .warn("[" + location + "] is not a index descriptor file. Ignoring.", e);
+          }
+        }
+
+        aggFsIdxCol = createFsIndexCollection(
+                fsIndexList.toArray(new FsIndexDescription[fsIndexList.size()]));
+        fsIndexCollectionsByClassloader.put(cl, aggFsIdxCol);
       }
     }
 
-    return createFsIndexCollection(fsIndexList.toArray(new FsIndexDescription[fsIndexList.size()]));
+    return (FsIndexCollection) aggFsIdxCol.clone();
   }
 
   /**
    * Get all currently accessible index descriptor locations. A scan is actually only performed on
    * the first call and the locations are cached. To force a re-scan use
    * {@link #forceIndexDescriptorsScan()}.
-   * 
+   *
    * @return an array of locations.
    * @throws ResourceInitializationException
    *           if the locations could not be resolved.
    */
   public static String[] scanIndexDescriptors() throws ResourceInitializationException {
     synchronized (SCAN_LOCK) {
-      if (indexDescriptorLocations == null) {
-        indexDescriptorLocations = scanDescriptors(MetaDataType.FS_INDEX);
+      ClassLoader cl = ClassUtils.getDefaultClassLoader();
+      String[] indexLocations = fsIndexLocationsByClassloader.get(cl);
+      if (indexLocations == null) {
+        indexLocations = scanDescriptors(MetaDataType.FS_INDEX);
+        fsIndexLocationsByClassloader.put(cl, indexLocations);
       }
-      return indexDescriptorLocations;
+      return indexLocations;
     }
   }
 
@@ -289,6 +314,9 @@ public final class FsIndexFactory {
    * all auto-import locations.
    */
   public static void forceIndexDescriptorsScan() {
-    indexDescriptorLocations = null;
+    synchronized (SCAN_LOCK) {
+      fsIndexLocationsByClassloader.clear();
+      fsIndexCollectionsByClassloader.clear();
+    }
   }
 }
