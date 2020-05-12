@@ -33,39 +33,41 @@ import org.apache.uima.cas_data.impl.CasDataUtils;
 import org.apache.uima.cas_data.impl.XCasToCasDataSaxHandler;
 import org.apache.vinci.transport.document.AFrame;
 
+
 /**
  * Utilities for converting a VinciFrame to and from a CasData.
  * 
  * 
  */
 public class VinciCasDataConverter {
+  
+  /** The m ueid type. */
   private String mUeidType;
 
+  /** The m ueid feature. */
   private String mUeidFeature;
 
+  /** The m cas data doc text type. */
   private String mCasDataDocTextType;
 
+  /** The m cas data doc text feature. */
   private String mCasDataDocTextFeature;
 
+  /** The m X cas doc text tag. */
   private String mXCasDocTextTag;
 
+  /** The m include annotation spanned text. */
   private boolean mIncludeAnnotationSpannedText;
 
   /**
-   * Creates a new VinciCasDataConverter
-   * 
-   * @param aUeidType
-   *          CasData type that contains the UEID (may be null)
-   * @param aUeidFeature
-   *          CasData feature that contains the UEID (may be null)
-   * @param aCasDataDocTextType
-   *          CasData type that contains the document text
-   * @param aCasDataDocTextFeature
-   *          CasData feature that contains the document text
-   * @param aXCasDocTextTag
-   *          XCas tag representing the document text
-   * @param aIncludeAnnotationSpannedText
-   *          if true, when generating XCas for an annotation, the spanned text of the annotation
+   * Creates a new VinciCasDataConverter.
+   *
+   * @param aUeidType          CasData type that contains the UEID (may be null)
+   * @param aUeidFeature          CasData feature that contains the UEID (may be null)
+   * @param aCasDataDocTextType          CasData type that contains the document text
+   * @param aCasDataDocTextFeature          CasData feature that contains the document text
+   * @param aXCasDocTextTag          XCas tag representing the document text
+   * @param aIncludeAnnotationSpannedText          if true, when generating XCas for an annotation, the spanned text of the annotation
    *          will be included as the content of the XCas element.
    */
   public VinciCasDataConverter(String aUeidType, String aUeidFeature, String aCasDataDocTextType,
@@ -80,14 +82,12 @@ public class VinciCasDataConverter {
   }
 
   /**
-   * Converts a CasData to a VinciFrame
-   * 
-   * @param aCasData
-   *          CasData to convert
-   * @param aParentFrame
-   *          VinciFrame to be the parent of the frame created from the CasData
-   * @throws SAXException -
-   * @throws IOException -
+   * Converts a CasData to a VinciFrame.
+   *
+   * @param aCasData          CasData to convert
+   * @param aParentFrame          VinciFrame to be the parent of the frame created from the CasData
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws SAXException the SAX exception
    */
   public void casDataToVinciFrame(CasData aCasData, AFrame aParentFrame) throws IOException,
           SAXException {
@@ -118,14 +118,11 @@ public class VinciCasDataConverter {
 
   /**
    * Converts a VinciFrame to a CasData, appending to an existing CasData.
-   * 
-   * @param aCasFrame
-   *          VinciFrame containing XCAS
-   * @param aCasData
-   *          CasData to which FeatureStructures from XCAS will be appended
-   * 
+   *
+   * @param aCasFrame          VinciFrame containing XCAS
+   * @param aCasData          CasData to which FeatureStructures from XCAS will be appended
+   * @throws SAXException the SAX exception
    * @deprecated Use appendVinciFrameToCasData(Aframe, CasData) or vinciFrameToCasData(AFrame)
-   * @throws SAXException -
    */
   @Deprecated
 public void vinciFrameToCasData(AFrame aCasFrame, CasData aCasData) throws SAXException {
@@ -134,12 +131,10 @@ public void vinciFrameToCasData(AFrame aCasFrame, CasData aCasData) throws SAXEx
 
   /**
    * Converts a VinciFrame to a CasData.
-   * 
-   * @param aCasFrame
-   *          VinciFrame containing XCAS
-   * 
+   *
+   * @param aCasFrame          VinciFrame containing XCAS
    * @return a new CasData corrsponding to the XCAS in aCasFrame
-   * @throws SAXException -
+   * @throws SAXException the SAX exception
    */
   public CasData vinciFrameToCasData(AFrame aCasFrame) throws SAXException {
     CasData casData = new CasDataImpl();
@@ -149,12 +144,10 @@ public void vinciFrameToCasData(AFrame aCasFrame, CasData aCasData) throws SAXEx
 
   /**
    * Converts a VinciFrame to a CasData, appending to an existing CasData.
-   * 
-   * @param aCasFrame
-   *          VinciFrame containing XCAS
-   * @param aCasData
-   *          CasData to which FeatureStructures from XCAS will be appended
-   * @throws SAXException -
+   *
+   * @param aCasFrame          VinciFrame containing XCAS
+   * @param aCasData          CasData to which FeatureStructures from XCAS will be appended
+   * @throws SAXException the SAX exception
    */
   public void appendVinciFrameToCasData(AFrame aCasFrame, CasData aCasData) throws SAXException {
     // Use VinciSaxParser to generate SAX events from VinciFrame, and send

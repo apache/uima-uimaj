@@ -35,8 +35,8 @@
           </configuration>
         </plugin>
       </plugins>
-    </pluginManagement>
-    <plugins>
+    </pluginManagement>    
+		<plugins>
 			<plugin>
 				<groupId>org.apache.uima</groupId>
 				<artifactId>jcasgen-maven-plugin</artifactId>

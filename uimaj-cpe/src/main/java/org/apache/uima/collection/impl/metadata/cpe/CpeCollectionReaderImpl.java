@@ -29,13 +29,24 @@ import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
+
+/**
+ * The Class CpeCollectionReaderImpl.
+ */
 public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeCollectionReader {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -7663775553359776495L;
 
+  /** The collection iterator. */
   private CpeCollectionReaderIterator collectionIterator;
 
+  /** The cas initializer. */
   private CpeCollectionReaderCasInitializer casInitializer;
 
+  /**
+   * Instantiates a new cpe collection reader impl.
+   */
   public CpeCollectionReaderImpl() {
   }
 
@@ -44,6 +55,7 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
    * 
    * @see org.apache.uima.collection.metadata.CpeCollectionReader#setCasInitializer(org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer)
    */
+  @Override
   public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
           throws CpeDescriptorException {
     casInitializer = aCasInitializer;
@@ -54,6 +66,7 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
    * 
    * @see org.apache.uima.collection.metadata.CpeCollectionReader#getCasInitializer()
    */
+  @Override
   public CpeCollectionReaderCasInitializer getCasInitializer() throws CpeDescriptorException {
     return casInitializer;
   }
@@ -63,6 +76,7 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
    * 
    * @see org.apache.uima.collection.metadata.CpeCollectionReader#removeCasInitializer()
    */
+  @Override
   public void removeCasInitializer() {
     casInitializer = null;
   }
@@ -72,6 +86,7 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
    * 
    * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#setDescriptorPath(java.lang.String)
    */
+  @Override
   public void setDescriptor(CpeComponentDescriptor aDescriptor) {
     collectionIterator.setDescriptor(aDescriptor);
   }
@@ -81,6 +96,7 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
    * 
    * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#getDescriptorPath()
    */
+  @Override
   public CpeComponentDescriptor getDescriptor() {
     return collectionIterator.getDescriptor();
   }
@@ -107,10 +123,15 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
     collectionIterator.setConfigurationParameterSettings(aParams);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("collectionReader",
           new PropertyXmlInfo[] { new PropertyXmlInfo("collectionIterator", null),
               new PropertyXmlInfo("casInitializer", null), });
@@ -125,6 +146,10 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
     collectionIterator = iterator;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.metadata.CpeCollectionReader#getCollectionIterator()
+   */
+  @Override
   public CpeCollectionReaderIterator getCollectionIterator() {
     return collectionIterator;
   }

@@ -22,7 +22,24 @@ package org.apache.uima.tools.jcasgen;
 import java.io.File;
 import java.io.IOException;
 
+
+/**
+ * The Interface IMerge.
+ */
 public interface IMerge {
+  
+  /**
+   * Do merge.
+   *
+   * @param jg the jg
+   * @param progressMonitor the progress monitor
+   * @param sourceContents the source contents
+   * @param targetContainer the target container
+   * @param targetPath the target path
+   * @param targetClassName the target class name
+   * @param targetFile the target file
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   public void doMerge(Jg jg, IProgressMonitor progressMonitor, String sourceContents,
           String targetContainer, String targetPath, String targetClassName, File targetFile)
           throws IOException;

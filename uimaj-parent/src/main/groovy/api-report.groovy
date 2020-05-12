@@ -20,7 +20,10 @@
   while (it.hasNext()) {
     def jApiClass = it.next()
     def fqn = jApiClass.getFullyQualifiedName()
-    if (fqn.contains("impl")) {
+    if (fqn.contains(".impl.") || 
+        fqn.contains(".internal.") ||
+        fqn.endsWith("_Type") 
+       ) {
       it.remove()
     }
   }  

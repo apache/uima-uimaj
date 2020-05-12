@@ -23,8 +23,20 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+
+/**
+ * The Class CpmLocalizedMessage.
+ */
 public class CpmLocalizedMessage {
 
+  /**
+   * Gets the localized message.
+   *
+   * @param aResourceBundleName the a resource bundle name
+   * @param aMessageKey the a message key
+   * @param aArguments the a arguments
+   * @return the localized message
+   */
   public static String getLocalizedMessage(String aResourceBundleName, String aMessageKey,
           Object[] aArguments) {
     if (aMessageKey == null)

@@ -25,17 +25,20 @@ import java.io.IOException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.text.AnnotationTreeNode;
 import org.apache.uima.resource.metadata.FsIndexDescription;
+import org.apache.uima.resource.metadata.TypePriorities;
+import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 public class AnnotationTreeTest extends TestCase {
 
@@ -66,21 +69,27 @@ public class AnnotationTreeTest extends TestCase {
       // instantiate CAS to get type system. Also build style
       // map file if there is none.
       TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
-      CAS cas = CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[0]);
+      
+      TypePriorities typePriorities = new TypePriorities_impl();
+      TypePriorityList priorityList = typePriorities.addPriorityList();
+      priorityList.addType("uima.cas.TOP");
+      priorityList.addType("uima.tcas.Annotation");
+      
+      CAS cas = CasCreationUtils.createCas(tsDesc, typePriorities, new FsIndexDescription[0]);
       SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
       XCASDeserializer xcasDeserializer = new XCASDeserializer(cas.getTypeSystem());
       File xcasFile = new File(xcasDir, sampleXcas1FileName);
       parser.parse(xcasFile, xcasDeserializer.getXCASHandler(cas));
       AnnotationTreeNode root = cas.getAnnotationIndex().tree(cas.getDocumentAnnotation())
-	  .getRoot();
+                           	  .getRoot();
       // There are 7 paragraph annotations in the CAS.
       assertTrue("There should be 7 paragraphs, but are: " + root.getChildCount(), root
-	  .getChildCount() == 7);
+                          	  .getChildCount() == 7);
       // The first paragraph contains 19 sentences, each subsequent one
       // contains only one sentence.
       assertTrue(root.getChild(0).getChildCount() == 19);
       for (int i = 1; i < root.getChildCount(); i++) {
-	assertTrue(root.getChild(i).getChildCount() == 1);
+        assertTrue(root.getChild(i).getChildCount() == 1);
       }
       // First sentence contains 8 tokens.
       assertTrue(root.getChild(0).getChild(0).getChildCount() == 8);

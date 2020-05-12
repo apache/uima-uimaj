@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>3.1.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-launcher
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-ep-launcher
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-launcher
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-ep-launcher
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-launcher
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-ep-launcher
     </url>
     <tag>HEAD</tag>
   </scm>
@@ -79,6 +79,16 @@
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-compilertools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     
     <!-- next dependency is commented out due to Maven 2.0.7 throwing NPE 
@@ -89,7 +99,7 @@
 			<version>3.2.0</version>
 			<scope>provided</scope>
 		</dependency-->
-    		<dependency>
+    <dependency>
 			<groupId>org.eclipse.swt</groupId>
 			<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
       <!-- changing the lower version number to 3.2.0, 
@@ -99,12 +109,14 @@
 			<version>[3.2.0,5.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jdt</groupId>
-			<artifactId>org.eclipse.jdt.debug.ui</artifactId>
+    
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.debug.ui</artifactId>
       <version>[3.8.0, 4.0.0)</version>
-			<scope>provided</scope>
-			<!-- https://issues.apache.org/jira/browse/UIMA-5252 -->
+      <scope>provided</scope>
+      
+      <!-- https://issues.apache.org/jira/browse/UIMA-5252 -->
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
@@ -123,7 +135,7 @@
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.ui.ide</artifactId>
-        </exclusion>        
+        </exclusion>
       </exclusions>
     </dependency>
     
@@ -133,7 +145,7 @@
       <version>[3.16.0, 4.0.0)</version>
       <scope>provided</scope>
     </dependency>
-        
+    
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>org.eclipse.jdt.ui</artifactId>
@@ -170,7 +182,7 @@
         </exclusion>
         
       </exclusions>
-		</dependency>
+    </dependency>
     
     <!-- dependencies added to overcome 3.6 maven central corrupted upload -->
     <!-- 
@@ -251,18 +263,17 @@
       <artifactId>org.eclipse.core.runtime.compatibility.auth</artifactId>
       <version>3.2.0</version>
       <scope>provided</scope>      
-    </dependency>  
+    </dependency>
      -->  
 	</dependencies>
   
-	<build>  
+	<build> 
     <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->  
 		<finalName>org.apache.uima.launcher_${parsedVersion.osgiVersion}</finalName>   	    
 		<plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>3.3.0</version>  <!-- override 2.3.7 - getting unresolved refs to some dependencies, fixed by 3.0.1 -->
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
@@ -282,7 +293,7 @@
             <Bundle-Activator>org.apache.uima.ep_launcher.LauncherPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.launcher;singleton:=true</Bundle-SymbolicName>
             <!-- Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment invalid value : JavaSE-1.8 --> 
-            <!-- NOTE: ANY CONTINUATION LINES for Require-Bundle MUST START IN Col1 else manifest is potentially wrong -->
+			<!-- NOTE: ANY CONTINUATION LINES for Require-Bundle MUST START IN Col1 else manifest is potentially wrong -->
             <Require-Bundle>org.eclipse.core.runtime</Require-Bundle>
             <Import-Package>
               !org.eclipse.core.runtime,                 

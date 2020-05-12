@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,75 +17,85 @@
  * specific language governing permissions and limitations
  * under the License.
  -->
-
-<taeDescription
-   xmlns="http://uima.apache.org/resourceSpecifier">
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
     <annotatorImplementationName>org.apache.uima.cas.test.ArrayIndexTest</annotatorImplementationName>
 
     <analysisEngineMetaData>
         <name>ArrayIndexTest</name>
-        <description></description>
+        <description/>
         <version>1.0</version>
         <vendor>The Apache Software Foundation</vendor>
 
-        <configurationParameters>
-        </configurationParameters>
+        <configurationParameters/>
 
-        <configurationParameterSettings>
-        </configurationParameterSettings>
+        <configurationParameterSettings/>
 
         <typeSystemDescription>
           <types>
 	    <typeDescription>
 	      <name>uima.test.Child1Annotation</name>
-	      <description></description>
+	      <description/>
 	      <supertypeName>uima.tcas.Annotation</supertypeName>
 	    </typeDescription>
 	    <typeDescription>
 	      <name>uima.test.Child2Annotation</name>
-	      <description></description>
+	      <description/>
 	      <supertypeName>uima.tcas.Annotation</supertypeName>
 	    </typeDescription>
 	    <typeDescription>
 	      <name>uima.test.Child2ChildAnnotation</name>
-	      <description></description>
+	      <description/>
 	      <supertypeName>uima.test.Child2Annotation</supertypeName>
 	    </typeDescription>
 	    <typeDescription>
 	      <name>uima.test.Type</name>
-	      <description></description>
+	      <description/>
 	      <supertypeName>uima.cas.TOP</supertypeName>
 	    </typeDescription>
-          </types>
+          <typeDescription>
+          <name>uima.test.type.RefFsArraySubtype</name>
+          <description/>
+          <supertypeName>uima.cas.TOP</supertypeName>
+          <features>
+            <featureDescription>
+              <name>refToDeclFsArraySubtype</name>
+              <description/>
+              <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+              <elementType>uima.tcas.Annotation</elementType>
+            </featureDescription>
+          </features>
+        </typeDescription>
+      </types>
         </typeSystemDescription>
 
-        <typePriorities>
-        </typePriorities>  
+        <typePriorities/>  
 
 
-<fsIndexes>
-  <fsIndexDescription>
+<fsIndexCollection>
+      <fsIndexes>
+        <fsIndexDescription>
     <label>ArrayIndex</label>
     <typeName>uima.cas.FSArray</typeName>
     <kind>bag</kind>
-    <keys>
-    </keys>  
-  </fsIndexDescription>
-</fsIndexes>
- 
-        <capabilities>
+    </fsIndexDescription>
+
+      </fsIndexes>
+    </fsIndexCollection>
+    <capabilities>
             <capability>
-                <inputs>                   
-                </inputs>
-                <outputs>
-                </outputs>
+                <inputs/>
+                <outputs/>
                 <languagesSupported>
                     <language>x-unspecified</language>
                 </languagesSupported>
             </capability>
         </capabilities>
-    </analysisEngineMetaData>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
 </taeDescription>
-

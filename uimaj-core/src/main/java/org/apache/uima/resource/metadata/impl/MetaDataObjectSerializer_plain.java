@@ -19,7 +19,6 @@
 
 package org.apache.uima.resource.metadata.impl;
 
-import org.apache.uima.util.XMLSerializer.CharacterValidatingContentHandler;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;

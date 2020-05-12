@@ -34,31 +34,52 @@ import javax.swing.border.BevelBorder;
 
 import org.apache.uima.tools.images.Images;
 
+
+/**
+ * The Class TransportControlPanel.
+ */
 public class TransportControlPanel extends JPanel implements ActionListener {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -2176626241850938032L;
 
+  /** The Constant PLAY_BUTTON. */
   static public final int PLAY_BUTTON = 0;
 
+  /** The Constant PAUSE_BUTTON. */
   static public final int PAUSE_BUTTON = 1;
 
+  /** The Constant STOP_BUTTON. */
   static public final int STOP_BUTTON = 2;
 
+  /** The play button. */
   private ToggleButton playButton;
 
+  /** The pause button. */
   private ToggleButton pauseButton;
 
+  /** The stop button. */
   private ToggleButton stopButton;
 
+  /** The invisible button. */
   private JToggleButton invisibleButton; // Used as part of ButtonGroup to give
 
   // visual effect of no button selected
+  /** The last button selected. */
   // if Stop is pressed.
   private ToggleButton lastButtonSelected;
 
+  /** The allow stop. */
   private boolean allowStop = true;
 
+  /** The control listener. */
   final TransportControlListener controlListener;
 
+  /**
+   * Instantiates a new transport control panel.
+   *
+   * @param controlListener the control listener
+   */
   public TransportControlPanel(TransportControlListener controlListener) {
     this.controlListener = controlListener;
     ButtonGroup buttonGroup = new ButtonGroup();
@@ -92,6 +113,10 @@ public class TransportControlPanel extends JPanel implements ActionListener {
     stopButton.setEnabled(false);
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent e) {
     Object source = e.getSource();
 
@@ -125,6 +150,9 @@ public class TransportControlPanel extends JPanel implements ActionListener {
     }
   }
 
+  /**
+   * Pause.
+   */
   private void pause() {
     playButton.setEnabled(false);
     stopButton.setEnabled(true);
@@ -133,14 +161,25 @@ public class TransportControlPanel extends JPanel implements ActionListener {
     lastButtonSelected = pauseButton;
   }
 
+  /**
+   * Perform pause.
+   */
   public void performPause() {
     pause();
   }
 
+  /**
+   * Stop.
+   */
   public void stop() {
     stop(true);
   }
 
+  /**
+   * Stop.
+   *
+   * @param invokeListener the invoke listener
+   */
   private void stop(boolean invokeListener) {
     if (invokeListener)
       controlListener.controlStopped();
@@ -154,10 +193,19 @@ public class TransportControlPanel extends JPanel implements ActionListener {
     lastButtonSelected = null;
   }
 
+  /**
+   * Reset.
+   */
   public void reset() {
     stop(false);
   }
 
+  /**
+   * Sets the button tooltip text.
+   *
+   * @param buttonIndex the button index
+   * @param tooltip the tooltip
+   */
   public void setButtonTooltipText(int buttonIndex, String tooltip) {
     if (buttonIndex == PLAY_BUTTON)
       playButton.setToolTipText(tooltip);
@@ -167,6 +215,12 @@ public class TransportControlPanel extends JPanel implements ActionListener {
       stopButton.setToolTipText(tooltip);
   }
 
+  /**
+   * Gets the button.
+   *
+   * @param buttonIndex the button index
+   * @return the button
+   */
   public AbstractButton getButton(int buttonIndex) {
     if (buttonIndex == PLAY_BUTTON)
       return playButton;
@@ -178,18 +232,36 @@ public class TransportControlPanel extends JPanel implements ActionListener {
       return null;
   }
 
+  /**
+   * Sets the allow stop.
+   *
+   * @param allowStop the new allow stop
+   */
   public void setAllowStop(boolean allowStop) {
     this.allowStop = allowStop;
   }
 
+  /**
+   * The Class ToggleButton.
+   */
   static class ToggleButton extends JToggleButton {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 334131406404068987L;
 
+    /**
+     * Instantiates a new toggle button.
+     *
+     * @param imageIcon the image icon
+     */
     public ToggleButton(ImageIcon imageIcon) {
       super(imageIcon);
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.JComponent#getInsets()
+     */
+    @Override
     public Insets getInsets() {
       return new Insets(2, 2, 2, 2);
     }

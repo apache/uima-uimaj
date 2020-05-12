@@ -80,7 +80,7 @@ if [ "$VNS_PORT" = "" ];
 then
   VNS_PORT=9000
 fi
-#also set default vlaue for UIMA_LOGGER_CONFIG_FILE
+#also set default value for UIMA_LOGGER_CONFIG_FILE
 if [ "$UIMA_LOGGER_CONFIG_FILE" = "" ]
 then
   UIMA_LOGGER_CONFIG_FILE=$UIMA_HOME/config/Logger.properties
@@ -106,5 +106,5 @@ then
 fi
 
 # Finally load the jars and run the class
-"$UIMA_JAVA_CALL" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Duima.home=$UIMA_HOME" "-Duima.datapath=$UIMA_DATAPATH" "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" "$UIMA_CVDMAN" $UIMA_JVM_OPTS "$LOG4J_CONFIG_FILE" -DUimaBootstrapSuppressClassPathDisplay -Dorg.apache.uima.jarpath="$UIMA_CLASSPATH" -jar "$UIMA_HOME/lib/uimaj-bootstrap.jar" $@
+"$UIMA_JAVA_CALL" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Duima.home=$UIMA_HOME" "-Duima.datapath=$UIMA_DATAPATH" "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" "$UIMA_CVDMAN" $UIMA_JVM_OPTS "-Duima.use_jul_as_default_uima_logger" "$LOG4J_CONFIG_FILE" -DUimaBootstrapSuppressClassPathDisplay -Dorg.apache.uima.jarpath="$UIMA_CLASSPATH" -jar "$UIMA_HOME/lib/uimaj-bootstrap.jar" $@
 

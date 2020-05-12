@@ -78,7 +78,7 @@ final class ImportDocumentWizardPage extends WizardPage {
   private static final Set<String> defaultEncodings;
   
   static {
-    Set<String> encodings = new HashSet<String>();
+    Set<String> encodings = new HashSet<>();
     
     encodings.add("US-ASCII");
     encodings.add("ISO-8859-1");
@@ -383,10 +383,9 @@ final class ImportDocumentWizardPage extends WizardPage {
     // combo box ...
     final Combo encodingCombo = new Combo(importOptions, SWT.NONE);
     encodingCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    
-    
-    Set<String> charsets = new HashSet<String>();
-    charsets.addAll(defaultEncodings);
+
+
+    Set<String> charsets = new HashSet<>(defaultEncodings);
     
     String lastUsedEncodingsString = 
             store.getString(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS);
@@ -465,7 +464,7 @@ final class ImportDocumentWizardPage extends WizardPage {
 
   List<File> getFilesToImport() {
 
-    List<File> files = new ArrayList<File>(fileTable.getTable().getItemCount());
+    List<File> files = new ArrayList<>(fileTable.getTable().getItemCount());
 
     for (int i = 0; i < fileTable.getTable().getItemCount(); i++) {
       files.add((File) fileTable.getElementAt(i));

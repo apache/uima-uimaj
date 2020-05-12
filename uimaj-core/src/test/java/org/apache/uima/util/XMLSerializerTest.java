@@ -19,14 +19,13 @@
 package org.apache.uima.util;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 
 import junit.framework.TestCase;
-
 import org.apache.uima.internal.util.XMLUtils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXParseException;
@@ -42,7 +41,7 @@ public class XMLSerializerTest extends TestCase {
     ch.startElement("","foo","foo", new AttributesImpl());
     ch.endElement("", "foo", "foo");
     ch.endDocument();
-    String xmlStr = new String(baos.toByteArray(), "UTF-8");
+    String xmlStr = new String(baos.toByteArray(), StandardCharsets.UTF_8);
     assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><foo/>", xmlStr);    
   }
   
@@ -55,7 +54,7 @@ public class XMLSerializerTest extends TestCase {
     ch.startElement("","foo","foo", new AttributesImpl());
     ch.endElement("", "foo", "foo");
     ch.endDocument();
-    String xmlStr = new String(baos.toByteArray(), "UTF-8");
+    String xmlStr = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 //    if (xmlStr.contains("1.0")) {
     // useful to investigate issues when bad XML output is produced
     //   related to which Java implementation is being used

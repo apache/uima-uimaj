@@ -32,13 +32,13 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>14-SNAPSHOT</version>
+    <version>13</version>
   </parent>
 
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.10.5-SNAPSHOT</version>
+  <version>3.1.1-SNAPSHOT</version>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the uimaj SDK</description>
   <url>${uimaWebsiteUrl}</url>
@@ -53,14 +53,15 @@
        element, and just changing the following two properties -->
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-parent
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-parent
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-parent
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-parent
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-parent
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-parent
     </url>
+    <tag>HEAD</tag>
   </scm>
 
   <!-- The repositories and pluginRepositories section is duplicated from
@@ -72,6 +73,21 @@
        This allows maven to find the snapshots when looking for the parent of
        this pom -->
   <repositories>
+    <repository>
+      <id>eclipsePlugins</id>
+      <name>Eclipse components</name>
+      <layout>default</layout>
+      <url>https://repo1.maven.org/eclipse</url>
+      
+      <releases>
+        <updatePolicy>never</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+      
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
 
     <!-- modify central repository access:
          Turn on checksum checking-->
@@ -90,6 +106,7 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
+
     </repository>
     
     <repository>
@@ -123,27 +140,26 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <!-- 
-     BACKWARD_COMPATIBLE_IMPLEMENTER - patch version (=.=.+)
-     BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
-     NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
-     -->
-    <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
-    <compat.previous.version>2.10.3</compat.previous.version>
-    <api_check_oldVersion>2.10.3</api_check_oldVersion>
 
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
      Local configurations within plugins should be avoided. Where plugins do not pick up default
      properties already, they should be injected manually into the plugins. 
-    -->    
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    --> 
+    <slf4j.version>1.7.25</slf4j.version>
+    <log4j.version>2.10.0</log4j.version>
+    <jackson.version>2.9.2</jackson.version>
+    
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.surefire.heap>512m</maven.surefire.heap>
+    <maven.surefire.argLine />
+    <maven.surefire.java9 />
     
-    <japicmp.postAnalysisScript>${project.basedir}/../uimaj-parent/src/main/groovy/api-report.groovy</japicmp.postAnalysisScript>
+    <jacoco.argLine />
+    <api_check_oldVersion>3.1.1</api_check_oldVersion>
   </properties>
-
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -156,6 +172,18 @@
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>3.14.0</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- set dependency versions for logger parts -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>xmlunit</groupId>
@@ -164,4 +192,315 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  
+  <dependencies>
+    <!-- Used to enable findbug rule suppression annotations -->
+    <!-- This is the Apache v2 license version -->      
+    <dependency>
+      <groupId>com.github.stephenc.findbugs</groupId>
+      <artifactId>findbugs-annotations</artifactId>
+      <version>1.3.9-1</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <pluginManagement>
+      <plugins>
+        
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <argLine>@{jacoco.argLine} -Xmx@{maven.surefire.heap} -Xms@{maven.surefire.heap} @{maven.surefire.argLine} @{maven.surefire.java9}</argLine>
+          </configuration>
+        </plugin>
+                
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes combine.children="append">
+                  <exclude>src/main/run_configuration/*.launch</exclude>
+                </excludes>    
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>   
+        
+        <!-- https://issues.apache.org/jira/browse/UIMA-5367 -->
+        <plugin> 
+          <groupId>org.apache.maven.plugins</groupId> 
+          <artifactId>maven-deploy-plugin</artifactId>
+          <configuration> 
+            <retryFailedDeploymentCount>10</retryFailedDeploymentCount> 
+          </configuration> 
+        </plugin>
+         
+      </plugins>
+    </pluginManagement>
+    
+  </build>
+  <profiles>
+    
+    <profile>
+      <id>pmd</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>cpd</goal>
+                  <goal>pmd</goal>
+                </goals>
+                <configuration>
+                  <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+                  <targetJdk>${maven.compiler.target}</targetJdk>
+                  <linkXRef>false</linkXRef>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>findbugs</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>findbugs-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>findbugs</goal>
+                </goals>
+                <configuration>
+                  <findbugsXmlOutput>true</findbugsXmlOutput>
+                  <xmlOutput>true</xmlOutput>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>cobertura</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cobertura-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>cobertura</goal>
+                </goals>
+                <configuration>
+                  <formats>
+                    <format>xml</format>
+                  </formats>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jacoco</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <configuration>
+              <excludes combine.children="append">
+                <!-- Duplicates on classpath cause an exception in JaCoCo report -->
+                <exclude>**/org/apache/uima/examples/SourceDocumentInformation*</exclude>
+                <exclude>**/org/apache/uima/examples/SourceDocumentInformation_Type*</exclude>
+              </excludes>
+            </configuration>
+            <executions>
+              <execution>
+                <id>default-prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <propertyName>jacoco.argLine</propertyName>
+                </configuration>
+              </execution>
+              <execution>
+                <id>default-report</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>default-check</id>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <configuration>
+                  <rules />
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <!-- **********  Backwards compatibility report generation profile ************** -->
+    <profile>
+      <id>enforce-compatibility</id>
+      <activation>
+        <file>
+          <exists>marker-file-identifying-api-compatibility-check</exists>
+        </file>
+      </activation>
+      <build>
+
+        <pluginManagement>
+          <plugins>
+            <plugin>
+	            <groupId>org.apache.rat</groupId>
+		          <artifactId>apache-rat-plugin</artifactId>
+		          <executions>
+		            <execution>
+		              <id>default-cli</id>
+		              <configuration>
+		                <excludes combine.children="append">
+	                    <exclude>**/api-change-report/**/*.*</exclude>
+		                </excludes>
+		              </configuration>
+		            </execution>
+	          </executions>
+	          </plugin>
+          </plugins>
+        </pluginManagement>
+         
+        <plugins>
+          <!-- https://siom79.github.io/japicmp/MavenPlugin.html -->
+          <plugin>              
+            <groupId>com.github.siom79.japicmp</groupId>
+            <artifactId>japicmp-maven-plugin</artifactId>
+            <version>0.13.0</version>
+            <configuration>
+              <oldVersion>
+                <dependency>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${api_check_oldVersion}</version>
+                </dependency>
+              </oldVersion> 
+              <parameter>
+                <onlyModified>true</onlyModified>
+                <!-- filter out classes with impl in their package or class name -->
+                <postAnalysisScript>${project.basedir}/../uimaj-parent/src/main/groovy/api-report.groovy</postAnalysisScript>                  
+              </parameter>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>cmp</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          
+          <!-- This copy is to have the api change report included in the source distribution -->
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-API-change-report</id>
+                <phase>install</phase>  <!-- must follow verify -->
+                <goals><goal>run</goal></goals>
+                <configuration>
+                  <target>
+                    <taskdef name="if" classname="net.sf.antcontrib.logic.IfTask" />
+                    <if>
+                      <available file="${project.build.directory}/japicmp/" />
+                      <then>
+                        <copy toDir="${basedir}/api-change-report">
+                          <fileset dir="${project.build.directory}/japicmp" />
+                        </copy>
+                      </then>
+                    </if>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+            
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <!-- ************** m2e  profile ************* -->
+    <profile>
+      <id>m2e</id>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>         
+            <!-- This plugin's configuration is used to store Eclipse m2e settings 
+                only. It has no influence on the Maven build itself. -->
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                  
+                    <!-- ***************************** -->
+                    <!-- IGNORE maven-bundle-plugin    -->
+                    <!-- ***************************** -->
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>
+                          maven-bundle-plugin
+                        </artifactId>
+                        <versionRange>[3,)</versionRange>
+                        <goals>
+                          <goal>process</goal>
+                          <goal>bundle</goal>
+                          <goal>manifest</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>  
+  </profiles>
 </project>

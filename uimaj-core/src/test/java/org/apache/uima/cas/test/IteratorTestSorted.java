@@ -19,19 +19,15 @@
 package org.apache.uima.cas.test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.CASFactory;
-import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
-import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FsIndex_annotation;
+import org.apache.uima.cas.impl.LowLevelIterator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
@@ -77,53 +73,45 @@ import junit.framework.TestCase;
 public class IteratorTestSorted extends TestCase {
   static final int REPETITIONS = // 100_000_000; 1000 secs = 17 min
                                   100_000;  // 1 second + startup time ~ .8 sec
+//                                    1000000;
   static final int NBR_FSS_PER_LEVEL = 5;
   static final int MAX_LEVELS = 6;  // max is 6 unless adding to the types and JCas class for them
   
-  static final String LEVEL_1_BEGIN = "level 1 begin";
-  
   JCas jcas;
+  
   Level_1 firstItem;
   Level_1 lastItem;
   int maxBegin;
   int firstBegin;
-  
-  final int[] nbrElements = new int[MAX_LEVELS];
+  boolean isWithoutTypeOrder;
   
   final ArrayList<Integer> levels = new ArrayList<>();
   FSIterator<Level_1> it;
   
-  final static long seed = new Random().nextLong();
+  final static Random r = new Random();
+  final static long seed = r.nextLong();
 //      6658836455455474098L;
 //  4811614709790403903L;
-  
-  static { System.out.println("Iterator Test Sorted, random seed = " + seed); }
-  final static Random r = new Random(seed);
+  static {
+    r.setSeed(seed);
+    System.out.println("Iterator Test Sorted, random seed = " + seed); 
+  }
     
   public void setUp() {
     CASImpl casMgr = (CASImpl) CASFactory.createCAS();
     TypeSystemImpl tsi = (TypeSystemImpl) casMgr.getTypeSystemMgr();
-    TypeImpl annotType = (TypeImpl) tsi.getType(CAS.TYPE_NAME_ANNOTATION);
-    TypeImpl level_1_type = (TypeImpl) tsi.addType("org.apache.uima.cas.test.Level_1", annotType);
+    TypeImpl level_1_type = tsi.addType("org.apache.uima.cas.test.Level_1", tsi.annotType);
     tsi.addFeature("id", level_1_type, tsi.floatType);
-    TypeImpl level_2_type = (TypeImpl) tsi.addType("org.apache.uima.cas.test.Level_2",  level_1_type);
-    TypeImpl level_3_type = (TypeImpl) tsi.addType("org.apache.uima.cas.test.Level_3",  level_2_type);
-    TypeImpl level_4_type = (TypeImpl) tsi.addType("org.apache.uima.cas.test.Level_4",  level_3_type);
-    TypeImpl level_5_type = (TypeImpl) tsi.addType("org.apache.uima.cas.test.Level_5",  level_4_type);
-                                       tsi.addType("org.apache.uima.cas.test.Level_6",  level_5_type);
+    TypeImpl level_2_type = tsi.addType("org.apache.uima.cas.test.Level_2",  level_1_type);
+    TypeImpl level_3_type = tsi.addType("org.apache.uima.cas.test.Level_3",  level_2_type);
+    TypeImpl level_4_type = tsi.addType("org.apache.uima.cas.test.Level_4",  level_3_type);
+    TypeImpl level_5_type = tsi.addType("org.apache.uima.cas.test.Level_5",  level_4_type);
+    TypeImpl level_6_type = tsi.addType("org.apache.uima.cas.test.Level_6",  level_5_type);
     
     casMgr.commitTypeSystem();
     try {
       FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
       casMgr.initCASIndexes();
-      
-      FSIndexComparator comp = irm.createComparator();
-      comp.setType(level_1_type);
-      comp.addKey(level_1_type.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN),
-              FSIndexComparator.STANDARD_COMPARE);      
-      
-      irm.createIndex(comp, LEVEL_1_BEGIN, FSIndex.SORTED_INDEX);
-      
       irm.commit();
       
       jcas = casMgr.getCurrentView().getJCas();
@@ -147,9 +135,10 @@ public class IteratorTestSorted extends TestCase {
     for (int i = 0; i < REPETITIONS; i++) {
       try {
       if (0 == i % 100000) {
-        long seed2 =  r.nextLong();
-//            5680709196975735850L;
-
+        long seed2 =   r.nextLong();
+//              5680709196975735850L;
+        
+//            -4764445956829722324L;
 //            2151669209502835073L;
         System.out.format("iteration: %,d seed: %d%n", i, seed2);
         r.setSeed(seed2);
@@ -157,24 +146,22 @@ public class IteratorTestSorted extends TestCase {
       }
       jcas.removeAllIncludingSubtypes(TOP.type);
       makeFSs(r.nextInt(MAX_LEVELS - 1) + 2);  // 2 - 6
-      it = jcas.getIndex(LEVEL_1_BEGIN, Level_1.class).iterator();     
+      it = ((FsIndex_annotation)jcas.getAnnotationIndex(Level_1.class)).iterator(LowLevelIterator.IS_ORDERED, isWithoutTypeOrder = r.nextBoolean());
+      if ( ! isWithoutTypeOrder) {
+        firstItem = it.get();
+        firstItem.setId(0.0f);
+      }
       validate();
       
-      // current test case design only allows one of the next two
-      // in v2, no support for noticing empty iterators transitioned to non-empty
-//      if (r.nextBoolean()) {
-        int random_level;
-        while (true) {  // this loop because v2 doesn't notice new elements added to previously empty indexes (known limitation)
-          random_level = randomLevel();
-          if (nbrElements[random_level] != 0) break;
-        }
-        addRandomFs(random_level);    
+      // current design only allows one of the next two
+      if (r.nextBoolean()) {
+        addRandomFs(randomLevel());    
         validate();
-//      } else {      
-//        if (addRandomFsInUnusedType()) {
-//          validate();
-//        }
-//      }
+      } else {      
+        if (addRandomFsInUnusedType()) {
+          validate();
+        }
+      }
       } catch (AssertionFailedError | IllegalArgumentException e) {
         System.err.format("exception, i = %,d%n", i);
         throw e;
@@ -216,13 +203,12 @@ public class IteratorTestSorted extends TestCase {
   
   private void addRandomFs(int level_to_make) {
     it.moveTo(randomSpot());
-    int begin = it.get().getBegin();
+    int begin = it.getNvc().getBegin();
     // it is at leftmost item with begin value.
-    float so = it.get().getId();
+    float so = it.getNvc().getId();
     // make a new fs, just before this begin  
     Level_1 fs = makeLevel(level_to_make, begin - 1, so - 0.1f);
-//    if (Float.compare(0.0f, so) == 0) {
-    if (firstItem.getBegin() == begin) {
+    if (Float.compare(0.0f, so) == 0) {
       firstItem = fs;
     }
   }
@@ -233,39 +219,72 @@ public class IteratorTestSorted extends TestCase {
   }
   
   private void verifyFirst() {
-    assertTrue(it.get().getBegin() == firstItem.getBegin());  
+    if (isWithoutTypeOrder) {
+      assertTrue(it.get() == firstItem);  
+    } else {
+      assertTrue(it.get().getBegin() == firstItem.getBegin());  // because typepriority sort order
+    }
   }
   
   private void verifyLast() {
-    assertTrue(it.get().getBegin() == lastItem.getBegin());
+    if (isWithoutTypeOrder) {
+      assertTrue(it.get() == lastItem);  
+    } else {
+      assertTrue(it.get().getBegin() == lastItem.getBegin());  // because typepriority sort order
+    }
   }
   
   private void verifyLeftmost() {
     Level_1 item = it.get();
-    if (item != firstItem) {
-      it.moveToPrevious();
+//    if (item != firstItem) {
+    it.moveToPreviousNvc();
+    if (it.isValid()) {
       if (it.get().getBegin() == item.getBegin()) {
         fail();
       }
+    } else {
+      it.moveToFirst();
     }
   }
   
   private void verifySeqToEnd() {
     Level_1 prev = it.get();
-    while (prev != lastItem) {
-      it.moveToNext();
-//      assertTrue(it.get().getId() > prev.getId());
-      assertTrue(it.get().getBegin() >= prev.getBegin());
-      prev = it.get();
+    while (true) {
+      it.moveToNextNvc();
+      if (!it.isValid()) {
+        it.moveToLast();
+        break;
+      }
+      if (isWithoutTypeOrder) {
+        assertTrue(it.getNvc().getId() > prev.getId());
+      }
+      validateEqualOrdering(prev, it.getNvc());
+      prev = it.getNvc();
+    }
+  }
+  
+  private void validateEqualOrdering(Level_1 before, Level_1 after) {
+    if (before.getBegin() == after.getBegin() &&
+        before.getEnd() == after.getEnd()) {
+      if (before._getTypeImpl() == after._getTypeImpl() || isWithoutTypeOrder) {
+        assertTrue(before._id() < after._id());
+      }
     }
   }
   
   private void verifySeqToBegin() {
     Level_1 prev = it.get();
-    while (prev != firstItem) {
-      it.moveToPrevious();
-      assertTrue(it.get().getBegin() <= prev.getBegin());
-      prev = it.get();
+    while (true) {
+      it.moveToPreviousNvc();
+      if (! it.isValid()) {
+        it.moveToFirst();
+        break;
+      }
+      if (isWithoutTypeOrder) {
+        assertTrue(it.getNvc().getId() < prev.getId());
+      }
+      validateEqualOrdering(it.getNvc(), prev);
+      prev = it.getNvc();
     }
   }
 
@@ -286,8 +305,7 @@ public class IteratorTestSorted extends TestCase {
     levels.clear();
     for (int i = 0; i < MAX_LEVELS; i++) levels.add(i);
     for (int i = MAX_LEVELS - lvls; i > 0; i--) levels.remove(randomLevel_index());
-    Arrays.fill(nbrElements,  0);
-    
+
     float sortOrder = 0;
     for (int i = 0; i < totNbr; i++) {
       int lastBegin = begin;
@@ -296,9 +314,7 @@ public class IteratorTestSorted extends TestCase {
         begin ++;
       }
       
-      int random_level = randomLevel();
-      nbrElements[random_level] ++;
-      Level_1 fs = makeLevel(random_level, begin, sortOrder++);
+      Level_1 fs = makeLevel(randomLevel(), begin, sortOrder++);
       if (i == 0) {
         firstItem = fs;
         firstBegin = begin;  // 0 or 1

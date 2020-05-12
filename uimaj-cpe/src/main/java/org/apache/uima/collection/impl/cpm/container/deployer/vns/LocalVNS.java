@@ -35,6 +35,7 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.VinciServableAdapter;
 import org.apache.vinci.transport.VinciServer;
 
+
 /**
  * 
  * LOCAL Vinci Naming Service. Used by locally deployed TAEs. Locally, meaning TAEs running on the
@@ -44,31 +45,41 @@ import org.apache.vinci.transport.VinciServer;
  */
 
 public class LocalVNS extends VinciServableAdapter implements Runnable {
+  
+  /** The onport. */
   private int onport;
 
+  /** The startport. */
   private int startport = 11111;
 
+  /** The maxport. */
   private int maxport = 12331;
 
+  /** The vns port. */
   private int vnsPort = 9001;
 
+  /** The server. */
   private VinciServer server = null;
 
+  /** The port queue. */
   private BoundedWorkQueue portQueue = null;
 
+  /**
+   * Instantiates a new local VNS.
+   */
   public LocalVNS() {
   }
 
   /**
-   * Instantiates Local Vinci Naming Service
-   * 
+   * Instantiates Local Vinci Naming Service.
+   *
    * @param aStartPort -
    *          a starting port # for clients (services)
    * @param aEndPort -
    *          an ending port # for clients( services)
    * @param aVNSPort -
    *          port on which this VNS will listen on
-   * @throws PortUnreachableException -
+   * @throws PortUnreachableException the port unreachable exception
    */
   public LocalVNS(String aStartPort, String aEndPort, String aVNSPort)
           throws PortUnreachableException {
@@ -181,9 +192,9 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
   /**
    * Determines if a given port is free. It establishes a short lived connection to the port and if
    * successful returns false.
-   * 
+   *
    * @param port number to check
-   * @return -
+   * @return true, if is available
    */
   public boolean isAvailable(int port) {
     ServerSocket socket = null;
@@ -258,8 +269,12 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    * Main method called by services advertising their availability. Each service, on startup sends
    * "serveon" request to VNS and waits for assigned port. The VNS looks up its cahce of ports and
    * returns to the service one that has not yest allocated.
-   * 
+   *
+   * @param in the in
+   * @return the transportable
+   * @throws ServiceException the service exception
    */
+  @Override
   public synchronized Transportable eval(Transportable in) throws ServiceException {
 
     try {
@@ -369,8 +384,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
   }
 
   /**
-   * Stop the VNS service
-   * 
+   * Stop the VNS service.
    */
   public void shutdown() {
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
@@ -395,6 +409,10 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
 
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#finalize()
+   */
+  @Override
   protected void finalize() throws Throwable {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
@@ -411,6 +429,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    * Starts VNS thread. This thread runs continuously waiting for service registrations and
    * returning port number back.
    */
+  @Override
   public void run() {
     boolean done = false;
     Thread.currentThread().setName("VNS-Thread");

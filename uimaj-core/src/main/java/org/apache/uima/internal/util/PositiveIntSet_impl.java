@@ -22,6 +22,8 @@ package org.apache.uima.internal.util;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.util.impl.Constants;
+
 
 
 /**
@@ -75,8 +77,6 @@ public class PositiveIntSet_impl implements PositiveIntSet {
   // Extra space in hashset for initial capacity - when creating from bitmap set - multiplier of existing size
   private static final int HASH_SET_OVERALLOCATE_DIVIDER_SHIFT = 1; // bit shift right = divide by 2 = 50% of existing capacity
   
-  public static final int[] EMPTY_INT_ARRAY = new int[0];
-
   private PositiveIntSet intSet;  // one of 3 representations: IntBitSet, IntHashSet, IntSet (based on IntVector)
   
   //package private for test case
@@ -166,7 +166,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
   public IntListIterator getOrderedIterator() {
     if (isBitSet) {
       if (null == intSet) {
-        return new IntListIteratorOverArray(EMPTY_INT_ARRAY);
+        return new IntListIteratorOverArray(Constants.EMPTY_INT_ARRAY);
       }
       return intSet.iterator();
     }
@@ -175,7 +175,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     IntListIterator it = intSet.iterator();
     int i = 0;
     while (it.hasNext()) {
-      allValues[i++] = it.next();
+      allValues[i++] = it.nextNvc();
     }
     Arrays.sort(allValues);
     return new IntListIteratorOverArray(allValues);
@@ -194,26 +194,20 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     public boolean hasNext() {
       return pos >= 0 && pos < a.length;
     }
-
+    
     @Override
-    public int next() throws NoSuchElementException {
-      if (hasNext()) {
-        return a[pos++];
-      }
-      throw new NoSuchElementException();
+    public int nextNvc() {
+      return a[pos++];
     }
 
     @Override
     public boolean hasPrevious() {
-      return pos >= 0 && pos < a.length;      
+      return pos > 0 && pos < a.length;      
     }
-
+    
     @Override
-    public int previous() {
-      if (hasPrevious()) {
-        return a[pos--];
-      }
-      throw new NoSuchElementException();
+    public int previousNvc() {
+      return a[--pos];    // decrement first!
     }
 
     @Override
@@ -321,7 +315,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
       IntListIterator it = intSet.iterator();
       allocateIntBitSet(largestInt, key, 0);
       while (it.hasNext()) {
-        intSet.add(it.next());
+        intSet.add(it.nextNvc());
       }
     }
   }
@@ -342,7 +336,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     IntListIterator it = getUnorderedIterator();
     int i = 0;
     while (it.hasNext()) {
-      a[i++] = it.next();
+      a[i++] = it.nextNvc();
     }
     return a;
   }
@@ -413,7 +407,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     } else {
       isShort = (estMax - estMin) < HASH_SET_SHORT_MAX_SIZE;
     }
-    int numberOfTableElements =  IntHashSet.tableSpace(numberOfElements, IntHashSet.DEFAULT_LOAD_FACTOR);
+    int numberOfTableElements =  IntHashSet.tableSpace(numberOfElements);       
     return (numberOfTableElements >> ((isShort) ? 1 : 0)) 
         + IntHashSet.getSpaceOverheadInWords();
   }
@@ -645,7 +639,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     isBitSet = isHashSet = false;
     
     while (it.hasNext()) {
-      intSet.add(it.next());
+      intSet.add(it.nextNvc());
     }
     return;
   }
@@ -665,7 +659,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     isHashSet = true;
     
     while (it.hasNext()) {
-      intSet.add(it.next());
+      intSet.add(it.nextNvc());
     }
   }
   
@@ -675,7 +669,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     allocateIntBitSet(estMax, estMin, offset);
     
     while (it.hasNext()) {
-      intSet.add(it.next());
+      intSet.add(it.nextNvc());
     }
   }
 
@@ -724,7 +718,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     if (null != intSet) {
       return intSet.toIntArray();
     }
-    return EMPTY_INT_ARRAY;
+    return Constants.EMPTY_INT_ARRAY;
   }
 
   /* (non-Javadoc)

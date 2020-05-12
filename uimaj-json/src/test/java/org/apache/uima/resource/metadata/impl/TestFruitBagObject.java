@@ -55,7 +55,7 @@ public class TestFruitBagObject extends MetaDataObject_impl {
 //  }
   
   static public Set<MetaDataAttr> getMetaDataAttrSet() {
-    Set<MetaDataAttr> result = new HashSet<MetaDataAttr>();
+    Set<MetaDataAttr> result = new HashSet<>();
     try {
     result.add(new MetaDataAttr("fruits", 
         TestFruitBagObject.class.getDeclaredMethod("getFruits"), 

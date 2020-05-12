@@ -19,6 +19,7 @@
 
 package org.apache.uima.tools.cvd;
 
+
 /**
  * TODO: add type comment for <code>ArrayNode</code>.
  * 
@@ -26,29 +27,53 @@ package org.apache.uima.tools.cvd;
  */
 public class ArrayNode extends FSTreeNode {
 
+  /** The Constant CUTOFF. */
   public static final int CUTOFF = 100;
 
+  /** The Constant MULT. */
   public static final int MULT = 10;
 
+  /** The start. */
   private int start;
 
+  /** The end. */
   private int end;
 
   
+  /**
+   * Instantiates a new array node.
+   *
+   * @param start the start
+   * @param end the end
+   */
   public ArrayNode(int start, int end) {
     super();
     this.start = start;
     this.end = end;
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
   public String toString() {
     return "[" + this.start + ".." + this.end + "]";
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.tools.cvd.FSTreeNode#initChildren()
+   */
+  @Override
   protected void initChildren() {
     // Does nothing.
   }
 
+  /**
+   * Degree.
+   *
+   * @param i the i
+   * @return the int
+   */
   // Compute the degree of i: (number of decimals of (i-1)) - 1.
   static int degree(int i) {
     if (i == 1) {
@@ -59,6 +84,8 @@ public class ArrayNode extends FSTreeNode {
   }
   
   /**
+   * Gets the end.
+   *
    * @return int
    */
   public int getEnd() {
@@ -66,6 +93,8 @@ public class ArrayNode extends FSTreeNode {
   }
 
   /**
+   * Gets the start.
+   *
    * @return int
    */
   public int getStart() {

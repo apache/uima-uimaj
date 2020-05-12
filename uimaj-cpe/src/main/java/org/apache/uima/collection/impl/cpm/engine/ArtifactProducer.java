@@ -49,6 +49,7 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
+
 /**
  * Component responsible for continuously filling a work queue with bundles containing Cas'es. The
  * queue is shared with a Processing Pipeline that consumes bundles of Cas. As soon as the the
@@ -64,47 +65,65 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * 
  */
 public class ArtifactProducer extends Thread {
+  
+  /** The thread state. */
   public int threadState = 0;
 
+  /** The cas pool. */
   private CPECasPool casPool;
 
+  /** The work queue. */
   // Queue shared wit ProcessingUnits
   private BoundedWorkQueue workQueue = null;
 
+  /** The collection reader. */
   // private BoundedWorkQueue outputQueue = null;
   private BaseCollectionReader collectionReader = null;
 
+  /** The reader fetch size. */
   // Number of CAS'es for each fetch from the CollectionReader
   private int readerFetchSize = 1;
 
+  /** The cas list. */
   private CAS[] casList;
 
+  /** The entity count. */
   private long entityCount = 0;
 
+  /** The max to process. */
   private long maxToProcess;
 
+  /** The cpm. */
   private CPMEngine cpm = null;
 
+  /** The cpm stat table. */
   private Map cpmStatTable = null;
 
+  /** The last doc id. */
   private String[] lastDocId = { "" };
 
+  /** The total fetch time. */
   private long totalFetchTime = 0;
 
+  /** The timer. */
   private UimaTimer timer = null;
 
+  /** The callback listeners. */
   private ArrayList callbackListeners = null;
 
+  /** The timedout docs. */
   private Hashtable timedoutDocs = new Hashtable();
 
+  /** The is running. */
   private boolean isRunning = false;
 
+  /** The global shared process trace. */
   private ProcessTrace globalSharedProcessTrace = null;
 
   /**
    * Instantiates and initializes this instance.
-   * 
-   * @param acpm -
+   *
+   * @param acpm the acpm
    */
   public ArtifactProducer(CPMEngine acpm) {
     cpm = acpm;
@@ -129,13 +148,18 @@ public class ArtifactProducer extends Thread {
     }
   }
 
+  /**
+   * Checks if is running.
+   *
+   * @return true, if is running
+   */
   public boolean isRunning() {
     return isRunning;
   }
 
   /**
-   * Plug in Custom Timer to time events
-   * 
+   * Plug in Custom Timer to time events.
+   *
    * @param aTimer -
    *          custom timer
    */
@@ -143,6 +167,11 @@ public class ArtifactProducer extends Thread {
     timer = aTimer;
   }
 
+  /**
+   * Sets the process trace.
+   *
+   * @param aProcTrace the new process trace
+   */
   public void setProcessTrace(ProcessTrace aProcTrace) {
     globalSharedProcessTrace = aProcTrace;
   }
@@ -177,8 +206,8 @@ public class ArtifactProducer extends Thread {
   }
 
   /**
-   * Assign total number of entities to process
-   * 
+   * Assign total number of entities to process.
+   *
    * @param aNumToProcess -
    *          number of entities to read from the Collection Reader
    */
@@ -187,8 +216,8 @@ public class ArtifactProducer extends Thread {
   }
 
   /**
-   * Assign CollectionReader to be used for reading
-   * 
+   * Assign CollectionReader to be used for reading.
+   *
    * @param aCollectionReader -
    *          collection reader as source of data
    */
@@ -198,14 +227,14 @@ public class ArtifactProducer extends Thread {
             .getParameterValue("fetchSize") != null) {
       // Determines how many at a time this Collection Reader will return
       // for each fetch
-      readerFetchSize = ((Integer) collectionReader.getProcessingResourceMetaData()
-              .getConfigurationParameterSettings().getParameterValue("fetchSize")).intValue();
+      readerFetchSize = (Integer) collectionReader.getProcessingResourceMetaData()
+          .getConfigurationParameterSettings().getParameterValue("fetchSize");
     }
   }
 
   /**
-   * Assigns a queue where the artifacts produced by this component will be deposited
-   * 
+   * Assigns a queue where the artifacts produced by this component will be deposited.
+   *
    * @param aQueue -
    *          queue for the artifacts this class is producing
    */
@@ -216,8 +245,8 @@ public class ArtifactProducer extends Thread {
   /**
    * Add table that will contain statistics gathered while reading entities from a Collection This
    * table is used for non-uima reports.
-   * 
-   * @param aStatTable -
+   *
+   * @param aStatTable the new CPM stat table
    */
   public void setCPMStatTable(Map aStatTable) {
     cpmStatTable = aStatTable;
@@ -246,7 +275,8 @@ public class ArtifactProducer extends Thread {
    * Fills the queue up to capacity. This is called before activating ProcessingPipeline as means of
    * optimizing processing. When pipelines start up there are already entities in the work queue to
    * process.
-   * @throws Exception -
+   *
+   * @throws Exception the exception
    */
   public void fillQueue() throws Exception {
     // Create an array holding CAS'es. Configuration of the Reader may
@@ -347,17 +377,16 @@ public class ArtifactProducer extends Thread {
   /**
    * Reads next set of entities from the CollectionReader. This method may return more than one Cas
    * at a time.
-   * 
-   * @parma fetchSize - number of entities the CollectionReader should return for each fetch. It is
-   *        hint as the Collection Reader ultimately decides how many to return.
-   * 
+   *
+   * @param fetchSize the fetch size
    * @return - The Object returned from the method depends on the type of the CollectionReader.
    *         Either CASData[] or CASObject[] initialized with document metadata and content is
    *         returned. If the CollectionReader has no more entities (EOF), null is returned.
-   * 
    * @throws IOException -
    *           error while reading corpus
    * @throws CollectionException -
+   * @parma fetchSize - number of entities the CollectionReader should return for each fetch. It is
+   *        hint as the Collection Reader ultimately decides how many to return.
    */
   private Object[] readNext(int fetchSize) throws IOException, CollectionException {
     ProcessTrace localTrace = new ProcessTrace_impl(cpm.getPerformanceTuningSettings());
@@ -422,7 +451,7 @@ public class ArtifactProducer extends Thread {
           if (cpmStatTable != null) {
             Progress[] progress = collectionReader.getProgress();
             cpmStatTable.put("COLLECTION_READER_PROGRESS", progress);
-            cpmStatTable.put("COLLECTION_READER_TIME", Long.valueOf(totalFetchTime));
+            cpmStatTable.put("COLLECTION_READER_TIME", totalFetchTime);
           }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -615,7 +644,7 @@ public class ArtifactProducer extends Thread {
     if (cpmStatTable != null) {
       Progress[] progress = collectionReader.getProgress();
       cpmStatTable.put("COLLECTION_READER_PROGRESS", progress);
-      cpmStatTable.put("COLLECTION_READER_TIME", Long.valueOf(totalFetchTime));
+      cpmStatTable.put("COLLECTION_READER_TIME", totalFetchTime);
     }
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -629,6 +658,7 @@ public class ArtifactProducer extends Thread {
    * Runs this thread until the CPM halts or the CollectionReader has no more entities. It
    * continuously fills the work queue with entities returned by the CollectionReader.
    */
+  @Override
   public void run() {
     boolean crEventCompleted = false; // this flag is used to mark the
     // ProcessTrace event
@@ -875,7 +905,8 @@ public class ArtifactProducer extends Thread {
 
   /**
    * Notify registered callback listeners of a given exception.
-   * 
+   *
+   * @param aCas the a cas
    * @param anException -
    *          exception to propagate to callback listeners
    */
@@ -936,6 +967,11 @@ public class ArtifactProducer extends Thread {
     }
   }
 
+  /**
+   * Gets the last doc id.
+   *
+   * @return the last doc id
+   */
   public String getLastDocId() {
     if (lastDocId != null && lastDocId.length > 0) {
       return lastDocId[0];
@@ -944,6 +980,11 @@ public class ArtifactProducer extends Thread {
     }
   }
 
+  /**
+   * Invalidate.
+   *
+   * @param aCasList the a cas list
+   */
   public void invalidate(CAS[] aCasList) {
     for (int i = 0; aCasList != null && i < aCasList.length && aCasList[i] != null; i++) {
       ChunkMetadata meta = CPMUtils.getChunkMetadata(aCasList[i]);

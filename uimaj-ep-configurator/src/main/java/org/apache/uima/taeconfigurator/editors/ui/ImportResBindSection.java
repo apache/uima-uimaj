@@ -24,12 +24,21 @@ import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.resource.metadata.impl.ResourceManagerConfiguration_impl;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.apache.uima.util.InvalidXMLException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 
+
 /**
+ * The Class ImportResBindSection.
  */
 public class ImportResBindSection extends ImportSection {
 
+  /**
+   * Instantiates a new import res bind section.
+   *
+   * @param editor the editor
+   * @param parent the parent
+   */
   public ImportResBindSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Imports for External Resources and Bindings",
             "The following definitions are included:"); // or ! DESCRIPTION
@@ -37,32 +46,56 @@ public class ImportResBindSection extends ImportSection {
 
   // **************************************
   // * Code to support type import section
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isAppropriate()
+   */
   // **************************************
+  @Override
   protected boolean isAppropriate() {
     return true; // always show
   }
 
   /**
-   * used when hovering
+   * used when hovering.
+   *
+   * @param source the source
+   * @return the description from import
    */
+  @Override
   protected String getDescriptionFromImport(String source) {
     return ""; // imports for resource bindings don't have descriptions
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#getModelImportArray()
+   */
+  @Override
   protected Import[] getModelImportArray() {
     return getResourceManagerConfiguration().getImports();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#setModelImportArray(org.apache.uima.resource.metadata.Import[])
+   */
+  @Override
   protected void setModelImportArray(Import[] imports) {
     getResourceManagerConfiguration().setImports(imports);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#clearModelBaseValue()
+   */
+  @Override
   protected void clearModelBaseValue() {
     getResourceManagerConfiguration().setExternalResourceBindings(externalResourceBinding0);
     getResourceManagerConfiguration().setExternalResources(externalResourceDescription0);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isValidImport(java.lang.String, java.lang.String)
+   */
   // indexes are checked and merged when the CAS is built
+  @Override
   protected boolean isValidImport(String title, String message) {
     ResourceManagerConfiguration savedRmc = editor.getResolvedExternalResourcesAndBindings();
     if (null != savedRmc)
@@ -71,7 +104,7 @@ public class ImportResBindSection extends ImportSection {
     try {
       editor.setResolvedExternalResourcesAndBindings();
     } catch (InvalidXMLException e) {
-      Utility.popMessage(title, message + editor.getMessagesToRootCause(e), Utility.ERROR);
+      Utility.popMessage(title, message + editor.getMessagesToRootCause(e), MessageDialog.ERROR);
       revert(savedRmc);
       return false;
     }
@@ -82,6 +115,11 @@ public class ImportResBindSection extends ImportSection {
     return true;
   }
 
+  /**
+   * Revert.
+   *
+   * @param rmc the rmc
+   */
   private void revert(ResourceManagerConfiguration rmc) {
     getResourceManagerConfiguration()
             .setExternalResourceBindings(rmc.getExternalResourceBindings());
@@ -89,10 +127,18 @@ public class ImportResBindSection extends ImportSection {
     editor.setResolvedExternalResourcesAndBindings(rmc);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#finishImportChangeAction()
+   */
+  @Override
   protected void finishImportChangeAction() {
     editor.getResourcesPage().getResourceDependencySection().refresh(); // to change Binding flag
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#enable()
+   */
+  @Override
   public void enable() {
     super.enable();
     addButton.setEnabled(true); // can add buttons even for aggregate
