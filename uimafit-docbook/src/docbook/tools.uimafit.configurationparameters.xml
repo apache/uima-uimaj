@@ -119,7 +119,7 @@
     initializer:</para>
   <itemizedlist>
     <listitem>
-      <para><classname>CasAnnotator_ImplBase</classname>`</para>
+      <para><classname>CasAnnotator_ImplBase</classname></para>
     </listitem>
     <listitem>
       <para><classname>CasCollectionReader_ImplBase</classname></para>

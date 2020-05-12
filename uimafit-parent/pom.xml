@@ -26,7 +26,7 @@
     <version>13</version>
   </parent>
   <artifactId>uimafit-parent</artifactId>
-  <version>3.1.0-SNAPSHOT</version>
+  <version>3.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Apache UIMA uimaFIT - Parent</name>
   <url>${uimaWebsiteUrl}</url>
@@ -37,7 +37,7 @@
     <slf4j.version>1.7.26</slf4j.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <api_check_oldVersion>2.4.0</api_check_oldVersion>
+    <api_check_oldVersion>3.0.0</api_check_oldVersion>
     
     <japicmp.postAnalysisScript>${project.basedir}/../uimafit-parent/src/main/groovy/api-report.groovy</japicmp.postAnalysisScript>
   </properties>
@@ -423,10 +423,8 @@
             <artifactId>japicmp-maven-plugin</artifactId>
             <version>0.14.3</version>
             <configuration>
-              <parameter combine.children="append">
+              <parameter>
                 <onlyModified>true</onlyModified>
-                <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
-                <reportOnlyFilename>true</reportOnlyFilename>
                 <!-- filter out classes with impl in their package or class name -->
                 <postAnalysisScript>${japicmp.postAnalysisScript}</postAnalysisScript>
               </parameter>

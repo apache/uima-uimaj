@@ -197,7 +197,7 @@ public static class Annotator
         use it to configure two different analysis engines. Because we only use a single
         description, also only a single instance of the external resource is created and shared
         between the two engines.
-        <programlisting>ExternalResourceDescription extDesc = createExternalResourceDescription(
+        <programlisting>ExternalResourceDescription extDesc = createSharedResourceDescription(
   SharedModel.class, new File("somemodel.bin"));
 		
 // Binding external resource to each Annotator individually
