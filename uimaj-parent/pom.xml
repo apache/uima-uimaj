@@ -93,6 +93,10 @@
 
     </repository>
     
+    <!--
+      - The Eclipse Plugin modules use version ranges for their dependencies. These could resolve to
+      - SNAPSHOT versions if we have a SNAPSHOT repo declaration here. Thus, this repo should only
+      - be enabled when really needed.
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
@@ -100,11 +104,15 @@
       <releases>
         <enabled>false</enabled>
       </releases>
-    </repository>    
-    
+    </repository>
+    -->
   </repositories>
   
   <pluginRepositories>
+    <!--
+      - The Eclipse Plugin modules use version ranges for their dependencies. These could resolve to
+      - SNAPSHOT versions if we have a SNAPSHOT repo declaration here. Thus, this repo should only
+      - be enabled when really needed.
     <pluginRepository>
       <id>apache.snapshots.plugins</id>
       <name>Apache Snapshot Repository - Maven plugins</name>
@@ -119,6 +127,7 @@
         <updatePolicy>never</updatePolicy>        
       </snapshots>
     </pluginRepository>
+    -->
   </pluginRepositories>
   
   <properties>
