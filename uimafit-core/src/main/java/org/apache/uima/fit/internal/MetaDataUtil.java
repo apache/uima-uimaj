@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -45,7 +45,7 @@ public final class MetaDataUtil {
 
   /**
    * Scan patterns from manifest files and from the specified system property.
-   * 
+   *
    * @param aType
    *          the type of metadata to scan for
    * @return array or all patterns found.
@@ -54,7 +54,7 @@ public final class MetaDataUtil {
    */
   public static String[] scanImportsAndManifests(MetaDataType aType)
           throws ResourceInitializationException {
-    ArrayList<String> patterns = new ArrayList<String>();
+    ArrayList<String> patterns = new ArrayList<>();
 
     // Scan auto-import locations
     for (String property : getImportProperties(aType)) {
@@ -80,7 +80,7 @@ public final class MetaDataUtil {
 
   /**
    * Resolve a list of patterns to a set of URLs.
-   * 
+   *
    * @param patterns
    *          the patterns to resolve
    * @return an array of locations.
@@ -88,11 +88,11 @@ public final class MetaDataUtil {
    *           if the locations could not be resolved.
    */
   public static String[] resolve(String... patterns) throws ResourceInitializationException {
-    Set<String> locations = new HashSet<String>();
+    Set<String> locations = new HashSet<>();
     PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
     try {
       // Scan auto-import locations. Using a set to avoid scanning a pattern twice.
-      for (String pattern : new TreeSet<String>(Arrays.asList(patterns))) {
+      for (String pattern : new TreeSet<>(Arrays.asList(patterns))) {
         String p = pattern.trim();
         if (p.length() == 0) {
           continue;
@@ -109,13 +109,13 @@ public final class MetaDataUtil {
 
   /**
    * Get manifest locations for the specified type.
-   * 
+   *
    * @param aType
    *          the type of metadata to scan for
    * @return the manifest locations for this kind of metadata to scan
    */
   public static String[] getManifestLocations(MetaDataType aType) {
-    List<String> locations = new ArrayList<String>();
+    List<String> locations = new ArrayList<>();
     switch (aType) {
       case FS_INDEX:
         locations.add("classpath*:META-INF/org.apache.uima.fit/fsindexes.txt");
@@ -125,7 +125,7 @@ public final class MetaDataUtil {
         break;
       case TYPE_PRIORITIES:
         locations.add("classpath*:META-INF/org.apache.uima.fit/typepriorities.txt");
-        break;        
+        break;
     }
 
     return locations.toArray(new String[locations.size()]);
@@ -134,13 +134,13 @@ public final class MetaDataUtil {
   /**
    * Get system properties indicating which locations to scan for descriptions of the given type. A
    * list of locations may be given separated by ";".
-   * 
+   *
    * @param aType
    *          the type of metadata to scan for
    * @return the locations for this kind of metadata to scan
    */
   public static String[] getImportProperties(MetaDataType aType) {
-    List<String> locations = new ArrayList<String>();
+    List<String> locations = new ArrayList<>();
     switch (aType) {
       case FS_INDEX:
         locations.add("org.apache.uima.fit.fsindex.import_pattern");
@@ -150,18 +150,18 @@ public final class MetaDataUtil {
         break;
       case TYPE_PRIORITIES:
         locations.add("org.apache.uima.fit.typepriorities.import_pattern");
-        break;        
+        break;
     }
 
     return locations.toArray(new String[locations.size()]);
   }
-  
+
   /**
    * Get all currently accessible descriptor locations for the given type.
-   * 
+   *
    * @param aType
    *          the type of metadata to scan for
-      * @return an array of locations.
+   * @return an array of locations.
    * @throws ResourceInitializationException
    *           if the locations could not be resolved.
    */
