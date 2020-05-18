@@ -5406,9 +5406,13 @@ public Iterator<CAS> getViewIterator(String localViewNamePrefix) {
     return r;
   }
   
-//  void dropProtectIndexesLevel () {
-//    svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() -1);
-//  }
+  void dropProtectIndexesLevel () {
+    if (svd.fssTobeAddedback.isEmpty()) {
+      return;
+    }
+    
+    svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() -1);
+  }
   
   /**
    * This design is to support normal operations where the
