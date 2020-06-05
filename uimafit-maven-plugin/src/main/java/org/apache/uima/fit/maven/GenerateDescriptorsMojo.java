@@ -80,6 +80,12 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
   @Parameter(defaultValue = "${project.build.sourceEncoding}", required = true)
   private String encoding;
 
+  /**
+   * Fail on error.
+   */
+  @Parameter(defaultValue = "true", required = true)
+  private boolean failOnError;
+
   enum TypeSystemSerialization {
     NONE, EMBEDDED
   }
@@ -162,13 +168,13 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
           componentsManifest.append("classpath*:").append(clazzPath + ".xml").append('\n');
         }
       } catch (SAXException e) {
-        getLog().warn("Cannot serialize descriptor for [" + clazzName + "]", e);
+        handleError("Cannot serialize descriptor for [" + clazzName + "]", e);
       } catch (IOException e) {
-        getLog().warn("Cannot write descriptor for [" + clazzName + "]", e);
+        handleError("Cannot write descriptor for [" + clazzName + "]", e);
       } catch (ClassNotFoundException e) {
-        getLog().warn("Cannot analyze class [" + clazzName + "]", e);
+        handleError("Cannot analyze class [" + clazzName + "]", e);
       } catch (ResourceInitializationException e) {
-        getLog().warn("Cannot generate descriptor for [" + clazzName + "]", e);
+        handleError("Cannot generate descriptor for [" + clazzName + "]", e);
       } finally {
         Thread.currentThread().setContextClassLoader(classLoader);
       }
@@ -185,10 +191,18 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
       try {
         FileUtils.fileWrite(path.getPath(), encoding, componentsManifest.toString());
       } catch (IOException e) {
-        throw new MojoExecutionException("Cannot write components manifest to [" + path + "]"
+        handleError("Cannot write components manifest to [" + path + "]"
                 + ExceptionUtils.getRootCauseMessage(e), e);
       }
     }
+  }
+
+  private void handleError(String message, Exception e) throws MojoExecutionException {
+    if (failOnError) {
+      throw new MojoExecutionException(message, e);
+    }
+
+    getLog().error(message, e);
   }
 
   private void embedTypeSystems(ProcessingResourceMetaData metadata)
