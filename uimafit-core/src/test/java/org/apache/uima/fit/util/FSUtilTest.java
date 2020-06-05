@@ -29,14 +29,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.AnnotationImpl;
-import org.apache.uima.cas.impl.ArrayFSImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.TOP;
@@ -151,14 +149,7 @@ public class FSUtilTest {
     assertThat((List) getFeature(fs, "TopValue", Object.class)).containsExactly(arrayElem);
     assertThat(getFeature(fs, "TopValue", ArrayFS.class).toArray())
             .containsExactly(arrayElem);
-    if (aActivateJCas) {
-      assertThat(getFeature(fs, "TopValue", TOP.class).getClass())
-              .isEqualTo(FSArray.class);
-    }
-    else {
-      assertThat(getFeature(fs, "TopValue", FeatureStructure.class).getClass())
-              .isEqualTo(ArrayFSImpl.class);
-    }
+    assertThat(getFeature(fs, "TopValue", TOP.class).getClass()).isEqualTo(FSArray.class);
 
     final AnnotationFS annVal = cas.createAnnotation(annotationType, 0, 1);
     setFeature(fs, "AnnotationValue", annVal);
@@ -168,7 +159,7 @@ public class FSUtilTest {
       assertThat(getFeature(fs, "AnnotationValue", TOP.class)).isEqualTo(annVal);
     }
     else {
-      assertEquals(AnnotationImpl.class.getName(),
+      assertEquals(Annotation.class.getName(),
               getFeature(fs, "AnnotationValue", FeatureStructure.class).getClass().getName());
     }
     assertThat(getFeature(fs, "AnnotationValue", AnnotationFS.class)).isEqualTo(annVal);
@@ -224,14 +215,8 @@ public class FSUtilTest {
             arg2);
     assertThat(getFeature(fs, "AnnotationArrayValue", ArrayFS.class).toArray())
             .containsExactly(arg1, arg2);
-    if (aActivateJCas) {
-      assertThat(getFeature(fs, "AnnotationArrayValue", TOP.class).getClass())
-              .isEqualTo(FSArray.class);
-    }
-    else {
-      assertThat(getFeature(fs, "AnnotationArrayValue", FeatureStructure.class).getClass())
-              .isEqualTo(ArrayFSImpl.class);
-    }
+    assertThat(getFeature(fs, "AnnotationArrayValue", TOP.class).getClass())
+            .isEqualTo(FSArray.class);
     assertThat(getFeature(fs, "AnnotationArrayValue", List.class)).containsExactly(arg1, arg2);
     assertThat((List) getFeature(fs, "AnnotationArrayValue", Object.class)).containsExactly(arg1,
             arg2);
@@ -269,7 +254,7 @@ public class FSUtilTest {
       assertEquals(Annotation.class.getName(),
               getFeature(fs, "AnnotationListValue", AnnotationFS[].class)[0].getClass().getName());
     } else {
-      assertEquals(AnnotationImpl.class.getName(),
+      assertEquals(Annotation.class.getName(),
               getFeature(fs, "AnnotationListValue", AnnotationFS[].class)[0].getClass().getName());
     }
       

@@ -20,7 +20,7 @@ package org.apache.uima.fit.examples.tutorial.ex6;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createSharedResourceDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -39,9 +39,9 @@ public class Example6Test {
   @Test
   public void test1() throws Exception {
     // This resource is shared between the UimaAcronymAnnotator and UimaMeetingAnnotator
-    ExternalResourceDescription resource = createExternalResourceDescription(
-            StringMapResource_impl.class,
-            "file:src/main/resources/org/apache/uima/fit/examples/tutorial/ex6/uimaAcronyms.txt");
+    ExternalResourceDescription resource = createSharedResourceDescription(
+            "file:src/main/resources/org/apache/uima/fit/examples/tutorial/ex6/uimaAcronyms.txt",
+            StringMapResource_impl.class);
 
     AggregateBuilder builder = new AggregateBuilder();
     builder.add(createEngineDescription(UimaAcronymAnnotator.class,

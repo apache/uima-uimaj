@@ -23,7 +23,6 @@ import java.util.Map;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
-import org.apache.uima.fit.internal.ExtendedLogger;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
@@ -33,19 +32,8 @@ import org.apache.uima.resource.ResourceSpecifier;
  */
 public abstract class Resource_ImplBase extends org.apache.uima.resource.Resource_ImplBase
         implements ExternalResourceAware {
-
-  private ExtendedLogger logger;
-
   @ConfigurationParameter(name = ExternalResourceFactory.PARAM_RESOURCE_NAME, mandatory = false)
   private String resourceName;
-
-  @Override
-  public ExtendedLogger getLogger() {
-    if (logger == null) {
-      logger = new ExtendedLogger(getUimaContext());
-    }
-    return logger;
-  }
 
   @Override
   public boolean initialize(final ResourceSpecifier aSpecifier,
@@ -63,10 +51,12 @@ public abstract class Resource_ImplBase extends org.apache.uima.resource.Resourc
     return true;
   }
 
+  @Override
   public String getResourceName() {
     return resourceName;
   }
 
+  @Override
   public void afterResourcesInitialized() throws ResourceInitializationException {
     // Per default nothing is done here.
   }
