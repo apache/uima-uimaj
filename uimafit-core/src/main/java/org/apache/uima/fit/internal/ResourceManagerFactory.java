@@ -27,6 +27,7 @@ import org.apache.uima.UimaContextHolder;
 import org.apache.uima.impl.UimaVersion;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -81,7 +82,17 @@ public class ResourceManagerFactory {
           // If there is no UIMA context, then we create a new resource manager
           // UIMA core still does not fall back to the context classloader in all cases.
           // This was the default behavior until uimaFIT 2.2.0.
-          ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+          ResourceManager resMgr;
+          if (Thread.currentThread().getContextClassLoader() != null) {
+            // If the context classloader is set, then we want the resource manager to fallb
+            // back to it. However, it may not reliably do that that unless we explictly pass
+            // null here. See. UIMA-6239.
+            resMgr = new ResourceManager_impl(null);
+          }
+          else {
+            resMgr = UIMAFramework.newDefaultResourceManager();
+          }
+          
           
           // Since UIMA Core version 2.10.3 and 3.0.1 the thread context classloader is taken
           // into account by the core framework. Thus, we no longer have to explicitly set a
