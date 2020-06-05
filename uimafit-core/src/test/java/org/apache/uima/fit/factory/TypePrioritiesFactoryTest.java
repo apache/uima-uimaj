@@ -22,8 +22,8 @@ package org.apache.uima.fit.factory;
 import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -34,27 +34,39 @@ import org.junit.Test;
 
 /**
  * Tests for the {@link TypePrioritiesFactory}.
- * 
  */
 public class TypePrioritiesFactoryTest {
 
   @Test
-  public void testCreateTypePrioritiesClassOfQArray() throws Exception {
+  public void testCreateTypePrioritiesFromTypeNames() throws Exception {
+    TypePriorities prio = createTypePriorities(CAS.TYPE_NAME_ANNOTATION);
+
+    CasCreationUtils.createCas(createTypeSystemDescription(), prio, null);
+
+    assertThat(prio.getPriorityLists()).hasSize(1);
+    assertThat(prio.getPriorityLists()[0].getTypes()).containsExactly(CAS.TYPE_NAME_ANNOTATION);
+  }
+  
+  @Test
+  public void testCreateTypePrioritiesFromClasses() throws Exception {
     TypePriorities prio = createTypePriorities(Annotation.class);
 
     CasCreationUtils.createCas(createTypeSystemDescription(), prio, null);
 
-    assertEquals(1, prio.getPriorityLists().length);
-    assertEquals(1, prio.getPriorityLists()[0].getTypes().length);
-    assertEquals("uima.tcas.Annotation", prio.getPriorityLists()[0].getTypes()[0]);
+    assertThat(prio.getPriorityLists()).hasSize(1);
+    assertThat(prio.getPriorityLists()[0].getTypes()).containsExactly(CAS.TYPE_NAME_ANNOTATION);
   }
   
-
+  @Test(expected = IllegalArgumentException.class)
+  public void testCreateTypePrioritiesFromBadClasses() throws Exception {
+    TypePriorities prio = createTypePriorities((Class) Integer.class);
+  }
+  
   @Test
   public void testAutoDetectTypePriorities() throws Exception {
-    TypePriorities typePriorities = createTypePriorities();
+    TypePriorities prio = createTypePriorities();
 
-    TypePriorityList[] typePrioritiesLists = typePriorities.getPriorityLists();
+    TypePriorityList[] typePrioritiesLists = prio.getPriorityLists();
     assertThat(typePrioritiesLists.length).isEqualTo(1);
     assertThat(typePrioritiesLists[0].getTypes())
         .as("Type priorities auto-detection")
