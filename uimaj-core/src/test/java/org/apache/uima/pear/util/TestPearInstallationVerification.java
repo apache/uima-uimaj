@@ -73,7 +73,10 @@ public class TestPearInstallationVerification {
   public void thatSpecialXmlCharactersInTargetPathDoNotBreakInstallation() throws Exception {
     assertThatPearInstalls(
             getFile("pearTests/analysisEngine.pear"),
-            temp.newFolder("<>'\"&"));
+            // on windows, can't use these chars
+            //   <>:"/\|?*  
+            
+            temp.newFolder("!'&"));
   }
 
   private void assertThatPearInstalls(File pearFile, File targetDir) throws InvalidXMLException,
