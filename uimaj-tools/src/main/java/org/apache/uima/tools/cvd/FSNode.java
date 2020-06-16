@@ -256,12 +256,12 @@ public class FSNode extends FSTreeNode {
         }
       case Slot_StrRef: {
         String[] a = ((StringArray)fs)._getTheArray();
-        makeNodes(arrayNodes, i -> new FSNode(this.fSTreeModel, nc, a[i], 0, i));
+        makeFsArrayNodes(arrayNodes, a, nc);
         break;
         }
       case Slot_HeapRef: {
         TOP[] a = ((FSArray)fs)._getTheArray();
-        makeNodes(arrayNodes, i -> new FSNode(this.fSTreeModel, nc, a[i], 0, i));
+        makeFsArrayNodes(arrayNodes, a, nc);
         break;
         }
       case Slot_BooleanRef: {
@@ -312,6 +312,12 @@ public class FSNode extends FSTreeNode {
         default: Misc.internalError();
         } // end of switch
       }
+    }
+  }
+
+  private <T> void makeFsArrayNodes(List<FSNode> arrayNodes, T[] a, int nodeClass) {
+    for(int idx = 0; idx < a.length; idx++) {
+      arrayNodes.add(new FSNode(this.fSTreeModel, nodeClass, a[idx], 0, idx));
     }
   }
 
