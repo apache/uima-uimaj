@@ -315,6 +315,18 @@ public class FSNode extends FSTreeNode {
     }
   }
 
+  /**
+   * The original makeNodes method (@see org.apache.uima.tools.cvd.MakeNodes) used the size of @arrayNodes to iterate
+   * but @arrayNodes was only initialized and not loaded up with data. This version relies on the size of the actual
+   * data array to copy into the arrayNode to make the iteration loop.
+   *
+   * TODO: This methods is only used for the two datatypes in which makeNodes cause problem (Slot_StrRef/Slot_HeapRef).
+   *       It is possibly that other datatypes could have the same problem.
+   * @param arrayNodes
+   * @param a
+   * @param nodeClass
+   * @param <T>
+   */
   private <T> void makeFsArrayNodes(List<FSNode> arrayNodes, T[] a, int nodeClass) {
     for(int idx = 0; idx < a.length; idx++) {
       arrayNodes.add(new FSNode(this.fSTreeModel, nodeClass, a[idx], 0, idx));
