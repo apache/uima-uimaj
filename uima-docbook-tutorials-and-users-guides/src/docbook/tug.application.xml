@@ -728,7 +728,11 @@ ae.destroy();</programlisting></para>
       See the Javadocs for that class for details.</para>
       
       <para>Several of the APIs use or return instances of <code>SerialFormat</code>, which is an enum specifying the various
-      forms of serialization.</para>  
+      forms of serialization.</para>
+      
+      <para>Serialization often makes use of temporary extra data structures, anchored from the CAS being serialized.
+        These are read/write, and because of this, most serializations are synchronized to prevent multiple
+        serializations of the same CAS from happening in parallel.</para>  
     </section>
   </section>
   

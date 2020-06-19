@@ -139,7 +139,13 @@
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>
-				<!--  Uncomment one of these to add Saxon8 or 9 to the classpath for JUnit tests. 
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!--  Uncomment one of these to add Saxon8 or 9 to the classpath for JUnit tests.
 		      1 fails due to different formatting and a dropped xmlns attribute, 
 		      5 work when run separately or by mvn, but fail when running all tests from Eclipse:
 		          Caused by: org.xml.sax.SAXParseException: cvc-elt.1: Cannot find the declaration of element '....'
@@ -204,8 +210,13 @@
       <artifactId>asm-tree</artifactId>
       <version>5.0.4</version>
     </dependency>
- -->		
-
+ -->
+ 
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
 	</dependencies>
 	
 	<build>

@@ -1117,6 +1117,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   private volatile FSIterator<Annotation> docAnnotIter = null;
   
+  // UIMA-6199 provides access to non-indexed doc annot 
+  //   to allow sofa setting to set the "length" of the local sofa data string
+  //   @see updateDocumentAnnotation() updateDocumentAnnotation.
+  private volatile Annotation deserialized_doc_annot_not_indexed = null;
+  
 //  private StackTraceElement[] addbackSingleTrace = null;  // for debug use only, normally commented out  
 
   // CASImpl(TypeSystemImpl typeSystem) {
@@ -4359,6 +4364,11 @@ public JCasImpl getJCasImpl() {
         if (wasRemoved) {
           tobeAddedback.addback(docAnnot);
         }
+      } else if (deserialized_doc_annot_not_indexed != null) {
+        // UIMA-6199 provides access to non-indexed doc annot 
+        //   to allow sofa setting to set the "length" of the local sofa data string
+        //   @see updateDocumentAnnotation() updateDocumentAnnotation.
+        deserialized_doc_annot_not_indexed._setIntValueNfc(endFeatAdjOffset,  newDoc.length());
       } else {
         // not in the index (yet)
         createDocumentAnnotation(newDoc.length());
@@ -4731,7 +4741,7 @@ public JCasImpl getJCasImpl() {
    * iterate over all views in view order (by view number) 
    * @param processViews
    */
-  void forAllViews(Consumer<CASImpl> processViews) {
+  public void forAllViews(Consumer<CASImpl> processViews) {
     final int numViews = this.getNumberOfViews();
     for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
       CASImpl view = (viewNbr == 1) ? getInitialView() : (CASImpl) getView(viewNbr);
@@ -4812,10 +4822,16 @@ public JCasImpl getJCasImpl() {
     svd.fssTobeAddedback.add(r);
     return r;
   }
-  
-  void dropProtectIndexesLevel () {
-    svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() -1);
-  }
+
+  // never used
+//  void dropProtectIndexesLevel (FSsTobeAddedback fssTobeAddedback) {
+//    int last_index = svd.fssTobeAddedback.size() -1;
+//    if (last_index < 0) return; 
+//    FSsTobeAddedback last_one = svd.fssTobeAddedback.get(last_index);
+//    if (fssTobeAddedback == last_one) {
+//       svd.fssTobeAddedback.remove(last_index);
+//    }
+//  }
   
   /**
    * This design is to support normal operations where the
@@ -4827,7 +4843,7 @@ public JCasImpl getJCasImpl() {
    *    2) the addbacks are (no longer) in the list
    *         - leave stack alone
    *    3) the addbacks are in the list but not at the end
-   *         - remove it and all later ones     
+   *         - remove it and all later ones, calling addback on each     
    *  
    * If the "withProtectedindexes" approach is used, it guarantees proper 
    * nesting, but the Runnable can't throw checked exceptions.
@@ -4840,17 +4856,26 @@ public JCasImpl getJCasImpl() {
    */
   void addbackModifiedFSs (FSsTobeAddedback addbacks) {
     final List<FSsTobeAddedback> listOfAddbackInfos =  svd.fssTobeAddedback;
+    
+    // case 1: the addbacks are the last in the stack:
     if (listOfAddbackInfos.get(listOfAddbackInfos.size() - 1) == addbacks) {
-      listOfAddbackInfos.remove(listOfAddbackInfos.size());
-    } else {
-      int pos = listOfAddbackInfos.indexOf(addbacks);
-      if (pos >= 0) {
-        for (int i = listOfAddbackInfos.size() - 1; i > pos; i--) {
-          FSsTobeAddedback toAddBack = listOfAddbackInfos.remove(i);
-          toAddBack.addback();
-        }
-      }      
-    }
+      listOfAddbackInfos.remove(listOfAddbackInfos.size() - 1);
+      addbacks.addback();
+      return;
+    } 
+     
+    int pos = listOfAddbackInfos.indexOf(addbacks);
+    
+    // case 2: the addbacks are in the stack, but there are others following it
+    if (pos >= 0) {
+      for (int i = listOfAddbackInfos.size() - 1; i >= pos; i--) {
+        FSsTobeAddedback toAddBack = listOfAddbackInfos.remove(i);
+        toAddBack.addback();
+      }
+      return;
+    }      
+    
+    // case 3: the addbacks are not in the list - just remove them, ignore the list
     addbacks.addback();
   }
   
@@ -5970,5 +5995,10 @@ public AutoCloseableNoException ll_enableV2IdRefs(boolean enable) {
 //  Object[] getReturnRefDataForAlloc() {
 //    return returnRefDataForAlloc;
 //  }
-
+  // UIMA-6199 provides access to non-indexed doc annot 
+  //   to allow sofa setting to set the "length" of the local sofa data string
+  //   @see updateDocumentAnnotation() updateDocumentAnnotation.
+  public void set_deserialized_doc_annot_not_indexed(Annotation doc_annot) {
+    deserialized_doc_annot_not_indexed = doc_annot;
+  }
 }

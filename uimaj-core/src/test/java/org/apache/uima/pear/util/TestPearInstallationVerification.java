@@ -19,107 +19,78 @@
 
 package org.apache.uima.pear.util;
 
-import java.io.File;
+import static org.apache.uima.pear.tools.InstallationController.TestStatus.TEST_SUCCESSFUL;
+import static org.apache.uima.test.junit_extension.JUnitExtension.getFile;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.uima.UIMAException;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.pear.tools.InstallationController.TestStatus;
 import org.apache.uima.pear.tools.InstallationTester;
 import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
-import org.apache.uima.test.junit_extension.JUnitExtension;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.InvalidXMLException;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Test the pear installation verification
- * 
  */
-public class TestPearInstallationVerification extends TestCase {
+public class TestPearInstallationVerification {
 
   // Temporary working directory, used to install the pear package
-  private File tempInstallDir = null;
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    
-    // create temporary working directory
-    File tempFile = File.createTempFile("pear_verification_test_", "tmp");
-    if (tempFile.delete()) {
-      File tempDir = tempFile;
-      if (tempDir.mkdirs())
-        this.tempInstallDir = tempDir;
-    }
-  }
-
-  /**
-   * @see junit.framework.TestCase#tearDown()
-   */
-  protected void tearDown() throws Exception {
-    if (this.tempInstallDir != null) {
-      FileUtil.deleteDirectory(this.tempInstallDir);
-    }
-  }
-
+  public @Rule TemporaryFolder temp = new TemporaryFolder();
   
+  @Test
   public void testAePearVerification() throws Exception {
-    
-     //get pear file to install
-    File pearFile = JUnitExtension.getFile("pearTests/analysisEngine.pear");
-    Assert.assertNotNull("analysisEngine.pear file not found", pearFile);
-    
+    assertThatPearInstalls(
+            getFile("pearTests/analysisEngine.pear"), 
+            temp.newFolder("pear_verification_test_tmp"));
+  }
+
+  @Test
+  public void testCcPearVerification() throws Exception {
+    assertThatPearInstalls(
+            getFile("pearTests/casConsumer.pear"), 
+            temp.newFolder("pear_verification_test_tmp"));
+  }
+
+  @Test
+  public void testTsPearVerification() throws Exception {
+    assertThatPearInstalls(
+            getFile("pearTests/typeSystem.pear"), 
+            temp.newFolder("pear_verification_test_tmp"));
+  }
+
+  // TODO: create testcases for ci, cr, cpe pear packages
+
+  @Test
+  public void thatSpecialXmlCharactersInTargetPathDoNotBreakInstallation() throws Exception {
+    assertThatPearInstalls(
+            getFile("pearTests/analysisEngine.pear"),
+            // on windows, can't use these chars
+            //   <>:"/\|?*          
+            temp.newFolder("!'&"));
+  }
+
+  private void assertThatPearInstalls(File pearFile, File targetDir) throws InvalidXMLException,
+          ResourceInitializationException, UIMARuntimeException, UIMAException, IOException {
+    assertThat(pearFile).as("PEAR file %s not found", pearFile).isNotNull();
+
     // Install PEAR package without verification
-    PackageBrowser instPear = PackageInstaller.installPackage(
-            this.tempInstallDir, pearFile, false);
-    
-    //check package browser
-    Assert.assertNotNull("PackageBrowser is null", instPear);
-       
+    PackageBrowser instPear = PackageInstaller.installPackage(targetDir, pearFile, false);
+
+    // Check package browser
+    assertThat(instPear).as("PackageBrowser is null").isNotNull();
+
     InstallationTester installTester = new InstallationTester(instPear);
     TestStatus status = installTester.doTest();
-    
-    Assert.assertEquals(status.getRetCode(), TestStatus.TEST_SUCCESSFUL);
+
+    assertThat(status.getRetCode()).isEqualTo(TEST_SUCCESSFUL);
   }
-
-  public void testCcPearVerification() throws Exception {
-    
-    //get pear file to install
-   File pearFile = JUnitExtension.getFile("pearTests/casConsumer.pear");
-   Assert.assertNotNull("casConsumer.pear file not found", pearFile);
-   
-   // Install PEAR package without verification
-   PackageBrowser instPear = PackageInstaller.installPackage(
-           this.tempInstallDir, pearFile, false);
-   
-   //check package browser
-   Assert.assertNotNull("PackageBrowser is null", instPear);
-      
-   InstallationTester installTester = new InstallationTester(instPear);
-   TestStatus status = installTester.doTest();
-   
-   Assert.assertEquals(status.getRetCode(), TestStatus.TEST_SUCCESSFUL);
- }
-
-  public void testTsPearVerification() throws Exception {
-    
-    //get pear file to install
-   File pearFile = JUnitExtension.getFile("pearTests/typeSystem.pear");
-   Assert.assertNotNull("typeSystem.pear file not found", pearFile);
-   
-   // Install PEAR package without verification
-   PackageBrowser instPear = PackageInstaller.installPackage(
-           this.tempInstallDir, pearFile, false);
-   
-   //check package browser
-   Assert.assertNotNull("PackageBrowser is null", instPear);
-      
-   InstallationTester installTester = new InstallationTester(instPear);
-   TestStatus status = installTester.doTest();
-   
-   Assert.assertEquals(status.getRetCode(), TestStatus.TEST_SUCCESSFUL);
- }
-
-  //TODO: create testcases for ci, cr, cpe pear packages
-
 }

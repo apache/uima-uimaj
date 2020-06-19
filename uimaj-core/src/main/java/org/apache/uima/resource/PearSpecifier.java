@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource;
 
+import org.apache.uima.resource.metadata.NameValuePair;
+
 /**
  * A type of <code>ResourceSpecifier</code> that locate an installed pear <code>Resource</code>.
  * 
@@ -41,18 +43,57 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
   public void setPearPath(String aPearPath);
 
   /**
-   * Gets parameters that may be read by the pear resource class when it is initialized.
+   * Gets legacy string-valued parameters that may be read by the pear resource class when it is
+   * initialized. These parameters are represented as follows in the PEAR specifier XML:
    * 
-   * @return an array of parameters.  This will never return <code>null</code>.
+   * <pre>{@code
+   * <parameters>
+   *   <parameter name="param1" value="val1"/>
+   * </parameters>  
+   * }</pre>
+   * 
+   * @return an array of parameters. This will never return <code>null</code>.
+   * 
+   * @deprecated These parameters only support string values. Better use
+   *             {@link #getPearParameters}.
    */
   public Parameter[] getParameters();
 
   /**
-   * Sets parameters that may be read by the pear resource class when it is initialized.
+   * Sets legacy string-valued parameters that may be read by the pear resource class when it is 
+   * initialized.
    * 
    * @param parameters the Parameters to set.
+   * 
+   * @see #getParameters()
+   * @deprecated These parameters only support string values. Better use
+   *             {@link #setPearParameters}.
    */
-  public void setParameters(Parameter[] parameters);
+  public void setParameters(Parameter... parameters);
+  
+  /**
+   * Gets parameters that may be read by the pear resource class when it is initialized. These 
+   * parameters are represented as follows in the PEAR specifier XML:
+   * 
+   * <pre>{@code
+   * <pearParameters>
+   *   <nameValuePair>
+   *    <name>param1</name>
+   *    <value><string>val1</string></value>
+   *   </nameValuePair>
+   * </pearParameters>
+   * }</pre>
+   * 
+   * @return an array of pearParameters.  This will never return <code>null</code>.
+   */
+  public NameValuePair[] getPearParameters();
 
-
+  /**
+   * Sets pearParameters that may be read by the pear resource class when it is initialized.
+   * 
+   * @param pearParameters the pearParameters to set.
+   * 
+   * @see #getPearParameters()
+   */
+  public void setPearParameters(NameValuePair... pearParameters);
 }

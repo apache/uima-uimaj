@@ -75,6 +75,17 @@
 			<artifactId>uimaj-core</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-compilertools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-core</artifactId>
+        </exclusion>
+      </exclusions>
+      
 		</dependency>
 
 		<dependency>
@@ -82,9 +93,17 @@
 			<artifactId>uimaj-tools</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.uima</groupId>
+          <artifactId>uimaj-cpe</artifactId>
+        </exclusion>
+      </exclusions>
+      
 		</dependency>
 
 		<!-- Eclipse dependencies -->
+    <!-- 
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>runtime</artifactId>
@@ -99,14 +118,53 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Depending on org.eclipse.ui does not include the SWT dependency -->
+		<! - - Depending on org.eclipse.ui does not include the SWT dependency - ->
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>ui</artifactId>
 			<version>[3.3.0.0,4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
-
+     -->
+     
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.ui</artifactId>
+      <version>[3.12.0,4.0.0)</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.search</artifactId>
+        </exclusion> 
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.debug.ui</artifactId>
+        </exclusion>               
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.compare</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.team</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.team.ui</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.jface</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.swt</artifactId>
+        </exclusion>
+        
+      </exclusions>
+    </dependency>
+     
 		<dependency>
 			<groupId>org.eclipse.swt</groupId>
 			<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
@@ -114,49 +172,85 @@
            was 3.3.0 
            because only 3.2.0 and 3.2.1 are in 
            repo -->
-			<version>[3.2.0.0,4.0.0)</version>
+			<version>[3.2.0,5.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
-
+    <!-- 
 		<dependency>
 			<groupId>org.eclipse.ui</groupId>
 			<artifactId>ide</artifactId>
 			<version>[3.3.0.0,4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
-
+    -->
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.core.filesystem</artifactId>
+      <version>[1.6.1,2.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.core.resources</artifactId>
+      <version>[3.11.1,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    
 		<dependency>
-			<groupId>org.eclipse.ui</groupId>
-			<artifactId>views</artifactId>
+			<groupId>org.eclipse.platform</groupId>
+			<artifactId>org.eclipse.ui.views</artifactId>
       <!-- changing the lower version number to 3.2.0, 
         was 3.3.0 
         because only 3.2.0 and 3.2.1 are in 
         repo -->
-			<version>[3.2.0.0,4.0.0)</version>
+			<version>[3.9.0,4.0.0)</version>
 			<scope>provided</scope>
+      <exclusions>
+         <exclusion>
+           <groupId>org.eclipse.platform</groupId>
+           <artifactId>org.eclipse.swt</artifactId>
+         </exclusion>
+       </exclusions>
+      
 		</dependency>
 
 		<dependency>
-			<groupId>org.eclipse.ui.workbench</groupId>
-			<artifactId>texteditor</artifactId>
-			<version>[3.3.0.0,4.0.0)</version>
+			<groupId>org.eclipse.platform</groupId>
+			<artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
+			<version>[3.10.0,4.0.0)</version>
 			<scope>provided</scope>
+       <exclusions>
+         <exclusion>
+           <groupId>org.eclipse.platform</groupId>
+           <artifactId>org.eclipse.swt</artifactId>
+         </exclusion>
+       </exclusions>
+      
 		</dependency>
 
 		<dependency>
-			<groupId>org.eclipse.jface</groupId>
-			<artifactId>text</artifactId>
-			<version>[3.3.0.0,4.0.0)</version>
+			<groupId>org.eclipse.platform</groupId>
+			<artifactId>org.eclipse.jface.text</artifactId>
+			<version>[3.11.0,4.0.0)</version>
 			<scope>provided</scope>
+       <exclusions>
+         <exclusion>
+           <groupId>org.eclipse.platform</groupId>
+           <artifactId>org.eclipse.swt</artifactId>
+         </exclusion>
+       </exclusions>
+      
 		</dependency>
-		
+		<!-- 
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>launching</artifactId>
       <version>[3.3.0,6.0.0)</version>
       <scope>provided</scope>
     </dependency>
-    
+     -->
 		<!-- https://issues.apache.org/jira/browse/UIMA-3510 -->
 		<dependency>
 		  <groupId>org.eclipse.equinox</groupId>
@@ -165,6 +259,7 @@
           <version>[1.0.0,1.0.1)</version>
        -->
        <version>[1.2.0,2.0.0)</version>
+       <scope>provided</scope>
 		</dependency>
 		
 	</dependencies>

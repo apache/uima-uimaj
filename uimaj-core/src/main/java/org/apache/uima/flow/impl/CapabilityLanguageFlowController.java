@@ -19,6 +19,8 @@
 
 package org.apache.uima.flow.impl;
 
+import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,6 +45,11 @@ import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Capability;
+import org.apache.uima.resource.metadata.ConfigurationParameter;
+import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
+import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.NameValuePair;
+import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
@@ -261,20 +268,24 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
   }
 
   public static FlowControllerDescription getDescription() {
-    URL descUrl = FixedFlowController.class
-            .getResource("/org/apache/uima/flow/CapabilityLanguageFlowController.xml");
-    FlowControllerDescription desc;
-    try {
-      desc = (FlowControllerDescription) UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(descUrl));
-    } catch (InvalidXMLException e) {
-      throw new UIMARuntimeException(e);
-    } catch (IOException e) {
-      throw new UIMARuntimeException(e);
-    }
+    FlowControllerDescription desc = getResourceSpecifierFactory().createFlowControllerDescription();
+    
+    desc.setImplementationName(CapabilityLanguageFlowController.class.getName());
+    
+    ProcessingResourceMetaData metaData = desc.getFlowControllerMetaData();
+    metaData.setName("Capability Language Flow Controller");
+    metaData.setDescription("Simple FlowController that uses a linear fow but may skip\n" + 
+        "\t\tsome of the AEs in the flow if they do not handle the language\n" + 
+        "\t\tof the current document or if their outputs have already been\n" + 
+        "\t\tproduced by a previous AE in the flow.");
+    metaData.setVendor("The Apache Software Foundation");
+    metaData.setVersion("1.0");
+    
+    Capability capability = getResourceSpecifierFactory().createCapability();
+    metaData.setCapabilities(new Capability[] { capability });
+        
     return desc;
   }
-
   public Map<String, ResultSpecification> getLastResultSpecForComponent() {
     return lastResultSpecForComponent;
   }

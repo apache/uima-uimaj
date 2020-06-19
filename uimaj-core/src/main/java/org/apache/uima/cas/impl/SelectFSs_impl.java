@@ -20,7 +20,6 @@
 package org.apache.uima.cas.impl;
 
 import java.lang.reflect.Array;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -112,7 +111,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private FSList  sourceFSList  = null;  // alternate source
   
   private boolean isTypePriority = false;
-//  private boolean isPositionUsesType = false;
+//  private boolean isPositionUsesType = false; // REMOVED see https://issues.apache.org/jira/browse/UIMA-5536 
   private boolean isSkipSameBeginEndType = false; // for boundsUse only
   private boolean isNonOverlapping = IS_UNAMBIGUOUS;
   private boolean isIncludeAnnotBeyondBounds = false;
@@ -229,6 +228,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * boolean operations
    *********************************/
   
+  // REMOVED see https://issues.apache.org/jira/browse/UIMA-5536
 //  /* (non-Javadoc)
 //   * @see org.apache.uima.cas.SelectFSs#positionUsesType()
 //   */
@@ -362,12 +362,32 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     this.shift = shiftAmount;
     return this;
   }
-  
+
+  @Override
+  public SelectFSs_impl<T> startAt(FeatureStructure fs) {
+    this.startingFs = (TOP) fs;
+    return this;
+  }
   @Override
   public SelectFSs_impl<T> startAt(TOP fs) {  // Ordered
     this.startingFs = fs;
     return this;
   } 
+//  @Override
+//  public SelectFSs_impl<T> startAt(AnnotationFS fs) {
+//    return (startAt((TOP)fs));
+//  }
+//  @Override
+//  public SelectFSs_impl<T> startAt(Annotation fs) {
+//    return (startAt((TOP)fs));
+//  }
+
+  @Override
+  public SelectFSs_impl<T> startAt(int begin) {
+    this.isTypePriority = false;
+    this.startingFs = makePosAnnot(begin, Integer.MAX_VALUE);
+    return this;
+  }
   
   @Override
   public SelectFSs_impl<T> startAt(int begin, int end) {  // AI
@@ -378,6 +398,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public SelectFSs_impl<T> startAt(TOP fs, int offset) {  // Ordered
     this.startingFs = fs;
+    this.shift = offset;
+    return this;
+  } 
+  @Override
+  public SelectFSs_impl<T> startAt(FeatureStructure fs, int offset) {  // Ordered
+    this.startingFs = (TOP)fs;
     this.shift = offset;
     return this;
   } 
@@ -493,7 +519,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     final boolean isUseAnnotationIndex = 
         ((index != null) && (index instanceof AnnotationIndex)) ||
         isNonOverlapping ||
-//        isPositionUsesType ||
+//        isPositionUsesType ||  REMOVED see https://issues.apache.org/jira/browse/UIMA-5536
         isTypePriority ||
         isIncludeAnnotBeyondBounds || 
         boundsUse != BoundsUse.notBounded ||
@@ -502,7 +528,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     if (isUseAnnotationIndex) {
       forceAnnotationIndex();  // throws if non-null index not an annotation index
     }
-    
+    // REMOVED see https://issues.apache.org/jira/browse/UIMA-5536
 //    if (isTypePriority) {
 //      isPositionUsesType = true;
 //    }
@@ -1082,7 +1108,19 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
 
   @Override
+  public T get(FeatureStructure fs) {
+    startAt(fs);
+    return getNullChk();
+  }
+
+  @Override
   public T single(TOP fs) {
+    startAt(fs);
+    return single();
+  }
+
+  @Override
+  public T single(FeatureStructure fs) {
     startAt(fs);
     return single();
   }
@@ -1094,7 +1132,19 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
 
   @Override
+  public T singleOrNull(FeatureStructure fs) {
+    startAt(fs);
+    return singleOrNull();
+  }
+
+  @Override
   public T get(TOP fs, int offset) {
+    startAt(fs, offset);
+    return getNullChk();
+  }
+
+  @Override
+  public T get(FeatureStructure fs, int offset) {
     startAt(fs, offset);
     return getNullChk();
   }
@@ -1106,7 +1156,19 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
 
   @Override
+  public T single(FeatureStructure fs, int offset) {
+    startAt(fs, offset);
+    return single();
+  }
+
+  @Override
   public T singleOrNull(TOP fs, int offset) {
+    startAt(fs, offset);
+    return singleOrNull();
+  }
+
+  @Override
+  public T singleOrNull(FeatureStructure fs, int offset) {
     startAt(fs, offset);
     return singleOrNull();
   }
@@ -1157,7 +1219,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * special processing for AnnotationIndex (only):
    *   - typePriority - use or ignore
    *     -- ignored: after moveTo(fs), moveToPrevious while begin and end ==
-   *       --- and if isPositionUsesType types are == 
+   *       // REMOVED see https://issues.apache.org/jira/browse/UIMA-5536 --- and if isPositionUsesType types are == 
    * @param it iterator to position
    * @return it positioned if needed
    */
