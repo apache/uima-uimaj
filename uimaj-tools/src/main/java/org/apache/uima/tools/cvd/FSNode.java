@@ -246,47 +246,47 @@ public class FSNode extends FSTreeNode {
       switch (kind) {
       case Slot_Int: {
         int[] a = ((IntegerArray)fs)._getTheArray();
-        makeNodes(arrayNodes, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
+        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
         break;
         }
       case Slot_Float: {
         float[] a = ((FloatArray)fs)._getTheArray();
-        makeNodes(arrayNodes, i -> new FSNode(this.fSTreeModel, nc, null, CASImpl.float2int(a[i]), i));
+        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, CASImpl.float2int(a[i]), i));
         break;
         }
       case Slot_StrRef: {
         String[] a = ((StringArray)fs)._getTheArray();
-        makeNodes(arrayNodes, i -> new FSNode(this.fSTreeModel, nc, a[i], 0, i));
+        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, a[i], 0, i));
         break;
         }
       case Slot_HeapRef: {
         TOP[] a = ((FSArray)fs)._getTheArray();
-        makeNodes(arrayNodes, i -> new FSNode(this.fSTreeModel, nc, a[i], 0, i));
+        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, a[i], 0, i));
         break;
         }
       case Slot_BooleanRef: {
         boolean[] a = ((BooleanArray)fs)._getTheArray();
-        makeNodes(arrayNodes, i -> new FSNode(this.fSTreeModel, nc, null, a[i]? 1 : 0, i));
+        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i]? 1 : 0, i));
         break;
         }
       case Slot_ByteRef: {
         byte[] a = ((ByteArray)fs)._getTheArray();
-        makeNodes(arrayNodes, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
+        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
         break;
         }
       case Slot_ShortRef: {
         short[] a = ((ShortArray)fs)._getTheArray();
-        makeNodes(arrayNodes, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
+        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
         break;
         }
       case Slot_LongRef: {
         long[] a = ((LongArray)fs)._getTheArray();
-        makeNodes(arrayNodes, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
+        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, a[i], i));
         break;
         }
       case Slot_DoubleRef: {
         double[] a = ((DoubleArray)fs)._getTheArray();
-        makeNodes(arrayNodes, i -> new FSNode(this.fSTreeModel, nc, null, CASImpl.double2long(a[i]), i));
+        makeNodes(arrayNodes, arrayLength, i -> new FSNode(this.fSTreeModel, nc, null, CASImpl.double2long(a[i]), i));
         break;
         }
       default: Misc.internalError();
@@ -321,8 +321,7 @@ public class FSNode extends FSTreeNode {
    * @param arrayNodes the array nodes
    * @param newFSNode the new FS node
    */
-  private void makeNodes(List<FSNode> arrayNodes, IntFunction<FSNode> newFSNode) {
-    final int size = arrayNodes.size();
+  private void makeNodes(List<FSNode> arrayNodes, int size, IntFunction<FSNode> newFSNode) {
     for (int idx = 0; idx < size; idx++) {
       arrayNodes.add(newFSNode.apply(idx));
     }
