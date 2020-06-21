@@ -77,7 +77,20 @@ public class JCasClassLoaderTest {
    * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the anlysis
    * engines should use its own version of the JCas wrappers to access the CAS.
    * 
-   * <b>NOTE:</b> This test fails in UIMAv3.
+   * <b>NOTE:<b> On UIMAv3, this test currently fails because in {@link FetchTheTokenAnnotator},
+   * the we a different version of the {@link Token} JCas wrapper than expected:
+   * <pre>{@code 
+   * Caused by: java.lang.ClassCastException: org.apache.uima.cas.test.Token cannot be cast to org.apache.uima.cas.test.Token
+   *   at java.util.Iterator.forEachRemaining(Iterator.java:116)
+   *   at org.apache.uima.cas.test.JCasClassLoaderTest$FetchTheTokenAnnotator.process(JCasClassLoaderTest.java:265)
+   *   at org.apache.uima.analysis_component.JCasAnnotator_ImplBase.process(JCasAnnotator_ImplBase.java:48)
+   *   at org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase.lambda$3(AnalysisEngineImplBase.java:626)
+   *   at org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase.withContexts(AnalysisEngineImplBase.java:643)
+   *   at org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase.callProcessMethod(AnalysisEngineImplBase.java:623)
+   *   at org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl.callAnalysisComponentProcess(PrimitiveAnalysisEngine_impl.java:381)
+   *   ... 27 more
+   * }</pre>
+   * However, on UIMAv2, we do not get an exception.
    */
   @Test
   public void thatCASCanBeDefinedWithoutJCasWrappersAndTheyComeInWithAnnotators() throws Exception {
@@ -126,7 +139,20 @@ public class JCasClassLoaderTest {
    * should not use the global JCas wrappers which were known to the JCas when it was first
    * initialized.
    * 
-   * <b>NOTE:</b> This test fails in UIMAv3.
+   * <b>NOTE:<b> On UIMAv3, this test currently fails because in {@link FetchTheTokenAnnotator},
+   * the we a different version of the {@link Token} JCas wrapper than expected:
+   * <pre>{@code 
+   * Caused by: java.lang.ClassCastException: org.apache.uima.cas.test.Token cannot be cast to org.apache.uima.cas.test.Token
+   *   at java.util.Iterator.forEachRemaining(Iterator.java:116)
+   *   at org.apache.uima.cas.test.JCasClassLoaderTest$FetchTheTokenAnnotator.process(JCasClassLoaderTest.java:265)
+   *   at org.apache.uima.analysis_component.JCasAnnotator_ImplBase.process(JCasAnnotator_ImplBase.java:48)
+   *   at org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase.lambda$3(AnalysisEngineImplBase.java:626)
+   *   at org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase.withContexts(AnalysisEngineImplBase.java:643)
+   *   at org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase.callProcessMethod(AnalysisEngineImplBase.java:623)
+   *   at org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl.callAnalysisComponentProcess(PrimitiveAnalysisEngine_impl.java:381)
+   *   ... 27 more
+   * }</pre>
+   * However, on UIMAv2, we do not get an exception.
    */
   @Test
   public void thatAnnotatorsCanLocallyUseDifferentJCasWrappers() throws Exception {
