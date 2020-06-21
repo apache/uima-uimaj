@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -47,9 +46,12 @@ import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -58,6 +60,25 @@ import org.apache.uima.util.XMLInputSource;
 import org.junit.Test;
 
 public class JCasClassLoaderTest {
+  
+  /**
+   * This test simulates an environment as it could exist when using e.g. PEARs. We use a vanilla
+   * JCas and the analysis engines each use local JCas wrappers.
+   * 
+   * <ul>
+   * <li>JCas does not know JCas wrappers for the {@code Token} type.</li>
+   * <li>AddATokenAnnotator uses a local version of the {@code Token} type.</li>
+   * <li>FetchTheTokenAnnotator uses a local version of the {@code Token} type.</li>
+   * </ul>
+   * 
+   * The expectation here is that at the moment when the JCas is passed to the analysis engines,
+   * {@link PrimitiveAnalysisEngine_impl#callAnalysisComponentProcess(CAS) it is reconfigured} using
+   * {@link CASImpl#switchClassLoaderLockCasCL(ClassLoader)} to use the classloader defined in the
+   * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the anlysis
+   * engines should use its own version of the JCas wrappers to access the CAS.
+   * 
+   * <b>NOTE:</b> This test fails in UIMAv3.
+   */
   @Test
   public void thatCASCanBeDefinedWithoutJCasWrappersAndTheyComeInWithAnnotators() throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
@@ -87,6 +108,26 @@ public class JCasClassLoaderTest {
     fetchTheTokenAnnotator.process(jcas);
   }
   
+  /**
+   * This test simulates an environment as it could exist when using e.g. PEARs. The CAS has access
+   * to JCas wrappers, but the analysis engines bring in their own.
+   * 
+   * <ul>
+   * <li>JCas knows the global JCas wrappers for the {@code Token} type.</li>
+   * <li>AddATokenAnnotator uses a local version of the {@code Token} type.</li>
+   * <li>FetchTheTokenAnnotator uses a local version of the {@code Token} type.</li>
+   * </ul>
+   * 
+   * The expectation here is that at the moment when the JCas is passed to the analysis engines,
+   * {@link PrimitiveAnalysisEngine_impl#callAnalysisComponentProcess(CAS) it is reconfigured} using
+   * {@link CASImpl#switchClassLoaderLockCasCL(ClassLoader)} to use the classloader defined in the
+   * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the anlysis
+   * engines should use its own version of the JCas wrappers to access the CAS. In particular, they
+   * should not use the global JCas wrappers which were known to the JCas when it was first
+   * initialized.
+   * 
+   * <b>NOTE:</b> This test fails in UIMAv3.
+   */
   @Test
   public void thatAnnotatorsCanLocallyUseDifferentJCasWrappers() throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
@@ -114,14 +155,47 @@ public class JCasClassLoaderTest {
     fetchTheTokenAnnotator.process(jcas);
   }
 
+  /**
+   * Here we try to simulate a situation as it could happen e.g. in an OSGI environment where the
+   * type system, the JCas and the analysis engines all use different classloaders.
+   * 
+   * <ul>
+   * <li>JCas does not know JCas wrappers for the {@code Token} type.</li>
+   * <li>The JCas wrappers are provided through a dedicated class loader</li>
+   * <li>AddATokenAnnotator uses the type classloader to acces the JCas wrapper for
+   * {@code Token}</li>
+   * <li>FetchTheTokenAnnotator uses the type classloader to acces the JCas wrapper for
+   * {@code Token}</li>
+   * </ul>
+   * 
+   * The expectation here is that at the moment when the JCas is passed to the analysis engines,
+   * {@link PrimitiveAnalysisEngine_impl#callAnalysisComponentProcess(CAS) it is reconfigured} using
+   * {@link CASImpl#switchClassLoaderLockCasCL(ClassLoader)} to use the classloader defined in the
+   * {@link ResourceManager} of the engines to load the JCas wrapper classes. Since the JCas wrappers
+   * are loaded through the same classloader by both engines, it they should have the same type in
+   * both annotators.
+   * 
+   * <b>NOTE:<b> On UIMAv2, this test currently fails because in {@link FetchTheTokenAnnotator},
+   * the we get a plain {@link Annotation} from the JCas instead of a {@link Token}:
+   * <pre>{@code 
+   * Caused by: java.lang.ClassCastException: org.apache.uima.jcas.tcas.Annotation cannot be cast to org.apache.uima.cas.test.Token
+   *   at java.util.Iterator.forEachRemaining(Iterator.java:116)
+   *   at org.apache.uima.cas.test.JCasClassLoaderTest$FetchTheTokenAnnotator.process(JCasClassLoaderTest.java:233)
+   *   at org.apache.uima.analysis_component.JCasAnnotator_ImplBase.process(JCasAnnotator_ImplBase.java:48)
+   *   at org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl.callAnalysisComponentProcess(PrimitiveAnalysisEngine_impl.java:411)
+   *   ... 28 more
+   * }</pre>
+   * However, on UIMAv3, we do not get an exception.
+   */
   @Test
   public void thatTypeSystemCanComeFromItsOwnClassLoader() throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
 
+    ClassLoader clForCas = new IsolatingClassloader("CAS", rootCl)
+            .hiding("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*");
+
     ClassLoader clForTS = new IsolatingClassloader("TS", rootCl)
             .redefining("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*");
-
-    ClassLoader clForCas = new IsolatingClassloader("CAS", rootCl);
 
     ClassLoader clForAddATokenAnnotator = new IsolatingClassloader("AddATokenAnnotator", rootCl)
             .redefining("^.*AddATokenAnnotator$")
@@ -220,7 +294,7 @@ public class JCasClassLoaderTest {
 
     public IsolatingClassloader redefining(String... patterns)
     {
-      hideClassesPatterns.addAll(asList(patterns));
+      redefineClassesPatterns.addAll(asList(patterns));
       return this;
     }
 
