@@ -46,6 +46,7 @@ class FSIntConstraintImpl implements FSIntConstraint {
 
   private IntVector values;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   FSIntConstraintImpl() {
     this.codes = new IntVector();
     this.values = new IntVector();
@@ -152,12 +153,14 @@ class FSIntConstraintImpl implements FSIntConstraint {
   public String toString() {
     if (this.codes.size() == 1) {
       return FSFloatConstraintImpl.toString(this.codes.get(0)) + " "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + Integer.toString(this.values.get(0));
     }
     StringBuffer buf = new StringBuffer();
     buf.append("( ");
     for (int i = 0; i < this.codes.size(); i++) {
       buf.append(FSFloatConstraintImpl.toString(this.codes.get(i)));
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
       buf.append(' ');
       buf.append(Integer.toString(this.values.get(i)));
       buf.append(' ');

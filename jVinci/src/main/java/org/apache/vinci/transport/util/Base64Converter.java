@@ -30,6 +30,7 @@ public class Base64Converter {
   static public final int LINE_LENGTH = 70;
 
   static private final byte[] B64_CODE = { (byte) 'A', (byte) 'B', (byte) 'C', (byte) 'D',
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       (byte) 'E', (byte) 'F', (byte) 'G', (byte) 'H', (byte) 'I', (byte) 'J', (byte) 'K',
       (byte) 'L', (byte) 'M', (byte) 'N', (byte) 'O', (byte) 'P', (byte) 'Q', (byte) 'R',
       (byte) 'S', (byte) 'T', (byte) 'U', (byte) 'V', (byte) 'W', (byte) 'X', (byte) 'Y',
@@ -152,6 +153,7 @@ public class Base64Converter {
    * @throws Base64FormatException -
    */
   static public byte[] convertBase64ToBinary(byte[] input, final int input_size)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws Base64FormatException {
     int output_size = calculateBinaryOutputSize(input, input_size);
     byte[] output = new byte[output_size];
@@ -175,6 +177,7 @@ public class Base64Converter {
    * @throws Base64FormatException -
    */
   static public int calculateBinaryOutputSize(byte[] input, final int input_size)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws Base64FormatException {
     int output_size = 0;
     for (int i = 0; i + 4 <= input_size;) {
@@ -200,6 +203,7 @@ public class Base64Converter {
   }
 
   static private int consumeInvalidDigits(byte[] in, int off, int max_offset)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws Base64FormatException {
     if (off >= max_offset) {
       throw new Base64FormatException("short read");

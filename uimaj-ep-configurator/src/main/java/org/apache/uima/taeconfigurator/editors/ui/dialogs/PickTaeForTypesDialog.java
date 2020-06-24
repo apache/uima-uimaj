@@ -58,6 +58,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
 
   /** The delegate component list GUI. */
   List delegateComponentListGUI;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The input types list. */
   private List inputTypesList;
@@ -121,6 +122,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
    */
   public PickTaeForTypesDialog(AbstractSection aSection, String aggregateFileName,
           java.util.List delegateComponentDescriptors, java.util.List delegateComponentDescriptions) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     super(aSection, "Select Delegate Component Descriptor(s)",
             "Select one or more delegate components to add and press OK");
@@ -159,6 +161,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
 
     if (bContainsConstituentsAlreadyInAggregate && bContainsAggregate) {
       specialMsgLabel
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .setText("(* indicates delegate component is already part of aggregate, ** is aggregate currently being configured)");
     } else if (bContainsConstituentsAlreadyInAggregate) {
       specialMsgLabel.setText("(* indicates delegate component is already part of aggregate)");
@@ -169,6 +172,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     createWideLabel(composite, "Delegate Component Description:");
 
     delegateComponentDescriptionText = new Text(composite, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             | SWT.BORDER);
     delegateComponentDescriptionText.setLayoutData(new GridData(GridData.FILL_BOTH));
     GridData dcgd = new GridData(GridData.FILL_HORIZONTAL);
@@ -192,6 +196,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     // autoAddToFlowButton.setBackground(null);
 
     importByNameUI = newButton(composite, SWT.RADIO, "Import by Name",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Importing by name looks up the name on the classpath and datapath.");
     importByLocationUI = newButton(composite, SWT.RADIO, "Import by Location",
             "Importing by location requires a relative or absolute URL");
@@ -215,6 +220,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     int nSelectedAeIndex = delegateComponentListGUI.getSelectionIndices()[0];
     ResourceSpecifier rs = (ResourceSpecifier) m_delegateComponentDescriptions
             .get(nSelectedAeIndex);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     String description = rs instanceof ResourceCreationSpecifier ? ((ResourceCreationSpecifier) rs)
             .getMetaData().getDescription() : "No Description - remote service descriptor";
@@ -242,6 +248,8 @@ public class PickTaeForTypesDialog extends AbstractDialog {
         }
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
     if (okButton != null)
       enableOK();
   }
@@ -268,6 +276,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
    * @return the selected delegate component descriptors
    */
   public String[] getSelectedDelegateComponentDescriptors() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     return m_selectedDelegateComponentDescriptors.clone();
   }
 
@@ -298,6 +307,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     for (int i = 0, j = 0; i < selIndices.length; i++) {
       if (!delegateComponentListGUI.getItem(selIndices[i]).endsWith("*")) {
         m_selectedDelegateComponentDescriptors[j] = (String) m_DelegateComponentDescriptors
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .get(selIndices[i]);
       }
     }

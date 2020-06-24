@@ -83,9 +83,12 @@ import org.xml.sax.SAXException;
  */
 public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_impl implements
         AnalysisEngineDescription {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static final private Method getterForAEwImports;
   static { 
+//IC see: https://issues.apache.org/jira/browse/UIMA-3684
     try {
       getterForAEwImports = AnalysisEngineDescription_impl.class.getDeclaredMethod("getDelegateAnalysisEngineSpecifiersWithImports");
     } catch (Exception e) {
@@ -131,11 +134,14 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * DelegateAnalysisEngineSpecifiers, and ExternalResourcesRequired attributes.
    */
   public AnalysisEngineDescription_impl() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     setMetaData(new AnalysisEngineMetaData_impl());
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
     setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     // Set default operational properties. These are used if the
     // descriptor is constructed programatically, rather than parsed.
     OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .createOperationalProperties();
     opProps.setModifiesCas(true);
     opProps.setMultipleDeploymentAllowed(true);
@@ -189,6 +195,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()
    */
   public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiers() throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-202
     resolveDelegateAnalysisEngineImports(UIMAFramework.newDefaultResourceManager(), false);
     return Collections.unmodifiableMap(mDelegateAnalysisEngineSpecifiers);
   }
@@ -197,7 +204,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()
    */
   public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiers(ResourceManager aResourceManager)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-202
     resolveDelegateAnalysisEngineImports(aResourceManager, false);
     return Collections.unmodifiableMap(mDelegateAnalysisEngineSpecifiers);
   }
@@ -231,10 +240,13 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     if (aResourceManager == null) {
       aResourceManager = UIMAFramework.newDefaultResourceManager();
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-86
     resolveImports(aResourceManager);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, ResourceSpecifier> map = new LinkedHashMap<>(mDelegateAnalysisEngineSpecifiers);
     if (getFlowControllerDeclaration() != null) {
       map.put(getFlowControllerDeclaration().getKey(), getFlowControllerDeclaration()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getSpecifier());
     }
     return Collections.unmodifiableMap(map);
@@ -272,6 +284,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    */
   public void doFullValidation() throws ResourceInitializationException {
     // attempt to instantiate AE in "verification mode"
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, Object> m = new HashMap<>();
     m.put(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE, Boolean.TRUE);
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(this, m);
@@ -285,8 +298,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
   public void doFullValidation(ResourceManager aResourceManager)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // attempt to instantiate AE in "verification mode"
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, Object> m = new HashMap<>();
     m.put(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE, Boolean.TRUE);
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(this, aResourceManager, m);
@@ -311,15 +326,18 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   public void validate(ResourceManager aResourceManager) throws ResourceInitializationException, ResourceConfigurationException {
     // do validation common to all descriptor types (e.g. config parameters)
     super.validate(aResourceManager);
+//IC see: https://issues.apache.org/jira/browse/UIMA-229
 
     // TypeSystem may not be specified for an Aggregate Analysis Engine
     if (!isPrimitive() && getAnalysisEngineMetaData().getTypeSystem() != null) {
       throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ResourceInitializationException.AGGREGATE_AE_TYPE_SYSTEM,
               new Object[] { getSourceUrlString() });
     }
     
     //Keys in FixedFlow or LanguageCapabilityFlow must be defined
+//IC see: https://issues.apache.org/jira/browse/UIMA-229
     FlowConstraints fc = getAnalysisEngineMetaData().getFlowConstraints();
     String[] keys = null;
     if (fc instanceof FixedFlow) {
@@ -354,9 +372,11 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    *           if there is an invalid parameter override declaration
    */
   protected void checkForInvalidParameterOverrides(ConfigurationParameter[] aParams,
+//IC see: https://issues.apache.org/jira/browse/UIMA-130
           String aGroupName, ResourceManager aResourceManager) throws ResourceInitializationException {
     //make sure delegate analysis engine specifiers are resolved using the correct resource manager
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-86
       resolveImports(aResourceManager);
     } catch (InvalidXMLException e) {
       throw new ResourceInitializationException(e);
@@ -370,6 +390,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
                     aParams[i].getName(), getMetaData().getName(), getSourceUrlString() });
       } else if (overrides.length == 0 && !isPrimitive()) {
         // Were deprecated for many years ... now no longer supported.
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
         throw new ResourceInitializationException(
                 ResourceInitializationException.INVALID_PARAM_OVERRIDE_NO_OVERRIDES, new Object[] {
                     aParams[i].getName(), getMetaData().getName(), getSourceUrlString() });
@@ -389,6 +410,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         ResourceSpecifier componentSpecifier = getComponentSpecifier(delegateKey);
         if (componentSpecifier == null) {
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceInitializationException.INVALID_PARAM_OVERRIDE_NONEXISTENT_DELEGATE,
                   new Object[] { overrides[j], aParams[i].getName(), getMetaData().getName(),
                       delegateKey, getSourceUrlString() });
@@ -412,6 +434,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
             overriddenParam = delegateParamDecls.getConfigurationParameter(aGroupName, paramName);
             if (overriddenParam == null) {
               throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       ResourceInitializationException.INVALID_PARAM_OVERRIDE_NONEXISTENT_PARAMETER_IN_GROUP,
                       new Object[] { overrides[j], aParams[i].getName(), getMetaData().getName(),
                           delegateKey, paramName, aGroupName, getSourceUrlString() });
@@ -436,6 +459,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   public ResourceSpecifier getComponentSpecifier(String key) throws ResourceInitializationException {
     ResourceSpecifier componentSpecifier;
     if (getFlowControllerDeclaration() != null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && key.equals(getFlowControllerDeclaration().getKey())) {
       try {
         getFlowControllerDeclaration().resolveImports();
@@ -463,6 +487,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     String aggName = this.getAnalysisEngineMetaData().getName();
     // build an actual Map (key: componentKey@/@componentSofa) from the sofa mappings
     // along the way check that all component keys and component sofa names exist
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, String> sofamap = new TreeMap<>();
     SofaMapping[] sofaMappings = this.getSofaMappings();
     if (sofaMappings != null) {
@@ -471,6 +496,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         ResourceSpecifier componentSpec = getComponentSpecifier(componentKey);
         if (componentSpec == null) {
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceInitializationException.SOFA_MAPPING_HAS_UNDEFINED_COMPONENT_KEY,
                   new Object[] { componentKey, sofaMappings[s].getAggregateSofaName(), aggName,
                       getSourceUrlString() });
@@ -519,6 +545,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     // component's input or output sofas, so rules (2) and (4) cannot be checked.
 
     boolean containsRemote = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Set<String> correctlyMappedAggregateOutputs = new HashSet<>();
     Set<String> correctlyMappedAggregateInputs = new HashSet<>();
 
@@ -535,6 +562,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
       if (delegateSpec instanceof AnalysisEngineDescription) {
         Capability[] caps = ((AnalysisEngineDescription) delegateSpec).getAnalysisEngineMetaData()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getCapabilities();
         for (int i = 0; i < caps.length; i++) {
           // all component output sofas must be mapped to aggregate output sofas
@@ -547,6 +575,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
             }
             if (!capabilitiesContainSofa(aggSofa, true)) {
               throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       ResourceInitializationException.OUTPUT_SOFA_NOT_DECLARED_IN_AGGREGATE,
                       new Object[] { outputSofas[j], componentKey, aggName, getSourceUrlString() });
             }
@@ -563,6 +592,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
             }
             if (!capabilitiesContainSofa(aggSofa, false) && !capabilitiesContainSofa(aggSofa, true)) {
               throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       ResourceInitializationException.INPUT_SOFA_HAS_NO_SOURCE, new Object[] {
                           inputSofas[j], componentKey, aggName, getSourceUrlString() });
             }
@@ -594,6 +624,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         for (int j = 0; j < sofas.length; j++) {
           if (!correctlyMappedAggregateOutputs.contains(sofas[j])) {
             throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     ResourceInitializationException.AGGREGATE_SOFA_NOT_MAPPED, new Object[] {
                         sofas[j], aggName, getSourceUrlString() });
           }
@@ -644,6 +675,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   
   @Override
   public List<MetaDataAttr> getAdditionalAttributes() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3684
     return Collections.singletonList(
         new MetaDataAttr(
             PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS,
@@ -662,8 +694,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    */
   @Deprecated
   public List<NameClassPair> listAttributes() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
     List<NameClassPair> result = super.listAttributes();
     result.add(new NameClassPair(PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS, Map.class
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getName()));
     return result;
   }
@@ -679,6 +713,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     if (aPreserveDelegateAnalysisEngineImports) {
       // trick the writePropertyAsElement method into thinking that
       // imports haven't been resolved yet
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
       Map<String, ResourceSpecifier> tempMap = mDelegateAnalysisEngineSpecifiers;
       mDelegateAnalysisEngineSpecifiers = Collections.emptyMap();
       toXML(aOutputStream);
@@ -694,10 +729,13 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#toXML(java.io.Writer, boolean)
    */
   public void toXML(Writer aWriter, boolean aPreserveDelegateAnalysisEngineImports)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException, IOException {
     if (aPreserveDelegateAnalysisEngineImports) {
       // trick the writePropertyAsElement method into thinking that
       // imports haven't been resolved yet
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
       Map<String, ResourceSpecifier> tempMap = mDelegateAnalysisEngineSpecifiers;
       mDelegateAnalysisEngineSpecifiers = Collections.emptyMap();
       toXML(aWriter);
@@ -718,6 +756,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     if (aPreserveDelegateAnalysisEngineImports) {
       // trick the writePropertyAsElement method into thinking that
       // imports haven't been resolved yet
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
       Map<String, ResourceSpecifier> tempMap = mDelegateAnalysisEngineSpecifiers;
       mDelegateAnalysisEngineSpecifiers = Collections.emptyMap();
       toXML(aContentHandler, aWriteDefaultNamespaceAttribute);
@@ -733,6 +772,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#resolveImports(org.apache.uima.resource.ResourceManager)
    */
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     resolveImports(new HashSet<>(), aResourceManager);
   }
 
@@ -746,9 +786,11 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
           ResourceManager aResourceManager) throws InvalidXMLException {
     // add our own URL, if known, to the collection of already imported URLs
     if (getSourceUrl() != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-494
       aAlreadyImportedDelegateAeUrls.add(getSourceUrl().toString());
     }
     // resolve delegate AE imports (and recursively resolve imports therein)
+//IC see: https://issues.apache.org/jira/browse/UIMA-202
     resolveDelegateAnalysisEngineImports(aAlreadyImportedDelegateAeUrls, aResourceManager, true);
     // resolve flow controller import
     if (getFlowControllerDeclaration() != null) {
@@ -777,10 +819,14 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @throws InvalidXMLException -
    */
   protected void resolveDelegateAnalysisEngineImports(ResourceManager aResourceManager, boolean aRecursive) 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-202
           throws InvalidXMLException {
     // add our own URL, if known, to the collection of enclosing aggregate URLs
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Set<String> urls = new HashSet<>();
     if (getSourceUrl() != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-494
       urls.add(getSourceUrl().toString());
     }   
     resolveDelegateAnalysisEngineImports(urls, aResourceManager, aRecursive);
@@ -799,8 +845,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    */
   protected synchronized void resolveDelegateAnalysisEngineImports(Collection<String> aEnclosingAggregateAeUrls,
           ResourceManager aResourceManager, boolean aRecursive) throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2693
     Set<String> keys = null;
     if (getDelegateAnalysisEngineSpecifiersWithImports().size() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       keys = new HashSet<>(); // keep track of keys we've encountered
       // so we can remove stale entries
       for (Map.Entry<String, MetaDataObject> entry : 
@@ -823,6 +871,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
           URL url = aeImport.findAbsoluteUrl(aResourceManager);
   
           // check for recursive import
+//IC see: https://issues.apache.org/jira/browse/UIMA-494
           if (aEnclosingAggregateAeUrls.contains(url.toString())) {
             String name = getMetaData() == null ? "<null>" : getMetaData().getName();
             throw new InvalidXMLException(InvalidXMLException.CIRCULAR_AE_IMPORT, new Object[] {
@@ -835,6 +884,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
             input = new XMLInputSource(url);
           } catch (IOException e) {
             throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     new Object[] { url, aeImport.getSourceUrlString() }, e);
           }
           ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(input);
@@ -847,7 +897,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   
           // now resolve imports in ths delegate
           if (spec instanceof AnalysisEngineDescription) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
             Set<String> alreadyImportedUrls = new HashSet<>(aEnclosingAggregateAeUrls);
+//IC see: https://issues.apache.org/jira/browse/UIMA-494
             alreadyImportedUrls.add(url.toString());
             ((AnalysisEngineDescription) spec).resolveImports(alreadyImportedUrls, aResourceManager);
           }
@@ -857,6 +909,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
           // resolve imports recursively on the delegate
           if (entry.getValue() instanceof AnalysisEngineDescription) {
             ((AnalysisEngineDescription) entry.getValue()).resolveImports(
+//IC see: https://issues.apache.org/jira/browse/UIMA-202
                     aEnclosingAggregateAeUrls, aResourceManager);
           }
         }
@@ -866,6 +919,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     
     if (mDelegateAnalysisEngineSpecifiers.size() > 0) {
       final Set<Map.Entry<String, ResourceSpecifier>> staleEntries = mDelegateAnalysisEngineSpecifiers.entrySet();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<String> staleKeys = new ArrayList<>();
       for (Map.Entry<String, ResourceSpecifier> entry : staleEntries) {
         String key = entry.getKey();
@@ -906,6 +960,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         propName = PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS;
       }
       writeMapPropertyToXml(propName, ELEM_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS, "key",
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
               "delegateAnalysisEngine", aPropInfo.omitIfNull, aNamespace);
     } else {
       // for all other attributes, use the default superclass behavior
@@ -922,6 +977,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    */
   @Override
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String propName = aPropXmlInfo.propertyName;
     if (PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS.equals(propName)) {
@@ -942,6 +998,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     if (getAnalysisEngineMetaData().getOperationalProperties() == null) {
@@ -966,6 +1023,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "analysisEngineDescription", new PropertyXmlInfo[] {
               new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("primitive"),

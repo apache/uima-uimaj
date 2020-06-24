@@ -34,6 +34,8 @@ public class UtilError extends RuntimeException {
 
   private static final String missing_resource_error = "Could not load message catalog: "
           + resource_file;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private static final int MESSAGES_NOT_FOUND = -1;
 
@@ -90,6 +92,7 @@ public class UtilError extends RuntimeException {
     // Retrieve message from resource bundle, format using arguments,
     // and return resulting string.
     return (new MessageFormat(this.resource.getString(identifiers[this.error])))
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .format(this.arguments);
   }
 

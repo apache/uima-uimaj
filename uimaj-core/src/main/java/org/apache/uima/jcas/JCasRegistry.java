@@ -59,6 +59,7 @@ public class JCasRegistry {
    */
   private static class WeakRefInt<T> extends WeakReference<T> {
     int index;    
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     WeakRefInt(T item, ReferenceQueue<? super T> q, int index) {
       super(item, q);
       this.index = index;
@@ -88,6 +89,7 @@ public class JCasRegistry {
    * @return the unique index value for this class.
    */
   public static synchronized int register(Class<? extends TOP> aJCasCoverClass) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     WeakRefInt<Class<? extends TOP>> releasedWeakRefInt = (WeakRefInt<Class<? extends TOP>>) releasedQueue.poll();
     
     if (releasedWeakRefInt != null) {
@@ -98,6 +100,7 @@ public class JCasRegistry {
 //        availableFeatureIndexes.addLast(it.next());
 //      }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       loadedJCasClasses.set(i, new WeakRefInt<>(aJCasCoverClass, releasedQueue, i));
       return i;
     }
@@ -152,6 +155,7 @@ public class JCasRegistry {
    */
   public static synchronized Class<? extends TOP> getClassForIndex(int aIndex) {
     if (aIndex >= 0 && aIndex < loadedJCasClasses.size())
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
       return loadedJCasClasses.get(aIndex).get();
     else
       return null;

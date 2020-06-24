@@ -107,6 +107,7 @@ public class JCasHashMapTest extends TestCase {
     System.out.format("test JCasHashMap with up to %d threads%n", numberOfThreads);
 
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-3807
     for (int th = 2; th <= numberOfThreads; th *=2) {
       JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
       final JCasHashMap m = new JCasHashMap(200);   
@@ -116,6 +117,7 @@ public class JCasHashMapTest extends TestCase {
           for (int k = 0; k < 4; k++) {
             for (int i = 0; i < SIZE / 4; i++) {
               final int key = addrs[random.nextInt(SIZE / 16)];
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
               m.putIfAbsent(key, x -> TOP._createSearchKey(x));
 //              TOP fs = m.getReserve(key);
 //              if (null == fs) {
@@ -148,6 +150,7 @@ public class JCasHashMapTest extends TestCase {
     System.out.format("test JCasHashMap with compare with up to %d threads%n", numberOfThreads);
 
     final ConcurrentMap<Integer, TOP> check = // one check map, run on multiple threads
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         new ConcurrentHashMap<>(SIZE, .5F, numberOfThreads * 2);
     
     for (int th = 2; th <= numberOfThreads; th *= 2) {
@@ -160,6 +163,7 @@ public class JCasHashMapTest extends TestCase {
           for (int k = 0; k < 4; k++) {
             for (int i = 0; i < SIZE / 4; i++) {
               final int key = addrs[random.nextInt(SIZE / 16)];
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
               final TOP[] createdFS = new TOP[1];
               TOP fs = m.putIfAbsent(key, x -> {
                 TOP tmp = createdFS[0] = TOP._createSearchKey(x);
@@ -223,6 +227,7 @@ public class JCasHashMapTest extends TestCase {
 
     Thread thisThread = Thread.currentThread();
     final int subThreadPriority = thisThread.getPriority();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
     thisThread.setPriority(subThreadPriority - 1);
     final MultiThreadUtils.ThreadM[] threads = new MultiThreadUtils.ThreadM[numberOfThreads];
     final JCasHashMap m = new JCasHashMap(200); 
@@ -250,6 +255,7 @@ public class JCasHashMapTest extends TestCase {
                   break;
                 }
                 MultiThreadUtils.sleep(r.nextInt(500000)); // 0-500 microseconds 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
                 found[finalI] = m.putIfAbsent(hashKey, k -> {
                   // k is ignored, hashKey is final, the fs returned is constant
                   threads[finalI].utilBoolean.set(true);
@@ -289,6 +295,7 @@ public class JCasHashMapTest extends TestCase {
 
         // verify that one thread holds the lock, the others are waiting on that lock
         int numberWaiting;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
         while (true) {  // may take a while for threads to get going
           Thread.sleep(5);
           numberWaiting = 0;
@@ -312,6 +319,7 @@ public class JCasHashMapTest extends TestCase {
         okToProceed.set(true);
 //        found[threadHoldingLock] = fs;
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
         MultiThreadUtils.waitForAllReady(threads);
         okToProceed.set(false);
 //        // loop a few times to give enough time for the other threads to finish.
@@ -337,6 +345,7 @@ public class JCasHashMapTest extends TestCase {
 //        assertEquals(0, numberWaiting);  // if not 0 by now, something is likely wrong, or machine stalled more than 30 seconds
   //      System.out.format("JCasHashMapTest collide,  found = %s%n", intList(found));
         for (TOP f : found) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3774
           if (f != fs) {
             System.err.format("JCasHashMapTest miscompare fs = %s,  f = %s%n", fs, (f == null) ? "null" : f);
           }
@@ -345,6 +354,7 @@ public class JCasHashMapTest extends TestCase {
       }
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
     MultiThreadUtils.terminateThreads(threads);
   }
   
@@ -373,6 +383,10 @@ public class JCasHashMapTest extends TestCase {
    
   private void arun(int n) {
     JCasHashMap m = new JCasHashMap(200); // true = do use cache 
+//IC see: https://issues.apache.org/jira/browse/UIMA-3774
+//IC see: https://issues.apache.org/jira/browse/UIMA-3784
+//IC see: https://issues.apache.org/jira/browse/UIMA-3774
+//IC see: https://issues.apache.org/jira/browse/UIMA-3784
     assertTrue(m.getApproximateSize() == 0);
        
     long start = System.nanoTime();
@@ -401,6 +415,8 @@ public class JCasHashMapTest extends TestCase {
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
       m.putIfAbsent(key, k -> TOP._createSearchKey(k));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
 
 //      TOP fs = TOP._createSearchKey(key);
       
@@ -427,6 +443,7 @@ public class JCasHashMapTest extends TestCase {
   
   private void innerTstGrowth() throws DataFormatException {
     for (int th = 2; th <= 128; th *= 2) {  // 2 4 8 16   32 64 128 256
+//IC see: https://issues.apache.org/jira/browse/UIMA-3807
       JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
       double loadfactor = .6;  // from JCasHashMap impl
       final int sub_capacity = 32;   // from JCasHashMap impl
@@ -441,6 +458,7 @@ public class JCasHashMapTest extends TestCase {
       System.out.print("JCasHashMapTest: after fill to switch point: ");
       assertTrue(checkSubsCapacity(m, sub_capacity));
       System.out.print("JCasHashMapTest: after 1 past switch point:  ");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
       final int key = addrs[switchpoint + 1];
       m.putIfAbsent(key, k -> TOP._createSearchKey(k));
 //      m.getReserve(key);
@@ -455,6 +473,7 @@ public class JCasHashMapTest extends TestCase {
       fill(switchpoint, m);
       System.out.print("JCasHashMapTest: after fill to switch point: ");
       assertTrue(checkSubsCapacity(m, sub_capacity));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
       final int key2 = addrs[switchpoint + 1];
 //      m.putIfAbsent(key, k -> TOP._createSearchKey(key2));  // k is ignored
       m.putIfAbsent(key2,  k -> TOP._createSearchKey(k));
@@ -536,6 +555,7 @@ public class JCasHashMapTest extends TestCase {
   }
   
   private String intListPm(int[] a, int smaller) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3807
     StringBuilder sb = new StringBuilder(a.length);
     for (int i : a) {
       sb.append(i == smaller ? '.' : '+');
@@ -546,6 +566,7 @@ public class JCasHashMapTest extends TestCase {
   private String intList(TOP[] a) {
     StringBuilder sb = new StringBuilder();
     for (TOP i : a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
       sb.append(i == null ? "null" : i._id()).append(", ");
     }
     return sb.toString();
@@ -554,6 +575,7 @@ public class JCasHashMapTest extends TestCase {
   private void fill (int n, JCasHashMap m) throws DataFormatException {
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
       m.putIfAbsent(key, k -> TOP._createSearchKey(k));
 //
 //      TOP fs = TOP._createSearchKey(key);

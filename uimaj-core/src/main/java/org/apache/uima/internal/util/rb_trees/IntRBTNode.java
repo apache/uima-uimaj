@@ -50,6 +50,7 @@ class IntRBTNode {
   // accessed from IntRedBlackTree.
 
   IntRBTNode left; // The left daughter.
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   IntRBTNode right; // The right daughter.
 
@@ -491,6 +492,7 @@ class IntRBTNode {
     // This will hold the new array.
     IntVector v = new IntVector();
     // A stack for traversing the tree;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Stack<IntRBTNode> nodeStack = new Stack<>();
     // A stack for keeping addresses associated w/ the nodes on the
     // node stack.
@@ -597,6 +599,7 @@ class IntRBTNode {
     return;
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
   IntRBTNode copyNode(IntRBTNode parent) {
     IntRBTNode copyOfNode = new IntRBTNode(key, color, parent, null, null, element);
     copyOfNode.left = copyNode(copyOfNode, left);

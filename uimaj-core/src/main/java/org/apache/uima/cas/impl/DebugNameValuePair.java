@@ -85,6 +85,7 @@ public class DebugNameValuePair {
 
   public String toString() {
     Object v = getValue();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     String className = v.getClass().getSimpleName();
     if (v instanceof StringArrayFS)
       v = className + "[" + ((StringArrayFS) v).size() + "]";

@@ -79,6 +79,7 @@ public interface CollectionProcessingManager {
    */
   public void setAnalysisEngine(AnalysisEngine aAnalysisEngine)
           throws ResourceConfigurationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the <code>CasConsumers</code>s assigned to this CPM.
@@ -207,6 +208,7 @@ public interface CollectionProcessingManager {
    */
   public void process(CollectionReader aCollectionReader, int aBatchSize)
           throws ResourceInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Determines whether this CPM is currently processing. This means that a processing request has

@@ -51,6 +51,7 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
    */
   public NonRuleBasedDamagerRepairer(TextAttribute defaultTextAttribute) {
     Assert.isNotNull(defaultTextAttribute);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     fDefaultTextAttribute = defaultTextAttribute;
   }
@@ -111,6 +112,7 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
 
         int end = event.getOffset()
                 + (event.getText() == null ? event.getLength() : event.getText().length());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
         if (info.getOffset() <= end && end <= info.getOffset() + info.getLength()) {
           // optimize the case of the same line
@@ -155,6 +157,7 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
   protected void addRange(TextPresentation presentation, int offset, int length, TextAttribute attr) {
     if (attr != null)
       presentation.addStyleRange(new StyleRange(offset, length, attr.getForeground(), attr
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getBackground(), attr.getStyle()));
   }
 }

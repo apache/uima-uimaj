@@ -62,13 +62,17 @@ public class AnalysisEnginePoolTest extends TestCase {
   protected void setUp() throws Exception {
     try {
       super.setUp();
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       mSimpleDesc = new AnalysisEngineDescription_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mSimpleDesc.setPrimitive(true);
       mSimpleDesc.getMetaData().setName("Test Primitive TAE");
       mSimpleDesc
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       mSimpleDesc.getMetaData().setName("Simple Test");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       Capability cap = new Capability_impl();
       cap.addOutputType("NamedEntity", true);
       cap.addOutputType("DocumentStructure", true);
@@ -80,6 +84,7 @@ public class AnalysisEnginePoolTest extends TestCase {
   }
 
   public void testGetAnalysisEngineMetaData() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
     AnalysisEnginePool pool = null;
     try {
       // create pool
@@ -101,8 +106,10 @@ public class AnalysisEnginePoolTest extends TestCase {
     try {
       // test simple primitive MultithreadableTextAnalysisEngine
       // (using TestAnnotator class)
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEnginePool pool = new AnalysisEnginePool("taePool", 3, mSimpleDesc);
       _testProcess(pool, 0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
 
       // test simple aggregate MultithreadableTextAnalysisEngine
       // (again using TestAnnotator class)
@@ -115,6 +122,7 @@ public class AnalysisEnginePoolTest extends TestCase {
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       pool = new AnalysisEnginePool("taePool", 3, aggDesc);
       _testProcess(pool, 0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
 
       // multiple threads!
       final int NUM_THREADS = 4;
@@ -124,6 +132,7 @@ public class AnalysisEnginePoolTest extends TestCase {
         threads[i].start();
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
       MultiThreadUtils.kickOffThreads(threads);
       
       MultiThreadUtils.waitForAllReady(threads);
@@ -143,10 +152,12 @@ public class AnalysisEnginePoolTest extends TestCase {
       //we can't test from the threads themsleves since the state of
       //these fields is nondeterministic during the multithreaded processing.
       assertEquals("testing...", TestAnnotator.getLastDocument());
+//IC see: https://issues.apache.org/jira/browse/UIMA-858
       ResultSpecification resultSpec = new ResultSpecification_impl(TestAnnotator.getLastResultSpec().getTypeSystem());
       resultSpec.addResultType("NamedEntity", true);
       assertEquals(resultSpec, TestAnnotator.getLastResultSpec());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
       MultiThreadUtils.terminateThreads(threads);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -158,10 +169,12 @@ public class AnalysisEnginePoolTest extends TestCase {
   public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
       primitiveDesc
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       ConfigurationParameter p1 = new ConfigurationParameter_impl();
       p1.setName("StringParam");
@@ -174,6 +187,7 @@ public class AnalysisEnginePoolTest extends TestCase {
 
       // create pool
       AnalysisEnginePool pool = new AnalysisEnginePool("taePool", 3, primitiveDesc);
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
 
       AnalysisEngine tae = pool.getAnalysisEngine();
       try {
@@ -191,6 +205,7 @@ public class AnalysisEnginePoolTest extends TestCase {
         pool.getMetaData().setUUID(tae.getMetaData().getUUID());
         Assert.assertEquals(tae.getMetaData(), pool.getMetaData());
       } finally {
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
         pool.releaseAnalysisEngine(tae);
       }
     } catch (Exception e) {
@@ -205,7 +220,9 @@ public class AnalysisEnginePoolTest extends TestCase {
    *          description of TextAnalysisEngine to test
    */
   protected void _testProcess(AnalysisEnginePool aPool, int i)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws UIMAException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
     AnalysisEngine tae = aPool.getAnalysisEngine(0);
     try {
       // Test each form of the process method. When TestAnnotator executes, it
@@ -213,7 +230,9 @@ public class AnalysisEnginePoolTest extends TestCase {
       // We use thse to make sure the information propogates correctly to the annotator.
 
       // process(CAS)
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       CAS tcas = tae.newCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
       mLastTypeSystem = tcas.getTypeSystem();
       tcas.setDocumentText("new test");
       tae.process(tcas);
@@ -227,10 +246,12 @@ public class AnalysisEnginePoolTest extends TestCase {
       tae.process(tcas, resultSpec);
       tcas.reset();
     } finally {
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       aPool.releaseAnalysisEngine(tae);
     }
   }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
   class ProcessThread extends MultiThreadUtils.ThreadM {
     ProcessThread(AnalysisEnginePool aPool, int aId) {
       mPool = aPool;
@@ -244,6 +265,7 @@ public class AnalysisEnginePoolTest extends TestCase {
             break;
           }
           // System.out.println("thread started");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
           _testProcess(mPool, mId);
           // System.out.println("thread finished");
         } catch (Throwable t) {
@@ -262,6 +284,7 @@ public class AnalysisEnginePoolTest extends TestCase {
     int mId;
 
     AnalysisEnginePool mPool;
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
 
     boolean mIsAggregate;
     

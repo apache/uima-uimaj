@@ -53,6 +53,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
 
    public SequencerTestAnnotator() {
       super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       this.testBaseDir = JUnitExtension.getFile("SequencerTest");
    }
 
@@ -75,6 +76,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
    public void initialize(AnnotatorContext context)
          throws AnnotatorInitializationException,
          AnnotatorConfigurationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       try {
          // read annotator name from configuration parameter 'AnnotatorName'
@@ -92,9 +94,12 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
     */
    public void process(CAS tcas, ResultSpecification resultSpec)
          throws AnnotatorProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-730
+//IC see: https://issues.apache.org/jira/browse/UIMA-731
       if (true) {
          try {
             // use standard output file
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
             File fp = new File(this.testBaseDir, "SequencerTest.txt");
             if (!fp.exists()) {
                fp.createNewFile();
@@ -102,10 +107,12 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
             if (fp.canWrite()) {
                // write result specification to the output file
                OutputStreamWriter writer = new OutputStreamWriter(
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
                      new FileOutputStream(fp, true), StandardCharsets.UTF_8);
                writer.write("\nResultSpec for annotator " + this.name + ":\n");
                TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
                // sort by name to ensure consistent output for testing purposes
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
                Arrays.sort(tofs, new Comparator<TypeOrFeature>() {
                   public int compare(TypeOrFeature o1, TypeOrFeature o2) {
                      return o1.getName().compareTo(o2.getName());
@@ -117,6 +124,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
                writer.flush();
                writer.close();
             } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
                throw new IOException("Cannot write to " + fp.getAbsolutePath());
             }
          } catch (IOException e) {

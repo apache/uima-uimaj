@@ -64,6 +64,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
   private DoubleArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     theArray = null;
   }
 
@@ -73,6 +74,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
    * @param length the length of the array 
    */
   public DoubleArray(JCas jcas, int length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     super(jcas);
     theArray = new double[length];
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
@@ -97,6 +99,8 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
       _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
@@ -172,6 +176,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
   
   // internal use
   public double[] _getTheArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return theArray;
   }
   
@@ -189,21 +194,27 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
    */
   @Override
   public void setArrayValueFromString(int i, String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     set(i, Double.parseDouble(v));    
   }
   
   @Override
   public Spliterator.OfDouble spliterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     return Arrays.spliterator(theArray);
   }
   
   @Override
   public OfDouble iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     return new OfDouble() {
       int i = 0;
       
       @Override
       public boolean hasNext() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
         return i < size();
       }
 
@@ -216,6 +227,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
 
       @Override
       public double nextDouble() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
         if (!hasNext())
           throw new NoSuchElementException();
         return get(i++);
@@ -236,6 +248,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
    * @return a newly created and populated array
    */
   public static DoubleArray create(JCas jcas, double[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     DoubleArray doubleArray = new DoubleArray(jcas, a.length);
     doubleArray.copyFromArray(a, 0, 0, a.length);
     return doubleArray;
@@ -246,6 +259,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
    * @param action -
    */
   public void forEach(DoubleConsumer action) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5305
     for (double d : theArray) {
       action.accept(d);
     }
@@ -257,6 +271,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray<Doubl
    * @return true if the item is in the array
    */
   public boolean contains(double item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     for (double b : theArray) {
       if (b == item) {
         return true;

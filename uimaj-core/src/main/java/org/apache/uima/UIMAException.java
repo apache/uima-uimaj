@@ -88,7 +88,9 @@ public class UIMAException extends Exception implements I18nExceptionI {
    */
   public UIMAException(Throwable aCause) {
     super(aCause);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     mCause = aCause;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     if (mMessageKey == null && (aCause instanceof I18nExceptionI)) {
       I18nExceptionI cause = (I18nExceptionI)aCause;
       mMessageKey = cause.getMessageKey();
@@ -111,6 +113,7 @@ public class UIMAException extends Exception implements I18nExceptionI {
    *          arguments.
    */
   public UIMAException(String aResourceBundleName, String aMessageKey, Object ... aArguments) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     this(aResourceBundleName, aMessageKey, aArguments, null);
   }
 
@@ -131,8 +134,11 @@ public class UIMAException extends Exception implements I18nExceptionI {
    *          the original exception that caused this exception to be thrown, if any
    */
   public UIMAException(String aResourceBundleName, String aMessageKey, Object[] aArguments,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Throwable aCause) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     super(aCause);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     this.mResourceBundleName = aResourceBundleName;
     this.mMessageKey = aMessageKey;
     this.mArguments = aArguments;
@@ -151,6 +157,7 @@ public class UIMAException extends Exception implements I18nExceptionI {
    *          arguments.
    */
   public UIMAException(String aMessageKey, Object[] aArguments) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     this(STANDARD_MESSAGE_CATALOG, aMessageKey, aArguments, null);
   }
 
@@ -169,6 +176,7 @@ public class UIMAException extends Exception implements I18nExceptionI {
    *          the original exception that caused this exception to be thrown, if any
    */
   public UIMAException(String aMessageKey, Object[] aArguments, Throwable aCause) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     this(STANDARD_MESSAGE_CATALOG, aMessageKey, aArguments, aCause);
   }
   

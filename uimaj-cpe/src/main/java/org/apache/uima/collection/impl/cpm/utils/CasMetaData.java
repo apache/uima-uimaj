@@ -39,6 +39,7 @@ public class CasMetaData implements Serializable {
 
   /** The cas object. */
   Object casObject;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The cas meta data. */
   NameValuePair[] casMetaData = null;
@@ -55,6 +56,7 @@ public class CasMetaData implements Serializable {
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cas_not_valid__FINEST",
                 new Object[] { Thread.currentThread().getName() });
       }

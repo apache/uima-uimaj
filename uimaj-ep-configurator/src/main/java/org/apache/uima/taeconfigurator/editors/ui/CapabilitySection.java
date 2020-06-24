@@ -165,6 +165,7 @@ public class CapabilitySection extends AbstractSection {
    */
   public CapabilitySection(MultiPageEditor aEditor, Composite parent) {
     super(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             aEditor,
             parent,
             "Component Capabilities",
@@ -182,6 +183,7 @@ public class CapabilitySection extends AbstractSection {
     enableBorders(sectionClient);
     toolkit.paintBordersFor(sectionClient);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     tt = newTree(sectionClient, SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
 //    Table table = tt.getTable();
 
@@ -195,9 +197,11 @@ public class CapabilitySection extends AbstractSection {
     tt.setHeaderVisible(true);
     tt.setLinesVisible(true);
     tt.addListener(SWT.MouseHover, this); // to show description
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     final Composite buttonContainer = newButtonContainer(sectionClient);
     addCapabilityButton = newPushButton(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             buttonContainer,
             "Add Capability Set",
             "Analysis Engines can have one or more sets of capabilities; each one describes a set of outputs that are produced, given a particular set of inputs. Click here to add a capability set.");
@@ -233,6 +237,7 @@ public class CapabilitySection extends AbstractSection {
         TreeItem item = new TreeItem(tt, SWT.NONE);
         item.setText(TITLE_COL, CAPABILITY_SET);
         item.setData(cs[i]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         tt.setSelection( item ); // set default selection
         fillCapability(item, cs[i]);
         // if (0 == i) {
@@ -245,6 +250,7 @@ public class CapabilitySection extends AbstractSection {
         // }
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     packTree(tt);
     enable();
     tt.getParent().setRedraw(true);
@@ -393,6 +399,7 @@ public class CapabilitySection extends AbstractSection {
       String typeName = (String) entry.getKey();
       tc = (TypeCapability) entry.getValue();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       TreeItem item = new TreeItem(parent, SWT.NONE);
       setGuiTypeName(item, typeName);
       if (tc.isInputType)
@@ -405,6 +412,7 @@ public class CapabilitySection extends AbstractSection {
         String featName = (String) fEntry.getKey();
         fc = (FeatureCapability) fEntry.getValue();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         TreeItem fItem = new TreeItem(item, SWT.NONE);
         fItem.setData(FEAT_TITLE);
         fItem.setText(NAME_COL, featName);
@@ -504,6 +512,7 @@ public class CapabilitySection extends AbstractSection {
       return;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem selItem = tt.getSelection()[0];
     int itemKind = getItemKind(selItem);
 
@@ -518,6 +527,7 @@ public class CapabilitySection extends AbstractSection {
     } else if (event.widget == editButton || event.type == SWT.MouseDoubleClick) {
       handleEdit(selItem, itemKind);
     } else if (event.widget == removeButton
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
             || (event.widget == tt && event.type == SWT.KeyUp && event.character == SWT.DEL)) {
       handleRemove(selItem, itemKind);
     }
@@ -539,6 +549,7 @@ public class CapabilitySection extends AbstractSection {
     createSofaHeaderGui(item);
 
     item.setExpanded(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     tt.setSelection( item );
     if (tt.getItemCount() == 1)
       tt.getColumn(TITLE_COL).pack();
@@ -589,6 +600,7 @@ public class CapabilitySection extends AbstractSection {
     TreeItem allFeatItem = getAllFeatItem(editItem);
     if (null == allFeatItem)
       // throw new InternalErrorCDE("invalid state");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       return; // happens when no allfeat is set
     allFeatItem.setText(column, "");
     String otherCol = allFeatItem.getText((column == INPUT_COL) ? OUTPUT_COL : INPUT_COL);
@@ -623,6 +635,7 @@ public class CapabilitySection extends AbstractSection {
         // if switch from input to output, delete from one array, add to other,
         // mappings: no change (maybe the user switches the other items too).
         if (Window.CANCEL == Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .popOkCancel(
                         "Confirm Change to all Capability Sets",
                         "This edit operation will change the Sofa in all Capability Sets in which it is defined.  Please confirm.",
@@ -634,6 +647,7 @@ public class CapabilitySection extends AbstractSection {
           String[] prevSofas;
           if (existingIsInput) {
             cSets[i].setInputSofas((String[]) Utility.removeElementsFromArray(prevSofas = cSets[i]
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     .getInputSofas(), existingSofaName, String.class));
             wasRemoved = prevSofas != cSets[i].getInputSofas();
           } else {
@@ -709,6 +723,7 @@ public class CapabilitySection extends AbstractSection {
       }
       case LANG_ITEM: {
         CommonInputDialog dialog = new CommonInputDialog(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 this,
                 "Edit Language",
                 "Enter a two letter ISO-639 language code, followed optionally by a two-letter ISO-3166 country code (Examples: fr or fr-CA)",
@@ -723,6 +738,7 @@ public class CapabilitySection extends AbstractSection {
       }
 
       case FEAT: {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         TreeItem typeItem = editItem.getParentItem();
         String typeName = getFullyQualifiedName(typeItem);
 
@@ -772,8 +788,10 @@ public class CapabilitySection extends AbstractSection {
     switch (itemKind) {
       case CS: {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Remove",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "This action will remove an entire capability set.  Please confirm.",
                 MessageDialog.WARNING)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
           maybeSetSelection(tt, selectionIndex + 1);
           return;
         }
@@ -783,6 +801,7 @@ public class CapabilitySection extends AbstractSection {
       }
       case LANG_ITEM: {
         c.setLanguagesSupported(stringArrayRemove(c.getLanguagesSupported(), removeItem
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getText(NAME_COL)));
         removeItem.dispose();
         break;
@@ -793,6 +812,7 @@ public class CapabilitySection extends AbstractSection {
                         "Confirm Removal of Sofa",
                         "This action will remove this Sofa as a capability, and delete its mappings if no other capability set declares this Sofa."
                                 + "  Please confirm.", MessageDialog.WARNING)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
           maybeSetSelection(tt, selectionIndex + 1);
           return;
         }
@@ -800,6 +820,7 @@ public class CapabilitySection extends AbstractSection {
         boolean isInput = INPUT.equals(removeItem.getText(INPUT_COL));
         if (isInput)
           c.setInputSofas((String[]) Utility.removeElementFromArray(c.getInputSofas(), sofaName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   String.class));
         else
           c.setOutputSofas((String[]) Utility.removeElementFromArray(c.getOutputSofas(), sofaName,
@@ -818,6 +839,7 @@ public class CapabilitySection extends AbstractSection {
             }
           };
           editor.getAeDescription().setSofaMappings(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   (SofaMapping[]) Utility.removeElementsFromArray(getSofaMappings(), sofaName,
                           SofaMapping.class, comparator));
 
@@ -827,8 +849,10 @@ public class CapabilitySection extends AbstractSection {
       }
       case TYPE: {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Removal of Type",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "This action will remove this type as a capability.  Please confirm.",
                 MessageDialog.WARNING)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
           maybeSetSelection(tt, selectionIndex + 1);
           return;
         }
@@ -854,6 +878,7 @@ public class CapabilitySection extends AbstractSection {
         throw new InternalErrorCDE("invalid state");
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     maybeSetSelection(tt, selectionIndex - 1);
     finishAction();
   }
@@ -926,6 +951,7 @@ public class CapabilitySection extends AbstractSection {
     if (shortFeatureName.equals(ALL_FEATURES)) {
       if (isInput(removeItem)) {
         TypeOrFeature tfItem = getTypeOrFeature(c.getInputs(), getFullyQualifiedName(removeItem
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getParentItem()));
         tfItem.setAllAnnotatorFeatures(false);
       }
@@ -970,8 +996,10 @@ public class CapabilitySection extends AbstractSection {
       selItem = selItem.getParentItem().getItems()[0];
     else if (itemKind == FEAT || itemKind == SOFA_ITEM)
       selItem = selItem.getParentItem().getParentItem().getItems()[0];
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     Capability c = getCapabilityFromTreeItem(selItem.getParentItem());
     CommonInputDialog dialog = new CommonInputDialog(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             this,
             "Add Language",
             "Enter a two letter ISO-639 language code, followed optionally by a two-letter ISO-3166 country code (Examples: fr or fr-CA)",
@@ -982,6 +1010,7 @@ public class CapabilitySection extends AbstractSection {
     c.setLanguagesSupported(stringArrayAdd(c.getLanguagesSupported(), dialog.getValue()));
 
     // update GUI
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem lItem = new TreeItem(selItem, SWT.NONE);
     lItem.setData(LANG_TITLE);
     lItem.setText(NAME_COL, dialog.getValue());
@@ -1001,6 +1030,7 @@ public class CapabilitySection extends AbstractSection {
       selItem = selItem.getParentItem();
     else if (itemKind == LANG_ITEM || itemKind == FEAT || itemKind == SOFA_ITEM)
       selItem = selItem.getParentItem().getParentItem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     Capability c = getCapabilityFromTreeItem(selItem);
     AddCapabilityTypeDialog dialog = new AddCapabilityTypeDialog(this, c);
     if (dialog.open() == Window.CANCEL)
@@ -1014,6 +1044,7 @@ public class CapabilitySection extends AbstractSection {
       if (dialog.outputs[i])
         c.addOutputType(dialog.types[i], dialog.outputs[i]);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       TreeItem item = new TreeItem(selItem, SWT.NONE);
       setGuiTypeName(item, dialog.types[i]);
       item.setText(INPUT_COL, dialog.inputs[i] ? INPUT : "");
@@ -1039,6 +1070,7 @@ public class CapabilitySection extends AbstractSection {
    * @param itemKind the item kind
    */
   private void handleAddSofa(TreeItem selItem, int itemKind) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (itemKind == CS)
       selItem = selItem.getItems()[1];
     else if (itemKind == LANG || itemKind == TYPE)
@@ -1046,6 +1078,7 @@ public class CapabilitySection extends AbstractSection {
     else if (itemKind == LANG_ITEM || itemKind == FEAT || itemKind == SOFA_ITEM)
       selItem = selItem.getParentItem().getParentItem().getItems()[1];
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     Capability c = getCapabilityFromTreeItem(selItem.getParentItem());
     AddSofaDialog dialog = new AddSofaDialog(this, c);
     if (dialog.open() == Window.CANCEL)
@@ -1057,6 +1090,7 @@ public class CapabilitySection extends AbstractSection {
     else
       c.setOutputSofas(stringArrayAdd(c.getOutputSofas(), dialog.sofaName));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem item = new TreeItem(selItem, SWT.NONE);
     setGuiSofaName(item, dialog.sofaName, dialog.isInput);
     selItem.setExpanded(true);
@@ -1073,14 +1107,18 @@ public class CapabilitySection extends AbstractSection {
    * @param itemKind the item kind
    */
   private void handleAddEditFeature(TreeItem selItem, int itemKind) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (itemKind == FEAT)
       selItem = selItem.getParentItem();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     Capability c = getCapabilityFromTreeItem(selItem.getParentItem());
     String typeName = getFullyQualifiedName(selItem);
 
     // using the CAS to get all the inherited features
     Type type = editor.getCurrentView().getTypeSystem().getType(typeName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
     AddCapabilityFeatureDialog dialog = new AddCapabilityFeatureDialog(this, type, c);
     if (dialog.open() == Window.CANCEL)
@@ -1099,6 +1137,7 @@ public class CapabilitySection extends AbstractSection {
    */
   private void addOrEditFeature(AddCapabilityFeatureDialog dialog, String typeName, // fully
           // qualified
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
           TreeItem parentItem, Capability c) {
     // set the <all features> flag on the type in the model, for input and output
     c.setInputs(setAllFeatures(c.getInputs(), typeName, dialog.allFeaturesInput));
@@ -1113,7 +1152,9 @@ public class CapabilitySection extends AbstractSection {
     //
     // For the "all features" case, we can't set an output state for all features on an input type.
     if (dialog.allFeaturesOutput && (null == getTypeOrFeature(c.getOutputs(), typeName))) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .popMessage(
                       "Unable to set AllFeatures",
                       "Skipping setting of <All Features> for output, because you must have the type specified itself"
@@ -1123,6 +1164,7 @@ public class CapabilitySection extends AbstractSection {
     } else
       c.setOutputs(setAllFeatures(c.getOutputs(), typeName, dialog.allFeaturesOutput));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem[] prevFeatGUI = parentItem.getItems();
     for (int i = 0; i < prevFeatGUI.length; i++) {
       prevFeatGUI[i].dispose();
@@ -1141,6 +1183,7 @@ public class CapabilitySection extends AbstractSection {
     List outputsL = new ArrayList();
 
     for (int i = 0; i < dialog.features.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       String fullName = typeName + ":" + dialog.features[i];
       if (dialog.inputs[i])
         inputsL.add(newFeature(fullName));
@@ -1156,6 +1199,7 @@ public class CapabilitySection extends AbstractSection {
     parentItem.setExpanded(true);
     tt.getColumn(NAME_COL).pack();
     tt.setSelection( parentItem );
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
 
     c.setInputs(replaceFeaturesKeepingTypes(c.getInputs(), typeName, inputsL));
     c.setOutputs(replaceFeaturesKeepingTypes(c.getOutputs(), typeName, outputsL));
@@ -1212,6 +1256,7 @@ public class CapabilitySection extends AbstractSection {
    * @return the type or feature[]
    */
   private TypeOrFeature[] replaceFeaturesKeepingTypes(TypeOrFeature[] items, String typeName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           List features) {
     List newItems = new ArrayList();
     typeName = typeName + ':';
@@ -1248,6 +1293,7 @@ public class CapabilitySection extends AbstractSection {
     // If get here, case = Type declared as Output(input) or not at all while all Features
     // declared as Input (output)
     // Need to add the Type and set the all annotator features value
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (isAllFeatures)
       throw new InternalErrorCDE("invalid state");
     return items;
@@ -1264,6 +1310,7 @@ public class CapabilitySection extends AbstractSection {
    * Pack 04.
    */
   private void pack04() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     tt.getColumn(TITLE_COL).pack();
     tt.getColumn(NAME_COL).pack();
     tt.getColumn(NAMESPACE_COL).pack();
@@ -1304,6 +1351,7 @@ public class CapabilitySection extends AbstractSection {
     addCapabilityButton.setEnabled(true);
 
     boolean selectOK = tt.getSelectionCount() == 1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem item = selectOK ? tt.getSelection()[0] : null;
     int kind = selectOK ? getItemKind(item) : 0;
 
@@ -1332,6 +1380,7 @@ public class CapabilitySection extends AbstractSection {
       for (int i = 0; i < languages.length; i++) {
         if (languages[i].equals(dialog.getValue())) {
           Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .popMessage(
                           "Language spec already defined",
                           "The language specification you entered is already specified.\nPlease enter a different specification, or Cancel this operation."
@@ -1355,6 +1404,7 @@ public class CapabilitySection extends AbstractSection {
   private Capability getCapability(TreeItem item) {
     while (null != item.getParentItem())
       item = item.getParentItem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     return getCapabilityFromTreeItem(item);
   }
 

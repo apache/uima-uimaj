@@ -191,6 +191,7 @@ public class CasIOUtils {
     InputStream casIS = new BufferedInputStream(casUrl.openStream());
     InputStream tsIS = (tsiUrl == null) ? null : new BufferedInputStream(tsiUrl.openStream());
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       return load(casIS, tsIS, aCAS, casLoadMode);
     } finally {
       closeQuitely(casIS);
@@ -215,6 +216,7 @@ public class CasIOUtils {
    * @throws IOException Problem loading
    */
   public static SerialFormat load(URL casUrl, URL tsiUrl, CAS aCAS, boolean leniently)
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       throws IOException {
     return load(casUrl, tsiUrl, aCAS, leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
   }
@@ -310,6 +312,7 @@ public class CasIOUtils {
    */
   public static SerialFormat load(InputStream casInputStream, InputStream tsiInputStream, CAS aCAS,
           CasLoadMode casLoadMode) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     return load(casInputStream, tsiInputStream, aCAS, casLoadMode, null);
   }
 
@@ -360,6 +363,7 @@ public class CasIOUtils {
     int bytesReadCount = casInputStream.read(firstPartOfFile);
     casInputStream.reset();
     String start = new String(firstPartOfFile, 0, bytesReadCount, StandardCharsets.UTF_8).toLowerCase();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
 
     if (start.startsWith("<?xml ")) {  // could be XCAS or XMI
       try {
@@ -392,6 +396,7 @@ public class CasIOUtils {
         if (o instanceof CASSerializer) {
           bcsd.setupCasFromCasMgrSerializer(readCasManager(tsiInputStream));
           bcsd.reinit((CASSerializer) o); // deserialize from object
+//IC see: https://issues.apache.org/jira/browse/UIMA-5017
           return SerialFormat.SERIALIZED;
         } else if (o instanceof CASCompleteSerializer) {
           // with a type system use that, ignore any supplied via tsiInputStream
@@ -449,15 +454,18 @@ public class CasIOUtils {
         case XMI:
           XmiCasSerializer.serialize(aCas, docOS);
           break;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6128
         case XMI_1_1:
           XmiCasSerializer.serialize(aCas, null, docOS, false, null, null, true);
           break;
         case XCAS:
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
           XCASSerializer.serialize(aCas, docOS, true); // true = formatted output
           break;
         case XCAS_1_1:
           XCASSerializer.serialize(aCas, docOS, true, true); // true = formatted output, use xml 1.1
           break;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5017
         case SERIALIZED:
           writeJavaObject(Serialization.serializeCAS(aCas), docOS);
           break;
@@ -468,6 +476,7 @@ public class CasIOUtils {
         case BINARY:              // Java-serialized CAS without type system
           serializeCAS(aCas, docOS);
           break;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
         case BINARY_TSI:              // Java-serialized CAS without type system
           CASSerializer ser = new CASSerializer();
           ser.addCAS((CASImpl) aCas, docOS, true);
@@ -490,6 +499,7 @@ public class CasIOUtils {
           typeSystemWritten = true; // Embedded type system
           break;
         default:
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
           StringBuilder sb = new StringBuilder();
           for (SerialFormat sf : SerialFormat.values()) {
             sb = sb.append(sf.toString()).append(", ");
@@ -506,6 +516,7 @@ public class CasIOUtils {
     // Write type system to the separate stream only if it has not already been embedded into the
     // main stream
     if (tsiOS != null && !typeSystemWritten) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       writeTypeSystem(aCas, tsiOS, true);
     }
   }
@@ -529,6 +540,7 @@ public class CasIOUtils {
   }
   
   public static void writeTypeSystem(CAS aCas, OutputStream aOS, boolean includeIndexDefs) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     writeJavaObject(includeIndexDefs 
                         ? Serialization.serializeCASMgr((CASImpl) aCas)
                         : Serialization.serializeCASMgrTypeSystemOnly((CASImpl) aCas)
@@ -536,6 +548,7 @@ public class CasIOUtils {
   }
   
   private static void closeQuitely(Closeable closeable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     if (closeable != null) {
       try {
         closeable.close();

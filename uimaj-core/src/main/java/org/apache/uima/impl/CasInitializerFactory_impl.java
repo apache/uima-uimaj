@@ -44,6 +44,7 @@ public class CasInitializerFactory_impl implements ResourceFactory {
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     if (aSpecifier instanceof CasInitializerDescription) {
       CasInitializerDescription desc = (CasInitializerDescription) aSpecifier;
@@ -52,9 +53,11 @@ public class CasInitializerFactory_impl implements ResourceFactory {
       // load class using UIMA Extension ClassLoader if there is one
       try {
         Class<?> implClass = Class_TCCL.forName(className, aAdditionalParams);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
 
         // check to see if this is a subclass of BaseCollectionReader and of aResourceClass
         if (!CasInitializer.class.isAssignableFrom(implClass)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 && !CasDataInitializer.class.isAssignableFrom(implClass)) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.NOT_A_CAS_INITIALIZER, new Object[] { className,
@@ -76,11 +79,13 @@ public class CasInitializerFactory_impl implements ResourceFactory {
         } else // failure, for some unknown reason :( This isn't likely to happen
         {
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
                       className, aSpecifier.getSourceUrlString() });
         }
       
       // if an exception occurs, log it but do not throw it... yet
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
       } catch (ClassNotFoundException e) {
         throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
             new Object[] { className, aSpecifier.getSourceUrlString() }, e);

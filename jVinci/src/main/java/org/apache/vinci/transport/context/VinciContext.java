@@ -124,6 +124,7 @@ public class VinciContext {
 
     ResolveResult r;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     long entryTime;
   }
 
@@ -172,6 +173,7 @@ public class VinciContext {
   public String getVNSHost() {
     if (host == null) {
       throw new IllegalStateException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "No VNS host or IP address has been specified! You can specify the VNS host or IP address through the Java command-line option -DVNS_HOST=[hostname], or programmatically using either System.setProperty(\"VNS_HOST\",[hostname]) or VinciContext.getGlobalContext().setVNSHost([hostname]).");
     } else {
       return host;
@@ -286,6 +288,7 @@ public class VinciContext {
    * @return -
    */
   public boolean isSocketKeepAliveEnabled() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
     return socketKeepAliveEnabled;
   }
 
@@ -395,6 +398,7 @@ public class VinciContext {
    * @pre factory != null
    */
   public Transportable sendAndReceive(Transportable in, String service_name,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           TransportableFactory factory) throws IOException, ServiceException, ServiceDownException,
           VNSException {
     VinciClient tempClient = new VinciClient(service_name, factory, this);
@@ -426,6 +430,7 @@ public class VinciContext {
    * @pre socket_timeout &ge; 0
    */
   public Transportable sendAndReceive(Transportable in, String service_name,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           TransportableFactory factory, int socket_timeout) throws IOException, ServiceException {
     VinciClient tempClient = new VinciClient(service_name, factory, this);
     tempClient.setSocketTimeout(socket_timeout);
@@ -461,6 +466,7 @@ public class VinciContext {
    * @pre socket_timeout &ge; 0
    */
   public Transportable sendAndReceive(Transportable in, String service_name,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           TransportableFactory factory, int socket_timeout, int connect_timeout)
           throws IOException, ServiceException {
     VinciClient tempClient = new VinciClient(service_name, factory, this, connect_timeout);
@@ -521,6 +527,8 @@ public class VinciContext {
    * @pre timeout &ge; 0
    */
   public VinciFrame rpc(Transportable in, String service_name, int timeout) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ServiceException, ServiceDownException, VNSException {
     VinciClient tempClient = new VinciClient(service_name, this);
     tempClient.setSocketTimeout(timeout);
@@ -557,6 +565,7 @@ public class VinciContext {
    */
   public VinciFrame rpc(Transportable in, String service_name, int socket_timeout,
           int connect_timeout) throws IOException, ServiceException, ServiceDownException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           VNSException {
     VinciClient tempClient = new VinciClient(service_name, this, connect_timeout);
     tempClient.setSocketTimeout(socket_timeout);

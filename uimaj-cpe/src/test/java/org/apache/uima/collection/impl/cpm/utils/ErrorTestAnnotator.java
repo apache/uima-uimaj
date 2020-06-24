@@ -60,6 +60,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
   private boolean aTestAnnotator = false;
 
   public ErrorTestAnnotator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     FunctionErrorStore.increaseAnnotatorCount();
   }
 
@@ -84,6 +85,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
    */
   public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AnnotatorConfigurationException {
     super.initialize(aContext);
     try {
@@ -126,6 +128,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#reconfigure()
    */
   public void reconfigure() throws AnnotatorConfigurationException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AnnotatorInitializationException {
     super.reconfigure();
     logger.log(LOG_LEVEL, "reconfigure was called");
@@ -141,6 +144,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
           boolean defaultValue) throws AnnotatorContextException {
     Boolean v = (Boolean) context.getConfigParameterValue(param);
     if (v != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       return v;
     }
     return defaultValue;

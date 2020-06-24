@@ -76,6 +76,7 @@ public class PerformanceReportDialog extends JDialog {
     this.getContentPane().setLayout(new BorderLayout());
     JPanel messagePanel = new JPanel();
     this.getContentPane().add(messagePanel, BorderLayout.NORTH);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     messagePanel.setLayout(new GridLayout(3, 1));
     messagePanel.add(statusLabel);
@@ -118,6 +119,7 @@ public class PerformanceReportDialog extends JDialog {
 
     // create root tree node
     DefaultMutableTreeNode root = new DefaultMutableTreeNode("100% (" + totalTime
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + "ms) - Collection Processing Engine");
     // build tree
     it = aProcessTrace.getEvents().iterator();
@@ -138,6 +140,7 @@ public class PerformanceReportDialog extends JDialog {
    * @param aTotalTime the a total time
    */
   public void buildEventTree(ProcessTraceEvent aEvent, DefaultMutableTreeNode aParentNode,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           long aTotalTime) {
     final DecimalFormat pctFmt = new DecimalFormat("##.##%");
     long duration = aEvent.getDuration();
@@ -155,6 +158,7 @@ public class PerformanceReportDialog extends JDialog {
     }
 
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(pctStr + " (" + duration + "ms) - "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + aEvent.getComponentName() + " (" + type + ")");
     aParentNode.add(node);
     Iterator it = aEvent.getSubEvents().iterator();

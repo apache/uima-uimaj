@@ -51,6 +51,7 @@ public class UIMAClassLoaderTest extends TestCase {
    */
   protected void setUp() throws Exception {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     this.testClassPath = JUnitExtension.getFile("ClassLoaderTest/classLoadingTest.jar").getAbsolutePath();
   }
 
@@ -60,13 +61,17 @@ public class UIMAClassLoaderTest extends TestCase {
     assertNull(rsrcMgr.getExtensionClassLoader());
 
     rsrcMgr.setExtensionClassPath("../this/is/a/simple/test.jar", false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3642
     ClassLoader cl = rsrcMgr.getExtensionClassLoader();
     assertNotNull(cl);
     //assertTrue(cl != cl.getClassLoadingLock("Aclass"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4501
     Class classOfLoader = cl.getClass().getSuperclass();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     while (!(classOfLoader.getName().equals("java.lang.ClassLoader"))) {
       classOfLoader = classOfLoader.getSuperclass(); 
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5369
     if (!Misc.isJava9ea) { // skip for java 9
       Method m = classOfLoader.getDeclaredMethod("getClassLoadingLock", String.class);
       m.setAccessible(true);
@@ -104,6 +109,7 @@ public class UIMAClassLoaderTest extends TestCase {
   }
   
   public void testParallelClassLoading() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4501
     final UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
     final Class<?>[] loadedClasses = new Class<?>[Misc.numberOfCores];
     
@@ -139,6 +145,8 @@ public class UIMAClassLoaderTest extends TestCase {
   }
 
   public void testAdvancedClassloadingSampleString() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
     Class testClass = null;
 
@@ -154,6 +162,8 @@ public class UIMAClassLoaderTest extends TestCase {
   }
 
   public void testAdvancedClassloadingSampleURL() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     URL[] urlClasspath = new URL[] { new File(this.testClassPath).toURL() };
     UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
     Class testClass = null;

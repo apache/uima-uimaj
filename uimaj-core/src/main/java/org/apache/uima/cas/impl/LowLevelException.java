@@ -103,6 +103,8 @@ public class LowLevelException extends UIMARuntimeException {
 
 
   public LowLevelException(String aMessageKey, Object[] aArguments, Throwable aCause) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5574
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     super(aCause, aMessageKey, aArguments);
   }
 
@@ -120,6 +122,7 @@ public class LowLevelException extends UIMARuntimeException {
    */
   @Override
   public String getResourceBundleName() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     return resource_file;
   }
 

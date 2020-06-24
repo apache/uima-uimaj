@@ -116,6 +116,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 	private static final String COVERED_TEXT = "coveredText()";
 
 	private static final String[] EMPTY_LIST_TYPE_NAMES = new String[] { CAS.TYPE_NAME_EMPTY_FS_LIST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
 			CAS.TYPE_NAME_EMPTY_INTEGER_LIST, CAS.TYPE_NAME_EMPTY_FLOAT_LIST,
 			CAS.TYPE_NAME_EMPTY_STRING_LIST };
 
@@ -150,6 +152,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 
 	static {
 		Arrays.sort(SIMPLE_VAL_TYPES);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 		CONTAINER_TO_ELEMENTYPE_MAP = new HashMap<>();
 		CONTAINER_TO_ELEMENTYPE_MAP.put(CAS.TYPE_NAME_INTEGER_ARRAY, CAS.TYPE_NAME_INTEGER);
 		CONTAINER_TO_ELEMENTYPE_MAP.put(CAS.TYPE_NAME_STRING_ARRAY, CAS.TYPE_NAME_STRING);
@@ -158,6 +161,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		CONTAINER_TO_ELEMENTYPE_MAP.put(CAS.TYPE_NAME_STRING_LIST, CAS.TYPE_NAME_STRING);
 		CONTAINER_TO_ELEMENTYPE_MAP.put(CAS.TYPE_NAME_FLOAT_LIST, CAS.TYPE_NAME_FLOAT);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 		LIST_TO_ARRAYTYPE_MAP = new HashMap<>();
 		LIST_TO_ARRAYTYPE_MAP.put(CAS.TYPE_NAME_INTEGER_LIST, CAS.TYPE_NAME_INTEGER_ARRAY);
 		LIST_TO_ARRAYTYPE_MAP.put(CAS.TYPE_NAME_STRING_LIST, CAS.TYPE_NAME_STRING_ARRAY);
@@ -200,6 +204,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 	private FeatureValuePathImpl(String pathSnippet, FeatureValuePathImpl child)
 			throws CASRuntimeException {
 		if (pathSnippet == null || pathSnippet.length() == 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 			throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, pathSnippet);
 		}
 
@@ -221,6 +226,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		// path
 		if ((this.isCoveredTextFeature || this.isFsIdFeature || this.isUniqueIdFeature || this.isTypeNameFeature)
 				&& child != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 			throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, pathSnippet);
 		}
 
@@ -269,6 +275,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			switch (typeClass) {
 			case LowLevelCAS.TYPE_CLASS_FLOATARRAY:
 				int position = getArrayIndex(arraySize);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 				return cas.ll_getFloatArrayValue(arrayFS, position, false);
 			case LowLevelCAS.TYPE_CLASS_FSARRAY:
 				int childFS = getFsAtIndex(arrayFS, cas, arraySize);
@@ -303,12 +310,14 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			int childFS = cas.ll_getRefValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
 			return this.childPath.evaluateAsFloat(childFS, cas);
 		} else if (this.isCoveredTextFeature || this.isUniqueIdFeature || this.isFsIdFeature
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 				|| this.isTypeNameFeature) {
 			throw new IllegalStateException("feature path does not denote a float");
 		} else {
 			int typeClass = cas.ll_getTypeClass(this.featureRangeType);
 			switch (typeClass) {
 			case LowLevelCAS.TYPE_CLASS_FLOAT:
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 				return cas.ll_getFloatValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
 			default:
 				throw new IllegalStateException("feature path does not denote a float");
@@ -356,6 +365,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 				} else {
 					// this snippet denotes a float array, just collect it
 					for (int i = 0; i < arraySize; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 						result[i] = cas.ll_getFloatArrayValue(arrayFS, i);
 					}
 				}
@@ -428,6 +438,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			switch (typeClass) {
 			case LowLevelCAS.TYPE_CLASS_INTARRAY:
 				int position = getArrayIndex(arraySize);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 				return cas.ll_getIntArrayValue(arrayFS, position, false);
 			case LowLevelCAS.TYPE_CLASS_FSARRAY:
 				int childFS = getFsAtIndex(arrayFS, cas, arraySize);
@@ -464,6 +475,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		} else if (this.isCoveredTextFeature || this.isTypeNameFeature) {
 			throw new IllegalStateException("feature path does not denote an int");
 		} else if (this.isFsIdFeature) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 			return currentFS;
 		} else if (this.isUniqueIdFeature) {
 			return currentFS; // TODO: return currentFs + chunkId
@@ -518,6 +530,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 				} else {
 					// this snippet denotes an int array, just collect it
 					for (int i = 0; i < arraySize; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 						result[i] = cas.ll_getIntArrayValue(arrayFS, i);
 					}
 				}
@@ -579,6 +592,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    */
 	@Override
   public String evaluateAsString(int currentFS, LowLevelCAS cas) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
 		if (currentFS == 0) {
 			return null;
 		}
@@ -673,6 +687,9 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			// contains the array
 			int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
 					this.featureCode));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 			int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 
@@ -715,6 +732,15 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			// contains the list
 			int listFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
 					this.featureCode));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 			if (this.arrayIndex == USE_ALL_ENTRIES) {
 				ArrayList resultList = (ArrayList) getValueAtListIndex(cas, listFS);
@@ -768,6 +794,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    */
 	@Override
   public int getFSType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
 		if (this.isSimpleRangeType) {
 			return this.typeCode;
 		}
@@ -790,6 +817,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    */
 	@Override
   public String getValueType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
 		if (this.valueTypeName == null) {
 			this.valueTypeName = this.childPath.getValueType();
 			if (this.arrayIndex == USE_ALL_ENTRIES) {
@@ -814,6 +842,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 		result.append(this.featureName);
 		if (this.isArrayOrList) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
 			result.append('[');
 			if (!this.isBracketsOnly && this.arrayIndex >= 0) {
 				result.append(this.arrayIndex);
@@ -841,6 +870,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 
 		if (fsType == LowLevelTypeSystem.UNKNOWN_TYPE_CODE) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 			throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.typeNameInSnippet );
 		}
 
@@ -865,6 +895,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 				rangeTypeCode = ts.ll_getRangeType(this.featureCode);
 			} else {
 				Type type = ts.ll_getTypeForCode(fsType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 				throw new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT, this.featureName, type.getName());
 			}
 		}
@@ -928,6 +959,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 				this.emptyListTypes = new Type[EMPTY_LIST_TYPE_NAMES.length];
 				for (int i = 0; i < EMPTY_LIST_TYPE_NAMES.length; i++) {
 					this.emptyListTypes[i] = ts.ll_getTypeForCode(ts
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 							.ll_getCodeForTypeName(EMPTY_LIST_TYPE_NAMES[i]));
 				}
 
@@ -939,8 +971,10 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			// for simple range types, only [] and fsId() are allowed as child
 			// path
 			if (this.isSimpleRangeType
+//IC see: https://issues.apache.org/jira/browse/UIMA-1853
 					&& !(this.childPath.isBracketsOnly() || 
 					     this.childPath.isFsIdFeature)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 				throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.featureName);
 			}
 
@@ -950,10 +984,12 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			// make sure that the type is a subtype of annotation
 			int annotationType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_ANNOTATION);
 			if (!((TypeSystemImpl) ts).subsumes(annotationType, fsType)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 				throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.featureName);
 			}
 
 			this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 					CAS.TYPE_NAME_STRING)];
 		} else if (this.isFsIdFeature) {
 			this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
@@ -989,6 +1025,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 
 	private boolean isBuiltInFeature() {
 		return this.isFsIdFeature || this.isUniqueIdFeature || this.isCoveredTextFeature
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 				|| this.isTypeNameFeature;
 	}
 
@@ -1002,11 +1039,13 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    */
 	private final void determineArray() throws CASRuntimeException {
 		int startIndex = this.featureName.indexOf('[');
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
 		if (startIndex == -1) {
 			return;
 		}
 		int endIndex = this.featureName.indexOf(']');
 		if (endIndex == -1) { // we're missing the ending bracket
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 			throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.toString());
 		}
 
@@ -1028,6 +1067,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			try {
 				this.arrayIndex = Integer.parseInt(arrayIndexString);
 			} catch (NumberFormatException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 				throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.toString());
 			}
 		}
@@ -1071,12 +1111,15 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    *         not contain an entry for that index.
    */
 	private int getFsAtListIndex(LowLevelCAS cas, int listFS) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
 		if (this.arrayIndex == USE_ALL_ENTRIES || this.listType != TYPE_CLASS_FSLIST) {
 			throw new IllegalStateException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 					"feature does not denote an fs list, or does not denote a singel array entry");
 		}
 		Object valueAtListIndex = getValueAtListIndex(cas, listFS);
 		if (valueAtListIndex != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 			return (Integer) valueAtListIndex;
 		}
 		return 0;
@@ -1090,6 +1133,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		case TYPE_CLASS_STRINGLIST:
 			return cas.ll_getStringValue(listFS, this.headFeature);
 		case TYPE_CLASS_INTEGERLIST:
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 			return cas.ll_getIntValue(listFS, this.headFeature);
 		case TYPE_CLASS_FLOATLIST:
 			return cas.ll_getFloatValue(listFS, this.headFeature);
@@ -1160,6 +1204,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 
 	private boolean isEmptyList(LowLevelCAS cas, int type) {
 		Type candidateType = cas.ll_getTypeSystem().ll_getTypeForCode(type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 		TypeSystem typeSystem = ((CASImpl) cas).getTypeSystem();
 		boolean isEmpty = false;
 		for (int i = 0; i < this.emptyListTypes.length && (!isEmpty); i++) {

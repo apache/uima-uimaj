@@ -52,6 +52,7 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
    */
   public SliderField(int min, int max, int initialValue) {
     setLayout(new FlowLayout(FlowLayout.LEFT, 4, 4));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     slider = new JSlider(min, max, initialValue);
 
@@ -78,6 +79,7 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
   public void stateChanged(ChangeEvent e) {
     int sliderValue = slider.getValue();
     textField.setValue(sliderValue);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 
     if (!slider.getValueIsAdjusting())
       textField.setValue(sliderValue);
@@ -114,6 +116,7 @@ public class SliderField extends JPanel implements ChangeListener, PropertyChang
    */
   public int getValue() {
     Integer value = (Integer) textField.getValue();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     return value;
   }
 

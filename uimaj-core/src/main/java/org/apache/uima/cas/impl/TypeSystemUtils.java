@@ -35,6 +35,7 @@ public abstract class TypeSystemUtils {
 
   // Return value constants for feature path checking on type system
   public static enum PathValid {
+//IC see: https://issues.apache.org/jira/browse/UIMA-640
     NEVER, POSSIBLE, ALWAYS
   }
 
@@ -43,6 +44,7 @@ public abstract class TypeSystemUtils {
     private ParsingError error = null;
 
     protected TypeSystemParse() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       super();
     }
 
@@ -291,6 +293,7 @@ public abstract class TypeSystemUtils {
     // space
     // boundaries. We need to see the delimiters to make sure there are no
     // gratuitous delimiters at the beginning or the end.
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
     StringTokenizer tok = new StringTokenizer(name, NAMESPACE_SEPARATOR_AS_STRING, true);
     // Loop over the tokens and check that every item is an identifier.
     while (tok.hasMoreTokens()) {
@@ -300,6 +303,7 @@ public abstract class TypeSystemUtils {
       }
       // If there is a next token, it must be a separator.
       if (tok.hasMoreTokens()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
         if (!tok.nextToken().equals(NAMESPACE_SEPARATOR_AS_STRING)) {
           return false;
         }
@@ -424,6 +428,7 @@ public abstract class TypeSystemUtils {
    * @return An integer encoding the the type class. See above.
    */
   public static final int classifyType(Type type) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5387
     return TypeSystemImpl.getTypeClass((TypeImpl) type);
   }
 

@@ -50,6 +50,7 @@ public class JsonMetaDataObjectTest extends TestCase {
     apple1 = new TestFruitObject();
     apple1.setAttributeValue("name", "Apple");
     apple1.setAttributeValue("color", "red");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     apple1.setAttributeValue("avgWeightLbs", 0.3F);
     apple1.setAttributeValue("avgCostCents", 40);
     apple1.setAttributeValue("citrus", Boolean.FALSE);

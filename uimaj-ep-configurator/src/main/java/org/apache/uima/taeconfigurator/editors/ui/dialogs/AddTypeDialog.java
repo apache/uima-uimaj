@@ -80,6 +80,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
    * @param aSection the a section
    */
   public AddTypeDialog(AbstractSection aSection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(aSection, "Add a Type", "Use this panel to specify a type.");
     typeSection = (TypeSection) aSection;
   }
@@ -103,6 +104,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingTd);
     createWideLabel(mainArea,
             "Type names must be globally unique, unless you are intentionally redefining another type.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // This part of the form looks like this sketch
     //   
@@ -118,6 +120,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     typeNameUI.setText("some.typename.you.Choose");
 
     new Label(twoCol, SWT.NONE).setText("Supertype:");
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     supertypeNameUI = newTypeInput(section, twoCol);
     descriptionUI = newDescription(twoCol, S_);
     newErrorMessage(twoCol, 2);
@@ -133,6 +136,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     else
       supertypeNameUI.setText(CAS.TYPE_NAME_ANNOTATION);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return mainArea;
   }
 
@@ -146,6 +150,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
    */
   @Override
   public TypesWithNameSpaces getTypeSystemInfoList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     TypesWithNameSpaces result = super.getTypeSystemInfoList();
     boolean hasFeatures = false;
     boolean hasAllowedValues = false;
@@ -174,6 +179,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
         continue;
       if (hasFeatures && CAS.TYPE_NAME_STRING.equals(type.getName()))
         continue;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
       result.add(type.getName());
     }
     allTypesList = result;
@@ -210,6 +216,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     }
     if (!typeContainedInTypeSystemInfoList(supertypeName, allTypesList)) {
       setErrorMessage("SuperType '" + supertypeName
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + "' is unknown. If this is intended, please define it first.");
       return false;
     }

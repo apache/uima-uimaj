@@ -301,6 +301,10 @@ public class CasWrapperForTstng implements CAS {
   
   @Override
   public void protectIndexes(Runnable runnable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4162
+//IC see: https://issues.apache.org/jira/browse/UIMA-4160
+//IC see: https://issues.apache.org/jira/browse/UIMA-4158
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
     originalCAS.protectIndexes(runnable);
   }
 

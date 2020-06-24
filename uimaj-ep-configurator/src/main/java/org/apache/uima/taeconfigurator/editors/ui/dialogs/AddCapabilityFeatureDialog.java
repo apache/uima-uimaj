@@ -85,6 +85,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
    */
   public AddCapabilityFeatureDialog(AbstractSection aSection, Type aSelectedType, Capability c) {
     super(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             aSection,
             "Specify features input and / or output",
             "Designate by mouse clicking one or more features in the Input and/or Output column, to designate as Input and/or Output press \"OK\"");
@@ -112,6 +113,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     Tree tree = newTree(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION);
     ((GridData) tree.getLayoutData()).heightHint = 100;
     tree.setHeaderVisible(true);
@@ -123,6 +125,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
     TreeItem item = new TreeItem(tree, SWT.NONE);
     item.setText(0, CapabilitySection.ALL_FEATURES);
     TypeOrFeature tof = AbstractSection.getTypeOrFeature(capability.getInputs(), selectedType
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getName());
     setChecked(item, 1, null == tof ? false : tof.isAllAnnotatorFeatures());
     tof = AbstractSection.getTypeOrFeature(capability.getOutputs(), selectedType.getName());
@@ -159,6 +162,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
   protected void toggleValue(TableItem item, int col) {
     if (1 == col && inputNotAllowed) {
       Utility.popMessage("Input not allowed",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "Input not allowed unless the type itself is also marked as an input.",
               MessageDialog.ERROR);
       return;
@@ -168,6 +172,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
       if (item.getText(0).equals(CapabilitySection.ALL_FEATURES))
         uncheckAllOtherFeatures(col);
       else
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         setChecked(f_tree.getItem(0), col, false); // uncheck all-features
   }
 
@@ -195,6 +200,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
     for (int i = f_tree.getItemCount() - 1; i >= 1; i--) {
       TreeItem item = f_tree.getItem(i);
       if (item.getText(1).equals(checkedIndicator(1))
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || item.getText(2).equals(checkedIndicator(2))) {
         names.add(item.getText(0));
         ins.add(item.getText(1).equals(checkedIndicator(1)));
@@ -206,6 +212,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
     inputs = new boolean[features.length];
     outputs = new boolean[features.length];
     for (int i = 0; i < features.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       inputs[i] = (Boolean) ins.get(i);
       outputs[i] = (Boolean) outs.get(i);
     }

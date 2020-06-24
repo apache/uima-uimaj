@@ -36,6 +36,7 @@ public class JavaTimer implements UimaTimer {
 
   // starts the timer
   public long startIt() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     start = System.currentTimeMillis();
     return start;
   }

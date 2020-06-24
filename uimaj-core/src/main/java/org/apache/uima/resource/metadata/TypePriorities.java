@@ -224,5 +224,6 @@ public interface TypePriorities extends MetaDataObject {
    *           if either the import target does not exist or is invalid
    */
   public void resolveImports(Collection<String> aAlreadyImportedPriorityListURLs,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceManager aResourceManager) throws InvalidXMLException;
 }

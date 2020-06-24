@@ -63,6 +63,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
 
   @SuppressWarnings("unused")
   private IntegerArray() { // never called. Here to disable default constructor
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     theArray = null;
   }
 
@@ -72,6 +73,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
    * @param length The number of elements in the new array
    */  
   public IntegerArray(JCas jcas, int length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     super(jcas);
     theArray = new int[length];
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
@@ -96,6 +98,8 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
       _casView.adjustLastFsV2Size_arrays(length);
     }    
   }
@@ -124,6 +128,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
   @Override
   public void copyFromArray(int[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, destPos,  length);
   }
 
@@ -168,12 +173,14 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
     _casView.checkArrayBounds(theArray.length, srcOffset, length);
     for (int i = 0; i < length; i++) {
       // use set to get proper logging
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
       set(i + destOffset, Integer.parseInt(src[i + srcOffset]));
     }
   }
 
   // internal use only
   public int[] _getTheArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return theArray;
   }
   
@@ -184,6 +191,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
   public void copyValuesFrom(CommonArrayFS v) {
     IntegerArray bv = (IntegerArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
@@ -192,6 +200,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
    */
   @Override
   public void setArrayValueFromString(int i, String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     set(i, Integer.parseInt(v));
   }
 
@@ -202,6 +211,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
     
   @Override
   public OfInt iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     return new OfInt() {
       
       int i = 0;
@@ -219,6 +229,9 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
       
       @Override
       public boolean hasNext() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
         return i < size();
       }
 
@@ -231,6 +244,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
 
       @Override
       public int nextInt() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
         if (!hasNext())
           throw new NoSuchElementException();
         return get(i++);
@@ -251,6 +265,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
    * @return a newly created and populated array
    */
   public static IntegerArray create(JCas jcas, int[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     IntegerArray intArray = new IntegerArray(jcas, a.length);
     intArray.copyFromArray(a, 0, 0, a.length);
     return intArray;
@@ -261,6 +276,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
    * @param action -
    */
   public void forEach(IntConsumer action) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5305
     for (int d : theArray) {
       action.accept(d);
     }
@@ -272,6 +288,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
    * @return true if the item is in the array
    */
   public boolean contains(int item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     for (int b : theArray) {
       if (b == item) {
         return true;

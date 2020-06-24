@@ -37,6 +37,7 @@ public class AnalysisEngineManagementImplTest extends TestCase {
     
     // Try multi-threaded
     final Random random = new Random();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     final Set<String> s = Collections.newSetFromMap(new ConcurrentHashMap<>());
     int numberOfThreads = Math.min(50, Misc.numberOfCores * 5); 
 

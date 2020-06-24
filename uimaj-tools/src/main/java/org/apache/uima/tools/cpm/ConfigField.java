@@ -115,6 +115,7 @@ public class ConfigField {
    * @return the field value
    */
   public Object getFieldValue() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (fieldComponent instanceof JTextField) {
       String fieldString = ((JTextField) fieldComponent).getText();
       if (classString.equals("Integer")) {
@@ -132,6 +133,7 @@ public class ConfigField {
       } else
         return fieldString;
     } else if (fieldComponent instanceof JCheckBox)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       return ((JCheckBox) fieldComponent).isSelected();
     else if (fieldComponent instanceof FileSelector)
       return ((FileSelector) fieldComponent).getSelected();

@@ -77,6 +77,7 @@ public class CpeDescriptorFactory {
    * @return An empty CpeDescription object with default settings
    */
   public static CpeDescription produceDescriptor() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     CpeDescription descriptor = null;
     descriptor = new CpeDescriptionImpl();
 
@@ -145,6 +146,7 @@ public class CpeDescriptorFactory {
    * @throws CpeDescriptorException if there is a failure
    */
   public static CpeCollectionReader produceCollectionReader(String aCollectionReaderDescriptorPath,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CpeDescription aDescriptor) throws CpeDescriptorException {
     CpeCollectionReader[] colR = null;
     if (aDescriptor == null) {
@@ -167,6 +169,7 @@ public class CpeDescriptorFactory {
    * @throws CpeDescriptorException the cpe descriptor exception
    */
   public static CpeCollectionReader produceCollectionReader(String aCollectionReaderDescriptorPath)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     CpeCollectionReader colR = produceCollectionReader();
     colR.getCollectionIterator().getDescriptor().getInclude().set(aCollectionReaderDescriptorPath);
@@ -193,6 +196,7 @@ public class CpeDescriptorFactory {
    * @throws CpeDescriptorException the cpe descriptor exception
    */
   public static CpeCollectionReaderIterator produceCollectionReaderIterator(String aPath)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     CpeCollectionReaderIterator iterator = new CpeCollectionReaderIteratorImpl();
     iterator.setDescriptor(produceComponentDescriptor(aPath));
@@ -210,6 +214,7 @@ public class CpeDescriptorFactory {
    */
   @Deprecated
 public static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aPath, CpeDescription aDescriptor) throws CpeDescriptorException {
     if (aDescriptor == null) {
       aDescriptor = produceDescriptor();
@@ -228,6 +233,7 @@ public static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitia
    */
   @Deprecated
 protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aInitializerDescriptorPath) {
     try {
       return produceCollectionReaderCasInitializer(aInitializerDescriptorPath, null);
@@ -392,6 +398,7 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
    * @throws CpeDescriptorException if an error occurs
    */
   public static CpeLocalCasProcessor produceLocalCasProcessor(String aName, String aSoFa)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     CpeLocalCasProcessor processor = new CpeLocalCasProcessorImpl();
     processor.setName(aName);
@@ -407,6 +414,7 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
    * @throws CpeDescriptorException if an error occurs
    */
   public static CpeRemoteCasProcessor produceRemoteCasProcessor(String aName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     CpeRemoteCasProcessor processor = new CpeRemoteCasProcessorImpl();
     processor.setName(aName);
@@ -432,7 +440,10 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
    * @throws CpeDescriptorException the cpe descriptor exception
    */
   public static CpeResourceManagerConfiguration produceResourceManagerConfiguration(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aResourceMgrConfigurationPath, CpeDescription aDescriptor)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     if (aDescriptor == null) {
       aDescriptor = produceDescriptor();
@@ -450,6 +461,7 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
    * @throws CpeDescriptorException the cpe descriptor exception
    */
   public static CpeResourceManagerConfiguration produceResourceManagerConfiguration(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aResourceMgrConfigurationPath) throws CpeDescriptorException {
     CpeResourceManagerConfiguration resMgr = new CpeResourceManagerConfigurationImpl();
     resMgr.set(aResourceMgrConfigurationPath);

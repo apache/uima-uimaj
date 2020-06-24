@@ -75,10 +75,12 @@ public class CpmAE_ErrorTest extends TestCase {
   private static final String FS = System.getProperties().getProperty("file.separator");
 
   public CpmAE_ErrorTest() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     System.gc();
   }
 
   private void cpeProcessNoMsg(CollectionProcessingEngine cpe, TestStatusCallbackListener listener) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
     UIMAFramework.getLogger().setLevel(Level.OFF);
     try {
       cpe.process();
@@ -149,6 +151,7 @@ public class CpmAE_ErrorTest extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
             true, listener.isFinished());
     assertEquals(
@@ -175,6 +178,9 @@ public class CpmAE_ErrorTest extends TestCase {
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "NullPointerException",
             exceptionSequence, "process");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -184,6 +190,8 @@ public class CpmAE_ErrorTest extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
             true, listener.isFinished());
     assertEquals(
@@ -262,6 +270,7 @@ public class CpmAE_ErrorTest extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm is still working or the collectionProcessComplete-method of listener was not called.",
             true, listener.isFinished());
     assertEquals(
@@ -333,10 +342,17 @@ public class CpmAE_ErrorTest extends TestCase {
       // setup CPM
       CollectionProcessingEngine cpe = setupCpm(documentCount, "AnnotatorConfigurationException",
               exceptionSequence, "initialize");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
       cpe.addStatusCallbackListener(listener);
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
       cpeProcessNoMsg(cpe, listener);
     } catch (NullPointerException e) {
       // e.printStackTrace();
@@ -348,6 +364,9 @@ public class CpmAE_ErrorTest extends TestCase {
     // check the results, if everything worked as expected
     assertEquals("The expected NullPointerException wasn't thrown!", true, exceptionThrown);
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm called the listener, that the cpm has finished - which normally could not be.",
             false, listener.isFinished());
     assertEquals("The aborted-method of the listener was called. (new behaviour?)", false, listener
@@ -415,6 +434,7 @@ public class CpmAE_ErrorTest extends TestCase {
 
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null,
             null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // Create and register a Status Callback Listener
     listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -428,6 +448,7 @@ public class CpmAE_ErrorTest extends TestCase {
     assertEquals("The cpm didn't finish correctly! Abort was called.", false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
     assertEquals("There are not as much ae's running as expected ", count, FunctionErrorStore
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getAnnotatorCount());
     // that's it.
   }
@@ -453,6 +474,7 @@ public class CpmAE_ErrorTest extends TestCase {
     // setup CPM
     Object[] objs = setupConfigurableCpm(documentCount, exceptionName, exceptionSequence,
             functionName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     CpeDescription cpeDesc = (CpeDescription) objs[0];
     cpeDesc.setProcessingUnitThreadCount(1);
@@ -468,6 +490,7 @@ public class CpmAE_ErrorTest extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm called the listener, that the cpm has finished - which normally could not be.",
             false, listener.isFinished());
     assertEquals("The aborted-method of the listener wasn't called.", true, listener.isAborted());
@@ -513,6 +536,7 @@ public class CpmAE_ErrorTest extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm called the listener, that the cpm has finished - which normally could not be.",
             false, listener.isFinished());
     assertEquals("The aborted-method of the listener wasn't called.", true, listener.isAborted());
@@ -558,6 +582,7 @@ public class CpmAE_ErrorTest extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
             true, listener.isFinished());
     assertEquals("The cpm didn't finish correctly! Abort in the listener was called.", false,
@@ -604,6 +629,7 @@ public class CpmAE_ErrorTest extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
             false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
@@ -650,6 +676,7 @@ public class CpmAE_ErrorTest extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
             false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
@@ -681,11 +708,13 @@ public class CpmAE_ErrorTest extends TestCase {
 
     // Create and register a Status Callback Listener
     cpe.addStatusCallbackListener(listener);
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
     cpeProcessNoMsg(cpe, listener);
     // enable System.out
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
             false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
@@ -711,6 +740,12 @@ public class CpmAE_ErrorTest extends TestCase {
     // setup CPM
     Object[] objs = setupConfigurableCpm(documentCount, exceptionName, exceptionSequence,
             functionName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     CpeDescription cpeDesc = (CpeDescription) objs[0];
     cpeDesc.setProcessingUnitThreadCount(1);
@@ -719,15 +754,32 @@ public class CpmAE_ErrorTest extends TestCase {
     integratedProcessor.setActionOnMaxError("terminate");
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null,
             null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // Create and register a Status Callback Listener
     // listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
     cpeProcessNoMsg(cpe, listener);
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
             false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
@@ -802,6 +854,7 @@ public class CpmAE_ErrorTest extends TestCase {
 
       // managing the default behaviour of this client
       CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .produceCasProcessor("ErrorTestAnnotator");
       integratedProcessor.setDescriptor(taeDesc);
 
@@ -861,6 +914,8 @@ public class CpmAE_ErrorTest extends TestCase {
     CpeDescription cpeDesc = null;
     CpeIntegratedCasProcessor integratedProcessor = null;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       String colReaderBase = JUnitExtension.getFile(
               "CpmTests" + FS + "ErrorTestCollectionReader.xml").getAbsolutePath();
       String taeBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestAnnotator.xml")
@@ -875,6 +930,8 @@ public class CpmAE_ErrorTest extends TestCase {
         taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
       } else {
         taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase, true, functionName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 exceptionSequence, exceptionName);
       }
       String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase);
@@ -887,6 +944,7 @@ public class CpmAE_ErrorTest extends TestCase {
       integratedProcessor.setDescriptor(taeDesc);
 
       CpeIntegratedCasProcessor casConsumer = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .produceCasProcessor("ErrorTest CasConsumer");
       casConsumer.setDescriptor(casConsumerDesc);
 
@@ -917,6 +975,7 @@ public class CpmAE_ErrorTest extends TestCase {
     public void aborted() {
       super.aborted();
       System.out.println("abort was called.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       this.cpe.stop();
     }
   }

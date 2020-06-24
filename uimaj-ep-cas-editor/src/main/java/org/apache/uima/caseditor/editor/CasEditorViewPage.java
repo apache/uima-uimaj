@@ -173,6 +173,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
         ISelectionProvider selectionProvider = page.getSite().getSelectionProvider();
         selectionProvider.addSelectionChangedListener(CasEditorViewPage.this::selectionChanged);
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
         subActionBar = (SubActionBars) casViewPage.getSite().getActionBars();
         
         casViewPage.setActionBars(subActionBar);
@@ -186,6 +187,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
       }
       else {
         book.showPage(messageText);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
         getSite().getActionBars().updateActionBars();
       }
     }
@@ -198,6 +200,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
    */
   public void setCASViewPage(IPageBookViewPage page) {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
     if (book != null && casViewPage != null) {
       casViewPage.dispose();
       subActionBar.dispose();
@@ -222,6 +225,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
   public void dispose() {
     super.dispose();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
     if (casViewPage != null) {
       casViewPage.dispose();
       subActionBar.dispose();

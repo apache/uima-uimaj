@@ -108,6 +108,7 @@ public interface CpeCasProcessors extends MetaDataObject {
    */
   public void addCpeCasProcessor(CpeCasProcessor aCasProcessor, int aInsertPosition)
           throws CpeDescriptorException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Appends new CasProcessor to existing list of CasProcessors

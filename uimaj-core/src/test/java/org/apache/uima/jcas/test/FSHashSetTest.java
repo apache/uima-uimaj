@@ -63,6 +63,7 @@ public class FSHashSetTest extends TestCase {
 	}
 
 	private void basic(FSHashSet<Token> s) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5650
     FSHashSet<Token> set = s;
     Token t1 = new Token(jcas);
     Token t2 = new Token(jcas);
@@ -90,6 +91,7 @@ public class FSHashSetTest extends TestCase {
 	}
 	
 	public void testBasicInt2FS() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5664
 	  Int2FS<Token> m = new Int2FS<>(jcas);
 	  Int2FS<Token> m2 = new Int2FS<>(jcas, 11);
 

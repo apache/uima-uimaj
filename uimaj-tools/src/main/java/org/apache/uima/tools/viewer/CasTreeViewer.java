@@ -100,6 +100,7 @@ public class CasTreeViewer extends JPanel {
     rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
     annotationTypeLabel = new JLabel("Annotation Type: ");
     rightPanel.add(annotationTypeLabel);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String[] columnNames = { "Feature", "Value" };
     featureTable = new JTable(new DefaultTableModel(columnNames, 1));
 
@@ -115,6 +116,7 @@ public class CasTreeViewer extends JPanel {
         TreePath selPath = tree.getSelectionPath();
         if (selPath != null) {
           DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selPath
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getLastPathComponent();
           Object userObj = selectedNode.getUserObject();
           if (userObj instanceof AnnotationTreeNodeObject) {
@@ -167,6 +169,7 @@ public class CasTreeViewer extends JPanel {
         tableModel.addRow(new Object[] { featName, strVal });
       } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
         int intVal = aAnnotation.getIntValue(feat);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         tableModel.addRow(new Object[] { featName, intVal});
       } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
         float floatVal = aAnnotation.getFloatValue(feat);
@@ -274,6 +277,7 @@ public class CasTreeViewer extends JPanel {
         {
           // add this annotation as a child of aParentNode
           DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(new AnnotationTreeNodeObject(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   curAnnot));
           aParentNode.add(newNode);
           // recursively add children to this node
@@ -303,6 +307,7 @@ public class CasTreeViewer extends JPanel {
         taeDescriptor = new File(args[0]);
         inputFile = new File(args[1]);
         validArgs = taeDescriptor.exists() && !taeDescriptor.isDirectory() && inputFile.exists()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 && !inputFile.isDirectory();
       }
       if (!validArgs) {
@@ -318,6 +323,7 @@ public class CasTreeViewer extends JPanel {
 
         // read document from file
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
         String document = FileUtils.file2String(inputFile);
         
         CAS.setDocumentText(getText(document).trim());
@@ -339,6 +345,7 @@ public class CasTreeViewer extends JPanel {
 
         // Set frame icon image
         try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-295
           frame.setIconImage(Images.getImage(Images.MICROSCOPE));
         } catch (IOException e) {
           System.err.println("Image could not be loaded: " + e.getMessage());
@@ -394,6 +401,7 @@ public class CasTreeViewer extends JPanel {
    */
   private static void printUsageMessage() {
     System.err.println("Usage: UimaFrameworkTreeViewer "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + "<TAE descriptor or TEAR file name> <input file>");
   }
 
@@ -409,6 +417,7 @@ public class CasTreeViewer extends JPanel {
     Insets insets = getInsets();
     Dimension paneSize = new Dimension(d.width - insets.left - insets.right, d.height - insets.top
             - insets.bottom);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     splitPane.setPreferredSize(paneSize);
     splitPane.setSize(paneSize);

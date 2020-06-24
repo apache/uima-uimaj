@@ -53,6 +53,7 @@ final class BoxDrawingStrategy implements IDrawingStrategy {
 
         int correctedHeight;
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-1951
         if (bounds.height > 0) {
           correctedHeight = bounds.height -1;
         }
@@ -62,6 +63,7 @@ final class BoxDrawingStrategy implements IDrawingStrategy {
         
         int correctedWidth;
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
         if (bounds.width > 0)
           correctedWidth = bounds.width -1;
         else

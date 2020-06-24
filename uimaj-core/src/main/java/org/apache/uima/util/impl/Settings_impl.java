@@ -64,6 +64,7 @@ public class Settings_impl implements Settings {
   // Thread-local map of properties being resolved +for detecting circular references.
   private ThreadLocal<HashMap<String, Integer>> tlResolving = new ThreadLocal<HashMap<String, Integer>>() {
     protected synchronized HashMap<String, Integer> initialValue() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       return new HashMap<>();
     }
   };
@@ -75,6 +76,7 @@ public class Settings_impl implements Settings {
   private Pattern evalPattern = Pattern.compile("\\$\\{.*?\\}");
 
   public Settings_impl() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     map = new HashMap<>();
   }
 
@@ -100,11 +102,14 @@ public class Settings_impl implements Settings {
    */
   public void load(InputStream in) throws IOException {
     // Process each logical line (after blanks & comments removed and continuations extended)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
     rdr = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
     String line;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
     final String legalPunc = "./-~_";   // Acceptable punctuation characters
     while ((line = getLine()) != null) {
       // Remove surrounding white-space and split on first '=' or ':' or white-space
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
       String[] parts = line.split("\\s*[:=\\s]\\s*", 2);
       String name = parts[0];
       // Restrict names to alphanumeric plus "joining" punctuation: ./-~_
@@ -130,6 +135,7 @@ public class Settings_impl implements Settings {
       } else {
         if (!value.equals(map.get(name))) {
           // Key {0} already in use ... ignoring value "{1}"
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
           UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "load",
                   LOG_RESOURCE_BUNDLE, "UIMA_external_override_ignored__CONFIG", new Object[] { name, value });
         }
@@ -158,6 +164,7 @@ public class Settings_impl implements Settings {
                 new Object[] { fname });
         try {
           InputStream is = null; 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5411
           if (fname.startsWith("path:")) {  // Convert to a url and search the datapath & classpath
             URL relativeUrl = new URL("file", "", fname.substring(5).replace('.', '/')+".settings");
             URL relPath = relativePathResolver.resolveRelativePath(relativeUrl);
@@ -177,6 +184,7 @@ public class Settings_impl implements Settings {
               throw new FileNotFoundException(fname + " - not in filesystem.");
             }
           }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2435
           try {
             load(is);
           } finally {
@@ -224,6 +232,7 @@ public class Settings_impl implements Settings {
     }
 
     // Add the name for the duration of the lookup
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     resolving.put(name, resolving.size());
     try {
       return resolve(from, map.get(name));
@@ -403,6 +412,7 @@ public class Settings_impl implements Settings {
     }
     iend = line.length() - 1;
     if ((line.charAt(iend) == ',' && !isEscaped(line, iend)) || 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
             line.equals("[") || nextline.charAt(0) == ']') {
       return line + getArray(nextline);
     } else {

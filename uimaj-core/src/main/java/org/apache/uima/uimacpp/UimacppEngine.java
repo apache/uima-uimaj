@@ -39,6 +39,7 @@ public class UimacppEngine {
   private static String[] compatibleTafJniVersions = { "2.0" };
 
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-390
     String uimacpp_lib = "uima";
     String debug = System.getProperty("DEBUG_UIMACPP");
     if (debug != null) {
@@ -48,6 +49,7 @@ public class UimacppEngine {
       }
     }
     System.loadLibrary(uimacpp_lib);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       String jniVersion = getTafJNIVersion();
       boolean compatible = false;
@@ -61,9 +63,11 @@ public class UimacppEngine {
         createResourceManager();
       } else {
         throw new UIMARuntimeException(UIMARuntimeException.INCOMPATIBLE_TAF_JNI_LIBRARY,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { jniVersion });
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-11
     } catch (UimacppException exc) {
       throw new UIMARuntimeException(exc.getEmbeddedException());
     }
@@ -87,6 +91,7 @@ public class UimacppEngine {
   // configuration of the TAF resource manager
   private static native void configureResourceManagerJNI(String workDir, String dataDir)
           throws InternalTafException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   // constructor
   private native void constructorJNI() throws InternalTafException;
@@ -103,6 +108,7 @@ public class UimacppEngine {
           int[] stringSubTypeValuePos, String[] indexNames, int[] nameToIndexMap,
           int[] indexingStrategy, int[] comparatorIndex, int[] comparators)
           throws InternalTafException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private native void destroyJNI() throws InternalTafException;
 
@@ -113,6 +119,7 @@ public class UimacppEngine {
    */
   private native void fillCASJNI(int[] heapArray, int[] fsIndex, String[] stringTable,
           byte[] byteArray, short[] shortArray, long[] longArray);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private native void processJNI(int isTCas, String sofaName, int[] resultSpecTypes,
           int[] resultSpecFeatures) throws InternalTafException;
@@ -201,6 +208,7 @@ public class UimacppEngine {
    * @throws UimacppException wraps any exception
    */
   public static void configureResourceManager(String workDirectory, String dataDirectory)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws UimacppException {
     try {
       configureResourceManagerJNI(workDirectory, dataDirectory);
@@ -258,6 +266,7 @@ public class UimacppEngine {
    * @param configFile
    *          the configuration as a string (not a filename)
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-11
   void initialize(String config) throws UimacppException {
     // for (int i = 0; i < casMgrSerializer.indexNames.length; i++) {
     // System.out.println(casMgrSerializer.indexNames[i]);
@@ -277,12 +286,14 @@ public class UimacppEngine {
    * @param serialized
    *          CAS definition
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-11
   void typeSystemInit(CASMgrSerializer casMgrSerializer) throws UimacppException {
     // for (int i = 0; i < casMgrSerializer.indexNames.length; i++) {
     // System.out.println(casMgrSerializer.indexNames[i]);
 
     try {
       typeSystemInitJNI(casMgrSerializer.typeNames, casMgrSerializer.featureNames,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               casMgrSerializer.typeInheritance, casMgrSerializer.featDecls,
               casMgrSerializer.topTypeCode, casMgrSerializer.featureOffsets,
               casMgrSerializer.typeOrder, casMgrSerializer.stringSubtypes,
@@ -308,6 +319,7 @@ public class UimacppEngine {
   }
 
   private static void serializeResultSpecification(ResultSpecification rs, CASImpl cas,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IntVector resultSpecTypes, IntVector resultSpecFeatures) {
     TypeOrFeature[] tofs = rs.getResultTypesAndFeatures();
     TypeSystemImpl tsImpl = cas.getTypeSystemImpl();
@@ -350,6 +362,7 @@ public class UimacppEngine {
          */
 
         fillCASJNI(casSerializerIn.heapArray, casSerializerIn.fsIndex, casSerializerIn.stringTable,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 casSerializerIn.byteHeapArray, casSerializerIn.shortHeapArray,
                 casSerializerIn.longHeapArray);
       }
@@ -518,6 +531,7 @@ public class UimacppEngine {
 
       // TafException tafException = new TafException(
       // itExc.getTafErrorCode(), exc.getMessage() );
+//IC see: https://issues.apache.org/jira/browse/UIMA-11
       throw new UimacppException(itExc);
     } else {
       throw new UimacppException(exc);

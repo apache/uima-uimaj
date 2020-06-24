@@ -104,6 +104,7 @@ public interface AnalysisEngineManagement extends ManagementObject {
    * @return a map from String keys to AnalysisEngineManagement objects
    */
   Map<String, AnalysisEngineManagement> getComponents();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Resets all of the performance statistics to zero. For an Aggregate Analysis Engine, also resets
@@ -115,6 +116,7 @@ public interface AnalysisEngineManagement extends ManagementObject {
    * Gets the current state of an AnalysisEngine. The AE should either be in Initializing or Ready state.
    * @return the state of the analysis engine, from the State enum above
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2217
   String getState();
   
   /**

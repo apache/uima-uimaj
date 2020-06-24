@@ -100,6 +100,7 @@ public class JCasTest extends TestCase {
 	public void setUp() throws Exception {
 		try {
 			try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
 				this.cas = CASInitializer.initCas(new CASTestSetup(), null);
 //				this.ts = this.cas.getTypeSystem();
 				this.jcas = cas.getJCas();
@@ -117,6 +118,7 @@ public class JCasTest extends TestCase {
 			System.out.print("setup caught CAS Exception with message: ");
 			String m = e1.getMessage();
 			System.out.println(m);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 			assertEquals("The JCas cannot be initialized.  The following errors occurred: "
 			    + "\nUnable to find required getPlainRef method for JCAS type aa.Root with return type of org.apache.uima.jcas.cas.TOP."
 			    + "\nUnable to find required setPlainRef method for JCAS type aa.Root with argument type of org.apache.uima.jcas.cas.TOP.\n", m);
@@ -134,6 +136,7 @@ public class JCasTest extends TestCase {
 			System.out.print("\nCaught CAS Exception with message: ");
 			String m = e1.getMessage();
 			System.out.println(m);
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
 			if (!(e.getMessageKey().equals(err))) {
 				assertTrue(false);
 			}
@@ -145,6 +148,7 @@ public class JCasTest extends TestCase {
 		this.cas = null;
 //		this.ts = null;
 		this.jcas = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
 		this.endOfSentenceInstance = null;
 	}
 
@@ -158,6 +162,7 @@ public class JCasTest extends TestCase {
 			  // error happens during setup
 				/*localCas =*/ CASInitializer.initCas(new CASTestSetup(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS), null);
 			} catch (CASRuntimeException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 				assertTrue(e.getMessageKey().equals(CASException.JCAS_INIT_ERROR));
 			}
 		} catch (Exception e) {
@@ -188,6 +193,7 @@ public class JCasTest extends TestCase {
 //					errFound = true;
 //				}
 			} catch (Exception e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 		    checkExpectedBadCASError(e, expectedErr);
 		    errFound = true;
 			}
@@ -238,6 +244,7 @@ public class JCasTest extends TestCase {
 			}
 
 			try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 				jcas.getRequiredFeature(jcas.getCasType(Annotation.type), "begin");
 			} catch (CASException e2) {
 				assertTrue(false);
@@ -298,6 +305,7 @@ public class JCasTest extends TestCase {
 			boolean caught = false;
 			try {
 				r2.getArrayString(2);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 			} catch (ArrayIndexOutOfBoundsException e) {
 			  caught = true;
 			}
@@ -311,6 +319,7 @@ public class JCasTest extends TestCase {
       assertTrue(caught);
 
       // float values
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       r1 = new Root(jcas);
       r1.setPlainFloat(1247.3F);
       r1.setArrayFloat(new FloatArray(jcas, 3));
@@ -319,6 +328,9 @@ public class JCasTest extends TestCase {
       assertEquals(321.4F, r1.getArrayFloat(2));
       
       // double values
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
       r1 = new Root(jcas);
       r1.setPlainDouble(2247.3D);
       r1.setArrayDouble(new DoubleArray(jcas, 3));
@@ -335,6 +347,7 @@ public class JCasTest extends TestCase {
 			r2.setPlainString(null);
 			assertTrue(null == r2.getPlainString());
 			assertTrue(null == r2.getPlainRef());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 			caught = false;
 			try {
 				r2.getArrayRef(0);
@@ -352,6 +365,7 @@ public class JCasTest extends TestCase {
 			FSIndex<Root> fsi1 = jfsi.getIndex("all", Root.type);
 			FSIterator<Root> fsit1 = fsi1.iterator();
 			assertTrue(fsit1.isValid());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
 			Root[] fetched = new Root[2];
 			
 			fetched[0] = (Root) fsit1.get();
@@ -382,6 +396,7 @@ public class JCasTest extends TestCase {
 			// oI.moveToNext();
 			// assertTrue(oI.isValid());
 			// assertTrue(r1 == oI.get());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 			((CASImpl)cas).traceFSflush();
 		} catch (Exception e) {
 			JUnitExtension.handleException(e);
@@ -403,6 +418,7 @@ public class JCasTest extends TestCase {
    */
 
 	public void testRandom() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
 		try {
 			// System.out.print("Making Random: ");
 			for (int i = 0; i < 50; i++) {
@@ -448,6 +464,7 @@ public class JCasTest extends TestCase {
 		}
 
 		public void test(Object o1) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 			assertTrue(o1 instanceof Root);
 			Root r1 = (Root) o1;
 			int k = System.identityHashCode(r1);
@@ -466,13 +483,16 @@ public class JCasTest extends TestCase {
 	public void test2CASs() throws Exception {
 		try {
 			try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
 				CAS cas2 = CASInitializer.initCas(new CASTestSetup(), null);
 //				TypeSystem ts2 = cas2.getTypeSystem();
 				JCas jcas2 = cas2.getJCas();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5225
 				if (TypeSystemImpl.IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
   				assertTrue(jcas.getCasType(Annotation.type).equals(jcas2.getCasType(Annotation.type)));
   				assertFalse(jcas.getCasType(Annotation.type) == jcas2.getCasType(Annotation.type));
 				} else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
           assertTrue(jcas.getCasType(Annotation.type) == jcas2.getCasType(Annotation.type));
 				}
 			} catch (Exception e) {
@@ -523,6 +543,7 @@ public class JCasTest extends TestCase {
 			try {
 
 				while (it.isValid()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
           Object o = it.get();
 					assertTrue(o instanceof Annotation);
 					it.moveToNext();
@@ -623,6 +644,7 @@ public class JCasTest extends TestCase {
 			Token tok1 = new Token(jcas);
 			Token tok2 = new Token(jcas);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
 			NonEmptyFSList<Token> fsList1 = new NonEmptyFSList<>(jcas);
 			fsList1.setHead(tok2);
 			fsList1.setTail(new EmptyFSList<>(jcas));
@@ -800,6 +822,9 @@ public class JCasTest extends TestCase {
 	}
   
 	public void testStringListAPI() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
 	  StringList sl = new EmptyStringList(jcas);
 	  sl = sl.push("2");
 	  sl = sl.push("1");
@@ -826,6 +851,7 @@ public class JCasTest extends TestCase {
 	}
 
   public void testFSListAPI() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     FSList<TOP> sl = new EmptyFSList<>(jcas);
     TOP fs1 = new TOP(jcas);
     TOP fs2 = new TOP(jcas);
@@ -834,6 +860,7 @@ public class JCasTest extends TestCase {
    
     TOP[] fss = new TOP[2];
     int i = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     Iterator<TOP> it = sl.iterator();
     while (it.hasNext()) {
       fss[i++] = it.next();
@@ -849,6 +876,7 @@ public class JCasTest extends TestCase {
   }
 	  
   public void testFSArrayAPI() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     FSArray sa = new FSArray<>(jcas, 2);
     TOP fs1 = new TOP(jcas);
     TOP fs2 = new TOP(jcas);
@@ -926,6 +954,7 @@ public class JCasTest extends TestCase {
       assertEquals(expectedIna[i++], v);
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     IntegerArrayList inal = new IntegerArrayList(jcas, 2);
     inal.add(15);
     inal.add(22);
@@ -972,6 +1001,7 @@ public class JCasTest extends TestCase {
       localJcas.getCasType(Sentence.type);
       fail(); 
     } catch(CASRuntimeException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       assertEquals(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, e.getMessageKey());
     }
     //check that this does not leave JCAS in an inconsistent state
@@ -1081,6 +1111,7 @@ public class JCasTest extends TestCase {
    * 
    */
 	public static void main(String[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
 		junit.textui.TestRunner.run(JCasTest.class);
 	}
 }

@@ -113,6 +113,7 @@ public class LanguagePair extends TOP {
    * @param v value to set into the feature 
    */
   public void setLang1(String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setStringValueNfc(wrapGetIntCatchException(_FH_lang1), v);
   }    
     
@@ -132,6 +133,7 @@ public class LanguagePair extends TOP {
    * @param v value to set into the feature 
    */
   public void setLang2(String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setStringValueNfc(wrapGetIntCatchException(_FH_lang2), v);
   }    
     
@@ -151,6 +153,7 @@ public class LanguagePair extends TOP {
    * @param v value to set into the feature 
    */
   public void setDescription(String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setStringValueNfc(wrapGetIntCatchException(_FH_description), v);
   }    
     

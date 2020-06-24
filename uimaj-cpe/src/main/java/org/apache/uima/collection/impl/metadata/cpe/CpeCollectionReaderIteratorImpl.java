@@ -36,6 +36,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * The Class CpeCollectionReaderIteratorImpl.
  */
 public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CpeCollectionReaderIterator {
   
   /** The Constant serialVersionUID. */
@@ -83,6 +85,7 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
 
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("collectionIterator",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
               new PropertyXmlInfo("configParameterSettings", null),
               new PropertyXmlInfo("sofaNameMappings", null),
@@ -114,6 +117,7 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
       if (length > 0) {
         configParameterSettings = new ConfigurationParameterSettings_impl();
         org.apache.uima.resource.metadata.NameValuePair[] nvp = new NameValuePair_impl[settings
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getParameterSettings().length];
         for (int i = 0; i < settings.getParameterSettings().length; i++) {
           nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(), settings
@@ -155,6 +159,7 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
     configParameterSettings = settings;
     if (configParameterSettings != null) {
       configurationParameterSettings = new CasProcessorConfigurationParameterSettingsImpl(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               configParameterSettings);
     }
   }

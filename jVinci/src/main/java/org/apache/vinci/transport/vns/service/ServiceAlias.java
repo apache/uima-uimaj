@@ -47,6 +47,7 @@ public class ServiceAlias implements ServiceInterface {
   }
 
   public String toXML(int offset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-279
     StringBuffer indent = new StringBuffer(offset);
     while (offset > 0) {
       indent.append(' ');

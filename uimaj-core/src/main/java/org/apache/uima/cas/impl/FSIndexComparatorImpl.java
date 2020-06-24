@@ -51,7 +51,9 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   // Public only for testing purposes.
   public FSIndexComparatorImpl() {
     this.type = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.keySpecs = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     this.directions = new IntVector();
   }
   
@@ -62,6 +64,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   }
 
   private boolean checkType(Type t) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-407
     return t.isPrimitive();
   }
 
@@ -84,6 +87,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     if (!checkType(feat.getRange())) {
       return -1;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     final int rc = this.keySpecs.size();
     this.keySpecs.add(feat);
     this.directions.add(compareKey);
@@ -219,6 +223,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     final int max = this.getNumberOfKeys();
     Feature feat;
     for (int i = 0; i < max; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (getKeyType(i) != FEATURE_KEY) {
         continue;
       }
@@ -234,6 +239,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   }
 
   public synchronized FSIndexComparatorImpl copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     return new FSIndexComparatorImpl(type, keySpecs, directions);
   }
 
@@ -246,6 +252,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
    */
   @Override
   public int compareTo(FSIndexComparator o) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1368
     FSIndexComparator comp = o;
     final int thisSize = this.getNumberOfKeys();
     final int compSize = comp.getNumberOfKeys();

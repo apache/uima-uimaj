@@ -86,8 +86,10 @@ public class AnnotationViewerMain extends JFrame {
           + "1) In the \"Input Directory\" field, either type or use the browse\n"
           + "button to select a directory containing the analyzed documents\n "
           + "(in XMI or XCAS format) that you want to view.\n\n"
+//IC see: https://issues.apache.org/jira/browse/UIMA-892
           + "2) In the \"TypeSystem or AE Descriptor File\" field, either type or use the browse\n"
           + "button to select the TypeSystem or AE descriptor for the AE that generated the\n"
+//IC see: https://issues.apache.org/jira/browse/UIMA-247
           + "XMI or XCAS files.  (This is needed for type system infornation only.\n"
           + "Analysis will not be redone.)\n\n"
           + "3) Click the \"View\" button at the buttom of the window.\n\n"
@@ -119,9 +121,11 @@ public class AnnotationViewerMain extends JFrame {
    */
   public AnnotationViewerMain() {
     super("Annotation Viewer");
+//IC see: https://issues.apache.org/jira/browse/UIMA-247
 
     // set UIMA home dir
     uimaHomeDir = new File(System.getProperty("uima.home", "C:/Program Files/apache-uima"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-26
 
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -135,6 +139,7 @@ public class AnnotationViewerMain extends JFrame {
 
     // Set frame icon image
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-295
       this.setIconImage(Images.getImage(Images.MICROSCOPE));
       // new ImageIcon(getClass().getResource(FRAME_ICON_IMAGE)).getImage());
     } catch (IOException e) {
@@ -145,6 +150,7 @@ public class AnnotationViewerMain extends JFrame {
 
     // create about dialog
     aboutDialog = new AboutDialog(this, "About Annotation Viewer");
+//IC see: https://issues.apache.org/jira/browse/UIMA-247
 
     // Create Menu Bar
     JMenuBar menuBar = new JMenuBar();
@@ -171,6 +177,7 @@ public class AnnotationViewerMain extends JFrame {
     JPanel controlPanel = new JPanel();
     controlPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
     controlPanel.setLayout(new SpringLayout());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // Once we add components to controlPanel, we'll
     // call SpringUtilities::makeCompactGrid on it.
@@ -178,6 +185,7 @@ public class AnnotationViewerMain extends JFrame {
     // controlPanel.setLayout(new GridLayout(4, 2, 8, 4));
 
     // Set default values for input fields
+//IC see: https://issues.apache.org/jira/browse/UIMA-253
     File inputDir = new File(uimaHomeDir, "examples/data/processed");
     inputFileSelector = new FileSelector("", "Input Directory", JFileChooser.DIRECTORIES_ONLY,
             inputDir);
@@ -187,6 +195,7 @@ public class AnnotationViewerMain extends JFrame {
             JFileChooser.FILES_ONLY, uimaHomeDir);
 
     File descriptorFile = new File(uimaHomeDir,
+//IC see: https://issues.apache.org/jira/browse/UIMA-253
             "examples/descriptors/analysis_engine/PersonTitleAnnotator.xml");
     taeDescriptorFileSelector.setSelected(descriptorFile.getAbsolutePath());
 
@@ -196,6 +205,7 @@ public class AnnotationViewerMain extends JFrame {
     controlPanel.add(taeDescriptorFileSelector);
 
     SpringUtilities.makeCompactGrid(controlPanel, 2, 2, // rows, cols
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             4, 4, // initX, initY
             4, 4); // xPad, yPad
 
@@ -212,6 +222,7 @@ public class AnnotationViewerMain extends JFrame {
     aboutMenuItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent ae) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         aboutDialog.setVisible(true);
       }
     });
@@ -220,7 +231,9 @@ public class AnnotationViewerMain extends JFrame {
     helpMenuItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent ae) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-247
         JOptionPane.showMessageDialog(AnnotationViewerMain.this, HELP_MESSAGE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "Annotation Viewer Help", JOptionPane.PLAIN_MESSAGE);
       }
     });
@@ -269,6 +282,7 @@ public class AnnotationViewerMain extends JFrame {
    * @throws ResourceInitializationException the resource initialization exception
    */
   public void viewDocuments() throws InvalidXMLException, IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceInitializationException {
     File descriptorFile = new File(taeDescriptorFileSelector.getSelected());
     if (!descriptorFile.exists() || descriptorFile.isDirectory()) {
@@ -284,11 +298,13 @@ public class AnnotationViewerMain extends JFrame {
     // parse descriptor. Could be either AE or TypeSystem descriptor
     Object descriptor = UIMAFramework.getXMLParser().parse(new XMLInputSource(descriptorFile));
     // instantiate CAS to get type system. Also build style map file if there is none.
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     CAS cas;
     File styleMapFile;
     if (descriptor instanceof AnalysisEngineDescription) {
       cas = CasCreationUtils.createCas((AnalysisEngineDescription) descriptor);
       styleMapFile = getStyleMapFile((AnalysisEngineDescription) descriptor, descriptorFile
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getPath());
     } else if (descriptor instanceof TypeSystemDescription) {
       TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
@@ -297,6 +313,7 @@ public class AnnotationViewerMain extends JFrame {
       styleMapFile = getStyleMapFile((TypeSystemDescription) descriptor, descriptorFile.getPath());
     } else {
       displayError("Invalid Descriptor File \"" + descriptorFile.getPath() + "\""
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + "Must be either an AnalysisEngine or TypeSystem descriptor.");
       return;
     }
@@ -307,7 +324,9 @@ public class AnnotationViewerMain extends JFrame {
     // PrefsMediator is also used in DocumentAnalyzer, where the
     // output dir is the directory containing XCAS files.
     prefsMed.setOutputDir(inputDir.toString());
+//IC see: https://issues.apache.org/jira/browse/UIMA-247
     AnnotationViewerDialog viewerDialog = new AnnotationViewerDialog(this,
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
             "Analyzed Documents", prefsMed, styleMapFile, null, cas.getTypeSystem(), null, false,
             cas);
     viewerDialog.pack();
@@ -324,6 +343,7 @@ public class AnnotationViewerMain extends JFrame {
    * @throws IOException -
    */
   private File getStyleMapFile(AnalysisEngineDescription tad, String descFileName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     File styleMapFile = getStyleMapFileName(descFileName);
     if (!styleMapFile.exists()) {
@@ -369,6 +389,7 @@ public class AnnotationViewerMain extends JFrame {
   public File getStyleMapFileName(String aDescriptorFileName) {
     String baseName;
     int index = aDescriptorFileName.lastIndexOf(".");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (index > 0) {
       baseName = aDescriptorFileName.substring(0, index);
     } else {
@@ -384,6 +405,7 @@ public class AnnotationViewerMain extends JFrame {
    */
   public static void main(String[] args) {
     final AnnotationViewerMain frame = new AnnotationViewerMain();
+//IC see: https://issues.apache.org/jira/browse/UIMA-247
 
     frame.addWindowListener(new WindowAdapter() {
       @Override
@@ -409,7 +431,9 @@ public class AnnotationViewerMain extends JFrame {
    */
   public void restorePreferences() {
     // figure defaults
+//IC see: https://issues.apache.org/jira/browse/UIMA-253
     File defaultInputDir = new File(uimaHomeDir, "examples/data/processed");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     File defaultTaeDescriptorFile = new File(uimaHomeDir,
             "examples/descriptors/analysis_engine/PersonTitleAnnotator.xml");
 
@@ -447,7 +471,9 @@ public class AnnotationViewerMain extends JFrame {
       }
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-247
     JOptionPane.showMessageDialog(AnnotationViewerMain.this, buf.toString(), "Error",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             JOptionPane.ERROR_MESSAGE);
   }
 

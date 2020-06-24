@@ -88,6 +88,7 @@ public class IteratorTestSorted extends TestCase {
   final ArrayList<Integer> levels = new ArrayList<>();
   FSIterator<Level_1> it;
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   final static Random r = new Random();
   final static long seed = r.nextLong();
 //      6658836455455474098L;
@@ -146,6 +147,7 @@ public class IteratorTestSorted extends TestCase {
       }
       jcas.removeAllIncludingSubtypes(TOP.type);
       makeFSs(r.nextInt(MAX_LEVELS - 1) + 2);  // 2 - 6
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
       it = ((FsIndex_annotation)jcas.getAnnotationIndex(Level_1.class)).iterator(LowLevelIterator.IS_ORDERED, isWithoutTypeOrder = r.nextBoolean());
       if ( ! isWithoutTypeOrder) {
         firstItem = it.get();
@@ -219,6 +221,7 @@ public class IteratorTestSorted extends TestCase {
   }
   
   private void verifyFirst() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     if (isWithoutTypeOrder) {
       assertTrue(it.get() == firstItem);  
     } else {

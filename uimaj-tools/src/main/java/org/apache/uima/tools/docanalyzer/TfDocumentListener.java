@@ -40,6 +40,7 @@ public class TfDocumentListener implements DocumentListener {
    * @param med the med
    */
   public TfDocumentListener(PrefsMediator med) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this.med = med;
   }
 

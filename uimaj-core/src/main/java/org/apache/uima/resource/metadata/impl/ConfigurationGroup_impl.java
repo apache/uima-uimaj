@@ -133,6 +133,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String names = aElement.getAttribute("names");
     if (names.length() == 0) {
@@ -141,6 +142,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
     }
     // treat names as a space-separated list
     StringTokenizer tokenizer = new StringTokenizer(names, " \t");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> nameList = new ArrayList<>();
     while (tokenizer.hasMoreTokens()) {
       nameList.add(tokenizer.nextToken());
@@ -161,6 +163,8 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("configurationGroup",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] {
           // NOTE: names property is XMLized as an attribute
           new PropertyXmlInfo("configurationParameters", null), });

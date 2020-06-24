@@ -69,7 +69,9 @@ public class AllTypes extends AbstractModelPart {
   private void update() {
     cachedResult.clear();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     CAS tcas = modelRoot.getCurrentView();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (null == tcas)
       return;
     TypeSystem typeSystem = tcas.getTypeSystem();

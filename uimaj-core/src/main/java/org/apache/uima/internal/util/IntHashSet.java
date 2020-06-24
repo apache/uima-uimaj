@@ -86,6 +86,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
   private int mostNegative = Integer.MAX_VALUE;
 
   public IntHashSet() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     this(10, 0);
   }
   
@@ -101,6 +102,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
    *                 If == MIN_VALUE, then force 4 byte ints
    */
   public IntHashSet(int initialSizeBeforeExpanding, int offset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     super(initialSizeBeforeExpanding);
     isMake4 = offset == Integer.MIN_VALUE;
     this.offset = isMake4 ? 0 : offset;
@@ -201,6 +203,8 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
    */
   private int getRawFromAdjKey(int adjKey) {
     assert (adjKey != Short.MIN_VALUE);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4184
+//IC see: https://issues.apache.org/jira/browse/UIMA-4187
     return adjKey + offset + ((adjKey < 0) ? 1 : 0); 
   }
   
@@ -268,6 +272,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
 //  }
   
   private void resetTable() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4060
     mostPositive = Integer.MIN_VALUE;
     mostNegative = Integer.MAX_VALUE;
 //    resetHistogram();
@@ -377,6 +382,8 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
    
   // only called when keys are shorts
   private boolean isAdjKeyOutOfRange(int adjKey) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4206
+//IC see: https://issues.apache.org/jira/browse/UIMA-4201
     return (adjKey > Short.MAX_VALUE ||
            // the minimum adjKey value stored in a short is
            // Short.MIN_VALUE + 1
@@ -386,6 +393,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
   @Override
   public boolean contains(int rawKey) {
     int pos = findPosition(rawKey);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     if (pos == -1) {
       return false;
     }
@@ -506,11 +514,17 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
   private void switchTo4byte() {
     // convert to 4 byte because values can't be offset and fit in a short
     final short[] oldKeys = keys2;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     isMake4 = true;
     newTable(getCapacity());  // make a 4 table. same size
     removed = 0; 
     for (short adjKey : oldKeys) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4682
+//IC see: https://issues.apache.org/jira/browse/UIMA-4682
+//IC see: https://issues.apache.org/jira/browse/UIMA-4682
       if (adjKey != 0 && adjKey != REMOVED2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4184
+//IC see: https://issues.apache.org/jira/browse/UIMA-4187
         addInner4(getRawFromAdjKey(adjKey));
       }
     } 
@@ -523,10 +537,13 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
    */
   @Override
   public boolean add(int rawKey) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4206
+//IC see: https://issues.apache.org/jira/browse/UIMA-4201
     if (rawKey == 0) {
       throw new IllegalArgumentException("argument must be non-zero");
     }
        
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     if (size() == 0) {
       mostPositive = mostNegative = rawKey;
     } else {
@@ -538,7 +555,10 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
       }
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4206
+//IC see: https://issues.apache.org/jira/browse/UIMA-4201
     if (keys4 != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
       if (rawKey == REMOVED4) {
         throw new IllegalArgumentException(String.valueOf(REMOVED4) + " is an invalid key");
       }
@@ -547,12 +567,15 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
       // short keys
     } else {
       int adjKey = getAdjKey(rawKey);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4184
+//IC see: https://issues.apache.org/jira/browse/UIMA-4187
       if (isAdjKeyOutOfRange(adjKey)) {
         switchTo4byte();
         return find4AndAddIfMissing(rawKey);
         
         // key in range
       } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
         final int i = findPositionAdjKey(adjKey);  
         if (keys2[i] == adjKey) {
           return false;
@@ -621,6 +644,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
    * @param rawKey
    */
   private void addInner4(int rawKey) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     final int i = findPosition4(rawKey);
     assert(keys4[i] == 0);
     keys4[i] = rawKey;
@@ -628,6 +652,8 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
   
   private void addInner2(short adjKey) {
     final int i = findPositionAdjKey(adjKey);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4206
+//IC see: https://issues.apache.org/jira/browse/UIMA-4201
     assert(keys2[i] == 0);    
     keys2[i] = adjKey;
   }
@@ -648,6 +674,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
   @Override
   public boolean remove(int rawKey) {
 //    debugValidate();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     final int pos = findPosition(rawKey);
     if (pos == -1 || ((keys4 == null) 
                         ? (keys2[pos] == 0) 
@@ -660,6 +687,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
 //      System.out.println("debug");
 //    assert size() > 0;
     if (keys4 == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4682
       keys2[pos] = REMOVED2;
     } else {
       keys4[pos] = REMOVED4;
@@ -691,6 +719,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
    *   It will be == unless remove operations has removed a least positive value.
    */
   public int getMostNegative() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4060
     return mostNegative;
   }
    
@@ -711,6 +740,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
         System.out.println(i + ": " + histogram[i]);
       }     
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
       if (keys4 == null) {
         System.out.println("bytes / entry = " + (float) (keys2.length) * 2 / size());
         System.out.format("size = %,d, prevExpansionTriggerSize = %,d, next = %,d%n",
@@ -735,7 +765,9 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
   public int get(int pos) {
     final int adjKey;
     if (keys4 == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
       adjKey = keys2[pos];
+//IC see: https://issues.apache.org/jira/browse/UIMA-4682
       if (adjKey == 0 || adjKey == REMOVED2) {
         return 0;  // null, not present
       }
@@ -824,6 +856,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
     }
 
     public final int nextNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
       curPosition = moveToNextFilled(curPosition);
       int r = get(curPosition);
       curPosition = moveToNextFilled(curPosition + 1);
@@ -876,6 +909,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
 
   @Override
   public int moveToFirst() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     return (size() == 0) ? -1 : moveToNextFilled(0);
   }
 
@@ -886,6 +920,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
 
   @Override
   public int moveToNext(int position) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4377
     if (position < 0) {
       return position;
     }
@@ -908,9 +943,13 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
 
   @Override
   public void bulkAddTo(IntVector v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4155
     if (null == keys4) {
       for (int k : keys2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4682
         if (k != 0 && k != REMOVED2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4206
+//IC see: https://issues.apache.org/jira/browse/UIMA-4201
           v.add(getRawFromAdjKey(k));
         }
       }
@@ -925,6 +964,8 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
 
   @Override
   public int[] toIntArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4184
+//IC see: https://issues.apache.org/jira/browse/UIMA-4187
     final int s = size();
     if (s == 0) {
       return Constants.EMPTY_INT_ARRAY;
@@ -943,9 +984,11 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
    */
   @Override
   public String toString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4193
     return String
         .format(
             "IntHashSet [loadFactor=%s, initialCapacity=%s, sizeWhichTriggersExpansion=%s, size=%s, offset=%s%n keys4=%s%n keys2=%s%n secondTimeShrinkable=%s, mostPositive=%s, mostNegative=%s]",
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
             loadFactor, initialCapacity, sizeWhichTriggersExpansion, size(), offset,
             Arrays.toString(keys4), Arrays.toString(keys2), secondTimeShrinkable, mostPositive,
             mostNegative);
@@ -962,6 +1005,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
 
   @Override
   protected boolean is_valid_key(int pos) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     if (keys4 == null) {
       return keys2[pos] != 0 && keys2[pos] != REMOVED2;
     }

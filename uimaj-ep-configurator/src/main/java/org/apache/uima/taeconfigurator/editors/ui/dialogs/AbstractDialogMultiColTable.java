@@ -45,6 +45,7 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
    * @return the string
    */
   protected String checkedIndicator(int col) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (col == 1)
       return "In";
     else
@@ -56,6 +57,7 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
 
   /** The table. */
   Tree f_tree;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
 
   /** The enable col 1. */
   protected boolean enableCol1 = true;
@@ -106,6 +108,7 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
       errorMessageUI.setText("");
       toggleValue(item, col);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
     super.handleEvent(event);
   }
 
@@ -142,6 +145,7 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
    * @param col the col
    */
   protected void toggleValue(TreeItem item, int col) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     item.setText(col, item.getText(col).equals(checkedIndicator(col)) ? UNCHECKED
             : checkedIndicator(col));
     if (item.getText(col).equals(checkedIndicator(col)))
@@ -193,6 +197,8 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
    */
   protected void setChecked(TreeItem item, int col, boolean value) {
     boolean prevChecked = checkedIndicator(col).equals(item.getText(col));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     item.setText(col, value ? checkedIndicator(col) : UNCHECKED);
     if (value && !prevChecked)
       numberChecked++;

@@ -58,6 +58,8 @@ public class AnalysisEnginePool {
    *           if the Resource instances could not be created
    */
   public AnalysisEnginePool(String aName, int aNumInstances, ResourceSpecifier aResourceSpecifier)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     this(aName, aNumInstances, aResourceSpecifier, null);
   }
@@ -82,6 +84,7 @@ public class AnalysisEnginePool {
   public AnalysisEnginePool(String aName, int aNumInstances, ResourceSpecifier aResourceSpecifier,
           Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     if (aResourceInitParams == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       aResourceInitParams = new HashMap<>();
     } else {
       aResourceInitParams = new HashMap<>(aResourceInitParams);
@@ -89,6 +92,7 @@ public class AnalysisEnginePool {
 
     // initialize ResourcePool
     mPool = new ResourcePool(aNumInstances, aResourceSpecifier, getResourceClass(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             aResourceInitParams);
   }
 
@@ -155,7 +159,9 @@ public class AnalysisEnginePool {
     
     // set Result Spec on each AnalysisEngine in the pool
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Vector<Resource> allInstances = mPool.getAllInstances();
+//IC see: https://issues.apache.org/jira/browse/UIMA-367
     for (int i = 0; i < mPool.getSize(); i++) {
       AnalysisEngine ae = (AnalysisEngine)allInstances.get(i);
       
@@ -272,6 +278,10 @@ public class AnalysisEnginePool {
    * @param aLogger -
    */
   public synchronized void setLogger(Logger aLogger) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<AnalysisEngine> toRelease = new ArrayList<>();
     try {
       for (int i = 0; i < mPool.getSize(); i++) {
@@ -286,6 +296,10 @@ public class AnalysisEnginePool {
       }
     } finally {
       // release all AnalysisEngines back to pool
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Iterator<AnalysisEngine> it = toRelease.iterator();
       while (it.hasNext()) {
         mPool.releaseResource(it.next());

@@ -53,9 +53,11 @@ public class XmlDeserializer_Axis11 extends DeserializerImpl {
    * Instantiates a new xml deserializer axis 11.
    */
   public XmlDeserializer_Axis11() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       mNesting = 0;
       mDeser = new SaxDeserializer_impl(UIMAFramework.getXMLParser(), null, null,
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
               new XMLParser.ParsingOptions(false));
       LocatorImpl loc = new LocatorImpl();
       loc.setSystemId(new File(System.getProperty("user.dir")).toURL().toString());
@@ -94,6 +96,7 @@ public class XmlDeserializer_Axis11 extends DeserializerImpl {
    */
   @Override
   public void onEndElement(String arg0, String arg1, DeserializationContext arg2)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
     // System.out.println("AxisResourceServiceDeserializer::onEndElement(" + arg0 + "," + arg1);
     mNesting--;
@@ -116,6 +119,7 @@ public class XmlDeserializer_Axis11 extends DeserializerImpl {
    */
   @Override
   public SOAPHandler onStartChild(String namespace, String localName, String prefix,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Attributes attributes, DeserializationContext context) throws SAXException {
     return this;
   }
@@ -133,6 +137,7 @@ public class XmlDeserializer_Axis11 extends DeserializerImpl {
    */
   @Override
   public void onStartElement(String arg0, String arg1, String arg2, Attributes arg3,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           DeserializationContext arg4) throws SAXException {
     // System.out.println("AxisResourceServiceDeserializer::onStartElement(" + arg0 + "," + arg1 +
     // "," + arg2 + ")");

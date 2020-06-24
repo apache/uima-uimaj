@@ -49,6 +49,7 @@ public class MergeAnnotationAction extends BaseSelectionListenerAction {
     super("MergeAnnotationAction");
     
     this.editor = editor;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
     setEnabled(false);
   }
@@ -67,6 +68,7 @@ public class MergeAnnotationAction extends BaseSelectionListenerAction {
   public void run() {
     AnnotationSelection annotations = new AnnotationSelection(getStructuredSelection());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     ICasDocument document = editor.getDocument();
     
     CAS documentCAS = document.getCAS();

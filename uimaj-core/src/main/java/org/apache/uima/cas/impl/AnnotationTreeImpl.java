@@ -38,6 +38,7 @@ public class AnnotationTreeImpl<T extends AnnotationFS>  implements AnnotationTr
     return this.root;
   }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1491
   void setRoot(AnnotationTreeNodeImpl<T> root) {
     this.root = root;
   }

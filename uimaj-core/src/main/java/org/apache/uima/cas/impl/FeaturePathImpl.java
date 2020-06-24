@@ -62,6 +62,7 @@ class FeaturePathImpl implements FeaturePath {
   private String originalBuiltInName = null;
 
   // featurePath element names
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
   final private ArrayList<String> featurePathElementNames = new ArrayList<>();
   
   private boolean pathStartsWithSlash = true;
@@ -73,6 +74,7 @@ class FeaturePathImpl implements FeaturePath {
    * It has values for the first names in the featurePathElementNames which are always valid for a
    * given starting type (set into boundBaseType).
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
   final private ArrayList<FeatureImpl>  boundFeatures = new ArrayList<>();
   
   private FeatureImpl targetFeature;  // set to the last value of boundFeatures
@@ -147,6 +149,7 @@ class FeaturePathImpl implements FeaturePath {
     // throw exception if featurePath is null
     if (featurePath == null) {
       throw new CASException(MESSAGE_DIGEST, "INVALID_FEATURE_PATH_SYNTAX",
+//IC see: https://issues.apache.org/jira/browse/UIMA-1853
           new Object[] { featurePath, "null for a feature path" });
     }
 
@@ -173,8 +176,10 @@ class FeaturePathImpl implements FeaturePath {
         // we have the last token, check for built-in functions
         int index = -1;
         if ((index = token.indexOf(BUILT_IN_FUNCTION_SEPARATOR)) != -1) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
           if (index > 0) {
             // we have a built-in function that is separated with a ":"
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
             this.featurePathElementNames.add(token.substring(0, index));
           }
           // get built-in function
@@ -469,6 +474,7 @@ class FeaturePathImpl implements FeaturePath {
       if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
         return evaluateBuiltInFunction(tgtFs);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       return ((CommonArrayFS)tgtFs).getValuesAsCommaSeparatedString();
     
     case LowLevelCAS.TYPE_CLASS_FS: 
@@ -557,6 +563,7 @@ class FeaturePathImpl implements FeaturePath {
     }
     
     if (this.featurePathElementNames.size() == 0) { 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       targetType = fs._getTypeImpl();
       return fs;
     }
@@ -589,6 +596,7 @@ class FeaturePathImpl implements FeaturePath {
          * 
          * So we check if this bound feature is appropriate for the current FS
          */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         if ( ! ((TypeImpl)targetFeature.getDomain()).subsumes(currentFs._getTypeImpl())) {
           setTargetFeature(currentFs, i);
         }
@@ -652,6 +660,7 @@ class FeaturePathImpl implements FeaturePath {
   }
 
   private void setTargetFeature(TOP currentFs, int i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     targetFeature = currentFs._getTypeImpl().getFeatureByBaseName(featurePathElementNames.get(i));
     if (targetFeature == null) {
       throw new CASRuntimeException(MESSAGE_DIGEST, "INVALID_FEATURE_PATH_FEATURE_NOT_DEFINED", 

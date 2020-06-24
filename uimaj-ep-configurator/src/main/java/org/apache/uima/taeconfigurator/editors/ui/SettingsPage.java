@@ -41,6 +41,7 @@ public class SettingsPage extends HeaderPageWithSash {
    * @param editor the editor
    */
   public SettingsPage(MultiPageEditor editor) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, "Parameter Value Settings");
   }
 
@@ -56,6 +57,7 @@ public class SettingsPage extends HeaderPageWithSash {
 
     managedForm.getForm().setText("Parameter Settings");
     managedForm.addPart(parameterSettingsSection = new ParameterSettingsSection(editor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             form2Panel.left));
     managedForm.addPart(valueSection = new ValueSection(editor, form2Panel.right));
     createToolBarActions(managedForm);

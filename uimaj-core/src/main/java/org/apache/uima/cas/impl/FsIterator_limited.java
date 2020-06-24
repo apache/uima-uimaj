@@ -42,6 +42,7 @@ class FsIterator_limited<T extends FeatureStructure>
   }
 
   private void maybeMakeInvalid() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     if (count == limit) {
       iterator.moveToFirstNoReinit();
       iterator.moveToPrevious();
@@ -51,6 +52,7 @@ class FsIterator_limited<T extends FeatureStructure>
   @Override
   public T getNvc() {
     maybeMakeInvalid();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     T r = iterator.get();  // not getNvc because of above line
     count++;
     return r;
@@ -95,11 +97,13 @@ class FsIterator_limited<T extends FeatureStructure>
 
   @Override
   public FSIterator<T> copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new FsIterator_limited<>(iterator.copy(), limit);
   }
 
   @Override
   public boolean isValid() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     maybeMakeInvalid();
     return iterator.isValid();
   }
@@ -111,6 +115,7 @@ class FsIterator_limited<T extends FeatureStructure>
 
   @Override
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return iterator.ll_maxAnnotSpan();
   }
 
@@ -124,11 +129,13 @@ class FsIterator_limited<T extends FeatureStructure>
    */
   @Override
   public boolean isIndexesHaveBeenUpdated() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     return iterator.isIndexesHaveBeenUpdated();
   }
 
   @Override
   public boolean maybeReinitIterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     return iterator.maybeReinitIterator();
   }
 

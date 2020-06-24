@@ -53,6 +53,8 @@ public class ResourceService_impl {
    * @throws ResourceInitializationException - 
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, Map<String, Object> aResourceInitParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // create Resource
     mResource = UIMAFramework.produceResource(getResourceClass(), aResourceSpecifier,
@@ -77,6 +79,7 @@ public class ResourceService_impl {
    * @return the Resource Class for this service
    */
   protected Class<? extends Resource> getResourceClass() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return Resource.class;
   }
 

@@ -94,6 +94,7 @@ public class PMUimaAgent {
         Import dlgImport = rsFactory.createImport();
         // set relative delegate descriptor location
         String dlgDescRelPath = dlgDescPath.replaceAll(PMControllerHelper.MAIN_ROOT_REGEX,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 StringUtil.toRegExpReplacement(".."));
         dlgImport.setLocation(dlgDescRelPath);
         // add delegate Import to the Map
@@ -104,6 +105,7 @@ public class PMUimaAgent {
       // set AE name and textual description
       aggMetadata.setName(aggCompName);
       aggMetadata.setDescription("Merged aggregate component" + "(" + PMController.PEAR_MERGER
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + ")");
       // set fixed flow constraints
       FixedFlow aggFixedFlow = rsFactory.createFixedFlow();
@@ -122,6 +124,7 @@ public class PMUimaAgent {
         if (dlgSpecifier instanceof AnalysisEngineDescription) {
           // get AE metadata
           AnalysisEngineMetaData dlgAeMetadata = ((AnalysisEngineDescription) dlgSpecifier)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getAnalysisEngineMetaData();
           // collect AE capabilities
           Capability[] dlgCapabilities = dlgAeMetadata.getCapabilities();
@@ -141,6 +144,7 @@ public class PMUimaAgent {
         } else if (dlgSpecifier instanceof CasConsumerDescription) {
           // get CC metadata
           ProcessingResourceMetaData dlgCcMetadata = ((CasConsumerDescription) dlgSpecifier)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getCasConsumerMetaData();
           // collect CC capabilities
           Capability[] dlgCapabilities = dlgCcMetadata.getCapabilities();
@@ -196,6 +200,7 @@ public class PMUimaAgent {
    * object.
    */
   private static Capability[] mergeCapabilities(ArrayList allCapabilities,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceSpecifierFactory rsFactory) {
     // collect all the inputs and all the outputs in 2 Hashtables
     Hashtable mergedInputs = new Hashtable();
@@ -284,6 +289,7 @@ public class PMUimaAgent {
    *           descriptor.
    */
   private static ResourceSpecifier retrieveDelegateSpecifier(File aggRootDir,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           InstallationDescriptor dlgInstDesc) throws IOException, InvalidXMLException {
     // get delegate desciptor path
     String aggRootDirPath = aggRootDir.getAbsolutePath().replace('\\', '/');
@@ -334,7 +340,9 @@ public class PMUimaAgent {
    *           If an I/O exception occurrs.
    */
   static void saveAggregateDescription(AnalysisEngineDescription aggDescription, File aggDescFile)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (Writer fWriter = new FileWriter(aggDescFile)) {
       aggDescription.toXML(fWriter);
     } catch (SAXException exc) {
@@ -352,6 +360,7 @@ public class PMUimaAgent {
    */
   static String toXmlString(XMLizable content) {
     StringWriter sWriter = new StringWriter();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (PrintWriter oWriter = new PrintWriter(sWriter)) {
       content.toXML(oWriter);
       oWriter.flush();

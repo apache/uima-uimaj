@@ -77,6 +77,7 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    *          If set to false, iterator will be unambiguous.
    * @return A annotation iterator.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1491
   FSIterator<T> iterator(boolean ambiguous);
                               
   /**
@@ -150,6 +151,7 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * @return A subiterator.
    */
   FSIterator<T> subiterator(AnnotationFS annot);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1491
 
   /**
    * Return a subiterator whose bounds are defined by the <code>annot</code>.
@@ -225,6 +227,7 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * @return A subiterator.
    */
   FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1491
 
   /**
    * Create an annotation tree with <code>annot</code> as root node. The tree is defined as
@@ -235,5 +238,7 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    *          The annotation at the root of the tree.  This must be of type T or a subtype
    * @return The annotation tree rooted at <code>annot</code>.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1491
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
    AnnotationTree<T> tree(T annot);
 }

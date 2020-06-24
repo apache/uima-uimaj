@@ -58,8 +58,10 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
    * @see org.apache.uima.analysis_engine.metadata.FixedFlow#setFixedFlow(String[])
    */
   public void setFixedFlow(String[] aFlow) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aFlow == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aFlow", "setFixedFlow" });
     }
     mFixedFlow = aFlow;
@@ -75,6 +77,7 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
     String[] newFlow = new String[oldFlow.length];
 
     for (int i = 0; i < oldFlow.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
       String newID = aIDMap.get(oldFlow[i]);
       if (newID != null) {
         newFlow[i] = newID;
@@ -92,5 +95,6 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fixedFlow",
           new PropertyXmlInfo[] { new PropertyXmlInfo("fixedFlow", null, true, "node") });
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 }

@@ -31,6 +31,7 @@ import java.util.StringTokenizer;
 public class ServiceTree {
 
   Object value = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   Hashtable children;
 

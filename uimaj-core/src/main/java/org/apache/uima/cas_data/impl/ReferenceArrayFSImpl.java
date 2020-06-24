@@ -56,9 +56,11 @@ public class ReferenceArrayFSImpl extends FeatureStructureImpl implements Refere
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append('\n').append(getType()).append('\n');
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (getId() != null) {
       buf.append("ID = ").append(getId()).append('\n');
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
     buf.append('[');
     int size = size();
     for (int i = 0; i < size; i++) {

@@ -42,6 +42,7 @@ public class CheckpointData implements Serializable {
   }
 
   public CheckpointData(ProcessTrace aProcessTrace) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     processTrace = aProcessTrace;
   }
 

@@ -45,6 +45,8 @@ public class I18nUtil {
    *         followed by the exception message.
    */
   public static String localizeMessage(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments) {
     return localizeMessage(aResourceBundleName, Locale.getDefault(), aMessageKey, aArguments, null);
   }
@@ -66,6 +68,7 @@ public class I18nUtil {
    *         followed by the exception message.
    */
   public static String localizeMessage(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments, ClassLoader aLoader) {
     return localizeMessage(aResourceBundleName, Locale.getDefault(), aMessageKey, aArguments,
             aLoader);
@@ -87,6 +90,7 @@ public class I18nUtil {
    *         followed by the exception message.
    */
   public static String localizeMessage(String aResourceBundleName, Locale aLocale,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aMessageKey, Object[] aArguments) {
     return localizeMessage(aResourceBundleName, aLocale, aMessageKey, aArguments, null);
   }
@@ -110,8 +114,11 @@ public class I18nUtil {
    *         followed by the exception message.
    */
   public static String localizeMessage(String aResourceBundleName, Locale aLocale,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aMessageKey, Object[] aArguments, ClassLoader aLoader) {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6088
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
       ResourceBundle bundle =  resolveResourceBundle(aResourceBundleName, aLocale, aLoader);
       return localizeMessage(bundle, aLocale, aMessageKey, aArguments);
     } catch (Exception e) {
@@ -152,6 +159,8 @@ public class I18nUtil {
   }
 
   public static ResourceBundle resolveResourceBundle(String aResourceBundleName, Locale aLocale, ClassLoader aLoader) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6088
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
     if (aLoader == null) {
       aLoader = MsgLocalizationClassLoader.getMsgLocalizationClassLoader();        
     }
@@ -160,6 +169,7 @@ public class I18nUtil {
   }
 
   public static void setTccl(ClassLoader tccl) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5721
     MsgLocalizationClassLoader.CallClimbingClassLoader.original_thread_context_class_loader.set(tccl);
   }
   

@@ -64,6 +64,7 @@ public class TCasToInlineXml implements TCasFormatter {
    * @see org.apache.uima.util.TCasFormatter#format(CAS)
    */
   public String format(CAS aCAS) throws CASException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     return generateXML(aCAS, null);
   }
 
@@ -105,8 +106,10 @@ public class TCasToInlineXml implements TCasFormatter {
     // get iterator over annotations sorted by increasing start position and
     // decreasing end position
     FSIterator<Annotation> iterator = aCAS.<Annotation>getAnnotationIndex().iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
 
     // filter the iterator if desired
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aFilter != null) {
       iterator = aCAS.createFilteredIterator(iterator, aFilter);
     }
@@ -116,6 +119,7 @@ public class TCasToInlineXml implements TCasFormatter {
     // annotations, and if an annotation contains other annotations, we
     // push the parent annotation on the stack, process the children, and
     // then come back to the parent later.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<AnnotationFS> stack = new ArrayList<>();
     int pos = 0;
 
@@ -147,6 +151,7 @@ public class TCasToInlineXml implements TCasFormatter {
               pos = nextAnnot.getBegin();
               handler.startElement("", nextAnnot.getType().getName(),
                       nextAnnot.getType().getName(), getFeatureAttributes(nextAnnot, aCAS));
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
               // push parent annotation on stack
               stack.add(curAnnot);
@@ -154,6 +159,7 @@ public class TCasToInlineXml implements TCasFormatter {
               curAnnot = nextAnnot;
             } catch (StringIndexOutOfBoundsException e) {
               System.err.println("Invalid annotation range: " + nextAnnot.getBegin() + ","
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       + nextAnnot.getEnd() + " in document of length " + docText.length());
             }
           }
@@ -166,6 +172,7 @@ public class TCasToInlineXml implements TCasFormatter {
             pos = curAnnot.getEnd();
           } catch (StringIndexOutOfBoundsException e) {
             System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     + curAnnot.getEnd() + " in document of length " + docText.length());
           }
           handler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
@@ -196,6 +203,8 @@ public class TCasToInlineXml implements TCasFormatter {
             pos = curAnnot.getEnd();
           } catch (StringIndexOutOfBoundsException e) {
             System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     + curAnnot.getEnd() + "in document of length " + docText.length());
           }
           handler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
@@ -209,6 +218,7 @@ public class TCasToInlineXml implements TCasFormatter {
       handler.endDocument();
 
       // return XML string
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
       return new String(byteArrayOutputStream.toByteArray(), StandardCharsets.UTF_8);
     } catch (SAXException e) {
       throw new UIMARuntimeException(e);
@@ -219,7 +229,9 @@ public class TCasToInlineXml implements TCasFormatter {
     AttributesImpl attrs = new AttributesImpl();
 
     Type stringType = aCAS.getTypeSystem().getType(CAS.TYPE_NAME_STRING);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     List<Feature> aFeatures = aFS.getType().getFeatures();
     Iterator<Feature> iter = aFeatures.iterator();
     while (iter.hasNext()) {
@@ -227,6 +239,7 @@ public class TCasToInlineXml implements TCasFormatter {
       String featName = feat.getShortName();
       // how we get feature value depends on feature's range type)
       String rangeTypeName = feat.getRange().getName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       if (aCAS.getTypeSystem().subsumes(stringType, feat.getRange())) // must check for subtypes
       // of string
       {
@@ -241,6 +254,7 @@ public class TCasToInlineXml implements TCasFormatter {
         }
       } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
         attrs
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .addAttribute("", featName, featName, "CDATA", Integer.toString(aFS
                         .getIntValue(feat)));
       } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
@@ -330,6 +344,7 @@ public class TCasToInlineXml implements TCasFormatter {
   private void replaceInvalidXmlChars(char[] aChars) {
     for (int i = 0; i < aChars.length; i++) {
       if ((aChars[i] < 0x20 && aChars[i] != 0x09 && aChars[i] != 0x0A && aChars[i] != 0x0D)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || (aChars[i] > 0xD7FF && aChars[i] < 0xE000) || aChars[i] == 0xFFFE
               || aChars[i] == 0xFFFF) {
         // System.out.println("Found invalid XML character: " + (int)aChars[i] + " at position " +

@@ -58,10 +58,12 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   private IEditorPart activeEditorPart;
 
   /** The auto J cas action. */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   Action autoJCasAction;
   
   /** The limit J cas gen to project. */
   Action limitJCasGenToProject;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
 
   /** The qualified types action. */
   Action qualifiedTypesAction;
@@ -122,6 +124,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
       MultiPageEditorPart editor = (MultiPageEditorPart) part;
 
       actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction(editor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ITextEditorActionConstants.DELETE));
       actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction(editor,
               ITextEditorActionConstants.UNDO));
@@ -157,6 +160,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
       ITextEditor textEditor = (part instanceof XMLEditor) ? (ITextEditor) part : null;
 
       actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction1(textEditor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ITextEditorActionConstants.DELETE));
       actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction1(textEditor,
               ITextEditorActionConstants.UNDO));
@@ -192,10 +196,12 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         Preferences prefs = plugin.getPluginPreferences();
         boolean bAutoJCasGen = !prefs.getBoolean(PreferencePage.P_JCAS); 
         autoJCasAction.setChecked(bAutoJCasGen);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
         prefs.setValue(PreferencePage.P_JCAS, bAutoJCasGen); 
       }
     };
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
     limitJCasGenToProject = new Action () {
       // The run action is simply to toggle the setting in the prefs page, and
       //   to update the checked status to correspond to that
@@ -223,6 +229,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
         boolean bFullyQualifiedTypeNames = !prefs
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
                 .getBoolean(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES); 
         qualifiedTypesAction.setChecked(bFullyQualifiedTypeNames);
         prefs.setValue(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES, bFullyQualifiedTypeNames); 
@@ -242,8 +249,10 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     };
 
     autoJCasAction.setText(Messages.getString("MultiPageEditorContributor.autoGenJCas")); //$NON-NLS-1$
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     autoJCasAction.setChecked(getAutoJCasGen()); 
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
     limitJCasGenToProject.setText(Messages.getString("MultiPageEditorContributor.limitJCasGenToProjectScope"));
     limitJCasGenToProject.setChecked(getLimitJCasGenToProjectScope());
 
@@ -266,6 +275,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     menu.add(settingsMenu);
     settingsMenu.add(autoJCasAction);
     settingsMenu.add(qualifiedTypesAction);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
     settingsMenu.add(limitJCasGenToProject);
   }
 
@@ -293,6 +303,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
    * @return the limit J cas gen to project scope
    */
   public static boolean getLimitJCasGenToProjectScope() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
     return getUimaPrefBoolean(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE, false);
   }
 
@@ -345,6 +356,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
    * Sets the vns host.
    */
   public static void setVnsHost() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     setVnsHost(getCDEVnsHost());
   }
 

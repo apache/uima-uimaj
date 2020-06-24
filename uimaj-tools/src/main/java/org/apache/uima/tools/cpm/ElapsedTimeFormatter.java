@@ -23,6 +23,7 @@ package org.apache.uima.tools.cpm;
 /**
  * The Class ElapsedTimeFormatter.
  */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 final public class ElapsedTimeFormatter {
   
   /**

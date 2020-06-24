@@ -30,6 +30,7 @@ public class IntStack extends IntVector {
 
   /** Creates an empty stack. */
   public IntStack() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -69,6 +70,8 @@ public class IntStack extends IntVector {
    */
   public int pop() {
     --this.pos;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
     return get(this.pos); // this.array[this.pos];
   }
 
@@ -78,6 +81,8 @@ public class IntStack extends IntVector {
    * @return The top element.
    */
   public int peek() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
     return get(this.pos - 1); // this.array[this.pos - 1];
   }
 

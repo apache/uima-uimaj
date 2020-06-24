@@ -81,6 +81,7 @@ public class ListSelector extends JPanel implements ActionListener {
    * @param listData the list data
    */
   public ListSelector(Object[] listData) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     for (int i = 0; i < listData.length; i++)
       listModel.addElement(listData[i]);
 
@@ -92,6 +93,7 @@ public class ListSelector extends JPanel implements ActionListener {
     Border etchedBorder = BorderFactory.createEtchedBorder();
     list.setBorder(etchedBorder);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     JScrollPane scrollPane = new JScrollPane(list, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
     add(scrollPane, BorderLayout.CENTER);
@@ -195,6 +197,7 @@ public class ListSelector extends JPanel implements ActionListener {
       Object selectedValue = list.getSelectedValue();
       if (selectedValue != null) {
         int rv = JOptionPane
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .showConfirmDialog((Component) source, "Are you sure you want to remove "
                         + selectedValue, null, JOptionPane.YES_NO_OPTION);
 
@@ -211,6 +214,7 @@ public class ListSelector extends JPanel implements ActionListener {
       int maxIndex = (listModel.getSize() - 1);
       if (selectedValue != null) {
         if ((source == moveUpButton && selectedIndex == 0)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 || (source == moveDownButton && selectedIndex == maxIndex)) {
           Toolkit.getDefaultToolkit().beep();
           list.clearSelection();
@@ -229,6 +233,7 @@ public class ListSelector extends JPanel implements ActionListener {
         }
       } else {
         JOptionPane.showMessageDialog(this, "You must first select an item to reorder", null,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 JOptionPane.WARNING_MESSAGE);
       }
     }

@@ -98,6 +98,9 @@ public class Token extends Annotation {
    * @param end offset to the end spot in the SofA 
   */  
   public Token(JCas jcas, int begin, int end) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
     super(jcas);
     setBegin(begin);
     setEnd(end);

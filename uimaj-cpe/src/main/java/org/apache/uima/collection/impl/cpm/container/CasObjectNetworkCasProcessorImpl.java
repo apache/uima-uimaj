@@ -79,6 +79,8 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * @throws ResourceConfigurationException the resource configuration exception
    */
   public CasObjectNetworkCasProcessorImpl(CpeCasProcessor aCasProcessor)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     if (aCasProcessor.getDeploymentParams() != null) {
       CasProcessorDeploymentParams params = aCasProcessor.getDeploymentParams();
@@ -87,6 +89,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
         transport = pluginTransport(transportParameter.getParameterValue());
       } catch (Exception e) {
         throw new ResourceConfigurationException(InvalidXMLException.INVALID_CLASS,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { "transport" }, e);
       }
 
@@ -100,6 +103,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
           }
         } catch (Exception e) {
           throw new ResourceConfigurationException(InvalidXMLException.INVALID_CLASS,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   new Object[] { "transport" }, e);
         }
 
@@ -268,6 +272,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    */
   @Override
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException {
     // noop
 
@@ -282,6 +287,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    */
   @Override
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),

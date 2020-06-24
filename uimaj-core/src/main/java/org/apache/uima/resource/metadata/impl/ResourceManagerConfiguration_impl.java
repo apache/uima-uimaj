@@ -43,6 +43,8 @@ import org.xml.sax.SAXException;
  * 
  */
 public class ResourceManagerConfiguration_impl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         ResourceManagerConfiguration {
   private static final long serialVersionUID = -8326190554827990517L;
 
@@ -131,8 +133,10 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#setImports(org.apache.uima.resource.metadata.Import[])
    */
   public void setImports(Import[] aImports) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aImports", "setImports" });
     }
     mImports = aImports;
@@ -208,6 +212,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    */
   public void removeExternalResource(ExternalResourceDescription aExternalResourceDescription) {
     ExternalResourceDescription[] current = getExternalResources();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     for (int i = 0; i < current.length; i++) {
       if (current[i] == aExternalResourceDescription) {
         ExternalResourceDescription[] newArr = new ExternalResourceDescription[current.length - 1];
@@ -226,6 +231,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    */
   public void removeExternalResourceBinding(ExternalResourceBinding aExternalResourceBinding) {
     ExternalResourceBinding[] current = getExternalResourceBindings();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     for (int i = 0; i < current.length; i++) {
       if (current[i] == aExternalResourceBinding) {
         ExternalResourceBinding[] newArr = new ExternalResourceBinding[current.length - 1];
@@ -243,6 +249,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    */
   @Deprecated
   public Import getImport() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (mImports.length > 0) {
       return mImports[0];
     } else {
@@ -266,9 +273,12 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    */
   // support multi-threading, avoid object creation if no imports
   public synchronized void resolveImports() throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     if (getImports().length == 0) {
       resolveImports(null, null);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       resolveImports(new TreeSet<>(), UIMAFramework.newDefaultResourceManager());
     }
   }
@@ -278,14 +288,17 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   }
 
   public synchronized void resolveImports(Collection<String> aAlreadyImportedURLs, ResourceManager aResourceManager)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     List<ExternalResourceDescription> importedResources = null;
     List<ExternalResourceBinding> importedBindings = null;
     if (getImports().length != 0) {
       // add our own URL, if known, to the collection of already imported URLs
+//IC see: https://issues.apache.org/jira/browse/UIMA-105
       if (getSourceUrl() != null) {
         aAlreadyImportedURLs.add(getSourceUrl().toString());
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       importedResources = new ArrayList<>();
       importedBindings = new ArrayList<>();
       Import[] imports = getImports();
@@ -300,6 +313,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
           aAlreadyImportedURLs.add(url.toString());
           try {
             resolveImport(url, aAlreadyImportedURLs, importedResources, importedBindings,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     aResourceManager);
           } catch (IOException e) {
             throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
@@ -316,6 +330,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
     }
     if (importedResources != null) {
       ExternalResourceDescription[] newResources = new ExternalResourceDescription[existingResources.length
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + importedResources.size()];
       System.arraycopy(existingResources, 0, newResources, 0, existingResources.length);
       for (int i = 0; i < importedResources.size(); i++) {
@@ -331,6 +346,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
     }
     if (null != importedBindings) {
       ExternalResourceBinding[] newBindings = new ExternalResourceBinding[existingBindings.length
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + importedBindings.size()];
       System.arraycopy(existingBindings, 0, newBindings, 0, existingBindings.length);
       for (int i = 0; i < importedBindings.size(); i++) {
@@ -343,6 +359,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   }
 
   private void resolveImport(URL aURL, Collection<String> aAlreadyImportedURLs,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1488
           Collection<ExternalResourceDescription> aResultResources, Collection<ExternalResourceBinding> aResultBindings, ResourceManager aResourceManager)
           throws InvalidXMLException, IOException {
     XMLInputSource input = new XMLInputSource(aURL);
@@ -364,6 +381,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
     // Prevent the import property from being written to XML - it exists only so old-style XML
     // can be read.
     if (!"import".equals(aPropInfo.propertyName)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
       super.writePropertyAsElement(aPropInfo, aNamespace);
     }
   }
@@ -373,6 +391,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "resourceManagerConfiguration", new PropertyXmlInfo[] {
               new PropertyXmlInfo("import", null), new PropertyXmlInfo("name", true),
               new PropertyXmlInfo("description", true), new PropertyXmlInfo("version", true),

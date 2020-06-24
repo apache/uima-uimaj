@@ -38,12 +38,14 @@ import org.apache.uima.cas.impl.SelectFSs_impl;
 
 public interface  SelectViaCopyToArray<T extends FeatureStructure> {
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
   FeatureStructure[] _toArrayForSelect();
   CASImpl _getView(); 
   
   /**
    * @return a new instance of SelectFSs
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
   default SelectFSs_impl<T> select() {
     return new SelectFSs_impl<>(_toArrayForSelect(), this._getView());
   }

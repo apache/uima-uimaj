@@ -56,6 +56,7 @@ public class PMControllerHelper {
    *         'set_env_variable' action.
    */
   private static InstallationDescriptor.ActionInfo createEnvAction(String envVarName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String envVarValue) {
     InstallationDescriptor.ActionInfo action = new InstallationDescriptor.ActionInfo(
             InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
@@ -77,6 +78,7 @@ public class PMControllerHelper {
    *         'find_and_replace_path' action.
    */
   private static InstallationDescriptor.ActionInfo createFileAction(String filePath,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String macroPath) {
     InstallationDescriptor.ActionInfo action = new InstallationDescriptor.ActionInfo(
             InstallationDescriptor.ActionInfo.FIND_AND_REPLACE_PATH_ACT);
@@ -107,6 +109,7 @@ public class PMControllerHelper {
    *           If an I/O exception occurred.
    */
   static InstallationDescriptor generateMergedInstallationDescriptor(File rootDir,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aggCompName, File aggDescFile, InstallationDescriptor[] dlgInstDescs,
           File[] dlgRootDirs) throws IOException {
     // create aggregate installation descriptor
@@ -135,6 +138,7 @@ public class PMControllerHelper {
           if (cpBuffer.length() > 0)
             cpBuffer.append(STANDARD_PATH_SEPARATOR_CHAR);
           cpBuffer.append(adjMainRoot + "/"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   + FileUtil.getRelativePath(dlgRootDir, jarFiles[n].getAbsolutePath()));
         }
         // add 'set_env_variable' action
@@ -145,6 +149,7 @@ public class PMControllerHelper {
       File dlgBinDir = new File(dlgRootDir, PackageBrowser.BINARY_DIR);
       if (dlgBinDir.isDirectory()) {
         String adjBinDirPath = adjMainRoot + "/"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + FileUtil.getRelativePath(dlgRootDir, dlgBinDir.getAbsolutePath());
         aggInsdObject.addInstallationAction(createEnvAction("CLASSPATH", adjBinDirPath));
         aggInsdObject.addInstallationAction(createEnvAction("PATH", adjBinDirPath));
@@ -187,6 +192,7 @@ public class PMControllerHelper {
     InstallationDescriptor insdObject = insdHandler.getInstallationDescriptor();
     // add installation descriptor file to 'find_and_replace_path' actions
     insdObject.addInstallationAction(createFileAction(adjMainRoot + "/"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + InstallationProcessor.INSD_FILE_PATH, MAIN_ROOT));
     // 2nd: process files under 'desc' folder, if exists
     processFiles(rootDir, PackageBrowser.DESCRIPTORS_DIR, insdObject);
@@ -210,6 +216,7 @@ public class PMControllerHelper {
    *           If an I/O exception occurred.
    */
   static void processFiles(File rootDir, String targetDirName, InstallationDescriptor insdObject)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     // build adjusted string for $main_root replacement
     String adjMainRoot = MAIN_ROOT + "/" + rootDir.getName();
@@ -226,6 +233,7 @@ public class PMControllerHelper {
         // add this file to 'find_and_replace_path' actions
         String relFilePath = FileUtil.getRelativePath(rootDir, file.getAbsolutePath());
         insdObject.addInstallationAction(createFileAction(adjMainRoot + "/" + relFilePath,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 MAIN_ROOT));
       }
     }

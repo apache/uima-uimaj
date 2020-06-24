@@ -29,6 +29,7 @@ public interface IXMLColorConstants {
   
   /** The xml comment. */
   RGB XML_COMMENT = new RGB(128, 0, 0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The proc instr. */
   RGB PROC_INSTR = new RGB(128, 128, 128);

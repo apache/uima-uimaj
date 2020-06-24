@@ -58,6 +58,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    */
   protected void setUp() throws Exception {
     // get test base path setting
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     this.testBaseDir = JUnitExtension.getFile("CpmTests/CpeAPITest");
   }
 
@@ -70,9 +71,11 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   public void testReadDescriptor() throws Exception {
 
     // input file
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf.xml");
     XMLInputSource in = new XMLInputSource(cpeDescFile);
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // output file
     File outputFile = new File(this.testBaseDir, "outConf.xml");
@@ -99,6 +102,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   public void testReadDescriptor2() throws Exception {
 
     // input file
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf2.xml");
     XMLInputSource in = new XMLInputSource(cpeDescFile);
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
@@ -114,6 +118,8 @@ public class CpeDescriptorSerialization_Test extends TestCase {
     fOut.close();
 
     equal(cpeDescFile, cpeDesc);
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
 
     outputFile.delete();
   }
@@ -128,6 +134,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   public void testAddRemoteCasProcessor() throws Exception {
 
     // parse cpe descriptor file
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf3.xml");
     XMLInputSource in = new XMLInputSource(cpeDescFile);
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
@@ -137,6 +144,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
 
     // generate a new casProcessor
     CpeCasProcessor casProcessor = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .produceRemoteCasProcessor("myTestCasPocessor");
     // set specifier path
     casProcessor.setDescriptor("any kind of string");
@@ -164,6 +172,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   public void testAddLocalCasProcessor() throws Exception {
 
     // parse cpe descriptor file
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf3.xml");
     XMLInputSource in = new XMLInputSource(cpeDescFile);
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
@@ -173,6 +182,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
 
     // Create Detag CasProcessor
     CpeLocalCasProcessor localProcessor = CpeDescriptorFactory.produceLocalCasProcessor(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "DupShingle Miner", "Detag:DetagContent");
     localProcessor.setDescriptor("c://cpm/annotators/example.xml");
     localProcessor.setExecutable("/some/path/executable.sh");
@@ -198,6 +208,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   public void testAddIntegratedCasProcessor() throws Exception {
 
     // parse cpe descriptor file
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf3.xml");
     XMLInputSource in = new XMLInputSource(cpeDescFile);
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
@@ -207,6 +218,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
 
     // add a new iCpe
     CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .produceCasProcessor("WF Writer_X");
     integratedProcessor.setDescriptor("c://cpm/conf/consumers/bla.xml");
     integratedProcessor.setBatchSize(99);
@@ -227,6 +239,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   public void equal(File aReferenceDescriptorFile, CpeDescription aGeneratedDescriptor) {
     try {
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       XMLInputSource in = new XMLInputSource(aReferenceDescriptorFile);
       CpeDescription referenceDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
 
@@ -235,6 +248,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
       if (readers[0] != null) {
         if (aGeneratedDescriptor.getAllCollectionCollectionReaders() == null
                 || aGeneratedDescriptor.getAllCollectionCollectionReaders()[0] == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
           fail("<collectionReader> element not found in generated CPE Descriptor");
         } else {
@@ -267,6 +281,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
           fail("<casProcessors> element not found in generated CPE Descriptor");
         } else {
           compareCasProcessors(referenceDesc.getCpeCasProcessors(), aGeneratedDescriptor
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getCpeCasProcessors());
         }
       }
@@ -276,6 +291,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   }
 
   public void compareCasProcessors(CpeCasProcessors aRefCasProcessors,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CpeCasProcessors aGenCasProcessors) {
     assertEquals(aRefCasProcessors.getCasPoolSize(), aGenCasProcessors.getCasPoolSize());
     assertEquals(aRefCasProcessors.getConcurrentPUCount(), aGenCasProcessors.getConcurrentPUCount());
@@ -419,6 +435,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
       } else {
         if (aGenCpeConfig.getStartingEntityId() != null) {
           assertTrue(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "Generated Cpe Descriptor has an invalid value for <startAt> in <cpeConfig>.Expected no value OR empty string. Instead got value of:"
                           + aGenCpeConfig.getStartingEntityId(), aGenCpeConfig
                           .getStartingEntityId().trim().length() == 0);
@@ -433,6 +450,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
               fail("Expected attribute 'file' in <checkpoint> element in <cpeConfig> not found in generated Cpe Descriptor.");
             } else {
               assertEquals(aRefCpeConfig.getCheckpoint().getFilePath(), aGenCpeConfig
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       .getCheckpoint().getFilePath());
             }
           }
@@ -494,6 +512,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   }
 
   public boolean isCasInitializerTheSame(CpeCollectionReaderCasInitializer aRefCasInitializer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CpeCollectionReaderCasInitializer aGenCasInitializer) {
     if (aRefCasInitializer.getDescriptor() != null) {
       if (aGenCasInitializer.getDescriptor() == null) {

@@ -57,18 +57,22 @@ public class FsIndexCollection_implTest extends TestCase {
    */
   protected void tearDown() throws Exception {
     super.tearDown();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
   public void testBuildFromXmlElement() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       File descriptor = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
       FsIndexCollection indexColl = UIMAFramework.getXMLParser().parseFsIndexCollection(
               new XMLInputSource(descriptor));
 
       assertEquals("TestFsIndexCollection", indexColl.getName());
       assertEquals("This is a test.", indexColl.getDescription());
+//IC see: https://issues.apache.org/jira/browse/UIMA-37
       assertEquals("The Apache Software Foundation", indexColl.getVendor());
       assertEquals("0.1", indexColl.getVersion());
       Import[] imports = indexColl.getImports();
@@ -88,6 +92,7 @@ public class FsIndexCollection_implTest extends TestCase {
   public void testResolveImports() throws Exception {
     try {
       File descriptor = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
       FsIndexCollection ic = UIMAFramework.getXMLParser().parseFsIndexCollection(
               new XMLInputSource(descriptor));
@@ -109,6 +114,7 @@ public class FsIndexCollection_implTest extends TestCase {
       // set data path correctly and it should work
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getAbsolutePath());
       ic.resolveImports(resMgr);
 

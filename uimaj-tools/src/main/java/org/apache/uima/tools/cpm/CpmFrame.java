@@ -94,6 +94,7 @@ public class CpmFrame extends JFrame implements ActionListener {
 
     // Set frame icon image
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-295
       this.setIconImage(Images.getImage(Images.MICROSCOPE));
       // new ImageIcon(getClass().getResource(FRAME_ICON_IMAGE)).getImage());
     } catch (IOException e) {
@@ -112,6 +113,7 @@ public class CpmFrame extends JFrame implements ActionListener {
     setJMenuBar(createMenuBar());
 
     aboutDialog = new AboutDialog(this, "About Collection Processing Engine Configurator");
+//IC see: https://issues.apache.org/jira/browse/UIMA-22
 
     this.setSize(800, 600);
     this.pack();
@@ -136,6 +138,7 @@ public class CpmFrame extends JFrame implements ActionListener {
     exitMenuItem.addActionListener(this);
     fileMenu.add(exitMenuItem);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-91
     JMenu viewMenu = new JMenu("View");
     List viewMenuItems = cpmPanel.createViewMenuItems();
     iter = viewMenuItems.iterator();
@@ -151,6 +154,7 @@ public class CpmFrame extends JFrame implements ActionListener {
     helpMenu.add(aboutMenuItem);
     helpMenu.add(helpMenuItem);
     menuBar.add(fileMenu);
+//IC see: https://issues.apache.org/jira/browse/UIMA-91
     menuBar.add(viewMenu);
     menuBar.add(helpMenu);
 
@@ -167,7 +171,9 @@ public class CpmFrame extends JFrame implements ActionListener {
     if (source == aboutMenuItem) {
       aboutDialog.setVisible(true);
     } else if (source == helpMenuItem) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       JOptionPane.showMessageDialog(CpmFrame.this, CpmPanel.HELP_MESSAGE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "Collection Processing Engine Configurator Help", JOptionPane.PLAIN_MESSAGE);
     } else if (source == exitMenuItem) {
       this.processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
@@ -193,6 +199,7 @@ public class CpmFrame extends JFrame implements ActionListener {
     //not thread-safe.  This is particularly important for the CPE Configurator
     //because it's initialization can be quite complex (it loads the last known    
     //CPE descriptor).
+//IC see: https://issues.apache.org/jira/browse/UIMA-230
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -205,6 +212,7 @@ public class CpmFrame extends JFrame implements ActionListener {
    * Creates and shows the GUI.
    */
   private static void initGUI() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       final CpmFrame frame = new CpmFrame();
       frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

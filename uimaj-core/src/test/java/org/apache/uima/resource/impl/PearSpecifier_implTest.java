@@ -46,9 +46,11 @@ public class PearSpecifier_implTest extends TestCase {
   public void testProducePearResource() throws Exception {
     PearSpecifier specifier = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
     specifier.setPearPath("/home/user/uimaApp/installedPears/testpear");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5936
     specifier.setParameters(new Parameter_impl("legacyParam1", "legacyVal1"),
         new Parameter_impl("legacyParam2", "legacyVal2"));
     specifier.setPearParameters(new NameValuePair_impl("param1", "stringVal1"), 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5936
         new NameValuePair_impl("param2", true));
       
     //compare created specifier with available test specifier
@@ -74,6 +76,7 @@ public class PearSpecifier_implTest extends TestCase {
             new Parameter_impl("legacyParam2", "legacyVal2"));
     manPearSpec.setPearParameters(new NameValuePair_impl("param1", "stringVal1"),
         new NameValuePair_impl("param2", true));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5936
 
     assertThat(specifier.getParameters())
         .usingElementComparatorOnFields("name", "value")
@@ -91,14 +94,17 @@ public class PearSpecifier_implTest extends TestCase {
     try {
       PearSpecifier pearSpec = new PearSpecifier_impl();
       pearSpec.setPearPath("/home/user/uimaApp/installedPears/testpear");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5936
       pearSpec.setParameters(new Parameter_impl("param1", "val1"),
               new Parameter_impl("param2", "val2"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5936
       pearSpec.setPearParameters(new NameValuePair[] { new NameValuePair_impl("param1", "val1"),
           new NameValuePair_impl("param2", "val2") });
 
       StringWriter sw = new StringWriter();
       pearSpec.toXML(sw);
       PearSpecifier pearSpec2 = (PearSpecifier) UIMAFramework.getXMLParser().parse(
+//IC see: https://issues.apache.org/jira/browse/UIMA-1202
               new XMLInputSource(new ByteArrayInputStream(sw.getBuffer().toString().getBytes(encoding)),
                       null));
       assertEquals(pearSpec, pearSpec2);

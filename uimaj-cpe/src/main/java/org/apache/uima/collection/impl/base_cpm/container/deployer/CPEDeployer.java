@@ -25,5 +25,6 @@ import org.apache.uima.resource.ResourceConfigurationException;
 
 public interface CPEDeployer {
   public ProcessingContainer deployCasProcessor(ProcessingContainer aProcessingContainer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CasProcessor aCasProcessor, boolean redeploy) throws ResourceConfigurationException;
 }

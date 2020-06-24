@@ -48,6 +48,7 @@ public class CPMChunkTimeoutException extends ResourceProcessException {
    * @param aDocumentURL document URL
    */
   public CPMChunkTimeoutException(long aDocumentId, String aThrottleID, String aDocumentURL) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     docID = aDocumentId;
     throttleID = aThrottleID;

@@ -30,6 +30,7 @@ public class ServiceStack {
   String name;
 
   Stack stack;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   int toplevel;
 

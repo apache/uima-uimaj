@@ -40,6 +40,8 @@ public class ConstraintFactoryImpl extends ConstraintFactory {
 
 	@Override
   public FSTypeConstraint createTypeConstraint() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-1188
 		return new FSTypeConstraintImpl();
 	}
 
@@ -66,6 +68,7 @@ public class ConstraintFactoryImpl extends ConstraintFactory {
 	@Override
   public FSMatchConstraint embedConstraint(FeaturePath featPath,
 			FSConstraint constraint) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 		ArrayList<String> path = new ArrayList<>();
 		for (int i = 0; i < featPath.size(); i++) {
 			path.add(featPath.getFeature(i).getShortName());

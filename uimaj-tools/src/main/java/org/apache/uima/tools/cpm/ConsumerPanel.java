@@ -39,6 +39,7 @@ public class ConsumerPanel extends MetaDataPanel {
 
   /** The cas consumer specifier. */
   ResourceSpecifier casConsumerSpecifier;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The specifier file. */
   File specifierFile;
@@ -96,6 +97,7 @@ public class ConsumerPanel extends MetaDataPanel {
    */
   public boolean hasFileChanged(long lastCheck) {
     return specifierFile.lastModified() > this.lastFileSyncTimestamp
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && specifierFile.lastModified() > lastCheck;
   }
 

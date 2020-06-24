@@ -43,6 +43,8 @@ import org.w3c.dom.Element;
 
 public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_impl implements
         CollectionReaderDescription {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private static final long serialVersionUID = -6654886877117758267L;
 
@@ -52,6 +54,7 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
    */
   public CollectionReaderDescription_impl() {
     setMetaData(new ProcessingResourceMetaData_impl());
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
     setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     // set default operational properties (may be overriden during parsing)
     OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
@@ -72,6 +75,7 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
   public void doFullValidation(ResourceManager aResourceManager)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // check that user class was specified
     if (getImplementationName() == null || getImplementationName().length() == 0) {
@@ -82,11 +86,14 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
     // try to load user class
 
     // use UIMA extension ClassLoader if available
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
     Class<?> implClass;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
       implClass = Class_TCCL.forName(getImplementationName(), aResourceManager);
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { getImplementationName(), getSourceUrlString() }, e);
     }
     // verify the user class implements CollectionReader
@@ -96,8 +103,10 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
                   getImplementationName(), CollectionReader.class.getName(), getSourceUrlString() });
     }
     // try to create a CAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<ProcessingResourceMetaData> metadata = new ArrayList<>();
     metadata.add(getCollectionReaderMetaData());
+//IC see: https://issues.apache.org/jira/browse/UIMA-606
     CasCreationUtils.createCas(metadata, 
         UIMAFramework.getDefaultPerformanceTuningProperties(),
         aResourceManager);
@@ -107,10 +116,12 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
    * Overridden to set default operational properties if they are not specified in descriptor.
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     if (getCollectionReaderMetaData().getOperationalProperties() == null) {
       OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .createOperationalProperties();
       opProps.setModifiesCas(true);
       opProps.setMultipleDeploymentAllowed(false);
@@ -124,6 +135,7 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "collectionReaderDescription", new PropertyXmlInfo[] {
               new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),

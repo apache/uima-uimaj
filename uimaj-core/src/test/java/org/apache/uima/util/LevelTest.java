@@ -29,6 +29,7 @@ import junit.framework.TestCase;
 public class LevelTest extends TestCase {
 
   public LevelTest(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(arg0);
   }
 
@@ -348,6 +349,7 @@ public class LevelTest extends TestCase {
   public void testEquals() throws Exception {
     Level level = Level.SEVERE;
     Integer myInt = 70000;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 
     // check if level is equal to "SEVERE"
     Assert.assertTrue(level.equals(Level.SEVERE));

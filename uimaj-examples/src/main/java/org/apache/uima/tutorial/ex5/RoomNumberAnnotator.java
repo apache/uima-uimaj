@@ -47,6 +47,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // Get config. parameter values
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String[] patternStrings = (String[]) aContext.getConfigParameterValue("Patterns");
     mLocations = (String[]) aContext.getConfigParameterValue("Locations");
 
@@ -57,6 +58,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         mPatterns[i] = Pattern.compile(patternStrings[i]);
       } catch (PatternSyntaxException e) {
         throw new ResourceInitializationException(MESSAGE_DIGEST, "regex_syntax_error",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { patternStrings[i] }, e);
       }
     }
@@ -72,8 +74,10 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
     // loop over patterns
     for (int i = 0; i < mPatterns.length; i++) {
       Matcher matcher = mPatterns[i].matcher(docText);
+//IC see: https://issues.apache.org/jira/browse/UIMA-235
       while (matcher.find()) {
         // found one - create annotation
+//IC see: https://issues.apache.org/jira/browse/UIMA-5625
         RoomNumber annotation = new RoomNumber(aJCas, matcher.start(), matcher.end());
         annotation.setBuilding(mLocations[i]);
         annotation.addToIndexes();

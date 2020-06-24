@@ -70,5 +70,6 @@ public interface ResourceFactory {
    */
   public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
 
 }

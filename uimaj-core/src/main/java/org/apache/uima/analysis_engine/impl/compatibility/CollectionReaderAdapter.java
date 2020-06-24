@@ -63,9 +63,12 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    *          metadata for the annotator. Needed to compute ResultSpecification.
    */
   public CollectionReaderAdapter(CollectionReader aCollectionReader,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AnalysisEngineMetaData aMetaData) {
     mCollectionReader = aCollectionReader;
     mSofaAware = aMetaData.isSofaAware();
+//IC see: https://issues.apache.org/jira/browse/UIMA-388
     mProcessCalled = false;
   }
 
@@ -82,6 +85,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
     // Primitive AnalysisEngine.
     AnalysisEngineDescription_impl desc = new AnalysisEngineDescription_impl();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, Object> paramsMap = new HashMap<>();
     paramsMap.put(Resource.PARAM_UIMA_CONTEXT, aContext);
     mCollectionReader.initialize(desc, paramsMap);
@@ -94,10 +98,12 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * @see org.apache.uima.core.AnalysisComponent#typeSystemChanged(org.apache.uima.core.AbstractCas)
    */
   public void checkTypeSystemChange(AbstractCas aCAS) throws AnalysisEngineProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       TypeSystem typeSystem;
       if (aCAS instanceof JCas) {
         typeSystem = ((JCas) aCAS).getTypeSystem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       } else // CAS
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();
@@ -120,6 +126,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
     // Does nothing on the first call to process - CollectionReaders ignore their input CAS.
     // On a subsequent call to process, we want to reset the CollectionReader, which we
     // try to do by calling its reconfigure method.
+//IC see: https://issues.apache.org/jira/browse/UIMA-388
     if (mProcessCalled) {
       try {
         reconfigure();
@@ -222,6 +229,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
   public void next(AbstractCas aEmptyCas) throws AnalysisEngineProcessException {
     if (!CAS.class.isAssignableFrom(aEmptyCas.getClass())) {
       throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
                   aEmptyCas.getClass() });
     }

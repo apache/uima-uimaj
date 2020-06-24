@@ -70,6 +70,7 @@ public class XmiCasFileOpenHandler implements ActionListener {
     if (rc == JFileChooser.APPROVE_OPTION) {
       File xmiCasFile = fileChooser.getSelectedFile();
       if (xmiCasFile.exists() && xmiCasFile.isFile()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1151
         this.main.loadXmiFile(xmiCasFile);
       }
     }

@@ -54,6 +54,7 @@ public class CASInitializer {
       init.initTypeSystem(tsa);
       // Commit the type system.
       ((CASImpl) casMgr0).commitTypeSystem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       if (null != reinitTypeSystem) {
         reinitTypeSystem.accept(((CASImpl) casMgr0).getTypeSystemImpl());
       }
@@ -67,6 +68,7 @@ public class CASInitializer {
       init.initIndexes(irm, casMgr.getTypeSystemMgr());
       irm.commit();
     } catch (ResourceInitializationException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1478
       throw new RuntimeException(e);
     } catch (CASException e) {
       throw new RuntimeException(e);
@@ -76,6 +78,7 @@ public class CASInitializer {
 //    (System.nanoTime() - startTime)/1000L);
 
     // Create the default text Sofa and return CAS view
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     return casMgr.getCAS().getCurrentView();
   }
 

@@ -45,6 +45,9 @@ public class IntVector implements Serializable {
   private static final int default_multiplication_limit = 1024 * 1024 * 16;
 
   final private int growth_factor;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2715
+//IC see: https://issues.apache.org/jira/browse/UIMA-2716
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
 
   final private int multiplication_limit;
 
@@ -57,6 +60,7 @@ public class IntVector implements Serializable {
    * Default constructor.
    */
   public IntVector() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this(default_size, default_growth_factor, default_multiplication_limit);
   }
 
@@ -100,6 +104,9 @@ public class IntVector implements Serializable {
    *          Multiplication limit.
    */
   public IntVector(int capacity, int growth_factor, int multiplication_limit) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4059
+//IC see: https://issues.apache.org/jira/browse/UIMA-4099
+//IC see: https://issues.apache.org/jira/browse/UIMA-3399
     resetSize(capacity);
     if (growth_factor < 1) {
       growth_factor = default_growth_factor;
@@ -112,6 +119,9 @@ public class IntVector implements Serializable {
   }
   
   public void resetSize(int capacity) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4059
+//IC see: https://issues.apache.org/jira/browse/UIMA-4099
+//IC see: https://issues.apache.org/jira/browse/UIMA-3399
     pos = 0;
     if (capacity <= 0) {
       capacity = default_size;
@@ -130,10 +140,14 @@ public class IntVector implements Serializable {
    * @param elements -
    */
   public void add(int[] elements) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2715
+//IC see: https://issues.apache.org/jira/browse/UIMA-2716
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     add(elements, 0, elements.length);
   }
   
   public void addBulk(IntVector elements) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4155
     add(elements.array, 0, elements.size());
   }
   
@@ -164,6 +178,7 @@ public class IntVector implements Serializable {
   }
   
   public void multiAdd(int element, int count) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4135
     final int i = this.pos;
     this.pos += count;
     ensure_size(this.pos);
@@ -192,6 +207,7 @@ public class IntVector implements Serializable {
   }
   
   public void multiAdd(int index, int element, int count) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4135
     final int endPos = index + count;
     if (index >= this.pos) {
       ensure_size(endPos);
@@ -280,6 +296,7 @@ public class IntVector implements Serializable {
   }
   
   public void removeAllElementsAdjustSizeDown() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4135
     removeAllElements();
     int len = array.length;
     int newSize =  len >> (
@@ -349,6 +366,7 @@ public class IntVector implements Serializable {
    * @return The position, or <code>-1</code> if it doesn't exist.
    */
   public int position(int elem) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4108
     return indexOfOptimizeAscending(elem);
 //    int i = 0;
 //    while (i < this.pos) {
@@ -454,6 +472,7 @@ public class IntVector implements Serializable {
     final int size = this.pos;
     for (int i = size - 1; i >= 0; i--) {
       if (element == this.array[i]) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3413
         return i;
       }
     }
@@ -487,6 +506,8 @@ public class IntVector implements Serializable {
       return -1;
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4108
+//IC see: https://issues.apache.org/jira/browse/UIMA-4108
     final int size = this.pos;
     for (int i = 0; i < size; i++) {
       if (element == this.array[i]) {
@@ -524,6 +545,7 @@ public class IntVector implements Serializable {
    * @return a copy of the internal int array, trimmed
    */
   public int[] toIntArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4188
     final int[] r = new int[size()];
     System.arraycopy(this.array, 0, r, 0, this.pos);
     return r;
@@ -540,6 +562,7 @@ public class IntVector implements Serializable {
 
   public String toString() {
     StringBuffer buf = new StringBuffer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
     buf.append('[');
     for (int i = 0; i < this.pos; i++) {
       if (i > 0) {
@@ -553,6 +576,7 @@ public class IntVector implements Serializable {
 
   public void ensure_size(int req) {
     this.array = IntArrayUtils.ensure_size(this.array, req, this.growth_factor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             this.multiplication_limit);
     if (this.pos < req) {
       this.pos = req;
@@ -572,6 +596,7 @@ public class IntVector implements Serializable {
   
   public OfInt iterator() {
     return new OfInt() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
 
       int pos = 0;
       
@@ -590,6 +615,7 @@ public class IntVector implements Serializable {
 
       @Override
       public int nextInt() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
@@ -611,6 +637,8 @@ public class IntVector implements Serializable {
 
       @Override
       public int nextNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
         return get(pos++);        
       }
       

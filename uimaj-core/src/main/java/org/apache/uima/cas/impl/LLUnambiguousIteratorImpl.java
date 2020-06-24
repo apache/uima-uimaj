@@ -35,6 +35,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 public class LLUnambiguousIteratorImpl<T extends FeatureStructure> extends FsIterator_subtypes_snapshot<T> {
 
   public LLUnambiguousIteratorImpl(LowLevelIterator<T> it) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     super((T[]) createItemsArray(
         (LowLevelIterator<FeatureStructure>) it), 
         (LowLevelIndex<T>) it.ll_getIndex(), 
@@ -44,12 +45,16 @@ public class LLUnambiguousIteratorImpl<T extends FeatureStructure> extends FsIte
   
   // this is static because can't have instance method call before super call in constructor
   private static Annotation[] createItemsArray(LowLevelIterator<FeatureStructure> it) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<Annotation> items = new ArrayList<>();
     int lastSeenEnd = 0;
     it.moveToFirst();
     // Iterate over the input iterator.
     while (it.isValid()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       FeatureStructure fs = it.nextNvc();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       if (!(fs instanceof Annotation)) {
         continue;  // skip until get an annotation
       }

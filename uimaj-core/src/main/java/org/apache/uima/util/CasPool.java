@@ -74,6 +74,7 @@ public class CasPool {
   // no sync needed because this list is filled during initialization of this instance, and
   // from then on is read-only, which can occur in parallel
   final private Set<CAS> mAllInstances;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
 
   
   // We use this rather than a form of BlockingQueue, to achieve an (arbitrary) LIFO-like reuse of CASes
@@ -113,8 +114,10 @@ public class CasPool {
    *           if the CAS instances could not be created
    */
   public CasPool(int aNumInstances, Collection<? extends ProcessingResourceMetaData> aCollectionOfProcessingResourceMetaData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
           throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
     this(aNumInstances, fillPool(aNumInstances, aCollectionOfProcessingResourceMetaData, aPerformanceTuningSettings, aResourceManager));
   }
   
@@ -133,6 +136,7 @@ public class CasPool {
    */
   public CasPool(int aNumInstances, AnalysisEngine aAnalysisEngine)
           throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
     this(aNumInstances, 
          fillPool(aNumInstances, 
                   Collections.singletonList((ProcessingResourceMetaData) aAnalysisEngine.getMetaData()),
@@ -153,6 +157,7 @@ public class CasPool {
    */
   public CasPool(int aNumInstances, ProcessingResourceMetaData aMetaData)
           throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
     this(aNumInstances, fillPool(aNumInstances, Collections.singletonList(aMetaData), null, null));
   }
 
@@ -168,7 +173,9 @@ public class CasPool {
    *           if the CAS instances could not be created
    */
   public CasPool(int aNumInstances, ProcessingResourceMetaData aMetaData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceManager aResourceManager) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
     this(aNumInstances, fillPool(aNumInstances, Collections.singletonList(aMetaData), null, aResourceManager));
   }
 
@@ -188,6 +195,7 @@ public class CasPool {
    */
   public CasPool(int aNumInstances, CasDefinition aCasDefinition,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
     this(aNumInstances, fillPool(aNumInstances, aCasDefinition, aPerformanceTuningSettings));
   }
 
@@ -206,7 +214,10 @@ public class CasPool {
    * @throws ResourceInitializationException -
    */
   public CasPool(int aNumInstances, CasManager aCasManager,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-234
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
     this(aNumInstances, fillPool(aNumInstances, aCasManager, aPerformanceTuningSettings));
   }
   
@@ -219,6 +230,7 @@ public class CasPool {
    */
   public CAS getCas() {
     boolean gotPermit;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
     gotPermit = permits.tryAcquire();
     if (!gotPermit) {
       return null;
@@ -238,6 +250,7 @@ public class CasPool {
    *         timeout period.
    */
   public CAS getCas(long aTimeout) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
     if (aTimeout == 0) {
       permits.acquireUninterruptibly();
       return getCasAfterPermitAcquired();
@@ -297,6 +310,7 @@ public class CasPool {
     synchronized (cas) {
       if (!mAllInstances.contains(cas) || mFreeInstances.contains(cas)) {
         UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "releaseCas",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 LOG_RESOURCE_BUNDLE, "UIMA_return_cas_to_pool__WARNING");
       } else {
         // restore the ClassLoader and unlock the CAS, since release() can be called 
@@ -334,6 +348,7 @@ public class CasPool {
    * @return the numberof available CASes 
    */
   public int getNumAvailable() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
     return mFreeInstances.size();
   }  
 
@@ -343,6 +358,8 @@ public class CasPool {
    * @param resourceManager
    */
   private static Set<CAS> fillPool(int aNumInstances, Collection<? extends ProcessingResourceMetaData> mdList, Properties performanceTuningSettings,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceManager resourceManager) throws ResourceInitializationException {
     CasDefinition casDef = new CasDefinition(mdList, resourceManager);
     return fillPool(aNumInstances, casDef, performanceTuningSettings);
@@ -352,6 +369,7 @@ public class CasPool {
           throws ResourceInitializationException {
     // create first CAS from metadata
     CAS c0 = CasCreationUtils.createCas(casDef, performanceTuningSettings);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Set<CAS> all = new HashSet<>(aNumInstances);
     // set owner so cas.release() can return it to the pool
     ((CASImpl) c0).setOwner(casDef.getCasManager());
@@ -366,7 +384,9 @@ public class CasPool {
   }
 
   private static Set<CAS> fillPool(int aNumInstances, CasManager casManager, Properties performanceTuningSettings)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Set<CAS> all = new HashSet<>(aNumInstances);
     // create additional CASes that share same type system
     for (int i = 0; i < aNumInstances; i++) {
@@ -380,6 +400,7 @@ public class CasPool {
   // no callers as of March 2014
   // left as Vector
   protected Vector<CAS> getAllInstances() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new Vector<>(mAllInstances);
   }
 

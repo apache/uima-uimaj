@@ -56,6 +56,7 @@ public class CustomResourceSpecifier_impl extends MetaDataObject_impl implements
     if (aParameters != null) {
       mParameters = aParameters;
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2693
       mParameters = EMPTY_PARAMETERS;
     }
     

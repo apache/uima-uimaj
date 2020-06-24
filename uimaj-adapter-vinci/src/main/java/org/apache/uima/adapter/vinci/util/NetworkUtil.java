@@ -45,6 +45,7 @@ public class NetworkUtil {
   public static InetAddress getLocalHostAddress() throws UnknownHostException {
     // try the straightforward call first
     InetAddress localhost = InetAddress.getLocalHost();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (!localhost.isLoopbackAddress()) {
       return localhost;
     }

@@ -46,6 +46,7 @@ public interface IntArrayFS extends CommonArrayFS<Integer> {
    *              If <code>index</code> is out of bounds.
    */
   void set(int index, int value);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
 
   /**
    * Copy the contents of the array from <code>start</code> to <code>end</code> to the
@@ -65,6 +66,7 @@ public interface IntArrayFS extends CommonArrayFS<Integer> {
    */
   void copyToArray(int srcOffset, int[] dest, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Copy the contents of an external array into this array.
@@ -79,6 +81,7 @@ public interface IntArrayFS extends CommonArrayFS<Integer> {
    *          The number of elements to copy.
    */
   void copyFromArray(int[] src, int srcOffset, int destOffset, int length)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ArrayIndexOutOfBoundsException;
   
   /**

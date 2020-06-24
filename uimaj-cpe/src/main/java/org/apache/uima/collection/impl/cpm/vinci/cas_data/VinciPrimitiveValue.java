@@ -31,6 +31,7 @@ public class VinciPrimitiveValue extends PrimitiveValueImpl implements Primitive
   private static final long serialVersionUID = 1668126114372701948L;
 
   public VinciPrimitiveValue(String aValue) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(aValue);
   }
 

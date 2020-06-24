@@ -133,6 +133,7 @@ public class CasToInlineXml {
     // get iterator over annotations sorted by increasing start position and
     // decreasing end position
     FSIterator<Annotation> iterator = aCAS.<Annotation>getAnnotationIndex().iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
 
     // filter the iterator if desired
     if (aFilter != null) {
@@ -144,10 +145,12 @@ public class CasToInlineXml {
     // annotations, and if an annotation contains other annotations, we
     // push the parent annotation on the stack, process the children, and
     // then come back to the parent later.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<AnnotationFS> stack = new ArrayList<>();
     int pos = 0;
 
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2101
       aHandler.startDocument();
       // write an artificial start tag
       aHandler.startElement("", "Document", "Document", new AttributesImpl());
@@ -161,6 +164,7 @@ public class CasToInlineXml {
         // fs.getClass().getName());
         // AnnotationFS nextAnnot = (AnnotationFS)fs;
         AnnotationFS nextAnnot = iterator.get();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2101
 
         if (curAnnot == null || nextAnnot.getBegin() < curAnnot.getEnd()) {
           // nextAnnot's start point is within the span of curAnnot
@@ -170,10 +174,12 @@ public class CasToInlineXml {
 
             // write text between current pos and beginning of nextAnnot
             try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2101
               aHandler.characters(docCharArray, pos, nextAnnot.getBegin() - pos);
               pos = nextAnnot.getBegin();
               aHandler.startElement("", nextAnnot.getType().getName(),
                   nextAnnot.getType().getName(), getFeatureAttributes(nextAnnot, aCAS));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
               // push parent annotation on stack
               stack.add(curAnnot);
@@ -181,6 +187,8 @@ public class CasToInlineXml {
               curAnnot = nextAnnot;
             } catch (StringIndexOutOfBoundsException e) {
               System.err.println("Invalid annotation range: " + nextAnnot.getBegin() + ","
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-2101
                   + nextAnnot.getEnd() + " in document of length " + docText.length());
             }
           }
@@ -189,10 +197,12 @@ public class CasToInlineXml {
           // nextAnnot begins after curAnnot ends
           // write text between current pos and end of curAnnot
           try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2101
             aHandler.characters(docCharArray, pos, curAnnot.getEnd() - pos);
             pos = curAnnot.getEnd();
           } catch (StringIndexOutOfBoundsException e) {
             System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + curAnnot.getEnd() + " in document of length " + docText.length());
           }
           aHandler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
@@ -223,6 +233,8 @@ public class CasToInlineXml {
             pos = curAnnot.getEnd();
           } catch (StringIndexOutOfBoundsException e) {
             System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + curAnnot.getEnd() + "in document of length " + docText.length());
           }
           aHandler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
@@ -262,6 +274,7 @@ public class CasToInlineXml {
 
   private Attributes getFeatureAttributes(FeatureStructure aFS, CAS aCAS) {
     AttributesImpl attrs = new AttributesImpl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     for (Feature feat : aFS.getType().getFeatures()) {
       String featName = feat.getShortName();
       // how we get feature value depends on feature's range type)
@@ -276,6 +289,7 @@ public class CasToInlineXml {
           }
           attrs.addAttribute("", featName, featName, "CDATA", str);
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2101
       } else if (feat.getRange().isArray() && feat.getRange().getComponentType().isPrimitive()) {
         // TODO: there should be a better way to get any array value as a string array
         String[] vals = null;
@@ -334,8 +348,10 @@ public class CasToInlineXml {
             buf.append(vals[vals.length - 1]);
           }
           buf.append(']');
+//IC see: https://issues.apache.org/jira/browse/UIMA-77
           attrVal = buf.toString();
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2101
         attrs.addAttribute("", featName, featName, "CDATA", attrVal);
       } else {
         // get value as FeatureStructure
@@ -366,6 +382,8 @@ public class CasToInlineXml {
   private void replaceInvalidXmlChars(char[] aChars) {
     for (int i = 0; i < aChars.length; i++) {
       if ((aChars[i] < 0x20 && aChars[i] != 0x09 && aChars[i] != 0x0A && aChars[i] != 0x0D)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-2101
           || (aChars[i] > 0xD7FF && aChars[i] < 0xE000) || aChars[i] == 0xFFFE
           || aChars[i] == 0xFFFF) {
         // System.out.println("Found invalid XML character: " + (int)aChars[i] + " at position " +

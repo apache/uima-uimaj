@@ -51,6 +51,7 @@ public class TypePriorityTest extends TestCase {
 
   public static final Properties casCreateProperties = new Properties();
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     casCreateProperties.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "200");
   }
 
@@ -72,6 +73,7 @@ public class TypePriorityTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     casMgr = initCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     cas = casMgr.getCAS().getCurrentView();
     irm = casMgr.getIndexRepositoryMgr();
     ts = cas.getTypeSystem();
@@ -205,6 +207,7 @@ public class TypePriorityTest extends TestCase {
       check(lo, new String[] { "aa", "abaa", "abbbb" });
       check(lo, "aaa", "bbb");
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-410
       check(lo, "aaa", "abaaa"); 
       check(lo, "aaab", "abaab");  
       check(lo, "aa", "abbbb");

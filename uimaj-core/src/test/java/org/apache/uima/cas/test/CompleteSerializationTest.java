@@ -58,9 +58,11 @@ public class CompleteSerializationTest extends TestCase {
   }
 
   public void testSerialization() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       CASMgr cas = null;
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
         cas = (CASMgr) CASInitializer.initCas(new CASTestSetup(), null);
       } catch (Exception e) {
         assertTrue(false);

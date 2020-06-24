@@ -92,6 +92,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationGroupNames()
    */
   public String[] getConfigurationGroupNames() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return mUimaContext.getConfigurationGroupNames();
   }
 
@@ -132,6 +133,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURI(java.lang.String)
    */
   public URI getResourceURI(String aKey) throws AnnotatorContextException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
     try {
       return mUimaContext.getResourceURI(aKey);
     } catch (ResourceAccessException e) {
@@ -183,6 +185,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    *      java.lang.String[])
    */
   public InputStream getResourceAsStream(String aKey, String[] aParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceAsStream(aKey, aParams);
@@ -222,6 +225,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    *      java.lang.String[])
    */
   public URI getResourceURI(String aKey, String[] aParams) throws AnnotatorContextException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
     try {
       return mUimaContext.getResourceURI(aKey, aParams);
     } catch (ResourceAccessException e) {

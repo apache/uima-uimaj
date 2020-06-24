@@ -354,6 +354,7 @@ public class JsonContentHandlerJacksonWrapper implements ContentHandler  {
     if (isFormattedOutput) {
       // upgrade from Lf2SpacesIndenter - removed in v 2.7
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5655
       uimaPrettyPrinter.indentObjectsWith(
 //          DefaultPrettyPrinter.Lf2SpacesIndenter.instance
             DefaultIndenter.SYSTEM_LINEFEED_INSTANCE

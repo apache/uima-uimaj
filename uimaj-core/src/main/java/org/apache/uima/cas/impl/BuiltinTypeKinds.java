@@ -130,6 +130,7 @@ public class BuiltinTypeKinds {
         CAS.TYPE_NAME_LONG,
         CAS.TYPE_NAME_FLOAT,
         CAS.TYPE_NAME_DOUBLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5272
         CAS.TYPE_NAME_STRING
 //        CAS.TYPE_NAME_JAVA_OBJECT
         );
@@ -143,10 +144,12 @@ public class BuiltinTypeKinds {
         CAS.TYPE_NAME_FLOAT_ARRAY,
         CAS.TYPE_NAME_DOUBLE_ARRAY,
         CAS.TYPE_NAME_STRING_ARRAY,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
         CAS.TYPE_NAME_FS_ARRAY
 //        CAS.TYPE_NAME_JAVA_OBJECT_ARRAY
         );
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     Misc.addAll(creatableBuiltinJCas, 
         CAS.TYPE_NAME_EMPTY_FLOAT_LIST,
         CAS.TYPE_NAME_EMPTY_FS_LIST,
@@ -158,6 +161,7 @@ public class BuiltinTypeKinds {
         CAS.TYPE_NAME_NON_EMPTY_STRING_LIST,
         CAS.TYPE_NAME_TOP,
         CAS.TYPE_NAME_ANNOTATION_BASE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5272
         CAS.TYPE_NAME_ANNOTATION
 //        CAS.TYPE_NAME_DOCUMENT_ANNOTATION  // https://issues.apache.org/jira/browse/UIMA-5586
          // these are semi-builtin (for backwards compatibility - not to change users type system codes if not used)

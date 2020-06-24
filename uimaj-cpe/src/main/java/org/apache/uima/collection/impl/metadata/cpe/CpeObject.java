@@ -52,6 +52,7 @@ public class CpeObject {
    * @return the internal object
    */
   public Object getInternalObject() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return internalObject;
   }
 

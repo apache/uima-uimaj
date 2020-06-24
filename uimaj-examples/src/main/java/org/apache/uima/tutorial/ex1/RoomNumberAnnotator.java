@@ -41,6 +41,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
     // get document text
     String docText = aJCas.getDocumentText();
     // search for Yorktown room numbers
+//IC see: https://issues.apache.org/jira/browse/UIMA-5625
     Matcher m = mYorktownPattern.matcher(docText);
     while (m.find()) {
       // found one - create annotation

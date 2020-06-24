@@ -46,10 +46,12 @@ public class CasConsumerFactory_impl implements ResourceFactory {
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     if (aSpecifier instanceof CasConsumerDescription) {
       CasConsumerDescription desc = (CasConsumerDescription) aSpecifier;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       final String frameworkImpl = desc.getFrameworkImplementation();
       if (frameworkImpl == null || frameworkImpl.length() == 0) {
         throw new ResourceInitializationException(
@@ -61,16 +63,20 @@ public class CasConsumerFactory_impl implements ResourceFactory {
         String className = desc.getImplementationName();
         if (className == null || className.length() == 0) {
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
                   new Object[] { aSpecifier.getSourceUrlString() });
         }
 
         // load class using UIMA Extension ClassLoader if there is one
+//IC see: https://issues.apache.org/jira/browse/UIMA-1509
         Class<?> implClass = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
         try {
           implClass = Class_TCCL.forName(className, aAdditionalParams);
         } catch (ClassNotFoundException e) {
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceInitializationException.CLASS_NOT_FOUND, new Object[] { className,
                       aSpecifier.getSourceUrlString() }, e);
         }
@@ -95,6 +101,7 @@ public class CasConsumerFactory_impl implements ResourceFactory {
           resource = (Resource) implClass.newInstance();
         } catch (InstantiationException e) {
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className,
                       aSpecifier.getSourceUrlString() }, e);
         } catch (IllegalAccessException e) {
@@ -110,10 +117,13 @@ public class CasConsumerFactory_impl implements ResourceFactory {
         // failure, for some unknown reason :( This isn't likely to happen
         {
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
                       className, aSpecifier.getSourceUrlString() });
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       } else if (frameworkImpl.startsWith(Constants.CPP_FRAMEWORK_NAME)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-11
         Resource resource = new UimacppAnalysisEngineImpl();
         if (resource.initialize(aSpecifier, aAdditionalParams)) {
           // success!
@@ -127,6 +137,7 @@ public class CasConsumerFactory_impl implements ResourceFactory {
         }
       } else {
         throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
                 ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION, new Object[] {
                     desc.getFrameworkImplementation(), aSpecifier.getSourceUrlString() });
       }

@@ -32,6 +32,7 @@ public class UimacppException extends Exception {
    * Nested exception to hold wrapped exception.
    */
   Exception detail = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Constructs a <code>JTafRuntimeException</code> with the specified nested exception.

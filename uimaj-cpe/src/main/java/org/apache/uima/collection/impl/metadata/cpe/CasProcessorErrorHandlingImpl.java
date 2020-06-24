@@ -33,6 +33,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  */
 public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl implements
         CasProcessorErrorHandling {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1677062861920690715L;
@@ -122,6 +124,7 @@ public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl implement
 
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("errorHandling",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("errorRateThreshold", null),
               new PropertyXmlInfo("maxConsecutiveRestarts", null),
               new PropertyXmlInfo("timeout", null), });

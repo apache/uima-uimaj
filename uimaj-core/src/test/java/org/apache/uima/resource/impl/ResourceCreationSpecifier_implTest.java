@@ -31,9 +31,11 @@ import junit.framework.TestCase;
 
 public class ResourceCreationSpecifier_implTest extends TestCase {
   public void testDoFullValidation() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       File descFile = JUnitExtension.getFile("UimaContextTest/CasConsumerForUimaContextTest.xml");
       ResourceCreationSpecifier resCreaSpec = (ResourceCreationSpecifier) UIMAFramework
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getXMLParser().parseResourceSpecifier(new XMLInputSource(descFile));
       resCreaSpec.doFullValidation();
     } catch (Exception e) {

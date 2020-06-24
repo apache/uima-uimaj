@@ -28,6 +28,7 @@ public class SkipCasException extends Exception {
   private static final long serialVersionUID = -1536918949728720979L;
 
   public SkipCasException(String msg) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(msg);
   }
 

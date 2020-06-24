@@ -33,11 +33,14 @@ import org.apache.uima.cas.FeatureStructure;
  * @version $Revision: 1.1 $
  */
 class FloatConstraint extends PathConstraint implements FSMatchConstraint {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private static final long serialVersionUID = -6954254545913068934L;
 
   private FSFloatConstraint floatConstraint;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
   FloatConstraint(ArrayList<String> path, FSFloatConstraint cons) {
     super(path);
     this.floatConstraint = cons;

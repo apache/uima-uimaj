@@ -63,6 +63,8 @@ public class Int2IntRBT extends IntArrayRBTcommon {
       if (!isValid()) {
         throw new NoSuchElementException();
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       return Int2IntRBT.this.getKeyForNode(this.currentNode);
     }
     
@@ -125,6 +127,8 @@ public class Int2IntRBT extends IntArrayRBTcommon {
 
     private KeyIterator() {
       super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
       this.currentNode = getFirstNode();
     }
 
@@ -149,6 +153,8 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     @Override
     public int previousNvc() {
       this.currentNode = previousNode(this.currentNode);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       return Int2IntRBT.this.getKeyForNode(this.currentNode);
     }
 
@@ -182,6 +188,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
    * Constructor for IntArrayRBT.
    */
   public Int2IntRBT() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3415
     super(default_size);
   }
 
@@ -196,6 +203,8 @@ public class Int2IntRBT extends IntArrayRBTcommon {
   
   public Int2IntRBT copy() {
     Int2IntRBT c = new Int2IntRBT();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     c.klrp = klrp.clone();
     c.klrp1 = (klrp1 != null) ? klrp1.clone() : null;
     c.klrp2 = (klrp2 != null) ? klrp2.clone() : null;
@@ -214,12 +223,14 @@ public class Int2IntRBT extends IntArrayRBTcommon {
   }
 
   public void flush() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4002
     super.flush();
     lastNodeGotten = NIL;
   }
   
   @Override
   protected void ensureCapacityKlrp(int requiredSize) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4267
     super.ensureCapacityKlrp(requiredSize);
     this.values = ensureArrayCapacity(this.values, requiredSize);
   }
@@ -231,9 +242,12 @@ public class Int2IntRBT extends IntArrayRBTcommon {
    * @return negative index if key is found
    */
   private int treeInsert(final int k, final int v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     if ((this.greatestNode != NIL) && (getKeyForNode(this.greatestNode) < k)) {
       final int y = this.greatestNode;
       final int z = newNode(k);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3415
       values[z] = v;   // addition
       this.greatestNode = z;
       setRight(y, z);
@@ -244,9 +258,12 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     int y = NIL;
     while (x != NIL) {
       y = x;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       final int xKey = getKeyForNode(x);
       if (k == xKey) {
         // key found
+//IC see: https://issues.apache.org/jira/browse/UIMA-3415
         prevValue = values[x];  // addition
         values[x] = v;          // addition
         return -x;
@@ -263,6 +280,8 @@ public class Int2IntRBT extends IntArrayRBTcommon {
       setParent(z, NIL);
     } else {
       setParent(z, y);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       if (k < getKeyForNode(y)) {
         setLeft(y, z);
       } else {
@@ -381,6 +400,8 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     if (lastNodeGotten == NIL) {
       node = findKey(k);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       final int distanceToTop = Math.abs(k - getKeyForNode(this.root));
       final int distanceToLast = Math.abs(k - getKeyForNode(this.lastNodeGotten));
       node = (distanceToTop < distanceToLast) ? findKey(k) : findKeyFromLast(k);
@@ -403,6 +424,8 @@ public class Int2IntRBT extends IntArrayRBTcommon {
         if (node == NIL) {
           break;
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
         keyNode = getKeyForNode(node);
       } while  (k < keyNode);
       if (keyNode == k) {
@@ -417,6 +440,8 @@ public class Int2IntRBT extends IntArrayRBTcommon {
         if (node == NIL) {
           break;
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
         keyNode = getKeyForNode(node);
       } while (k > keyNode);
       if (keyNode == k) {

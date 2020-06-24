@@ -101,7 +101,10 @@ public class JsonCasSerializerTest extends TestCase {
  
   protected void setUp() throws Exception {
     jcs = new JsonCasSerializer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
     jcs.setOmit0Values(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     doJson = true;
   }
 
@@ -152,6 +155,8 @@ public class JsonCasSerializerTest extends TestCase {
     // also test including / excluding type-name-reference  
     
     setupTypeSystem("nameSpaceNeeded.xml");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
+//IC see: https://issues.apache.org/jira/browse/UIMA-4082
     serializeAndCompare("emptyCAS.txt");  // empty cas
     
     cas.addFsToIndexes(cas.createFS(topType));
@@ -164,6 +169,8 @@ public class JsonCasSerializerTest extends TestCase {
     serializeAndCompare("topAndTokenOnlyNoContext.txt");
     
     jcs = new JsonCasSerializer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
     jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames).setOmit0Values(true);
     serializeAndCompare("topAndTokenOnlyNoExpandedTypeNames.txt");
     
@@ -189,6 +196,8 @@ public class JsonCasSerializerTest extends TestCase {
     serializeAndCompare("topNoContext.txt");
         
     cas.reset();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
     jcs = new JsonCasSerializer().setOmit0Values(true);
     jcs.setTypeSystemReference("A URI to TypeSystem");
     cas.addFsToIndexes(cas.createFS(topType));
@@ -212,11 +221,16 @@ public class JsonCasSerializerTest extends TestCase {
     cas.addFsToIndexes(cas.createFS(t2));
     cas.addFsToIndexes(cas.createFS(t3));
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
+//IC see: https://issues.apache.org/jira/browse/UIMA-4082
     serializeAndCompare("nameSpaceCollisionOmits.txt");
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
     jcs.setOmit0Values(false);
     serializeAndCompare("nameSpaceCollision.txt");
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     cas.addFsToIndexes(cas.createFS(t3));
     serializeAndCompare("nameSpaceCollision2.txt");
 
@@ -235,8 +249,12 @@ public class JsonCasSerializerTest extends TestCase {
     // filter out the 2 types causing namespaces to be needed.
     tsMgr.addType("org.apache.uima.test.Token", a2t);
     TypeSystemImpl tsi = (TypeSystemImpl) tsMgr.commit();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
     jcs = new JsonCasSerializer().setOmit0Values(true);
     jcs.setFilterTypes(tsi);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
+//IC see: https://issues.apache.org/jira/browse/UIMA-4082
     serializeAndCompare("nameSpaceNoCollsionFiltered.txt");
     
     // filter, but not enough - should have 1 collison
@@ -247,6 +265,8 @@ public class JsonCasSerializerTest extends TestCase {
     tsMgr.addType("org.apache.uimax.test.Token", a2t);
     tsi = (TypeSystemImpl) tsMgr.commit();
     jcs.setFilterTypes(tsi);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
+//IC see: https://issues.apache.org/jira/browse/UIMA-4082
     serializeAndCompare("nameSpaceCollsionFiltered.txt");    
     
   }
@@ -254,7 +274,11 @@ public class JsonCasSerializerTest extends TestCase {
   public void testAllValues() throws Exception {
     setupTypeSystem("allTypes.xml");
     setAllValues(0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
     jcs.setPrettyPrint(true).setOmit0Values(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
+//IC see: https://issues.apache.org/jira/browse/UIMA-4082
     serializeAndCompare("allValuesOmits.txt");
     
     jcs.setOmit0Values(false);
@@ -272,12 +296,15 @@ public class JsonCasSerializerTest extends TestCase {
     setAllValues(0);
 
     jcs.setPrettyPrint(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
+//IC see: https://issues.apache.org/jira/browse/UIMA-4082
     serializeAndCompare("multipleViews.txt");
         
   }
   public void testDynamicLists() throws Exception {
     setupTypeSystem("allTypes.xml");
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     FeatureStructure[] fss = new FeatureStructure[20];
     fss[0] = emptyIntList();
     fss[1] = intList(33, fss[0]);   // value 33, linked to 0
@@ -290,12 +317,16 @@ public class JsonCasSerializerTest extends TestCase {
     jcas.addFsToIndexes(fss[4]);
    
     jcs.setPrettyPrint(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
+//IC see: https://issues.apache.org/jira/browse/UIMA-4082
     serializeAndCompare("twoListMerge.txt");
     
     jcs.setStaticEmbedding();
     serializeAndCompare("twoListMergeStatic.txt");
    
     cas.reset();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
     jcs = new JsonCasSerializer().setOmit0Values(true);
     jcs.setPrettyPrint(true);
     fss[0] = emptyIntList();
@@ -304,6 +335,8 @@ public class JsonCasSerializerTest extends TestCase {
     fss[3] = intList(11, fss[2]);
 
     cas.addFsToIndexes(fss[3]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
+//IC see: https://issues.apache.org/jira/browse/UIMA-4082
     serializeAndCompare("indexedSingleList.txt");
     
     jcs.setStaticEmbedding();
@@ -325,6 +358,7 @@ public class JsonCasSerializerTest extends TestCase {
     setupTypeSystem("refTypes.xml");
     jcs.setPrettyPrint(true);
     jcs.setJsonContext(JsonContextFormat.omitContext);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
 
       
     //  make root FS that is indexed and has a ref 
@@ -338,6 +372,7 @@ public class JsonCasSerializerTest extends TestCase {
     
     serializeAndCompare("indexedAndRef.txt");
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
     arrayOrListRefstst(true);
     arrayOrListRefstst(false);
   }
@@ -450,6 +485,7 @@ public class JsonCasSerializerTest extends TestCase {
   
   private FeatureStructure setAllValues(int v) throws CASException {
     cas = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);  // create the default initial view sofa.
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     JCas jcas = cas.getJCas();
     boolean s1 = v == 0;
     boolean s2 = v == 1;
@@ -469,6 +505,7 @@ public class JsonCasSerializerTest extends TestCase {
     fs.setFeatureValue(allTypesType.getFeatureByBaseName("aFS"),  fs2);
     
     FeatureStructure fsAboolean = cas.createBooleanArrayFS(s1 ? 1 : 0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     ByteArray fsAbyte    = new ByteArray(jcas, s1 ? 2 : 0);
     if (s1) {
       fsAbyte.set(0, (byte) 15);
@@ -477,6 +514,8 @@ public class JsonCasSerializerTest extends TestCase {
     FeatureStructure fsAshort   = cas.createShortArrayFS(s2 ? 2 : 0);
     FeatureStructure fsAstring  = cas.createStringArrayFS(s1 ? 1 : 0);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
+//IC see: https://issues.apache.org/jira/browse/UIMA-4082
     fsa1 = cas.createFS(allTypesType);
     fsa2 = cas.createFS(allTypesType);
     fsa3 = cas.createFS(allTypesType);
@@ -528,6 +567,7 @@ public class JsonCasSerializerTest extends TestCase {
     tsd = parser.parseTypeSystemDescription(new XMLInputSource(tsdFile));
     cas = (CASImpl) CasCreationUtils.createCas(tsd, null, null);
 //    cas.getSofaRef();  // creates the default sofa
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     jcas = cas.getJCas();
     tsi = cas.getTypeSystemImpl();
     topType = (TypeImpl) tsi.getTopType();
@@ -542,6 +582,7 @@ public class JsonCasSerializerTest extends TestCase {
   }
   
   private String getExpected(String expectedResultsName, String r) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     if (!doJson) {
       expectedResultsName = expectedResultsName.replace(".txt", ".xml");
     }
@@ -551,6 +592,7 @@ public class JsonCasSerializerTest extends TestCase {
       File d = new File (generateDirPlus);
       d.mkdirs();
       File file = new File (generateDirPlus  + expectedResultsName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
       try (Writer writer = new FileWriter(file)) {
         writer.write(r);
       }
@@ -562,6 +604,8 @@ public class JsonCasSerializerTest extends TestCase {
   }
   
   private void serializeAndCompare(String expectedResultsName) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
+//IC see: https://issues.apache.org/jira/browse/UIMA-4082
     String r = serialize();
     compareWithExpected(expectedResultsName, r);
   }
@@ -569,6 +613,7 @@ public class JsonCasSerializerTest extends TestCase {
   private void compareWithExpected(String expectedResultsName, String r) throws IOException, SAXException {
     r = canonicalizeNewLines(r);
     String expected = getExpected(expectedResultsName, r);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4056
     String ce = canonicalizeNewLines(expected);
     if (doJson) {
       assertEquals(ce, r);
@@ -582,6 +627,7 @@ public class JsonCasSerializerTest extends TestCase {
   }
   
   private String serialize() throws Exception {    
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     StringWriter sw = null;
     ByteArrayOutputStream baos = null;
     try {

@@ -60,6 +60,7 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
 
   
   public void setAnalysisEngine(AnalysisEngine aAnalysisEngine)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     if (super.getCasProcessors().length > 0
             && super.getCasProcessors()[0] instanceof AnalysisEngine) {
@@ -118,6 +119,7 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
 
   
   public void process(CollectionReader aCollectionReader, int aBatchSize)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     super.process(aCollectionReader, aBatchSize);
 

@@ -82,6 +82,7 @@ public class SimpleRunCPM extends Thread {
     mStartTime = System.currentTimeMillis();
 
     // check command line args
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
     if (args.length < 3) {
       printUsageMessage();
       System.exit(1);
@@ -98,6 +99,7 @@ public class SimpleRunCPM extends Thread {
     // AnalysisEngine
     System.out.println("Initializing AnalysisEngine");
     ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
             new XMLInputSource(args[1]));
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpecifier);
 
@@ -130,6 +132,7 @@ public class SimpleRunCPM extends Thread {
    */
   private static void printUsageMessage() {
     System.out.println(" Arguments to the program are as follows : \n"
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
             + "args[0] : Collection Reader descriptor file \n "
             + "args[1] : Analysis Engine descriptor file. \n"
             + "args[2] : CAS Consumer descriptor file");
@@ -191,6 +194,7 @@ public class SimpleRunCPM extends Thread {
      */
     public void collectionProcessComplete() {
       System.out.print("Completed " + entityCount + " documents");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (size > 0) {
         System.out.print("; " + size + " characters");
       }
@@ -238,6 +242,7 @@ public class SimpleRunCPM extends Thread {
      *          EntityProcessStatus that holds the status of all the events for aEntity
      */
     public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (aStatus.isException()) {
         List exceptions = aStatus.getExceptions();
         for (int i = 0; i < exceptions.size(); i++) {

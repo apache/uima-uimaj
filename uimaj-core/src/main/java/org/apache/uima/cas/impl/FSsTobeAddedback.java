@@ -43,6 +43,7 @@ import org.apache.uima.util.AutoCloseableNoException;
  */
 abstract class FSsTobeAddedback implements AutoCloseableNoException {
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4135
   final static boolean SHOW = false;
   final static AtomicInteger removes = new AtomicInteger(0);
   
@@ -84,12 +85,14 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
   
   protected void log(FeatureStructureImplC fs, FSIndexRepositoryImpl view) {
     if (SHOW) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       logPart(fs, view);
       System.out.println();
     }
   }
   
   void recordRemove(FSIndexRepositoryImpl view) {throw new UnsupportedOperationException();}
+//IC see: https://issues.apache.org/jira/browse/UIMA-4135
   void recordRemove(FSIndexRepositoryImpl view, int count)             {
     if (count == 1) {
       recordRemove(view);
@@ -97,6 +100,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
       throw new UnsupportedOperationException();
     }
   }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
   void recordRemove(TOP fs, FSIndexRepositoryImpl view) {throw new UnsupportedOperationException();}
   void recordRemove(TOP fs, FSIndexRepositoryImpl view, int count) {
     if (count == 1) {
@@ -130,6 +134,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
     /**
      * list of views where the FS was removed; used when adding the fs back
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     final List<FSIndexRepositoryImpl> views = new ArrayList<>();
     
     @Override
@@ -142,6 +147,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
      * in single, the fs is ignored
      */
     @Override
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     void recordRemove(TOP fs, FSIndexRepositoryImpl view) {
       recordRemove(view);
     }
@@ -156,6 +162,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
           
     
     @Override
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     void addback(TOP fs) {
       /**
        * add this back only to those views where it was removed
@@ -183,11 +190,13 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
     /**
      * For each FS, the list of views where it was removed. 
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     final Map<TOP, List<?>> fss2views = new HashMap<>();
     
     /**
      * An arbitrary cas view or base cas
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4135
     final CASImpl cas;
     
     FSsTobeAddedbackMultiple(CASImpl cas) {
@@ -195,11 +204,13 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
     }
     
     @Override
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     void recordRemove(TOP fs, FSIndexRepositoryImpl view) {
       log(fs, view);
       @SuppressWarnings("unchecked")
       List<FSIndexRepositoryImpl> irList = (List<FSIndexRepositoryImpl>) fss2views.get(fs);
       if (null == irList) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         fss2views.put(fs,  irList = new ArrayList<>());
       }
       irList.add(view);
@@ -207,6 +218,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
           
     @Override
     void addback() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
       for (Entry<TOP, List<?>> e : fss2views.entrySet()) {
         final TOP fs = e.getKey();
         @SuppressWarnings("unchecked")
@@ -230,6 +242,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
    * @return an impl of this class
    */
   public static FSsTobeAddedback createSingle() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return new FSsTobeAddedbackSingle();
   }
   

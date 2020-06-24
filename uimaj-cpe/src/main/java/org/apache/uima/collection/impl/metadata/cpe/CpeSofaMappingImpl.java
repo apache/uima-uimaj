@@ -50,12 +50,14 @@ public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMa
    */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return XMLIZATION_INFO;
   }
 
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("sofaNameMapping",
           new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Overridden to handle "name" and "value" attributes.
@@ -72,6 +74,7 @@ public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMa
       }
       if (getComponentSofaName() != null) {
         attrs.addAttribute("", "componentSofaName", "componentSofaName", "CDATA",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 getComponentSofaName());
       }
     } catch (Exception e) {
@@ -92,6 +95,7 @@ public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMa
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     // assumes all children are parameter elements
     NamedNodeMap nodeMap = aElement.getAttributes();

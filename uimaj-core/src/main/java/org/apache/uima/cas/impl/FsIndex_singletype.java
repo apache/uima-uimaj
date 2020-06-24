@@ -47,8 +47,10 @@ import org.apache.uima.jcas.cas.TOP;
  *          iterators producing Java cover classes
  */
 public abstract class FsIndex_singletype<T extends FeatureStructure> 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5619
     extends AbstractCollection<T>
     implements Comparator<FeatureStructure>, LowLevelIndex<T> {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
 
   private final static String[] indexTypes = new String[] {
       "Sorted", "Set", "Bag", "DefaultBag" };
@@ -74,6 +76,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
    * comparator for an index, passed in as an argument to the constructor
    */
   final protected FSIndexComparatorImpl comparatorForIndexSpecs;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
 
   final protected Comparator<TOP> comparatorWithID;
   final protected Comparator<TOP> comparatorWithoutID;
@@ -82,6 +85,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
    * comparator (with id) (ignoring typeorder) - used within one type
    */
   final protected Comparator<TOP> comparatorNoTypeWithID;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
 
   /**
    * comparator (without id) (ignoring typeorder) - used within one type - used
@@ -172,6 +176,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
     this.isReverse = new boolean[nKeys];
 
     if (!this.comparatorForIndexSpecs.isValid()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
       isAnnotIdx = false;
       comparatorWithID = null;
       comparatorWithoutID = null;
@@ -292,6 +297,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
    */
   @Override
   public Comparator<TOP> getComparator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     return comparatorWithoutID;
   }
 
@@ -301,6 +307,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
   }
 
   public FSIndexComparatorImpl getComparatorImplForIndexSpecs() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     return this.comparatorForIndexSpecs;
   }
 
@@ -329,6 +336,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
    * @return 0 if equal, &lt; 0 if fs1 &lt; fs2, &gt; 0 if fs1 &gt; fs2
    */
   public int compare(int fs1, int fs2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return compare(casImpl.getFsFromId_checked(fs1), casImpl.getFsFromId_checked(fs2));
   }
 
@@ -349,6 +357,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
 
   int compare(FeatureStructure afs1, FeatureStructure afs2, boolean ignoreType) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     if (afs1 == afs2) {
       return 0;
     }
@@ -366,11 +375,15 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
       i++;
       if (key instanceof FeatureImpl) {
         FeatureImpl fi = (FeatureImpl) key;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
         if (fi.getRange().isStringOrStringSubtype()) { // string and string
                                                        // subtypes
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
           result = Misc.compareStrings(fs1._getStringValueNc(fi), fs2._getStringValueNc(fi));
         } else {
           switch (keyTypeCodes[i]) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           case TypeSystemConstants.booleanTypeCode:
             result = Integer.compare(fs1._getBooleanValueNc(fi) ? 1 : 0,
                 fs2._getBooleanValueNc(fi) ? 1 : 0);
@@ -401,9 +414,11 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
           } // end of switch
         }
       } else { // is type order compare
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
         if (ignoreType) {
           result = 0;
         } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
           result = ((LinearTypeOrder) key).compare(fs1, fs2);
         }
       }
@@ -514,6 +529,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
    *   to be indexed only in 1 view.
    * 
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
   void removeAll() {
     FSIterator<T> it = iterator();
     if (type instanceof TypeImpl_annotBase) {
@@ -526,6 +542,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
   }
 
   protected CopyOnWriteIndexPart<T> getNonNullCow() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
     CopyOnWriteIndexPart<T> n = getCopyOnWriteIndexPart();
     if (n != null) {
       if (CASImpl.traceCow) {
@@ -540,6 +557,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
 
     // null means index updated since iterator was created, need to make new cow
     // and use it
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     n = createCopyOnWriteIndexPart(); // new CopyOnWriteObjHashSet<TOP>(index);
     wr_cow = new WeakReference<>(n);
     return n;
@@ -563,6 +581,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
     if (wr_cow != null) {
       CopyOnWriteIndexPart v = wr_cow.get();
       if (v != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
         v.makeReadOnlyCopy();
       }
       wr_cow = null;

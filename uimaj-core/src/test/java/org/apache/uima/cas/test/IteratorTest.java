@@ -151,7 +151,9 @@ public class IteratorTest extends TestCase {
     // assertTrue(false);
     // }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-190
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/casTestCaseDescriptor.xml");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1601
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
         descriptorFile.exists());
 
@@ -160,6 +162,7 @@ public class IteratorTest extends TestCase {
       ResourceSpecifier spec = (ResourceSpecifier) parser.parse(new XMLInputSource(descriptorFile));
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(spec);
       this.cas = (CASImpl) ae.newCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4146
       this.jcas = cas.getJCas();
       assertTrue(this.cas != null);
       this.ts = this.cas.getTypeSystem();
@@ -193,12 +196,14 @@ public class IteratorTest extends TestCase {
     assertTrue(this.sentLenFeat != null);
     this.tokenFloatFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
     assertTrue(this.tokenFloatFeat != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     this.startFeature = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     assertTrue(this.startFeature != null);
     this.sentenceType = this.ts.getType(CASTestSetup.SENT_TYPE);
     assertTrue(this.sentenceType != null);
     this.annotationType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(this.annotationType != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2434
     this.subsentenceType = this.ts.getType("SubTypeOfSentence");
     assertTrue(this.subsentenceType != null);
   }
@@ -221,6 +226,7 @@ public class IteratorTest extends TestCase {
   }
   
   private void setupindexes () {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4146
     bagIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX);
     setIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
     sortedIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX);
@@ -240,6 +246,7 @@ public class IteratorTest extends TestCase {
   }
   
   public void testEmptySnapshotIterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4248
     setupindexes();
     FSIterator<FeatureStructure> it = sortedIndex.iterator();
     assertEquals(0, it.size());
@@ -253,6 +260,8 @@ public class IteratorTest extends TestCase {
     assertTrue(ok);
     
     it = ssSortedIndex.iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
     assertEquals(0, it.size());    
     assertFalse(it.isValid());
     ok = false;
@@ -265,8 +274,11 @@ public class IteratorTest extends TestCase {
   }
   
   public void testGetIndexes() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
      Iterator<FSIndex<FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1352
       assertNotNull(it.next());
     }
   }
@@ -286,8 +298,10 @@ public class IteratorTest extends TestCase {
     }
     AnnotationFS match = this.cas.createAnnotation(this.annotationType, start, end);
     FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4146
     FSIndex<AnnotationFS> ssIndex = index.withSnapshotIterators();
     FSIterator<AnnotationFS> it = index.iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
     assertEquals(60, it.size());
     FSIterator<AnnotationFS> ssit = ssIndex.iterator();
     assertEquals(60, it.size());
@@ -304,6 +318,8 @@ public class IteratorTest extends TestCase {
   }
   
   public void testMoveToPastEnd() {  // https://issues.apache.org/jira/browse/UIMA-4094
+//IC see: https://issues.apache.org/jira/browse/UIMA-4094
+//IC see: https://issues.apache.org/jira/browse/UIMA-4095
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.annotationType, 1,2));
     
@@ -313,8 +329,10 @@ public class IteratorTest extends TestCase {
     it.moveTo(pastEnd);
     assertFalse(it.isValid());
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4146
     index = index.withSnapshotIterators();
     it = index.iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
     assertEquals(1, it.size());
     it.moveTo(pastEnd);
     assertFalse(it.isValid());
@@ -348,6 +366,7 @@ public class IteratorTest extends TestCase {
       for (int j = 0; j < 2; j++) {
         assertTrue(it.isValid());
         AnnotationFS fs = it.get();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5111
         this.cas.getIndexRepository().addFS(testAnnot);
         this.cas.getIndexRepository().removeFS(testAnnot);
         assertEquals(1, fs.getBegin()); 
@@ -356,8 +375,11 @@ public class IteratorTest extends TestCase {
       }
       assertTrue(it.isValid());
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4146
       index = index.withSnapshotIterators();
       it = index.iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
       assertEquals((i == 0) ? 6 : 5, it.size());
       it.moveTo(testAnnot);
       for (int j = 0; j < 2; j++) {
@@ -378,6 +400,7 @@ public class IteratorTest extends TestCase {
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
         this.cas.createAnnotation(this.sentenceType,   i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
       fsi = 
@@ -409,6 +432,7 @@ public class IteratorTest extends TestCase {
   
   private void setupFSs() {
     this.cas.getIndexRepository().removeAllIncludingSubtypes(TOP.class);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
 
     for (int i = 0; i < 10; i++) {
       createFSs(i);  // i = 0 .. 9, 5 annot per: annotation, sentence, token, token, token
@@ -430,8 +454,10 @@ public class IteratorTest extends TestCase {
     int numberOfCores = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
     
     System.out.println("test multicore iterator with " + numberOfCores + " threads");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
     MultiThreadUtils.ThreadM[] threads = new MultiThreadUtils.ThreadM[numberOfCores];
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4248
     final Throwable[] tthrowable = new Throwable[1];  // trick to get a return value in a parameter
     tthrowable[0] = null;
     
@@ -479,6 +505,7 @@ public class IteratorTest extends TestCase {
   }
   
   public void testIterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     setupFSs();  
     
     setupindexes();
@@ -489,6 +516,8 @@ public class IteratorTest extends TestCase {
     sortedIteratorWithoutMods(sortedIndex);
     sortedIteratorWithoutMods(ssSortedIndex);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-3674
+//IC see: https://issues.apache.org/jira/browse/UIMA-3675
     bagIteratorWithoutMods(bagIndex);
     bagIteratorWithoutMods(ssBagIndex);
 
@@ -502,6 +531,7 @@ public class IteratorTest extends TestCase {
     
 //    debugls();  //debug
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     basicRemoveAdd(bagIndex);
     basicRemoveAdd(sortedIndex, 38, 39);
 //    debugls();  //debug
@@ -530,6 +560,7 @@ public class IteratorTest extends TestCase {
      */
 
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
     createFSsU();
     
     cowTst(setIndex, true);
@@ -555,6 +586,7 @@ public class IteratorTest extends TestCase {
     
 
     // moved IntArrayRBTtest for pointer iterators here
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     FSIndexRepository iri = cas.getIndexRepository();
     FSIndex<FeatureStructure> setIndexOverTokens = iri.getIndex(CASTestSetup.ANNOT_SET_INDEX, tokenType);
     int [] expected = new int[setIndexOverTokens.size()];
@@ -564,6 +596,8 @@ public class IteratorTest extends TestCase {
       expected[i++] = fs._id();
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     LowLevelIndexRepository llir = this.cas.ll_getIndexRepository();
     LowLevelIndex setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
 //    int[] expected = {17, 53, 89, 125, 161, 197, 233, 269, 305, 341, 701, 665, 629, 593, 557, 521, 485, 449, 413, 377};
@@ -598,6 +632,7 @@ public class IteratorTest extends TestCase {
     
     setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
     LowLevelIterator it = setIndexForType.ll_iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
     assertEquals(20, it.size());
     assertTrue(it.isValid());
     it.moveToPrevious();
@@ -614,6 +649,7 @@ public class IteratorTest extends TestCase {
   
   private void setIndexIterchk(LowLevelIndex idx, int[] expected) {
     LowLevelIterator it = idx.ll_iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
     assertEquals(expected.length, it.size());
     int[] r = new int[70];
     int i = 0;
@@ -630,6 +666,8 @@ public class IteratorTest extends TestCase {
     // Create a reverse iterator for the set index and check that the result
     // is the same as for forward iteration.
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-3674
+//IC see: https://issues.apache.org/jira/browse/UIMA-3675
     IntVector v = new IntVector();
     FSIterator<FeatureStructure> it = setIndex.iterator();
     AnnotationFS a, b = null;
@@ -641,10 +679,12 @@ public class IteratorTest extends TestCase {
         // note compare may be equal for two items of different types
         // because setIndex is not using type priorities (I think) (2/2015)
         int compareResult = setIndex.compare(b, a);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4248
         if (compareResult == 0) {
           // types must be different
           assertFalse(a.getType().getName().equals(b.getType().getName()));
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
         if (a._id() == b._id()) {
           System.err.format("set Iterator: should not have 2 identical elements%n%s%n", it);
           assertTrue(false);
@@ -662,6 +702,7 @@ public class IteratorTest extends TestCase {
 //           a.getType().getName(),
 //           a.getBegin(),
 //           a.getEnd()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
       v.add(it.get()._id());
       it.moveToNext();
     }
@@ -683,6 +724,7 @@ public class IteratorTest extends TestCase {
       // System.out.println(
       // a.getType().getName() + " - " + a.getStart() + " - " +
       // a.getEnd());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
       assertTrue(it.get()._id() == v.get(current));
       it.moveToPrevious();
       --current;
@@ -712,6 +754,7 @@ public class IteratorTest extends TestCase {
     }
 
     // also test Java-style iteration
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     Iterator<FeatureStructure> javaIt = setIndex.iterator();
     current = 0;
     while (javaIt.hasNext()) {
@@ -720,12 +763,14 @@ public class IteratorTest extends TestCase {
   }
   
   private void findTst(FSIndex index, FSIndex jcasIndex) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4146
     findTestCas(index);
     findTestJCas(jcasIndex);
   }
   
   // called for bag indexes - can't know the begin/end for these - they're hash sets
   private void basicRemoveAdd(FSIndex<FeatureStructure> index) { 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     FSIterator<FeatureStructure> it = index.iterator();
     it.moveToLast();
     Annotation a = (Annotation) it.get();
@@ -754,6 +799,7 @@ public class IteratorTest extends TestCase {
    */
   private void cowTst(FSIndex<FeatureStructure> index, boolean isCow) {
     LowLevelIterator<FeatureStructure> it = (LowLevelIterator)index.iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
     it.moveToLast();
     it.moveToFirst();
     // moved to first, 2.7.0, because new bag iterator is more forgiving re concurrentmodexception
@@ -807,6 +853,10 @@ public class IteratorTest extends TestCase {
     it.moveToLast();
     it.moveToFirst();
     // moved to first, 2.7.0, because new bag iterator is more forgiving re concurrentmodexception
+//IC see: https://issues.apache.org/jira/browse/UIMA-4162
+//IC see: https://issues.apache.org/jira/browse/UIMA-4160
+//IC see: https://issues.apache.org/jira/browse/UIMA-4158
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
     FeatureStructure a = it.get();
     
     cas.removeFsFromIndexes(a);
@@ -818,13 +868,16 @@ public class IteratorTest extends TestCase {
   
   private void expectCCE(FeatureStructure a, FSIterator it, boolean isShouldFail) {
     boolean ok = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5111
     isShouldFail = false; // after fix
     try {
       it.moveToNext();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       it.get();  // for set/sorted, the get does the actual "move" operation
     } catch (ConcurrentModificationException e) {
       ok = true;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
      assertTrue(isShouldFail ? ok : !ok);
     
     it.moveTo(a);  // should reset concurrent mod, 
@@ -845,6 +898,7 @@ public class IteratorTest extends TestCase {
 
     wordFeat = wType.getFeatureByBaseName("word");
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1352
     for (int i = 0; i < 20; i++) {
       FeatureStructure fs = this.cas.createFS(wType);
       fs.setStringValue(wordFeat, "word" + i);
@@ -858,6 +912,7 @@ public class IteratorTest extends TestCase {
   
   private void tstWord(FSIndex<FeatureStructure> index) {
     FSIterator<FeatureStructure> it = index.iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
     assertEquals(20, it.size());  // test size
     it.moveToLast();
 
@@ -907,6 +962,7 @@ public class IteratorTest extends TestCase {
     }    
     IntVector v = new IntVector();
     FSIterator<FeatureStructure> it = sortedIndex.iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-190
     it.moveToFirst();
     AnnotationFS a, b = null;
     while (it.isValid()) {
@@ -915,6 +971,7 @@ public class IteratorTest extends TestCase {
       assertTrue(a != null);
       if (b != null) {
         // System.out.println("b = " + b);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1352
         assertTrue(sortedIndex.compare(b, a) <= 0);
       }
       b = a;
@@ -928,6 +985,7 @@ public class IteratorTest extends TestCase {
     assertTrue(sortedIndex.size() == v.size());
 
     // Test moveTo()
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<AnnotationFS> list = new ArrayList<>();
     FSIterator<AnnotationFS> it2 = this.cas.getAnnotationIndex().iterator();
     for (it2.moveToFirst(); it2.isValid(); it2.moveToNext()) {
@@ -994,6 +1052,10 @@ public class IteratorTest extends TestCase {
     FSIterator<FeatureStructure> it = bagIndex.iterator();
     AnnotationFS a, b = null;
 //    int debug_i = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4162
+//IC see: https://issues.apache.org/jira/browse/UIMA-4160
+//IC see: https://issues.apache.org/jira/browse/UIMA-4158
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
     while (true) {
 //      if (debug_i == 20) {
 //        System.out.println("Debug");
@@ -1009,6 +1071,7 @@ public class IteratorTest extends TestCase {
 //        assertTrue(bagIndex.compare(b, a) <= 0);
 //      }
       b = a;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
       v.add(a._id());
       it.moveToNext();
     }
@@ -1021,6 +1084,7 @@ public class IteratorTest extends TestCase {
 //        System.out.println("debug");
 //      }
       assertTrue(it.isValid());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
       assertTrue(it.get()._id() == v.get(i));
       it.moveToPrevious();
     }
@@ -1036,6 +1100,9 @@ public class IteratorTest extends TestCase {
     while (current < (v.size() - 1)) {
       it.moveToNext();
       assertTrue(it.isValid());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
       assertTrue(it.get()._id() == v.get(current));
       it.moveToNext();
       assertTrue(it.isValid());
@@ -1053,10 +1120,14 @@ public class IteratorTest extends TestCase {
     Iterator<FeatureStructure> javaIt = bagIndex.iterator();
     current = 0;
     while (javaIt.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
       assertEquals(javaIt.next()._id(), v.get(current++));
     }
 
     // Test iterator copy.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIterator<AnnotationFS> source, copy;
     source = this.cas.getAnnotationIndex().iterator();
     // Count items.
@@ -1085,6 +1156,7 @@ public class IteratorTest extends TestCase {
   }
   
   private void addAnnotations(AnnotationFS[] fsArray, Type type) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2434
     FSIndexRepository ir = this.cas.getIndexRepository();    
     for (int i = 0; i < fsArray.length; i++) {
       // key order:
@@ -1106,15 +1178,19 @@ public class IteratorTest extends TestCase {
     // Create a bunch of FSs.
     // have 10% of them be the same key
     // have the order be scrambled somewhat, not strictly increasing
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     AnnotationFS[] fsArray = new AnnotationFS[100];
     FSIndexRepository ir = this.cas.getIndexRepository();
     addAnnotations(fsArray, this.tokenType);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1601
     FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
         CASTestSetup.ANNOT_SET_INDEX, this.tokenType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     FSIterator<FeatureStructure> set_iterator = setIndex.iterator();
     
     FSIndex<AnnotationFS> sortedIndex = this.cas.getAnnotationIndex(this.tokenType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIterator<AnnotationFS> sortedIt = sortedIndex.iterator();
     
     FSIndex<FeatureStructure> bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.tokenType);
@@ -1127,6 +1203,7 @@ public class IteratorTest extends TestCase {
     
     // For each index, check that the FSs are actually in the index.
     for (int i = 0; i < fsArray.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       set_iterator.moveTo(fsArray[i]);
       assertTrue(set_iterator.isValid());
       assertTrue(set_iterator.get().equals(fsArray[(i < 90) ? i : 90]));
@@ -1137,6 +1214,7 @@ public class IteratorTest extends TestCase {
       
       sortedIt.moveTo(fsArray[i]);
       assertTrue(sortedIt.isValid());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2434
       fsBeginEndEqual(sortedIt.get(), fsArray[i]);
     }
     sortedIt.moveToFirst();
@@ -1159,7 +1237,9 @@ public class IteratorTest extends TestCase {
       ir.removeFS(fsArray[i]);  // a 2nd remove should be a no-op https://issues.apache.org/jira/browse/UIMA-2934
       
       // due to copy on write, need a new instance of set_iterator
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
       set_iterator = setIndex.iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       set_iterator.moveTo(fsArray[i]);
       if (set_iterator.isValid()) {
         int oldRef = this.cas.ll_getFSRef(fsArray[i]);
@@ -1169,6 +1249,7 @@ public class IteratorTest extends TestCase {
       }
       
    // due to copy on write, need a new instance of set_iterator
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
       bagIt = bagIndex.iterator();
 //      assertFalse(bagIt.hasNext());  // invalid test: removing one item from a bag index doesn't remove the "last" element.
       assertEquals(99, bagIndex.size());
@@ -1190,12 +1271,14 @@ public class IteratorTest extends TestCase {
     // All iterators should be invalidated when being reset.
     
     // due to copy on write, need a new instance of set_iterator
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
     bagIt = bagIndex.iterator();
     bagIt.moveToFirst();
     assertFalse(bagIt.isValid());
     
     // due to copy on write, need a new instance of set_iterator
     set_iterator = setIndex.iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     set_iterator.moveToFirst();
     assertFalse(set_iterator.isValid());
 
@@ -1226,6 +1309,7 @@ public class IteratorTest extends TestCase {
     AnnotationFS[] subFsArray = new AnnotationFS[100];
     FSIndexRepository ir = this.cas.getIndexRepository();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2434
     addAnnotations(fsArray, ts.getType("Sentence"));
     addAnnotations(subFsArray, ts.getType("SubTypeOfSentence"));
     
@@ -1278,6 +1362,7 @@ public class IteratorTest extends TestCase {
 //    verifyConcurrantModificationDetected(subsortedIt);
 
     // due to copy on write, need to get new iterators
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
     setIt = setIndex.iterator();
     bagIt = bagIndex.iterator();
     sortedIt = sortedIndex.iterator();
@@ -1301,6 +1386,7 @@ public class IteratorTest extends TestCase {
     }
 
     // due to copy on write, need to get new iterators
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
     setIt = setIndex.iterator();
     bagIt = bagIndex.iterator();
     sortedIt = sortedIndex.iterator();
@@ -1319,6 +1405,7 @@ public class IteratorTest extends TestCase {
     ir.removeAllExcludingSubtypes(this.sentenceType);
     
     // due to copy on write, need to get new iterators
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
     setIt = setIndex.iterator();
     bagIt = bagIndex.iterator();
     sortedIt = sortedIndex.iterator();
@@ -1341,6 +1428,9 @@ public class IteratorTest extends TestCase {
     ir.removeAllExcludingSubtypes(subsentenceType);
 
     // due to copy on write, need to get new iterators
+//IC see: https://issues.apache.org/jira/browse/UIMA-2434
+//IC see: https://issues.apache.org/jira/browse/UIMA-2434
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
     setIt = setIndex.iterator();
     bagIt = bagIndex.iterator();
     sortedIt = sortedIndex.iterator();
@@ -1360,12 +1450,14 @@ public class IteratorTest extends TestCase {
   
   private void verifyConcurrantModificationDetected(FSIterator<?> it) {
     boolean caught = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2434
     try {
       it.moveToNext();
     } catch (Exception e) {
       caught = true;
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     assertFalse(caught); // because of copy-on-write
     
 //    if (it.isValid()) {
@@ -1380,6 +1472,7 @@ public class IteratorTest extends TestCase {
   
   public void testInvalidIndexRequest() {
     boolean exc = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-649
     try {
       this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.stringType);
     } catch (CASRuntimeException e) {
@@ -1393,6 +1486,7 @@ public class IteratorTest extends TestCase {
   }
 
   private void fsBeginEndEqual(AnnotationFS fs1, AnnotationFS fs2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2434
     assertEquals(fs1.getBegin(), fs2.getBegin());
     assertEquals(fs1.getEnd(), fs2.getEnd());     
   }

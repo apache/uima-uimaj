@@ -37,6 +37,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
   final private boolean is_unordered;
   final private LowLevelIndex<T> indexForComparator;
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   final private boolean isNotUimaIndexSource;
   
   final private Comparator<TOP> comparatorMaybeNoTypeWithoutId;
@@ -101,6 +102,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
    */
   @Override
   public T getNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return snapshot[pos];
   }
 
@@ -116,6 +118,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
 
   @Override
   public void moveToNextNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     pos++;
   }
 
@@ -131,6 +134,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
   
   @Override
   public void moveToPreviousNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     pos--;
   }
 
@@ -157,6 +161,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
   public void moveToNoReinit(FeatureStructure fs) {
     if (is_unordered) {
       int i = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
       while ((i < snapshot.length) && compare(snapshot[i],  fs) != 0) {
         i++;
       }
@@ -174,6 +179,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
       } else {
         // found an equal.  need to move to leftmost
         c--;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
         while ((c >= 0) && compare(snapshot[c],  fs) == 0) {
           c--;
         }
@@ -205,7 +211,9 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
    */
   @Override
   public FSIterator<T> copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     FsIterator_subtypes_snapshot<T> it = new FsIterator_subtypes_snapshot<>(
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
         this.snapshot,
         this.indexForComparator,
         this.is_unordered,
@@ -224,6 +232,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
   
   @Override
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return indexForComparator.ll_maxAnnotSpan();   
   }
 
@@ -237,6 +246,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
   
   @Override
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return (null == comparatorMaybeNoTypeWithoutId) 
         ? Integer.compare(fs1._id(), fs2._id())
         : comparatorMaybeNoTypeWithoutId.compare((TOP)fs1, (TOP)fs2);
@@ -252,17 +262,21 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
 
   @Override
   public boolean maybeReinitIterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     return false;
   }
 
 
   @Override
   public Comparator<TOP> getComparator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return comparatorMaybeNoTypeWithoutId;
   } 
   
   @Override 
   public int size() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
     return snapshot.length;
   }
 }

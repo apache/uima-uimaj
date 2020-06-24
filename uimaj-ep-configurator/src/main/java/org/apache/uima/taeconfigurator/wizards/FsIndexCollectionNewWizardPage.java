@@ -37,6 +37,7 @@ public class FsIndexCollectionNewWizardPage extends AbstractNewWizardPage {
    */
   public FsIndexCollectionNewWizardPage(ISelection selection) {
     super(selection, "big_ae.gif", "Index Collection Descriptor File",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Create a new Index Collection Descriptor file", "indexCollectionDescriptor.xml");
   }
 

@@ -43,6 +43,7 @@ public class IntHashSetPerfTest extends TestCase {
   IntArrayRBT m1;
   IntBitSet m3;
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
   final int[] keys10000 = new int[511111];
   int k10ki = 0;
   
@@ -53,6 +54,7 @@ public class IntHashSetPerfTest extends TestCase {
     m2 = new IntHashSet(16);
     m3 = new IntBitSet(16);
      
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     for (int i = 0; i < keys10000.length; i++) {
       int k = r.nextInt(511110);
      
@@ -74,6 +76,7 @@ public class IntHashSetPerfTest extends TestCase {
     
     System.out.format("%n%n Time 500000 %n%n");
     timelp(500000);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
 
     
     System.out.println(dmv);

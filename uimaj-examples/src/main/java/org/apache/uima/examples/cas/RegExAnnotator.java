@@ -272,6 +272,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
         // iterate over all annotation types for which we have patterns
         for (int j = 0; j < mCASTypes.length; j++) {
           // see if the ResultSpec contains this type
+//IC see: https://issues.apache.org/jira/browse/UIMA-891
           if (getResultSpecification().containsType(mCASTypes[j].getName(),aCAS.getDocumentLanguage()) || getResultSpecification().containsType(mCASTypes[j].getName())) {
             // try to match each pattern that we have for this annotation type
             for (int k = 0; k < mPatterns[j].length; k++) {
@@ -279,10 +280,12 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
               Matcher matcher = mPatterns[j][k].matcher(subText);
               while (pos < subText.length() && matcher.find(pos)) {
                 getContext().getLogger().log(Level.FINER,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                         "RegEx match found: [" + matcher.group() + "]");
                 // match found; extract locations of start and end of match
                 // (or of entire containing annotation, if that option is on)
                 int annotStart, annotEnd;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
                 if (mAnnotateEntireContainingAnnotation) {
                   annotStart = startPos;
                   annotEnd = endPos;

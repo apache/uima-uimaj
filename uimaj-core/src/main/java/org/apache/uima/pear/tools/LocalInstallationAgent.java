@@ -303,6 +303,7 @@ public class LocalInstallationAgent {
       completed = true;
     } else
       System.err.println("[LocalInstallationAgent]: "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + "PEAR properties do not comply with installation descriptor");
     return completed;
   }
@@ -319,6 +320,7 @@ public class LocalInstallationAgent {
   protected synchronized File[] localizeComponentFiles() throws IOException {
     // localize all files in conf & desc dirs
     File confDir = new File(_mainRootDir, InstallationController.PACKAGE_CONF_DIR);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Collection<File> confDirFiles = FileUtil.createFileList(confDir, false);
     File descDir = new File(_mainRootDir, InstallationController.PACKAGE_DESC_DIR);
     Collection<File> descDirFiles = FileUtil.createFileList(descDir, false);
@@ -330,6 +332,7 @@ public class LocalInstallationAgent {
       File orgFile = dirList.next();
       String bakFileName = orgFile.getName().concat(BACKUP_FILE_SUFFIX);
       File bakFile = new File(orgFile.getParent(), bakFileName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5923
       Files.copy(orgFile.toPath(), bakFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
       // localize original file
       localizeComponentFile(orgFile, _insdObject, _packageConfig);
@@ -342,6 +345,7 @@ public class LocalInstallationAgent {
       File orgFile = dirList.next();
       String bakFileName = orgFile.getName().concat(BACKUP_FILE_SUFFIX);
       File bakFile = new File(orgFile.getParent(), bakFileName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5923
       Files.copy(orgFile.toPath(), bakFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
       // localize original file
       localizeComponentFile(orgFile, _insdObject, _packageConfig);
@@ -367,6 +371,7 @@ public class LocalInstallationAgent {
       File orgFile = _localizedFiles[i];
       String bakFileName = orgFile.getName().concat(BACKUP_FILE_SUFFIX);
       File bakFile = new File(orgFile.getParent(), bakFileName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5923
       Files.copy(bakFile.toPath(), orgFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
       bakFile.delete();
       counter++;
@@ -394,6 +399,7 @@ public class LocalInstallationAgent {
    * @see org.apache.uima.pear.tools.InstallationTester
    */
   public synchronized boolean verifyLocalizedComponent() throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-411
           ResourceInitializationException, UIMAException {
     // check input parameters
     if (_insdObject == null)

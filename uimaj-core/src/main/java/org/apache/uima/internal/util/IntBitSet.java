@@ -82,10 +82,12 @@ public class IntBitSet implements PositiveIntSet {
    * @param maxInt the biggest int (perhaps plus an offset) that can be held without growing the space
    */
   public IntBitSet(int maxInt) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     this(maxInt, 0);
   }
 
   public IntBitSet(int maxAdjKey, int offset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     set = new BitSet(Math.max(1, maxAdjKey));
     this.offset = offset;
     if (IS_TRACE_MODE_SWITCH) {
@@ -118,6 +120,7 @@ public class IntBitSet implements PositiveIntSet {
 
   @Override
   public int find(int element) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4201
     return contains(element) ? element - offset : -1;
   }
   /**
@@ -131,6 +134,7 @@ public class IntBitSet implements PositiveIntSet {
       throw new IllegalArgumentException("key " + original_key + " must be greater than or equal to the offset: " + offset);
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4201
     final int adjKey = original_key - offset;
     final boolean prev = set.get(adjKey);
     set.set(adjKey);
@@ -148,11 +152,13 @@ public class IntBitSet implements PositiveIntSet {
    */
   @Override
   public boolean remove(int original_key) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4189
     final int adjKey = original_key - offset;
     if (adjKey < 0) {
       return false;
     }
     final boolean prev = set.get(adjKey);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4060
     if (prev) {
       set.clear(adjKey);  // avoid clearing which may expand bit set, if not present
       size --;
@@ -193,6 +199,8 @@ public class IntBitSet implements PositiveIntSet {
   
   @Override
   public int get(int position) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
+//IC see: https://issues.apache.org/jira/browse/UIMA-4201
     assert(set.get(position));
     return position + offset;
   }
@@ -210,6 +218,7 @@ public class IntBitSet implements PositiveIntSet {
     protected IntBitSetIterator() {}
 
     public final boolean hasNext() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4060
       return (curKey >= 0);
     }
     
@@ -217,6 +226,9 @@ public class IntBitSet implements PositiveIntSet {
     public final int nextNvc() {
       final int r = curKey;
       curKey = set.nextSetBit(curKey + 1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4060
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
       return r + offset;      
     }
 
@@ -255,6 +267,7 @@ public class IntBitSet implements PositiveIntSet {
 
   @Override
   public int moveToFirst() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     return set.nextSetBit(0);
   }
 
@@ -265,6 +278,7 @@ public class IntBitSet implements PositiveIntSet {
 
   @Override
   public int moveToNext(int position) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4377
     return (position < 0) ? position : set.nextSetBit(position + 1);
   }
 
@@ -279,6 +293,7 @@ public class IntBitSet implements PositiveIntSet {
    */
   @Override
   public boolean isValid(int position) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4201
     return (position >= 0) && set.get(position);
   }
 
@@ -288,6 +303,7 @@ public class IntBitSet implements PositiveIntSet {
   @Override
   public void bulkAddTo(IntVector v) {
     int pos = -1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4155
     while (-1 != (pos = set.nextSetBit(pos + 1))) {
       v.add(pos + offset);
     }
@@ -295,6 +311,7 @@ public class IntBitSet implements PositiveIntSet {
 
   @Override
   public int[] toIntArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4189
     final int s = size();
     if (s == 0) {
       return Constants.EMPTY_INT_ARRAY;
@@ -302,6 +319,7 @@ public class IntBitSet implements PositiveIntSet {
     final int[] r = new int[s];
     int pos = moveToFirst();
     for (int i = 0; i < s; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4201
       r[i] = get(pos);
       pos = set.nextSetBit(pos + 1);
     }
@@ -313,6 +331,8 @@ public class IntBitSet implements PositiveIntSet {
    */
   @Override
   public String toString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4192
+//IC see: https://issues.apache.org/jira/browse/UIMA-4193
     return String.format("IntBitSet [set=%s, size=%s, offset=%s]", set, size, offset);
   }
 

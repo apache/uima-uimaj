@@ -58,7 +58,9 @@ public class SequencerCapabilityLanguageTest extends TestCase {
   }
 
   public void runTest(String desc, String language, String refFile, boolean doResultSpec)
+//IC see: https://issues.apache.org/jira/browse/UIMA-443
           throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-443
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -73,12 +75,36 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
       // Create a new CAS.
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
       // Set the document text on the CAS.
       cas.setDocumentText(text);
+//IC see: https://issues.apache.org/jira/browse/UIMA-443
       cas.setDocumentLanguage(language);
       // Process the sample document.
       if (doResultSpec) {
@@ -107,6 +133,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
   public void testSequencerCapabilityLanguageEsEn() throws Exception {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-443
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt", false);
 

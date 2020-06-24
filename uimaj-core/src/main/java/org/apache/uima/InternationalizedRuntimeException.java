@@ -85,6 +85,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
    *          arguments.
    */
   public InternationalizedRuntimeException(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments) {
     this(aResourceBundleName, aMessageKey, aArguments, null);
   }
@@ -107,8 +108,11 @@ public class InternationalizedRuntimeException extends RuntimeException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public InternationalizedRuntimeException(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments, Throwable aCause) {
     super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
     c = new I18nx_impl(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 
@@ -119,6 +123,8 @@ public class InternationalizedRuntimeException extends RuntimeException {
    *         message.
    */
   public String getResourceBundleName() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
     return c.getResourceBundleName();
   }
 
@@ -131,6 +137,8 @@ public class InternationalizedRuntimeException extends RuntimeException {
    *         this exception has no message.
    */
   public String getMessageKey() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
     return c.getMessageKey();
   }
 
@@ -142,6 +150,8 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * @return the arguments to this exception's message.
    */
   public Object[] getArguments() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
     return c.getArguments();
   }
 
@@ -152,6 +162,8 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * @return the English detail message for this exception.
    */
   public String getMessage() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
     return c.getMessage();
   }
 
@@ -162,6 +174,8 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * @return this exception's detail message, localized for the default Locale.
    */
   public String getLocalizedMessage() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
     return c.getLocalizedMessage();
   }
 
@@ -174,6 +188,8 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * @return this exception's detail message, localized for the specified <code>Locale</code>.
    */
   public String getLocalizedMessage(Locale aLocale) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
     return c.getLocalizedMessage(aLocale);
   }
 
@@ -184,6 +200,8 @@ public class InternationalizedRuntimeException extends RuntimeException {
    *         if there is no such cause.
    */
   public Throwable getCause() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
     return c.getCause();
   }
 

@@ -35,6 +35,7 @@ public abstract class JCasAnnotator_ImplBase extends Annotator_ImplBase {
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
   public Class<JCas> getRequiredCasInterface() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-10
     return JCas.class;
   }
 
@@ -44,10 +45,13 @@ public abstract class JCasAnnotator_ImplBase extends Annotator_ImplBase {
    * @see org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
    */
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aCAS instanceof JCas) {
       process((JCas) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-10
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
                   aCAS.getClass() });
     }

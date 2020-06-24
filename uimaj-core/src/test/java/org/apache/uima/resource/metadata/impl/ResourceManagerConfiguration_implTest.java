@@ -57,12 +57,15 @@ public class ResourceManagerConfiguration_implTest extends TestCase {
    */
   protected void tearDown() throws Exception {
     super.tearDown();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
   public void testBuildFromXmlElement() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       File descriptor = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("ResourceManagerConfigurationImplTest/TestResourceManagerConfiguration.xml");
       ResourceManagerConfiguration rmc = UIMAFramework.getXMLParser()
               .parseResourceManagerConfiguration(new XMLInputSource(descriptor));
@@ -74,8 +77,11 @@ public class ResourceManagerConfiguration_implTest extends TestCase {
       assertEquals("This is a test.  This is only a test.", rmc.getDescription());
       assertEquals("0.1", rmc.getVersion());
       assertEquals("The Apache Software Foundation", rmc.getVendor());
+//IC see: https://issues.apache.org/jira/browse/UIMA-37
 
       descriptor = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("ResourceManagerConfigurationImplTest/ResourceManagerConfigurationWithImports.xml");
       rmc = UIMAFramework.getXMLParser().parseResourceManagerConfiguration(
               new XMLInputSource(descriptor));
@@ -93,6 +99,7 @@ public class ResourceManagerConfiguration_implTest extends TestCase {
   public void testResolveImports() throws Exception {
     try {
       File descriptor = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("ResourceManagerConfigurationImplTest/TaeImportingResourceManagerConfiguration.xml");
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(descriptor));
@@ -107,6 +114,8 @@ public class ResourceManagerConfiguration_implTest extends TestCase {
 
       // test old single-import style
       descriptor = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("ResourceManagerConfigurationImplTest/TaeImportingResourceManagerConfiguration.xml");
       aeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(descriptor));
@@ -119,6 +128,7 @@ public class ResourceManagerConfiguration_implTest extends TestCase {
       assertEquals(4, rmc.getExternalResources().length);
       assertEquals(4, rmc.getExternalResourceBindings().length);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -127,6 +137,7 @@ public class ResourceManagerConfiguration_implTest extends TestCase {
   public void testClone() throws Exception {
     try {
       File descriptor = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("ResourceManagerConfigurationImplTest/TaeImportingResourceManagerConfiguration.xml");
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(descriptor));
@@ -145,6 +156,7 @@ public class ResourceManagerConfiguration_implTest extends TestCase {
       assertEquals(0, rmcClone.getExternalResources().length);
       assertEquals(0, rmcClone.getExternalResourceBindings().length);
       assertEquals(1, rmcClone.getImports().length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

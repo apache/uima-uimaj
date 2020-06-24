@@ -56,6 +56,7 @@ public class CasMultiplierExampleApplication {
    *          Command-line arguments - see class description
    */
   public static void main(String[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // get Resource Specifier from XML file
       XMLInputSource in = new XMLInputSource(args[0]);
@@ -67,6 +68,7 @@ public class CasMultiplierExampleApplication {
       // read input text file
       File textFile = new File(args[1]);
       String document = FileUtils.file2String(textFile, "UTF-8");
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
 
       // create a new CAS and set the document text
       CAS initialCas = ae.newCAS();

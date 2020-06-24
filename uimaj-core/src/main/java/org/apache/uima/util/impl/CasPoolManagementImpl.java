@@ -32,6 +32,7 @@ public class CasPoolManagementImpl implements CasPoolManagement, CasPoolManageme
   private String mUniqueMBeanName;
   
   public CasPoolManagementImpl(CasPool aCasPool, String aUniqueMBeanName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     mCasPoolRef = new WeakReference<>(aCasPool);
     mUniqueMBeanName = aUniqueMBeanName; 
   }
@@ -40,6 +41,7 @@ public class CasPoolManagementImpl implements CasPoolManagement, CasPoolManageme
    * @see org.apache.uima.util.CasPoolManagement#getAvailableInstances()
    */
   public int getAvailableInstances() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-598
     CasPool casPool = mCasPoolRef.get();
     if (casPool != null) {
       return casPool.getNumAvailable();
@@ -60,6 +62,7 @@ public class CasPoolManagementImpl implements CasPoolManagement, CasPoolManageme
    * @see org.apache.uima.util.CasPoolManagement#getPoolSize()
    */
   public int getPoolSize() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-598
     CasPool casPool = mCasPoolRef.get();
     if (casPool != null) {
       return casPool.getSize();

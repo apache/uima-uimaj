@@ -91,6 +91,8 @@ public abstract class ImportSection extends AbstractSection {
    */
   protected abstract String getDescriptionFromImport(String source) throws InvalidXMLException,
           IOException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Checks if is appropriate.
@@ -167,6 +169,7 @@ public abstract class ImportSection extends AbstractSection {
 
     addButton = newPushButton(buttonContainer, "Add...", "Click here to add an import");
     removeButton = newPushButton(buttonContainer, "Remove",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Click here to remove the selected import.");
     setDataPathButton = newPushButton(buttonContainer, "Set DataPath",
             "Click here to view or set the data path to use when resolving imports by name.");
@@ -224,6 +227,7 @@ public abstract class ImportSection extends AbstractSection {
   @Override
   public void handleEvent(Event event) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (event.widget == addButton) {
       handleAdd();
     } else if (event.widget == removeButton) {
@@ -253,6 +257,7 @@ public abstract class ImportSection extends AbstractSection {
 
     setModelImportArray((Import[]) Utility.removeElementFromArray(oldImports,
             oldImports[nSelectedIndex], Import.class));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (!isValidImport("Error Removing Import", "An error was caused by removing an import.")) {
       setModelImportArray(oldImports);
@@ -272,6 +277,7 @@ public abstract class ImportSection extends AbstractSection {
    */
   private void handleSetDataPath() {
     CommonInputDialog dialog = new CommonInputDialog(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             this,
             "Set DataPath",
             "The DataPath is a series of locations which will be used when looking up imports and external resources.\nEnter a series of absolute path names, separated by the character used to separate classpath names on this platform.",
@@ -287,6 +293,7 @@ public abstract class ImportSection extends AbstractSection {
   private void handleAdd() {
     Shell shell = getSection().getShell();
     MultiResourceSelectionDialog dialog = new MultiResourceSelectionDialog(shell, editor.getFile()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getProject().getParent(), "Select one or more descriptor files to import:", editor
             .getFile().getLocation(), editor);
     dialog.setTitle("Import File(s) Selection");
@@ -339,6 +346,7 @@ public abstract class ImportSection extends AbstractSection {
     setModelImportArray(newImports);
 
     if (!isValidImport(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Error Adding Import(s)",
             "An error was caused by adding Import(s); operation cancelled.  Please correct the error and retry.")) {
       setModelImportArray(currentImports);
@@ -358,6 +366,7 @@ public abstract class ImportSection extends AbstractSection {
     currentFileBeingEdited = editor.getDescriptorRelativePath(currentFileBeingEdited);
     if (currentFileBeingEdited.equals(imp.getLocation())) {
       Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .popMessage(
                       "Error - importing self",
                       MessageFormat
@@ -372,6 +381,7 @@ public abstract class ImportSection extends AbstractSection {
       return false;
     for (int i = 0; i < currentImports.length; i++) {
       if (currentImports[i].equals(imp)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         Utility.popMessage("Error - duplicate import", MessageFormat.format(
                 "The import {0} is already present", new Object[] { null != imp.getName() ? imp
                         .getName() : imp.getLocation() }), MessageDialog.ERROR);
@@ -418,6 +428,7 @@ public abstract class ImportSection extends AbstractSection {
 
       long lCurrentTimeInMillis = System.currentTimeMillis();
       if (item == lastTableHoverItem
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               && lCurrentTimeInMillis - lLastTableHoverMillis < TABLE_HOVER_REQUERY_TIME) {
         sDesc = sLastTableHoverHelp;
       } else {
@@ -428,6 +439,7 @@ public abstract class ImportSection extends AbstractSection {
         Import[] importItems = getModelImportArray();
         if (itemIndex < 0 || itemIndex >= importItems.length) {
           System.err.println("***ERROR Item index hover out of range" + itemIndex
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   + ", size of array = " + importItems.length);
           System.err.println(this.getClass().getName());
           return;
@@ -480,6 +492,7 @@ public abstract class ImportSection extends AbstractSection {
       if (start < 0 || end < 0)
         throw new InternalErrorCDE("invalid state");
       start += xmlStartElement.length();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       printWriter.println(MessageFormat.format(partTemplate, new Object[] { dialog.baseFileName,
           wholeModel.substring(start, end) + "\n" }));
       printWriter.close();
@@ -488,6 +501,7 @@ public abstract class ImportSection extends AbstractSection {
       setFileDirty(); // do as soon as file changes, in case later error aborts processing
       Import imp = createImport(dialog.genFilePath, dialog.isImportByName);
       setModelImportArray((Import[]) Utility.addElementToArray(getModelImportArray(), imp,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Import.class));
       isValidImport("Error Exporting a part and Importing it",
               "An unexpected error was caused by the export operation");
@@ -498,6 +512,7 @@ public abstract class ImportSection extends AbstractSection {
           IFile ifile = (IFile) file;
           ifile.refreshLocal(1, null);
           ((IFile) file).setPersistentProperty(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   new QualifiedName(PLUGIN_ID, IMPORTABLE_PART_CONTEXT), editor.getFile()
                           .getLocation().toString());
         } catch (CoreException e) {

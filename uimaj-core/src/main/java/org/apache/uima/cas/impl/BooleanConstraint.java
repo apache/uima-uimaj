@@ -34,6 +34,7 @@ public class BooleanConstraint extends PathConstraint implements FSMatchConstrai
 
   private final FSBooleanConstraint cons;
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
   BooleanConstraint(ArrayList<String> path, FSBooleanConstraint constraint) {
     super(path);
     this.cons = constraint;

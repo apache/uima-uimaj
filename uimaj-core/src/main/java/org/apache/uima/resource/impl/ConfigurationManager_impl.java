@@ -61,10 +61,12 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * org.apache.uima.resource.metadata.ConfigurationParameterSettings, java.lang.String, java.lang.String)
    */
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
           ConfigurationParameterSettings aSettings, String aContextName, Settings aExternalOverrides)
           throws ResourceConfigurationException {
     super.declareParameters(aGroupName, aParams, aSettings, aContextName, aExternalOverrides);
     // iterate over config. param _declarations_ and build mSharedParamNap
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aParams != null) {
       for (int i = 0; i < aParams.length; i++) {
         String qname = makeQualifiedName(aContextName, aParams[i].getName(), aGroupName);
@@ -96,6 +98,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
         mSharedParamMap.put(qname, paramValue);
         
         // Log parameter & value & how it was found ... could do when validate them?
+//IC see: https://issues.apache.org/jira/browse/UIMA-3123
         if (UIMAFramework.getLogger(this.getClass()).isLoggable(Level.CONFIG)) {
           Object realValue = paramValue;
           if (from.length() == 0) {
@@ -119,6 +122,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
               // Ignore errors caused by failure to validate parameter settings (see Jira 3123)
             }
           }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
           UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "declareParameters",
                   LOG_RESOURCE_BUNDLE, "UIMA_parameter_set__CONFIG",
                   new Object[] { aParams[i].getName(), aContextName, realValue, from });

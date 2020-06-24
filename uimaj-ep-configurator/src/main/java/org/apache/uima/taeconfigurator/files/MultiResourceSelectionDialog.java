@@ -73,6 +73,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
   private static class CandidateAndSource implements Comparable<CandidateAndSource> {
     
     /** The candidate. */
+//IC see: https://issues.apache.org/jira/browse/UIMA-477
     String candidate;
     
     /** The source. */
@@ -164,9 +165,13 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
    * @param aEditor the a editor
    */
   public MultiResourceSelectionDialog(Shell parentShell, IAdaptable rootElement, String message,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IPath aExcludeDescriptor, MultiPageEditor aEditor) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     super(parentShell);
     editor = aEditor;
+//IC see: https://issues.apache.org/jira/browse/UIMA-477
     String importByStickySetting = CDEpropertyPage.getImportByDefault(editor.getProject());
     isImportByName = (importByStickySetting.equals("name")) ? true : false;  
 
@@ -191,6 +196,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     // page group
     Composite composite = (Composite) super.createDialogArea(parent);
     FormToolkit factory = new FormToolkit(TAEConfiguratorPlugin.getDefault().getFormColors(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             parent.getDisplay()));
     Label label = new Label(composite, SWT.WRAP /* SWT.CENTER */);
     label.setText(Messages.getString("MultiResourceSelectionDialog.Or")); //$NON-NLS-1$
@@ -207,6 +213,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
         String[] extensions = { Messages.getString("MultiResourceSelectionDialog.starDotXml") }; //$NON-NLS-1$
         dialog.setFilterExtensions(extensions);
         String sStartDir = TAEConfiguratorPlugin.getWorkspace().getRoot().getLocation()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .toOSString();
         dialog.setFilterPath(sStartDir);
         String file = dialog.open();
@@ -228,15 +235,18 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     importByNameUI.setText("Import by Name");
     importByNameUI
             .setToolTipText("Importing by name looks up the name on the datapath, and if not found there, on the classpath.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     importByLocationUI = new Button(composite, SWT.RADIO);
     importByLocationUI.setText("Import By Location");
     importByLocationUI.setToolTipText("Importing by location requires a relative or absolute URL");
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-477
     String importByStickySetting = CDEpropertyPage.getImportByDefault(editor.getProject());
     if (importByStickySetting.equals("location")) {
       importByNameUI.setSelection(false);
       importByLocationUI.setSelection(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-894
       isImportByName = false;
     } else {
       importByNameUI.setSelection(true);
@@ -249,6 +259,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     importByLocationUI.addListener(SWT.Selection, new Listener() {
       @Override
       public void handleEvent(Event event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-894
         if (importByLocationUI.getSelection()) {
           isImportByName = false;
           CDEpropertyPage.setImportByDefault(editor.getProject(), "location");
@@ -335,11 +346,14 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
   private CandidateAndSource [] computeByNameCandidates() {
     String cp;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-477
       cp = editor.getFilteredProjectClassPath(false);
     } catch (CoreException e) {
       throw new InternalErrorCDE("unhandled CoreException while getting classpaths to populate by-location list", e);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-894
     String [] cps = cp.split(PATH_SEPARATOR);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<CandidateAndSource> candidates = new ArrayList<>(100);
     
     for (String jarOrDir : cps) {
@@ -407,6 +421,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     }
  
     for (File subdir : subdirs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-477
       String nextPrefix = prefix + subdir.getName() + "/"; 
       addClassCandidates(subdir, candidates, nextPrefix, source);
     }
@@ -434,6 +449,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
         lastModified.longValue() != fileLastModified ||
         null == css) {
       JarInputStream jarIn;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       css = new ArrayList<>();
       try {
         jarIn = new JarInputStream(new BufferedInputStream(new FileInputStream(jarPath)));
@@ -479,6 +495,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
    */
   @Override
   public void enableOK() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-477
     okButton.setEnabled(false);  // preset
     if (0 < resourcesUI.getSelectionCount()) {
       if (importByLocationUI.getSelection()) {
@@ -486,6 +503,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
           okButton.setEnabled(true);
         }
       } else { // import by name
+//IC see: https://issues.apache.org/jira/browse/UIMA-894
         okButton.setEnabled(true); 
       }
     }

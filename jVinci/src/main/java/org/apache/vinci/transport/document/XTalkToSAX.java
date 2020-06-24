@@ -117,6 +117,7 @@ public class XTalkToSAX {
       }
       int version = is.read();
       if ((byte) version != XTalkTransporter.VERSION_CODE) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         throw new IOException("Xtalk version code doesn't match "
                 + (int) XTalkTransporter.VERSION_CODE + ": " + version);
       }
@@ -203,6 +204,7 @@ public class XTalkToSAX {
           int bytesToRead = XTalkTransporter.readInt(is);
           ensureCapacity(bytesToRead);
           int charsRead = XTalkTransporter.consumeCharacters(is, byteBuffer, charBuffer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   bytesToRead);
           handler.characters(charBuffer, 0, charsRead);
           break;

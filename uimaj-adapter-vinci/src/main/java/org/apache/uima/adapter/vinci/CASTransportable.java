@@ -84,6 +84,8 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @param includeDocText the include doc text
    */
   public CASTransportable(CasPool casPool, OutOfTypeSystemData outOfTypeSystemData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           UimaContext uimaContext, boolean includeDocText) {
     // Debug.p("Creating new CASTransportable.");
     this.myCasPool = casPool;
@@ -104,6 +106,8 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @param includeDocText the include doc text
    */
   public CASTransportable(CAS cas, OutOfTypeSystemData outOfTypeSystemData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           UimaContext uimaContext, boolean includeDocText) {
     // Debug.p("Creating new CASTransportable.");
     this.myCas = cas;
@@ -120,6 +124,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @return the extra data frame
    */
   public VinciFrame getExtraDataFrame() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return extraDataFrame;
   }
 
@@ -211,6 +216,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
         XTalkTransporter.writeInt(children, os); // 1 child (KEYS) + extra data fields...
         started = false; // triggers first startElement() call to write "KEYS" instead of "CAS"
         // Write extra data...
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         for (int i = 0; i < extraDataFrame.getKeyValuePairCount(); i++) {
           KeyValuePair k = extraDataFrame.getKeyValuePair(i);
           os.write(XTalkTransporter.ELEMENT_MARKER);
@@ -253,6 +259,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
      * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
     public void startElement(String uri, String name, String qName, org.xml.sax.Attributes atts)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             throws SAXException {
       try {
         // Debug.p("Start element: " + qName + " : " + serializer.getNumChildren());
@@ -283,6 +290,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
         os.write(XTalkTransporter.STRING_MARKER);
         XTalkTransporter.stringToBin(ch, start, length, os, mybuf);
       } catch (IOException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-113
+//IC see: https://issues.apache.org/jira/browse/UIMA-113
+//IC see: https://issues.apache.org/jira/browse/UIMA-113
         throw wrapAsSAXException(e);
       }
     }
@@ -304,6 +314,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       //if SAXException wraps an IOException, throw the IOException.  This is
       //important since different types of IOExceptions (e.g. SocketTimeoutExceptions)
       //are treated differently by Vinci
+//IC see: https://issues.apache.org/jira/browse/UIMA-113
       throw convertToIOException(e);
     } finally {
       if (!done) {
@@ -338,6 +349,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
         //if SAXException wraps an IOException, throw the IOException.  This is
         //important since different types of IOExceptions (e.g. SocketTimeoutExceptions)
         //are treated differently by Vinci
+//IC see: https://issues.apache.org/jira/browse/UIMA-113
         throw convertToIOException(e);
       }
       UIMAFramework.getLogger().log(Level.FINEST, "CAS Serialization Complete.");
@@ -357,6 +369,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   }
 
   public void cleanup() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (myCas != null && myCasPool != null) {
       myCasPool.releaseCas(myCas);
       myCas = null;
@@ -381,6 +394,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
    */
   public void startElement(String uri, String name, String qName, org.xml.sax.Attributes atts)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
     // Debug.p("Start element: " + qName);
     if (ready > 0) {
@@ -479,7 +493,9 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @return a SAX exception for which <code>getCause()</code> will return <code>e</code>.
    */
   public SAXException wrapAsSAXException(IOException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-113
     SAXException saxEx =new SAXException(e.getMessage());
+//IC see: https://issues.apache.org/jira/browse/UIMA-113
     saxEx.initCause(e);
     return saxEx;
   }

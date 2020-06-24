@@ -186,6 +186,8 @@ public class IntArrayRBT extends IntArrayRBTcommon {
 
     protected IntArrayRBTKeyIterator() {
       super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       moveToStart();
     }
 
@@ -198,6 +200,8 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     public final int nextNvc() {
       int r = IntArrayRBT.this.getKeyForNode(this.currentNode);
       this.currentNode = nextNode(this.currentNode);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
       return r;      
     }
 
@@ -206,6 +210,8 @@ public class IntArrayRBT extends IntArrayRBTcommon {
      */
     @Override
     public boolean hasPrevious() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
       return previousNode(this.currentNode) != NIL;
     }
 
@@ -223,6 +229,8 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     
     @Override
     public int previousNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
       this.currentNode = previousNode(this.currentNode);
       return getKey(this.currentNode);
     }
@@ -240,6 +248,8 @@ public class IntArrayRBT extends IntArrayRBTcommon {
      */
     @Override
     public void moveToStart() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       this.currentNode = getFirstNode();
     }
 
@@ -287,6 +297,8 @@ public class IntArrayRBT extends IntArrayRBTcommon {
    * @return negative of the node number of the found key, if the key was found, else, the node number of the inserted new node
    */
   protected int treeInsert(final int k) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     return treeInsert(k, false);
   }
 
@@ -401,6 +413,8 @@ public class IntArrayRBT extends IntArrayRBTcommon {
       this.greatestNode = x;
       return x;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     final int x = treeInsert(k, withDups);
     if (x < NIL) {  // means was found, not inserted
       return -x;
@@ -495,11 +509,15 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     //   Multiple FSs may compare equal, even though they are different FSs
     //   Only delete if the fs addr found is the one being looked for
     //   For this use, there are never multiple FSs comparing equal in the set because it's a set.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     if (node == NIL || getKeyForNode(node) != aKey) {
       return false;
     }
     deleteNode(node);
     --this.size;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3415
+//IC see: https://issues.apache.org/jira/browse/UIMA-3416
     if (size == 0 && next > multiplication_limit) {
       flush();  // recover space 
     }
@@ -542,6 +560,8 @@ public class IntArrayRBT extends IntArrayRBTcommon {
   
   //debug
   public boolean debugScanFor(int key) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     for (int i = 1; i < next; i++) {
       if (getKeyForNode(i) == key) {
         return true;

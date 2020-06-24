@@ -44,6 +44,7 @@ public class ColorIcon implements Icon {
    * Instantiates a new color icon.
    */
   public ColorIcon() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 

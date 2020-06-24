@@ -47,6 +47,7 @@ public class IndexesPage extends HeaderPageWithSash {
    * @param editor the editor
    */
   public IndexesPage(MultiPageEditor editor) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, "Indexes");
   }
 
@@ -60,6 +61,7 @@ public class IndexesPage extends HeaderPageWithSash {
 
     final Form2Panel form2Panel = setup2ColumnLayout(managedForm, EQUAL_WIDTH);
     managedForm.getForm().setText(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             (isLocalProcessingDescriptor() || isIndexDescriptor()) ? "Indexes" : "Type Priorities");
     if (!isTypePriorityDescriptor()) {
       managedForm.addPart(indexSection = new IndexSection(editor, form2Panel.left));
@@ -68,6 +70,7 @@ public class IndexesPage extends HeaderPageWithSash {
     if (!isIndexDescriptor()) {
       managedForm.addPart(priorityListSection = new PriorityListSection(editor, form2Panel.left));
       managedForm.addPart(typePriorityImportSection = new TypePriorityImportSection(editor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               form2Panel.right));
     }
     createToolBarActions(managedForm);

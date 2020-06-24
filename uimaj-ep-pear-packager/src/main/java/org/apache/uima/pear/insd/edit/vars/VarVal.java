@@ -53,6 +53,7 @@ public class VarVal {
    * @param varValue the var value
    */
   public VarVal(String varName, String varValue) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.varName = varName;
     this.varValue = varValue;

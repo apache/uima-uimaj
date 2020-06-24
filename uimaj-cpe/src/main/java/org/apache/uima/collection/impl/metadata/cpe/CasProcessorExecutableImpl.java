@@ -43,6 +43,8 @@ import org.xml.sax.helpers.AttributesImpl;
  * The Class CasProcessorExecutableImpl.
  */
 public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CasProcessorExecutable {
   
   /** The Constant serialVersionUID. */
@@ -210,6 +212,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     // TODO Auto-generated method stub
     setExecutable(aElement.getAttribute("executable"));
@@ -222,6 +225,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
         if ("arg".equals(node.getNodeName())) {
           // assumes all children are CasProcessor elements
           CasProcessorExecArg arg = (CasProcessorExecArg) aParser.buildObject((Element) node,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   aOptions);
           args.add(arg);
         } else if ("env".equals(node.getNodeName())) {
@@ -240,6 +244,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
    */
   @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
 
@@ -258,6 +263,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
     // write child elements
     for (int i = 0; i < envs.size(); i++) {
       ((CasProcessorRuntimeEnvParam) envs.get(i)).toXML(aContentHandler,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               aWriteDefaultNamespaceAttribute);
     }
     CasProcessorExecArg[] argList = args.getAll();
@@ -298,6 +304,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("exec",
           new PropertyXmlInfo[] { new PropertyXmlInfo("arg"), new PropertyXmlInfo("env"), });
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the envs.

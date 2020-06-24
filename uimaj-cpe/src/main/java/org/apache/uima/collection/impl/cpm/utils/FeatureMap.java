@@ -29,6 +29,7 @@ public class FeatureMap {
   
   /** The entities. */
   ArrayList entities = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Instantiates a new feature map.

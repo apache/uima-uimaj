@@ -45,7 +45,9 @@ public class IndexImportSection extends ImportSection {
    * @param parent the parent
    */
   public IndexImportSection(MultiPageEditor editor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, parent, "Index Imports",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The following index definitions are included as part of this one."); // or !
     // DESCRIPTION
   }
@@ -72,6 +74,7 @@ public class IndexImportSection extends ImportSection {
   @Override
   protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
     FsIndexCollection parsedImportItem = UIMAFramework.getXMLParser().parseFsIndexCollection(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new XMLInputSource(source));
     return parsedImportItem.getDescription();
   }
@@ -112,6 +115,7 @@ public class IndexImportSection extends ImportSection {
     FsIndexCollection savedIC = editor.getMergedFsIndexCollection();
     if (null != savedIC)
       savedIC = (FsIndexCollection) savedIC.clone();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     CAS savedCAS = editor.getCurrentView();
     try {
       editor.setMergedFsIndexCollection();

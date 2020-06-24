@@ -34,6 +34,7 @@ public interface LongArrayFS extends CommonArrayFS<Long> {
    *              If the index is out of bounds.
    */
   long get(int i) throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Set the i-th value.
@@ -65,6 +66,7 @@ public interface LongArrayFS extends CommonArrayFS<Long> {
    */
   void copyToArray(int srcOffset, long[] dest, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Copy the contents of an external array into this array.
@@ -79,11 +81,13 @@ public interface LongArrayFS extends CommonArrayFS<Long> {
    *          The number of elements to copy.
    */
   void copyFromArray(long[] src, int srcOffset, int destOffset, int length)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ArrayIndexOutOfBoundsException;
   /**
    * Creates a new array the this array is copied to.
    * 
    * @return A Java array copy of this FS array.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
   long[] toArray();  
 }

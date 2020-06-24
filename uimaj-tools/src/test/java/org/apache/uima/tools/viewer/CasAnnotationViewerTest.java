@@ -91,15 +91,18 @@ public class CasAnnotationViewerTest extends TestCase {
     viewer = new CasAnnotationViewer();
 
     CASMgr casMgr = CASFactory.createCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
     // Create a writable type system.
     TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
     // Add new types and features.
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(annotationType != null);
 
     // new primitive types
     exampleType = tsa.addType("test.primitives.Example", annotationType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     floatFeature = tsa.addFeature("floatFeature", exampleType, tsa.getType(CAS.TYPE_NAME_FLOAT));
     stringFeature = tsa.addFeature("stringFeature", exampleType, tsa.getType(CAS.TYPE_NAME_STRING));
@@ -110,6 +113,7 @@ public class CasAnnotationViewerTest extends TestCase {
     doubleFeature = tsa.addFeature("doubleFeature", exampleType, tsa.getType(CAS.TYPE_NAME_DOUBLE));
 
     intArrayFeature = tsa.addFeature("intArrayFeature", exampleType, tsa
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getType(CAS.TYPE_NAME_INTEGER_ARRAY));
     floatArrayFeature = tsa.addFeature("floatArrayFeature", exampleType, tsa
             .getType(CAS.TYPE_NAME_FLOAT_ARRAY), false);
@@ -161,6 +165,7 @@ public class CasAnnotationViewerTest extends TestCase {
   public void testAddAnnotationToTree() throws Exception {
     try {
       // create an annotation
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       createExampleFS(this.cas);
       FSIterator iter = this.cas.getAnnotationIndex(exampleType).iterator();
       AnnotationFS annot = (AnnotationFS) iter.get();
@@ -180,6 +185,7 @@ public class CasAnnotationViewerTest extends TestCase {
       DefaultMutableTreeNode fsNode = (DefaultMutableTreeNode) typeNode.getChildAt(0);
       Enumeration children = fsNode.children();
       assertEquals("begin = 1", ((DefaultMutableTreeNode) children.nextElement()).getUserObject()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .toString());
       assertEquals("end = 5", ((DefaultMutableTreeNode) children.nextElement()).getUserObject()
               .toString());
@@ -228,6 +234,7 @@ public class CasAnnotationViewerTest extends TestCase {
   }
   
   public void testAddAnnotationToTreeJCas() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4533
     this.cas.getJCas();
     testAddAnnotationToTree();
   }

@@ -40,6 +40,7 @@ public interface FSIntConstraint extends FSConstraint {
    *          Matched value must be equal to this.
    */
   void eq(int i);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Require int value to be less than <code>i</code>.

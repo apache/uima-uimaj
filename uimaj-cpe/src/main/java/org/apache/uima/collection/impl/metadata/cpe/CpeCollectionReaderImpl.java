@@ -57,6 +57,8 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
    */
   @Override
   public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     casInitializer = aCasInitializer;
   }
@@ -119,6 +121,7 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
    */
   @Override
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     collectionIterator.setConfigurationParameterSettings(aParams);
   }
@@ -133,6 +136,7 @@ public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeC
 
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("collectionReader",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("collectionIterator", null),
               new PropertyXmlInfo("casInitializer", null), });
 

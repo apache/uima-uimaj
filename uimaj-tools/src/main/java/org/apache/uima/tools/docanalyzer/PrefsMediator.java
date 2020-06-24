@@ -116,6 +116,7 @@ public class PrefsMediator {
    */
   public PrefsMediator() {
     // get the installed UIMA home directory
+//IC see: https://issues.apache.org/jira/browse/UIMA-266
     defaultInputDir = "examples/data";
     defaultOutputDir = "examples/data/processed";
     prefs = Preferences.userRoot().node("org/apache/uima/tools/DocumentAnalyzer1");
@@ -133,6 +134,7 @@ public class PrefsMediator {
     language = prefs.get(LANGUAGE, "en");
     encoding = prefs.get(ENCODING, "UTF-8");
     viewType = prefs.get(VIEWTYPE, "Java Viewer");
+//IC see: https://issues.apache.org/jira/browse/UIMA-31
     xmlTag = prefs.get(XMLTAG, "");
     lenient = prefs.getBoolean(LENIENT, true);
 
@@ -236,6 +238,7 @@ public class PrefsMediator {
    * @return the TAE file name root
    */
   public String getTAEFileNameRoot() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-257
     String file;
     int index = indexOfLastFileSeparator(taeDir);
     if (index > 0) {
@@ -367,6 +370,7 @@ public class PrefsMediator {
    */
   public void setXmlTag(String xmlTag) {
     this.xmlTag = xmlTag;
+//IC see: https://issues.apache.org/jira/browse/UIMA-31
     prefs.put(XMLTAG, xmlTag);
   }
 
@@ -447,6 +451,7 @@ public class PrefsMediator {
       if (t2.length() > 0) {
         enableView = true;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-480
       if ((t2.length() > 0) && (t3.length() > 0)) {
         enableInter = true;
         if (t1.length() > 0) {

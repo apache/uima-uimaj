@@ -205,6 +205,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    */
   public static class JCasClassInfo {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     final FsGenerator3 generator;
    
     /**
@@ -232,6 +233,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
     
     boolean isCopydown(TypeImpl ti) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
       return isCopydown(ti.getJCasClassName());
     }
   
@@ -288,6 +290,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     ClassLoader cl = tsi.getClass().getClassLoader();
     loadBuiltins(tsi.topType, cl, cl_to_type2JCas.computeIfAbsent(cl, x -> new HashMap<>()), callSites_toSync);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     MutableCallSite[] sync = callSites_toSync.toArray(new MutableCallSite[callSites_toSync.size()]);
     MutableCallSite.syncAll(sync);
 
@@ -298,6 +301,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     String typeName = ti.getName();
     
     if (BuiltinTypeKinds.creatableBuiltinJCas.contains(typeName) || typeName.equals(CAS.TYPE_NAME_SOFA)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
       JCasClassInfo jcci = getOrCreateJCasClassInfo(ti, cl, type2jcci, defaultLookup);
       assert jcci != null;
       // done while beginning to commit the staticTsi (before committed flag is set), for builtins  
@@ -426,6 +430,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * @param type2JCas map holding the results of loading JCas classes
    */
   private static void maybeLoadJCasAndSubtypes(
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
       TypeSystemImpl tsi, 
       TypeImpl ti, 
       JCasClassInfo copyDownDefault_jcasClassInfo,
@@ -437,6 +442,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     JCasClassInfo jcci = getOrCreateJCasClassInfo(ti, cl, type2jcci, lookup);
     
     if (null != jcci && tsi.isCommitted()) {      
+//IC see: https://issues.apache.org/jira/browse/UIMA-5708
       updateOrValidateAllCallSitesForJCasClass(jcci.jcasClass, ti, callSites_toSync);
     }
         
@@ -544,6 +550,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   public static JCasClassInfo getOrCreateJCasClassInfo(
       TypeImpl ti, 
       ClassLoader cl, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
       Map<String, JCasClassInfo> type2jcci, 
       Lookup lookup) {
     
@@ -728,6 +735,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
 //  
   
   private static boolean compare_C_T(Class<?> clazz, TypeImpl ti) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
     return ti.getJCasClassName().equals(clazz.getName());
   }
   
@@ -828,6 +836,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    */
   private static Class<? extends TOP> maybeLoadJCas(TypeImpl ti, ClassLoader cl) {
     Class<? extends TOP> clazz = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
     String className = ti.getJCasClassName();
     
     try { 
@@ -835,6 +844,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     } catch (ClassNotFoundException e) {
       // Class not found is normal, if there is no JCas for this class
       return clazz;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5708
     } catch (ExceptionInInitializerError e) {
       throw new RuntimeException("Exception while loading " +  className, e);
     }
@@ -845,6 +855,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   // SYNCHRONIZED 
   
   static synchronized MethodHandle getConstantIntMethodHandle(int i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     MethodHandle mh = Misc.getWithExpand(methodHandlesForInt, i);
     if (mh == null) {
       methodHandlesForInt.set(i, mh = MethodHandles.constant(int.class, i));
@@ -873,9 +884,11 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
           fsGeneratorType,  // samMethodType signature and return type of method impl by function object 
           mh,  // method handle to constructor 
           mtThisGenerator);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       return (FsGenerator3) callSite.getTarget().invokeExact();
     } catch (Throwable e) {
       if (e instanceof NoSuchMethodException) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         String classname = jcasClass.getName();
         add2errors(errorSet, new CASRuntimeException(e, CASRuntimeException.JCAS_CAS_NOT_V3, 
             classname,
@@ -1064,6 +1077,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   
   private static void checkConformance(TypeSystemImpl ts, TypeImpl ti, Map<String, JCasClassInfo> type2jcci) {
     if (ti.isPrimitive()) return;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
     JCasClassInfo jcci = type2jcci.get(ti.getJCasClassName());
     
 //    if (null == jcci) {
@@ -1072,6 +1086,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
 //    }
     
     if (null != jcci && // skip if the UIMA class has an abstract (non-creatable) JCas class)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
         !(ti.isBuiltIn)) { // skip if builtin
       checkConformance(jcci.jcasClass, ts, ti, type2jcci);
     }
@@ -1108,6 +1123,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     
     // check supertype
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
     validateSuperClass(type2jcci.get(ti.getJCasClassName()), ti);
     
 //    //   This is done by validateSuperClass, when JCasClass is loaded or looked up for a particular type system
@@ -1177,6 +1193,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       FeatureImpl fi = ti.getFeatureByBaseName(fname);
       if (fi == null) {                            
         fname = mname.charAt(3) + suffix;      // no feature, but look for one with captialized first letter
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
         fi = ti.getFeatureByBaseName(fname);
         if (fi == null) continue;
       }
@@ -1201,6 +1218,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
           rangeClass = range.getComponentType().getJavaClass();
         }
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (!rangeClass.isAssignableFrom(returnClass)) {   // can return subclass of TOP, OK if range is TOP
         if (rangeClass.getName().equals("org.apache.uima.jcas.cas.Sofa") &&       // exception: for backwards compat reasons, sofaRef returns SofaFS, not Sofa.
             returnClass.getName().equals("org.apache.uima.cas.SofaFS")) {
@@ -1216,6 +1234,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       }
     } // end of checking methods
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5607
     try {
       for (Field f : clazz.getDeclaredFields()) {
         String fname = f.getName();
@@ -1230,6 +1249,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
 //         //debug
 //         System.out.format("debug JCAS field not in ts: type: %s, field: %s %n%s%n",
 //                   clazz.getName(), featName, Misc.getCallers(1, 30));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         } else {
           Field mhf = clazz.getDeclaredField("_FH_" + featName);
           mhf.setAccessible(true);
@@ -1243,6 +1263,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
             add2errors(errorSet, 
                        new CASRuntimeException(CASRuntimeException.JCAS_FIELD_ADJ_OFFSET_CHANGED,
                           clazz.getName(), 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
                           fi.getName(),
                            staticOffsetInClass,
                            fi.getAdjustedOffset()),
@@ -1262,6 +1283,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   private static void add2errors(ThreadLocal<List<ErrorReport>> errors, Exception e, boolean doThrow) {
     List<ErrorReport> es = errors.get();
     if (es == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       es = new ArrayList<>();
       errors.set(es);
     }
@@ -1277,6 +1299,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       for (ErrorReport f : es) {
         msg.append(f.e.getMessage());
         throwWhenDone = throwWhenDone || f.doThrow;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         msg.append('\n');
       }
       errorSet.set(null); // reset after reporting
@@ -1319,6 +1342,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
 
     loadJCasForTSandClassLoader(tsi, true, cl, type2jcci);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     FsGenerator3[] r = new FsGenerator3[tsi.getTypeArraySize()];
                           
 //      Map<String, JCasClassInfo> t2jcci = cl2t2j.get(cl);
@@ -1326,6 +1350,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     
     // cannot iterate over type2jcci - that map only has types with found JCas classes
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
     getGeneratorsForTypeAndSubtypes(tsi.topType, type2jcci, isPear, cl, r);
     
 //    for (Entry<String, JCasClassInfo> e : type2jcci.entrySet()) {
@@ -1364,6 +1389,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     //    in a pear setup, and this cl is not the cl that loaded the JCas class.
     //    See method comment for why.
     if (!isPear || jcci.isPearOverride(cl)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       r[ti.getCode()] = (FsGenerator3) jcci.generator;
     }      
     
@@ -1400,6 +1426,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * @param type -
    */
   private static void updateOrValidateAllCallSitesForJCasClass(Class<? extends TOP> clazz, TypeImpl type, ArrayList<MutableCallSite> callSites_toSync ) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5607
     try {
       Field[] fields = clazz.getDeclaredFields();
      
@@ -1444,6 +1471,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
             // This is one of two errors.  
             // It could also be caused by the range type switching from ref array to the int array
             checkConformance(clazz.getClassLoader(), type.getTypeSystem());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4679
             reportErrors();
 //            //debug
 //            System.err.format(
@@ -1461,6 +1489,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   }
   
   static Map<String, JCasClassInfo> get_className_to_jcci(ClassLoader cl, boolean is_pear) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
     final Map<ClassLoader, Map<String, JCasClassInfo>> cl2t2j = cl_to_type2JCas;   /*is_pear ? cl_4pears_to_type2JCas :*/
     return cl2t2j.computeIfAbsent(cl, x -> new HashMap<>());
   }

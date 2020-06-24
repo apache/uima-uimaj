@@ -118,6 +118,7 @@ public class DocumentAnnotationTest extends TestCase {
   }
   
   public void testToString() throws InvalidXMLException, IOException, ResourceInitializationException, CASException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem_docmetadata.xml");
     TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(typeSystemFile));

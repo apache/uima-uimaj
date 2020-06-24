@@ -98,6 +98,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
       // AnalysisEngine can be build from any ResourceCreationSpecifier-
       // CasConsumer descriptors as well as AnalysisEngine descriptors.
@@ -115,6 +116,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
      // also framework implementation must start with org.apache.uima.cpp
      final String fwImpl = mDescription.getFrameworkImplementation();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
      if (!fwImpl.startsWith(Constants.CPP_FRAMEWORK_NAME)) {
           return false;
      }
@@ -130,7 +132,9 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     		 (! ((AnalysisEngineDescription)mDescription).isPrimitive())) { 
 
       // resolve deep type system imports
+//IC see: https://issues.apache.org/jira/browse/UIMA-1939
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-130
         mDescription.validate(getResourceManager());
       } catch (ResourceConfigurationException e) {
         throw new ResourceInitializationException(e);
@@ -154,6 +158,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
     getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
             "UIMA_analysis_engine_init_begin__CONFIG", md.getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   
     // Normalize language codes. Need to do this since a wide variety of
@@ -170,6 +175,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
     // Read parameters from the aAdditionalParams map.
     if (aAdditionalParams == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
       aAdditionalParams = Collections.emptyMap();
     }
 
@@ -183,9 +189,11 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     initializeAnalysisComponent();
 
     resetResultSpecificationToDefault();
+//IC see: https://issues.apache.org/jira/browse/UIMA-225
 
     getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
             "UIMA_analysis_engine_init_successful__CONFIG", md.getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     return true;
   }
@@ -193,6 +201,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   public void setResultSpecification(ResultSpecification aResultSpec) {
     if (aResultSpec == null) {
       resetResultSpecificationToDefault();
+//IC see: https://issues.apache.org/jira/browse/UIMA-225
     } else if (mAnnotator != null) {
       //note have to check for null to handle "verification mode" where annotator is not instantiated
       mAnnotator.setResultSpecification(aResultSpec);
@@ -206,6 +215,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     if (mAnnotator != null)
       mAnnotator.destroy();
     getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "UIMA_analysis_engine_destroyed__CONFIG", getMetaData().getName());
     super.destroy();
   }
@@ -265,6 +275,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     // logging and instrumentation
     String resourceName = getMetaData().getName();
     getLogger().logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "UIMA_analysis_engine_process_begin__FINE", resourceName);
     try {
       // call Annotator's process method
@@ -275,12 +286,15 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
         // Get the right view of the CAS. Sofa-aware components get the base CAS.
         // Sofa-unaware components get whatever is mapped to the _InitialView.   
+//IC see: https://issues.apache.org/jira/browse/UIMA-2117
         CAS view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
         // Get the right type of CAS and call the AnalysisComponent's
         // process method
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
         Class<CAS> requiredInterface = mAnnotator.getRequiredCasInterface();
         AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
         callProcessMethod(mAnnotator, casToPass);
 //        
 //        MDC.put(MDC_ANNOTATOR_CONTEXT_NAME, ((UimaContext_ImplBase)getUimaContext()).getQualifiedContextName());
@@ -298,6 +312,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
           throw e;
         } else {
           throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   AnalysisEngineProcessException.ANNOTATOR_EXCEPTION, null, e);
         }
       } finally {
@@ -307,6 +322,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
       // log end of event
       getLogger().logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_analysis_engine_process_end__FINE", resourceName);
     } catch (Exception e) {
       // log and rethrow exception
@@ -325,6 +341,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    *           if an initialization failure occurs
    */
   protected void initializeAnalysisComponent()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // create Annotator Context and set Logger
     UimaContextAdmin uimaContext = getUimaContextAdmin();
@@ -336,7 +353,9 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
       getUimaContextAdmin().defineCasPool(mAnnotator.getCasInstancesRequired(),
               getPerformanceTuningSettings(), mSofaAware);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
       callInitializeMethod(mAnnotator, uimaContext);
 //      mAnnotator.initialize(uimaContext);
     }
@@ -389,6 +408,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    * @throws ResultNotSupportedException -
    */
   protected CAS callAnalysisComponentNext() throws AnalysisEngineProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResultNotSupportedException {
     try {
       AbstractCas absCas = mAnnotator.next();
@@ -502,6 +522,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
         boolean analysisComponentHasNext = mAnalysisComponent.hasNext();
         if (!analysisComponentHasNext) {
           throw new UIMA_IllegalStateException(UIMA_IllegalStateException.NO_NEXT_CAS,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   new Object[0]);
         }
         // call AnalyaisComponent.next method to populate CAS

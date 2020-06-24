@@ -50,6 +50,7 @@ public class MultiThreadUtils extends TestCase {
   // also serves as a lock
   
   private static enum ThreadControl {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4280
     WAIT,   // causes test thread to wait, is the initial state 
     RUN,    // causes test thread to run; when run is done, thread goes back to waiting and sets global entry in thread array to WAIT
     TERMINATE,  // causes test thread to finish 
@@ -61,6 +62,7 @@ public class MultiThreadUtils extends TestCase {
   
   public void testMultiThreadTimers() {
        
+//IC see: https://issues.apache.org/jira/browse/UIMA-4280
     final int numberOfTimers = 50;
     final Timer[] timers = new Timer[numberOfTimers];
 
@@ -167,6 +169,7 @@ public class MultiThreadUtils extends TestCase {
         
           while (true) {
             synchronized (threadState[finalI]) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5176
               if (threadState[finalI][0] == ThreadControl.TERMINATE) {
                 return;
               }
@@ -222,6 +225,7 @@ public class MultiThreadUtils extends TestCase {
       
       repeatNumber[0] = r;
       assertTrue(numberRunning.get() == 0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
       if (numberOfExceptions.get() != 0) {
         System.out.println("debug");
       }
@@ -292,6 +296,7 @@ public class MultiThreadUtils extends TestCase {
     public AtomicBoolean utilBoolean = new AtomicBoolean(); // used by a test
 
     public ThreadM(Runnable runnable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
       super(runnable);
     }
     

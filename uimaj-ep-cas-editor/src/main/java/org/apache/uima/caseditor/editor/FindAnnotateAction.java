@@ -53,6 +53,7 @@ public class FindAnnotateAction extends Action {
     FindAnnotateDialog dialog = new FindAnnotateDialog(
             Display.getCurrent().getActiveShell(),
             editor.getDocument(), target, editor.getAnnotationMode());
+//IC see: https://issues.apache.org/jira/browse/UIMA-1418
 
     dialog.open();
   }

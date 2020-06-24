@@ -44,6 +44,7 @@ public class AnnotationStyleTest {
 
     assertEquals(a, b);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5925
     AnnotationStyle c = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
         255, 255, 0), 0, "config");
 

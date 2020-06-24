@@ -123,6 +123,7 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public abstract class AbstractSection extends SectionPart /* extends FormSection */
 implements Listener, StandardStrings {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The toolkit. */
   protected FormToolkit toolkit;
@@ -295,6 +296,7 @@ implements Listener, StandardStrings {
   public Composite newNcolumnComposite(Composite parent, int cols) {
     Composite composite = toolkit.createComposite(parent);
     if (parent instanceof ExpandableComposite)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       ((ExpandableComposite) parent).setClient(composite);
     GridLayout layout = new GridLayout(cols, !EQUAL_WIDTH);
     layout.marginHeight = 0;
@@ -475,6 +477,7 @@ implements Listener, StandardStrings {
    * @return the label
    */
   public Label newLabelWithData(Composite parent, String text) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return newLabelWithTip(parent, text, ""); //$NON-NLS-1$
   }
 
@@ -549,6 +552,7 @@ implements Listener, StandardStrings {
     // Make the CCombo's border visible since CCombo is NOT a widget supported
     // by FormToolkit.
     // needed apparently by RedHat Linux 
+//IC see: https://issues.apache.org/jira/browse/UIMA-933
     ccombo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
     return ccombo;
   }
@@ -593,6 +597,7 @@ implements Listener, StandardStrings {
    * @return the push button
    */
   public Button newPushButton(Composite parent, String label, String tip) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return newPushButton(parent, label, tip, true); // set enabled by default
   }
 
@@ -644,6 +649,7 @@ implements Listener, StandardStrings {
   public Button newCheckBox(Composite parent, String label, String tip) {
     Button button = toolkit.createButton(parent, label, SWT.CHECK);
     button.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             | GridData.HORIZONTAL_ALIGN_FILL));
     button.pack();
     button.setToolTipText(tip);
@@ -733,6 +739,7 @@ implements Listener, StandardStrings {
    * @return the tree
    */
   protected Tree newTree(Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     Tree local_tree = toolkit.createTree(parent, SWT.SINGLE);
     local_tree.setLayoutData(new GridData(GridData.FILL_BOTH));
     local_tree.addListener(SWT.Selection, this);
@@ -780,6 +787,7 @@ implements Listener, StandardStrings {
    * @return the TableTree
    */
   protected Tree newTree(Composite parent, int style) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     Tree tt = new Tree(parent, style);
     tt.setLayoutData(new GridData(GridData.FILL_BOTH));
     toolkit.adapt(tt, true, true);
@@ -791,6 +799,7 @@ implements Listener, StandardStrings {
  
     // Make the TableTree's border visible since TableTree is NOT a widget supported
     // by FormToolkit.  Needed by RedHat Linux
+//IC see: https://issues.apache.org/jira/browse/UIMA-933
     tt.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
     return tt;
   }
@@ -814,6 +823,7 @@ implements Listener, StandardStrings {
    * @param p_tree the tree
    */
   public void packTree(Tree p_tree) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeColumn[] columns = p_tree.getColumns();
     for (int i = 0; i < columns.length; i++) {
       columns[i].pack();
@@ -843,6 +853,7 @@ implements Listener, StandardStrings {
    * @return the index
    */
   public static int getIndex(TreeItem item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem parent = item.getParentItem();
     TreeItem[] items = (null == parent) ? item.getParent().getItems() : parent.getItems();
     for (int i = items.length - 1; i >= 0; i--) {
@@ -899,6 +910,7 @@ implements Listener, StandardStrings {
    */
   // **********************************
   protected TreeColumn newTreeColumn(Tree p_tree) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     return newTreeColumn(p_tree, ""); //$NON-NLS-1$
   }
 
@@ -954,6 +966,7 @@ implements Listener, StandardStrings {
    * @return the tree column
    */
   protected TreeColumn newTreeColumn(Tree container, int width, int alignment, String header) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeColumn tc = new TreeColumn(container, alignment);
     if (header != null && (!header.equals(""))) { //$NON-NLS-1$
       tc.setText(header);
@@ -1022,6 +1035,7 @@ implements Listener, StandardStrings {
    * @return true, if is type system descriptor
    */
   public boolean isTypeSystemDescriptor() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return editor.isTypeSystemDescriptor();
   }
 
@@ -1202,6 +1216,7 @@ implements Listener, StandardStrings {
     TypePriorities tps = getAnalysisEngineMetaData().getTypePriorities();
     if (null == tps) {
       getAnalysisEngineMetaData().setTypePriorities(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               tps = UIMAFramework.getResourceSpecifierFactory().createTypePriorities());
     }
     return tps;
@@ -1247,6 +1262,7 @@ implements Listener, StandardStrings {
   // ************
   public boolean isParmGroup() {
     ConfigurationParameterDeclarations lcpd = getAnalysisEngineMetaData()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getConfigurationParameterDeclarations();
     return (lcpd.getCommonParameters() != null && lcpd.getCommonParameters().length > 0)
             || (lcpd.getConfigurationGroups() != null && lcpd.getConfigurationGroups().length > 0);
@@ -1302,6 +1318,7 @@ implements Listener, StandardStrings {
     ExternalResourceBinding[] erb = getResourceManagerConfiguration().getExternalResourceBindings();
     if (null == erb)
       getResourceManagerConfiguration().setExternalResourceBindings(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               erb = new ExternalResourceBinding[0]);
     return erb;
   }
@@ -1315,6 +1332,7 @@ implements Listener, StandardStrings {
     ExternalResourceDescription[] erd = getResourceManagerConfiguration().getExternalResources();
     if (null == erd)
       getResourceManagerConfiguration().setExternalResources(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               erd = new ExternalResourceDescription[0]);
     return erd;
   }
@@ -1348,6 +1366,7 @@ implements Listener, StandardStrings {
    */
   protected String setValueChanged(String newValue, String oldValue) {
     if (null == newValue)
+//IC see: https://issues.apache.org/jira/browse/UIMA-2511
       valueChanged = valueChanged || (null != oldValue);
     else if (!newValue.equals(oldValue))
       valueChanged = true;
@@ -1405,6 +1424,7 @@ implements Listener, StandardStrings {
    * @return the fs index key description[]
    */
   protected FsIndexKeyDescription[] setValueChangedKeys(FsIndexKeyDescription[] newKeys,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           FsIndexKeyDescription[] oldKeys) {
     if (valueChanged) {
     } else if (oldKeys == null && newKeys == null) {
@@ -1449,6 +1469,7 @@ implements Listener, StandardStrings {
    */
   protected void revertMsg(String msgTitle, String msgTxt, String exceptionMessage) {
     Utility.popMessage(msgTitle, msgTxt + "\r\n" + exceptionMessage, //$NON-NLS-1$
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             MessageDialog.ERROR);
     return;
   }
@@ -1461,7 +1482,9 @@ implements Listener, StandardStrings {
    * @return true to revert, false to continue
    */
   public static boolean revertOrContinue(String msg, String msgDetails) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (Window.CANCEL == Utility.popMessage(msg, msgDetails
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + "\nDo you want to continue, or Abort the last action?", MessageDialog.QUESTION,
             new String[] { "Continue", "Abort" }))
       return true; // for closing the window or hitting Undo
@@ -1678,6 +1701,7 @@ implements Listener, StandardStrings {
     int i = name.lastIndexOf('.');
     if (i < 0)
       return name;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return name.substring(i + 1);
   }
 
@@ -1730,6 +1754,7 @@ implements Listener, StandardStrings {
           return features[i];
       }
     if (null != (supertypeName = td.getSupertypeName()))
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       if (!CAS.TYPE_NAME_TOP.equals(supertypeName)) { 
         TypeDescription supertype = getMergedTypeSystemDescription().getType(supertypeName);
         if (null == supertype)
@@ -1747,7 +1772,9 @@ implements Listener, StandardStrings {
    */
   // means is this range allowed in the UIMA Index Spec as a Key
   public static boolean isIndexableRange(String rangeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return CAS.TYPE_NAME_BYTE.equals(rangeName) || CAS.TYPE_NAME_SHORT.equals(rangeName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || CAS.TYPE_NAME_INTEGER.equals(rangeName) || CAS.TYPE_NAME_LONG.equals(rangeName)
             || CAS.TYPE_NAME_FLOAT.equals(rangeName) || CAS.TYPE_NAME_DOUBLE.equals(rangeName)
             || CAS.TYPE_NAME_STRING.equals(rangeName);
@@ -1775,6 +1802,7 @@ implements Listener, StandardStrings {
       String pathName = filePathName.replace('\\', '/');
       int nLoc = pathName.lastIndexOf('/');
       return filePathName.substring(0, 61 - (pathName.length() - nLoc)) + ".../"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + filePathName.substring(nLoc + 1);
     }
     return filePathName;
@@ -1787,6 +1815,7 @@ implements Listener, StandardStrings {
    * @param newSelection the new selection
    */
   public static void swapTreeItems(TreeItem itemBelow, int newSelection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem parent = itemBelow.getParentItem();
     if (null == parent)
       throw new InternalErrorCDE("invalid arg");
@@ -1824,6 +1853,7 @@ implements Listener, StandardStrings {
    * @param newSelection the new selection
    */
   public static void swapIndexKeys(TreeItem itemBelow, int newSelection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem parent = itemBelow.getParentItem();
     FsIndexDescription fsid = getFsIndexDescriptionFromTableTreeItem(parent);
     int i = getIndex(itemBelow);
@@ -1833,6 +1863,7 @@ implements Listener, StandardStrings {
     keys[i - 1] = temp;
 
     // swap items in the GUI
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     swapTreeItems(itemBelow, newSelection);
   }
 
@@ -1906,6 +1937,7 @@ implements Listener, StandardStrings {
   public static Capability[] getCapabilities(ResourceSpecifier rs) {
     if (rs instanceof ResourceCreationSpecifier)
       return ((ProcessingResourceMetaData) ((ResourceCreationSpecifier) rs).getMetaData())
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getCapabilities();
     return null;
   }
@@ -1995,6 +2027,7 @@ implements Listener, StandardStrings {
       return aemd;
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-802
     throw new InternalErrorCDE("invalid call");
   }
 
@@ -2070,6 +2103,7 @@ implements Listener, StandardStrings {
 
     // code to open selected file, by location or by name
     if (null != res) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
       if ((inputDescription instanceof URISpecifier) ||
           isJmsDescriptor(inputDescription)) {
         editor.openTextEditor(path);
@@ -2155,6 +2189,7 @@ implements Listener, StandardStrings {
     // If a path starts with "C:", it must be preceeded by
     // file:/ so the C: is not interpreted as a "scheme".
     if (sDescriptorRelativePath.indexOf("file:/") == -1 //$NON-NLS-1$
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && sDescriptorRelativePath.indexOf(":/") > -1) { //$NON-NLS-1$
       sDescriptorRelativePath = "file:/" + sDescriptorRelativePath; //$NON-NLS-1$
     }
@@ -2214,6 +2249,7 @@ implements Listener, StandardStrings {
   // subtype of FSLists should not match
   public static boolean isFSArrayOrListType(String type) {
     return (null != type)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && (type.equals(CAS.TYPE_NAME_FS_ARRAY) || type.equals(CAS.TYPE_NAME_FS_LIST));
   }
 
@@ -2268,7 +2304,9 @@ implements Listener, StandardStrings {
         return sKeyName;
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     Utility.popMessage("Failed to create unique key", "The Flow Controller name, '" + fileName
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + "', could not be "
             + "converted to a unique key name -- tried with 10000 different suffixes",
             MessageDialog.ERROR);
@@ -2293,6 +2331,7 @@ implements Listener, StandardStrings {
    * @throws InvalidXMLException the invalid XML exception
    */
   public static XMLizable parseDescriptor(XMLInputSource input) throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
     return parseDescriptor(input, false);
   }
   
@@ -2306,12 +2345,15 @@ implements Listener, StandardStrings {
    */
   public static XMLizable parseDescriptor(XMLInputSource input, boolean preserveComments) throws InvalidXMLException {
     // turn off environment variable expansion
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     XMLParser.ParsingOptions parsingOptions = new XMLParser.ParsingOptions(false);
     parsingOptions.preserveComments = preserveComments;
     XMLParser parser = UIMAFramework.getXMLParser();
     // disabled - error messages from XML validation not very helpful
     // parser.enableSchemaValidation(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return parser.parse(input, "http://uima.apache.org/resourceSpecifier",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             urlForResourceSpecifierSchema, parsingOptions);
   }
 
@@ -2339,6 +2381,7 @@ implements Listener, StandardStrings {
     // doing this check here is expensive, but gives the best error location information
     if (!editor.isValidAE(editor.getAeDescription()))
       if (revertOrContinue("Continue or Abort",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "Because of errors in validating the resulting Analysis Engine:\n"))
         return false; // want to revert
 
@@ -2406,7 +2449,9 @@ implements Listener, StandardStrings {
       }
 
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         input = new XMLInputSource(byNameURL.openStream(), new File(byNameURL.getFile())
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getParentFile());
       } catch (IOException e) {
         showExceptionReadingImportedDescriptor(e);
@@ -2420,6 +2465,7 @@ implements Listener, StandardStrings {
       }
     }
     // read the content and merge into our model
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     XMLizable inputDescription;
     try {
       inputDescription = parseDescriptor(input);
@@ -2481,10 +2527,13 @@ implements Listener, StandardStrings {
     String sDesc;
     long lCurrentTimeInMillis = System.currentTimeMillis();
     if (rs == lastResourceForDescription
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && ((lCurrentTimeInMillis - lastTimeDescriptionRequested) < TABLE_HOVER_REQUERY_TIME)) {
       return lastDescriptionFromDescriptor;
     } else {
       sDesc = fileRef + ":\n";
+//IC see: https://issues.apache.org/jira/browse/UIMA-802
       if (rs instanceof PearSpecifier) {
         sDesc += " (Pear descriptor)";
       } else {
@@ -2514,6 +2563,7 @@ implements Listener, StandardStrings {
    */
   protected PrintWriter setupToPrintFile(String filePath) {
     if (new File(filePath).exists())
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (Window.CANCEL == Utility.popOkCancel("File exists, OK to replace?", MessageFormat.format(
               "The file ''{0}'' exists. Press OK if it can be replaced; otherwise press Cancel.",
               new Object[] { filePath }), MessageDialog.WARNING))
@@ -2537,6 +2587,7 @@ implements Listener, StandardStrings {
     FsIndexCollection fsic = getAnalysisEngineMetaData().getFsIndexCollection();
     if (null == fsic)
       getAnalysisEngineMetaData().setFsIndexCollection(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               fsic = UIMAFramework.getResourceSpecifierFactory().createFsIndexCollection());
     return fsic;
   }
@@ -2559,6 +2610,7 @@ implements Listener, StandardStrings {
    */
   public static void setSelectionOneUp(Tree tt, TreeItem item) {
     int itemIndex = tt.indexOf(item);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     maybeSetSelection(tt, itemIndex - 1);
   }
   

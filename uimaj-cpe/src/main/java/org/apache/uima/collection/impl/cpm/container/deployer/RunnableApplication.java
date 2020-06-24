@@ -68,6 +68,7 @@ public class RunnableApplication {
    * @throws ResourceConfigurationException wraps Exception
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
     try {
       if (aCasProcessor instanceof CpeLocalCasProcessor) {
@@ -87,6 +88,7 @@ public class RunnableApplication {
         }
         executable = rip.getExecutable().getExecutable();
         List<CasProcessorRuntimeEnvParam> descrptrEnvVars = rip.getExecutable().getEnvs();
+//IC see: https://issues.apache.org/jira/browse/UIMA-668
 
         exec = new Execute();
 
@@ -99,6 +101,7 @@ public class RunnableApplication {
           e.printStackTrace();
         }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-668
         environment.clear();
         boolean pathDone = false;
         boolean classpathDone = false;
@@ -128,6 +131,7 @@ public class RunnableApplication {
               String classpath = getSysEnvVarValue(key);
               if (classpath != null) {
                 environment.add(key + "=" + value + System.getProperty("path.separator")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                         + classpath);
               } else {
                 environment.add(key + "=" + value + System.getProperty("path.separator"));
@@ -179,6 +183,7 @@ public class RunnableApplication {
       while (sysKeys.hasMoreElements()) {
         String key = (String) sysKeys.nextElement();
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                   "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_launching_with_service_env__FINEST",
@@ -201,6 +206,7 @@ public class RunnableApplication {
     try {
       // Retrieve all env variables
 //      sysEnv = SystemEnvReader.getEnvVars();  // already done, do only once
+//IC see: https://issues.apache.org/jira/browse/UIMA-668
       Enumeration sysKeys = sysEnvVars.keys();
       while (sysKeys.hasMoreElements()) {
         String key = (String) sysKeys.nextElement();

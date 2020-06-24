@@ -40,6 +40,7 @@ public class ConfigurableFeature {
    * @param newV the new V
    */
   public ConfigurableFeature(String oldV, String newV) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     value = new ValuePair(oldV, newV);
   }
 

@@ -73,6 +73,7 @@ public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
       int errorCountName = 0;
       String errorExceptionName = "RuntimeException";
       if (errorCount != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         errorCountName = errorCount;
       }
       if (errorException != null) {
@@ -80,6 +81,7 @@ public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
       }
       // add the error object to the corresponding HashMap Entry
       addError(errorFunction, new FunctionErrorStore(errorExceptionName, errorCountName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               errorFunction));
     }
     logger.log(LOG_LEVEL, "initialize() was called");

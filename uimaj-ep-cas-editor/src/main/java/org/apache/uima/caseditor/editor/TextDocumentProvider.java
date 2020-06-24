@@ -102,6 +102,7 @@ class TextDocumentProvider extends AbstractDocumentProvider {
   protected IDocument createDocument(Object element) throws CoreException {
     ICasDocument casDocument =  documentProvider.createDocument(element);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2253
     if (casDocument != null) {
       AnnotationDocument document = new AnnotationDocument();
       document.setDocument(casDocument);

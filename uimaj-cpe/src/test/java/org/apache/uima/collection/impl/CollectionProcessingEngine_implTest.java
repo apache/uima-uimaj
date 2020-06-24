@@ -42,6 +42,8 @@ import org.apache.uima.util.XMLInputSource;
 
 public class CollectionProcessingEngine_implTest extends TestCase {
   protected final String TEST_DATAPATH = JUnitExtension.getFile(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-198
       "CollectionProcessingEngineImplTest").getPath()
       + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
@@ -72,6 +74,7 @@ public class CollectionProcessingEngine_implTest extends TestCase {
       HashMap params = new HashMap();
       params.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, newProps);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-198
       CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
 	  new XMLInputSource(JUnitExtension
 	      .getFile("CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml")));
@@ -94,7 +97,9 @@ public class CollectionProcessingEngine_implTest extends TestCase {
     try {
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
       rm.setDataPath(TEST_DATAPATH);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
+//IC see: https://issues.apache.org/jira/browse/UIMA-198
 	  new XMLInputSource(JUnitExtension
 	      .getFile("CollectionProcessingEngineImplTest/externalResourceTestCpe.xml")));
       CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, rm,
@@ -114,6 +119,7 @@ public class CollectionProcessingEngine_implTest extends TestCase {
   }
   
   public void testCasMultiplierTypeSystem() throws Throwable {
+//IC see: https://issues.apache.org/jira/browse/UIMA-234
     CpeDescription cpeDesc = UIMAFramework.getXMLParser()
             .parseCpeDescription(new XMLInputSource(
                     JUnitExtension.getFile("CollectionProcessingEngineImplTest/cpeWithWrappedCasMultiplier.xml")));

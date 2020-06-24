@@ -111,6 +111,7 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
    * @param aParentController -         
    */
   public CapabilityLanguageFlowObject(Map<String, List<AnalysisSequenceCapabilityNode>> aFlowTable, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
       CapabilityLanguageFlowController aParentController) {
 //    mNodeList = null;
     mIndex = 0;
@@ -267,6 +268,7 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
         // see if this next cas processor was previously given this result spec, and 
         // if so, set a flag indicating this
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
         Map<String, ResultSpecification> lastResultSpecForComponent = mParentController.getLastResultSpecForComponent();
         String component = node.getCasProcessorKey();
         ResultSpecification neededResultSpec = node.getResultSpec();      
@@ -316,9 +318,11 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
       // drop any caching that may be happening
       //   to force sending new result specs down
       mParentController.getLastResultSpecForComponent().clear();
+//IC see: https://issues.apache.org/jira/browse/UIMA-730
 
       // get all language key from the table
       Set<String> keys = mFlowTable.keySet();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
 
       // loop over all languages
       Iterator<String> it = keys.iterator();
@@ -333,6 +337,7 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
           AnalysisSequenceCapabilityNode node = sequence.get(i);
           if (node != null) {
             // recompile result spec
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
             node.getResultSpec().setTypeSystem(mLastTypeSystem);
           }
         }

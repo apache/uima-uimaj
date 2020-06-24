@@ -83,6 +83,7 @@ public interface AnnotatorContext {
    */
   public Object getConfigParameterValue(String aGroupName, String aParamName)
           throws AnnotatorContextException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the names of all configuration parameter groups.
@@ -385,6 +386,7 @@ public interface AnnotatorContext {
    */
   public InputStream getResourceAsStream(String aKey, String[] aParams)
           throws AnnotatorContextException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Retrieves the named resource object. This can be used to acquire references to external

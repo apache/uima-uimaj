@@ -127,6 +127,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
 public final class ResultSpecification_impl extends MetaDataObject_impl implements
         ResultSpecification {
+//IC see: https://issues.apache.org/jira/browse/UIMA-149
 
   private static final long serialVersionUID = 8516517600467270594L;
 
@@ -163,7 +164,10 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   private final Map<String, RsLangs> rsCompiled;
 
   public ResultSpecification_impl() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
     rsTypesMap = new RsTypesMap();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     rsCompiled = new HashMap<>();
   }
 
@@ -186,9 +190,12 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @param original
    */
   private ResultSpecification_impl(ResultSpecification_impl original) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
     mTypeSystem = original.mTypeSystem;    // not cloned
     rsTypesMap = new RsTypesMap(original.rsTypesMap);
     needsCompilation = original.needsCompilation;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     rsCompiled = new HashMap<>(original.rsCompiled);
     for (Map.Entry<String, RsLangs> e : rsCompiled.entrySet()) {
       e.getValue().setShared();
@@ -212,6 +219,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   }
   
   private TypeOrFeature[] getResultTypesAndFeatures(boolean skipLanguageFilter, String language) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<TypeOrFeature> r = new ArrayList<>();
     if (rsTypesMap.nbrOfTypes() == 0 && !needsCompilation) {
       // being called on results of intersection
@@ -387,6 +395,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   }
   
   private TypeOrFeature createTypeOrFeature(String typeName, String featureName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
     return createTypeOrFeature(typeName + TypeSystem.FEATURE_SEPARATOR + featureName, false, false);
   }
   
@@ -394,6 +404,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsType(java.lang.String)
    */
   public boolean containsType(String aTypeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-730
     return containsType(aTypeName, Language.UNSPECIFIED_LANGUAGE);
   }
 
@@ -413,6 +424,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   
   // TODO check cache, normalize language
   public boolean containsType(String aTypeName, String aLanguage) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
     if (aTypeName.indexOf(TypeSystem.FEATURE_SEPARATOR) != -1) {
       return false; // check against someone passing a feature name here
     }
@@ -434,6 +447,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
 
   public boolean containsFeature(String aFullFeatureName, String aLanguage) {
     int i = aFullFeatureName.indexOf(TypeSystem.FEATURE_SEPARATOR);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
     if (i == -1)
       return false; // check against someone passing a type name here
     compileIfNeeded();
@@ -471,6 +486,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   @Override
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo("resultSpecification", "",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new PropertyXmlInfo[] { new PropertyXmlInfo("resultTypesAndFeatures", null) });
   }
 
@@ -493,6 +509,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       TypeOrFeature[] tofs = outputs ? capability.getOutputs() : capability.getInputs();
       
       for (TypeOrFeature tof : tofs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
         String typeName = tof.getName();
         if (!tof.isType()) {
           int i = typeName.indexOf(TypeSystem.FEATURE_SEPARATOR);
@@ -540,6 +558,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
 
   public void setTypeSystem(TypeSystem ts) {
     mTypeSystem = ts;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
     setCompileNeeded();
   }
   
@@ -551,6 +571,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(this.getClass().getSimpleName() + ":\n");
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
     sb.append("  needsCompilation = ").append(needsCompilation).append('\n');
 //    sb.append("lang2int = ").append(lang2int).append("\n");
 //    sb.append("name2tof_langs = ").append(name2tof_langs).append("\n");
@@ -570,6 +591,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
         Entry<String, RsLangs> e = (Entry<String, RsLangs>) o;
         String k = e.getKey();
         k = k + "        ".substring(k.length()%8);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
         sb.append(" key: ").append(k).append("  value: ").append(e.getValue()).append('\n');
       }
     }
@@ -578,6 +600,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   }
 
   private void compileIfNeeded() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
     if (needsCompilation) {
       needsCompilation = false;
       compile();
@@ -694,6 +718,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    */
 
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
   ResultSpecification_impl intersect(ResultSpecification_impl rsOther) {
     
     ResultSpecification_impl r = new ResultSpecification_impl();

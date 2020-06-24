@@ -75,6 +75,7 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
    * @param aSection the a section
    */
   public AddExternalResourceDependencyDialog(AbstractSection aSection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(aSection, "Add External Resource Dependency", "Add an External Resource Dependency");
     rdSection = (ResourceDependencySection) aSection;
   }
@@ -86,6 +87,7 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
    * @param aExistingXRD the a existing XRD
    */
   public AddExternalResourceDependencyDialog(AbstractSection aSection,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ExternalResourceDependency aExistingXRD) {
     this(aSection);
     existingXRD = aExistingXRD;
@@ -98,6 +100,7 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingXRD);
     createWideLabel(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             mainArea,
             "The only required field is the key name,\nwhich must be unique within this primitive Analysis Engine descriptor.");
 
@@ -113,6 +116,7 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
 
     keyNameUI = newLabeledSingleLineStyledText(twoCol, "Key",
             "Name used by the Primitive Analysis Engine to refer to the resource");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     descriptionUI = newDescription(twoCol, "(Optional)Describes this resource dependency");
 
@@ -133,6 +137,7 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
       interfaceNameUI.setText(convertNull(existingXRD.getInterfaceName()));
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return mainArea;
   }
 

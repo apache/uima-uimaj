@@ -135,6 +135,7 @@ public class GetAllIndexedTest extends TestCase {
   }
   
   private final FSIterator<FeatureStructure> getAllIndexed() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-297
     return getAllIndexed(this.cas.getTypeSystem().getTopType());
   }
 
@@ -157,6 +158,7 @@ public class GetAllIndexedTest extends TestCase {
   }
   
   private final FeatureStructure createAnnot(int from, int to) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-297
     return this.cas.createAnnotation(this.annotationType, from, to);
   }
   
@@ -182,12 +184,14 @@ public class GetAllIndexedTest extends TestCase {
     addFS(annotationBaseFS);
     addFS(this.cas.createFS(this.cas.getTypeSystem().getTopType()));
     assertTrue(getIteratorSize(this.cas.getAnnotationIndex().iterator()) == 2);
+//IC see: https://issues.apache.org/jira/browse/UIMA-297
     addFS(createAnnot(0, 1));
     addFS(createAnnot(1, 2));
     addFS(createAnnot(2, 3));
     addFS(createAnnot(3, 4));
     
     // Iterate backwards, check only that it returns correct number of FSs
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIterator<FeatureStructure> it = getAllIndexed();
     int down = this.fsCount;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
@@ -197,6 +201,7 @@ public class GetAllIndexedTest extends TestCase {
 
     // Get all indexed, create copy and iterate in parallel.
     it = getAllIndexed();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIterator<FeatureStructure> copy = it.copy();
     copy.moveToFirst();
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
@@ -207,6 +212,7 @@ public class GetAllIndexedTest extends TestCase {
     assertFalse(copy.isValid());
     
     // Iterate over all indexed, create a copy at each stage, check that it gets same FS.
+//IC see: https://issues.apache.org/jira/browse/UIMA-297
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       copy = it.copy();
       assertTrue(it.get().equals(copy.get()));
@@ -218,6 +224,7 @@ public class GetAllIndexedTest extends TestCase {
     //test getAllIndexed(Type)
     Type tokenType = this.cas.getTypeSystem().getType(TOKEN_TYPE);
     assertNotNull(tokenType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIterator<FeatureStructure> tokenIter = this.cas.getIndexRepository().getAllIndexedFS(tokenType);
     assertFalse(tokenIter.hasNext());
     Iterator<TOP> tokenIter2 = this.cas.getIndexedFSs(tokenType).iterator();

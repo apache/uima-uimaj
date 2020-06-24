@@ -168,6 +168,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     tablePanel.setLayout(new BorderLayout());
 
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             annotationFeaturesPanel, tablePanel);
     Dimension screenDimension = getToolkit().getScreenSize();
     splitPane.setDividerLocation((int) (screenDimension.width * 0.28));
@@ -226,6 +227,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     tc.setCellRenderer(cellRenderer);
 
     TableColumn labelTableColumn = annotationsTable.getColumnModel().getColumn(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             StyleConstants.LABEL_COLUMN);
     TableColumn typeNameTableColumn = annotationsTable.getColumnModel().getColumn(
             StyleConstants.TYPE_NAME_COLUMN);
@@ -258,6 +260,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
           if ((obj != null) && !obj.equals("")) {
             if (noDups.contains(obj)) {
               JOptionPane.showMessageDialog(StyleMapEditor.this, ("Duplicate Label :  " + obj
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       + "\n" + "Change the Label and click OK!"), "Duplicate Values",
                       JOptionPane.PLAIN_MESSAGE);
               buttonPress = false;
@@ -332,6 +335,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
    * @return a new style map XML document. If the user cancels, null is returned.
    */
   public String launchEditor(AnalysisEngineMetaData aAnalysisEngineMetaData, String aStyleMapXml,
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
           CAS cas) {
     analysisEngineMetaData = aAnalysisEngineMetaData;
     // create an ArrayList of style entries used by the GUI
@@ -360,6 +364,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
    *         in <code>aTaeMetaData</code>.
    */
   public ArrayList createStyleList(AnalysisEngineMetaData aAnalysisEngineMetaData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aStyleMapXml) {
     styleList = new ArrayList();
 
@@ -416,6 +421,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       int selectedRow = annotationsTable.getSelectedRow();
       if (selectedRow == -1) {
         JOptionPane.showMessageDialog(source, "Select table row", "Error",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 JOptionPane.ERROR_MESSAGE);
         return;
       } else if (selectedRow == 0) {
@@ -434,6 +440,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       int selectedRow = annotationsTable.getSelectedRow();
       if (selectedRow == -1) {
         JOptionPane.showMessageDialog(source, "Select table row", "Error",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 JOptionPane.ERROR_MESSAGE);
         return;
       } else if (selectedRow == (tableModel.getRowCount() - 1)) {
@@ -452,6 +459,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       String typeName = annotationFeaturesViewer.getSelection();
       if (typeName == null) {
         JOptionPane.showMessageDialog(source,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "You must first select an annotation type or feature", "Error",
                 JOptionPane.ERROR_MESSAGE);
         return;
@@ -462,6 +470,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       int row = annotationsTable.getSelectedRow();
       if (row >= 0) {
         String message = "Are you sure you want to remove "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + tableModel.getValueAt(row, StyleConstants.LABEL_COLUMN);
         int rv = JOptionPane.showConfirmDialog(removeTableRowButton, message, "Remove Table Row",
                 JOptionPane.YES_NO_OPTION);
@@ -476,6 +485,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
         }
       } else {
         JOptionPane.showMessageDialog(source, "You must first select a table row to remove",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "Error", JOptionPane.ERROR_MESSAGE);
       }
     } else if (source == resetButton) {
@@ -529,6 +539,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       // maxColumnWidths[StyleConstants.FEATURE_VALUE_COLUMN] =
       // fm.stringWidth(StyleConstants.columnNames[StyleConstants.FEATURE_VALUE_COLUMN]);
       maxColumnWidths[StyleConstants.BG_COLUMN] = fm
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .stringWidth(StyleConstants.columnNames[StyleConstants.BG_COLUMN]);
       maxColumnWidths[StyleConstants.FG_COLUMN] = fm
               .stringWidth(StyleConstants.columnNames[StyleConstants.FG_COLUMN]);
@@ -544,6 +555,8 @@ public class StyleMapEditor extends JDialog implements ActionListener {
         // data[x][StyleConstants.FEATURE_VALUE_COLUMN] = e.getFeatureValue();
         data[x][StyleConstants.BG_COLUMN] = e.getBackground();
         data[x][StyleConstants.FG_COLUMN] = e.getForeground();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         data[x][StyleConstants.CHECK_COLUMN] = e.getChecked();
         data[x][StyleConstants.HIDDEN_COLUMN] = e.getHidden();
 
@@ -632,6 +645,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     };
     final JDialog dialog = JColorChooser.createDialog(button, "Pick a Color", true, colorChooser,
             okListener, null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // Here's the code that brings up the dialog.
     button.addActionListener(new ActionListener() {
@@ -687,6 +701,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
           newStyle.append("<style>");
 
           String foregroundColor = "#"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   + Integer.toHexString(e.getForeground().getRGB()).substring(2);
           String backgroundColor = "#"
                   + Integer.toHexString(e.getBackground().getRGB()).substring(2);
@@ -746,6 +761,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       StyleMapEntry e = (StyleMapEntry) styleList.get(i);
       if (typeName.equals(e.getAnnotationTypeName()) && typeName.indexOf(":") == -1) {
         JOptionPane.showMessageDialog(StyleMapEditor.this, "Duplicate Annotation Type", "Error",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 JOptionPane.ERROR_MESSAGE);
         return;
       }

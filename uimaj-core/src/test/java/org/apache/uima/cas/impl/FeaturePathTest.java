@@ -87,6 +87,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-736
       assertEquals(Short.valueOf((short) 12), featurePath.getShortValue(cas
             .getDocumentAnnotation()));
       assertEquals("12", featurePath.getValueAsString(cas
@@ -95,6 +96,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals(shortFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
       assertEquals(null, featurePath.getValueAsString(null));
       assertEquals(null, featurePath.getStringValue(null));
 
@@ -107,6 +109,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       assertEquals(1.12f, featurePath.getFloatValue(cas
             .getDocumentAnnotation()));
       assertEquals("1.12", featurePath.getValueAsString(cas
@@ -115,6 +118,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals(floatFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
       assertEquals(null, featurePath.getValueAsString(null));
       assertEquals(null, featurePath.getFloatValue(null));
 
@@ -127,6 +131,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       assertEquals(100.5, featurePath.getDoubleValue(cas
             .getDocumentAnnotation()));
       assertEquals("100.5", featurePath.getValueAsString(cas
@@ -135,6 +140,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals(doubleFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
       assertEquals(null, featurePath.getValueAsString(null));
       assertEquals(null, featurePath.getDoubleValue(null));
 
@@ -147,6 +153,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-736
       assertEquals(Long.valueOf(2000), featurePath.getLongValue(cas
             .getDocumentAnnotation()));
       assertEquals("2000", featurePath.getValueAsString(cas
@@ -155,6 +162,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals(longFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
       assertEquals(null, featurePath.getValueAsString(null));
       assertEquals(null, featurePath.getLongValue(null));
 
@@ -167,6 +175,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-736
       assertEquals(Integer.valueOf(5), featurePath.getIntValue(cas
             .getDocumentAnnotation()));
       assertEquals("5", featurePath.getValueAsString(cas
@@ -175,6 +184,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals(intFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
       assertEquals(null, featurePath.getValueAsString(null));
       assertEquals(null, featurePath.getIntValue(null));
 
@@ -187,6 +197,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-736
       assertEquals(Boolean.valueOf(true), featurePath.getBooleanValue(cas
             .getDocumentAnnotation()));
       assertEquals("true", featurePath.getValueAsString(cas
@@ -195,6 +206,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals(boolFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
       assertEquals(null, featurePath.getValueAsString(null));
       assertEquals(null, featurePath.getBooleanValue(null));
 
@@ -207,6 +219,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-736
       assertEquals(Byte.valueOf((byte) 127), featurePath.getByteValue(cas
             .getDocumentAnnotation()));
       assertEquals("127", featurePath.getValueAsString(cas
@@ -215,6 +228,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals(byteFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
       assertEquals(null, featurePath.getValueAsString(null));
       assertEquals(null, featurePath.getByteValue(null));
 
@@ -245,6 +259,7 @@ public class FeaturePathTest extends TestCase {
       assertEquals(null, featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
       assertEquals(null, featurePath.getFSValue(cas.getDocumentAnnotation()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
       assertEquals(null, featurePath.getValueAsString(null));
       assertEquals(null, featurePath.getFSValue(null));
 
@@ -311,6 +326,7 @@ public class FeaturePathTest extends TestCase {
       assertEquals(cas.getDocumentAnnotation().toString(), featurePath.getValueAsString(cas.getDocumentAnnotation()));
 
       // test "/" featurePath
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
       featurePath = new FeaturePathImpl();
       featurePath.initialize("/");
       assertEquals("/", featurePath.getFeaturePath());
@@ -319,6 +335,7 @@ public class FeaturePathTest extends TestCase {
             .getValueAsString(cas.getDocumentAnnotation()));
 
       // check init() with super type and call getValue() with subtype
+//IC see: https://issues.apache.org/jira/browse/UIMA-732
       featurePath = new FeaturePathImpl();
       featurePath.initialize("/stringFeature");
       Type testAnnotType = cas.getTypeSystem()
@@ -408,6 +425,7 @@ public class FeaturePathTest extends TestCase {
             .getValueAsString(cas.getDocumentAnnotation()));
 
       // test typeName() on root
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
       path = ":typeName()";
       featurePath = new FeaturePathImpl();
       featurePath.initialize(path);
@@ -417,6 +435,7 @@ public class FeaturePathTest extends TestCase {
             .getValueAsString(cas.getDocumentAnnotation()));
 
       // test coveredText() on root
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       LowLevelCAS llc = cas.getLowLevelCAS();
       path = "/:coveredText()";
       featurePath = new FeaturePathImpl();
@@ -425,6 +444,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
       assertEquals(cas.getDocumentText(), featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       assertEquals(cas.getDocumentText(), 
                    featurePath.ll_getValueAsString(
                        llc.ll_getFSRef(cas.getDocumentAnnotation()), 
@@ -551,6 +571,7 @@ public class FeaturePathTest extends TestCase {
       // use featurePath object with an different type than used for typeInit()
       // and the case that type used for typeInit() has and featurePath that is
       // not always valid
+//IC see: https://issues.apache.org/jira/browse/UIMA-732
       featurePath = new FeaturePathImpl();
       try {
          featurePath.initialize("/refFeature/stringFeature");
@@ -574,6 +595,8 @@ public class FeaturePathTest extends TestCase {
          featurePath.initialize("/stringFeature");
          featurePath.typeInit(cas.getDocumentAnnotation().getType());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-732
+//IC see: https://issues.apache.org/jira/browse/UIMA-732
          Type testAnnotType = cas.getTypeSystem().getType(
                "uima.tt.TestAnnotation");
          AnnotationFS fs = cas.createAnnotation(testAnnotType, 0, 1);
@@ -585,6 +608,7 @@ public class FeaturePathTest extends TestCase {
       }
 
       // pass null as FS
+//IC see: https://issues.apache.org/jira/browse/UIMA-740
       featurePath = new FeaturePathImpl();
       featurePath.initialize("/refFeature:coveredText()");
       featurePath.typeInit(cas.getDocumentAnnotation().getType());

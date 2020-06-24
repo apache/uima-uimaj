@@ -254,6 +254,7 @@ public class CasCopier {
    * Target not set for SofaFSs
    * Target not set if lenient specified and src type isn't in target
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5601
   final private Map<TOP, TOP> mFsMap;  // is identity hash map
   
   /**
@@ -277,6 +278,7 @@ public class CasCopier {
    *          the CAS to copy into.
    */
   public CasCopier(CAS aSrcCas, CAS aDestCas) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2832
     this(aSrcCas, aDestCas, false);
   }
 
@@ -296,13 +298,17 @@ public class CasCopier {
    */
   public CasCopier(CAS aSrcCas, CAS aDestCas, boolean lenient) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     mFsMap = new IdentityHashMap<>(((CASImpl)(aSrcCas.getLowLevelCAS())).getLastUsedFsId());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
     originalSrcCas = (CASImpl)aSrcCas.getLowLevelCAS();
     originalTgtCas = (CASImpl)aDestCas.getLowLevelCAS();
     
     srcTsi = originalSrcCas.getTypeSystemImpl();
     tgtTsi = originalTgtCas.getTypeSystemImpl();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     src2TgtType = (srcTsi == tgtTsi) ? null : new Int2ObjListMap<>(srcTsi.getTypeArraySize());
     src2TgtFeat = (srcTsi == tgtTsi) ? null : new Int2ObjListMap<>(srcTsi.getNumberOfFeatures() + 1);
     
@@ -320,18 +326,23 @@ public class CasCopier {
     //   or corresponding to two views in different CASs
     //   and then individual FeatureStructures are copied using copyFS(...)
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4466
     srcCasViewImpl = (CASImpl) originalSrcCas.getLowLevelCAS();
     tgtCasViewImpl = (CASImpl) originalTgtCas.getLowLevelCAS();
     
     srcViewName = srcCasViewImpl.getViewName();
     tgtViewName = tgtCasViewImpl.getViewName();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
     if (srcViewName == null) {  // base cas
+//IC see: https://issues.apache.org/jira/browse/UIMA-4466
       isChangeViewName = (tgtViewName == null) ? false : true;
     } else {
       isChangeViewName = !srcViewName.equals(tgtViewName);
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     isEqualTypeSystems = srcTsi.equals(tgtTsi);
   }
   
@@ -356,6 +367,7 @@ public class CasCopier {
    *          if true, the sofa data and mimeType of each view will be copied. If false they will not.
    */  
   public static void copyCas(CAS aSrcCas, CAS aDestCas, boolean aCopySofa) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2832
    copyCas(aSrcCas, aDestCas, aCopySofa, false);
   }
 
@@ -388,10 +400,14 @@ public class CasCopier {
 //      copier.copyCasView(view, aCopySofa);
 //    }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
     if (copier.originalSrcCas.getBaseCAS() == copier.originalTgtCas.getBaseCAS()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_CAS_COPY_TO_SAME_CAS);
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2493
     Iterator<CAS> viewIterator = aSrcCas.getViewIterator();
     while (viewIterator.hasNext()) {
       CAS view = viewIterator.next();
@@ -414,6 +430,8 @@ public class CasCopier {
    * @param aCopySofa if true, the sofa data and mimeType will be copied. If false they will not.
    */
   public void copyCasView(CAS aSrcCasView, boolean aCopySofa) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4178
+//IC see: https://issues.apache.org/jira/browse/UIMA-4179
     copyCasViewDifferentCASs(aSrcCasView, getOrCreateView(originalTgtCas, aSrcCasView.getViewName()), aCopySofa);
   }
   
@@ -432,6 +450,8 @@ public class CasCopier {
    * @param aCopySofa if true, the sofa data and mimeType will be copied. If false they will not.
    */
   public void copyCasView(String aSrcCasViewName, boolean aCopySofa) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4178
+//IC see: https://issues.apache.org/jira/browse/UIMA-4179
     copyCasView(getOrCreateView(originalSrcCas, aSrcCasViewName), aCopySofa);
   }
   
@@ -453,6 +473,8 @@ public class CasCopier {
    * @param aCopySofa if true, the sofa data and mimeType will be copied. If false they will not.
    */
   public void copyCasView(CAS aSrcCasView, String aTgtCasViewName, boolean aCopySofa) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4178
+//IC see: https://issues.apache.org/jira/browse/UIMA-4179
     copyCasView(aSrcCasView, getOrCreateView(originalTgtCas, aTgtCasViewName), aCopySofa);
   }
 
@@ -475,7 +497,10 @@ public class CasCopier {
   }
 
   private void copyCasViewDifferentCASs(CAS aSrcCasView, CAS aTgtCasView, boolean aCopySofa) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
     if (originalSrcCas.getBaseCAS() == originalTgtCas.getBaseCAS()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_CAS_COPY_TO_SAME_CAS);
     }
 
@@ -520,12 +545,16 @@ public class CasCopier {
     srcCasViewImpl = (CASImpl) aSrcCasView.getLowLevelCAS();
     tgtCasViewImpl = (CASImpl) aTgtCasView.getLowLevelCAS();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
     try { // to support finally to reset the src/tgt view names 
       srcViewName = srcCasViewImpl.getViewName();
       tgtViewName = tgtCasViewImpl.getViewName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4198
       isChangeViewName = !srcViewName.equals(tgtViewName);
   
       if ((aSrcCasView == srcCasViewImpl.getBaseCAS()) || (aTgtCasView == tgtCasViewImpl.getBaseCAS())) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_COPY_TO_OR_FROM_BASE_CAS);
       }
       
@@ -543,6 +572,7 @@ public class CasCopier {
           // if the sofa doesn't exist in the target, these calls will create it
           //  (view can exist without Sofa, at least for the initial view)
           String sofaMime = sofa.getSofaMime();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           String docTxt = srcCasViewImpl.getDocumentText();
           if (docTxt != null) {
             aTgtCasView.setSofaDataString(docTxt, sofaMime);
@@ -591,6 +621,7 @@ public class CasCopier {
           // If the lenient option is used, it's possible that no FS was
           // created (e.g., FS is not defined in the target CAS. So ignore
           // this FS in the source CAS and move on to the next FS.
+//IC see: https://issues.apache.org/jira/browse/UIMA-2832
           if (lenient && copyOfFs == null) {
             continue; // Move to the next FS in the source CAS
           }
@@ -608,6 +639,8 @@ public class CasCopier {
   //          }
   //        }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5601
           tgtCasViewImpl.getIndexRepository().addFS(copyOfFs);
           indexedFsAlreadyCopied.add(fs._id());
         }
@@ -649,6 +682,8 @@ public class CasCopier {
   
   public <T extends FeatureStructure> T copyFs(T aFS) {
     if (null == srcCasViewImpl) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
       srcCasViewImpl = originalSrcCas;
     }
     if (null == tgtCasViewImpl) {
@@ -671,6 +706,8 @@ public class CasCopier {
    */
   private TOP copyFs2(TOP aFS) {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
     TOP copy = copyFsInner(aFS);  // doesn't copy the slot values, but enqueues them
     // the iteration is done this way because the body can add more to the queue
     while (fsToDo.size() > 0) {
@@ -701,6 +738,8 @@ public class CasCopier {
 //    assert (casViewsInSameCas(aFS.getCAS(), originalSrcCas));
 
     // check if we already copied this FS
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
     TOP copy = mFsMap.get(srcFs);
     if (copy != null) {
       return copy;
@@ -712,6 +751,8 @@ public class CasCopier {
     // same Sofa ID in the target CAS. If it does not exist it will be created.
     if (srcFs instanceof Sofa) {
       Sofa srcSofa = (Sofa) srcFs;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
       return getCorrespondingTgtView(srcSofa.getSofaID()).getSofa();
     }
     
@@ -727,6 +768,8 @@ public class CasCopier {
       tgtView = tgtCasViewImpl;
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-5601
     TypeImpl tgtTi = getTargetType(((TOP)srcFs)._getTypeImpl());
     if (null == tgtTi) {
       return null; // not in target, no FS to create
@@ -780,6 +823,7 @@ public class CasCopier {
 //    }
 
     // Arrays - need to be created a populated differently than "normal" FS
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     if (srcFs instanceof CommonArrayFS) {
       copy = copyArray(srcFs);
       if (copy != null) { // can be null if trying to copy MyFs[] and type doesn't exist in target type system
@@ -799,11 +843,15 @@ public class CasCopier {
     // set because we'll set it manually when in the copyFeatures method.
     
     TOP tgtFs = tgtView.createFS(tgtTi);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
 
     // add to map so we don't try to copy this more than once
     mFsMap.put((TOP)srcFs, tgtFs);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     fsToDo.addLast(() -> {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       if (srcFs instanceof UimaSerializable) {
         ((UimaSerializable)srcFs)._save_to_cas_data();
       }
@@ -842,6 +890,8 @@ public class CasCopier {
    * @return id unless the id matches the source view name, and that name is being changed
    */
   private String getDestSofaId(String viewNameFromSrcSofaId) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
     return (isChangeViewName && viewNameFromSrcSofaId.equals(srcViewName)) ? tgtViewName : viewNameFromSrcSofaId;
   }
   
@@ -863,6 +913,7 @@ public class CasCopier {
    *          FeatureStructure to copy to, which must not be in the index (index corruption checks skipped)
    */
   private <T extends FeatureStructure> void copyFeatures(T srcFSi, T tgtFSi) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     TOP srcFS = (TOP) srcFSi;
     TypeImpl ti = srcFS._getTypeImpl();
     
@@ -871,6 +922,8 @@ public class CasCopier {
     // guaranteed not an array at this point
 
     if (isEqualTypeSystems) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
       for (final FeatureImpl fi : ti.getFeatureImpls()) {
         final int adjOffset = fi.getAdjustedOffset();
         if (fi.isInInt) {
@@ -892,10 +945,13 @@ public class CasCopier {
           }
         }
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
       return;
     }  // end of equal type systems special paths
     
     for (FeatureImpl fi : ti.getFeatureImpls()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       FeatureImpl tgtFi = getTargetFeature(fi);
       if (null == tgtFi) {
         continue;  // skip copying features not in the target type system
@@ -906,6 +962,8 @@ public class CasCopier {
         if (fi.isAnnotBaseSofaRef) {
           continue;
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
         TOP refFs = srcFS._getFeatureValueNc(fi);
         if (null != refFs) {
           tgtFS._setFeatureValueNcNj(tgtFi, copyFsInner(refFs));  // recursive call
@@ -965,6 +1023,7 @@ public class CasCopier {
    * @return true if the given FS has already been copied using this CasCopier.
    */
   public boolean alreadyCopied(FeatureStructure aFS) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return alreadyCopied(((TOP)aFS));
   }
   
@@ -988,6 +1047,7 @@ public class CasCopier {
    * @return true if the given FS has already been copied using this CasCopier.
    */
   public boolean alreadyCopied(int aFS) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5225
     TOP fs = originalSrcCas.getFsFromId(aFS);
     return mFsMap.get(fs) != null;
   }
@@ -998,15 +1058,20 @@ public class CasCopier {
    * @return a copy of the array
    */
   private TOP copyArray(TOP srcFS) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     final CommonArrayFS srcCA = (CommonArrayFS) srcFS;
     final int size = srcCA.size();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     final TypeImpl tgtTi = getTargetType(((TOP)srcFS)._getTypeImpl());  // could be null for src = e.g. Annotation[]
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
     if (tgtTi == null) {
       return null; // can't copy
     }
     
     if (srcFS instanceof CommonPrimitiveArray) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       CommonArrayFS copy = (CommonArrayFS) tgtCasViewImpl.createArray(tgtTi, size);
       copy.copyValuesFrom(srcCA);
       return (TOP) copy;
@@ -1027,9 +1092,12 @@ public class CasCopier {
       if (null != srcItem) {
         tgtArray[i] = copyFsInner(srcItem);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       i++;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4920
     return fsArray;
   }
   
@@ -1038,6 +1106,7 @@ public class CasCopier {
    */
   private static CASImpl getOrCreateView(CASImpl aCas, String aViewName) {
     //TODO: there should be some way to do this without the try...catch
+//IC see: https://issues.apache.org/jira/browse/UIMA-3513
     try { // throws if view doesn't exist
       return (CASImpl) aCas.getView(aViewName).getLowLevelCAS(); 
     }
@@ -1054,6 +1123,7 @@ public class CasCopier {
    * as the Document Annotation instance.
    */
   private <T extends FeatureStructure> boolean isDocumentAnnotation(T aFS) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5601
     if ( ! srcTsi.docType.subsumes(aFS.getType()) ) {
       return false;
     }
@@ -1075,6 +1145,8 @@ public class CasCopier {
       return false;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4178
+//IC see: https://issues.apache.org/jira/browse/UIMA-4179
     CASImpl ci1 = (CASImpl) c1.getLowLevelCAS();
     CASImpl ci2 = (CASImpl) c2.getLowLevelCAS();
     
@@ -1082,10 +1154,12 @@ public class CasCopier {
   }
   
   private TypeImpl getTargetType(TypeImpl srcTi) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (srcTsi == tgtTsi) {
       return srcTi;
     }
     int srcTypeCode = srcTi.getCode();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     TypeImpl r = src2TgtType.get(srcTypeCode);
     if (r == null) {
       r = tgtTsi.getType(srcTi.getName());
@@ -1096,6 +1170,7 @@ public class CasCopier {
   
   // tiny method to inline
   private FeatureImpl getTargetFeature(FeatureImpl srcFi) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (srcTsi == tgtTsi) {
       return srcFi;
     }

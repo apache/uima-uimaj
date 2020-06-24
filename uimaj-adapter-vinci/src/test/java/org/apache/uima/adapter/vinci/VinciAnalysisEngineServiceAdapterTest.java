@@ -70,6 +70,7 @@ public class VinciAnalysisEngineServiceAdapterTest extends TestCase {
     uriSpec.setProtocol(Constants.PROTOCOL_VINCI);
     uriSpec.setResourceType(URISpecifier.RESOURCE_TYPE_ANALYSIS_ENGINE);
     ResourceInitializationException ex = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       adapter.initialize(uriSpec, null);
     } catch (ResourceInitializationException e) {

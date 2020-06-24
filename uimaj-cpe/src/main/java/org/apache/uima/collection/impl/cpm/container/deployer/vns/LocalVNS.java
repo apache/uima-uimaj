@@ -82,6 +82,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    * @throws PortUnreachableException the port unreachable exception
    */
   public LocalVNS(String aStartPort, String aEndPort, String aVNSPort)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws PortUnreachableException {
     if (aStartPort != null) {
       try {
@@ -152,7 +153,9 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
     // Loop until we find a valid port or hard limit of 100 tries is reached
     while (!vnsPortAvailable) {
       if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_test_vns_port__INFO",
                 new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
       }
@@ -173,6 +176,8 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
     }
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_activating_vns_port__INFO",
               new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
     }
@@ -208,6 +213,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
       if (socket != null) {
         try {
           if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
                     "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_test_local_port__INFO",
@@ -249,6 +255,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_test_local_port__INFO",
                 new Object[] { Thread.currentThread().getName(), String.valueOf(onport) });
       }
@@ -258,6 +265,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
       // to acquire any of the ports in configured range
       if (retryCount > 3) {
         throw new PortUnreachableException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "Unable to aquire any of the ports in configured range:[" + startport + ".."
                         + maxport + "]");
       }
@@ -287,6 +295,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
       if (cmd.equals("shutdown")) {
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_deactivating_vns_port__INFO",
                   new Object[] { Thread.currentThread().getName() });
@@ -308,6 +317,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
 
         try {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                     "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_assign_service_port__FINEST",
@@ -332,6 +342,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
         String publicVNSHost = System.getProperty("PVNS_HOST");
         String publicVNSPort = System.getProperty("PVNS_PORT");
         if (publicVNSHost == null || publicVNSHost.trim().length() == 0 || publicVNSPort == null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 || publicVNSPort.trim().length() == 0) {
           if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING,
@@ -351,6 +362,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
         } catch (NumberFormatException e) {
           if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_unknown_vns_command__WARNING",
                     new Object[] { Thread.currentThread().getName() });
@@ -389,6 +401,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
   public void shutdown() {
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_vns_shutdown__INFO",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -398,6 +411,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
         server.shutdownServing();
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_vns_stopped_serving__INFO",
                   new Object[] { Thread.currentThread().getName() });
@@ -416,6 +430,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
   protected void finalize() throws Throwable {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "*************Finalizing VNS***************");
     }
     try {
@@ -436,6 +451,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
     while (!done) {
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_launching_local_vns__INFO",
@@ -450,6 +466,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
 
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_launching_local_vns_failed__SEVERE",
                   new Object[] { Thread.currentThread().getName(), e.getMessage() });

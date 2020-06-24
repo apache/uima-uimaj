@@ -46,6 +46,7 @@ public class PearPlugin extends AbstractUIPlugin {
    * The constructor.
    */
   public PearPlugin() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     plugin = this;
   }

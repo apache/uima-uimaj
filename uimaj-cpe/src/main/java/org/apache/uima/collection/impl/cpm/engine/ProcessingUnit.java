@@ -189,6 +189,7 @@ public class ProcessingUnit extends Thread {
     mConverter = new CasConverter();
 
     outputQueue = aOutputQueue;
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinestWorkQueue("UIMA_CPM_initialize_pipeline__FINEST", workQueue);
   }
 
@@ -342,6 +343,7 @@ public class ProcessingUnit extends Thread {
    */
   public void setUimaTimer(UimaTimer aTimer) {
     timer = aTimer;
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinest("UIMA_CPM_timer_class__FINEST", timer.getClass().getName());
   }
 
@@ -389,6 +391,8 @@ public class ProcessingUnit extends Thread {
       ProcessingContainer pc = ((ProcessingContainer) processContainers.get(i));
       if (pc.getName().equals(aCasProcessorName)) {
         pc.setStatus(Constants.CAS_PROCESSOR_DISABLED);
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_disabled_cp__FINEST", pc);
       }
     }
@@ -406,6 +410,7 @@ public class ProcessingUnit extends Thread {
     for (int i = 0; i < processContainers.size(); i++) {
       ProcessingContainer pc = ((ProcessingContainer) processContainers.get(i));
       if (pc.getName().equals(aCasProcessorName)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_enabled_cp__FINEST", pc);
         pc.setStatus(Constants.CAS_PROCESSOR_RUNNING);
       }
@@ -422,6 +427,7 @@ public class ProcessingUnit extends Thread {
 
     if (timer != null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         logFinest("UIMA_CPM_use_custom_timer__FINEST", timer.getClass().getName());
       }
       pT = new ProcessTrace_impl(timer, cpm.getPerformanceTuningSettings());
@@ -441,6 +447,7 @@ public class ProcessingUnit extends Thread {
    * @throws Exception -
    */
   private void handleEOFToken() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinest("UIMA_CPM_got_eof_token__FINEST");
     // Add EOF Token back to the work queue so that the next processing thread (if there is one) can
     // terminate. There will be more
@@ -455,6 +462,7 @@ public class ProcessingUnit extends Thread {
 //        }
       }
       if (outputQueue != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_placed_eof_in_queue__FINEST", outputQueue.getName());
       }
 
@@ -504,6 +512,7 @@ public class ProcessingUnit extends Thread {
       while (cpm.isPaused()) {
         threadState = 2016;
         maybeLogFinest("UIMA_CPM_pausing_pp__FINEST");
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
 
         try {
           // Wait until resumed
@@ -529,6 +538,7 @@ public class ProcessingUnit extends Thread {
               new Object[] { Thread.currentThread().getName() });
       return;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinestWorkQueue("UIMA_CPM_start_pp__FINEST", workQueue);
     // Assign initial status to all Cas Processors in the processing pipeline
     for (int i = 0; i < processContainers.size(); i++) {
@@ -548,6 +558,7 @@ public class ProcessingUnit extends Thread {
       // blocks if CPM is in pause state
       isCpmPaused();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       maybeLogFinestWorkQueue("UIMA_CPM_dequeue_artifact__FINEST", workQueue);
       artifact = null;
       Object entity = null;
@@ -565,6 +576,7 @@ public class ProcessingUnit extends Thread {
       }
 
       if (entity == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_queue_empty__FINEST", workQueue.getName());
         continue;
       }
@@ -577,6 +589,7 @@ public class ProcessingUnit extends Thread {
               ChunkMetadata meta = CPMUtils.getChunkMetadata((CAS) artifact[i]);
               if (meta != null) {
                 EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                         processingUnitProcessTrace);
                 enProcSt.addEventStatus("Process", "Failed", new SkipCasException(
                         "Dropping CAS due chunk Timeout. Doc Id::" + meta.getDocId() + " Sequence:"
@@ -614,6 +627,7 @@ public class ProcessingUnit extends Thread {
           break; // Terminate Loop
         }
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_call_processNext__FINEST");
         /* *********** EXECUTE PIPELINE ************ */
         processNext(artifact, pT);
@@ -627,6 +641,7 @@ public class ProcessingUnit extends Thread {
           processingUnitProcessTrace.aggregate(pT);
         }
       } catch (ResourceProcessException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogSevereException(e);
         if (e.getCause() instanceof KillPipelineException) {
           cpm.pipelineKilled(Thread.currentThread().getName());
@@ -637,6 +652,7 @@ public class ProcessingUnit extends Thread {
 
         this.cpm.killIt();
       } catch (Exception e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogSevereException(e);
         threadState = 2003; // Killing
 
@@ -649,6 +665,7 @@ public class ProcessingUnit extends Thread {
 
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinestWorkQueue("UIMA_CPM_exit_pp__FINEST", workQueue);
     // Always clear the cas cache on exit.
     clearCasCache();
@@ -668,6 +685,7 @@ public class ProcessingUnit extends Thread {
       for (int index = 0; index < casCache.length; index++) {
         if (casCache[index] != null) {
           // casCache[index].reset();
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
           maybeLogFinest("UIMA_CPM_release_cas_from_cache__FINEST");
           casPool.releaseCas(casCache[index]);
 //          synchronized (casPool) { // redundant - the above releaseCas call does this
@@ -691,6 +709,7 @@ public class ProcessingUnit extends Thread {
   public boolean consumeQueue() {
     Object artifact = null;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinestWorkQueue("UIMA_CPM_dequeue_artifact__FINEST", workQueue);
     // Dequeue first bundle
     artifact = workQueue.dequeue();
@@ -702,6 +721,7 @@ public class ProcessingUnit extends Thread {
           Object[] oList = (Object[]) artifact;
           // Only consume CASs
           if (oList[0] != null && !(oList[0] instanceof EOFToken)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogFinest("UIMA_CPM_call_processNext__FINEST");
             processNext((Object[]) artifact, pT);
             maybeLogFinest("UIMA_CPM_call_processNext_done__FINEST");
@@ -751,6 +771,7 @@ public class ProcessingUnit extends Thread {
     boolean doneAlready = false;
     // If there are no CASes in the list, return false since there is nothing else to do
     if (aCasObjectList == null || aCasObjectList[0] == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       maybeLogFinest("UIMA_CPM_invalid_cas_reference__SEVERE");
       return false;
     }
@@ -771,6 +792,7 @@ public class ProcessingUnit extends Thread {
     for (int i = 0; processContainers != null && i < processContainers.size(); i++) {
       
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         logFinest("UIMA_CPM_retrieve_container__FINEST", String.valueOf(i));
       }
       container = (ProcessingContainer) processContainers.get(i);
@@ -790,6 +812,7 @@ public class ProcessingUnit extends Thread {
       }
       // Check if any of the Cas'es in the set has a required feature structure.
       if (!isCasObject && !container.processCas(aCasObjectList)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_skip_CAS__FINEST", container);
         container.incrementFilteredCount(aCasObjectList.length);
         container.logAbortedCases(aCasObjectList);
@@ -804,6 +827,7 @@ public class ProcessingUnit extends Thread {
       // Retry Loop.
       do {
         if (System.getProperty("SHOW_MEMORY") != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
           maybeLogMemoryFinest();
         }
 
@@ -834,6 +858,7 @@ public class ProcessingUnit extends Thread {
           break;
         }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_checkedout_cp_from_container__FINEST", container, processor);
         try {
           if (processor instanceof CasDataProcessor) {
@@ -865,6 +890,7 @@ public class ProcessingUnit extends Thread {
             casObjects = aCasObjectList;
             long pStart = System.currentTimeMillis();
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
               logFinest("UIMA_CPM_call_process__FINEST", container, processor);
               logFinest("UIMA_CPM_casObjects_class__FINEST", casObjects.getClass().getName());
             }
@@ -893,6 +919,7 @@ public class ProcessingUnit extends Thread {
             }
             pTrTemp.endEvent(container.getName(), "Process", "success");
           } else if (processor instanceof CasObjectProcessor) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogFinest("UIMA_CPM_casobject_processor__FINEST", container, processor);
             maybeLogMemoryFinest();
             casList = new CAS[aCasObjectList.length];
@@ -912,6 +939,7 @@ public class ProcessingUnit extends Thread {
                   casList[casIndex] = null;
 
                   while (casList[casIndex] == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
                     maybeLogFinest("UIMA_CPM_get_cas_from_pool__FINEST", container);
                      // Retrieve a Cas from Cas Pool. Wait max 10 millis for an instance
                     casList[casIndex] = casPool.getCas(0);
@@ -931,6 +959,7 @@ public class ProcessingUnit extends Thread {
 
                 // Convert CasData to CAS
                 mConverter.casDataToCasContainer((CasData) aCasObjectList[casIndex],
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                         casList[casIndex], true);
               } else {
                 casList[casIndex] = (CAS) aCasObjectList[casIndex];
@@ -963,6 +992,7 @@ public class ProcessingUnit extends Thread {
             // This flag is used to prevent multiple notifications
             doneAlready = true;
             EntityProcessStatus aEntityProcStatus = new EntityProcessStatusImpl(pTrTemp);
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogFinest("UIMA_CPM_notify_listeners__FINEST");
             threadState = 2007;
 
@@ -980,6 +1010,7 @@ public class ProcessingUnit extends Thread {
               cpm.releaseCASes((CAS[]) aCasObjectList);
             }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogFinest("UIMA_CPM_done_releasing_cases__FINEST", container);
           }
 
@@ -997,8 +1028,10 @@ public class ProcessingUnit extends Thread {
           if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
 
             logSevere("UIMA_CPM_pipeline_exception__SEVERE", container.getName(), e.getMessage());
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
 
             maybeLogSevereException(e);
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
 
             logFinest("UIMA_CPM_pipeline_exception__FINEST", 
                 container.getName(), String.valueOf(container.isPaused()));
@@ -1025,6 +1058,7 @@ public class ProcessingUnit extends Thread {
               cpm.invalidateCASes((CAS[]) aCasObjectList);
             }
             retry = false; // Dont retry. The CAS has been released
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogWarning("UIMA_CPM_drop_cas__WARNING", 
                 container.getName(), processor.getClass().getName());
           } else {
@@ -1038,6 +1072,7 @@ public class ProcessingUnit extends Thread {
             threadState = 2010;
 
             maybeLogFinest("UIMA_CPM_container_paused_do_retry__FINEST", container);
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
 
             // Do conditional release of CAS instances. The release occurs only if the CasProcessor
             // is the last one
@@ -1046,6 +1081,7 @@ public class ProcessingUnit extends Thread {
             // pool gets depleted and no more work will be done.
             releaseCases(casList, (i == (processContainers.size() - 1)), container.getName());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogFinest("UIMA_CPM_container_paused__FINEST", container);
             // Release current Cas Processor before continuing with the next Cas Processor in the
             // pipeline
@@ -1070,6 +1106,7 @@ public class ProcessingUnit extends Thread {
             // Pause the container while the CPM is re-connecting to un-managed service
             // that is shared by all processing threads
             container.pause();
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogFinest("UIMA_CPM_pausing_container__FINEST", container);
             threadId = Thread.currentThread().getName();
           }
@@ -1107,6 +1144,7 @@ public class ProcessingUnit extends Thread {
               handleKillPipeline(container);
               processor = null;
             } catch (Exception innerE) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
               maybeLogWarning("UIMA_CPM_exception_on_pipeline_kill__WARNING",
                   container.getName(), innerE.getMessage());
             }
@@ -1120,6 +1158,7 @@ public class ProcessingUnit extends Thread {
             try {
               handleAbortCPM(container, processor);
             } catch (Exception innerE) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
               maybeLogWarning("UIMA_CPM_exception_on_cpm_kill__WARNING", 
                   container.getName(), innerE.getMessage());
             }
@@ -1179,6 +1218,7 @@ public class ProcessingUnit extends Thread {
                   processor = null;
                 } catch (Exception excep) {
                   // Just log the exception. We are killing the pipeline
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
                   maybeLogWarning("UIMA_CPM_exception_on_pipeline_kill__WARNING", 
                       container.getName(), excep.getMessage());
                 }
@@ -1198,6 +1238,7 @@ public class ProcessingUnit extends Thread {
               }
 
               handleSkipCasProcessor(container, aCasObjectList,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       (i == (processContainers.size() - 1)));
             } catch (Exception sEx) {
               throw new ResourceProcessException(sEx);
@@ -1210,6 +1251,7 @@ public class ProcessingUnit extends Thread {
             }
           } catch (Exception ex) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
               logCPM(Level.FINER, "UIMA_CPM_exception__FINER", new Object[] {ex.getMessage()});
               ex.printStackTrace();
             }
@@ -1233,6 +1275,7 @@ public class ProcessingUnit extends Thread {
         // This marker is defined in the <checkpoint> section of the CasProcessor Definition
         // and corresponds to the attribute "batch". If end-of-batch marker is reached the container
         // invokes batchProcessComplete() on the CasProcessor
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_end_of_batch__FINEST", container, processor);
         doEndOfBatchProcessing(container, processor, pTrTemp, aCasObjectList);
         processor = null;
@@ -1277,6 +1320,8 @@ public class ProcessingUnit extends Thread {
   private void postAnalysis(Object[] aCasObjectList, boolean isCasObject, Object[] casObjects,
           ProcessTrace aProcessTr, boolean doneAlready) throws Exception {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       maybeLogFinest("UIMA_CPM_pipeline_completed__FINEST");
       // Notify Listeners that the entity has been processed.
       if (!doneAlready && notifyListeners) {
@@ -1314,6 +1359,7 @@ public class ProcessingUnit extends Thread {
       if (outputQueue == null && casObjects != null && casObjects instanceof CasData[]) {
         if (System.getProperty("DEBUG_RELEASE") != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             logFinest("UIMA_CPM_done_with_cas__FINEST", String.valueOf(Runtime.getRuntime().freeMemory() / 1024));  
           }
         }
@@ -1347,6 +1393,7 @@ public class ProcessingUnit extends Thread {
    *          CASes just analyzed
    */
   private void doEndOfBatchProcessing(ProcessingContainer aContainer, CasProcessor aProcessor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ProcessTrace aProcessTr, Object[] aCasObjectList) {
     String cName = aContainer.getName();
     try {
@@ -1354,6 +1401,7 @@ public class ProcessingUnit extends Thread {
       aContainer.isEndOfBatch(aProcessor, aCasObjectList.length);
       aProcessTr.endEvent(cName, "End of Batch", "success");
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       maybeLogFinest("UIMA_CPM_end_of_batch_completed__FINEST", aContainer);
     } catch (Exception ex) {
       maybeLogSevere("UIMA_CPM_end_of_batch_exception__SEVERE", 
@@ -1382,6 +1430,7 @@ public class ProcessingUnit extends Thread {
   private void handleSkipCasProcessor(ProcessingContainer aContainer, Object[] aCasObjectList,
           boolean isLastCP) throws Exception {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinest("UIMA_CPM_skipping_cas__FINEST", aContainer);
     if (aContainer.isPaused()) {
       aContainer.resume();
@@ -1407,6 +1456,7 @@ public class ProcessingUnit extends Thread {
         } catch (Exception ex2) {
           
           if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             logSevere("UIMA_CPM_exception_releasing_cas__SEVERE", aContainer.getName());
             maybeLogSevereException(ex2);
             throw ex2;
@@ -1432,6 +1482,7 @@ public class ProcessingUnit extends Thread {
    * @throws Exception -
    */
   private void handleServiceException(ProcessingContainer aContainer, CasProcessor aProcessor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ProcessTrace aProcessTr, Exception ex) throws Exception {
     if (aProcessor instanceof NetworkCasProcessorImpl) {
       ((NetworkCasProcessorImpl) aProcessor).collectionProcessComplete(aProcessTr);
@@ -1447,6 +1498,7 @@ public class ProcessingUnit extends Thread {
 
     if (aContainer.isRemote() && aContainer.isSingleFencedService()) {
       if (Thread.currentThread().getName().equals(threadId)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_service_connection_exception__FINEST", aContainer, aProcessor);
         aProcessTr.startEvent(aContainer.getName(), "Process", "");
         // Redeploy the CasProcessor
@@ -1482,6 +1534,7 @@ public class ProcessingUnit extends Thread {
    */
   private void handleAbortCasProcessor(ProcessingContainer aContainer, CasProcessor aProcessor)
           throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinest("UIMA_CPM_disable_due_to_action__FINEST", aContainer); 
     if (aContainer.isPaused()) {
       aContainer.resume();
@@ -1494,6 +1547,7 @@ public class ProcessingUnit extends Thread {
       aProcessor = null;
     }
     maybeLogFinest("UIMA_CPM_disabled_cp__FINEST", aContainer);
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
 
   }
 
@@ -1508,12 +1562,14 @@ public class ProcessingUnit extends Thread {
    *           exception
    */
   private void handleAbortCPM(ProcessingContainer aContainer, CasProcessor aProcessor)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws Exception {
     if (aContainer.isPaused()) {
       aContainer.resume();
     }
     aContainer.setStatus(Constants.CAS_PROCESSOR_KILLED);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogSevere("UIMA_CPM_abort_cpm__SEVERE", aContainer.getName());
     aContainer.releaseCasProcessor(aProcessor);
     // Release Cas'es. Terminating the CPM. Catch any exception that may occur
@@ -1524,6 +1580,7 @@ public class ProcessingUnit extends Thread {
         releaseCAS = true;
         releaseCases(casList, true, aContainer.getName());
       } catch (Exception exc) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogSevere("UIMA_CPM_exception_on_cpm_kill__WARNING", aContainer.getName(), exc.getMessage());
         maybeLogSevereException(exc);
       }
@@ -1547,6 +1604,7 @@ public class ProcessingUnit extends Thread {
       aContainer.resume();
     }
     aContainer.setStatus(Constants.CAS_PROCESSOR_KILLED);
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinest("UIMA_CPM_kill_pipeline__FINEST", aContainer);
     releaseCAS = true;
 
@@ -1574,6 +1632,7 @@ public class ProcessingUnit extends Thread {
    * @return true, if successful
    */
   private boolean pauseContainer(ProcessingContainer aContainer, Exception aException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aThreadId) {
     if (aContainer.isRemote() && aContainer.isSingleFencedService()
             && aException.getCause() instanceof ServiceConnectionException && aThreadId == null) {
@@ -1597,6 +1656,7 @@ public class ProcessingUnit extends Thread {
   // aContainer)
   {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       logFinest("UIMA_CPM_releasing_cases__FINEST", 
           aName, String.valueOf(releaseCAS), String.valueOf(lastProcessor));
     }
@@ -1612,6 +1672,7 @@ public class ProcessingUnit extends Thread {
           casCache = null;
         }
         cpm.releaseCASes((CAS[]) aCasList);
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_done_releasing_cases__FINEST", aName);
       } else {
         maybeLogFinest("UIMA_CPM_casobject_class__FINEST", aName, aCasList.getClass().getName());
@@ -1631,6 +1692,7 @@ public class ProcessingUnit extends Thread {
    *          status object that may contain exceptions and trace
    */
   protected void notifyListeners(Object aCas, boolean isCasObject,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           EntityProcessStatus aEntityProcStatus) {
     if (aCas instanceof Object[]) {
       for (int i = 0; i < ((Object[]) aCas).length; i++) {
@@ -1653,6 +1715,7 @@ public class ProcessingUnit extends Thread {
    *          status object containing exceptions and trace info
    */
   protected void doNotifyListeners(Object aCas, boolean isCasObject,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           EntityProcessStatus aEntityProcStatus) {
     // Notify Listener that the entity has been processed
     Object casObjectCopy = aCas;
@@ -1668,6 +1731,7 @@ public class ProcessingUnit extends Thread {
         }
         // Notify the listener that the Cas has been processed
         ((CasDataStatusCallbackListener) statCL).entityProcessComplete((CasData) casObjectCopy,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 aEntityProcStatus);
       } else if (statCL instanceof StatusCallbackListener) {
         boolean casFromPool = false;
@@ -1685,6 +1749,7 @@ public class ProcessingUnit extends Thread {
           try {
             mConverter.casDataToCasContainer((CasData) casObjectCopy, conversionCas, true);
           } catch (CollectionException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             logWarning("UIMA_CPM_exception_converting_CAS__WARNING");
           }
           casObjectCopy = conversionCas;
@@ -1692,6 +1757,7 @@ public class ProcessingUnit extends Thread {
         // Notify the listener that the Cas has been processed
 //        ((StatusCallbackListener) statCL).entityProcessComplete((CAS) casObjectCopy,
 //                aEntityProcStatus);
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
         CPMEngine.callEntityProcessCompleteWithCAS((StatusCallbackListener) statCL, (CAS) casObjectCopy, aEntityProcStatus);
         if (conversionCas != null) {
           if (casFromPool) {
@@ -1729,6 +1795,7 @@ public class ProcessingUnit extends Thread {
    * 
    */
   public void stopCasProcessors(boolean kill) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinest("UIMA_CPM_stop_containers__FINEST");
    // Stop all running CASProcessors
     for (int i = 0; processContainers != null && i < processContainers.size(); i++) {
@@ -1753,6 +1820,7 @@ public class ProcessingUnit extends Thread {
         }
         
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
           logFinest("UIMA_CPM_container_status__FINEST", 
               container.getName(), String.valueOf(container.getStatus()));
         }
@@ -1763,6 +1831,7 @@ public class ProcessingUnit extends Thread {
 
           if (deployer != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
               logFinest("UIMA_CPM_undeploy_cp_instances__FINEST", container.getName(), deployer.getClass().getName());
             }
             deployer.undeploy();
@@ -1877,6 +1946,7 @@ public class ProcessingUnit extends Thread {
     // This is currently only supported for the CasData instances and provides
     // filtering mechanism
     if (!isCasObject && !aContainer.processCas(aCasObjectList)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       maybeLogFinest("UIMA_CPM_skip_CAS__FINEST", aContainer);
       aContainer.incrementFilteredCount(aCasObjectList.length);
       aContainer.logAbortedCases(aCasObjectList);
@@ -1896,6 +1966,7 @@ public class ProcessingUnit extends Thread {
     synchronized (aContainer) {
       // Check to see if the CasProcessor is available for processing
       if (!isProcessorReady(aContainer.getStatus())) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_container_not_ready__FINEST", aContainer);
         // Skip any CasProcessor that is not ready to process. Cas Processors may be disabled during
         // processing
@@ -1923,6 +1994,8 @@ public class ProcessingUnit extends Thread {
   // AbortCPMException
   {
     long t1 = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinest("UIMA_CPM_start_analysis__FINEST");
     // String lastDocId = "";
     CasProcessor processor = null;
@@ -1941,6 +2014,8 @@ public class ProcessingUnit extends Thread {
     boolean isCasObject = aCasObjectList[0] instanceof CAS;
     // String docid = "";
     maybeLogFinest("UIMA_CPM_entering_pipeline__FINEST");
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
 
     ProcessingContainer container = null;
     String containerName = "";
@@ -1950,6 +2025,7 @@ public class ProcessingUnit extends Thread {
     // Send Cas Object through the processing pipeline.
     for (int i = 0; processContainers != null && i < processContainers.size(); i++) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         logFinest("UIMA_CPM_retrieve_container__FINEST", String.valueOf(i));
       }
       // Retrieve the container. Container manages one or more instances of CAS Processor
@@ -1973,6 +2049,7 @@ public class ProcessingUnit extends Thread {
 
         try {
           if (System.getProperty("SHOW_MEMORY") != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogMemoryFinest();
           }
 
@@ -1984,6 +2061,7 @@ public class ProcessingUnit extends Thread {
           timer01 += (System.currentTimeMillis() - t1);
           timer06 = ((ProcessingContainer_Impl) container).getFetchTime();
           if (processor == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogSevere("UIMA_CPM_checkout_null_cp_from_container__SEVERE", containerName);
             throw new ResourceProcessException(CpmLocalizedMessage.getLocalizedMessage(
                     CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -1995,6 +2073,8 @@ public class ProcessingUnit extends Thread {
           // defined
           // in the CPE descriptor.
           if (!isProcessorReady(container.getStatus())) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogFinest("UIMA_CPM_container_not_ready__FINEST", container);
             if (container.getStatus() == Constants.CAS_PROCESSOR_KILLED) {
               container.releaseCasProcessor(processor);
@@ -2008,6 +2088,7 @@ public class ProcessingUnit extends Thread {
             break;
           }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
           maybeLogFinest("UIMA_CPM_checkedout_cp_from_container__FINEST", container, processor);
           t1 = System.currentTimeMillis();
           // ************************* P E R F O R M A N A L Y S I S *************************
@@ -2020,6 +2101,7 @@ public class ProcessingUnit extends Thread {
             isCasObject = true;
           }
           timer02 += (System.currentTimeMillis() - t1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
           maybeLogFinest("UIMA_CPM_analysis_successfull__FINEST", container, processor);
           retry = false;
           // On successfull processing reset the restart counter. Restart counter determines how
@@ -2037,6 +2119,7 @@ public class ProcessingUnit extends Thread {
           }
         } finally {
           if (retry == false) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogFinest("UIMA_CPM_end_of_batch__FINEST", container, processor);
             if (isProcessorReady(container.getStatus())) {
               t1 = System.currentTimeMillis();
@@ -2056,6 +2139,7 @@ public class ProcessingUnit extends Thread {
           // Release current Cas Processor before continuing with the next Cas Processor in the
           // pipeline
           if (processor != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
             maybeLogFinest("UIMA_CPM_release_cp__FINEST", container, processor, casCache);
             t1 = System.currentTimeMillis();
             doReleaseCasProcessor(container, processor);
@@ -2101,6 +2185,7 @@ public class ProcessingUnit extends Thread {
     String containerName = aContainer.getName();
     try {
       aContainer.isEndOfBatch(aProcessor, howManyCases);
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       maybeLogFinest("UIMA_CPM_end_of_batch_completed__FINEST", aContainer);
     } catch (Exception ex) {
         maybeLogSevere("UIMA_CPM_end_of_batch_exception__SEVERE", containerName, ex.getMessage());
@@ -2132,6 +2217,7 @@ public class ProcessingUnit extends Thread {
 
     String containerName = aContainer.getName();
     e.printStackTrace();
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogSevereException(e);
     maybeLogSevere("UIMA_CPM_handle_exception__SEVERE", 
         containerName, aProcessor.getClass().getName(), e.getMessage());
@@ -2152,6 +2238,7 @@ public class ProcessingUnit extends Thread {
       if (casCache != null) {
         clearCasCache();
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       logWarning("UIMA_CPM_drop_cas__WARNING", containerName, aProcessor.getClass().getName());
       // Release CASes and notify listeners
       cpm.invalidateCASes((CAS[]) aCasObjectList);
@@ -2164,6 +2251,7 @@ public class ProcessingUnit extends Thread {
     if (aProcessor instanceof CasObjectNetworkCasProcessorImpl && aContainer.isPaused()) {
       threadState = 2010;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       maybeLogFinest("UIMA_CPM_container_paused_do_retry__FINEST", aContainer);
       return true; // retry
     }
@@ -2193,6 +2281,7 @@ public class ProcessingUnit extends Thread {
         aContainer.resume();
       }
       aContainer.setStatus(Constants.CAS_PROCESSOR_KILLED);
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       maybeLogFinest("UIMA_CPM_EXP_configured_to_abort__WARNING", aProcessor);
       throw new AbortCPMException(CpmLocalizedMessage.getLocalizedMessage(
               CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_configured_to_abort__WARNING",
@@ -2232,6 +2321,7 @@ public class ProcessingUnit extends Thread {
         throw new ResourceProcessException(sEx);
       }
     } catch (Exception ex) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       maybeLogSevereException(ex);
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         // done as 2 messages because there is no method supporting 
@@ -2262,6 +2352,7 @@ public class ProcessingUnit extends Thread {
    */
   private void invokeCasObjectCasProcessor(ProcessingContainer container, CasProcessor processor,
           Object[] aCasObjectList, ProcessTrace pTrTemp, boolean isCasObject) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogMemoryFinest();
     maybeLogFinest("UIMA_CPM_invoke_cp_process__FINEST", container, processor);
     casList = new CAS[aCasObjectList.length];
@@ -2286,6 +2377,8 @@ public class ProcessingUnit extends Thread {
         casList[casIndex] = (CAS) aCasObjectList[casIndex];
       }
       if (processor instanceof AnalysisEngine) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
         maybeLogFinest("UIMA_CPM_call_process__FINEST", container, processor);
         threadState = 2005;
 
@@ -2313,6 +2406,7 @@ public class ProcessingUnit extends Thread {
    * @throws Exception -
    */
   private void convertCasDataToCasObject(int casIndex, String aContainerName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aCasObjectList) throws Exception {
     // The following may be true if the CollectionReader is CasData based and this is the first
     // CasObject based annotator in the chain.
@@ -2322,6 +2416,7 @@ public class ProcessingUnit extends Thread {
 
       while (casList[casIndex] == null) {
         maybeLogFinest("UIMA_CPM_get_cas_from_pool__FINEST", aContainerName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
 
         // Retrieve a Cas from Cas Pool. Wait max 10 millis for an instance
         casList[casIndex] = casPool.getCas(0);
@@ -2355,6 +2450,7 @@ public class ProcessingUnit extends Thread {
   private void invokeCasDataCasProcessor(ProcessingContainer container, CasProcessor processor,
           Object[] aCasObjectList, ProcessTrace pTrTemp, boolean isCasObject, boolean retry)
           throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     maybeLogFinest("UIMA_CPM_cas_data_processor__FINEST", container, processor);
     pTrTemp.startEvent(container.getName(), "Process", "");
     // Check if the CasObject to CasData conversion is necessary
@@ -2383,6 +2479,7 @@ public class ProcessingUnit extends Thread {
     Object[] casObjects = aCasObjectList;
     long pStart = System.currentTimeMillis();
     if (!(casObjects instanceof CasData[])) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
       maybeLogFinest("UIMA_CPM_expected_casdata__FINEST", casObjects.getClass().getName());
     }
     maybeLogFinest("UIMA_CPM_call_process__FINEST", container, processor);
@@ -2423,6 +2520,7 @@ public class ProcessingUnit extends Thread {
    * @param args the args
    */
   private void logCPM(Level level, String msgBundleId, Object[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     if (null == args) {
       args = zeroLengthObjectArray;
     }

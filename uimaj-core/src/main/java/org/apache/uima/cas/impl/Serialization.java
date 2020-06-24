@@ -92,6 +92,7 @@ public class Serialization {
     CASMgrSerializer ser = new CASMgrSerializer();
     ser.addTypeSystem((TypeSystemImpl) casMgr.getCAS().getTypeSystem());
     ser.addIndexRepository((FSIndexRepositoryImpl) ((CASImpl) casMgr.getCAS())
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getBaseIndexRepository());
     return ser;
   }
@@ -104,6 +105,7 @@ public class Serialization {
    * @return a serializable object version of these
    */
   public static CASMgrSerializer serializeCASMgrTypeSystemOnly(CASMgr casMgr) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     CASMgrSerializer ser = new CASMgrSerializer();
     ser.addTypeSystem((TypeSystemImpl) casMgr.getCAS().getTypeSystem());
     return ser;
@@ -126,6 +128,7 @@ public class Serialization {
    * @param casMgr the CAS to receive the data
    */
   public static void deserializeCASComplete(CASCompleteSerializer casCompSer, CASMgr casMgr) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     ((CASImpl) casMgr).getBinaryCasSerDes().reinit(casCompSer);
   }
 
@@ -151,7 +154,9 @@ public class Serialization {
    * @return the initialized CAS loaded with the deserialized data
    */
   public static CAS createCAS(CASMgr casMgr, CASSerializer casSer) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     ((CASImpl) casMgr).getBinaryCasSerDes().reinit(casSer);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     return ((CASImpl) casMgr).getCurrentView();
   }
 
@@ -184,6 +189,7 @@ public class Serialization {
    * @return The form of the serialized CAS (from its header)
    */
   public static SerialFormat deserializeCAS(CAS cas, InputStream istream) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return ((CASImpl) cas).getBinaryCasSerDes().reinit(istream);
   }
 
@@ -196,6 +202,7 @@ public class Serialization {
    * @param mark the cas mark (for delta CASes)
    */
   public static void serializeCAS(CAS cas, OutputStream ostream, Marker mark) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1569
   	if (!mark.isValid() ) {
   	  throw new CASRuntimeException(CASRuntimeException.INVALID_MARKER);
   	}
@@ -214,6 +221,7 @@ public class Serialization {
    * @throws IOException if IO exception
    */
   public static void serializeWithCompression(CAS cas, Object out) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2874
     (new BinaryCasSerDes4(((CASImpl)cas).getTypeSystemImpl(), false)).serialize(cas, out);
   }
   
@@ -243,6 +251,7 @@ public class Serialization {
    * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
    */  
   public static ReuseInfo serializeWithCompression(CAS cas, Object out, boolean includeTS, boolean includeTSI) throws IOException, ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas, null, includeTS, includeTSI);
     bcs.serialize(out);
     return bcs.getReuseInfo();

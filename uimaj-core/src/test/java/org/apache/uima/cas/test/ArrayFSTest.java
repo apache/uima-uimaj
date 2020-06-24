@@ -42,11 +42,14 @@ public class ArrayFSTest extends TestCase {
    * @param arg0
    */
   public ArrayFSTest(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
     super(arg0);
   }
 
   public void setUp() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
     } catch (Exception e) {
@@ -75,6 +78,7 @@ public class ArrayFSTest extends TestCase {
     }
     assertTrue(exceptionCaught);
     ArrayFS array = this.cas.createArrayFS(0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-301
     assertTrue(array.size() == 0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
@@ -93,6 +97,7 @@ public class ArrayFSTest extends TestCase {
       array.set(0, fs1);
       array.set(1, fs2);
       array.set(2, fs3);
+//IC see: https://issues.apache.org/jira/browse/UIMA-301
       String[] stringArray = array.toStringArray();
       assertTrue(stringArray.length == 3);
       for (int i = 0; i < array.size(); i++) {
@@ -200,6 +205,7 @@ public class ArrayFSTest extends TestCase {
   }
   
   public void testArraysOfArrays() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annotationType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     AnnotationFS annot = this.cas.createAnnotation(annotationType, 0, 5);
     IntArrayFS intArray = this.cas.createIntArrayFS(3);

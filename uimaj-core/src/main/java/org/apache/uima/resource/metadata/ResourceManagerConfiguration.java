@@ -292,5 +292,6 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    */
   public void resolveImports(Collection<String> aAlreadyImportedURLs, ResourceManager aResourceManager)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 }

@@ -54,6 +54,7 @@ public class Attribute_impl extends MetaDataObject_impl implements Attribute {
    * @see org.apache.uima.search.Attribute#setName(java.lang.String)
    */
   public void setName(String aName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mName = aName;
   }
 
@@ -94,6 +95,7 @@ public class Attribute_impl extends MetaDataObject_impl implements Attribute {
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     setName(aElement.getAttribute("name"));
     setValue(aElement.getAttribute("value"));
@@ -112,6 +114,7 @@ public class Attribute_impl extends MetaDataObject_impl implements Attribute {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("attribute",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] {
           // name and value are attributes, not elements
           });

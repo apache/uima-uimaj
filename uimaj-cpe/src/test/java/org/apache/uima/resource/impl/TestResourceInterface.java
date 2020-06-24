@@ -20,5 +20,6 @@
 package org.apache.uima.resource.impl;
 
 public interface TestResourceInterface {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   String readString();
 }

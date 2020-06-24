@@ -32,6 +32,7 @@ import org.apache.uima.jcas.cas.TOP;
  * Implements a filtered iterator.
  */
 class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T> {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
 
   // The base iterator.
   private LowLevelIterator<T> it;
@@ -47,8 +48,10 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   /**
    * Create a filtered iterator from a base iterator and a constraint.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
   FilteredIterator(FSIterator<T> it, FSMatchConstraint cons) {
     this();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     this.it = (LowLevelIterator<T>) it;
     this.cons = cons;
     moveToFirst();
@@ -71,6 +74,9 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   
   private void adjustForConstraintBackward() {
     // If the iterator is valid, but doesn't match the constraint, advance.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4392
+//IC see: https://issues.apache.org/jira/browse/UIMA-4391
+//IC see: https://issues.apache.org/jira/browse/UIMA-4393
     while (this.it.isValid() && !this.cons.match(this.it.get())) {
       this.it.moveToPrevious();
     }    
@@ -78,6 +84,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   
 
   public void moveToFirstNoReinit() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     this.it.moveToFirstNoReinit();
     adjustForConstraintForward();
   }
@@ -88,16 +95,19 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   }
 
   public void moveToNextNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     this.it.moveToNextNvc();
     adjustForConstraintForward();
   }
 
   public void moveToPreviousNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     this.it.moveToPreviousNvc();
     adjustForConstraintBackward();
   }
 
   public T getNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return this.it.getNvc();
   }
   
@@ -105,6 +115,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
    * @see org.apache.uima.cas.FSIterator#copy()
    */
   public FilteredIterator<T> copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new FilteredIterator<>(this.it.copy(), this.cons);
   }
 
@@ -112,6 +123,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
    * @see org.apache.uima.cas.FSIterator#moveTo(FeatureStructure)
    */
   public void moveToNoReinit(FeatureStructure fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     this.it.moveToNoReinit(fs);
     adjustForConstraintForward();
   }
@@ -125,6 +137,9 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
 
   @Override
   public int ll_indexSizeMaybeNotCurrent() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5833
+//IC see: https://issues.apache.org/jira/browse/UIMA-5835
+//IC see: https://issues.apache.org/jira/browse/UIMA-5834
     return it.ll_indexSizeMaybeNotCurrent();
   }
 

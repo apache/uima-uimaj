@@ -192,6 +192,7 @@ public interface List_of_ints extends Iterable<Integer> {
 
       @Override
       public OfInt iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
         return new OfInt() {
           @Override
           public boolean hasNext() {return false;}
@@ -323,6 +324,7 @@ public interface List_of_ints extends Iterable<Integer> {
 
       @Override
       public OfInt iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
         return new OfInt () {
           int pos = 0;
           @Override
@@ -340,6 +342,7 @@ public interface List_of_ints extends Iterable<Integer> {
 
           @Override
           public int nextInt() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
             if (!hasNext()) {
               throw new NoSuchElementException();
             }
@@ -366,6 +369,8 @@ public interface List_of_ints extends Iterable<Integer> {
 
           @Override
           public boolean hasPrevious() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
             return pos > 0 && pos < size(); 
           }
 

@@ -118,6 +118,7 @@ public class FileSelector extends JPanel implements FocusListener {
    */
   public FileSelector(String initialValue, String fileChooserTitle, int selectionMode, File currentDir, 
           FileFilter filter) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (currentDir == null && initialValue != null) {
       currentDir = new File(initialValue).getAbsoluteFile();
     }
@@ -245,6 +246,7 @@ public class FileSelector extends JPanel implements FocusListener {
    */
   public void setSelected(String s) {
     field.setText(s);
+//IC see: https://issues.apache.org/jira/browse/UIMA-245
     previousValue = s;
     if (s == null || s.length() == 0) {
       s = System.getProperty("user.dir");

@@ -80,12 +80,15 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    *   this (containing, outer) class.  So it seems the method could just be used directly,
    *   and putting it into an inner class is silly.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
   final private ComponentInfo mComponentInfo = new ComponentInfoImpl();
   
   /**
    * Fully-qualified name of this context.
    */
   final protected String mQualifiedContextName;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
 
   /**
    * Mapping between sofa names assigned by an aggregate engine to sofa names assigned by the
@@ -168,9 +171,13 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * Object that implements management interface to the AE.
    */
   final protected AnalysisEngineManagementImpl mMBean = new AnalysisEngineManagementImpl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
   final private String uniqueIdentifier;
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
   final private String mdcUniqueId;
   
   /**
@@ -191,8 +198,10 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public UimaContext_ImplBase() { 
     mQualifiedContextName = "/";  // This constructor for root call only
     uniqueIdentifier = constructUniqueName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
     mdcUniqueId = String.valueOf(MDC_NEXT_ID.getAndIncrement());
     mSofaMappings = new TreeMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
   }
   
@@ -204,6 +213,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public UimaContext_ImplBase(String contextName, Map<String, String> sofaMappings) {
     mQualifiedContextName = contextName;
     uniqueIdentifier = constructUniqueName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
     mdcUniqueId = "invalid";  // never referenced
     mSofaMappings = sofaMappings;
   }
@@ -211,6 +221,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   private String constructUniqueName() {
     //  Generate unique name for this component
     // this method generates less garbage than replaceAll, etc.
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
     String u = new UID().toString();
     StringBuilder sb = new StringBuilder(u.length());
     sb.append(u);    
@@ -222,6 +233,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
         sb.setCharAt(i, '_');
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     return sb.toString();
   }
   /* Returns a unique name of this component
@@ -243,6 +256,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
 
     // create child context with the absolute mappings
     ChildUimaContext_impl child = new ChildUimaContext_impl(this, aContextName, combineSofaMappings(aSofaMappings));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4769
 
     // build a tree of MBeans that parallels the tree of UimaContexts
     mMBean.addComponent(aContextName, child.mMBean);
@@ -263,10 +277,12 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     // produce the absolute mapping and pass that into the child context's constructor.
 
     // child context's mappings are originally equivalent to this context's mappings
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, String> childSofaMap = new TreeMap<>();
     childSofaMap.putAll(mSofaMappings);
     if (aSofaMappings != null) {
       // iterate through remappings list (aSofaMappings) and apply them
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Iterator<Map.Entry<String, String>> it = aSofaMappings.entrySet().iterator();
       while (it.hasNext()) {
         Map.Entry<String, String> entry = it.next();
@@ -279,6 +295,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
         childSofaMap.put(childSofaName, absoluteSofaName);
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4769
     return childSofaMap;
   }
   /**
@@ -296,6 +313,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   @Override
   public Object getConfigParameterValue(String aGroupName, String aParamName) {
     return getConfigurationManager().getConfigParameterValue(makeQualifiedName(aParamName),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             aGroupName);
   }
 
@@ -357,6 +376,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
   
   private URI getResourceURIfromURL(URL resourceUrl) throws ResourceAccessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
     if (resourceUrl != null) {
       try {
         return UriUtils.quote(resourceUrl);
@@ -438,8 +459,11 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public InputStream getResourceAsStream(String aKey, String[] aParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceAccessException {
     InputStream result = getResourceManager().getResourceAsStream(makeQualifiedName(aKey), aParams);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (result != null) {
       return result;
     } else {
@@ -452,6 +476,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       }
       if (unmanagedResourceUrl != null) {
         UIMAFramework.getLogger().logrb(Level.WARNING, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "getResourceAsStream", LOG_RESOURCE_BUNDLE, "UIMA_unmanaged_resource__WARNING",
                 new Object[] { aKey });
         try {
@@ -480,6 +506,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   @Override
   public URL getResourceURL(String aKey, String[] aParams) throws ResourceAccessException {
     URL result = getResourceManager().getResourceURL(makeQualifiedName(aKey), aParams);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (result != null) {
       return result;
     } else {
@@ -492,6 +519,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       }
       if (unmanagedResourceUrl != null) {
         UIMAFramework.getLogger().logrb(Level.WARNING, this.getClass().getName(), "getResourceURL",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 LOG_RESOURCE_BUNDLE, "UIMA_unmanaged_resource__WARNING", new Object[] { aKey });
         return unmanagedResourceUrl;
       }
@@ -551,10 +580,13 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   @Override
   public String[] getConfigurationGroupNames() {
     ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             getQualifiedContextName()).getConfigurationGroups();
     if (groups == null) {
       return Constants.EMPTY_STRING_ARRAY;
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Set<String> names = new TreeSet<>();
       for (int i = 0; i < groups.length; i++) {
         names.addAll(Arrays.asList(groups[i].getNames()));
@@ -573,6 +605,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   @Override
   public String[] getConfigParameterNames() {
     ConfigurationParameter[] params = getConfigurationManager().getConfigParameterDeclarations(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             getQualifiedContextName()).getConfigurationParameters();
     if (params == null) {
       return Constants.EMPTY_STRING_ARRAY;
@@ -593,10 +627,12 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   @Override
   public String[] getConfigParameterNames(String aGroup) {
     ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             getQualifiedContextName()).getConfigurationGroupDeclarations(aGroup);
     if (groups.length == 0) {
       return Constants.EMPTY_STRING_ARRAY;
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<String> names = new ArrayList<>();
       ConfigurationParameter[] commonParams = getConfigurationManager()
               .getConfigParameterDeclarations(getQualifiedContextName()).getCommonParameters();
@@ -624,6 +660,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public Settings getExternalOverrides() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     return getRootContext().getExternalOverrides();
   }
 
@@ -634,6 +672,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public void setExternalOverrides(Settings externalOverrides) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     getRootContext().setExternalOverrides(externalOverrides);
   }
 
@@ -648,6 +688,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     int index = aSofaName.indexOf(".");
     String nameToMap = aSofaName;
     String absoluteSofaName = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (index < 0) {
       absoluteSofaName = mSofaMappings.get(nameToMap);
       if (absoluteSofaName == null)
@@ -675,6 +716,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public String mapSofaIDToComponentSofaName(String aSofaID) {
     String componentSofaName = aSofaID;
     SofaID[] sofaArr = getSofaMappings();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     for (int i = 0; i < sofaArr.length; i++) {
       if (aSofaID.equals(sofaArr[i].getSofaID()))
         return sofaArr[i].getComponentSofaName();
@@ -689,6 +731,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public SofaID[] getSofaMappings() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1509
     Set<Map.Entry<String, String>> sofamap = mSofaMappings.entrySet();
     Iterator<Map.Entry<String, String>> iter = sofamap.iterator();
     SofaID[] sofaArr = new SofaID_impl[sofamap.size()];
@@ -709,11 +752,13 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   @Override
   public Map<String, String> getSofaMap() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-213
     return Collections.unmodifiableMap(mSofaMappings);
   }
 
   @Override
   public void defineCasPool(int aSize, Properties aPerformanceTuningSettings, boolean aSofaAware)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     mCasPoolSize = aSize;
     mPerformanceTuningSettings = aPerformanceTuningSettings;
@@ -735,6 +780,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     else if (aCAS instanceof CASImpl) {
       baseCas = ((CASImpl)aCAS).getBaseCAS();
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3662
     mOutstandingCASes.remove(baseCas); // mOutstandingCASes is thread-safe (Concurrent hash map)
   }
 
@@ -752,6 +798,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
           // define CAS Pool in the CasManager
           try {
             getResourceManager().getCasManager().defineCasPool(this, mCasPoolSize,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     mPerformanceTuningSettings);
           } catch (ResourceInitializationException e) {
             throw new UIMARuntimeException(e);
@@ -819,6 +866,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
   
   protected Logger maybeThrottleLogger(Logger logger) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
     final int limit = ((UimaContext_ImplBase)getRootContext()).loggingThrottleLimit; 
     if (limit == Integer.MAX_VALUE ||
         !logger.isAnnotatorLogger()) {
@@ -864,10 +912,12 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
   
   public void setLoggingThrottleLimit(Integer v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
     loggingThrottleLimit = v;
   }
 
   public String getMdcId() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
     return mdcUniqueId;
   }
 }

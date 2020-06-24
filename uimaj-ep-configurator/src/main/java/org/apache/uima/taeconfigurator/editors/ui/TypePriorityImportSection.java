@@ -44,7 +44,9 @@ public class TypePriorityImportSection extends ImportSection {
    * @param parent the parent
    */
   public TypePriorityImportSection(MultiPageEditor editor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, parent, "Type Priority Imports",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The following type priority imports are included as part of the type priorities:");
   }
 
@@ -70,6 +72,7 @@ public class TypePriorityImportSection extends ImportSection {
   @Override
   protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
     TypePriorities parsedImportItem = UIMAFramework.getXMLParser().parseTypePriorities(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new XMLInputSource(source));
     return parsedImportItem.getDescription();
   }
@@ -104,6 +107,7 @@ public class TypePriorityImportSection extends ImportSection {
   // indexes are checked and merged when the CAS is built
   @Override
   protected boolean isValidImport(String title, String message) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     CAS savedCAS = editor.getCurrentView();
     TypePriorities savedTP = editor.getMergedTypePriorities();
     if (null != savedTP)

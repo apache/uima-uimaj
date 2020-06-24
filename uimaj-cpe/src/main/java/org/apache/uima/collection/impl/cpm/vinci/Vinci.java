@@ -55,6 +55,7 @@ public class Vinci {
      */
     @Override
     public Transportable makeTransportable() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       return new AFrame();
     }
   }
@@ -108,6 +109,7 @@ public class Vinci {
    * @throws Exception the exception
    */
   public static AFrame replyWithAnalysis(VinciClient conn, VinciFrame requestFrame)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws Exception {
     AFFactory af = new AFFactory();
     return (AFrame) conn.sendAndReceive(requestFrame, af);
@@ -148,6 +150,7 @@ public class Vinci {
     String frameAsString = frame.toXML();
     if (frameAsString.indexOf("KEYS") > -1 && frameAsString.indexOf("</KEYS>") > -1) {
       keys = frameAsString.substring(frameAsString.indexOf("KEYS") + 5, frameAsString
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .indexOf("</KEYS>"));
     }
     return keys;
@@ -189,6 +192,7 @@ public class Vinci {
       FeatureStructure fs = (FeatureStructure) it.next();
       if (org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG.equals(fs.getType())) {
         return ((PrimitiveValue) fs
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getFeatureValue(org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG_VALUE))
                 .toString();
       }

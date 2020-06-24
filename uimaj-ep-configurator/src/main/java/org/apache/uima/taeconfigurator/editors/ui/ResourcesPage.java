@@ -45,6 +45,7 @@ public class ResourcesPage extends HeaderPageWithSash {
    * @param editor the editor
    */
   public ResourcesPage(MultiPageEditor editor) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, "Resource Definitions and Bindings");
   }
 
@@ -69,6 +70,7 @@ public class ResourcesPage extends HeaderPageWithSash {
     managedForm.addPart(extnlResBindSection = new ExtnlResBindSection(editor, form2panel.left));
     managedForm.addPart(resBindImportSection = new ImportResBindSection(editor, form2panel.left));
     managedForm.addPart(resourceDependencySection = new ResourceDependencySection(editor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             form2panel.right));
     createToolBarActions(managedForm);
   }

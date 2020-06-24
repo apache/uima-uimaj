@@ -91,6 +91,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
     mDocBuf.append(docText);
 
     // copy specified annotation types
+//IC see: https://issues.apache.org/jira/browse/UIMA-215
     CasCopier copier = new CasCopier(aJCas.getCas(), mMergedCas.getCas());
     Set copiedIndexedFs = new HashSet(); // needed in case one annotation is in two indexes (could
     // happen if specified annotation types overlap)
@@ -115,6 +116,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
     // and whether the incoming CAS is the last segment
     FSIterator it = aJCas.getAnnotationIndex(SourceDocumentInformation.type).iterator();
     if (!it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-283
       throw new AnalysisEngineProcessException(MESSAGE_DIGEST, MISSING_SOURCE_DOCUMENT_INFO,
               new Object[0]);
     }
@@ -152,8 +154,10 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
     if (!mReadyToOutput) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-283
       throw new AnalysisEngineProcessException(MESSAGE_DIGEST, NO_NEXT_CAS, new Object[0]);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-10
     JCas casToReturn = mMergedCas;
     mMergedCas = null;
     mReadyToOutput = false;

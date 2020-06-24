@@ -46,6 +46,7 @@ public class UimaAcronymAnnotator extends JCasAnnotator_ImplBase {
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // get a reference to the String Map Resource
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       mMap = (StringMapResource) getContext().getResourceObject("AcronymTable");
     } catch (ResourceAccessException e) {

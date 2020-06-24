@@ -89,6 +89,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  *   for 3 other boundings:
  *     - use subiterator, pass in strict and skipeq
  *     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
    finish this javadoc comment edit
  *   T extends FeatureStructure, not TOP, because of ref from FSIndex 
  *      which uses FeatureStructure for backwards compatibility                  
@@ -141,12 +142,15 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    ************************************************/
   public SelectFSs_impl(CAS cas) {
     this.view = (CASImpl) cas.getLowLevelCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     this.jcas = (JCasImpl) view.getJCas();
   }
   
   public SelectFSs_impl(FSArray source) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     this(source._casView);
     isAltSource = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     sourceFSArray = source._getTheArray();
   }
   
@@ -173,10 +177,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   public SelectFSs_impl<T> index(String indexName) {
     this.index = view.indexRepository.getIndex(indexName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     return this;
   }
   
   public SelectFSs_impl<T> index(FSIndex<T> aIndex) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     this.index =  (LowLevelIndex<T>) aIndex;
     return this;
   }
@@ -252,6 +258,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> skipWhenSameBeginEndType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     this.isSkipSameBeginEndType = true;
     return this;
   }
@@ -261,6 +268,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> useAnnotationEquals(boolean useAnnotationEquals) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     this.isSkipSameBeginEndType = useAnnotationEquals;
     return this;
   }
@@ -282,6 +290,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   @Override
   public SelectFSs_impl<T> includeAnnotationsWithEndBeyondBounds() { // AI known as "not strict"
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     isIncludeAnnotBeyondBounds = true;
     return this;
   }  
@@ -315,6 +324,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   @Override
   public SelectFSs_impl<T> nullOK() { // applies to get() and single()
+//IC see: https://issues.apache.org/jira/browse/UIMA-5845
    this.isNullOK = true;
    return this;
   }  
@@ -359,12 +369,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   @Override
   public SelectFSs_impl<T> shifted(int shiftAmount) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     this.shift = shiftAmount;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> startAt(FeatureStructure fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6159
     this.startingFs = (TOP) fs;
     return this;
   }
@@ -384,6 +396,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
   @Override
   public SelectFSs_impl<T> startAt(int begin) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6160
     this.isTypePriority = false;
     this.startingFs = makePosAnnot(begin, Integer.MAX_VALUE);
     return this;
@@ -403,12 +416,15 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   } 
   @Override
   public SelectFSs_impl<T> startAt(FeatureStructure fs, int offset) {  // Ordered
+//IC see: https://issues.apache.org/jira/browse/UIMA-6159
     this.startingFs = (TOP)fs;
     this.shift = offset;
     return this;
   } 
   @Override
   public SelectFSs_impl<T> startAt(int begin, int end, int offset) {  // AI
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     this.startingFs = makePosAnnot(begin, end);
     this.shift = offset;
     return this;
@@ -416,9 +432,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   @Override
   public SelectFSs_impl<T> limit(int alimit) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5830
+//IC see: https://issues.apache.org/jira/browse/UIMA-5829
+//IC see: https://issues.apache.org/jira/browse/UIMA-5828
+//IC see: https://issues.apache.org/jira/browse/UIMA-5826
     if (alimit < 0) {
       throw new IllegalArgumentException("limit argument must be >= 0, but was " + alimit);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     this.limit = alimit;
     return this;
   }
@@ -458,6 +479,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
   @Override
   public SelectFSs_impl<T> between(AnnotationFS fs1, AnnotationFS fs2) {   // AI
+//IC see: https://issues.apache.org/jira/browse/UIMA-5830
+//IC see: https://issues.apache.org/jira/browse/UIMA-5829
+//IC see: https://issues.apache.org/jira/browse/UIMA-5828
+//IC see: https://issues.apache.org/jira/browse/UIMA-5826
     final boolean reverse = fs1.getEnd() > fs2.getBegin(); 
     int begin = (reverse ? fs2 : fs1).getEnd();
     int end   = (reverse ? fs1 : fs2).getBegin();
@@ -465,10 +490,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     if (begin > end) {
       isEmptyBoundingFs = true;
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
       this.boundingFs = makePosAnnot(begin, end);
     }
     this.boundsUse = BoundsUse.coveredBy;
 //    this.isIncludeAnnotWithEndBeyondBounds = true; // default    
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return this;
   }
   
@@ -487,6 +514,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> at(int begin, int end) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return at(makePosAnnot(begin, end));
   }
 
@@ -510,10 +538,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
   
   private void prepareTerminalOp() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     if (boundsUse == null) {
       boundsUse = BoundsUse.notBounded;
     } 
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     maybeValidateAltSource();
     
     final boolean isUseAnnotationIndex = 
@@ -521,7 +551,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         isNonOverlapping ||
 //        isPositionUsesType ||  REMOVED see https://issues.apache.org/jira/browse/UIMA-5536
         isTypePriority ||
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
         isIncludeAnnotBeyondBounds || 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
         boundsUse != BoundsUse.notBounded ||
         isFollowing || isPreceding;
     
@@ -539,6 +571,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       }
     } else {
       // type is specified
+//IC see: https://issues.apache.org/jira/browse/UIMA-5830
+//IC see: https://issues.apache.org/jira/browse/UIMA-5829
+//IC see: https://issues.apache.org/jira/browse/UIMA-5828
+//IC see: https://issues.apache.org/jira/browse/UIMA-5826
       if (index != null) {
         if (((TypeImpl)index.getType()).subsumes(ti)) {
           index = ((LowLevelIndex)index).getSubIndex(ti);
@@ -558,12 +594,17 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       ti = view.getTypeSystemImpl().getTopType();
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     if (boundsUse == BoundsUse.covering) {
       isIncludeAnnotBeyondBounds = true;  
     }
     
     // force ordering 
     boolean orderingNeeded = 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5830
+//IC see: https://issues.apache.org/jira/browse/UIMA-5829
+//IC see: https://issues.apache.org/jira/browse/UIMA-5828
+//IC see: https://issues.apache.org/jira/browse/UIMA-5826
         !isUnordered ||
         shift != 0 ||
         boundsUse != BoundsUse.notBounded ||
@@ -575,6 +616,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
   
   private void maybeValidateAltSource() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     if (!isAltSource) return;
     
     if (index != null ||
@@ -589,6 +631,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
   
   private void incr(FSIterator<T> it) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5844
     it.moveToNext();    
   }
   
@@ -614,6 +657,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   public FSIterator<T> fsIterator() {
     if (isFollowing && isBackwards) {
       isBackwards = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5830
+//IC see: https://issues.apache.org/jira/browse/UIMA-5829
+//IC see: https://issues.apache.org/jira/browse/UIMA-5828
+//IC see: https://issues.apache.org/jira/browse/UIMA-5826
       return make_or_copy_snapshot(fsIterator1(), true);
 //      LowLevelIterator<T> baseIterator = fsIterator1();
 //      FSIterator<T> it;
@@ -661,8 +708,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   private FSIterator<T> make_or_copy_snapshot(LowLevelIterator<T> baseIterator, boolean bkwd) {
     FSIterator<T> it;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
     T[] a = (T[]) asArray(baseIterator, FeatureStructure.class);  // array is in forward order because 
                                           // it's produced by a backwards iterator, but then the array is reversed
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     it = new FsIterator_subtypes_snapshot<>(
         a,
         (LowLevelIndex<T>) index,
@@ -676,19 +725,27 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return (limit == -1)
         ? it
           // rewrap with limit - needs to be outer shell to get right invalid behavior
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         : new FsIterator_limited<>(it, limit);
   }
   
   private LowLevelIterator<T> fsIterator1() {
     prepareTerminalOp();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     LowLevelIterator<T> it = isAllViews 
                       ? //new FsIterator_aggregation_common<T>(getPlainIteratorsForAllViews(), )
                         createFsIterator_for_all_views()
                       : plainFsIterator(index, view);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5830
+//IC see: https://issues.apache.org/jira/browse/UIMA-5829
+//IC see: https://issues.apache.org/jira/browse/UIMA-5828
+//IC see: https://issues.apache.org/jira/browse/UIMA-5826
     it = maybeWrapBackwards(it);                  
+//IC see: https://issues.apache.org/jira/browse/UIMA-5844
     maybePosition(it);  // position needs to come after backwards because that sets the position
     maybeShift(it);     // shift semantically needs to come after backwards
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return (limit == -1) ? it : new FsIterator_limited<>(it, limit);    
   }
   
@@ -703,12 +760,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     
     for (int i = 1; i <= nbrViews; i++) {
       CASImpl v = (i == 1) ? view.getInitialView() : (CASImpl) view.getView(i);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
       LowLevelIndex<T> index_local = (LowLevelIndex<T>) getIndexForView(v);
       ita[i - 1] = plainFsIterator(index_local, v);
 //      indexes[i - 1] = index;
     }
 //    return new FsIterator_aggregation_common<T>(ita, new FsIndex_aggr<>(indexes));
     return new FsIterator_aggregation_common<>(ita, null, null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
   }
   
@@ -756,6 +815,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       // type could be null
       // could be alternate source
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
       if (isAltSource) {
         return altSourceIterator();
       } else {
@@ -782,11 +842,16 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         //     - orderNotNecessary / orderNeeded
         //   - preceding: need to skip over annotations whose end is > positioning-begin
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5830
+//IC see: https://issues.apache.org/jira/browse/UIMA-5829
+//IC see: https://issues.apache.org/jira/browse/UIMA-5828
+//IC see: https://issues.apache.org/jira/browse/UIMA-5826
         it = isAnnotationIndex 
                ? (LowLevelIterator<T>) ai.iterator( ! isNonOverlapping, IS_NOT_STRICT, isUnordered, ! isTypePriority)
                : idx.iterator(isUnordered, ! isTypePriority);
         if (isPreceding) {
           // filter the iterator to skip annotations whose end is > the position-begin
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
           it = new FilteredIterator<>(it, fs ->
               // true if ok, false to skip
               ((Annotation) fs).getEnd() <= ((Annotation) startingFs).getBegin());
@@ -797,11 +862,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         return (LowLevelIterator<T>) LowLevelIterator.FS_ITERATOR_LOW_LEVEL_EMPTY;
       }
       // bounds in use, index must be annotation index, is ordered
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       it = (LowLevelIterator<T>) new Subiterator<>(
           (FSIterator<Annotation>) idx.iterator(isUnordered, !isTypePriority),
           boundingFs,
           !isNonOverlapping,  // ambiguous
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
           !isIncludeAnnotBeyondBounds,  // strict 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
           boundsUse,
           isTypePriority,
           isSkipSameBeginEndType);
@@ -811,7 +879,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
   
   private LowLevelIterator<T> maybeWrapBackwards(LowLevelIterator<T> it) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     if (isBackwards) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5844
       it = new FsIterator_backwards<>(it);  // positions the underlying iterator to last,
                                             // which is first for going backwards
     }
@@ -820,8 +891,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
     
   private LowLevelIterator<T> altSourceIterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     T[] filtered;
     if (sourceFSList != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<T> filteredItems = new ArrayList<>();
       FSList fsl = sourceFSList;
       while (!(fsl instanceof EmptyFSList)) {
@@ -838,12 +911,15 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       
       // skip filtering if nullOK and no subsumption test needed because type = TOP or higher
       boolean noTypeFilter = ti == view.getTypeSystemImpl().topType;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       if (!isNullOK && noTypeFilter) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         return new FsIterator_subtypes_snapshot<>((T[]) sourceFSArray, null, IS_UNORDERED, null);
       }
       
       List<T> filteredItems = new ArrayList<>();
       boolean noNullsWereFiltered = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       for (FeatureStructure item : sourceFSArray) {
         if (!isNullOK && null == item) {
           noNullsWereFiltered = false;
@@ -856,7 +932,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       }
       
       if (noTypeFilter && !noNullsWereFiltered) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         return new FsIterator_subtypes_snapshot<>(
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
             (T[]) sourceFSArray,
             null,
             IS_UNORDERED,
@@ -887,6 +965,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public ArrayList<T> asList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5844
     return asArrayList((LowLevelIterator<T>) fsIterator());
   }
   
@@ -916,6 +995,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     // and the iterator might have been positioned other than the starting spot
     // by a following or startAt etc.
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5844
     ArrayList<T> a = asArrayList(it);
     T[] r = (T[]) Array.newInstance(clazz, a.size());
     return a.toArray(r);
@@ -927,6 +1007,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
 
   private Annotation makePosAnnot(int begin, int end) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     if (end < begin) {
       throw new IllegalArgumentException("End value must be >= Begin value");
     }
@@ -958,6 +1039,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       private final FSIndex<T> localIndex = index;
       
       private final Comparator<? super T> comparator = 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
           (localIndex != null && localIndex.getIndexingStrategy() == FSIndex.SORTED_INDEX) 
             ? (Comparator<? super T>)localIndex 
             : null;
@@ -972,7 +1054,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         }
         
         // set per indexing strategy
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
         switch ((null == localIndex) ? -1 : localIndex.getIndexingStrategy()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
         case FSIndex.SORTED_INDEX: c |= Spliterator.ORDERED | Spliterator.SORTED; break;
         case FSIndex.SET_INDEX: c |= Spliterator.ORDERED; break;
         default: // do nothing
@@ -1010,6 +1094,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
       @Override
       public Comparator<? super T> getComparator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
         if (comparator != null) {
           return comparator;
         }
@@ -1029,6 +1114,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public T get() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5845
     return getNullChk();
   }
   
@@ -1052,6 +1138,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T single() {
     T v = singleOrNull();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5845
     if (v == null && !isNullOK) {
       throw new CASRuntimeException(CASRuntimeException.SELECT_GET_NO_INSTANCES, ti.getName(), maybeMsgPosition());
     }
@@ -1068,6 +1155,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     FSIterator<T> it = fsIterator();
     if (it.isValid()) {
       T v = it.getNvc();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5304
       if (shift >= 0) {
         it.moveToNext();
       } else {
@@ -1085,6 +1173,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   @Override
   public T get(int offset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     this.shift = offset;
     return getNullChk();
   }
@@ -1109,6 +1198,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
   @Override
   public T get(FeatureStructure fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6159
     startAt(fs);
     return getNullChk();
   }
@@ -1194,6 +1284,11 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T get(int begin, int end, int offset) {
     startAt(begin, end, offset);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5845
+//IC see: https://issues.apache.org/jira/browse/UIMA-5845
+//IC see: https://issues.apache.org/jira/browse/UIMA-5845
+//IC see: https://issues.apache.org/jira/browse/UIMA-5845
+//IC see: https://issues.apache.org/jira/browse/UIMA-5845
     return getNullChk();
   }
 
@@ -1251,7 +1346,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 //      }
 //    }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     if (isFollowing) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
       final int end = ((Annotation)startingFs).getEnd();
       while (it.isValid() && ((Annotation)it.get()).getBegin() < end) {
         it.moveToNext();
@@ -1293,6 +1390,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(Annotation fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5304
     return following(fs, 0);
   }
 
@@ -1301,6 +1399,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(int position) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5304
     return following(position, 0);
   }
 
@@ -1309,6 +1408,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(Annotation fs, int offset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5304
     if (fs.getBegin() < fs.getEnd()) {
       fs = makePosAnnot(fs.getEnd(), fs.getEnd());
     }
@@ -1320,6 +1420,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(int position, int offset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5304
     return commonFollowing(makePosAnnot(position, position), offset);
   }
 
@@ -1328,6 +1429,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> preceding(Annotation fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5304
     return preceding(fs, 0);
   }
 
@@ -1336,6 +1438,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> preceding(int position) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5304
     return preceding(position, 0);
   }
 
@@ -1344,9 +1447,11 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> preceding(Annotation annotation, int offset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5304
     if (annotation.getEnd() < Integer.MAX_VALUE) {
       annotation = makePosAnnot(annotation.getBegin(), Integer.MAX_VALUE);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5304
     return commonPreceding(annotation, offset);
   }
 
@@ -1390,8 +1495,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 //  }
   
   private SelectFSs<T> commonFollowing(Annotation annotation, int offset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5304
     this.startingFs = annotation;
     this.shift = offset;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     isFollowing = true;
     return this;
   }
@@ -1406,6 +1513,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   private void forceAnnotationIndex() {
     if (index == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5830
+//IC see: https://issues.apache.org/jira/browse/UIMA-5829
+//IC see: https://issues.apache.org/jira/browse/UIMA-5828
+//IC see: https://issues.apache.org/jira/browse/UIMA-5826
       index = (LowLevelIndex<T>) (  (ti == null) ? 
                                        view.getAnnotationIndex() :
                                        view.getAnnotationIndex(ti));
@@ -1418,6 +1529,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
   
   private Stream<T> stream() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return StreamSupport.stream(spliterator(), false); // false = default not parallel
   }
 
@@ -1508,6 +1620,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
   @Override
   public void forEachOrdered(Consumer<? super T> action) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     stream().forEachOrdered(action);
   }
 
@@ -1615,11 +1728,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
   @Override
   public Stream<T> unordered() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5238
     return stream().unordered();
   }
 
   @Override
   public boolean isEmpty() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5827
     if (this.limit == 0) return true;
     return fsIterator().size() == 0;
   }

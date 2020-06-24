@@ -64,6 +64,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * Create a ProcessTrace_impl using the framework's default timer.
    */
   public ProcessTrace_impl() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this(UIMAFramework.getDefaultPerformanceTuningProperties());
   }
   
@@ -115,6 +116,8 @@ public class ProcessTrace_impl implements ProcessTrace {
       aPerformanceTuningSettings = UIMAFramework.getDefaultPerformanceTuningProperties();
     }
     mEnabled = "true".equalsIgnoreCase(aPerformanceTuningSettings
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED));
   }
 
@@ -126,6 +129,7 @@ public class ProcessTrace_impl implements ProcessTrace {
     if (mEnabled) {
       // DEBUG System.out.println("startEvent(" + aComponentName + "," + aEventType + ")");
       ProcessTraceEvent_impl evt = new ProcessTraceEvent_impl(aComponentName, aEventType,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               aDescription);
       evt.setStartTime(mTimer.getTimeInMillis());
       mOpenEvents.push(evt);
@@ -142,6 +146,7 @@ public class ProcessTrace_impl implements ProcessTrace {
 
       // look for matching event on mOpenEvents stack. If found, close it and
       // all its open sub-events. If not found, throw exception.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       ArrayList<ProcessTraceEvent_impl> eventsToClose = new ArrayList<>();
       boolean foundEvent = false;
       while (!mOpenEvents.isEmpty()) {
@@ -158,6 +163,7 @@ public class ProcessTrace_impl implements ProcessTrace {
         // close all open sub-events
         long currentTime = mTimer.getTimeInMillis();
         for (int i = 0; i < eventsToClose.size(); i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
           ProcessTraceEvent_impl subEvt = eventsToClose.get(i);
           subEvt.setResultMessage(aResultMessage);
           subEvt.setDuration((int) (currentTime - subEvt.getStartTime()));
@@ -184,6 +190,7 @@ public class ProcessTrace_impl implements ProcessTrace {
         }
         // throw exception
         throw new UIMA_IllegalStateException(UIMA_IllegalStateException.REQUIRED_METHOD_CALL,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { "startEvent", "endEvent" });
       }
     }
@@ -193,6 +200,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#addEvent(String, String, String, int, String)
    */
   public void addEvent(String aComponentName, String aType, String aDescription, int aDuration,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aResultMsg) {
     if (mEnabled) {
       // create event
@@ -224,6 +232,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#addAll(java.util.List)
    */
   public void addAll(List<ProcessTraceEvent> aEventList) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     for (ProcessTraceEvent evt : aEventList) {
       addEvent(evt);
     }
@@ -240,6 +249,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#getEventsByComponentName(String, boolean)
    */
   public List<ProcessTraceEvent> getEventsByComponentName(String aComponentName, boolean aRecurseAfterMatch) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<ProcessTraceEvent> result = new ArrayList<>();
     for (ProcessTraceEvent event : getEvents()) {
       getEventsByComponentName(event, aComponentName, aRecurseAfterMatch, result);
@@ -251,6 +261,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#getEventsByType(String, boolean)
    */
   public List<ProcessTraceEvent> getEventsByType(String aType, boolean aRecurseAfterMatch) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<ProcessTraceEvent> result = new ArrayList<>();
     for (ProcessTraceEvent event : getEvents()) {
       getEventsByType(event, aType, aRecurseAfterMatch, result);
@@ -263,6 +274,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#getEvent(String, String)
    */
   public ProcessTraceEvent getEvent(String aComponentName, String aType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     List<ProcessTraceEvent> events = getEvents();
     return getEvent(events, aComponentName, aType);
   }
@@ -296,12 +308,14 @@ public class ProcessTrace_impl implements ProcessTrace {
   public void aggregate(ProcessTrace aProcessTrace) {
     if (mEnabled) {
       List<ProcessTraceEvent> newEventList = aProcessTrace.getEvents();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
 
       // iterate over new events
       Iterator<ProcessTraceEvent> newEventIter = newEventList.iterator();
       while (newEventIter.hasNext()) {
         ProcessTraceEvent_impl newEvt = (ProcessTraceEvent_impl) newEventIter.next();
         // find corresponding event in thisEventList
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
         ProcessTraceEvent correspondingEvt = findCorrespondingEvent(mEventList, newEvt);
         if (correspondingEvt != null) {
           aggregateEvent((ProcessTraceEvent_impl) correspondingEvt, newEvt);
@@ -320,6 +334,7 @@ public class ProcessTrace_impl implements ProcessTrace {
     // count total time so we can do percentages
     int totalTime = 0;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     for (ProcessTraceEvent event : mEventList) {
       totalTime += event.getDuration();
     }
@@ -350,6 +365,7 @@ public class ProcessTrace_impl implements ProcessTrace {
     }
 
     // recurse into child events
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     for (ProcessTraceEvent event : aEvent.getSubEvents()) {
       getEventsByComponentName(event, aComponentName, aRecurseAfterMatch, aResultList);
     }
@@ -373,6 +389,7 @@ public class ProcessTrace_impl implements ProcessTrace {
     }
 
     // recurse into child events
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     for (ProcessTraceEvent event : aEvent.getSubEvents()) {
       getEventsByType(event, aType, aRecurseAfterMatch, aResultList);
     }
@@ -382,6 +399,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * Utility method used by aggregate(ProcessTrace)
    */
   protected <T extends ProcessTraceEvent> T findCorrespondingEvent(List<T> aEventList, T aEvent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Iterator<T> it = aEventList.iterator();
     while (it.hasNext()) {
       T evt = it.next();
@@ -404,6 +422,7 @@ public class ProcessTrace_impl implements ProcessTrace {
 
     // aggregate sub-events
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     List<ProcessTraceEvent> destEventList = aDest.getSubEvents();
     List<ProcessTraceEvent> srcEventList = aSrc.getSubEvents();
     List<ProcessTraceEvent> eventsToAdd = null; // lazy init
@@ -413,12 +432,14 @@ public class ProcessTrace_impl implements ProcessTrace {
     while (srcEventIter.hasNext()) {
       ProcessTraceEvent_impl srcEvt = (ProcessTraceEvent_impl) srcEventIter.next();
       // find corresponding event in destEventList
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       ProcessTraceEvent correspondingEvt = findCorrespondingEvent(destEventList, srcEvt);
       if (correspondingEvt != null) {
         aggregateEvent((ProcessTraceEvent_impl) correspondingEvt, srcEvt);
       } else {
         // no corresponding event - add srcEvt to list of events to be added
         if (eventsToAdd == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
           eventsToAdd = new ArrayList<>();
         }
         eventsToAdd.add(srcEvt);
@@ -427,6 +448,7 @@ public class ProcessTrace_impl implements ProcessTrace {
 
     // add all from events eventsToAdd
     if (eventsToAdd != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       for (ProcessTraceEvent eventToAdd : eventsToAdd) {
         aDest.addSubEvent(eventToAdd);
       }

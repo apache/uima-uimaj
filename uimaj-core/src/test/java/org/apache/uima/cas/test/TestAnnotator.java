@@ -34,6 +34,7 @@ public class TestAnnotator extends CasAnnotator_ImplBase {
   }
 
   public void process(CAS cas) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-297
     FeatureStructure fs = cas.createFS(cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION_BASE));
     cas.addFsToIndexes(fs);
     fs = cas.createFS(cas.getTypeSystem().getType("OtherAnnotation"));

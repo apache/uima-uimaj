@@ -37,6 +37,7 @@ class DisjunctiveConstraint implements FSMatchConstraint {
   private FSMatchConstraint c2;
 
   private DisjunctiveConstraint() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 

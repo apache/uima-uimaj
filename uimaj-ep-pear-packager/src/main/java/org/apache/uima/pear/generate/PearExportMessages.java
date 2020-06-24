@@ -52,6 +52,7 @@ public class PearExportMessages {
    * @return the string
    */
   public static String format(String key, Object[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return MessageFormat.format(getString(key), args);
   }
 

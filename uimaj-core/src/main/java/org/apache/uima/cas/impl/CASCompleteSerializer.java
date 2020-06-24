@@ -38,6 +38,7 @@ public class CASCompleteSerializer implements Serializable {
    * Constructor for CASCompleteSerializer.
    */
   public CASCompleteSerializer() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 

@@ -27,6 +27,8 @@ import org.apache.uima.collection.metadata.CpeRemoteCasProcessor;
  * The Class CpeRemoteCasProcessorImpl.
  */
 public class CpeRemoteCasProcessorImpl extends CasProcessorCpeObject implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CpeRemoteCasProcessor {
   
   /** The Constant serialVersionUID. */

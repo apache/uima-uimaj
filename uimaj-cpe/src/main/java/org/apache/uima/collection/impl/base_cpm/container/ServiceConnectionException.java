@@ -23,6 +23,7 @@ public class ServiceConnectionException extends Exception {
   private static final long serialVersionUID = 2965580005726446212L;
 
   public ServiceConnectionException(String msg) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(msg);
   }
 

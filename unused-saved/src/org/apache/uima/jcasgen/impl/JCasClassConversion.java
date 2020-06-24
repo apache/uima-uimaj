@@ -36,6 +36,7 @@ import org.objectweb.asm.TypePath;
 
 public class JCasClassConversion implements Opcodes {
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
   final private String classname;  // e.g. "org/apache/uima/jcas/tcas/Annotation"
   final private ClassVisitor cv;
   final List<String> fieldNames;

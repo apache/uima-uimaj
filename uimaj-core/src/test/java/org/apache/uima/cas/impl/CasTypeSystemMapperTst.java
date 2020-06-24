@@ -114,10 +114,12 @@ public class CasTypeSystemMapperTst extends TestCase {
 //  }
 
   public void testCasTypeSystemMapperFull() throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts2 = createTs(3, 0x1ffff, 0x1ffff); // become == type systems
     m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m, t2);  // check all are equal
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
     assertTrue(m.isEqual());
   }
   
@@ -168,6 +170,7 @@ public class CasTypeSystemMapperTst extends TestCase {
     assertEquals(ts1t1, m.mapTypeCodeTgt2Src(t2));
     assertEquals(null, m.mapTypeCodeTgt2Src(t1));
     chkfeats(m, ts1t1, t2t);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
     assertFalse(m.isEqual());
   }
   
@@ -186,6 +189,7 @@ public class CasTypeSystemMapperTst extends TestCase {
 
   public void testMissingType6() throws ResourceInitializationException {
     ts1 = createTs(0, 0x1ffff, 0x1ffff);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     ts1t1 = t1t;
     ts1t2 = t2t;    
     ts2 = createTs(3, 0x1ffff, 0x1ffff); 
@@ -213,6 +217,7 @@ public class CasTypeSystemMapperTst extends TestCase {
       assertEquals(ts1t2, m.mapTypeCodeTgt2Src(t2));
       chkfeats(m, ts1t2, t2t);
       chkMissingFeats1(m, t1, mf);    
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
       assertFalse(m.isEqual());
    } 
   }
@@ -232,6 +237,7 @@ public class CasTypeSystemMapperTst extends TestCase {
       assertEquals(ts1t2, m.mapTypeCodeTgt2Src(t2));
       chkfeats(m, ts1t1, t1t);
       chkMissingFeats1(m, t2, mf);      
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
       assertFalse(m.isEqual());
     }
   }
@@ -251,6 +257,7 @@ public class CasTypeSystemMapperTst extends TestCase {
       assertEquals(t2t, m.mapTypeTgt2Src(ts2t2));
       chkfeats(m, t2t, ts2t2);
       chkMissingFeats2(m, t1, mf);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
       assertFalse(m.isEqual());
     }
   }
@@ -270,6 +277,7 @@ public class CasTypeSystemMapperTst extends TestCase {
       assertFalse(ts2t2.equals(m.mapTypeCodeTgt2Src(t2)));
       chkfeats(m, t1t, ts2t1);
       chkMissingFeats2(m, t2, mf);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
       assertFalse(m.isEqual());
     }
   }
@@ -289,6 +297,7 @@ public class CasTypeSystemMapperTst extends TestCase {
     assertFalse(t2t.equals(m.mapTypeCodeTgt2Src(t2)));
     chkfeats(m, ts1t1, t1t);
     chkMissingFeats1(m, t2, mf);      
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
     assertFalse(m.isEqual());
   }
 
@@ -307,6 +316,7 @@ public class CasTypeSystemMapperTst extends TestCase {
     assertFalse(t2t.equals(m.mapTypeCodeTgt2Src(t2)));
     chkfeats(m, ts1t1, t1t);
     chkMissingFeats2(m, t2, mf);      
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
     assertFalse(m.isEqual());
   }
 
@@ -316,6 +326,7 @@ public class CasTypeSystemMapperTst extends TestCase {
    * @param tCode
    */
   private void chkfeats(CasTypeSystemMapper m, TypeImpl srcType, TypeImpl tgtType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     Set<FeatureImpl> srcFeats = new HashSet<>(Arrays.asList(srcType.getFeatureImpls()));
     Set<FeatureImpl> tgtFeats = new HashSet<>(Arrays.asList(tgtType.getFeatureImpls()));
     assertTrue(srcFeats.equals(tgtFeats));
@@ -333,6 +344,7 @@ public class CasTypeSystemMapperTst extends TestCase {
     TypeImpl srcType = m.tsSrc.getTypeForCode(tCode);
     TypeImpl tgtType = m.tsTgt.get().getTypeForCode(tCode);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     FeatureImpl[] tgtFeats = tgtType.getFeatureImpls();
     
     for (int j = 0, mf = 1; 
@@ -360,6 +372,7 @@ public class CasTypeSystemMapperTst extends TestCase {
     TypeImpl srcType = m.tsSrc.getTypeForCode(tCode);
     TypeImpl tgtType = m.tsTgt.get().getTypeForCode(tCode);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     FeatureImpl[] srcFeats = srcType.getFeatureImpls();
     
     for (int j = 0, mf = 1; 
@@ -381,6 +394,7 @@ public class CasTypeSystemMapperTst extends TestCase {
   
   private void chkbase(CasTypeSystemMapper m, final int last) {
     for (int i = 1; i <= last; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       TypeImpl typeSrc = m.tsSrc.types.get(i);
       TypeImpl typeTgt = m.tsTgt.get().types.get(i);
       assertEquals(m.mapTypeCodeTgt2Src(i), typeSrc);
@@ -396,6 +410,7 @@ public class CasTypeSystemMapperTst extends TestCase {
    * @return
    */
   private TypeSystemImpl createTs(int types, int feats1, int feats2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     CASTestSetup cts = new CASTestSetup(types, feats1, feats2);
     return (TypeSystemImpl) CASInitializer.initCas(cts, tsi -> cts.reinitTs(tsi)).getTypeSystem();
   }
@@ -514,6 +529,7 @@ public class CasTypeSystemMapperTst extends TestCase {
     
     public void initTypeSystem(TypeSystemMgr tsm) {
       initBuiltInTypes(tsm);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
 
       // Add new types and features.
 
@@ -561,6 +577,7 @@ public class CasTypeSystemMapperTst extends TestCase {
         if (ftg2.get(16)) {akof2Aboolean = tsm.addFeature("akof2Aboolean", akof2, typeArrayBoolean);}
         if (ftg2.get(17)) {akof2Astring = tsm.addFeature("akof2Astring", akof2, typeArrayString);}        
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       if (ttgb[0]) {
         t1t = (TypeImpl) akof;
         t2t = ttgb[1] ? (TypeImpl) akof2 : null;

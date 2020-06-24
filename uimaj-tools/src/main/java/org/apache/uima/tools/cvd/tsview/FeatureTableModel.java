@@ -47,6 +47,7 @@ public class FeatureTableModel extends AbstractTableModel {
    * Instantiates a new feature table model.
    */
   public FeatureTableModel() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -119,6 +120,7 @@ public class FeatureTableModel extends AbstractTableModel {
     if (this.type == null) {
       return null;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     List<?> feats = this.type.getFeatures();
     if (rowIndex < 0 || rowIndex >= feats.size()) {
       return null;

@@ -43,12 +43,14 @@ public class SystemEnvReader {
     if (OS.indexOf("windows 9") > -1) {
       p = r.exec("command.com /c set");
     } else if ((OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || (OS.indexOf("windows xp") > -1)) {
       p = r.exec("cmd.exe /c set");
     } else {
       // our last hope, we assume Unix
       p = r.exec("env");
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
       String line;
       while ((line = br.readLine()) != null) {

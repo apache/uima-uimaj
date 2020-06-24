@@ -62,6 +62,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
   private BooleanArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     theArray = null;
   }
 
@@ -71,6 +72,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
    * @param length of array
    */
   public BooleanArray(JCas jcas, int length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     super(jcas);
     theArray = new boolean[length];
 
@@ -95,6 +97,8 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
       _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
@@ -159,11 +163,14 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
     for (int i = 0; i < length; i++) {
       theArray[i + destPos] = Boolean.parseBoolean(src[i + srcPos]);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
   // internal use
   public boolean[] _getTheArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return theArray;
   }
   
@@ -172,8 +179,10 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
    */
   @Override
   public void copyValuesFrom(CommonArrayFS<Boolean> v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     BooleanArray bv = (BooleanArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
@@ -182,11 +191,15 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
    */
   @Override
   public void setArrayValueFromString(int i, String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     set(i, Boolean.parseBoolean(v));
   }
   
   @Override
   public Iterator<Boolean> iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
     return new Iterator<Boolean>() {
       int i = 0;
       
@@ -211,6 +224,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
    * @return a newly created and populated array
    */
   public static BooleanArray create(JCas jcas, boolean[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     BooleanArray booleanArray = new BooleanArray(jcas, a.length);
     booleanArray.copyFromArray(a, 0, 0, a.length);
     return booleanArray;

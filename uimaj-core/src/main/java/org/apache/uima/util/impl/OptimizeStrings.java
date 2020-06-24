@@ -262,6 +262,7 @@ public class OptimizeStrings {
   public void optimize() {
     String[] sa = inStrings.toArray(new String[inStrings.size()]);
     optimizeI(sa); 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     inStrings = new ArrayList<>();  // release space
   }
      
@@ -287,6 +288,7 @@ public class OptimizeStrings {
     offsets = new int[ssLength];
     IntVector lastIndexInCommonStrings = new IntVector();
     List<String> commonStrings = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
     for (int i = ssLength - 1; i >= 0; i--) {
       String s = sortedStrings[i];
@@ -321,6 +323,7 @@ public class OptimizeStrings {
 
     // prepare map from original string object to index in sorted arrays and offsets
     // index also used to find common string segment.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     stringToIndexMap = new HashMap<>(ssLength);
     for (int i = ssLength - 1; i >= 0; i--) {
       stringToIndexMap.put(sortedStrings[i], i);
@@ -383,6 +386,7 @@ public class OptimizeStrings {
       // see https://issues.apache.org/jira/browse/UIMA-2515
       // debug/test
 //      System.out.println("hit stack overflow");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Set<String> orderedSet = new TreeSet<>();
       for (String s : inStrings) {
         if (!orderedSet.add(s)) {

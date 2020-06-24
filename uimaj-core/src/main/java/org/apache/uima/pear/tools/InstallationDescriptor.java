@@ -284,6 +284,7 @@ public class InstallationDescriptor implements Serializable {
    * @return The relative path of the given component object.
    */
   protected static String getRelativePathForComponentObject(String absolutePath,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ComponentInfo component) {
     String path = absolutePath;
     if (component.rootDirPath != null && path != null) {
@@ -354,11 +355,13 @@ public class InstallationDescriptor implements Serializable {
       // a) substitute $main_root and $comp_id$root in action fields
       // b) substitute standard path separator (';') with OS dependent
       // in FILE_TAG, REPLACE_WITH_TAG and VAR_VALUE_TAG values
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Enumeration<Object> keys = mAction.params.keys();
       while (keys.hasMoreElements()) {
         String key = (String) keys.nextElement();
         String value = mAction.params.getProperty(key);
         if (key.equals(InstallationDescriptorHandler.FILE_TAG)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 || key.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
                 || key.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
           if (_mainComponent.rootDirPath != null) {
@@ -367,6 +370,7 @@ public class InstallationDescriptor implements Serializable {
                     _mainComponent.rootDirPath);
             mAction.params.setProperty(key, value);
           }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
           Iterator<Map.Entry<String, ComponentInfo>> dlgEntries = getDelegateComponents().entrySet().iterator();
           while (dlgEntries.hasNext()) {
             Map.Entry<String, ComponentInfo> dlgEntry = dlgEntries.next();
@@ -374,6 +378,7 @@ public class InstallationDescriptor implements Serializable {
             if (dlgInfo.rootDirPath != null) {
               // substitute '$dlg_comp_id$root' macros
               value = InstallationProcessor.substituteCompIdRootInString(value, dlgInfo.getId(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       dlgInfo.rootDirPath);
               mAction.params.setProperty(key, value);
             }
@@ -491,6 +496,7 @@ public class InstallationDescriptor implements Serializable {
    *          The given action name.
    */
   public synchronized void deleteInstallationActions(String actionName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Iterator<ActionInfo> actionList = _installationActions.iterator();
     while (actionList.hasNext()) {
       ActionInfo action = actionList.next();
@@ -559,6 +565,7 @@ public class InstallationDescriptor implements Serializable {
    * @return The list of the <code>ActionInfo</code> objects that have the given action name.
    */
   public Collection<ActionInfo> getInstallationActions(String actionName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<ActionInfo> selActions = new ArrayList<>();
     Iterator<ActionInfo> allActions = getInstallationActions().iterator();
     while (allActions.hasNext()) {
@@ -598,6 +605,7 @@ public class InstallationDescriptor implements Serializable {
   public synchronized String getMainCasConsumerDesc(boolean relativePath) {
     if (_mainComponent != null)
       return relativePath ? getRelativePathForComponentObject(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               _mainComponent.casConsumerDescFilePath, _mainComponent)
               : _mainComponent.casConsumerDescFilePath;
     return null;
@@ -625,6 +633,7 @@ public class InstallationDescriptor implements Serializable {
   public synchronized String getMainCasInitializerDesc(boolean relativePath) {
     if (_mainComponent != null)
       return relativePath ? getRelativePathForComponentObject(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               _mainComponent.casInitializerDescFilePath, _mainComponent)
               : _mainComponent.casInitializerDescFilePath;
     return null;
@@ -652,6 +661,7 @@ public class InstallationDescriptor implements Serializable {
   public synchronized String getMainCollIteratorDesc(boolean relativePath) {
     if (_mainComponent != null)
       return relativePath ? getRelativePathForComponentObject(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               _mainComponent.collIteratorDescFilePath, _mainComponent)
               : _mainComponent.collIteratorDescFilePath;
     return null;
@@ -694,6 +704,7 @@ public class InstallationDescriptor implements Serializable {
             return _mainComponent.descFilePath;
         } else {
           return relativePath ? getRelativePathForComponentObject(_mainComponent.descFilePath,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   _mainComponent) : _mainComponent.descFilePath;
         }
       } else
@@ -725,6 +736,7 @@ public class InstallationDescriptor implements Serializable {
    */
   public synchronized Properties getMainComponentNetworkParam(String paramName) {
     return (_mainComponent != null && _mainComponent.networkParams != null) ? _mainComponent.networkParams
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .get(paramName)
             : null;
   }
@@ -734,6 +746,7 @@ public class InstallationDescriptor implements Serializable {
    */
   public synchronized Set<String> getMainComponentNetworkParamNames() {
     return (_mainComponent != null && _mainComponent.networkParams != null) ? _mainComponent.networkParams
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .keySet()
             : null;
   }
@@ -862,6 +875,8 @@ public class InstallationDescriptor implements Serializable {
       // delegate descriptor path
       if (dCompInfo.descFilePath != null) {
         dCompInfo.descFilePath = InstallationProcessor.substituteCompIdRootInString(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 dCompInfo.descFilePath, dlgId, dCompInfo.rootDirPath);
       }
     }
@@ -875,6 +890,7 @@ public class InstallationDescriptor implements Serializable {
         String key = (String) keys.nextElement();
         String value = action.params.getProperty(key);
         if (key.equals(InstallationDescriptorHandler.FILE_TAG)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 || key.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
                 || key.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
           value = InstallationProcessor.substituteCompIdRootInString(value, dlgId,
@@ -914,6 +930,7 @@ public class InstallationDescriptor implements Serializable {
         _mainComponent.casInitializerDescFilePath = descFilePath.trim().replace('\\', '/');
       else { // substitute $main_root macros in descriptor path
         _mainComponent.casInitializerDescFilePath = InstallationProcessor
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .substituteMainRootInString(descFilePath, _mainComponent.rootDirPath);
       }
     }
@@ -985,6 +1002,9 @@ public class InstallationDescriptor implements Serializable {
         _mainComponent.descFilePath = descFilePath.trim().replace('\\', '/');
       else { // substitute $main_root macros in descriptor path
         _mainComponent.descFilePath = InstallationProcessor.substituteMainRootInString(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 descFilePath, _mainComponent.rootDirPath);
       }
     }
@@ -1024,6 +1044,7 @@ public class InstallationDescriptor implements Serializable {
   public synchronized void setMainComponentNetworkParam(String paramName, Properties paramSpecs) {
     if (_mainComponent != null) {
       if (_mainComponent.networkParams == null)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         _mainComponent.networkParams = new Hashtable<>();
       _mainComponent.networkParams.put(paramName, paramSpecs);
     }
@@ -1057,6 +1078,7 @@ public class InstallationDescriptor implements Serializable {
       // substitute $main_root macros in all specs of descriptor files
       if (_mainComponent.descFilePath != null)
         _mainComponent.descFilePath = InstallationProcessor.substituteMainRootInString(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 _mainComponent.descFilePath, _mainComponent.rootDirPath);
       if (_mainComponent.collIteratorDescFilePath != null)
         _mainComponent.collIteratorDescFilePath = InstallationProcessor.substituteMainRootInString(
@@ -1069,6 +1091,8 @@ public class InstallationDescriptor implements Serializable {
         _mainComponent.casConsumerDescFilePath = InstallationProcessor.substituteMainRootInString(
                 _mainComponent.casConsumerDescFilePath, _mainComponent.rootDirPath);
       // substitute $main_root macros in all specs of actions
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Iterator<ActionInfo> list = getInstallationActions().iterator();
       while (list.hasNext()) {
         ActionInfo action = list.next();
@@ -1077,6 +1101,7 @@ public class InstallationDescriptor implements Serializable {
           String key = (String) keys.nextElement();
           String value = action.params.getProperty(key);
           if (key.equals(InstallationDescriptorHandler.FILE_TAG)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   || key.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
                   || key.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
             value = InstallationProcessor.substituteMainRootInString(value,
@@ -1106,6 +1131,7 @@ public class InstallationDescriptor implements Serializable {
    */
   public String toString() {
     StringWriter sWriter = new StringWriter();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (PrintWriter oWriter = new PrintWriter(sWriter)) {
       InstallationDescriptorHandler.printInstallationDescriptor(this, oWriter);
       oWriter.flush();

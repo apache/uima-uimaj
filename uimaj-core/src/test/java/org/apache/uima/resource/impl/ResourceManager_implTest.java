@@ -45,6 +45,8 @@ import junit.framework.TestCase;
 public class ResourceManager_implTest extends TestCase {
   private final File TEST_DATA_FILE = JUnitExtension
           .getFile("ResourceTest/ResourceManager_implTest_tempDataFile.dat");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private final String TEST_DATAPATH_WITH_SPACES = JUnitExtension.getFile(
           "ResourceTest/spaces in dir name").toString();
@@ -95,6 +97,7 @@ public class ResourceManager_implTest extends TestCase {
       // parameterized (language-based) resource
       FileLanguageResourceSpecifier langSpec = new FileLanguageResourceSpecifier_impl();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
       File baseDir = JUnitExtension.getFile("ResourceTest");
       langSpec.setFileUrlPrefix(new File(baseDir, "FileLanguageResource_implTest_data_").toURL()
               .toString());
@@ -117,6 +120,7 @@ public class ResourceManager_implTest extends TestCase {
       desc5.setResourceSpecifier(spec2);
 
       // resource path as filename instead of URL
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
       ExternalResourceDescription desc6 = new ExternalResourceDescription_impl();
       FileResourceSpecifier_impl fileSpec = new FileResourceSpecifier_impl();
       fileSpec.setFileUrl(TEST_DATA_FILE.getAbsolutePath());
@@ -142,6 +146,7 @@ public class ResourceManager_implTest extends TestCase {
       ExternalResourceBinding binding5 = new ExternalResourceBinding_impl();
       binding5.setKey("myResourceWithSpaceInPathKey");
       binding5.setResourceName("myResourceWithSpaceInPath");
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
       ExternalResourceBinding binding6 = new ExternalResourceBinding_impl();
       binding6.setKey("myResourceWithFilePathNotUrl");
       binding6.setResourceName("myResourceWithFilePathNotUrl");
@@ -156,6 +161,7 @@ public class ResourceManager_implTest extends TestCase {
   }
 
   public void tearDown() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
     mManager = null;
   }
   
@@ -176,6 +182,7 @@ public class ResourceManager_implTest extends TestCase {
       Assert.assertEquals(TEST_DATA_FILE.toURL(), r1.getUrl());
 
       TestResourceInterface r2 = (TestResourceInterface) mManager.getResource(TEST_CONTEXT_NAME
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + "myCustomObjectKey");
       Assert.assertEquals(TEST_STRING, r2.readString());
 
@@ -208,6 +215,7 @@ public class ResourceManager_implTest extends TestCase {
       URI expectedUri = expectedBaseUri.resolve("Test.dat");
       Assert.assertEquals(expectedUri, r3.getUri());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
       mManager.destroy();
       boolean caught = false;
       try {
@@ -260,6 +268,7 @@ public class ResourceManager_implTest extends TestCase {
 
       File descFile = JUnitExtension.getFile("ResourceManagerImplTest/ResourceTestAggregate.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new XMLInputSource(descFile));
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(TEST_DATAPATH);

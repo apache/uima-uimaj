@@ -27,6 +27,7 @@ import java.util.Arrays;
 final class ShortHeap extends CommonAuxHeap {
 
   short[] heap;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   ShortHeap() {
     super(DEFAULT_HEAP_BASE_SIZE, DEFAULT_HEAP_MULT_LIMIT);
@@ -42,6 +43,7 @@ final class ShortHeap extends CommonAuxHeap {
   }
   
   @Override
+//IC see: https://issues.apache.org/jira/browse/UIMA-4281
   final void initMemory(int size) {
     this.heap = new short[size];
   }
@@ -57,6 +59,7 @@ final class ShortHeap extends CommonAuxHeap {
       return;
 
     short[] new_array = new short[computeNewArraySize(heap.length, heapPos, GROWTH_FACTOR,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             heapMultLimit)];
     System.arraycopy(heap, 0, new_array, 0, heap.length);
     heap = new_array;
@@ -68,6 +71,7 @@ final class ShortHeap extends CommonAuxHeap {
   }
 
   // Getters
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   short getHeapValue(int offset) {
     return this.heap[offset];
   }

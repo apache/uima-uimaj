@@ -114,6 +114,7 @@ public abstract class CasEditorView extends PageBookView {
     
     IPageBookViewPage page = doCreatePage(editor);
     if (page != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
       try {
         page.init(new SubPageSite(casViewPageBookedPage.getSite()));
       } catch (PartInitException e) {
@@ -135,6 +136,7 @@ public abstract class CasEditorView extends PageBookView {
     if (part instanceof ICasEditor) {
       final ICasEditor editor = (ICasEditor) part;
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2293
       final CasEditorViewPage casViewPageBookedPage = new CasEditorViewPage(editorNotAvailableMessage);
       
       if (editor.getDocument() != null) {
@@ -159,6 +161,7 @@ public abstract class CasEditorView extends PageBookView {
         public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument,
                 IEditorInput newInput, ICasDocument newDocument) {
           
+//IC see: https://issues.apache.org/jira/browse/UIMA-2293
           createViewPage(casViewPageBookedPage, editor);
           
           ICasDocumentListener changeListener = documentListenerMap.get(editor);
@@ -173,6 +176,7 @@ public abstract class CasEditorView extends PageBookView {
           
         }
       };
+//IC see: https://issues.apache.org/jira/browse/UIMA-2293
       editorListenerMap.put(editor, inputListener);
       editor.addCasEditorInputListener(inputListener);
       

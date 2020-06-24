@@ -41,10 +41,12 @@ public class FileAndShortName {
    */
   public FileAndShortName(Object o) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (o instanceof IFile) {
       IFile file = (IFile) o;
       fileName = file.getLocation().toString();
       shortName = file.getName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-477
     } else if (o instanceof String) {
         fileName = (String)o;
         int lastSlash = fileName.lastIndexOf('/');

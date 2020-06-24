@@ -59,6 +59,7 @@ public class FSTreeModel implements TreeModel {
   /** The Constant defaultRootString. */
   private static final String defaultRootString = "<html><b>" + MainFrame.htmlGrayColor
           + "FS List - no selection</b></html>";
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The root string. */
   private String rootString = defaultRootString;
@@ -69,6 +70,7 @@ public class FSTreeModel implements TreeModel {
   public FSTreeModel() {
     super();
     this.root = new FSNode(this, FSNode.DISPLAY_NODE, null, 0, null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.root.setChildren(new ArrayList<>());
   }
 
@@ -81,11 +83,15 @@ public class FSTreeModel implements TreeModel {
    */
   public void update(String indexName, FSIndex index, CAS cas1) {
     // this.indexName = indexName;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     this.cas = (CASImpl) cas1;
     final int size = index.size();
     this.rootString = "<html><font color=green>" + indexName + "</font> - <font color=blue>"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + index.getType().getName() + "</font> [" + size + "]</html>";
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     this.root = new FSNode(this, FSNode.DISPLAY_NODE, null, 0, null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.fss = new ArrayList<>();
     FSIterator<TOP> it = index.iterator();
     int count = 0;
@@ -94,6 +100,7 @@ public class FSTreeModel implements TreeModel {
       this.fss.add(new FSNode(this, getNodeType(fs.getType()), fs, fs._id(), count));
       ++count;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     List<FSTreeNode> kids = createArrayChildren(0, size, this.fss, this);
     this.root.setChildren(kids);
     Object[] path = new Object[1];
@@ -114,6 +121,7 @@ public class FSTreeModel implements TreeModel {
     path[0] = this.root;
     TreeModelEvent event = new TreeModelEvent(this.root, path);
     for (int i = 0; i < this.treeModelListeners.size(); i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       this.treeModelListeners.get(i).treeStructureChanged(event);
     }
 
@@ -193,6 +201,7 @@ int getNodeType(Type type) {
       return FSNode.STRING_FS;
     } else {
       switch(((TypeImpl)type).getCode()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       case TypeSystemConstants.intTypeCode: return FSNode.INT_FS;
       case TypeSystemConstants.floatTypeCode: return FSNode.FLOAT_FS;
       case TypeSystemConstants.fsArrayTypeCode: return FSNode.ARRAY_FS;
@@ -285,6 +294,7 @@ int getNodeType(Type type) {
    *
    * @return CASImpl
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
   CASImpl getCas() {
     return this.cas;
   }
@@ -308,6 +318,7 @@ int getNodeType(Type type) {
    * @return the list
    */
   static List<FSTreeNode> createArrayChildren(int start, int end, List<FSNode> array, FSTreeModel model) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<FSTreeNode> kids = new ArrayList<>();
     final int size = end - start;
     if (size <= ArrayNode.CUTOFF) {
@@ -325,6 +336,7 @@ int getNodeType(Type type) {
         start_i = (start + (i * divisor));
         end_i = start_i + divisor;
         ArrayNode node = new ArrayNode(start_i, end_i - 1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
         List<FSTreeNode> grandkids = createArrayChildren(start_i, end_i, array, model);
         node.setChildren(grandkids);
         kids.add(node);
@@ -352,6 +364,7 @@ int getNodeType(Type type) {
    * @return the tree path
    */
   public TreePath pathToNode(int fsNum) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<FSTreeNode> p = new ArrayList<>();
     p.add(this.root);
     getPathToNode(fsNum, this.root.getChildren(), p);

@@ -184,6 +184,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
    */
   
   public enum CompressLevel {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     None(   Deflater.NO_COMPRESSION),
     Fast(   Deflater.BEST_SPEED),
     Default(Deflater.DEFAULT_COMPRESSION),
@@ -210,7 +211,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
    * Things set up for one instance of this class, and
    * reuse-able
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
   final private TypeSystemImpl ts;  
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
   final private boolean doMeasurements;
   
   final TypeImpl fsArrayType;
@@ -227,6 +230,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   public BinaryCasSerDes4(TypeSystemImpl ts, boolean doMeasurements) {
     this.ts = ts;
     this.doMeasurements = doMeasurements;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
     this.fsArrayType = ts.fsArrayType;
    }
 
@@ -245,11 +250,15 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     SerializationMeasures sm = (doMeasurements) ? new SerializationMeasures() : null;
     CASImpl casImpl = (CASImpl) ((cas instanceof JCas) ? ((JCas)cas).getCas(): cas);
     if (null != trackingMark && !trackingMark.isValid() ) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       throw new CASRuntimeException(CASRuntimeException.INVALID_MARKER, "Invalid Marker.");
     }
     
     Serializer serializer = new Serializer(
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
         casImpl, makeDataOutputStream(out), (MarkerImpl) trackingMark, sm,
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
         compressLevel, compressStrategy, false);
    
     serializer.serialize();
@@ -268,6 +277,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   }
   
   public SerializationMeasures serialize(AbstractCas cas, Object out, Marker trackingMark) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return serialize(cas, out, trackingMark, CompressLevel.Default, CompressStrat.Default);
   }
 
@@ -289,6 +299,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   
   private class Serializer {
     final private DataOutputStream serializedOut;  // where to write out the serialized result
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
     final private CASImpl baseCas;  // cas being serialized
     final private BinaryCasSerDes bcsd;  
     final private MarkerImpl mark;  // the mark to serialize from
@@ -307,6 +319,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //    final private ByteHeap byteHeapObj;
 
     final private boolean isDelta;        // if true, there is a marker indicating the start spot(s)
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     final private boolean isTsi;          // true to include the type system and indexes definition
     final private boolean doMeasurement;  // if true, doing measurements
 //    final private ComprItemRefs fsStartIndexes = (CHANGE_FS_REFS_TO_SEQUENTIAL) ? new ComprItemRefs() : null;
@@ -314,6 +327,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //    final private Integer[] serializedTypeCode2Code = new Integer[ts.getTypeArraySize()]; // needs to be Integer to get comparator choice
 //    final private int[] estimatedZipSize = new int[NBR_SLOT_KIND_ZIP_STREAMS]; // one entry for each output stream kind
     final private OptimizeStrings os;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     final private CompressLevel compressLevel;
     final private CompressStrat compressStrategy;
     
@@ -353,6 +367,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     final private DataOutputStream control_dos;
     final private DataOutputStream strSeg_dos;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     final private CommonSerDesSequential csds;
     /**
      * convert between FSs and "sequential" numbers
@@ -375,8 +390,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      */
 
     private Serializer(CASImpl cas, DataOutputStream serializedOut, MarkerImpl mark,
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
                        SerializationMeasures sm,
                        CompressLevel compressLevel,
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
                        CompressStrat compressStrategy,
                        boolean isTsi) {
       this.baseCas = cas.getBaseCAS();
@@ -391,6 +408,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       this.sm = sm;
       this.compressLevel = compressLevel;
       this.compressStrategy = compressStrategy;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       this.isTsi = isTsi;
       
       doMeasurement = (sm != null);
@@ -406,6 +424,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      
       os = new OptimizeStrings(doMeasurement);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       BinaryCasSerDes6.setupOutputStreams(baseCas, baosZipSources, dosZipSources);  
       
 //      arrayLength_dos = dosZipSources[arrayLength_i];
@@ -428,6 +448,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       strSeg_dos = dosZipSources[strSeg_i];
       
       this.prevFsByType = new TOP[ts.getTypeArraySize()];
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       csds = getCsds(baseCas, isDelta);
       assert null != csds;
     }
@@ -461,6 +482,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
          * Write standard header
          ************************/
         CommonSerDes.createHeader()
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
           .v3()
           .seqVer(2)    // 0 - original, 1 - UIMA-4743, 2 - v3 
           .form4()
@@ -468,6 +490,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           .typeSystemIndexDefIncluded(isTsi)
           .write(serializedOut);
        
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
         if (isTsi) {
           CasIOUtils.writeTypeSystem(baseCas, serializedOut, true);    
         }
@@ -481,6 +504,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
          *******************************************************************************/
         final int origHeapEnd = csds.getHeapEnd();  // csds guaranteed non-null by constructor
         if (isDelta) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           csds.setup(mark, origHeapEnd);  // add additional above the line items to csds
         } // otherwise was initialized when initially set up 
         
@@ -494,14 +518,17 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         
         final List<TOP> localSortedFSs = csds.getSortedFSs();
         for (TOP fs : localSortedFSs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           fs2seq.put(fs, seq++);
   //        seq2fs.put(seq++, fs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
           if (fs instanceof UimaSerializable) {
             ((UimaSerializable)fs)._save_to_cas_data();
           }
         }
         
         // the sort order is on the id (e.g. creation order)
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         List<TOP> newSortedFSs = CASImpl.filterAboveMark(csds.getSortedFSs(), mark);  // returns all if mark not set            
               
         /**************************
@@ -518,6 +545,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         
           // also add in all modified strings
           for (FsChange fsChange : fssModified) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
             if (fsChange.fs instanceof UimaSerializable) {
               ((UimaSerializable)fsChange.fs)._save_to_cas_data();
             }
@@ -527,13 +555,17 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   
         os.optimize();
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         writeStringInfo();
               
         /***************************
          * Prepare to walk main heap
          ***************************/
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
         heapEnd = csds.getHeapEnd();
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         heapStart = isDelta ? origHeapEnd : 0;
   //      
   //      
@@ -556,9 +588,12 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   //        System.out.format("debug End of debug scan, heapStart: %,d heapEnd: %,d%n%n", heapStart, heapEnd);
   //      }
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
         if (TRACE_SER) System.out.println("Form4Ser heapstart: " + heapStart + "  heapEnd: " + heapEnd);
          
         writeVnumber(control_dos, heapEnd - heapStart);   // used for delta heap size to grow the CAS and ending condition on deser loop
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
         if (TRACE_SER) System.out.println("Form4Ser heapstart: " + heapStart + "  heapEnd: " + heapEnd);
         Arrays.fill(prevFsByType, null);
   
@@ -580,7 +615,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           writeFs(fs);
         }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
         if (TRACE_SER) System.out.println("Form4Ser writing index info");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
         serializeIndexedFeatureStructures(csds);
   
         if (isDelta) {
@@ -626,6 +664,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
       only1CommonString = commonStrings.length == 1;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       if (doMeasurements) {
 //        long commonStringsLength = 0;
 //        sm.stringsNbrCommon = commonStrings.length;
@@ -650,6 +690,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }  
 
     private void writeFs(TOP fs) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       TypeImpl type = fs._getTypeImpl();
       int typeCode = type.getCode();
       writeVnumber(typeCode_dos, typeCode);
@@ -698,6 +739,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       }
        
       for (int vi = 0; vi < nbrViews; vi++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
         fi = compressFsxPart(fsIndexes, fi, csds);    // added FSs
         if (isDelta) {
           fi = compressFsxPart(fsIndexes, fi, csds);  // removed FSs
@@ -708,6 +750,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
     private int compressFsxPart(int[] fsIndexes, int fsNdxStart, final CommonSerDesSequential csds) throws IOException {
       int ix = fsNdxStart;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final int nbrEntries = fsIndexes[ix++];
       final int end = ix + nbrEntries;
       writeVnumber(fsIndexes_dos, nbrEntries);  // number of entries
@@ -735,11 +779,14 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     } 
 
     private void serializeArray(TOP fs) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       final int length = serializeArrayLength(fs);
       // special case 0 and 1st value
       if (length == 0) {
         return;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final TypeImpl type = fs._getTypeImpl();
       
       // output values
@@ -814,6 +861,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
     
     private int getPrevArray0HeapRef() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       if (isNoPrevArrayValue((CommonArrayFS)prevFs)) return 0;      
       return fs2seq((TOP)((FSArray)prevFs).get(0));
     }
@@ -831,6 +879,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       SlotKind kind = feat.getSlotKind();      
       switch (kind) {
       case Slot_Int: {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
         final int prev = (prevFs == null) ? 0 : prevFs._getIntValueNc(feat);
         final int v = fs._getIntValueNc(feat);
 //        if (TRACE_INT) System.out.format("writeInt value: %,d prev: %,d%n", v, prev); 
@@ -911,6 +961,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       int nbrEntries = 0;
       
       List<Integer> idxAndLen = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
       for (int i = 0; i < baosZipSources.length; i++) {
         ByteArrayOutputStream baos = baosZipSources[i];
@@ -923,6 +974,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           DeflaterOutputStream cds = new DeflaterOutputStream(baosZipped, deflater, zipBufSize);       
           baos.writeTo(cds);
           cds.close();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
           idxAndLen.add(i);
           if (doMeasurement) {
             idxAndLen.add((int) (sm.statDetails[i].afterZip = deflater.getBytesWritten()));
@@ -1095,6 +1147,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       final long mants = (revMants << 1) + ((raw < 0) ? 1 : 0);
       writeVnumber(double_Exponent_dos, exponent);
       writeVnumber(double_Mantissa_Sign_dos, mants);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       if (TRACE_DOUBLE) {
         System.out.format("write Double: raw = %,d, exponent = %,d, mantissa + lowbit sign: %,d%n", raw, exponent, mants);
       }
@@ -1147,6 +1201,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         // failure only observed when running entire suite of uimaj-core tests via eclipse - mvn test doesn't fail
 //        final int absDiff = Math.abs(diff);
         // this seems to work around
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
         final int absDiff = (diff < 0) ? -diff : diff; 
         writeVnumber(kind, 
             (absV <= absDiff) ? 
@@ -1174,9 +1229,12 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * @param fs feature structure
      */
     private void extractStrings(TOP fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       if (isDelta && !mark.isNew(fs)) {
         return;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       TypeImpl type = fs._getTypeImpl();
      
       if (type.isArray()) {
@@ -1188,6 +1246,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       } else {  // end of is-array        
         for (FeatureImpl feat : type.getFeatureImpls()) {
           if (feat.getSlotKind() == SlotKind.Slot_StrRef) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
             os.add(fs._getStringValueNc(feat));
           }
         } // end of iter over all features
@@ -1200,6 +1260,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      */
     private void extractStringsFromModifications(FsChange fsChange) {
       final TOP fs = fsChange.fs;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final TypeImpl type = fs._getTypeImpl();
       if (fsChange.arrayUpdates != null) {
         if (type.getComponentSlotKind() == SlotKind.Slot_StrRef) {
@@ -1211,8 +1272,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       } else { // end of is array
         BitSet fm = fsChange.featuresModified;
         for (int offset = fm.nextSetBit(0); offset >= 0; offset = fm.nextSetBit(offset + 1)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           FeatureImpl feat = type.getFeatureImpls()[offset];
           if (feat.getSlotKind() == SlotKind.Slot_StrRef) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
             os.add(fs._getStringValueNc(feat));
           }
         } // end of iter over features
@@ -1237,6 +1301,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       short vPrevModShort = 0;
       long vPrevModLong = 0;
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       final CommonSerDesSequential csds;
       
       public SerializeModifiedFSs(CommonSerDesSequential csds) {
@@ -1247,6 +1312,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         
         int iPrevAddr = 0; 
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
         FsChange[] fsChanges = baseCas.getModifiedFSList();  
         // write out number of modified Feature Structures
         writeVnumber(control_dos, fsChanges.length);
@@ -1260,11 +1327,15 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
          *      and recorded as such
          */
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
         for (FsChange fsChange : fsChanges) {
           
           TOP fs = fsChange.fs;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           TypeImpl ti = fs._getTypeImpl();
           final int addr = csds.fs2addr.get(fs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           if (addr == 0) { // https://issues.apache.org/jira/browse/UIMA-5194
             // need to write a dummy entry because we already outputted the number of changes
             writeVnumber(fsIndexes_dos, 0);
@@ -1297,6 +1368,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         final TOP fs = fsChange.fs;
         
         if (fsChange.arrayUpdates == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           FeatureImpl[] features = fs._getTypeImpl().getFeatureImpls();
           int iPrevOffsetInFs = 0;
           final BitSet bs = fsChange.featuresModified;
@@ -1311,6 +1383,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
             
             switch (kind) {
             case Slot_Boolean:
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
               byte_dos.write(fs._getBooleanValueNc(feat) ? 1 : 0);
               break;
               
@@ -1364,6 +1438,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           }  // end of looping for all modified slots in this FS
         } else { // end of processing of features
           // heap stored arrays
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           TypeImpl type = fs._getTypeImpl();
           SlotKind kind = type.getComponentSlotKind();
           int kindi = kind.ordinal();
@@ -1407,6 +1482,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
       private void writeAuxHeapMods(FsChange fsChange) throws IOException {
         final TOP fs = fsChange.fs;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         final TypeImpl type = fs._getTypeImpl();
         
         int iPrevOffset = 0;
@@ -1474,6 +1550,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
    */
   private class Deserializer {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
     final private CASImpl baseCas;  // cas being deserialized into
     final private CASImpl ivCas;    // initial view cas - where by default new fs are created
     final private BinaryCasSerDes bcsd;  
@@ -1506,6 +1584,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      *  actions set slot values 
      */
     final private List<Runnable> fixupsNeeded = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
     
     final private StringHeap stringHeapObj = new StringHeap();
@@ -1563,6 +1642,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * Also used for array refs, for the 1st entry in the array
      *   - feature slot 0 is used for this when reading (not when writing - could be made more uniform)
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
     final private int[] [] prevFsRefsByType = new int[ts.getTypeArraySize()][];
     private int[] prevFsRefs;
     
@@ -1587,9 +1668,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * @param deserIn input data
      * @throws IOException passthru
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     Deserializer(CASImpl cas, DataInput deserIn, boolean isDelta) throws IOException {
       this.baseCas = cas.getBaseCAS();
       this.ivCas = baseCas.getInitialView();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       this.bcsd = cas.getBinaryCasSerDes();     
       this.csds = getCsds(baseCas, isDelta);
       this.deserIn = deserIn;
@@ -1597,6 +1680,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
       final int nbrEntries = deserIn.readInt();  // number of compressed streams
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2493
       IntVector idxAndLen = new IntVector(nbrEntries * 3);
       
       for (int i = 0; i < nbrEntries; i++) {
@@ -1631,6 +1715,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
     
     private void deserialize(CommonSerDes.Header h) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       if (TRACE_DES) System.out.println("Form4Deser starting");
           
 //      fs2seq.clear();
@@ -1657,6 +1744,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
        ***************************/
       
       int seq = 1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       for (TOP fs : csds.getSortedFSs()) {  // only non-empty if delta; and then it's from prev serialization
 //        fs2seq.put(fs, seq);
         seq2fs.put(seq++, fs);
@@ -1703,12 +1791,15 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       int arraySize = 0;
       Arrays.fill(prevFsByType, null);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
       if (TRACE_DES) System.out.println("Form4Deser heapStart: " + heapStart + "  heapEnd: " + heapEnd);
       for (int iHeap = heapStart; iHeap < heapEnd; iHeap += type.getFsSpaceReq(arraySize)) {
           final int typeCode = readVnumber(typeCode_dis);
   //        final int adjTypeCode = typeCode + ((this.bcsd.isBeforeV3 && typeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
   //            ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
   //            : 0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5272
            type = ts.getTypeForCode(typeCode);
           
           prevFs = prevFsByType[typeCode]; // could be null;
@@ -1716,10 +1807,12 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           
           if (type.isArray()) {
             currentFs = readArray(iHeap, type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
             arraySize = ((CommonArrayFS)currentFs).size();
           } else {
             if (!ts.annotBaseType.subsumes(type) &&  // defer subtypes of AnnotationBase
                 !(ts.sofaType == type)) {            // defer sofa types
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
               createCurrentFs(type, ivCas);              
             } else {
               currentFs = null;
@@ -1751,6 +1844,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
                 // sofa was already created, by an annotationBase subtype deserialized prior to this one
                 currentFs = (TOP) baseCas.getView(sofaName).getSofa();
               } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
                 currentFs = baseCas.createSofa(sofaNum, sofaName, null);
               }
             } else {
@@ -1764,14 +1858,18 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   //              // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
   //              // would end up creating additional instances
   //            } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
                 createCurrentFs(type, view);
   //            }
             }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
             if (type.getCode() == TypeSystemConstants.docTypeCode) { 
               boolean wasRemoved = baseCas.checkForInvalidFeatureSetting(currentFs, baseCas.getAddbackSingle());
               for (Runnable r : singleFsDefer) {
                 r.run();
               }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
               baseCas.addbackSingleIfWasRemoved(wasRemoved, currentFs);
             } else {
               for (Runnable r : singleFsDefer) {
@@ -1790,19 +1888,24 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   //        fs2seq.put(currentFs, s2);  // 1 origin to match v2
           seq2fs.put(s2, currentFs);
           
+//IC see: https://issues.apache.org/jira/browse/UIMA-5272
           prevFsByType[typeCode] = currentFs;
       }
       csds.setHeapEnd(heapEnd);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
 //      if (TRACE_DES) System.out.println("Form4Deser running deferred fixups after all FSs deserialized");
       for (Runnable r : fixupsNeeded) {
         r.run();
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       for (Runnable r : uimaSerializableFixups) {
         r.run();
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
       if (TRACE_DES) System.out.println("Form4Deser indexing FSs");
       readIndexedFeatureStructures();
 
@@ -1816,7 +1919,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
     
     private void createCurrentFs(TypeImpl type, CASImpl view) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
       currentFs = view.createFS(type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       if (currentFs instanceof UimaSerializable) {
         UimaSerializable ufs = (UimaSerializable) currentFs;
         uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
@@ -1824,6 +1930,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
     
     private TOP readArray(int iHeap, TypeImpl type) throws IOException { 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       final int length = readArrayLength();
       TOP fs = ivCas.createArray(type, length); // create in default view - initial view (iv)cas
       if (length == 0) {
@@ -1928,6 +2036,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         if (feat == ts.sofaNum) {
           sofaNum = i;
         } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
           maybeStoreOrDefer((lfs) -> lfs._setIntValueNcNj(feat, i));
         }
         break;
@@ -1973,6 +2083,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
             if (feat == ts.sofaArray) {
               maybeStoreOrDefer_slotFixups(vh, ref_fs -> ((Sofa)lfs).setLocalSofaData(ref_fs));
             } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
               maybeStoreOrDefer_slotFixups(vh, ref_fs -> lfs._setFeatureValueNcNj(feat, ref_fs));
             }
           });
@@ -2002,6 +2114,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         }
         // other user-defined custom sofa extended string features (if any)
         //   as well as non-sofa FS features, are set by the following code
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
         maybeStoreOrDefer(lfs -> lfs._setStringValueNcNj(feat, s));
         break;
       }
@@ -2043,6 +2157,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         }
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       bcsd.reinitIndexedFSs(fsIndexes.getArray(), isDelta,
           i ->  
               seq2fs.get(i),  // written on separate line for Eclipse breakpoint control
@@ -2161,6 +2277,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
     
     private DataInput getInputStream(SlotKind kind) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       return dataInputs[kind.ordinal()];
     }
 
@@ -2173,6 +2292,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
 
     private void readIntoByteArray(byte[] ba) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       byte_dis.readFully(ba);
     }
 
@@ -2235,6 +2356,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       if (kind == SlotKind.Slot_HeapRef) {
         return (prevFsRefs == null) ? 0 : prevFsRefs[(feat == null) ? 0 : feat.getOffset()]; 
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
       return (prevFs == null) ? 0 : prevFs._getIntLikeValue(kind,  feat);
     }
     
@@ -2251,6 +2374,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     
     private int readDiff(DataInput in, int prev) throws IOException {
       final long encoded = readVlong(in);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final boolean isDelta1 = (0 != (encoded & 1L));
       final boolean isNegative = (0 != (encoded & 2L));
       int v = (int)(encoded >>> 2);
@@ -2260,6 +2384,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         }
         v = -v;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (isDelta1) {
         v = v + prev;
       }
@@ -2267,6 +2392,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
         
     private long readLongOrDouble(SlotKind kind, long prev) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       if (kind == SlotKind.Slot_DoubleRef) {
         return readDouble();
       }
@@ -2308,6 +2435,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       }
       long mants = readVlong(double_Mantissa_Sign_dis);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       long raw = decodeDouble(mants, exponent);
       if (TRACE_DOUBLE) {
         System.out.format("read Double: raw = %,d, exponent = %,d, mantissa + lowbit sign: %,d%n", raw, exponent, mants);
@@ -2335,6 +2464,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     private String readString() throws IOException {
       int length = decodeIntSign(readVnumber(strLength_dis));
       if (0 == length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
         return null;
       }
       if (1 == length) {
@@ -2380,13 +2511,17 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           iHeap = readVnumber(fsIndexes_dis) + iPrevHeap;
           // convention for a skipped entry: written as 0
           boolean isSkippedEntry = iHeap == iPrevHeap;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           if (isSkippedEntry) {
             continue;
           } else {
             iPrevHeap = iHeap;
           }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
           TOP fs = csds.addr2fs.get(iHeap);
           assert(fs != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           TypeImpl type = fs._getTypeImpl();
                     
           final int numberOfModsInThisFs = readVnumber(fsIndexes_dis); 
@@ -2448,6 +2583,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       private void readModifiedMainHeap(int numberOfMods, TOP fs, TypeImpl type) throws IOException {
         final boolean isArray = type.isArray();
         int iPrevOffsetInFs = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         final FeatureImpl[] features = isArray ? null : type.getFeatureImpls();
                
         wasRemoved = false;  // set to true when removed from index to stop further testing
@@ -2458,6 +2594,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           final int offsetInFs = readVnumber(fsIndexes_dis) + iPrevOffsetInFs;  // this is encoded in v2 style, -1 for feat offset, -2 for array indexes
           iPrevOffsetInFs = offsetInFs;
           
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           FeatureImpl feat = (features == null) ? null : features[offsetInFs - 1]; // -1 because v2 records it this way
           
           final SlotKind kind = isArray ? type.getComponentSlotKind() : feat.getSlotKind();
@@ -2534,6 +2671,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
             int v = readDiff(heapRef_dis, vPrevModHeapRef);
             vPrevModHeapRef = v;
             
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
             final TOP ref_fs = seq2fs(v); // v2 stores these this way 
 //            assert(ref_fs != null);  // it could be a modification which set the slot to null
             if (isArray) {
@@ -2901,7 +3039,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
    */
   
   public static void dumpCas(CASImpl cas) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
     CommonSerDesSequential csds = new CommonSerDesSequential(cas);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     csds.setup(null, 1);
     
     for (TOP fs : csds.getSortedFSs()) {

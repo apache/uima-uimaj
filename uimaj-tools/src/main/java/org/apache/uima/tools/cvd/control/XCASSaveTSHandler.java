@@ -68,6 +68,7 @@ public class XCASSaveTSHandler implements ActionListener {
     int rc = fileChooser.showSaveDialog(this.main);
     if (rc == JFileChooser.APPROVE_OPTION) {
       File tsFile = fileChooser.getSelectedFile();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1866
       if (!this.main.confirmOverwrite(tsFile)) {
         return;
       }

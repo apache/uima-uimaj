@@ -76,6 +76,7 @@ public class ArrayNode extends FSTreeNode {
    */
   // Compute the degree of i: (number of decimals of (i-1)) - 1.
   static int degree(int i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-638
     if (i == 1) {
       // Avoid log10(0)
       return 0;

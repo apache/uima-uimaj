@@ -121,6 +121,7 @@ public class RemoteLauncher {
         
         inputEncoding = args[index++];
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
       else if (INPUT_LANGUAGE_PARAM.equals(arg)) {
         if (index >= args.length) {
           return false;
@@ -158,11 +159,13 @@ public class RemoteLauncher {
       // put document text in CAS
       aCAS.setDocumentText(document);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
       if (inputLanguage != null)
         aCAS.setDocumentLanguage(inputLanguage);
     }
     else if (InputFormat.CAS.equals(format)) {
       if (inputFile.getName().endsWith(".xmi")) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
         try (FileInputStream inputStream = new FileInputStream(inputFile)) {
           XmiCasDeserializer.deserialize(inputStream, aCAS, true);
         } catch (SAXException e) {
@@ -194,6 +197,7 @@ public class RemoteLauncher {
         inputDirectory = inputResource;
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
       String inputFilePath = inputFile.getPath();
       String relativeInputFilePath;
       if (inputFilePath.startsWith(inputDirectory.getPath())) {
@@ -219,6 +223,7 @@ public class RemoteLauncher {
         outputFile.getParentFile().mkdirs();
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
       try (FileOutputStream out = new FileOutputStream(outputFile)) {
         // write XMI
         XmiCasSerializer ser = new XmiCasSerializer(aCAS.getTypeSystem());
@@ -226,6 +231,9 @@ public class RemoteLauncher {
         try {
           ser.serialize(aCAS, xmlSer.getContentHandler());
         } catch (SAXException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
           throw new IOException(e.getMessage());
         }
       }
@@ -340,6 +348,7 @@ public class RemoteLauncher {
     
     findAndProcessFiles(inputResource, fileFilter, ae, cas);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2240
     ae.collectionProcessComplete(new ProcessTrace_impl());
     ae.destroy();
   }

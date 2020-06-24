@@ -35,10 +35,12 @@ public class ErrorAnnotator extends Annotator_ImplBase implements TextAnnotator 
    * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(CAS,ResultSpecification)
    */
   public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     if ("ERROR".equals(aCAS.getDocumentText())) {
       throw new RuntimeException("Test Error");
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
     if ("LOG".equals(aCAS.getDocumentText())) {
       try {
         getContext().getLogger().warn("Test Warn Log");

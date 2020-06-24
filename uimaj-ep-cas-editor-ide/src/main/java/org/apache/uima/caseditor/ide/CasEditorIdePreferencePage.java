@@ -39,6 +39,7 @@ public class CasEditorIdePreferencePage extends FieldEditorPreferencePage
   protected void createFieldEditors() {
    
     // should the editor use the last selected type system to open the cas?
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     BooleanFieldEditor mEditorRememberTypesystem = new BooleanFieldEditor(CasEditorIdePreferenceConstants.CAS_EDITOR_REMEMBER_TYPESYSTEM,
         "Use the previously selected type system to open a CAS", getFieldEditorParent());
     addField(mEditorRememberTypesystem);

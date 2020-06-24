@@ -52,6 +52,9 @@ public abstract class CasFlow_ImplBase implements Flow {
    * @see Flow#newCasProduced(AbstractCas, String)
    */
   public final Flow newCasProduced(AbstractCas newCas, String producedBy)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws AnalysisEngineProcessException {
     if (newCas instanceof CAS) {
       return newCasProduced((CAS) newCas, producedBy);
@@ -70,6 +73,7 @@ public abstract class CasFlow_ImplBase implements Flow {
    * @see org.apache.uima.flow.Flow#continueOnFailure(String, java.lang.Exception)
    */
   public boolean continueOnFailure(String failedAeKey, Exception failure) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
     return false;
   }
 

@@ -107,6 +107,7 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
    * @param cas the cas
    */
   public void populate(AnalysisEngineDescription analysisEngine, AnalysisEngineMetaData aeMetaData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
           CAS cas) {
     tree = generateTreeView(analysisEngine, aeMetaData, cas);
 
@@ -136,6 +137,7 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
    */
   private JTree generateTreeView(AnalysisEngineDescription analysisEngine,
           AnalysisEngineMetaData aeMetaData, CAS cas) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
     DefaultMutableTreeNode root = new DefaultMutableTreeNode(ROOT);
     // We won't actually see this.
@@ -154,6 +156,7 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
 
     Iterator it = annotationTypes.iterator();
     String annotationTypeName = "";
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (it.hasNext()) {
       annotationTypeName = (String) it.next();
 
@@ -173,6 +176,7 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
           // System.out.println("Can\'t get feature names for: "
           // + annotationTypeName);
           JOptionPane.showMessageDialog(null,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "Can\'t get feature names for: " + annotationTypeName, "XML error",
                   JOptionPane.ERROR_MESSAGE);
         }

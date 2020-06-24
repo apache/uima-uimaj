@@ -50,6 +50,7 @@ import org.apache.uima.resource.ResourceServiceStub;
  */
 public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub implements
         AnalysisEngineServiceStub {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** Whether attachments should be used to send binary-serialized data. */
   private boolean mUseAttachments;
@@ -66,6 +67,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
    *           if <code>aEndpoint</code> is not a valid URL
    */
   public AxisAnalysisEngineServiceStub(String aEndpoint, Integer aTimeout)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws MalformedURLException {
     this(aEndpoint, aTimeout, false);
   }
@@ -84,6 +86,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
    *           if <code>aEndpoint</code> is not a valid URL
    */
   public AxisAnalysisEngineServiceStub(String aEndpoint, Integer aTimeout, boolean aUseAttachments)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws MalformedURLException {
     super(aEndpoint, aTimeout);
     mUseAttachments = aUseAttachments;
@@ -100,6 +103,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
   public void callProcess(CAS aCAS) throws ResourceServiceException {
     final QName operationQName = new QName("http://uima.apache.org/analysis_engine", "process");
     final QName resultSpecTypeQName = new QName("http://uima.apache.org/analysis_engine",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "resultSpecification");
     final QName serviceDataCargoTypeQName = new QName("http://uima.apache.org/analysis_engine",
             "serviceDataCargo");
@@ -113,6 +117,8 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
       call.setOperationName(operationQName);
 
       call.registerTypeMapping(ResultSpecification.class, resultSpecTypeQName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new XmlSerializerFactory(), new XmlDeserializerFactory());
       call.registerTypeMapping(ServiceDataCargo.class, serviceDataCargoTypeQName,
               new BinarySerializerFactory(mUseAttachments), new BinaryDeserializerFactory());
@@ -129,6 +135,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
         ObjectInputStream objStream = null;
         try {
           DataHandler dataHandler = AttachmentUtils
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getActivationDataHandler((AttachmentPart) result);
           Object content = dataHandler.getContent();
           // System.out.println(content.getClass().getName());
@@ -152,6 +159,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
         resultCargo = (ServiceDataCargo) result;
       } else {
         throw new ResourceServiceException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 ResourceServiceException.UNEXPECTED_SERVICE_RETURN_VALUE_TYPE, new Object[] {
                     ServiceDataCargo.class.getName(),
                     resultCargo == null ? "null" : resultCargo.getClass().getName() });
@@ -165,6 +173,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
       throw new ResourceServiceException(e);
     } catch (java.rmi.RemoteException e) {
       throw new ResourceServiceException(e);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     } catch (CASException e) {
       throw new ResourceServiceException(e);
     }

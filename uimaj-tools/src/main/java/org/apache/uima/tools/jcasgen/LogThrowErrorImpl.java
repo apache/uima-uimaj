@@ -41,6 +41,7 @@ public class LogThrowErrorImpl implements IError {
   @Override
   public void newError(int severity, String message, Exception exception) {
     Logger log = UIMAFramework.getLogger();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     log.log(logLevels[severity], "JCasGen: " + message, exception);
     if (IError.WARN < severity)
       throw new ErrorExit();

@@ -58,6 +58,7 @@ public class FixedFlowControllerTest {
   
   @Before
   public void setUp() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     analysisEngineMetaDataMap = new HashMap<>();
     AnalysisEngineMetaData delegateMd = new AnalysisEngineMetaData_impl();
     delegateMd.setOperationalProperties(new OperationalProperties_impl());
@@ -75,6 +76,7 @@ public class FixedFlowControllerTest {
     UimaContextAdmin rootContext = UIMAFramework.newUimaContext(
             UIMAFramework.getLogger(), UIMAFramework.newDefaultResourceManager(),
             UIMAFramework.newConfigurationManager());
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     Map<String, String> aSofaMappings = Collections.emptyMap();
     FlowControllerContext fcContext = new FlowControllerContext_impl(
             rootContext, "_FlowController", aSofaMappings,
@@ -143,6 +145,7 @@ public class FixedFlowControllerTest {
     analysisEngineMetaDataMap.put("key4", delegateMd);    
     analysisEngineMetaDataMap.put("key5", delegateMd);    
     //then notify FC
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> newAeKeys = new ArrayList<>();
     newAeKeys.add("key4");
     newAeKeys.add("key5");
@@ -193,6 +196,7 @@ public class FixedFlowControllerTest {
     
     //remove "key2"
     analysisEngineMetaDataMap.remove("key2");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> removedKeys = new ArrayList<>();
     removedKeys.add("key2");
     fixedFlowController.removeAnalysisEngines(removedKeys);
@@ -223,6 +227,7 @@ public class FixedFlowControllerTest {
     
     FlowControllerDescription desc2 = getXMLParser().parseFlowControllerDescription(
         new XMLInputSource("src/test/resources/FixedFlowControllerTest/FixedFlowController.xml"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-6200
 
     StringWriter desc1Writer = new StringWriter();
     desc1.toXML(desc1Writer);

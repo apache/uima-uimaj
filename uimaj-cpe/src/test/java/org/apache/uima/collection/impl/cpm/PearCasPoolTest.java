@@ -66,6 +66,7 @@ public class PearCasPoolTest extends TestCase {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
     
     // create pear install directory in the target
+//IC see: https://issues.apache.org/jira/browse/UIMA-623
     pearInstallDir = new File(PEAR_INSTALL_DIR);
     pearInstallDir.mkdirs();
   }
@@ -89,6 +90,7 @@ public class PearCasPoolTest extends TestCase {
     ResourceManager rm = UIMAFramework.newDefaultResourceManager();
     
     // check temporary working directory
+//IC see: https://issues.apache.org/jira/browse/UIMA-623
     if (this.pearInstallDir == null)
       throw new FileNotFoundException("PEAR install directory not found");
     

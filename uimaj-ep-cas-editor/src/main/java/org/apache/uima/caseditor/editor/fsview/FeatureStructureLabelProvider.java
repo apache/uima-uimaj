@@ -63,6 +63,7 @@ public final class FeatureStructureLabelProvider implements ILabelProvider {
       }
 
       return structure.getType().getShortName() + " (id=" +
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
       		structure._id() + ")";
     }
     else {

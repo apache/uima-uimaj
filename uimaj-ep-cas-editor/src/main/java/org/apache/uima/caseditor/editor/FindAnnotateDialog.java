@@ -119,6 +119,7 @@ class FindAnnotateDialog extends Dialog {
    * @param findReplaceTarget the find replace target
    * @param modeType the mode type
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1418
   FindAnnotateDialog(Shell parentShell, ICasDocument document, IFindReplaceTarget findReplaceTarget, Type modeType) {
     super(parentShell);
     this.document = document;
@@ -173,10 +174,12 @@ class FindAnnotateDialog extends Dialog {
     typeData.horizontalAlignment =  SWT.LEFT;
     typeLabel.setLayoutData(typeData);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     typeField = new TypeCombo(panel);
     typeField.setInput(document.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION),
             document.getCAS().getTypeSystem());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1418
     typeField.select(modeType);
     GridData typeFieldData = new GridData();
     typeFieldData.horizontalAlignment = SWT.FILL;
@@ -222,6 +225,8 @@ class FindAnnotateDialog extends Dialog {
    * @param parent the parent
    */
   private void createAnnotationButtons(Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1419
+//IC see: https://issues.apache.org/jira/browse/UIMA-1419
     Composite panel = new Composite(parent, SWT.NONE);
     GridLayout layout = new GridLayout();
     layout.marginWidth = 0;
@@ -391,6 +396,7 @@ class FindAnnotateDialog extends Dialog {
 
     createDirectionGroup(panel);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1419
     createAnnotationButtons(panel);
     
     Composite buttonFindAnnotatePanel = createButtonSection(panel);
@@ -442,6 +448,7 @@ class FindAnnotateDialog extends Dialog {
   private AnnotationFS annotateSelection() {
     Point selection = findReplaceTarget.getSelection();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1419
     AnnotationFS newAnnotation = document.getCAS().createAnnotation(
             typeField.getType(), selection.x, selection.x + selection.y);
     document.getCAS().addFsToIndexes(newAnnotation);
@@ -455,6 +462,7 @@ class FindAnnotateDialog extends Dialog {
 
     if (FIND_BUTTON == buttonID) {
       findAndSelectNext();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1419
       currentAnnotation = null;
     }
     else if (ANNOTATE_BUTTON == buttonID) {
@@ -471,12 +479,14 @@ class FindAnnotateDialog extends Dialog {
     }
     else if (CLOSE_BUTTON == buttonID) {
       close();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1761
       return;
     }
     else {
       throw new TaeError("Unkown button!");
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1419
     updateAnnotationButtons();
   }
 }

@@ -147,6 +147,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * public for test case
    */
   public static final boolean IS_DISABLE_TYPESYSTEM_CONSOLIDATION = // true || // debug
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       Misc.getNoValueSystemProperty(DISABLE_TYPESYSTEM_CONSOLIDATION);
    
 //  private final static String DECOMPILE_JCAS = "uima.decompile.jcas";
@@ -251,6 +252,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //           );
 //  }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
   final private static Map<TypeSystemImpl, WeakReference<TypeSystemImpl>> committedTypeSystems = Collections.synchronizedMap(new WeakHashMap<>());
   
 //  /**  OBSOLETE with BETA and later levels
@@ -287,6 +289,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public final TypeImpl      stringType;
   public final TypeImpl      floatType;
          final TypeImpl      arrayBaseType;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
          final TypeImpl_array intArrayType;
          final TypeImpl_array floatArrayType;
          final TypeImpl_array stringArrayType;
@@ -309,6 +312,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
          
 //         final TypeImpl_javaObject javaObjectType;   // for Map, List, etc.
 //         final TypeImpl_array javaObjectArrayType;   // for arrays of these
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
          final TypeImpl      listBaseType;
   public final TypeImpl_list intListType;
   public final TypeImpl_list floatListType;
@@ -415,6 +419,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
   // saw evidence that in some cases the setup is called on the same instance on two threads
   // must be volatile to force the right memory barriers
+//IC see: https://issues.apache.org/jira/browse/UIMA-4017
   volatile boolean areBuiltInTypesSetup = false;
   
 //  private final DecompilerSettings decompilerSettings = (IS_DECOMPILE_JCAS) ? DecompilerSettings.javaDefaults() : null;
@@ -429,6 +434,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   FeatureImpl sofaString;
   FeatureImpl sofaUri;
   FeatureImpl annotBaseSofaFeat;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
 
   /**
    * Cache for implementing map from type code -> FsGenerator
@@ -471,6 +477,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     // Add basic data types.
     intType = new TypeImpl_primitive(CAS.TYPE_NAME_INTEGER, this, topType, int.class);
     floatType = new TypeImpl_primitive(CAS.TYPE_NAME_FLOAT, this, topType, float.class);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     stringType = new TypeImpl_string(CAS.TYPE_NAME_STRING, this, topType, String.class);
     
     // Add arrays.
@@ -487,10 +494,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     listBaseType = new TypeImpl(CAS.TYPE_NAME_LIST_BASE, this, topType);
     
     // FS list
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     fsListType = new TypeImpl_list(CAS.TYPE_NAME_FS_LIST, topType, this, listBaseType, FSList.class);
     fsEListType = new TypeImpl_list(CAS.TYPE_NAME_EMPTY_FS_LIST, topType, this, fsListType, EmptyFSList.class);
     fsNeListType = new TypeImpl_list(CAS.TYPE_NAME_NON_EMPTY_FS_LIST, topType, this, fsListType, NonEmptyFSList.class);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, fsNeListType, fsListType, true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
     addFeature(CAS.FEATURE_BASE_NAME_HEAD, fsNeListType, topType, true);
     
     // Float list
@@ -540,6 +550,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
     // Annotations
     annotBaseType = new TypeImpl_annotBase(CAS.TYPE_NAME_ANNOTATION_BASE, this, topType, AnnotationBase.class);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     annotBaseSofaFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofaType, false);
     
     annotType = new TypeImpl_annot(CAS.TYPE_NAME_ANNOTATION, this, annotBaseType, Annotation.class);
@@ -617,6 +628,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //    }
     
     // Lock individual types.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     setTypeFinal(intType);
     setTypeFinal(floatType);
     setTypeFinal(stringType);
@@ -640,6 +652,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     setTypeFinal(doubleArrayType);
 //    setTypeFinal(javaObjectArrayType);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     setTypeFinal(fsListType);
     setTypeFinal(floatListType);
     setTypeFinal(stringListType);
@@ -729,6 +742,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   final int getSmallestFeature() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
     return LEAST_FEATURE_CODE;
   }
 
@@ -737,6 +751,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   public Vector<Feature> getIntroFeatures(Type type) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Vector<Feature> feats = new Vector<>();
     List<Feature> appropFeats = type.getFeatures();
     final int max = appropFeats.size();
@@ -803,6 +818,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public TypeImpl getType(String typeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return typeName2TypeImpl.get(typeName);
   }
 
@@ -827,6 +843,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   @Override
   public FeatureImpl getFeatureByFullName(String featureName) {
     int split = featureName.indexOf(TypeSystem.FEATURE_SEPARATOR);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return getFeature(featureName.substring(0,  split), featureName.substring(split + 1));
   }
 
@@ -841,10 +858,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
   static final String getArrayComponentName(String arrayTypeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-476
     return arrayTypeName.substring(0, arrayTypeName.length() - 2);
   }
   
   static boolean isArrayTypeNameButNotBuiltIn(String typeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return typeName.endsWith(ARRAY_TYPE_SUFFIX);
   }
 
@@ -885,6 +904,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   private void checkTypeSyntax(String name) throws CASAdminException {
     if (!TypeSystemUtils.isTypeName(name)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       throw new CASAdminException(CASAdminException.BAD_TYPE_SYNTAX, name);
     }
   }
@@ -914,6 +934,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
             
     final TypeImpl supertypeimpl = (TypeImpl) superType;
     TypeImpl ti = supertypeimpl.isAnnotationType() ? 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
                     new TypeImpl_annot    (typeName, this, supertypeimpl, Annotation.class) :
                   supertypeimpl.isAnnotationBaseType() ?
                     new TypeImpl_annotBase(typeName, this, supertypeimpl, AnnotationBase.class) :
@@ -930,6 +951,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   
   @Override
   public Feature addFeature(String featureName, Type domainType, Type rangeType)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-408
       throws CASAdminException {
     return addFeature(featureName, domainType, rangeType, true);
   }
@@ -991,6 +1014,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return
    */
   static SlotKind getSlotKindFromType(Type rangeType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     SlotKind slotKind = rangeType.isStringOrStringSubtype() 
                          ? Slot_StrRef 
                          : slotKindsForNonArrays.get(rangeType.getName());
@@ -1025,6 +1049,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public TypeImpl getTopType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return this.topType;
   }
   
@@ -1042,6 +1067,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public List<Type> getProperlySubsumedTypes(Type type) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return ((TypeImpl)type).getAllSubtypes().collect(Collectors.toList());
   }
 
@@ -1054,11 +1080,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public Vector<Type> getDirectlySubsumedTypes(Type type) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new Vector<>(getDirectSubtypes(type));
   }
 
   @Override
   public List<Type> getDirectSubtypes(Type type) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     TypeImpl ti = (TypeImpl) type;
     return Collections.<Type>unmodifiableList(ti.getDirectSubtypes());
   }
@@ -1147,11 +1175,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     if (superType == subType) 
       return true;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     if (isCommitted()) {
       return ((TypeImpl)superType).subsumes((TypeImpl)subType);
     }
     
     if (superType.isArray()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       return ((TypeImpl_array)superType).subsumes((TypeImpl)subType);  // doesn't need to be committed
     }
         
@@ -1347,6 +1377,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     sb.append(String.format("Type System <%,d>:%n", System.identityHashCode(this)));
     topType.prettyPrintWithSubTypes(sb, 2); // 2 is indent  
     return sb.toString();
@@ -1366,9 +1397,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   @Override
   public TypeSystemImpl commit(ClassLoader cl) {
     synchronized(this) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
       if (this.locked) {
         // is a no-op if already loaded for this Class Loader
         // otherwise, need to load and set up generators for this class loader
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
+//IC see: https://issues.apache.org/jira/browse/UIMA-5712
         getGeneratorsForClassLoader(cl, false);  // false - is not pear     
         return this; // might be called multiple times, but only need to do once
       }
@@ -1384,14 +1418,17 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // because it will call the type system iterator
   //    this.casMetadata.setupFeaturesAndCreatableTypes();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       if (!IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
         WeakReference<TypeSystemImpl> prevWr = committedTypeSystems.get(this);
         if (null != prevWr) {
           TypeSystemImpl prev = prevWr.get();
           if (null != prev) {            
             // the following is a no-op if the generators already set up for this class loader
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
             prev.getGeneratorsForClassLoader(cl, false);  // false - is not pear
             
+//IC see: https://issues.apache.org/jira/browse/UIMA-5976
             if (IS_TRACE_JCAS_EXPAND) {
               System.out.format("debug type system impl commit: consolidated a type system with a previous one, %d%n", prev.hashCode());
               System.out.println(Misc.getCallers(1, 50).toString());
@@ -1402,6 +1439,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
         }      
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
       topType.computeDepthFirstCode(1); // fixes up ordering, supers before subs. also sets hasRef.
       
       computeFeatureOffsets(topType, 0);
@@ -1430,6 +1469,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //      fsClassRegistry = new FSClassRegistry(this, true);
 //      FSClassRegistry.loadAtTypeSystemCommitTime(this, true, cl);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       this.locked = true;
       
       if (!IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
@@ -1439,9 +1479,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // this call is here for the case where a commit happens, but no subsequent
       //   new CAS or switch classloader call is done.  For example, a "reinit" in an existing CAS
       // This call internally calls the code to load JCas classes for this class loader.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5704
       getGeneratorsForClassLoader(cl, false);  // false - is not pear    
 //      FSClassRegistry.loadJCasForTSandClassLoader(this, true, cl);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5976
       if (IS_TRACE_JCAS_EXPAND) {
         System.out.format("debug type system impl commited new type system and loaded JCas %d%n", this.hashCode());
         System.out.println(Misc.getCallers(1, 50).toString());
@@ -1499,6 +1541,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     // all the JCas slots come first, because their offsets can't easily change
     // this includes any superClass of a jcas class which is not in this type system
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5712
     if (! skip_loading_user_jcas) {
       JCasClassInfo jcci = getJcci(ti);
       
@@ -1511,6 +1554,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       if (fi.getAdjustedOffset() == -1) {
         // wasn't set due to jcas class, above
         setFeatureAdjustedOffset(fi, tempIntFis, tempRefFis, tempNsr);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5976
         if (debug) {
           System.out.println("debug setting adjOffset for feat: " + fi.getShortName() + " to " + fi.getAdjustedOffset());
         }
@@ -1644,6 +1688,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
           added.add(fi);
         }
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5976
       if (fi.getAdjustedOffset() != -1) {
         if (debug) {
 	        System.out.println("debug fi adjusted offset not -1, is " + fi.getAdjustedOffset());
@@ -1660,6 +1705,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     }
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5976
   void setFeatureAdjustedOffset(FeatureImpl fi, List<FeatureImpl> tempIntFis, List<FeatureImpl> tempRefFis, List<FeatureImpl> tempNsr) {
     boolean isInt = fi.isInInt;
     fi.setAdjustedOffset(isInt ? nextI : nextR);
@@ -1705,6 +1751,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   private void computeFeatureOffsets(TypeImpl ti, int next) {
     
     for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       fi.setOffset(next ++);
     }
         
@@ -1745,6 +1792,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return true if type is AnnotationBase or a subtype of it
    */
   public boolean isAnnotationBaseOrSubtype(int typecode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     return isAnnotationBaseOrSubtype(ll_getTypeForCode(typecode));
   }
 
@@ -1812,6 +1860,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public Type getArrayType(Type componentType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     TypeImpl ti = (TypeImpl) arrayComponentTypeToArrayType.get(componentType);
     if (null == ti) { 
       // This path only happens when 
@@ -1834,6 +1883,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
     TypeImpl existingTi = getType(typeName);
     if (existingTi != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (!(existingTi instanceof TypeImpl_stringSubtype)) {
         throw new CASAdminException(CASAdminException.STRING_SUBTYPE_REDEFINE_NAME_CONFLICT,
             typeName, existingTi.toString());
@@ -1851,6 +1901,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     }
 
     // Create the type.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     TypeImpl_stringSubtype type = new TypeImpl_stringSubtype(typeName, this, supertype, allowedValues);
     type.setFeatureFinal();
     type.setInheritanceFinal();
@@ -1863,7 +1914,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @param componentType the component type
    * @return a TypeImplArray 
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   TypeImpl_array addArrayType(Type componentType, SlotKind slotKind, boolean isHeapStoredArray, Class<?> javaClass) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     if (isCommitted()) {
       throw new CASRuntimeException(CASRuntimeException.ADD_ARRAY_TYPE_AFTER_TS_COMMITTED, 
           componentType.getName() + TypeSystemImpl.ARRAY_TYPE_SUFFIX);
@@ -1905,6 +1958,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
   private FeatureImpl getFeature(String typeName, String featureShortName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     Type type = getType(typeName);
     if (null == type) {
 //      System.out.println("debug - get feature for typename: " + typeName + ", feature: " + featureShortName 
@@ -2091,8 +2145,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * from the synchronized getTypeSystemMapper method
    *********************************************************/
   public final Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers =
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       new WeakHashMap<>();
    
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
   synchronized CasTypeSystemMapper getTypeSystemMapper(TypeSystemImpl tgtTs) {
     CasTypeSystemMapper ctsm = getTypeSystemMapperInner(tgtTs);
     if (null == ctsm || ctsm.isEqual()) { // if the mapper is for this type system
@@ -2102,6 +2158,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
   synchronized CasTypeSystemMapper getTypeSystemMapperInner(TypeSystemImpl tgtTs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     if ((null == tgtTs) || (this == tgtTs)) {
       return null;  // conventions for no type mapping
     }
@@ -2156,6 +2213,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public int ll_getParentType(int typeCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (typeCode == 1) {
       return 0;
     }
@@ -2226,6 +2284,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   
   public TypeImpl getTypeForCode(int typeCode) {
     if (isType(typeCode)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
       return this.types.get(typeCode);
     }
     return null;
@@ -2262,6 +2323,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return this.features.size();
   }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-408
   final boolean isFeature(int featureCode) {
     return ((featureCode > UNKNOWN_FEATURE_CODE) && (featureCode <= getLargestFeatureCode()));
   }
@@ -2275,6 +2337,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
   FeatureImpl getFeatureForCode(int featureCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
     return this.features.get(featureCode);
   }
   
@@ -2328,6 +2391,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       return false;
     }
     // superType is null for TOP, which is a Ref type
+//IC see: https://issues.apache.org/jira/browse/UIMA-4687
     if (superType != null && superType.getName().equals(CAS.TYPE_NAME_STRING)) { // can't compare to stringType - may not be set yet
       return false;
     }
@@ -2349,6 +2413,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     
   @Override
   public final int ll_getTypeClass(int typeCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (typeCode == TypeSystemConstants.booleanTypeCode) {
       return LowLevelCAS.TYPE_CLASS_BOOLEAN;
     }
@@ -2400,6 +2465,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     if (typeCode == TypeSystemConstants.stringArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_STRINGARRAY;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1242
     if (ll_isArrayType(typeCode)) {
       return LowLevelCAS.TYPE_CLASS_FSARRAY;
     }
@@ -2443,6 +2509,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public int ll_getComponentType(int arrayTypeCode) {
     final TypeImpl type = types.get(arrayTypeCode);
     if (type.isArray()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       return ((TypeImpl) ((TypeImpl_array)type).getComponentType()).getCode();
     }
     return UNKNOWN_TYPE_CODE;
@@ -2460,6 +2527,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     if (!ti.isStringSubtype()) {
       return null;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     Set<String> allowedValues = ((TypeImpl_stringSubtype)ti).getAllowedValues();
     return allowedValues.stream().toArray(i -> new String[i]);
   }
@@ -2620,10 +2688,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return - the type impl associated with that JCas cover class
    */
   public TypeImpl getJCasRegisteredType(int i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     TypeImpl ti;
     synchronized(jcasRegisteredTypes) {
       ti = (i >= jcasRegisteredTypes.size()) ? null : jcasRegisteredTypes.get(i);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
     if (null == ti) {
       throwMissingUIMAtype(i);
     }
@@ -2636,6 +2707,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @param i - the index in the JCasRegistry
    */
   private void throwMissingUIMAtype(int typeindex) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     Class<? extends TOP> cls = JCasRegistry.getClassForIndex(typeindex);
     if (cls != null) {
       String className = cls.getName();
@@ -2653,6 +2725,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     sb.append("TypeSystem committed?: ").append(isCommitted()).append('\n');
     sb.append("jcasRegisteredTypes:\n");
     // dump 5 at a time, use temp stringbuilder to avoid issues with users that wrap System.err
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     synchronized(jcasRegisteredTypes) {
       for (int i = 0; i < jcasRegisteredTypes.size(); i++) {
         TypeImpl ti = jcasRegisteredTypes.get(i);
@@ -2716,6 +2789,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   
   public static final int getTypeClass(TypeImpl ti) { 
     switch (ti.getCode()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     case TypeSystemConstants.intTypeCode: return CASImpl.TYPE_CLASS_INT;
     case TypeSystemConstants.floatTypeCode: return CASImpl.TYPE_CLASS_FLOAT;
     case TypeSystemConstants.stringTypeCode: return CASImpl.TYPE_CLASS_STRING;
@@ -2735,6 +2809,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     case TypeSystemConstants.doubleArrayTypeCode: return CASImpl.TYPE_CLASS_DOUBLEARRAY;
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     if (ti.isStringOrStringSubtype()) {
       return CASImpl.TYPE_CLASS_STRING;
     }
@@ -2768,6 +2843,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public int hashCode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     final int prime = 31;
     int result = 1;
     result = prime * result + ((types == null) ? 0 : types.hashCode());
@@ -2776,6 +2852,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
   // debug - compare two type systems, print first different type
   public static void compareTs(TypeSystem t1, TypeSystem t2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     TypeSystemImpl ts1 = (TypeSystemImpl) t1;
     TypeSystemImpl ts2 = (TypeSystemImpl) t2;
     if (ts1.types.size() != ts2.types.size()) {
@@ -2821,6 +2898,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   // variables referring to Types and Features to update these after a commit
   //   (in case the commit consolidated type systems).
   public TypeImpl refreshType(Type t) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return getType(t.getName());
   }
   
@@ -2861,6 +2939,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
      * This can be fixed by regenerating this using the current v3 version of UIMA tooling
      * (JCasgen, or the migration tooling to migrate from v2).
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5712
     Logger logger = UIMAFramework.getLogger(TypeSystemImpl.class);
     logger.warn(() -> logger.rb_ue(CASRuntimeException.JCAS_ALPHA_LEVEL_NOT_SUPPORTED)); 
     return -1;
@@ -2895,6 +2974,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * from FSArray to the array type declared; no checking is done to insure the elements conform, however.
    */
   void fixupFSArrayTypes(TypeImpl featRange, TOP arrayFs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6047
     if (CASImpl.IS_DISABLE_SUBTYPE_FSARRAY_CREATION) {
       return;  // for compatibility with V2
     }
@@ -2916,10 +2996,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return the generators
    */
   public FsGenerator3[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5597
     Map<ClassLoader, FsGenerator3[]> gByC = isPear ? generators4pearsByClassLoader : generatorsByClassLoader;
     synchronized (gByC) {
       
       FsGenerator3[] g = gByC.get(cl); // a separate map per type system instance
+//IC see: https://issues.apache.org/jira/browse/UIMA-5712
       if (g == null && ! skip_loading_user_jcas) {
         g = FSClassRegistry.getGeneratorsForClassLoader(cl, isPear, this);
         gByC.put(cl, g);
@@ -2944,6 +3026,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return the created callsite
    */
   public final static MutableCallSite createCallSite(Class<? extends TOP> clazz, String featName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
+//IC see: https://issues.apache.org/jira/browse/UIMA-5607
     MutableCallSite callSite = new MutableCallSite(MethodType.methodType(int.class));
     callSite.setTarget(MHC_MINUS_1);  // for error checking
 //    ArrayList<Entry<String, MutableCallSite>> callSitesForType = FSClassRegistry.callSites_all_JCasClasses.computeIfAbsent(clazz, k -> new ArrayList<>());
@@ -2957,6 +3041,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   public void set_skip_loading_user_jcas(boolean v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5712
     this.skip_loading_user_jcas = v;
   }
   

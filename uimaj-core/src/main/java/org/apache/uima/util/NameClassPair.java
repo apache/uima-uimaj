@@ -82,6 +82,7 @@ public class NameClassPair implements java.io.Serializable {
 
     boolean nameMatch = this.getName() == null ? that.getName() == null : this.getName().equals(
             that.getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     boolean classNameMatch = this.getClassName() == null ? that.getClassName() == null : this
             .getClassName().equals(that.getClassName());

@@ -33,6 +33,7 @@ import javax.swing.JTable;
 /**
  * The Class ColorEditor.
  */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 class ColorEditor extends DefaultCellEditor {
   
   /** The Constant serialVersionUID. */

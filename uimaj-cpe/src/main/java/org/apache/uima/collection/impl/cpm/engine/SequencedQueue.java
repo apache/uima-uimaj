@@ -104,6 +104,7 @@ public class SequencedQueue extends BoundedWorkQueue {
     notifyAll();
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_chunk_state_false_timeout__FINEST",
               new Object[] { Thread.currentThread().getName(), getName() });
@@ -132,6 +133,7 @@ public class SequencedQueue extends BoundedWorkQueue {
     if (numberElementsInQueue == 0) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_queue_empty__FINEST",
                 new Object[] { Thread.currentThread().getName(), getName() });
       }
@@ -145,6 +147,7 @@ public class SequencedQueue extends BoundedWorkQueue {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -162,6 +165,7 @@ public class SequencedQueue extends BoundedWorkQueue {
         notifyAll();
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_got_eof_token__FINEST",
                   new Object[] { Thread.currentThread().getName(), getName() });
         }
@@ -175,6 +179,7 @@ public class SequencedQueue extends BoundedWorkQueue {
           // Create metadata from the CAS. This convenience object is used internally and keeps
           // track of the last chunks sequence processed here
           ChunkMetadata chunkMetadata = CPMUtils.getChunkMetadata(((CAS[]) ((WorkUnit) anObject)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .get())[0]);
           // Chunking is not strictly required. In such cases the sequence metadata will not be in
           // the CAS and thus there is no ChunkMetaData
@@ -201,6 +206,7 @@ public class SequencedQueue extends BoundedWorkQueue {
           if (chunkMetadata.isOneOfMany() && sequenceTimedOut(chunkMetadata)) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       Level.FINEST,
                       this.getClass().getName(),
                       "process",
@@ -247,6 +253,7 @@ public class SequencedQueue extends BoundedWorkQueue {
               if (chunkMetadata.isLast()) {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                   UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                           this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                           "UIMA_CPM_change_chunk_state__FINEST",
                           new Object[] { Thread.currentThread().getName(), getName() });
@@ -266,6 +273,7 @@ public class SequencedQueue extends BoundedWorkQueue {
             // Currently NOT in a chunk state
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_not_in_chunk_state__FINEST",
                       new Object[] { Thread.currentThread().getName(), getName() });
@@ -324,6 +332,7 @@ public class SequencedQueue extends BoundedWorkQueue {
           if (anObject == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_null_cas__FINEST",
                       new Object[] { Thread.currentThread().getName(), getName() });
@@ -358,6 +367,7 @@ public class SequencedQueue extends BoundedWorkQueue {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_done_scanning_q__FINEST",
               new Object[] { Thread.currentThread().getName(), getName() });
     }
@@ -403,6 +413,7 @@ public class SequencedQueue extends BoundedWorkQueue {
     notifyAll();
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -426,6 +437,7 @@ public class SequencedQueue extends BoundedWorkQueue {
   @Override
   public synchronized Object dequeue(long aTimeout) {
     Object resource = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-303
     long startTime = System.currentTimeMillis();
     // add 1 for rounding issues.  Should really add the smallest incr unit, which might be
     //   > 1...  Java docs say it could be 10...
@@ -434,9 +446,11 @@ public class SequencedQueue extends BoundedWorkQueue {
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_wait_for_chunk__FINEST",
                   new Object[] { Thread.currentThread().getName(), getName() });
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-303
         long timeRemaining = expireTime - System.currentTimeMillis();
         if (timeRemaining > 0) {
           wait(timeRemaining);
@@ -449,6 +463,7 @@ public class SequencedQueue extends BoundedWorkQueue {
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_timedout_waiting_for_chunk__FINEST",
                   new Object[] { Thread.currentThread().getName(), getName(), docId });
@@ -478,17 +493,20 @@ public class SequencedQueue extends BoundedWorkQueue {
         // Timeout
         return null;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-575
       else break;
     }
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
               CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_return_chunk__FINEST",
               new Object[] { Thread.currentThread().getName(), getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
                   String.valueOf(queueMaxSize), String.valueOf(numberElementsInQueue) });
     }
 
@@ -501,6 +519,7 @@ public class SequencedQueue extends BoundedWorkQueue {
   @Override
   public synchronized void invalidate(CAS[] aCasObjectList) {
     for (int i = 0; aCasObjectList != null && i < aCasObjectList.length
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && aCasObjectList[i] != null; i++) {
       ChunkMetadata meta = CPMUtils.getChunkMetadata(aCasObjectList[i]);
       if (meta != null && meta.getDocId().trim().length() > 0 && meta.getSequence() > 0) {
@@ -546,6 +565,7 @@ public class SequencedQueue extends BoundedWorkQueue {
    */
   protected void doNotifyListeners(Object aCas, EntityProcessStatus aEntityProcStatus) {
     // Notify Listener that the entity has been processed
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
     CAS casObjectCopy = (CAS)aCas;
     // Notify ALL listeners
     for (int j = 0; j < statusCbL.size(); j++) {

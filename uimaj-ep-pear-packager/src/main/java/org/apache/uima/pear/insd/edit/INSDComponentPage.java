@@ -56,6 +56,7 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
   /** The insd. */
   InstallationDescriptor insd;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The gr. */
   private Group gr;
@@ -89,6 +90,7 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
    * @param wizardData the wizard data
    */
   public INSDComponentPage(IContainer currentContainer, InstallationDescriptor insd,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Hashtable wizardData) {
     super("wizardPage");
     setTitle("UIMA - Installation Descriptor - Component Information");
@@ -204,6 +206,7 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
       compIDLabel.setText(" ");
 
       compDescriptorPathText = addTextField(gr, "&Component Descriptor*:         ",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               compDescriptorPath, true);
       addButton(gr, "   &Browse...   ", true, compDescriptorPathText);
 
@@ -214,6 +217,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
       setControl(container);
     } catch (Throwable e) {
       PearException subEx = new PearException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "The operation failed because the wizard's pages could not be initialized properly.",
               e);
       subEx.openErrorDialog(getShell());
@@ -249,6 +254,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
   void validateCompInfo() {
     if (compID == null || compID.trim().length() == 0 || compDescriptorPath == null
             || compDescriptorPath.trim().length() == 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       setPageComplete(false);
       setErrorMessage(null);
@@ -345,6 +352,7 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
       public void widgetSelected(SelectionEvent e) {
 
         ResourceSelectionDialog dialog = new ResourceSelectionDialog(getShell(), currentContainer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "Selection Dialog");
         dialog.setTitle("Selection Dialog");
         dialog.setMessage("Please select a file:");

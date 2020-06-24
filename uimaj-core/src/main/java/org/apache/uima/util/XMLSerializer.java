@@ -66,6 +66,7 @@ public class XMLSerializer {
   private Writer mWriter;
   
   public XMLSerializer() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this(true);
   }
 
@@ -92,6 +93,7 @@ public class XMLSerializer {
   }
 
   public void setIndent(boolean yes) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
     mTransformer.setOutputProperty(OutputKeys.INDENT, yes ? "yes" : "no");
   }
   
@@ -128,6 +130,7 @@ public class XMLSerializer {
   }
 
   public ContentHandler getContentHandler() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-387
     String xmlVer = mTransformer.getOutputProperty(OutputKeys.VERSION);
     boolean xml10 = xmlVer == null || "1.0".equals(xmlVer);
     return new CharacterValidatingContentHandler(!xml10, mHandler);
@@ -177,6 +180,7 @@ public class XMLSerializer {
    * This class wraps the standard content handler
    */
   public class CharacterValidatingContentHandler implements ContentHandler, LexicalHandler {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
     ContentHandler mHandler;  // the wrapped handler
     boolean mXml11;           
     
@@ -235,6 +239,7 @@ public class XMLSerializer {
     private List<Node> mLastOutputNode = new ArrayList<>();  // the last output node for repeated subelement nodes
     
     public void lastOutputNodeAddLevel() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
       mLastOutputNode.add(null);
     }
     
@@ -248,6 +253,7 @@ public class XMLSerializer {
     
     public Node getLastOutputNodePrevLevel() {
       int lastIndex = mLastOutputNode.size() -1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
       if (lastIndex > 0) {
         return mLastOutputNode.get(lastIndex - 1); 
       }
@@ -262,9 +268,11 @@ public class XMLSerializer {
     
     public boolean prevNL = false;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-387
     CharacterValidatingContentHandler(boolean xml11, ContentHandler serializerHandler) {
       mHandler = serializerHandler;  
       mXml11 = xml11;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
       String indentDeltaString = mTransformer.getOutputProperty("{http://xml.apache.org/xslt}indent-amount");
       if (null != indentDeltaString) {
         try {
@@ -273,6 +281,7 @@ public class XMLSerializer {
           indentDelta = 0;
         }
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
       mLastOutputNode.add(null);
     }
 
@@ -284,6 +293,7 @@ public class XMLSerializer {
         String val = atts.getValue(i);
         checkForInvalidXmlChars(val, mXml11);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
       mHandler.startElement(uri, localName, qName, atts); 
       prevWasEndElement = false;
       prevNL = false;
@@ -295,6 +305,7 @@ public class XMLSerializer {
     public void characters(char[] ch, int start, int length) throws SAXException {
       checkForInvalidXmlChars(ch, start, length, mXml11);
       mHandler.characters(ch, start, length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
       prevNL = false;
       for (int i = start; i < start + length; i++) {
         if (ch[i] == '\n') {
@@ -318,7 +329,10 @@ public class XMLSerializer {
      */
     public void endElement(String uri, String localName, String qName) throws SAXException {
       mHandler.endElement(uri, localName, qName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
       prevWasEndElement = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
       prevNL = false;
     }
 
@@ -361,6 +375,7 @@ public class XMLSerializer {
      * @see org.xml.sax.ContentHandler#startDocument()
      */
     public void startDocument() throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
       indent = 0;
       mHandler.startDocument();
     }
@@ -375,6 +390,7 @@ public class XMLSerializer {
     private final void checkForInvalidXmlChars(String s, boolean xml11) throws SAXParseException {
       final int index = XMLUtils.checkForNonXmlCharacters(s, xml11);
       if (index >= 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5338
         String startStr = (index == 0) 
                          ? "[The Very First Character]"
                          : s.substring(0, Math.min(index, Math.min(100,  s.length())));
@@ -391,6 +407,7 @@ public class XMLSerializer {
     private final void checkForInvalidXmlChars(char[] ch, int start, int length, boolean xml11) throws SAXParseException {
       final int index = XMLUtils.checkForNonXmlCharacters(ch, start, length, xml11);
       if (index >= 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5338
         String startStr = (index == 0) 
             ? "[The Very First Character]"
             : new String(ch).substring(0, Math.min(index, Math.min(100,  ch.length)));
@@ -405,7 +422,9 @@ public class XMLSerializer {
     }
 
     public void comment(char[] ch, int start, int length) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
       ((LexicalHandler)mHandler).comment(ch, start, length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
       prevNL = false;
     }
 

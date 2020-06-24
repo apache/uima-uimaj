@@ -35,6 +35,7 @@ public class JSR47Logger_implTest extends TestCase {
 
   private static HashMap<String, Level> logLevels = new HashMap<>(9);
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     logLevels.put("OFF", Level.OFF);
     logLevels.put("SEVERE", Level.SEVERE);
     logLevels.put("WARNING", Level.WARNING);
@@ -55,9 +56,13 @@ public class JSR47Logger_implTest extends TestCase {
     // Set the root logger's level to INFO ... may not be the default
     java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.INFO);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-397
     org.apache.uima.util.Logger uimaLogger = JSR47Logger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = JSR47Logger_impl.getInstance(this.getClass());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4183
+//IC see: https://issues.apache.org/jira/browse/UIMA-4183
     uimaLogger.setLevel(null);  // causes it to inherit from above
     classLogger.setLevel(null);  // causes it to inherit from above
 
@@ -66,8 +71,10 @@ public class JSR47Logger_implTest extends TestCase {
     Assert.assertNotNull(classLogger);
     Assert.assertTrue(uimaLogger.isLoggable(Level.INFO));
     Assert.assertTrue(classLogger.isLoggable(Level.INFO));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     } finally {
       java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.INFO);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3123
 
     }
   }
@@ -168,6 +175,7 @@ public class JSR47Logger_implTest extends TestCase {
     Assert.assertTrue(classLogger.isLoggable(Level.SEVERE));
     Assert.assertTrue(classLogger.isLoggable(Level.OFF));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     } finally {
       // reset log level to default log level
       classLogger.setLevel(Level.INFO);
@@ -177,6 +185,8 @@ public class JSR47Logger_implTest extends TestCase {
 
   public void testMessageLogMethods() throws Exception {
     // create Logger
+//IC see: https://issues.apache.org/jira/browse/UIMA-2374
+//IC see: https://issues.apache.org/jira/browse/UIMA-2375
     final org.apache.uima.util.Logger logger = JSR47Logger_impl.getInstance();
     // reset log level to INFO
     try {
@@ -212,6 +222,7 @@ public class JSR47Logger_implTest extends TestCase {
     logger.log(Level.INFO, null, "");
 
     // log test with method log(Level,String,Throwable)
+//IC see: https://issues.apache.org/jira/browse/UIMA-2381
     logger.setLevel(Level.WARNING); // Don't log the expected exceptions
     Throwable thrown = new Throwable();
     logger.log(Level.INFO, "My fourth test message", thrown);
@@ -220,6 +231,8 @@ public class JSR47Logger_implTest extends TestCase {
     thrown = null;
     logger.log(Level.INFO, "My fourth test message", thrown);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2374
+//IC see: https://issues.apache.org/jira/browse/UIMA-2375
     new Runnable() {
       public void run() {
         logger.log(getClass().getName(), Level.INFO, "Message from wrapper", null);
@@ -235,6 +248,7 @@ public class JSR47Logger_implTest extends TestCase {
     Exception ex = new Exception("My sixth test message");
     logger.logException(ex);
     logger.logException(null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     } finally {
       logger.setLevel(Level.INFO);
     }
@@ -255,6 +269,7 @@ public class JSR47Logger_implTest extends TestCase {
     // logger.setOutputStream(new PrintStream(new FileOutputStream(file)));
 
     // test deprecated log(String, String, Object[])
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     String msgKey = "UIMA_logger_test";
     String bundle = "org.apache.uima.util.impl.logger_test_messages";
     logger.log(bundle, msgKey, new Object[] { "message key test" });
@@ -292,6 +307,7 @@ public class JSR47Logger_implTest extends TestCase {
 
     // test method logrb(Level, String, String, String, String, thrown)
     Throwable thrown = new Throwable();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2381
     logger.setLevel(Level.WARNING); // Don't log the expected exceptions
     logger.logrb(Level.INFO, null, null, bundle, msgKey, thrown);
     logger.logrb(Level.INFO, null, null, bundle, null, thrown);
@@ -303,6 +319,7 @@ public class JSR47Logger_implTest extends TestCase {
     
     // https://issues.apache.org/jira/browse/UIMA-5719
     logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
   } finally {
     logger.setLevel(Level.INFO);
   }

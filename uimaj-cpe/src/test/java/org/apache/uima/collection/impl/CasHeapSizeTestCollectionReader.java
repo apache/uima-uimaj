@@ -49,6 +49,7 @@ public class CasHeapSizeTestCollectionReader extends CollectionReader_ImplBase {
     // in v3 the actualHeap is always 500,000, so this test always miscompares  
 //    Assert.assertEquals(EXPECTED_HEAP_SIZE, actualHeapSize);
     numChecks--;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // populate with doc to avoid error
     aCAS.setDocumentText("This is a test");

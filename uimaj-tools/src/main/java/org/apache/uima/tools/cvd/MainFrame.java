@@ -204,6 +204,8 @@ public class MainFrame extends JFrame {
   /** The Constant noIndexReposLabel. */
   private static final String noIndexReposLabel = "<html><b>" + htmlGrayColor
       + "CAS Index Repository</b></html>";
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
 
   /** The text area. */
   // The content areas.
@@ -525,6 +527,7 @@ public class MainFrame extends JFrame {
    */
   public MainFrame(File iniFile) {
     super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1046
     this.iniFile = iniFile;
     init();
   }
@@ -535,6 +538,7 @@ public class MainFrame extends JFrame {
    * @param doCasReset the do cas reset
    */
   public void runAE(boolean doCasReset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     setStatusbarMessage("Running Annotator.");
     Timer timer = new Timer();
     timer.start();
@@ -556,6 +560,7 @@ public class MainFrame extends JFrame {
    * Run CPC.
    */
   public void runCPC() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1167
     setStatusbarMessage("Running CollectionProcessComplete.");
     Timer timer = new Timer();
     timer.start();
@@ -571,8 +576,11 @@ public class MainFrame extends JFrame {
     this.showPerfReportItem.setEnabled(false);
     timer.stop();
     setStatusbarMessage("Done running CPC on " + this.ae.getAnalysisEngineMetaData().getName() + " in "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
         + timer.getTimeSpan() + ".");
     updateIndexTree(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     this.allAnnotationViewerItem.setEnabled(false);
     this.isDirty = false;
     this.runOnCasMenuItem.setEnabled(true);
@@ -593,7 +601,9 @@ public class MainFrame extends JFrame {
    * @param descriptorFile the descriptor file
    */
   public void loadAEDescriptor(File descriptorFile) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1045
     addRecentDescFile(descriptorFile);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     setWaitCursor();
     if (descriptorFile.exists() && descriptorFile.isFile()) {
       this.annotOpenDir = descriptorFile.getParentFile();
@@ -618,6 +628,7 @@ public class MainFrame extends JFrame {
       return;
     }
     if (this.ae != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-270
       this.aeDescriptorFile = descriptorFile;
       String annotName = this.ae.getAnalysisEngineMetaData().getName();
       this.reRunMenu.setText("Run " + annotName);
@@ -628,9 +639,11 @@ public class MainFrame extends JFrame {
     }
     // Check for CAS multiplier
     // TODO: properly handle CAS multiplication
+//IC see: https://issues.apache.org/jira/browse/UIMA-264
     if (this.ae != null) {
       if (this.ae.getAnalysisEngineMetaData().getOperationalProperties().getOutputsNewCASes()) {
         JOptionPane
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
             .showMessageDialog(
                 this,
                 "This analysis engine uses a CAS multiplier component.\nCAS multiplication/merging is not currently supported in CVD.\nYou can run the analysis engine, but will not see any results.",
@@ -657,6 +670,7 @@ public class MainFrame extends JFrame {
    * @param msg the msg
    */
   protected void handleException(Throwable e, StringBuffer msg) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-488
     msg.append(e.getClass().getName() + ": ");
     if (e.getMessage() != null) {
       msg.append(e.getMessage());
@@ -704,6 +718,8 @@ public class MainFrame extends JFrame {
         addRecentTextFile(this.textFile);
       } else {
         handleException(new IOException("File does not exist or is not readable: "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
             + this.textFile.getAbsolutePath()));
       }
       // Add the loaded file to the recently used files list.
@@ -729,6 +745,7 @@ public class MainFrame extends JFrame {
       SAXParser parser = saxParserFactory.newSAXParser();
       XmiCasDeserializer xmiCasDeserializer = new XmiCasDeserializer(getCas().getTypeSystem());
       getCas().reset();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1148
       parser.parse(xmiCasFile, xmiCasDeserializer.getXmiCasHandler(getCas(), true));
       time.stop();
       handleSofas();
@@ -753,6 +770,7 @@ public class MainFrame extends JFrame {
    */
   private static final int getMnemonic(int i) {
     switch (i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
     case 1:
       return KeyEvent.VK_1;
     case 2:
@@ -786,6 +804,7 @@ public class MainFrame extends JFrame {
   private final JMenuItem createRecentTextFileItem(int num, File file) {
     String fileShortName = file.getName();
     JMenuItem item = new JMenuItem(num + " " + fileShortName, getMnemonic(num));
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     item.addActionListener(new LoadRecentTextFileEventHandler(this, file.getAbsolutePath()));
     item.setToolTipText(file.getAbsolutePath());
     return item;
@@ -816,6 +835,7 @@ public class MainFrame extends JFrame {
   private final JMenuItem createRecentDescFileItem(int num, File file) {
     String fileShortName = file.getName();
     JMenuItem item = new JMenuItem(num + " " + fileShortName, getMnemonic(num));
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     item.addActionListener(new LoadRecentDescFileEventHandler(this, file.getAbsolutePath()));
     item.setToolTipText(file.getAbsolutePath());
     return item;
@@ -934,6 +954,7 @@ public class MainFrame extends JFrame {
    * @return true, if successful
    */
   public boolean confirmOverwrite(File f) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1866
     if (f.exists()) {
       Object[] options = {"Yes, Overwrite.",
                           "No"};
@@ -968,6 +989,7 @@ public class MainFrame extends JFrame {
       this.textArea.setLineWrap(true);
       this.textArea.setWrapStyleWord(true);
       this.textArea.setText(defaultText);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
       this.textArea.addMouseListener(new PopupListener(this));
       // textArea.setFocusable(true);
       this.textArea.addFocusListener(new TextFocusHandler(this));
@@ -991,29 +1013,43 @@ public class MainFrame extends JFrame {
     this.undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
     this.editMenu.add(this.undoItem);
     this.editMenu.addSeparator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1045
     HashMap<Object, Action> actionMap = createEditActionMap();
     // Cut
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     this.cutAction = actionMap.get(DefaultEditorKit.cutAction);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     this.cutAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_T);
     this.cutAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
         InputEvent.CTRL_MASK));
     this.cutAction.setEnabled(false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-425
     JMenuItem cutItem = new JMenuItem(this.cutAction);
     cutItem.setText("Cut");
     this.editMenu.add(cutItem);
     // Copy
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     this.copyAction = actionMap.get(DefaultEditorKit.copyAction);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     this.copyAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
     this.copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
         InputEvent.CTRL_MASK));
     this.copyAction.setEnabled(false);
     JMenuItem copyItem = new JMenuItem(this.copyAction);
     copyItem.setText("Copy");
     this.editMenu.add(copyItem);
     // Paste
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     Action pasteAction = actionMap.get(DefaultEditorKit.pasteAction);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     pasteAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_P);
     pasteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
         InputEvent.CTRL_MASK));
     JMenuItem pasteItem = new JMenuItem(pasteAction);
     pasteItem.setText("Paste");
@@ -1026,6 +1062,7 @@ public class MainFrame extends JFrame {
    * @return the hash map
    */
   private HashMap<Object, Action> createEditActionMap() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     HashMap<Object, Action> map = new HashMap<>();
     Action[] ar = this.textArea.getActions();
     for (int i = 0; i < ar.length; i++) {
@@ -1072,6 +1109,7 @@ public class MainFrame extends JFrame {
     JMenu helpMenu = new JMenu("Help");
     helpMenu.setMnemonic(KeyEvent.VK_H);
     JMenuItem manualItem = new JMenuItem("Manual", KeyEvent.VK_M);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     manualItem.addActionListener(new ManualHandler(this));
     helpMenu.add(manualItem);
     JMenuItem helpInfoItem = new JMenuItem("Help", KeyEvent.VK_H);
@@ -1096,6 +1134,7 @@ public class MainFrame extends JFrame {
     // Standard text file menu items.
     JMenuItem newTextItem = new JMenuItem("New Text...", KeyEvent.VK_N);
     newTextItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     newTextItem.addActionListener(new NewTextEventHandler(this));
     this.fileMenu.add(newTextItem);
     this.fileMenu.setMnemonic(KeyEvent.VK_F);
@@ -1122,6 +1161,7 @@ public class MainFrame extends JFrame {
 
     // Color preferences
     JMenuItem colorPrefsOpenItem = new JMenuItem("Load Color Settings", KeyEvent.VK_L);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     colorPrefsOpenItem.addActionListener(new ColorPrefsOpenHandler(this));
     this.fileMenu.add(colorPrefsOpenItem);
     JMenuItem colorPrefsSaveItem = new JMenuItem("Save Color Settings", KeyEvent.VK_C);
@@ -1150,6 +1190,7 @@ public class MainFrame extends JFrame {
 
     // Reading and writing old-style XCAS files.
     this.xcasReadItem = new JMenuItem("Read XCAS File", KeyEvent.VK_R);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     this.xcasReadItem.addActionListener(new XCASFileOpenEventHandler(this));
     this.fileMenu.add(this.xcasReadItem);
     this.xcasWriteItem = new JMenuItem("Write XCAS File", KeyEvent.VK_W);
@@ -1157,6 +1198,7 @@ public class MainFrame extends JFrame {
     this.fileMenu.add(this.xcasWriteItem);
     this.fileMenu.addSeparator();
     JMenuItem exit = new JMenuItem("Exit", KeyEvent.VK_X);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     exit.addActionListener(new SystemExitHandler(this));
     this.fileMenu.add(exit);
 
@@ -1169,6 +1211,7 @@ public class MainFrame extends JFrame {
    * Sets the enable cas file reading and writing.
    */
   public final void setEnableCasFileReadingAndWriting() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     final boolean enable = this.cas != null;
     this.xcasReadItem.setEnabled(enable);
     this.xmiCasReadItem.setEnabled(enable);
@@ -1190,6 +1233,7 @@ public class MainFrame extends JFrame {
    */
   private final void setWaitCursor() {
     this.setEnabled(false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.cursorCache = new ArrayList<>();
     for (int i = 0; i < this.cursorOwningComponents.size(); i++) {
       Component comp = this.cursorOwningComponents.get(i);
@@ -1206,6 +1250,7 @@ public class MainFrame extends JFrame {
       return;
     }
     for (int i = 0; i < this.cursorOwningComponents.size(); i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       Component comp = this.cursorOwningComponents.get(i);
       comp.setCursor(this.cursorCache.get(i));
     }
@@ -1217,10 +1262,12 @@ public class MainFrame extends JFrame {
    */
   public void createCodePages() {
     // Get supported encodings from JVM
+//IC see: https://issues.apache.org/jira/browse/UIMA-420
     Map<String, Charset> charsetMap = Charset.availableCharsets();
     String sysCodePage = Charset.defaultCharset().name();
     
     this.codePages = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
     if (sysCodePage != null) {
       this.codePages.add(sysCodePage);
@@ -1247,6 +1294,7 @@ public class MainFrame extends JFrame {
    */
   private void createCPMenu() {
     createCodePages();
+//IC see: https://issues.apache.org/jira/browse/UIMA-420
     this.cpMenu = new AutoFoldingMenu("Code Page", 20);
     resetCPMenu();
   }
@@ -1260,11 +1308,13 @@ public class MainFrame extends JFrame {
     JRadioButtonMenuItem item;
     String cp;
     for (int i = 0; i < this.codePages.size(); i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       cp = this.codePages.get(i);
       item = new JRadioButtonMenuItem(cp);
       if (cp.equals(this.codePage)) {
         item.setSelected(true);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
       item.addActionListener(new SetCodePageHandler(this));
       this.cpButtons.add(item);
       this.cpMenu.add(item);
@@ -1303,22 +1353,27 @@ public class MainFrame extends JFrame {
     JRadioButtonMenuItem item;
     String lang;
     for (int i = 0; i < this.languages.size(); i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       lang = this.languages.get(i);
       item = new JRadioButtonMenuItem(lang);
       if (lang.equals(this.language)) {
         item.setSelected(true);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
       item.addActionListener(new SetLanguageHandler(this));
       this.langButtons.add(item);
       this.langMenu.add(item);
     }
     this.langMenu.addSeparator();
     JMenuItem addLangItem = new JMenuItem("Add language");
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     addLangItem.addActionListener(new AddLanguageHandler(this));
     this.langMenu.add(addLangItem);
     JMenu removeMenu = new JMenu("Remove language");
     for (int i = 0; i < this.languages.size(); i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       JMenuItem rmItem = new JMenuItem(this.languages.get(i));
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
       rmItem.addActionListener(new RemoveLanguageHandler(this));
       removeMenu.add(rmItem);
     }
@@ -1332,6 +1387,7 @@ public class MainFrame extends JFrame {
    * Creates the languages.
    */
   public void createLanguages() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.languages = new ArrayList<>();
     if (this.languagePrefsList == null) {
       this.languagePrefsList = defaultLanguages;
@@ -1364,19 +1420,25 @@ public class MainFrame extends JFrame {
     this.reRunMenu = new JMenuItem("Run AE", KeyEvent.VK_R);
     this.reRunMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
     runMenu.add(this.reRunMenu);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     this.reRunMenu.addActionListener(new AnnotatorRerunEventHandler(this));
     this.reRunMenu.setEnabled(false);
     this.runOnCasMenuItem = new JMenuItem("Run AE on CAS", KeyEvent.VK_Y);
     this.runOnCasMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
         ActionEvent.CTRL_MASK));
     runMenu.add(this.runOnCasMenuItem);
     this.runOnCasMenuItem.addActionListener(new AnnotatorRunOnCasEventHandler(this));
     this.runOnCasMenuItem.setEnabled(false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1167
     this.runCPCMenu = new JMenuItem("Run collectionProcessComplete");
     runMenu.add(this.runCPCMenu);
     this.runCPCMenu.addActionListener(new AnnotatorRunCPCEventHandler(this));
     this.runCPCMenu.setEnabled(false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-749
     this.showPerfReportItem = new JMenuItem("Performance report");
+//IC see: https://issues.apache.org/jira/browse/UIMA-749
     this.showPerfReportItem.setEnabled(false);
     this.showPerfReportItem.addActionListener(new ActionListener() {
       @Override
@@ -1400,6 +1462,7 @@ public class MainFrame extends JFrame {
     this.langMenu.setMnemonic(KeyEvent.VK_L);
     // runMenu.addSeparator();
     JMenuItem dataPathItem = new JMenuItem("Set data path");
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     dataPathItem.addActionListener(new SetDataPathHandler(this));
     dataPathItem.setMnemonic(KeyEvent.VK_S);
     runMenu.addSeparator();
@@ -1416,9 +1479,11 @@ public class MainFrame extends JFrame {
     JMenu toolsMenu = new JMenu("Tools");
     toolsMenu.setMnemonic(KeyEvent.VK_T);
     this.tsViewerItem = new JMenuItem("View Typesystem", KeyEvent.VK_T);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     this.tsViewerItem.addActionListener(new ShowTypesystemHandler(this));
     this.tsViewerItem.setEnabled(false);
     toolsMenu.add(this.tsViewerItem);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     this.allAnnotationViewerItem = new JMenuItem("Show Selected Annotations", KeyEvent.VK_A);
     this.allAnnotationViewerItem.addActionListener(new ShowAnnotatedTextHandler(this));
     toolsMenu.add(this.allAnnotationViewerItem);
@@ -1427,6 +1492,7 @@ public class MainFrame extends JFrame {
     toolsMenu.add(this.acdItem);
     this.acdItem.setEnabled(false);
     this.acdItem.addActionListener(new ShowAnnotationCustomizerHandler(this));
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
 
     JMenu logConfig = new JMenu("Set Log Level");
     ButtonGroup levelGroup = new ButtonGroup();
@@ -1435,7 +1501,9 @@ public class MainFrame extends JFrame {
     String curLogLevel = LogManager.getLogManager().getProperty(".level");
 
     // create log config menu with available log levels
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     Iterator<Level> levelIt = MainFrame.logLevels.iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
     while (levelIt.hasNext()) {
       Level level = levelIt.next();
       JRadioButtonMenuItem item = new JRadioButtonMenuItem(level.toString());
@@ -1455,7 +1523,10 @@ public class MainFrame extends JFrame {
       @Override
       public void actionPerformed(ActionEvent event) {
         LogFileViewer viewer = new LogFileViewer("Log file: "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
             + MainFrame.this.logFile.getAbsolutePath());
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
         viewer.addWindowListener(new CloseLogViewHandler(MainFrame.this));
         Dimension dim = getDimension(logViewSizePref);
         if (dim == null) {
@@ -1478,6 +1549,7 @@ public class MainFrame extends JFrame {
     this.statusPanel.setLayout(new BoxLayout(this.statusPanel, BoxLayout.X_AXIS));
     this.statusBar = new JTextField();
     Border innerCompound = BorderFactory.createCompoundBorder(BorderFactory.createBevelBorder(
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
         BevelBorder.LOWERED, Color.lightGray, Color.darkGray), BorderFactory.createEmptyBorder(0,
         3, 0, 3));
     Border leftCompoundBorder = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(
@@ -1550,10 +1622,13 @@ public class MainFrame extends JFrame {
   public void setFileStatusMessage() {
     Border textBorder;
     if (this.textFile == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-421
       textBorder = BorderFactory.createTitledBorder(this.textTitleBorder, "Text");
       // textBorder.setTitleJustification(TitledBorder.ABOVE_TOP);
     } else {
       textBorder = BorderFactory.createTitledBorder(this.textTitleBorder, this.textFile
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
           .getAbsolutePath());
     }
     this.textScrollPane.setBorder(textBorder);
@@ -1570,6 +1645,8 @@ public class MainFrame extends JFrame {
     } else {
       this.aeStatus.setText(this.aeDescriptorFile.getName());
       this.aeStatus.setToolTipText("<html>Currently loaded AE descriptor file:<br>"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
           + this.aeDescriptorFile.getAbsolutePath() + "</html>");
     }
     this.statusPanel.revalidate();
@@ -1615,6 +1692,7 @@ public class MainFrame extends JFrame {
   private void initializeLogging() {
 
     // set log file path
+//IC see: https://issues.apache.org/jira/browse/UIMA-156
     File homeDir = new File(System.getProperty("user.home"));
     this.logFile = new File(homeDir, "uima.log");
 
@@ -1624,6 +1702,7 @@ public class MainFrame extends JFrame {
     // initialize log framework
     LogManager logManager = LogManager.getLogManager();
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1621
       InputStream ins = ClassLoader.getSystemResourceAsStream(loggerPropertiesFileName);
       // Try the current class loader if system one cannot find the file
       if (ins == null) {
@@ -1650,6 +1729,7 @@ public class MainFrame extends JFrame {
    * Inits the.
    */
   private void init() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-425
     this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     this.addWindowListener(new WindowAdapter() {
       @Override
@@ -1659,6 +1739,7 @@ public class MainFrame extends JFrame {
     });
     initializeLogging();
     this.addCursorOwningComponent(this);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     this.addWindowListener(new MainFrameClosing(this));
     // runConfigs = new ArrayList();
     createTextArea();
@@ -1676,23 +1757,29 @@ public class MainFrame extends JFrame {
     contentPane.add(this.statusPanel, BorderLayout.SOUTH);
     contentPane.setOpaque(true);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-251
     this.setContentPane(contentPane);
     initIRTree();
     this.indexTree.addMouseListener(new IndexPopupListener(this));
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
 
     // add combobox to select the view
     JPanel leftPanel = new JPanel();
     leftPanel.setLayout(new BorderLayout());
     this.sofaSelectionPanel = new JPanel();
     this.sofaSelectionComboBox = new JComboBox();
+//IC see: https://issues.apache.org/jira/browse/UIMA-168
     this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
     this.sofaSelectionPanel.add(new JLabel("Select View:"));
     this.sofaSelectionPanel.add(this.sofaSelectionComboBox);
     leftPanel.add(this.sofaSelectionPanel, BorderLayout.NORTH);
     this.sofaSelectionPanel.setVisible(false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     this.sofaSelectionComboBox.addItemListener(new SofaSelectionListener(this));
     this.sofaSelectionComboBox
         .setToolTipText("This CAS has multiple Views. Select the View to display.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
 
     JSplitPane treePairPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     treePairPane.setDividerSize(dividerSize);
@@ -1726,6 +1813,7 @@ public class MainFrame extends JFrame {
     Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
     defaultStyle = StyleContext.getDefaultStyleContext().addStyle("defaultAnnot", defaultStyle);
     StyleConstants.setBackground(defaultStyle, selectionColor);
+//IC see: https://issues.apache.org/jira/browse/UIMA-178
     this.styleMap.put(CAS.TYPE_NAME_ANNOTATION, defaultStyle);
     this.textPopup = new JPopupMenu();
     this.fsTree.addFocusListener(new TreeFocusHandler(this.fsTree));
@@ -1744,11 +1832,13 @@ public class MainFrame extends JFrame {
     int numFiles = this.textFileNameList.size();
     int max = numFiles < maxRecentSize ? numFiles : maxRecentSize;
     for (int i = 0; i < max; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1045
       File file = new File(this.textFileNameList.get(i));
       this.recentTextFileMenu.add(createRecentTextFileItem(i + 1, file));
       this.recentTextFiles.appendFile(file);
     }
     numFiles = this.descFileNameList.size();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     max = numFiles < maxRecentSize ? numFiles : maxRecentSize;
     for (int i = 0; i < max; i++) {
       File file = new File(this.descFileNameList.get(i));
@@ -1784,9 +1874,11 @@ public class MainFrame extends JFrame {
       if (this.ae != null) {
         destroyAe();
         this.acdItem.setEnabled(false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-421
         setEnableCasFileReadingAndWriting();
         this.tsViewerItem.setEnabled(false);
         this.reRunMenu.setEnabled(false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1167
         this.runCPCMenu.setEnabled(false);
         this.runOnCasMenuItem.setEnabled(false);
       }
@@ -1804,18 +1896,24 @@ public class MainFrame extends JFrame {
       } else {
         this.ae = UIMAFramework.produceAnalysisEngine(specifier, rsrcMgr, null);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       this.cas = this.ae.newCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-421
       initCas();
       this.acdItem.setEnabled(true);
       this.tsViewerItem.setEnabled(true);
       this.typeSystemWriteItem.setEnabled(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-421
       setEnableCasFileReadingAndWriting();
       this.reRunMenu.setEnabled(true);
       this.runCPCMenu.setEnabled(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1167
 
       // reset sofa combo box with just the initial view
       // this.disableSofaListener = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-429
       this.sofaSelectionComboBox.removeAllItems();
+//IC see: https://issues.apache.org/jira/browse/UIMA-168
       this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
       this.sofaSelectionPanel.setVisible(false);
       // this.disableSofaListener = false;
@@ -1831,6 +1929,7 @@ public class MainFrame extends JFrame {
    * Inits the cas.
    */
   private final void initCas() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-421
     this.cas.setDocumentLanguage(this.language);
     this.cas.setDocumentText(this.textArea.getText());
   }
@@ -1844,12 +1943,15 @@ public class MainFrame extends JFrame {
     try {
       if (doCasReset) {
         // Change to Initial view
+//IC see: https://issues.apache.org/jira/browse/UIMA-168
         this.cas = this.cas.getView(CAS.NAME_DEFAULT_SOFA);
         this.cas.reset();
+//IC see: https://issues.apache.org/jira/browse/UIMA-421
         initCas();
         // this.disableSofaListener = true;
         this.sofaSelectionComboBox.setSelectedIndex(0);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-749
       this.lastRunProcessTrace = this.ae.process(this.cas);
       this.showPerfReportItem.setEnabled(true);
       this.log.log(Level.INFO, "Process trace of AE run:\n" + this.lastRunProcessTrace.toString());
@@ -1857,9 +1959,15 @@ public class MainFrame extends JFrame {
       // this.disableSofaListener = true;
       int currentViewID = this.sofaSelectionComboBox.getSelectedIndex();
       this.sofaSelectionComboBox.removeAllItems();
+//IC see: https://issues.apache.org/jira/browse/UIMA-168
       this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       Iterator<?> sofas = ((CASImpl) MainFrame.this.cas).getBaseCAS().getSofaIterator();
       Feature sofaIdFeat = MainFrame.this.cas.getTypeSystem().getFeatureByFullName(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
           CAS.FEATURE_FULL_NAME_SOFAID);
       boolean nonDefaultSofaFound = false;
       while (sofas.hasNext()) {
@@ -1876,6 +1984,7 @@ public class MainFrame extends JFrame {
       this.sofaSelectionPanel.setVisible(nonDefaultSofaFound);
     } catch (Exception e) {
       handleException(e);
+//IC see: https://issues.apache.org/jira/browse/UIMA-488
     } catch (Error e) {
       StringBuffer buf = new StringBuffer();
       buf.append("A severe error has occured:\n");
@@ -1894,6 +2003,7 @@ public class MainFrame extends JFrame {
     this.indexTree.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 2));
     // Only one node can be selected at any one time.
     this.indexTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     this.indexTree.addTreeSelectionListener(new IndexTreeSelectionListener(this));
     // No icons.
     DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
@@ -1910,11 +2020,13 @@ public class MainFrame extends JFrame {
   private void initFSTree() {
     FSTreeModel treeModel = new FSTreeModel();
     this.fsTree = new JTree(treeModel);
+//IC see: https://issues.apache.org/jira/browse/UIMA-178
     this.fsTree.addMouseListener(new StringFsPopupEventAdapter());
     this.fsTree.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 2));
     this.fsTree.setLargeModel(true);
     // Only one node can be selected at any one time.
     this.fsTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     this.fsTree.addTreeSelectionListener(new FSTreeSelectionListener(this));
     DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
     cellRenderer.setLeafIcon(null);
@@ -1948,6 +2060,7 @@ public class MainFrame extends JFrame {
     root.removeAllChildren();
     if (this.cas != null && useCAS) {
       FSIndexRepository ir = this.cas.getIndexRepository();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       Iterator<String> it = ir.getLabels();
       while (it.hasNext()) {
         String label = it.next();
@@ -1960,7 +2073,10 @@ public class MainFrame extends JFrame {
     }
     DefaultTreeModel model = (DefaultTreeModel) this.indexTree.getModel();
     // 1.3 workaround
+//IC see: https://issues.apache.org/jira/browse/UIMA-381
     TreeModelListener[] listeners = org.apache.uima.tools.cvd.tsview.MainFrame
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
         .getTreeModelListeners(model);
     // TreeModelListener[] listeners = model.getTreeModelListeners();
     // System.out.println("Number of tree model listeners: " +
@@ -1992,6 +2108,7 @@ public class MainFrame extends JFrame {
    * @return the annotations at pos
    */
   private ArrayList<FSNode> getAnnotationsAtPos(int pos, List<FSNode> annots) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<FSNode> res = new ArrayList<>();
     FSNode annot;
     final int max = annots.size();
@@ -2027,6 +2144,7 @@ public class MainFrame extends JFrame {
     final int max = types.size();
     for (int i = 0; i < max; i++) {
       if (ir.getIndex(label, types.get(i)) == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1045
         continue;
       }
       DefaultMutableTreeNode child = createTypeTree(types.get(i), ts, label, ir);
@@ -2041,12 +2159,14 @@ public class MainFrame extends JFrame {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   private void loadProgramPreferences() throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1046
     if (this.iniFile == null) {
       File home = new File(System.getProperty("user.home"));
       this.iniFile = new File(home, "annotViewer.pref");
     }
     if (this.iniFile.exists() && this.iniFile.isFile() && this.iniFile.canRead()) {
       FileInputStream in = new FileInputStream(this.iniFile);
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
       this.preferences = new Properties();
       this.preferences.load(in);
       String fileOpenDirName = this.preferences.getProperty(textDirPref);
@@ -2070,6 +2190,7 @@ public class MainFrame extends JFrame {
           handleException(e);
         }
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
       String colorDirName = this.preferences.getProperty(colorDirPref);
       if (colorDirName != null) {
         this.colorSettingsDir = new File(colorDirName);
@@ -2087,7 +2208,9 @@ public class MainFrame extends JFrame {
       setPreferredSize(this.indexTreeScrollPane, indexTreeSizePref);
       setPreferredSize(this.fsTreeScrollPane, fsTreeSizePref);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     if (this.preferences != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1045
       List<String> list = stringToArrayList(this.preferences.getProperty(textFileListPref, ""));
       for (int i = 0; i < list.size(); i++) {
         this.textFileNameList.add(list.get(i));
@@ -2121,11 +2244,13 @@ public class MainFrame extends JFrame {
    * @return the dimension
    */
   public Dimension getDimension(String propPrefix) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     if (this.preferences == null) {
       return null;
     }
     final String width = this.preferences.getProperty(propPrefix + widthSuffix);
     final String height = this.preferences.getProperty(propPrefix + heightSuffix);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     if (height == null || width == null) {
       return null;
     }
@@ -2154,6 +2279,7 @@ public class MainFrame extends JFrame {
       return "";
     }
     StringBuffer buf = new StringBuffer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1045
     buf.append(list.get(0));
     for (int i = 1; i < list.size(); i++) {
       buf.append(',');
@@ -2169,6 +2295,7 @@ public class MainFrame extends JFrame {
    * @return the list
    */
   private static final List<String> stringToArrayList(String s) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> list = new ArrayList<>();
     if (s.length() > 0) {
       StringTokenizer tok = new StringTokenizer(s, ",");
@@ -2186,6 +2313,7 @@ public class MainFrame extends JFrame {
    */
   public void saveProgramPreferences() throws IOException {
     // File open dialog preferences.
+//IC see: https://issues.apache.org/jira/browse/UIMA-406
     if (this.preferences == null) {
       this.preferences = new Properties();
     }
@@ -2225,6 +2353,7 @@ public class MainFrame extends JFrame {
     }
     if (this.languages != null && this.languages.size() > 0) {
       StringBuffer buf = new StringBuffer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       buf.append(this.languages.get(0));
       for (int i = 1; i < this.languages.size(); i++) {
         buf.append(",");
@@ -2232,11 +2361,13 @@ public class MainFrame extends JFrame {
       }
       this.preferences.setProperty(langListPref, buf.toString());
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1045
     this.preferences.setProperty(textFileListPref, stringListToString(this.recentTextFiles
         .toStringList()));
     this.preferences.setProperty(descFileListPref, stringListToString(this.recentDescFiles
         .toStringList()));
     // Write out preferences to file.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1046
     FileOutputStream out = new FileOutputStream(this.iniFile);
     this.preferences.store(out, "Automatically generated preferences file for Annotation Viewer");
   }
@@ -2249,6 +2380,7 @@ public class MainFrame extends JFrame {
    */
   public void saveColorPreferences(File file) throws IOException {
     Properties prefs1 = new Properties();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     Iterator<String> it = this.styleMap.keySet().iterator();
     String type;
     Style style;
@@ -2271,6 +2403,7 @@ public class MainFrame extends JFrame {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public void loadColorPreferences(File file) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     Style parent = this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
     StyleContext sc = StyleContext.getDefaultStyleContext();
     Properties prefs1 = new Properties();
@@ -2280,6 +2413,7 @@ public class MainFrame extends JFrame {
     Style style;
     Color color;
     int pos;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     Iterator<?> it = prefs1.keySet().iterator();
     while (it.hasNext()) {
       typeName = (String) it.next();
@@ -2307,6 +2441,8 @@ public class MainFrame extends JFrame {
     Action focusIRAction = new FocusIRAction(this);
     String focusIRActionName = "focusIRAction";
     getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-404
         KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), focusIRActionName);
     getRootPane().getActionMap().put(focusIRActionName, focusIRAction);
     // Create a key map for focussing the FS tree panel.
@@ -2344,6 +2480,7 @@ public class MainFrame extends JFrame {
     this.textPopup.add(item);
     FSNode posAnnot;
     if (this.isAnnotationIndex) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       List<FSNode> annots = ((FSTreeModel) this.fsTree.getModel()).getFSs();
       ArrayList<FSNode> selAnnots = getAnnotationsAtPos(pos, annots);
       for (int i = 0; i < selAnnots.size(); i++) {
@@ -2497,6 +2634,7 @@ public class MainFrame extends JFrame {
    * @param enabled the new all annotation viewer item enable
    */
   public void setAllAnnotationViewerItemEnable(boolean enabled) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-416
     this.allAnnotationViewerItem.setEnabled(enabled);
   }
 
@@ -2542,6 +2680,7 @@ public class MainFrame extends JFrame {
    * @param enabled the new save text file enable
    */
   public void setSaveTextFileEnable(boolean enabled) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-416
     this.fileSaveItem.setEnabled(enabled);
   }
 
@@ -2595,6 +2734,7 @@ public class MainFrame extends JFrame {
    */
   public void setRunOnCasEnabled() {
     // Enable the "Run on CAS" menu item when we have both an AE and a CAS.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     this.runOnCasMenuItem.setEnabled(this.ae != null && this.cas != null);
   }
 
@@ -2602,6 +2742,7 @@ public class MainFrame extends JFrame {
    * Destroy ae.
    */
   public void destroyAe() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-416
     this.cas = null;
     if (this.ae != null) {
       this.ae.destroy();
@@ -2616,6 +2757,7 @@ public class MainFrame extends JFrame {
    */
   public void setRerunEnabled(boolean enabled) {
     this.reRunMenu.setEnabled(enabled);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1167
     this.runCPCMenu.setEnabled(enabled);
   }
 
@@ -2779,10 +2921,13 @@ public class MainFrame extends JFrame {
   public void handleSofas() {
     // Populate sofa combo box with the names of all text
     // Sofas in the CAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-416
     String currentView = (String) this.sofaSelectionComboBox.getSelectedItem();
     this.sofaSelectionComboBox.removeAllItems();
     this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     Iterator<?> sofas = ((CASImpl) getCas()).getBaseCAS().getSofaIterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1045
     Feature sofaIdFeat = getCas().getTypeSystem()
         .getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
     boolean nonDefaultSofaFound = false;
@@ -2817,10 +2962,12 @@ public class MainFrame extends JFrame {
         text = "SofaURI = " + text;
       } else {
         if (getCas().getSofaDataArray() != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1045
           text = "Sofa array with mime type = " + getCas().getSofa().getSofaMime();
         }
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-429
     setText(text);
     if (text == null) {
       getTextArea().repaint();

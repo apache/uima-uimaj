@@ -30,6 +30,8 @@ import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
  * The Class CasProcessorConfigurationParameterSettingsImpl.
  */
 public class CasProcessorConfigurationParameterSettingsImpl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CasProcessorConfigurationParameterSettings {
   
   /** The params. */
@@ -58,6 +60,7 @@ public class CasProcessorConfigurationParameterSettingsImpl implements
     }
     for (int i = 0; i < size; i++) {
       paramList.add(new NameValuePairImpl(aCps.getParameterSettings()[i].getName(), aCps
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getParameterSettings()[i].getValue()));
     }
   }

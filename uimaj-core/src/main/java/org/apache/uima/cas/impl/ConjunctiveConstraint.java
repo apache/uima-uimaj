@@ -37,6 +37,7 @@ class ConjunctiveConstraint implements FSMatchConstraint {
   private FSMatchConstraint c2;
 
   private ConjunctiveConstraint() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 

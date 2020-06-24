@@ -58,6 +58,7 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
    */
   @Override
   public void setArgValue(String aArgValue) throws CpeDescriptorException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     value = aArgValue;
   }
 
@@ -83,6 +84,7 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     value = XMLUtils.getText(aElement);
   }
@@ -98,6 +100,7 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("arg",
           new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /* (non-Javadoc)
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler, boolean)

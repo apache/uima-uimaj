@@ -67,6 +67,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
    * @see ResourceMetaData#getName()
    */
   public String getName() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return mName;
   }
 
@@ -126,6 +127,8 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
    */
   public Import[] getImports() {
     // don't allow this to return null
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     return (mImports == null) ? Import.EMPTY_IMPORTS : mImports;
   }
 
@@ -137,6 +140,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aImports", "setImports" });
     }
     mImports = aImports;
@@ -162,6 +166,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   public void setFsIndexes(FsIndexDescription[] aFSIndexes) {
     if (aFSIndexes == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aFSIndexes", "setImports" });
     }
     mFsIndexes = aFSIndexes;
@@ -195,9 +200,12 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
    */
   // support multi-threading, avoid object creation if no imports
   public synchronized void resolveImports() throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     if (getImports().length == 0) {
       resolveImports(null, null);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       resolveImports(new TreeSet<>(), UIMAFramework.newDefaultResourceManager());
     }
   }
@@ -207,14 +215,17 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   }
 
   public synchronized void resolveImports(Collection<String> aAlreadyImportedFsIndexURLs,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceManager aResourceManager) throws InvalidXMLException {
     List<FsIndexDescription> importedIndexes = null;
     if (getImports().length != 0) {
       // add our own URL, if known, to the collection of already imported URLs
+//IC see: https://issues.apache.org/jira/browse/UIMA-105
       if (getSourceUrl() != null) {
         aAlreadyImportedFsIndexURLs.add(getSourceUrl().toString());
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       importedIndexes = new ArrayList<>();
       Import[] imports = getImports();
       for (int i = 0; i < imports.length; i++) {
@@ -231,6 +242,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
             resolveImport(url, aAlreadyImportedFsIndexURLs, importedIndexes, aResourceManager);
           } catch (IOException e) {
             throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     new Object[] { url, imports[i].getSourceUrlString() }, e);
           }
         }
@@ -243,6 +255,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     }
     if (null != importedIndexes) {
       FsIndexDescription[] newIndexes = new FsIndexDescription[existingIndexes.length
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + importedIndexes.size()];
       System.arraycopy(existingIndexes, 0, newIndexes, 0, existingIndexes.length);
       for (int i = 0; i < importedIndexes.size(); i++) {
@@ -255,13 +268,17 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   }
 
   private void resolveImport(URL aURL, Collection<String> aAlreadyImportedFsIndexCollectionURLs,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1488
           Collection<FsIndexDescription> aResults, ResourceManager aResourceManager) throws InvalidXMLException,
           IOException {
     //check the import cache
+//IC see: https://issues.apache.org/jira/browse/UIMA-1230
     FsIndexCollection desc;    
     String urlString = aURL.toString();
     Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
     Map<String, Set<String>> importUrlsCache = ((ResourceManager_impl)aResourceManager).getImportUrlsCache();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     synchronized(importCache) {
       XMLizable cachedObject = importCache.get(urlString);
       if (cachedObject instanceof FsIndexCollection) {
@@ -272,6 +289,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
         XMLInputSource input;
         input = new XMLInputSource(aURL);
         desc = UIMAFramework.getXMLParser().parseFsIndexCollection(input);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         TreeSet<String> previouslyImported = new TreeSet<>(aAlreadyImportedFsIndexCollectionURLs);
         desc.resolveImports(aAlreadyImportedFsIndexCollectionURLs, aResourceManager);
         importCache.put(urlString, desc);
@@ -289,6 +307,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fsIndexCollection",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("name", true),
               new PropertyXmlInfo("description", true), new PropertyXmlInfo("version", true),
               new PropertyXmlInfo("vendor", true), new PropertyXmlInfo("imports", true),

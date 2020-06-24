@@ -38,6 +38,7 @@ public class CustomResourceFactory_impl implements ResourceFactory {
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     
     if (aSpecifier instanceof CustomResourceSpecifier) {
@@ -45,8 +46,10 @@ public class CustomResourceFactory_impl implements ResourceFactory {
       //check additional params map for ResourceManager, and use the UIMA extension ClassLoader
       //if one exists
       //load the Resourceclass
+//IC see: https://issues.apache.org/jira/browse/UIMA-1509
       Class<?> resourceClass;
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
         resourceClass = Class_TCCL.forName(className, aAdditionalParams);
       } catch (ClassNotFoundException e) {
         throw new ResourceInitializationException(
@@ -77,6 +80,7 @@ public class CustomResourceFactory_impl implements ResourceFactory {
       }
       // attempt to initialize it
       boolean initializeOK = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-664
       try {
         initializeOK = resource.initialize(aSpecifier, aAdditionalParams);
       } catch (Exception e) {

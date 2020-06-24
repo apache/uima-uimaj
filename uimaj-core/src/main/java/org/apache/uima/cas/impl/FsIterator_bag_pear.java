@@ -42,6 +42,7 @@ class FsIterator_bag_pear<T extends FeatureStructure> extends FsIterator_bag<T> 
   
   @Override
   public FsIterator_bag_pear<T> copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     FsIterator_bag_pear<T> copy = new FsIterator_bag_pear<>(this.fsBagIndex, this.ti, this.bag);
     copyCommonSetup(copy);
     return copy;

@@ -103,6 +103,7 @@ public abstract class FlowController_ImplBase implements FlowController {
    * @see org.apache.uima.flow.FlowController#removeAnalysisEngines(java.util.Collection)
    */
   public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
     throw new AnalysisEngineProcessException(
             AnalysisEngineProcessException.REMOVE_AE_FROM_FLOW_NOT_SUPPORTED,
             new Object[] { getClass().getName() });

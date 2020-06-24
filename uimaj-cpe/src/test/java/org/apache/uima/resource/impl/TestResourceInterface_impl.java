@@ -37,6 +37,8 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 
 
 public class TestResourceInterface_impl extends Resource_ImplBase implements SharedResourceObject,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         TestResourceInterface {
   private String mString;
 
@@ -44,6 +46,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
    * @see org.apache.uima.resource.SharedResourceObject#load(DataResource)
    */
   public void load(DataResource aData) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1560
     InputStream inStr = null;
     try {
       // try to get an input stream and read from the file
@@ -89,6 +92,8 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     return true;
   }
@@ -97,6 +102,8 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
    * @see org.apache.uima.resource.Resource#setConfigurationParameters(NameValuePair[])
    */
   public void setConfigurationParameters(NameValuePair[] aSettings)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
   }
 

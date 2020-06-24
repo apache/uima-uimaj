@@ -55,6 +55,7 @@ public class Id2FS implements Iterable<TOP> {
   private static final boolean IS_REPORT_PINNING;
   private static int pinning_count;  // ignoring multithreading issues, not critical
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6043
     String s = //  "";  // debug 
       System.getProperty(REPORT_FS_PINNING);
     IS_REPORT_PINNING = (s != null);
@@ -73,7 +74,9 @@ public class Id2FS implements Iterable<TOP> {
 //  public static final boolean IS_DISABLE_FS_GC =   // true || // disabled due to performance
 //      Misc.getNoValueSystemProperty(DISABLE_FS_GC);
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
   final private JCasHashMap id2fs;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   final private int initialSize;
     
   public Id2FS(int initialHeapSize) {
@@ -82,6 +85,7 @@ public class Id2FS implements Iterable<TOP> {
   }
   
   private void maybeReport() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6043
     if (!IS_REPORT_PINNING) return;
     pinning_count --;
     if (pinning_count < 0) return;
@@ -113,6 +117,8 @@ public class Id2FS implements Iterable<TOP> {
   void putChange(int id, TOP fs) {
     TOP prev = id2fs.put(id, fs);
     assert prev != null;  // changing a preexisting value
+//IC see: https://issues.apache.org/jira/browse/UIMA-6043
+//IC see: https://issues.apache.org/jira/browse/UIMA-6043
     maybeReport();
   }
   
@@ -149,6 +155,7 @@ public class Id2FS implements Iterable<TOP> {
 //  }
        
   int size() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
     return id2fs.getApproximateSize(); 
   }
     

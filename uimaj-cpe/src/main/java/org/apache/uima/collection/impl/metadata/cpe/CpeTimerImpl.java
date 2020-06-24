@@ -44,6 +44,7 @@ public class CpeTimerImpl implements CpeTimer {
    * @param aTimerClass the a timer class
    */
   public CpeTimerImpl(String aTimerClass) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     timer = aTimerClass;
   }
 

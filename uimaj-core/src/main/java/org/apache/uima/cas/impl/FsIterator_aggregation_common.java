@@ -51,6 +51,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
   /** the index of the current iterator */
   private int current_it_idx = -1;
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   FsIterator_aggregation_common(LowLevelIterator<T>[] iterators, 
                                 FSIndex<T> index, 
                                 Comparator<TOP> comparatorMaybeNoTypeWithoutId) {
@@ -181,12 +182,14 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
   public void moveToNextNvc() {
     FSIterator<T> it = nonEmptyIterators[current_it_idx];
     it.moveToNextNvc();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
     if (it.isValid()) {
       return;
     }
     
     final int nbrIt = nonEmptyIterators.length;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     for (int i = current_it_idx + 1; i < nbrIt; i++) {
       it = nonEmptyIterators[i];
       it.moveToFirst();
@@ -203,13 +206,16 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
     
     LowLevelIterator<T> it = nonEmptyIterators[current_it_idx];
     it.moveToPreviousNvc();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
     if (it.isValid()) {
       return;
     }
     
     for (int i = current_it_idx - 1; i >=  0; i--) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
       it = nonEmptyIterators[i];
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
       it.moveToLastNoReinit();
       if (it.isValid()) {
         current_it_idx = i;
@@ -221,6 +227,8 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
 
   public int ll_indexSizeMaybeNotCurrent() {
     int sum = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     for (int i = nonEmptyIterators.length - 1; i >=  0; i--) {
       FSIterator<T> it = nonEmptyIterators[i];
       sum += ((LowLevelIterator<T>)it).ll_indexSizeMaybeNotCurrent();
@@ -230,6 +238,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
   
   
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     throw Misc.internalError();  // should never be called, because this operation isn't useful
                                  // in unordered indexes
 //    int span = -1;
@@ -248,6 +257,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
    */
   @Override
   public FsIterator_aggregation_common<T> copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new FsIterator_aggregation_common<>(this);
   }
 
@@ -261,6 +271,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
       return sb.toString();
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     sb.append( (main_idx == null && nonEmptyIterators.length > 1) 
                  ? " over multiple Types: "
                  : " over type: ");

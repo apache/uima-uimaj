@@ -27,6 +27,8 @@ import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
  * The Class CpeIntegratedCasProcessorImpl.
  */
 public class CpeIntegratedCasProcessorImpl extends CasProcessorCpeObject implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CpeIntegratedCasProcessor {
   
   /** The Constant serialVersionUID. */

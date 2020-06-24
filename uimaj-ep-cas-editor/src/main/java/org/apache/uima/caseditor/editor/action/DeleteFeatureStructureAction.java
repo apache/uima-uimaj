@@ -43,7 +43,9 @@ public class DeleteFeatureStructureAction extends BaseSelectionListenerAction {
     super("DeleteAction");
 
     this.editor = editor;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1785
     setEnabled(false);
   }
 
@@ -64,6 +66,7 @@ public class DeleteFeatureStructureAction extends BaseSelectionListenerAction {
     FeatureStructureSelection featureStructures =
       new FeatureStructureSelection(getStructuredSelection());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     editor.getDocument().removeFeatureStructures(featureStructures.toList());
   }
 }

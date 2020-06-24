@@ -46,6 +46,7 @@ public class UTFConverter {
    * @throws NumberFormatException if conversion to a number can't be done
    */
   static public float convertUTFToFloat(byte[] bytearr) throws UTFDataFormatException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           NumberFormatException {
     return Float.parseFloat(UTFConverter.convertUTFToString(bytearr));
   }
@@ -86,6 +87,7 @@ public class UTFConverter {
    * @throws NumberFormatException if conversion to a number can't be done
    */
   static public int convertUTFToInt(byte[] bytearr) throws UTFDataFormatException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           NumberFormatException {
     return Integer.parseInt(UTFConverter.convertUTFToString(bytearr));
   }
@@ -274,6 +276,7 @@ public class UTFConverter {
    * @return The number of characters in the UTF-8 representation.
    */
   static public int convertStringToUTF(char[] inputArray, int startOffset, int endOffset,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           byte[] resultArray) {
     int resultLength = 0;
     resultLength = 0;

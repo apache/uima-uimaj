@@ -82,6 +82,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
 
   /** The collection reader. */
   BaseCollectionReader collectionReader = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The checkpoint. */
   private Checkpoint checkpoint = null;
@@ -154,6 +155,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * @throws Exception -
    */
   public BaseCPMImpl(Boolean mode, String aDescriptor, ResourceManager aResourceManager)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws Exception {
     cpmThreadGroup = new CPMThreadGroup("CPM Thread Group");
     cpeFactory = new CPEFactory(aResourceManager);
@@ -161,6 +163,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       defaultProcessTrace = true;
       cpeFactory.parse();
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       defaultProcessTrace = mode;
       cpeFactory.parse(aDescriptor);
     }
@@ -217,6 +220,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       // e.printStackTrace();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_use_default_timer__FINEST",
                 new Object[] { Thread.currentThread().getName() });
 
@@ -240,6 +244,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     if (checkpointFileName != null && checkpointFileName.trim().length() > 0) {
       File checkpointFile = new File(checkpointFileName);
       checkpoint = new Checkpoint(this, checkpointFileName, cpeFactory.getCPEConfig()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getCheckpoint().getFrequency());
       // Check if the checkpoint file already exists. If it does, the CPM did not complete
       // successfully during the previous run and CPM will start in recovery mode, restoring all
@@ -262,6 +267,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     cpEngine = new CPMEngine(cpmThreadGroup, cpeFactory, procTr, checkpointData);
     if (!aDummyCasProcessor) {
       int concurrentThreadCount = cpeFactory.getCpeDescriptor().getCpeCasProcessors()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getConcurrentPUCount();
       for (int threadCount = 0; threadCount < concurrentThreadCount; threadCount++) {
         CasProcessor[] casProcessors = cpeFactory.getCasProcessors();
@@ -299,6 +305,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       cpEngine.setInputQueueSize(casPoolSize == 0 ? iqSize : casPoolSize);
     } catch (NumberFormatException e) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_CPM_EXP_queue_size_not_defined__WARNING", new Object[] {
                   Thread.currentThread().getName(), "inputQueueSize" }));
     }
@@ -310,6 +317,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       cpEngine.setOutputQueueSize(casPoolSize == 0 ? oqSize : casPoolSize + 2);
     } catch (NumberFormatException e) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_CPM_EXP_queue_size_not_defined__WARNING", new Object[] {
                   Thread.currentThread().getName(), "outputQueueSize" }));
     }
@@ -373,6 +381,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    */
   @Override
   public void addCasProcessor(CasProcessor aCasProcessor, int aIndex)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     cpEngine.addCasProcessor(aCasProcessor, aIndex);
   }
@@ -547,6 +556,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       }
       end = System.currentTimeMillis();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_show_total_time_in_cpm__FINEST",
@@ -577,6 +587,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       // Notify all listeners that the CPM has finished processing
       for (int j = 0; j < statusCbL.size(); j++) {
         BaseStatusCallbackListener st = (BaseStatusCallbackListener) statusCbL.get(j);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1727
         if (st != null && st instanceof StatusCallbackListener) {
           ((StatusCallbackListener) st).entityProcessComplete(null, enProcSt);
         }
@@ -589,6 +600,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cpm_stopped__FINEST",
               new Object[] { Thread.currentThread().getName(), String.valueOf(killed) });
     }
@@ -596,6 +608,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     // Notify all listeners that the CPM has finished processing
     for (int j = 0; j < statusCbL.size(); j++) {
       BaseStatusCallbackListener st = (BaseStatusCallbackListener) statusCbL.get(j);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1727
       if ( st != null ) {
         if (!killed) {
           st.collectionProcessComplete();
@@ -626,6 +639,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    */
   @Deprecated
 public void process(BaseCollectionReader aCollectionReader)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // Retrieve number of entities to process from the CPM configuration
     try {
@@ -685,6 +699,7 @@ public void process(BaseCollectionReader aCollectionReader)
    */
   @Deprecated
 public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // Let the application define the size of Collection.
     num2Process = aBatchSize;
@@ -810,6 +825,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
   public void kill() {
     if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_killing_cpm__WARNING",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -841,6 +857,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
   public void stop() {
     if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stop_cpm__WARNING",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -871,6 +888,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
   public void asynchStop() {
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_asynch_stop_cpm__WARNING",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -936,6 +954,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * 
    */
   private void copyComponentEvents(String aEvType, List aList, ProcessTrace aPTr)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     for (int i = 0; i < aList.size(); i++) {
       ProcessTraceEvent prEvent = (ProcessTraceEvent) aList.get(i);
@@ -957,6 +976,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
   public void displayStats(ProcessTrace aProcessTrace, int aNumDocsProcessed) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "Documents Processed: " + aNumDocsProcessed);
     }
     // count total time
@@ -969,6 +989,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
       if ("CPM".equals(event.getComponentName())) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).log(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   "Current Component::" + event.getComponentName() + " Time::"
                           + event.getDuration());
@@ -1023,6 +1044,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
 
     if (System.getProperty("DEBUG") != null)
       UIMAFramework.getLogger(this.getClass()).log(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               "" + pct + "% (" + duration + "ms) - " + aEvent.getComponentName() + " (" + type
                       + ")");
@@ -1046,6 +1068,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
     ProcessTrace processTrace = new ProcessTrace_impl(cpEngine.getPerformanceTuningSettings());
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "-------------------------------------------");
     }
     if (useJediiReport) {
@@ -1106,6 +1129,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
         String readerName = collectionReader.getProcessingResourceMetaData().getName();
         if (totalCollectionReaderTime != null) {
           processTrace.addEvent(readerName, "COLLECTION_READER_TIME", String
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .valueOf(totalCollectionReaderTime), 0, null);
         }
         for (int i = 0; i < colReaderProgress.length; i++) {
@@ -1124,6 +1148,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
         copyComponentEvents("COLLECTION READER PROCESSING TIME", eList, processTrace);
         eList.clear();
         processTrace.addEvent(readerName, "Last Entity ID Read", cpEngine.getLastProcessedDocId(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 0, null);
       }
 
@@ -1136,6 +1161,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
         copyComponentEvents("Process", eList, processTrace);
 
         processTrace.addEvent(container.getName(), "Documents Processed", String.valueOf(container
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getProcessed()), 0, null);
         String status = decodeStatus(container.getStatus());
         processTrace.addEvent(container.getName(), "Processor Status", status, 0, null);
@@ -1179,12 +1205,14 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
                 processTrace.addEvent(container.getName(), key, (String) o, 0, null);
                 if (System.getProperty("SHOW_CUSTOM_STATS") != null)
                   UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                           "Custom String Stat-" + key + " Value=" + (String) o);
               } else if (o instanceof Integer) {
                 processTrace.addEvent(container.getName(), key, String.valueOf(((Integer) o)
                         .intValue()), 0, null);
                 if (System.getProperty("SHOW_CUSTOM_STATS") != null)
                   UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
                           "Custom Integer Stat-" + key + " Value=" + o);
               } else {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1202,6 +1230,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
           String lastDocId = container.getLastProcessedEntityId();
           if (lastDocId != null) {
             processTrace.addEvent(container.getName(), "Processor Last EntityId", lastDocId, 0,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     null);
           }
         } catch (Exception e) {
@@ -1222,6 +1251,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * @param aProcessTrace the a process trace
    */
   private void createDefaultProcessTrace(CasProcessor[] aProcessors, ProcessTrace srcProcTr,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ProcessTrace aProcessTrace) {
     for (int i = 0; aProcessors != null && i < aProcessors.length; i++) {
       String name = aProcessors[i].getProcessingResourceMetaData().getName();

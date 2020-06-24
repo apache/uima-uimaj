@@ -63,6 +63,7 @@ public class DeployFactory {
    */
 
   public static CasProcessorDeployer getDeployer(CPEFactory aCpeFactory,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CpeCasProcessor aCasProcessorConfig, ProcessControllerAdapter aPca)
           throws ResourceConfigurationException {
     String deployMode = aCasProcessorConfig.getDeployment();
@@ -70,9 +71,11 @@ public class DeployFactory {
     if (Constants.DEPLOYMENT_LOCAL.equals(deployMode)) {
       return new VinciCasProcessorDeployer(aCpeFactory);
     } else if (Constants.DEPLOYMENT_REMOTE.equals(deployMode)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
       String protocol = getProtocol(aCasProcessorConfig, aCpeFactory.getResourceManager());
       if (protocol == null || protocol.trim().length() == 0) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "UIMA_CPM_invalid_service_descriptor__SEVERE", new Object[] {
                     Thread.currentThread().getName(), "<uriSpecifier>", "<protocol>" },
                 new Exception(CpmLocalizedMessage.getLocalizedMessage(
@@ -94,6 +97,7 @@ public class DeployFactory {
       return new CPEDeployerDefaultImpl(aCpeFactory);
     }
     throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new Object[] { "deployment", "casProcessor" }, new Exception(CpmLocalizedMessage
                     .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                             "UIMA_CPM_Exception_invalid_deployment__WARNING", new Object[] {
@@ -113,6 +117,7 @@ public class DeployFactory {
   public static String getProtocol(CpeCasProcessor aCasProcessorConfig, ResourceManager aResourceManager)
           throws ResourceConfigurationException {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
       URL clientServiceDescriptor = aCasProcessorConfig.getCpeComponentDescriptor().findAbsoluteUrl(aResourceManager);
       ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
               new XMLInputSource(clientServiceDescriptor));

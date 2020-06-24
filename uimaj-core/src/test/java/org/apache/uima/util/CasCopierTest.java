@@ -54,9 +54,11 @@ public class CasCopierTest extends TestCase {
   protected void setUp() throws Exception {
     File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
 
     typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(typeSystemFile1));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
             .getFsIndexes();
   }
@@ -66,6 +68,7 @@ public class CasCopierTest extends TestCase {
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension
             .getFile("ExampleCas/multiSofaCas.xml"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-134
     XCASDeserializer.deserialize(serCasStream, srcCas);
     serCasStream.close();
 
@@ -78,6 +81,7 @@ public class CasCopierTest extends TestCase {
 
     // verify copy
     CasComparer.assertEquals(srcCas, destCas);
+//IC see: https://issues.apache.org/jira/browse/UIMA-729
 
     // try with type systems are not identical (dest. a superset of src.)
     TypeSystemDescription additionalTypes = new TypeSystemDescription_impl();
@@ -100,20 +104,25 @@ public class CasCopierTest extends TestCase {
     
     //try with source and dest cas the same
     // 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2409
     Exception ee = null;
     try {
       CasCopier.copyCas(srcCasBase,  srcCasBase, false);
     } catch (Exception e) {
       ee = e;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4178
+//IC see: https://issues.apache.org/jira/browse/UIMA-4179
     assertTrue(ee instanceof UIMARuntimeException);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2409
     ee = null;
     CAS v2 = srcCas.createView("v2");
     CasCopier cc = new CasCopier(srcCas, v2);
     try {
       cc.copyCasView(srcCas, v2, false);
     } catch (Exception e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4198
       e.printStackTrace();
       ee = e;
     }
@@ -122,7 +131,9 @@ public class CasCopierTest extends TestCase {
   
   public void testCopyCasWithDifferentTypeSystemObject() throws Exception {
     // create a source CAS by deserializing from XCAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-1258
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+//IC see: https://issues.apache.org/jira/browse/UIMA-729
     InputStream serCasStream = new FileInputStream(JUnitExtension
             .getFile("ExampleCas/multiSofaCas.xml"));
     XCASDeserializer.deserialize(serCasStream, srcCas);
@@ -150,11 +161,14 @@ public class CasCopierTest extends TestCase {
     TypeDescription fooType = additionalTypes.addType("test.Foo", "Test Type",
             "uima.tcas.Annotation");
     fooType.addFeature("bar", "Test Feature", "uima.cas.String");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<TypeSystemDescription> destTypeSystems = new ArrayList<>();
     destTypeSystems.add(additionalTypes);
     destTypeSystems.add(typeSystem);
     CAS destCas2 = CasCreationUtils.createCas(destTypeSystems);
     CasCopier.copyCas(srcCas, destCas2, true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4198
     CasComparer.assertEquals(srcCas, destCas2);
     
     // try with src type system having extra type (no instances) with
@@ -164,6 +178,7 @@ public class CasCopierTest extends TestCase {
             "uima.tcas.Annotation");
     fooType.addFeature("bar", "Test Feature", "uima.cas.Float");
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<TypeSystemDescription> srcTypeSystems = new ArrayList<>();
     srcTypeSystems.add(additionalTypes);
     srcTypeSystems.add(typeSystem);
@@ -184,6 +199,7 @@ public class CasCopierTest extends TestCase {
     destCas.reset();
     CAS destCasBase = ((CASImpl) destCas).getBaseCAS();
     CasCopier.copyCas(srcCasBase, destCasBase, true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-310
     CasComparer.assertEquals(srcCasBase, destCasBase);
   }  
 
@@ -195,10 +211,13 @@ public class CasCopierTest extends TestCase {
     serCasStream.close();
 
     // create a new view
+//IC see: https://issues.apache.org/jira/browse/UIMA-4466
     CAS tgtCas = srcCas.createView("view2");
     CasCopier copierv = new CasCopier(srcCas, tgtCas);
     
     // copy a fs while in an iteration
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     FSIterator<TOP> itv = srcCas.getJCas().getFSIndexRepository().<TOP>getIndex("testEntityIndex").iterator();
     FSIterator<Annotation> ita = srcCas.getJCas().getAnnotationIndex().iterator();
 
@@ -223,12 +242,15 @@ public class CasCopierTest extends TestCase {
 
     CasCopier copier;
     // do the copy
+//IC see: https://issues.apache.org/jira/browse/UIMA-4198
     long shortest = Long.MAX_VALUE;
     int i = 0;
 //    for (; i < 60000; i++) {  // uncomment for perf test.  was more than 5x faster than version 2.6.0
       destCas.reset();
       long startTime = System.nanoTime();
       copier = new CasCopier(srcCas, destCas);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
       copier.copyCasView(srcCas, true);  // true == copy the sofa too
       long time = (System.nanoTime() - startTime)/ 1000;
       if (time < shortest) {
@@ -243,18 +265,21 @@ public class CasCopierTest extends TestCase {
     // do the copy to a different view
     // create a destination CAS
     destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2409
 
     // do the copy
     copier = new CasCopier(srcCas, destCas);
     copier.copyCasView(srcCas, "aNewView", true);
 
     // verify copy
+//IC see: https://issues.apache.org/jira/browse/UIMA-4343
     CasComparer.assertEqualViews(srcCas, destCas.getView("aNewView"));
     
   }
   
   public void testCopyCasViewsWithWrapper() throws Exception {
     // create a source CAS by deserializing from XCAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-3513
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
     XCASDeserializer.deserialize(serCasStream, srcCas);
@@ -284,6 +309,7 @@ public class CasCopierTest extends TestCase {
     copier.copyCasView(wrappedSrcCas, "aNewView", true);
 
     // verify copy
+//IC see: https://issues.apache.org/jira/browse/UIMA-4343
     CasComparer.assertEqualViews(wrappedSrcCas, wrappedTgtCas.getView("aNewView"));
     
   }
@@ -298,15 +324,20 @@ public class CasCopierTest extends TestCase {
     // create a destination CAS and the CasCopier instance
     CAS destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     CasCopier copier = new CasCopier(srcCas, destCas);
+//IC see: https://issues.apache.org/jira/browse/UIMA-215
+//IC see: https://issues.apache.org/jira/browse/UIMA-215
 
     // set sofa data in destination CAS (this is not copied automatically)
     destCas.setDocumentText(srcCas.getDocumentText());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4343
     CasComparer cci = new CasComparer();
     // copy all entities
     Iterator<TOP> it = srcCas.getIndexRepository().getIndexedFSs(srcCas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity")).iterator();
 //    Iterator<TOP> it = srcCas.getIndexRepository().getAllIndexedFS(srcCas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity"));
 //    while(it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
       TOP fs = it.next();
       TOP fsc = (TOP) copier.copyFs(fs);
 //      destCas.addFsToIndexes(fsc);
@@ -331,15 +362,20 @@ public class CasCopierTest extends TestCase {
     arrFS.set(0, annot);
     arrFS.set(1, null);
     arrFS.set(2, relFS);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     TOP copyArrFS = (TOP) copier.copyFs(arrFS);
     CasComparer.assertEquals((TOP)arrFS, copyArrFS);
     
     // test with using base cas
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2409
     destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     destCas.setDocumentText(srcCas.getDocumentText());
     copier = new CasCopier(((CASImpl)srcCas).getBaseCAS(), ((CASImpl)destCas).getBaseCAS());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     annotIter = srcCas.<Annotation>getAnnotationIndex().iterator();
     annot = annotIter.next();
     boolean wascaught = false;
@@ -348,6 +384,7 @@ public class CasCopierTest extends TestCase {
     } catch (CASRuntimeException e) {
       wascaught = true;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     assertFalse(wascaught);
     // verify copy
     CasComparer.assertEquals(annot, copy);
@@ -382,6 +419,8 @@ public class CasCopierTest extends TestCase {
     // the above creates an invalid Annotation, because it doesn't set the sofa ref for the view
     // replace with below that includes the proper sofa ref
     JCas srcJCas = srcCasView.getJCas();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     Annotation fs = new Annotation(srcJCas, 0, 4);
 //    fs.setIntValue(srcCas.getBeginFeature(), 0);
 //    fs.setIntValue(srcCas.getEndFeature(), 4);

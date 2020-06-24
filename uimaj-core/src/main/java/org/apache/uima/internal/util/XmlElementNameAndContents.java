@@ -27,6 +27,7 @@ import java.util.List;
  */
 public class XmlElementNameAndContents {
   public XmlElementNameAndContents(XmlElementName name, String contents) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     this(name, contents, Collections.<XmlAttribute>emptyList());
   }
 
@@ -36,6 +37,7 @@ public class XmlElementNameAndContents {
     this.attributes = attributes;
   }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   final public XmlElementName name;
   
   /**

@@ -99,6 +99,7 @@ public class MetaDataPanel extends FormPanel {
     // Loop through parameters, creating label captions and
     // an appropriate component for the data type:
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     for (int i = 0; i < parameters.length; i++) {
       String name = parameters[i].getName();
       String type = parameters[i].getType();
@@ -106,6 +107,7 @@ public class MetaDataPanel extends FormPanel {
 
       boolean requiresFileSelector = false;
       if ((name.endsWith("Dir") || name.endsWith("Directory") || name.endsWith("Descriptor") || name
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .indexOf("File") != -1)
               && type.equals("String"))
         requiresFileSelector = true;
@@ -124,7 +126,9 @@ public class MetaDataPanel extends FormPanel {
 
       if (type.equals("Boolean"))
         field = new JCheckBox((String) null, (parameterValue == null) ? false
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
                 : (Boolean) parameterValue);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       else if (multiValued == false) {
         if (requiresFileSelector == false) {
           String stringValue = (parameterValue == null) ? "" : parameterValue.toString();
@@ -139,6 +143,7 @@ public class MetaDataPanel extends FormPanel {
           }
           int selectionMode = justDirectories ? JFileChooser.DIRECTORIES_ONLY
                   : JFileChooser.FILES_AND_DIRECTORIES;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
           field = new FileSelector(filePath, caption, selectionMode);
         }
@@ -205,6 +210,7 @@ public class MetaDataPanel extends FormPanel {
    */
   public void clearAll() {
     Component components[] = gridBagPanel.getComponents();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     for (int i = (components.length - 1); i >= 0; i--) {
       gridBagPanel.remove(i);
     }

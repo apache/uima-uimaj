@@ -271,8 +271,10 @@ public class XmiCasDeserializer {
     /**
      * Deferred Set of feature value assignments to do after all FSs are deserialized,
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     final private List<Runnable_withSaxException> fixupToDos = new ArrayList<>();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
     
     /**
@@ -293,6 +295,7 @@ public class XmiCasDeserializer {
     private XmiCasDeserializerHandler(CASImpl aCAS, boolean lenient, 
             XmiSerializationSharedData sharedData, int mergePoint, AllowPreexistingFS allowPreexistingFS) {
       super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
       this.casBeingFilled = aCAS.getBaseCAS();
       this.lenient = lenient;
       this.sharedData = 
@@ -304,6 +307,7 @@ public class XmiCasDeserializer {
       if (mergePoint < 0) {
         //If not merging, reset the CAS. 
         //Necessary to get Sofas to work properly.
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
         casBeingFilled.resetNoQuestions();
         
         // clear ID mappings stored in the SharedData (from previous deserializations)
@@ -311,9 +315,12 @@ public class XmiCasDeserializer {
         //new Sofas start at 2
         this.nextSofaNum = 2;
       } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         this.nextSofaNum = this.casBeingFilled.getViewCount() + 1; 
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       this.buffer = new StringBuilder();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       this.indexRepositories = new ArrayList<>();
       this.views = new ArrayList<>();
       indexRepositories.add(this.casBeingFilled.getBaseIndexRepository());
@@ -321,6 +328,7 @@ public class XmiCasDeserializer {
       indexRepositories.add(this.casBeingFilled.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
       //add an entry to indexRepositories for each Sofa in the CAS (which can only happen if
       //a mergePoint was specified)
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
       FSIterator<Sofa> sofaIter = this.casBeingFilled.getSofaIterator();
       while(sofaIter.hasNext()) {
         SofaFS sofa = sofaIter.next();
@@ -330,6 +338,7 @@ public class XmiCasDeserializer {
           // add indexRepo for views other than the initial view
           // the position in this indexed collection must be equal to the sofa's sofaNum (== sofaRef)
           // The sofas are not necessarily in the sofaRef order.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
           Misc.setWithExpand(indexRepositories, sofa.getSofaRef(), casBeingFilled.getSofaIndexRepository(sofa));
         }        
       }      
@@ -360,6 +369,8 @@ public class XmiCasDeserializer {
      */
     @Override
     public void startElement(String nameSpaceURI, String localName, String qualifiedName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             Attributes attrs) throws SAXException {
       // org.apache.vinci.debug.Debug.p("startElement: " + qualifiedName);
       // if (attrs != null) {
@@ -395,6 +406,8 @@ public class XmiCasDeserializer {
           }
           
           // if Delta CAS check if preexisting FS check if allowed
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
           if (this.mergePoint >= 0) {
             String id = attrs.getValue(ID_ATTR_NAME);
             if (id != null) {
@@ -405,6 +418,7 @@ public class XmiCasDeserializer {
               		this.ignoreDepth++;
               		return;
               	} else if (this.allowPreexistingFS == AllowPreexistingFS.disallow) { //fail 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
               		throw new CASRuntimeException(CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED,
             		                    ID_ATTR_NAME + "=" + id,
             		        		        nameSpaceURI,
@@ -432,6 +446,8 @@ public class XmiCasDeserializer {
             }
           }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
           readFS(nameSpaceURI, localName, qualifiedName, attrs);
          
           multiValuedFeatures.clear();
@@ -448,6 +464,7 @@ public class XmiCasDeserializer {
             //correctly.
             if (this.outOfTypeSystemElement != null) {
               XmlElementName elemName = new XmlElementName(nameSpaceURI, localName, qualifiedName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
               List<XmlAttribute> ootsAttrs = new ArrayList<>();
               ootsAttrs.add(new XmlAttribute("href", href));
               XmlElementNameAndContents elemWithContents = new XmlElementNameAndContents(elemName, null, ootsAttrs);
@@ -458,6 +475,7 @@ public class XmiCasDeserializer {
               //the integer value, which will be interpreted as a reference later.
               //NOTE: this will end up causing it to be reserialized as an attribute
               //rather than an element, but that is not in violation of the XMI spec.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
               ArrayList<String> valueList = this.multiValuedFeatures.computeIfAbsent(qualifiedName, k -> new ArrayList<>());
               valueList.add(href.substring(1));
             }                         
@@ -489,6 +507,8 @@ public class XmiCasDeserializer {
      * @throws SAXException -
      */
     private void readFS(String nameSpaceURI, String localName, String qualifiedName, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
             Attributes attrs) throws SAXException {
       String typeName = xmiElementName2uimaTypeName(nameSpaceURI, localName);
       
@@ -500,6 +520,7 @@ public class XmiCasDeserializer {
         }
         // special processing for uima.cas.View (encodes indexed FSs)
         if ("uima.cas.View".equals(typeName)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
           processDeferredFSs();
           processView(attrs.getValue("sofa"), attrs.getValue("members"));
           String added = attrs.getValue("added_members");
@@ -511,11 +532,14 @@ public class XmiCasDeserializer {
         // type is not in our type system
         if (!lenient) {
           throw createException(XCASParsingException.UNKNOWN_TYPE, typeName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
         } else {
           addToOutOfTypeSystemData(
               new XmlElementName(nameSpaceURI, localName, qualifiedName), attrs);                  
         }
         return;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       } else if (currentType.isArray()) {
         
         // store ID and array values (if specified as attribute).
@@ -528,7 +552,9 @@ public class XmiCasDeserializer {
         // special parsing for byte arrays (they are serialized as a hex
         // string. And we create them here instead of parsing to a string
         // array, for efficiency.
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
         if (casBeingFilled.isByteArrayType(currentType)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
           createOrUpdateByteArray(elements, currentArrayId, null);
         } else {
           if (elements != null) {
@@ -542,6 +568,7 @@ public class XmiCasDeserializer {
         
         // not an array type
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       	final String idStr = attrs.getValue(ID_ATTR_NAME);
       	final int xmiId = (idStr == null) ? -1 : Integer.parseInt(idStr);
   
@@ -571,6 +598,7 @@ public class XmiCasDeserializer {
           
 //          // get the sofa's FeatureStructure id
 //          final int sofaExtId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
           } else { // not a sofa, not an array
             if (currentType.isAnnotationBaseType()) {
 
@@ -593,10 +621,12 @@ public class XmiCasDeserializer {
                 doDeferFsOrThrow(idStr, nameSpaceURI, localName, qualifiedName, attrs);              
                 return;  // no further processing of this element when deferred.  Subelements recorded though.
               } else {   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
                 if (currentType.getCode() == TypeSystemConstants.docTypeCode) { // documentAnnotation
                   fs = casView.getDocumentAnnotation(); // gets existing one or creates a new one
                 } else {
                   fs = casView.createFS(currentType);  // not document annotation
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
                   if (currentFs instanceof UimaSerializable) {
                     UimaSerializable ufs = (UimaSerializable) currentFs;
                     uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
@@ -610,6 +640,7 @@ public class XmiCasDeserializer {
                 uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
               }
             }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
           }  // end of not a sofa, not an array
           readFS(fs, attrs, IS_NEW_FS);
       	} else {  //preexisting
@@ -629,6 +660,7 @@ public class XmiCasDeserializer {
        	    readFS(fs, attrs, IS_EXISTING_FS);
       		} // otherwise ignore  ( AllowPreexistingFS is not disallow nor allow)
       	}
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
       } // end of not-an-array type
     }
     
@@ -642,6 +674,7 @@ public class XmiCasDeserializer {
       this.deferredFsElement = new OotsElementData(
           idStr, 
           new XmlElementName(nameSpaceURI, localName, qualifiedName),
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           (locator == null) ? 0 : locator.getLineNumber(),
           (locator == null) ? 0 : locator.getColumnNumber());
       
@@ -669,6 +702,7 @@ public class XmiCasDeserializer {
         FSIndexRepositoryImpl indexRep = getIndexRepo(sofa, sofaXmiId);
         final boolean newview = (sofa == null) ? false : isNewFS(sofaXmiId);
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
         final List<TOP> todo = toBeAdded.getTodos(indexRep);
         
         // TODO: optimize by going straight to int[] without going through
@@ -680,6 +714,7 @@ public class XmiCasDeserializer {
           // special handling for merge operations ...
           if (!newview && !isNewFS(xmiId)) {
             // a pre-existing FS is indexed in a pre-existing view
+//IC see: https://issues.apache.org/jira/browse/UIMA-1965
             if (this.allowPreexistingFS == AllowPreexistingFS.ignore) {
               // merging with full CAS: ignore anything below the high water mark
               continue;
@@ -691,6 +726,7 @@ public class XmiCasDeserializer {
             }
           }
           // have to map each ID to its "real" address (TODO: optimize?)
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
           TOP fs = maybeGetFsForXmiId(xmiId);
 //            indexRep.addFS(addr);  // can't do now because sofa ref not yet fixed up
           if (fs != null) {
@@ -741,6 +777,7 @@ public class XmiCasDeserializer {
      *          sofa's index repository
      */
     private void processView(
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
         String sofa, 
         String addmembersString, 
     		String delmemberString, 
@@ -770,6 +807,7 @@ public class XmiCasDeserializer {
       // TODO: optimize by going straight to int[] without going through
       // intermediate String[]?
       if (delmemberString != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
         List<TOP> localRemoves = toBeRemoved.getTodos(indexRep);
         String[] members = parseArray(delmemberString);
         for (int i = 0; i < members.length; i++) {
@@ -783,6 +821,7 @@ public class XmiCasDeserializer {
             }
         	}
         	// have to map each ID to its "real" address (TODO: optimize?)
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
         	TOP fs = maybeGetFsForXmiId(xmiId);
   //      	  indexRep.removeFS(addr); // can't do now because sofa ref not yet fixed up
         	if (fs != null) {
@@ -831,8 +870,10 @@ public class XmiCasDeserializer {
 
     private void readFS(final TOP fs, Attributes attrs, final boolean isNewFs) throws SAXException {
       // Hang on to FS for setting content feature (things coded as child xml elements)
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       this.currentFs = fs;
       String attrName, attrValue;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final TypeImpl type = fs._getTypeImpl();
       final int typeCode = type.getCode();
 
@@ -873,7 +914,12 @@ public class XmiCasDeserializer {
       // we do this once, before the feature setting loop, because that loop may set a sofa Ref which is 
       // invalid (to be fixed up later). But the removal code needs a valid sofa ref.
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
+//IC see: https://issues.apache.org/jira/browse/UIMA-4722
         if (!isNewFs || fs._getTypeCode() == TypeSystemConstants.docTypeCode) {   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           casBeingFilled.removeFromCorruptableIndexAnyView(fs, casBeingFilled.getAddbackSingle());
           // else clause not needed because caller does ll_createFS which sets this anyways
   //      } else {  
@@ -884,6 +930,7 @@ public class XmiCasDeserializer {
         
         // before looping over features, set the xmi to fs correspondence for this FS, in case a 
         //   feature does a self reference
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
         String idStr = attrs.getValue(ID_ATTR_NAME);
         final int extId;
         try {
@@ -914,6 +961,7 @@ public class XmiCasDeserializer {
           }
         }  // end of all features loop
       } finally {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         if (!isNewFs || fs._getTypeCode() == TypeSystemConstants.docTypeCode) {
           casBeingFilled.addbackSingle(fs);
         }
@@ -923,6 +971,7 @@ public class XmiCasDeserializer {
         // If a Sofa, create CAS view to get new indexRepository
         Sofa sofa = (Sofa) fs;
         // also add to indexes so we can retrieve the Sofa later
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
         casBeingFilled.getBaseIndexRepository().addFS(sofa);
         CAS view = casBeingFilled.getView(sofa);
         if (sofa.getSofaRef() == 1) {
@@ -931,7 +980,9 @@ public class XmiCasDeserializer {
           // add indexRepo for views other than the initial view
           indexRepositories.add(casBeingFilled.getSofaIndexRepository(sofa));
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
         ((CASImpl) view).registerView(sofa);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
         views.add(view);
       }
     }
@@ -963,6 +1014,7 @@ public class XmiCasDeserializer {
         else {
           // this logic mimics the way version 2 did this.
           if (isDoingDeferredChildElements) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
             ArrayList<String> featValAsArrayList = new ArrayList<>(1);
             featValAsArrayList.add(featVal);
             sharedData.addOutOfTypeSystemChildElements(fs, featName, featValAsArrayList);
@@ -986,6 +1038,7 @@ public class XmiCasDeserializer {
       	}
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       handleFeatSingleValue(fs, feat, featVal);
       return feat.getCode();
     }
@@ -1011,6 +1064,7 @@ public class XmiCasDeserializer {
         }
         return -1;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       handleFeatMultiValue(fs, feat, featVals);
       return feat.getCode();
     }
@@ -1028,8 +1082,10 @@ public class XmiCasDeserializer {
      * @throws SAXException - 
      */
     private void handleFeatSingleValue(TOP fs, FeatureImpl fi, String featVal) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if ((fs instanceof AnnotationBase) && (fi.getCode() == TypeSystemConstants.annotBaseSofaFeatCode)) {
         // the sofa feature is set when the FS is created, can't be set separately
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
         return;
       }
       
@@ -1063,6 +1119,7 @@ public class XmiCasDeserializer {
         case LowLevelCAS.TYPE_CLASS_LONGARRAY:
         case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
         case LowLevelCAS.TYPE_CLASS_FSARRAY: {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
           if (fi.isMultipleReferencesAllowed()) {
             deserializeFsRef(featVal, fi, fs);
             break;
@@ -1076,6 +1133,7 @@ public class XmiCasDeserializer {
           
             ByteArray byteArray = createOrUpdateByteArray(featVal, -1, existingByteArray);
             if (byteArray != existingByteArray) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5600
               CASImpl.setFeatureValueMaybeSofa(fs, fi, byteArray);
             }
           } else {  // not ByteArray, but encoded locally
@@ -1086,27 +1144,34 @@ public class XmiCasDeserializer {
         }
           // For list types, we do the same as for array types UNLESS we're dealing with
           // the tail feature of another list node. In that case we do the usual FS deserialization.
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
         case CasSerializerSupport.TYPE_CLASS_INTLIST:
         case CasSerializerSupport.TYPE_CLASS_FLOATLIST:
         case CasSerializerSupport.TYPE_CLASS_STRINGLIST:
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
         case CasSerializerSupport.TYPE_CLASS_FSLIST: {
           if (fi.isMultipleReferencesAllowed()) {
             // do the usual FS deserialization
             deserializeFsRef(featVal, fi, fs);
           } else { // do the multivalued property deserialization, like arrays
             String[] arrayVals = parseArray(featVal);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
             handleFeatMultiValue(fs, fi, Arrays.asList(arrayVals));
           }
           break;
         }
         default: {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
           Misc.internalError(); // this should be an exhaustive case block
         }
       }
     }
 
     private void deserializeFsRef(String featVal, FeatureImpl fi, TOP fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       if (featVal == null || featVal.length() == 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5600
         CASImpl.setFeatureValueMaybeSofa(fs, fi, null);  
       } else {
         int xmiId = Integer.parseInt(featVal); 
@@ -1133,6 +1198,7 @@ public class XmiCasDeserializer {
       if (emptyVal(val)) {
         arrayVals = Constants.EMPTY_STRING_ARRAY;
       } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
         arrayVals = whiteSpace.split(val);
       }
       return arrayVals;
@@ -1155,6 +1221,7 @@ public class XmiCasDeserializer {
      * @throws SAXException - 
      */
     private void handleFeatMultiValue(TOP fs, FeatureImpl fi, List<String> featVals) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       final int rangeCode = fi.rangeTypeClass; 
       switch (rangeCode) {
         case LowLevelCAS.TYPE_CLASS_INT:
@@ -1172,6 +1239,7 @@ public class XmiCasDeserializer {
                     "multiple_values_unexpected",
                     new Object[] { fi.getName() }), locator);
           } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
             handleFeatSingleValue(fs, fi, featVals.get(0));
           }
           break;
@@ -1184,9 +1252,12 @@ public class XmiCasDeserializer {
         case LowLevelCAS.TYPE_CLASS_LONGARRAY:
         case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
         case LowLevelCAS.TYPE_CLASS_FSARRAY: {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
           CommonArrayFS existingArray = (CommonArrayFS) fs.getFeatureValue(fi);
           CommonArrayFS casArray = createOrUpdateArray(fi.getRangeImpl(), featVals, -1, existingArray);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
           if (existingArray != casArray) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5600
             CASImpl.setFeatureValueMaybeSofa(fs, fi, (TOP)casArray);
           }
           //add to nonshared fs to encompassing FS map
@@ -1204,6 +1275,7 @@ public class XmiCasDeserializer {
           if (featVals == null) {
             fs.setFeatureValue(fi,  null);
           } else if (featVals.size() == 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
             fs.setFeatureValue(fi, casBeingFilled.emptyList(rangeCode));
           } else {
             CommonList existingList = (CommonList) fs.getFeatureValue(fi);
@@ -1239,6 +1311,7 @@ public class XmiCasDeserializer {
         updateExistingList(values, existingList);
         return existingList;
       } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
         return createListFromStringValues(values, casBeingFilled.emptyListFromTypeCode(listType.getCode()));
       }
     }
@@ -1263,6 +1336,7 @@ public class XmiCasDeserializer {
       }
     
       final int arrayLen = values.size();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       final CommonArrayFS resultArray;
             
       if (existingArray != null) {  // values are local to feature (nonshared), preexisting
@@ -1283,6 +1357,7 @@ public class XmiCasDeserializer {
         resultArray = createNewArray(arrayType, values);
         
       } else {                      // values are with FS, below the line
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
         existingArray = (CommonArrayFS) getFsForXmiId(xmiId);
         if (existingArray.size() == arrayLen) {
           updateExistingArray(values, existingArray);
@@ -1307,8 +1382,10 @@ public class XmiCasDeserializer {
      * @return a reference to the array FS
      */
     private CommonArrayFS createNewArray(TypeImpl type, List<String> values) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       final int sz = values.size();
       CommonArrayFS fs = (sz == 0) 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
                            ? casBeingFilled.emptyArray(type)
                            : (CommonArrayFS) casBeingFilled.createArray(type, sz);
       if (fs instanceof FSArray) {
@@ -1375,6 +1452,7 @@ public class XmiCasDeserializer {
         if (existingList instanceof EmptyList) {
           return existingList;
         } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
           return existingList.emptyList();
         }
       }
@@ -1389,6 +1467,7 @@ public class XmiCasDeserializer {
       // existingList is non-empty
       if (existingList instanceof FSList) {
         FSList node = (FSList) existingList;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         NonEmptyFSList prevNode = null;
         
         for (int i = 0; i < valLen; i++) {
@@ -1401,6 +1480,7 @@ public class XmiCasDeserializer {
           NonEmptyFSList neNode = (NonEmptyFSList) node;
           maybeSetFsListHead(values.get(i), neNode);
           
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           prevNode = (NonEmptyFSList) node;
           node = prevNode.getTail();
         }
@@ -1424,11 +1504,15 @@ public class XmiCasDeserializer {
         node.set_headFromString(values.get(i));
         
         prevNode = node;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         node = node.getCommonTail();
       }
     
       // got to the end of the values, but the existing list has more elements
       //   truncate the existing list
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
       prevNode.setTail(existingList.emptyList());
       return existingList;
     }
@@ -1621,6 +1705,7 @@ public class XmiCasDeserializer {
         fs.set(i, b);
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       addFsToXmiId(fs, xmiId);
       return fs;
     }
@@ -1630,6 +1715,7 @@ public class XmiCasDeserializer {
         return (byte) (c - '0');
       else if ('A' <= c && c <= 'F')
         return (byte) (c - 'A' + 10);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5691
       else if ('a' <= c && c <= 'f')
         return (byte) (c - 'a' + 10);
       else
@@ -1659,6 +1745,7 @@ public class XmiCasDeserializer {
      */
     @Override
     public void endElement(String nsURI, String localName, String qualifiedName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             throws SAXException {
       switch (this.state) {
         case DOC_STATE: {
@@ -1672,6 +1759,7 @@ public class XmiCasDeserializer {
         case FEAT_CONTENT_STATE: {
           // We have just processed one of possibly many values for a feature.
           // Store this value in the multiValuedFeatures map for later use.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
           ArrayList<String> valueList = this.multiValuedFeatures.computeIfAbsent(qualifiedName, k -> new ArrayList<>());
           valueList.add(buffer.toString());
 
@@ -1691,6 +1779,7 @@ public class XmiCasDeserializer {
               for (Map.Entry<String, ArrayList<String>> entry : this.multiValuedFeatures.entrySet()) {
                 String featName = entry.getKey();
                 ArrayList<String> featVals = entry.getValue();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
                 XmiSerializationSharedData.addOutOfTypeSystemFeature(
                     (outOfTypeSystemElement == null) ? deferredFsElement : outOfTypeSystemElement, 
                     featName, 
@@ -1702,6 +1791,7 @@ public class XmiCasDeserializer {
 
           } else if (currentType != null) {
             
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
             if (currentType.isArray() && currentType.getCode() != TypeSystemConstants.byteArrayTypeCode) {
               // create the array now. elements may have been provided either as
               // attributes or child elements, but not both.
@@ -1714,6 +1804,7 @@ public class XmiCasDeserializer {
                   currentArrayElements = Collections.emptyList();
                 }
               }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
               createOrUpdateArray(currentType, currentArrayElements, currentArrayId, null);
               
             } else if (!this.multiValuedFeatures.isEmpty()) {
@@ -1763,6 +1854,7 @@ public class XmiCasDeserializer {
     @Override
     public void endDocument() throws SAXException {
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       processDeferredFSs();
       
       // Resolve ID references
@@ -1795,16 +1887,20 @@ public class XmiCasDeserializer {
 
       
       for (CAS view : views) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
+//IC see: https://issues.apache.org/jira/browse/UIMA-4722
         ((CASImpl) view).updateDocumentAnnotation();
       }
      
       
       //check if disallowed fs  encountered]
       if (this.disallowedViewMemberEncountered) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     	  throw new CASRuntimeException(
     	      CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED, "Preexisting FS view member encountered.");
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       for (Runnable r : uimaSerializableFixups) {
         r.run();
       }
@@ -1820,10 +1916,13 @@ public class XmiCasDeserializer {
           // the element may be out of typesystem.  In that case set it
           // to null, but record the id so we can add it back on next serialization.
           this.sharedData.addOutOfTypeSystemAttribute(fs, fi.getShortName(), Integer.toString(xmiId));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5600
           CASImpl.setFeatureValueMaybeSofa(fs, fi, null);
         }
       } else {
         CASImpl.setFeatureValueMaybeSofa(fs, fi, tgtFs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
         ts.fixupFSArrayTypes(fi.getRangeImpl(), tgtFs);
       }
     }
@@ -1939,6 +2038,7 @@ public class XmiCasDeserializer {
      */
     @Override
     public void warning(SAXParseException e) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1430
       throw e;
     }
     
@@ -1946,6 +2046,7 @@ public class XmiCasDeserializer {
       if (xmiId > 0) {
         if (mergePoint < 0) {
           //if we are not doing a merge, update the map in the XmiSerializationSharedData
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
           sharedData.addIdMapping(fs, xmiId);
         } else {
           //if we're doing a merge, we can't update the shared map because we could
@@ -1964,6 +2065,7 @@ public class XmiCasDeserializer {
      * and are expected to already be present in the CAS.
      */
     private TOP getFsForXmiId(int xmiId) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       TOP r = maybeGetFsForXmiId(xmiId);
       if (r == null) {
         throw new NoSuchElementException();
@@ -2001,6 +2103,7 @@ public class XmiCasDeserializer {
      */
     private void addToOutOfTypeSystemData(XmlElementName xmlElementName, Attributes attrs)
             throws XCASParsingException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       String xmiId = attrs.getValue(ID_ATTR_NAME);
       this.outOfTypeSystemElement = new OotsElementData(xmiId, xmlElementName);
       addOutOfTypeSystemAttributes(this.outOfTypeSystemElement, attrs);
@@ -2044,6 +2147,7 @@ public class XmiCasDeserializer {
                deferredFs.elementName.qName,
                deferredFs.getAttributes());
         try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
           isDoingDeferredChildElements = true;        
           for (NameMultiValue nmv : deferredFs.multiValuedFeatures) {
             int featcode = handleFeatMultiValueFromName(currentType, currentFs, nmv.name, nmv.values);            
@@ -2127,6 +2231,7 @@ public class XmiCasDeserializer {
    * @return The <code>DefaultHandler</code> to pass to the SAX parser.
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
     return getXmiCasHandler(cas, lenient, null); 
   }
   
@@ -2147,7 +2252,9 @@ public class XmiCasDeserializer {
    * @return The <code>DefaultHandler</code> to pass to the SAX parser.
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XmiSerializationSharedData sharedData) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
     return getXmiCasHandler(cas, lenient, sharedData, -1);
   }
   
@@ -2172,6 +2279,7 @@ public class XmiCasDeserializer {
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient,
           XmiSerializationSharedData sharedData, int mergePoint) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
     return getXmiCasHandler(cas, lenient, sharedData, mergePoint, AllowPreexistingFS.ignore);
   }  
   
@@ -2219,6 +2327,8 @@ public class XmiCasDeserializer {
    *           if an I/O failure occurs
    */
   public static void deserialize(InputStream aStream, CAS aCAS) throws SAXException, IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
     XmiCasDeserializer.deserialize(aStream, aCAS, false, null, -1);
   }
 
@@ -2241,6 +2351,8 @@ public class XmiCasDeserializer {
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
           throws SAXException, IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
     deserialize(aStream, aCAS, aLenient, null, -1);
   }
 
@@ -2370,7 +2482,9 @@ public class XmiCasDeserializer {
    *     
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1756
 		  XmiSerializationSharedData aSharedData, int aMergePoint, AllowPreexistingFS allowPreexistingFS)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   throws SAXException, IOException {
 	  XMLReader xmlReader = XMLUtils.createXMLReader();
 	  XmiCasDeserializer deser = new XmiCasDeserializer(aCAS.getTypeSystem());

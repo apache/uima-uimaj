@@ -74,6 +74,7 @@ public class BrowserUtil {
     if (osName.startsWith("Windows")) {
       if (osName.indexOf("9") > -1) {
         __osId = WINDOWS_9x;
+//IC see: https://issues.apache.org/jira/browse/UIMA-518
         __browserLauncher = new String[] { "command.com" };
       } else {
         __osId = WINDOWS_NT;
@@ -95,9 +96,11 @@ public class BrowserUtil {
    *          [url_to_open]
    */
   public static void main(String args[]) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-37
     String url = (args.length > 0) ? args[0] : "http://apache.org";
     try {
       Process process = BrowserUtil.openUrlInDefaultBrowser(url);
+//IC see: https://issues.apache.org/jira/browse/UIMA-518
       if(process != null) {
         process.waitFor();
       }
@@ -135,6 +138,7 @@ public class BrowserUtil {
         // Add quotes around the URL to allow ampersands and other
         // special characters to work.
         process = Runtime.getRuntime().exec(
+//IC see: https://issues.apache.org/jira/browse/UIMA-518
                 new String[] { __browserLauncher[0], FIRST_WINDOWS_PARAMETER,
                     SECOND_WINDOWS_PARAMETER, THIRD_WINDOWS_PARAMETER, '"' + url + '"' });
         // This avoids a memory leak on some versions of Java on
@@ -147,7 +151,9 @@ public class BrowserUtil {
           throw new IOException("InterruptedException while launching browser: " + ie.getMessage());
         }
         break;
+//IC see: https://issues.apache.org/jira/browse/UIMA-518
       case MAC_OS:
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
         Class<?> fileMgr = Class.forName("com.apple.eio.FileManager");
         Method openURL = fileMgr.getDeclaredMethod("openURL", new Class[] { String.class });
         openURL.invoke(null, new Object[] { url });

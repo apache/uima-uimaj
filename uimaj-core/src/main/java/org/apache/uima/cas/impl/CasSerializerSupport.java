@@ -441,6 +441,7 @@ public class CasSerializerSupport {
      * @param csss -
      */
     public CasDocSerializer(ContentHandler ch, CASImpl cas, XmiSerializationSharedData sharedData, MarkerImpl marker, CasSerializerSupportSerialize csss) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
       this(ch, cas,sharedData, marker, csss, false);
     }
     
@@ -454,9 +455,11 @@ public class CasSerializerSupport {
       isFormattedOutput_inner = CasSerializerSupport.this.isFormattedOutput; 
       this.marker = marker;
       errorHandler2 = CasSerializerSupport.this.errorHandler;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
       tsi = cas.getTypeSystemImpl();
       queue = new ArrayDeque<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       indexedFSs = (List<TOP>[]) new List<?>[cas.getViewCount()];  // number of views
 //      listUtils = new ListUtils(cas, logger, errorHandler);
       typeUsed = new BitSet();
@@ -476,6 +479,7 @@ public class CasSerializerSupport {
           + " multiple references.  These will be serialized in duplicate.", 
           fi.getName());
       Misc.decreasingWithTrace(errorCount, message, logger);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (this.errorHandler2 != null) {
         this.errorHandler2.warning(new SAXParseException(message, null));
       }
@@ -499,6 +503,7 @@ public class CasSerializerSupport {
       int iElementCount = 1; // start at 1 to account for special NULL object
 
       enqueueIndexed();  // done first - to insure this has priority  
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
 
       enqueueIncoming(); //make sure we enqueue every FS that was deserialized into this CAS
                          // needed to support Out Of Typesystem data
@@ -507,6 +512,7 @@ public class CasSerializerSupport {
       
       iElementCount += (previouslySerializedFSs == null) ? 0 : previouslySerializedFSs.size();
       iElementCount += (modifiedEmbeddedValueFSs == null) ? 0 : modifiedEmbeddedValueFSs.size();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       for (List<TOP> fss : indexedFSs) {  
         iElementCount += (fss == null) ? 0 : fss.size();
       }
@@ -541,6 +547,7 @@ public class CasSerializerSupport {
     public Sofa getSofa(int sofaNum) {  
       if (sofaNum != 1 || cas.isInitialSofaCreated()) { //skip if initial view && no Sofa yet
                                                         // all non-initial-views must have a sofa
+//IC see: https://issues.apache.org/jira/browse/UIMA-4179
         return ((CASImpl)cas.getView(sofaNum)).getSofaRef();
       }
       return null;
@@ -633,6 +640,7 @@ public class CasSerializerSupport {
     private void enqueueIncoming() {
       if (sharedData == null)
         return;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       TOP[] fss = this.sharedData.getAndSortByIdAllFSsInIdMap();
       previouslySerializedFSs = new ArrayList<>();
       
@@ -697,6 +705,7 @@ public class CasSerializerSupport {
     private void enqueueNonsharedMultivaluedFS() {
       if (sharedData == null || !isDelta)
           return;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       TOP[] fss = sharedData.getNonsharedMulitValuedFSs();
       modifiedEmbeddedValueFSs = new ArrayList<>();
       
@@ -756,6 +765,7 @@ public class CasSerializerSupport {
         }
       
         if (isFiltering) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           String typeName = fs._getTypeImpl().getName();
           if (filterTypeSystem_inner.getType(typeName) == null) {
             return -1; // this type is not in the target type system
@@ -787,6 +797,7 @@ public class CasSerializerSupport {
       if (!alreadySet) {
         typeUsed.set(typeCode);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         String typeName = fs._getTypeImpl().getName();
         XmlElementName newXel = csss.uimaTypeName2XmiElementName(typeName);
 
@@ -803,6 +814,7 @@ public class CasSerializerSupport {
      * Doesn't enqueue non-modified FS when delta
      */
     void enqueueIndexedFs_only_not_features(int viewNumber, TOP fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (enqueueCommon(fs) != -1) {
         List<TOP> fss = indexedFSs[viewNumber - 1];
         if (null == fss) {
@@ -865,6 +877,7 @@ public class CasSerializerSupport {
           foundCycle = true;
           break;
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         curNode = curNode.getCommonTail();
       }
       return foundCycle;
@@ -920,6 +933,7 @@ public class CasSerializerSupport {
       
       // doing JSON dynamic determination of multi-refs
       if (alreadyVisited) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
         return !multiRefFSs.contains(featVal); // enqueue in the "queue" section, first time this happens
       }
       return true;  // enqueue this item.  May or may not be eventually written embedded
@@ -959,9 +973,11 @@ public class CasSerializerSupport {
       
       boolean insideListNode = fs instanceof CommonList;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       if (fs instanceof UimaSerializable) {
         ((UimaSerializable)fs)._save_to_cas_data();
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       for (FeatureImpl fi : fs._getTypeImpl().getFeatureImpls()) {
         if (isFiltering && filterTypeSystem_inner.getFeatureByFullName(fi.getName()) == null) { 
           // skip features that aren't in the target type system
@@ -989,6 +1005,7 @@ public class CasSerializerSupport {
           case LowLevelCAS.TYPE_CLASS_LONGARRAY:
           case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
           case LowLevelCAS.TYPE_CLASS_FSARRAY: {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
             TOP array = fs.getFeatureValue(fi);  // can be null
             if (null == array) {
               continue;
@@ -1000,6 +1017,7 @@ public class CasSerializerSupport {
             //       be picked up when serializing the feature
             //   when dynamically computing multiple-refs: we enqueue it
             //   unless already enqueued, in order to pick up any multiple refs
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
             final boolean alreadyVisited = visited_not_yet_written.contains(array);
             if (isMultiRef_enqueue(fi, array, alreadyVisited, false, false)) {
               if (enqueued_multiRef_arrays_or_lists.add(array)) {  // only do this once per item
@@ -1035,6 +1053,7 @@ public class CasSerializerSupport {
             //       be picked up when serializing the feature
             //   when dynamically computing multiple-refs: we enqueue it
             //   unless already enqueued, in order to pick up any multiple refs
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
             TOP startOfList_node = fs.getFeatureValue(fi);
             if (null == startOfList_node) {
               // the feature, whose type is one of the lists, has a null value, so there's nothing to enqueue
@@ -1124,6 +1143,7 @@ public class CasSerializerSupport {
      */
     public void encodeQueued() throws Exception {
    
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       for (TOP fs :  queue) {
         // for some serializers, things could be enqueued multiple times in the ref queue
         // so check if already written, and if so, skip
@@ -1161,6 +1181,7 @@ public class CasSerializerSupport {
      *  then by id
      */
     public final Comparator<TOP> sortFssByType = 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         new Comparator<TOP>() {
           public int compare(TOP fs1, TOP fs2) {
             int c = Integer.compare(fs1._getTypeImpl().getCode(), fs2._getTypeImpl().getCode());
@@ -1187,6 +1208,7 @@ public class CasSerializerSupport {
               // fall thru to do id compare
             }
             // not annotation, or equal begin/end/type
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
             return Integer.compare(fs1._id, fs2._id);  // return in @id order
           }
       };
@@ -1214,6 +1236,7 @@ public class CasSerializerSupport {
      */
     public void encodeFS(TOP fs) throws Exception {
       final int typeCode = fs._getTypeImpl().getCode();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
       final int typeClass = classifyType(fs._getTypeImpl());
       // for JSON, the items reachable via indexes are written first,
@@ -1227,6 +1250,7 @@ public class CasSerializerSupport {
       //   - skip if not JSON dynamic ref, or in index, or not multiply ref'd
       if (!isIndexId && isDynamicMultiRef && multiRefFSs.contains(fs)) {
         csss.writeFsRef(fs);        
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
       } else {
         visited_not_yet_written.remove(fs);  // mark as written
         switch (typeClass) {
@@ -1239,6 +1263,7 @@ public class CasSerializerSupport {
           case TYPE_CLASS_FLOATLIST:
           case TYPE_CLASS_STRINGLIST:
           case TYPE_CLASS_FSLIST: 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
             csss.writeListsAsIndividualFSs(fs, typeCode);
             break;
                   
@@ -1251,6 +1276,7 @@ public class CasSerializerSupport {
           case LowLevelCAS.TYPE_CLASS_LONGARRAY:
           case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
           case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
             csss.writeArrays(fs, typeCode, typeClass);
             break;
           
@@ -1278,6 +1304,7 @@ public class CasSerializerSupport {
     }
     
     public int getXmiIdAsInt(TOP fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (fs == null) {
         return 0;
       }
@@ -1349,6 +1376,7 @@ public class CasSerializerSupport {
     }
     
     public boolean isStaticMultiRef(FeatureImpl fi) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       return fi.isMultipleReferencesAllowed();
     }
 
@@ -1370,6 +1398,7 @@ public class CasSerializerSupport {
    */
   public static final int classifyType(TypeImpl ti) {
     switch (ti.getCode()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     case TypeSystemConstants.intListTypeCode: return TYPE_CLASS_INTLIST;
     case TypeSystemConstants.floatListTypeCode: return TYPE_CLASS_FLOATLIST;
     case TypeSystemConstants.stringListTypeCode: return TYPE_CLASS_STRINGLIST;

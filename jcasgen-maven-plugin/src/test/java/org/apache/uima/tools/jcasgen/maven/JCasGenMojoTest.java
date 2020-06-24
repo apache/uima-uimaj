@@ -36,6 +36,7 @@ import org.codehaus.plexus.util.FileUtils;
 public class JCasGenMojoTest extends AbstractMojoTestCase {
 
   public void testInvalidFeature() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4618
     Exception ee = null;
     try {
       this.test("invalidFeature");
@@ -47,6 +48,7 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
   }
   
   public void testSimple() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2953
     this.test("simple", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
   }
 
@@ -64,6 +66,7 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
 
   public void test(String projectName, String... types) throws Exception {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2958
     File projectSourceDirectory = getTestFile("src/test/resources/" + projectName);
     File projectDirectory = getTestFile("target/project-" + projectName + "-test");
 
@@ -84,6 +87,7 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     // copy resources
     File source = new File(projectDirectory, "src/main/resources");
     if (source.exists()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2958
       FileUtils.copyDirectoryStructure(source, new File(project.getBuild().getOutputDirectory()));
     }
     
@@ -98,13 +102,16 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     generate.execute();
 
     // check that the Java files have been generated
+//IC see: https://issues.apache.org/jira/browse/UIMA-2958
     File jCasGenDirectory = new File(project.getBasedir(), "target/generated-sources/jcasgen");
     
     // Record all the files that were generated
+//IC see: https://issues.apache.org/jira/browse/UIMA-2953
     DirectoryScanner ds = new DirectoryScanner();
     ds.setBasedir(jCasGenDirectory);
     ds.setIncludes(new String[] { "**/*.java" });
     ds.scan();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<File> files = new ArrayList<>();
     for (String scannedFile : ds.getIncludedFiles()) {
       files.add(new File(ds.getBasedir(), scannedFile));

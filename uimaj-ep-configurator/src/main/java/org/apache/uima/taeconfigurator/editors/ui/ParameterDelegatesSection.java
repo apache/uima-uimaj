@@ -73,7 +73,9 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
    * @param parent the parent
    */
   public ParameterDelegatesSection(MultiPageEditor editor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             editor,
             parent,
             "Delegate Component Parameters",
@@ -98,6 +100,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     Composite buttonContainer = new2ColumnComposite(sectionClient);
     ((GridData) buttonContainer.getLayoutData()).grabExcessVerticalSpace = false;
     createOverrideButton = newPushButton(buttonContainer, "Create Override",
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
             "Overrides allow an aggregate to replace a parameter's value in one or more of its delegates");
     createNonSharedOverrideButton = newPushButton(buttonContainer, "Create non-shared Override",
             "Click here to create a non-shared override for this parameter");
@@ -126,6 +129,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     } else {
       getSection().setText("Delegate Component Parameters");
       getSection()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .setDescription(
                       "This section shows all delegate components by their Key names, and what parameters they have.\nDouble-click a parameter or a group if you want to specify overrides for these parameters in this aggregate; this will add a default Configuration Parameter in this Aggregate for that parameter, and set the overrides.");
 
@@ -137,6 +141,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
       if (null != fcd) {
         addDelegateToGUI(fcd.getKey(), fcd.getSpecifier());
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       maybeSetSelection(tree, 0);
     }
     enable();
@@ -169,6 +174,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
    */
   private void addDelegateToGUI(String key, ResourceSpecifier delegate) {
     if (delegate instanceof AnalysisEngineDescription || delegate instanceof CasConsumerDescription
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || delegate instanceof FlowControllerDescription) {
       TreeItem d = new TreeItem(tree, SWT.NONE);
       d.setText(((delegate instanceof FlowControllerDescription) ? FLOWCTLR_HEADER
@@ -188,6 +194,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
    */
   private void addDelegateGroupsToGUI(TreeItem parent, ResourceCreationSpecifier delegate) {
     ConfigurationParameterDeclarations cpd1 = delegate.getMetaData()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getConfigurationParameterDeclarations();
     // if (delegate instanceof AnalysisEngineDescription)
     // cpd1 = ((AnalysisEngineDescription)delegate)
@@ -333,6 +340,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
    */
   private void addNewParameter(TreeItem item) {
     addNewParameter(getConfigurationParameterFromTreeItem(item), getConfigGroupFromTreeItem(item
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getParentItem()), getKeyNameFromTreeItem(item.getParentItem().getParentItem()));
   }
 
@@ -375,6 +383,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     ConfigurationParameter parmInGroup;
     String override = key + "/" + parm.getName();
     String overrideParmName;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
     if (null != (overrideParmName = getOverridingParmName(override, group))) {
       Utility.popMessage("Only one override allowed",
               "This delegate parameter is currently overridden by '" + overrideParmName
@@ -397,6 +406,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
       }
     } else {
       // Not already in this group
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
       parmSection.addParm(parm.getName(), parm, group, override);
     }
   }
@@ -471,6 +481,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     List allNames = new ArrayList();
     addParmNames(allNames, cpd.getConfigurationParameters());
     addParmNames(allNames, cpd.getCommonParameters());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     ConfigurationGroup[] cgs = cpd.getConfigurationGroups();
     if (null != cgs) {
       for (int i = 0; i < cgs.length; i++) {
@@ -506,6 +517,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
    * @return the override index
    */
   private int getOverrideIndex(ConfigurationParameter parm, String override) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String[] overrides = parm.getOverrides();
     if (null == overrides)
       return -1;
@@ -524,6 +536,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
    * @return the same named parm in group
    */
   private ConfigurationParameter getSameNamedParmInGroup(ConfigurationParameter parm,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ConfigGroup group) {
     ConfigurationParameter[] cps = group.getConfigParms();
     String parmName = parm.getName();
@@ -576,6 +590,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
    * @return the corresponding model group
    */
   private ConfigGroup getCorrespondingModelGroup(String[] nameArray) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     ConfigurationGroup[] cgs = cpd.getConfigurationGroups();
     for (int i = 0; i < cgs.length; i++) {
       if (setEquals(cgs[i].getNames(), nameArray)) {
@@ -593,6 +608,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
    * @return true, if successful
    */
   private boolean setEquals(Object[] a, Object[] b) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (null == a && null == b)
       return true;
     if (null == a || null == b)
@@ -607,6 +623,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
           break;
         }
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (!foundB)
         return false;
     }

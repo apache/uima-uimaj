@@ -78,6 +78,7 @@ public class Checkpoint implements Runnable {
    * @param aCheckpointFrequency the a checkpoint frequency
    */
   public Checkpoint(BaseCPMImpl aCpm, String aFilename, long aCheckpointFrequency) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     fileName = aFilename;
     int fExtPos = fileName.indexOf('.');
     if (fExtPos > -1) {
@@ -102,6 +103,7 @@ public class Checkpoint implements Runnable {
     // isRunning = false;
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stop_checkpoint_thread__INFO",
               new Object[] { Thread.currentThread().getName() });
 
@@ -117,6 +119,7 @@ public class Checkpoint implements Runnable {
 
     // isRunning = true;
     while (!stop) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
       synchronized (lockForPause) {
         if (pause) {
           try {
@@ -127,14 +130,17 @@ public class Checkpoint implements Runnable {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_checkpoint__FINEST",
                 new Object[] { Thread.currentThread().getName() });
       }
       doCheckpoint();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_sleep__FINEST",
                   new Object[] { Thread.currentThread().getName() });
         }
@@ -166,6 +172,7 @@ public class Checkpoint implements Runnable {
    * Pauses checkpoint thread.
    */
   public void pause() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
     synchronized (lockForPause) {
       pause = true;
     }
@@ -175,6 +182,7 @@ public class Checkpoint implements Runnable {
    * Resumes checkpoint thread.
    */
   public void resume() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
     synchronized (lockForPause) {
       if (pause) {
         lockForPause.notifyAll();
@@ -191,6 +199,7 @@ public class Checkpoint implements Runnable {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_checkpoint__FINEST",
                 new Object[] { Thread.currentThread().getName() });
       }
@@ -203,6 +212,7 @@ public class Checkpoint implements Runnable {
       // This stream is for the SynchPoint part of the Checkpoint
       ObjectOutputStream s = null;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
       try (FileOutputStream out = new FileOutputStream(fileName);
            FileOutputStream synchPointOut = new FileOutputStream(synchPointFileName)) {
         s = new ObjectOutputStream(out);
@@ -214,6 +224,8 @@ public class Checkpoint implements Runnable {
           if (synchPoint != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
                     this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_checkpoint_with_synchpoint__FINEST",
                     new Object[] {Thread.currentThread().getName()});
@@ -240,6 +252,7 @@ public class Checkpoint implements Runnable {
         }
       } catch (Exception e) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_exception_when_checkpointing__FINEST",
               new Object[] {Thread.currentThread().getName(), e.getMessage()});
@@ -247,6 +260,8 @@ public class Checkpoint implements Runnable {
 
     } catch (Exception e) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_exception_when_checkpointing__FINEST",
               new Object[] { Thread.currentThread().getName(), e.getMessage() });
@@ -273,6 +288,7 @@ public class Checkpoint implements Runnable {
   public static void printStats(ProcessTrace prT) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "\n\t\t\t----------------------------------------");
       UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST, "\t\t\t\t PERFORMANCE REPORT ");
       UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
@@ -315,6 +331,7 @@ public class Checkpoint implements Runnable {
       subEveList = prEvent.getSubEvents();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(Checkpoint.class).log(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 tabS + "COMPONENT : " + compNameS + "\tTYPE : " + typeS + "\tDescription : "
                         + prEvent.getDescription());
@@ -363,6 +380,7 @@ public class Checkpoint implements Runnable {
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_restoring_from_checkpoint__FINEST",
                   new Object[] { Thread.currentThread().getName() });
@@ -383,6 +401,7 @@ public class Checkpoint implements Runnable {
       if (file.exists()) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_synchpoint_from_file__FINEST",
                   new Object[] { Thread.currentThread().getName(), synchPointFileName });

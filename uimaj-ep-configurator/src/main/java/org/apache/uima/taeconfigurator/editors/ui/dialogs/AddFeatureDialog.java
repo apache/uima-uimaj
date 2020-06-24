@@ -109,6 +109,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
    * @param aExistingFd the a existing fd
    */
   public AddFeatureDialog(AbstractSection aSection, TypeDescription aTd,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           FeatureDescription aExistingFd) {
     super(aSection, "Add a Feature", "Use this panel to add or edit a feature");
     typeSection = (TypeSection) aSection;
@@ -137,8 +138,10 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     featureNameUI = newLabeledSingleLineStyledText(twoCol, "Feature Name", S_);
 
     typeFilter = ALL_TYPES;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     featureRangeNameUI = newLabeledTypeInput(section, twoCol, "Range Type:",
             "The range type specifies the type of value this feature can hold.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     multiRefComposite = new2ColumnComposite(twoCol);
     ((GridData) multiRefComposite.getLayoutData()).horizontalSpan = 2;
@@ -152,8 +155,10 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     elementTypeComposite = new2ColumnComposite(twoCol);
     ((GridData) elementTypeComposite.getLayoutData()).horizontalSpan = 2;
     typeFilter = ONLY_NON_PRIMITIVE_TYPES;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     elementRangeNameUI = newLabeledTypeInput(section, elementTypeComposite, "Element Type:",
             "The element type of each element in the Array or List object");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     descriptionUI = newDescription(twoCol, S_);
     newErrorMessage(twoCol, 2);
@@ -163,6 +168,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
       featureNameUI.setText(originalFeatureName = existingFd.getName());
       featureRangeNameUI.setText(existingFd.getRangeTypeName());
       Boolean mra = existingFd.getMultipleReferencesAllowed();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       multiRefUI.select((null == mra) ? 0 : (mra) ? 2 : 1);
       String ert = existingFd.getElementType();
       elementRangeNameUI.setText((null == ert) ? "" : ert);
@@ -197,6 +203,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
    */
   @Override
   public void handleEvent(Event event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-274
     super.handleEvent(event);
     if (event.type == SWT.Modify && event.widget == featureRangeNameUI)
       manageVisibleFields();
@@ -207,6 +214,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
    */
   @Override
   public TypesWithNameSpaces getTypeSystemInfoList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     TypesWithNameSpaces result = super.getTypeSystemInfoList();
     Type[] allTypes = (Type[]) editor.allTypes.get().values().toArray(new Type[0]);
 /*    Arrays.sort(allTypes, new Comparator() {
@@ -222,6 +230,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
       Type type = allTypes[i];
       if (typeFilter == ONLY_NON_PRIMITIVE_TYPES) {
         if (!type.isPrimitive()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
           result.add(type.getName());
         }
       } else {
@@ -242,7 +251,9 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     description = nullIf0lengthString(descriptionUI.getText());
     featureRangeName = featureRangeNameUI.getText();
     multiRef = (1 == multiRefUI.getSelectionIndex()) ? Boolean.FALSE : (2 == multiRefUI
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getSelectionIndex()) ? Boolean.TRUE : null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     if (AbstractSection.isFSArrayOrListType(featureRangeName)) {
       elementRangeName = elementRangeNameUI.getText();
       if ("".equals(elementRangeName)) {
@@ -284,6 +295,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     }
     if (!typeContainedInTypeSystemInfoList(featureRangeName, allTypesList)) {
       setErrorMessage("RangeType '" + featureRangeName
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + "' is unknown. If this is intended, please define it first.");
       return false;
     }

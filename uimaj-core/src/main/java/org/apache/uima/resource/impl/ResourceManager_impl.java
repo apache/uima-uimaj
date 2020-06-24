@@ -86,10 +86,12 @@ public class ResourceManager_impl implements ResourceManager {
     Object resource;  
 
     ExternalResourceDescription description;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
 
     String definingContext;
 
     public ResourceRegistration(Object resourceOrImplementation, ExternalResourceDescription description,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             String definingContext) {
       this.resource = resourceOrImplementation;
       this.description = description;
@@ -128,6 +130,8 @@ public class ResourceManager_impl implements ResourceManager {
    * Keeping the Map's 2nd argument as Object, although it could be Resource, 
    * for backwards compatibility 
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
   final protected Map<String, Object> mResourceMap;
   
   /**
@@ -241,11 +245,14 @@ public class ResourceManager_impl implements ResourceManager {
    * @param aClassLoader -
    */
   public ResourceManager_impl(ClassLoader aClassLoader) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     mResourceMap = Collections.synchronizedMap(new HashMap<>());
     mInternalResourceRegistrationMap = new ConcurrentHashMap<>();
     mParameterizedResourceImplClassMap = new ConcurrentHashMap<>();
     mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<>();
     mParameterizedResourceInstanceMap = new ConcurrentHashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3688
     mRelativePathResolver = new RelativePathResolver_impl(aClassLoader);
   }
 
@@ -267,6 +274,7 @@ public class ResourceManager_impl implements ResourceManager {
   }
   
   public ResourceManager_impl copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5146
     ResourceManager_impl rm = new ResourceManager_impl(
         this.mResourceMap,
         this.mInternalResourceRegistrationMap,
@@ -276,6 +284,7 @@ public class ResourceManager_impl implements ResourceManager {
         );
     // non-final fields init
     rm.uimaCL = this.uimaCL;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5146
     rm.importCache = this.importCache;
     rm.importUrlsCache = this.importUrlsCache;
     return rm; 
@@ -306,9 +315,11 @@ public class ResourceManager_impl implements ResourceManager {
    */
   @Override
   public synchronized void setExtensionClassPath(String classpath, boolean resolveResource)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws MalformedURLException {
     // create UIMA extension ClassLoader with the given classpath
     uimaCL = new UIMAClassLoader(classpath, Class_TCCL.get_parent_cl());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
 
     if (resolveResource) {
       // set UIMA extension ClassLoader also to resolve resources
@@ -322,6 +333,8 @@ public class ResourceManager_impl implements ResourceManager {
    */
   @Override
   public synchronized void setExtensionClassPath(ClassLoader parent, String classpath, boolean resolveResource)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws MalformedURLException {
     // create UIMA extension ClassLoader with the given classpath
     uimaCL = new UIMAClassLoader(classpath, parent);
@@ -341,6 +354,8 @@ public class ResourceManager_impl implements ResourceManager {
                : new UIMAClassLoader(emptyURLarray, classLoader);
     if (resolveResource) {
       // set UIMA extension ClassLoader also to resolve resources
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
       getRelativePathResolver().setPathResolverClassLoader(uimaCL);
     }
   }
@@ -358,6 +373,7 @@ public class ResourceManager_impl implements ResourceManager {
    */
   @Override
   public String getDataPath() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
     return getRelativePathResolver().getDataPath();
   }
 
@@ -377,15 +393,18 @@ public class ResourceManager_impl implements ResourceManager {
   @Override
   public URL resolveRelativePath(String aRelativePath) throws MalformedURLException {
     URL relativeUrl;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       relativeUrl = new URL(aRelativePath);
     } catch (MalformedURLException e) {
       relativeUrl = new URL("file", "", aRelativePath);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
     return getRelativePathResolver().resolveRelativePath(relativeUrl);
   }
 
   private void checkDestroyed() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
     if (isDestroyed.get()) {
       throw new IllegalStateException("ResourceManager is destroyed");
     }    
@@ -399,8 +418,10 @@ public class ResourceManager_impl implements ResourceManager {
     checkDestroyed();
     Object r = mResourceMap.get(aName);
     // if this is a ParameterizedDataResource, it is an error
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (r instanceof ParameterizedDataResource) {
       throw new ResourceAccessException(ResourceAccessException.PARAMETERS_REQUIRED,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { aName });
     }
     return r;
@@ -416,16 +437,19 @@ public class ResourceManager_impl implements ResourceManager {
      *     uima context object.
      *   Do double-checked idiom to avoid locking where resource is already available, loaded   
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
     checkDestroyed();
     Object r = mResourceMap.get(aName);
 
     // if no resource found, return null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (r == null) {
       return null;
     }
     // if not a ParameterizedDataResource, it is an error
     if (!(r instanceof ParameterizedDataResource)) {
       throw new ResourceAccessException(ResourceAccessException.PARAMETERS_NOT_ALLOWED,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { aName });
     }
     ParameterizedDataResource pdr = (ParameterizedDataResource) r;
@@ -439,6 +463,7 @@ public class ResourceManager_impl implements ResourceManager {
     }
 
     // see if we've already encountered this DataResource under this resource name
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<Object> nameAndResource = new ArrayList<>(2);
     nameAndResource.add(aName);
     nameAndResource.add(dr);
@@ -446,6 +471,7 @@ public class ResourceManager_impl implements ResourceManager {
     if (resourceInstance != null) {
       return resourceInstance;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3688
     synchronized(mParameterizedResourceInstanceMap) {
       // double-check idiom
       resourceInstance = mParameterizedResourceInstanceMap.get(nameAndResource);
@@ -454,6 +480,7 @@ public class ResourceManager_impl implements ResourceManager {
       }
       // We haven't encountered this before. See if we need to instantiate a
       // SharedResourceObject
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Class<?> sharedResourceObjectClass = mParameterizedResourceImplClassMap.get(aName);
       if (sharedResourceObjectClass != EMPTY_RESOURCE_CLASS) {
         try {
@@ -493,6 +520,7 @@ public class ResourceManager_impl implements ResourceManager {
     // if this is a ParameterizedDataResource, look up its class
     if (r instanceof ParameterizedDataResource) {
       Class<?> customResourceClass = mParameterizedResourceImplClassMap.get(aName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3688
       if (customResourceClass == EMPTY_RESOURCE_CLASS) {
         // return the default class
         return DataResource_impl.class;
@@ -501,6 +529,7 @@ public class ResourceManager_impl implements ResourceManager {
     } else {
       // return r's Class
       // could be, for 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       return (Class<? extends Resource>) r.getClass();
     }
   }
@@ -513,7 +542,9 @@ public class ResourceManager_impl implements ResourceManager {
    */
   @Override
   public InputStream getResourceAsStream(String aKey, String[] aParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceAccessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3688
     return getResourceAsStreamCommon(getResource(aKey, aParams));
   }
   
@@ -528,6 +559,7 @@ public class ResourceManager_impl implements ResourceManager {
   }
 
   private InputStream getResourceAsStreamCommon(Object resource) throws ResourceAccessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
     checkDestroyed();
     try {
       if (resource != null && resource instanceof DataResource) {
@@ -556,6 +588,7 @@ public class ResourceManager_impl implements ResourceManager {
    */
   @Override
   public URL getResourceURL(String aKey, String[] aParams) throws ResourceAccessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3688
     return getResourceAsStreamCommonUrl(getResource(aKey, aParams));
   }
 
@@ -566,6 +599,7 @@ public class ResourceManager_impl implements ResourceManager {
    */
   @Override
   public URL getResourceURL(String aKey) throws ResourceAccessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3688
     return getResourceAsStreamCommonUrl(getResource(aKey));
   }
 
@@ -582,16 +616,21 @@ public class ResourceManager_impl implements ResourceManager {
    */
   @Override
   public synchronized void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           String aQualifiedContextName, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // register resources
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
     checkDestroyed();
     
     // set up aAdditionalParams to have this resource manager if not already set
     // so that External Resource instances created from this use this creating/owning
     // resource manager as the value returned from their getResourceManager call
     // see https://issues.apache.org/jira/browse/UIMA-5148
+//IC see: https://issues.apache.org/jira/browse/UIMA-5146
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
     if (null == aAdditionalParams) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       aAdditionalParams = new HashMap<>();
     }
     if (!aAdditionalParams.containsKey(Resource.PARAM_RESOURCE_MANAGER)) {
@@ -620,6 +659,7 @@ public class ResourceManager_impl implements ResourceManager {
             UIMAFramework.getLogger().logrb(Level.CONFIG, ResourceManager_impl.class.getName(),
                     "initializeExternalResources", LOG_RESOURCE_BUNDLE,
                     "UIMA_overridden_resource__CONFIG",
+//IC see: https://issues.apache.org/jira/browse/UIMA-474
                     new Object[] { name, aQualifiedContextName, registration.definingContext});
           } else {
             UIMAFramework.getLogger().logrb(Level.WARNING, ResourceManager_impl.class.getName(),
@@ -634,6 +674,7 @@ public class ResourceManager_impl implements ResourceManager {
     ExternalResourceBinding[] bindings = aConfiguration.getExternalResourceBindings();
     for (int i = 0; i < bindings.length; i++) {
       ResourceRegistration registration = mInternalResourceRegistrationMap
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .get(bindings[i].getResourceName());
       if (registration == null) {
         throw new ResourceInitializationException(
@@ -642,6 +683,7 @@ public class ResourceManager_impl implements ResourceManager {
       }
       mResourceMap.put(aQualifiedContextName + bindings[i].getKey(), registration.resource);
       // record the link from key to resource class (for parameterized resources only)
+//IC see: https://issues.apache.org/jira/browse/UIMA-3688
       Class<?> impl = mInternalParameterizedResourceImplClassMap.get(bindings[i].getResourceName()); 
       mParameterizedResourceImplClassMap.put(aQualifiedContextName + bindings[i].getKey(),
                                              (impl == null) ? EMPTY_RESOURCE_CLASS : impl);
@@ -661,7 +703,9 @@ public class ResourceManager_impl implements ResourceManager {
    */
   @Override
   public synchronized void resolveAndValidateResourceDependencies(ExternalResourceDependency[] aDependencies,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aQualifiedContextName) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
     checkDestroyed();
     for (int i = 0; i < aDependencies.length; i++) {
       // get resource
@@ -677,6 +721,7 @@ public class ResourceManager_impl implements ResourceManager {
         } catch (MalformedURLException e) {
           throw new ResourceInitializationException(e);
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
         URL absUrl = getRelativePathResolver().resolveRelativePath(relativeUrl);
         if (absUrl != null) {
           // found - create a DataResource object and store it in the mResourceMap
@@ -697,9 +742,12 @@ public class ResourceManager_impl implements ResourceManager {
         }
 
       } else {  // resource not null
+//IC see: https://issues.apache.org/jira/browse/UIMA-5146
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
 
         // make sure resource exists and implements the correct interface
         try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           String name = aDependencies[i].getInterfaceName();
           if (name != null && name.length() > 0) {
             Class<?> theInterface = loadUserClass(name);
@@ -707,6 +755,7 @@ public class ResourceManager_impl implements ResourceManager {
             Class<?> resourceClass = getResourceClass(qname);
             if (!theInterface.isAssignableFrom(resourceClass)) {
               throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
                       new Object[] { qname, aDependencies[i].getInterfaceName(),
                           aDependencies[i].getSourceUrlString() });
@@ -727,14 +776,17 @@ public class ResourceManager_impl implements ResourceManager {
   private void registerResource(String aName, ExternalResourceDescription aResourceDescription,
           String aDefiningContext, Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     // add the relative path resolver to the resource init. params
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, Object> initParams = (aResourceInitParams == null) ? new HashMap<>() : new HashMap<>(
         aResourceInitParams);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
     initParams.put(DataResource.PARAM_RELATIVE_PATH_RESOLVER, getRelativePathResolver());
     
     // determine if verification mode is on.  If so, we don't want to load the resource data
     boolean verificationMode = initParams.containsKey(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE);
     
     // create the initial resource using the resource factory
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
     Resource r = UIMAFramework.produceResource(aResourceDescription.getResourceSpecifier(),
             initParams);
 
@@ -745,9 +797,11 @@ public class ResourceManager_impl implements ResourceManager {
     Object implInstance = r;  // what will be registered, might be the Resource, or its implementation
     if (implementationName != null && implementationName.length() > 0) {
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         implClass = loadUserClass(implementationName);
       } catch (ClassNotFoundException e) {
         throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { implementationName, aResourceDescription.getSourceUrlString() }, e);
       }
 
@@ -764,12 +818,14 @@ public class ResourceManager_impl implements ResourceManager {
       if (implClass != null) {
         try {
           SharedResourceObject sro = (SharedResourceObject) implClass.newInstance();
+//IC see: https://issues.apache.org/jira/browse/UIMA-780
           if (!verificationMode) {
             sro.load((DataResource) r);
           }
           implInstance = sro;   // so the implementation is registered, for DataResources
         } catch (InstantiationException e) {
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
                       implClass.getName(), aResourceDescription.getSourceUrlString() }, e);
         } catch (IllegalAccessException e) {
@@ -783,12 +839,16 @@ public class ResourceManager_impl implements ResourceManager {
     else if (r instanceof ParameterizedDataResource) {
       // we can't load the SharedResourceObject now, but we need to remember
       // which class it is for later when we get a request with parameters
+//IC see: https://issues.apache.org/jira/browse/UIMA-3688
       mInternalParameterizedResourceImplClassMap.put(aName, (null == implClass) ? EMPTY_RESOURCE_CLASS : implClass);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5146
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
     } else {
     // it is some other type of Resource
       // it is an error to specify an implementation class in this case
       if (implClass != null) {
         throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 ResourceInitializationException.NOT_A_DATA_RESOURCE, new Object[] {
                     implClass.getName(), aName, r.getClass().getName(),
                     aResourceDescription.getSourceUrlString() });
@@ -796,6 +856,8 @@ public class ResourceManager_impl implements ResourceManager {
     }
 
     // put resource or its implementation (for DataResources)  in internal map for later retrieval
+//IC see: https://issues.apache.org/jira/browse/UIMA-5146
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
     ResourceRegistration registration = new ResourceRegistration(implInstance, aResourceDescription,
             aDefiningContext);
     mInternalResourceRegistrationMap.put(aName, registration);
@@ -813,7 +875,9 @@ public class ResourceManager_impl implements ResourceManager {
     if(mCasManager != null) {
       return mCasManager;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3688
     synchronized(casManagerMonitor) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-353
       if (mCasManager == null) {
         mCasManager = new CasManager_impl(this);
       }
@@ -826,6 +890,7 @@ public class ResourceManager_impl implements ResourceManager {
    */
   @Override
   public void setCasManager(CasManager aCasManager) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3688
     synchronized(casManagerMonitor) {
       if (mCasManager == null) {
         mCasManager = aCasManager;
@@ -839,11 +904,13 @@ public class ResourceManager_impl implements ResourceManager {
  
   // This method overridden by subclass for pear wrapper
   protected RelativePathResolver getRelativePathResolver() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
     return mRelativePathResolver;
   }
 
   @Override
   public Map<String, XMLizable> getImportCache() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1230
     return importCache;
   }
 
@@ -853,6 +920,7 @@ public class ResourceManager_impl implements ResourceManager {
   
   @Override
   public <N> Class<N> loadUserClass(String name) throws ClassNotFoundException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
     return Class_TCCL.forName(name, this, true);
   }
   
@@ -877,6 +945,7 @@ public class ResourceManager_impl implements ResourceManager {
   @Override
   public void destroy() {
     boolean alreadyDestroyed = isDestroyed.getAndSet(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
     if (alreadyDestroyed) {
       return;
     }
@@ -893,6 +962,7 @@ public class ResourceManager_impl implements ResourceManager {
       }
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5797
     if (uimaCL != null) {
       try {
         uimaCL.close();
@@ -931,6 +1001,8 @@ public class ResourceManager_impl implements ResourceManager {
   public List<Object> getExternalResources() {
     
     List<Object> rs = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5146
+//IC see: https://issues.apache.org/jira/browse/UIMA-2977
     for (ResourceRegistration r : mInternalResourceRegistrationMap.values()) {
       if (!(r instanceof ParameterizedDataResource)) {
         rs.add(r.resource);

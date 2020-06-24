@@ -59,11 +59,14 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    * @see org.apache.uima.resource.service.impl.ResourceService_impl#initialize(ResourceSpecifier, Map)
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, Map<String, Object> aResourceInitParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     super.initialize(aResourceSpecifier, aResourceInitParams);
     Integer numInstances = (Integer) aResourceInitParams
             .get(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS);
     if (numInstances == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       numInstances = 1;
     }
     mCasPool = new CasPool(numInstances, getAnalysisEngine());
@@ -87,7 +90,9 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, int aNumSimultaneousRequests,
           int aTimeout) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, Object> initParams = new HashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, aNumSimultaneousRequests);
     initParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, aTimeout);
     this.initialize(aResourceSpecifier, initParams);
@@ -104,6 +109,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    * @return the results of analysis
    */
   public ServiceDataCargo process(ServiceDataCargo aData, ResultSpecification aResultSpec)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceServiceException {
     ProcessTrace trace = aData.getProcessTrace();
     if (trace == null) {
@@ -121,6 +127,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
 
       if (cas == null) {
         throw new ResourceServiceException(ResourceServiceException.RESOURCE_UNAVAILABLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[0]);
       }
 

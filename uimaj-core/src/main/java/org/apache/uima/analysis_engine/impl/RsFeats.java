@@ -41,6 +41,7 @@ public class RsFeats implements Iterable<RsFeat> {
       features = null;
       return;
     }      
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     features = new ArrayList<>(other.features.size());
     for (RsFeat f : other.features){
       features.add(new RsFeat(f));    
@@ -68,6 +69,7 @@ public class RsFeats implements Iterable<RsFeat> {
       feat = new RsFeat(shortFeatName, rsLangs);
     }
     if (null == features) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       features = new ArrayList<>(1);
     }
     features.add(feat);

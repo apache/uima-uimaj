@@ -56,6 +56,7 @@ public class SofaMapping_implTest extends TestCase {
   }
 
   public void testXmlization() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // write to XML
       StringWriter writer = new StringWriter();
@@ -65,8 +66,10 @@ public class SofaMapping_implTest extends TestCase {
       sm2.toXML(writer);
       String sm2Xml = writer.getBuffer().toString();
       // parse from XML
+//IC see: https://issues.apache.org/jira/browse/UIMA-1202
       InputStream is = new ByteArrayInputStream(sm1Xml.getBytes(encoding));
       SofaMapping_impl newSm1 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new XMLInputSource(is, null));
       is = new ByteArrayInputStream(sm2Xml.getBytes(encoding));
       SofaMapping_impl newSm2 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(

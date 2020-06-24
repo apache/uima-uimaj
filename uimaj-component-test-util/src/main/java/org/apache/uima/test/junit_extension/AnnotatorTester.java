@@ -238,6 +238,7 @@ public class AnnotatorTester {
     * @throws Exception passthru
     */
     public CAS createCAS()  throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2037
         try {
             return ae.newCAS();
         } catch (Exception ex) {

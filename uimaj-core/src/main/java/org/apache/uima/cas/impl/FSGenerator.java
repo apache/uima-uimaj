@@ -32,5 +32,7 @@ import org.apache.uima.cas.FeatureStructure;
 public interface FSGenerator<T extends FeatureStructure> {
 
   T createFS(int addr, CASImpl cas);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
 
 }

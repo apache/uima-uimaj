@@ -81,6 +81,8 @@ public class SerDesTest6 extends SerDesTstCommon {
    *
    */
   enum TypeSystems {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5471
+//IC see: https://issues.apache.org/jira/browse/UIMA-5470
     TwoTypes,    // two types, Akof1 Akof2, with all features, one type system
     EqTwoTypes,  // two typesystems, made up of a copy of TwoTypes
     OneType,     // one type, all features
@@ -110,6 +112,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     public TTypeSystem   m;
     public TypeSystemMgr tsm;
     final TypeSystems    kind; // enum TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, TwoTypesNoFeatures
+//IC see: https://issues.apache.org/jira/browse/UIMA-5471
+//IC see: https://issues.apache.org/jira/browse/UIMA-5470
 
     public CASTestSetup(TypeSystems kind) {
       this.kind = kind;
@@ -126,6 +130,8 @@ public class SerDesTest6 extends SerDesTstCommon {
       m = new TTypeSystem(tsm, kind);
       addBuiltins();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
       m.addType(Akof1.name(), "Top");
       if (kind != TwoTypesNoFeatures) {
         for (String fn : featureNameRoots) {
@@ -137,8 +143,11 @@ public class SerDesTest6 extends SerDesTstCommon {
       }
 
       switch (kind) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
       case TwoTypes:
       case TwoTypesSubsetFeatures:
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       case TwoTypesNoFeatures:
         m.addType(Akof2.name(), "Top");
         if (kind != TwoTypesNoFeatures) {
@@ -150,6 +159,7 @@ public class SerDesTest6 extends SerDesTstCommon {
           }
         }
         break;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       default: // skip the other cases
       } // end of switch
     }
@@ -190,11 +200,14 @@ public class SerDesTest6 extends SerDesTstCommon {
   
   /** have 2 instances of this, one per type system */
   static class TTypeSystem {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5471
+//IC see: https://issues.apache.org/jira/browse/UIMA-5470
     final TypeSystems     kind; // enum TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, TwoTypesNoFeatures,
     TypeSystemMgr tsm;
     /** table, by two types, then sparse table, each slot not empty is a feature indexed by corresponding featureNameRoots */
     Feature[][] featureTable = new Feature[Types.values().length][featureNameRoots.size()];
     /** short-name to types map: e.g. Aint -> array of int  */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, Type>     mapString2Type      = new HashMap<>();
     public TypeSystemImpl ts;
     public CASImpl cas;  // the Cas setup as part of initialization                                                                    // the
@@ -230,6 +243,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     void add(Type type, String featNameRoot) {
       String typeName = type.getShortName();
       int i2 = featureNameRoots.indexOf(featNameRoot);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
       featureTable[Types.valueOf(typeName).ordinal()][i2] = tsm.addFeature(typeName + featNameRoot,
           type, mapString2Type.get(featNameRoot));
     }
@@ -250,6 +265,7 @@ public class SerDesTest6 extends SerDesTstCommon {
       return getFeature(Types.valueOf(t.getShortName()), featNameRoot);
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     void updateAfterCommit() {
       ts = cas.getTypeSystemImpl();
       tsm = ts;
@@ -263,6 +279,8 @@ public class SerDesTest6 extends SerDesTstCommon {
         if (ti != null) {
           Feature[] features = featureTable[typeKind.ordinal()];
           for (int i = 0; i < features.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
             features[i] = ti.getFeatureByBaseName(ti.getShortName() + featureNameRoots.get(i));
           }
         }
@@ -288,14 +306,18 @@ public class SerDesTest6 extends SerDesTstCommon {
 
   public void setUp() {
 //    long startTime = System.nanoTime();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
     mSrc = setupTTypeSystem(TwoTypes);
     casSrc = mSrc.cas;
     final TypeSystems[] tss = TypeSystems.values();
     final int nbrAltTs = tss.length;
     alternateTTypeSystems = new TTypeSystem[nbrAltTs];
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     for (int i = 0; i < nbrAltTs; i++) {
       alternateTTypeSystems[i] = setupTTypeSystem(tss[i]);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     lfs = new ArrayList<>();
 //    System.out.format("Debug SerDesTest6 setup time: %d micros%n", 
 //        (System.nanoTime() - startTime)/1000L);
@@ -303,6 +325,7 @@ public class SerDesTest6 extends SerDesTstCommon {
   }
 
   public void tearDown() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
     remoteCas = null;
     lfs = null;
     mSrc = null;
@@ -335,7 +358,10 @@ public class SerDesTest6 extends SerDesTstCommon {
   }
 
   public void testDocText() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3054
       CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
       cas.setDocumentLanguage("latin");
       cas.setDocumentText("test");
@@ -377,6 +403,8 @@ public class SerDesTest6 extends SerDesTstCommon {
    */
 
   public void testAllKinds() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
+//IC see: https://issues.apache.org/jira/browse/UIMA-2778
     if (doPlain) {
       serdesSimple(getTT(EqTwoTypes), "EqTwoTypes");
     } else {
@@ -476,6 +504,8 @@ public class SerDesTest6 extends SerDesTstCommon {
       lfs = getIndexedFSs(remoteCas, m);
       FeatureStructure fs = lfs.get(10);
       StringArrayFS sa = (StringArrayFS) maybeGetFeatureKind(fs, m, "Astring");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
       if (sa == null) { // could happen because features are randomly omitted
         System.out.println("    Astring feature omitted, retrying");
       } else if (sa.size() == 0) {
@@ -495,12 +525,15 @@ public class SerDesTest6 extends SerDesTstCommon {
 
   public void testDeltaWithDblArrayMod() {
     for (int i = 0; i < 10; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4102
       TTypeSystem m = getTT(EqTwoTypes);
       remoteCas = setupCas(m);
       loadCas(casSrc, mSrc);
       ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
       MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
       lfs = getIndexedFSs(remoteCas, m);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
       FeatureStructure fs = lfs.get(10); /* has double array length 2 */
       DoubleArrayFS d = (DoubleArrayFS) maybeGetFeatureKind(fs, m, "Adouble");
       if (d == null) { // could happen because features are randomly omitted
@@ -568,6 +601,8 @@ public class SerDesTest6 extends SerDesTstCommon {
   private void serdesSimple(TTypeSystem m, String kind) {
     remoteCas = setupCas(m);
     casSrc.reset();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     loadCas(casSrc, mSrc);
     verify(remoteCas, kind);
 
@@ -592,10 +627,13 @@ public class SerDesTest6 extends SerDesTstCommon {
    * 
    */
   public void testDelta() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     if (doPlain) {
       serdesDelta(getTT(EqTwoTypes));
     } else {
       for (TTypeSystem m : alternateTTypeSystems) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
         switch (m.kind) {
         case TwoTypesSubsetFeatures:
           serdesDelta(m);
@@ -615,6 +653,8 @@ public class SerDesTest6 extends SerDesTstCommon {
   }
 
   private void serdesDelta(TTypeSystem m) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     remoteCas = setupCas(m); // create empty new CAS with specified type system from m.ts
 //    casSrc.reset();
     loadCas(casSrc, mSrc); // load up the src cas using mSrc spec
@@ -655,6 +695,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     lfs = getIndexedFSs(remoteCas, m); // get list of all "Akof1" FS
     FeatureStructure fs = remoteCas.createFS(m.getType(Akof1));
     // set the lfs.get(0) featurestructure's feature "Fs" to the new fs
@@ -678,6 +720,7 @@ public class SerDesTest6 extends SerDesTstCommon {
   public void testDeltaWithAllMods() {
 
     for (int i = 0; i < 100; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
       checkDeltaWithAllMods();
       tearDown();
       setUp();
@@ -710,12 +753,14 @@ public class SerDesTest6 extends SerDesTstCommon {
   }
 
   public void testDeltaWithIndexMods() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
     ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     lfs = new ArrayList<>();
     loadCas(remoteCas, m);
 
@@ -728,6 +773,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     remoteCas.getIndexRepository().removeFS(lfs.get(0));
     remoteCas.getIndexRepository().removeFS(lfs.get(1));
     remoteCas.getIndexRepository().addFS(lfs.get(1));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
 
     verifyDelta(marker, ri);
   }
@@ -833,6 +880,7 @@ public class SerDesTest6 extends SerDesTstCommon {
   }
 
   public void testArrayAux() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<FeatureStructure> fsList = new ArrayList<>();
     /**
      * Strings, non-array Long/Double:
@@ -849,6 +897,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     verify(remoteCas, "ArrayAuxString");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
 
     FSIterator<FeatureStructure> it = remoteCas.indexRepository.getAllIndexedFS(m.getType(Akof1));
     FeatureStructure fsAt1d = it.next();
@@ -860,7 +910,9 @@ public class SerDesTest6 extends SerDesTstCommon {
     assertEquals(sa1.get(1), "def");
 
     casSrc.reset();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     fsAt1 = newAkof(casSrc, mSrc, Akof1, fsList);
     fsAt2 = newAkof(casSrc, mSrc, Akof1, fsList);
     casSrc.addFsToIndexes(fsAt1);
@@ -870,6 +922,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     createLongA(casSrc, mSrc, fsAt2, 9);
     remoteCas.reset();
     verify(remoteCas, "ArrayAuxLong");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
 
     it = remoteCas.indexRepository.getAllIndexedFS(m.getType(Akof1));
     fsAt1d = it.next();
@@ -953,7 +1007,10 @@ public class SerDesTest6 extends SerDesTstCommon {
   // }
 
   private FeatureStructure newAkof(CASImpl cas, TTypeSystem m, Types typeKind,
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
       List<FeatureStructure> fsl) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     FeatureStructure fs = cas.createFS(m.getType(typeKind.name()));
     fsl.add(fs);
     return fs;
@@ -982,6 +1039,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     maybeSetFeatureKind(fs, m, "Aboolean", cas.createBooleanArrayFS(2));
     maybeSetFeatureKind(fs, m, "Astring", randomStringA(cas));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     return fs;
   }
 
@@ -989,6 +1048,7 @@ public class SerDesTest6 extends SerDesTstCommon {
     "abc", "abcdef", null, "", "ghijklm", "a", "b"
   };
   private String randomString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     return stringValues[random.nextInt(7)];
   }
 
@@ -1017,6 +1077,7 @@ public class SerDesTest6 extends SerDesTstCommon {
     int length = random.nextInt(2) + 1;
     ByteArrayFS fs = cas.createByteArrayFS(length);
     for (int i = 0; i < length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
       fs.set(i, byteValues[random.nextInt(byteValues.length)]);
     }
     return fs;
@@ -1029,6 +1090,7 @@ public class SerDesTest6 extends SerDesTstCommon {
     int length = random.nextInt(2) + 1;
     LongArrayFS fs = cas.createLongArrayFS(length);
     for (int i = 0; i < length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
       fs.set(i, longValues[random.nextInt(longValues.length)]);
     }
     return fs;
@@ -1041,6 +1103,7 @@ public class SerDesTest6 extends SerDesTstCommon {
     int length = random.nextInt(2) + 1;
     ShortArrayFS fs = cas.createShortArrayFS(length);
     for (int i = 0; i < length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
       fs.set(i, shortValues[random.nextInt(shortValues.length)]);
     }
     return fs;
@@ -1053,6 +1116,7 @@ public class SerDesTest6 extends SerDesTstCommon {
     int length = random.nextInt(2) + 1;
     DoubleArrayFS fs = cas.createDoubleArrayFS(length);
     for (int i = 0; i < length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
       fs.set(i, doubleValues[random.nextInt(doubleValues.length)]);
     }
     return fs;
@@ -1065,12 +1129,14 @@ public class SerDesTest6 extends SerDesTstCommon {
     int length = random.nextInt(2) + 1;
     FloatArrayFS fs = cas.createFloatArrayFS(length);
     for (int i = 0; i < length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
       fs.set(i, floatValues[random.nextInt(floatValues.length)]);
     }
     return fs;
   }
 
   private void makeRandomFss(CASImpl cas, TTypeSystem m, Types typeKind, int n) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<FeatureStructure> lfss = new ArrayList<>();
     for (int i = 0; i < n; i++) {
       FeatureStructure fs = makeAkof(cas, m, typeKind);
@@ -1088,6 +1154,8 @@ public class SerDesTest6 extends SerDesTstCommon {
   private void loadCas(CASImpl cas, TTypeSystem m) {
     makeFeaturesForAkof(cas, m, Akof1);
     // TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, NoFeatures,
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     switch (m.kind) {
     case TwoTypes:
     case EqTwoTypes:
@@ -1186,6 +1254,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     FeatureStructure fs = newAkof(cas, m, typeKind, lfs);
 
     maybeSetBoolean(fs, m, true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     maybeSetByte(fs, m, (byte) 109);
     maybeSetShort(fs, m, (short) 23);
     maybeSetInt(fs, m, 2345);
@@ -1219,6 +1289,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     maybeSetFloat(fs, m, Float.MIN_VALUE);
     maybeSetLong(fs, m, Long.MIN_VALUE);
     maybeSetDouble(fs, m, Double.MIN_VALUE);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     maybeSetString(fs, m, null);
     maybeSetFeature(fs, m, fs1);
     cas.addFsToIndexes(fs);
@@ -1234,6 +1306,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     maybeSetDouble(fs, m, 0D);
     maybeSetFeature(fs, m, fs1);
     cas.addFsToIndexes(fs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     maybeSetFeature(fs3, m, fs); // make a forward ref
     FeatureStructure fs4 = fs;
 
@@ -1280,6 +1354,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     /* lfs index: 9 */
     fs = newAkof(cas, m, typeKind, lfs);
     maybeSetFeatureKind(fs, m, "Aint", cas.createIntArrayFS(0));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     maybeSetFeatureKind(fs, m, "Afs", cas.createArrayFS(0));
     maybeSetFeatureKind(fs, m, "Afloat", cas.createFloatArrayFS(0));
     maybeSetFeatureKind(fs, m, "Adouble", cas.createDoubleArrayFS(0));
@@ -1293,6 +1369,8 @@ public class SerDesTest6 extends SerDesTstCommon {
 
     /* lfs index: 10 */
     fs = newAkof(cas, m, typeKind, lfs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     maybeSetFeatureKind(fs, m, "Aint", cas.createIntArrayFS(2));
     maybeSetFeatureKind(fs, m, "Afs", cas.createArrayFS(2));
     maybeSetFeatureKind(fs, m, "Afloat", cas.createFloatArrayFS(2));
@@ -1317,7 +1395,10 @@ public class SerDesTest6 extends SerDesTstCommon {
     fsafs.set(2, fs1);
     fsafs.set(3, fs4);
     maybeSetFeatureKind(fs, m, "Afs", fsafs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     createFloatA(cas, m, fs, 0f);
     createDoubleA(cas, m, fs, 0d);
     createLongA(cas, m, fs, 0L);
@@ -1370,6 +1451,7 @@ public class SerDesTest6 extends SerDesTstCommon {
         bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
         bais = new ByteArrayInputStream(readIn(fname));
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       casTgt.getBinaryCasSerDes().reinit(bais);
       if (doPlain) {
         assertTrue(new BinaryCasSerDes6(casSrc).compareCASes(casSrc, casTgt));
@@ -1391,6 +1473,8 @@ public class SerDesTest6 extends SerDesTstCommon {
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
       if (doPlain) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
         return;
       } else {
         bcs = new BinaryCasSerDes6(casSrc, (ReuseInfo) null);
@@ -1404,7 +1488,9 @@ public class SerDesTest6 extends SerDesTstCommon {
           : new ByteArrayInputStream(readIn(fname));
           
       Serialization.deserializeCAS(casTgt, bais, casSrc.getTypeSystemImpl(), null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2874
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2874
       bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
       assertTrue(bcs.compareCASes(casSrc, casTgt));
     } catch (IOException e) {
@@ -1437,8 +1523,11 @@ public class SerDesTest6 extends SerDesTstCommon {
           Serialization.serializeCAS(casSrc, baos, mark);
         }
       } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2874
         BinaryCasSerDes6 bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
         SerializationMeasures sm = bcs.serialize(baos);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
         if (sm != null) {
           System.out.println(sm);
         }
@@ -1446,12 +1535,15 @@ public class SerDesTest6 extends SerDesTstCommon {
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       if (doPlain) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
         casTgt.getBinaryCasSerDes().reinit(bais);
       } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2874
         riToReturn[1] = Serialization.deserializeCAS(casTgt, bais, null, null).getReuseInfo();
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       fail();
@@ -1467,13 +1559,17 @@ public class SerDesTest6 extends SerDesTstCommon {
       } else {
         BinaryCasSerDes6 bcs = new BinaryCasSerDes6(remoteCas, mark, null, ri[1]);
         SerializationMeasures sm = bcs.serialize(baos);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
         if (sm != null) {
           System.out.println(sm);
         }
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       if (doPlain) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
         casSrc.getBinaryCasSerDes().reinit(bais);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
         assertTrue(new BinaryCasSerDes6(casSrc).compareCASes(casSrc, remoteCas));
       } else {
         BinaryCasSerDes6 bcsDeserialize = Serialization.deserializeCAS(casSrc, bais,
@@ -1482,6 +1578,9 @@ public class SerDesTest6 extends SerDesTstCommon {
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
+//IC see: https://issues.apache.org/jira/browse/UIMA-2791
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       fail();
@@ -1496,6 +1595,8 @@ public class SerDesTest6 extends SerDesTstCommon {
 
   private void makeRandomUpdate(CASImpl cas, TTypeSystem m, Types typeKind, FeatureStructure fs) {
     int n = random.nextInt(3);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     for (int i = 0; i < n; i++) {
       switch (random.nextInt(26)) {
       case 0:
@@ -1520,6 +1621,8 @@ public class SerDesTest6 extends SerDesTstCommon {
         maybeSetDouble(fs, m, random.nextDouble());
         break;
       case 7:
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
         maybeSetString(fs, m, randomString());
         break;
       case 8:
@@ -1529,6 +1632,8 @@ public class SerDesTest6 extends SerDesTstCommon {
         maybeSetFeatureKind(fs, m, "Aint", randomIntA(cas));
         break;
       case 10:
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
         maybeSetFeatureKind(fs, m, "Afs", cas.createArrayFS(1));
         break;
       case 11:
@@ -1549,6 +1654,8 @@ public class SerDesTest6 extends SerDesTstCommon {
       case 16:
         maybeSetFeatureKind(fs, m, "Aboolean", cas.createBooleanArrayFS(2));
         break;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
       case 17:
         maybeSetFeatureKind(fs, m, "Astring", randomStringA(cas));
         break;
@@ -1614,6 +1721,7 @@ public class SerDesTest6 extends SerDesTstCommon {
 
   private List<FeatureStructure> getIndexedFSs(CASImpl cas, TTypeSystem m) {
     Collection<TOP> c = cas.getIndexRepository().getIndexedFSs(m.getType(Akof1));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<FeatureStructure> lfs = new ArrayList<>();
     for (TOP fs : c) {
       lfs.add(fs);

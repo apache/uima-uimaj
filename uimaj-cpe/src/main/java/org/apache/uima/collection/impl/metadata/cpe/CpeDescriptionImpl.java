@@ -63,6 +63,7 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
    * Instantiates a new cpe description impl.
    */
   public CpeDescriptionImpl() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -120,6 +121,7 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
    */
   @Override
   public void addCollectionReader(CpeCollectionReader aCollectionReader)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     collectionReader = aCollectionReader;
   }
@@ -149,6 +151,7 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   @Override
   @Deprecated
 public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDescriptorPath)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     if (collectionReader == null) {
       collectionReader = CpeDescriptorFactory.produceCollectionReader();
@@ -181,7 +184,9 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
    */
   @Override
   public void setAllCollectionCollectionReaders(CpeCollectionReader[] areaders)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-162
     if (areaders == null || areaders.length == 0) {
       collectionReader = null;
     }
@@ -293,6 +298,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
   @Override
   public void addCasProcessor(int index, CpeCasProcessor aCasProcessor)
           throws CpeDescriptorException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (casProcessors == null) {
       casProcessors = CpeDescriptorFactory.produceCasProcessors();
@@ -424,6 +430,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
    */
   @Override
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ParsingOptions aOptions, List aKnownPropertyNames) throws InvalidXMLException {
     if (aElement.getNodeName().equals("resourceManagerConfiguration")) {
       resourceMgrConfig = new CpeResourceManagerConfigurationImpl();
@@ -445,6 +452,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
 
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeDescription",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("allCollectionCollectionReaders", null),
               new PropertyXmlInfo("cpeCasProcessors", null),
               new PropertyXmlInfo("cpeConfig", null),

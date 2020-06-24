@@ -38,6 +38,8 @@ public class CpmLocalizedMessage {
    * @return the localized message
    */
   public static String getLocalizedMessage(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments) {
     if (aMessageKey == null)
       return null;

@@ -87,6 +87,8 @@ public class TypeSection extends AbstractImportablePartSection {
   
   /** The Constant CASCADE_MESSAGE. */
   public static final String CASCADE_MESSAGE = "This will cause a cascading deletion of an associated "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           + "input, output, index, or type priority, unless this deletion exposes a "
           + "built-in or imported type or feature of the same name.  Ok to continue?";
 
@@ -151,6 +153,7 @@ public class TypeSection extends AbstractImportablePartSection {
    */
   public TypeSection(MultiPageEditor editor, Composite parent) {
     super(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             editor,
             parent,
             "Types (or Classes)",
@@ -172,6 +175,7 @@ public class TypeSection extends AbstractImportablePartSection {
     enableBorders(sectionClient);
     toolkit.paintBordersFor(sectionClient);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     tt = newTree(sectionClient, SWT.SINGLE | SWT.FULL_SELECTION);
     new TreeColumn(tt, SWT.NONE).setText("Type Name or Feature Name");
     new TreeColumn(tt, SWT.NONE).setText("SuperType or Range");
@@ -182,8 +186,10 @@ public class TypeSection extends AbstractImportablePartSection {
     tt.addListener(SWT.MouseHover, this); // to show description and more
 
     Composite buttonContainer = newButtonContainer(sectionClient);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     addTypeButton = newPushButton(buttonContainer, "Add Type", "Click here to add a new type.");
     addButton = newPushButton(buttonContainer, S_ADD,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Click here to add a feature or allowed-value to the selected type.");
     editButton = newPushButton(buttonContainer, S_EDIT, S_EDIT_TIP);
     removeButton = newPushButton(buttonContainer, S_REMOVE, S_REMOVE_TIP);
@@ -192,6 +198,7 @@ public class TypeSection extends AbstractImportablePartSection {
     spacer(buttonContainer);
     jcasGenButton = newPushButton(buttonContainer, "JCasGen",
             "Click here to run JCasGen on this type system.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
     limitJCasGenToProjectScope = newCheckBox(buttonContainer, "limited", 
         "JCasGen only those types defined within this project" + 
         "\n  You can change the default in UIMA prefs or in the UIMA menu");
@@ -220,6 +227,7 @@ public class TypeSection extends AbstractImportablePartSection {
     }
 
     if (tt.getItemCount() > 0)
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       tt.setSelection(tt.getItems()[0]);
     packTree(tt);
     enable();
@@ -233,6 +241,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @return the feature description[]
    */
   private FeatureDescription[] setDifference(FeatureDescription[] all, FeatureDescription[] subset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (null == all)
       return featureDescriptionArray0;
     if (null == subset)
@@ -256,6 +265,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param td the td
    */
   private void addTypeToGUI(TypeDescription td) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem item = new TreeItem(tt, SWT.NONE);
     item.setText(NAME_COL, formatName(td.getName()));
     item.setText(SUPER_COL, formatName(td.getSupertypeName()));
@@ -268,6 +278,7 @@ public class TypeSection extends AbstractImportablePartSection {
     TypeDescription builtInTd = getBuiltInTypeDescription(td);
     if (null != builtInTd) {
       FeatureDescription[] additionalBuiltInFeatures = setDifference(builtInTd.getFeatures(), td
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFeatures());
       addFeaturesToGui(td, item, additionalBuiltInFeatures);
     }
@@ -275,6 +286,7 @@ public class TypeSection extends AbstractImportablePartSection {
     AllowedValue[] avs = td.getAllowedValues();
     if (null != avs) {
       for (int i = 0; i < avs.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         TreeItem avItem = new TreeItem(item, SWT.NONE);
         avItem.setText(NAME_COL, HEADER_ALLOWED_VALUE);
         avItem.setText(AV_COL, convertNull(avs[i].getString()));
@@ -294,9 +306,11 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param features the features
    */
   private void addFeaturesToGui(TypeDescription td, TreeItem item,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           FeatureDescription[] features) {
     if (null != features) {
       for (int i = 0; i < features.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         TreeItem fItem = new TreeItem(item, SWT.NONE);
         updateGuiFeature(fItem, features[i], td);
       }
@@ -318,7 +332,9 @@ public class TypeSection extends AbstractImportablePartSection {
     setItemColor(fItem, null != getLocalFeatureDefinition(td, fd));
     if (isArrayOrListType(rangeType)) {
       Boolean mra = fd.getMultipleReferencesAllowed();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       fItem.setImage(MULTIPLE_REF_OK_COL,
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
               (null != mra && mra) ? TAEConfiguratorPlugin
                       .getImage(TAEConfiguratorPlugin.IMAGE_MREFOK) : TAEConfiguratorPlugin
                       .getImage(TAEConfiguratorPlugin.IMAGE_NOMREF));
@@ -354,7 +370,9 @@ public class TypeSection extends AbstractImportablePartSection {
     if (event.widget == addTypeButton) {
       handleAddType();
     } else if (event.widget == addButton) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       TreeItem parent = tt.getSelection()[0];
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (null != parent.getParentItem())
         parent = parent.getParentItem();
 
@@ -366,6 +384,7 @@ public class TypeSection extends AbstractImportablePartSection {
     } else if (event.widget == editButton) {
       handleEdit();
     } else if (event.type == SWT.MouseDoubleClick && (!isAggregate()) && // can't edit aggregates
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             isLocalItem(tt.getSelection()[0])) {
       handleEdit();
     } else if (event.widget == removeButton) {
@@ -376,6 +395,7 @@ public class TypeSection extends AbstractImportablePartSection {
       refresh();
     } else if (event.widget == jcasGenButton) {
       editor.doJCasGenChkSrc(null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
     } else if (event.widget == limitJCasGenToProjectScope) {
       editor.setLimitJCasGenToProjectScope(limitJCasGenToProjectScope.getSelection());
     } else if (event.type == SWT.MouseHover) {
@@ -391,6 +411,7 @@ public class TypeSection extends AbstractImportablePartSection {
    */
   public void handleHover(Event event) {
     // next getItem call requires that table have SWT.FULL_SELECTION Style
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem item = tt.getItem(new Point(event.x, event.y));
     if (null != item) {
       Object o = item.getData();
@@ -402,8 +423,10 @@ public class TypeSection extends AbstractImportablePartSection {
       } else if (o instanceof FeatureDescription) {
         FeatureDescription fd = (FeatureDescription) o;
         if (item.getBounds(MULTIPLE_REF_OK_COL).contains(event.x, event.y)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 && isArrayOrListType(fd.getRangeTypeName())) {
           Boolean mra = fd.getMultipleReferencesAllowed();
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
           setToolTipText(tt, (mra != null && mra) ? "Multiple References Allowed"
                   : "Multiple References Not Allowed");
         } else
@@ -443,6 +466,7 @@ public class TypeSection extends AbstractImportablePartSection {
       return;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     AllowedValue av = UIMAFramework.getResourceSpecifierFactory().createAllowedValue();
     allowedValueUpdate(av, dialog);
     addAllowedValue(localTd, av);
@@ -456,6 +480,7 @@ public class TypeSection extends AbstractImportablePartSection {
     if (refreshNeeded)
       refresh();
     else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       TreeItem item = new TreeItem(parent, SWT.NONE);
       item.setText(NAME_COL, HEADER_ALLOWED_VALUE);
       item.setText(AV_COL, convertNull(av.getString()));
@@ -476,6 +501,7 @@ public class TypeSection extends AbstractImportablePartSection {
    */
   private void addAllowedValue(TypeDescription td, AllowedValue av) {
     td.setAllowedValues((AllowedValue[]) Utility.addElementToArray(td.getAllowedValues(), av,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             AllowedValue.class));
   }
 
@@ -488,6 +514,7 @@ public class TypeSection extends AbstractImportablePartSection {
    */
   private void removeAllowedValue(TypeDescription td, AllowedValue av) {
     td.setAllowedValues((AllowedValue[]) Utility.removeEqualElementFromArray(td.getAllowedValues(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             av, AllowedValue.class));
   }
 
@@ -532,6 +559,7 @@ public class TypeSection extends AbstractImportablePartSection {
     } else {
       fd = td.addFeature(null, null, null);
       featureUpdate(fd, dialog);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       TreeItem item = new TreeItem(parent, SWT.NONE);
       updateGuiFeature(item, fd, td);
       parent.setExpanded(true);
@@ -548,6 +576,7 @@ public class TypeSection extends AbstractImportablePartSection {
     TreeItem[] items = tt.getItems();
     for (int i = 0; i < items.length; i++) {
       if (td.getName().equals(((TypeDescription) items[i].getData()).getName())) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         tt.setSelection( items[i]);
         return;
       }
@@ -587,6 +616,7 @@ public class TypeSection extends AbstractImportablePartSection {
         v = setValueChanged(dialog.elementRangeName, fd.getElementType());
         fd.setElementType(v);
       } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         fd.setElementType(null);
       }
     } else {
@@ -606,8 +636,10 @@ public class TypeSection extends AbstractImportablePartSection {
     TypeSystemDescription tsd = getMergedTypeSystemDescription();
     TypeSystemDescription localTsd = getTypeSystemDescription();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     TypeDescription td = localTsd.addType(dialog.typeName, multiLineFix(dialog.description),
             dialog.supertypeName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (!isImportedType(dialog.typeName)) {
       td = tsd.addType(dialog.typeName, multiLineFix(dialog.description), dialog.supertypeName);
@@ -629,6 +661,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * Finish action pack.
    */
   private void finishActionPack() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     packTree(tt);
     finishAction();
   }
@@ -649,6 +682,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * Handle edit.
    */
   private void handleEdit() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem item = tt.getSelection()[0];
     TreeItem parentType = item.getParentItem();
 
@@ -668,6 +702,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @return the feature description from table tree item
    */
   public FeatureDescription getFeatureDescriptionFromTableTreeItem(TreeItem item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return (FeatureDescription) item.getData();
   }
 
@@ -693,8 +728,10 @@ public class TypeSection extends AbstractImportablePartSection {
       return;
 
     if (!dialog.featureName.equals(oldFeatureName)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (isImportedFeature(oldFeatureName, td)) {
         Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .popMessage(
                         "Imported Feature not changed",
                         "Changing the feature name from '"
@@ -783,6 +820,7 @@ public class TypeSection extends AbstractImportablePartSection {
    */
   private String newFeatureTests(TypeDescription td, AddFeatureDialog dialog) {
     FeatureDescription fd;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (isLocalFeature(dialog.featureName, td))
       return "Duplicate Feature Name in this Descriptor";
@@ -867,6 +905,7 @@ public class TypeSection extends AbstractImportablePartSection {
     // dialog has already checked for dup type name
     String newTypeName = dialog.typeName;
     String oldTypeName = td.getName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String[] typesRequiringThisOne = stringArray0;
     if (!oldTypeName.equals(newTypeName)) {
       typesRequiringThisOne = showTypesRequiringThisOneMessage(oldTypeName, ALLOWED);
@@ -874,7 +913,9 @@ public class TypeSection extends AbstractImportablePartSection {
         return;
 
       if (isImportedType(oldTypeName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
               && Window.CANCEL == Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       .popOkCancel(
                               "Type define via Import",
                               "The type '"
@@ -883,6 +924,7 @@ public class TypeSection extends AbstractImportablePartSection {
                               MessageDialog.WARNING))
         return;
       if (isBuiltInType(oldTypeName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
               && Window.CANCEL == Utility
                       .popOkCancel(
                               "Type was extending a built-in",
@@ -984,11 +1026,13 @@ public class TypeSection extends AbstractImportablePartSection {
    * Note that the Remove action is disabled if the item selected is imported only
    */
   private void handleRemove() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem item = tt.getSelection()[0];
     TreeItem parent = item.getParentItem();
 
     if (null == parent)
       handleRemoveType(item);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     else if (item.getText(NAME_COL).equals(HEADER_ALLOWED_VALUE))
       handleRemoveAllowedValue(item);
     else
@@ -1009,6 +1053,7 @@ public class TypeSection extends AbstractImportablePartSection {
       removeAllowedValue(td, av);
 
       // update GUI
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       setSelectionOneUp(tt, item);
       item.dispose();
     } else {
@@ -1037,6 +1082,8 @@ public class TypeSection extends AbstractImportablePartSection {
       String sCascadeDeleteTitle = CASCADE_DELETE_WARNING;
       String sCascadeDeleteMessage = CASCADE_MESSAGE;
       boolean bContinue = MessageDialog.openConfirm(getSection().getShell(), sCascadeDeleteTitle,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               sCascadeDeleteMessage);
       if (!bContinue)
         return;
@@ -1053,6 +1100,7 @@ public class TypeSection extends AbstractImportablePartSection {
         refresh();
       else {
         // update GUI
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         setSelectionOneUp(tt, item);
 //        tt.getTable().setSelection(tt.getTable().getSelectionIndex() - 1);
         item.dispose();
@@ -1060,6 +1108,7 @@ public class TypeSection extends AbstractImportablePartSection {
     }
 
     if (bFeatureInUseElsewhere && !isImportedFeature(featureName, td)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && !isBuiltInFeature(featureName, td)) {
       deleteTypeOrFeatureMentions(featureName, FEATURES, localTd.getName());
     }
@@ -1129,6 +1178,7 @@ public class TypeSection extends AbstractImportablePartSection {
     // have list of features really disappearing (not kept present by imports or built-ins)
     // return all types/features of these for types which are subtypes of the passed-in type
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     CAS tcas = editor.getCurrentView();
     TypeSystem typeSystem = tcas.getTypeSystem();
     Type thisType = typeSystem.getType(localTd.getName());
@@ -1169,6 +1219,7 @@ public class TypeSection extends AbstractImportablePartSection {
       String sCascadeDeleteTitle = CASCADE_DELETE_WARNING;
       String sCascadeDeleteMessage = CASCADE_MESSAGE;
       boolean bContinue = MessageDialog.openConfirm(getSection().getShell(), sCascadeDeleteTitle,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               sCascadeDeleteMessage);
       if (!bContinue) {
         return;
@@ -1187,12 +1238,14 @@ public class TypeSection extends AbstractImportablePartSection {
     } else {
       removeType(td, getMergedTypeSystemDescription());
       // update GUI
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       setSelectionOneUp(tt, item);
       item.dispose();
     }
 
     TypeFeature[] featuresToRemove = computeFeaturesToRemove(localTd,
             getMergedTypeSystemDescription().getType(td.getName()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (bTypeInUseElsewhere && !isImportedType(td) && !isBuiltInType(td)) {
       deleteTypeOrFeatureMentions(sTypeNameToRemove, TYPES, null);
@@ -1204,6 +1257,7 @@ public class TypeSection extends AbstractImportablePartSection {
     if (null != featuresToRemove)
       for (int i = 0; i < featuresToRemove.length; i++) {
         deleteTypeOrFeatureMentions(featuresToRemove[i].featureName, FEATURES,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 featuresToRemove[i].typeName);
       }
 
@@ -1221,6 +1275,7 @@ public class TypeSection extends AbstractImportablePartSection {
   private String[] showTypesRequiringThisOneMessage(String existingTypeName, boolean allowed) {
     // if type is imported or built-in, in addition to being defined in this
     // descriptor, removing it won't make the type unavailable.
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (isImportedType(existingTypeName) || isBuiltInType(existingTypeName))
       return stringArray0; // imported or built-in type will remain
     String[] typesRequiringThisOne = getTypesRequiringThisOne(existingTypeName);
@@ -1234,11 +1289,14 @@ public class TypeSection extends AbstractImportablePartSection {
       }
       if (!allowed) {
         sMsg += ".  Please delete dependent types first.";
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         Utility.popMessage("Can''t Remove Needed Type", sMsg, MessageDialog.WARNING);
         return null;
       }
       sMsg += ".  If you proceed, the dependent types which are updatable will be updated."
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + " Non-updatable types (imported, etc.) you will have to update manually.  Please confirm.";
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       if (Window.OK == Utility.popOkCancel("Confirm renaming type update actions", sMsg,
               MessageDialog.WARNING))
         return typesRequiringThisOne;
@@ -1255,6 +1313,7 @@ public class TypeSection extends AbstractImportablePartSection {
    */
   private void removeType(TypeDescription td, TypeSystemDescription tsd) {
     tsd.setTypes((TypeDescription[]) Utility.removeElementFromArray(tsd.getTypes(), td,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             TypeDescription.class));
   }
 
@@ -1288,6 +1347,7 @@ public class TypeSection extends AbstractImportablePartSection {
         }
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return (String[]) upstreamTypeNames.toArray(new String[upstreamTypeNames.size()]);
   }
 
@@ -1327,6 +1387,7 @@ public class TypeSection extends AbstractImportablePartSection {
     TypeSystemDescription tsd = getTypeSystemDescription();
     exportButton.setEnabled(false);
     if (null != tsd) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       TypeDescription[] tsa = tsd.getTypes();
       if (null != tsa)
         exportButton.setEnabled(tsa.length > 0);
@@ -1372,6 +1433,7 @@ public class TypeSection extends AbstractImportablePartSection {
     CapabilityVisitor cv = new CapabilityVisitor() {
       @Override
       boolean visit(TypeOrFeature i_o) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         if (i_o.isType() && i_o.getName().equals(sTypeName))
           return true;
         else if (i_o.getName().startsWith(sTypeName_Colon))
@@ -1412,6 +1474,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @return true, if successful
    */
   private boolean typePriorityListsVisit(int kind, String typeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return typePriorityListsVisit(kind, typeName, null);
   }
 
@@ -1433,6 +1496,7 @@ public class TypeSection extends AbstractImportablePartSection {
         for (int i = 0; i < priorityLists.length; i++) {
           String[] typeNames = priorityLists[i].getTypes();
           if (typeNames != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             if (kind == FIND_EQUAL_TYPE) {
               for (int j = 0; j < typeNames.length; j++) {
                 if (typeNames[j].equals(typeName))
@@ -1453,6 +1517,7 @@ public class TypeSection extends AbstractImportablePartSection {
               }
             } else if (kind == REMOVE_EQUAL_TYPE) {
               Object[] newTypeNames = Utility.removeElementsFromArray(typeNames, typeName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       String.class);
               if (newTypeNames != typeNames) {
                 priorityLists[i].setTypes((String[]) newTypeNames);
@@ -1478,6 +1543,7 @@ public class TypeSection extends AbstractImportablePartSection {
    */
   private TypeOrFeature[] deleteTypeOrFeatureFromCapability(TypeOrFeature[] io_s,
           final boolean isType, String name, String typeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (!isType) // is feature
       name = typeName + ':' + name;
@@ -1536,6 +1602,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param typeName the type name
    */
   private void deleteTypeOrFeatureMentions(final String typeOrFeatureName, boolean isType,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           final String typeName) {
     if (!isLocalProcessingDescriptor()) {
       return;
@@ -1556,6 +1623,7 @@ public class TypeSection extends AbstractImportablePartSection {
 
     FsIndexDescription[] indexes = (null == indexCollection) ? null : indexCollection
             .getFsIndexes();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     boolean somethingChanged = false;
     if (indexes != null) {
@@ -1570,6 +1638,7 @@ public class TypeSection extends AbstractImportablePartSection {
         for (int i = 0; i < indexes.length; i++) {
           if (typeName.equals(indexes[i].getTypeName())) {
             FsIndexKeyDescription[] newFsKeys = (FsIndexKeyDescription[]) Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     .removeElementsFromArray(indexes[i].getKeys(), typeOrFeatureName,
                             FsIndexKeyDescription.class, fsIndexKeyDescCompare);
             if (newFsKeys != indexes[i].getKeys()) {
@@ -1625,6 +1694,7 @@ public class TypeSection extends AbstractImportablePartSection {
         if (null != localTd) { // is a local type
           if (isImportedType(typeName)) {
             Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     .popMessage(
                             "Imported type won't be changed",
                             "There is both a local and imported version of type, '"
@@ -1641,6 +1711,7 @@ public class TypeSection extends AbstractImportablePartSection {
         } else { // is not a local type
           // can't be a built-in type because all the supertypes of built-ins are unchangeable
           Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .popMessage(
                           "Imported type not changed",
                           "There is an imported type, '"
@@ -1696,6 +1767,7 @@ public class TypeSection extends AbstractImportablePartSection {
    */
   // this function to set the corresponding feature in the "local" type's fd array
   private void setNamedFeatureDescriptionRange(FeatureDescription[] localFds, String featureName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           final String rangeName) {
     if (null != localFds) {
       for (int i = 0; i < localFds.length; i++) {
@@ -1718,6 +1790,7 @@ public class TypeSection extends AbstractImportablePartSection {
     if (isLocalType(typeName)) {
       if (isImportedType(typeName)) {
         Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .popMessage(
                         "Imported type won't be changed",
                         "There is both a local and imported version of type, '"
@@ -1779,6 +1852,7 @@ public class TypeSection extends AbstractImportablePartSection {
 
     FsIndexDescription[] indexes = (null == indexCollection) ? null : indexCollection
             .getFsIndexes();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     boolean somethingChanged = false;
     boolean markStale = false;
@@ -1793,6 +1867,7 @@ public class TypeSection extends AbstractImportablePartSection {
     }
 
     if (somethingChanged) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       markStale = true;
       try {
         editor.setMergedFsIndexCollection();
@@ -1875,6 +1950,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @return true, if is feature in use elsewhere
    */
   private boolean isFeatureInUseElsewhere(final String typePlusFeature) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (!isLocalProcessingDescriptor()) { // not strictly true for imports....
       return false;
     }
@@ -1942,6 +2018,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * @param typeName the type name
    */
   private void alterFeatureMentions(final String sOldFeatureName, final String sNewFeatureName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           final String typeName) {
     final boolean[] somethingChanged = new boolean[1];
     somethingChanged[0] = false;

@@ -895,15 +895,18 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public FeatureStructureImplC clone() throws CASRuntimeException { 
         
     if (_typeImpl.isArray()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       CommonArrayFS original = (CommonArrayFS) this;
       CommonArrayFS copy = (CommonArrayFS) _casView.createArray(_typeImpl, original.size());
       copy.copyValuesFrom(original);      
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       return (FeatureStructureImplC) copy;
     }
     
     TOP fs = _casView.createFS(_typeImpl);
     TOP srcFs = (TOP) this;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
    fs._copyIntAndRefArraysEqTypesFrom(srcFs);
     
     /* copy all the feature values except the sofa ref which is already set as part of creation */
@@ -1001,6 +1004,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     }
 
     int printInfo(FeatureStructure ref) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       String k = this.tree.get(ref);
       if (k == null || k.equals("seen once")) {
         return NO_LABEL;
@@ -1027,6 +1031,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    * @param fs the top level FS being pretty printed, to descend if needed
    */
   private final void getPrintRefs(PrintReferences printRefs, FeatureStructureImplC fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (null == fs) {
       return;
     }
@@ -1035,9 +1040,12 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       return;
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     final TypeImpl ti = fs._typeImpl;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (ti != null) { // null for REMOVED marker
       // for v2 style, don't descend fs arrays; these are omitted
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
       if (!IS_V2_PRETTY_PRINT && ti.isArray() && (fs instanceof FSArray)) {
         for (TOP item : ((FSArray)fs)._getTheArray()) {
           getPrintRefs(printRefs, item);
@@ -1048,6 +1056,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
         }
         ti.getFeaturesAsStream()
           .filter(fi -> fi.getRangeImpl().isRefType)     // is ref type
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           .map(fi -> fs.getFeatureValue(fi)) // get the feature value
           .filter(refFs -> refFs != null)            // skip null ones
           .forEachOrdered(refFs -> getPrintRefs(printRefs, refFs));
@@ -1080,6 +1089,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void prettyPrint(int indent, int incr, StringBuffer buf, boolean useShortNames) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     prettyPrint(indent, incr, buf, useShortNames, null);
   }
 
@@ -1115,6 +1125,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public void prettyPrint(int indent, int incr, StringBuilder buf, boolean useShortNames, String s) {
     PrintReferences printRefs = new PrintReferences();
     getPrintRefs(printRefs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
     prettyPrint(indent, incr, buf, useShortNames, s, printRefs);    
   }
 
@@ -1133,6 +1144,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public void prettyPrint(
       int indent, 
       int incr, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       StringBuffer buf, 
       boolean useShortNames, 
       String s, 
@@ -1176,6 +1188,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   private void prettyPrint(
       int indent,  // the current indent position
       int incr,    // the delta to indent this FS printing
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
       final StringBuilder buf, 
       boolean useShortNames, 
       String s, // carries the "#123" id refs for others to use, labels this fs with that.
@@ -1205,12 +1218,15 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
         buf.append(printRefs.getLabel(this));
       }
       if (printInfo == PrintReferences.JUST_LABEL) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
         buf.append(IS_V2_PRETTY_PRINT ? ' ' : '\n');  
         return;
       }
       buf.append(' ');
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (_typeImpl == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5225
       buf.append((_id == 0) 
                   ? " Special REMOVED marker " 
                   : _isJCasHashMapReserve() 
@@ -1223,6 +1239,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
         buf.append(getType().getName());
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
       if (!IS_V2_PRETTY_PRINT) {
         buf.append(':').append(_id);
       }
@@ -1239,8 +1256,10 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       return;
     }
     switch (_getTypeCode()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     case TypeSystemConstants.stringArrayTypeCode: {
       StringArray a = (StringArray) this;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
       printArrayElements(a.size(), i -> appendOrNull(buf, a.get(i)), indent, incr, buf);
       return;
     }
@@ -1294,6 +1313,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     // if get here, non of the cases in the above switch fit
     
     if (this instanceof FSArray) {  // catches instance of FSArrays which are "typed" to hold specific element types
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
       if (IS_V2_PRETTY_PRINT) {
         return; // v2 did not descend to print fs array contents
       }
@@ -1302,6 +1322,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       return;
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     for (FeatureImpl fi : _typeImpl.getFeatureImpls()) {
       Misc.indent(buf, indent);
       buf.append(fi.getShortName() + ": ");
@@ -1312,6 +1333,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       }
       
       // not primitive
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       FeatureStructureImplC val = null;
       boolean hadException = false;
       try {
@@ -1329,6 +1351,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
           }
         } else {
           // treat sofa refs special, since they're pervasive
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
           if (val instanceof Sofa) {
             buf.append(((Sofa)val).getSofaID());
           } else {
@@ -1344,6 +1367,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       }
     
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     } catch (Exception e) {
       buf.append("**Caught exception: ").append(e);
 //      StringWriter sw = new StringWriter();
@@ -1358,6 +1382,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     if (range.isStringOrStringSubtype()) {
       String stringVal = getStringValue(fi);
       stringVal = (null == stringVal) ? "<null>" : "\"" + Misc.elideString(stringVal, 80) + "\"";
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
       sb.append(stringVal);  // caller adds nl
     } else {
       sb.append(this.getFeatureValueAsString(fi));
@@ -1393,6 +1418,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    * @param buf the stringbuilder where the result is added
    */
   private void printArrayElements(int arrayLen, IntConsumer f, int indent, int incr, StringBuilder buf) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
     Misc.indent(buf, indent);
     buf.append("Array length: " + arrayLen);
     if (arrayLen == 0) {
@@ -1454,6 +1480,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   }
   
   public int getTypeIndexID() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     throw new CASRuntimeException(UIMARuntimeException.INTERNAL_ERROR); // dummy, always overridden
   }
   
@@ -1469,6 +1496,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     case Slot_Byte: setByteValue(fi, (byte) v); break;
     case Slot_Short: setShortValue(fi, (short) v); break;
     case Slot_Int: setIntValue(fi, v); break;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     case Slot_Float: setFloatValue(fi, CASImpl.int2float(v)); break;
     default: Misc.internalError();
     }
@@ -1482,6 +1510,8 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    */
   public void _setIntLikeValueNcNj(SlotKind slotKind, FeatureImpl fi, int v) {
     switch(slotKind) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
     case Slot_Boolean: _setBooleanValueNcNj(fi, v == 1); break;
     case Slot_Byte: _setByteValueNcNj(fi, (byte) v); break;
     case Slot_Short: _setShortValueNcNj(fi, (short) v); break;
@@ -1532,6 +1562,8 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     }
     
     switch(slotKind) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
     case Slot_Boolean: return _getBooleanValueNc(f) ? 1 : 0;
     case Slot_Byte: return _getByteValueNc(f);
     case Slot_Short: return _getShortValueNc(f);
@@ -1547,6 +1579,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     TypeImpl range = fi.getRangeImpl();
     if (fi.isInInt) {
       switch (range.getCode()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       case TypeSystemConstants.floatTypeCode :
         return Float.toString(getFloatValue(feat));
       case TypeSystemConstants.booleanTypeCode :
@@ -1555,6 +1588,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
         return Long.toString(getLongValue(feat));
       case TypeSystemConstants.doubleTypeCode :
         return Double.toString(getDoubleValue(feat));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5706
       case TypeSystemConstants.byteTypeCode:
         return Byte.toString(getByteValue(feat));
       case TypeSystemConstants.shortTypeCode:
@@ -1606,10 +1640,14 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   }
   
   protected FeatureImpl _getFeatFromAdjOffset(int adjOffset, boolean isInInt) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
     return _typeImpl.getFeatureByAdjOffset(adjOffset, isInInt);
   }
   
   private int _getIntValueCommon(FeatureImpl feat) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
     return _intData[feat.getAdjustedOffset() /*+ _getIntDataArrayOffset()*/];
   }
 
@@ -1660,6 +1698,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   
   // used also for sofa string setting
   protected void _setRefValueCommonWj(FeatureImpl fi, Object v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
     _setRefValueCommon(fi, v);
     _casView.maybeLogUpdate(this, fi);
   }
@@ -1684,6 +1725,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   }
   
   private void _check_feature_range_is_FeatureStructure(Feature feat, FeatureStructureImplC fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5740
     Type range = feat.getRange();
     if (range.isPrimitive()) {
       throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE_NOT_FS,
@@ -1712,9 +1754,11 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     
     
     final int rangeTypeCode = range.getCode();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
     /* The assignment is stricter than the Java rules - must match */
     switch (rangeTypeCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     case TypeSystemConstants.booleanArrayTypeCode:
       return v instanceof BooleanArray;
     case TypeSystemConstants.byteArrayTypeCode:
@@ -1734,6 +1778,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 //    case TypeSystemConstants.javaObjectArrayTypeCode:
 //      return v instanceof JavaObjectArray;
     case TypeSystemConstants.fsArrayTypeCode:
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       return v instanceof FSArray;
     }
     
@@ -1762,9 +1807,12 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    * @param src the FS to copy features from
    */
   public void _copyIntAndRefArraysFrom(FeatureStructureImplC src) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     if (src._intData != null && _intData != null) {
 //      System.arraycopy(src._intData, src._getIntDataArrayOffset(), _intData, _getIntDataArrayOffset(), 
 //          Math.min(src._typeImpl.nbrOfUsedIntDataSlots, _typeImpl.nbrOfUsedIntDataSlots));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
       System.arraycopy(src._intData, 0, _intData, 0, 
           Math.min(src._intData.length, _intData.length));
      }
@@ -1783,6 +1831,8 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public void _copyIntAndRefArraysEqTypesFrom(FeatureStructureImplC src) {
     if (_intData != null) {
 //      System.arraycopy(src._intData, src._getIntDataArrayOffset(), _intData, _getIntDataArrayOffset(), _typeImpl.nbrOfUsedIntDataSlots);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
       System.arraycopy(src._intData, 0, _intData, 0, _typeImpl.nbrOfUsedIntDataSlots);
      }
     if (_refData != null) {
@@ -1801,6 +1851,8 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   }
   
   public String toShortString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
     return new StringBuilder(_typeImpl.getShortName()).append(':').append(_id).toString();   
   }
   
@@ -1829,10 +1881,12 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   }
   
   public static int compare(FeatureStructureImplC a, FeatureStructureImplC b) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return Integer.compare(a._id, b._id);
   }
   
   protected final static int wrapGetIntCatchException(MethodHandle mh) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     try {
       return (int) mh.invokeExact();
     } catch(Throwable t) {

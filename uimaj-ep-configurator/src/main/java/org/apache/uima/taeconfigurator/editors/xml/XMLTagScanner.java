@@ -35,6 +35,7 @@ public class XMLTagScanner extends RuleBasedScanner {
    */
   public XMLTagScanner(ColorManager manager) {
     IToken string = new Token(new TextAttribute(manager.getColor(IXMLColorConstants.STRING)));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     IRule[] rules = new IRule[3];
 

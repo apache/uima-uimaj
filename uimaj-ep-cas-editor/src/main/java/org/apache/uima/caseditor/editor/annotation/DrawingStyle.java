@@ -39,6 +39,7 @@ public class DrawingStyle {
       new HashMap<>();
   
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
     statelessStyles.put(Style.BACKGROUND, new BackgroundDrawingStrategy());
     statelessStyles.put(Style.TEXT_COLOR, new TextColorDrawingStrategy());
     statelessStyles.put(Style.TOKEN, new TokenDrawingStrategy());

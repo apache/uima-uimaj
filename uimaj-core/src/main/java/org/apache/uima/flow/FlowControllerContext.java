@@ -43,6 +43,7 @@ public interface FlowControllerContext extends UimaContext {
    * @return a map with <code>String</code> keys, and {@link AnalysisEngineMetaData} values
    */
   Map<String, AnalysisEngineMetaData> getAnalysisEngineMetaDataMap();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Gets the metadata of the Aggregate AnalysisEngine containing this FlowController. This includes

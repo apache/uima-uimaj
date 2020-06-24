@@ -38,6 +38,7 @@ public class Execute {
    * Instantiates a new execute.
    */
   public Execute() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 

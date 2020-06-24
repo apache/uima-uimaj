@@ -57,7 +57,9 @@ public class AnalysisComponentAdapterFactory {
    * @throws ResourceInitializationException if passed an adaptee which is not an analysis component
    */
   public static AnalysisComponent createAdapter(Object aAdaptee, AnalysisEngineMetaData aMetaData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aAdaptee instanceof BaseAnnotator) {
       return new AnnotatorAdapter((BaseAnnotator) aAdaptee, aMetaData, aAdditionalParams);
     } else if (aAdaptee instanceof CasConsumer) {
@@ -66,6 +68,7 @@ public class AnalysisComponentAdapterFactory {
       return new CollectionReaderAdapter((CollectionReader) aAdaptee, aMetaData);
     } else {
       throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ResourceInitializationException.NOT_AN_ANALYSIS_COMPONENT, new Object[] {
                   aAdaptee.getClass().getName(), aMetaData.getSourceUrlString() });
     }
@@ -81,6 +84,7 @@ public class AnalysisComponentAdapterFactory {
    */
   public static boolean isAdaptable(Class<?> cls) {
     return BaseAnnotator.class.isAssignableFrom(cls) || CasConsumer.class.isAssignableFrom(cls)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || CollectionReader.class.isAssignableFrom(cls);
   }
 

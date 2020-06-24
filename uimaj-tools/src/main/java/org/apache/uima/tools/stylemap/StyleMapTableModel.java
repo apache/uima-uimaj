@@ -34,6 +34,7 @@ public class StyleMapTableModel extends AbstractTableModel {
 
   /** The v. */
   Vector v;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The column names. */
   // Data is held as a Vector of Vectors.

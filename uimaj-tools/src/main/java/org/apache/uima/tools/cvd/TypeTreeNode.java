@@ -42,6 +42,7 @@ public class TypeTreeNode {
    * Constructor for TypeTreeNode.
    */
   public TypeTreeNode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.type = null;
     this.label = null;

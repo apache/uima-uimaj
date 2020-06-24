@@ -41,6 +41,8 @@ import org.apache.uima.util.impl.Constants;
  */
 public class CapabilityLanguageFlow_impl extends MetaDataObject_impl implements
         CapabilityLanguageFlow {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "capabilityLanguageFlow", new PropertyXmlInfo[] { new PropertyXmlInfo(
@@ -71,6 +73,7 @@ public class CapabilityLanguageFlow_impl extends MetaDataObject_impl implements
   public void setCapabilityLanguageFlow(String[] aFlow) {
     if (aFlow == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aFlow", "setCapabilityLanguageFlow" });
     }
     mCapabilityLanguageFlow = aFlow;

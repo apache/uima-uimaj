@@ -51,6 +51,8 @@ public interface FSIndexRepositoryMgr extends FSIndexRepository {
    */
   boolean createIndex(FSIndexComparator comp, String label, int indexingStrategy)
           throws CASAdminException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Create a new sorted index.

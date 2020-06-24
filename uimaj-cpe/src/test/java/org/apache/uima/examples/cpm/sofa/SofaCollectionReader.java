@@ -48,6 +48,7 @@ public class SofaCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
   public void getNext(CAS aCAS) throws IOException, CollectionException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String text = "this beer is good";
     try {
       this.getCasInitializer().initializeCas(text, aCAS);

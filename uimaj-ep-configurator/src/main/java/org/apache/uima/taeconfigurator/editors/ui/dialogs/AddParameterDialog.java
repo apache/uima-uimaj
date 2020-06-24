@@ -100,6 +100,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
    * @param aSection the a section
    */
   private AddParameterDialog(AbstractSection aSection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
     super(aSection, "Add Parameter", "Specify a parameter name && type");
     parmSection = (ParameterSection) section;
   }
@@ -147,6 +148,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
 
     parmNameUI = newLabeledSingleLineStyledText(twoCol, "Parameter Name",
             "The unique name of the parameter");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     parmTypeUI = newLabeledCCombo(twoCol, "Parameter Type",
             "Select the type of the parameter from the pull-down list");
@@ -156,6 +158,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
     parmTypeUI.add("Boolean");
 
     descriptionUI = newDescription(twoCol, "Description of parameter (optional)");
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
 
     extParmNameUI = newLabeledSingleLineStyledText(twoCol, "External Override",
             "External overrides allow a parameter's value to be overriden by an entry in\n" + 
@@ -163,6 +166,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
 
     multiValueUI = newButton(mainArea, SWT.CHECK, "Parameter is multi-valued",
             "Check the box if the parameter is multi-valued");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     mandatoryUI = newButton(mainArea, SWT.CHECK, "Parameter is mandatory",
             "Check the box if the parameter is mandatory");
@@ -180,9 +184,11 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
       mandatoryUI.setSelection(existingCP.isMandatory());
       parmNameUI.setText(convertNull(existingCP.getName()));
       parmTypeUI.setText(convertNull(existingCP.getType()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
       extParmNameUI.setText(convertNull(existingCP.getExternalOverrideName()));
     }
     originalParmName = parmNameUI.getText(); // for validity testing in edit case
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return mainArea;
   }
 
@@ -196,6 +202,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
     mandatory = mandatoryUI.getSelection();
     description = nullIf0lengthString(descriptionUI.getText());
     parmType = parmTypeUI.getText();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
     extParmName = nullIf0lengthString(extParmNameUI.getText());
   }
 
@@ -206,6 +213,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   public boolean isValid() {
     if (parmName.length() == 0)
       return false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
     if (!parmName.equals(originalParmName) && parmSection.parameterNameAlreadyDefined(parmName,configGroup))
       return false;
     if (parmType.length() == 0)

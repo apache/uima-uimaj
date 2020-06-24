@@ -39,6 +39,8 @@ public class VarValViewerHandler extends AbstractVarValViewerHandler {
    * @param tableRowList the table row list
    */
   public VarValViewerHandler(Composite parent, String[] columnNames, int numParentColumns,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           VarValList tableRowList) {
     super(parent, columnNames, numParentColumns, tableRowList, new VarValLabelProvider());
   }

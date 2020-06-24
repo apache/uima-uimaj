@@ -45,6 +45,7 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
 
   // An array of iterators, one for each in the collection (e.g. subtypes, or views or ...)
   // split among empty and non-empty.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   final protected LowLevelIterator<T>[] allIterators;
   private LowLevelIterator<T>[] emptyIterators;
   protected LowLevelIterator<T> [] nonEmptyIterators;
@@ -86,6 +87,7 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
    */
   public FsIterator_multiple_indexes(FsIterator_multiple_indexes<T> v) {
     allIterators = v.allIterators.clone();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     this.main_idx = v.main_idx;
     this.comparatorMaybeNoTypeWithoutId = v.comparatorMaybeNoTypeWithoutId;
     int i = 0;
@@ -187,6 +189,7 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
   
   @Override
   public LowLevelIndex<T> ll_getIndex() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return (LowLevelIndex<T>)
              ((main_idx != null)
                 ? main_idx 
@@ -196,6 +199,7 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
   @Override
   public int size() {
     int r = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
     for (LowLevelIterator<T> it : nonEmptyIterators) {
       r += it.size();
     }

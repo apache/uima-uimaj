@@ -175,6 +175,8 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     IntListIterator it = intSet.iterator();
     int i = 0;
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
       allValues[i++] = it.nextNvc();
     }
     Arrays.sort(allValues);
@@ -197,6 +199,8 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     
     @Override
     public int nextNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
       return a[pos++];
     }
 
@@ -336,6 +340,8 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     IntListIterator it = getUnorderedIterator();
     int i = 0;
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
       a[i++] = it.nextNvc();
     }
     return a;
@@ -708,6 +714,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
 
   @Override
   public void bulkAddTo(IntVector v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4155
     if (null != intSet) {
       intSet.bulkAddTo(v);
     }
@@ -715,6 +722,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
 
   @Override
   public int[] toIntArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4188
     if (null != intSet) {
       return intSet.toIntArray();
     }
@@ -726,6 +734,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
    */
   @Override
   public String toString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4193
     return String.format("PositiveIntSet_impl [%n  intSet=%s%n secondTimeShrinkable=%s, useOffset=%s]",
         intSet, secondTimeShrinkable, useOffset);
   }

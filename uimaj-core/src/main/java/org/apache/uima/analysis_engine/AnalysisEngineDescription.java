@@ -197,6 +197,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    */
   public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiers(ResourceManager aResourceManager)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Retrieves a Map whose keys are string identifiers and whose values are the either
@@ -329,6 +330,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    */
   public void doFullValidation(ResourceManager aResourceManager)
           throws ResourceInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Resolves all import declarations in this AnalysisEngineDescription. For an aggregate, this is
@@ -387,6 +389,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    */
   public void toXML(Writer aWriter, boolean aPreserveDelegateAnalysisEngineImports)
           throws SAXException, IOException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Writes this object's XML representation as a string in UTF-8 encoding.
@@ -405,6 +408,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    */
   public void toXML(OutputStream aOutputStream, boolean aPreserveDelegateAnalysisEngineImports)
           throws SAXException, IOException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Writes this object's XML representation by making calls on a SAX {@link ContentHandler}.

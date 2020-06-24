@@ -67,6 +67,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
    * @see org.apache.uima.collection.CasConsumer_ImplBase#initialize()
    */
   public void initialize() throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mDocNum = 0;
     mOutputDir = new File(((String) getConfigParameterValue(PARAM_OUTPUTDIR)).trim());
     if (!mOutputDir.exists()) {
@@ -115,6 +116,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
     try {
       String xmlAnnotations = cas2xml.generateXML(aCAS);
       FileOutputStream outStream = new FileOutputStream(outFile);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
       outStream.write(xmlAnnotations.getBytes(StandardCharsets.UTF_8));
       outStream.close();
     } catch (CASException e) {

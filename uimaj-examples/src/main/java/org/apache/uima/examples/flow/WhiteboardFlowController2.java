@@ -74,6 +74,7 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
    * @see org.apache.uima.flow.FlowController_ImplBase#initialize(org.apache.uima.flow.FlowControllerContext)
    */
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-92
     super.initialize(aContext);
     mLogger = aContext.getLogger();
   }
@@ -89,6 +90,7 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
     // Resolve those to Type handles in the TypeSystem and store this information in
     // the mComponentInfo field for use in routing.
     Iterator aeIter = getContext().getAnalysisEngineMetaDataMap().entrySet().iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (aeIter.hasNext()) {
       Map.Entry entry = (Map.Entry) aeIter.next();
       String aeKey = (String) entry.getKey();
@@ -99,6 +101,7 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
       compInfo.key = aeKey;
       compInfo.inputTypesByCapability = new Type[capabilities.length][];
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       for (int i = 0; i < capabilities.length; i++) {
         List inputTypes = new ArrayList();
         TypeOrFeature[] inputs = capabilities[i].getInputs();
@@ -134,6 +137,7 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
    * A separate instance of WhiteboardFlow is created for each input CAS, and is responsible for
    * routing that CAS to all appropriate AnalysisEngines.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   class WhiteboardFlow extends CasFlow_ImplBase {
     private Set mAlreadyCalled = new HashSet();
 
@@ -157,6 +161,7 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
           }
           if (satisfied) {
             mAlreadyCalled.add(componentInfo.key);
+//IC see: https://issues.apache.org/jira/browse/UIMA-92
             if (mLogger.isLoggable(Level.FINEST)) {
               getContext().getLogger().log(Level.FINEST, "Next AE is: " + componentInfo.key);
             }
@@ -195,6 +200,7 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
    */
   static private class ComponentInfo {
     String key;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     /**
      * Required input types, organized by capability. For example, inputTypesByCapability[0] is the

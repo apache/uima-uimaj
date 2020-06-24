@@ -59,6 +59,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
   private ByteArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     theArray = null;
   }
 
@@ -68,6 +69,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
    * @param length the length of the array in bytes
    */
   public ByteArray(JCas jcas, int length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     super(jcas);  
     theArray = new byte[length];
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
@@ -92,6 +94,8 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
       _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
@@ -156,11 +160,14 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
     for (int i = 0; i < length; i++) {
       theArray[i + destPos] = Byte.parseByte(src[i + srcPos]);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
   // internal use
   public byte[] _getTheArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return theArray;
   }
   
@@ -171,6 +178,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
   public void copyValuesFrom(CommonArrayFS<Byte> v) {
     ByteArray bv = (ByteArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
@@ -179,11 +187,15 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
    */
   @Override
   public void setArrayValueFromString(int i, String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     set(i, Byte.parseByte(v));    
   }
 
   @Override
   public Iterator<Byte> iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
     return new Iterator<Byte>() {
       int i = 0;
       
@@ -207,6 +219,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
    * @return a newly created and populated array
    */
   public static ByteArray create(JCas jcas, byte[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     ByteArray byteArray = new ByteArray(jcas, a.length);
     byteArray.copyFromArray(a, 0, 0, a.length);
     return byteArray;
@@ -217,6 +230,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
    * @return true if the item is in the array
    */
   public boolean contains(byte item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     for (byte b : theArray) {
       if (b == item) {
         return true;

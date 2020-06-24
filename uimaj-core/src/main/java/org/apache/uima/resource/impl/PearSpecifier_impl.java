@@ -52,6 +52,7 @@ public class PearSpecifier_impl extends MetaDataObject_impl implements PearSpeci
   }
   
   public NameValuePair[] getPearParameters() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5936
     return this.mPearParameters;
   }
 
@@ -77,5 +78,6 @@ public class PearSpecifier_impl extends MetaDataObject_impl implements PearSpeci
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("pearSpecifier", new PropertyXmlInfo[] {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5936
       new PropertyXmlInfo("pearPath"), new PropertyXmlInfo("pearParameters"), new PropertyXmlInfo("parameters") });
 }

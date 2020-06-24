@@ -69,12 +69,14 @@ public class ExpirationTimer extends Thread {
   @Override
   public void run() {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
       Thread.sleep(timeOut);
     } catch (InterruptedException e) {
     }
 
     if (map.containsKey(key)) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_timer_expired__FINEST",
                 new Object[] { Thread.currentThread().getName(), key, String.valueOf(map.size()) });

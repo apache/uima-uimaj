@@ -56,6 +56,7 @@ public class ServiceRegistry {
 
   /* Instance vars */
   ServiceTree services = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   Hashtable bindings = null;
 
@@ -129,6 +130,7 @@ public class ServiceRegistry {
           srv = (Service) objs[i];
           if (srv == null)
             continue;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           if (srv.realhost.equals(S.realhost) && srv.level.equals(S.level)
                   && srv.instance == S.instance) {
             pr("Service not added: Found one with same everything");
@@ -418,6 +420,7 @@ public class ServiceRegistry {
     DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 
     Document doc;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (FileReader readme = new FileReader(fname)) {
       doc = docBuilder.parse(new InputSource(readme));
     }
@@ -453,6 +456,7 @@ public class ServiceRegistry {
           H.put(C.getNodeName(), C.getFirstChild().getNodeValue());
         } else {
           // Complex elements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           H.put(C.getNodeName(), XMLToVinci.xmlToVinciFrame(new StringReader(constructXMLString(C,
                   true))));
         }
@@ -532,6 +536,7 @@ public class ServiceRegistry {
 
     @Override
     public int hashCode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1853
       return minPort * 31 + maxPort;
     }
   }

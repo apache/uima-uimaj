@@ -35,6 +35,7 @@ import org.apache.uima.cas.impl.CASImpl;
 public class CASInitializer {
 
   public static CAS initCas(AnnotatorInitializer init,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
                             Consumer<TypeSystemMgr> moreTypes) throws CASException {
     // Create an initial CASMgr from the factory.
     CASMgr casMgr = CASFactory.createCAS();
@@ -43,6 +44,7 @@ public class CASInitializer {
     // assert(tsa != null);
     // Create a CASMgr. Ensures existence of AnnotationFS type.
     init.initTypeSystem(tsa);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     if (moreTypes != null) {
       moreTypes.accept(tsa);
     }
@@ -59,6 +61,7 @@ public class CASInitializer {
     irm.commit();
     // assert(cas.getIndexRepositoryMgr().isCommitted());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     return casMgr.getCAS().getCurrentView();
   }
   

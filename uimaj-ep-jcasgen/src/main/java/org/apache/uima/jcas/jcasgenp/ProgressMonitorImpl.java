@@ -36,6 +36,7 @@ public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgr
    * @param pm the pm
    */
   ProgressMonitorImpl(IProgressMonitor pm) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     fwd = pm;
   }
 

@@ -41,6 +41,7 @@ public class AnalysisEnginePanel extends MetaDataPanel {
 
   /** The should run check box. */
   JCheckBox shouldRunCheckBox = new JCheckBox((String) null, true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The ae specifier. */
   ResourceSpecifier aeSpecifier;
@@ -100,6 +101,7 @@ public class AnalysisEnginePanel extends MetaDataPanel {
    */
   public boolean hasFileChanged(long lastCheck) {
     return specifierFile.lastModified() > this.lastFileSyncTimestamp
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && specifierFile.lastModified() > lastCheck;
   }
 

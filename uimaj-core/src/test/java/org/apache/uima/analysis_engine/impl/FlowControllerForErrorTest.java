@@ -53,6 +53,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
     mSequence = ((FixedFlow) flowConstraints).getFixedFlow();
     Boolean paramVal = (Boolean)aContext.getConfigParameterValue(PARAM_CONTINUE_ON_FAILURE);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     mContinueOnFailure = paramVal != null && paramVal;
   }
 
@@ -126,6 +127,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
      * @see org.apache.uima.flow.CasFlow_ImplBase#continueOnFailure(java.lang.String, java.lang.Exception)
      */
     public boolean continueOnFailure(String failedAeKey, Exception failure) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
       failedAEs.add(failedAeKey);
       return mContinueOnFailure;
     }
@@ -142,6 +144,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
 
   
   public static void reset() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
     abortedDocuments.clear();
     failedAEs.clear();    
   }

@@ -54,6 +54,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
    */
   // can't be factored - refs locally defined field
   public int getTypeIndexID() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return typeIndexID;
   }
 
@@ -61,6 +62,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
   private StringArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     theArray = null;
   }
 
@@ -70,6 +72,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
    * @param length The number of elements in the new array
    */
   public StringArray(JCas jcas, int length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     super(jcas);
     theArray = new String[length];
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
@@ -94,6 +97,8 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
       _casView.adjustLastFsV2Size_arrays(length);
     }    
   }
@@ -110,6 +115,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
    */
   public void set(int i, String v) {
     theArray[i] = v;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     _casView.maybeLogArrayUpdate(this, null, i);
   }
 
@@ -118,6 +124,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
    */
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
@@ -142,6 +149,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
 
   // internal use
   public String[] _getTheArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return theArray;
   }
   
@@ -152,6 +160,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
   public void copyValuesFrom(CommonArrayFS v) {
     StringArray bv = (StringArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
@@ -160,12 +169,14 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
    */
   @Override
   public void setArrayValueFromString(int i, String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     set(i, v);    
   }
 
   @Override
   public Iterator<String> iterator() {
     return new Iterator<String>() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
 
       int i = 0;
       
@@ -190,6 +201,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
    * @return a newly created and populated array
    */
   public static StringArray create(JCas jcas, String[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     StringArray stringArray = new StringArray(jcas, a.length);
     stringArray.copyFromArray(a, 0, 0, a.length);
     return stringArray;
@@ -204,6 +216,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
   }
 
   public Stream<String> stream() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     return Arrays.stream(theArray);
   }
 

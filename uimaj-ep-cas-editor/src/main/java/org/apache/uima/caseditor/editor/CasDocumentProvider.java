@@ -59,6 +59,7 @@ public abstract class CasDocumentProvider {
      * @param element the element
      */
     protected ElementInfo(Object element) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2222
       this.element = element;
     }
   }
@@ -119,6 +120,7 @@ public abstract class CasDocumentProvider {
    */
   protected abstract void doSaveDocument(IProgressMonitor monitor, Object element,
           ICasDocument document, boolean overwrite) throws CoreException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2222
 
   /**
    * Gets the status.
@@ -176,6 +178,7 @@ public abstract class CasDocumentProvider {
    */
   public abstract Composite createTypeSystemSelectorForm(ICasEditor editor, Composite parent,
           IStatus status);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
   /**
    * Adds the element state listener.
@@ -183,6 +186,7 @@ public abstract class CasDocumentProvider {
    * @param listener the listener
    */
   public void addElementStateListener(IElementStateListener listener) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2222
     elementStateListeners.add(listener);
   }
 
@@ -212,6 +216,7 @@ public abstract class CasDocumentProvider {
    * @param element the element
    */
   protected void fireElementChanged(Object element) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     for (IElementStateListener listener : elementStateListeners) {
       listener.elementContentReplaced(element);
     }

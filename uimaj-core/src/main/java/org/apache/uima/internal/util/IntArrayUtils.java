@@ -29,11 +29,13 @@ public final class IntArrayUtils {
   private static final int default_multiplication_limit = 1024 * 1024 * 16;
 
   public static final int[] ensure_size(int[] array, int req) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return ensure_size(array, req, default_growth_factor, default_multiplication_limit);
   }
 
   // done this way to allow more inlining
   public static final int[] ensure_size(final int[] array, final int req, final int growth_factor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
           final int multiplication_limit) {
     if (array.length < req) {
       return expand_size(array, req, growth_factor, multiplication_limit);
@@ -54,6 +56,7 @@ public final class IntArrayUtils {
         new_array_size = new_array_size + multiplication_limit;
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     final int[] new_array = new int[new_array_size];
     System.arraycopy(array, 0, new_array, 0, array.length);
     return new_array;
@@ -129,6 +132,7 @@ public final class IntArrayUtils {
     int i; // Current position
     int current; // Current value
     while (start <= end) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1431
       i = (int)(((long)start + end) / 2);
       current = array[i];
       if (ele == current) {

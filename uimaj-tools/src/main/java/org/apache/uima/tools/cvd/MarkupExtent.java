@@ -46,6 +46,7 @@ public class MarkupExtent {
    * @param markupDepth the markup depth
    */
   public MarkupExtent(int start, int end, int markupDepth) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.start = start;
     this.end = end;

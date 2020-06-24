@@ -32,6 +32,7 @@ import junit.framework.TestCase;
 public class Int2IntRBTtest extends TestCase {
   
   public void testexpand() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4267
     Int2IntRBT ia = new Int2IntRBT();
     
     int shiftpoint = 1 + (1 << 30);
@@ -60,6 +61,7 @@ public class Int2IntRBTtest extends TestCase {
     IntListIterator itl = ia.keyIterator();
 
     while(itl.hasNext()){
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
       r[i++] = itl.nextNvc();  
     }
     assertEquals(i, vs.length - 1);
@@ -92,6 +94,7 @@ public class Int2IntRBTtest extends TestCase {
   public void testFastLookup() {
     Int2IntRBT ia = new Int2IntRBT();
     Random r = new Random();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Set<Integer> keys = new HashSet<>(1000);
     
     for (int i = 0; i < 1000; i++) {

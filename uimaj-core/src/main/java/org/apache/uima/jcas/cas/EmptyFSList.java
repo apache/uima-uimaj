@@ -36,6 +36,7 @@ public class EmptyFSList<T extends TOP> extends FSList<T> implements EmptyList {
   public final static int type = typeIndexID;
 
   public int getTypeIndexID() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return typeIndexID;
   }
   
@@ -45,6 +46,7 @@ public class EmptyFSList<T extends TOP> extends FSList<T> implements EmptyList {
 
   /* used by type system impl to initialize empty singleton in typeImpl */
   public EmptyFSList(TypeImpl_list ti) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     super(ti, null);
   }
   
@@ -60,6 +62,7 @@ public class EmptyFSList<T extends TOP> extends FSList<T> implements EmptyList {
    */
 
   public EmptyFSList(TypeImpl t, CASImpl c) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     super(t, c);
   }
 

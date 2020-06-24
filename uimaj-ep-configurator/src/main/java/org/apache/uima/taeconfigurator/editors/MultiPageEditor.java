@@ -3306,6 +3306,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * The Class JCasGenProgressMonitor.
    */
   public static class JCasGenProgressMonitor implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           org.apache.uima.tools.jcasgen.IProgressMonitor {
     
     /** The m progress monitor. */
@@ -3383,6 +3384,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       Logger log = UIMAFramework.getLogger();
       log.log(logLevels[severity], "JCasGen: " + message); //$NON-NLS-1$
       System.out.println(Messages.getString("MultiPageEditor.JCasGenErr") //$NON-NLS-1$
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + message);
       if (null != ex)
         ex.printStackTrace();
@@ -3459,8 +3461,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * @throws ResourceInitializationException the resource initialization exception
    */
   public void setMergedTypeSystemDescription() throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-177
     mergedTypesAddingFeatures.clear();
     if (isAggregate())
+//IC see: https://issues.apache.org/jira/browse/UIMA-402
       mergedTypeSystemDescription = mergeDelegateAnalysisEngineTypeSystems(
               (AnalysisEngineDescription) aeDescription.clone(), createResourceManager(),
               mergedTypesAddingFeatures);
@@ -3473,6 +3477,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         tsdc.add(typeSystemDescription.clone());
         // System.out.println("mergingTypeSystem 2"); //$NON-NLS-1$
         // long time = System.currentTimeMillis();
+//IC see: https://issues.apache.org/jira/browse/UIMA-177
         mergedTypeSystemDescription = CasCreationUtils.mergeTypeSystems(tsdc, resourceManager,
                 mergedTypesAddingFeatures);
         // System.out.println("Finished mergingTypeSystem 2; time= " + //$NON-NLS-1$
@@ -3506,7 +3511,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * @throws ResourceInitializationException the resource initialization exception
    */
   public void setMergedFsIndexCollection() throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-402
     mergedFsIndexCollection = mergeDelegateAnalysisEngineFsIndexCollections(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
   }
 
@@ -3536,7 +3543,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   // full merge - including locally defined and imported ones
   public void setMergedTypePriorities() throws ResourceInitializationException {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-402
     mergedTypePriorities = mergeDelegateAnalysisEngineTypePriorities(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
   }
 
@@ -3624,6 +3633,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     AnalysisEngineDescription localAe = (AnalysisEngineDescription) aeDescription.clone();
     localAe.getAnalysisEngineMetaData().setFsIndexCollection(null);
     importedFsIndexCollection = CasCreationUtils.mergeDelegateAnalysisEngineFsIndexCollections(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             localAe, createResourceManager());
   }
 
@@ -3647,7 +3657,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   private void setImportedTypePriorities() throws ResourceInitializationException {
     AnalysisEngineDescription localAe = (AnalysisEngineDescription) aeDescription.clone();
     localAe.getAnalysisEngineMetaData().setTypePriorities(null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-402
     importedTypePriorities = mergeDelegateAnalysisEngineTypePriorities(localAe,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             createResourceManager());
   }
 
@@ -3721,6 +3733,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       } catch (JavaModelException e) {
         Utility.popMessage("Unexpected Exception", MessageFormat.format(
                 "Unexpected exception while getting type information for type ''{0}''. {1}",
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
                 new Object[] { typename, getMessagesToRootCause(e) }), MessageDialog.ERROR);
         throw new InternalErrorCDE("unexpected exception", e);
       }
@@ -3828,6 +3841,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
      * @return the scopes
      */
     public IJavaSearchScope[] getScopes() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       return subScopes;
     }
 
@@ -3852,6 +3866,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       }
       if (!resourcePath.startsWith("C:\\p\\j"))
         System.out.println(MessageFormat.format(" FALSE encloses resourcepath: ''{0}''",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { resourcePath }));
       return false;
     }
@@ -3879,6 +3895,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         IPath[] pjs = subScopes[i].enclosingProjectsAndJars();
         if (null != pjs)
           for (int j = 0; j < pjs.length; j++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             if (!result.contains(pjs[j]))
               result.add(pjs[j]);
           }
@@ -3927,6 +3944,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * @return the search scope for descriptor type
    */
   public IJavaSearchScope getSearchScopeForDescriptorType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       switch (descriptorType) {
         case DESCRIPTOR_AE:
@@ -3961,6 +3979,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * @throws ResourceInitializationException the resource initialization exception
    */
   private TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
+//IC see: https://issues.apache.org/jira/browse/UIMA-402
           AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager,
           Map aOutputMergedTypes) throws ResourceInitializationException {
     
@@ -4010,6 +4029,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * @throws ResourceInitializationException the resource initialization exception
    */
   public CAS createCas(AnalysisEngineDescription aAeDescription,
+//IC see: https://issues.apache.org/jira/browse/UIMA-462
           Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
           throws ResourceInitializationException {
     
@@ -4090,6 +4110,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     
     StringBuffer sb = new StringBuffer(100);
     for (int i = 0; i < names.size(); i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-664
       sb.append("Component key-name(s): ").append(names.get(i))
         .append(": ")
         .append(getMessagesToRootCause((Exception)exceptions.get(i)))

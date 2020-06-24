@@ -42,6 +42,7 @@ import junit.framework.TestCase;
 
 public class ConfigurableDataResourceSpecifier_implTest extends TestCase {
   public void testXmlization() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // create a ConfigurableDataResourceSpecifier
       ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();
@@ -54,6 +55,7 @@ public class ConfigurableDataResourceSpecifier_implTest extends TestCase {
       param.setName("param");
       param.setType("String");
       decls.addConfigurationParameter(param);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       md.setConfigurationParameterDeclarations(decls);
       ConfigurationParameterSettings settings = new ConfigurationParameterSettings_impl();
       NameValuePair nvp = new NameValuePair_impl();
@@ -68,10 +70,12 @@ public class ConfigurableDataResourceSpecifier_implTest extends TestCase {
       String xmlStr = sw.getBuffer().toString();
 
       // parse back
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
       ByteArrayInputStream inStream = new ByteArrayInputStream(xmlStr.getBytes(StandardCharsets.UTF_8));
       XMLInputSource in = new XMLInputSource(inStream, null);
       ConfigurableDataResourceSpecifier_impl parsedSpec = (ConfigurableDataResourceSpecifier_impl) UIMAFramework
               .getXMLParser().parse(in);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       assertEquals(cspec, parsedSpec);
 

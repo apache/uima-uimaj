@@ -27,6 +27,8 @@ package org.apache.uima.analysis_engine.annotator;
  */
 @Deprecated
 public abstract class GenericAnnotator_ImplBase extends Annotator_ImplBase implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         GenericAnnotator {
   // overrides no methods
 }

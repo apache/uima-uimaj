@@ -59,8 +59,10 @@ public class CPECasPool {
    * @throws ResourceInitializationException -
    */
   public CPECasPool(int aNumInstances, CasManager aCasManager)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     mNumInstances = aNumInstances;
+//IC see: https://issues.apache.org/jira/browse/UIMA-234
     fillPool(aCasManager, UIMAFramework.getDefaultPerformanceTuningProperties());
   }
 
@@ -76,6 +78,7 @@ public class CPECasPool {
    */
   public CPECasPool(int aNumInstances, CasManager aCasManager, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
+//IC see: https://issues.apache.org/jira/browse/UIMA-234
     fillPool(aCasManager, aPerformanceTuningSettings);
   }
 
@@ -104,6 +107,7 @@ public class CPECasPool {
    * @return - CAS instance, or null on timeout
    */
   public synchronized CAS getCas(long aTimeout) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
     CAS cas = getCas();
     
     if (cas != null) {
@@ -132,6 +136,7 @@ public class CPECasPool {
         checkedOutInstances.add(cas);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "process",
@@ -162,6 +167,7 @@ public class CPECasPool {
     if (!mAllInstances.contains(aCas) || mFreeInstances.contains(aCas)) {
       if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_invalid_checkin__WARNING",
                 new Object[] { Thread.currentThread().getName() });
       }
@@ -177,6 +183,7 @@ public class CPECasPool {
         checkedOutInstances.remove(index);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "process",
@@ -197,6 +204,7 @@ public class CPECasPool {
                 new Object[] { Thread.currentThread().getName(),
                     String.valueOf(checkedOutInstances.size()) });
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
       this.notifyAll();  // when CAS becomes available
     }
 

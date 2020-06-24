@@ -32,6 +32,7 @@ public class RsTypesMap implements Iterable<RsType> {
   private final Map<String, RsType> types;  
   
   RsTypesMap() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     types = new HashMap<>();
   }
   
@@ -40,6 +41,7 @@ public class RsTypesMap implements Iterable<RsType> {
    * @param src
    */
   RsTypesMap(RsTypesMap src) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     types = new HashMap<>(src.types);
     for (Map.Entry<String, RsType> e : types.entrySet()) {
       e.setValue(new RsType(e.getValue()));  // copy

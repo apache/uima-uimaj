@@ -68,6 +68,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    *          reference to CPE configuration
    */
   public CPEDeployerDefaultImpl(CPEFactory aCpeFactory) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     cpeFactory = aCpeFactory;
   }
 
@@ -101,6 +102,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * @throws ResourceConfigurationException the resource configuration exception
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     String name = null;
     CasProcessor casProcessor = null;
@@ -126,6 +128,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
           ProcessingResourceMetaData metaData = casProcessor.getProcessingResourceMetaData();
 
           CpeCasProcessor cpeCasProcessor = (CpeCasProcessor) cpeFactory.casProcessorConfigMap
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .get(metaData.getName());
           if (engine != null) {
             boolean parallelizable = engine.isParallizable(casProcessor, metaData.getName());
@@ -134,9 +137,11 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
           casProcessorPool = new ServiceProxyPool();
           // Instantiate an object that encapsulates CasProcessor configuration
           casProcessorConfig = new CasProcessorConfigurationJAXBImpl(cpeCasProcessor, cpeFactory.getResourceManager());
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINEST,
                     this.getClass().getName(),
                     "initialize",
@@ -179,6 +184,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
           casProcessorConfig = processingContainer.getCasProcessorConfiguration();
           if (casProcessorConfig == null) {
             throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     new Object[] { "<casProcessor>", "<casProcessors>" }, new Exception(
                             CpmLocalizedMessage.getLocalizedMessage(
                                     CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -191,6 +197,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_deploying_cp__FINEST",
                   new Object[] { Thread.currentThread().getName(), name });
         }
@@ -202,6 +209,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
     } catch (Exception e) {
       e.printStackTrace();
       throw new ResourceConfigurationException(ResourceServiceException.RESOURCE_UNAVAILABLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] {}, e);
     }
     return processingContainer;
@@ -216,6 +224,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * @throws ResourceConfigurationException the resource configuration exception
    */
   public void deployCasProcessor(ProcessingContainer aProcessingContainer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     try {
       CasProcessorConfiguration casProcessorConfig = aProcessingContainer
@@ -226,6 +235,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
                 "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_redeploying_cp__FINEST",
                 new Object[] { Thread.currentThread().getName(), name });
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
       URL descriptorUrl = casProcessorConfig.getDescriptorUrl();
       CasProcessor casProcessor = produceIntegratedCasProcessor(descriptorUrl);
       casProcessorPool.addCasProcessor(casProcessor);
@@ -235,6 +245,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
     } catch (Exception e) {
       e.printStackTrace();
       throw new ResourceConfigurationException(ResourceServiceException.RESOURCE_UNAVAILABLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] {}, e);
     }
   }
@@ -248,6 +259,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * @throws ResourceConfigurationException wraps Exception
    */
   private CasProcessor produceIntegratedCasProcessor(URL aDescriptor)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     CasProcessor casProcessor = null;
     try {
@@ -256,9 +268,11 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
 
         if (resourceSpecifier instanceof AnalysisEngineDescription) {
           casProcessor = UIMAFramework.produceAnalysisEngine(resourceSpecifier, this.cpeFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getResourceManager(), null);
           // casProcessor.
         } else if (resourceSpecifier instanceof CasConsumerDescription) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
           if (cpeFactory.isDefinitionInstanceOf(CasConsumer.class, resourceSpecifier, aDescriptor.toString())) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
@@ -269,6 +283,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
             casProcessor = UIMAFramework.produceCasConsumer(resourceSpecifier, this.cpeFactory
                     .getResourceManager(), null);
           } else if (cpeFactory.isDefinitionInstanceOf(CasProcessor.class, resourceSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
                   aDescriptor.toString())) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
@@ -295,6 +310,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
     } catch (Exception e) {
       e.printStackTrace();
       throw new ResourceConfigurationException(ResourceServiceException.RESOURCE_UNAVAILABLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] {}, new Exception(CpmLocalizedMessage.getLocalizedMessage(
                       CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_EXP_instantiation_exception__WARNING", new Object[] {

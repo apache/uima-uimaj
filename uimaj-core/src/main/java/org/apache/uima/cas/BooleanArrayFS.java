@@ -46,6 +46,7 @@ public interface BooleanArrayFS extends CommonArrayFS<Boolean> {
    *              If <code>i</code> is out of bounds.
    */
   void set(int i, boolean b) throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Create a Java array that is a copy of the internal CAS array.
@@ -70,8 +71,10 @@ public interface BooleanArrayFS extends CommonArrayFS<Boolean> {
    *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
    *              <code>destOffset + length &gt; destArray.length</code>.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   void copyToArray(int srcOffset, boolean[] dest, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Copy the contents of an external array into this array.
@@ -87,5 +90,6 @@ public interface BooleanArrayFS extends CommonArrayFS<Boolean> {
    */
   void copyFromArray(boolean[] src, int srcOffset, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 }

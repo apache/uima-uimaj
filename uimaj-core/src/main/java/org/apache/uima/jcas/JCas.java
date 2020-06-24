@@ -101,6 +101,7 @@ public interface JCas extends AbstractCas {
    * @return the FSIndexRepository object for this Cas
    */
   FSIndexRepository getFSIndexRepository();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
   LowLevelIndexRepository getLowLevelIndexRepository();
 
@@ -146,6 +147,7 @@ public interface JCas extends AbstractCas {
    * @return the CAS Java Type object for this CAS Type.
    */
   Type getCasType(int i);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
   /*
    * Internal use - looks up a type-name-string in the CAS type system and returns the Cas Type
@@ -165,6 +167,7 @@ public interface JCas extends AbstractCas {
    * @deprecated only for V2 compiling
    */
   @Deprecated
+//IC see: https://issues.apache.org/jira/browse/UIMA-5225
   default Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst) {
     throw new UnsupportedOperationException("not supported in UIMA v3");
   }
@@ -210,6 +213,7 @@ public interface JCas extends AbstractCas {
    */
   @Deprecated
   Sofa getSofa(SofaID sofaID);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
   /**
    * Get the Sofa feature structure associated with this JCas view.
@@ -237,6 +241,7 @@ public interface JCas extends AbstractCas {
    *           if a View with this name already exists in this CAS
    */
   JCas createView(String sofaID) throws CASException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
   /**
    * Create a JCas view for a Sofa. 
@@ -248,6 +253,7 @@ public interface JCas extends AbstractCas {
    * @throws CASException -
    */  
   JCas getJCas(Sofa sofa) throws CASException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
   /**
    * Gets the JCas-based interface to the Index Repository. Provides the same functionality
@@ -257,6 +263,7 @@ public interface JCas extends AbstractCas {
    * @return the JCas-based interface to the index repository
    */
   JFSIndexRepository getJFSIndexRepository();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
   /**
    * Gets the document annotation. The object returned from this method can be typecast to
@@ -270,6 +277,7 @@ public interface JCas extends AbstractCas {
    * @see org.apache.uima.cas.CAS#getDocumentAnnotation
    */
   TOP getDocumentAnnotationFs();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -291,7 +299,9 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a StringArray
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
   default StringArray emptyStringArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     return this.getCas().emptyStringArray();
   }
 
@@ -316,7 +326,9 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of an IntegerArray
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
   default IntegerArray emptyIntegerArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     return this.getCas().emptyIntegerArray();
   }
 
@@ -341,7 +353,9 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a FloatArray
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
   default FloatArray emptyFloatArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     return this.getCas().emptyFloatArray();
   }
 
@@ -370,7 +384,9 @@ public interface JCas extends AbstractCas {
    * See also the CAS API 
    * @return 0-length instance of a FSArray
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
   default FSArray emptyFSArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     return this.getCas().emptyFSArray();
   }
   
@@ -387,6 +403,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of a FSArray, which is associated with the element type T
    * @param <T> the particular FeatureStructure type   
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-6060
   default <T extends TOP> FSArray<T> emptyFSArray(Class<T> clazz) {
     return this.getCas().emptyFSArray(((JCasImpl)this).getCasType(clazz));
   }
@@ -399,6 +416,7 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a ByteArray
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
   default ByteArray emptyByteArray() {
     return this.getCas().emptyByteArray();
   }
@@ -411,6 +429,7 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a ShortArray
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
   default ShortArray emptyShortArray() {
     return this.getCas().emptyShortArray();
   }
@@ -423,6 +442,7 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a LongArray
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
   default LongArray emptyLongArray() {
     return this.getCas().emptyLongArray();
   }
@@ -435,6 +455,7 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a DoubleArray
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
   default DoubleArray emptyDoubleArray() {
     return this.getCas().emptyDoubleArray();
   }
@@ -447,6 +468,7 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a DoubleArray
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
   default BooleanArray emptyBooleanArray() {
     return this.getCas().emptyBooleanArray();
   }
@@ -459,6 +481,7 @@ public interface JCas extends AbstractCas {
    */
   @Deprecated
   void processInit();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
   /**
    * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and
@@ -473,6 +496,7 @@ public interface JCas extends AbstractCas {
    * @throws CASException passthru
    *           
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-143
   JCas getView(String localViewName) throws CASException;
   
   /**
@@ -507,6 +531,7 @@ public interface JCas extends AbstractCas {
    * @exception CASRuntimeException
    *              If the type system has not been committed.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-168
   TypeSystem getTypeSystem() throws CASRuntimeException;
   
   /**
@@ -519,6 +544,8 @@ public interface JCas extends AbstractCas {
    */
   @Deprecated
   SofaFS createSofa(SofaID sofaID, String mimeType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1342
+//IC see: https://issues.apache.org/jira/browse/UIMA-1342
 
   /**
    * Get iterator for all SofaFS in the CAS.
@@ -526,6 +553,7 @@ public interface JCas extends AbstractCas {
    * @return an iterator over SofaFS.
    */
   FSIterator<SofaFS> getSofaIterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1483
 
   /**
    * Create an iterator over structures satisfying a given constraint. Constraints are described in
@@ -539,6 +567,7 @@ public interface JCas extends AbstractCas {
    * @return An iterator over FSs.
    */
   <T extends FeatureStructure> FSIterator<T> createFilteredIterator(FSIterator<T> it, FSMatchConstraint cons);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1483
 
   /**
    * Get a constraint factory. A constraint factory is a simple way of creating
@@ -573,6 +602,7 @@ public interface JCas extends AbstractCas {
    * @return An equivalent <code>ListIterator</code>.
    */
   <T extends FeatureStructure> ListIterator<T> fs2listIterator(FSIterator<T> it);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1483
 
   /**
    * Reset the CAS, emptying it of all content. Feature structures and iterators will no longer be
@@ -621,6 +651,7 @@ public interface JCas extends AbstractCas {
    *              If the Sofa data has already been set.
    */
   void setDocumentText(String text) throws CASRuntimeException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
   /**
    * Set the document text. Once set, Sofa data is immutable, and cannot be set again until the CAS
@@ -634,6 +665,7 @@ public interface JCas extends AbstractCas {
    *              If the Sofa data has already been set.
    */
   void setSofaDataString(String text, String mimetype) throws CASRuntimeException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
   /**
    * Get the document text.
@@ -648,6 +680,7 @@ public interface JCas extends AbstractCas {
    * @return The Sofa data string.
    */
   String getSofaDataString();
+//IC see: https://issues.apache.org/jira/browse/UIMA-187
 
   /**
    * Sets the language for this document. This value sets the language feature of the special
@@ -678,6 +711,7 @@ public interface JCas extends AbstractCas {
    *              If the Sofa data has already been set.
    */
   void setSofaDataArray(FeatureStructure array, String mime) throws CASRuntimeException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
   /**
    * Get the Sofa data array.
@@ -698,6 +732,7 @@ public interface JCas extends AbstractCas {
    *              If the Sofa data has already been set.
    */
   void setSofaDataURI(String uri, String mime) throws CASRuntimeException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
   /**
    * Get the Sofa data array.
@@ -718,6 +753,7 @@ public interface JCas extends AbstractCas {
    * 
    * @return the mime type of the Sofa
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-207
   String getSofaMimeType();
   
   /**
@@ -752,6 +788,7 @@ public interface JCas extends AbstractCas {
    * Remove all feature structures of a given type (including subtypes) from all indexes in the repository associated with this CAS View.
    * @param i the CAS type constant, written as Foo.type (for a given JCas Type) or anInstanceOfFoo.getTypeIndexID(), for an instance
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2434
   void removeAllIncludingSubtypes(int i);
   
   /**
@@ -794,6 +831,7 @@ public interface JCas extends AbstractCas {
    * @return The standard annotation index.
    */
   AnnotationIndex<Annotation> getAnnotationIndex();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1491
 
   /**
    * Get the standard annotation index restricted to a specific annotation type.
@@ -804,6 +842,7 @@ public interface JCas extends AbstractCas {
    * @return The standard annotation index, restricted to <code>type</code>.
    */
   <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(Type type) throws CASRuntimeException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
 
   /**
    * Get the standard annotation index restricted to a specific annotation type.
@@ -817,6 +856,7 @@ public interface JCas extends AbstractCas {
    * @throws CASRuntimeException -
    */
   <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(int type) throws CASRuntimeException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
 
   /**
    * Get the standard annotation index restricted to a specific annotation type.
@@ -902,6 +942,7 @@ public interface JCas extends AbstractCas {
    *   the iterator is of type JCas.
    * @throws CASException -
   */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1483
   Iterator<JCas> getViewIterator() throws CASException;  
   
   /**
@@ -920,6 +961,7 @@ public interface JCas extends AbstractCas {
    *   Each object returned by the iterator is of type JCas.
    * @throws CASException -
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1483
   Iterator<JCas> getViewIterator(String localViewNamePrefix) throws CASException;
   
   /**
@@ -935,6 +977,11 @@ public interface JCas extends AbstractCas {
    * 
    * @return an object used to record things that need adding back
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4162
+//IC see: https://issues.apache.org/jira/browse/UIMA-4160
+//IC see: https://issues.apache.org/jira/browse/UIMA-4158
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
   AutoCloseable protectIndexes();
   
   /**
@@ -966,6 +1013,9 @@ public interface JCas extends AbstractCas {
    * @param <T> the Type of the elements being accessed
    * @return a newly created selection object for accessing feature structures
    */  
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
+//IC see: https://issues.apache.org/jira/browse/UIMA-5632
   default <T extends TOP> SelectFSs<T> select() {
     return new SelectFSs_impl<>(getCas());
   }
@@ -1011,6 +1061,7 @@ public interface JCas extends AbstractCas {
    * @param <T> the type of the list, e.g FloatList
    * @return - the shared (in this CAS) instance of the empty list (immutable)
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
   default <T extends TOP> EmptyList emptyList(Class<T> clazz) {
     return this.getCasImpl().emptyListFromTypeCode(((TypeImpl)getCasType(clazz)).getCode());
   }
@@ -1018,6 +1069,8 @@ public interface JCas extends AbstractCas {
   /** 
    * @return a lazily created shared (for this CAS) empty list
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
+//IC see: https://issues.apache.org/jira/browse/UIMA-5632
   default EmptyFloatList emptyFloatList() {
     return getCas().emptyFloatList();
   };
@@ -1049,6 +1102,7 @@ public interface JCas extends AbstractCas {
    * @param <T> the type of the list, e.g FloatArray
    * @return a shared (in this CAS) instance of the empty array (immutable)
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
   default <T extends TOP> CommonArrayFS emptyArray(Class<T> clazz) {
     return this.getCasImpl().emptyArray(getCasType(clazz));
   }

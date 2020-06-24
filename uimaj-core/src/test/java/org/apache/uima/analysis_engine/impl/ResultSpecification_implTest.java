@@ -69,6 +69,7 @@ public class ResultSpecification_implTest extends TestCase {
    * @see junit.framework.TestCase#setUp()
    */
   protected void setUp() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // create array of types and features for use in testing
       t1 = new TypeOrFeature_impl();
@@ -117,10 +118,12 @@ public class ResultSpecification_implTest extends TestCase {
       capabilities = new Capability[] { cap1, cap2, cap3 };
 
       // make languages array
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       languages = new Vector<>(3);
       languages.add(0, languages1);
       languages.add(1, languages2);
       languages.add(2, languages3);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -154,6 +157,7 @@ public class ResultSpecification_implTest extends TestCase {
   }
 
   public void testAddCapabilitiesWithoutLanguage() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-890
      try {
        
         TypeOrFeature t4 = new TypeOrFeature_impl();
@@ -200,6 +204,7 @@ public class ResultSpecification_implTest extends TestCase {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures, languages.get(0));
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
 
       // check for language en
       TypeOrFeature[] resultEn = rs.getResultTypesAndFeatures("en");
@@ -243,6 +248,7 @@ public class ResultSpecification_implTest extends TestCase {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       for (int i = 0; i < mTypesAndFeatures.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
         rs.addResultTypeOrFeature(mTypesAndFeatures[i], languages.get(i));
       }
 
@@ -297,6 +303,7 @@ public class ResultSpecification_implTest extends TestCase {
   public void testAddResultTypeWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
       rs.addResultType("FakeType", false, languages.get(0));
       rs.addResultType("AnotherType", true, languages.get(2));
       rs.addResultType("NewDefinedType", true, new String[] { "ja" });
@@ -347,6 +354,7 @@ public class ResultSpecification_implTest extends TestCase {
       Assert.assertEquals(false, result[atafIndex].isType());
       Assert.assertEquals("FakeType:FakeFeature", result[ftffIndex].getName());
       Assert.assertEquals(false, result[ftffIndex].isType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -401,6 +409,7 @@ public class ResultSpecification_implTest extends TestCase {
       Assert.assertTrue(rs.containsType("AnotherType", "x-unspecified"));
       Assert.assertFalse(rs.containsType("FakeType:FakeFeature", "de"));
       Assert.assertFalse(rs.containsType("AnotherType:AnotherFeature", "de"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -492,8 +501,10 @@ public class ResultSpecification_implTest extends TestCase {
       Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
       Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
       Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
       Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl"));  // unknown features are there, if the type says allFeats
       Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -517,6 +528,7 @@ public class ResultSpecification_implTest extends TestCase {
 
       // compile
       rs.compile(tsMgr);
+//IC see: https://issues.apache.org/jira/browse/UIMA-730
 
       // check
       Assert.assertFalse(rs.containsType("FakeType"));
@@ -531,11 +543,13 @@ public class ResultSpecification_implTest extends TestCase {
       Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
       Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
       Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
       Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl")); // unknown features are there if type says allfeats
       Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
       Assert.assertFalse(rs.containsFeature("NotThere:FakeFeature"));
       Assert.assertFalse(rs.containsType("SubType"));
       Assert.assertTrue(rs.containsType("SubType", "en"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -554,8 +568,10 @@ public class ResultSpecification_implTest extends TestCase {
       // System.out.println(rsXml);
 
       // parse object back from XML
+//IC see: https://issues.apache.org/jira/browse/UIMA-1202
       InputStream is = new ByteArrayInputStream(rsXml.getBytes(encoding));
       ResultSpecification newRS = UIMAFramework.getXMLParser().parseResultSpecification(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new XMLInputSource(is, null));
       TypeOrFeature[] tofs = newRS.getResultTypesAndFeatures();
       Arrays.sort(tofs);

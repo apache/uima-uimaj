@@ -58,6 +58,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
 
   public UIMAResultPrinter(PrintStream writer, boolean abortOnFail, boolean teeOutputStream) {
     // init class members
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(writer);
     this.fWriter = writer;
     this.testCounter = 0;

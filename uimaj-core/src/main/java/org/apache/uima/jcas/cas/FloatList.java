@@ -56,6 +56,7 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
   
   @Override
   public NonEmptyFloatList createNonEmptyNode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     return new NonEmptyFloatList(this._casView.getJCasImpl());
   }
   
@@ -65,6 +66,7 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
   * @return the new list, with this item as the head value of the first element
   */
  public NonEmptyFloatList push(float item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
    return new NonEmptyFloatList(_casView.getJCasImpl(), item, this);
  }
 
@@ -73,11 +75,15 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
    */
   @Override
   public Iterator<Float> iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
     return Collections.emptyIterator();  // overridden by NonEmptyXxList
   }
   
   @Override
   public EmptyFloatList emptyList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     return this._casView.emptyFloatList();
   }
   
@@ -88,7 +94,9 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
    * @return an FloatList, with the elements from the array
    */
   public static FloatList create(JCas jcas, Float[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     FloatList floatList = jcas.getCasImpl().emptyFloatList();   
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     for (int i = a.length - 1; i >= 0; i--) {
       floatList = floatList.push(a[i]);
     }   
@@ -96,6 +104,7 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
   }
   
   public Stream<Float> stream() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     return StreamSupport.stream(spliterator(), false);
   }
   

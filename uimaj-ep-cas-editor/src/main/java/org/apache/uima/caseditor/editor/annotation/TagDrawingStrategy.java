@@ -65,6 +65,7 @@ class TagDrawingStrategy implements IDrawingStrategy {
    *
    * @param featureName the feature name
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
   TagDrawingStrategy(String featureName) {
     
     if (featureName == null)
@@ -83,6 +84,7 @@ class TagDrawingStrategy implements IDrawingStrategy {
     // expensive, test how fast it is when the box drawing is "inlined".
     // The box drawing strategy could be changed to do the drawing via
     // static methods
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
     annotationDrawingStyle.draw(annotation, gc, textWidget, offset, length, color);
     
     if (annotation instanceof EclipseAnnotationPeer) {
@@ -96,6 +98,7 @@ class TagDrawingStrategy implements IDrawingStrategy {
         
         // Annotation can be rendered into multiple lines, always draw
         // the tag in the first line where annotation starts
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
         if (featureValue != null && annotationFS.getBegin() == offset) {
           
           // Calculate how much overhang on both sides of the annotation for a tag is allowed
@@ -113,6 +116,7 @@ class TagDrawingStrategy implements IDrawingStrategy {
           int maxEndOverhang;
           int lineLength;
           int lineCount = textWidget.getLineCount();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
           if (lineCount > lineIndex +1) {
             int offsetNextLine = textWidget.getOffsetAtLine(lineIndex + 1);
             lineLength = offsetNextLine - firstCharInLineOffset -1;
@@ -132,6 +136,7 @@ class TagDrawingStrategy implements IDrawingStrategy {
           Rectangle bounds = textWidget.getTextBounds(offset, offset + length);
   
           if (gc != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2082
 
             int lastCharIndex;
             
@@ -199,6 +204,7 @@ class TagDrawingStrategy implements IDrawingStrategy {
             
             // After done using the tag font it must be disposed, otherwise
             // eclipse on windows runs out of handles and crashes
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
             tagFont.dispose();
           } else {
             

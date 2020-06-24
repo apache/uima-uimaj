@@ -129,6 +129,7 @@ public class InstallPearCli {
   private static void printUsageAndExit() {
     System.out
             .println("Usage: installPearCli pathToPearFile [directoryToInstallInto] [options]\n\n"
+//IC see: https://issues.apache.org/jira/browse/UIMA-2121
                     + "  *** items in [] are optional ***"
                     + "Install a Pear file into a specified directory\n"
                     + "Install directory defaults to the current directory/pearFileName\n"

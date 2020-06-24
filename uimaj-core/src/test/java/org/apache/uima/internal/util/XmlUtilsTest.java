@@ -41,6 +41,7 @@ public class XmlUtilsTest extends TestCase {
     
     // The follownig utf 16 code units are not valid XML chars, or can not stand by themselves
     // (i.e., they're surrogates).
+//IC see: https://issues.apache.org/jira/browse/UIMA-387
     chars = new char[] { 0x0, 0xDFFF, 0xD800, 0xDC00, 0xFFFF };
     for (int i = 0; i < chars.length; i++) {
       assertTrue(XMLUtils.checkForNonXmlCharacters(new String(new char[] { chars[i] })) == 0);

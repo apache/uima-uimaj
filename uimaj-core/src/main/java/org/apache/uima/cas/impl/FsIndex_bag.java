@@ -55,8 +55,10 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 //   */
 //  private WeakReference<CopyOnWriteObjHashSet<TOP>> cow = null;
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
   FsIndex_bag(CASImpl cas, Type type, int initialSize, int indexType, FSIndexComparator comparatorForIndexSpecs) {
     super(cas, type, indexType, cleanUpComparator(comparatorForIndexSpecs, cas));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.index = new ObjHashSet<>(initialSize, TOP.class, TOP._singleton);
   }
 
@@ -69,16 +71,19 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
     // it isn't, we create an empty one.
     FSIndexComparator newComp;
     if (comp.getNumberOfKeys() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
       newComp = new FSIndexComparatorImpl();
       newComp.setType(comp.getType());
     } else {
       newComp = comp;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     return newComp;
   }
 
   @Override
   public void flush() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5111
     super.flush();
     index.clear();
   }
@@ -86,6 +91,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   @Override
   public final void insert(T fs) {
     maybeCopy();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     index.add((TOP) fs);
   }
 
@@ -148,6 +154,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   }
     
   boolean ll_contains(int fsAddr) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return contains(casImpl.getFsFromId_checked(fsAddr));
   }
 
@@ -158,6 +165,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public T find(FeatureStructure fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     final int resultAddr =  this.index.find((TOP) fs);
     if (resultAddr >= 0) {
       return (T) fs;
@@ -180,6 +188,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public boolean deleteFS(T fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5111
     maybeCopy();
     return this.index.remove(fs);
   }
@@ -196,6 +205,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 
   @Override
   protected void bulkAddTo(List<T> fss) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     fss.addAll((Collection<? extends T>) this.index);
   }  
   
@@ -205,6 +215,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public LowLevelIterator<T> iterator(boolean orderNotNeeded, boolean ignoreType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
     CopyOnWriteIndexPart<T> cow_index_wrapper = getNonNullCow();
     return casImpl.inPearContext()
              ? new FsIterator_bag_pear<>(this, type, cow_index_wrapper)
@@ -213,6 +224,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 
   @Override
   protected CopyOnWriteIndexPart<T> createCopyOnWriteIndexPart() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     if (CASImpl.traceCow) {
       this.casImpl.traceCowCopy(this);
     }
@@ -221,6 +233,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   
   @Override
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return Integer.MAX_VALUE;
   }
   

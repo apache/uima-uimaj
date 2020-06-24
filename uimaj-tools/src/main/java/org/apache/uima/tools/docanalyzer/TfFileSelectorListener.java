@@ -39,6 +39,7 @@ public class TfFileSelectorListener implements FileSelectorListener {
    * @param med the med
    */
   public TfFileSelectorListener(PrefsMediator med) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this.med = med;
   }
 

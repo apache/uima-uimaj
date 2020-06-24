@@ -226,6 +226,7 @@ public abstract class UIMAFramework {
    *         application.
    */
   public static CollectionProcessingManager newCollectionProcessingManager(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceManager aResourceManager) {
     return getInstance()._newCollectionProcessingManager(aResourceManager);
   }
@@ -254,6 +255,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static Resource produceResource(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     return produceResource(Resource.class, aSpecifier, aAdditionalParams);
   }
@@ -285,6 +287,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     Resource resource = getResourceFactory().produceResource(aResourceClass, aSpecifier,
             aAdditionalParams);
@@ -331,6 +334,7 @@ public abstract class UIMAFramework {
     // add ResourceManager to aAdditionalParams map
     if (aResourceManager != null) {
       if (aAdditionalParams == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         aAdditionalParams = new HashMap<>();
       } else {  // copy to avoid modifying the original which might be immutable
         aAdditionalParams = new HashMap<>(aAdditionalParams);
@@ -349,6 +353,7 @@ public abstract class UIMAFramework {
    * @param initStartTime
    */
   private static void updateAeState(AnalysisEngine ae, long initStartTime) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2217
 	  if ( ae.getManagementInterface() instanceof AnalysisEngineManagementImpl) {
 	      ((AnalysisEngineManagementImpl)ae.getManagementInterface()).setState(State.Ready);
 	      ((AnalysisEngineManagementImpl)ae.getManagementInterface()).
@@ -375,6 +380,7 @@ public abstract class UIMAFramework {
    */
   public static AnalysisEngine produceAnalysisEngine(ResourceSpecifier aSpecifier)
           throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2217
 	    AnalysisEngine ae = null;
 	    //	Fetch current time to compute initialization time
 	    long initStartTime = System.currentTimeMillis();
@@ -452,6 +458,7 @@ public abstract class UIMAFramework {
   public static AnalysisEngine produceAnalysisEngine(ResourceSpecifier aSpecifier,
           ResourceManager aResourceManager, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2217
     AnalysisEngine ae = null;
     //	Fetch current time to compute initialization time
     long initStartTime = System.currentTimeMillis();
@@ -497,9 +504,12 @@ public abstract class UIMAFramework {
     // add parameters to the aAdditionalParams map
     Map<String, Object> aAdditionalParams = new HashMap<>();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, aMaxSimultaneousRequests);
     aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, aTimeoutPeriod);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2217
+//IC see: https://issues.apache.org/jira/browse/UIMA-2217
     AnalysisEngine ae = null;
     //	Fetch current time to compute initialization time
     long initStartTime = System.currentTimeMillis();
@@ -533,6 +543,7 @@ public abstract class UIMAFramework {
    */
   @Deprecated
   public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier, null);
   }
@@ -604,7 +615,9 @@ public abstract class UIMAFramework {
    */
   @Deprecated
   public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           ResourceManager aResourceManager, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
             aResourceManager, aAdditionalParams);
@@ -648,7 +661,10 @@ public abstract class UIMAFramework {
           int aMaxSimultaneousRequests, int aTimeoutPeriod) throws ResourceInitializationException {
     // add parameters to the aAdditionalParams map
     Map<String, Object> aAdditionalParams = new HashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, aMaxSimultaneousRequests);
     aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, aTimeoutPeriod);
 
@@ -671,6 +687,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CasConsumer produceCasConsumer(ResourceSpecifier aSpecifier)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     return (CasConsumer) produceResource(CasConsumer.class, aSpecifier, null);
   }
@@ -700,6 +717,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CasConsumer produceCasConsumer(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     return (CasConsumer) produceResource(CasConsumer.class, aSpecifier, aAdditionalParams);
   }
@@ -732,6 +750,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CasConsumer produceCasConsumer(ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           ResourceManager aResourceManager, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     return (CasConsumer) produceResource(CasConsumer.class, aSpecifier, aResourceManager,
@@ -753,6 +772,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CollectionReader produceCollectionReader(ResourceSpecifier aSpecifier)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     return (CollectionReader) produceResource(CollectionReader.class, aSpecifier, null);
   }
@@ -782,6 +802,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CollectionReader produceCollectionReader(ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     return (CollectionReader) produceResource(CollectionReader.class, aSpecifier, aAdditionalParams);
   }
@@ -815,6 +836,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CollectionReader produceCollectionReader(ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           ResourceManager aResourceManager, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     return (CollectionReader) produceResource(CollectionReader.class, aSpecifier, aResourceManager,
@@ -841,6 +863,7 @@ public abstract class UIMAFramework {
    */
   @Deprecated
   public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     return (CasInitializer) produceResource(CasInitializer.class, aSpecifier, null);
   }
@@ -870,6 +893,8 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     return (CasInitializer) produceResource(CasInitializer.class, aSpecifier, aAdditionalParams);
   }
@@ -903,6 +928,8 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           ResourceManager aResourceManager, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     return (CasInitializer) produceResource(CasInitializer.class, aSpecifier, aResourceManager,
@@ -922,6 +949,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the CPE.
    */
   public static CollectionProcessingEngine produceCollectionProcessingEngine(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CpeDescription aCpeDescription) throws ResourceInitializationException {
     return getInstance()._produceCollectionProcessingEngine(aCpeDescription, null);
   }
@@ -949,6 +977,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the CPE.
    */
   public static CollectionProcessingEngine produceCollectionProcessingEngine(
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           CpeDescription aCpeDescription, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     return getInstance()._produceCollectionProcessingEngine(aCpeDescription, aAdditionalParams);
@@ -982,9 +1011,11 @@ public abstract class UIMAFramework {
    */
   public static CollectionProcessingEngine produceCollectionProcessingEngine(
           CpeDescription aCpeDescription, ResourceManager aResourceManager, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     if (aResourceManager != null) {
       if (aAdditionalParams == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         aAdditionalParams = new HashMap<>();
       } else {
         // copy to avoid modifying original, which might be immutable, etc.
@@ -1071,6 +1102,7 @@ public abstract class UIMAFramework {
    * @return a new <code>ResourceManagerPearWrapper</code> to be used by the application.
    */
   public static ResourceManager newDefaultResourceManagerPearWrapper() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
     return getInstance()._newDefaultResourceManagerPearWrapper();
   }
 
@@ -1105,9 +1137,11 @@ public abstract class UIMAFramework {
    * @return a new UIMA Context to be used by the application.
    */
   public static UimaContextAdmin newUimaContext(Logger aLogger, ResourceManager aResourceManager,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ConfigurationManager aConfigManager) {
     // We use an ugly trick to make the 3 values available to the new UIMA context during its initialization - 
     //   we put them in threadlocals for this class (UIMAFramework).
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     UimaContextAdmin context; 
     try {
       newContextResourceManager.set(aResourceManager);
@@ -1229,6 +1263,7 @@ public abstract class UIMAFramework {
    */
   protected abstract CollectionProcessingManager _newCollectionProcessingManager(
           ResourceManager aResourceManager);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * To be implemented by subclasses; this should return a reference to the default UIMA
@@ -1317,6 +1352,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the CPE.
    */
   protected abstract CollectionProcessingEngine _produceCollectionProcessingEngine(
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           CpeDescription aCpeDescription, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
 
@@ -1333,14 +1369,17 @@ public abstract class UIMAFramework {
       frameworkClassName = REF_IMPL_CLASS_NAME; // use default
     }
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1509
       Class<?> implClass = Class.forName(frameworkClassName);
       mInstance = (UIMAFramework) implClass.newInstance();
       mInstance._initialize();
     } catch (Exception e) {
       // could not load reference implementation
       System.err.println("Could not create UIMA framework, using framework class name: " + frameworkClassName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5339
       e.printStackTrace();
       throw new UIMA_IllegalStateException(UIMA_IllegalStateException.COULD_NOT_CREATE_FRAMEWORK,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { frameworkClassName }, e);
     }
   }

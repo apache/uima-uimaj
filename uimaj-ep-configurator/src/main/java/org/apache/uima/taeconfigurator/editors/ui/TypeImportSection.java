@@ -52,7 +52,9 @@ public class TypeImportSection extends ImportSection {
    * @param parent the parent
    */
   public TypeImportSection(MultiPageEditor editor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, parent, "Imported Type Systems",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The following type systems are included as part of this one.");
   }
 
@@ -81,6 +83,7 @@ public class TypeImportSection extends ImportSection {
   @Override
   protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
     TypeSystemDescription parsedImportItem = UIMAFramework.getXMLParser()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .parseTypeSystemDescription(new XMLInputSource(source));
     return parsedImportItem.getDescription();
   }
@@ -98,6 +101,7 @@ public class TypeImportSection extends ImportSection {
    */
   @Override
   protected void setModelImportArray(Import[] imports) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     savedCAS = editor.getCurrentView();
     Import[] oldImports = getTypeSystemDescription().getImports();
     importWasRemoved = (null != oldImports) && (oldImports.length > imports.length);
@@ -122,6 +126,7 @@ public class TypeImportSection extends ImportSection {
 
     try {
       editor.setMergedTypeSystemDescription();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       editor.descriptorCAS.validate();
     } catch (ResourceInitializationException e1) {
       revertMsg(title, msg, editor.getMessagesToRootCause(e1));
@@ -131,6 +136,7 @@ public class TypeImportSection extends ImportSection {
       return false;
     }
     if (importWasRemoved)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (Window.CANCEL == Utility.popOkCancel("May need to remove dependencies",
               "A type import is being removed.  If this would removed some types or features in the"
                       + " merged type system, which are referenced in the Capabilities or Indexes "
@@ -139,6 +145,7 @@ public class TypeImportSection extends ImportSection {
         revertMsg(title, msg, "Cancelled by user.");
         editor.setMergedTypeSystemDescription(savedTSD);
         editor.setImportedTypeSystemDescription(savedITSD);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
         editor.descriptorCAS.set(savedCAS);
         return false;
       }

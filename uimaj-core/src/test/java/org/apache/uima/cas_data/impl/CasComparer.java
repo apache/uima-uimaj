@@ -76,10 +76,12 @@ import org.junit.Assert;
  */
 public class CasComparer {
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4343
   enum ARRAY_TYPE {
     FS, STRING, BOOLEAN, BYTE, SHORT, INT, LONG, FLOAT, DOUBLE,
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   final private Set<TOP> sortCompareSeen = Collections.newSetFromMap(new IdentityHashMap<>());
   final private Set<TOP> alreadyCompared = Collections.newSetFromMap(new IdentityHashMap<>());
 
@@ -91,6 +93,8 @@ public class CasComparer {
     alreadyCompared.clear();
     
     // this code handles initial views with no SofaFS
+//IC see: https://issues.apache.org/jira/browse/UIMA-2486
+//IC see: https://issues.apache.org/jira/browse/UIMA-2490
     CAS initialView1 = c1.getView(CAS.NAME_DEFAULT_SOFA);
     CAS initialView2 = c2.getView(CAS.NAME_DEFAULT_SOFA);
     assertEqualViewsInner(initialView1, initialView2);
@@ -134,6 +138,7 @@ public class CasComparer {
     Assert.assertEquals(list1.size(),  list2.size());
     
     isSortUse = true;  // while sorting; i.e., for next two calls. Affects how visited is used
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     list1.sort(fsComparator);
     list2.sort(fsComparator);
 
@@ -141,6 +146,7 @@ public class CasComparer {
     int i = 0;
     try {
       for (; i < list1.size(); i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         compare1(list1.get(i), list2.get(i), alreadyCompared);
       }
     } catch (ConcurrentModificationException e) {
@@ -166,6 +172,7 @@ public class CasComparer {
    */
 
   public int compare1(TOP fs1, TOP fs2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     sortCompareSeen.clear();
     return compare1(fs1, fs2, sortCompareSeen);
   }
@@ -215,6 +222,7 @@ public class CasComparer {
       }
 
       if (t1.isArray()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
         final int len1 = ((CommonArrayFS)fs1).size();
         if (0 != (r = Integer.compare(len1, ((CommonArrayFS)fs2).size()))) {
           return r;
@@ -271,6 +279,7 @@ public class CasComparer {
     
   private int compareFeatures(
       TOP fs1, TOP fs2, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       FeatureImpl[] feats1, FeatureImpl[] feats2,
       Set<TOP> visited) {
     
@@ -287,6 +296,7 @@ public class CasComparer {
       // range types are the same
       
       //String or subtypes of it
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (rangeType.isStringOrStringSubtype()) {  
         if (0 != (r = compStr(fs1.getStringValue(feat1), fs2.getStringValue(feat2)))) {
           return chkEqual(r, "String features miscompare, s1 = %s, s2 = %s", fs1.getStringValue(feat1), fs2.getStringValue(feat2));
@@ -322,6 +332,7 @@ public class CasComparer {
       int r = 0;
       for (int j = 0; j < fsCompares.size(); j++) {
         int i = fsCompares.get(j);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         if (0 != ( r = compare1(fs1.getFeatureValue(feats1[i]), fs2.getFeatureValue(feats2[i]), visited))) return r; 
       }      
     }
@@ -337,6 +348,7 @@ public class CasComparer {
         CAS.TYPE_NAME_DOUBLE_ARRAY.equals(rangeTypeName) ||
         CAS.TYPE_NAME_BYTE_ARRAY.equals(rangeTypeName) ||
         CAS.TYPE_NAME_BOOLEAN_ARRAY.equals(rangeTypeName) ||
+//IC see: https://issues.apache.org/jira/browse/UIMA-4343
         CAS.TYPE_NAME_FS_ARRAY.equals(rangeTypeName);
   }
   
@@ -351,6 +363,7 @@ public class CasComparer {
   }
       
   private int compLong(long v1, long v2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return chkEqual(Long.compare(v1, v2), "Integral format number miscompare,  v1 = %,d v2 = %,d", v1, v2);
   }
 
@@ -372,6 +385,7 @@ public class CasComparer {
    * When populating, skip items already visted and compared in other views (but always include sofas)
    */
   private static List<TOP> populate(Collection<TOP> items, Set<TOP> visited) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<TOP> s = new ArrayList<>();
     for (TOP fs : items) {
       if (!(fs instanceof Sofa) && !visited.contains(fs)) {
@@ -384,6 +398,7 @@ public class CasComparer {
   // returns true if the items were arrays
   private int compareArrayFSs(TOP arrayFS1fs, Feature feat1, TOP arrayFS2fs, Feature feat2, Set<TOP> visited) {
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     CommonArrayFS arrayFS1 = (CommonArrayFS)arrayFS1fs.getFeatureValue(feat1);
     CommonArrayFS arrayFS2 = (CommonArrayFS)arrayFS2fs.getFeatureValue(feat2);
     

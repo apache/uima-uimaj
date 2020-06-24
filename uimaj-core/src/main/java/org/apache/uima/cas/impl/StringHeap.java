@@ -42,6 +42,7 @@ final class StringHeap {
   // Initialize internal datastructures.  This used to be a lot more complicated when we had the
   // character heap option.  
   private final void initMemory() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.stringList = new ArrayList<>();
     this.stringList.add(null);
   }
@@ -50,8 +51,10 @@ final class StringHeap {
    * 
    * @param shdh Serialization helper datastructure.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
   final void reinit(StringHeapDeserializationHelper shdh, boolean delta) {
   	if (!delta) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1067
         initMemory();
   	}
     // Simply iterate over the ref heap and add one string after another.  The references come out
@@ -59,6 +62,7 @@ final class StringHeap {
     int stringOffset;
     int stringLength;
     String charHeapInString = new String(shdh.charHeap); // UIMA-2460
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, String> reuseStrings = new HashMap<>(
         Math.min(8,
             (shdh.refHeap.length / StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE)
@@ -77,9 +81,11 @@ final class StringHeap {
    * @return Serialization helper that can be interpreted easier by serialization code.
    */
   StringHeapDeserializationHelper serialize() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2493
     return serialize(1);  
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
   StringHeapDeserializationHelper serialize(int startPos) {
     StringHeapDeserializationHelper shdh = new StringHeapDeserializationHelper();
 	// Ref heap is 3 times the size of the string list.
@@ -151,6 +157,7 @@ final class StringHeap {
    * @return The positional code of the added string.
    */
   int addString(String s) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-936
     if (s == null) {
       return LowLevelCAS.NULL_FS_REF;
     }
@@ -183,11 +190,13 @@ final class StringHeap {
     return this.stringList.size() - 1;
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
   final int getSize() {
 	  return this.stringList.size();
   }
   
   public String[] toArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     String[] r = new String[stringList.size()];
     return stringList.toArray(r);
   }

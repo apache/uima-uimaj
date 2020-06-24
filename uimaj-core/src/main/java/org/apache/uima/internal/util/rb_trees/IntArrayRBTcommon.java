@@ -699,6 +699,8 @@ public class IntArrayRBTcommon {
   }
 
   protected int compare(int v1, int v2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     return (v1 < v2) ? -1 : ((v1 > v2) ? 1 : 0);
   }
 
@@ -797,6 +799,7 @@ public class IntArrayRBTcommon {
     if (this.color[node] == black) {
       buf.append(" BLACK");
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
     buf.append('\n');
     printKeys(getLeft(node), offset + 2, buf);
     printKeys(getRight(node), offset + 2, buf);

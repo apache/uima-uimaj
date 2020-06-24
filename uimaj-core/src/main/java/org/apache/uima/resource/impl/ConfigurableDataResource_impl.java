@@ -66,6 +66,8 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // aSpecifier must be a ConfigurableDataResourceSpecifier
     if (!(aSpecifier instanceof ConfigurableDataResourceSpecifier)) {
@@ -151,11 +153,13 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
       return false;
 
     // URIs must be the same
+//IC see: https://issues.apache.org/jira/browse/UIMA-148
     URI uri = ((ConfigurableDataResource_impl) obj).getUri();
     if (uri == null || !uri.equals(this.getUri()))
       return false;
 
     // Local Cache Files must be the same
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     File localCache = ((ConfigurableDataResource_impl) obj).getLocalCache();
     if (localCache == null && this.getLocalCache() != null)
       return false;
@@ -172,6 +176,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
   public int hashCode() {
     // add hash codes of member variables
     int hashCode = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-148
     if (mUri != null)
       hashCode += mUri.hashCode();
 

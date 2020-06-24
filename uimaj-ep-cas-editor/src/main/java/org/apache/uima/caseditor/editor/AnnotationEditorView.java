@@ -68,6 +68,7 @@ public abstract class AnnotationEditorView extends PageBookView {
 
     if (part instanceof AnnotationEditor) {
       ICasEditor editor = (ICasEditor) part;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1397
 
       return doCreatePage(editor);
     }

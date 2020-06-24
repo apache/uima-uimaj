@@ -60,6 +60,7 @@ public class CasToInlineXmlTest extends TestCase {
 
   public void testCAStoString() throws Exception {
     // create a source CAS by deserializing from XCAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-2101
     File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
     
@@ -91,6 +92,7 @@ public class CasToInlineXmlTest extends TestCase {
     transformer.setFormattedOutput(false);
     String unformattedXml = transformer.generateXML(cas, null);
 //    System.out.println(unformattedXml);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2101
     assertTrue(unformattedXml.contains("<Document><uima.tcas.DocumentAnnotation"));
     assertTrue(unformattedXml
             .contains("confidence=\"0.0\"><org.apache.uima.testTypeSystem.Owner"));
@@ -144,6 +146,7 @@ public class CasToInlineXmlTest extends TestCase {
     String expected = "<Document>\n" +
         IND+"<uima.tcas.DocumentAnnotation sofa=\"Sofa\" begin=\"0\" end=\"17\" language=\"x-unspecified\">\n" +
         IND+IND+"<org.apache.uima.testTypeSystem_arrays.OfStrings sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Strings=\"[0s,1s,2s]\"/>\n"  +
+//IC see: https://issues.apache.org/jira/browse/UIMA-5369
         IND+IND+"<org.apache.uima.testTypeSystem_arrays.OfShorts sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Shorts=\"[0,1,2]\"/>"
         		+ (Misc.isJava9ea() ? "\n        " : "") + 
         		"1 2 3 4 5 6 7 8 9"
@@ -156,6 +159,7 @@ public class CasToInlineXmlTest extends TestCase {
       }
     }
     boolean whitespaceFlag = XMLUnit.getIgnoreWhitespace();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5753
     XMLUnit.setIgnoreWhitespace(true);
     try {
       XMLAssert.assertXMLEqual(expected, result);

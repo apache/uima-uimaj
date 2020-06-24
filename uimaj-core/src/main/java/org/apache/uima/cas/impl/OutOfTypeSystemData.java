@@ -43,6 +43,7 @@ public class OutOfTypeSystemData {
    * List of FSData objects for out-of-typesystem FSs.
    */
   final List<FSData> fsList = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
   /**
    * Map from Feature Structure to List of String arrays holding feature names and values for
@@ -61,6 +62,7 @@ public class OutOfTypeSystemData {
    * Map used during re-serialization. Stores mapping from out-of-typesystem FS IDs to the actual
    * IDs used in the generated XCAS.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
   final Map<String, String> idMap = new HashMap<>();
   
   /**
@@ -74,6 +76,7 @@ public class OutOfTypeSystemData {
       buf.append(fs.toString()).append('\n');
     }
     buf.append("\nFeatures\n-----------------\n");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     for (Map.Entry<TOP, List<Pair<String, Object>>> entry : extraFeatureValues.entrySet()) {
       TOP id = entry.getKey();
       buf.append(id._id).append(": ");
@@ -90,6 +93,7 @@ public class OutOfTypeSystemData {
 /****************************************************************
  *  W A R N I N G   Not an Inner Class ! !  
  ****************************************************************/
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 class ArrayElement {
   int index;
 
@@ -112,6 +116,7 @@ class FSData {
   String indexRep; // space-separated sequence of index repository numbers
 
   /** map from feature name to value which is a string or a ref to a not-out-of-type-system FS */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   Map<String, Object> featVals = new HashMap<>();
   
   public String toString() {

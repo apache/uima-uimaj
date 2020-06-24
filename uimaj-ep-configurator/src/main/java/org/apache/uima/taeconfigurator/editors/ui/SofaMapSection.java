@@ -83,6 +83,8 @@ public class SofaMapSection extends AbstractSection {
   /** The Constant titleMsg. */
   private static final String titleMsg = "This section shows all defined Sofas for an Aggregate and their mappings to the component Sofas.\n"
           + "Add Aggregate Sofa Names using the Capabilities section; Select an Aggregate Sofa Name and Add/Edit mappings for that Sofa in this section.\n";
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Instantiates a new sofa map section.
@@ -147,6 +149,7 @@ public class SofaMapSection extends AbstractSection {
       fillMap(inputAggrSofas, INPUT);
       fillMap(outputSofaNames, OUTPUT);
       maybeSetSelection(tree, 0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
 
       if (0 == (inputAggrSofas.length + outputSofaNames.length)) {
         getSection().setText("Sofa Mappings (No Sofas are defined)");
@@ -178,6 +181,7 @@ public class SofaMapSection extends AbstractSection {
       for (int i = 0; i < allMappings.length; i++) {
         String sofaName = allMappings[i].getAggregateSofaName();
         if (0 > Arrays.binarySearch(inputCapabilityNames, sofaName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 && 0 > Arrays.binarySearch(outputCapabilityNames, sofaName))
           undeclaredNames.add(sofaName);
       }
@@ -241,6 +245,7 @@ public class SofaMapSection extends AbstractSection {
       SofaMapping sofaMapping = sofaMappings[i];
       if (sofaMapping.getAggregateSofaName().equals(aggrSofa))
         if (null != sofaMapping.getComponentSofaName()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 && !"".equals(sofaMapping.getComponentSofaName()))
           bindings.add(sofaMapping.getComponentKey() + '/' + sofaMapping.getComponentSofaName());
         else
@@ -342,10 +347,13 @@ public class SofaMapSection extends AbstractSection {
     // minus current mappings for this aggrSofa
     // Available: a) not mapped,
     // User selects mappings to add
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String aggrSofa = selected.getText();
     Map availAndBoundSofas = getAvailAndBoundSofas(aggrSofa, AVAIL_ONLY);
     if (availAndBoundSofas.size() == 0) {
       Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .popMessage(
                       "No available sofas",
                       "Because there are no sofas in the delegates that are not already bound, no sofa mapping can be created.",
@@ -372,6 +380,8 @@ public class SofaMapSection extends AbstractSection {
    * @param isInput the is input
    */
   private void addSofasToAllComponentSofaMap(Map allComponentSofas, String key,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceSpecifier delegate, boolean isInput) {
     // delegates can be AnalysisEngines, CasConsmers, flowControllers, or remotes
     if (delegate instanceof AnalysisEngineDescription || delegate instanceof CasConsumerDescription
@@ -402,11 +412,13 @@ public class SofaMapSection extends AbstractSection {
   private Map getAvailAndBoundSofas(String aggrSofa, boolean availOnly) {
     boolean isInput = isInput(aggrSofa);
     Map allComponentSofas = new TreeMap(); // key = component/sofa, value = AggrSofa bound to
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // put all delegate component/sofa items in a Map
     for (Iterator it = editor.getResolvedDelegates().entrySet().iterator(); it.hasNext();) {
       Map.Entry entry = (Map.Entry) it.next();
       addSofasToAllComponentSofaMap(allComponentSofas, (String) entry.getKey(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               (ResourceSpecifier) entry.getValue(), isInput);
     }
     // pick up any sofa info from flow controller
@@ -497,6 +509,7 @@ public class SofaMapSection extends AbstractSection {
       }
     };
     editor.getAeDescription().setSofaMappings(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             (SofaMapping[]) Utility.removeElementsFromArray(getSofaMappings(), aggrSofa,
                     SofaMapping.class, comparator));
   }
@@ -537,6 +550,7 @@ public class SofaMapSection extends AbstractSection {
         String sofa = getSofaOnly((String) componentAndSofa);
         if (null == sofa || sofa.equals(""))
           if (null == sofaMapping.getComponentSofaName()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   || "".equals(sofaMapping.getComponentSofaName()))
             return 0;
           else
@@ -549,6 +563,7 @@ public class SofaMapSection extends AbstractSection {
     };
 
     editor.getAeDescription().setSofaMappings(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             (SofaMapping[]) Utility.removeElementsFromArray(getSofaMappings(), selected.getText(),
                     SofaMapping.class, comparator));
     selected.dispose();
@@ -564,6 +579,7 @@ public class SofaMapSection extends AbstractSection {
    * @param pEditor the editor
    */
    public static void removeSofaMappings(String componentKey, ResourceSpecifier delegate,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           MultiPageEditor pEditor) {
     if (delegate instanceof AnalysisEngineDescription || delegate instanceof CasConsumerDescription) {
       Set[] inOut = getCapabilitySofaNames((ResourceCreationSpecifier) delegate, componentKey);
@@ -584,6 +600,7 @@ public class SofaMapSection extends AbstractSection {
       };
 
       pEditor.getAeDescription().setSofaMappings(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               (SofaMapping[]) Utility.removeElementsFromArray(getSofaMappings(pEditor), null,
                       SofaMapping.class, comparator));
     }

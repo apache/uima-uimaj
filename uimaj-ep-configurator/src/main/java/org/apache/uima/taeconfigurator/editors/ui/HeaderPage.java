@@ -173,6 +173,7 @@ public abstract class HeaderPage extends FormPage {
     xtra.setLayoutData(new GridData(GridData.FILL_BOTH));
 
     Control c = form.getParent();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (!(c instanceof ScrolledComposite))
       c = c.getParent();
     ((GridData) xtra.getLayoutData()).widthHint = c.getSize().x;
@@ -212,6 +213,7 @@ public abstract class HeaderPage extends FormPage {
     xtra.setLayout(new GridLayout(1, false));
     xtra.setLayoutData(new GridData(GridData.FILL_BOTH));
     Control c = xtra.getParent();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (!(c instanceof ScrolledComposite))
       c = c.getParent();
     ((GridData) xtra.getLayoutData()).widthHint = c.getSize().x;
@@ -227,6 +229,7 @@ public abstract class HeaderPage extends FormPage {
     ((GridLayout) rightPanel.getLayout()).marginHeight = 5;
     ((GridLayout) rightPanel.getLayout()).marginWidth = 5;
     sashForm.setWeights(new int[] { w1, w2 });
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     leftPanelPercent = (float) w1 / (float) (w1 + w2);
     rightPanelPercent = (float) w2 / (float) (w1 + w2);
 
@@ -299,6 +302,7 @@ public abstract class HeaderPage extends FormPage {
         float col1CurrentWidth = leftPanel.getSize().x;
         float col2CurrentWidth = rightPanel.getSize().x;
         final int minLeftPanelWidth = 250; // in pels
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         final int minRightPanelWidth = (int) (col2CurrentWidth * minLeftPanelWidth / col1CurrentWidth);
         ((GridData) leftPanel.getLayoutData()).widthHint = minLeftPanelWidth;
         ((GridData) rightPanel.getLayoutData()).widthHint = minRightPanelWidth;
@@ -372,6 +376,7 @@ public abstract class HeaderPage extends FormPage {
    * @return true, if is type system descriptor
    */
   public boolean isTypeSystemDescriptor() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return editor.isTypeSystemDescriptor();
   }
 

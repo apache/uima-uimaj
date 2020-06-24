@@ -94,6 +94,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
    * @param alreadyUsedKeys the already used keys
    */
   public AddIndexKeyDialog(AbstractSection aSection, String typeName, String indexKind,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           List alreadyUsedKeys) {
     super(aSection, "Add index key", "Add or edit an index key for a type");
     this.indexKind = indexKind;
@@ -111,6 +112,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
    * @param existingKey the existing key
    */
   public AddIndexKeyDialog(AbstractSection aSection, String typeName, String indexKind,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           List alreadyUsedKeys, FsIndexKeyDescription existingKey) {
     this(aSection, typeName, indexKind, alreadyUsedKeys);
     this.existingKey = existingKey;
@@ -123,6 +125,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
    * @return an array of features whose range is primitive
    */
   private String[] getSortableFeatureNames(String selectedTypeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type selectedType = section.editor.getCurrentView().getTypeSystem().getType(selectedTypeName);
     List feats = selectedType.getFeatures();
     Collection sortableFeatureNames = new ArrayList();
@@ -154,6 +157,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
 
     if ("sorted".equals(indexKind)) {
       kindUI = newLabeledCCombo(twoCol, "Sort order, or Type Priority",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "Specify the sort direction, or specify Type Priorities");
       kindUI.add(ASCENDING);
       kindUI.add(DESCENDING);
@@ -169,8 +173,10 @@ public class AddIndexKeyDialog extends AbstractDialog {
 
     if (null == existingKey) { // default initialization
       if ("sorted".equals(indexKind))
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         kindUI.setText(kindUI.getItem(0));
     } else if ("sorted".equals(indexKind)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       kindUI.setText(existingKey.isTypePriority() ? TYPE_PRIORITY
               : existingKey.getComparator() == FSIndexComparator.STANDARD_COMPARE ? ASCENDING
                       : DESCENDING);
@@ -194,10 +200,12 @@ public class AddIndexKeyDialog extends AbstractDialog {
   public void handleEvent(Event event) {
     if (event.widget == kindUI) {
       boolean makeFeatureVisible = "set".equals(indexKind)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || !TYPE_PRIORITY.equals(kindUI.getText());
       featureUI.setVisible(makeFeatureVisible);
       featureLabel.setVisible(makeFeatureVisible);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
     super.handleEvent(event);
   }
 
@@ -222,6 +230,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
       typePriority = false;
       if ("sorted".equals(indexKind)) {
         direction = ASCENDING.equals(kindUI.getText()) ? FSIndexComparator.STANDARD_COMPARE
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 : FSIndexComparator.REVERSE_STANDARD_COMPARE;
       } else
         direction = FSIndexComparator.STANDARD_COMPARE;

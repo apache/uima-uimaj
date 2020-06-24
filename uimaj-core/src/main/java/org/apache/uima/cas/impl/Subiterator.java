@@ -241,11 +241,13 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       ) {
     
     this.it = (LowLevelIterator<Annotation>) it;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     this.boundingAnnot = (Annotation) boundingAnnot;  // could be same begin/end, coveredby, or covering
     this.isBounded = boundsUse != null && boundsUse != BoundsUse.notBounded;
     this.boundsUse = (boundsUse == null) ? BoundsUse.notBounded : boundsUse;
 
     this.isUnambiguous = !ambiguous;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     if (this.isUnambiguous) {
       switch (this.boundsUse) {
       case notBounded:   // ok
@@ -273,6 +275,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     this.boundType = isBounded ? (TypeImpl) boundingAnnot.getType() : null;
 
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     FSIndexRepositoryImpl ir = this.it.ll_getIndex().getCasImpl().indexRepository;
 //    underlying_iterator_using_typepriorities =  ir.isAnnotationComparator_usesTypeOrder();
 
@@ -289,7 +292,9 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     this.annotationComparator_withId = ir.getAnnotationFsComparatorWithId();
         
     this.jcas = (JCasImpl) ll_getIndex().getCasImpl().getJCas();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     isDoEqualsTest = (boundsUse == BoundsUse.coveredBy || boundsUse == BoundsUse.sameBeginEnd) && 
         this.boundingAnnot._inSetSortedIndex();
 
@@ -309,15 +314,18 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       }
       coveringStartPos = new Annotation(jcas, begin, Integer.MAX_VALUE);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
       coveringStartPos = null;  
     }
        
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     moveToStartSetEmptyAndId();
   }
   
   private void moveToStartSetEmptyAndId() {
     moveToStart();
     isEmpty = !isValid();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     startId = isValid() ? getNvc()._id() : 0;    
   }
    
@@ -340,6 +348,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       Annotation boundingAnnot, 
       boolean ambiguous, 
       boolean strict,    // omit FSs whose end > bounds
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
       BoundsUse boundsUse, // null if boundingAnnot being used for starting position in unambiguous iterator
       boolean isUseTypePriority,
       boolean isSkipSameBeginEndType,
@@ -349,12 +358,21 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       boolean isDoEqualsTest
       ) {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     this.it = (LowLevelIterator<Annotation>) it;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     this.boundingAnnot = boundingAnnot;  // could be same begin/end, coveredby, or covering
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     this.isBounded = boundsUse != null && boundsUse != BoundsUse.notBounded;
     this.boundsUse = (boundsUse == null) ? BoundsUse.notBounded : boundsUse;
     this.isUnambiguous = !ambiguous;
     if (strict) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5836
+//IC see: https://issues.apache.org/jira/browse/UIMA-5835
+//IC see: https://issues.apache.org/jira/browse/UIMA-5833
+//IC see: https://issues.apache.org/jira/browse/UIMA-5836
       if (BoundsUse.coveredBy != boundsUse && BoundsUse.sameBeginEnd != boundsUse) {
         throw new IllegalArgumentException("Strict requires BoundsUse.coveredBy or BoundsUse.sameBeginEnd");
       }
@@ -377,6 +395,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         isUseTypePriority ?  FSComparators.WITH_TYPE_ORDER : FSComparators.WITHOUT_TYPE_ORDER);
     this.annotationComparator_withId = ir.getAnnotationFsComparatorWithId();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     this.jcas = (JCasImpl) ll_getIndex().getCasImpl().getJCas();
     
     this.coveringStartPos = coveringStartPos;
@@ -385,6 +404,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     if (isEmpty) {
       makeInvalid();
     }    
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     this.isDoEqualsTest = isDoEqualsTest;
   }
 
@@ -398,11 +418,14 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   private void convertToListForm() {
     moveToStart();  // moves to the start annotation, including moving past equals for annot style, 
                     // and accommodating strict
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.list = new ArrayList<>();
     while (isValid()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
       list.add(it.getNvc());
       moveToNext();  // does all the adjustments, so list has only appropriate elements
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     this.pos = 0;
     isListForm = true;  // do at end, so up to this point, iterator is not the list form style
   }
@@ -421,10 +444,12 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     switch (boundsUse) {
     
     case notBounded:
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
       it.moveToFirstNoReinit();
       break;
       
     case sameBeginEnd:
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
       it.moveToNoReinit(boundingAnnot);  
       if (it.isValid()) {
         // no need for mimic position if type priorities are in effect; moveTo will either
@@ -494,6 +519,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     //   positioned either as invalid, or at the valid spot including the bounds, for 
     //   a get();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return it.isValid();
   }
 
@@ -504,9 +530,12 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   @Override
   public T getNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (isListForm) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
       return (T) this.list.get(this.pos);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
       return (T)it.getNvc();
     }
   }
@@ -523,6 +552,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     it.moveToNextNvc();
     // maybe move past previous annotation
     if (isUnambiguous) {               // skip until start > prev end
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
       while (it.isValid() && (it.getNvc().getBegin() < this.prevEnd)) {
         it.moveToNext();
       }
@@ -538,6 +568,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     case coveredBy:
       if (it.isValid() && adjustForStrictNvc_forward()) {
         boolean moved = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
         while (equalToBounds(it.getNvc())) {
           it.moveToNextNvc();
           moved = true;
@@ -596,12 +627,14 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       convertToListForm();
       pos = Collections.binarySearch(this.list, currentAnnotation, annotationComparator_withId);
       --this.pos;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
       return;
     }
 
     // is ambiguous, not list form
     maybeMoveToPrevBounded();  // makes iterator invalid if moving before startId 
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     adjustForStrictOrCoveringAndBoundSkip_backwards();
   }
   
@@ -618,6 +651,9 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       return;
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4392
+//IC see: https://issues.apache.org/jira/browse/UIMA-4391
+//IC see: https://issues.apache.org/jira/browse/UIMA-4393
     if (isListForm) {
       this.pos = 0;
     } else {
@@ -643,10 +679,14 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   @Override
   public void moveToLastNoReinit() {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     if (isEmpty) {
       return;
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     if (isUnambiguous && !isListForm) {
       convertToListForm();
     }
@@ -659,6 +699,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       switch (boundsUse) {
 
       case coveredBy:
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
         moveToJustPastBoundsAndBackup(boundEnd + 1, Integer.MAX_VALUE, 
             // continue backing up if: 
             a -> a.getBegin() > boundEnd
@@ -730,6 +771,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * @param continue_going_backwards when true, continue to backup
    */
   private void moveToJustPastBoundsAndBackup(int begin, int end, Predicate<Annotation> continue_going_backwards) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     it.moveToNoReinit(new Annotation(jcas, begin, end));
     if (it.isValid()) {
       Annotation a = it.getNvc();
@@ -748,6 +790,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         a = it.getNvc();
       }
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
       it.moveToLastNoReinit();
     }
   }
@@ -787,8 +830,10 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     Annotation fsa = (Annotation) fs;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     if (isEmpty) return;
     
     if (isUnambiguous && !isListForm) {  // unambiguous must be in list form
@@ -810,6 +855,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       // Go back until we find a FS that is really smaller
 
       if (pos >= 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         moveToPrevious();
       } else {
         // no exact match
@@ -827,8 +873,10 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       }
         
       if (isValid()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
         moveToNextNvc();  // backed up one too much          
       } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
         moveToFirstNoReinit();
       }          
 
@@ -842,6 +890,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     // implement "unambiguous", and that mode requires the "list" form above.)
     // can be one of 3 bounds: coveredBy, covering, and sameBeginEnd.
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     it.moveToNoReinit(fs);  // may move before, within, or after bounds
     if (!it.isValid()) {
       return;
@@ -856,6 +905,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     
     case covering:
              // condition true if need to move forwards because current spot is invalid
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
       while ((begin <= this.boundBegin &&  // stop if go too far
              a._id != boundingAnnot._id &&                                 // stop if hit bounding annot
              ((end = a.getEnd()) < this.boundEnd || 
@@ -913,6 +963,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
           (begin == boundBegin && 
            ((end = a.getEnd()) > boundEnd ||
             (end == boundEnd && lto != null && lto.lessThan(a._getTypeImpl(), boundType))))) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
         moveToFirstNoReinit();
       } else {
         // skip over boundary
@@ -939,6 +990,8 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    *              or iterator is invalid to start with
    */
   private boolean is_beyond_bounds_chk_sameBeginEnd() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
+//IC see: https://issues.apache.org/jira/browse/UIMA-5121
     if (it.isValid()) {
       return is_beyond_bounds_chk_sameBeginEndNvc();
     }
@@ -1049,6 +1102,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * @return true if should be skipped
    */
   private boolean equalToBounds(Annotation fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     return isDoEqualsTest && fs._id == boundingAnnot._id ||
            (isSkipSameBeginEndType &&
             fs.getBegin() == boundBegin &&
@@ -1070,9 +1124,11 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   private boolean adjustForStrictNvc_forward() {    
     if (isStrict) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       Annotation item = it.getNvc();
       while (item.getEnd() > this.boundEnd) {
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
         it.moveToNextNvc();
         if (!isValid()) {
           return false;
@@ -1121,6 +1177,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     if (!it.isValid()) {
       return;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     Annotation a = it.getNvc();
     int begin = a.getBegin();
     int end = a.getEnd();
@@ -1128,6 +1185,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     // moveTo may move to invalid position
     // if the cur pos item has a begin beyond the bound, it cannot be a covering annotation
     if (begin > this.boundBegin) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
       makeInvalid();
       return;
     }
@@ -1150,6 +1208,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   private void maybeMoveToPrevBounded() {
     if (it.getNvc()._id == startId) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
       it.moveToFirstNoReinit();  // so next is invalid
     }
     it.moveToPreviousNvc();
@@ -1162,11 +1221,13 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   @Override
   public FSIterator<T> copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Subiterator<T> copy = new Subiterator<>(
         this.it.copy(),
         this.boundingAnnot,
         !this.isUnambiguous,
         this.isStrict,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
         this.boundsUse,
         this.isUseTypePriority,
         this.isSkipSameBeginEndType,
@@ -1174,6 +1235,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         this.startId,
         this.isEmpty,
         this.coveringStartPos,
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
         this.isDoEqualsTest);
     copy.list = this.list;  // non-final things
     copy.pos  = this.pos;
@@ -1193,18 +1255,22 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
 
   @Override
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     if (isEmpty) {
       return 0;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return ((LowLevelIterator)it).ll_maxAnnotSpan();
   }
 
   @Override
   public LowLevelIndex<T> ll_getIndex() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return ((LowLevelIterator<T>)it).ll_getIndex();
   }
 
   private void makeInvalid() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     it.moveToFirstNoReinit();
     it.moveToPrevious();
   }
@@ -1215,11 +1281,13 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   @Override
   public boolean isIndexesHaveBeenUpdated() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     return ((LowLevelIterator<?>)it).isIndexesHaveBeenUpdated();
   }
 
   @Override
   public boolean maybeReinitIterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     if (it.maybeReinitIterator()) {
       resetList();
       moveToStartSetEmptyAndId();
@@ -1230,6 +1298,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
 
   @Override
   public Comparator<TOP> getComparator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     return comparatorMaybeNoTypeWithoutId;
   }
 

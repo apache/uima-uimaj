@@ -44,6 +44,8 @@ import org.apache.uima.util.UriUtils;
  */
 public class NonJavaApplication extends RunnableApplication {
   public NonJavaApplication(CasProcessorConfiguration aCasProcessorConfiguration,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CpeCasProcessor aCasProcessorConfig) throws ResourceConfigurationException {
     addApplicationInfo(aCasProcessorConfiguration, aCasProcessorConfig);
   }
@@ -58,6 +60,7 @@ public class NonJavaApplication extends RunnableApplication {
    * @throws ResourceConfigurationException passthru
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
     super.addApplicationInfo(aCasProcessorConfiguration, aCasProcessor);
     if ("local".equals(aCasProcessor.getDeployment())) {
@@ -81,6 +84,7 @@ public class NonJavaApplication extends RunnableApplication {
    * @throws ResourceConfigurationException -
    */
   protected String[] addApplicationCmdLineArguments(
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
           CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable) 
       throws ResourceConfigurationException
   {
@@ -97,6 +101,7 @@ public class NonJavaApplication extends RunnableApplication {
                 new Object[] { Thread.currentThread().getName(), String.valueOf(i), arg });
       }
       if ("${descriptor}".equals(arg.trim())) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
         URL descriptorUrl = aCasProcessorConfiguration.getDescriptorUrl();
         String descriptorPath;
         try {

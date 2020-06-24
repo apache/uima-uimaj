@@ -46,10 +46,12 @@ public class ConfigurationParameterDeclarations_implTest extends TestCase {
 
   public void testBuildFromXmlElement() throws Exception {
     // parse XML
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 
     InputStream str = new FileInputStream(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getFile("org/apache/uima/resource/metadata/impl/ConfigParamEmptyGroup.xml"));
     Document doc = docBuilder.parse(str);
 

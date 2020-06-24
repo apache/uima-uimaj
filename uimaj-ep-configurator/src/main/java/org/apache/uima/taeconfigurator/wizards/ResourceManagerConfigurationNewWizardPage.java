@@ -36,7 +36,9 @@ public class ResourceManagerConfigurationNewWizardPage extends AbstractNewWizard
    * @param selection the selection
    */
   public ResourceManagerConfigurationNewWizardPage(ISelection selection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             selection,
             "big_ae.gif",
             "External Resources and Bindings (Resource Manager Configuration) Descriptor File",

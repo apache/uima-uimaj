@@ -67,6 +67,8 @@ public class LogFileViewer extends JFrame {
 	 * @throws java.awt.HeadlessException the java.awt. headless exception
 	 */
 	public LogFileViewer() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-263
 		super();
 	}
 
@@ -112,12 +114,14 @@ public class LogFileViewer extends JFrame {
 		// Copy
 		Action copyAction = this.textArea.getActionMap().get(DefaultEditorKit.copyAction);
 		copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 				InputEvent.CTRL_MASK));
 		copyAction.setEnabled(true);
 		this.scrollPane = new JScrollPane(this.textArea);
 		this.setContentPane(this.scrollPane);
 		this.scrollPane.setPreferredSize(d);
 		boolean doneLoadingFile = loadFile();
+//IC see: https://issues.apache.org/jira/browse/UIMA-263
 		if (!doneLoadingFile) {
 			this.dispose();
 			return;
@@ -169,6 +173,7 @@ public class LogFileViewer extends JFrame {
 			text = FileUtils.file2String(this.logFile, "UTF-8");
 		} catch (IOException e) {
 			handleException(e);
+//IC see: https://issues.apache.org/jira/browse/UIMA-263
 			return false;
 		}
 		this.textArea.setText(text);

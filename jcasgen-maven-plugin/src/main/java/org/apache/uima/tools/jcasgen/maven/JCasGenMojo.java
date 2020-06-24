@@ -109,6 +109,7 @@ public class JCasGenMojo extends AbstractMojo {
     this.project.addCompileSourceRoot(this.outputDirectory.getPath());
 
     // assemble the classpath
+//IC see: https://issues.apache.org/jira/browse/UIMA-4081
     StringBuilder classpathBuilder = new StringBuilder();
     
     // Source roots
@@ -157,6 +158,7 @@ public class JCasGenMojo extends AbstractMojo {
 
     // Create a merged type system and check if any of the files has a delta
     TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<Import> imports = new ArrayList<>();
     boolean contextDelta = false;
     for (String descriptorLocation : ds.getIncludedFiles()) {
@@ -204,6 +206,7 @@ public class JCasGenMojo extends AbstractMojo {
       return;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> args = new ArrayList<>();
     if (limitToProject) {
       File limitToDirectory = project.getBasedir().getAbsoluteFile();
@@ -261,6 +264,7 @@ public class JCasGenMojo extends AbstractMojo {
       } else if (severity == IError.WARN) {
         getLog().warn(fullMessage, exception);
       } else if (severity == IError.ERROR) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4618
         String m = fullMessage;
         if (exception != null) {
           m = m + "\nException: " + exception.getMessage(); 
@@ -302,6 +306,7 @@ public class JCasGenMojo extends AbstractMojo {
     File buildOutputDirectory = new File(this.project.getBuild().getOutputDirectory());
 
     // map each resource from its target location to its source location
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<File, File> targetToSource = new HashMap<>();
     for (Resource resource : this.project.getResources()) {
       File resourceDir = new File(resource.getDirectory());
@@ -323,6 +328,7 @@ public class JCasGenMojo extends AbstractMojo {
         String targetPath = resource.getTargetPath();
         for (String filePath : scanner.getIncludedFiles()) {
           File sourceFile = new File(resourceDir, filePath);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2471
           File baseDirectory = targetPath != null ? new File(buildOutputDirectory, targetPath)
                   : buildOutputDirectory;
           File targetFile = new File(baseDirectory, filePath);

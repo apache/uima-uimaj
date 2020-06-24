@@ -263,6 +263,7 @@ public class BaseClient {
   public Transportable sendAndReceive(Transportable in) throws IOException, ServiceException {
     try {
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         if (!isOpen()) {
           open();
         }
@@ -303,6 +304,7 @@ public class BaseClient {
    * @pre getHost() != null
    */
   public Transportable sendAndReceive(Transportable in, int timeout) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ServiceException {
     try {
       try {
@@ -345,6 +347,7 @@ public class BaseClient {
    * @throws ServiceException -
    */
   public Transportable sendAndReceive(Transportable in, TransportableFactory f) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ServiceException {
     try {
       try {
@@ -462,6 +465,7 @@ public class BaseClient {
   public void send(Transportable in) throws IOException {
     try {
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         if (!isOpen()) {
           open();
         }
@@ -499,6 +503,7 @@ public class BaseClient {
    * @pre is != null
    */
   public Transportable receive() throws IOException, ServiceException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (!isOpen()) {
       throw new IOException("Socket not open");
     }
@@ -564,6 +569,7 @@ public class BaseClient {
    * @throws ServiceException -
    */
   static public Transportable sendAndReceive(Transportable in, String host_name, int p,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           TransportableFactory f) throws IOException, ServiceException {
     BaseClient tempClient = new BaseClient(host_name, p, f);
     tempClient.setRetry(false);
@@ -592,6 +598,7 @@ public class BaseClient {
    * @throws ServiceException -
    */
   static public Transportable sendAndReceive(Transportable in, String host_name, int p,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           TransportableFactory f, int socket_timeout) throws IOException, ServiceException {
     BaseClient tempClient = new BaseClient(host_name, p, f);
     tempClient.setSocketTimeout(socket_timeout);
@@ -651,6 +658,7 @@ public class BaseClient {
    * @throws ServiceException -
    */
   static public VinciFrame rpc(Transportable in, String host_name, int p) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ServiceException {
     return (VinciFrame) sendAndReceive(in, host_name, p, VinciFrame.getVinciFrameFactory());
   }
@@ -713,6 +721,7 @@ public class BaseClient {
    * @throws ServiceException -
    */
   protected Transportable sendAndReceiveWork(Transportable in, TransportableFactory f)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException, ServiceException {
     in.toStream(os);
     os.flush();
@@ -736,6 +745,7 @@ public class BaseClient {
    * @throws ServiceException -
    */
   protected Transportable sendAndReceiveWork(Transportable in, TransportableFactory f, int timeout)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException, ServiceException {
     socket.setSoTimeout(timeout);
     try {
@@ -818,6 +828,8 @@ public class BaseClient {
     setRetry(false);
     socket = use_me;
     socket.setSoTimeout(socketTimeout);
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
     socket.setKeepAlive(isSocketKeepAliveEnabled());    
     is = new BufferedInputStream(socket.getInputStream());
     os = new BufferedOutputStream(socket.getOutputStream());
@@ -843,6 +855,7 @@ public class BaseClient {
    *@return whether socket keepAlive should be turned on
    */
   protected boolean isSocketKeepAliveEnabled() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
     return true;
   }
 

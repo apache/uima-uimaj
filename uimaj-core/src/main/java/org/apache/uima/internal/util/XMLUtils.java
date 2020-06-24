@@ -329,6 +329,7 @@ public abstract class XMLUtils {
 
     try {
       // load class
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Class<?> theClass = Class.forName(className);
       // must have a constructor that takes a String parameter
       Constructor<?> constructor = theClass.getConstructor(new Class[] { String.class });
@@ -432,6 +433,7 @@ public abstract class XMLUtils {
    *         invalid XML characters found.
    */
   public static final int checkForNonXmlCharacters(String s) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-387
     return checkForNonXmlCharacters(s, false);
   }
   
@@ -476,6 +478,7 @@ public abstract class XMLUtils {
     if (s == null) {
       return -1;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-387
     char c;
     for (int i = 0; i < s.length(); i++) {
       c = s.charAt(i);
@@ -514,6 +517,7 @@ public abstract class XMLUtils {
    * @see #checkForNonXmlCharacters(String, boolean) 
    */  
   public static final int checkForNonXmlCharacters(char[] ch, int start, int length, boolean xml11) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-387
     if (ch == null) {
       return -1;
     }

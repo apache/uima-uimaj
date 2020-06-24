@@ -44,6 +44,7 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
    * Instantiates a new cpe local cas processor impl.
    */
   public CpeLocalCasProcessorImpl() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     try {
       super.setDeployment("local");
@@ -99,6 +100,7 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
    * @throws CpeDescriptorException the cpe descriptor exception
    */
   private CasProcessorRunInSeperateProcess getBaseRunInSeperateProcess()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     CasProcessorRunInSeperateProcess sepProcess = getRunInSeperateProcess();
     if (sepProcess == null) {
@@ -168,6 +170,7 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
   protected void addDefaults() throws CpeDescriptorException {
     if (getRunInSeperateProcess() == null) {
       CasProcessorRunInSeperateProcess sepProcess = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .produceRunInSeperateProcess();
       CasProcessorExecutable exe = CpeDescriptorFactory.produceCasProcessorExecutable();
       exe.setExecutable("default");
@@ -334,6 +337,7 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
    */
   @Override
   public void setRunInSeperateProcess(CasProcessorRunInSeperateProcess aSepProcess)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     super.setRunInSeparateProcess(aSepProcess);
   }

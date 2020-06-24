@@ -41,6 +41,8 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl implements
         ConfigurationParameterDeclarations {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static final long serialVersionUID = -2248322904617280983L;
   
@@ -74,6 +76,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   public void setConfigurationParameters(ConfigurationParameter[] aParams) {
     if (aParams == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aParams", "setConfigurationParameters" });
     }
     mConfigurationParameters = aParams;
@@ -113,6 +116,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   public void setCommonParameters(ConfigurationParameter[] aParams) {
     if (aParams == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aParams", "setCommonParameters" });
     }
     mCommonParameters = aParams;
@@ -124,6 +128,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   public void setConfigurationGroups(ConfigurationGroup[] aGroups) {
     if (aGroups == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aGroups", "setConfigurationGroups" });
     }
     mConfigurationGroups = aGroups;
@@ -173,8 +178,10 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
    * @see ConfigurationParameterDeclarations#getConfigurationGroupDeclarations(String)
    */
   public ConfigurationGroup[] getConfigurationGroupDeclarations(String aGroupName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<ConfigurationGroup> results = new ArrayList<>();
     ConfigurationGroup[] grps = getConfigurationGroups();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (grps != null) {
       for (int i = 0; i < grps.length; i++) {
         String[] names = grps[i].getNames();
@@ -276,6 +283,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
 
   /* Utility method */
   protected ConfigurationParameter _getConfigurationParameter(ConfigurationParameter[] aParams,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aName) {
     if (aParams != null) {
       for (int i = 0; i < aParams.length; i++) {
@@ -293,6 +301,8 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     // read defaultGroup and searchStrategy from attributes
     String defaultGroup = aElement.getAttribute("defaultGroup");
@@ -310,6 +320,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     }
 
     // read parameters, commonParameters, and configurationGroups
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<XMLizable> params = new ArrayList<>();
     List<XMLizable> groups = new ArrayList<>();
     NodeList childNodes = aElement.getChildNodes();
@@ -326,6 +337,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
           groups.add(aParser.buildObject(elem, aOptions));
         } else {
           throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { elem
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getTagName() });
         }
       }
@@ -350,6 +362,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     if (getDefaultGroupName() != null) {
       buf.append("defaultGroup = \"");
       buf.append(getDefaultGroupName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
       buf.append('"');
     }
     if (getSearchStrategy() != null) {
@@ -358,6 +371,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
       }
       buf.append("searchStrategy = \"");
       buf.append(getSearchStrategy());
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
       buf.append('"');
     }
     return buf.toString();
@@ -369,6 +383,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = new AttributesImpl();
     if ((getDefaultGroupName() != null) && (!getDefaultGroupName().equals(""))) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1817
       attrs.addAttribute("", "defaultGroup", "defaultGroup", "string", getDefaultGroupName());
     }
     if ((getSearchStrategy() != null) && (!getSearchStrategy().equals(""))) {
@@ -383,6 +398,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   protected XmlizationInfo getXmlizationInfo() {
     // NOTE: custom XMLization is used for reading. This information
     // is only used for writing.
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return new XmlizationInfo("configurationParameters", new PropertyXmlInfo[] {
         new PropertyXmlInfo("configurationParameters", null),
         new PropertyXmlInfo("commonParameters", "commonParameters"),

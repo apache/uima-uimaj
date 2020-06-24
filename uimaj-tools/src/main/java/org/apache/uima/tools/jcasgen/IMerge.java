@@ -41,6 +41,8 @@ public interface IMerge {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public void doMerge(Jg jg, IProgressMonitor progressMonitor, String sourceContents,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String targetContainer, String targetPath, String targetClassName, File targetFile)
           throws IOException;
 }

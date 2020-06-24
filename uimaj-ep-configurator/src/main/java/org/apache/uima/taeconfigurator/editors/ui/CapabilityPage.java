@@ -39,6 +39,7 @@ public class CapabilityPage extends HeaderPageWithSash {
    * @param aEditor the a editor
    */
   public CapabilityPage(MultiPageEditor aEditor) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(aEditor, "Capabilities");
   }
 
@@ -50,6 +51,7 @@ public class CapabilityPage extends HeaderPageWithSash {
   @Override
   protected void createFormContent(IManagedForm managedForm) {
     final Form2Panel form2Panel = setup2ColumnLayout(managedForm, editor.isAggregate() ? 50 : 90,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             editor.isAggregate() ? 50 : 10);
     managedForm.getForm().setText("Capabilities: Inputs and Outputs");
     managedForm.addPart(/* inputSection = */new CapabilitySection(editor, form2Panel.left));

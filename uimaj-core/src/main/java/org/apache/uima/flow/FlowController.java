@@ -153,6 +153,7 @@ public interface FlowController {
    * 
    * @return the required CAS interface. This must specify a subtype of {@link AbstractCas}.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
   Class<? extends AbstractCas> getRequiredCasInterface();
   
   /**
@@ -174,6 +175,7 @@ public interface FlowController {
    *   {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
    */
   void addAnalysisEngines(Collection<String> aKeys);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Notifies this FlowController that some Analysis Engines are no longer available to route CASes to.
@@ -199,5 +201,6 @@ public interface FlowController {
    * @throws AnalysisEngineProcessException if the FlowController cannot continue with these
    *   Analysis Engines removed, or doesn't support removing Analysis Engines at all.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
   void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException;
 }

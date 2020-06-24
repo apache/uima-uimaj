@@ -34,6 +34,7 @@ public class Id2FSTest extends TestCase {
 
   public void setUp() {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
       this.jcas = cas.getJCas();
       this.ts = this.cas.getTypeSystem();
@@ -86,6 +87,7 @@ public class Id2FSTest extends TestCase {
     cas.setId2FSsMaybeUnconditionally(fs1);
        
     lastUsedId = fs1._id();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     assertEquals(fs1, cas.getFsFromId(lastUsedId));
     
     for (int i = 0; i < 20; i++) {

@@ -39,6 +39,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
   StringBuffer mBuf = new StringBuffer();
 
   JCas[] mJCases = new JCas[2];
+//IC see: https://issues.apache.org/jira/browse/UIMA-10
 
   int mActiveJCas = 0;
 
@@ -71,6 +72,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
     // we should already have a JCas ready to return
+//IC see: https://issues.apache.org/jira/browse/UIMA-10
     JCas toReturn = mJCases[mActiveJCas];
     mJCases[mActiveJCas] = null;
     assert toReturn != null;
@@ -139,7 +141,9 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
   }
 
   private String getCasSourceUri(JCas jcas) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1519
     Iterator<Annotation> iter = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .iterator();
     if (iter.hasNext()) {
       SourceDocumentInformation sdi = (SourceDocumentInformation) iter.next();

@@ -77,6 +77,8 @@ public class FindComponentDialog extends AbstractDialog {
    * @param componentHeaders the component headers
    */
   public FindComponentDialog(AbstractSection aSection, String title, String header,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String[] componentHeaders) {
     super(aSection, title, header);
     this.componentHeaders = componentHeaders;
@@ -166,6 +168,7 @@ public class FindComponentDialog extends AbstractDialog {
     } else { // cancel in-progress search
       if (m_searchThread.isDone()) {
         m_matchingDelegateComponetDescriptors = m_searchThread
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getMatchingDelegateComponentDescriptors();
         m_matchingDelegateComponentDescriptions = m_searchThread
                 .getMatchingDelegateComponentDescriptions();
@@ -181,6 +184,7 @@ public class FindComponentDialog extends AbstractDialog {
 
   /** The Constant needToEscapeTheseChars. */
   private static final String needToEscapeTheseChars = 
+//IC see: https://issues.apache.org/jira/browse/UIMA-84
     ".+{}()\\";
   
   /**
@@ -257,6 +261,7 @@ public class FindComponentDialog extends AbstractDialog {
     String outputTypeSearch = convertToRegexSearchPattern(outputTypeText.getText());
     String projectToSearch = lookInCombo.getText().substring(1);
     m_searchThread = new SearchThread(this, section, fileNameSearch, inputTypeSearch,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             outputTypeSearch, projectToSearch, componentHeaders);
     cancelButton.setEnabled(true);
     Thread searchThreadThread = new Thread(m_searchThread);

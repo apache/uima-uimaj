@@ -182,4 +182,5 @@ public class XMLConverter {
   }
 
 } // class
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 

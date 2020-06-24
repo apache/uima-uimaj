@@ -42,6 +42,7 @@ public class VinciFrame extends QueryableFrame {
 
   private static TransportableFactory vinciFrameFactory = new TransportableFactory() {
     public Transportable makeTransportable() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       return new VinciFrame();
     }
   };

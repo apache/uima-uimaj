@@ -32,6 +32,7 @@ import org.apache.uima.cas.FeatureStructure;
 public interface FeatureStructureImpl extends FeatureStructure {
   
   String toString(int indent);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
 
   void prettyPrint(int indent, int incr, StringBuffer buf, boolean useShortNames);
   void prettyPrint(int indent, int incr, StringBuilder buf, boolean useShortNames);

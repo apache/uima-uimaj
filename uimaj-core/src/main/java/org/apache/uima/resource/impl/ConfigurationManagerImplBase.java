@@ -65,6 +65,9 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *   The setup is done under a sync'd control to insure only one setup is done, and to
    *   publish the updated results to other threads
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
   final private Map<String, ConfigurationParameterDeclarations> mContextNameToParamDeclsMap =
       new HashMap<>();
 
@@ -77,6 +80,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * 
    */
   final protected Map<String, String> mLinkMap = new HashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
   /**
    * Set of parameters (fully qualified names) that explicitly declare overrides. This is used to
@@ -115,7 +119,10 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * Could be called multiple times on different threads - first one does the context creation
    */
   public synchronized void createContext(String aContextName, ResourceMetaData aResourceMetaData, Settings externalOverrides)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     if (mContextNameToParamDeclsMap.containsKey(aContextName)) {
       return;
     }
@@ -127,13 +134,16 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     // concrete ConfigurationManager implementations to set up data structures to
     // provide access to the parameter values
     ConfigurationParameterDeclarations paramDecls = aResourceMetaData
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getConfigurationParameterDeclarations();
     ConfigurationParameterSettings settings = aResourceMetaData.getConfigurationParameterSettings();
 
     // parameters in no group
     ConfigurationParameter[] paramsInNoGroup = paramDecls.getConfigurationParameters();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3123
     if (paramsInNoGroup.length > 0) // group-less parameters
     {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
       declareParameters(null, paramsInNoGroup, settings, aContextName, externalOverrides);
     }
 
@@ -147,6 +157,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
             // common params
             ConfigurationParameter[] commonParams = paramDecls.getCommonParameters();
             if (commonParams != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
               declareParameters(names[j], commonParams, settings, aContextName, externalOverrides);
             }
             // params in group
@@ -177,6 +188,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     // try to look up parameter in no group
     Object val = lookup(aQualifiedParameterName);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (val != null) {
       return val;
     }
@@ -184,6 +196,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     // if that fails, look up in default group if one is defined
     String defaultGroup = null;
     ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .get(computeParentContextName(aQualifiedParameterName));
     if (decls != null) {
       defaultGroup = decls.getDefaultGroupName();
@@ -203,6 +216,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   public Object getConfigParameterValue(String aQualifiedParameterName, String aGroupName) {
     // get parameter search strategy for this context
     ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .get(computeParentContextName(aQualifiedParameterName));
     if (decls != null) {
       return getConfigParameterValue(aQualifiedParameterName, aGroupName,
@@ -277,6 +291,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     // get declarations
     ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
             .get(aContextName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     ConfigurationParameterSettings settings = UIMAFramework.getResourceSpecifierFactory()
             .createConfigurationParameterSettings();
@@ -296,6 +311,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
             for (int j = 0; j < names.length; j++) {
               // common params
               NameValuePair[] commonParamSettings = getParamSettings(names[j], decls
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       .getCommonParameters(), aContextName);
               NameValuePair[] specificParamSettings = getParamSettings(names[j], groups[i]
                       .getConfigurationParameters(), aContextName);
@@ -329,6 +345,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     String linkedTo = getLink(aCompleteName);
     if (linkedTo != null) {
       Object val = lookup(linkedTo);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
       if (val != null) {
         return val;
       }
@@ -360,6 +377,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @throws ResourceConfigurationException passthru
    */
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
           ConfigurationParameterSettings aSettings, String aContextName, Settings aExternalOverrides)
           throws ResourceConfigurationException {
     // iterate over config. param _declarations_
@@ -413,7 +431,10 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @return array containing settings of the specific parameters
    */
   private NameValuePair[] getParamSettings(String aGroupName, ConfigurationParameter[] aParams,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aContextName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<NameValuePair> result = new ArrayList<>();
     // iterate over config. param _declarations_
     if (aParams != null) {
@@ -448,6 +469,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    */
   protected String makeQualifiedName(String aContextName, String aParamName, String aGroupName) {
     String name = aContextName + aParamName;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aGroupName != null) {
       name += GROUP_SEPARATOR + aGroupName;
     }
@@ -465,6 +487,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   private String computeParentContextName(String aContextName) {
     String nameWithoutSlash = aContextName.substring(0, aContextName.length() - 1);
     int lastSlash = nameWithoutSlash.lastIndexOf('/');
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (lastSlash == -1) // root context
     {
       return null;
@@ -481,6 +504,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *           if the configuration parameter settings are invalid
    */
   private void validateConfigurationParameterSettings(String aContext)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     // get declarations
     ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
@@ -525,6 +549,8 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *           if the configuration parameter settings are invalid
    */
   private void validateConfigurationParameterSettings(String aContext,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ConfigurationParameter[] aParams, String aGroupName)
           throws ResourceConfigurationException {
     for (int i = 0; i < aParams.length; i++) {
@@ -534,6 +560,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
       if (val == null && aParams[i].isMandatory()) {
         if (aGroupName != null) {
           throw new ResourceConfigurationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceConfigurationException.MANDATORY_VALUE_MISSING_IN_GROUP, new Object[] {
                       aParams[i].getName(), aGroupName, aContext });
         } else {
@@ -561,8 +588,10 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *           if the data types do not match
    */
   private void validateConfigurationParameterDataTypeMatch(ConfigurationParameter aParam,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object aValue, String aContextName) throws ResourceConfigurationException {
     if (aValue != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Class<?> valClass = aValue.getClass();
       if (aParam.isMultiValued() && !valClass.isArray()) {
         throw new ResourceConfigurationException(ResourceConfigurationException.ARRAY_REQUIRED,
@@ -587,6 +616,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    */
   protected Class<?> getParameterExpectedValueClass(ConfigurationParameter aParam) {
     String paramType = aParam.getType();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aParam.isMultiValued()) {
       if (ConfigurationParameter.TYPE_STRING.equals(paramType)) {
         return String[].class;
@@ -630,6 +660,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @return the value of the specified parameter, <code>null</code> if none
    */
   private Object getConfigParameterValue(String aQualifiedParameterName, String aGroupName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aSearchStrategy, String aDefaultGroup) {
     if (ConfigurationParameterDeclarations.SEARCH_STRATEGY_DEFAULT_FALLBACK.equals(aSearchStrategy)) {
       // try in specified group then in default group
@@ -659,6 +690,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
         }
         if (aGroupName != null) {
           value = getConfigParameterValue(aQualifiedParameterName, aGroupName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
         }
       }
@@ -673,6 +705,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     {
       // just to direct look up in the specified group
       return lookup(aGroupName == null ? aQualifiedParameterName : (aQualifiedParameterName
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + GROUP_SEPARATOR + aGroupName));
     }
   }
@@ -691,6 +724,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   @SuppressWarnings("unchecked")
   private Object getSessionParam(String aCompleteName) {
     if (mSession != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Map<String, Object> m = (Map<String, Object>) mSession.get(SESSION_CONFIGURATION_KEY);
       if (m != null) {
         return m.get(aCompleteName);
@@ -712,11 +746,13 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    */
   @SuppressWarnings("unchecked")
   private void setSessionParam(String aCompleteName, Object aValue) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (mSession == null) {
       throw new UIMA_IllegalStateException();
     } else {
       Map<String, Object> m = (Map<String, Object>) mSession.get(SESSION_CONFIGURATION_KEY);
       if (m == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         m = Collections.synchronizedMap(new HashMap<>());
         mSession.put(SESSION_CONFIGURATION_KEY, m);
       }

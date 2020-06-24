@@ -40,7 +40,9 @@ public class ImportResBindSection extends ImportSection {
    * @param parent the parent
    */
   public ImportResBindSection(MultiPageEditor editor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, parent, "Imports for External Resources and Bindings",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The following definitions are included:"); // or ! DESCRIPTION
   }
 
@@ -99,11 +101,14 @@ public class ImportResBindSection extends ImportSection {
   protected boolean isValidImport(String title, String message) {
     ResourceManagerConfiguration savedRmc = editor.getResolvedExternalResourcesAndBindings();
     if (null != savedRmc)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       savedRmc = (ResourceManagerConfiguration) ((ResourceManagerConfiguration_impl) savedRmc)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .clone();
     try {
       editor.setResolvedExternalResourcesAndBindings();
     } catch (InvalidXMLException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
       Utility.popMessage(title, message + editor.getMessagesToRootCause(e), MessageDialog.ERROR);
       revert(savedRmc);
       return false;
@@ -122,6 +127,7 @@ public class ImportResBindSection extends ImportSection {
    */
   private void revert(ResourceManagerConfiguration rmc) {
     getResourceManagerConfiguration()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .setExternalResourceBindings(rmc.getExternalResourceBindings());
     getResourceManagerConfiguration().setExternalResources(rmc.getExternalResources());
     editor.setResolvedExternalResourcesAndBindings(rmc);

@@ -42,6 +42,7 @@ public class ResourceServiceAdapter_implTest extends TestCase {
    * @param arg0
    */
   public ResourceServiceAdapter_implTest(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(arg0);
   }
 
@@ -73,8 +74,10 @@ public class ResourceServiceAdapter_implTest extends TestCase {
       p1.setDescription("multi-valued parameter with Integer data type");
       p1.setType(ConfigurationParameter.TYPE_INTEGER);
       p1.setMultiValued(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       md.getConfigurationParameterDeclarations().setConfigurationParameters(
               new ConfigurationParameter[] { p1 });
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       mServiceStub.getMetaDataReturnValue = md;
       ResourceMetaData result = mAdapter.getMetaData();

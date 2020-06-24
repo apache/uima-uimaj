@@ -37,6 +37,7 @@ public class SofaMixedCPE_Test extends TestCase {
   private File cpeSpecifierFile = null;
 
   CpeDescription cpeDesc = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   CollectionProcessingEngine cpe = null;
 
@@ -58,8 +59,10 @@ public class SofaMixedCPE_Test extends TestCase {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
     cpeSpecifierFile = JUnitExtension.getFile("CpeSofaTest/SofaMixedCPE.xml");
     // Use the specifier file to determine where the specifiers live.
+//IC see: https://issues.apache.org/jira/browse/UIMA-198
     System.setProperty("CPM_HOME", cpeSpecifierFile.getParentFile().getParentFile().getAbsolutePath());
     cpeDesc = UIMAFramework.getXMLParser()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .parseCpeDescription(new XMLInputSource(cpeSpecifierFile));
     // instantiate a cpe
     cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null);
@@ -80,6 +83,7 @@ public class SofaMixedCPE_Test extends TestCase {
   public void testProcess() throws Throwable {
     try {
       cpe.process();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1560
       while ( cpe.isProcessing() ) {
         // wait till cpe finishes
         synchronized (statCbL1) {

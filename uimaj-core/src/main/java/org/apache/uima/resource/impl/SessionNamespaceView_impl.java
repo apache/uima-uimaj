@@ -30,6 +30,7 @@ public class SessionNamespaceView_impl implements Session {
   private String mNamespace;
 
   public SessionNamespaceView_impl(Session aRootSession, String aNamespace) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mRootSession = aRootSession;
     mNamespace = aNamespace;
   }

@@ -38,6 +38,8 @@ import org.apache.uima.util.InvalidXMLException;
  * The Class CpeComponentDescriptorImpl.
  */
 public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CpeComponentDescriptor {
   
   /** The Constant serialVersionUID. */
@@ -62,6 +64,7 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
    */
   @Override
   public void setInclude(CpeInclude aInclude) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     mInclude = aInclude;
   }
 
@@ -72,6 +75,7 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
    */
   @Override
   public CpeInclude getInclude() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     return mInclude;
   }
   
@@ -108,6 +112,7 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
         return mImport.findAbsoluteUrl(aResourceManager);
       }
       else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-343
         String path = mInclude.get();
         //replace ${CPM_HOME}
         if (path.startsWith("${CPM_HOME}")) {
@@ -144,6 +149,7 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
 
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("descriptor",
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
           new PropertyXmlInfo[] { 
            new PropertyXmlInfo("include", null), 
            new PropertyXmlInfo("import", null)});

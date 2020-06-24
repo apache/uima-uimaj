@@ -50,6 +50,8 @@ public class CollectionProcessingEngine_impl implements CollectionProcessingEngi
    *      java.util.Map)
    */
   public void initialize(CpeDescription aCpeDescription, Map aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     if (mCPM != null) // repeat initialization - not allowed
     {

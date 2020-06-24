@@ -71,6 +71,7 @@ public class VinciCasDataConverter {
    *          will be included as the content of the XCas element.
    */
   public VinciCasDataConverter(String aUeidType, String aUeidFeature, String aCasDataDocTextType,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aCasDataDocTextFeature, String aXCasDocTextTag,
           boolean aIncludeAnnotationSpannedText) {
     mUeidType = aUeidType;
@@ -90,6 +91,7 @@ public class VinciCasDataConverter {
    * @throws SAXException the SAX exception
    */
   public void casDataToVinciFrame(CasData aCasData, AFrame aParentFrame) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           SAXException {
     // get UEID if necessary
     String ueid = null;

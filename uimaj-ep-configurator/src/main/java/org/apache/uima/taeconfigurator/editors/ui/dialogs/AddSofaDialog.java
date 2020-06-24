@@ -76,6 +76,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
    * @param c the c
    */
   public AddSofaDialog(AbstractSection aSection, Capability c) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(aSection, "Add a Sofa", "Use this panel to specify a Sofa Name.");
     capabilitySection = (CapabilitySection) aSection;
     capability = c;
@@ -103,6 +104,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingSofa);
     createWideLabel(mainArea, "Sofa names must be unique within a Capability Set, and are"
+//IC see: https://issues.apache.org/jira/browse/UIMA-589
             + " simple names without name spaces (no dots in the name).\n\n" +
             		" As a special case, they may end in .*\n" +
             		"   - Use this form to designate a class of sofa names, where the class\n" +
@@ -132,6 +134,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     io.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     inputButton = newButton(io, SWT.RADIO, "Input", "Click here to specify this Sofa is an input.");
     outputButton = newButton(io, SWT.RADIO, "Output",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Click here to specify this Sofa as an output.");
     inputButton.setSelection(true);
     outputButton.setSelection(false);
@@ -171,6 +174,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     if (sofaName.length() == 0)
       return false;
     if (!sofaName.equals(originalSofa) || // true for adding new sofa, or sofa name changed on edit
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             isInput != existingIsInput) { // true if input / output switched for editing
       // sofa, not changed name
       String errMsg = checkDuplSofaName();
@@ -179,6 +183,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
         return false;
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-589
     if ((sofaName.contains(".") || sofaName.contains("*")) &&
         (sofaName.indexOf('.') != (sofaName.length() - 2) ||
          sofaName.indexOf('*') != (sofaName.length() - 1))) {
@@ -216,6 +221,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
         for (int j = 0; j < sofaNames.length; j++) {
           if (sofaName.equals(sofaNames[j]))
             return "This name exists as an " + (isInput ? "output" : "input")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     + " in some capability set.  Please choose another name, or "
                     + "switch the input/output specification to the opposite setting.";
         }
@@ -253,6 +259,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
   public boolean verifyKeyChecks(VerifyEvent event) {
     if (event.keyCode == SWT.CR || event.keyCode == SWT.TAB)
       return true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-589
     if (Character.isJavaIdentifierPart(event.character) ||
         event.character == '*' ||
         event.character == '.')

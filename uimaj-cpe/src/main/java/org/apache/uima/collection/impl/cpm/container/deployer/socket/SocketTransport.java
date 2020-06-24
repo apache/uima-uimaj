@@ -66,6 +66,7 @@ public interface SocketTransport {
    */
   public CAS process(Socket aSocket, CAS aCas) throws SocketTimeoutException, SocketException,
           AnalysisEngineProcessException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Returns metadata associated with the fenced CasProcessor.
@@ -78,5 +79,6 @@ public interface SocketTransport {
    */
   public ProcessingResourceMetaData getProcessingResourceMetaData(Socket aSocket)
           throws SocketException, AnalysisEngineProcessException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 }

@@ -171,12 +171,14 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    *           if any I/O exception occurred.
    */
   public static InputStream getInstallationDescriptorAsStream(InstallationDescriptor insdObject)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     InputStream iStream = null;
     StringBuffer xmlBuffer = new StringBuffer();
     xmlBuffer.append(XML_HEADER);
     xmlBuffer.append('\n');
     xmlBuffer.append(insdObject.toString());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
     byte[] xmlContentBytes = xmlBuffer.toString().getBytes(StandardCharsets.UTF_8);
     iStream = new ByteArrayInputStream(xmlContentBytes);
     return iStream;
@@ -194,6 +196,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    *           if any I/O exception occurred.
    */
   public static void printInstallationDescriptor(InstallationDescriptor insdObject,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           PrintWriter oWriter) throws IOException {
     String[] tagOrder = null;
     // ROOT - 0th level
@@ -207,6 +210,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
     tagOrder[0] = NAME_TAG;
     if (insdObject.getOSSpecs().size() > 0)
       XMLUtil.printAllXMLElements(insdObject.getOSSpecs(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               InstallationDescriptor.PROPERTY_DELIMITER, tagOrder, oWriter, 2);
     // OS specs end - 1st level
     XMLUtil.printXMLTag(OS_TAG, oWriter, true, 1);
@@ -217,6 +221,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
     // 2nd level elements (multi-value properties) - no order
     if (insdObject.getToolkitsSpecs().size() > 0)
       XMLUtil.printAllXMLElements(insdObject.getToolkitsSpecs(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               InstallationDescriptor.PROPERTY_DELIMITER, null, oWriter, 2);
     // TOOLKITS specs end - 1st level
     XMLUtil.printXMLTag(TOOLKITS_TAG, oWriter, true, 1);
@@ -227,6 +232,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
     // 2nd level elements (multi-value properties) - no order
     if (insdObject.getFrameworkSpecs().size() > 0)
       XMLUtil.printAllXMLElements(insdObject.getFrameworkSpecs(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               InstallationDescriptor.PROPERTY_DELIMITER, null, oWriter, 2);
     // UIMA_FRAMEWORK specs end - 1st level
     XMLUtil.printXMLTag(UIMA_FRAMEWORK_TAG, oWriter, true, 1);
@@ -259,6 +265,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
         // SERVICE_COMMAND_ARGS
         XMLUtil.printXMLTag(SERVICE_COMMAND_ARGS_TAG, oWriter, false, 2);
         oWriter.println();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
         Iterator<ArgInfo> argList = service.getArgs().iterator();
         while (argList.hasNext()) {
           // ARGUMENT - 3rd level
@@ -280,6 +287,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
         oWriter.println();
       }
       // network component parameters block
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Set<String> netParamNames = insdObject.getMainComponentNetworkParamNames();
       if (netParamNames != null) {
         // NETWORK_PARAMETERS
@@ -337,6 +345,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
     XMLUtil.printXMLTag(INSTALLATION_TAG, oWriter, false, 1);
     oWriter.println();
     // delegate components, if specified
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Hashtable<String, ComponentInfo> dlgTable = insdObject.getDelegateComponents();
     Iterator<String> dlgList = dlgTable.keySet().iterator();
     while (dlgList.hasNext()) {
@@ -346,6 +355,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
       // 3rd level elements
       String dlgId = dlgList.next();
       InstallationDescriptor.ComponentInfo dlgInfo = dlgTable
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .get(dlgId);
       XMLUtil.printXMLElement(ID_TAG, dlgId, oWriter, 3);
       oWriter.println();
@@ -356,6 +366,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
       oWriter.println();
     }
     // installation actions, if specified
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Iterator<ActionInfo> actList = insdObject.getInstallationActions().iterator();
     while (actList.hasNext()) {
       ActionInfo actInfo = actList.next();
@@ -397,7 +408,9 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    *           if any I/O exception occurred.
    */
   public static void saveInstallationDescriptor(InstallationDescriptor insdObject, File xmlFile)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (PrintWriter oWriter = new PrintWriter(
                                  new OutputStreamWriter(
                                    new FileOutputStream(xmlFile), StandardCharsets.UTF_8))) {
@@ -502,6 +515,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
           _activeArg.value = elemValue;
       } else if (localName.equalsIgnoreCase(ARGUMENT_TAG)) {
         if (SERVICE_COMMAND_ARGS_TAG.equals(_activeSubSection) && _activeService != null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 && _activeArg != null && _activeArg.value != null && _activeArg.value.length() > 0)
           _activeService.addArg(_activeArg);
         _activeArg = null;
@@ -623,6 +637,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    *           Any SAX exception, possibly wrapping another exception.
    */
   public synchronized void parseInstallationDescriptor(JarFile pearFile) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           SAXException {
     String insdFilePath = InstallationProcessor.INSD_FILE_PATH;
     JarEntry insdJarEntry = pearFile.getJarEntry(insdFilePath);
@@ -669,6 +684,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    *              Any SAX exception, possibly wrapping another exception.
    */
   public void startElement(String uri, String localName, String qName, Attributes attributes)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
     _mainTag = localName;
     _activeBuffer.setLength(0);
@@ -686,6 +702,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
         _activeSubSection = SERVICE_COMMAND_ARGS_TAG;
     } else if (_mainTag.equalsIgnoreCase(ARGUMENT_TAG)) {
       if (SUBMITTED_COMPONENT_TAG.equals(_activeSection)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               && SERVICE_COMMAND_ARGS_TAG.equals(_activeSubSection))
         _activeArg = new InstallationDescriptor.ArgInfo();
     } else if (_mainTag.equalsIgnoreCase(NETWORK_PARAMETERS_TAG)) {

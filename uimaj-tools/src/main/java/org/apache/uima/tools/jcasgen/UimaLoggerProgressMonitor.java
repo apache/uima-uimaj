@@ -40,6 +40,7 @@ public class UimaLoggerProgressMonitor implements IProgressMonitor {
    */
   @Override
   public void done() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     UIMAFramework.getLogger().log(Level.INFO, " ** JCasGen Done.");
   }
 

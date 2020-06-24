@@ -56,6 +56,7 @@ public class CasTreeViewerApplet extends JApplet {
    */
   @Override
   public void init() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // get applet parameter - URL from which to get the CAS
       String casURL = getParameter("CasUrl");
@@ -86,6 +87,7 @@ public class CasTreeViewerApplet extends JApplet {
       // deserialize CAS
       CASMgr casMgr = CASFactory.createCAS();
       CASCompleteSerializer serializer = (CASCompleteSerializer) SerializationUtils
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .deserialize(bytes);
       Serialization.deserializeCASComplete(serializer, casMgr);
 
@@ -113,6 +115,7 @@ public class CasTreeViewerApplet extends JApplet {
     Insets insets = getInsets();
     Dimension panelSize = new Dimension(appletSize.width - insets.left - insets.right - 10,
             appletSize.height - insets.top - insets.bottom - 10);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     mTreeViewer.setPreferredSize(panelSize);
     mTreeViewer.setSize(panelSize);

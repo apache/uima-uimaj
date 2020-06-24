@@ -47,6 +47,8 @@ import org.xml.sax.SAXException;
  */
 public class ConfigurationParameterSettings_impl extends MetaDataObject_impl implements
         ConfigurationParameterSettings {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static final long serialVersionUID = 3476535733588304983L;
 
@@ -54,6 +56,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   
   private static final Method methodGetSettingsForGroups;
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3684
     try {
       methodGetSettingsForGroups = ConfigurationParameterSettings.class.getDeclaredMethod("getSettingsForGroups");
     } catch (Exception e) {
@@ -84,6 +87,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   public void setParameterSettings(NameValuePair[] aSettings) {
     if (aSettings == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aSettings", "setParameterSettings" });
     }
     mParameterSettings = aSettings;
@@ -116,6 +120,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    *      java.lang.String)
    */
   public Object getParameterValue(String aGroupName, String aParamName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aGroupName == null) {
       return getParameterValue(aParamName);
     } else {
@@ -230,6 +235,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
 
   @Override
   public List<MetaDataAttr> getAdditionalAttributes() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3684
     return Collections.singletonList(
         new MetaDataAttr(
             "settingsForGroups",
@@ -248,6 +254,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    */
   @Deprecated
   public List<NameClassPair> listAttributes() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1488
     List<NameClassPair> result = super.listAttributes();
     result.add(new NameClassPair("settingsForGroups", Map.class.getName()));
     return result;
@@ -261,7 +268,9 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<XMLizable> nvps = new ArrayList<>();
     // get all child nodes
     NodeList childNodes = aElement.getChildNodes();
@@ -275,6 +284,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
         } else if ("settingsForGroup".equals(elem.getTagName())) {
           String key = elem.getAttribute("name");
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
           List<XMLizable> vals = new ArrayList<>();
           NodeList arrayNodes = elem.getChildNodes();
           for (int j = 0; j < arrayNodes.getLength(); j++) {
@@ -291,6 +301,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
           }
         } else {
           throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { elem
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getTagName() });
         }
       }
@@ -310,6 +321,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
     if ("settingsForGroups".equals(aPropInfo.propertyName)) {
       this.writeMapPropertyToXml("settingsForGroups", null, "name", "settingsForGroup", true,
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
               aNamespace);
     } else {
       super.writePropertyAsElement(aPropInfo, aNamespace);

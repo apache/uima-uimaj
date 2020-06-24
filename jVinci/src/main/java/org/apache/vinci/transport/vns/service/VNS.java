@@ -208,6 +208,7 @@ public class VNS extends VinciServableAdapter {
     System.out.println("  -b ip_address  --bind ip_address");
     System.out
             .println("    Force socket server to bind only to ip_address [default is bind to all]");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     System.out.println("  -c dirname --config dirname");
     System.out.println("    Look for & write config files in this directory [default=.]");
@@ -227,6 +228,7 @@ public class VNS extends VinciServableAdapter {
     System.out.println("  -m N  --maxthreads N");
     System.out.println("    Set the maximum size of the VNS thread pool [default=" + maxThreads
             + "].");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     System.out.println("  -h  --help");
     System.out.println("    This help message");
@@ -260,6 +262,7 @@ public class VNS extends VinciServableAdapter {
 
     // Configure and start the backup thread
     Debug.p("Starting backup thread, using files " + backupFile + " and " + configFile);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     vns.backupThreadRunnable = new BackupThread(vns, backupFile, configFile, backupInterval,
             counterFile);
 
@@ -348,6 +351,7 @@ public class VNS extends VinciServableAdapter {
   public void loadWorkspaces(String wFile) {
     Debug.p("Loading workspaces file : " + wFile);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (FileReader F = new FileReader(wFile)) {
       WS.load(F);
     } catch (Exception e) {
@@ -571,6 +575,7 @@ public class VNS extends VinciServableAdapter {
     } catch (Exception e) {
       // Exact translation of the Python code [may not be necessary]
       out = new VinciFrame();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       out
               .fadd(
                       "vinci:ERROR",
@@ -647,6 +652,7 @@ public class VNS extends VinciServableAdapter {
         cache(name + "[" + servicesList[0].level + "]", new CachedItem(servicesList));
         // Have a proxy pointer to the entry created if it is not the same
         if (!servicesList[0].level.equals(level)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           cache(name + "[" + level + "]", new ProxyCachedItem(name + "[" + servicesList[0].level
                   + "]"));
         }
@@ -660,6 +666,7 @@ public class VNS extends VinciServableAdapter {
       return out;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     Debug.p("Number of services found with name = " + name + ", and level = " + level + " : "
             + servicesList.length);
 
@@ -746,6 +753,7 @@ public class VNS extends VinciServableAdapter {
         }
         System.out.println(out.toXML());
         if (out == null || out instanceof ErrorFrame || strip(out.fgetString("LEVEL")) == null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 || out.fgetString("vinci:ERROR") != null) {
           continue; // Check if resolve actually worked
         }
@@ -794,6 +802,7 @@ public class VNS extends VinciServableAdapter {
   }
 
   VinciFrame resolve(VinciFrame in) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     logRequest(VNSConstants.RESOLVE_COMMAND, in.fgetString("vinci:REMOTEIP"), in
             .fgetString("SERVICE"));
 
@@ -877,6 +886,7 @@ public class VNS extends VinciServableAdapter {
       for (int i = 0; i < services.length; i++) {
         S = (Service) services[i];
         Debug.p("current: realhost = " + S.realhost + " - instance = " + S.instance);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         if (S.realhost.equals(realhost) && instance.equals("" + S.instance)
                 && S.level.equals(level)) {
           srv = S;
@@ -896,6 +906,7 @@ public class VNS extends VinciServableAdapter {
       srv = new Service(H);
       boolean ok = false;
       synchronized (SR) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         Debug.p("Adding service : " + H.get("NAME") + ", lvl=" + H.get("LEVEL") + ",instance="
                 + H.get("INSTANCE") + ",ip=" + H.get("IP"));
         ok = SR.addService(srv);
@@ -913,6 +924,7 @@ public class VNS extends VinciServableAdapter {
             Debug.p("Trying to shutdown old service ...");
             VinciFrame shutdown = new VinciFrame();
             shutdown
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     .fadd(
                             "vinci:SHUTDOWN",
                             "Identical service started on this host. Use the INSTANCE tag to run multiple instances of the same service on a single host.");
@@ -981,6 +993,7 @@ public class VNS extends VinciServableAdapter {
       getFrame(false, "Malformed request");
     else {
       synchronized (SR) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         ok = SR
                 .addAlias(new ServiceAlias(service.fgetString("NAME"), service.fgetString("TARGET")));
       }
@@ -1244,6 +1257,7 @@ public class VNS extends VinciServableAdapter {
     synchronized (hits) {
       Integer I = (Integer) hits.get(type);
       if (I == null)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         I = 0;
       I = I + 1;
 
@@ -1295,6 +1309,7 @@ public class VNS extends VinciServableAdapter {
 /* Class for the backup thread */
 class BackupThread implements Runnable {
   VNS parent;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   String backupFile;
 

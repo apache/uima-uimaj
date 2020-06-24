@@ -94,6 +94,7 @@ public class SofaTest extends TestCase {
 //  private Feature annotSofaFeat;
 
   public SofaTest(String arg) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(arg);
   }
 
@@ -103,6 +104,7 @@ public class SofaTest extends TestCase {
   protected void setUp() throws Exception {
     try {
       super.setUp();
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       this.casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(this.casMgr, (TypeSystemDescription) null);
       // Create a writable type system.
@@ -119,6 +121,7 @@ public class SofaTest extends TestCase {
       ((CASImpl) this.casMgr).commitTypeSystem();
 
       // reinit type system values because the commit might reuse an existing one
+//IC see: https://issues.apache.org/jira/browse/UIMA-4720
       tsa = this.casMgr.getTypeSystemMgr(); 
       this.annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
       this.docAnnotationType = tsa.getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
@@ -140,6 +143,7 @@ public class SofaTest extends TestCase {
   }
   
   public void tearDown() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
     casMgr = null;
     cas = null;
     annotationType = null;
@@ -157,6 +161,7 @@ public class SofaTest extends TestCase {
       // Create a Sofa (using old APIs for now)
       SofaID_impl id = new SofaID_impl();
       id.setSofaID("EnglishDocument");
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       SofaFS es = this.cas.createSofa(id, "text");
       // Initial View is #1!!!
       assertTrue(2 == es.getSofaRef());
@@ -166,6 +171,7 @@ public class SofaTest extends TestCase {
 
       // Test Multiple Sofas across XCAS serialization
       String xcasFilename = "Sofa.xcas";
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       XCASSerializer ser = new XCASSerializer(this.cas.getTypeSystem());
       OutputStream outputXCAS = new FileOutputStream(xcasFilename);
       XMLSerializer xmlSer = new XMLSerializer(outputXCAS);
@@ -179,6 +185,7 @@ public class SofaTest extends TestCase {
       }
 
       // Deserialize XCAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
      this.cas.reset();
       InputStream inputXCAS = new FileInputStream(xcasFilename);
       try {
@@ -199,6 +206,7 @@ public class SofaTest extends TestCase {
       // SofaID_impl gid = new SofaID_impl();
       // gid.setSofaID("GermanDocument");
       // SofaFS gs = ((CASImpl)cas).createSofa(gid,"text");
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       CAS gerTcas =this.cas.createView("GermanDocument");
       assertTrue(gerTcas.getViewName().equals("GermanDocument"));
       SofaFS gs = gerTcas.getSofa();
@@ -218,6 +226,7 @@ public class SofaTest extends TestCase {
       // SofaID_impl fid = new SofaID_impl();
       // fid.setSofaID("FrenchDocument");
       // SofaFS fs = ((CASImpl)cas).createSofa(fid, "text");
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       CAS frT =this.cas.createView("FrenchDocument");
       assertTrue(frT.getViewName().equals("FrenchDocument"));
       SofaFS fs = frT.getSofa();
@@ -227,6 +236,7 @@ public class SofaTest extends TestCase {
       // Test multiple Sofas across blob serialization
       ByteArrayOutputStream fos = new ByteArrayOutputStream();
       Serialization.serializeCAS(cas, fos);
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       this.cas.reset();
       ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
       Serialization.deserializeCAS(cas, fis);
@@ -280,6 +290,7 @@ public class SofaTest extends TestCase {
           assertTrue("ANNOTATION_IN_WRONG_INDEX".equals(c.getMessageKey()));
         }
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
         AnnotationFS frAnnot = frTcas.createAnnotation(this.annotationType, frBegin, frEnd);
         frTcas.getIndexRepository().addFS(frAnnot);
 
@@ -292,6 +303,7 @@ public class SofaTest extends TestCase {
       // Sofas are indexed
       // FSIndex sofaIndex =
       // cas.getIndexRepository().getIndex(CAS.SOFA_INDEX_NAME);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
       FSIterator<SofaFS> sofaIter =this.cas.getSofaIterator();
       int numSofas = 0;
       while (sofaIter.isValid()) {
@@ -311,6 +323,7 @@ public class SofaTest extends TestCase {
       // documentAnnotation
 
       // Test that the annotations are of the correct types
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
       FSIterator<AnnotationFS> engIt = engIndex.iterator();
       FSIterator<AnnotationFS> gerIt = gerIndex.iterator();
       FSIterator<AnnotationFS> frIt = frIndex.iterator();
@@ -344,6 +357,7 @@ public class SofaTest extends TestCase {
       
       // Test that annotations accessed from a reference in the base CAS
       // work correctly
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       ArrayFS anArray =this.cas.createArrayFS(3);
       anArray.set(0, engAnnot);
       anArray.set(1, frAnnot);
@@ -372,6 +386,7 @@ public class SofaTest extends TestCase {
       // id.setSofaID("StringSofaData");
       // SofaFS strSofa = cas.createSofa(id, "text");
       // strSofa.setLocalSofaData("this beer is good");
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       CAS stringView =this.cas.createView("StringSofaData");
       stringView.setDocumentText("this beer is good");
 
@@ -387,10 +402,12 @@ public class SofaTest extends TestCase {
       // id.setSofaID("intArraySofaData");
       // SofaFS intarraySofaFS = cas.createSofa(id, "text");
       // intarraySofaFS.setLocalSofaData(intArrayFS);
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       CAS intArrayView =this.cas.createView("intArraySofaData");
       intArrayView.setSofaDataArray(intArrayFS, "integers");
 
       // create a string array fs
+//IC see: https://issues.apache.org/jira/browse/UIMA-1774
       StringArrayFS stringArrayFS =this.cas.createStringArrayFS(5);
       stringArrayFS.set(0, "This");
       stringArrayFS.set(1, "beer");
@@ -412,6 +429,7 @@ public class SofaTest extends TestCase {
       // id.setSofaID("floatArraySofaData");
       // SofaFS floatarraySofaFS = cas.createSofa(id,"text");
       // floatarraySofaFS.setLocalSofaData(floatArrayFS);
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       CAS floatArrayView =this.cas.createView("floatArraySofaData");
       floatArrayView.setSofaDataArray(floatArrayFS, "floats");
 
@@ -427,6 +445,7 @@ public class SofaTest extends TestCase {
       // id.setSofaID("shortArraySofaData");
       // SofaFS shortarraySofaFS = cas.createSofa(id, "text");
       // shortarraySofaFS.setLocalSofaData(shortArrayFS);
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       CAS shortArrayView =this.cas.createView("shortArraySofaData");
       shortArrayView.setSofaDataArray(shortArrayFS, "shorts");
 
@@ -442,6 +461,7 @@ public class SofaTest extends TestCase {
       // id.setSofaID("byteArraySofaData");
       // SofaFS bytearraySofaFS = cas.createSofa(id, "text");
       // bytearraySofaFS.setLocalSofaData(byteArrayFS);
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       CAS byteArrayView =this.cas.createView("byteArraySofaData");
       byteArrayView.setSofaDataArray(byteArrayFS, "bytes");
 
@@ -457,6 +477,7 @@ public class SofaTest extends TestCase {
       // id.setSofaID("longArraySofaData");
       // SofaFS longarraySofaFS = cas.createSofa(id, "text");
       // longarraySofaFS.setLocalSofaData(longArrayFS);
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       CAS longArrayView =this.cas.createView("longArraySofaData");
       longArrayView.setSofaDataArray(longArrayFS, "longs");
 
@@ -471,6 +492,7 @@ public class SofaTest extends TestCase {
       // id.setSofaID("doubleArraySofaData");
       // SofaFS doublearraySofaFS = cas.createSofa(id, "text");
       // doublearraySofaFS.setLocalSofaData(doubleArrayFS);
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       CAS doubleArrayView =this.cas.createView("doubleArraySofaData");
       doubleArrayView.setSofaDataArray(doubleArrayFS, "doubles");
 
@@ -479,6 +501,7 @@ public class SofaTest extends TestCase {
       // id.setSofaID("remoteSofaData");
       // SofaFS remoteSofa = cas.createSofa(id, "text");
       // remoteSofa.setRemoteSofaURI("file:.\\Sofa.xcas");
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
       CAS remoteView =this.cas.createView("remoteSofaData");
       String sofaFileName = "./Sofa.xcas";
       remoteView.setSofaDataURI("file:" + sofaFileName, "text");
@@ -507,6 +530,7 @@ public class SofaTest extends TestCase {
         assertTrue(ByteBuffer.wrap(dest).getInt() == intArrayFS.get(i++));
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1774
       is.close();
       is = stringArrayView.getSofaDataStream();
       assertTrue(is != null);
@@ -588,16 +612,20 @@ public class SofaTest extends TestCase {
   }
   
   public void testSetSofaDataString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-206
     final String TEST_TEXT = "this is a test";
     final String TEST_MIME = "text/plain";
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
     CAS testView = this.cas.createView("TestView");
     testView.setSofaDataString(TEST_TEXT, TEST_MIME);
     assertEquals(TEST_TEXT, testView.getSofa().getLocalStringData());
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
+//IC see: https://issues.apache.org/jira/browse/UIMA-187
     assertEquals(TEST_TEXT, testView.getSofaDataString());
   }
   
   public void testSetSofaDataStringOnInitialView() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-805
     final String TEST_TEXT = "this is a test";
     final String TEST_MIME = "text/plain";
     this.cas.setSofaDataString(TEST_TEXT, TEST_MIME);
@@ -609,6 +637,7 @@ public class SofaTest extends TestCase {
   public void testSetSofaDataURI() {
     final String TEST_URI = "file:/test";
     final String TEST_MIME = "text/plain";
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
     CAS testView = this.cas.createView("TestView");
     testView.setSofaDataURI(TEST_URI, TEST_MIME);
     assertEquals(TEST_URI, testView.getSofa().getSofaURI());
@@ -641,6 +670,7 @@ public class SofaTest extends TestCase {
 //    is.close();
 //    assertTrue(buf.toString().equals(someText));
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1202
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
     String textFromFile = reader.readLine();
     is.close();
@@ -651,6 +681,7 @@ public class SofaTest extends TestCase {
   
   public void testSetSofaDataArray() {
     final String TEST_MIME = "text/plain";    
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
     CAS testView = this.cas.createView("TestView");
     ByteArrayFS sofaDataArray = testView.createByteArrayFS(2);
     sofaDataArray.set(0, (byte)0);
@@ -661,6 +692,7 @@ public class SofaTest extends TestCase {
   }
   
   public void testSetSofaDataArrayOnInitialView() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-805
     final String TEST_MIME = "text/plain";    
     ByteArrayFS sofaDataArray = this.cas.createByteArrayFS(2);
     sofaDataArray.set(0, (byte)0);
@@ -671,6 +703,7 @@ public class SofaTest extends TestCase {
   }
   
   public void testReset() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-233
     this.cas.reset();
     this.cas.setDocumentText("setDocumentText creates the _InitialView Sofa");
     CAS testView = this.cas.createView("TestView");
@@ -687,6 +720,7 @@ public class SofaTest extends TestCase {
   }
   
   private void checkViewsExist(Iterator it, AbstractCas ... cas_s) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     List<AbstractCas> casList = Arrays.asList(cas_s);
     int i = 0;
     while (it.hasNext()) {
@@ -702,6 +736,7 @@ public class SofaTest extends TestCase {
     CAS view2 = this.cas.createView("View2");
     checkViewsExist(this.cas.getViewIterator(), cas, view1, view2);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-465
     CAS viewE1 = this.cas.createView("EnglishDocument");
     CAS viewE2 = this.cas.createView("EnglishDocument.2");
     checkViewsExist(this.cas.getViewIterator("EnglishDocument"), viewE1, viewE2);
@@ -710,10 +745,12 @@ public class SofaTest extends TestCase {
     UimaContextAdmin rootCtxt = UIMAFramework.newUimaContext(
             UIMAFramework.getLogger(), UIMAFramework.newDefaultResourceManager(),
             UIMAFramework.newConfigurationManager());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, String> sofamap = new HashMap<>();
     sofamap.put("SourceDocument","EnglishDocument");
     UimaContextAdmin childCtxt = rootCtxt.createChild("test", sofamap);
     cas.setCurrentComponentInfo(childCtxt.getComponentInfo());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     checkViewsExist(this.cas.getViewIterator("SourceDocument"), viewE1, viewE2);
       
     this.cas.setCurrentComponentInfo(null);
@@ -723,6 +760,7 @@ public class SofaTest extends TestCase {
     JCas jcas = this.cas.getJCas();
     JCas jview1 = jcas.createView("View1");
     JCas jview2 = jcas.createView("View2");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     checkViewsExist(jcas.getViewIterator(), jcas, jview1, jview2);
         
     JCas jviewE1 = jcas.createView("EnglishDocument");

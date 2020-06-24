@@ -75,6 +75,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
 
   /** The insd. */
   InstallationDescriptor insd;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The current container. */
   IContainer currentContainer;
@@ -96,6 +97,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
    * @param wizardData          a hash table with shared information between wizard pages
    */
   public INSDEnvironmentPage(IContainer currentContainer, InstallationDescriptor insd,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Hashtable wizardData) {
     super("wizardPage");
     setTitle("UIMA - Installation Descriptor - Installation Environment");
@@ -154,6 +156,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
       setControl(container);
     } catch (Throwable e) {
       PearException subEx = new PearException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "The operation failed because the wizard's pages could not be initialized properly.",
               e);
       subEx.openErrorDialog(getShell());
@@ -219,6 +222,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     selectedOS = getFirstItem(insd.getOSSpecs().getProperty(InstallationDescriptorHandler.NAME_TAG));
     selectedJdkVersion = getFirstItem(insd.getToolkitsSpecs().getProperty(
             InstallationDescriptorHandler.JDK_VERSION_TAG));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     String[] items = { "Windows", "Linux", "Windows and Linux", "AIX" };
     String selectedItem = selectedOS;
@@ -246,6 +250,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
       envVarList = new VarValList();
       Collection actionInfos = insd
               .getInstallationActions(InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       Iterator itr = actionInfos.iterator();
       String classPath = null;
@@ -273,6 +278,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
       }
     } catch (Throwable e) {
       PearException subEx = new PearException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "Error. Cause: the environment page could not be initialized properly.", e);
       subEx.openErrorDialog(getShell());
       this.dispose();
@@ -307,6 +313,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
 
         // add output Location
         System.out.println("Output Location (normal): "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + javaProject.getOutputLocation().toOSString());
         System.out.println("Output Location (relative): "
                 + javaProject.getOutputLocation().makeRelative().toOSString());
@@ -337,6 +344,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
           while (itr.hasNext())
             sb.append("\n- ").append((String) itr.next());
           MessageDialog
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .openWarning(
                           getShell(),
                           "Missing class path entries",
@@ -442,6 +450,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
         path = classPathEntry.getPath();
         boolean inProject = currentContainer.getFullPath().makeAbsolute().isPrefixOf(
                 path.makeAbsolute());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
         System.out.println("\tProject (full absolute): "
                 + currentContainer.getFullPath().makeAbsolute());

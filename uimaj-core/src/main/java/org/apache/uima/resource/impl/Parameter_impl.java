@@ -68,6 +68,8 @@ public class Parameter_impl extends MetaDataObject_impl implements Parameter {
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     setName(aElement.getAttribute("name"));
@@ -91,5 +93,6 @@ public class Parameter_impl extends MetaDataObject_impl implements Parameter {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("parameter",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[0]);
 }

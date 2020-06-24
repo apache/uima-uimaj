@@ -49,9 +49,11 @@ public class ResourcePoolTest extends TestCase {
    * @see TestCase#setUp()
    */
   protected void setUp() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       super.setUp();
       // create resource specifier and a pool containing 3 instances
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       mDesc = new AnalysisEngineDescription_impl();
       mDesc.setPrimitive(true);
       mDesc.setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
@@ -64,6 +66,7 @@ public class ResourcePoolTest extends TestCase {
   }
   
   public void tearDown() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
     mDesc = null;
     pool1.destroy();
     pool1 = null;
@@ -108,6 +111,7 @@ public class ResourcePoolTest extends TestCase {
       // until resources are exhausted, then it will pause 1 second before
       // returning null
       long startTime = System.currentTimeMillis();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3752
       Resource foo = pool1.getResource(1000);
       Assert.assertNotNull(foo);
       Assert.assertTrue(System.currentTimeMillis() - startTime < 500);
@@ -164,6 +168,7 @@ public class ResourcePoolTest extends TestCase {
 
       // try to release "foo" again - should not change the free instances count
       // this will log a warning - first we log that this is expected
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       UIMAFramework.getLogger().log(Level.WARNING, "Unit test is expecting to log ResourcePool warning.");
       pool1.releaseResource(foo);
       Assert.assertEquals(1, pool1.getFreeInstances().size());
@@ -234,6 +239,7 @@ public class ResourcePoolTest extends TestCase {
     public void run() {
       try {
         synchronized (this) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3752
           wait(200);
         }
         pool1.releaseResource(r);

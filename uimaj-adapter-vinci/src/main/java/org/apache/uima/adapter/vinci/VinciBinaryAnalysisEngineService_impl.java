@@ -96,6 +96,8 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * @throws Exception the exception
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath, boolean debug,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String instanceId) throws Exception {
     this(serviceConfigPath, debug);
     serviceInstanceId = Integer.parseInt(instanceId);
@@ -114,6 +116,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
     this.debug = debug;
 
     UIMAFramework.getLogger().log(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-123
             "VinciBinaryAnalysisEngineService_impl: constructor");
     // Instantiate an object which holds configuration data: resource
     // specifier path,
@@ -124,6 +127,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
 
     ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
             new XMLInputSource(aResourceSpecifierPath));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // create CAS Object Processor
     if (mAE == null) {
@@ -155,6 +159,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * @throws Exception the exception
    */
   private Frame getMetaData() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-123
     UIMAFramework.getLogger().log(Level.FINEST, "getMetaData()");
     // get metadata
     ProcessingResourceMetaData md = mAE.getProcessingResourceMetaData();
@@ -195,6 +200,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
       // deserialize into CAS object
       byte[] casBytes = aRequestFrame.fgetTrueBinary("BinaryCAS");
       CASCompleteSerializer serializer = (CASCompleteSerializer) SerializationUtils
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .deserialize(casBytes);
       Serialization.deserializeCASComplete(serializer, (CASMgr) cas);
 
@@ -221,6 +227,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
       FSIterator sItr = cas.getSofaIterator();
       while (sItr.isValid()) {
         sofa = (SofaFS) sItr.get();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
         totalAnnots += cas.getView(sofa).getAnnotationIndex().size();
         sItr.moveToNext();
       }
@@ -317,12 +324,14 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
       }
       UIMAFramework.getLogger().log(
               Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-123
               "VinciBinaryAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
       System.out
               .println("VinciBinaryAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
       _server.setSocketTimeout(descriptor.getServerSocketTimeout());
+//IC see: https://issues.apache.org/jira/browse/UIMA-821
       _server.setThreadPoolSize(descriptor.getThreadPoolMinSize(), descriptor.getThreadPoolMaxSize());
       _server.serve();
     } catch (ServiceDownException e) {

@@ -95,6 +95,7 @@ public interface XMLizable {
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Initializes this object from its XML DOM representation. This method is typically called from
@@ -127,6 +128,7 @@ public interface XMLizable {
    *           if the input XML element does not specify a valid object
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException;
   
 }

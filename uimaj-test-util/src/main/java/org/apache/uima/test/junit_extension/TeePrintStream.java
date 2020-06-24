@@ -27,6 +27,7 @@ import java.io.PrintStream;
  */
 public class TeePrintStream extends PrintStream {
   PrintStream original;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   PrintStream teeStream;
 

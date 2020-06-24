@@ -37,5 +37,6 @@ public interface AnnotationBaseFS extends FeatureStructure {
    * 
    * @return the CAS view associated with the Annotation's Sofa
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
   CAS getView(); 
 }

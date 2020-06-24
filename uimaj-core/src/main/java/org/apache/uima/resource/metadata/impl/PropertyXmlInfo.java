@@ -117,6 +117,7 @@ public class PropertyXmlInfo {
    *          array element to have a tag determined by its class.
    */
   public PropertyXmlInfo(String aPropName, String aXmlElementName, boolean aOmitIfNull,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aArrayElementTagName) {
     propertyName = aPropName;
     xmlElementName = aXmlElementName;

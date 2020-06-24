@@ -41,6 +41,8 @@ public interface CpeCollectionReader extends MetaDataObject {
   @Deprecated
   public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
           throws CpeDescriptorException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Returns CasInitializer associated with CollectionReader. This object initializes the CAS with
@@ -95,6 +97,7 @@ public interface CpeCollectionReader extends MetaDataObject {
    */
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
           throws CpeDescriptorException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   public void setCollectionIterator(CpeCollectionReaderIterator iterator);
 

@@ -72,6 +72,7 @@ public final class AnnotationStyle {
     /**
      * The bracket style.
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
     BRACKET,
     
     /** The tag. */
@@ -135,6 +136,7 @@ public final class AnnotationStyle {
     }
 
     this.layer = layer;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
     this.configuration = configuration;
   }
 
@@ -192,6 +194,7 @@ public final class AnnotationStyle {
    * @return the configuration
    */
   public String getConfiguration() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
     return configuration;
   }
   
@@ -242,6 +245,7 @@ public final class AnnotationStyle {
     annotationStyle += " Style: " + getStyle().name();
     annotationStyle += " Color: " + getColor().toString();
     annotationStyle += " Layer: " + getLayer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
     annotationStyle += " Config: " + getConfiguration();
     return annotationStyle;
   }
@@ -334,6 +338,7 @@ public final class AnnotationStyle {
     Map<String, String> styleProperties = parseProperties(store.getString(typeName + ".style"));
     
     // initialize with random background style for the case if the store contains no style information
+//IC see: https://issues.apache.org/jira/browse/UIMA-2463
     AnnotationStyle.Style style = AnnotationStyle.Style.BACKGROUND;
     int index = (int) Math.round(Math.random() * (DefaultColors.COLORS.length-1));
     Color color = DefaultColors.COLORS[index];
@@ -376,6 +381,7 @@ public final class AnnotationStyle {
     if (configuration != null && configuration.length() != 0)
       configuration = null;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2463
     AnnotationStyle annotationStyle = new AnnotationStyle(typeName, style, color, layer, configuration);
     
     // store style if it is not known yet

@@ -44,6 +44,7 @@ public class TestResourceServiceStub implements ResourceServiceStub {
    */
   public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     lastMethodName = "callGetMetaData";
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     lastMethodArgs = new Object[] {};
     return getMetaDataReturnValue;
   }

@@ -51,6 +51,7 @@ import org.apache.uima.util.ProcessTrace;
  */
 public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase implements
         TextAnalysisEngine {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * AnalysisEngine pool used to serve process requests.
@@ -68,12 +69,15 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     
     // Read parameters from the aAdditionalParams map.
     // (First copy it so we can modify it and send the parameters on to
     // each Analysis Engine in the pool.)
     if (aAdditionalParams == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       aAdditionalParams = new HashMap<>();
     } else {
       aAdditionalParams = new HashMap<>(aAdditionalParams);
@@ -103,9 +107,11 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     Integer poolSizeInteger = (Integer) aAdditionalParams.get(PARAM_NUM_SIMULTANEOUS_REQUESTS);
     int poolSize = (poolSizeInteger != null) ? poolSizeInteger
             : DEFAULT_NUM_SIMULTANEOUS_REQUESTS;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     Integer timeoutInteger = (Integer) aAdditionalParams.get(PARAM_TIMEOUT_PERIOD);
     mTimeout = (timeoutInteger != null) ? timeoutInteger : DEFAULT_TIMEOUT_PERIOD;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 
     // Share resource manager, but don't share uima-context
 //    // add UimaContext to params map so that all AEs in pool will share it
@@ -127,6 +133,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     AnalysisEngine ae = mPool.getAnalysisEngine(mTimeout);
     if (ae == null) { // timeout elapsed
       throw new AnalysisEngineProcessException(AnalysisEngineProcessException.TIMEOUT_ELAPSED,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
          new Object[] {getTimeout()});
     }       
     return ae;
@@ -308,6 +315,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
    * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(org.apache.uima.analysis_engine.ResultSpecification)
    */
   public void setResultSpecification(ResultSpecification aResultSpec) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-367
    mPool.setResultSpecification(aResultSpec);
   }
 

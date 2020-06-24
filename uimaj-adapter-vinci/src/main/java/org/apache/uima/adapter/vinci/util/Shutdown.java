@@ -35,6 +35,7 @@ public class Shutdown {
    */
   public static void main(String[] args) {
     System.out.println("Shutting down the service...");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       String serviceName = args[0];
       VinciFrame query = new VinciFrame();

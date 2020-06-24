@@ -36,6 +36,7 @@ public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
   public void testSimple() throws Exception {
     System.out.println("Using this repository: " + MavenPlugin.getMaven().getLocalRepository());
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2471
     ResolverConfiguration configuration = new ResolverConfiguration();
     IProject project = importProject("target/projects/jcasgen/simple/pom.xml", configuration);
     waitForJobsToComplete();
@@ -75,6 +76,8 @@ public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
 
   public void testEmptyOutputDirectory() throws Exception {
     ResolverConfiguration configuration = new ResolverConfiguration();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2471
+//IC see: https://issues.apache.org/jira/browse/UIMA-2471
     IProject project = importProject("target/projects/jcasgen/simple/pom.xml", configuration);
     waitForJobsToComplete();
     assertNoErrors(project);
@@ -101,6 +104,7 @@ public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
 
   public void testTypeSystemReferences() throws Exception {
     ResolverConfiguration configuration = new ResolverConfiguration();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2471
     IProject project = importProject("target/projects/jcasgen/classpath/pom.xml", configuration);
     waitForJobsToComplete();
     assertNoErrors(project);
@@ -181,6 +185,7 @@ public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
   public void testCrossProjectReferences() throws Exception {
     ResolverConfiguration configuration = new ResolverConfiguration();
     String[] projectPoms = new String[] { "crossref1/pom.xml", "crossref2/pom.xml" };
+//IC see: https://issues.apache.org/jira/browse/UIMA-2471
     IProject[] projects = importProjects("target/projects/jcasgen", projectPoms, configuration);
     waitForJobsToComplete();
     for (IProject project : projects) {

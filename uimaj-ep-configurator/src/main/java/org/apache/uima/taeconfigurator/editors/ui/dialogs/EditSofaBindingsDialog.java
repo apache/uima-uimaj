@@ -57,6 +57,8 @@ public class EditSofaBindingsDialog extends AbstractDialog {
    * @param aAvailAndBoundSofas the a avail and bound sofas
    */
   public EditSofaBindingsDialog(AbstractSection aSection, String aAggrSofaName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Map aAvailAndBoundSofas) {
     super(aSection, "Assign Components and their sofas to an Aggregate Sofa Name",
             "Change the selection as needed to reflect bindings.");
@@ -80,6 +82,7 @@ public class EditSofaBindingsDialog extends AbstractDialog {
     Composite composite = (Composite) super.createDialogArea(parent);
     Label info = new Label(composite, SWT.NONE);
     info.setText("Select all the delegate sofas from the list below which should be "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + "associated with the aggregate sofa name \"" + aggrSofaName + "\".\n"
             + "Hold down the Shift or Control keys to select multiple items.");
 
@@ -127,6 +130,7 @@ public class EditSofaBindingsDialog extends AbstractDialog {
    */
   @Override
   public void enableOK() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     okButton.setEnabled(true);
   }
 }

@@ -99,6 +99,7 @@ public abstract class Logger_common_impl implements Logger {
   private boolean isAnnotatorLogger;
     
   protected Logger_common_impl(Class<?> component) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
     this.limit_common = Integer.MAX_VALUE;
     this.isLimited = false;
   }
@@ -109,6 +110,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param limit the limit
    */
   protected Logger_common_impl(Logger_common_impl lci, int limit) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
     this.limit_common = limit;
     this.isLimited = true;
     this.isAnnotatorLogger = true;
@@ -152,6 +154,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param throwable - can be null
    */
   public abstract void log2(Marker m, String aFqcn, Level level,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
                            String message, Object[] args, Throwable throwable);
   
   /**
@@ -175,6 +178,7 @@ public abstract class Logger_common_impl implements Logger {
   public static Marker getMarkerForLevel(Level level) {
     switch(level.toInteger()) {
     case Level.CONFIG_INT: return UIMA_MARKER_CONFIG;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
     case Level.FINEST_INT: return UIMA_MARKER_FINEST;
     default: return null;
     }
@@ -206,6 +210,7 @@ public abstract class Logger_common_impl implements Logger {
       return true;
     }
     switch(level.toInteger()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
     case Level.SEVERE_INT: if (SEVERE_COUNT >= limit_common) return false; SEVERE_COUNT++; return true; 
     case Level.WARNING_INT: if (WARNING_COUNT >= limit_common) return false; WARNING_COUNT++; return true; 
     case Level.INFO_INT: if (INFO_COUNT >= limit_common) return false; INFO_COUNT++; return true; 
@@ -251,6 +256,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   @Deprecated
   public void log(String aMessage) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.INFO) && !isEmpty(aMessage) && isNotLimited(Level.INFO)) {
       log(fqcnCmn, Level.INFO, aMessage, null);
     }
@@ -266,6 +272,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   @Deprecated
   public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.INFO) && !isEmpty(aMessageKey) && isNotLimited(Level.INFO)) {
       log(fqcnCmn, Level.INFO, rb(aResourceBundleName, aMessageKey, aArguments), null);
     }
@@ -282,6 +289,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   @Deprecated
   public void logException(Exception aException) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.INFO) && isNotLimited(Level.INFO) && aException != null) {
       log(fqcnCmn, Level.INFO, EXCEPTION_MESSAGE, aException);
     }
@@ -294,6 +302,7 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void log(Level level, String aMessage) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(level) && !isEmpty(aMessage) && isNotLimited(level)) {
       log(fqcnCmn, level, aMessage, null);
     }
@@ -307,6 +316,7 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void log(Level level, String aMessage, Object param1) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(level) && !isEmpty(aMessage) && isNotLimited(level)) {
       log(fqcnCmn, level, MessageFormat.format(aMessage, new Object[] { param1 }), null);
     }
@@ -320,6 +330,7 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void log(Level level, String aMessage, Object[] params) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(level) && !isEmpty(aMessage) && isNotLimited(level)) {
       log(fqcnCmn, level, MessageFormat.format(aMessage, params), null);
     }
@@ -333,6 +344,7 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void log(Level level, String aMessage, Throwable thrown) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(level) && isNotLimited(level)) {
       log(fqcnCmn, 
           level,
@@ -352,6 +364,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Object param1) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(level) && !isEmpty(msgKey) && isNotLimited(level)) {
       log(fqcnCmn, level, rb(bundleName, msgKey, param1), null);
     }
@@ -366,6 +379,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Object[] params) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(level) && !isEmpty(msgKey) && isNotLimited(level)) {
       log(fqcnCmn, level, rb(bundleName, msgKey, params), null);
     }
@@ -380,6 +394,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Throwable thrown) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(level) && isNotLimited(level)) {
       if (thrown == null && isEmpty(msgKey)) {
         return;
@@ -402,6 +417,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(level) && !isEmpty(msgKey) && isNotLimited(level)) {
       log(fqcnCmn, level, rb(bundleName, msgKey), null);
     }
@@ -466,7 +482,9 @@ public abstract class Logger_common_impl implements Logger {
   
   @Override
   public void debug(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.DEBUG, arg0, null, null);
     }
   }
@@ -541,7 +559,9 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void debug(Supplier<String> msgSupplier) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, null);
     }   
   }
@@ -552,7 +572,9 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void debug(Supplier<String> msgSupplier, Throwable throwable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, throwable);
     }   
   }
@@ -564,7 +586,9 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void debug(Marker marker, String message, Supplier<?>... paramSuppliers) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.DEBUG, marker) && isNotLimited(Level.DEBUG)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.DEBUG, message, suppliersToArray(paramSuppliers), null);
     }  
   }
@@ -575,6 +599,7 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void debug(String message, Supplier<?>... paramSuppliers) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5617
     if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) {
       log2(null, fqcnCmn, Level.DEBUG, message, suppliersToArray(paramSuppliers), null);
     }  
@@ -587,7 +612,9 @@ public abstract class Logger_common_impl implements Logger {
   */
  @Override
 public void debug(Marker marker, Supplier<String> msgSupplier) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
    if (isLoggable(Level.DEBUG, marker) && isNotLimited(Level.DEBUG)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
      log2(marker, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, null);
    }   
  }
@@ -598,7 +625,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier) {
   */
  @Override
 public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
    if (isLoggable(Level.DEBUG, marker) && isNotLimited(Level.DEBUG)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
      log2(marker, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, throwable);
    }   
  }
@@ -607,7 +636,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
            
   @Override
   public void error(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.ERROR, arg0, null, null);
     }
   }
@@ -682,7 +713,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void error(Supplier<String> msgSupplier) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.ERROR, msgSupplier.get(), null, null);
     }   
   }
@@ -693,7 +726,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void error(Supplier<String> msgSupplier, Throwable throwable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.ERROR, msgSupplier.get(), null, throwable);
     }   
   }
@@ -705,7 +740,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void error(Marker marker, String message, Supplier<?>... paramSuppliers) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.ERROR, marker) && isNotLimited(Level.ERROR)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.ERROR, message, suppliersToArray(paramSuppliers), null);
     }  
   }
@@ -716,6 +753,7 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void error(String message, Supplier<?>... paramSuppliers) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5617
     if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) {
       log2(null, fqcnCmn, Level.ERROR, message, suppliersToArray(paramSuppliers), null);
     }  
@@ -728,7 +766,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
   */
   @Override
   public void error(Marker marker, Supplier<String> msgSupplier) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.ERROR, marker) && isNotLimited(Level.ERROR)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.ERROR, msgSupplier.get(), null, null);
     }
   }
@@ -741,7 +781,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void error(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.ERROR, marker) && isNotLimited(Level.ERROR)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.ERROR, msgSupplier.get(), null, throwable);
     }
   }
@@ -750,7 +792,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
 
   @Override
   public void info(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.INFO, arg0, null, null);
     }
   }
@@ -826,7 +870,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void info(Supplier<String> msgSupplier) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.INFO, msgSupplier.get(), null, null);
     }
   }
@@ -839,7 +885,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void info(Supplier<String> msgSupplier, Throwable throwable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.INFO, msgSupplier.get(), null, throwable);
     }
   }
@@ -855,7 +903,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void info(Marker marker, String message, Supplier<?>... paramSuppliers) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.INFO, marker) && isNotLimited(Level.INFO)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.INFO, message, suppliersToArray(paramSuppliers), null);
     }
   }
@@ -865,6 +915,7 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
    */
   public void info(String message, Supplier<?>... paramSuppliers) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5617
     if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
       log2(null, fqcnCmn, Level.INFO, message, suppliersToArray(paramSuppliers), null);
     }  
@@ -878,7 +929,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void info(Marker marker, Supplier<String> msgSupplier) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.INFO, marker) && isNotLimited(Level.INFO)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.INFO, msgSupplier.get(), null, null);
     }
   }
@@ -891,7 +944,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void info(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.INFO, marker) && isNotLimited(Level.INFO)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.INFO, msgSupplier.get(), null, throwable);
     }
   }
@@ -900,7 +955,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
 
   @Override
   public void trace(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.TRACE, arg0, null, null);
     }
   }
@@ -976,7 +1033,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void trace(Supplier<String> msgSupplier) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.TRACE, msgSupplier.get(), null, null);
     }
   }
@@ -989,7 +1048,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void trace(Supplier<String> msgSupplier, Throwable throwable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.TRACE, msgSupplier.get(), null, throwable);
     }
   }
@@ -1005,7 +1066,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void trace(Marker marker, String message, Supplier<?>... paramSuppliers) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.TRACE, marker) && isNotLimited(Level.TRACE)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.TRACE, message, suppliersToArray(paramSuppliers), null);
     }
   }
@@ -1016,6 +1079,7 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void trace(String message, Supplier<?>... paramSuppliers) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5617
     if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
       log2(null, fqcnCmn, Level.TRACE, message, suppliersToArray(paramSuppliers), null);
     }  
@@ -1029,7 +1093,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void trace(Marker marker, Supplier<String> msgSupplier) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.TRACE, marker) && isNotLimited(Level.TRACE)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.TRACE, msgSupplier.get(), null, null);
     }
   }
@@ -1042,7 +1108,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void trace(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.TRACE, marker) && isNotLimited(Level.TRACE)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.TRACE, msgSupplier.get(), null, throwable);
     }
   }
@@ -1050,7 +1118,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
   // ---------------------- WARN
   @Override
   public void warn(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.WARNING) && isNotLimited(Level.WARNING)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.WARNING, arg0, null, null);
     }
   }
@@ -1126,7 +1196,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void warn(Supplier<String> msgSupplier) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.WARNING) && isNotLimited(Level.WARNING)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.WARNING, msgSupplier.get(), null, null);
     }
   }
@@ -1139,7 +1211,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void warn(Supplier<String> msgSupplier, Throwable throwable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.WARNING) && isNotLimited(Level.WARNING)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(null, fqcnCmn, Level.WARNING, msgSupplier.get(), null, throwable);
     }
   }
@@ -1155,7 +1229,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void warn(Marker marker, String message, Supplier<?>... paramSuppliers) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.WARNING, marker) && isNotLimited(Level.WARNING)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.WARNING, message, suppliersToArray(paramSuppliers), null);
     }
   }
@@ -1166,6 +1242,7 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void warn(String message, Supplier<?>... paramSuppliers) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5617
     if (isLoggable(Level.WARN) && isNotLimited(Level.WARN)) {
       log2(null, fqcnCmn, Level.WARN, message, suppliersToArray(paramSuppliers), null);
     }  
@@ -1179,7 +1256,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void warn(Marker marker, Supplier<String> msgSupplier) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.WARNING, marker) && isNotLimited(Level.WARNING)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.WARNING, msgSupplier.get(), null, null);
     }
   }
@@ -1192,7 +1271,9 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
    */
   @Override
   public void warn(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5570
     if (isLoggable(Level.WARNING, marker) && isNotLimited(Level.WARNING)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
       log2(marker, fqcnCmn, Level.WARNING, msgSupplier.get(), null, throwable);
     }
   }

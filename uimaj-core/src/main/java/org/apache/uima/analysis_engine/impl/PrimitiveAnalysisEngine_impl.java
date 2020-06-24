@@ -107,6 +107,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     try {
       // Primitive AnalysisEngine can be build from any ResourceCreationSpecifier-
@@ -119,6 +120,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // BUT, for AnalysisEngineDescriptions, must not be an aggregate
       if (aSpecifier instanceof AnalysisEngineDescription
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               && !((AnalysisEngineDescription) aSpecifier).isPrimitive()) {
         return false;
       }
@@ -127,6 +129,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // also framework implementation must start with org.apache.uima.java
       final String fwImpl = mDescription.getFrameworkImplementation();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       if (!fwImpl.startsWith(Constants.JAVA_FRAMEWORK_NAME)) {
         return false;
       }
@@ -139,9 +142,11 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       }
 
       // Get logger for this class
+//IC see: https://issues.apache.org/jira/browse/UIMA-2382
       Logger logger = getLogger();
       logger.logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_init_begin__CONFIG", md.getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // Normalize language codes. Need to do this since a wide variety of
       // spellings are acceptable according to ISO.
@@ -158,9 +163,11 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // validate the AnalysisEngineDescription and throw a
       // ResourceInitializationException if there is a problem
       mDescription.validate(getResourceManager());
+//IC see: https://issues.apache.org/jira/browse/UIMA-130
 
       // Read parameters from the aAdditionalParams map.
       if (aAdditionalParams == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
         aAdditionalParams = Collections.emptyMap();
       }
       // determine if verification mode is on
@@ -176,7 +183,9 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // TODO: should only do this for outermost AE
       resetResultSpecificationToDefault();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2382
       logger.logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_analysis_engine_init_successful__CONFIG", md.getName());
       return true;
     } catch (ResourceConfigurationException e) {
@@ -196,6 +205,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    *           if an initialization failure occurs
    */
   protected void initializeAnalysisComponent(Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // instantiate Annotator class
     final String annotatorClassName = mDescription.getImplementationName();
@@ -208,6 +218,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
     // load annotator class
     Class<?> annotatorClass = loadUserClassOrThrow(annotatorClassName, mDescription);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5038
 
     // Make sure the specified class can be adapter to an AnalysisComponent.
     if (!(AnalysisComponent.class.isAssignableFrom(annotatorClass))
@@ -229,6 +240,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         mAnalysisComponent = (AnalysisComponent) userObject;
       } else {
         mAnalysisComponent = AnalysisComponentAdapterFactory.createAdapter(userObject,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 getAnalysisEngineMetaData(), aAdditionalParams);
       }
     } catch (ResourceInitializationException e) {
@@ -247,8 +259,10 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     uimaContext.setLogger(logger);
 
     // initialize AnalysisComponent
+//IC see: https://issues.apache.org/jira/browse/UIMA-5320
     UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
       callInitializeMethod(mAnalysisComponent, getUimaContext());
 //      mAnalysisComponent.initialize(getUimaContext());
       // set up the CAS pool for this AE (this won't do anything if mAnalysisComponent.getCasInstancesRequired() == 0)
@@ -268,8 +282,11 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    */
   public void destroy() {
     if (mAnalysisComponent != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5320
       withContextHolder(() -> mAnalysisComponent.destroy());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4133
       getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "destroy", LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_analysis_engine_destroyed__CONFIG", getMetaData().getName());
     }
     super.destroy();
@@ -300,6 +317,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // return a CasIterator that allows caller to step through the outputs
       // of this AnalysisComponent (if any)
+//IC see: https://issues.apache.org/jira/browse/UIMA-294
       return new AnalysisComponentCasIterator(mAnalysisComponent, aCAS);
     } finally {
       exitProcess();
@@ -308,6 +326,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     enterBatchProcessComplete();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5320
     UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
       getAnalysisComponent().batchProcessComplete();
@@ -319,6 +338,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     enterCollectionProcessComplete();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5320
     UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
       getAnalysisComponent().collectionProcessComplete();
@@ -338,11 +358,14 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   protected void callAnalysisComponentProcess(CAS aCAS) throws AnalysisEngineProcessException {
     // logging and instrumentation
     String resourceName = getMetaData().getName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2382
     Logger logger = getLogger();
     logger.logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "UIMA_analysis_engine_process_begin__FINE", resourceName);
     try {
       CAS view = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5320
       UimaContext prevContext = setContextHolder();  // for use by POJOs
       // call Annotator's process method
       try {
@@ -352,6 +375,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
         // now get the right interface(e.g. CAS or JCAS)
         // must precede the switchClassLoader call below UIMA-2211
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
         Class<? extends AbstractCas> requiredInterface = mAnalysisComponent.getRequiredCasInterface();
         AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
 
@@ -361,7 +385,10 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         if (mResultSpecChanged || mLastTypeSystem != view.getTypeSystem()) {
           if (mLastTypeSystem != view.getTypeSystem()) {
             mLastTypeSystem = view.getTypeSystem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
             mCurrentResultSpecification.setTypeSystem(mLastTypeSystem);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
             rsFromOutputCapabilities = new ResultSpecification_impl(mLastTypeSystem);
             rsFromOutputCapabilities.addCapabilities(this.getAnalysisEngineMetaData().getCapabilities());
           }
@@ -378,6 +405,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         ((CASImpl)view).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
           
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
         callProcessMethod(mAnalysisComponent, casToPass);
 //        // call the process method
 //        MDC.put(MDC_ANNOTATOR_CONTEXT_NAME, ((UimaContext_ImplBase)getUimaContext()).getQualifiedContextName());
@@ -404,6 +432,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           throw (AnalysisEngineProcessException) e;
         } else {
           throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   AnalysisEngineProcessException.ANNOTATOR_EXCEPTION, null, e);
         }
       } catch (Error e) {  // out of memory error, for instance
@@ -417,7 +446,9 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       }
 
       // log end of event
+//IC see: https://issues.apache.org/jira/browse/UIMA-2382
       logger.logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_analysis_engine_process_end__FINE", resourceName);
     } catch (Exception e) {
       // log and rethrow exception
@@ -514,7 +545,9 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @throws ResultNotSupportedException -
    */
   protected CAS callAnalysisComponentNext() throws AnalysisEngineProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResultNotSupportedException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5320
     UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
       AbstractCas absCas = mAnalysisComponent.next();
@@ -536,6 +569,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // clear the CAS's component info, since it is no longer
       // being processed by this AnalysisComponent
       casToReturn.setCurrentComponentInfo(null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
       ((CASImpl)casToReturn).restoreClassLoaderUnlockCas();
       return casToReturn;
     } catch (Exception e) {
@@ -558,6 +592,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     super.reconfigure();
 
     // inform the annotator
+//IC see: https://issues.apache.org/jira/browse/UIMA-5320
     UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
       mAnalysisComponent.reconfigure();
@@ -569,6 +604,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   }
 
   protected AnalysisComponent getAnalysisComponent() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return mAnalysisComponent;
   }
 
@@ -580,6 +616,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     private CAS mInputCas;
     private boolean casAvailable;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-294
     AnalysisComponentCasIterator(AnalysisComponent aAnalysisComponent, CAS aInputCas) {
       mMyAnalysisComponent = aAnalysisComponent;
       mInputCas = aInputCas;
@@ -596,6 +633,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       if (casAvailable) {
         return true;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5320
       UimaContext prevContext = setContextHolder();  // for use by POJOs
       try {
         casAvailable = mMyAnalysisComponent.hasNext();
@@ -607,6 +645,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           ((CASImpl)mInputCas).restoreClassLoaderUnlockCas();
         }
         return casAvailable;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1718
       } catch (Exception e) {
         ((CASImpl)mInputCas).restoreClassLoaderUnlockCas();
         if (e instanceof AnalysisEngineProcessException) {
@@ -633,6 +672,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         // Use the saved value so hasNext not called twice before next
         if (!casAvailable) {
           throw new UIMA_IllegalStateException(UIMA_IllegalStateException.NO_NEXT_CAS,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   new Object[0]);
         }
         casAvailable = false;
@@ -642,6 +682,8 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           // cas.setParentID(mOriginalCas.getID());
           return cas;
         } catch (Exception e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
+//IC see: https://issues.apache.org/jira/browse/UIMA-1718
           ((CASImpl)mInputCas).restoreClassLoaderUnlockCas();
           
           if (e instanceof AnalysisEngineProcessException) {

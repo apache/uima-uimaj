@@ -51,6 +51,7 @@ public class FormPanel extends JPanel {
   /** The Constant anchors. */
   private static final int anchors[] = { GridBagConstraints.NORTHEAST,
       GridBagConstraints.NORTHWEST, GridBagConstraints.NORTHEAST, GridBagConstraints.NORTHWEST };
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The gbl. */
   private GridBagLayout gbl;
@@ -157,6 +158,7 @@ public class FormPanel extends JPanel {
       if (i == 0)
         sb.append(String.valueOf(c).toUpperCase());
       else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1739
         if (c >= 'A' && c <= 'Z')
           sb.append(" ");
 

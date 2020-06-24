@@ -56,6 +56,7 @@ public class NewTextEventHandler implements ActionListener {
     }
     this.main.setTitle();
     this.main.resetTrees();
+//IC see: https://issues.apache.org/jira/browse/UIMA-416
     this.main.setSaveTextFileEnable(false);
     this.main.getUndoMgr().discardAllEdits();
     this.main.setFileStatusMessage();

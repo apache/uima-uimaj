@@ -38,6 +38,7 @@ public class CpmInitTest extends TestCase {
    * @see junit.framework.TestCase#tearDown()
    */
   protected void tearDown() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super.tearDown();
     FunctionErrorStore.resetCount();
   }
@@ -123,9 +124,13 @@ public class CpmInitTest extends TestCase {
       Thread.sleep(10);
     }
     System.out.println("testInitMultiThreadCPM()-Initialize was called: "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + listener.isInitialized());
     // Let the CPM process some docs, before calling stop
     Thread.sleep(300);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2295
+//IC see: https://issues.apache.org/jira/browse/UIMA-2295
+//IC see: https://issues.apache.org/jira/browse/UIMA-2295
 
     // stop CPM
     cpe.stop();
@@ -152,6 +157,7 @@ public class CpmInitTest extends TestCase {
     CollectionProcessingEngine cpe = null;
 
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       String colReaderBase = JUnitExtension.getFile("CpmTests" + separator
               + "ErrorTestCollectionReader.xml").getAbsolutePath();
       String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml").getAbsolutePath();
@@ -183,6 +189,7 @@ public class CpmInitTest extends TestCase {
       if (useSlowAnnotator) {
         CpeIntegratedCasProcessor slowProcessor = CpeDescriptorFactory
                 .produceCasProcessor("SlowAnnotator");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
         slowProcessor.setDescriptor(JUnitExtension.getFile("CpmTests" + separator
                 + "SlowAnnotator.xml").getAbsolutePath());
         cpeDesc.addCasProcessor(slowProcessor);

@@ -34,6 +34,8 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
         FsIndexKeyDescription {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static final long serialVersionUID = -4015997042353963398L;
 
@@ -98,6 +100,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
    */
   @Override
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
     final SerialContext sc = serialContext.get();
     final Serializer serializer = sc.serializer;
 
@@ -118,6 +121,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
         // This property has an interger-encoded value which is written to XML
         // as a more user-friendly string.
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
         serializer.outputStartElement(node, namespace, "comparator", "comparator", new AttributesImpl());
 //        aContentHandler.startElement(getXmlizationInfo().namespace, "comparator", "comparator",
 //                new AttributesImpl());
@@ -141,6 +145,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
    * @see MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     if ("typePriority".equals(aPropXmlInfo.propertyName)) {
       // The mere presence of a <typePriority/> element in the XML indicates
@@ -173,6 +178,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fsIndexKey",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("typePriority"), // NOTE: custom
               // XMLization
               new PropertyXmlInfo("featureName"), new PropertyXmlInfo("comparator") // NOTE:

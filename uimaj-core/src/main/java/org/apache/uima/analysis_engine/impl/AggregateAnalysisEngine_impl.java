@@ -105,6 +105,8 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     try {
       // aSpecifier must be a AnalysisEngineDescription
@@ -121,6 +123,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // also framework implementation must start with org.apache.uima.java
       final String fwImpl = mDescription.getFrameworkImplementation();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       if (!fwImpl.startsWith(Constants.JAVA_FRAMEWORK_NAME)) {
         return false;
       }
@@ -129,9 +132,12 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       AnalysisEngineMetaData md = mDescription.getAnalysisEngineMetaData();
 
       // Get logger for this class ... NOT the user's one in the UimaContext
+//IC see: https://issues.apache.org/jira/browse/UIMA-2382
       Logger logger = getLogger();
       logger.logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_init_begin__CONFIG", md.getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // Normalize language codes. Need to do this since a wide variety of
       // spellings are acceptable according to ISO.
@@ -147,12 +153,14 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // resolve component AnalysisEngine and FlowController specifiers
       // UIMA-5274  Set & restore the UimaContextHolder so that AEs created on this thread can use the Settings
+//IC see: https://issues.apache.org/jira/browse/UIMA-5320
       UimaContext prevContext = setContextHolder();
       try {
         // next call only done for side effect of resolving imports
         mDescription.getDelegateAnalysisEngineSpecifiers(getResourceManager());
         if (mDescription.getFlowControllerDeclaration() != null) {
           if (mDescription.getFlowControllerDeclaration().getImport() == null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   && mDescription.getFlowControllerDeclaration().getSpecifier() == null) {
             throw new ResourceInitializationException(
                     ResourceInitializationException.EMPTY_FLOW_CONTROLLER_DECLARATION,
@@ -170,11 +178,13 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // validate the AnalysisEngineDescription and throw a
       // ResourceInitializationException if there is a problem
       mDescription.validate(getResourceManager());
+//IC see: https://issues.apache.org/jira/browse/UIMA-130
 
       // Read parameters from the aAdditionalParams map.
       // (First copy it so we can modify it and send the parameters on to
       // out delegate analysis engines.)
       if (aAdditionalParams == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         aAdditionalParams = new HashMap<>();
       } else {
         aAdditionalParams = new HashMap<>(aAdditionalParams);
@@ -184,6 +194,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // passed on to delegate AEs
       aAdditionalParams.put(Resource.PARAM_CONFIG_PARAM_SETTINGS,
               getCurrentConfigParameterSettings());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // add resource manager (initialized by superclass) to aAdditionalParams map
       // so that delegate AEs will share it
@@ -195,7 +206,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // TODO: should only do this for outermost AE
       resetResultSpecificationToDefault();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2382
       logger.logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_analysis_engine_init_successful__CONFIG", md.getName());
       return true;
     } catch (ResourceConfigurationException e) {
@@ -222,6 +235,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       resultSpecForComponents.addCapabilities(getAllComponentCapabilities(), false);
 
       // now iterate over components and call their setResultSpecification methods
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
       Iterator<AnalysisEngine> componentIter = _getASB().getComponentAnalysisEngines().values().iterator();
       while (componentIter.hasNext()) {
         AnalysisEngine ae = componentIter.next();
@@ -236,6 +250,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @return all capabilities of all components of this aggregate
    */
   private Capability[] getAllComponentCapabilities() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<Capability> capabilityList = new ArrayList<>();
     Iterator<ProcessingResourceMetaData> iter = _getComponentMetaData().values().iterator();
     while (iter.hasNext()) {
@@ -253,7 +268,10 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   public void destroy() {
     if (mASB != null)
       mASB.destroy();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1251
     getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "destroy", LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "UIMA_analysis_engine_destroyed__CONFIG", getMetaData().getName());
     super.destroy();
   }
@@ -264,8 +282,10 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
     // logging and instrumentation
     String resourceName = getMetaData().getName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2382
     Logger logger = getLogger();
     logger.logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "UIMA_analysis_engine_process_begin__FINE", resourceName);
     try {
       CasIterator iterator = _getASB().process(aCAS);
@@ -292,6 +312,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     super.reconfigure();
 
     // call this method recursively on each component
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
     Map<String, AnalysisEngine> components = this._getASB().getComponentAnalysisEngines();
     Iterator<AnalysisEngine> it = components.values().iterator();
     while (it.hasNext()) {
@@ -299,6 +320,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       component.reconfigure();
     }
     //and the FlowController
+//IC see: https://issues.apache.org/jira/browse/UIMA-330
     FlowControllerContainer fcc = ((ASB_impl) _getASB()).getFlowControllerContainer();
     fcc.reconfigure();
   }
@@ -307,6 +329,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     enterBatchProcessComplete();
     try {
       // pass call down to components, which might be (or contain) CAS Consumers
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
       Iterator<AnalysisEngine> iter = this._getASB().getComponentAnalysisEngines().values().iterator();
       while (iter.hasNext()) {
         iter.next().batchProcessComplete();
@@ -323,7 +346,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // If there's a standard flow type, use that order, then call components not in flow
       // at the end in arbitrary order.  If there's no standard flow type
       // (a custom FlowController must be in use), the entire order is arbitrary.
+//IC see: https://issues.apache.org/jira/browse/UIMA-348
       String[] orderedNodes = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Map<String, AnalysisEngine> components = new HashMap<>(this._getASB().getComponentAnalysisEngines());
       FlowConstraints flow = getAnalysisEngineMetaData().getFlowConstraints();
       if (flow != null) {
@@ -342,11 +367,13 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         }
       }
       //now call remaining components in arbitrary order
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
       Iterator<AnalysisEngine> iter = components.values().iterator();
       while (iter.hasNext()) {
         iter.next().collectionProcessComplete();
       }
       //  Call CPC on the Flow Controller
+//IC see: https://issues.apache.org/jira/browse/UIMA-1316
       FlowControllerContainer fcc = _getASB().getFlowControllerContainer();
       if ( fcc != null ) {
         fcc.collectionProcessComplete();
@@ -368,6 +395,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    *           if an initialization failure occurs
    */
   protected void initializeAggregateAnalysisEngine(AnalysisEngineDescription aDescription,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     // Create and configure the ASB - the ASB will create and initialize
     // the component AnalysisEngines and the FlowController. This method also retrieves
@@ -375,6 +403,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     // _getComponentCasProcessorMetaData() method.
     // If any delegates fail to initialize, must let the successful ones release their resources.
     // Necessary for JMS sevice adapters that create listener threads.  Jira 1251.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1251
     try {
       initASB(aDescription, aAdditionalParams);
     } catch (ResourceInitializationException e) {
@@ -401,9 +430,12 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    *           if the ASB or a delegate AnalysisEngine could not be created.
    */
   protected void initASB(AnalysisEngineDescription aAnalysisEngineDescription, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // add this analysis engine's name to the parameters sent to the ASB
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, Object> asbParams = new HashMap<>(aAdditionalParams);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3209
     asbParams.put(ASB.PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME, this.getMetaData().getName());  // not used 9/2013 scan
     asbParams.put(Resource.PARAM_RESOURCE_MANAGER, getResourceManager());
 
@@ -411,6 +443,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     // System.out.println("remapping sofa names");
     asbParams.put(Resource.PARAM_AGGREGATE_SOFA_MAPPINGS, aAnalysisEngineDescription
             .getSofaMappings());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // Get FlowController specifier from the aggregate descriptor. If none, use
     // default FixedFlow specifier.
@@ -434,6 +467,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     mASB.initialize(dummyAsbSpecifier, asbParams);
     mASB.setup(_getComponentCasProcessorSpecifierMap(), getUimaContextAdmin(), flowControllerDecl,
             getAnalysisEngineMetaData());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // Get delegate AnalysisEngine metadata from the ASB
     mComponentMetaData = _getASB().getAllComponentMetaData();
@@ -455,6 +489,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     // priorities but NOT its own types.)
 
     // first, create Collections of TypeSystems, TypePriorities, and Index Descriptions
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<TypeSystemDescription> typeSystems = new ArrayList<>();
     List<TypePriorities> typePriorities = new ArrayList<>();
     List<FsIndexCollection> fsIndexCollections = new ArrayList<>();
@@ -469,6 +504,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     }
 
     // iterate over metadata for all components
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
     Iterator<ProcessingResourceMetaData> metadataIterator = _getComponentMetaData().values().iterator();
     while (metadataIterator.hasNext()) {
       ProcessingResourceMetaData md = metadataIterator.next();
@@ -482,6 +518,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
     // now do merge
     TypeSystemDescription aggTypeDesc = CasCreationUtils.mergeTypeSystems(typeSystems,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             getResourceManager());
     TypePriorities aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePriorities,
             getResourceManager());
@@ -511,12 +548,14 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     OperationalProperties aggProps = getAnalysisEngineMetaData().getOperationalProperties();
     if (aggProps != null) {
       boolean atLeastOneCasMultiplier = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
       Iterator<ProcessingResourceMetaData> metadataIterator = _getComponentMetaData().values().iterator();
       while (metadataIterator.hasNext()) {
         ProcessingResourceMetaData md = metadataIterator.next();
         OperationalProperties componentProps = md.getOperationalProperties();
         if (componentProps != null) {
           if (aggProps.isMultipleDeploymentAllowed()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   && !componentProps.isMultipleDeploymentAllowed()) {
             throw new ResourceInitializationException(
                     ResourceInitializationException.INVALID_MULTIPLE_DEPLOYMENT_ALLOWED,
@@ -536,6 +575,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       }
       if (aggProps.getOutputsNewCASes() && !atLeastOneCasMultiplier) {
         throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 ResourceInitializationException.INVALID_OUTPUTS_NEW_CASES, new Object[] {
                     getAnalysisEngineMetaData().getName(),
                     getAnalysisEngineMetaData().getSourceUrlString() });
@@ -552,6 +592,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     if (getAnalysisEngineMetaData().getFlowConstraints() instanceof CapabilityLanguageFlow) {
       flowControllerDesc = CapabilityLanguageFlowController.getDescription();
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       flowControllerDesc = FixedFlowController.getDescription();
     }
 
@@ -588,6 +629,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @return a Map with String keys and ResourceSpecifier values
    */
   protected Map<String, ResourceSpecifier> _getComponentCasProcessorSpecifierMap() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       return mDescription.getDelegateAnalysisEngineSpecifiers();
     } catch (InvalidXMLException e) {
@@ -604,11 +646,13 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   protected void buildProcessTraceFromMBeanStats(ProcessTrace trace) {
     if (isProcessTraceEnabled()) {
       ProcessTraceEvent_impl procEvt = new ProcessTraceEvent_impl(getMetaData().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "Analysis", "");
       procEvt.setDuration((int) getMBean().getAnalysisTimeSinceMark());
       trace.addEvent(procEvt);
 
       // now add subevents for each component
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
       Iterator<AnalysisEngine> aeIter = _getASB().getComponentAnalysisEngines().values().iterator();
       while (aeIter.hasNext()) {
         AnalysisEngine ae = aeIter.next();
@@ -623,6 +667,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       FlowControllerContainer fcc = ((ASB_impl) _getASB()).getFlowControllerContainer();
       int flowControllerTime = (int) fcc.getMBean().getAnalysisTimeSinceMark();
       ProcessTraceEvent_impl flowControllerEvent = new ProcessTraceEvent_impl(fcc.getMetaData()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getName(), "Analysis", "");
       flowControllerEvent.setDuration(flowControllerTime);
       procEvt.addSubEvent(flowControllerEvent);

@@ -90,6 +90,8 @@ public class TOP_Type {
 	protected final TOP_Type instanceOf_Type; // allow ref to this in inner class
 
   protected FSGenerator<?> getFSGenerator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
+//IC see: https://issues.apache.org/jira/browse/UIMA-5225
     return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
   }
 //
@@ -128,6 +130,7 @@ public class TOP_Type {
 		casImpl = null;
 		lowLevelTypeChecks = false;
 		lowLevelArrayBoundChecks = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3774
 		useExistingInstance = true;
 		ll_cas = null;
 		// used for test mocking
@@ -154,6 +157,7 @@ public class TOP_Type {
 		this.jcas = jcas;
 		this.casImpl = jcas.getCasImpl();
 		this.ll_cas = this.casImpl;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 		this.casType = casType;
 		this.instanceOf_Type = this;
 		this.casTypeCode = ((TypeImpl) this.casType).getCode();
@@ -207,6 +211,7 @@ public class TOP_Type {
 	}
 
 	public int noObjCreate() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-408
 		return casImpl.ll_createFS(casTypeCode);
 	}
 }

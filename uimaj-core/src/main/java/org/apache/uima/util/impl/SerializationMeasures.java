@@ -269,6 +269,7 @@ public class SerializationMeasures {
       return 100F;
     }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-3256
     return ((100F * a)/ b);
   }
         
@@ -294,6 +295,7 @@ public class SerializationMeasures {
   public final StatDetail[] statDetails = new StatDetail[SlotKind.values().length];
   {
     for (SlotKind kind : SlotKind.values()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
       statDetails[kind.ordinal()] = new StatDetail(kind.toString(), 
                                            kind.canBeNegative,
                                            kind.inMainHeap,
@@ -337,6 +339,7 @@ public class SerializationMeasures {
     StatDetail[] sds= new StatDetail[kinds.length];
     int i = 0;
     for(SlotKind k : kinds) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
       sds[i++] = statDetails[k.ordinal()];
     }
     return sds;
@@ -366,6 +369,7 @@ public class SerializationMeasures {
   public String toString() {
     // Strings
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     long origStringChars = statDetails[Slot_StrChars.ordinal()].getOriginal();
     long origStringObjs = statDetails[Slot_StrLength.ordinal()].getOriginal() * 2;
     long origStringsTot = origStringChars +   // space for the chars 
@@ -376,6 +380,7 @@ public class SerializationMeasures {
     allSlots.aggregate();
     strSlots.aggregate();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     long allOrig = statDetails[Slot_MainHeap.ordinal()].original +
                    origStringChars + origStringObjs +
                    origAuxBytes + 
@@ -402,6 +407,7 @@ public class SerializationMeasures {
        strTotZ, percent(strTotZ, origStringsTot),
        strB4Z,  percent(strB4Z,  origStringsTot),
             
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
        mainHeapFSs, stringsCommonChars, percent(stringsCommonChars, statDetails[Slot_StrChars.ordinal()].original),
        stringsSavedExact, stringsSavedSubstr,
        allSlots.toString()

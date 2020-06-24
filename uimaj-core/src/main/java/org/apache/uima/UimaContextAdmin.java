@@ -53,6 +53,8 @@ public interface UimaContextAdmin extends UimaContext {
    */
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
           ConfigurationManager aConfigurationManager);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Creates a UimaContext that is a child of this UimaContext.
@@ -144,6 +146,7 @@ public interface UimaContextAdmin extends UimaContext {
    */
   void defineCasPool(int aSize, Properties aPerformanceTuningSettings, boolean aSofaAware)
           throws ResourceInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets an object that can be used to do monitoring or management of this AnalysisEngine.

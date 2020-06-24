@@ -39,6 +39,8 @@ import org.apache.uima.resource.Resource_ImplBase;
  */
 public class FileLanguageResource_impl extends Resource_ImplBase implements
         ParameterizedDataResource {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** URL prefix */
   private String mFileUrlPrefix;
@@ -54,6 +56,7 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // aSpecifier must be a FileLanguageResourceSpecifier
     if (!(aSpecifier instanceof FileLanguageResourceSpecifier))
@@ -67,8 +70,10 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
     mFileUrlSuffix = spec.getFileUrlSuffix();
 
     // store initialization parameters to be passed on to DataReources
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     mResourceInitParams = (aAdditionalParams == null) ? new HashMap<>() : new HashMap<>(
         aAdditionalParams);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // call super initialize to set uima context from additional params if available
     // this context is to allow getting access to the Resource Manager.
@@ -90,6 +95,7 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
     // one parameter - the language - is required
     if (aParams.length != 1) {
       throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ResourceInitializationException.INCORRECT_NUMBER_OF_PARAMETERS, new Object[] { "1" });
     }
 
@@ -102,6 +108,7 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
       String urlString = mFileUrlPrefix + lang + mFileUrlSuffix;
       // build FileResource specifier and attempt to create DataResource
       FileResourceSpecifier fileSpec = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .createFileResourceSpecifier();
       fileSpec.setFileUrl(urlString);
 
@@ -134,6 +141,7 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
       return resource;
     } else {
       throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ResourceInitializationException.NO_RESOURCE_FOR_PARAMETERS, new Object[] { "["
                       + aParams[0] + "]" }, firstException);
     }

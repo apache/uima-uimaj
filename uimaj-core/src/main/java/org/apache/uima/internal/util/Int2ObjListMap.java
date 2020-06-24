@@ -42,6 +42,7 @@ public class Int2ObjListMap<T> {
   private final ArrayList<T> values;
   
   public Int2ObjListMap() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     values = new ArrayList<>();
   }
   

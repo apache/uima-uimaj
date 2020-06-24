@@ -53,8 +53,10 @@ public class SymbolTable {
    *          larger code points.
    */
   public SymbolTable(int start) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.symbol2intMap = new HashMap<>();
     this.int2symbolMap = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this.start = start;
   }
 
@@ -128,6 +130,7 @@ public class SymbolTable {
    */
   public int set(String symbol) {
     if (this.symbol2intMap.containsKey(symbol)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       return this.symbol2intMap.get(symbol);
     }
     int rel;
@@ -137,6 +140,7 @@ public class SymbolTable {
       abs = this.symbol2intMap.size();
       rel = abs2rel(abs);
       // System.out.println("Adding symbol " + symbol + " at pos: " + i);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       this.symbol2intMap.put(symbol, rel);
       int2symbolMap.add(symbol);
     }
@@ -152,6 +156,7 @@ public class SymbolTable {
    *         (where <code>start</code> is the code point of the first symbol).
    */
   public int get(String symbol) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3641
     Integer i = symbol2intMap.get(symbol);
     return (i == null) ? start - 1 : i;
   }
@@ -165,6 +170,7 @@ public class SymbolTable {
    */
   public String getSymbol(int i) {
     int abs = rel2abs(i);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3641
     if (abs < 0 || abs >= this.int2symbolMap.size()) {
       // System.out.println("Out of bounds error in SymbolTable object");
       return null;
@@ -178,6 +184,7 @@ public class SymbolTable {
    * @return The number of symbols in the table.
    */
   public int size() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3641
     return this.int2symbolMap.size();
   }
 

@@ -149,6 +149,7 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
       return true;
 
     if ((!validateTrueFalse) && (!validateInteger) && (!validateFloat)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && Character.isJavaIdentifierPart(ch))
       return true;
 

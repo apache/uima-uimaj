@@ -42,6 +42,7 @@ public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mSequence = ((FixedFlow) flowConstraints).getFixedFlow();
   }
 
@@ -82,6 +83,7 @@ public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
      */
     public Step next() throws AnalysisEngineProcessException {
       // drop any segment whose document text is "DROP"
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       if ("DROP".equals(getCas().getCurrentView().getDocumentText())) {
         return new FinalStep(true);
       }

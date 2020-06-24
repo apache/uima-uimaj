@@ -110,6 +110,7 @@ public class ResourcePickerDialog extends AbstractDialog {
     resourcesUI = newTree(mainArea, SWT.SINGLE);
     ((GridData)resourcesUI.getLayoutData()).heightHint = 400;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-477
     resourcesUIc1 = new TreeColumn(resourcesUI, SWT.LEFT);
     resourcesUIc2 = new TreeColumn(resourcesUI, SWT.LEFT);
         
@@ -163,6 +164,7 @@ public class ResourcePickerDialog extends AbstractDialog {
     } else if (event.widget == resourcesUI && event.type == SWT.Selection) {
       copyValuesFromGUI();
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
     super.handleEvent(event);
   }
   /* (non-Javadoc)

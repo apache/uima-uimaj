@@ -64,6 +64,7 @@ public interface CasDataConsumer extends ConfigurableResource, CasDataProcessor 
    */
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Completes the processing of an entire collection.
@@ -78,5 +79,6 @@ public interface CasDataConsumer extends ConfigurableResource, CasDataProcessor 
    */
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 }

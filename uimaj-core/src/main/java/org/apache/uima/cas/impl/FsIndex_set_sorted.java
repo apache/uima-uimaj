@@ -47,6 +47,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * 
  * @param <T> the Java class type for this index
  */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
 final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_singletype<T> {
   
 //  /**h
@@ -56,19 +57,23 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
 
 
   // The index, a custom high-performance array impl 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5496
   final private OrderedFsSet_array<T> indexedFSs;
     
   // only an optimization used for select.covering for AnnotationIndexes
   private int maxAnnotSpan = -1;
      
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
   FsIndex_set_sorted(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs) {
     super(cas, type, indexType, comparatorForIndexSpecs);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.indexedFSs = new OrderedFsSet_array<>(comparatorNoTypeWithID, comparatorNoTypeWithoutID);
   }
 
   @Override
   public void flush() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5111
     super.flush();
     this.indexedFSs.clear();
   }
@@ -92,6 +97,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
     
     // past the initial load, or item is not > previous largest item to be added 
     maybeCopy();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     if (isAnnotIdx) {
       int span = ((Annotation)fs).getEnd() - ((Annotation)fs).getBegin();
       if (span > maxAnnotSpan) {
@@ -99,6 +105,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
       }
     }
     indexedFSs.add(fs, isSorted() 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
                               ? comparatorNoTypeWithID 
                               : comparatorNoTypeWithoutID);
   }
@@ -124,6 +131,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
   @Override
   public T find(FeatureStructure templateKey) {
     int pos = this.indexedFSs.findWithoutID((TOP)templateKey);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5496
     return (pos >= 0)
              ? this.indexedFSs.getAtPos(pos)
              : null;
@@ -190,6 +198,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
    */
   @Override
   public int size() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     return this.indexedFSs.size()/* + itemsToBeAdded.size()*/;
   }
 
@@ -206,12 +215,15 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
    */
   @Override
   public boolean deleteFS(T fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     if (((TOP)fs)._getTypeImpl() != this.type) {
       throw new IllegalArgumentException(
           String.format("Wrong type %s passed to deleteFS of index over type %s", 
             ((TOP)fs)._getTypeImpl().getName(), this.type.getName()));
     }
 //    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
+//IC see: https://issues.apache.org/jira/browse/UIMA-5111
+//IC see: https://issues.apache.org/jira/browse/UIMA-5111
     maybeCopy();
     return this.indexedFSs.remove(fs);
   }
@@ -253,11 +265,13 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
     //   not an empty one, because it may become non-empty
     Comparator<TOP> comparatorMaybeNoTypeWithoutID = ignoreType ? comparatorNoTypeWithoutID : comparatorWithoutID;
     return casImpl.inPearContext()
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
              ? new FsIterator_set_sorted_pear<>(this, cow_wrapper, comparatorMaybeNoTypeWithoutID)
              : new FsIterator_set_sorted2<>(this, cow_wrapper, comparatorMaybeNoTypeWithoutID);  }
 
   @Override
   protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     if (CASImpl.traceCow) {
       this.casImpl.traceCowCopy(this);
     }
@@ -266,6 +280,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
   
   @Override
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return maxAnnotSpan;
   }
 
@@ -274,6 +289,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
    */
   @Override
   public int compare(FeatureStructure o1, FeatureStructure o2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return comparatorWithoutID.compare((TOP)o1, (TOP)o2);
   }
   

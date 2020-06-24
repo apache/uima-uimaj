@@ -152,6 +152,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    */
   public void setResourceManagerConfiguration(
           ResourceManagerConfiguration aResourceManagerConfiguration);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Checks that this <code>ResourceCreationSpecifier</code> is valid. 
@@ -182,6 +183,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    */
   public void validate(ResourceManager aResourceManager) throws ResourceInitializationException,
           ResourceConfigurationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-130
 
   /**
    * Does full validation of this <code>ResourceCreationSpecifier</code>. 
@@ -210,5 +212,6 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    */
   public void doFullValidation(ResourceManager aResourceManager)
           throws ResourceInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 }

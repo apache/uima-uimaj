@@ -147,11 +147,13 @@ public class RunAE implements StatusCallbackListener {
               .getAbsolutePath());
       crSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
       crSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
+//IC see: https://issues.apache.org/jira/browse/UIMA-413
       if (xcasInput) {
         crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, "XCAS");
       } else if (xmiInput) {
         crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, "XMI");
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-158
       if (xLenient) {
         crSettings.setParameterValue(FileSystemCollectionReader.PARAM_LENIENT, "true");
       }
@@ -160,6 +162,7 @@ public class RunAE implements StatusCallbackListener {
       CpeCasProcessor xmlDetaggerCasProc = null;
       if (xmlTagName != null && xmlTagName.length() > 0) {
         xmlDetaggerCasProc = CpeDescriptorFactory.produceCasProcessor("XmlDetagger");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1015
         CpeComponentDescriptor cpeComponentDescriptor = 
           CpeDescriptorFactory.produceComponentDescriptor(XmlDetagger.getDescriptorURL().toString());
         xmlDetaggerCasProc.setCpeComponentDescriptor(cpeComponentDescriptor);
@@ -173,6 +176,7 @@ public class RunAE implements StatusCallbackListener {
 
       // add user's AE to CPE
       CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor("UserAE");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1015
       CpeComponentDescriptor cpeComponentDescriptor = 
         CpeDescriptorFactory.produceComponentDescriptor(aeSpecifierFile.getAbsolutePath());
       casProc.setCpeComponentDescriptor(cpeComponentDescriptor);
@@ -184,6 +188,7 @@ public class RunAE implements StatusCallbackListener {
       CpeCasProcessor casCon = null;
       if (outputDir != null) {
         casCon = CpeDescriptorFactory.produceCasProcessor("CasConsumer");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1015
         cpeComponentDescriptor = 
           CpeDescriptorFactory.produceComponentDescriptor(InlineXmlCasConsumer.getDescriptorURL().toString());
         casCon.setCpeComponentDescriptor(cpeComponentDescriptor);
@@ -192,6 +197,7 @@ public class RunAE implements StatusCallbackListener {
         casCon.setConfigurationParameterSettings(consumerSettings);
         consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_OUTPUTDIR, outputDir
                 .getAbsolutePath());
+//IC see: https://issues.apache.org/jira/browse/UIMA-413
         if (xcasInput) {
           consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_XCAS, "XCAS");
         } else if (xmiInput) {
@@ -239,6 +245,7 @@ public class RunAE implements StatusCallbackListener {
     } catch (Exception e) {
       //special check for using XML detagger with remotes, which will generate an error
       //since sofa mappings aren't supported for remotes
+//IC see: https://issues.apache.org/jira/browse/UIMA-213
       if (xmlTagName != null && xmlTagName.length() > 0 && e instanceof UIMAException &&
               ((UIMAException)e).hasMessageKey(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE)) {
         System.err.println("The XML detagging feature (-t) is not supported for remote Analysis Engines or for Aggregates containing remotes.");
@@ -276,6 +283,7 @@ public class RunAE implements StatusCallbackListener {
     } else if (genProgressMessages) {
       // retrieve the filename of the input file from the CAS
       // (it was put there by the FileSystemCollectionReader)
+//IC see: https://issues.apache.org/jira/browse/UIMA-413
       if (!(xcasInput || xmiInput)) {
         Type fileLocType = aCas.getTypeSystem().getType(
                 "org.apache.uima.examples.SourceDocumentInformation");
@@ -418,9 +426,11 @@ public class RunAE implements StatusCallbackListener {
       } else if (arg.equals("-x")) // XCAS file input
       {
         xcasInput = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-413
       } else if (arg.equals("-xmi")) // XMI file input
       {
         xmiInput = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-158
       } else if (arg.equals("-lenient")) // lenient XML deserialization
       {
         xLenient = true;

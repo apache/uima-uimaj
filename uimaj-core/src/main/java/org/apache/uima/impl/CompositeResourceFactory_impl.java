@@ -51,11 +51,13 @@ public class CompositeResourceFactory_impl implements CompositeResourceFactory {
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     // check for factories registered for this resource specifier type
     // (most recently registered first)
     ListIterator<Registration> it = mRegisteredFactories.listIterator(mRegisteredFactories.size());
     Resource result = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (it.hasPrevious()) {
       Registration reg = it.previous();
       if (reg.resourceSpecifierInterface.isAssignableFrom(aSpecifier.getClass())) {

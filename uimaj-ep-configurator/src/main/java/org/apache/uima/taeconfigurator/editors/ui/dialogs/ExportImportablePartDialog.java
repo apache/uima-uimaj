@@ -87,12 +87,14 @@ public class ExportImportablePartDialog extends AbstractDialog {
      */
     @Override
     public void modifyText(ModifyEvent e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       String text = genFilePathUI.getText();
       int pos = text.lastIndexOf(baseFileName + ".xml");
       if (pos == -1)
         pos = text.length();
       baseFileName = baseFileNameUI.getText();
       genFilePathUI.setText(text.substring(0, pos) + baseFileName + ".xml");
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
       if (okButton != null)
         enableOK();
     }
@@ -118,6 +120,7 @@ public class ExportImportablePartDialog extends AbstractDialog {
     public void verifyText(VerifyEvent e) {
       if (0 <= e.text.indexOf('.')) {
         setErrorMessage(MessageFormat.format("invalid character(s): ''{0}''",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { e.text }));
         e.doit = false;
       } else
@@ -132,6 +135,7 @@ public class ExportImportablePartDialog extends AbstractDialog {
    */
   public ExportImportablePartDialog(AbstractSection aSection) {
     super(aSection, "Export an importable part",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Specify a base file name, and perhaps alter the path where it should be stored, and press OK");
     rootPath = aSection.editor.getFile().getParent().getLocation().toString() + '/';
   }
@@ -165,6 +169,7 @@ public class ExportImportablePartDialog extends AbstractDialog {
     importByNameUI.setText("Import by Name");
     importByNameUI
             .setToolTipText("Importing by name looks up the name on the classpath and datapath.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     importByLocationUI = new Button(composite, SWT.RADIO);
     importByLocationUI.setText("Import By Location");

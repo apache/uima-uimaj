@@ -28,6 +28,7 @@ public class CharArraySpanMap {
 
   private static final class Entry {
     private Entry() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       super();
       this.start = 0;
       this.length = 0;
@@ -90,6 +91,7 @@ public class CharArraySpanMap {
     this.charArray = new char[initialArraySize];
     this.map = new ArrayList[initialMapSize];
     for (int i = 0; i < initialMapSize; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       this.map[i] = new ArrayList<>();
     }
     this.pos = 0;
@@ -123,6 +125,7 @@ public class CharArraySpanMap {
   }
 
   private final int isInList(final char[] inputArray, final int start, final int strLen,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
           ArrayList<Entry> entryList) {
     final int listLen = entryList.size();
     Entry entry;
@@ -164,6 +167,7 @@ public class CharArraySpanMap {
    */
   public void put(String s, Object value) {
     final int hashCode = CharArrayString.hashCode(s);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     ArrayList<Entry> list = this.map[hashCode % this.map.length];
     final int listPos = isInList(s, list);
     if (listPos >= 0) {
@@ -197,6 +201,7 @@ public class CharArraySpanMap {
    */
   public final boolean containsKey(char[] characterArray, int start, int length) {
     final int hashCode = CharArrayString.hashCode(characterArray, start, (start + length));
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     final ArrayList<Entry> list = this.map[hashCode % this.map.length];
     final int listPos = isInList(characterArray, start, length, list);
     return (listPos >= 0);

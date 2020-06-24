@@ -31,6 +31,7 @@ public class FencedProcessReaper {
   
   public FencedProcessReaper() {
     super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   }
 
@@ -47,6 +48,7 @@ public class FencedProcessReaper {
       if (System.getProperty("os.name").equalsIgnoreCase("linux")) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_killing_process__FINEST",
                   new Object[] { Thread.currentThread().getName(), aPid });
         }

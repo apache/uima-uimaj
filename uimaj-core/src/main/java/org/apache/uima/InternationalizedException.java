@@ -105,8 +105,11 @@ public class InternationalizedException extends Exception {
     *           the original exception that caused this exception to be thrown, if any
     */
    public InternationalizedException(String aResourceBundleName, String aMessageKey, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
            Object[] aArguments, Throwable aCause) {
       super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
       c = new I18nx_impl(aResourceBundleName, aMessageKey, aArguments, aCause);
    }
 
@@ -117,6 +120,8 @@ public class InternationalizedException extends Exception {
     * message.
     */
    public String getResourceBundleName() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
      return c.getResourceBundleName();
    }
 
@@ -129,6 +134,8 @@ public class InternationalizedException extends Exception {
     *         this exception has no message.
     */
    public String getMessageKey() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
      return c.getMessageKey();
    }
 
@@ -140,6 +147,8 @@ public class InternationalizedException extends Exception {
     * @return the arguments to this exception's message.
     */
    public Object[] getArguments() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
      return c.getArguments();
    }
 
@@ -150,6 +159,8 @@ public class InternationalizedException extends Exception {
     * @return the English detail message for this exception.
     */
    public String getMessage() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
      return c.getMessage();
    }
 
@@ -160,6 +171,8 @@ public class InternationalizedException extends Exception {
     * @return this exception's detail message, localized for the default Locale.
     */
    public String getLocalizedMessage() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
      return c.getLocalizedMessage();
    }
 
@@ -172,6 +185,8 @@ public class InternationalizedException extends Exception {
     * @return this exception's detail message, localized for the specified <code>Locale</code>.
     */
    public String getLocalizedMessage(Locale aLocale) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
      return c.getLocalizedMessage(aLocale);
    }
 
@@ -182,6 +197,8 @@ public class InternationalizedException extends Exception {
     *         if there is no such cause.
     */
    public Throwable getCause() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
      return c.getCause();
    }
 
@@ -194,6 +211,8 @@ public class InternationalizedException extends Exception {
     * @return true if this exception or any of its root causes has a particular UIMA message key.
     */
    public boolean hasMessageKey(String messageKey) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5961
+//IC see: https://issues.apache.org/jira/browse/UIMA-6090
      return c.hasMessageKey(messageKey);
    }
 

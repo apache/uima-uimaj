@@ -113,6 +113,7 @@ public class FlowSection extends AbstractSection {
    */
   public FlowSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, Messages.getString("FlowSection.ComponentEngineFlowTitle"), //$NON-NLS-1$
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             Messages.getString("FlowSection.ComponentEngineFlowDescription")); //$NON-NLS-1$
   }
 
@@ -136,6 +137,7 @@ public class FlowSection extends AbstractSection {
     ((GridData) sectionClient.getLayoutData()).grabExcessHorizontalSpace = false;
 
     flowChoiceLabel = newLabelWithTip(sectionClient, Messages.getString("FlowSection.FlowKind"), //$NON-NLS-1$
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             Messages.getString("FlowSection.FlowKindTip")); //$NON-NLS-1$ 
     flowControllerChoice = newCComboWithTip(sectionClient, Messages
             .getString("FlowSection.FlowKindTip")); //$NON-NLS-1$ 
@@ -152,6 +154,7 @@ public class FlowSection extends AbstractSection {
     Composite fcButtonContainer = newButtonContainer(comp2, VERTICAL_BUTTONS, 0);
 
     flowControllerLabel = newLabelWithTip(comp2a, "Flow Controller:",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The XML descriptor for the Custom Flow Controller");
     flowControllerGUI = newUnUpdatableTextWithTip(comp2a, "",
             "The XML descriptor for the Custom Flow Controller");
@@ -185,6 +188,7 @@ public class FlowSection extends AbstractSection {
     final Composite buttonContainer = newButtonContainer(flowComposite, VERTICAL_BUTTONS, 70);
 
     upButton = newPushButton(buttonContainer, S_UP,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             Messages.getString("FlowSection.upTip"), !ENABLED); //$NON-NLS-1$
     downButton = newPushButton(buttonContainer, S_DOWN,
             Messages.getString("FlowSection.downTip"), !ENABLED); //$NON-NLS-1$
@@ -219,7 +223,9 @@ public class FlowSection extends AbstractSection {
       // add them to the list
       for (int i = 0; i < nodes.length; i++) {
         TableItem item = new TableItem(flowList, SWT.NONE);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
         item.setImage(TAEConfiguratorPlugin.getImage(TAEConfiguratorPlugin.IMAGE_ANNOTATOR) 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 );
         item.setText(0, nodes[i]);
       }
@@ -231,6 +237,7 @@ public class FlowSection extends AbstractSection {
         if (null == flowConstraints) {
           // force fixed flow if nothing is specified
           getAnalysisEngineMetaData().setFlowConstraints(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   flowConstraints = ff = new FixedFlow_impl());
           ff.setFixedFlow(stringArray0);
         }
@@ -246,6 +253,7 @@ public class FlowSection extends AbstractSection {
         refreshFcd(fcd);
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     enable();
   }
 
@@ -256,6 +264,7 @@ public class FlowSection extends AbstractSection {
    */
   private void refreshFcd(FlowControllerDeclaration fcd) {
     enableFlowControllerGUI(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-205
     String keyName;
     if (null == fcd.getKey() || "".equals(fcd.getKey())) {
       keyName = "Warning: no key name is specified";
@@ -278,6 +287,7 @@ public class FlowSection extends AbstractSection {
     // must follow label updates
     // because this method also does the redraw
     // otherwise, label updates are not redrawn...
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     flowControllerGUI.getParent().redraw();
   }
 
@@ -345,6 +355,7 @@ public class FlowSection extends AbstractSection {
       FixedFlow ff = null;
 
       String[] nodes = new FlowNodes(modelFlow).getFlow();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       if (flowTypeGUI.equals(CAPABILITY_LANGUAGE_FLOW)) {
         setFlowControllerDeclaration(null);
@@ -361,6 +372,7 @@ public class FlowSection extends AbstractSection {
         FlowControllerDeclaration newFcd = new FlowControllerDeclaration_impl();
         setFlowControllerDeclaration(newFcd);
         refreshFcd(newFcd);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         getAnalysisEngineMetaData().setFlowConstraints(ff = new FixedFlow_impl());
         ff.setFixedFlow(nodes);
       }
@@ -397,6 +409,7 @@ public class FlowSection extends AbstractSection {
     } else if (event.widget == findFlowControllerDescriptorButton) {
       handleFindFlowController();
     } else if (event.widget == flowControllerGUI && event.type == SWT.MouseDown
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && event.button == 3) {
       handleContextMenuRequest(event);
     } else if (event.widget == flowControllerGUI && event.type == SWT.MouseHover
@@ -485,6 +498,7 @@ public class FlowSection extends AbstractSection {
    * @param node          the key of the delegate
    */
   public void addNode(String node) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-205
     FlowConstraints flowConstraints = getModelFlow();
     if (null == flowConstraints) {
       // no constraints declared
@@ -620,6 +634,7 @@ public class FlowSection extends AbstractSection {
    * Handle find flow controller.
    */
   private void handleFindFlowController() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     FindComponentDialog dialog1 = new FindComponentDialog(this, "Find a Flow Controller",
             "Specify a name pattern and/or other constraints, and then push the Search button",
             flowControllerHeadersLC);
@@ -630,6 +645,7 @@ public class FlowSection extends AbstractSection {
     List matchingDelegateComponentDescriptions = dialog1.getMatchingDelegateComponentDescriptions();
 
     if (matchingDelegateComponentDescriptors.size() == 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       Utility.popMessage("No matching Components",
               "There are no Components matching your search criteria.", MessageDialog.ERROR);
       return;
@@ -657,6 +673,7 @@ public class FlowSection extends AbstractSection {
         shortName = fileName.substring(nLastSlashLoc + 1);
       }
       produceKeyAddFlowController(shortName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               editor.getFullPathFromDescriptorRelativePath(fileName), dialog2.isImportByName);
     }
   }
@@ -691,6 +708,7 @@ public class FlowSection extends AbstractSection {
     }
 
     if (!(inputDescription instanceof FlowControllerDescription)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       Utility.popMessage("Invalid kind of descriptor", MessageFormat.format(
               "Operation cancelled: The descriptor ''{0}'' being added is not a FlowController.",
               new Object[] { maybeShortenFileName(fullPathFileName) }), MessageDialog.ERROR);
@@ -719,10 +737,12 @@ public class FlowSection extends AbstractSection {
    */
   private void handleSpecifyFlowController() {
     MultiResourceSelectionDialog dialog = new MultiResourceSelectionDialog(getSection().getShell(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             editor.getFile().getProject().getParent(), "Flow Controller Selection", editor
                     .getFile().getLocation(), editor);
     dialog.setTitle("Flow Controller Selection");
     dialog.setMessage("Select a Flow Controller descriptor from the workspace:");
+//IC see: https://issues.apache.org/jira/browse/UIMA-477
     if (Window.CANCEL  == dialog.open()) {
       return;
     }
@@ -743,6 +763,7 @@ public class FlowSection extends AbstractSection {
   private boolean checkForOneSelection(int numberSelected) {
     if (numberSelected > 1) {
       Utility.popMessage("Error - Multiple selection",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "Only one Flow Controller can be selected. Please try again.", MessageDialog.ERROR);
       return false;
     }

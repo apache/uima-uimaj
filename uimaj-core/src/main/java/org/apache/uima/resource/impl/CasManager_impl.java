@@ -85,6 +85,7 @@ public class CasManager_impl implements CasManager {
   
   private final List<CasPoolManagementImpl> casPoolMBeans = 
       Collections.synchronizedList(new ArrayList<>());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
   public CasManager_impl(ResourceManager aResourceManager) {
     mResourceManager = aResourceManager;
@@ -154,6 +155,7 @@ public class CasManager_impl implements CasManager {
    * @see org.apache.uima.resource.CasManager#getCasDefinition()
    */
   public synchronized CasDefinition getCasDefinition() throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (mCasDefinition == null) {
       mCasDefinition = new CasDefinition(mMetaDataList, mResourceManager);
     }
@@ -170,6 +172,7 @@ public class CasManager_impl implements CasManager {
     CasPool pool = mRequestorToCasPoolMap.get(aRequestorContextName);
     if (pool == null) {
       throw new UIMARuntimeException(UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { aRequestorContextName, "1", "0" });
     }
     return pool.getCas(0);  // 0 means wait forever
@@ -181,6 +184,7 @@ public class CasManager_impl implements CasManager {
    * @see org.apache.uima.resource.CasManager#releaseCAS(org.apache.uima.cas.CAS)
    */
   public void releaseCas(AbstractCas aCAS) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-553
     if (!(aCAS instanceof CASImpl) &&
         !(aCAS instanceof JCas)) {
       throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_INTERFACE,
@@ -189,6 +193,7 @@ public class CasManager_impl implements CasManager {
     CASImpl baseCas = (aCAS instanceof JCas) ? ((JCas)aCAS).getCasImpl().getBaseCAS() 
                                              : ((CASImpl)aCAS).getBaseCAS();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5763
     if (baseCas.containsCasState(CasState.UIMA_AS_WAIT_4_RESPONSE)) {
       throw new UIMARuntimeException(UIMARuntimeException.CAS_RELEASE_NOT_ALLOWED_WHILE_WAITING_FOR_UIMA_AS, new Object[0]);
     }
@@ -197,6 +202,7 @@ public class CasManager_impl implements CasManager {
     if (pool == null) {
       // CAS doesn't belong to this CasManager!
       throw new UIMARuntimeException(UIMARuntimeException.CAS_RELEASED_TO_WRONG_CAS_MANAGER,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[0]);
     } else {
       //see if we have a UimaContext that we can notify that CAS was release
@@ -226,6 +232,7 @@ public class CasManager_impl implements CasManager {
    * @see org.apache.uima.resource.CasManager#defineCasPool(org.apache.uima.UimaContextAdmin, int, java.util.Properties)
    */
   public void defineCasPool(UimaContextAdmin aRequestorContext, int aMinimumSize, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1400
     defineCasPool(aRequestorContext, aRequestorContext.getUniqueName(), aMinimumSize, aPerformanceTuningSettings);
   }
 
@@ -234,8 +241,10 @@ public class CasManager_impl implements CasManager {
    * synchronized because it tests, then sets "pool"
    */
   private synchronized void defineCasPool(UimaContext aRequestorContext, String aRequestorContextName, int aMinimumSize,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     int poolSize = getCasPoolSize(aRequestorContextName, aMinimumSize);
+//IC see: https://issues.apache.org/jira/browse/UIMA-353
     if (poolSize > 0) {
       CasPool pool = mRequestorToCasPoolMap.get(aRequestorContextName);
       if (pool == null) {
@@ -248,6 +257,7 @@ public class CasManager_impl implements CasManager {
 
       } else {
         throw new UIMARuntimeException(UIMARuntimeException.DEFINE_CAS_POOL_CALLED_TWICE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { aRequestorContextName });
       }
     }
@@ -259,6 +269,8 @@ public class CasManager_impl implements CasManager {
   public CAS createNewCas(Properties aPerformanceTuningSettings) throws ResourceInitializationException {
 
     if (mCurrentTypeSystem != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1249
+//IC see: https://issues.apache.org/jira/browse/UIMA-1598
       return CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings, mCurrentTypeSystem);      
     } else {
       synchronized(this) {
@@ -284,6 +296,7 @@ public class CasManager_impl implements CasManager {
   public AbstractCas getCasInterface(CAS cas, Class<? extends AbstractCas> requiredInterface) {
     if (requiredInterface == CAS.class) {
       return cas;
+//IC see: https://issues.apache.org/jira/browse/UIMA-10
     } else if (requiredInterface == JCas.class) {
       try {
         return cas.getJCas();
@@ -313,6 +326,7 @@ public class CasManager_impl implements CasManager {
   @SuppressWarnings("unchecked")
   public static <T extends AbstractCas> T getCasInterfaceStatic(CAS cas, Class<T> requiredInterface) {
     if (requiredInterface == CAS.class) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
       return (T) cas;
     } else if (requiredInterface == JCas.class) {
       try {
@@ -326,6 +340,7 @@ public class CasManager_impl implements CasManager {
     }
     {
       throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_INTERFACE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { requiredInterface });
     }
   }
@@ -334,6 +349,7 @@ public class CasManager_impl implements CasManager {
    * @see org.apache.uima.resource.CasManager#setJmxInfo(java.lang.Object, java.lang.String)
    */
   public void setJmxInfo(Object aMBeanServer, String aRootMBeanName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-358
     mMBeanServer = aMBeanServer;
     if (aRootMBeanName.endsWith("\"")) {
       mMBeanNamePrefix = aRootMBeanName.substring(0, aRootMBeanName.length() - 1) + " CAS Pools\",";
@@ -354,6 +370,7 @@ public class CasManager_impl implements CasManager {
   protected void populateCasToCasPoolAndUimaContextMaps(CasPool aCasPool, UimaContext aUimaContext) {
     CAS[] casArray = new CAS[aCasPool.getSize()];
     for (int i = 0; i < casArray.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       casArray[i] = ((CASImpl) aCasPool.getCas()).getBaseCAS();
       mCasToCasPoolMap.put(casArray[i], aCasPool);
       if (aUimaContext != null) {
@@ -374,10 +391,12 @@ public class CasManager_impl implements CasManager {
    * @param pool the CasPool
    */
   protected void registerCasPoolMBean(String aRequestorContextName, CasPool pool) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-358
     if (mMBeanNamePrefix != null) {
       String mbeanName = mMBeanNamePrefix + "casPoolContextName=" + aRequestorContextName;
       CasPoolManagementImpl mbean = new CasPoolManagementImpl(pool, mbeanName);
       JmxMBeanAgent.registerMBean(mbean, mMBeanServer);
+//IC see: https://issues.apache.org/jira/browse/UIMA-598
       casPoolMBeans.add(mbean);
     }
   }  
@@ -393,6 +412,7 @@ public class CasManager_impl implements CasManager {
    * @return the size of the CAS pool to create for the specified AE
    */
   protected int getCasPoolSize(String aRequestorContextName, int aMinimumSize) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-353
     return aMinimumSize;
   }
 
@@ -403,6 +423,7 @@ public class CasManager_impl implements CasManager {
    */
   protected void finalize() throws Throwable {
     // unregister MBeans from MBeanServer when GC occurs.
+//IC see: https://issues.apache.org/jira/browse/UIMA-598
     for (CasPoolManagementImpl mbean : casPoolMBeans) {
       JmxMBeanAgent.unregisterMBean(mbean, mMBeanServer);
     }

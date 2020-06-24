@@ -159,6 +159,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    */
   public void setLanguagesSupported(String[] aLanguageIDs) {
     // create a list of existing preconditions
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<Precondition> preconditions = new ArrayList<>();
     Precondition[] precondArray = getPreconditions();
     if (precondArray != null) {
@@ -186,8 +187,10 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    */
   public void setMimeTypesSupported(String[] aMimeTypes) {
     // create a list of existing preconditions
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<Precondition> preconditions = new ArrayList<>();
     Precondition[] precondArray = getPreconditions();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (precondArray != null) {
       preconditions.addAll(Arrays.asList(precondArray));
     }
@@ -368,6 +371,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("capability",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("description"),
               new PropertyXmlInfo("inputs", false), new PropertyXmlInfo("outputs", false),
               new PropertyXmlInfo("inputSofas", "inputSofas", true, "sofaName"),

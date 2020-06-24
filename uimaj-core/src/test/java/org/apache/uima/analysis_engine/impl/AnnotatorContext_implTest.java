@@ -46,9 +46,12 @@ import junit.framework.TestCase;
 public class AnnotatorContext_implTest extends TestCase {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
           + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   protected final String TEST_EXTENSION_CLASSPATH = JUnitExtension.getFile(
           "ResourceTest/spaces in dir name").getPath();
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
 
   private AnnotatorContext mAC1;
 
@@ -77,13 +80,17 @@ public class AnnotatorContext_implTest extends TestCase {
       super.setUp();
       // create primitive analysis engine with configuration groups
       XMLInputSource in = new XMLInputSource(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       PrimitiveAnalysisEngine_impl tae = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Map<String, Object> map = new HashMap<>();
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
       rm.setDataPath(TEST_DATAPATH);
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
       rm.setExtensionClassPath(TEST_EXTENSION_CLASSPATH, true);
       map.put(AnalysisEngine.PARAM_RESOURCE_MANAGER, rm);
       tae.initialize(desc, map);
@@ -92,7 +99,9 @@ public class AnnotatorContext_implTest extends TestCase {
 
       // create aggregate analysis engine with configuration parameter overrides
       XMLInputSource in2 = new XMLInputSource(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("AnnotatorContextTest/AggregateTaeWithConfigParamOverrides.xml"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription aggDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in2);
       AggregateAnalysisEngine_impl aggTae = new AggregateAnalysisEngine_impl();
       aggTae.initialize(aggDesc, map);
@@ -105,6 +114,7 @@ public class AnnotatorContext_implTest extends TestCase {
       // create primitive analysis engine for resource testing
       XMLInputSource in3 = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/ResourceTestAnnotator.xml"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription resTestDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in3);
       PrimitiveAnalysisEngine_impl resTestTae = new PrimitiveAnalysisEngine_impl();
       resTestTae.initialize(resTestDesc, map);
@@ -112,8 +122,10 @@ public class AnnotatorContext_implTest extends TestCase {
       mAC3 = new AnnotatorContext_impl(resTestTae.getUimaContextAdmin());
 
       // create primitive TAE with configuration groups and default fallback
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       XMLInputSource in4 = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithDefaultFallbackConfiguration.xml"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription desc4 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in4);
       PrimitiveAnalysisEngine_impl tae4 = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
@@ -123,7 +135,9 @@ public class AnnotatorContext_implTest extends TestCase {
 
       // create primitive TAE with configuration parameters (no groups)
       XMLInputSource in5 = new XMLInputSource(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("AnnotatorContextTest/AnnotatorWithConfigurationParameters.xml"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription desc5 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in5);
       PrimitiveAnalysisEngine_impl tae5 = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
@@ -232,6 +246,7 @@ public class AnnotatorContext_implTest extends TestCase {
 
       Float floatVal2 = (Float) mAC1.getConfigParameterValue("de", "FloatParam");
       Assert.assertEquals(null, floatVal2);
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
 
       // zh group
       String str3 = (String) mAC1.getConfigParameterValue("zh", "StringParam");
@@ -253,12 +268,14 @@ public class AnnotatorContext_implTest extends TestCase {
 
       Float floatVal3 = (Float) mAC1.getConfigParameterValue("zh", "FloatParam");
       Assert.assertEquals(3.14, floatVal3, 0.0001);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 
       // test override
       String str4 = (String) mAC2.getConfigParameterValue("en", "StringParam");
       Assert.assertEquals("override", str4);
       // fallback too
       String str5 = (String) mAC2.getConfigParameterValue("en-GB", "StringParam");
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       Assert.assertEquals("override", str5);
       // other groups should not be affected
       String str6 = (String) mAC2.getConfigParameterValue("de", "StringParam");
@@ -266,6 +283,7 @@ public class AnnotatorContext_implTest extends TestCase {
 
       // test empty string array
       String[] strArr4 = (String[]) mAC2.getConfigParameterValue("x-unspecified",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "StringArrayParam");
       Assert.assertTrue(Arrays.equals(strArr4, new String[0]));
 
@@ -282,6 +300,7 @@ public class AnnotatorContext_implTest extends TestCase {
   public void testGetConfigurationGroupNames() {
     String[] names = mAC1.getConfigurationGroupNames();
     Assert.assertEquals(5, names.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("en"));
     Assert.assertTrue(l.contains("en-US"));
@@ -312,6 +331,7 @@ public class AnnotatorContext_implTest extends TestCase {
   public void testGetConfigParameterNamesString() {
     String[] names = mAC1.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("StringParam"));
     Assert.assertTrue(l.contains("StringArrayParam"));
@@ -408,6 +428,7 @@ public class AnnotatorContext_implTest extends TestCase {
       Assert.assertNotNull(url7);
 
       // spaces as part of extension classpath (spaces should be URL-encoded)
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
       URL url8 = mAC3.getResourceURL("OtherFileResource");
       assertNotNull(url8);
       assertTrue(url8.getPath().indexOf("%20") > -1);
@@ -560,6 +581,7 @@ public class AnnotatorContext_implTest extends TestCase {
 
       // passthrough to class loader
       InputStream strm4 = mAC3
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getResourceAsStream("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
       Assert.assertNotNull(strm4);
       // for directory
@@ -640,6 +662,7 @@ public class AnnotatorContext_implTest extends TestCase {
     try {
       // standard data resource
       InputStream strm = mAC3
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getResourceAsStream("TestFileLanguageResource", new String[] { "en" });
       Assert.assertNotNull(strm);
 
@@ -704,6 +727,7 @@ public class AnnotatorContext_implTest extends TestCase {
       URL url2 = mAC3.getResourceURL("TestFileLanguageResource", new String[] { "de" });
       Assert.assertNotNull(url2);
       Assert.assertFalse(url2.toString().equals(url.toString()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-148
 
       // custom object (should return null)
       URL url3 = mAC3.getResourceURL("TestLanguageResourceObject", new String[] { "en" });
@@ -752,6 +776,7 @@ public class AnnotatorContext_implTest extends TestCase {
   }
 
   public void testGetResourceURIStringStringArray() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
     try {
       // standard data resource
       URI uri = mAC3.getResourceURI("TestFileLanguageResource", new String[] { "en" });

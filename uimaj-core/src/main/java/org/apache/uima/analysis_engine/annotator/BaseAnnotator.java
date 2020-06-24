@@ -46,6 +46,8 @@ public interface BaseAnnotator {
    */
   public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
           AnnotatorConfigurationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Informs this annotator that the CAS TypeSystem has changed. The Analysis Engine calls this
@@ -64,6 +66,7 @@ public interface BaseAnnotator {
    */
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnnotatorInitializationException,
           AnnotatorConfigurationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Alerts this annotator that the values of its configuration parameters or external resources
@@ -80,6 +83,7 @@ public interface BaseAnnotator {
    */
   public void reconfigure() throws AnnotatorConfigurationException,
           AnnotatorInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Frees all resources held by this annotator. The Analysis Engine calls this method only once,

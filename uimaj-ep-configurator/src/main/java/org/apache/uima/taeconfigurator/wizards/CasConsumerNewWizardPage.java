@@ -36,7 +36,9 @@ public class CasConsumerNewWizardPage extends AbstractNewWizardPage {
    * @param selection the selection
    */
   public CasConsumerNewWizardPage(ISelection selection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(selection, "big_ae.gif", "Cas Consumer Descriptor File",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Create a new Cas Consumer Descriptor file", "casConsumerDescriptor.xml");
   }
 

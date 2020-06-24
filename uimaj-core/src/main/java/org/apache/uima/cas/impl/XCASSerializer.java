@@ -88,6 +88,7 @@ public class XCASSerializer {
 
     /** Any FS reference we've touched goes in here. value is index repo (first one?), or MULTIPLY_INDEXED */
     final private Map<TOP, Integer> queued = new IdentityHashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
     private static final int NOT_INDEXED = -1;
 
@@ -99,6 +100,7 @@ public class XCASSerializer {
     /** Any FS indexed in more than one IR goes in here, the value is the associated duplicate key,
      * Key is used to index into dupVectors */
     final private Map<TOP, Integer> duplicates = new IdentityHashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
     /** A key identifying a particular FS indexed in multiple indexes.
      *  Starts a 0, incr by 1 for each new FS discovered to be indexed in more than one IR */
@@ -149,6 +151,7 @@ public class XCASSerializer {
      * @return <code>false</code> iff we've seen this address before.
      */
     private boolean enqueue(TOP fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       if (KEY_ONLY_MATCH == isQueued(fs, INVALID_INDEX)) {
         return false;
       }
@@ -178,6 +181,7 @@ public class XCASSerializer {
       int status = isQueued(fs, indexRep);
       switch (status) {
         case KEY_NOT_FOUND: // most common case, key not found
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           queued.put(fs, indexRep);
           indexedFSs.add(fs);
           indexReps.add(indexRep);
@@ -195,6 +199,7 @@ public class XCASSerializer {
           if (MULTIPLY_INDEXED == prevIndex) {
             // this fs already indexed more than once
             int thisDup = duplicates.get(fs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
             dupVectors.get(thisDup).add(indexRep);
             break;
           }
@@ -229,6 +234,7 @@ public class XCASSerializer {
      */
     private int isQueued(TOP fs, int value) {
       Integer v = this.queued.get(fs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       return (null == v) ? KEY_NOT_FOUND : (value == v) ? KEY_AND_VALUE_MATCH : KEY_ONLY_MATCH;
     }
 
@@ -238,6 +244,7 @@ public class XCASSerializer {
      * 
      */
     private void serialize(boolean encodeDoc, OutOfTypeSystemData outOfTypeSystemData)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             throws IOException, SAXException {
       mOutOfTypeSystemData = outOfTypeSystemData;
 
@@ -248,6 +255,7 @@ public class XCASSerializer {
       if (outOfTypeSystemData != null) {
         // Queues out of type system data.
         int nextId = cas.getLastUsedFsId() + 1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
         Iterator<FSData> it = outOfTypeSystemData.fsList.iterator();
         while (it.hasNext()) {
           FSData fs = it.next();
@@ -262,6 +270,7 @@ public class XCASSerializer {
       iElementCount += queue.size();
 
       AttributesImpl rootAttrs = new AttributesImpl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1817
       rootAttrs.addAttribute("", VERSION_ATTR, VERSION_ATTR, cdataType, CURRENT_VERSION);
       startElement(casTagName, rootAttrs, iElementCount);
 
@@ -317,6 +326,7 @@ public class XCASSerializer {
       if (CAS.FEATURE_BASE_NAME_SOFASTRING.equals(attrName)) {
         attrValue = replaceInvalidXmlChars(attrValue);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1817
       attrs.addAttribute("", attrName, attrName, cdataType, attrValue);
     }
 
@@ -342,6 +352,7 @@ public class XCASSerializer {
           encodeFS(indexedFSs.get(i), iv);
         } else {
           int thisDup = duplicates.get(indexedFSs.get(i));
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
           encodeFS(indexedFSs.get(i), dupVectors.get(thisDup));
         }
       }
@@ -362,6 +373,7 @@ public class XCASSerializer {
       }
 
       // Get indexes for each SofaFS in the CAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       for (int sofaNum = 1, numViews = cas.getViewCount(); sofaNum <= numViews; sofaNum++) {
         FSIndexRepositoryImpl viewIR = (FSIndexRepositoryImpl) cas.getBaseCAS().getSofaIndexRepository(sofaNum);
         if (viewIR != null) {
@@ -374,6 +386,7 @@ public class XCASSerializer {
     }
     
     private void enqueueArray(TOP[] fss, int sofaNum) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       for (TOP fs : fss) {   // enqueues the fss for one view (incl view 0 - the base view
         enqueueIndexed(fs, sofaNum);
       }
@@ -390,6 +403,8 @@ public class XCASSerializer {
       for (int i = 0; i < max; i++) {
         TOP fs = indexedFSs.get(i);
         int typeCode = fs._getTypeCode();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         final int typeClass = classifyType(fs._getTypeImpl());
         if (typeClass == LowLevelCAS.TYPE_CLASS_FS) {
           if (mOutOfTypeSystemData != null) {
@@ -407,6 +422,7 @@ public class XCASSerializer {
      * 
      */
     private void encodeQueued() throws IOException, SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       for (TOP item : queue) {
         encodeFS(item, null);
       }
@@ -455,7 +471,9 @@ public class XCASSerializer {
       // is
       // actually referenced.
       // xmlStack.addAttribute(ID_ATTR_NAME, Integer.toString(fs_id));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       addAttribute(workAttrs, ID_ATTR_NAME, Integer.toString(fs._id));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final int typeClass = classifyType(fs._getTypeImpl());
       // Call special code according to the type of the FS (special
       // treatment
@@ -512,6 +530,7 @@ public class XCASSerializer {
         }
         default: {
           // Internal error.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           throw new RuntimeException("Internal error: classifying FS type.");
         }
       } // end of switch
@@ -522,12 +541,14 @@ public class XCASSerializer {
 
     private void encodePrimitiveTypeArrayFS(String[] data, String typeName, AttributesImpl attrs)
             throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       addAttribute(attrs, ARRAY_SIZE_ATTR, Integer.toString(data.length));
       startElement(typeName, attrs, data.length);
 
       for (int i = 0; i < data.length; i++) {
         startElement(ARRAY_ELEMENT_TAG, emptyAttrs, 1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1344
         addText(data[i] == null ? "" : data[i]);
         endElement(ARRAY_ELEMENT_TAG);
       }
@@ -535,6 +556,7 @@ public class XCASSerializer {
     }
 
     private void encodeFSArray(FSArray fs, AttributesImpl attrs) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       String typeName = fs._getTypeImpl().getName();
       final int size = fs.size();
 //      int pos = cas.getArrayStartAddress(fs_id);
@@ -555,6 +577,7 @@ public class XCASSerializer {
           
           List<ArrayElement> ootsElems = mOutOfTypeSystemData.arrayElements.get(fs);
           if (ootsElems != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
             Iterator<ArrayElement> iter = ootsElems.iterator();
             // TODO: iteration could be slow for large arrays
             while (iter.hasNext())
@@ -584,6 +607,7 @@ public class XCASSerializer {
     }
 
     private void enqueueFSArray(FSArray fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       TOP[] theArray = fs._getTheArray();
       for (TOP element : theArray) {
         if (element != null) {
@@ -596,6 +620,7 @@ public class XCASSerializer {
      * Encode features of a regular (non-array) FS.
      */
     private void encodeFeatures(TOP fs, AttributesImpl attrs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       TypeImpl ti = fs._getTypeImpl();
       
       for (FeatureImpl fi : ti.getFeatureImpls()) {
@@ -613,8 +638,10 @@ public class XCASSerializer {
     }
 
     private void enqueueFeatures(TOP fs, int heapValue) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       TypeImpl ti = fs._getTypeImpl();
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       if (fs instanceof UimaSerializable) {
         ((UimaSerializable)fs)._save_to_cas_data();
       }
@@ -632,6 +659,7 @@ public class XCASSerializer {
      * Encode Out-Of-TypeSystem Features.
      */
     private void encodeOutOfTypeSystemFeatures(TOP fs, AttributesImpl attrs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       List<Pair<String, Object>> attrList = mOutOfTypeSystemData.extraFeatureValues.get(fs);
       if (attrList != null) {
         for (Pair<String, Object> p : attrList) {
@@ -652,6 +680,7 @@ public class XCASSerializer {
      * Encode Out-Of-TypeSystem Features.
      */
     private void enqueueOutOfTypeSystemFeatures(TOP fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       List<Pair<String, Object>> attrList = mOutOfTypeSystemData.extraFeatureValues.get(fs);
       if (attrList != null) {
         Iterator<Pair<String, Object>> it = attrList.iterator();
@@ -682,6 +711,7 @@ public class XCASSerializer {
      * @return the classification
      */
     private final int classifyType(TypeImpl ti) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       return TypeSystemImpl.getTypeClass(ti);
     }
 
@@ -690,8 +720,10 @@ public class XCASSerializer {
      */
     private void enqueueOutOfTypeSystemData(OutOfTypeSystemData aData) {
       for (FSData fs : aData.fsList) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         for (Entry<String, Object> entry : fs.featVals.entrySet()) {
           String attrName = entry.getKey();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           if (attrName.startsWith(REF_PREFIX)) {
             Object attrVal = entry.getValue();
             // references whose ID starts with the character 'a' are references to out of type
@@ -707,6 +739,7 @@ public class XCASSerializer {
     }
 
     private void serializeOutOfTypeSystemData(OutOfTypeSystemData aData) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
       for (FSData fs : aData.fsList) {
         workAttrs.clear();
         // Add indexed info.
@@ -718,9 +751,11 @@ public class XCASSerializer {
         addAttribute(workAttrs, ID_ATTR_NAME, fs.id);
 
         // Add other attributes (remap OOTS refs)
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         for (Entry<String, Object> entry : fs.featVals.entrySet()) {
           String attrName = entry.getKey();
           Object attrVal = entry.getValue();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           if (attrName.startsWith(REF_PREFIX)) {
             if (attrVal instanceof String && ((String)attrVal).startsWith("a")) {
               // "a" prefix indicates a reference from one OOTS FS
@@ -730,6 +765,7 @@ public class XCASSerializer {
               attrVal = mOutOfTypeSystemData.idMap.get(attrVal);
             }
           }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           addAttribute(workAttrs, attrName, (attrVal instanceof TOP) 
                                               ? Integer.toString(((TOP)attrVal)._id) 
                                               : (String)attrVal);
@@ -758,6 +794,7 @@ public class XCASSerializer {
     } else {
       // Note: This is really slow so we avoid if possible. -- RJB
       return StringUtils
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .replaceAll(StringUtils.replaceAll(aTagName, ":", "_colon_"), "-", "_dash_");
     }
   }
@@ -806,6 +843,7 @@ public class XCASSerializer {
     this.featureNames = new String[featArraySize];
     FeatureImpl feat;
     String featName;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
     Iterator<Feature> it = this.ts.getFeatures();
     while (it.hasNext()) {
       feat = (FeatureImpl) it.next();
@@ -850,6 +888,7 @@ public class XCASSerializer {
    * @throws SAXException passed thru
    */
   public void serialize(CAS cas, ContentHandler contentHandler, boolean encodeDoc)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException, SAXException {
     serialize(cas, contentHandler, encodeDoc, null);
   }
@@ -871,6 +910,7 @@ public class XCASSerializer {
    * @throws SAXException passed thru
    */
   public void serialize(CAS cas, ContentHandler contentHandler, boolean encodeDoc,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           OutOfTypeSystemData outOfTypeSystemData) throws IOException, SAXException {
     contentHandler.startDocument();
     XCASDocSerializer ser = new XCASDocSerializer(contentHandler, ((CASImpl) cas).getBaseCAS());
@@ -957,6 +997,7 @@ public class XCASSerializer {
    */
   public static void serialize(CAS aCAS, OutputStream aStream, boolean isFormattedOutput)
           throws SAXException, IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6128
     serialize(aCAS, aStream, isFormattedOutput, false);
   }
 
@@ -977,6 +1018,7 @@ public class XCASSerializer {
    *           if an I/O failure occurs
    */
   public static void serialize(CAS aCAS, OutputStream aStream, boolean isFormattedOutput, boolean useXml_1_1)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException, IOException {
     XCASSerializer xcasSerializer = new XCASSerializer(aCAS.getTypeSystem());
     XMLSerializer sax2xml = new XMLSerializer(aStream, isFormattedOutput);

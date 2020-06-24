@@ -80,6 +80,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * @see org.apache.uima.resource.metadata.Import#setName(java.lang.String)
    */
   public void setName(String aName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mName = aName;
   }
 
@@ -111,6 +112,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * Called when importing by name non-xml files, e.g. external override settings
    */
   public void setSuffix(String suffix) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
     byNameSuffix = suffix;
   }
   
@@ -142,6 +144,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
                 new Object[] {"name", url});
       } catch (MalformedURLException e) {
         throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
                 new Object[] { filename, getSourceUrlString() }, e);
       }
       if (url == null) {
@@ -164,6 +167,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String name = aElement.getAttribute("name");
     setName(name.length() == 0 ? null : name);
@@ -173,6 +177,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     // validate that at exactly one of name or location is specified
     if (!((getName() == null) ^ (getLocation() == null))) {
       throw new InvalidXMLException(InvalidXMLException.IMPORT_MUST_HAVE_NAME_XOR_LOCATION,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[0]);
     }
   }
@@ -185,6 +190,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    */
   
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
     if (null == serialContext.get()) {
       getSerialContext(aContentHandler);  
       try {
@@ -198,10 +204,12 @@ public class Import_impl extends MetaDataObject_impl implements Import {
   }
   
   private void toXMLinner(boolean aWriteDefaultNamespaceAttribute)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
     SerialContext sc = serialContext.get();
     Serializer serializer = sc.serializer;   
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
     String namespace = getXmlizationInfo().namespace;
     AttributesImpl attrs = new AttributesImpl();
     String name = getName();
@@ -212,6 +220,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     if (location != null) {
       attrs.addAttribute("", "location", "location", "", location);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
     Node node = serializer.findMatchingSubElement("import");
     serializer.outputStartElement(node, namespace, "import", "import", attrs);
 //    aContentHandler.startElement(getXmlizationInfo().namespace, "import", "import", attrs);

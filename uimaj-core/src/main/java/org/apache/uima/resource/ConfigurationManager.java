@@ -55,6 +55,8 @@ public interface ConfigurationManager {
    */
   public void createContext(String aContextName, ResourceMetaData aResourceMetaData, Settings externalSettings)
           throws ResourceConfigurationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Sets the current <code>Session</code>. The Configuration Manager uses the

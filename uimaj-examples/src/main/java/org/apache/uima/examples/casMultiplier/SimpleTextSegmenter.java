@@ -50,6 +50,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
    */
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     mSegmentSize = (Integer) aContext.getConfigParameterValue("SegmentSize");
   }
 
@@ -64,6 +65,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
     // retrieve the filename of the input file from the CAS so that it can be added
     // to each segment
     FSIterator it = aJCas.getAnnotationIndex(SourceDocumentInformation.type).iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (it.hasNext()) {
       SourceDocumentInformation fileLoc = (SourceDocumentInformation) it.next();
       mDocUri = fileLoc.getUri();
@@ -98,6 +100,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
     while (breakAt < mDoc.length() && mDoc.charAt(breakAt - 1) != '\n')
       breakAt++;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-10
     JCas jcas = getEmptyJCas();
     try {
       jcas.setDocumentText(mDoc.substring(mPos, breakAt));
@@ -110,6 +113,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
         sdi.setDocumentSize(breakAt - mPos);
         sdi.addToIndexes();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-66
         if (breakAt == mDoc.length()) {
           sdi.setLastSegment(true);
         }

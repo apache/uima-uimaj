@@ -65,6 +65,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    }
 	
    public T getNthElement(int i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
      FSList<T> node = (FSList<T>) getNthNode(i);
      if (node instanceof EmptyFSList) {
        throw new CASRuntimeException(CASRuntimeException.JCAS_GET_NTH_PAST_END, Integer.toString(i));
@@ -73,6 +74,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    } 
    
   public NonEmptyFSList<T> createNonEmptyNode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
    return new NonEmptyFSList<>(this._casView.getJCasImpl());
   }
   
@@ -140,6 +142,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    * @return an FSList, with the elements from the array
    */
   public static <U extends TOP, E extends FeatureStructure> FSList<U> create(JCas jcas, E[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     FSList<U> fsl = jcas.getCasImpl().emptyFSList();   
     for (int i = a.length - 1; i >= 0; i--) {
       fsl = fsl.push((U) a[i]);
@@ -161,6 +164,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    * @return the new list, with this item as the head value of the first element
    */
   public NonEmptyFSList<T> push(T item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new NonEmptyFSList<>(_casView.getJCasImpl(), item, this);
   }
 
@@ -173,10 +177,12 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
   
   @Override
   public EmptyFSList emptyList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     return this._casView.emptyFSList();
   }
  
   public boolean contains(T v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     FSList<T> node = this;
     while (node instanceof NonEmptyFSList) {
       NonEmptyFSList<T> n = (NonEmptyFSList<T>) node;

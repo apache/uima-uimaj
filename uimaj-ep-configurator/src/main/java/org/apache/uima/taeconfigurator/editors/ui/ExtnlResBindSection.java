@@ -86,7 +86,9 @@ public class ExtnlResBindSection extends AbstractSection {
    * @param parent the parent
    */
   public ExtnlResBindSection(MultiPageEditor aEditor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             aEditor,
             parent,
             "Resources Needs, Definitions and Bindings",
@@ -107,6 +109,7 @@ public class ExtnlResBindSection extends AbstractSection {
     Composite buttonContainer = newButtonContainer(sectionClient);
 
     addButton = newPushButton(buttonContainer, S_ADD,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Click to add a new External Resource definition");
     editButton = newPushButton(buttonContainer, S_EDIT,
             "Click to edit an External Resource definition");
@@ -155,6 +158,8 @@ public class ExtnlResBindSection extends AbstractSection {
    * @param bindings the bindings
    */
   private void addExternalResourceDescriptionToGUI(ExternalResourceDescription xrd,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ExternalResourceBinding[] bindings) {
     TreeItem item = new TreeItem(tree, SWT.NONE);
     fillXrdItem(item, xrd);
@@ -175,6 +180,7 @@ public class ExtnlResBindSection extends AbstractSection {
     if (rs instanceof FileLanguageResourceSpecifier) {
       FileLanguageResourceSpecifier flrs = (FileLanguageResourceSpecifier) rs;
       text.append("  URL_Prefix: ").append(flrs.getFileUrlPrefix()).append("  URL_Suffix: ")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .append(flrs.getFileUrlSuffix());
     } else if (rs instanceof FileResourceSpecifier) {
       FileResourceSpecifier frs = (FileResourceSpecifier) rs;
@@ -198,6 +204,7 @@ public class ExtnlResBindSection extends AbstractSection {
    * @param bindings the bindings
    */
   private void fillBindings(TreeItem parent, ExternalResourceDescription xrd,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ExternalResourceBinding[] bindings) {
     if (null != bindings) {
       for (int i = 0; i < bindings.length; i++) {
@@ -228,11 +235,13 @@ public class ExtnlResBindSection extends AbstractSection {
    */
   @Override
   public void handleEvent(Event event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (event.widget == addButton)
       handleAdd();
     else if (event.widget == editButton || event.type == SWT.MouseDoubleClick)
       handleEdit();
     else if (event.widget == removeButton
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || (event.widget == tree && event.type == SWT.KeyUp && event.character == SWT.DEL))
       handleRemove();
     else if (event.widget == bindButton)
@@ -256,6 +265,7 @@ public class ExtnlResBindSection extends AbstractSection {
    * @return the XR description from tree item
    */
   public ExternalResourceDescription getXRDescriptionFromTreeItem(TreeItem item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return (ExternalResourceDescription) item.getData();
   }
 
@@ -271,8 +281,10 @@ public class ExtnlResBindSection extends AbstractSection {
       return;
     ExternalResourceDescription xrd = getXRDescriptionFromTreeItem(item);
     ResourceSpecifier rs = xrd.getResourceSpecifier();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (!((rs instanceof FileResourceSpecifier) || (rs instanceof FileLanguageResourceSpecifier))) {
       Utility.popMessage("Can''t edit custom resource", "This resource is a '"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + rs.getClass().getName()
               + "', and any edits have to be done directly in the XML in the Source view.",
               MessageDialog.INFORMATION);
@@ -308,6 +320,8 @@ public class ExtnlResBindSection extends AbstractSection {
    * @param item the item
    */
   private void alterExistingXRD(AddExternalResourceDialog dialog, ExternalResourceDescription xrd,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           TreeItem item) {
     valueChanged = false;
     xrd.setName(setValueChanged(dialog.xrName, xrd.getName()));
@@ -376,7 +390,9 @@ public class ExtnlResBindSection extends AbstractSection {
     if (1 != selectionCount)
       return;
     TreeItem item = tree.getSelection()[0];
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (null == item.getParentItem()) { // case of removing a resource
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (Window.CANCEL == Utility
               .popOkCancel("Removing Resource",
                       "Removing an External Resource and all its bindings. Resource name:"
@@ -456,6 +472,7 @@ public class ExtnlResBindSection extends AbstractSection {
   @Override
   public void enable() {
     // bind enabled when one item in tree and one in table is selected
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     bindButton.setEnabled(tree.getSelectionCount() == 1
             && resourceDependencySection.getTable().getSelectionCount() == 1
             && "".equals(resourceDependencySection.getTable().getSelection()[0].getText(0))); // not
@@ -488,6 +505,7 @@ public class ExtnlResBindSection extends AbstractSection {
       for (int i = 0; i < xrds.length; i++) {
         if (xrds[i].getName().equals(name)) {
           Utility.popMessage("Name Already Defined",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "The External Resource Name specified is already defined", MessageDialog.ERROR);
           return true;
         }

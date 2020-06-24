@@ -41,6 +41,7 @@ public class EmptyCasIterator implements CasIterator {
    * @see org.apache.uima.analysis_engine.CasIterator#next()
    */
   public CAS next() throws AnalysisEngineProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     throw new UIMA_IllegalStateException(UIMA_IllegalStateException.NO_NEXT_CAS, new Object[0]);
   }
 

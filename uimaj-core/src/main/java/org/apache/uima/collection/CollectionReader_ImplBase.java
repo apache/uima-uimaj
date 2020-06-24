@@ -40,6 +40,8 @@ import org.apache.uima.util.Level;
  */
 
 public abstract class CollectionReader_ImplBase extends ConfigurableResource_ImplBase implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CollectionReader {
   /**
    * @deprecated
@@ -62,6 +64,7 @@ private CasInitializer mCasInitializer;
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     if (aSpecifier instanceof ResourceCreationSpecifier) {
       // do framework intitialiation

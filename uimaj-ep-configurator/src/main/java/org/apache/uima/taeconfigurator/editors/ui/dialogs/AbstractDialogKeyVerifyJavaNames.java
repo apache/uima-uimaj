@@ -34,6 +34,8 @@ import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
  */
 public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKeyVerify implements
         VerifyKeyListener, VerifyListener {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogKeyVerify#newSingleLineStyledText(org.eclipse.swt.widgets.Composite, java.lang.String)
@@ -53,6 +55,7 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
    * @param description the description
    */
   protected AbstractDialogKeyVerifyJavaNames(AbstractSection aSection, String title,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String description) {
     super(aSection, title, description);
   }
@@ -93,6 +96,7 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
   @Override
   public void verifyText(VerifyEvent event) {
     event.doit = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String oldStr = ((StyledText) event.widget).getText();
     String newStr = oldStr.substring(0, event.start) + event.text + oldStr.substring(event.end);
     if (newStr.indexOf("..") >= 0) {
@@ -103,6 +107,7 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
     if (namePartStartsWithDigit(newStr)) {
       event.doit = false;
       setErrorMessage("Name parts cannot start with a digit.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       return;
     }
   }
@@ -120,6 +125,7 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
     if (Character.isDigit(s.charAt(testloc)))
       return true;
     for (testloc = 1 + s.indexOf('.', testloc); testloc > 0 && testloc < s.length(); testloc = 1 + s
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .indexOf('.', testloc))
       if (Character.isDigit(s.charAt(testloc)))
         return true;

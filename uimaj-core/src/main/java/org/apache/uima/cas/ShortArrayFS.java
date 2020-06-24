@@ -34,6 +34,7 @@ public interface ShortArrayFS extends CommonArrayFS<Short> {
    *              If the index is out of bounds.
    */
   short get(int i) throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Set the i-th value.
@@ -65,6 +66,7 @@ public interface ShortArrayFS extends CommonArrayFS<Short> {
    */
   void copyToArray(int srcOffset, short[] dest, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Copy the contents of an external array into this array.
@@ -80,6 +82,7 @@ public interface ShortArrayFS extends CommonArrayFS<Short> {
    */
   void copyFromArray(short[] src, int srcOffset, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Creates a new array the this array is copied to.

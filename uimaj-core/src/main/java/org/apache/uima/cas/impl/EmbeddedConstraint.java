@@ -38,6 +38,7 @@ class EmbeddedConstraint extends PathConstraint implements FSMatchConstraint {
 
   private FSMatchConstraint cons;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
   EmbeddedConstraint(ArrayList<String> path, FSConstraint cons) {
     super(path);
     this.cons = (FSMatchConstraint) cons;

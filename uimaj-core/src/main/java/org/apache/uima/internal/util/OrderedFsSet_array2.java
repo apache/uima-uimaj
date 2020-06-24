@@ -502,6 +502,7 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
         
         if (batchSize > 1) {
           // Sort the items to add 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
           batch.sort(comparatorWithID);
           TOP prev = batch.get(batchSize - 1);
         

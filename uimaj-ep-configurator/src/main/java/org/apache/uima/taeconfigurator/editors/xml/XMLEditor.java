@@ -55,6 +55,7 @@ public class XMLEditor extends TextEditor {
 
   /** The editor. */
   MultiPageEditor editor;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The color manager. */
   private ColorManager colorManager;
@@ -137,6 +138,7 @@ public class XMLEditor extends TextEditor {
     SaveAsDialog dialog = new SaveAsDialog(shell);
 
     IFile original = (input instanceof IFileEditorInput) ? ((IFileEditorInput) input).getFile()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             : null;
     if (original != null)
       dialog.setOriginalFile(original);
@@ -155,6 +157,7 @@ public class XMLEditor extends TextEditor {
       dialog.setMessage(message, IMessageProvider.WARNING);
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     if (dialog.open() == Window.CANCEL) {
       if (progressMonitor != null)
         progressMonitor.setCanceled(true);
@@ -178,6 +181,7 @@ public class XMLEditor extends TextEditor {
       @Override
       public void execute(final IProgressMonitor monitor) throws CoreException {
         getDocumentProvider().saveDocument(monitor, newInput,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 getDocumentProvider().getDocument(getEditorInput()), true);
       }
     };

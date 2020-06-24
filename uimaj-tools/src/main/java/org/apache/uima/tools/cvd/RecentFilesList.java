@@ -48,6 +48,7 @@ public class RecentFilesList {
    */
   public RecentFilesList(int maxSize) {
     super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.list = new ArrayList<>();
     this.max = maxSize;
   }
@@ -121,6 +122,7 @@ public class RecentFilesList {
    * @return The file list as a list of absolute file names.
    */
   public List<String> toStringList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> out = new ArrayList<>();
     for (File file : this.list) {
       out.add(file.getAbsolutePath());

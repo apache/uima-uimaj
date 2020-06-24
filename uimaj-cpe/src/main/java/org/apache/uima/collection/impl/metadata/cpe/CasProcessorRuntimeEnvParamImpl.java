@@ -35,6 +35,8 @@ import org.xml.sax.helpers.AttributesImpl;
  * The Class CasProcessorRuntimeEnvParamImpl.
  */
 public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CasProcessorRuntimeEnvParam {
   
   /** The Constant serialVersionUID. */
@@ -104,6 +106,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     setKey(aElement.getAttribute("key"));
     setValue(aElement.getAttribute("value"));
@@ -136,6 +139,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("env",
           new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the value.

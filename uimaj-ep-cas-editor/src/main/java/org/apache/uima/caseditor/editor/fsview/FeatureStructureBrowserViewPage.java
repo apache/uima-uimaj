@@ -75,6 +75,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
    */
   final class FeatureStructureTreeContentProvider extends AbstractAnnotationDocumentListener
           implements ITreeContentProvider {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
     /** The m document. */
     private ICasDocument mDocument;
@@ -87,6 +89,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
      *
      * @param document the document
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
     FeatureStructureTreeContentProvider(ICasDocument document) {
       mDocument = document;
     }
@@ -119,6 +122,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     @Override
     public void dispose() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       if (mDocument != null)
         mDocument.removeChangeListener(this);
     }
@@ -175,6 +180,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
       Type type = featureStructure.getType();
 
       for (Feature feature : type.getFeatures()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
         childs.add(new FeatureValue(mDocument, featureStructure, feature));
       }
 
@@ -302,6 +309,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     @Override
     public void viewChanged(String oldViewName, String newViewName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
       changed();
     }
 
@@ -328,8 +336,12 @@ public final class FeatureStructureBrowserViewPage extends Page {
       }
 
       FeatureStructure newFeatureStructure = mDocument.getCAS().createFS(mCurrentType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
       mDocument.addFeatureStructure(newFeatureStructure);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1397
 
       mFSList.refresh();
     }
@@ -378,6 +390,10 @@ public final class FeatureStructureBrowserViewPage extends Page {
    */
   public FeatureStructureBrowserViewPage(ICasEditor editor) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2276
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 	if (editor == null)
 		throw new IllegalArgumentException("editor parameter must not be null!");
 
@@ -390,6 +406,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     mSelectAllAction = new SelectAllAction();
 
     TypeSystem ts = mDocument.getCAS().getTypeSystem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
 
     filterTypes = new HashSet<>();
     filterTypes.add(ts.getType(CAS.TYPE_NAME_ARRAY_BASE));
@@ -459,6 +476,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
     typeLabel.setLayoutData(typeLabelData);
     
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     TypeCombo typeCombo = new TypeCombo(typePanel);
     typeCombo.setInput(mDocument.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_TOP),
             mDocument.getCAS().getTypeSystem(), filterTypes);
@@ -467,6 +486,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     typeComboData.grabExcessHorizontalSpace = true;
     typeCombo.setLayoutData(typeComboData);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2276
     final IPreferenceStore store = mCasEditor.getCasDocumentProvider().
             getSessionPreferenceStore(mCasEditor.getEditorInput());
     
@@ -491,6 +511,9 @@ public final class FeatureStructureBrowserViewPage extends Page {
     instanceListData.horizontalAlignment = SWT.FILL;
     instanceListData.verticalAlignment = SWT.FILL;
     mFSList.getList().setLayoutData(instanceListData);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2276
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     mFSList.setContentProvider(new FeatureStructureTreeContentProvider(mDocument));
     mFSList.setLabelProvider(new FeatureStructureLabelProvider());
 
@@ -505,6 +528,9 @@ public final class FeatureStructureBrowserViewPage extends Page {
       }
     });
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2276
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     if (lastUsedType != null)
       mFSList.setInput(lastUsedType);
     

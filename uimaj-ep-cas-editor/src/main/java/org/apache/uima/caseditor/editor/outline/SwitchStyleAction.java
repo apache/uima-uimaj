@@ -36,6 +36,7 @@ public class SwitchStyleAction extends Action {
 	 *
 	 * @param outline the outline
 	 */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1360
 	SwitchStyleAction(AnnotationOutline outline) {
 		this.outline = outline;
 	}

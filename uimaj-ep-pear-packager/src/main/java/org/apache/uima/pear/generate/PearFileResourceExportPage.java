@@ -90,6 +90,8 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
    * @param currentContainer          Container (project or folder) with Pear structure
    */
   public PearFileResourceExportPage(final IStructuredSelection selection,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           final IContainer currentContainer) {
     super("pearFileResourceExportPage"); //$NON-NLS-1$
     final PearPlugin plugin = PearPlugin.getDefault();
@@ -123,6 +125,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     if (filename == null || filename.trim().equals("")) { //$NON-NLS-1$
       setErrorMessage(null);
       setMessage(PearExportMessages.getString("PearFileResourceExportPage.SelectFile"), //$NON-NLS-1$
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               IMessageProvider.INFORMATION);
       setPageComplete(false);
       return;
@@ -132,6 +135,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     if (new File(filename).exists()) {
       setErrorMessage(null);
       setMessage(PearExportMessages.format(PearExportMessages
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getString("PearFileResourceExportPage.FileExistsInfo"), //$NON-NLS-1$
               new Object[] { filename }), IMessageProvider.INFORMATION);
       setPageComplete(true);
@@ -262,6 +266,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     fCompressCheckbox = new Button(group, SWT.CHECK);
     fCompressCheckbox.setSelection(true);
     fCompressCheckbox.setText(PearExportMessages
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getString("PearFileResourceExportPage.CompressContents")); //$NON-NLS-1$
   }
 
@@ -302,6 +307,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
 
     final Button deselectAllButton = new Button(buttonsComposite, SWT.PUSH);
     deselectAllButton.setText(PearExportMessages
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getString("PearFileResourceExportPage.DeselectAll")); //$NON-NLS-1$
     deselectAllButton.addSelectionListener(new SelectionAdapter() {
       @Override
@@ -354,6 +360,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
 
     final Button destinationBrowseButton = new Button(container, SWT.PUSH);
     destinationBrowseButton.setText(PearExportMessages
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getString("PearFileResourceExportPage.Browse")); //$NON-NLS-1$
     destinationBrowseButton.addSelectionListener(new SelectionAdapter() {
       @Override
@@ -408,6 +415,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     }
 
     return new PearExportOperation(exports, fCurrentContainer, getDestinationValue(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             fCompressCheckbox.getSelection());
   }
 }

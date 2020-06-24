@@ -1298,6 +1298,7 @@ public class InstallationController {
    *          The given local root directory for installation.
    */
   public InstallationController(String componentId, File localPearFile, File rootDir) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-496
     this(componentId, rootDir.getAbsolutePath(), false, null, null, true);
     _mainPearFileLocation = localPearFile.getAbsolutePath();
   }
@@ -1327,6 +1328,7 @@ public class InstallationController {
    */
   public InstallationController(String componentId, File localPearFile, File rootDir,
           boolean installInRootDir, boolean cleanInstallDir) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-496
     this(componentId, rootDir.getAbsolutePath(), installInRootDir, null, null, cleanInstallDir);
     _mainPearFileLocation = localPearFile.getAbsolutePath();
   }
@@ -1384,6 +1386,7 @@ public class InstallationController {
    */
   public InstallationController(String componentId, File localPearFile, File rootDir,
           boolean installInRootDir, MessageRouter.StdChannelListener msgListener) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-496
     this(componentId, rootDir.getAbsolutePath(), installInRootDir, null, msgListener, true);
     _mainPearFileLocation = localPearFile.getAbsolutePath();
   }
@@ -1447,19 +1450,23 @@ public class InstallationController {
     if (_insdObject != null) {
       StringBuffer cpBuffer = new StringBuffer();
       // build main component classpath
+//IC see: https://issues.apache.org/jira/browse/UIMA-1273
       String mainClassPath = buildComponentClassPath(_mainComponentRootPath, _insdObject, true);
       cpBuffer.append(mainClassPath);
       // add component classpath for possible delegate components
       if (_installationTable.size() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
         Enumeration<String> dlgIdList = _installationTable.keys();
         while (dlgIdList.hasMoreElements()) {
           // process next delegate component
           String dlgId = dlgIdList.nextElement();
           String dlgRootPath = _installationTable.get(dlgId);
           InstallationDescriptor dlgInsD = _installationInsDs.get(dlgId);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1273
           String dlgClassPath = buildComponentClassPath(dlgRootPath, dlgInsD, true);
           if (dlgClassPath.length() > 0) {
             if (cpBuffer.length() > 0
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     && cpBuffer.charAt(cpBuffer.length() - 1) != File.pathSeparatorChar)
               cpBuffer.append(File.pathSeparatorChar);
             cpBuffer.append(dlgClassPath);
@@ -1486,6 +1493,7 @@ public class InstallationController {
       pBuffer.append(mainPath);
       // add component path for possible delegate components
       if (_installationTable.size() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
         Enumeration<String> dlgIdList = _installationTable.keys();
         while (dlgIdList.hasMoreElements()) {
           // process next delegate component
@@ -1495,6 +1503,7 @@ public class InstallationController {
           String dlgPath = buildComponentPath(dlgRootPath, dlgInsD);
           if (dlgPath.length() > 0) {
             if (pBuffer.length() > 0
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     && pBuffer.charAt(pBuffer.length() - 1) != File.pathSeparatorChar)
               pBuffer.append(File.pathSeparatorChar);
             pBuffer.append(dlgPath);
@@ -1520,6 +1529,7 @@ public class InstallationController {
       Properties envVars = buildTableOfEnvVars(_insdObject);
       // add required env vars for possible delegate components
       if (_installationTable.size() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
         Enumeration<String> dlgIdList = _installationTable.keys();
         while (dlgIdList.hasMoreElements()) {
           // process next delegate component
@@ -1558,6 +1568,7 @@ public class InstallationController {
       if (_mainPearFileLocation == null) // get PEAR file location
         _mainPearFileLocation = getPEARFileLocation(_mainComponentId, _packageSelector);
       // extract PEAR file in a specified directory
+//IC see: https://issues.apache.org/jira/browse/UIMA-496
       if (extractPEARFile(_mainPearFileLocation, _mainComponentRoot, this, _cleanInstallDir) == null) {
         // PEAR extraction failed
         // set error message
@@ -1575,6 +1586,7 @@ public class InstallationController {
       installDelegateComponents();
       // complete installation process for main component
       InstallationProcessor processor = new InstallationProcessor(_mainComponentRootPath,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               _installationTable, this);
       processor.process();
       _insdObject = processor.getInstallationDescriptor();
@@ -1584,8 +1596,10 @@ public class InstallationController {
       generatePackageConfigFile();
       // generate 'setenv.bat' file
       generateSetEnvFile();
+//IC see: https://issues.apache.org/jira/browse/UIMA-351
       generatePearSpecifier(_mainComponentRootPath, _mainComponentId);
       getOutMsgWriter().println(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "[InstallationController]: " + "the " + SET_ENV_FILE + " file contains required "
                       + "environment variables for this component");
       getOutMsgWriter().println(
@@ -1624,6 +1638,7 @@ public class InstallationController {
       if (_mainPearFileLocation == null) // get PEAR file location
         _mainPearFileLocation = getPEARFileLocation(_mainComponentId, _packageSelector);
       // extract main XML descriptors in a specified directory
+//IC see: https://issues.apache.org/jira/browse/UIMA-496
       if (extractFilesFromPEARFile(_mainPearFileLocation, ".xml", _mainComponentRoot, this,
               _cleanInstallDir) == null) {
         // PEAR extraction failed
@@ -1640,6 +1655,7 @@ public class InstallationController {
       installDelegateComponentsDescriptors();
       // complete installation process for main component
       InstallationProcessor processor = new InstallationProcessor(_mainComponentRootPath,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               _installationTable);
       processor.process();
       _insdObject = processor.getInstallationDescriptor();
@@ -1662,6 +1678,7 @@ public class InstallationController {
    */
   protected synchronized void installDelegateComponents() {
     // get list of separate delegate components IDs
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Enumeration<String> dlgList = _insdObject.getDelegateComponents().keys();
     while (dlgList.hasMoreElements()) {
       // get next separate delegate component ID
@@ -1678,6 +1695,7 @@ public class InstallationController {
       if (componentRootPath == null) {
         // install next separate delegate component
         InstallationController dlgController = new InstallationController(componentId,
+//IC see: https://issues.apache.org/jira/browse/UIMA-496
                 _installationDirPath, false, this._msgRouter, this._defaultMsgListener,
                 _cleanInstallDir);
         dlgController.setPackageSelector(this._packageSelector);
@@ -1712,12 +1730,14 @@ public class InstallationController {
    */
   protected synchronized void installDelegateComponentsDescriptors() {
     // get list of separate delegate components IDs
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Enumeration<String> dlgList = _insdObject.getDelegateComponents().keys();
     while (dlgList.hasMoreElements()) {
       // get next separate delegate component ID
       String componentId = dlgList.nextElement();
       // install XML descriptors of the next delegate component
       InstallationController dlgController = new InstallationController(componentId,
+//IC see: https://issues.apache.org/jira/browse/UIMA-496
               _installationDirPath, false, this._msgRouter, this._defaultMsgListener,
               _cleanInstallDir);
       dlgController.setPackageSelector(this._packageSelector);
@@ -1750,11 +1770,13 @@ public class InstallationController {
    * @throws SAXException if SAX Exception
    */
   protected static synchronized void generatePearSpecifier(String mainComponentRootPath,
+//IC see: https://issues.apache.org/jira/browse/UIMA-411
           String mainComponentId) throws IOException, SAXException {
     PearSpecifier pearSpec = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
     pearSpec.setPearPath(mainComponentRootPath);
     File outputFile = new File(mainComponentRootPath, mainComponentId + PEAR_DESC_FILE_POSTFIX);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (OutputStream fos = new FileOutputStream(outputFile)) {
       pearSpec.toXML(fos);
     }
@@ -1769,6 +1791,7 @@ public class InstallationController {
    */
   protected synchronized void generateSetEnvFile() throws IOException {
     File setEnvFile = new File(_mainComponentRoot, SET_ENV_FILE);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (PrintWriter fWriter = new PrintWriter(new FileWriter(setEnvFile))) {
       fWriter.println("### Add the following environment variables");
       fWriter.println("### to appropriate existing environment variables");
@@ -1784,12 +1807,15 @@ public class InstallationController {
         fWriter.println("PATH=" + path);
       // the rest of env.vars.
       Properties envVarTable = buildTableOfEnvVars();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Enumeration<Object> envVarList = envVarTable.keys();
       while (envVarList.hasMoreElements()) {
         String varName = (String) envVarList.nextElement();
         String varValue = envVarTable.getProperty(varName);
         // add env.var. setting
         if (varName.length() > 0 && varValue.length() > 0
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
               && !varName.equalsIgnoreCase(CLASSPATH_VAR) && !varName.equalsIgnoreCase(PATH_VAR)) {
           fWriter.println(varName + "=" + varValue);
         }
@@ -1809,13 +1835,16 @@ public class InstallationController {
     File packageConfigFile = new File(_mainComponentRoot, PACKAGE_CONFIG_FILE);
     if (packageConfigFile.exists()) {
       // loading existing pear config file
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
       try (InputStream iStream = new FileInputStream(packageConfigFile)) {
         packageConfig.load(iStream);
       }
     }
     // set local config params
     packageConfig.setProperty(LocalInstallationAgent.MAIN_ROOT, _mainComponentRootPath.replace(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             '\\', '/'));
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Iterator<String> dlgIdList = _installationTable.keySet().iterator();
     while (dlgIdList.hasNext()) {
       String id = dlgIdList.next();
@@ -1824,6 +1853,7 @@ public class InstallationController {
       packageConfig.setProperty(idRoot, _installationTable.get(id).replace('\\', '/'));
     }
     // save pear config file
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (OutputStream oStream = new FileOutputStream(packageConfigFile)) {
       String header = _mainComponentId;
       packageConfig.store(oStream, header);
@@ -1959,6 +1989,7 @@ public class InstallationController {
         _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_IN_PROGRESS);
 
       // create PackageBrowser object for the installed PEAR
+//IC see: https://issues.apache.org/jira/browse/UIMA-411
       PackageBrowser installedPear = new PackageBrowser(this._mainComponentRoot);
       TestStatus status = verifyComponentInstallation(installedPear);
       if (status.getRetCode() == TestStatus.TEST_SUCCESSFUL) {
@@ -1974,6 +2005,7 @@ public class InstallationController {
           _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_FAILED);
       } else {
         // verification cancelled
+//IC see: https://issues.apache.org/jira/browse/UIMA-351
         _verificationMsg = status.getMessage();
         if (_installationMonitor != null) // notify monitor
           _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_CANCELLED);

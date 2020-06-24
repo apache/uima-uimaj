@@ -42,6 +42,7 @@ public class ConsumerCasUtils {
    */
   public static int getIntFeatValue(CAS aCasView, String aTypeS, String aFeatS) {
     int result = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     FSIterator idIter = aCasView.getAnnotationIndex(aCasView.getTypeSystem().getType(aTypeS)).iterator();
     while (idIter != null && idIter.isValid()) {
       org.apache.uima.cas.FeatureStructure idFS = idIter.get();
@@ -65,6 +66,7 @@ public class ConsumerCasUtils {
   public static String getStringFeatValue(CAS aCasView, String aTypeS, String aFeatS) {
     String result = null;
     FSIterator idIter = aCasView.getAnnotationIndex(aCasView.getTypeSystem().getType(aTypeS))
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .iterator();
     while (idIter != null && idIter.isValid()) {
       org.apache.uima.cas.FeatureStructure idFS = idIter.get();
@@ -86,6 +88,7 @@ public class ConsumerCasUtils {
    */
   public static FeatureStructure getTcasFS(CAS aCasView, String aTypeS) {
     org.apache.uima.cas.FeatureStructure idFS = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     FSIterator idIter = aCasView.getAnnotationIndex(aCasView.getTypeSystem().getType(aTypeS)).iterator();
     while (idIter != null && idIter.isValid()) {
       idFS = idIter.get();

@@ -81,6 +81,7 @@ public class JCasPool {
    */
   @Deprecated
   public JCasPool(int aNumInstances, TextAnalysisEngine aTextAnalysisEngine)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
@@ -100,6 +101,7 @@ public class JCasPool {
    *           if the JCas instances could not be created
    */
   public JCasPool(int aNumInstances, AnalysisEngine aAnalysisEngine)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
@@ -118,6 +120,7 @@ public class JCasPool {
    *           if the CAS instances could not be created
    */
   public JCasPool(int aNumInstances, ProcessingResourceMetaData aMetaData)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
@@ -152,6 +155,7 @@ public class JCasPool {
     // make sure this CAS actually belongs to this pool and is checked out
     if (!mAllInstances.contains(aJCas) || mFreeInstances.contains(aJCas)) {
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "releaseJCas",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               LOG_RESOURCE_BUNDLE, "UIMA_return_jcas_to_pool__WARNING");
     } else {
       // reset CAS
@@ -209,13 +213,17 @@ public class JCasPool {
    *           if the Resource instances could not be created
    */
   protected void fillPool(ProcessingResourceMetaData aMetaData)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // fill the pool
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<ProcessingResourceMetaData> mdList = new ArrayList<>();
     mdList.add(aMetaData);
     for (int i = 0; i < mNumInstances; i++) {
       JCas c;
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
         c = CasCreationUtils.createCas(mdList).getJCas();
       } catch (CASException e) {
         throw new ResourceInitializationException(e);

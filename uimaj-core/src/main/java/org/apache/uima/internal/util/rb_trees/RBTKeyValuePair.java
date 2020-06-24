@@ -32,6 +32,7 @@ public class RBTKeyValuePair {
 
   private Object value;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   RBTKeyValuePair(int key, Object value) {
     this.key = key;
     this.value = value;

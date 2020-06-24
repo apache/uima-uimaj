@@ -37,6 +37,7 @@ public class XMLDoubleClickStrategy implements ITextDoubleClickStrategy {
   public void doubleClicked(ITextViewer part) {
     int pos = part.getSelectedRange().x;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (pos < 0)
       return;
 

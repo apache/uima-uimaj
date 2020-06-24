@@ -83,5 +83,6 @@ public interface InstrumentationFacility {
    *          result message of event
    */
   public void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aResultMsg);
 }

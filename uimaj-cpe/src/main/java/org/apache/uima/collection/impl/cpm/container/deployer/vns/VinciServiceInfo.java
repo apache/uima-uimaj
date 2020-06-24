@@ -34,6 +34,7 @@ public class VinciServiceInfo {
   private boolean available = true;
 
   public VinciServiceInfo(String aServiceName, String aHost, int aPort) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     serviceName = aServiceName;
     host = aHost;
     port = aPort;
@@ -61,6 +62,7 @@ public class VinciServiceInfo {
 
   public String toString() {
     StringBuffer sb = new StringBuffer("SERVICE:").append(serviceName).append("\nIP:").append(host)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .append("\nPORT:").append(port);
     return sb.toString();
   }

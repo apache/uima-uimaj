@@ -63,6 +63,8 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
   // \s*?(AM|PM)? followed by optional white space (non greedy) and AM or PM
   static final Pattern hoursMinutesPattern = Pattern
           .compile("(?s)\\b([0-2]?\\d:[0-5]\\d\\s*(AM\\W|PM\\W|am\\W|pm\\W)?)");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   //
   static final DateFormat dfTimeShort = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
@@ -77,9 +79,11 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
   // ((/[1-2]\d\d\d)|(/\d\d)|\s) // year is /nnnn or /nn or missing
   static final Pattern numericDatePattern = Pattern
           .compile("(?s)\\b([0-1]?\\d/[0-3]?\\d((/[1-2]\\d\\d\\d)|(/\\d\\d))?)\\W");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   // not static, because DateFormat is not threadsafe
   final DateFormat dfDateShort = DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1853
 
   // .*? (any number of artibrary chars, non greedy
   // \b word boundary
@@ -93,6 +97,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
 
   static final Pattern mediumDatePattern = Pattern.compile("(?s)\\b(" + shortMonthNames
           + "\\.?\\s[0-3]?\\d(((,\\s+)?[1-2]\\d\\d\\d)|((,\\s+)?\\d\\d))?)\\W");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static final DateFormat dfDateMedium = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
 
@@ -101,6 +106,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
 
   static final Pattern longDatePattern = Pattern.compile("(?s)\\b(" + longMonthNames
           + "\\s[0-3]?\\d(((,\\s+)?[1-2]\\d\\d\\d)|((,\\s+)?\\d\\d))?)\\W");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static final DateFormat dfDateLong = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
 
@@ -129,6 +135,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
    * DateAnnotations, change the descriptor for this component to specify it outputs only that type.
    */
   public void process(JCas aJCas) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     jcas = aJCas;
     input = jcas.getDocumentText();
 
@@ -137,6 +144,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
     boolean timeWanted = resultSpec.containsType("org.apache.uima.tutorial.TimeAnnot", aJCas.getDocumentLanguage());
     boolean dateWanted = resultSpec.containsType("org.apache.uima.tutorial.DateAnnot", aJCas.getDocumentLanguage());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1852
     if (timeWanted)
       makeAnnotations(timeAnnotationMaker, hoursMinutesPattern, dfTimeShort);
     
@@ -163,10 +171,12 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
 
   // HELPER METHODS
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   void makeAnnotations(Maker m, BreakIterator b) {
     b.setText(input);
     for (int end = b.next(), start = b.first(); end != BreakIterator.DONE; start = end, end = b
             .next()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // eliminate all-whitespace tokens
       boolean isWhitespace = true;
@@ -203,6 +213,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
     String av; // append value
     pp.setIndex(0);
     if (-1 < s.indexOf(":")) { // have time string
+//IC see: https://issues.apache.org/jira/browse/UIMA-1853
       if (s.endsWith("AM") || s.endsWith("PM") || s.endsWith("am") || s.endsWith("pm"))
         return s;
       else {
@@ -218,6 +229,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
     }
 
     // have date string
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return s + ", " + defaultYear; // in case no year available
   }
 

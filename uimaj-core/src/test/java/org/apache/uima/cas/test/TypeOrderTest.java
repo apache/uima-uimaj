@@ -67,6 +67,7 @@ public class TypeOrderTest extends TestCase {
 
   public static final String TOKEN_TYPE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
           + TOKEN_TYPE_FEAT;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   public static final String TOKEN_TYPE_TYPE = "TokenType";
 
@@ -98,6 +99,7 @@ public class TypeOrderTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
 //    this.casMgr = initCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-197
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile.exists());
     
@@ -137,6 +139,7 @@ public class TypeOrderTest extends TestCase {
   // Initialize the first CAS.
   public void testInitCAS() {
     // Create a CASMgr. Ensures existence of AnnotationFS type.
+//IC see: https://issues.apache.org/jira/browse/UIMA-197
     CASMgr cas1 = CASFactory.createCAS();
     // Create a writable type system.
     TypeSystemMgr tsa = cas1.getTypeSystemMgr();
@@ -178,7 +181,9 @@ public class TypeOrderTest extends TestCase {
     // Create an alternative annotation index using a type sort order.
     order = irm.createTypeSortOrder();
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       order.add(new String[] { TOKEN_TYPE, SENT_TYPE, CAS.TYPE_NAME_ANNOTATION });
+//IC see: https://issues.apache.org/jira/browse/UIMA-197
       order.getOrder();
     } catch (CASException e) {
       assertTrue(false);
@@ -190,14 +195,17 @@ public class TypeOrderTest extends TestCase {
    */
   public void testMain() throws Exception {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File refFile = JUnitExtension.getFile("CASTests/CasTypeOrderTestRef.txt");
     Assert.assertNotNull(refFile);
     File outputFile = new File(JUnitExtension.getFile("CASTests"), "CasTypeOderTest_testouput.txt");
     OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
             outputFile , false), StandardCharsets.UTF_8);
     Assert.assertNotNull(fileWriter);   
     
     for (int i = 0; i < 10; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-197
       this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
       this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
       this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
@@ -213,11 +221,13 @@ public class TypeOrderTest extends TestCase {
     }
 
     FSIterator<FeatureStructure> it = this.cas.getIndexRepository().getIndex(TYPE_ORDER_INDEX).iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
 
     // it = cas.getAnnotationIndex().iterator();
     AnnotationFS fs;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       fs = (AnnotationFS) it.get();
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       fileWriter.write(
        fs.getType().getName()
        + ": "

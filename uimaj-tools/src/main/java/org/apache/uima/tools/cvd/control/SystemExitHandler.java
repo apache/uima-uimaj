@@ -48,7 +48,9 @@ public class SystemExitHandler implements ActionListener {
    */
   @Override
   public void actionPerformed(ActionEvent event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-425
     MainFrameClosing.handleClosingEvent(this.main);
+//IC see: https://issues.apache.org/jira/browse/UIMA-425
     if (this.main != null) {
       this.main.dispose();
     }

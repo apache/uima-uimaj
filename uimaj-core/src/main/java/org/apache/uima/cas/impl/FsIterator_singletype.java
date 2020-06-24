@@ -26,6 +26,7 @@ import org.apache.uima.cas.Type;
 
 public abstract class FsIterator_singletype<T extends FeatureStructure>
                     implements LowLevelIterator<T> {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
 
 //  private int modificationSnapshot; // to catch illegal modifications
 
@@ -65,6 +66,7 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
 //  }
   
   protected void maybeTraceCowUsingCopy(FsIndex_singletype<?> idx, CopyOnWriteIndexPart iteratorCopy) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     if (CASImpl.traceCow) {
       if (idx.getCopyOnWriteIndexPart() != iteratorCopy) {
         idx.casImpl.traceCowCopyUse(idx);
@@ -90,6 +92,7 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
   
   @Override
   public String toString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     Type type = ti;
     StringBuilder sb = new StringBuilder(this.getClass().getSimpleName()).append(":").append(System.identityHashCode(this));
     sb.append(" over Type: ").append(type.getName()).append(":").append(ti.getCode());

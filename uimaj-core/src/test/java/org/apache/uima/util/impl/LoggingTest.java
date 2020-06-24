@@ -39,6 +39,7 @@ public class LoggingTest extends TestCase {
    * @param arg0
    */
   public LoggingTest(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(arg0);
   }
 
@@ -93,6 +94,7 @@ public class LoggingTest extends TestCase {
   }
 
   public void testSetLevel() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     Logger uimaLogger = UIMAFramework.getLogger(); // should affect everything in
     // org.apache.uima.*
     try {
@@ -123,6 +125,7 @@ public class LoggingTest extends TestCase {
       Assert.assertFalse(logger.isLoggable(Level.ALL));
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     } finally {
       uimaLogger.setLevel(Level.INFO); // otherwise, is stuck at INFO, too much logging
     }

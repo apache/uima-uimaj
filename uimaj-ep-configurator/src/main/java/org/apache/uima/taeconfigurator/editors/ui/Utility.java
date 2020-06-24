@@ -49,7 +49,9 @@ public class Utility extends MessageDialog {
    * @param defaultIndex the default index
    */
   public Utility(Shell parentShell, String dialogTitle, Image dialogTitleImage,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType,
             dialogButtonLabels, defaultIndex);
     // TODO Auto-generated constructor stub
@@ -167,6 +169,7 @@ public class Utility extends MessageDialog {
    */
 
   public static Object[] removeElementFromArray(Object[] source, Object element,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Class componentClass) {
     Object[] result = (Object[]) Array.newInstance(componentClass, source.length - 1);
     for (int i = 0, j = 0; i < source.length; i++) {
@@ -186,6 +189,7 @@ public class Utility extends MessageDialog {
    */
 
   public static Object[] removeEqualElementFromArray(Object[] source, Object element,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Class componentClass) {
     Object[] result = (Object[]) Array.newInstance(componentClass, source.length - 1);
     for (int i = 0, j = 0; i < source.length; i++) {
@@ -207,6 +211,7 @@ public class Utility extends MessageDialog {
    * @return the object[]
    */
   public static Object[] removeElementsFromArray(Object[] source, Object element,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Class componentClass) {
     if (null == source)
       return null;
@@ -236,6 +241,7 @@ public class Utility extends MessageDialog {
    * @return the object[]
    */
   public static Object[] removeElementsFromArray(Object[] source, Object element,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Class componentClass, Comparator comp) {
     if (null == source)
       return null;

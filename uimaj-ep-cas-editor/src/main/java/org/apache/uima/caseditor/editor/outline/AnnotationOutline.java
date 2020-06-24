@@ -155,6 +155,7 @@ public final class AnnotationOutline extends ContentOutlinePage
     
     changeAnnotationMode();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2265
     editorChangeListener = new EditorListener();
     editor.addAnnotationListener(editorChangeListener);
 
@@ -210,6 +211,7 @@ public final class AnnotationOutline extends ContentOutlinePage
   @Override
   public void setActionBars(IActionBars actionBars) {
     DeleteFeatureStructureAction deleteAction = new DeleteFeatureStructureAction(editor);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
     actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
 
@@ -222,10 +224,12 @@ public final class AnnotationOutline extends ContentOutlinePage
     IMenuManager dropDownMenu = actionBars.getMenuManager();
     dropDownMenu.add(action);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2125
     IToolBarManager toolBarManager = actionBars.getToolBarManager();
     
     // wide left annotation side action
     WideLeftAnnotationSideAction wideLeftAnnotationSideAction = new WideLeftAnnotationSideAction(
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
             editor);
     wideLeftAnnotationSideAction.setActionDefinitionId(WideLeftAnnotationSideAction.ID);
     wideLeftAnnotationSideAction.setText("Wides the left annotation side");
@@ -238,6 +242,7 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     // lower left annotation side action
     LowerLeftAnnotationSideAction lowerLeftAnnotationSideAction = new LowerLeftAnnotationSideAction(
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
             editor);
     lowerLeftAnnotationSideAction.setActionDefinitionId(LowerLeftAnnotationSideAction.ID);
     lowerLeftAnnotationSideAction.setText("Lowers the left annotation side");
@@ -250,6 +255,7 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     // lower right annotation side action
     LowerRightAnnotationSideAction lowerRightAnnotationSideAction =
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       new LowerRightAnnotationSideAction(editor);
     lowerRightAnnotationSideAction.setActionDefinitionId(LowerRightAnnotationSideAction.ID);
     lowerRightAnnotationSideAction.setText("Lowers the right annotation side");
@@ -262,6 +268,7 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     // wide right annotation side action
     WideRightAnnotationSideAction wideRightAnnotationSideAction = new WideRightAnnotationSideAction(
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
             editor);
     wideRightAnnotationSideAction.setActionDefinitionId(WideRightAnnotationSideAction.ID);
     wideRightAnnotationSideAction.setText("Wides the right annotation side");
@@ -273,6 +280,7 @@ public final class AnnotationOutline extends ContentOutlinePage
     toolBarManager.add(wideRightAnnotationSideAction);
 
     // merge action
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     MergeAnnotationAction mergeAction = new MergeAnnotationAction(editor);
     getSite().getSelectionProvider().addSelectionChangedListener(mergeAction);
     mergeAction.setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.MERGE));
@@ -329,6 +337,7 @@ public final class AnnotationOutline extends ContentOutlinePage
    */
   private void changeAnnotationMode() {
     mTableViewer.setInput(editor.getDocument());
+//IC see: https://issues.apache.org/jira/browse/UIMA-1421
     mTableViewer.refresh();
   }
 
@@ -401,6 +410,7 @@ public final class AnnotationOutline extends ContentOutlinePage
     
     boolean isForeignSelection = true;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
     if (part instanceof ContentOutline) {
       ContentOutline contentOutline = (ContentOutline) part;
       
@@ -412,6 +422,7 @@ public final class AnnotationOutline extends ContentOutlinePage
       }
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
     if (isForeignSelection && getSite().getPage().getActiveEditor() == editor) {
       if (selection instanceof StructuredSelection) {
         AnnotationSelection annotations = new AnnotationSelection((StructuredSelection) selection);
@@ -428,10 +439,13 @@ public final class AnnotationOutline extends ContentOutlinePage
 
   @Override
   public void dispose() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
     getSite().setSelectionProvider(null);
     getSite().getPage().removeSelectionListener(this);
     editor.removeAnnotationListener(editorChangeListener);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2265
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5913
     super.dispose();
   }
 
@@ -440,6 +454,8 @@ public final class AnnotationOutline extends ContentOutlinePage
    *
    * @return the viewer
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
   Viewer getViewer() {
     return mTableViewer;
   }

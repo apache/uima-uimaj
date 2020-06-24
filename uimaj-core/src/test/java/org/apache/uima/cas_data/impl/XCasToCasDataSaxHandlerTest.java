@@ -88,13 +88,16 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
       xmlReader.parse(new InputSource(getClass().getResourceAsStream("xcastest.xml")));
 
       // System.out.println(casData);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
       Iterator<FeatureStructure> fsIter = casData.getFeatureStructures();
       boolean foundCrawlUrl = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       while (fsIter.hasNext()) {
         FeatureStructure fs = fsIter.next();
         if ("Crawl_colon_URL".equals(fs.getType())) {
           // System.out.println("[" + fs.getFeatureValue("value") + "]");
           Assert
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .assertEquals(
                           "http://www.nolimitmedia.com/index.php?act=group&gro=1&gron=Flash&PHPSESSID=5dcc31fb425c4a204b70d9eab92531a5",
                           fs.getFeatureValue("value").toString());
@@ -112,10 +115,14 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
       // complex CAS obtained by deserialization
       File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
       TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new XMLInputSource(typeSystemFile));
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               new FsIndexDescription[0]);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
       InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
       
       XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
@@ -130,11 +137,13 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
 
       // a CAS with multiple Sofas
       InputStream translatorAeStream = new FileInputStream(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("CpeSofaTest/TransAnnotator.xml"));
       AnalysisEngineDescription translatorAeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(translatorAeStream, null));
       AnalysisEngine transAnnotator = UIMAFramework.produceAnalysisEngine(translatorAeDesc);
       CAS cas2 = transAnnotator.newCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-220
       CAS englishView = cas2.createView("EnglishDocument");
       englishView.setSofaDataString("this beer is good", "text/plain");
       transAnnotator.process(cas2);
@@ -146,6 +155,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
   }
 
   private void _testConversions(CAS aCAS) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ParserConfigurationException, SAXException, ResourceInitializationException,
           CASRuntimeException {
     // generate XCAS events and pipe them to XCasToCasDataSaxHandler
@@ -169,6 +179,8 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
     String xml = sw.getBuffer().toString();
     
     //workaround for XML serializatioj problem on Sun Java 1.4
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
     if (!builtInXmlSerializationSupportsCRs()) {
       xml = xml.replaceAll("&#10;", "&#13;&#10;");  
     }
@@ -199,9 +211,12 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
    * @param system
    */
   private void assertValidCasData(CasData casData, TypeSystem typeSystem) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annotType = typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
     Type arrayType = typeSystem.getType(CAS.TYPE_NAME_ARRAY_BASE);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     Iterator<FeatureStructure> fsIter = casData.getFeatureStructures();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (fsIter.hasNext()) {
       org.apache.uima.cas_data.FeatureStructure fs = fsIter.next();
       String typeName = fs.getType();
@@ -233,6 +248,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
    * @return true if XML serialization of CRs behave properly in the current JRE
    */
   private boolean builtInXmlSerializationSupportsCRs() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-220
     String javaVendor = System.getProperty("java.vendor");
     if( javaVendor.startsWith("Sun") ) {
         String javaVersion = System.getProperty("java.version");

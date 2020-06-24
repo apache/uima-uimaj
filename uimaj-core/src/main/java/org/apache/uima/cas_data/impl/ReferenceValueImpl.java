@@ -32,6 +32,7 @@ public class ReferenceValueImpl implements ReferenceValue {
   private String mTargetId;
 
   public ReferenceValueImpl(String aTargetId) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mTargetId = aTargetId;
   }
 

@@ -226,6 +226,7 @@ public class StringUtil {
     for (int i = 0; i < chars2escape.length; i++) {
       escBuff.setLength(0);
       repBuff.setLength(0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
       escBuff.append('\\');
       escBuff.append(chars2escape[i]);
       repBuff.append("\\\\");

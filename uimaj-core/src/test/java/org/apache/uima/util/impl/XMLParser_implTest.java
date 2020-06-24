@@ -75,18 +75,21 @@ public class XMLParser_implTest extends TestCase {
    * @see TestCase#tearDown()
    */
   protected void tearDown() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     super.tearDown();
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
 
   public void testParse() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // JTalentAndStringMatch.xml contains imports,
       // JTalentAndStringMatch_Expanded.xml has had them manually expanded
       File withImports = JUnitExtension.getFile("XmlParserTest/JTalentAndStringMatch.xml");
       File manuallyExpanded = JUnitExtension
               .getFile("XmlParserTest/JTalentAndStringMatch_Expanded.xml");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // After parsing both files and calling resolveImports,
       // we should then be able to parse both files and get identical results.
@@ -111,12 +114,15 @@ public class XMLParser_implTest extends TestCase {
       File envVarRefTest = JUnitExtension.getFile("XmlParserTest/EnvVarRefTest.xml");
       System.setProperty("uima.test.var1", "foo");
       System.setProperty("uima.test.var2", "bar");
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription taeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new XMLInputSource(envVarRefTest), new XMLParser.ParsingOptions(true, true));
       Assert.assertEquals("foo-bar", taeDesc.getMetaData().getName());
 
       // parse with env var ref expansion disabled
       taeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(envVarRefTest),
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
               new XMLParser.ParsingOptions(false));
       Assert.assertEquals(
               "<envVarRef>uima.test.var1</envVarRef>-<envVarRef>uima.test.var2</envVarRef>",
@@ -133,9 +139,11 @@ public class XMLParser_implTest extends TestCase {
     try {
       //can't run this test under Sun Java 1.4 with no Xerces installed, as
       //it doesn't support schema validation.  The following is a test for that.
+//IC see: https://issues.apache.org/jira/browse/UIMA-192
       SAXParserFactory factory = SAXParserFactory.newInstance();
       SAXParser parser = factory.newSAXParser();
       XMLReader reader = parser.getXMLReader();
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
       try {
         reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", "test");
       }
@@ -159,6 +167,7 @@ public class XMLParser_implTest extends TestCase {
   }
   
   public void testParseFlowControllerDescription() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-338
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("TextAnalysisEngineImplTest/FlowControllerForErrorTest.xml"));
     FlowControllerDescription desc = mXmlParser.parseFlowControllerDescription(in);
@@ -166,6 +175,7 @@ public class XMLParser_implTest extends TestCase {
   }
   
   public void testParseURISpecifier() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-336
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("XmlParserTest/TestUriSpecifier.xml"));
     URISpecifier uriSpec = mXmlParser.parseURISpecifier(in);
@@ -181,6 +191,7 @@ public class XMLParser_implTest extends TestCase {
   }
   
   public void testParseCustomResourceSpecifier() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-352
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("XmlParserTest/TestCustomResourceSpecifier.xml"));
     CustomResourceSpecifier uriSpec = mXmlParser.parseCustomResourceSpecifier(in);
@@ -202,9 +213,11 @@ public class XMLParser_implTest extends TestCase {
     assertThat(pearSpec.getParameters())
         .extracting(Parameter::getName, Parameter::getValue)
         .containsExactly(tuple("legacyParam1", "legacyVal1"), tuple("legacyParam2", "legacyVal2"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5936
 
     assertThat(pearSpec.getPearParameters())
         .extracting(NameValuePair::getName, NameValuePair::getValue)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5936
         .containsExactly(tuple("param1", "stringVal1"), tuple("param2", true));
   }
 }

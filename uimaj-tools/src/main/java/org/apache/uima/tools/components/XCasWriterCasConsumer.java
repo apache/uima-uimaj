@@ -113,6 +113,7 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
         // https://issues.apache.org/jira/browse/UIMA-2097
         URI uri = UriUtils.quote(fileLoc.getUri());
         inFile = new File(uri);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1879
 
         String outFileName = inFile.getName();
         if (fileLoc.getOffsetInSource() > 0) {
@@ -151,6 +152,7 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
    */
   private void writeXCas(CAS aCas, File name) throws IOException, SAXException {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (OutputStream out = new FileOutputStream(name)) {
       XCASSerializer ser = new XCASSerializer(aCas.getTypeSystem());
       XMLSerializer sax2xml = new XMLSerializer(out, false);

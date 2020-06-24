@@ -81,6 +81,7 @@ public final class Heap {
    * Default constructor.
    */
   public Heap() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-574
     this(DEFAULT_SIZE);
   }
 
@@ -109,6 +110,7 @@ public final class Heap {
   }
   
   private final void initHeap(int size) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4281
     this.heap = new int[size];
     this.pos = 1; // 0 is not a valid address
     this.max = this.heap.length;
@@ -122,6 +124,7 @@ public final class Heap {
     // assert(md != null);
     // assert(shortHeap != null);
     final int heapSize = md[SIZE_POS];
+//IC see: https://issues.apache.org/jira/browse/UIMA-574
     this.pos = md[TMPP_POS];
     this.max = md[TMPM_POS];
     this.initialSize = md[PGSZ_POS];
@@ -233,15 +236,18 @@ public final class Heap {
   
   void reset(boolean doFullReset) {
     if (doFullReset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4281
       if (debugLogShrink) System.out.format("Debug shrink Heap full reset from %,d%n", getHeapSize());
       this.initHeap();
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4281
       final int curCapacity = getHeapSize();
       final int curSize = getCellsUsed();
       // shrink based on max of prevSize and curSize
       final int newCapacity = CommonAuxHeap.computeShrunkArraySize(
             curCapacity, curSize, 2, MULTIPLICATION_LIMIT, initialSize, shrinkableCount);
       if (newCapacity == curCapacity) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-988
         Arrays.fill(this.heap, 0, this.pos, 0);
       } else {
         if (debugLogShrink) System.out.format("Debug shrink Heap from %,d to %,d%n",
@@ -296,6 +302,8 @@ public final class Heap {
   }
   
   public void grow(int len) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
   	while ((this.pos + len) >= this.max) {
   	  grow();
   	}
@@ -304,6 +312,8 @@ public final class Heap {
 
   // used by JCas to default the size the JCasHashMap
   public int getInitialSize() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3798
+//IC see: https://issues.apache.org/jira/browse/UIMA-3795
     return initialSize;
   }	
   

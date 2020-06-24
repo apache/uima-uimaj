@@ -40,6 +40,7 @@ public class CharacterUtils {
    * Constructor for CharacterUtils.
    */
   public CharacterUtils() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -55,6 +56,7 @@ public class CharacterUtils {
   }
 
   private static ArrayList<CharRange> getCharacterRanges(int[] charSpecs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     final ArrayList<CharRange> ranges = new ArrayList<>();
     CharRange range;
     // Max value needs special case since characters wrap.
@@ -182,6 +184,7 @@ public class CharacterUtils {
         System.out.print(" '" + toUnicodeChar(range.start) + "'");
       } else {
         System.out.print(" '" + toUnicodeChar(range.start) + "' .. '" + toUnicodeChar(range.end)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + "' ");
       }
     }
@@ -198,6 +201,7 @@ public class CharacterUtils {
       if (i != 0) {
         System.out.print("\n" + spaces + " | ");
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       range = charRanges.get(i);
       if (range.start == range.end) {
         System.out.print(toHexString(range.start));
@@ -209,6 +213,7 @@ public class CharacterUtils {
   }
 
   public static void main(String[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     ArrayList<CharRange> letters = getDigitRange();
     // ArrayList letters = getLetterRange();
     // getCharacterRanges(new int[] { Character.UPPERCASE_LETTER });

@@ -3601,8 +3601,11 @@ public void asynchStop() {
    * @param eps entity process status
    */
   public static void callEntityProcessCompleteWithCAS(StatusCallbackListener statCL, CAS cas, EntityProcessStatus eps) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1727
     if ( statCL != null ) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
         if (null != cas)
           ((CASImpl)cas).switchClassLoaderLockCas(statCL);
         statCL.entityProcessComplete(cas, eps);
@@ -3624,6 +3627,7 @@ public void asynchStop() {
     UimaTimer uTimer = getTimer();
     if (uTimer != null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_use_custom_timer__FINEST",
                 new Object[] { Thread.currentThread().getName(), uTimer.getClass().getName() });
@@ -3655,10 +3659,12 @@ public void asynchStop() {
    * Wait for cpm to resume if paused.
    */
   private void waitForCpmToResumeIfPaused() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
     synchronized (lockForPause) {
       // Pause this thread if CPM has been paused
       while (pause) {
 //        threadState = 2016;  thread state is not kept here, only in the ProcessingUnit
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_pausing_pp__FINEST",
@@ -3667,6 +3673,7 @@ public void asynchStop() {
 
         try {
           // Wait until resumed
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
           lockForPause.wait();
         } catch (InterruptedException e) {
         }

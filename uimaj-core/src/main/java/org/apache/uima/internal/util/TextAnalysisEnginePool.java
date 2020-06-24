@@ -49,6 +49,8 @@ public class TextAnalysisEnginePool extends AnalysisEnginePool {
    *           if the Resource instances could not be created
    */
   public TextAnalysisEnginePool(String aName, int aNumInstances,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceSpecifier aResourceSpecifier) throws ResourceInitializationException {
     this(aName, aNumInstances, aResourceSpecifier, null);
   }
@@ -71,6 +73,7 @@ public class TextAnalysisEnginePool extends AnalysisEnginePool {
    *           if the Resource instances could not be created
    */
   public TextAnalysisEnginePool(String aName, int aNumInstances,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           ResourceSpecifier aResourceSpecifier, Map<String, Object> aResourceInitParams)
           throws ResourceInitializationException {
     super(aName, aNumInstances, aResourceSpecifier, aResourceInitParams);

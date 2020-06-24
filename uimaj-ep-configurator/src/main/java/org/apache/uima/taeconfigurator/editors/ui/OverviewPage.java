@@ -44,6 +44,7 @@ public class OverviewPage extends HeaderPageWithSash {
    * @param aEditor the a editor
    */
   public OverviewPage(MultiPageEditor aEditor) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(aEditor, "UID_OverviewPage", "Overview");
   }
 
@@ -56,10 +57,12 @@ public class OverviewPage extends HeaderPageWithSash {
   protected void createFormContent(IManagedForm managedForm) {
     final Form2Panel form = setup2ColumnLayout(managedForm, EQUAL_WIDTH);
     managedForm.getForm().setText("Overview");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (isLocalProcessingDescriptor()) {
       managedForm.addPart(new GeneralSection(editor, form.left));
       managedForm.addPart(primitiveSection = new PrimitiveSection(editor, form.left));
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
       managedForm.addPart(metadataSection= new MetaDataSection(editor, form.right));
     } else {
       managedForm.addPart(metadataSection = new MetaDataSection(editor, form.left));
@@ -88,6 +91,7 @@ public class OverviewPage extends HeaderPageWithSash {
    * @return the meta data section
    */
   public MetaDataSection getMetaDataSection() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     return metadataSection;
   }
 }

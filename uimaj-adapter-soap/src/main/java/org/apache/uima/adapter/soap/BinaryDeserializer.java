@@ -59,6 +59,8 @@ public class BinaryDeserializer extends DeserializerImpl {
   @Override
   public void startElement(String namespace, String localName, String prefix,
           Attributes attributes, DeserializationContext context) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // System.out.println("startElement(" + namespace + "," + localName + "," + prefix + ")");
     if (!context.isDoneParsing()) {
@@ -96,9 +98,11 @@ public class BinaryDeserializer extends DeserializerImpl {
       if (ref instanceof org.apache.axis.Part) {
         try {
           DataHandler dataHandler = AttachmentUtils
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getActivationDataHandler((org.apache.axis.Part) ref);
           Object content = dataHandler.getContent();
           // System.out.println(content.getClass().getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
           try (ObjectInputStream objStream = new ObjectInputStream((InputStream) content)) {
             setValue(objStream.readObject());
           }
@@ -132,6 +136,7 @@ public class BinaryDeserializer extends DeserializerImpl {
    */
   @Override
   public void onStartElement(String namespace, String localName, String prefix,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Attributes attributes, DeserializationContext context) throws SAXException {
     buf.setLength(0);
   }
@@ -148,6 +153,7 @@ public class BinaryDeserializer extends DeserializerImpl {
    */
   @Override
   public void onEndElement(String arg0, String arg1, DeserializationContext arg2)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
     try {
       // System.out.println("onEndElement(" + arg0 + "," + arg1 + ")");

@@ -38,6 +38,8 @@ public interface CpeDescription extends MetaDataObject {
 
   public void addCollectionReader(CpeCollectionReader aCollectionReader)
           throws CpeDescriptorException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Adds a path to the descriptor file containing CollectionReader's configuration.
@@ -55,6 +57,7 @@ public interface CpeDescription extends MetaDataObject {
    */
   public CpeCollectionReader addCollectionReader(String aCollectionReaderPath)
           throws CpeDescriptorException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Adds a path to the descriptor file containing CasInitializer's configuration.
@@ -70,6 +73,7 @@ public interface CpeDescription extends MetaDataObject {
   @Deprecated
   public CpeCollectionReaderCasInitializer addCasInitializer(String aCasInitializerPath)
           throws CpeDescriptorException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Returns a list of {@link org.apache.uima.collection.metadata.CpeCollectionReader} instances
@@ -83,6 +87,7 @@ public interface CpeDescription extends MetaDataObject {
 
   public void setAllCollectionCollectionReaders(CpeCollectionReader[] readers)
           throws CpeDescriptorException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Returns a {@link org.apache.uima.collection.metadata.CpeCasProcessors} instance containing
@@ -132,6 +137,7 @@ public interface CpeDescription extends MetaDataObject {
    */
   public void addCasProcessor(int index, CpeCasProcessor aCasProcessor)
           throws CpeDescriptorException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Returns the CPE configuration that includes:

@@ -56,6 +56,7 @@ public class NameClient {
 
     int totalhits;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String starttime;
   };
 
@@ -111,6 +112,7 @@ public class NameClient {
   public ServiceInfo[] lookup(String name, int level, String host, String instance, String ws) {
     VinciFrame req = new VinciFrame();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     req.fadd("vinci:COMMAND", VNSConstants.RESOLVE_COMMAND).fadd("SERVICE", name).fadd("LEVEL",
             level).fadd("HOST", host).fadd("INSTANCE", instance).fadd("WORKSPACE", ws);
 
@@ -168,6 +170,7 @@ public class NameClient {
 
     ServiceInfo[] S = constructServiceInfo(resp.fget("SERVER"), resp.fgetString("LEVEL"), name);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-286
     return ((S.length > 0) ? S[R.nextInt(S.length)] : null);
   }
 
@@ -177,6 +180,7 @@ public class NameClient {
   }
 
   public ServiceInfo resolve(String name, int level) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     VinciFrame req = (VinciFrame) new VinciFrame().fadd("vinci:COMMAND",
             VNSConstants.RESOLVE_COMMAND).fadd("SERVICE", name).fadd("LEVEL", level);
 
@@ -186,6 +190,7 @@ public class NameClient {
 
     ServiceInfo[] S = constructServiceInfo(resp.fget("SERVER"), resp.fgetString("LEVEL"), name);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-286
     return ((S.length > 0) ? S[R.nextInt(S.length)] : null);
   }
 
@@ -393,6 +398,7 @@ public class NameClient {
       }
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     VinciFrame out = (VinciFrame) new VinciFrame().fadd("vinci:COMMAND",
             VNSConstants.SERVEON_COMMAND).fadd("SERVICE", name).fadd("HOST", host).fadd("LEVEL",
             level).fadd("INSTANCE", instance);
@@ -427,6 +433,7 @@ public class NameClient {
     QueryableFrame L;
     for (int i = 0; i < S.length; i++) {
       L = (QueryableFrame) A.get(i);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       S[i] = new ServiceInfo(name, L.fgetString("HOST"), L.fgetString("PORT"), level, L
               .fgetString("INSTANCE"));
     }
@@ -664,6 +671,7 @@ public class NameClient {
 
   private static String[] options = { "parseqname", "lookup", "resolve", "getlist", "getnames",
       "gethits", "getallhits", "serveon", "addservice" };
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private static void prMainMenu() {
     pr("\nMenu \n");

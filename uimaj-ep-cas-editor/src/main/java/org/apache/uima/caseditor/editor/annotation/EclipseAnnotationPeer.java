@@ -54,11 +54,13 @@ public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotat
 
   @Override
   public int hashCode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5225
     return annotation._id();
   }
 
   @Override
   public boolean equals(Object obj) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1420
     if (obj == this) {
       return true;
     }

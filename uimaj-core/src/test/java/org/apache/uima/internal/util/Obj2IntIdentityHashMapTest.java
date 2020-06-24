@@ -40,6 +40,7 @@ public class Obj2IntIdentityHashMapTest extends TestCase {
   Map<Integer, Integer> im = new HashMap<>();
   
   public void setUp() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     ihm = new Obj2IntIdentityHashMap<>(Integer.class, Integer.MIN_VALUE);
   }
 

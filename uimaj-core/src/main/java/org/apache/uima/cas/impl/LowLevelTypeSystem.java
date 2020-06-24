@@ -248,5 +248,6 @@ public interface LowLevelTypeSystem {
    * @return The set of allowable string values for subtypes of uima.cas.String.  If the input type
    * code is not a proper subtype of String, returns <code>null</code>. 
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-128
   String[] ll_getStringSet(int typeCode);
 }

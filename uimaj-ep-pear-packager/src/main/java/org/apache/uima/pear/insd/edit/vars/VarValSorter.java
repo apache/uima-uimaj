@@ -55,6 +55,7 @@ class VarValSorter extends ViewerSorter {
    *          the sort criterion to use: one of <code>NAME</code> or <code>TYPE</code>
    */
   public VarValSorter(int criteria) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.criteria = criteria;
   }

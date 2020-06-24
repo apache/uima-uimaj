@@ -59,6 +59,7 @@ public class ConfigGroup {
    */
   public ConfigGroup(ConfigurationParameterDeclarations aCpd, int aKind) {
     cpd = aCpd;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     kind = aKind;
     fixupCpd();
   }
@@ -86,6 +87,7 @@ public class ConfigGroup {
       cpd.setCommonParameters(AbstractSection.configurationParameterArray0);
     if (null == cpd.getConfigurationGroups())
       cpd.setConfigurationGroups(AbstractSection.configurationGroupArray0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     ConfigurationGroup[] cgs = cpd.getConfigurationGroups();
     for (int i = 0; i < cgs.length; i++) {
       if (null == cgs[i].getConfigurationParameters())

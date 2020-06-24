@@ -31,6 +31,7 @@ public class ObjHashSetTest extends TestCase {
   Random random;
   
   public void setUp() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     ihs = new ObjHashSet<>(Integer.class, Integer.MIN_VALUE);
   }
   
@@ -40,6 +41,7 @@ public class ObjHashSetTest extends TestCase {
     ihs.add(188);
     Integer[] sv = ihs.toArray();
     assertEquals(2, sv.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     assertEquals(15 + 188, sv[0] + sv[1]);
     
     // test most positive / negative
@@ -93,6 +95,7 @@ public class ObjHashSetTest extends TestCase {
     /** Test with 2 byte numbers */
     checkRemovedReuse(true);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     ihs = new ObjHashSet<>(Integer.class, Integer.MIN_VALUE);
     for (int i = 1; i < 99; i++) {
       ihs.add(i);

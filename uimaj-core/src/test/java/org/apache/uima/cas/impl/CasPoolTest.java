@@ -79,6 +79,7 @@ public class CasPoolTest extends TestCase {
   }
   
   public void testCasReleaseNotAllowed() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5763
     final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);   
     casManager.defineCasPool("id",  2,  p);
@@ -104,6 +105,7 @@ public class CasPoolTest extends TestCase {
   }
 
   public void testMultiThread() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3797
     final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);   
     int numberOfThreads = Math.min(50, Misc.numberOfCores * 10);    
@@ -112,6 +114,7 @@ public class CasPoolTest extends TestCase {
         numberOfThreads, casPoolSize);
     casManager.defineCasPool("id",  casPoolSize, p);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
       
       public void call(int i, int r, StringBuilder sb) {
@@ -122,6 +125,7 @@ public class CasPoolTest extends TestCase {
 //        System.out.println(sb.toString());
       }
     };  
+//IC see: https://issues.apache.org/jira/browse/UIMA-3797
     MultiThreadUtils.tstMultiThread("CasPoolTest",  numberOfThreads,  10, run2isb,
         new Runnable() {
           public void run() {
@@ -192,6 +196,7 @@ public class CasPoolTest extends TestCase {
       ChildUimaContext_impl context = new ChildUimaContext_impl(rootContext, "abc", Collections.singletonMap(CAS.NAME_DEFAULT_SOFA, "mappedName"));
       c1.setCurrentComponentInfo(context.getComponentInfo());
       casManager.releaseCas(c1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);

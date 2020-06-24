@@ -34,6 +34,7 @@ import org.apache.uima.util.Level;
  * 
  * 
  */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 class StatusCallbackListenerImpl implements StatusCallbackListener {
   int entityCount = 0;
 
@@ -47,6 +48,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
   public void initializationComplete() {
     if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cpm_init_complete__CONFIG",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -74,6 +76,8 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
   public synchronized void collectionProcessComplete() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_method_ping__FINEST",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -87,6 +91,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
   public synchronized void paused() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_paused__FINEST",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -100,6 +105,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
   public synchronized void resumed() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resumed__FINEST",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -113,6 +119,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
   public void aborted() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stopped__FINEST",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -135,6 +142,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
       for (int i = 0; i < aStatus.getFailedComponentNames().size(); i++) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "process",
@@ -164,6 +172,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
       // get size here
       Type t = aCas.getTypeSystem().getType("uima.cpm.FileLocation");
       Feature f = t.getFeatureByBaseName("DocumentSize");
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       FSIterator fsI = aCas.getAnnotationIndex(t).iterator();
       if (fsI.isValid()) {
         dataSize = fsI.get().getIntValue(f);

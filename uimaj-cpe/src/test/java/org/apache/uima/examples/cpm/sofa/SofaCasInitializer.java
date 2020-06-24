@@ -40,6 +40,7 @@ public class SofaCasInitializer extends CasInitializer_ImplBase {
   public void initializeCas(Object aObject, CAS aCAS) throws CollectionException, IOException {
     // Assert.assertFalse(aCAS instanceof CAS);
     // Create the English document Sofa
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     SofaID realSofaName = getUimaContext().mapToSofaID("InputText");
     // System.out.println("CASINITIALIZER: real sofa name for InputText " +
     // realSofaName.getSofaID());

@@ -63,6 +63,8 @@ public class SerializationNoMDTest extends TestCase {
 
   public static final String TOKEN_TYPE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
           + TOKEN_TYPE_FEAT;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   public static final String TOKEN_TYPE_TYPE = "TokenType";
 
@@ -105,6 +107,7 @@ public class SerializationNoMDTest extends TestCase {
     super.setUp();
     casMgr = initCAS();
     cas = (CASImpl)casMgr;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
@@ -113,12 +116,14 @@ public class SerializationNoMDTest extends TestCase {
     eosType = ts.getType(EOS_TYPE);
     tokenType = ts.getType(TOKEN_TYPE);
     tokenTypeFeature = ts.getFeatureByFullName(TOKEN_TYPE_FEAT_Q);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     sentenceType = ts.getType(SENT_TYPE);
   }
 
   public void tearDown() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     casMgr = null;
     cas = null;
     wordType = null;
@@ -149,6 +154,7 @@ public class SerializationNoMDTest extends TestCase {
     TypeSystemMgr tsa = aCas.getTypeSystemMgr();
     // Add new types and features.
     Type topType = tsa.getTopType();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annotType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
     tsa.addType(SENT_TYPE, annotType);
@@ -159,6 +165,7 @@ public class SerializationNoMDTest extends TestCase {
     tsa.addType(EOS_TYPE, tokenTypeType);
     tsa.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     // Commit the type system.
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     ((CASImpl) aCas).commitTypeSystem();
     // assert(tsa.isCommitted());
     // // Create the CAS indexes.
@@ -175,6 +182,7 @@ public class SerializationNoMDTest extends TestCase {
     // assert(cas.getIndexRepositoryMgr().isCommitted());
 
     // Create the default text Sofa and return CAS view
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     return (CASMgr) aCas.getCAS().getCurrentView();
   }
 
@@ -200,6 +208,7 @@ public class SerializationNoMDTest extends TestCase {
     AnnotationFS tokenAnnot;
     while (tokenizer.isValid()) {
       tokenAnnot = cas.createAnnotation(tokenType, tokenizer.getTokenStart(), tokenizer
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getTokenEnd());
       tokenTypeCode = tokenizer.getTokenType();
       switch (tokenTypeCode) {
@@ -263,9 +272,11 @@ public class SerializationNoMDTest extends TestCase {
     // Get a handle to the index repository.
     FSIndexRepository indexRepository = cas.getIndexRepository();
     // assert(indexRepository != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     Iterator<String> labelIt = indexRepository.getLabels();
     assertTrue(labelIt != null);
     // Get the standard index for tokens.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIndex<AnnotationFS> tokenIndex = cas.getAnnotationIndex(tokenType);
     // assert(tokenIndex != null);
     // Get an iterator over tokens.
@@ -314,6 +325,7 @@ public class SerializationNoMDTest extends TestCase {
 
     // Print the first few sentences.
     // System.out.println("\nThe first 10 sentences:\n");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIndex<AnnotationFS> sentenceIndex = cas.getAnnotationIndex(localSentenceType);
     FSIterator<AnnotationFS> it = sentenceIndex.iterator();
     AnnotationFS sentFS;
@@ -334,6 +346,7 @@ public class SerializationNoMDTest extends TestCase {
     // }
 
     // Now get an iterator over all annotations.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIndex<AnnotationFS> annotIndex = cas.getAnnotationIndex();
     // System.out.println("\nNumber of annotations in index: " + annotIndex.size());
 
@@ -373,6 +386,7 @@ public class SerializationNoMDTest extends TestCase {
    *           Various I/O errors.
    */
   public static String file2String(File file) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     return new String(Files.readAllBytes(file.toPath()));
   }
 
@@ -383,12 +397,14 @@ public class SerializationNoMDTest extends TestCase {
 
     // Read the document into a String. I'm sure there are better ways to
     // do this.
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String moby = file2String(textFile);
     // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
     String line;
     BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> docs = new ArrayList<>();
     while ((line = br.readLine()) != null) {
       if (line.startsWith(".. <p")) {
@@ -414,6 +430,7 @@ public class SerializationNoMDTest extends TestCase {
         cas.setDocumentText(docs.get(i));
 
         tokenize();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         numTok = cas.getAnnotationIndex(tokenType).size();
         assertTrue(numTok > 0);
         // System.out.println(" Number of tokens: " + numTok);
@@ -441,6 +458,9 @@ public class SerializationNoMDTest extends TestCase {
         // System.out.println("Serializing...");
         cs = Serialization.serializeNoMetaData(cas);
         cas = Serialization.createCAS(casMgr, cs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());

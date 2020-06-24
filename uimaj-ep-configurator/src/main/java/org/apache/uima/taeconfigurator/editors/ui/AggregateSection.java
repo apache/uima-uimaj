@@ -88,6 +88,7 @@ public class AggregateSection extends AbstractSection {
    * @return the removes the from flow button
    */
   public Button getRemoveFromFlowButton() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return removeFromFlowButton;
   }
 
@@ -102,6 +103,7 @@ public class AggregateSection extends AbstractSection {
    */
   public AggregateSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, "Component Engines",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The following engines are included in this aggregate.");
   }
 
@@ -132,6 +134,7 @@ public class AggregateSection extends AbstractSection {
     // This little code fragment is an attempt to get the right sizing for the buttons
     // Was wrong on Mac platforms
     //   Word below is the longer of the two words in the button container
+//IC see: https://issues.apache.org/jira/browse/UIMA-85
     Button tempForSize = toolkit.createButton(tableContainer, "Remove", SWT.PUSH);
     Point p = tempForSize.computeSize(SWT.DEFAULT, SWT.DEFAULT);
     tempForSize.dispose();
@@ -139,6 +142,7 @@ public class AggregateSection extends AbstractSection {
     Composite bottomButtonContainer = newButtonContainer(tableContainer, HORIZONTAL_BUTTONS, 3* p.x);
 
     addButton = newPushButton(bottomButtonContainer, S_ADD,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Click here to add a locally defined AE or CAS Consumer delegate", ENABLED);
     removeButton = newPushButton(bottomButtonContainer, "Remove",
             "Click here to remove the selected item", ENABLED);
@@ -150,6 +154,7 @@ public class AggregateSection extends AbstractSection {
     spacer(sideButtonContainer);
 
     addToFlowButton = newPushButton(sideButtonContainer, ">>",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Click here to add the selected item to the flow", !ENABLED);
     removeFromFlowButton = newPushButton(sideButtonContainer, "<<",
             "Click here to remove the selected item from the flow", !ENABLED);
@@ -234,6 +239,7 @@ public class AggregateSection extends AbstractSection {
     if (event.widget == addButton)
       handleAdd();
     else if (event.widget == removeButton
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || (event.type == SWT.KeyUp && event.character == SWT.DEL))
       handleRemove();
     else if (event.widget == addToFlowButton)
@@ -252,6 +258,7 @@ public class AggregateSection extends AbstractSection {
         boolean bEnableButtons = (filesTable.getSelectionCount() > 0);
         removeButton.setEnabled(bEnableButtons);
         addToFlowButton.setEnabled(bEnableButtons);
+//IC see: https://issues.apache.org/jira/browse/UIMA-85
       } else if (event.type == SWT.MouseDown && 
                   (event.button == 3  || 
                           // this is for Macintosh - they just have one button
@@ -273,10 +280,12 @@ public class AggregateSection extends AbstractSection {
   private void handleAdd() {
 
     MultiResourceSelectionDialogWithFlowOption dialog = new MultiResourceSelectionDialogWithFlowOption(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             getSection().getShell(), editor.getFile().getProject().getParent(),
             "Component Engine Selection", editor.getFile().getLocation(), editor);
     dialog.setTitle("Component Engine Selection");
     dialog.setMessage("Select one or more component engines from the workspace:");
+//IC see: https://issues.apache.org/jira/browse/UIMA-477
     if (Window.CANCEL == dialog.open()) {
       return;
     }
@@ -286,6 +295,7 @@ public class AggregateSection extends AbstractSection {
       for (int i = 0; i < files.length; i++) {
         FileAndShortName fsn = new FileAndShortName(files[i]);
         produceKeyAddDelegate(fsn.shortName, fsn.fileName, dialog.getAutoAddToFlow(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 dialog.isImportByName);
       }
     }
@@ -334,6 +344,7 @@ public class AggregateSection extends AbstractSection {
       String sCascadeDeleteTitle = "Cascade delete warning";
       String sCascadeDeleteMessage = "This will cause a cascading deletion of an associated input, output, index, or type priority.  Ok to continue?";
       boolean bContinue = MessageDialog.openConfirm(getSection().getShell(), sCascadeDeleteTitle,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               sCascadeDeleteMessage);
       if (!bContinue) {
         return;
@@ -343,6 +354,7 @@ public class AggregateSection extends AbstractSection {
     // remove the selected delegate from delegate list
 
     Map delegatesWithImport = editor.getAeDescription()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getDelegateAnalysisEngineSpecifiersWithImports();
     Object savedDelegate1 = delegatesWithImport.get(key);
     delegatesWithImport.remove(key);
@@ -356,6 +368,7 @@ public class AggregateSection extends AbstractSection {
 
     FlowNodes flow = new FlowNodes(getAnalysisEngineMetaData().getFlowConstraints());
     String[] savedFlowNodes = flow.getFlow();
+//IC see: https://issues.apache.org/jira/browse/UIMA-205
     if (null == savedFlowNodes) 
       savedFlowNodes = stringArray0;
 
@@ -451,6 +464,7 @@ public class AggregateSection extends AbstractSection {
 
   /** The Constant REMOTE_TEMPLATE. */
   private final static String REMOTE_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           + "<uriSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
           + "  <resourceType>{0}</resourceType>\n" + // AnalysisEngine CasConsumer
           "  <uri>{1}</uri> \n" + // sURI
@@ -460,6 +474,7 @@ public class AggregateSection extends AbstractSection {
   
   /** The Constant REMOTE_JMS_TEMPLATE. */
   private final static String REMOTE_JMS_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
     + "<customResourceSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
     + "  <resourceClassName>org.apache.uima.aae.jms_adapter.JmsAnalysisEngineServiceAdapter</resourceClassName>\n"
     + "  <parameters>\n"
@@ -476,10 +491,12 @@ public class AggregateSection extends AbstractSection {
     String sDescriptorPath = editor.getFile().getParent().getLocation().toString() + '/';
     AddRemoteServiceDialog dialog = new AddRemoteServiceDialog(this, sDescriptorPath);
     dialog.open();
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     if (dialog.getReturnCode() == Window.CANCEL)
       return;
 
     String sServiceType = dialog.getSelectedServiceTypeName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
     if (sServiceType != null &&
         !sServiceType.equals("UIMA-AS JMS") &&
         !sServiceType.equals("SOAP") && 
@@ -497,10 +514,13 @@ public class AggregateSection extends AbstractSection {
 
     PrintWriter printWriter = setupToPrintFile(dialog.genFilePath);
     if (null != printWriter) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
       if (!sServiceType.equals("UIMA-AS JMS")) {
         String vnsHostPort = "";
         if (dialog.vnsHost.length() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           vnsHostPort = MessageFormat.format("    <parameter name=\"VNS_HOST\" value=\"{0}\"/>\n",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     new Object[] { dialog.vnsHost });
         }
         if (dialog.vnsPort.length() > 0) {
@@ -550,6 +570,7 @@ public class AggregateSection extends AbstractSection {
    * @return the string builder
    */
   private StringBuilder addParam(StringBuilder sb, String name, String value) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
     if (value != null && value.length() > 0) {
       sb = sb.append("      <parameter name=\"").append(name).append("\" value=\"").append(value).append("\"/>\n");
     }
@@ -559,12 +580,14 @@ public class AggregateSection extends AbstractSection {
   /** The Constant delegateComponentStringHeadersLC. */
   private static final String[] delegateComponentStringHeadersLC = new String[] {
       "<analysisenginedescription", "<casconsumerdescription", "<taedescription" };
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Handle find analysis engine.
    */
   private void handleFindAnalysisEngine() {
     FindComponentDialog dialog1 = new FindComponentDialog(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             this,
             "Find an Analysis Engine (AE), CAS Consumer, or Remote Service Descriptor",
             "Specify a name pattern and/or additional constraints, and then push the Search button",
@@ -577,6 +600,7 @@ public class AggregateSection extends AbstractSection {
 
     if (matchingDelegateComponentDescriptors.size() == 0) {
       Utility.popMessage("No matching Delegate Components",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "There are no Delegate Components matching your search criteria.",
               MessageDialog.ERROR);
       return;
@@ -606,6 +630,7 @@ public class AggregateSection extends AbstractSection {
       }
       produceKeyAddDelegate(shortName, editor.getFullPathFromDescriptorRelativePath(fileName),
       // dialog2.getAutoAddToFlow(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               true, dialog2.isImportByName);
     }
     finishAggregateChangeAction();
@@ -642,6 +667,7 @@ public class AggregateSection extends AbstractSection {
       Map dels = editor.getResolvedDelegates();
       if (null != dels) {
         sDesc = getDescriptionForDescriptor(item.getText(0), (ResourceSpecifier) dels.get(item
+//IC see: https://issues.apache.org/jira/browse/UIMA-315
                 .getText(1)));
       }
     }
@@ -676,8 +702,10 @@ public class AggregateSection extends AbstractSection {
       return false;
 
     if (!(inputDescription instanceof AnalysisEngineDescription)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && !(inputDescription instanceof CasConsumerDescription)
             && !(inputDescription instanceof URISpecifier)
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
             && !(inputDescription instanceof PearSpecifier)
             && !(isJmsDescriptor(inputDescription))
        ) {
@@ -688,6 +716,7 @@ public class AggregateSection extends AbstractSection {
                               .format(
                                       "Operation cancelled: The descriptor ''{0}'' being added is not an Analysis Engine or a CAS Consumer or a Remote Service.",
                                       new Object[] { maybeShortenFileName(fileName) }),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       MessageDialog.ERROR);
       return false;
     }
@@ -730,6 +759,7 @@ public class AggregateSection extends AbstractSection {
   public void addParametersForDelegate(AnalysisEngineDescription tae) {
     ConfigurationParameter[] candidateNewParams = tae.getAnalysisEngineMetaData()
             .getConfigurationParameterDeclarations().getConfigurationParameters();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     NameValuePair[] candidateSettings = tae.getAnalysisEngineMetaData()
             .getConfigurationParameterSettings().getParameterSettings();
@@ -746,6 +776,7 @@ public class AggregateSection extends AbstractSection {
 
     if (oldParams == null || oldParams.length == 0) {
       getAnalysisEngineMetaData().getConfigurationParameterDeclarations()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .setConfigurationParameters(candidateNewParams);
       getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterSettings(
               candidateSettings);
@@ -756,6 +787,7 @@ public class AggregateSection extends AbstractSection {
         boolean bNew = true;
         for (int j = 0; j < oldParams.length; j++) {
           if (candidateNewParams[i].getName().equals(oldParams[j].getName())
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   && candidateNewParams[i].getType().equals(oldParams[j].getType())) {
             bNew = false;
           }
@@ -766,6 +798,7 @@ public class AggregateSection extends AbstractSection {
       }
 
       ConfigurationParameter[] newPlusOldParams = new ConfigurationParameter[oldParams.length
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + newParams.size()];
       for (int i = 0; i < oldParams.length; i++) {
         newPlusOldParams[i] = oldParams[i];
@@ -775,6 +808,7 @@ public class AggregateSection extends AbstractSection {
       }
       getAnalysisEngineMetaData().getConfigurationParameterDeclarations()
               .setConfigurationParameters(newPlusOldParams);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // next do settings
       Vector newSettings = new Vector();
@@ -793,6 +827,7 @@ public class AggregateSection extends AbstractSection {
       }
 
       NameValuePair[] newPlusOldSettings = new NameValuePair[oldSettings.length
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + newSettings.size()];
       for (int i = 0; i < oldSettings.length; i++) {
         newPlusOldSettings[i] = oldSettings[i];
@@ -801,6 +836,7 @@ public class AggregateSection extends AbstractSection {
         newPlusOldSettings[oldSettings.length + i] = (NameValuePair) newSettings.elementAt(i);
       }
       getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterSettings(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               newPlusOldSettings);
     }
   }

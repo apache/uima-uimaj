@@ -29,6 +29,7 @@ public class IntHashSetTest extends TestCase {
   
   IntHashSet ihs;
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
   Random random;
   
   public void setUp() {
@@ -60,15 +61,19 @@ public class IntHashSetTest extends TestCase {
     assertEquals(1000, ihs.getMostPositive());
     assertEquals(-1000, ihs.getMostNegative());
     ihs.remove(1000);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     assertEquals(999, ihs.getMostPositive());
     assertEquals(-1000, ihs.getMostNegative());
     ihs.add(1001);    
     assertEquals(1001, ihs.getMostPositive());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4184
+//IC see: https://issues.apache.org/jira/browse/UIMA-4187
     sv = getSortedValues(ihs);
     assertTrue(Arrays.equals(sv, new int[]{-1000, -500, 189, 500, 1001}));
   }
   
   public void testSwitching224() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4200
     final int OS = 100000;
     ihs = new IntHashSet(16, OS);
     ihs.add(OS - 1);
@@ -86,10 +91,12 @@ public class IntHashSetTest extends TestCase {
   }
   
   private int[] getSortedValues(IntHashSet s) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     IntListIterator it = s.iterator();
     int[] r = new int[s.size()];
     int i = 0;
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
       r[i++] = it.nextNvc();
     }
     Arrays.sort(r);
@@ -113,12 +120,14 @@ public class IntHashSetTest extends TestCase {
   
   public void testWontExpand() {
     ihs = new IntHashSet(21);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     assertEquals(16, ihs.getSpaceUsedInWords());
     assertTrue(ihs.wontExpand(20));
     assertFalse(ihs.wontExpand(21));
   }
   
   public void testExpandNpe() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4101
     ihs.add(15);
     ihs.add(150000);  // makes 4 byte table entries
     
@@ -129,6 +138,7 @@ public class IntHashSetTest extends TestCase {
   
   public void testAddIntoRemovedSlot() {
     long seed = // 6738591171221169418L;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
         new Random().nextLong();
     System.out.println("Random seed for testAddIntoRemovedSlot in " + this.getClass().getName() + ": "  + seed);
     random = new Random(seed);
@@ -157,6 +167,7 @@ public class IntHashSetTest extends TestCase {
       int v = 1 + random.nextInt(100 + (i % 30000)); // random between 1 and 30,101
       int sz = ihs.size();
       boolean wasRemoved = ihs.remove(v);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
       assertEquals(sz - (wasRemoved ? 1 : 0), ihs.size());
       assertTrue(!(ihs.contains(v)));
       v = 1 + random.nextInt(100 + (i % 30000));
@@ -210,6 +221,7 @@ public class IntHashSetTest extends TestCase {
     int notPres = 0;
     int countRmv = 0;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     long seed = 
         new Random().nextLong();
     System.out.println("Random seed for testRandom in " + this.getClass().getName() + ": "  + seed);

@@ -122,6 +122,7 @@ public class UIMAUtil {
    *           If any I/O exception occurred.
    */
   public static synchronized String identifyUimaComponentCategory(File xmlDescFile)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     return identifyUimaComponentCategory(xmlDescFile, null);
   }
@@ -141,6 +142,7 @@ public class UIMAUtil {
    *           If any I/O exception occurred.
    */
   public static synchronized String identifyUimaComponentCategory(URL xmlDescUrl)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     return identifyUimaComponentCategory(null, xmlDescUrl);
   }
@@ -173,6 +175,8 @@ public class UIMAUtil {
       XMLParser xmlParser = UIMAFramework.getXMLParser();
       // create XML source
       xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               xmlDescUrl);
       // parse XML source and create resource specifier
       ResourceSpecifier resourceSpec = null;
@@ -183,6 +187,7 @@ public class UIMAUtil {
       } catch (UIMARuntimeException exc) {
 				__errTableByUri.put( xmlDescUri, exc );
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-814
       if (resourceSpec != null) { // AE | CR | CI | CC | CustomResourceSpecifier ?
         // identify UIMA resource category
         if (resourceSpec instanceof AnalysisEngineDescription) {
@@ -193,6 +198,7 @@ public class UIMAUtil {
           uimaCompCtg = CAS_INITIALIZER_CTG;
         } else if (resourceSpec instanceof CasConsumerDescription) {
           uimaCompCtg = CAS_CONSUMER_CTG;
+//IC see: https://issues.apache.org/jira/browse/UIMA-814
         } else if (resourceSpec instanceof CustomResourceSpecifier) {
            // try to treat custom resource specifiers as AE
            uimaCompCtg = ANALYSIS_ENGINE_CTG;
@@ -207,6 +213,7 @@ public class UIMAUtil {
         xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(xmlDescUrl);
         try {
           // try parsing CPE configuration
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           xmlParser.parseCpeDescription(xmlSource);
           uimaCompCtg = CPE_CONFIGURATION_CTG;
           __errTableByUri.remove( xmlDescUri );
@@ -225,6 +232,7 @@ public class UIMAUtil {
         xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(xmlDescUrl);
         try {
           // try parsing TS description
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           xmlParser.parseTypeSystemDescription(xmlSource);
           uimaCompCtg = TYPE_SYSTEM_CTG;
           __errTableByUri.remove( xmlDescUri );
@@ -243,6 +251,7 @@ public class UIMAUtil {
         xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(xmlDescUrl);
         try {
           // try parsing RES manager configuration
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           xmlParser.parseResourceManagerConfiguration(xmlSource);
           uimaCompCtg = REUSABLE_RESOURCE_CTG;
           __errTableByUri.remove( xmlDescUri );

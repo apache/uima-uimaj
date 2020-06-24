@@ -102,6 +102,7 @@ public class Sofa extends TOP implements SofaFSImpl {
   
   public Sofa(TypeImpl t, CASImpl c, int sofaNum, String viewName, String mimeType) {
     super(t, c);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setIntValueNcNj(wrapGetIntCatchException(_FH_sofaNum), sofaNum);
     _setRefValueCommon(wrapGetIntCatchException(_FH_sofaID), viewName);
     _setRefValueCommon(wrapGetIntCatchException(_FH_mimeType), mimeType);
@@ -168,6 +169,7 @@ public class Sofa extends TOP implements SofaFSImpl {
   @Override
   public void setLocalSofaData(FeatureStructure aFS) {   
     if (isSofaDataSet()) { throwAlreadySet("setLocalSofaData()"); }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_sofaArray), aFS);
   }
 
@@ -193,6 +195,7 @@ public class Sofa extends TOP implements SofaFSImpl {
    */
   public void setLocalSofaDataNoDocAnnotUpdate(String aString) {
     if (isSofaDataSet()) { throwAlreadySet("setLocalSofaData()"); }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setStringValueNcWj(wrapGetIntCatchException(_FH_sofaString), aString);    
   }
   
@@ -221,11 +224,14 @@ public class Sofa extends TOP implements SofaFSImpl {
   @Override
   public void setRemoteSofaURI(String aURI) {
     if (isSofaDataSet()) { throwAlreadySet("setRemoteSofaURI()"); }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setStringValueNcWj(wrapGetIntCatchException(_FH_sofaURI), aURI);
   }
 	
 	public void setRemoteSofaURI(String aURI, String mimeType) {
     setRemoteSofaURI(aURI);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
     setMimeType(mimeType);
 	}
 

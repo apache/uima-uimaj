@@ -152,6 +152,7 @@ public class DocMeta extends DocumentAnnotation {
    * @param v value to set into the feature 
    */
   public void setFeat(String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
     _setStringValueNfc(wrapGetIntCatchException(_FH_feat), v);
   }    
     

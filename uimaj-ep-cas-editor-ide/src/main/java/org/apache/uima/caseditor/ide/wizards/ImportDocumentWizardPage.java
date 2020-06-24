@@ -78,8 +78,10 @@ final class ImportDocumentWizardPage extends WizardPage {
   private static final Set<String> defaultEncodings;
   
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     Set<String> encodings = new HashSet<>();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2179
     encodings.add("US-ASCII");
     encodings.add("ISO-8859-1");
     encodings.add("UTF-8");
@@ -108,6 +110,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     super(pageName);
 
     setTitle("Import Text Files");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1782
 
     // TODO: Pre select the selected foler ..
 //    if (!currentResourceSelection.isEmpty()) {
@@ -124,6 +127,7 @@ final class ImportDocumentWizardPage extends WizardPage {
 	  
 	boolean isEncodingSupported = false;
 	
+//IC see: https://issues.apache.org/jira/browse/UIMA-1782
 	try {
 		isEncodingSupported = Charset.isSupported(importEncoding);
 	}
@@ -133,6 +137,7 @@ final class ImportDocumentWizardPage extends WizardPage {
 		
 	}
 	
+//IC see: https://issues.apache.org/jira/browse/UIMA-1782
 	String errorMessage = null;
 	if (!isEncodingSupported)
 		errorMessage ="Invalid text import encoding!";
@@ -257,6 +262,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     });
 
     // Into Corpus folder 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1894
     Label intoFolderLabel = new Label(composite, SWT.NONE);
     intoFolderLabel.setText("Into folder:");
 
@@ -267,6 +273,7 @@ final class ImportDocumentWizardPage extends WizardPage {
       corpusText.setText(importDestinationPath.toString());
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1894
     Button browseForFolder = new Button(composite, SWT.NONE);
     browseForFolder.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
             | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -289,12 +296,14 @@ final class ImportDocumentWizardPage extends WizardPage {
                 new BaseWorkbenchContentProvider());
 
         folderSelectionDialog.addFilter(new ContainerElementFilter());
+//IC see: https://issues.apache.org/jira/browse/UIMA-1894
 
         if (containerElement != null) {
           folderSelectionDialog.setInitialSelection(containerElement);
         }
 
         folderSelectionDialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2123
 
         folderSelectionDialog.setTitle("Choose folder");
         folderSelectionDialog.setMessage("Please choose a folder.");
@@ -324,6 +333,7 @@ final class ImportDocumentWizardPage extends WizardPage {
 
         Object[] results = folderSelectionDialog.getResult();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1894
         if (results != null && results.length > 0) {
           // validator makes sure that an IContainer or an IAdaptable
           // element which can provide an IContainer is selected
@@ -358,9 +368,11 @@ final class ImportDocumentWizardPage extends WizardPage {
     importOptionsGridData.horizontalSpan = 3;
     importOptions.setLayoutData(importOptionsGridData);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2174
     Label languageLabel = new Label(importOptions, SWT.NONE);
     languageLabel.setText("Language:");
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2179
     final IPreferenceStore store = CasEditorIdePlugin.getDefault().getPreferenceStore();
     
     final Text languageText = new Text(importOptions, SWT.BORDER);
@@ -385,8 +397,10 @@ final class ImportDocumentWizardPage extends WizardPage {
     encodingCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     Set<String> charsets = new HashSet<>(defaultEncodings);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2179
     String lastUsedEncodingsString = 
             store.getString(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS);
     
@@ -405,6 +419,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     encodingCombo.addSelectionListener(new SelectionListener() {
   		
   		public void widgetSelected(SelectionEvent e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2174
   			importEncoding = encodingCombo.getText();
   			updatePageState();
   		}
@@ -417,6 +432,11 @@ final class ImportDocumentWizardPage extends WizardPage {
 		
   		public void keyReleased(KeyEvent e) {
   			importEncoding = encodingCombo.getText();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1782
+//IC see: https://issues.apache.org/jira/browse/UIMA-1782
+//IC see: https://issues.apache.org/jira/browse/UIMA-1782
+//IC see: https://issues.apache.org/jira/browse/UIMA-1782
+//IC see: https://issues.apache.org/jira/browse/UIMA-1782
   			updatePageState();
   		}
   		
@@ -429,6 +449,7 @@ final class ImportDocumentWizardPage extends WizardPage {
   
     final Combo casFormatCombo = new Combo(importOptions, SWT.READ_ONLY);
     casFormatCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     SerialFormat[] values = SerialFormat.values();
     String[] stringValues = new String[values.length];
     for (int i = 0; i < values.length; i++) {
@@ -446,8 +467,10 @@ final class ImportDocumentWizardPage extends WizardPage {
   		
   		public void widgetDefaultSelected(SelectionEvent e) {
   		}
+//IC see: https://issues.apache.org/jira/browse/UIMA-2174
   	});
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1782
     updatePageState();
     
     setControl(composite);
@@ -465,6 +488,7 @@ final class ImportDocumentWizardPage extends WizardPage {
   List<File> getFilesToImport() {
 
     List<File> files = new ArrayList<>(fileTable.getTable().getItemCount());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
 
     for (int i = 0; i < fileTable.getTable().getItemCount(); i++) {
       files.add((File) fileTable.getElementAt(i));
@@ -473,14 +497,17 @@ final class ImportDocumentWizardPage extends WizardPage {
     return files;
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-1782
   String getTextEncoding() {
 	  return importEncoding;
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-2174
   String getLanguage() {
     return language;
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
   SerialFormat getCasFormat() {
 	  return documentFormat;
   }

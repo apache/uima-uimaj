@@ -56,6 +56,7 @@ public class GeneratePearFileAction implements IObjectActionDelegate {
    * Constructor.
    */
   public GeneratePearFileAction() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -99,6 +100,7 @@ public class GeneratePearFileAction implements IObjectActionDelegate {
           dialog.open();
         } catch (Throwable e) {
           PearProjectCustomizationException pcEx = new PearProjectCustomizationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "An error occured during the PEAR generation process.", e);
           pcEx.openErrorDialog(shell);
         }

@@ -48,6 +48,8 @@ import org.apache.uima.util.XMLizable;
  */
 public class TypeSystemDescription_impl extends MetaDataObject_impl implements
         TypeSystemDescription {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static final long serialVersionUID = -3372766232454730201L;
     
@@ -139,6 +141,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aImports", "setImports" });
     }
     mImports = aImports;
@@ -157,6 +160,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   public void setTypes(TypeDescription[] aTypes) {
     if (aTypes == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aTypes", "setTypes" });
     }
     mTypes = aTypes;
@@ -199,9 +203,12 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
    */
   // allow these calls to be done multiple times on this same object, in different threads
   public synchronized void resolveImports() throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     if (getImports().length == 0) {
       resolveImports(null, null);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       resolveImports(new TreeSet<>(), UIMAFramework.newDefaultResourceManager());
     }
   }
@@ -211,14 +218,17 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   }
 
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceManager aResourceManager) throws InvalidXMLException {
     List<TypeDescription> importedTypes = null;
     if (getImports().length != 0) {
       // add our own URL, if known, to the collection of already imported URLs
+//IC see: https://issues.apache.org/jira/browse/UIMA-105
       if (getSourceUrl() != null) {
         aAlreadyImportedTypeSystemURLs.add(getSourceUrl().toString());
       }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       importedTypes = new ArrayList<>();
       Import[] imports = getImports();
       for (int i = 0; i < imports.length; i++) {
@@ -234,6 +244,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
             resolveImport(url, aAlreadyImportedTypeSystemURLs, importedTypes, aResourceManager);
           } catch (IOException e) {
             throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     new Object[] { url, imports[i].getSourceUrlString() }, e);
           }
         }
@@ -257,13 +268,17 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   }
 
   private void resolveImport(URL aURL, Collection<String> aAlreadyImportedTypeSystemURLs,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1488
           Collection<TypeDescription> aResults, ResourceManager aResourceManager) throws InvalidXMLException,
           IOException {
     //check the import cache
+//IC see: https://issues.apache.org/jira/browse/UIMA-1230
     TypeSystemDescription desc;    
     String urlString = aURL.toString();
     Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
     Map<String, Set<String>> importUrlsCache = ((ResourceManager_impl)aResourceManager).getImportUrlsCache();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     synchronized(importCache) {
       XMLizable cachedObject = importCache.get(urlString);
       if (cachedObject instanceof TypeSystemDescription) {
@@ -274,6 +289,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
         XMLInputSource input;
         input = new XMLInputSource(aURL);
         desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(input);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         TreeSet<String> previouslyImported = new TreeSet<>(aAlreadyImportedTypeSystemURLs);
         desc.resolveImports(aAlreadyImportedTypeSystemURLs, aResourceManager);
         importCache.put(urlString, desc);
@@ -292,6 +308,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeSystemDescription",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("name", true),
               new PropertyXmlInfo("description", true), new PropertyXmlInfo("version", true),
               new PropertyXmlInfo("vendor", true), new PropertyXmlInfo("imports", true),

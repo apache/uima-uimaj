@@ -185,6 +185,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    */
   @Override
   public void deployCasProcessor(ProcessingContainer aProcessingContainer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     try {
       CasProcessorConfiguration casProcessorConfig = aProcessingContainer
@@ -203,6 +204,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       throw e;
     } catch (Exception e) {
       throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_CPM_unable_to_deploy_service__SEVERE", new Object[] {
                   Thread.currentThread().getName(),
                   aProcessingContainer.getCasProcessorConfiguration().getName() });
@@ -226,6 +228,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    */
   @Override
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     String name = null;
     CasProcessor casProcessor = null;
@@ -249,6 +252,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         if (processingContainer == null) {
           ProcessingResourceMetaData metaData = casProcessor.getProcessingResourceMetaData();
           CpeCasProcessor casProcessorType = (CpeCasProcessor) cpeFactory.casProcessorConfigMap
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .get(metaData.getName());
           // Create a pool to hold instances of CasProcessors. Instances are managed by a container
           // through
@@ -256,9 +260,11 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           casProcessorPool = new ServiceProxyPool();
           // Create CasProcess Configuration holding info defined in the CPE descriptor
           casProcessorConfig = new CasProcessorConfigurationJAXBImpl(casProcessorType, cpeFactory.getResourceManager());
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
 
           // Associate CasProcessor configuration from CPE descriptor with this container
           processingContainer = new ProcessingContainer_Impl(casProcessorConfig, metaData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   casProcessorPool);
           processingContainer.setCasProcessorDeployer(this);
           // Instantiate an object that encapsulates CasProcessor configuration
@@ -268,6 +274,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           if (name == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_unable_to_read_meta__SEVERE", Thread.currentThread().getName());
             }
@@ -283,6 +290,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       // There is one instance of ProcessingContainer for set of CasProcessors
       if (processingContainer == null) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "UIMA_CPM_invalid_container__SEVERE", new Object[] { Thread.currentThread()
                         .getName() });
       }
@@ -316,6 +324,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException if unknown deployment type
    */
   private void deployBasedOnModel(ProcessingContainer aProcessingContainer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CasProcessorConfiguration aCasProcessorConfig, boolean redeploy)
           throws ResourceConfigurationException {
     String deployModel = aCasProcessorConfig.getDeploymentType();
@@ -340,6 +349,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_unsupported_deploy_mode__SEVERE",
                 new Object[] { Thread.currentThread().getName(), name, deployModel });
@@ -367,6 +377,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException if the descriptor is invalid or for any internal Exception (wrapped)
    */
   private void deployLocal(ProcessingContainer aProcessingContainer, boolean redeploy)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     // Cas Processor configuration is associated with the container. There is a container per Cas
     // Processor type.
@@ -396,6 +407,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           if (vns == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_deploy_vns__FINEST",
                       new Object[] { Thread.currentThread().getName() });
@@ -409,6 +421,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINEST,
                     this.getClass().getName(),
                     "initialize",
@@ -428,6 +441,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         associateMetadataWithContainer(aProcessingContainer);
       } else {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "UIMA_CPM_invalid_cpe_descriptor__SEVERE", new Object[] {
                     Thread.currentThread().getName(), name, "runInSeparateProcess" });
       }
@@ -477,6 +491,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws CasProcessorDeploymentException wraps any exception
    */
   private void launchLocalService(ProcessingContainer aProcessingContainer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CasProcessorConfiguration casProcessorConfig, boolean redeploy, int howMany)
           throws CasProcessorDeploymentException {
     try {
@@ -485,6 +500,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
       String[] execCommand = new String[3];
       if (System.getProperty("os.name").equalsIgnoreCase("linux")) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-667
         execCommand[0] = "/bin/sh";
         execCommand[1] = "-c";
       }
@@ -512,6 +528,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         }
       }
       sb.append(" >> " + logDir + "\"" + casProcessorConfig.getName() + System.currentTimeMillis()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + ".log\"" + " 2>&1");
       execCommand[2] = sb.toString();
 
@@ -530,6 +547,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         for (int i = 0; cmd != null && i < cmd.length; i++) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINEST,
                     this.getClass().getName(),
                     "initialize",
@@ -545,6 +563,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           for (int i = 0; i < env.length; i++) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       Level.FINEST,
                       this.getClass().getName(),
                       "initialize",
@@ -577,6 +596,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           if (System.getProperty("os.name").equalsIgnoreCase("linux")) {
             for (int i = 0; execCommand != null && i < execCommand.length; i++) {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 UIMAFramework.getLogger(this.getClass()).logrb(
                         Level.FINEST,
                         this.getClass().getName(),
@@ -594,6 +614,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         }
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_connecting_to_services__FINEST",
@@ -620,6 +641,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException tbd
    */
   private void deployIntegrated(ProcessingContainer aProcessingContainer, boolean redeploy)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     // Integrated CasProcessors are deployed in the CPEFactory
   }
@@ -637,6 +659,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException wraps exception
    */
   private void deployRemote(ProcessingContainer aProcessingContainer, boolean redeploy)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     CasProcessorConfiguration casProcessorConfig = aProcessingContainer
             .getCasProcessorConfiguration();
@@ -695,6 +718,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
             if (((NetworkCasProcessorImpl) processor).getProxy() == null) {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                 UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                         Level.FINEST,
                         this.getClass().getName(),
                         "initialize",
@@ -740,6 +764,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *           error
    */
   private int attachToServices(boolean redeploy, String aServiceUri, int howMany,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ProcessingContainer aProcessingContainer) throws Exception {
     VinciServiceInfo serviceInfo = null;
 
@@ -754,6 +779,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     String serviceAccess = casProcessorConfig.getDeploymentParameter("service-access");
     if (serviceAccess != null && serviceAccess.equalsIgnoreCase("exclusive")) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(
                 Level.FINEST,
                 this.getClass().getName(),
@@ -772,6 +798,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         // available in the current service list
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "initialize",
@@ -808,6 +835,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
       if (serviceList == null || serviceList.size() == 0 && redeploy == false) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "UIMA_CPM_no_service_in_vns__FINEST", new Object[] {
                     Thread.currentThread().getName(), aServiceUri,
                     casProcessorConfig.getDeploymentType(),
@@ -847,6 +875,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     for (int i = 0; i < howMany; i++) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 this.getClass().getName(),
                 "initialize",
@@ -875,6 +904,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           }
           if (sleepBetweenRetries) {
             try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
               Thread.sleep(maxTimeToWait);
             } catch (InterruptedException iex) {
             }
@@ -897,6 +927,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           }
           if (exclusiveAccess) {
             activateProcessor(casProcessorConfig, serviceInfo.getHost(), serviceInfo.getPort(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     aProcessingContainer, redeploy);
             serviceInfo.setAvailable(false);
           } else {
@@ -908,6 +939,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           break;
         } catch (ResourceInitializationException ex) {
           if (ex.getCause() instanceof ServiceException
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   || ex.getCause() instanceof ServiceDownException) {
             if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
@@ -970,6 +1002,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws Exception passthru
    */
   private ArrayList getNewServiceList(String aServiceUri,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CasProcessorConfiguration aCasProcessorConfig) throws Exception {
     String vnsHost = getVNSSettingFor("VNS_HOST", aCasProcessorConfig, "localhost");
     String vnsPort = getVNSSettingFor("VNS_PORT", aCasProcessorConfig, "9000");
@@ -988,6 +1021,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException when max restarts limit reached
    */
   private void handleMaxRestartThresholdReached(ProcessingContainer aProcessingContainer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     CasProcessorConfiguration casProcessorConfig = aProcessingContainer
             .getCasProcessorConfiguration();
@@ -1063,6 +1097,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    */
   private String getServiceUri(CasProcessorConfiguration aCasProcessorConfig)
           throws ResourceConfigurationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     URL descriptorUrl;
     descriptorUrl = aCasProcessorConfig.getDescriptorUrl();
 
@@ -1086,6 +1121,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    */
   private URISpecifier getURISpecifier(URL aDescriptorUrl) throws ResourceConfigurationException {
     ResourceSpecifier resourceSpecifier = getSpecifier(aDescriptorUrl);
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
 
     if (!(resourceSpecifier instanceof URISpecifier)) {
       throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -1125,6 +1161,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws CasProcessorDeploymentException wraps Exception
    */
   private void deployVNS(CasProcessorConfiguration casProcessorConfig, boolean redeploy)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CasProcessorDeploymentException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
@@ -1249,7 +1286,9 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws Exception passthru
    */
   private synchronized boolean activateProcessor(CasProcessorConfiguration aCasProcessorConfig,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aHost, int aPort, ProcessingContainer aProcessingContainer, boolean redeploy)
+//IC see: https://issues.apache.org/jira/browse/UIMA-3484
           throws ResourceConfigurationException, Exception {
     // Instantiate proxy from given configuration
     VinciTAP tap = getTextAnalysisProxy(aCasProcessorConfig);
@@ -1272,6 +1311,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           e.printStackTrace();
           if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
             UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Thread.currentThread().getName() + "", e);
           }
           throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -1306,6 +1347,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws Exception passthru
    */
   private synchronized boolean activateProcessor(CasProcessorConfiguration aCasProcessorConfig,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aService, ProcessingContainer aProcessingContainer, boolean redeploy) // throws
           // ResourceInitializationException,
           // ResourceConfigurationException
@@ -1322,6 +1364,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     int maxCount = aCasProcessorConfig.getMaxRestartCount();
     int maxTimeToWait = aCasProcessorConfig.getMaxTimeToWaitBetweenRetries();
     // Never sleep indefinitely. Override if the maxTimeToWait = 0
+//IC see: https://issues.apache.org/jira/browse/UIMA-1304
     if (maxTimeToWait == 0) {
       maxTimeToWait = WAIT_TIME;
     }
@@ -1337,6 +1380,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_connecting_to_service__FINEST",
                   new Object[] { Thread.currentThread().getName(), aService });
@@ -1505,6 +1549,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws Exception the exception
    */
   private void bindProxyToNetworkCasProcessor(VinciTAP aTap,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ProcessingContainer aProcessingContainer, boolean redeploy) throws Exception {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
@@ -1523,6 +1568,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         // Check out the next Cas Processor from the pool
         if (((ProcessingContainer_Impl) aProcessingContainer).failedCasProcessorList.isEmpty()) {
           throw new ResourceProcessException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "UIMA_CPM_no_cp_instance_in_failed_list__FINEST", new Object[] {
                       Thread.currentThread().getName(), aProcessingContainer.getName(),
                       aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) },
@@ -1565,6 +1611,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           if (processor == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       Level.SEVERE,
                       this.getClass().getName(),
                       "initialize",
@@ -1584,6 +1632,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
             if (netProcessor.getProxy() != null && netProcessor.getProxy().isConnected()) {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
                         this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                         "UIMA_CPM_already_allocated__FINEST",
@@ -1621,6 +1671,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         if (processorAssigned) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINEST,
                     this.getClass().getName(),
                     "initialize",
@@ -1661,6 +1712,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException wraps Exception
    */
   private VinciTAP getTextAnalysisProxy(CasProcessorConfiguration aCasProcessorConfig)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     VinciTAP tap = new VinciTAP();
     String vnsHost = null;
@@ -1734,10 +1786,12 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException passthru
    */
   private String getVNSSettingFor(String aVNSParamKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CasProcessorConfiguration aCasProcessorConfig, String aDefault)
           throws ResourceConfigurationException {
     String vnsParam = null;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     URL descriptorUrl = aCasProcessorConfig.getDescriptorUrl();
     URISpecifier uriSpecifier = getURISpecifier(descriptorUrl);
     Parameter[] params = uriSpecifier.getParameters();
@@ -1788,6 +1842,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *           unable to establish connection to Cas Processor
    */
   private void connectToServices(ProcessingContainer aProcessingContainer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CasProcessorConfiguration casProcessorConfig, boolean redeploy, int howMany)
           throws ConnectException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1807,6 +1862,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     for (int i = 0; i < howMany; i++) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 this.getClass().getName(),
                 "initialize",
@@ -1827,6 +1883,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       } catch (TimeLimitExceededException e) {
         e.printStackTrace();
         throw new ConnectException(CpmLocalizedMessage.getLocalizedMessage(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_no_service_port__WARNING",
                 new Object[] { Thread.currentThread().getName() }));
       } catch (NumberFormatException e) {
@@ -1857,6 +1914,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "initialize",
@@ -1890,6 +1948,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     int waitCount = MAX_WAIT_TRIES; // default
     try {
       waitCount = System.getProperty(CONN_RETRY_COUNT) != null ? Integer.parseInt(System
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getProperty(CONN_RETRY_COUNT)) : MAX_WAIT_TRIES;
     } catch (NumberFormatException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
@@ -1914,6 +1973,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
                     "UIMA_CPM_service_port_not_allocated__INFO",
                     new Object[] { Thread.currentThread().getName(), String.valueOf(waitCount) });
           }
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
           Thread.sleep(WAIT_TIME);
         } catch (InterruptedException e) {
         }
@@ -1930,6 +1990,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     Object portObject = portQueue.dequeue();
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_got_port_from_queue__INFO",
               new Object[] { Thread.currentThread().getName(), (String) portObject });
     }

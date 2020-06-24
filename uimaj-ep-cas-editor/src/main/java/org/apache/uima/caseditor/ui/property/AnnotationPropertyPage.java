@@ -83,6 +83,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
      *
      * @param configuration the configuration
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
     void styleChanged(String configuration);
   }
   
@@ -278,6 +279,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
 
     IStructuredSelection selection = (IStructuredSelection) mTypeList.getSelection();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1892
     return (Type) selection.getFirstElement();
   }
 
@@ -332,6 +334,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
    */
   // and update the annotation style with custom control defaults
   private void updateCustomStyleControl(AnnotationStyle style, Type selectedType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
     if (Style.TAG.equals(style.getStyle())) {
       styleConfigurationWidget.setVisible(true);
       styleConfigurationWidget.setStyle(style, selectedType);
@@ -349,12 +352,14 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
 
     Type selectedType = (Type) selection.getFirstElement();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
     if( selectedType != null) {
       
       AnnotationStyle style = getWorkingCopyAnnotationStyle(selectedType);
   
       if (style == null) {
         style = new AnnotationStyle(selectedType.getName(), AnnotationStyle.DEFAULT_STYLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
                 AnnotationStyle.DEFAULT_COLOR, 0);
       }
   
@@ -365,9 +370,11 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       mColorSelector.setColorValue(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
       mColorSelector.setEnabled(true);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1892
       moveLayerUpButton.setEnabled(true);
       moveLayerDownButton.setEnabled(true);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
       updateCustomStyleControl(style, selectedType);
     }
     else {
@@ -375,6 +382,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       mStyleCombo.setEnabled(false);
       mColorSelector.setEnabled(false);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-1892
       moveLayerUpButton.setEnabled(false);
       moveLayerDownButton.setEnabled(false);
       styleConfigurationWidget.setVisible(false);
@@ -453,6 +461,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
         Type type = (Type) cell.getElement();
 
         AnnotationStyle style = getWorkingCopyAnnotationStyle(type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1892
 
         cell.setText(Integer.toString(style.getLayer()));
       }});
@@ -466,6 +475,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       mTypeList.add(type);
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1889
     mTypeList.add(annotationType);
     
     mTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -494,9 +504,11 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       @Override
       public void widgetSelected(SelectionEvent e) {
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
         AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
         
         AnnotationStyle newStyle = new AnnotationStyle(style.getAnnotation(), AnnotationStyle.Style
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
                 .valueOf(mStyleCombo.getText()), style.getColor(), style.getLayer(), style.getConfiguration());
         
         updateCustomStyleControl(newStyle, getSelectedType());
@@ -536,6 +548,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       @Override
       public void propertyChange(PropertyChangeEvent event) {
         AnnotationStyle style = getWorkingCopyAnnotationStyle( getSelectedType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-1892
 
         RGB colorRGB = mColorSelector.getColorValue();
 
@@ -543,6 +556,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
 
         setAnnotationStyle(new AnnotationStyle(
                 style.getAnnotation(), style.getStyle(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
                 color, style.getLayer(), style.getConfiguration()));
       }
     });
@@ -559,10 +573,12 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       @Override
       public void widgetSelected(SelectionEvent e) {
         AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-1892
 
         setAnnotationStyle(new AnnotationStyle(
                 style.getAnnotation(), AnnotationStyle.Style.valueOf(mStyleCombo.getText()),
                 style.getColor(), style.getLayer() + 1, style.getConfiguration()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
 
         mTypeList.update(getSelectedType(), null);
       }
@@ -582,11 +598,13 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       public void widgetSelected(SelectionEvent e) {
         
         AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-1892
 
         if (style.getLayer() - 1 >= 0) {
           setAnnotationStyle(new AnnotationStyle(style
                   .getAnnotation(), AnnotationStyle.Style.valueOf(mStyleCombo.getText()),
                   style.getColor(), style.getLayer() - 1, style.getConfiguration()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
 
           mTypeList.update(getSelectedType(), null);
         }
@@ -594,8 +612,10 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     });
 
     // Insert style dependent configuration widget
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
     styleConfigurationWidget = new TagStyleConfigWidget(settingsComposite);
     GridDataFactory.fillDefaults().span(2, 1).applyTo(styleConfigurationWidget);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
     styleConfigurationWidget.setVisible(false);
     styleConfigurationWidget.addListener(new CustomStyleConfigChangeListener() {
       @Override
@@ -633,6 +653,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   @Override
   public boolean performOk() {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
     if (!isTypeSystemPresent)
       return true;
     

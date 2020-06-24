@@ -31,9 +31,11 @@ abstract class PathConstraint implements FSMatchConstraint {
   protected ArrayList<String> featNames;
 
   protected PathConstraint() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
   PathConstraint(ArrayList<String> featNames) {
     this();
     this.featNames = featNames;
@@ -49,6 +51,7 @@ abstract class PathConstraint implements FSMatchConstraint {
       if (i > 0) {
         buf.append('.');
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
       buf.append(this.featNames.get(i));
     }
     return buf.toString();

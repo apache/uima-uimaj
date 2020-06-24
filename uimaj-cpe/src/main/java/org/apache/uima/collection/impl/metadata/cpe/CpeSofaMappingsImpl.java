@@ -54,6 +54,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
    */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return XMLIZATION_INFO;
   }
 
@@ -69,6 +70,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     NodeList nodes = aElement.getChildNodes();
     for (int i = 0; i < nodes.getLength(); i++) {
@@ -77,6 +79,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
         CpeSofaMapping sofaMapping = new CpeSofaMappingImpl();
         NamedNodeMap atts = node.getAttributes();
         if (atts.getNamedItem("componentSofaName") != null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 && atts.getNamedItem("componentSofaName").getNodeValue() != null) {
           sofaMapping.setComponentSofaName(atts.getNamedItem("componentSofaName").getNodeValue());
         }
@@ -94,6 +97,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
    */
   @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
 
@@ -113,6 +117,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
     // write child elements
     for (int i = 0; i < sofaNameMappings.size(); i++) {
       ((CpeSofaMapping) sofaNameMappings.get(i)).toXML(aContentHandler,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               aWriteDefaultNamespaceAttribute);
     }
 
@@ -123,6 +128,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("sofaNameMappings",
           new PropertyXmlInfo[] { new PropertyXmlInfo("sofaNameMapping", null), });
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the sofa name mappings.

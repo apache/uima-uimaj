@@ -37,6 +37,7 @@ import org.apache.uima.cas.TypeSystem;
 public class RsFullFeatNames {
     
   private static final ConcurrentHashMap<String, ConcurrentHashMap<String, String>> typeName2TypeFeats =
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       new ConcurrentHashMap<>();
   
   public static String getFullFeatName(String typeName, String shortFeatName) {

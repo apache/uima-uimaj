@@ -128,6 +128,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   public void setFeatures(FeatureDescription[] aFeatures) {
     if (aFeatures == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aFeatures", "setFeatures" });
     }
     mFeatures = aFeatures;
@@ -151,6 +152,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
    * @see TypeDescription#addFeature(String, String, String)
    */
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aRangeTypeName) {
     return addFeature(aFeatureName, aDescription, aRangeTypeName, null, null);
   }
@@ -159,6 +161,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
    * @see TypeDescription#addFeature(String, String, String, String, Boolean)
    */
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed) {
     // create new feature description
     FeatureDescription newFeature = new FeatureDescription_impl(aFeatureName, aDescription,
@@ -183,6 +186,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeDescription",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
               new PropertyXmlInfo("description", false), new PropertyXmlInfo("supertypeName"),
               new PropertyXmlInfo("features"), new PropertyXmlInfo("allowedValues") });

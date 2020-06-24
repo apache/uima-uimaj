@@ -40,9 +40,11 @@ import org.apache.uima.util.XMLInputSource;
 public class CpmTestDriver {
 
   public static void main(String[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // read in the cpe descriptor
       CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new XMLInputSource("CpeSofaTest/SofaCPE.xml"));
       // instantiate a cpe
       CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc,

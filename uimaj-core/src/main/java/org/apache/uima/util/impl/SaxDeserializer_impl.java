@@ -78,11 +78,15 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
     mUimaXmlParser = aUimaXmlParser;
     mOptions = aOptions;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-3404
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
+//IC see: https://issues.apache.org/jira/browse/UIMA-2155
     TransformerHandler testTransformerHandler = null;
     DOMResult testDomResult = new DOMResult();
 
     // use a TransformerHandler to convert SAX events to DOM
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
       mTransformerHandler = transformerFactory.newTransformerHandler();
       mDOMResult = new DOMResult();
       mTransformerHandler.setResult(mDOMResult);
@@ -127,6 +131,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    */
   @Deprecated
   public SaxDeserializer_impl(XMLParser aUimaXmlParser, String aNamespaceForSchema, URL aSchemaUrl,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser.ParsingOptions aOptions) {
     this(aUimaXmlParser, aOptions);
   }
@@ -153,6 +158,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    */
   public void characters(char[] ch, int start, int length) throws SAXException {
 //    System.out.format("SaxDeserializer_impl::characters: %s%n", new String(ch, start, length));
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     mTransformerHandler.characters(ch, start, length);
   }
 
@@ -161,6 +167,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    */
   public void endDocument() throws SAXException {
     // System.out.println("SaxDeserializer_impl::endDocument");
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     mTransformerHandler.endDocument();
   }
 
@@ -170,6 +177,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    */
   public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
     // System.out.println("SaxDeserializer_impl::endElement");
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     mTransformerHandler.endElement(namespaceURI, localName, qName);
   }
 
@@ -201,6 +209,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    */
   public void processingInstruction(String target, String data) throws SAXException {
     // System.out.println("SaxDeserializer_impl::processingInstruction");
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     mTransformerHandler.processingInstruction(target, data);
   }
 
@@ -209,6 +218,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    */
   public void setDocumentLocator(Locator locator) {
     // System.out.println("SaxDeserializer_impl::setDocumentLocator");
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     mTransformerHandler.setDocumentLocator(locator);
   }
 
@@ -224,6 +234,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    */
   public void startDocument() throws SAXException {
     // System.out.println("SaxDeserializer_impl::startDocument");
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     mTransformerHandler.startDocument();
   }
 
@@ -232,11 +243,16 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    *      java.lang.String, org.xml.sax.Attributes)
    */
   public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
     // System.out.println("SaxDeserializer_impl::startElement("+namespaceURI+","+localName+","+qName+","+atts+")");
+//IC see: https://issues.apache.org/jira/browse/UIMA-3404
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
+//IC see: https://issues.apache.org/jira/browse/UIMA-2155
     if (needsFix) {
       mTransformerHandler.startElement(namespaceURI, localName, qName, fixNSbug(atts));
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     mTransformerHandler.startElement(namespaceURI, localName, qName, atts);
   }
   }
@@ -262,12 +278,14 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    */
   public void startPrefixMapping(String prefix, String uri) throws SAXException {
     // System.out.println("SaxDeserializer_impl::startPrefixMapping("+prefix+","+uri+")");
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     mTransformerHandler.startPrefixMapping(prefix, uri);
   }
 
   //==============================================
   // Methods for LexicalHandler interface
   public void comment(char[] arg0, int arg1, int arg2) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
     mTransformerHandler.comment(arg0, arg1, arg2);
   }
 

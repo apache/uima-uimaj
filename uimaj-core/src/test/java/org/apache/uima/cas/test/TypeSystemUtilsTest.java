@@ -79,6 +79,7 @@ public class TypeSystemUtilsTest extends TestCase {
   public void testPathValidation() {
     Type type1 = this.cas.getTypeSystem().getType("Type1");
     // Type1, f0/begin, always
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> path = new ArrayList<>();
     path.add("f0");
     path.add("begin");

@@ -72,6 +72,7 @@ public class ResultNotSupportedException extends UIMAException {
    *          arguments.
    */
   public ResultNotSupportedException(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
@@ -93,6 +94,7 @@ public class ResultNotSupportedException extends UIMAException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public ResultNotSupportedException(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }

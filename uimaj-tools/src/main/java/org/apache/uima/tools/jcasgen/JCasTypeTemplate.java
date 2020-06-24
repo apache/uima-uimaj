@@ -47,6 +47,8 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
    if (0 != jg.packageName.length()) {
     stringBuilder.append("package ");
     stringBuilder.append(jg.packageName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
     stringBuilder.append(";\n \n");
    } 
    else 
@@ -80,6 +82,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(typeName);
     stringBuilder.append(" extends ");
     stringBuilder.append(jg.getJavaName(td.getSupertypeName()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     stringBuilder.append(" {\n \n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static String _TypeName = \"");
     stringBuilder.append(jg.getJavaNameWithPkg(td.getName()));
     stringBuilder.append("\";\n  \n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static int typeIndexID = JCasRegistry.register(");
@@ -89,9 +92,13 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
    StringBuilder localData = new StringBuilder();
    StringBuilder featRegistry = new StringBuilder();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
    featRegistry.append("  /* Feature Adjusted Offsets */\n");
    
    for (FeatureDescription fd : fds) { 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
 
      String featName = fd.getName();
      String featUName = jg.uc1(featName);  // upper case first letter
@@ -101,9 +108,12 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
                          null);
      }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
      localData   .append("  public final static String _FeatName_").append(featName).append(" = \"").append(featName).append("\";\n");
      
+//IC see: https://issues.apache.org/jira/browse/UIMA-5578
      featRegistry.append("  private final static CallSite _FC_").append(featName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
                  .append(" = TypeSystemImpl.createCallSite(").append(typeName).append(".class, ")
                  .append("\"").append(featName).append("\");\n"); 
      featRegistry.append("  private final static MethodHandle _FH_").append(featName)
@@ -114,6 +124,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(localData);
     stringBuilder.append("\n\n");
     stringBuilder.append(featRegistry);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6054
     stringBuilder.append("\n   \n  /** Never called.  Disable default constructor\n   * @generated */\n  @Deprecated\n  @SuppressWarnings (\"deprecation\")\n  protected ");
     stringBuilder.append(typeName);
     stringBuilder.append("() {/* intentionally empty block */}\n    \n  /** Internal - constructor used by generator \n   * @generated\n   * @param casImpl the CAS this Feature Structure belongs to\n   * @param type the type of this Feature Structure \n   */\n  public ");
@@ -139,6 +150,8 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
      String featDesc = jg.nullBlank(fd.getDescription());
      String featDescCmt = featDesc;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
      String rangeType = jg.getJavaRangeType2(fd);
      String elemType = jg.getJavaRangeArrayElementType2(fd); 
      boolean isRangeTypeGeneric = jg.isRangeTypeGeneric(fd);
@@ -152,6 +165,8 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(featName);
     stringBuilder.append(" - gets ");
     stringBuilder.append(featDescCmt);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
     stringBuilder.append("\n   * @generated\n   * @return value of the feature \n   */\n");
   if (isRangeTypeGeneric) { 
     stringBuilder.append("  @SuppressWarnings(\"unchecked\")\n");
@@ -171,6 +186,8 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append("(");
     stringBuilder.append(rangeType);
     stringBuilder.append(" v) {\n    ");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     stringBuilder.append(jg.setFeatureValue(fd, td));
     stringBuilder.append(";\n  }    \n    \n  ");
   if (jg.hasArrayRange(fd)) {
@@ -178,6 +195,8 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(featName);
     stringBuilder.append(" - gets an indexed value - ");
     stringBuilder.append(featDescCmt);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
     stringBuilder.append("\n   * @generated\n   * @param i index in the array to get\n   * @return value of the element at index i \n   */\n");
   if (isRangeTypeGeneric || isElemTypeGeneric) {
     stringBuilder.append("  @SuppressWarnings(\"unchecked\")\n");
@@ -200,6 +219,8 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(featUName);
     stringBuilder.append("(int i, ");
     stringBuilder.append(elemType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     stringBuilder.append(" v) {\n    ");
     stringBuilder.append(jg.setArrayFeatureValue(fd, td));
     stringBuilder.append(";\n  }  \n  ");

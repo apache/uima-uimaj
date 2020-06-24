@@ -43,6 +43,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
   public final static int type = typeIndexID;
 
   public int getTypeIndexID() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return typeIndexID;
   }
   
@@ -87,6 +88,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
    * @param tail -
    */
   public NonEmptyIntegerList(JCas jcas, int v, IntegerList tail) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4980
     this(jcas);
     setHead(v);
     setTail(tail);
@@ -98,6 +100,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
    * @param v -
    */
   public NonEmptyIntegerList(JCas jcas, int v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     this(jcas, v, jcas.getCasImpl().emptyIntegerList());
   }
   
@@ -108,6 +111,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
 
   /* setter for head * */
   public void setHead(int v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setIntValueNfc(wrapGetIntCatchException(_FH_head), v);
   }
 
@@ -120,10 +124,12 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
 
   /* setter for tail * */
   public void setTail(IntegerList v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
   _setFeatureValueNcWj(wrapGetIntCatchException(_FH_tail), v); 
   }
   
@@ -139,6 +145,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
    */
   @Override
   public String get_headAsString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     return Integer.toString(((NonEmptyIntegerList)this).getHead());
   }
 
@@ -153,7 +160,11 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
   @Override
   public OfInt iterator() {
     return new OfInt() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
       IntegerList node = NonEmptyIntegerList.this;
       
       @Override
@@ -174,6 +185,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
 
       @Override
       public int nextInt() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
         if (!hasNext()) {
           throw new NoSuchElementException();
         }

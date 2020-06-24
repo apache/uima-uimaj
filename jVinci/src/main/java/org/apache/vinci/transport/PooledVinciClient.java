@@ -131,6 +131,7 @@ public class PooledVinciClient {
    * @throws ServiceException -
    */
   public Transportable sendAndReceive(Transportable in, TransportableFactory f) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ServiceException {
     VinciClient c = getClientFromPool();
     try {
@@ -151,6 +152,7 @@ public class PooledVinciClient {
    * @throws ServiceException -
    */
   public Transportable sendAndReceive(Transportable in, TransportableFactory f, int socketTimeout)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException, ServiceException {
     VinciClient c = getClientFromPool();
     try {
@@ -170,6 +172,7 @@ public class PooledVinciClient {
    * @throws ServiceException -
    */
   public Transportable sendAndReceive(Transportable in, int socketTimeout) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ServiceException {
     VinciClient c = getClientFromPool();
     try {

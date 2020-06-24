@@ -41,6 +41,7 @@ public class FeatureStructureImpl implements FeatureStructure {
   private int[] mIndexed = Constants.EMPTY_INT_ARRAY;
 
   public FeatureStructureImpl() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     mFeatureMap = new TreeMap<>();
   }
 
@@ -53,6 +54,7 @@ public class FeatureStructureImpl implements FeatureStructure {
   }
 
   public String[] getFeatureNames() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Set<String> aSet = mFeatureMap.keySet();
     String[] featureNames = new String[aSet.size()];
     aSet.toArray(featureNames);
@@ -74,6 +76,7 @@ public class FeatureStructureImpl implements FeatureStructure {
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append('\n').append(getType()).append('\n');
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (getId() != null) {
       buf.append("ID = ").append(getId()).append('\n');
     }
@@ -121,6 +124,7 @@ public class FeatureStructureImpl implements FeatureStructure {
    */
   @Deprecated
   public void setIndexed(boolean b) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mIndexed = new int[] { 1 }; // index in first index repository for backwards compatibility
   }
 

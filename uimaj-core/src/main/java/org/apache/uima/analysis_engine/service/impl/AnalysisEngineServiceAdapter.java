@@ -54,6 +54,8 @@ import org.apache.uima.util.UimaTimer;
  */
 public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBase implements
         TextAnalysisEngine, CasConsumer {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * current class
@@ -123,6 +125,7 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
     // logging and instrumentation
     mTimer.startIt();
     UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "process",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_begin__FINE", getResourceName());
     try {
       // invoke service
@@ -143,6 +146,7 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
     } finally {
       mTimer.stopIt();
       getMBean().reportServiceCallTime((int) mTimer.getDuration());
+//IC see: https://issues.apache.org/jira/browse/UIMA-1625
       getMBean().incrementCASesProcessed();
     }
   }
@@ -161,6 +165,7 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
    */
   public Object getConfigParameterValue(String aGroupName, String aParamName) {
     return getMetaData().getConfigurationParameterSettings().getParameterValue(aGroupName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             aParamName);
   }
 
@@ -186,6 +191,9 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
    */
   public void setConfigParameterValue(String aGroupName, String aParamName, Object aValue) {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.SHARED_RESOURCE_NOT_RECONFIGURABLE, new Object[] {});
   }
 

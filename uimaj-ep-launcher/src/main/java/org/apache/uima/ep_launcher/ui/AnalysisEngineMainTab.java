@@ -101,6 +101,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
   }
   
   private IContainer getContainer(String path) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
 	Path containerPath = new Path(path);
 	IResource resource =  getWorkspaceRoot().findMember(containerPath);
 	if (resource instanceof IContainer)
@@ -191,6 +192,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
                 new WorkbenchLabelProvider(), new WorkbenchContentProvider());
         dialog.setTitle("Select descriptor");
         dialog.setMessage("Select descriptor");
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
         dialog.setInput(getWorkspaceRoot());
         dialog.setInitialSelection(getWorkspaceRoot().findMember(descriptorText.getText()));
         if (dialog.open() == IDialogConstants.OK_ID) {
@@ -232,6 +234,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
         dialog.setTitle("Select input folder or file");
         dialog.setMessage("Select input folder or file");
         dialog.setInput(getSelectedProject());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
         dialog.setInitialSelection(getWorkspaceRoot().findMember(inputText.getText()));
         if (dialog.open() == IDialogConstants.OK_ID) {
           IResource resource = (IResource) dialog.getFirstResult();
@@ -263,6 +266,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
             grab(true, false).applyTo(inputFormatGroup);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
     GridLayout inputFormatGroupLayout = new GridLayout(4, false);
     inputFormatGroup.setLayout(inputFormatGroupLayout);
     
@@ -287,6 +291,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
       
       public void widgetSelected(SelectionEvent event) {
         encodingCombo.setEnabled(plainTextButton.getSelection());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
         languageText.setEnabled(plainTextButton.getSelection());
         updateLaunchConfigurationDialog();
       }
@@ -309,6 +314,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
   
     String defaultEncoding = Charset.defaultCharset().displayName();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Set<String> charsets = new HashSet<>();
     charsets.add("US-ASCII");
     charsets.add("ISO-8859-1");
@@ -323,6 +329,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     encodingCombo.setEnabled(false);
     
     // Add language label
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
     Label languageLabel = new Label(inputFormatGroup, SWT.NONE);
     languageLabel.setText("Language:");
     
@@ -410,6 +417,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     }
     
     // Descriptor must be set and valid file
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
     IResource descriptorResource = getWorkspaceRoot().findMember(descriptorText.getText());
     if (!(descriptorResource instanceof IFile)) {
       setErrorMessage("Descriptor must be an existing file!");
@@ -443,6 +451,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     
     // Validate output folder
     if (outputFolderText.getText().length() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
       IResource outputResource = getWorkspaceRoot().findMember(outputFolderText.getText());
       if (!(outputResource instanceof IFolder)) {
         setErrorMessage("The output folder must be a valid folder or not be set!");
@@ -460,6 +469,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     config.setAttribute(LauncherConstants.ATTR_DESCRIPTOR_NAME, descriptorText.getText());
     
     config.setAttribute(LauncherConstants.ATTR_INPUT_NAME, inputText.getText());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     config.setAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME,
         recursivelyButton.getSelection());
     
@@ -478,10 +488,12 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     
     config.setAttribute(LauncherConstants.ATTR_INPUT_ENCODING_NAME, encodingCombo.getText());
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
     config.setAttribute(LauncherConstants.ATTR_INPUT_LANGUAGE_NAME, languageText.getText());
     
     config.setAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, outputFolderText.getText());
     config.setAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         clearFolderButton.getSelection());
   }
 
@@ -538,6 +550,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     else if (InputFormat.PLAIN_TEXT.toString().equals(formatName)) {
       plainTextButton.setSelection(true);
       encodingCombo.setEnabled(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
       languageText.setEnabled(true);
       
       String language;

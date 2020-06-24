@@ -79,6 +79,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * that don't actually implement this method.
    */
   private static final List SUPPORT_XCAS_V1 = Collections.unmodifiableList(
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
           Arrays.asList(new String[]{"1"}));
   
   /**
@@ -89,6 +90,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * @throws ResourceInitializationException the resource initialization exception
    */
   public VinciAnalysisEngineServiceStub(String endpointURI, Resource owner)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     this(endpointURI, null, owner, null);
   }
@@ -108,10 +110,13 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
     // open Vinci connection
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
       VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
       // Override vinci default VNS settings
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
       String vnsHost = null;
       String vnsPort = null; 
+//IC see: https://issues.apache.org/jira/browse/UIMA-821
       String getMetaDataTimeout = null; 
       if (parameters != null) {
          vnsHost = 
@@ -146,10 +151,12 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       
       //store timeout for use in later RPC calls
       if (timeout != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         mTimeout = timeout;
       } else {
        mTimeout = mVinciClient.getSocketTimeout(); //default
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-821
       if (getMetaDataTimeout != null) {
         mGetMetaDataTimeout = Integer.parseInt(getMetaDataTimeout);
       } else {
@@ -185,6 +192,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       }
 
       VinciFrame resultFrame = mVinciClient.rpc(queryFrame, mGetMetaDataTimeout);
+//IC see: https://issues.apache.org/jira/browse/UIMA-821
 
       if (debug) {
         System.out.println("Success");
@@ -207,6 +215,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
       // Parse the XML into the ProcessingResourceMetaData object
       SaxDeserializer saxDeser = UIMAFramework.getXMLParser().newSaxDeserializer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
 
       VinciSaxParser vinciSaxParser = new VinciSaxParser();
       vinciSaxParser.setContentHandler(saxDeser);
@@ -261,12 +270,14 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
           return query;
         }
       }, mTimeout);
+//IC see: https://issues.apache.org/jira/browse/UIMA-33
 
       // if service reply included the time taken to do the analysis,
       // add that to the AnalysisEngineManagement MBean
       int annotationTime = query.getExtraDataFrame().fgetInt("TAE:AnnotationTime");
       if (annotationTime > 0) {
         AnalysisEngineManagementImpl mbean = (AnalysisEngineManagementImpl) mOwner
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getUimaContextAdmin().getManagementInterface();
         mbean.reportAnalysisTime(annotationTime);
       }
@@ -317,6 +328,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       queryFrame.fadd("vinci:COMMAND", Constants.COLLECTION_PROCESS_COMPLETE);
 
       // make RPC call (no return val)
+//IC see: https://issues.apache.org/jira/browse/UIMA-33
       mVinciClient.rpc(queryFrame, mTimeout);
     } catch (Exception e) {
       throw new ResourceServiceException(e);
@@ -376,6 +388,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * @throws ResourceServiceException the resource service exception
    */
   public List callGetSupportedXCasVersions() throws ResourceServiceException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
     try {
       // create Vinci Frame ( Data Cargo)
       AFrame queryFrame = new AFrame();
@@ -403,6 +416,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * @return if socketKeepAlive is enabled
    */
   protected boolean isSocketKeepAliveEnabled() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
     if (mOwner instanceof AnalysisEngine) {
       Properties settings = ((AnalysisEngine)mOwner).getPerformanceTuningSettings();
       if (settings != null) {

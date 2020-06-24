@@ -65,6 +65,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   private final TypeSystemImpl tsi ; // the Type System instance this type belongs to.
                                      // This means that built-in types have multiple instances, so this field can vary.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
   final SlotKind slotKind;  
   /* the Java class for this type 
    *   integer = int.class, etc.
@@ -168,6 +169,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 //  FeatureImpl featUimaUID = null;  // null or the feature named uimaUID with range type long
 
   private TypeImpl() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     this.name = null;
     this.shortName = null;
     this.jcasClassName = null;
@@ -186,6 +188,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 //    setter_funct_intfc_class = null;
     
     slotKind = TypeSystemImpl.getSlotKindFromType(this);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     this.allSuperTypes = null;
     this.hashCodeNameLong = Misc.hashStringLong(name);
   }
@@ -194,6 +197,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * Create a new type. This should only be done by a <code>TypeSystemImpl</code>.
    */
   TypeImpl(String name, TypeSystemImpl tsi, final TypeImpl supertype) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
     this(name, tsi, supertype, supertype.javaClass);
   }
   
@@ -214,6 +219,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     this.isFeatureFinal = false;
     this.isLongOrDouble = name.equals(CAS.TYPE_NAME_LONG) || name.equals(CAS.TYPE_NAME_DOUBLE);
     this.tsi = tsi;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (tsi.types.size() > Short.MAX_VALUE) {
       throw new RuntimeException("Too many types declared, max is 32767.");
     }
@@ -234,6 +240,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
         // but this breaks commit
         superType.directSubtypes.add(this);
 //      }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       if (superType.staticMergedFeatures != null) {
         staticMergedFeatures.putAll(superType.staticMergedFeatures);
       }
@@ -273,8 +280,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 //      setter_funct_intfc_class = JCas_setter_generic.class;
 //    }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     slotKind = TypeSystemImpl.getSlotKindFromType(this);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     hasRefFeature = name.equals(CAS.TYPE_NAME_FS_ARRAY);  // initialization of other cases done at commit time
     this.hashCodeNameLong = Misc.hashStringLong(name);
   }
@@ -316,6 +326,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   @Override
   public String toString() {
     // for backwards compatibility, must return just the name
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return getName();
 //    return toString(0);
   }
@@ -330,8 +341,10 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
         sb.append(supert.getName()).append(", ");
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5434
     prettyPrintList(sb, "directSubtypes", directSubtypes, (sbx, ti) -> sbx.append(ti.getName()));
     sb.append(", ");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     appendIntroFeats(sb, indent);
     return sb.toString();
   }
@@ -359,6 +372,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   private void appendIntroFeats(StringBuilder sb, int indent) {
     prettyPrintList(sb, "FeaturesIntroduced/Range/multiRef", staticMergedFeaturesIntroducedByThisType,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5434
         (sbx, fi) -> Misc.indent(sbx.append('\n'), indent + 2).append(fi.getShortName()).append('/')
                 .append(fi.getRange().getName()).append('/')
                 .append(fi.isMultipleReferencesAllowed() ? 'T' : 'F') );
@@ -375,6 +389,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   @Deprecated
   public Vector<Feature> getAppropriateFeatures() {
     return new Vector<>(getFeatures());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
   }
 
@@ -385,6 +400,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public int getNumberOfFeatures() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return staticMergedFeatures.size();
   }
   
@@ -407,6 +425,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @return true for AnnotationBaseType or any subtype
    */
   public boolean isAnnotationBaseType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return false;
   }
   
@@ -428,6 +448,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public FeatureImpl getFeatureByBaseName(String featureShortName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return staticMergedFeatures.get(featureShortName);
   }
   
@@ -469,6 +490,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
   
   public boolean isLongOrDouble() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return this.isLongOrDouble;
   }
   
@@ -488,6 +511,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public List<Feature> getFeatures() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new ArrayList<>(Arrays.asList(getFeatureImpls()));
   }
   
@@ -497,9 +521,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @return the list of feature impls
    */
   public FeatureImpl[] getFeatureImpls() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     if (!tsi.isCommitted()) {
       // recompute the list if needed
       int nbrOfFeats = staticMergedFeatures.size();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (staticMergedFeaturesList == null || nbrOfFeats != staticMergedFeaturesList.length) {
         computeStaticMergedFeaturesList();
       }
@@ -508,6 +534,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
   
   private void computeStaticMergedFeaturesList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     synchronized (staticMergedFeaturesIntroducedByThisType) {
       if (null == superType) {  // is top type
         staticMergedFeaturesList = Constants.EMPTY_FEATURE_ARRAY;
@@ -528,7 +555,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * Sets hasRefFeature and nbrOfLongOrDoubleFeatures
    */
   private void computeHasXxx() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     nbrOfLongOrDoubleFeatures = superType.getNbrOfLongOrDoubleFeatures();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (superType.hasRefFeature) {
       hasRefFeature = true;
     }
@@ -544,10 +573,13 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
     
   public Stream<FeatureImpl> getFeaturesAsStream() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return Arrays.stream(getFeatureImpls());
   }
 
   public List<FeatureImpl> getMergedStaticFeaturesIntroducedByThisType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return staticMergedFeaturesIntroducedByThisType;
   }
 
@@ -589,6 +621,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @param fi the feature
    */
   private void checkAndAdjustFeatureInSubtypes(TypeImpl ti, FeatureImpl fi) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     String featShortName = fi.getShortName();
     for (TypeImpl subti : ti.directSubtypes) {
       removeEqualFeatureNameMatch(subti.staticMergedFeaturesIntroducedByThisType, featShortName);
@@ -698,6 +731,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @return true if it is an array and is one of the 3 aux arrays (byte (also used for boolean) short, long
    */
   boolean isAuxStoredArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return false; // overridden by array subtype, used for backward compatibility
   }
   
@@ -711,6 +746,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   @Override
   public boolean isStringOrStringSubtype() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return false;
   }
 
@@ -735,6 +771,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
   
   boolean hasSupertype(TypeImpl supertype) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     for (TypeImpl st : allSuperTypes) {
       if (st == supertype) {
         return true;
@@ -815,6 +852,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
       return true;
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (depthFirstNextSibling != 0) { // means that these codes are valid
       return false;
     }
@@ -848,9 +886,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @return true if value v can be assigned to an object of this type
    */
   public boolean subsumesValue(Object v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return (v == null && (isRefType || isStringOrStringSubtype())) ||
            (v instanceof String && isStringOrStringSubtype()) ||
            ((v instanceof FeatureStructureImplC) &&
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
              subsumes( ((FeatureStructureImplC)v)._getTypeImpl())) 
            ;
   }
@@ -864,12 +904,17 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
      *      - supers, then features introduced by this type.                              *
      *      - order may be "bad" if later feature merge introduced an additional feature  *
      **************************************************************************************/
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     if (level != 1) {
       // skip for top level; no features there, but no super type either
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
       getFeatureImpls(); // also done for side effect of computingcomputeStaticMergedFeaturesList();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       computeHasXxx();
     }
      
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     depthFirstCode = (short) ( level ++ );
     for (TypeImpl subti : directSubtypes) {
       level = subti.computeDepthFirstCode(level);
@@ -900,6 +945,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @return the main heap size for this FeatureStructure, assuming it's not a heap stored array (see below)
    */
   public int getFsSpaceReq() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return getFeatureImpls().length + 1;  // number of feats + 1 for the type code
   }
   
@@ -918,6 +964,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   public int getFsSpaceReq(TOP fs) {
     return getFsSpaceReq(isHeapStoredArray() 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
                           ? ((CommonArrayFS)fs).size()  
                           : 0);
   }  
@@ -937,6 +984,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
   
   int getAdjOffset(String featureShortName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return getFeatureByBaseName(featureShortName).getAdjustedOffset();
   }
   
@@ -1082,6 +1130,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
 
   boolean isPrimitiveArrayType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     if (!isArray()) {
       return false;
     }
@@ -1106,6 +1155,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
   
   public int getNbrOfLongOrDoubleFeatures() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return nbrOfLongOrDoubleFeatures;
   }
   
@@ -1113,6 +1163,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @return true if this type is an array of specific (not TOP) Feature structures, not FSArray
    */
   public boolean isTypedFsArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return false;
   }
   
@@ -1124,6 +1175,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     staticMergedRefFeaturesList = v;
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
   void setStaticMergedNonSofaFsRefs(FeatureImpl[] v) {
     staticMergedNonSofaFsRefs = v;
   }

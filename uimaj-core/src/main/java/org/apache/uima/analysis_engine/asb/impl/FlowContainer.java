@@ -52,6 +52,7 @@ public class FlowContainer {
     mFlow = aFlow;
     mFlowControllerContainer = aFlowControllerContainer;
     mSofaAware = mFlowControllerContainer.getProcessingResourceMetaData().isSofaAware();
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
     mCAS = (CASImpl)aCAS;
   }
 
@@ -66,11 +67,13 @@ public class FlowContainer {
           mFlowControllerContainer.getUimaContextAdmin().getComponentInfo());
       // now get the right interface(e.g. CAS or JCAS)
       // must be done before call to switchClassLoader
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
       Class<? extends AbstractCas> requiredInterface = mFlowControllerContainer.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
 
       ((CASImpl)view).switchClassLoaderLockCasCL(getFlowClassLoader());
       Flow flow = mFlow.newCasProduced(casToPass, producedBy);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1333
       if (flow instanceof CasFlow_ImplBase) {
         ((CasFlow_ImplBase)flow).setCas(view);
       }
@@ -93,7 +96,9 @@ public class FlowContainer {
 
   public Step next() throws AnalysisEngineProcessException {
     mTimer.startIt();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
       mCAS.switchClassLoaderLockCasCL(getFlowClassLoader());
       return mFlow.next();
     } finally {
@@ -105,7 +110,9 @@ public class FlowContainer {
   
   public void aborted() {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
       mCAS.switchClassLoaderLockCasCL(getFlowClassLoader());
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
       mFlow.aborted();
     } finally {
       mCAS.restoreClassLoaderUnlockCas();
@@ -116,7 +123,9 @@ public class FlowContainer {
   
   public boolean continueOnFailure(String failedAeKey, Exception failure) {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
       mCAS.switchClassLoaderLockCasCL(getFlowClassLoader());
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
       return mFlow.continueOnFailure(failedAeKey, failure);
     } finally {
       mCAS.restoreClassLoaderUnlockCas();
@@ -136,10 +145,12 @@ public class FlowContainer {
    */
   public AnalysisEngineManagementImpl getMBean() {
     return (AnalysisEngineManagementImpl) mFlowControllerContainer.getUimaContextAdmin()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getManagementInterface();
   }
   
   private ClassLoader getFlowClassLoader() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
     return mFlowControllerContainer.getResourceManager().getExtensionClassLoader();
   }
 }

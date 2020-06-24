@@ -57,6 +57,7 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
     	int annotationEnd = annotationBegin + length;
     	  
         Rectangle bounds = textWidget.getTextBounds(annotationBegin, annotationEnd - 1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1408
 
         // Selection in the text widget are drawn before the annotations are drawn,
         // to make a selection visible the selection is redrawn over the background
@@ -100,6 +101,7 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
         if (dontOverDrawSpans.size() > 0) {
 	        int zBegin = annotationBegin;
 	    	for (Span xSpan : dontOverDrawSpans) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1600
 	    	  if (xSpan.getLength() > 0 && zBegin < xSpan.getStart()) {
 	    		  Rectangle selectionBounds = textWidget.getTextBounds(zBegin, xSpan.getStart() -1);
 	    		  gc.fillRectangle(selectionBounds);
@@ -127,6 +129,7 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
         // Instead of a tab draw textWidget.getTabs() spaces
         String annotationText = textWidget.getText(annotationBegin, end);
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-1600
         if (annotationText.contains("\t")) {
         	char replacementSpaces[] = new char[textWidget.getTabs()];
         	for (int i = 0; i < replacementSpaces.length; i++) {

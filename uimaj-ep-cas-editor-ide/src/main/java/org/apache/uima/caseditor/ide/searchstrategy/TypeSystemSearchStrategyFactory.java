@@ -37,6 +37,7 @@ public class TypeSystemSearchStrategyFactory {
 
   private TypeSystemSearchStrategyFactory() {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
     IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
             SEARCH_STRATEGY_EXTENSION);
 

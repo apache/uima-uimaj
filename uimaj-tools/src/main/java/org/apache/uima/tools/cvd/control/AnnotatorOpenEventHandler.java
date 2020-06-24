@@ -63,8 +63,10 @@ public class AnnotatorOpenEventHandler implements ActionListener {
       }
       int rc = fileChooser.showOpenDialog(this.main);
       if (rc == JFileChooser.APPROVE_OPTION) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-427
         this.main.loadAEDescriptor(fileChooser.getSelectedFile());
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-416
       this.main.setAllAnnotationViewerItemEnable(false);
     } finally {
       this.main.resetCursor();

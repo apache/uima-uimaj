@@ -72,6 +72,7 @@ public class FileOpenEventHandler implements ActionListener {
       this.main.loadFile();
       time.stop();
       this.main.resetTrees();
+//IC see: https://issues.apache.org/jira/browse/UIMA-416
       this.main.setSaveTextFileEnable(true);
       this.main.getUndoMgr().discardAllEdits();
       this.main.setFileStatusMessage();

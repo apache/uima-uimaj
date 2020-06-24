@@ -61,6 +61,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * Default is to not have this filter.
    * @return the updated SelectFSs object
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   SelectFSs<T> nonOverlapping();  // requires Annotation Index, known as unambiguous
   /**
    * Meaningful only for Annotation Indexes, specifies that iteration should or should not return 
@@ -70,6 +71,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param nonOverlapping true to specify filtering for only non-overlapping annotations.
    * @return the updated SelectFSs object
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   SelectFSs<T> nonOverlapping(boolean nonOverlapping); // requires Annotation Index
   
   /**
@@ -78,6 +80,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * Default is to NOT include annotations whose end exceeds the bounding annotation's end.
    * @return the updated SelectFSs object
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   SelectFSs<T> includeAnnotationsWithEndBeyondBounds();  // requires Annotation Index, known as "not strict"
   /**
    * Meaningful only for coveredBy, includes or filters out annotations where the end exceeds the bounding annotation's end.
@@ -87,6 +90,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @return the updated SelectFSs object
    */
   SelectFSs<T> includeAnnotationsWithEndBeyondBounds(boolean includeAnnotationsWithEndBeyondBounds); // requires Annotation Index
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
 
   /**
    * Meaningful only for coveredBy and covering: if true, then returned annotations are compared equal to 
@@ -155,6 +159,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * Default: order is required by default, when iterating over an ordered index. 
    * @return the updated SelectFSs object
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5238
   SelectFSs<T> orderNotNeeded();                  // ignored if not ordered index
   /**
    * Specifies that order is or is not required while iterating over an otherwise ordered index.
@@ -209,6 +214,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    *                      normally would be returned are instead skipped.
    * @return the updated SelectFSs object
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
   SelectFSs<T> shifted(int shiftAmount); 
   
   /**
@@ -217,6 +223,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param fs a Feature Structure specifying a starting position.
    * @return the updated SelectFSs object
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-6159
   SelectFSs<T> startAt(TOP fs); // an ordered index not necessarily AnnotationIndex, not necessarily sorted
   
   /**
@@ -236,6 +243,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @return the updated SelectFSs object
    */
   SelectFSs<T> startAt(int begin);   // requires Annotation Index, no type priorities
+//IC see: https://issues.apache.org/jira/browse/UIMA-6160
 
   /**
    * Starting Position specification - For Annotation Indexes, specifies which FS to start at. 
@@ -243,6 +251,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param end the end bound
    * @return the updated SelectFSs object
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   SelectFSs<T> startAt(int begin, int end);   // requires Annotation Index
   
   /**
@@ -255,6 +264,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @return the updated SelectFSs object
    */
   SelectFSs<T> startAt(TOP fs, int shift);  // an ordered index not necessarily AnnotationIndex, not necessarily sorted
+//IC see: https://issues.apache.org/jira/browse/UIMA-6159
 
   /**
    * Starting Position specification - A combination of startAt followed by a shift
@@ -286,6 +296,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    *   This must be a value &gt;= 0.
    * @return the updated SelectFSs object
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
   SelectFSs<T> limit(int n);
   
   // ---------------------------------
@@ -302,6 +313,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param fs specifies the bounds.
    * @return the updated SelectFSs object
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   SelectFSs<T> at(AnnotationFS fs);  // requires Annotation Index
   
   /**
@@ -370,6 +382,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param fs2 the ending bound
    * @return the updated SelectFSs object
    */  
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   SelectFSs<T> between(AnnotationFS fs1, AnnotationFS fs2);  // requires Annotation Index, implies a coveredBy style
  
   /* ---------------------------------
@@ -389,6 +402,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param annotation the Annotation to follow
    * @return the updated SelectFSs object
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5304
   SelectFSs<T> following(Annotation annotation);
   /**
    * For AnnotationIndex, position to first Annotation whose begin &gt;= position;
@@ -467,6 +481,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   /**
    * @return a List object whose elements represent the selection.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
   List<T> asList();
   /**
    * @param clazz the class of the type of the elements
@@ -483,6 +498,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @return first element or null if empty
    * @throws CASRuntimeException conditioned on nullOK == false, and null being returned or the selection is empty.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
   T get();          // returns first element or null if empty (unless nullOK(false) specified)
   /**
    * @return first element, verifying that the size of the selection is 1 (or maybe 0)
@@ -556,6 +572,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @throws CASRuntimeException (conditioned on nullOK == false) null being returned or the selection is empty.
    */
   T get(TOP fs);         // returns first element or null if empty after positioning
+//IC see: https://issues.apache.org/jira/browse/UIMA-6159
 
   /**
    * Positions to the fs using moveTo(fs).
@@ -586,6 +603,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @throws CASRuntimeException if, after positioning, there is another element following the one being returned 
    *     or (conditioned on nullOK == false) and null being returned or the selection is empty.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-6159
   T single(FeatureStructure fs);       // throws if not exactly 1 element
   /**
    * Positions to the fs using moveTo(fs).
@@ -624,6 +642,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @return the selected element or null if empty
    * @throws CASRuntimeException (conditioned on nullOK == false) null being returned or the selection is empty.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-6159
   T get(FeatureStructure fs, int offset);          // returns first element or null if empty
   /**
    * Positions to the fs using moveTo(fs), followed by a shifted(offset).
@@ -657,6 +676,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @throws CASRuntimeException if, after positioning, there is another element following the one being returned
    *     or (conditioned on nullOK == false) null being returned or the selection is empty.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-6159
   T single(FeatureStructure fs, int offset);       // throws if not exactly 1 element
   /**
    * Positions to the fs using moveTo(fs), followed by a shifted(offset).
@@ -686,6 +706,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @return the selected element or null if empty
    * @throws CASRuntimeException if, after positioning, there is another element next to the one being returned 
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-6159
   T singleOrNull(FeatureStructure fs, int offset); // throws if more than 1 element, returns single or null
   /**
    * Position using a temporary Annotation with its begin and end set to the arguments.
@@ -771,6 +792,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   
   
   @Override
+//IC see: https://issues.apache.org/jira/browse/UIMA-5238
   default Spliterator<T> spliterator() {
     // TODO Auto-generated method stub
     return Iterable.super.spliterator();

@@ -73,14 +73,18 @@ public abstract class Resource_ImplBase implements Resource {
   @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // get name of resource, to be used in error messages
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     final ResourceMetaData metadata1 = getMetaData();
     String name = (metadata1 == null) ? getClass().getName() : metadata1.getName();
 
     // check for repeat initialization
     if (mInitialized) {
       throw new UIMA_IllegalStateException(UIMA_IllegalStateException.RESOURCE_ALREADY_INITIALIZED,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { name });
     }
 
@@ -89,6 +93,8 @@ public abstract class Resource_ImplBase implements Resource {
     if (aAdditionalParams != null) {
       mUimaContextAdmin = (UimaContextAdmin) aAdditionalParams.get(PARAM_UIMA_CONTEXT);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     if (mUimaContextAdmin == null) {// no, we have to create one    
     
       // skip this part if initializing an external resource
@@ -120,6 +126,7 @@ public abstract class Resource_ImplBase implements Resource {
 
         // create and initialize UIMAContext
         mUimaContextAdmin = UIMAFramework.newUimaContext(logger, resMgr, configMgr);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
         if (aAdditionalParams != null) {
           Object limit = aAdditionalParams.get(AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING);
           if (limit != null) {
@@ -155,12 +162,15 @@ public abstract class Resource_ImplBase implements Resource {
       // Check if a Settings object for the external overrides has been provided in the additional
       // parameters map.  If not and not already set from the parent UimaContext then create one 
       // (for the root context) from the system defaults
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
       Settings externalOverrides = aAdditionalParams == null ? null : 
                     (Settings) aAdditionalParams.get(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS);
       if (externalOverrides != null) {
         mUimaContextAdmin.setExternalOverrides(externalOverrides);
       } else {
         // synch around test/set of the (possibly shared) uima-context info about external param overrides
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
         synchronized(mUimaContextAdmin) {
           if (mUimaContextAdmin.getExternalOverrides() == null) {
             externalOverrides = UIMAFramework.getResourceSpecifierFactory().createSettings();  // i.e. new Settings_impl()
@@ -200,8 +210,10 @@ public abstract class Resource_ImplBase implements Resource {
             throw new ResourceInitializationException(e);
           }
           if (aAdditionalParams == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
             aAdditionalParams = new HashMap<>();
             aAdditionalParams.put(PARAM_RESOURCE_MANAGER, mUimaContextAdmin.getResourceManager());
+//IC see: https://issues.apache.org/jira/browse/UIMA-3732
           } else {
             if (!aAdditionalParams.containsKey(PARAM_RESOURCE_MANAGER)) {
               // copy in case original is shared on multi-threads, or
@@ -272,6 +284,7 @@ public abstract class Resource_ImplBase implements Resource {
    */
   @Override
   public Logger getLogger() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2382
     return UIMAFramework.getLogger(this.getClass());
   }
 
@@ -328,6 +341,7 @@ public abstract class Resource_ImplBase implements Resource {
   }
   
   public Class<?> loadUserClassOrThrow(String name, ResourceSpecifier aSpecifier) 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5038
       throws ResourceInitializationException {
     return ResourceManager_impl.loadUserClassOrThrow(name, getResourceManager(), aSpecifier);
   }
@@ -344,6 +358,7 @@ public abstract class Resource_ImplBase implements Resource {
   }
 
   public void withContextHolder(Runnable userCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5320
     Util.withContextHolder(getUimaContext(), userCode);
   }
   

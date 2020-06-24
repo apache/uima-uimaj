@@ -43,6 +43,7 @@ public class RsLang {
     if (language == null || language.equals(Language.UNSPECIFIED_LANGUAGE)) {  // represents x-unspecified
       return Language.UNSPECIFIED_LANGUAGE;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3638
     String cl = canonicalLanguageStrings.get(language), clOther;
     if (cl == null) {
       // make new string based on trimmed chars if needed, in case holding on to big string

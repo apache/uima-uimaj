@@ -27,6 +27,7 @@ public class AbortCPMException extends Exception {
   private static final long serialVersionUID = 3227334551231448553L;
 
   public AbortCPMException(String msg) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(msg);
   }
 }

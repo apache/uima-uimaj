@@ -50,6 +50,7 @@ public class CasProcessorExecArgsImpl implements CasProcessorExecArgs {
    */
   @Override
   public void add(CasProcessorExecArg aArg) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     args.add(aArg);
   }
 

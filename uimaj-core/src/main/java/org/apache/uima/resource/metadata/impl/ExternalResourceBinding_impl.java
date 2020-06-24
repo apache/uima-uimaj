@@ -27,6 +27,8 @@ import org.apache.uima.resource.metadata.ExternalResourceBinding;
  */
 public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
         ExternalResourceBinding {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   
   private static final long serialVersionUID = 8736222753308388218L;
@@ -41,6 +43,7 @@ public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
    * @see org.apache.uima.resource.metadata.ExternalResourceBinding#getKey()
    */
   public String getKey() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return mKey;
   }
 
@@ -76,6 +79,7 @@ public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "externalResourceBinding", new PropertyXmlInfo[] { new PropertyXmlInfo("key"),
               new PropertyXmlInfo("resourceName"), });
 }

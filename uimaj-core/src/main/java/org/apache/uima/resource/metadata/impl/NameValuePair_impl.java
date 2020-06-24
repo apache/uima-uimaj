@@ -98,6 +98,7 @@ public class NameValuePair_impl extends MetaDataObject_impl implements NameValue
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "nameValuePair",
           new PropertyXmlInfo[] { new PropertyXmlInfo("name"), new PropertyXmlInfo("value", false), });
 }

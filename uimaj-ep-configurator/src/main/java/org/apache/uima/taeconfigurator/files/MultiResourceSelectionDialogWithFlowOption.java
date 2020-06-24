@@ -56,6 +56,8 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
    * @param editor the editor
    */
   public MultiResourceSelectionDialogWithFlowOption(Shell parentShell, IAdaptable rootElement,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String message, IPath excludeDescriptor, MultiPageEditor editor) {
     super(parentShell, rootElement, message, excludeDescriptor, editor);
   }
@@ -70,11 +72,13 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
     new Label(composite, SWT.WRAP).setText(""); //$NON-NLS-1$
 
     String sAddToFlowPrompt = Messages
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getString("MultiResourceSelectionDialogWithFlowOption.addSelectedAEsToEndOfFlow"); //$NON-NLS-1$
     FormToolkit factory = new FormToolkit(TAEConfiguratorPlugin.getDefault().getFormColors(
             parent.getDisplay()));
 
     autoAddToFlowButton = factory.createButton(composite, sAddToFlowPrompt, SWT.CHECK);
+//IC see: https://issues.apache.org/jira/browse/UIMA-792
     m_bAutoAddToFlow = "false".equals(CDEpropertyPage.getAddToFlow(editor.getProject())) ? false : true;
     autoAddToFlowButton.setSelection(m_bAutoAddToFlow);
     autoAddToFlowButton.setBackground(null);
@@ -88,6 +92,7 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
   @Override
   protected void okPressed() {
     m_bAutoAddToFlow = autoAddToFlowButton.getSelection();
+//IC see: https://issues.apache.org/jira/browse/UIMA-792
     CDEpropertyPage.setAddToFlow(editor.getProject(), m_bAutoAddToFlow ? "true" : "false");
     super.okPressed();
   }

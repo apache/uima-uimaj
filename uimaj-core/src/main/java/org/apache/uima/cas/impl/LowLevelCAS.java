@@ -265,6 +265,7 @@ public interface LowLevelCAS {
    * @return A FS object corresponding to the input reference.
    */
   <T extends TOP> T ll_getFSForRef(int fsRef);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
 
   /**
    * Get the value of an integer valued feature.

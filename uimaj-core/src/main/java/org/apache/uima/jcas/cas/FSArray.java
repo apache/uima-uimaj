@@ -43,6 +43,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
                            implements ArrayFSImpl<T>,
                                       Iterable<T>,                                      
                                       SelectViaCopyToArray<T> {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_FS_ARRAY;
@@ -102,12 +103,15 @@ public final class FSArray<T extends FeatureStructure> extends TOP
   public FSArray(TypeImpl t, CASImpl c, int length) {
     super(t, c);  
     _casView.validateArraySize(length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     theArray = new TOP[length];
     
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
       _casView.adjustLastFsV2Size_arrays(length);
     }    
   }
@@ -121,6 +125,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
    * @param length -
    */
   public FSArray(Class<? extends TOP> clazz, JCas jcas, int length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6060
    this((TypeImpl)jcas.getCasType(clazz), jcas.getCasImpl(), length);
   }
 
@@ -132,6 +137,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
   }
   
   // internal use
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
   TOP get_without_PEAR_conversion(int i) {
     return theArray[i];
   }
@@ -139,6 +145,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
   /** updates the Cas, setting the indexed value with the corresponding Cas FeatureStructure. */
   @Override
   public void set(int i, T av) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     TOP v = (TOP) av;
     if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
@@ -149,8 +156,10 @@ public final class FSArray<T extends FeatureStructure> extends TOP
   }
   
   // internal use
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
   void set_without_PEAR_conversion(int i, TOP v) {
     theArray[i] = v;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     _casView.maybeLogArrayUpdate(this, null, i);
   }
 
@@ -177,6 +186,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
     // doing this element by element to get pear conversions done if needed, and 
     // to get journaling done
     for (;srcPos < srcEnd && destPos < destEnd;) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
       set(destPos++, (T) src[srcPos++]);
     }
   }
@@ -195,6 +205,8 @@ public final class FSArray<T extends FeatureStructure> extends TOP
           String.format("FSArray.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
     for (;srcPos < srcEnd && destPos < destEnd;) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
+//IC see: https://issues.apache.org/jira/browse/UIMA-5632
       dest[destPos++] = (U) _maybeGetPearFs(get(srcPos++));
     }
   }
@@ -259,8 +271,10 @@ public final class FSArray<T extends FeatureStructure> extends TOP
    */
   @Override
   public void copyValuesFrom(CommonArrayFS<T> v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     FSArray<T> bv = (FSArray<T>) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
   
@@ -272,6 +286,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
    * @return -
    */
   public static <U extends FeatureStructure> FSArray<U> create(JCas jcas, FeatureStructure[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     FSArray<U> fsa = new FSArray<>(jcas, a.length);
     fsa.copyFromArray(a, 0, 0, a.length);
     return fsa;
@@ -284,6 +299,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
       
       @Override
       public boolean hasNext() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
         return i < size();
       }
 
@@ -329,6 +345,8 @@ public final class FSArray<T extends FeatureStructure> extends TOP
   }
 
   public <U extends TOP> U[] toArray(U[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
+//IC see: https://issues.apache.org/jira/browse/UIMA-5632
     final int sz = size();
     if (a.length < sz) {
       return (U[]) Arrays.copyOf(theArray, sz, a.getClass());

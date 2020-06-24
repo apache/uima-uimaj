@@ -51,6 +51,7 @@ public class FileChooserBugWorkarounds {
     final int MAX_ATTEMPTS = 20;
     JFileChooser fileChooser = null;
     int attempts = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (fileChooser == null) {
       try {
         fileChooser = new JFileChooser();

@@ -43,6 +43,7 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
    * @param description the description
    */
   public AbstractImportablePartSection(MultiPageEditor aEditor, Composite parent,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String headerText, String description) {
     super(aEditor, parent, headerText, description);
   }
@@ -89,6 +90,7 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
    * @return the allowed value
    */
   public AllowedValue getAllowedValue(String value, TypeDescription td) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     AllowedValue[] avs = td.getAllowedValues();
     if (null == avs)
       return null;
@@ -110,6 +112,7 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
    * @return the local type definition
    */
   protected TypeDescription getLocalTypeDefinition(TypeDescription td) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     TypeSystemDescription tsdLocal = getTypeSystemDescription();
     if (null == tsdLocal)
       return null;
@@ -166,6 +169,7 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
    */
   // ********************************
   public TypeDescription getBuiltInTypeDescription(TypeDescription td) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return (TypeDescription) BuiltInTypes.typeDescriptions.get(td.getName());
   }
 

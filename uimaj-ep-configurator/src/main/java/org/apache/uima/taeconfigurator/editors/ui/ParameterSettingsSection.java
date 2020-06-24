@@ -47,7 +47,9 @@ public class ParameterSettingsSection extends AbstractSectionParm {
    * @param parent the parent
    */
   public ParameterSettingsSection(MultiPageEditor editor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             editor,
             parent,
             "Configuration Parameters",

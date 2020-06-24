@@ -70,6 +70,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
    * @param aCpeFactory the a cpe factory
    */
   public SocketCasProcessorDeployer(ProcessControllerAdapter aController, CPEFactory aCpeFactory) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     controller = aController;
     cpeFactory = aCpeFactory;
   }
@@ -110,6 +111,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
    */
   @Override
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     String name = null;
     CasProcessor cProcessor = null;
@@ -147,15 +149,18 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
         if (processingContainer == null) {
           ProcessingResourceMetaData metaData = cProcessor.getProcessingResourceMetaData();
           CpeCasProcessor casProcessorType = (CpeCasProcessor) cpeFactory.casProcessorConfigMap
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .get(metaData.getName());
           // Create a pool to hold instances of CasProcessors. Instances are managed by a container
           // through
           // getCasProcessor() and releaseProcessor() methods.
           // Create CasProcess Configuration holding info defined in the CPE descriptor
           casProcessorConfig = new CasProcessorConfigurationJAXBImpl(casProcessorType, cpeFactory.getResourceManager());
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
 
           // Associate CasProcessor configuration from CPE descriptor with this container
           processingContainer = new ProcessingContainer_Impl(casProcessorConfig, metaData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   casProcessorPool);
           processingContainer.setCasProcessorDeployer(this);
           processingContainer.setSingleFencedService(true);
@@ -166,6 +171,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
           if (name == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_unable_to_read_meta__SEVERE", Thread.currentThread().getName());
             }
@@ -187,6 +193,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
           ((CasObjectNetworkCasProcessorImpl) cProcessor).connect(serviceUrls[i]);
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_service_deployed__FINEST",
                     new Object[] { Thread.currentThread().getName(), name });
@@ -199,6 +206,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
       // There is one instance of ProcessingContainer for set of CasProcessors
       if (processingContainer == null) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "UIMA_CPM_invalid_container__SEVERE", new Object[] { Thread.currentThread()
                         .getName() });
       }
@@ -231,6 +239,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
    */
   @Override
   public void deployCasProcessor(ProcessingContainer aProcessingContainer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     try {
       if (aProcessingContainer.isSingleFencedService()) {
@@ -251,6 +260,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
                                 aProcessingContainer.getName() });
           }
           throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "UIMA_CPM_no_service_proxy__SEVERE", new Object[] {
                       Thread.currentThread().getName(), aProcessingContainer.getName() });
 
@@ -260,6 +270,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
           try {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       Level.SEVERE,
                       this.getClass().getName(),
                       "initialize",
@@ -268,6 +279,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
                       new Object[] { Thread.currentThread().getName(),
                           aProcessingContainer.getName() });
             }
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
             pool.wait();  // pool has notifyall when it changes the pool.getSize() result
           } catch (Exception e) {
           }
@@ -280,6 +292,8 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
           pool.checkIn(cProcessor);
           cProcessor = null;
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMAFramework.getLogger(this.getClass())
                     .logrb(
                             Level.SEVERE,
@@ -333,6 +347,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.SEVERE,
                 this.getClass().getName(),
                 "initialize",

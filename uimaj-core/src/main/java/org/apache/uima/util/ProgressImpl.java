@@ -81,9 +81,11 @@ public class ProgressImpl implements Progress, Cloneable {
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append(getCompleted());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (getTotal() >= 0) {
       buf.append(" of ").append(getTotal());
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
     buf.append(' ').append(getUnit());
     if (isApproximate()) {
       buf.append(" (approximate)");

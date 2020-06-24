@@ -64,6 +64,7 @@ public class AboutDialog extends JDialog {
     getContentPane().setLayout(new BorderLayout());
     JButton closeButton = new JButton("OK");
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-22
     JLabel imageLabel = new JLabel(Images.getImageIcon(Images.UIMA_LOGO_BIG));
     JPanel imagePanel = new JPanel();
     imagePanel.setBackground(Color.WHITE);
@@ -73,6 +74,7 @@ public class AboutDialog extends JDialog {
     String aboutText = ABOUT_TEXT.replaceAll("\\$\\{version\\}", UIMAFramework.getVersionString());
        
     JTextArea textArea = new JTextArea(aboutText);
+//IC see: https://issues.apache.org/jira/browse/UIMA-362
     textArea.setEditable(false);
     getContentPane().add(textArea, BorderLayout.CENTER);
     

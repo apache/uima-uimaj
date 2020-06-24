@@ -61,6 +61,7 @@ public class SelectFsTest  {
   
   @Test
   public void testSelect_asList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5837
     cas.reset();
     JCas jcas = cas.getJCas();
     
@@ -89,6 +90,7 @@ public class SelectFsTest  {
     Iterator<Token> it = jcas.select(Token.class).preceding(c).iterator();
     assertTrue(it.hasNext()); 
     Token x = it.next();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5837
     assertTrue(x == p1);
     assertTrue(it.hasNext()); 
     x = it.next();
@@ -167,6 +169,7 @@ public class SelectFsTest  {
   
   @Test
   public void testempty() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5827
     cas.reset();
     JCas jcas = cas.getJCas();
     cas.setDocumentText("t1 t2 t3 t4");
@@ -182,6 +185,7 @@ public class SelectFsTest  {
   @Test
   public void testSelectFollowingPrecedingDifferentTypes() {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5844
     JCas jCas = cas.getJCas();
     jCas.setDocumentText("A B C D E");
     Token a = new Token(jCas, 0, 1);
@@ -218,6 +222,7 @@ public class SelectFsTest  {
     prec2 =jCas.select(Token.class).following(sentence).shifted(-1).asList();
     assertEquals(Arrays.asList(c, d, e), prec2);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5846
     prec2 = jCas.select(Token.class).between(b, e).asList();
     assertEquals(Arrays.asList(c, d), prec2);
 

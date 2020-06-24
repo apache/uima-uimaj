@@ -55,6 +55,7 @@ public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasPr
    */
   @Override
   public void setFilterString(String aFilterString) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     filter = aFilterString;
   }
 
@@ -78,6 +79,7 @@ public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasPr
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     filter = XMLUtils.getText(aElement);
 
@@ -121,6 +123,7 @@ public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasPr
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("filter",
           new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the filter.

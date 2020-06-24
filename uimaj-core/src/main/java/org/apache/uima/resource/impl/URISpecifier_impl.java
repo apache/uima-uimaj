@@ -137,6 +137,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("uriSpecifier",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("resourceType"), new PropertyXmlInfo("uri"),
               new PropertyXmlInfo("protocol"), new PropertyXmlInfo("timeout"),
               new PropertyXmlInfo("parameters"), });

@@ -53,6 +53,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
   protected final Comparator<TOP> comparatorMaybeNoTypeWithoutID;  
   
   public FsIterator_set_sorted2(FsIndex_set_sorted<T> ll_index, CopyOnWriteIndexPart cow_wrapper, Comparator<TOP> comparatorMaybeNoTypeWithoutID) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     super((TypeImpl)ll_index.getType());
     this.comparatorMaybeNoTypeWithoutID = comparatorMaybeNoTypeWithoutID;
     
@@ -127,6 +128,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
     pos = ofsa.getOfsa().find((TOP) fs, comparatorMaybeNoTypeWithoutID); 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
 
     if (pos < 0) {
       pos = (-pos) -1;  // insertion point, one above
@@ -139,6 +141,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
 
     moveToPreviousNvc();
     if (isValid()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
       if (0 == comparatorMaybeNoTypeWithoutID.compare((TOP)get(), (TOP) fs)) {
         moveToLeftMost(fs);
       } else {
@@ -163,6 +166,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
    */
   @Override
   public FsIterator_singletype<T> copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     FsIterator_set_sorted2<T> r = new FsIterator_set_sorted2<>(ll_index, ofsa, comparatorMaybeNoTypeWithoutID);
     r.pos = pos;
     return r;
@@ -198,6 +202,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
    */
   @Override
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     FsIndex_set_sorted<T> ss_idx = ll_index;
     return ss_idx.isAnnotIdx 
         ? ss_idx.ll_maxAnnotSpan()
@@ -257,6 +262,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
         moveToLeftMostUp(fs, upperValidPos);
         return;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
       comparedEqual = (0 == comparatorMaybeNoTypeWithoutID.compare((TOP)get(), (TOP) fs));
       if (!comparedEqual) {
         moveToLeftMostUp(fs, upperValidPos);
@@ -285,6 +291,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     if (pos == upperValidPos) {
       return;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     pos = ofsa.getOfsa().binarySearchLeftMostEqual((TOP) fs, pos, upperValidPos, comparatorMaybeNoTypeWithoutID);
   }
   
@@ -303,6 +310,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
 
   @Override
   public int size() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
     return ofsa.size();
   }
   

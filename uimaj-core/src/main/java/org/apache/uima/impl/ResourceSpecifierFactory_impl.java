@@ -102,6 +102,7 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
    * Map from standard UIMA interface (Class object) to the class providing the implementation.
    */
   Map mInterfaceToClassMap = Collections.synchronizedMap(new HashMap());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * @see org.apache.uima.ResourceSpecifierFactory#createObject(Class)
@@ -454,10 +455,12 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
   }
   
   public CustomResourceSpecifier createCustomResourceSpecifier() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-352
     return (CustomResourceSpecifier) createObject(CustomResourceSpecifier.class);
   }  
 
   public PearSpecifier createPearSpecifier() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-351
     return (PearSpecifier) createObject(PearSpecifier.class);
   }  
 

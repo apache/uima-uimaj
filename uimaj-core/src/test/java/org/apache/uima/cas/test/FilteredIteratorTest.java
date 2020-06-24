@@ -87,6 +87,7 @@ public class FilteredIteratorTest extends TestCase {
 
   public void setUp() {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       assertTrue(cas != null);
       this.ts = this.cas.getTypeSystem();
@@ -109,6 +110,7 @@ public class FilteredIteratorTest extends TestCase {
     assertTrue(sepType != null);
     this.eosType = ts.getType(CASTestSetup.EOS_TYPE);
     assertTrue(eosType != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this.tokenTypeFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
     assertTrue(tokenTypeFeat != null);
     this.lemmaFeat = ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
@@ -117,6 +119,7 @@ public class FilteredIteratorTest extends TestCase {
     assertTrue(sentLenFeat != null);
     this.tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
     assertTrue(tokenFloatFeat != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     this.startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     assertTrue(startFeature != null);
     this.sentenceType = ts.getType(CASTestSetup.SENT_TYPE);
@@ -165,6 +168,8 @@ public class FilteredIteratorTest extends TestCase {
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 14, 15));
     cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, 0, 15));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     iterAndCount1(false);
     
 //    if (FSIndexFlat.enabled) {
@@ -178,6 +183,7 @@ public class FilteredIteratorTest extends TestCase {
     // create filtered iterator over Tokens only
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex().iterator();  // always non-flat because just did index update
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     FSTypeConstraint constraint = cas.getConstraintFactory().createTypeConstraint();
     constraint.add(tokenType);
     
@@ -224,11 +230,15 @@ public class FilteredIteratorTest extends TestCase {
 
     try {
       // cas.setDocumentText("A test."); can't set document text twice!
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     } catch (CASRuntimeException e) {
       assertTrue(false);
     }
 
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       cas.setDocumentText("This is a test.");
     } catch (CASRuntimeException e) {
       assertTrue(false);
@@ -241,6 +251,8 @@ public class FilteredIteratorTest extends TestCase {
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 14, 15));
     cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, 0, 15));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     iterAndCount1a();
     
 //    expandBeyondFlatThreshold(6);  // enables flat iterator
@@ -249,7 +261,9 @@ public class FilteredIteratorTest extends TestCase {
   
   private void iterAndCount1a() {
     // create filtered iterator over Tokens only
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex().iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     FSTypeConstraint constraint = cas.getConstraintFactory().createTypeConstraint();
     constraint.add(tokenType.getName());
     it = cas.createFilteredIterator(it, constraint);
@@ -327,6 +341,8 @@ public class FilteredIteratorTest extends TestCase {
       token.setStringValue(lemmaFeat, type1);
       cas.getIndexRepository().addFS(token);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       iterAndCount2();
       
 //      expandBeyondFlatThreshold(6);  // enables flat iterator
@@ -341,7 +357,9 @@ public class FilteredIteratorTest extends TestCase {
   private void iterAndCount2() {
     String lemma = "the";
     // create filtered iterator over Tokens of type 1
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     FSStringConstraint type1Constraint = cas.getConstraintFactory().createStringConstraint();
     type1Constraint.equals(lemma);
     FeaturePath path = cas.createFeaturePath();
@@ -406,6 +424,8 @@ public class FilteredIteratorTest extends TestCase {
       token.setStringValue(lemmaFeat, type1);
       cas.getIndexRepository().addFS(token);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       iterAndCount2a();
       
 //      expandBeyondFlatThreshold(6);  // enables flat iterator
@@ -419,9 +439,12 @@ public class FilteredIteratorTest extends TestCase {
   
   private void iterAndCount2a() {
     String lemma = "the";
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     FSStringConstraint type1Constraint = cas.getConstraintFactory().createStringConstraint();
     type1Constraint.equals(lemma);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<String> path = new ArrayList<>();
     path.add(lemmaFeat.getShortName());
     FSMatchConstraint cons = cas.getConstraintFactory().embedConstraint(path, type1Constraint);
@@ -436,6 +459,8 @@ public class FilteredIteratorTest extends TestCase {
     // Count instances of tokens with lemma "the".
 
     // Create an iterator over Token annotations.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
     FSIndex<AnnotationFS> tokenIndex = cas.getAnnotationIndex(tokenType);
     FSIterator<AnnotationFS> tokenIt = tokenIndex.iterator();
     // Create a counter.
@@ -461,6 +486,9 @@ public class FilteredIteratorTest extends TestCase {
   public void testIterator2b() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
       FeatureStructure wordFS = this.cas.createFS(wordType);
       FeatureStructure sepFS = this.cas.createFS(sepType);
@@ -495,6 +523,8 @@ public class FilteredIteratorTest extends TestCase {
       token.setFeatureValue(tokenTypeFeat, eosFS);
       cas.getIndexRepository().addFS(token);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       iterAndCount2b();
       
 //      expandBeyondFlatThreshold(6);  // enables flat iterator
@@ -513,6 +543,7 @@ public class FilteredIteratorTest extends TestCase {
     FSTypeConstraint tc = cf.createTypeConstraint();
     tc.add(sepType);
     tc.add(eosType.getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<String> path = new ArrayList<>();
     path.add(tokenTypeFeat.getShortName());
     FSMatchConstraint cons = cf.embedConstraint(path, tc);

@@ -44,6 +44,7 @@ public class Form2Panel {
    * @param right the right
    */
   public Form2Panel(Composite form, Composite left, Composite right) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this.form = form;
     this.left = left;
     this.right = right;

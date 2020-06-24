@@ -74,13 +74,16 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * @throws ResourceInitializationException if the component is sofa-aware
    */
   public AnnotatorAdapter(BaseAnnotator aAnnotator, AnalysisEngineMetaData aMetaData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     mAnnotator = aAnnotator;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // check for the invalid case where a TextAnnotator or JTextAnnotator
     // declares sofa input/output capabilities. Text annotators should not be
     // "sofa-aware".
     if (aMetaData.isSofaAware()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && (mAnnotator instanceof TextAnnotator || mAnnotator instanceof JTextAnnotator)) {
       throw new ResourceInitializationException(
               ResourceInitializationException.TEXT_ANNOTATOR_CANNOT_BE_SOFA_AWARE, new Object[] {
@@ -91,6 +94,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
 
     // determine which CAS interface this Annotator needs
     if (mAnnotator instanceof JTextAnnotator) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-10
       mCasInterface = JCas.class;
     } else {
       mCasInterface = CAS.class;
@@ -116,6 +120,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
 
   public void setResultSpecification(ResultSpecification aResultSpec) {
     mDefaultResultSpecification = aResultSpec;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     mLanguageToResultSpecMap = new HashMap<>();
   }
 
@@ -127,6 +132,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (!mCasInterface.isAssignableFrom(aCAS.getClass())) {
       throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { mCasInterface,
                   aCAS.getClass() });
     }
@@ -137,8 +143,10 @@ public class AnnotatorAdapter implements AnalysisComponent {
     // do proper typecasts and call process method
     try {
       if (mAnnotator instanceof TextAnnotator) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
         CAS cas = (CAS) aCAS;
         ResultSpecification rs = getResultSpecForLanguage(cas.getDocumentLanguage());
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
         rs.setTypeSystem(cas.getTypeSystem());
         ((TextAnnotator) mAnnotator).process(cas, rs);
       } else if (mAnnotator instanceof JTextAnnotator) {
@@ -195,6 +203,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
       TypeSystem typeSystem;
       if (aCAS instanceof JCas) {
         typeSystem = ((JCas) aCAS).getTypeSystem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       } else // CAS 
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();
@@ -268,6 +277,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
                 AnnotatorAdapter.class, "next" });
   }

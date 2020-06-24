@@ -86,9 +86,11 @@ public class InstallationTester {
    */
   public InstallationTester(PackageBrowser pkgBrowser) throws IOException, InvalidXMLException,
           ResourceInitializationException, UIMAException, UIMARuntimeException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // set PackageBrowser
     this.pkgBrowser = pkgBrowser;
+//IC see: https://issues.apache.org/jira/browse/UIMA-411
 
     // save System properties
     this.systemProps = System.getProperties();
@@ -110,8 +112,11 @@ public class InstallationTester {
   }
 
   public TestStatus doTest() throws IOException, InvalidXMLException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-411
           ResourceInitializationException {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5799
+//IC see: https://issues.apache.org/jira/browse/UIMA-5798
     if (uimaCategory.equals(UIMAUtil.TYPE_SYSTEM_CTG)) {
       return testTypeSystem();
     }
@@ -211,6 +216,7 @@ public class InstallationTester {
 
     // get pear env variables and set them as system properties
     Properties props = pkgBrowser.getComponentEnvVars();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Iterator<Object> keyIterator = props.keySet().iterator();
     while (keyIterator.hasNext()) {
       String key = (String) keyIterator.next();
@@ -246,6 +252,8 @@ public class InstallationTester {
    *           If the specified AE cannot be instantiated.
    */
   private void testAnalysisEngine(ResourceSpecifier specifier, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5799
+//IC see: https://issues.apache.org/jira/browse/UIMA-5798
                                   ResourceManager resource_manager, 
                                   TestStatus status) 
                                       throws IOException, InvalidXMLException, ResourceInitializationException {
@@ -285,6 +293,8 @@ public class InstallationTester {
    *           If the specified CC cannot be instantiated.
    */
   private void testCasConsumer(ResourceSpecifier specifier, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5799
+//IC see: https://issues.apache.org/jira/browse/UIMA-5798
                                ResourceManager resource_manager, 
                                TestStatus status) 
                                          throws IOException, InvalidXMLException, ResourceInitializationException {
@@ -317,6 +327,8 @@ public class InstallationTester {
    *           If the specified CI cannot be instantiated.
    */
   private void testCasInitializer(ResourceSpecifier specifier, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5799
+//IC see: https://issues.apache.org/jira/browse/UIMA-5798
                                   ResourceManager resource_manager, 
                                   TestStatus status) 
                                             throws IOException, InvalidXMLException, ResourceInitializationException {
@@ -349,6 +361,8 @@ public class InstallationTester {
    *           If the specified CR cannot be instantiated.
    */
   private void testCollectionReader(ResourceSpecifier specifier, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5799
+//IC see: https://issues.apache.org/jira/browse/UIMA-5798
                                     ResourceManager resource_manager, 
                                     TestStatus status) 
                                               throws IOException, InvalidXMLException, ResourceInitializationException {
@@ -380,6 +394,8 @@ public class InstallationTester {
    *           If the specified CPE cannot be instantiated.
    */
   private void testCpeCongifuration(ResourceSpecifier specifier, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5799
+//IC see: https://issues.apache.org/jira/browse/UIMA-5798
                                     ResourceManager resource_manager, 
                                     TestStatus status) 
                                               throws IOException, InvalidXMLException, ResourceInitializationException {
@@ -411,6 +427,7 @@ public class InstallationTester {
    *           If the specified TS cannot be used to create a CAS.
    */
   private TestStatus testTypeSystem() throws IOException, InvalidXMLException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-411
           ResourceInitializationException {
     // set system properties
     setSystemProperties(this.pkgBrowser);

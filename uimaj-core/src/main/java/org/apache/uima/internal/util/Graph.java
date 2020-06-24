@@ -32,6 +32,7 @@ public class Graph {
 
   /** @return The root of the graph. */
   public GraphNode getRoot() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return this.root;
   }
 

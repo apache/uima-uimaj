@@ -35,6 +35,7 @@ public interface CASMgr {
    * @return A writable version of the type system.
    */
   TypeSystemMgr getTypeSystemMgr();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * @return a writable version of the index repository. Note that the type system must be committed
@@ -52,6 +53,8 @@ public interface CASMgr {
    */
   @Deprecated
   void flush() throws CASAdminException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1342
+//IC see: https://issues.apache.org/jira/browse/UIMA-1342
 
   /**
    * Flush this CAS instance of all transient data. This will delete all feature structures, but not

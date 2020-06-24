@@ -39,7 +39,9 @@ public class StringUtils {
    *          Buffer to print to.
    */
   public static final void printSpaces(int n, StringBuilder buf) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     for (int i = 0; i < n; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
       buf.append(' ');
     }
   }

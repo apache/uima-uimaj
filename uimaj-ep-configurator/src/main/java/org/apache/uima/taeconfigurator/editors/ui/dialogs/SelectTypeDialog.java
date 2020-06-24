@@ -167,6 +167,7 @@ public class SelectTypeDialog extends AbstractDialog {
       displayNameSpacesForSelectedItem(
               (Map.Entry)(matchingTypesUI.getSelection()[0].getData()));
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
     super.handleEvent(event);
   }
 

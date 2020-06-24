@@ -83,6 +83,8 @@ public class BinarySerializer implements Serializer {
    */
   @Override
   public void serialize(QName name, Attributes attributes, Object value,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           SerializationContext context) throws IOException {
     if (value instanceof Serializable) {
       byte[] bytes = SerializationUtils.serialize((Serializable) value);
@@ -96,6 +98,7 @@ public class BinarySerializer implements Serializer {
       boolean useAttachments = (attachments != null) && mUseAttachments;
       if (useAttachments) {
         useAttachments = !context.getMessageContext().getPastPivot()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 || context.getMessageContext().getRequestMessage().getAttachments().hasNext();
       }
       // if we have attachment support, do this as an attachment
@@ -117,6 +120,7 @@ public class BinarySerializer implements Serializer {
         }
 
         attrs.addAttribute("", soapConstants.getAttrHref(), soapConstants.getAttrHref(), "CDATA",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 attachmentPart.getContentIdRef());
         context.startElement(name, attrs);
         context.endElement();

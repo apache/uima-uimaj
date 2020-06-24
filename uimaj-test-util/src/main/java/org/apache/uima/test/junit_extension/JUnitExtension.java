@@ -35,6 +35,7 @@ public class JUnitExtension {
   public static File getFile(String aRelativeFilePath) {
     URL url = JUnitExtension.class.getClassLoader().getResource(aRelativeFilePath);
     File file = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     if (url != null) {
       try {
         String fileURL = URLDecoder.decode(url.getFile(), "UTF-8");
@@ -47,11 +48,13 @@ public class JUnitExtension {
   }
 
   public static URL getURL(String aRelativeFilePath) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     return JUnitExtension.class.getClassLoader().getResource(aRelativeFilePath);
   }
 
   public static void handleException(Exception e) throws Exception {
     // check command line setting
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (System.getProperty("isCommandLine", "false").equals("true")) {
       // print exception
       ExceptionPrinter.printException(e);

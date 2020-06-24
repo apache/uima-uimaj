@@ -27,6 +27,7 @@ import java.util.Arrays;
 final class LongHeap extends CommonAuxHeap {
 
   long[] heap; // is never null after construction
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   LongHeap() {
     super(DEFAULT_HEAP_BASE_SIZE, DEFAULT_HEAP_MULT_LIMIT);
@@ -40,6 +41,7 @@ final class LongHeap extends CommonAuxHeap {
     this.heap = new long[this.heapBaseSize];
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4281
   final void initMemory(int size) {
     this.heap = new long[size];
   }
@@ -53,12 +55,14 @@ final class LongHeap extends CommonAuxHeap {
       return;
 
     long[] new_array = new long[computeNewArraySize(heap.length, heapPos, GROWTH_FACTOR,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             heapMultLimit)];
     System.arraycopy(heap, 0, new_array, 0, heap.length);
     heap = new_array;
   }
 
   void resetToZeros() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     Arrays.fill(this.heap, 0, this.heapPos, NULL);
   }
 

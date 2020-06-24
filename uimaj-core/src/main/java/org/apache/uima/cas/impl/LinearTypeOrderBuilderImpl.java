@@ -57,6 +57,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     // index = orderNumber, value = type-code
     // used by serialization routines
     final private int[] order;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
     // index= typeCode, value = order number
     final private short[] typeCodeToOrder;
@@ -68,6 +69,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     private final boolean isEmptyTypeOrder;
 
     private TotalTypeOrder(String[] typeList, TypeSystem ts, boolean isEmpty) throws CASException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5483
       this(encodeTypeList(typeList, ts), ts, isEmpty);
     }
 
@@ -77,6 +79,8 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       for (int i = 0; i < a.length; i++) {
         int t = llts.ll_getCodeForTypeName(typeList[i]);
         if (t == LowLevelTypeSystem.UNKNOWN_TYPE_CODE) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
           throw new CASException(CASException.TYPEORDER_UNKNOWN_TYPE, typeList[i]);
         }
         a[i] = t;
@@ -95,6 +99,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       super();
       TypeSystemImpl tsi = (TypeSystemImpl) ts;
       this.order = typeList;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final int sz = this.order.length + tsi.getSmallestType();
       if (sz > 32767) {
         /** Total number of UIMA types, {0}, exceeds the maximum of 32766. **/
@@ -104,6 +109,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       for (int i = 0; i < this.order.length; i++) {
         this.typeCodeToOrder[this.order[i]] = (short)i;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5483
       this.isEmptyTypeOrder = isEmpty;
     }
 
@@ -114,6 +120,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
      */
     @Override
     public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       TypeImpl t1 = ((FeatureStructureImplC)fs1)._getTypeImpl();
       TypeImpl t2 = ((FeatureStructureImplC)fs2)._getTypeImpl();
       if (t1 == t2) return 0;
@@ -124,6 +131,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     // Look-up.
     @Override
     public boolean lessThan(Type t1, Type t2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5483
       return lessThan(((TypeImpl) t1).getCode(), ((TypeImpl) t2).getCode());       
       // return this.lt[((TypeImpl) t1).getCode()].get(((TypeImpl) t2)
       // .getCode());
@@ -131,6 +139,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
     @Override
     public boolean lessThan(int t1, int t2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
       return this.typeCodeToOrder[t1] < this.typeCodeToOrder[t2];
       // return this.lt[t1].get(t2);
     }
@@ -142,6 +151,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
     @Override
     public int hashCode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (!hashCodeComputed) {
         computedHashCode = Arrays.hashCode(order);
         hashCodeComputed = true;  
@@ -151,6 +161,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
     @Override
     public boolean equals(Object obj) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (this == obj) {
         return true;
       }
@@ -161,6 +172,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
         return false;
       }
       TotalTypeOrder other = (TotalTypeOrder) obj;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (hashCode() != other.hashCode()) {
         return false;
       }      
@@ -172,6 +184,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
     @Override
     public boolean isEmptyTypeOrder() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5483
       return isEmptyTypeOrder;
     }
 
@@ -209,7 +222,9 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     }
 
     private void addAllPredecessors(ArrayList<? extends GraphNode> pred) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       for (Iterator<? extends GraphNode> it = pred.iterator(); it.hasNext();) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
         Node n = (Node) it.next();
         if (!LinearTypeOrderBuilderImpl.this.order.pathFromTo(this, n)) {
           n.connect(this);
@@ -223,6 +238,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     }
 
     private void addAllSuccessors(ArrayList<? extends GraphNode> successors1) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       for (Iterator<? extends GraphNode> it = successors1.iterator(); it.hasNext();) {
         Node n = (Node) it.next();
         if (!LinearTypeOrderBuilderImpl.this.order.pathFromTo(n, this)) {
@@ -249,6 +265,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     private Node getNode(String name) {
       Node node = this.nodeMap.get(name);
       if (node == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
         node = new Node(name);
         this.nodeMap.put(name, node);
       }
@@ -257,6 +274,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
     private Graph copy(Node inRank0nodes) {
       Graph copy = new Graph();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Iterator<Map.Entry<String, Node>> it = this.nodeMap.entrySet().iterator();
       Map.Entry<String, Node> entry;
       String key;
@@ -271,6 +289,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       it = this.nodeMap.entrySet().iterator();
       Node origNode, copyNode;
       while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
         entry = it.next();
         key = entry.getKey();
         origNode = entry.getValue();
@@ -297,6 +316,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       // an
       // in-degree of 0, we don't need to worry about in-arcs.
       // Node node = (Node) this.nodeMap.get(name);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       ArrayList<Node> rank0s = new ArrayList<>();
       // if (node == null) {
       // return ;
@@ -304,6 +324,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       this.nodeMap.remove(node.getElement());
       final int max = node.outRank();
       for (int i = 0; i < max; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
         Node n = (Node) node.getSuccessor(i);
         n.removeAncestor(node);
         if (n.inRank() == 0) {
@@ -314,12 +335,14 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     }
 
     private boolean pathFromTo(Node n1, Node n2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       final HashMap<Node, Node> map = new HashMap<>();
       return pathFromTo(n1, n2, map);
     }
 
     private boolean pathFromTo(Node n1, Node n2, HashMap<Node, Node> map) {
       if (n1 == n2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
 	return true;
       }
       if (map.containsKey(n1)) {
@@ -355,6 +378,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
    * @return -
    */
   public static LinearTypeOrder createTypeOrder(int[] typeList, TypeSystem ts) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5483
     return new TotalTypeOrder(typeList, ts, false);
   }
 
@@ -365,6 +389,8 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     for (int i = 0; i < max; i++) {
       rc = add(types[i], types[i + 1]);
       if (!rc) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
 	      throw new CASException(CASException.CYCLE_IN_TYPE_ORDER, types[i], types[i + 1]);
       }
     }
@@ -385,6 +411,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
   private void addInheritanceTypes() {
     List<Type> typesToModify = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
     for (Iterator<Type> tsi = this.ts.getTypeIterator(); tsi.hasNext();) {
       Type bottomType = tsi.next();
@@ -395,6 +422,9 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       typesToModify.clear();
 
       while (true) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       	String typeName = type.getName();
       	final Node n = this.order.getNode(typeName);
       	if ((nIn == null) && (n.inRank() != 0)) {
@@ -414,7 +444,9 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       }
       boolean doIn = true;
       boolean doOut = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       for (Iterator<Type> ni = typesToModify.iterator(); ni.hasNext();) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5483
       	type = ni.next();
       	String typeName = type.getName();
       	final Node n = this.order.getNode(typeName);
@@ -450,8 +482,10 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       Node n = (Node) inRank0Nodes.getSuccessor(0);
       totalOrder[i] = (String) n.getElement();
       inRank0Nodes.removeSuccessor(0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       ArrayList<Node> newRank0Nodes = g.removeNode(n);
       for (Iterator<Node> it = newRank0Nodes.iterator(); it.hasNext();) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 	      inRank0Nodes.addSuccessor(it.next());
       }
     }
@@ -460,6 +494,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     // for (int i = 0; i < totalOrder.length; i++) {
     // System.out.println(" " + totalOrder[i]);
     // }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5483
     return new TotalTypeOrder(totalOrder, this.ts, origOrderSize == 0);
   }
 

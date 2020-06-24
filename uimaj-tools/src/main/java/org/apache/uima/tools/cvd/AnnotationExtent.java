@@ -45,6 +45,7 @@ public class AnnotationExtent {
    * @param style the style
    */
   public AnnotationExtent(int start, int end, Style style) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.start = start;
     this.end = end;

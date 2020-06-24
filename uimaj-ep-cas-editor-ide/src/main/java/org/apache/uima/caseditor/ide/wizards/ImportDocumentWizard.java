@@ -51,6 +51,7 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
 
     // Did not find a way to retrieve the "Import" string
     // from an eclipse message file
+//IC see: https://issues.apache.org/jira/browse/UIMA-1782
     setWindowTitle("Import");
   }
 
@@ -64,6 +65,7 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
   @Override
   public boolean performFinish() {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2179
     String usedEncoding = mMainPage.getTextEncoding();
     
     IPreferenceStore store = CasEditorIdePlugin.getDefault().getPreferenceStore();
@@ -71,6 +73,7 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
     String lastUsedEncodingsString = store.getString(
             CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     List<String> lastUsedEncodings = new ArrayList<>(Arrays.asList(lastUsedEncodingsString.split(
         CasEditorIdePreferenceConstants.STRING_DELIMITER)));
     
@@ -99,11 +102,13 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
     store.setValue(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS,
             updatedLastUsedEncodingsString.toString());
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2174
     IImportStructureProvider importProvider = new DocumentImportStructureProvider(mMainPage.getLanguage(),
     		mMainPage.getTextEncoding(), mMainPage.getCasFormat());
     
     // BUG: We cannot pass null here for the overwrite query
     ImportOperation operation =
+//IC see: https://issues.apache.org/jira/browse/UIMA-2175
             new ImportOperation(mMainPage.getImportDestinationPath(), importProvider, new OverwriteQuery(getShell()),
             mMainPage.getFilesToImport());
 
@@ -116,6 +121,7 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
     } catch (InvocationTargetException e) {
       CasEditorPlugin.log(e);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-1787
       String message = "Unkown error during import, see the log file for details";
       
       Throwable cause = e.getCause();

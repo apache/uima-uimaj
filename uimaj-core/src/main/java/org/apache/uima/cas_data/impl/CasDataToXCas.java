@@ -169,6 +169,7 @@ public class CasDataToXCas {
    *           if the ContentHandler throws a SAX Exception
    */
   public void generateXCas(CasData aCasData, String aUEID, boolean aSendStartAndEndDocEvents)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
     if (aSendStartAndEndDocEvents) {
       mHandler.startDocument();
@@ -187,6 +188,7 @@ public class CasDataToXCas {
     }
 
     // iterate over FSs and generate XCAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Iterator<FeatureStructure> iter = aCasData.getFeatureStructures();
     while (iter.hasNext()) {
       FeatureStructure fs = iter.next();
@@ -239,6 +241,7 @@ public class CasDataToXCas {
         } else {
           if (!"value".equals(features[i])) {
             attrs.addAttribute("", "_ref_" + features[i], "_ref_" + features[i], "CDATA",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     ((ReferenceValue) featVal).getTargetId());
           } else {
             contentValue = ((ReferenceValue) featVal).getTargetId();
@@ -251,6 +254,7 @@ public class CasDataToXCas {
 
       // encode array subelements
       String[] arrayElems = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (aFS instanceof PrimitiveArrayFS) {
         arrayElems = ((PrimitiveArrayFS) aFS).toStringArray();
       } else if (aFS instanceof ReferenceArrayFS) {
@@ -272,6 +276,7 @@ public class CasDataToXCas {
       }
       // encode annotation spanned text, if this FS has valid begin and end features
       else if (mIncludeAnnotationSpannedText && aDocTextHolder.docText != null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               && aDocTextHolder.docText.length > 0) {
         FeatureValue begin = aFS.getFeatureValue("begin");
         FeatureValue end = aFS.getFeatureValue("end");
@@ -301,6 +306,8 @@ public class CasDataToXCas {
    */
   private String getXCasElementName(FeatureStructure aFS) {
     return StringUtils.replaceAll(StringUtils.replaceAll(aFS.getType(), "_colon_", ":"), "_dash_",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "-");
   }
 

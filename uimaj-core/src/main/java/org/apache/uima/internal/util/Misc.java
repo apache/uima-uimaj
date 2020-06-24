@@ -72,6 +72,7 @@ public class Misc {
   private static final Pattern whitespace = Pattern.compile("\\s");
 
   public static String replaceWhiteSpace(String s, String replacement) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
     return whitespace.matcher(s).replaceAll(replacement);
   }
   
@@ -82,6 +83,7 @@ public class Misc {
   public static byte[] hex_string_to_bytearray(String s) {
     int len2 = s.length();
     int len = len2 >> 1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5896
     byte[] out = new byte[len];
     for (int out_i = 0, str_i = 0; out_i < len; out_i ++, str_i += 2) {
       out[out_i] = (byte) ((Character.digit(s.charAt(str_i),  16) << 4) + 
@@ -91,6 +93,7 @@ public class Misc {
   }
   
   public static String dumpByteArray(byte[] b, int limit) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5434
     if (b == null) {
       return "null";
     }
@@ -120,6 +123,7 @@ public class Misc {
    * @return  x called by: y ...
    */
   public static StringBuilder getCallers(final int s, final int n) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return dumpCallers(Thread.currentThread().getStackTrace(), s, n);
   }
   
@@ -140,6 +144,7 @@ public class Misc {
    */
   public static String getCaller() {
     StackTraceElement[] e = Thread.currentThread().getStackTrace();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return formatcaller(e[5]) + " => " + formatcaller(e[4]);
   }
   
@@ -149,6 +154,7 @@ public class Misc {
   }
   
   public static String formatcaller(String className, String methodName, int lineNumber) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return className.substring(1 + className.lastIndexOf('.')) + "." + methodName + "[" + lineNumber + "]";
   }
   
@@ -156,6 +162,7 @@ public class Misc {
     
    // get the call stack; "new" is needed to get the current context call stack
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5721
     final Class<?>[] cs = new CallStack().getCallStack();
     // start at the caller of the caller's class loader
     // cs[0] is getClassContext
@@ -210,6 +217,7 @@ public class Misc {
    * @return the stringBuilder, with nl if needed, and indention
    */
   public static StringBuilder indent(StringBuilder sb, int[] indent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5434
     return indent(sb, indent[0]);
   }
   
@@ -227,6 +235,7 @@ public class Misc {
   }
   
   public static void addNlIfMissing(StringBuilder sb) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
     if (!endsWithNl(sb)) {
       sb.append('\n');
     }
@@ -253,12 +262,14 @@ public class Misc {
   
   private static FilenameFilter jarFilter = new FilenameFilter() {
     public boolean accept(File dir, String name) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3583
       name = name.toLowerCase();
       return (name.endsWith(".jar"));
     }
   };
 
   public static URL[] getURLs(String s) throws MalformedURLException, IOException, URISyntaxException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<URL> urls = new ArrayList<>();
     String[] spaths = s.split(File.pathSeparator);
     for (String p : spaths) {
@@ -282,6 +293,7 @@ public class Misc {
     boolean mustBeDirectory = false;
     if (p.endsWith("*")) {
       if (p.length() < 2 || p.charAt(p.length() - 2) != File.separatorChar) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5577
         UIMAFramework.getLogger().error("Path Specification \"{}\" invalid.", p);
         throw new MalformedURLException();
       }
@@ -302,6 +314,7 @@ public class Misc {
         }
       }
     } else if (mustBeDirectory) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5577
       UIMAFramework.getLogger().error("Path Specification \"{}\" must be a directory.", p);
       throw new MalformedURLException();
     } else if (p.toLowerCase().endsWith(".jar")) {
@@ -332,8 +345,10 @@ public class Misc {
   }
   
   public static String expandClasspath(String classpath) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5388
     StringBuilder sb = new StringBuilder();
     for (URL url : classpath2urls(classpath)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5434
       sb.append(url.getPath());  // returns as a string just the path part of the url
       sb.append(File.pathSeparatorChar);
     }
@@ -359,6 +374,7 @@ public class Misc {
    * @return the StringBuilder for chaining
    */
   public static <T> StringBuilder addElementsToStringBuilder(StringBuilder sb, Collection<T> c) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5434
     return addElementsToStringBuilder(sb, c, 1000);
   }
   
@@ -417,6 +433,7 @@ public class Misc {
       return sb.append("[]");
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     sb.append('[');
     int i = 0;
     boolean overLimit = false;
@@ -448,6 +465,7 @@ public class Misc {
   public static StringBuilder addElementsToStringBuilder(StringBuilder sb, int size, int limit, int indent, int incr, BiConsumer<StringBuilder, Integer> appender) {
     int origLength = sb.length();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
     if (size == 0) {       // empty case
       return sb.append("[]");
     }
@@ -508,6 +526,7 @@ public class Misc {
   }
 
   private static <T> StringBuilder style2(StringBuilder sb, int size, int limit, int indent, int incr, BiConsumer<StringBuilder, Integer> appender) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5595
     sb.append("[");
     indent += incr;
 
@@ -580,6 +599,7 @@ public class Misc {
    */
   static public int nextHigherPowerOfX(int i, int x) {
     int shft = 31 - Integer.numberOfLeadingZeros(x);  // x == 8, shft = 3
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return (i < 1) ? x : ((i+(x - 1)) >>> shft) << shft;
   }
   
@@ -642,6 +662,7 @@ public class Misc {
    */
   static public int getStaticIntField(Class<?> clazz, String fieldName) {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       Field f = clazz.getField(fieldName);
       return f.getInt(null);
     } catch (NoSuchFieldException e) {
@@ -663,6 +684,7 @@ public class Misc {
   }
   
   static public int getPrivateStaticIntFieldNoInherit(Class<?> clazz, String fieldName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4679
     try {
       Field f = clazz.getDeclaredField(fieldName);
       f.setAccessible(true);
@@ -694,6 +716,7 @@ public class Misc {
    * @param v if false, throws
    */
   public static void assertUie(boolean v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (!v) 
       throw new UIMARuntimeException(UIMARuntimeException.INTERNAL_ERROR);
   }
@@ -766,6 +789,7 @@ public class Misc {
    * @return the item at the index or null
    */
   public static <T> T getWithExpand(List<T> a, int i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     while (i >= a.size()) {
       a.add(null);
     }
@@ -773,6 +797,7 @@ public class Misc {
   }
 
   public static <T> void setWithExpand(List<T> a, int i, T value) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     while (i >= a.size()) {
       a.add(null);
     }
@@ -780,6 +805,7 @@ public class Misc {
   }
   
   public static boolean equalStrings(String s1, String s2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (null == s1) {
       return (null == s2);
     }
@@ -820,6 +846,7 @@ public class Misc {
    * @return - the object or a cached version of it.
    */
   public static <T> T shareExisting(T obj, WeakHashMap<T, WeakReference<T>> cache) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (null == obj) {
       throw new IllegalArgumentException();
     }
@@ -827,6 +854,7 @@ public class Misc {
     synchronized (cache) {
       WeakReference<T> r = cache.get(obj);
       if (r == null || (v = r.get()) == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         cache.put(obj, new WeakReference<>(obj));
         return obj;
       }
@@ -841,6 +869,7 @@ public class Misc {
    * @return  [item1, item2, ... ]
    */
   public static <T> String ppList(List<T> items) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5434
     return ppList(items, 1000);
   }
   
@@ -906,6 +935,7 @@ public class Misc {
    * @return the fully qualified JCas class name 
    */
   public static String typeName2ClassName(String typeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (typeName.startsWith(CAS.UIMA_CAS_PREFIX)) {
       return "org.apache.uima.jcas.cas." + typeName.substring(CAS.UIMA_CAS_PREFIX.length());
     }
@@ -949,6 +979,7 @@ public class Misc {
   
   
   public static void timeLoops(String title, int iterations, Runnable_withException r) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     long shortest = Long.MAX_VALUE;
     for (int i = 0; i < iterations; i++) {
       long startTime = System.nanoTime();
@@ -975,6 +1006,7 @@ public class Misc {
       int capacity, 
       int factor, 
       int minCapacity,
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       IntConsumer realloc,
       Runnable reset) {
 
@@ -1009,6 +1041,7 @@ public class Misc {
 //  }
   
   public static boolean isJava9ea() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5369
     return isJava9ea;
   }
   
@@ -1019,6 +1052,7 @@ public class Misc {
    * @return the slashified class name eg. x/y/z/Myclass
    */
   public static String classNameFromByteCode(byte[] bytes) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5434
     ByteBuffer bb = ByteBuffer.wrap(bytes);
     int temp = (bb.getShort() & 0xffff);  // constant at the beginning
     assert 0xCAFE == temp;
@@ -1139,6 +1173,7 @@ public class Misc {
   }
   
   static public boolean contains(ClassLoader[] cls, ClassLoader cl) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5721
     for (ClassLoader item : cls) {
       if (item == cl) {
         return true;

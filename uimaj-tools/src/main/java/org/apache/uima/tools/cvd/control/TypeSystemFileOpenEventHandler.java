@@ -79,6 +79,7 @@ public class TypeSystemFileOpenEventHandler implements ActionListener {
           // map file if there is none.
           TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
           tsDesc.resolveImports();
+//IC see: https://issues.apache.org/jira/browse/UIMA-416
           this.main.destroyAe();
           this.main.setCas(CasCreationUtils
               .createCas(tsDesc, null, new FsIndexDescription[0]));
@@ -87,6 +88,7 @@ public class TypeSystemFileOpenEventHandler implements ActionListener {
           this.main.getTextArea().setText("");
           this.main.resetTrees();
           this.main.setTypeSystemViewerEnabled(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-421
           this.main.setEnableCasFileReadingAndWriting();
           time.stop();
           this.main.setStatusbarMessage("Done loading type system file in " + time.getTimeSpan() + ".");

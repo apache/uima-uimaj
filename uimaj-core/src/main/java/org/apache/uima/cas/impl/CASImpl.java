@@ -3906,6 +3906,7 @@ public JCasImpl getJCasImpl() {
   
   @Override
   public FeatureValuePath createFeatureValuePath(String featureValuePath)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       throws CASRuntimeException {
     return FeatureValuePathImpl.getFeaturePath(featureValuePath);
   }
@@ -3943,6 +3944,11 @@ public JCasImpl getJCasImpl() {
   @Override
   public ByteArrayFS createByteArrayFS(int length) throws CASRuntimeException {
     checkArrayPreconditions(length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4677
+//IC see: https://issues.apache.org/jira/browse/UIMA-4680
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
     return new ByteArray(this.getJCas(), length);
   }
 
@@ -3972,6 +3978,7 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public byte ll_getByteValue(int fsRef, int featureCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return getFsFromId_checked(fsRef).getByteValue(getFeatFromCode_checked(featureCode));
   }
 
@@ -3985,6 +3992,7 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public boolean ll_getBooleanValue(int fsRef, int featureCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return getFsFromId_checked(fsRef).getBooleanValue(getFeatFromCode_checked(featureCode));
   }
 
@@ -3998,6 +4006,7 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public short ll_getShortValue(int fsRef, int featureCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return getFsFromId_checked(fsRef).getShortValue(getFeatFromCode_checked(featureCode));
   }
 
@@ -4016,6 +4025,7 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public long ll_getLongValue(int fsRef, int featureCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return getFsFromId_checked(fsRef).getLongValue(getFeatFromCode_checked(featureCode));
   }
 
@@ -4034,6 +4044,7 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public double ll_getDoubleValue(int fsRef, int featureCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return getFsFromId_checked(fsRef).getDoubleValue(getFeatFromCode_checked(featureCode));
   }
   
@@ -4053,12 +4064,18 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public void ll_setBooleanValue(int fsRef, int featureCode, boolean value) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     getFsFromId_checked(fsRef).setBooleanValue(getFeatFromCode_checked(featureCode), value);
   }
 
   @Override
   public void ll_setBooleanValue(int fsRef, int featureCode, boolean value, boolean doTypeChecks) {
     if (doTypeChecks) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4677
+//IC see: https://issues.apache.org/jira/browse/UIMA-4680
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       checkNonArrayConditions(fsRef, featureCode);
     }
     ll_setBooleanValue(fsRef, featureCode, value);
@@ -4066,12 +4083,18 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public final void ll_setByteValue(int fsRef, int featureCode, byte value) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     getFsFromId_checked(fsRef).setByteValue(getFeatFromCode_checked(featureCode), value);
   }
 
   @Override
   public void ll_setByteValue(int fsRef, int featureCode, byte value, boolean doTypeChecks) {
     if (doTypeChecks) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4677
+//IC see: https://issues.apache.org/jira/browse/UIMA-4680
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
       checkNonArrayConditions(fsRef, featureCode);
     }
     ll_setByteValue(fsRef, featureCode, value);
@@ -4079,6 +4102,7 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public final void ll_setShortValue(int fsRef, int featureCode, short value) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     getFsFromId_checked(fsRef).setShortValue(getFeatFromCode_checked(featureCode), value);
   }
 
@@ -4092,6 +4116,7 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public void ll_setLongValue(int fsRef, int featureCode, long value) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     getFsFromId_checked(fsRef).setLongValue(getFeatFromCode_checked(featureCode), value);
   }
 
@@ -4105,6 +4130,7 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public void ll_setDoubleValue(int fsRef, int featureCode, double value) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     getFsFromId_checked(fsRef).setDoubleValue(getFeatFromCode_checked(featureCode), value);
   }
 
@@ -4216,6 +4242,7 @@ public JCasImpl getJCasImpl() {
   }
 
   public boolean isAnnotationType(Type t) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return ((TypeImpl)t).isAnnotationType();
   }
 
@@ -4225,6 +4252,7 @@ public JCasImpl getJCasImpl() {
    */
   public boolean isSubtypeOfAnnotationBaseType(int t) {
     TypeImpl ti = getTypeFromCode(t);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return (ti == null) ? false : ti.isAnnotationBaseType(); 
   }
   
@@ -4242,6 +4270,7 @@ public JCasImpl getJCasImpl() {
     Annotation fs = (Annotation) createFS(type);
     fs.setBegin(begin);
     fs.setEnd(end);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     return fs;
   }
   
@@ -4259,6 +4288,7 @@ public JCasImpl getJCasImpl() {
    */
   @Override
   public <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     return (AnnotationIndex<T>) indexRepository.getAnnotationIndex(getTypeSystemImpl().annotType);
   }
   
@@ -4301,6 +4331,7 @@ public JCasImpl getJCasImpl() {
     final TypeSystemImpl ts = getTypeSystemImpl();
     // Remove any existing document annotations.
     FSIterator<T> it = this.<T>getAnnotationIndex(ts.docType).iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<T> list = new ArrayList<>();
     while (it.isValid()) {
       list.add(it.get());
@@ -4310,6 +4341,7 @@ public JCasImpl getJCasImpl() {
       getIndexRepository().removeFS(list.get(i));
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
     return (T) createDocumentAnnotationNoRemove(length);
   }
   
@@ -4321,18 +4353,30 @@ public JCasImpl getJCasImpl() {
   
   public <T extends Annotation> T createDocumentAnnotationNoRemoveNoIndex(int length) {
     final TypeSystemImpl ts = getTypeSystemImpl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4677
+//IC see: https://issues.apache.org/jira/browse/UIMA-4680
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
     AnnotationFS docAnnot = createAnnotation(ts.docType, 0, length);
     docAnnot.setStringValue(ts.langFeat, CAS.DEFAULT_LANGUAGE_NAME);
     return (T) docAnnot;    
   }
     
   public int ll_createDocumentAnnotation(int length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4178
+//IC see: https://issues.apache.org/jira/browse/UIMA-4179
     final int fsRef = ll_createDocumentAnnotationNoIndex(0, length);
     ll_getIndexRepository().ll_addFS(fsRef);
     return fsRef;
   }
   
   public int ll_createDocumentAnnotationNoIndex(int begin, int end) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4677
+//IC see: https://issues.apache.org/jira/browse/UIMA-4680
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
     final TypeSystemImpl ts = getTypeSystemImpl();
     int fsRef = ll_createAnnotation(ts.docType.getCode(), begin, end);
     ll_setStringValue(fsRef, ts.langFeat.getCode(), CAS.DEFAULT_LANGUAGE_NAME);
@@ -4360,6 +4404,7 @@ public JCasImpl getJCasImpl() {
         FSsTobeAddedback tobeAddedback = FSsTobeAddedback.createSingle();
         boolean wasRemoved = this.checkForInvalidFeatureSetting(
             docAnnot, getTypeSystemImpl().endFeat.getCode(), tobeAddedback);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         docAnnot._setIntValueNfc(endFeatAdjOffset, newDoc.length());
         if (wasRemoved) {
           tobeAddedback.addback(docAnnot);
@@ -4371,6 +4416,7 @@ public JCasImpl getJCasImpl() {
         deserialized_doc_annot_not_indexed._setIntValueNfc(endFeatAdjOffset,  newDoc.length());
       } else {
         // not in the index (yet)
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         createDocumentAnnotation(newDoc.length());
       }
     }
@@ -4384,6 +4430,7 @@ public JCasImpl getJCasImpl() {
    */
   @Override
   public <T extends AnnotationFS> T getDocumentAnnotation() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4718
     T docAnnot = (T) getDocumentAnnotationNoCreate();
     if (null == docAnnot) {
       return (T) createDocumentAnnotationNoRemove(0);
@@ -4436,20 +4483,28 @@ public JCasImpl getJCasImpl() {
       // base CAS has no document
       return null;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return getDocumentAnnotation().getStringValue(getTypeSystemImpl().langFeat);
   }
 
   @Override
   public String getDocumentText() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-187
     return this.getSofaDataString();
   }
 
   @Override
   public String getSofaDataString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
     if (this == this.svd.baseCAS) {
       // base CAS has no document
       return null;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4677
+//IC see: https://issues.apache.org/jira/browse/UIMA-4680
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
     return mySofaIsValid() ? mySofaRef.getLocalStringData() : null;
   }
 
@@ -4459,6 +4514,11 @@ public JCasImpl getJCasImpl() {
       // base CAS has no Sofa
       return null;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4677
+//IC see: https://issues.apache.org/jira/browse/UIMA-4680
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
     return mySofaIsValid() ? mySofaRef.getLocalFSData() : null;
   }
 
@@ -4468,24 +4528,39 @@ public JCasImpl getJCasImpl() {
       // base CAS has no Sofa
       return null;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4677
+//IC see: https://issues.apache.org/jira/browse/UIMA-4680
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
     return mySofaIsValid() ? mySofaRef.getSofaURI() : null;
   }
 
   @Override
   public InputStream getSofaDataStream() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
     if (this == this.svd.baseCAS) {
       // base CAS has no Sofa nothin
       return null;
     }
 //  return mySofaRef.getSofaDataStream();  // this just goes to the next method
+//IC see: https://issues.apache.org/jira/browse/UIMA-4677
+//IC see: https://issues.apache.org/jira/browse/UIMA-4680
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
     return mySofaIsValid() ? this.getSofaDataStream(mySofaRef) : null; 
  
   }
 
   @Override
   public String getSofaMimeType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
     if (this == this.svd.baseCAS) {
       // base CAS has no Sofa
+//IC see: https://issues.apache.org/jira/browse/UIMA-207
       return null;
     }
     return mySofaIsValid() ? mySofaRef.getSofaMime() : null;
@@ -4493,6 +4568,7 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public Sofa getSofa() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return mySofaRef;
   }
   
@@ -4506,6 +4582,7 @@ public JCasImpl getJCasImpl() {
 
   @Override
   public String getViewName() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5547
     return (this == svd.getViewFromSofaNbr(1)) ? CAS.NAME_DEFAULT_SOFA :
            mySofaIsValid() ? mySofaRef.getSofaID() : 
            null; 
@@ -4515,6 +4592,7 @@ public JCasImpl getJCasImpl() {
     return this.mySofaRef != null;
   }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
   void setDocTextFromDeserializtion(String text) {
     if (mySofaIsValid()) {
       Sofa sofa = getSofaRef();  // creates sofa if doesn't already exist
@@ -4532,10 +4610,12 @@ public JCasImpl getJCasImpl() {
     languageCode = Language.normalize(languageCode);
     boolean wasRemoved = this.checkForInvalidFeatureSetting(docAnnot, languageFeature.getCode(), this.getAddbackSingle());
     docAnnot.setStringValue(getTypeSystemImpl().langFeat, languageCode);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     addbackSingleIfWasRemoved(wasRemoved, docAnnot);
   }
 
   private void setSofaThingsMime(Consumer<Sofa> c, String msg) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-409
     if (this == this.svd.baseCAS) {
       throw new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD, msg);
     }   
@@ -4603,6 +4683,7 @@ public JCasImpl getJCasImpl() {
    * @return the view associated with this FS where it could be indexed
    */
   public CASImpl getSofaCasView(AnnotationBase fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return fs._casView;
 //    Sofa sofa = fs.getSofa();
 //    
@@ -4639,8 +4720,10 @@ public JCasImpl getJCasImpl() {
    * @return the number of views, excluding the base view, including the initial view (even if not initially present or no sofa)
    */
   public int getNumberOfViews() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
     CASImpl initialView = getInitialView();  // creates one if not existing, w/o sofa
     int nbrSofas = this.svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME).size();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return initialView.mySofaIsValid() ? nbrSofas : 1 + nbrSofas; 
   }
   
@@ -4655,6 +4738,7 @@ public JCasImpl getJCasImpl() {
    */
   @Override
   public <T extends CAS> Iterator<T> getViewIterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return new Iterator<T>() {
       
       final CASImpl initialView = getInitialView();  // creates one if not existing, w/o sofa  
@@ -4678,8 +4762,14 @@ public JCasImpl getJCasImpl() {
 
       @Override
       public T next() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4677
+//IC see: https://issues.apache.org/jira/browse/UIMA-4680
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
         if (isInitialView_but_noSofa) {
           isInitialView_but_noSofa = false;  // no incr of sofa iterator because it was missing initial view
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           return (T) initialView;
         }
         return (T) getView(sofaIter.next());
@@ -4699,9 +4789,12 @@ public JCasImpl getJCasImpl() {
    * @return iterator over all views except the base view
    */
   public Iterator<CASImpl> getViewImplIterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return new Iterator<CASImpl>() {
       
       final CASImpl initialView = getInitialView();  // creates one if not existing, w/o sofa  
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
 
       boolean isInitialView_but_noSofa = !initialView.mySofaIsValid(); // true if has no Sofa in initial view
                                                            //     but is reset to false once iterator moves
@@ -4711,10 +4804,15 @@ public JCasImpl getJCasImpl() {
                                                            // sofa iterator instead.
 
       final FSIterator<Sofa> sofaIter = getSofaIterator(); 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
       @Override
       public boolean hasNext() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4718
         if (isInitialView_but_noSofa) { // set to false once iterator moves off of first value
+//IC see: https://issues.apache.org/jira/browse/UIMA-4059
+//IC see: https://issues.apache.org/jira/browse/UIMA-4099
+//IC see: https://issues.apache.org/jira/browse/UIMA-3399
           return true;
         }
         return sofaIter.hasNext(); 
@@ -4722,10 +4820,16 @@ public JCasImpl getJCasImpl() {
 
       @Override
       public CASImpl next() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4677
+//IC see: https://issues.apache.org/jira/browse/UIMA-4680
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
         if (isInitialView_but_noSofa) {
           isInitialView_but_noSofa = false;  // no incr of sofa iterator because it was missing initial view
           return initialView;
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
         return getView(sofaIter.next());
       }
 
@@ -4742,6 +4846,7 @@ public JCasImpl getJCasImpl() {
    * @param processViews
    */
   public void forAllViews(Consumer<CASImpl> processViews) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     final int numViews = this.getNumberOfViews();
     for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
       CASImpl view = (viewNbr == 1) ? getInitialView() : (CASImpl) getView(viewNbr);
@@ -4757,6 +4862,7 @@ public JCasImpl getJCasImpl() {
   void forAllSofas(Consumer<Sofa> processSofa) {
     FSIterator<Sofa> it = getSofaIterator();
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       processSofa.accept(it.nextNvc());
     }
   }
@@ -4766,6 +4872,7 @@ public JCasImpl getJCasImpl() {
    * Includes the initial view's ir only if it has a sofa defined
    * @param processIr the code to execute
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   void forAllIndexRepos(Consumer<FSIndexRepositoryImpl> processIr) {
     final int numViews = this.getViewCount();
     for (int viewNum = 1; viewNum <= numViews; viewNum++) {
@@ -4790,10 +4897,13 @@ public JCasImpl getJCasImpl() {
     }
 
     // find Sofas with this prefix
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<CAS> viewList = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     FSIterator<Sofa> sofaIter = getSofaIterator();
     while (sofaIter.hasNext()) {
       SofaFS sofa = sofaIter.next();
+//IC see: https://issues.apache.org/jira/browse/UIMA-465
       String sofaId = sofa.getSofaID();
       if (sofaId.startsWith(absolutePrefix)) {
         if ((sofaId.length() == absolutePrefix.length())
@@ -4859,6 +4969,7 @@ public JCasImpl getJCasImpl() {
     
     // case 1: the addbacks are the last in the stack:
     if (listOfAddbackInfos.get(listOfAddbackInfos.size() - 1) == addbacks) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6168
       listOfAddbackInfos.remove(listOfAddbackInfos.size() - 1);
       addbacks.addback();
       return;
@@ -4885,6 +4996,10 @@ public JCasImpl getJCasImpl() {
    */
   @Override
   public void protectIndexes(Runnable r) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4162
+//IC see: https://issues.apache.org/jira/browse/UIMA-4160
+//IC see: https://issues.apache.org/jira/browse/UIMA-4158
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
     AutoCloseable addbacks = protectIndexes();
     try {
       r.run();
@@ -4908,16 +5023,20 @@ public JCasImpl getJCasImpl() {
     if (isCasLocked()) {
 	    throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
   	}
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   	this.svd.trackingMark = new MarkerImpl(this.getLastUsedFsId() + 1, 
   			this);
   	if (this.svd.modifiedPreexistingFSs == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4718
   	  this.svd.modifiedPreexistingFSs = new IdentityHashMap<>();
   	}
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   	if (this.svd.modifiedPreexistingFSs.size() > 0) {
   	  errorMultipleMarkers();
   	}
 
   	if (this.svd.trackingMarkList == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
   	  this.svd.trackingMarkList = new ArrayList<>();
   	} else {errorMultipleMarkers();}
   	this.svd.trackingMarkList.add(this.svd.trackingMark);
@@ -4939,6 +5058,7 @@ public JCasImpl getJCasImpl() {
    * @return an array of FsChange items, one per modified Fs, 
    *         sorted in order of fs._id
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   FsChange[] getModifiedFSList() {
     final Map<TOP, FsChange> mods = this.svd.modifiedPreexistingFSs;
 	  FsChange[] r = mods.values().toArray(new FsChange[mods.size()]);
@@ -4947,6 +5067,7 @@ public JCasImpl getJCasImpl() {
   }
   
   boolean isInModifiedPreexisting(TOP fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4718
     return this.svd.modifiedPreexistingFSs.containsKey(fs);
   }
     
@@ -4974,6 +5095,7 @@ public JCasImpl getJCasImpl() {
   }
   
   final public int getNextFsId(TOP fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5162
     return svd.getNextFsId(fs);
   }
   
@@ -4982,6 +5104,7 @@ public JCasImpl getJCasImpl() {
   }
   
   public void adjustLastFsV2size_nonHeapStoredArrays() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
     svd.lastFsV2Size += 2;  // length and index into other special heap
   }
   
@@ -5069,7 +5192,10 @@ public JCasImpl getJCasImpl() {
    * @return sorted list of all found items (ignoring mark)
    */
   public List<TOP> walkReachablePlusFSsSorted(
+//IC see: https://issues.apache.org/jira/browse/UIMA-5056
     Consumer<TOP> action_filtered, MarkerImpl mark, Predicate<TOP> includeFilter, CasTypeSystemMapper typeMapper) {    
+//IC see: https://issues.apache.org/jira/browse/UIMA-5471
+//IC see: https://issues.apache.org/jira/browse/UIMA-5470
     List<TOP> all = new AllFSs(this, mark, includeFilter, typeMapper).getAllFSsAllViews_sofas_reachable().getAllFSsSorted();
     List<TOP> filtered = filterAboveMark(all, mark);
     for (TOP fs : filtered) {
@@ -5112,6 +5238,7 @@ public JCasImpl getJCasImpl() {
   }
   
   public boolean isInCAS(FeatureStructure fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return ((TOP)fs)._casView.getBaseCAS() == this.getBaseCAS();
   }
   
@@ -5135,6 +5262,7 @@ public JCasImpl getJCasImpl() {
   @Override
 public <T extends TOP> EmptyFSList<T> emptyFSList() {
     if (null == svd.emptyFSList) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
       svd.emptyFSList = new EmptyFSList<>(getTypeSystemImpl().fsEListType, this);
     }
     return svd.emptyFSList;
@@ -5170,6 +5298,7 @@ public EmptyStringList emptyStringList() {
   public CommonArrayFS emptyArray(Type type) {
     switch (((TypeImpl)type).getCode()) {
     case TypeSystemConstants.booleanArrayTypeCode :
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
       return emptyBooleanArray();
     case TypeSystemConstants.byteArrayTypeCode :
       return emptyByteArray();
@@ -5185,6 +5314,7 @@ public EmptyStringList emptyStringList() {
       return emptyDoubleArray();
     case TypeSystemConstants.stringArrayTypeCode :
       return emptyStringArray();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5621
     default: // TypeSystemConstants.fsArrayTypeCode or any other type
       return emptyFSArray();
     }
@@ -5200,6 +5330,8 @@ public FloatArray emptyFloatArray() {
 
   @Override
   public <T extends FeatureStructure> FSArray<T> emptyFSArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6060
+//IC see: https://issues.apache.org/jira/browse/UIMA-6047
     return emptyFSArray(null);
   }
   
@@ -5270,6 +5402,7 @@ public BooleanArray emptyBooleanArray() {
    * @return the empty list (shared) corresponding to the type
    */
   public EmptyList emptyList(int rangeCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     return (rangeCode == CasSerializerSupport.TYPE_CLASS_INTLIST) ? emptyIntegerList() :
            (rangeCode == CasSerializerSupport.TYPE_CLASS_FLOATLIST) ? emptyFloatList() :
            (rangeCode == CasSerializerSupport.TYPE_CLASS_STRINGLIST) ? emptyStringList() :
@@ -5285,6 +5418,7 @@ public BooleanArray emptyBooleanArray() {
     switch (typeCode) {
     case fsListTypeCode:
     case fsEListTypeCode:
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     case fsNeListTypeCode: return emptyFSList();
     case floatListTypeCode:
     case floatEListTypeCode:
@@ -5329,6 +5463,7 @@ public BooleanArray emptyBooleanArray() {
    * @return false if feature is an fsRef
    */
   public static boolean copyFeatureExceptFsRef(TOP fsSrc, FeatureImpl fiSrc, TOP fsTgt, FeatureImpl fiTgt) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
    switch (fiSrc.getRangeImpl().getCode()) {
     case booleanTypeCode    : fsTgt._setBooleanValueNcNj(   fiTgt, fsSrc._getBooleanValueNc(   fiSrc)); break;
     case byteTypeCode       : fsTgt._setByteValueNcNj(      fiTgt, fsSrc._getByteValueNc(      fiSrc)); break;
@@ -5340,6 +5475,7 @@ public BooleanArray emptyBooleanArray() {
     case stringTypeCode     : fsTgt._setStringValueNcNj(    fiTgt, fsSrc._getStringValueNc(    fiSrc)); break;
 //    case javaObjectTypeCode : fsTgt._setJavaObjectValueNcNj(fiTgt, fsSrc.getJavaObjectValue(fiSrc)); break;
                // skip setting sofaRef - it's final and can't be set
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     default: 
       if (fiSrc.getRangeImpl().isStringSubtype()) {
         fsTgt._setStringValueNcNj(    fiTgt, fsSrc._getStringValueNc(    fiSrc)); break;  // does substring range check
@@ -5350,6 +5486,7 @@ public BooleanArray emptyBooleanArray() {
   }
 
   public static CommonArrayFS copyArray(TOP srcArray) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     CommonArrayFS srcCA = (CommonArrayFS) srcArray;
     CommonArrayFS copy = (CommonArrayFS) srcArray._casView.createArray(srcArray._getTypeImpl(), srcCA.size());
     copy.copyValuesFrom(srcCA); 
@@ -5357,12 +5494,15 @@ public BooleanArray emptyBooleanArray() {
   }
     
   public BinaryCasSerDes getBinaryCasSerDes() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4718
     return svd.bcsd;
   }
   
   /**
    * @return the saved CommonSerDesSequential info
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
   CommonSerDesSequential getCsds() {
     return svd.csds; 
   }
@@ -5407,6 +5547,8 @@ public BooleanArray emptyBooleanArray() {
     final TOP fs = (TOP) aFs;
     final CASImpl view = fs._casView;
     final TypeImpl ti = fs._getTypeImpl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     final FsGenerator3 generator = view.svd.generators[ti.getCode()];
     if (null == generator) {
       return aFs;
@@ -5425,6 +5567,8 @@ public BooleanArray emptyBooleanArray() {
    */
   private TOP pearConvert(TOP fs, FsGenerator3 g) {
     return svd.id2tramp.putIfAbsent(fs._id, k -> {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
 
       svd.reuseId = k;  // create new FS using base FS's ID
       pearBaseFs = fs;
@@ -5455,6 +5599,8 @@ public BooleanArray emptyBooleanArray() {
    * @return the corresponding base fs
    */
   <T extends TOP> T getBaseFsFromTrampoline(T fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     TOP r = svd.id2base.get(fs._id);
     assert r != null;
     return (T) r;
@@ -5465,6 +5611,7 @@ public BooleanArray emptyBooleanArray() {
    ******************************************/
   
   public void traceFSCreate(FeatureStructureImplC fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4897
     StringBuilder b = svd.traceFScreationSb;
     if (b.length() > 0) {
       traceFSflush();
@@ -5478,10 +5625,12 @@ public BooleanArray emptyBooleanArray() {
 //      }
 //    }
     svd.id2addr.add(svd.nextId2Addr);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     svd.nextId2Addr += fs._getTypeImpl().getFsSpaceReq((TOP)fs);
     traceFSfs(fs);
     svd.traceFSisCreate = true;
     if (fs._getTypeImpl().isArray()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       b.append(" l:").append(((CommonArrayFS)fs).size());
     }
   }
@@ -5489,6 +5638,7 @@ public BooleanArray emptyBooleanArray() {
   void traceFSfs(FeatureStructureImplC fs) {
     StringBuilder b = svd.traceFScreationSb;
     svd.traceFSid = fs._id;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
     b.append("c:").append(String.format("%-3s", getCasId()));
     String viewName = fs._casView.getViewName();
     if (null == viewName) {
@@ -5496,9 +5646,12 @@ public BooleanArray emptyBooleanArray() {
     }
     b.append(" v:").append(Misc.elide(viewName, 8));
     b.append(" i:").append(String.format("%-5s", geti2addr(fs._id)));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     b.append(" t:").append(Misc.elide(fs._getTypeImpl().getShortName(), 10));    
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
   void traceIndexMod(boolean isAdd, TOP fs, boolean isAddbackOrSkipBag) {
     StringBuilder b = svd.traceCowSb;
     b.setLength(0);
@@ -5630,6 +5783,7 @@ public BooleanArray emptyBooleanArray() {
       TOP fs = (TOP) v;
       return Misc.elide(fs.getType().getShortName(), 5, false)  + ':' + geti2addr(fs._id);
     } 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5842
     if (v == null) {
         return "null";
     }
@@ -5672,7 +5826,9 @@ public BooleanArray emptyBooleanArray() {
   }
   
   public StringBuilder traceFSflush() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5842
     if (!traceFSs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         return null;
     }
     StringBuilder b = svd.traceFScreationSb;
@@ -5840,6 +5996,7 @@ public BooleanArray emptyBooleanArray() {
    * @param ser - The instance to convert back to a CAS
    */
   public void reinit(CASSerializer ser) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5225
     svd.bcsd.reinit(ser);
   }
   
@@ -5878,6 +6035,7 @@ public BooleanArray emptyBooleanArray() {
   }
   
   public void swapInPearVersion(Object[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     if (!inPearContext()) {
       return;
     }

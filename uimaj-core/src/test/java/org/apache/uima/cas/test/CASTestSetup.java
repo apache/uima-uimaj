@@ -43,6 +43,8 @@ public class CASTestSetup  implements AnnotatorInitializer {
 
   public static final String TOKEN_TYPE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
           + TOKEN_TYPE_FEAT;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   public static final String TOKEN_TYPE_TYPE = "TokenType";
 
@@ -54,6 +56,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
   
   public static final String ARRAYFSWITHSUBTYPE_TYPE_FEAT_Q = ARRAYFSWITHSUBTYPE_TYPE + TypeSystem.FEATURE_SEPARATOR
           + ARRAYFSWITHSUBTYPE_TYPE_FEAT;
+//IC see: https://issues.apache.org/jira/browse/UIMA-25
 
   public static final String SEP_TYPE = "Separator";
 
@@ -144,22 +147,28 @@ public class CASTestSetup  implements AnnotatorInitializer {
   public void initTypeSystem(TypeSystemMgr tsm) {
     // Add new types and features.
     Type stringType = tsm.getType(CAS.TYPE_NAME_STRING);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
     Type topType = tsm.getTopType();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annotType = tsm.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     Type sentenceType = tsm.addType(SENT_TYPE, annotType);
     tsm.addType(PHRASE_TYPE, sentenceType);
     Type tokenType = tsm.addType(TOKEN_TYPE, annotType);
     Type tokenTypeType = tsm.addType(TOKEN_TYPE_TYPE, topType);
     tsm.addType(WORD_TYPE, tokenTypeType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-25
     Type arrayFsWithSubtypeType = tsm.addType(ARRAYFSWITHSUBTYPE_TYPE, topType);
     Type arrayOfAnnot = tsm.getArrayType(annotType);
     tsm.addFeature(ARRAYFSWITHSUBTYPE_TYPE_FEAT, arrayFsWithSubtypeType, arrayOfAnnot);
     tsm.addType(SEP_TYPE, tokenTypeType);
     tsm.addType(EOS_TYPE, tokenTypeType);
     tsm.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     tsm.addFeature(TOKEN_FLOAT_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_FLOAT));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     tsm.addFeature(TOKEN_DOUBLE_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_DOUBLE));
     tsm.addFeature(TOKEN_LONG_FEAT, tokenType,  tsm.getType(CAS.TYPE_NAME_LONG));
     // Add a type that inherits from IntArray.
@@ -171,6 +180,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
     tsm.addFeature(LEMMA_FEAT, tokenType, stringType);
     tsm.addFeature(SENT_LEN_FEAT, tsm.getType(SENT_TYPE), tsm.getType(CAS.TYPE_NAME_INTEGER));
     tsm.addFeature(LEMMA_LIST_FEAT, tsm.getType(TOKEN_TYPE), tsm
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getType(CAS.TYPE_NAME_STRING_ARRAY));
     Type group1 = tsm.addStringSubtype(GROUP_1, GROUP_1_LANGUAGES);
     Type group2 = tsm.addStringSubtype(GROUP_2, GROUP_2_LANGUAGES);
@@ -182,6 +192,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
     try {
       tsm.addType("some.new.Name", group1);
     } catch (CASAdminException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       TestCase.assertTrue(e.getMessageKey() == CASAdminException.TYPE_IS_INH_FINAL);
       exc = true;
     }
@@ -190,23 +201,28 @@ public class CASTestSetup  implements AnnotatorInitializer {
     try {
       tsm.addFeature("some.new.Name", group1, stringType);
     } catch (CASAdminException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       TestCase.assertTrue(e.getMessageKey() == CASAdminException.TYPE_IS_FEATURE_FINAL);
       exc = true;
     }
     TestCase.assertTrue(exc);
     // add IntegerArray[] type before commit for testArrayTypes in TypeSystemTest
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     Type intArrayType = tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
     Type arrayOfIntArray = tsm.getArrayType(intArrayType);
   }
 
   private FSIndexComparator makeComp(FSIndexRepositoryMgr irm, TypeSystem ts) {
     FSIndexComparator comp = irm.createComparator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annotation = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
     comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             FSIndexComparator.STANDARD_COMPARE);
     comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END),
             FSIndexComparator.REVERSE_STANDARD_COMPARE);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
     return comp;
   }
 
@@ -218,11 +234,13 @@ public class CASTestSetup  implements AnnotatorInitializer {
       tob.add(new String[] { CAS.TYPE_NAME_ANNOTATION, SENT_TYPE, TOKEN_TYPE });
       comp.addKey(tob.getOrder(), FSIndexComparator.STANDARD_COMPARE);
     } catch (CASException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-479
       TestCase.assertTrue(false);
     }
     irm.createIndex(comp, ANNOT_BAG_INDEX, FSIndex.BAG_INDEX);
     irm.createIndex(comp, ANNOT_SET_INDEX, FSIndex.SET_INDEX);
     irm.createIndex(comp, ANNOT_SORT_INDEX, FSIndex.SORTED_INDEX);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
     irm.createIndex(compNoTypeOrder, ANNOT_SET_INDEX_NO_TYPEORDER, FSIndex.SET_INDEX);
   }
 }

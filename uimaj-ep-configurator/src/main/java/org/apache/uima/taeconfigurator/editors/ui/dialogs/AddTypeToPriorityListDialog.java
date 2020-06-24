@@ -57,6 +57,8 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
    * @param typesInList the types in list
    */
   public AddTypeToPriorityListDialog(AbstractSection aSection, Set allowableTypeNameHash,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String[] typesInList) {
     super(aSection, "Add Types to Priority List", "Select one or more types and press OK");
 
@@ -80,6 +82,7 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
     while (typeNameIterator.hasNext()) {
       String sTypeName = (String) typeNameIterator.next();
       if (0 > Arrays.binarySearch(alreadyUsedTypes, sTypeName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               && !CAS.TYPE_NAME_TOP.equals(sTypeName)) {
         availableHash.add(sTypeName);
       }
@@ -117,6 +120,7 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
    * @return the selected type names
    */
   public String[] getSelectedTypeNames() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     return m_selectedTypeNames.clone();
   }
 

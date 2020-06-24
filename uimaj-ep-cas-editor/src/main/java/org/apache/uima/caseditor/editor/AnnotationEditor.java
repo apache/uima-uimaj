@@ -154,6 +154,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   private abstract class AbstractAnnotateAction extends Action
       implements ISelectionChangedListener {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1785
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
     @Override
     public void selectionChanged(SelectionChangedEvent event) {
@@ -178,6 +180,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
      *
      * @param textWidget the text widget
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2173
     QuickAnnotateAction(StyledText textWidget) {
       mTextWidget = textWidget;
     }
@@ -192,10 +195,14 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
         // get old annotations of current type for this area
         // if there is something ... the delete them and add
+//IC see: https://issues.apache.org/jira/browse/UIMA-2168
         Collection<AnnotationFS> oldAnnotations = getAnnotation(getDocument().getCAS(),
             getAnnotationMode(), new Span(selection.x, selection.y));
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
         if (!oldAnnotations.isEmpty()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1398
           getDocument().removeFeatureStructures(oldAnnotations);
         }
 
@@ -216,6 +223,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
      *
      * @return the document
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1397
     ICasDocument getDocument() {
       return AnnotationEditor.this.getDocument();
     }
@@ -234,6 +242,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
       if (isSomethingSelected()) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
         QuickTypeSelectionDialog typeDialog =
           new QuickTypeSelectionDialog(Display.getCurrent().getActiveShell(),
           AnnotationEditor.this);
@@ -307,6 +316,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
      */
     @Override
     public void addedAnnotation(Collection<AnnotationFS> annotations) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1420
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       IAnnotationModelExtension annotationModel = (IAnnotationModelExtension) getDocumentProvider().getAnnotationModel(getEditorInput());
       
       Map<Annotation, Position> addAnnotationMap = new HashMap<>();
@@ -335,6 +346,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
       highlight(0, 0); // TODO: only if removed annotation was selected
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1420
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       IAnnotationModelExtension annotationModel = (IAnnotationModelExtension) getDocumentProvider().getAnnotationModel(getEditorInput());
       
       Annotation removeAnnotations[] = new Annotation[deletedAnnotations.size()];
@@ -354,6 +367,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     @Override
     public void updatedAnnotation(Collection<AnnotationFS> annotations) {
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2125
       IAnnotationModelExtension annotationModel = (IAnnotationModelExtension) getDocumentProvider().getAnnotationModel(getEditorInput());
       
       for (AnnotationFS annotation : annotations) {
@@ -427,15 +441,18 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
             try {
               offset = textWidget.getOffsetAtLocation(new Point(e.x, e.y));
             }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
             catch (IllegalArgumentException e2) {
               return;
             }
 
             Map<Integer, AnnotationFS> view = getView(getAnnotationMode());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2168
 
             mCandidate = view.get(offset);
 
             if (mCandidate != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
               textWidget.setSelectionRange(mCandidate.getBegin(), mCandidate.getEnd()
                       - mCandidate.getBegin());
             }
@@ -494,6 +511,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         // ask document provider for this
         // getAnnotation must be added to cas document provider
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
         AnnotationStyle style = getAnnotationStyle(
             eclipseAnnotation.getAnnotationFS().getType());
 
@@ -534,6 +552,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
       Type type = getDocument().getCAS().getTypeSystem().getType((String) annotationType);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       return mShowAnnotationsMenu.getSelectedTypes().contains(type) ||
           getAnnotationMode().equals(type);
     }
@@ -559,14 +578,17 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
      * @param casEditor the cas editor
      */
     public CasViewMenu(AnnotationEditor casEditor) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
       this.casEditor = casEditor;
     } 
 
     @Override
     public void fill(Menu parentMenu, int index) {
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       CAS cas = casEditor.getDocument().getCAS();
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       for (Iterator<CAS> it = cas.getViewIterator(); it.hasNext(); ) {
         
         CAS casView = it.next();
@@ -586,6 +608,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         // TODO: Add support for non text views, editor has
         //       to display some error message
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
         if (cas.getViewName().equals(viewName))
             actionItem.setSelection(true);
         
@@ -659,7 +682,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   @Override
   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2222
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     casDocumentProvider =
+//IC see: https://issues.apache.org/jira/browse/UIMA-2219
             CasDocumentProviderFactory.instance().getDocumentProvider(input);
     
     setDocumentProvider(new TextDocumentProvider(casDocumentProvider));
@@ -679,10 +705,12 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   @Override
   public String getTitleToolTip() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2671
     if (getEditorInput() == null) {
       return super.getTitleToolTip();
     }
     ICasDocument document = getDocument();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2671
     if(document == null) {
       return super.getTitleToolTip();
     }
@@ -707,6 +735,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     if (IContentOutlinePage.class.equals(adapter) && getDocument() != null) {
       return mOutlinePage;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     else if (CAS.class.equals(adapter) && getDocument() != null) {
       return getDocument().getCAS();
     }
@@ -736,10 +765,12 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * @param newSize the new text size
    */
   private void setTextSize(int newSize) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2169
     Font font = getSourceViewer().getTextWidget().getFont();
     
     if (font.getFontData().length > 0) {
       FontData fd = font.getFontData()[0];
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       getSourceViewer().getTextWidget().setFont(new Font(font.getDevice(),
               fd.getName(), newSize, fd.getStyle()));
     }
@@ -807,6 +838,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       public void mouseUp(MouseEvent e) {
         int newCaretOffset = getSourceViewer().getTextWidget().getCaretOffset();
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-2166
         if (newCaretOffset != mCursorPosition) {
           mCursorPosition = newCaretOffset;
           refreshSelection();
@@ -824,9 +856,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // UIMA-2247:
     // Changed again to ensure that also selection from the find dialog
     // can be detected
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     getSourceViewer().getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
       @Override
       public void selectionChanged(SelectionChangedEvent event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2260
         mFeatureStructureSelectionProvider.setSelection(new AnnotationEditorSelection((ITextSelection) event.getSelection(), 
                 new StructuredSelection(ModelFeatureStructure.create(getDocument(), getSelectedAnnotations()))));
       }
@@ -847,6 +881,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     
       
     // Retrieve font size from preference store, default is 15
+//IC see: https://issues.apache.org/jira/browse/UIMA-2169
     IPreferenceStore prefStore = CasEditorPlugin.getDefault().getPreferenceStore();
     int textSize = prefStore.getInt(AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE);
     
@@ -854,10 +889,12 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       setTextSize(textSize);
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2271
     preferenceStoreChangeListener = (new IPropertyChangeListener() {
       
       @Override
       public void propertyChange(PropertyChangeEvent event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
         if (AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE.equals(event.getProperty())) {
           Integer textSize = (Integer) event.getNewValue();
           
@@ -901,17 +938,20 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   @Override
   protected void handleElementContentReplaced() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     super.handleElementContentReplaced();
     setInput(getEditorInput());
   }
 
   @Override
   protected void doSetInput(final IEditorInput input) throws CoreException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
     final IEditorInput oldInput = getEditorInput();
     final ICasDocument oldDocument = getDocument();
     
     // Unregister the editor listeners on the old input
     // TODO: Should we make methods to encapsulate the register/unregister code?
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     if (oldDocument != null) {
       oldDocument.removeChangeListener(mAnnotationSynchronizer);
       mAnnotationSynchronizer = null;
@@ -923,6 +963,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     super.doSetInput(input);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2123
     if (CasEditorPlugin.getDefault().
             getAndClearShowMigrationDialogFlag()) {
       getSite().getShell().getDisplay().asyncExec(new Runnable() {
@@ -940,9 +981,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     
     if (getDocument() != null) {
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
       AnnotationOutline outline = new AnnotationOutline(this);
       mOutlinePage.setCASViewPage(outline);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       shownAnnotationTypes.clear();
       
       // Synchronize shown types with the editor
@@ -988,6 +1031,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         }
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
     else {
       // Makes the outline book show the not available message page
       mOutlinePage.setCASViewPage(null);
@@ -1021,6 +1065,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   // is not a text sofa or not set at all
   @Override
   protected boolean isErrorStatus(IStatus status) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2107
     return super.isErrorStatus(status) || getDocument().getCAS().getDocumentText() == null;
   }
   
@@ -1032,6 +1077,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   private void initiallySynchronizeUI() {
     if (getDocument() != null) {
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       mShowAnnotationsMenu = new ShowAnnotationsMenu(
               getDocument().getCAS().getTypeSystem(), shownAnnotationTypes);
       mShowAnnotationsMenu.addListener(new IShowAnnotationsListener() {
@@ -1057,6 +1103,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           
           setEditorSessionPreferences();
           
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
           if (mEditorListener != null) {
             for (IAnnotationEditorModifyListener listener : mEditorListener) 
               listener.showAnnotationsChanged(selection);
@@ -1069,6 +1116,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       
       // TODO: Define constants for these settings!
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2872
       Type annotationModeType = getDocument().getType(
           sessionPreferences.getString("LastUsedModeType"));
       
@@ -1084,6 +1132,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       
       String lastActiveViewName = sessionPreferences.getString("LastActiveCasViewName");
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
       try {
         // TODO: Missing compatibility check!!!
         getDocument().getCAS().getView(lastActiveViewName);
@@ -1095,6 +1144,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         // TODO: Is there a way to check which views are available?!
         //       Maybe we should iterate over all available views, and then
         //       check if it is available!
+//IC see: https://issues.apache.org/jira/browse/UIMA-2113
         showView(CAS.NAME_DEFAULT_SOFA);
       }
     }
@@ -1107,6 +1157,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // Add Annotate action
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, new Separator());
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(SmartAnnotateAction.ID));
+//IC see: https://issues.apache.org/jira/browse/UIMA-2173
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(QuickAnnotateAction.ID));
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(IWorkbenchActionDefinitionIds.DELETE));
     
@@ -1118,9 +1169,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     ModeMenu modeMenu = new ModeMenu(typeSystem, this);
     modeMenu.addListener(new IModeMenuListener(){
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
     @Override
     public void modeChanged(Type newMode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       IAction actionToExecute = new ChangeModeAction(newMode, newMode.getShortName(),
               AnnotationEditor.this);
 
@@ -1135,6 +1188,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     showAnnotationMenu.add(mShowAnnotationsMenu);
     
     // view menu
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
     MenuManager casViewMenuManager = new MenuManager("CAS Views");
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, casViewMenuManager);
     CasViewMenu casViewMenu = new CasViewMenu(this);
@@ -1161,11 +1215,13 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   @Override
   public ICasDocument getDocument() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
     return (ICasDocument) getDocumentProvider().getDocument(getEditorInput());
   }
 
   @Override
   public void reopenEditorWithNewTypeSystem() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2159
     setInput(getEditorInput());
   }
   
@@ -1186,6 +1242,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   public void setAnnotationMode(Type type) {
     // TODO: check if this type is a subtype of Annotation
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2872
     if (type == null) {
       throw new IllegalArgumentException("type must not be null!");
     }
@@ -1199,6 +1256,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     updateStatusLineModeItem();
 
     syncAnnotationTypes();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1688
 
     fireAnnotationTypeChanged(getAnnotationMode());
 
@@ -1221,6 +1279,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * @param isShown the is shown
    */
   public void setShownAnnotationType(Type type, boolean isShown) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
     mShowAnnotationsMenu.setSelectedType(type, isShown);
   }
 
@@ -1230,6 +1289,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * @param types the new shown annotation types
    */
   public void setShownAnnotationTypes(Collection<Type> types) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3673
     mShowAnnotationsMenu.setSelectedTypes(types);
   }
 
@@ -1255,6 +1315,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     if (type == null)
       throw new IllegalArgumentException("type parameter must not be null!");
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     IPreferenceStore prefStore = getCasDocumentProvider().
             getTypeSystemPreferenceStore(getEditorInput());
     
@@ -1271,6 +1332,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   // TODO: Disk must be accessed for every changed annotation style
   // add a second method which can take all changed styles
   public void setAnnotationStyle(AnnotationStyle style) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     IPreferenceStore prefStore = getCasDocumentProvider().getTypeSystemPreferenceStore(getEditorInput());
     AnnotationStyle.putAnnotatationStyleToStore(prefStore, style);
     
@@ -1287,8 +1349,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   private void showAnnotationType(Type type, boolean isVisible) {
     AnnotationStyle style = getAnnotationStyle(type);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1576
     if (isVisible) {
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
       IDrawingStrategy strategy = DrawingStyle.createStrategy(style);
       
       // It might not be possible to create the drawing strategy trough
@@ -1296,6 +1360,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       if (strategy != null) {
         
         if (style.getStyle().equals(AnnotationStyle.Style.TAG)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
           getSourceViewer().getTextWidget().setLineSpacing(13);
         }
         
@@ -1317,6 +1382,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         // How to figure that out ?!
         boolean isKeepLineSpacing = false;
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
         for(Type shownType : shownAnnotationTypes) {
           AnnotationStyle potentialTagStyle = getAnnotationStyle(shownType);
           
@@ -1338,9 +1404,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   public void syncAnnotationTypes() {
 
     mPainter.removeAllAnnotationTypes();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
     getSourceViewer().getTextWidget().setLineSpacing(0);
     
     for (Type displayType : mShowAnnotationsMenu.getSelectedTypes()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1576
       showAnnotationType(displayType, true);
     }
 
@@ -1356,6 +1424,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   private void removeAllAnnotations() {
     // Remove all annotation from the model
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
     IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(getEditorInput());
     ((IAnnotationModelExtension) annotationModel).removeAllAnnotations();
   }
@@ -1368,19 +1438,23 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     removeAllAnnotations();
     
     // Remove all annotation from the model
+//IC see: https://issues.apache.org/jira/browse/UIMA-1688
     IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(getEditorInput());
     ((IAnnotationModelExtension) annotationModel).removeAllAnnotations();
     
     // Add all annotation to the model
     // copy annotations into annotation model
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
     final Iterator<AnnotationFS> mAnnotations = getDocument().getCAS().getAnnotationIndex()
             .iterator();
     
     // TODO: Build first a map, and then pass all annotations at once
+//IC see: https://issues.apache.org/jira/browse/UIMA-2113
     Map annotationsToAdd = new HashMap();
     
     while (mAnnotations.hasNext()) {
       AnnotationFS annotationFS = mAnnotations.next();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       annotationsToAdd.put(new EclipseAnnotationPeer(annotationFS), new Position(
               annotationFS.getBegin(), annotationFS.getEnd() - annotationFS.getBegin()));
     }
@@ -1394,6 +1468,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * @param listener the listener
    */
   public void addAnnotationListener(IAnnotationEditorModifyListener listener) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
     mEditorListener.add(listener);
   }
   
@@ -1403,11 +1478,13 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * @param listener the listener
    */
   public void removeAnnotationListener(IAnnotationEditorModifyListener listener) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2265
     mEditorListener.remove(listener);
   }
 
   @Override
   public void addCasEditorInputListener(ICasEditorInputListener listener) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     mEditorInputListener.add(listener);
   }
   
@@ -1444,10 +1521,12 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
               mCurrentStyleRange.length, null, null);
 
       text.setStyleRange(resetedStyleRange);
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
       mCurrentStyleRange = null;
     }
 
     if (length != 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       mCurrentStyleRange = new StyleRange(start, length, text.getSelectionForeground(), text
               .getSelectionBackground());
 
@@ -1470,6 +1549,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
       Span selectedSpan = new Span(selectedText.x, selectedText.y);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2168
       Collection<AnnotationFS> selectedAnnotations = getAnnotation(getDocument().getCAS(),
               getAnnotationMode(), selectedSpan);
 
@@ -1478,6 +1558,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       selection.sort(new AnnotationComparator());
     } else {
       Map<Integer, AnnotationFS> view = getView(getAnnotationMode());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2168
 
       AnnotationFS annotation = view.get(getSourceViewer().getTextWidget().getCaretOffset());
 
@@ -1499,6 +1580,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * @return the caret position relative to the start of the text
    */
   public int getCaretOffset() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2263
     return getSourceViewer().getTextWidget().getCaretOffset();
   }
   
@@ -1515,11 +1597,13 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // selectionChanged method, is that the right place?!
     
     // Clear all old selections, references FSes of current view
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
     mFeatureStructureSelectionProvider.clearSelection();
     
     // Move the caret before the first char, otherwise it
     // might be placed on an index which is out of bounds in
     // the changed text
+//IC see: https://issues.apache.org/jira/browse/UIMA-2107
     if (getSourceViewer().getTextWidget().getText().length() > 0)
       getSourceViewer().getTextWidget().setCaretOffset(0);
     
@@ -1531,6 +1615,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // Remove all editor annotations
     // Changing the text with annotations might fail, because the
     // bounds might be invalid in the new text
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     removeAllAnnotations();
     
     // Change the view in the input document
@@ -1538,7 +1623,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     getDocument().switchView(viewName);
     
     // Retrieve the new (changed) text document and refresh the source viewer
+//IC see: https://issues.apache.org/jira/browse/UIMA-2160
     getSourceViewer().setDocument((AnnotationDocument) getDocument(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
             getDocumentProvider().getAnnotationModel(getEditorInput())); 
     getSourceViewer().invalidateTextPresentation();
     
@@ -1550,10 +1637,14 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // Check if CAS view is compatible, only if compatible the listeners
     // to update the annotations in the editor can be registered
     // and the annotations can be synchronized
+//IC see: https://issues.apache.org/jira/browse/UIMA-2222
     if (!isErrorStatus(getCasDocumentProvider().getStatus(getEditorInput()))) {
       
       // Synchronize all annotation from the document with
       // the editor
+//IC see: https://issues.apache.org/jira/browse/UIMA-1688
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
+//IC see: https://issues.apache.org/jira/browse/UIMA-2107
       syncAnnotations();
       
       // Note: If a change from a compatible view to a compatible view
@@ -1575,10 +1666,12 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           @Override
           public void annotationStylesChanged(Collection<AnnotationStyle> styles) {
             // TODO: Only sync changed types
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
             syncAnnotationTypes();
           }
         };
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
         getCasDocumentProvider().getTypeSystemPreferenceStore(getEditorInput()).
             addPropertyChangeListener(mAnnotationStyleListener);
       }
@@ -1587,6 +1680,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
     else {
       // if not null ... then unregister ... listener
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       if (mAnnotationSynchronizer != null) {
         getDocument().removeChangeListener(mAnnotationSynchronizer);
         mAnnotationSynchronizer = null;
@@ -1631,6 +1725,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
       // only process these selection if the annotations belong
       // to the current editor instance
+//IC see: https://issues.apache.org/jira/browse/UIMA-2178
       if (getSite().getPage().getActiveEditor() == this) {
         
         if (!annotations.isEmpty()) {
@@ -1646,6 +1741,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
             String text = getSourceViewer().getTextWidget().getText();
             
             if (newCaretOffset > 0 && newCaretOffset < text.length()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
               char beforeCaret = text.charAt(newCaretOffset -1);
               char afterCaret = text.charAt(newCaretOffset);
               
@@ -1661,8 +1757,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
             
             // check bounds, if out of text do nothing
             getSourceViewer().getTextWidget().setCaretOffset(newCaretOffset);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1948
             getSourceViewer().revealRange(newCaretOffset, 0);
             
+//IC see: https://issues.apache.org/jira/browse/UIMA-2125
             mFeatureStructureSelectionProvider.setSelection(selection);
           }
         }
@@ -1693,6 +1791,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     
     // TODO: Define constants with prefix for these settings ... so they don't conflict with other plugins!
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     IPreferenceStore sessionStore = getCasDocumentProvider().
             getSessionPreferenceStore(getEditorInput());
     
@@ -1726,6 +1825,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     getSite().setSelectionProvider(mFeatureStructureSelectionProvider);
 
     // create annotate action
+//IC see: https://issues.apache.org/jira/browse/UIMA-2173
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     QuickAnnotateAction quickAnnotateAction = new QuickAnnotateAction(getSourceViewer().getTextWidget());
     quickAnnotateAction.setActionDefinitionId(QuickAnnotateAction.ID);
     quickAnnotateAction.setText("Quick Annotate");
@@ -1737,10 +1838,13 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     smartAnnotateAction.setText("Annotate");
     setAction(SmartAnnotateAction.ID, smartAnnotateAction);
     getSite().getSelectionProvider().addSelectionChangedListener(smartAnnotateAction);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1785
 
     // create delete action
     DeleteFeatureStructureAction deleteAnnotationAction = new DeleteFeatureStructureAction(
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
             this);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1785
     deleteAnnotationAction.setText("Delete Annotation");
     getSite().getSelectionProvider().addSelectionChangedListener(deleteAnnotationAction);
 
@@ -1762,7 +1866,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     setAction(ITextEditorActionConstants.FIND, findAnnotateAction);
     
     // Lower left side of annotation action
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     LowerLeftAnnotationSideAction lowerLeftAnnotationSideAction = new LowerLeftAnnotationSideAction(this);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2125
     lowerLeftAnnotationSideAction.setActionDefinitionId(LowerLeftAnnotationSideAction.ID);
     setAction(LowerLeftAnnotationSideAction.ID, lowerLeftAnnotationSideAction);
     getSite().getSelectionProvider().addSelectionChangedListener(lowerLeftAnnotationSideAction);
@@ -1799,15 +1905,19 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       document.removeChangeListener(mAnnotationSynchronizer);
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2222
     CasDocumentProvider provider = getCasDocumentProvider();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     if (provider != null) {
       IPreferenceStore store = provider.getTypeSystemPreferenceStore(getEditorInput());
       if (store != null)
         store.removePropertyChangeListener(mAnnotationStyleListener);
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2169
     if (preferenceStoreChangeListener != null)
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       CasEditorPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(preferenceStoreChangeListener);
     
     super.dispose();
@@ -1855,15 +1965,19 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   protected Control createStatusControl(Composite parent, IStatus status) {
 
     // Type System is missing in non Cas Editor Project case
+//IC see: https://issues.apache.org/jira/browse/UIMA-2151
     if (status.getCode() == CasDocumentProvider.TYPE_SYSTEM_NOT_AVAILABLE_STATUS_CODE
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
             && getEditorInput() !=null) {
       // TODO: Is the null check on the editor input necessary ?!
       
       // Show a form to select a type system in the document provider,
       // afterwards the form calls reopenEditorWithNewTypesystem to reopen
       // the editor on the input
+//IC see: https://issues.apache.org/jira/browse/UIMA-2222
       return getCasDocumentProvider().createTypeSystemSelectorForm(this, parent, status);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2107
     else if (status.getCode() == IStatus.OK) {
       
       // TODO: Figure out which page should be shown
@@ -1874,6 +1988,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         
         // TODO: Also display the current view name ...
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-2107
         Composite noTextComposite = new Composite(parent, SWT.NONE);
         noTextComposite.setLayout(new GridLayout(1, false));
         Label noTextLabel = new Label(noTextComposite, SWT.NONE);
@@ -1933,6 +2048,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   static Collection<AnnotationFS> getAnnotation(CAS cas, Type type, Span span) {
     ConstraintFactory cf = cas.getConstraintFactory();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2168
 
     Type annotationType = cas.getAnnotationType();
 
@@ -1954,6 +2070,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     FSMatchConstraint annotationInSpanConstraint = cf.and(embeddedBegin, embeddedEnd);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     FSMatchConstraint annotationInSpanAndStrictTypeConstraint =
             cf.and(annotationInSpanConstraint, strictType);
 
@@ -1974,6 +2091,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   private Map<Integer, AnnotationFS> getView(Type annotationType) {
     Collection<AnnotationFS> annotations = getDocument().getAnnotations(annotationType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2168
 
     Map<Integer, AnnotationFS> viewMap = new HashMap<>();
 

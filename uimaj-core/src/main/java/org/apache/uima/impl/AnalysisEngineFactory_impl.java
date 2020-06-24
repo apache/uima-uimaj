@@ -48,6 +48,7 @@ public class AnalysisEngineFactory_impl implements ResourceFactory {
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     // It is important to know whether we need a Multiprocessing-capable
     // Analysis Engine implementation - this is determined by whether there
@@ -67,6 +68,7 @@ public class AnalysisEngineFactory_impl implements ResourceFactory {
         resource = new MultiprocessingAnalysisEngine_impl();
       } else {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
         String frameworkImpl = spec.getFrameworkImplementation();
         if (frameworkImpl == null || frameworkImpl.length() == 0) {
           throw new ResourceInitializationException(
@@ -75,6 +77,7 @@ public class AnalysisEngineFactory_impl implements ResourceFactory {
         }
 
         if (frameworkImpl.startsWith(Constants.CPP_FRAMEWORK_NAME)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-11
           resource = new UimacppAnalysisEngineImpl();
         } else if (frameworkImpl.startsWith(Constants.JAVA_FRAMEWORK_NAME)) {
           if (spec instanceof AnalysisEngineDescription

@@ -120,8 +120,10 @@ public class InstallationProcessor {
    *           if any I/O exception occurred.
    */
   public static void generateVSDescriptor(InstallationDescriptor insdObject, File mainRootDir)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     File vsDescriptorFile = new File(mainRootDir, VS_DESCRIPTOR_PATH);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (PrintWriter oWriter = new PrintWriter(new FileWriter(vsDescriptorFile))) {
       String xmlContent = generateVSDescriptorContent(insdObject);
       oWriter.println(xmlContent);
@@ -140,6 +142,7 @@ public class InstallationProcessor {
    *           if any I/O exception occurred.
    */
   public static InputStream generateVSDescriptorAsStream(InstallationDescriptor insdObject)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     InputStream iStream = null;
     String xmlContent = generateVSDescriptorContent(insdObject);
@@ -183,6 +186,7 @@ public class InstallationProcessor {
    *           if any I/O exception occurred.
    */
   protected static void findAndReplacePath(InstallationDescriptor.ActionInfo action)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     // get action parameters
     String filePath = action.params.getProperty(InstallationDescriptorHandler.FILE_TAG);
@@ -194,6 +198,7 @@ public class InstallationProcessor {
     String replaceWith = action.params.getProperty(InstallationDescriptorHandler.REPLACE_WITH_TAG);
     if (replaceWith == null)
       throw new RuntimeException("no " + InstallationDescriptorHandler.REPLACE_WITH_TAG
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + " defined");
     // replace all specified path-strings in specified file
     File inputFile = new File(filePath);
@@ -214,6 +219,7 @@ public class InstallationProcessor {
    *         replaced with '/' characters.
    */
   protected static String substituteCompIdRootInString(String source, String compId,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String compRootPath) {
     String result = source;
     // substitute '$dlg_comp_id$root_url'
@@ -274,6 +280,7 @@ public class InstallationProcessor {
    *          The given <code>InstallationController</code> requestor.
    */
   public InstallationProcessor(String mainRootPath, Hashtable<String, String> installationTable,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           InstallationController controller) {
     _controller = controller;
     _mainRootPath = mainRootPath.replace('\\', '/');
@@ -297,6 +304,7 @@ public class InstallationProcessor {
    *          The given main component root directory path.
    */
   protected void initSubstitutionTables(String mainRootPath) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Enumeration<String> idList = _installationTable.keys();
     while (idList.hasMoreElements()) {
       String id = idList.nextElement();
@@ -323,6 +331,7 @@ public class InstallationProcessor {
     File xmlInsDFile = new File(mainRootDir, INSD_FILE_PATH);
     if (_controller != null)
       _controller.getOutMsgWriter().println(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "[InstallationProcessor]: " + "start processing InsD file - "
                       + xmlInsDFile.getAbsolutePath());
     else
@@ -340,9 +349,11 @@ public class InstallationProcessor {
     // set main root path
     _insdObject.setMainComponentRoot(_mainRootPath);
     // perform required actions
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Iterator<InstallationDescriptor.ActionInfo> actionList = _insdObject.getInstallationActions().iterator();
     while (actionList.hasNext()) {
       InstallationDescriptor.ActionInfo action = actionList
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .next();
       // substitute string 'variables' in action parameters
       substituteStringVariablesInAction(action.params);
@@ -371,20 +382,24 @@ public class InstallationProcessor {
    *          The given <code>Properties</code> object.
    */
   protected void substituteStringVariablesInAction(Properties params) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Enumeration<?> paramNames = params.propertyNames();
     while (paramNames.hasMoreElements()) {
       String paramName = (String) paramNames.nextElement();
+//IC see: https://issues.apache.org/jira/browse/UIMA-43
       String paramValue = params.getProperty(paramName);
       // replace all ';' with OS-dependent separator
       // in VAR_VALUE_TAG value
       if (paramName.equals(InstallationDescriptorHandler.VAR_VALUE_TAG))
         paramValue = paramValue.replace(';', File.pathSeparatorChar);
       if (paramName.equals(InstallationDescriptorHandler.FILE_TAG)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || paramName.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
               || paramName.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
         // substitute '$main_root_url' and '$main_root'
         paramValue = substituteMainRootInString(paramValue, _mainRootPath);
         // substitute '$dlg_comp_id$root_url'
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
         Enumeration<String> regexList = _urlSubstitutionTable.keys();
         while (regexList.hasMoreElements()) {
           String regex = regexList.nextElement();
@@ -415,6 +430,7 @@ public class InstallationProcessor {
    */
   protected void substituteStringVariablesInFiles(File dir) throws IOException {
     // get list of files in the given dir with subdirs
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Iterator<File> fileList = FileUtil.createFileList(dir, true).iterator();
     while (fileList.hasNext()) {
       File file = fileList.next();
@@ -425,6 +441,7 @@ public class InstallationProcessor {
       replacement = _mainRootPath;
       FileUtil.replaceStringInFile(file, MAIN_ROOT_REGEX, replacement);
       // substitute '$dlg_comp_id$root_rel'
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Enumeration<String> compList = _installationTable.keys();
       while (compList.hasMoreElements()) {
         String compId = compList.nextElement();
@@ -438,6 +455,7 @@ public class InstallationProcessor {
         }
       }
       // substitute '$dlg_comp_id$root_url'
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Enumeration<String> regexList = _urlSubstitutionTable.keys();
       while (regexList.hasMoreElements()) {
         String regex = regexList.nextElement();

@@ -40,6 +40,8 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
    * 
    * @return An iterator for this index.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
   default LowLevelIterator<T> ll_iterator() {
     return ll_iterator(true);
   };
@@ -53,6 +55,8 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
    *          When set to <code>false</code>, iterator will be disambiguated.
    * @return An iterator for this index.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
   LowLevelIterator<T> ll_iterator(boolean ambiguous);
   
 //  /**
@@ -93,6 +97,8 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
    *   For sets, the equal is used to determine set membership
    *   For sorted, the comparator is the sort order (this comparator is without the ID)
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   Comparator<TOP> getComparator(); 
   
   static final Comparator<TOP> FS_ID_COMPARATOR = 
@@ -140,6 +146,7 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
    * @param <U> the type the subindex is over
    * @return the index but just over this subtype
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
   default <U extends T> LowLevelIndex<U> getSubIndex(Type type) {
     TypeImpl ti = (TypeImpl) type;
     return getCasImpl().indexRepository.getIndexBySpec(ti.getCode(), getIndexingStrategy(), (FSIndexComparatorImpl) getComparatorForIndexSpecs());
@@ -161,6 +168,7 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
   boolean isSorted();
   
   @Override
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
   default SelectFSs<T> select() {
     return ((SelectFSs_impl<T>)getCasImpl().select()).index(this);
   }
@@ -192,6 +200,7 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
    * 
    * @return An FSIterator positioned at the beginning, or an invalid iterator.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   default LowLevelIterator<T> iterator() {
     return iterator(IS_ORDERED, IS_TYPE_ORDER);
   }

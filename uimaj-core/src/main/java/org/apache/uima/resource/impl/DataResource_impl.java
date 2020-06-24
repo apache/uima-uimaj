@@ -67,6 +67,8 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // aSpecifier must be a FileResourceSpecifier
     if (!(aSpecifier instanceof FileResourceSpecifier))
@@ -84,12 +86,14 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
       // Get the file URL from the specifier.  If the user has passed a file path
       // (e.g. c:\Program Files\...) instead of a URL, be lenient and convert it to
       // a URL
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
       URL relativeUrl;
       try {
         relativeUrl = new URL(spec.getFileUrl());
       }
       catch (MalformedURLException e) {
         //try to treat the URL as a file name.  
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
         File file = new File(spec.getFileUrl());
         if (file.isAbsolute()) {
           //for absolute paths, use File.toURL(), which handles
@@ -119,6 +123,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
     }
     if (mFileUrl == null) {
       throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ResourceInitializationException.COULD_NOT_ACCESS_DATA, new Object[] { spec
                       .getFileUrl() }, ioEx);
     }
@@ -151,6 +156,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
    * @see org.apache.uima.resource.DataResource#getUri()
    */
   public URI getUri() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       return UriUtils.quote(mFileUrl);
     } catch (URISyntaxException e) {
@@ -177,6 +183,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
 
     // URLs must be the same (but don't use URL.equals(), which does DNS resolution!)
     URL url = ((DataResource_impl) obj).getUrl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-148
     if (url == null || !url.toString().equals(this.getUrl().toString()))
       return false;
 
@@ -198,6 +205,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
     // add hash codes of member variables
     int hashCode = 0;
     if (mFileUrl != null)
+//IC see: https://issues.apache.org/jira/browse/UIMA-148
       hashCode += mFileUrl.toString().hashCode(); //don't use URL.hashCode(), which does DNS resolution
     if (mLocalCache != null)
       hashCode += mLocalCache.hashCode();

@@ -91,6 +91,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       // Test assigning an array to a string and vice-versa
       // prefix-suffix     Prefix-${suffix}
       // suffix = should be ignored
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
       String actual = null;
       try {
         actual = UimaContextHolder.getContext().getSharedSettingValue("context-holder");
@@ -115,6 +116,8 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
 
       // Test a stand-alone settings object
       Settings testSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
+//IC see: https://issues.apache.org/jira/browse/UIMA-5273
       String lines = "foo = ${bar} \n" +
                 "bar : [ok \n OK] \n" +
                 "bad = ${missing} \n" +
@@ -123,8 +126,10 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
                 "loop3 = three ${loop1} \n" ;
       InputStream is;
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
         is = new ByteArrayInputStream(lines.getBytes(StandardCharsets.UTF_8));
         testSettings.load(is);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2435
         is.close();
         String val = testSettings.lookUp("foo");
         Assert.assertEquals("[ok,OK]", val);
@@ -134,6 +139,8 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
         } catch (ResourceConfigurationException e) {
           System.err.println("Expected exception: " + e.toString());
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
+//IC see: https://issues.apache.org/jira/browse/UIMA-5273
         try {
           val = testSettings.lookUp("loop2");
           Assert.fail("\"loop2\" should create an error");
@@ -196,6 +203,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
         //XMLInputSource in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
         XMLInputSource in = new XMLInputSource(new File(resDir, "AnnotatorWithExternalOverrides.xml"));
         AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         Map<String, Object> additionalParams = new HashMap<>();
         Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
         FileInputStream fis = new FileInputStream(new File(resDir, "testExternalOverride2.settings"));
@@ -216,6 +224,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
 
     }
     // Used to check initialization order by testManyDelegates
+//IC see: https://issues.apache.org/jira/browse/UIMA-2418
     allContexts  = allContexts + contextName.substring(1);
   }
 

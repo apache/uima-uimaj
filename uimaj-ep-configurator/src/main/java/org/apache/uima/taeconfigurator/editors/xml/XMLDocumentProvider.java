@@ -36,9 +36,11 @@ public class XMLDocumentProvider extends FileDocumentProvider {
    */
   @Override
   protected IDocument createDocument(Object element) throws CoreException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     IDocument document = super.createDocument(element);
     if (document != null) {
       IDocumentPartitioner partitioner = new DefaultPartitioner(new XMLPartitionScanner(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new String[] { XMLPartitionScanner.XML_TAG, XMLPartitionScanner.XML_COMMENT });
       partitioner.connect(document);
       document.setDocumentPartitioner(partitioner);

@@ -59,6 +59,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
   private ShortArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     theArray = null;
   }
 
@@ -68,6 +69,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
    * @param length The number of elements in the new array
    */
   public ShortArray(JCas jcas, int length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     super(jcas);
     theArray = new short[length];
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
@@ -92,6 +94,8 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
       _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
@@ -156,11 +160,14 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
     for (int i = 0; i < length; i++) {
       theArray[i + destPos] = Short.parseShort(src[i + srcPos]);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, destPos, length);
   }
   
   // internal use
   public short[] _getTheArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return theArray;
   }
   
@@ -171,16 +178,21 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
   public void copyValuesFrom(CommonArrayFS v) {
     ShortArray bv = (ShortArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
   // used by deserializers
   public void setArrayValueFromString(int i, String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     set(i, Short.parseShort(v));
   }
   
   @Override
   public Iterator<Short> iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
     return new Iterator<Short>() {
       int i = 0;
       
@@ -204,6 +216,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
    * @return a newly created and populated array
    */
   public static ShortArray create(JCas jcas, short[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     ShortArray shortArray = new ShortArray(jcas, a.length);
     shortArray.copyFromArray(a, 0, 0, a.length);
     return shortArray;
@@ -215,6 +228,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>
    * @return true if the item is in the array
    */
   public boolean contains(short item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     for (short b : theArray) {
       if (b == item) {
         return true;

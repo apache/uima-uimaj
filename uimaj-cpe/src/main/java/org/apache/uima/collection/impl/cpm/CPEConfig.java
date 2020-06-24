@@ -51,6 +51,7 @@ public class CPEConfig {
    * @return CheckpointConfig object
    */
   public CheckpointConfig getChConfig() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return chConfig;
   }
 

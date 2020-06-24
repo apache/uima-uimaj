@@ -95,6 +95,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
    */
   public void initialize() throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     File directory = new File(((String) getConfigParameterValue(PARAM_INPUTDIR)).trim());
     mEncoding  = (String) getConfigParameterValue(PARAM_ENCODING);
     mLanguage  = (String) getConfigParameterValue(PARAM_LANGUAGE);
@@ -107,11 +108,13 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     // if input directory does not exist or is not a directory, throw exception
     if (!directory.exists() || !directory.isDirectory()) {
       throw new ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { PARAM_INPUTDIR, this.getMetaData().getName(), directory.getPath() });
     }
 
     // get list of files in the specified directory, and subdirectories if the
     // parameter PARAM_SUBDIR is set to True
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     mFiles = new ArrayList<>();
     addFilesFromDir(directory);
   }
@@ -162,12 +165,14 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
     // open input stream to file
     File file = (File) mFiles.get(mCurrentIndex++);
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
     String text = FileUtils.file2String(file, mEncoding);
       // put document in CAS
     jcas.setDocumentText(text);
 
     // set language if it was explicitly specified as a configuration parameter
     if (mLanguage != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3121
       jcas.setDocumentLanguage(mLanguage);
     }
 
@@ -180,6 +185,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     srcDocInfo.setUri(file.getAbsoluteFile().toURL().toString());
     srcDocInfo.setOffsetInSource(0);
     srcDocInfo.setDocumentSize((int) file.length());
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
     srcDocInfo.setLastSegment(mCurrentIndex == mFiles.size());
     srcDocInfo.addToIndexes();
   }

@@ -40,6 +40,8 @@ import org.w3c.dom.NodeList;
 
 public class ConfigurationParameter_impl extends MetaDataObject_impl implements
         ConfigurationParameter {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static final long serialVersionUID = 4234432343384779535L;
 
@@ -85,6 +87,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * @see ConfigurationParameter#getExternalOverrideName()
    */
   public String getExternalOverrideName() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
     return mExternalOverrideName;
   }
 
@@ -123,6 +126,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
     // check to make sure value is legal
     if (!isValidDataTypeName(aType)) {
       throw new UIMA_IllegalArgumentException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] { aType,
                   "type" });
     }
@@ -274,7 +278,9 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    *         data type name.
    */
   protected static boolean isValidDataTypeName(Object aTypeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return TYPE_STRING.equals(aTypeName) || TYPE_BOOLEAN.equals(aTypeName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || TYPE_INTEGER.equals(aTypeName) || TYPE_FLOAT.equals(aTypeName);
   }
 
@@ -294,6 +300,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    *          option settings
    */
   protected void readArrayPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Class aPropClass, Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
           throws InvalidXMLException {
     if ("overrides".equals(aPropXmlInfo.propertyName)) {
@@ -303,6 +310,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
 
       // iterate through children, and for each element construct a value,
       // adding it to a list
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<String> valueList = new ArrayList<>();
       for (int i = 0; i < numChildren; i++) {
         Node curNode = elems.item(i);
@@ -326,6 +334,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
       this.setOverrides(overridesArray);
     } else {
       super.readArrayPropertyValueFromXMLElement(aPropXmlInfo, aPropClass, aElement, aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               aOptions);
     }
   }
@@ -335,7 +344,9 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "configurationParameter", new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
               new PropertyXmlInfo("externalOverrideName"),
               new PropertyXmlInfo("description"), new PropertyXmlInfo("type"),
               new PropertyXmlInfo("multiValued"), new PropertyXmlInfo("mandatory"),

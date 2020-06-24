@@ -146,6 +146,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
    * @param t the t
    */
   public static void log(String message, Throwable t) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2219
     getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, message, t));
   }
 
@@ -172,6 +173,8 @@ public class CasEditorPlugin extends AbstractUIPlugin {
    * Sets the show migration dialog.
    */
   public void setShowMigrationDialog() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2123
+//IC see: https://issues.apache.org/jira/browse/UIMA-2151
     showMigrationDialog = true;
   }
   
@@ -181,6 +184,8 @@ public class CasEditorPlugin extends AbstractUIPlugin {
    * @return the and clear show migration dialog flag
    */
   public boolean getAndClearShowMigrationDialogFlag() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2123
+//IC see: https://issues.apache.org/jira/browse/UIMA-2151
     if (showMigrationDialog) {
       showMigrationDialog = false;
       return true;

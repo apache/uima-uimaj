@@ -35,11 +35,13 @@ public class IntArrayFSTest extends TestCase {
    * @param arg0
    */
   public IntArrayFSTest(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(arg0);
   }
 
   public void setUp() {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
     } catch (Exception e) {
       assertTrue(false);
@@ -55,6 +57,7 @@ public class IntArrayFSTest extends TestCase {
   }
 
   public void testSet() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
     IntArrayFS array = this.cas.createIntArrayFS(0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
@@ -65,6 +68,7 @@ public class IntArrayFSTest extends TestCase {
       exceptionCaught = true;
     }
     assertTrue(exceptionCaught);
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
     array = this.cas.createIntArrayFS(3);
     try {
       array.set(0, 1);
@@ -107,6 +111,7 @@ public class IntArrayFSTest extends TestCase {
     // Check that we can't create arrays smaller than 0.
     exceptionCaught = false;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
       array = this.cas.createIntArrayFS(-1);
     } catch (CASRuntimeException e) {
       exceptionCaught = true;
@@ -132,6 +137,7 @@ public class IntArrayFSTest extends TestCase {
     assertTrue(fsArray[2] == 3);
 
     // From Java array to CAS array.
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
     array = this.cas.createIntArrayFS(3);
     assertTrue(array.get(0) == 0);
     assertTrue(array.get(1) == 0);

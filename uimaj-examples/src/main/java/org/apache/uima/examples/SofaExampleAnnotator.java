@@ -62,6 +62,7 @@ public class SofaExampleAnnotator extends CasAnnotator_ImplBase {
 
     // Parse the English text
     StringTokenizer st = new StringTokenizer(engText);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (st.hasMoreTokens()) {
       String thisTok = st.nextToken();
       int engBegin = engText.indexOf(thisTok, engEnd);
@@ -75,6 +76,7 @@ public class SofaExampleAnnotator extends CasAnnotator_ImplBase {
       String germWord = translate(thisTok);
 
       // Accumulate the translated text
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (germBegin > 0) {
         translation.append(' ');
         germBegin += 1;
@@ -105,6 +107,7 @@ public class SofaExampleAnnotator extends CasAnnotator_ImplBase {
   private String translate(String word) {
     String lword = word.toLowerCase();
     if (Arrays.equals(wThis, lword.toCharArray()))
+//IC see: https://issues.apache.org/jira/browse/UIMA-1853
       return "das";
     if (Arrays.equals(wBeer, lword.toCharArray()))
       return "bier";

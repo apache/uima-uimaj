@@ -86,6 +86,7 @@ public class XTalkTransporter implements FrameTransporter {
   }
 
   public KeyValuePair fromStreamWork(InputStream is, Frame f, byte[] buffer, char[] cbuffer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     int version = is.read();
     if ((byte) version != VERSION_CODE) {
@@ -124,6 +125,7 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre is != null
    */
   private Attributes consumeAttributes(InputStream is, byte[] buffer, char[] cbuffer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     int attribute_count = readInt(is);
     if (attribute_count < 1) {
@@ -162,6 +164,7 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre f != null
    */
   public KeyValuePair consumeRootChildren(InputStream is, Frame f, byte[] buffer, char[] cbuffer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     consumeString(is, buffer, cbuffer); // ignore root tag name -- assume it's
     // always vinci:FRAME
@@ -200,6 +203,7 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre f != null
    */
   public KeyValuePair consumeRootElement(InputStream is, Frame f, byte[] buffer, char[] cbuffer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     // This code returns the first ELEMENT as the KeyValuePair header, if its
     // tag
@@ -257,6 +261,7 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre f != null
    */
   public void consumeChildren(InputStream is, Frame f, int field_count, int marker, byte[] buffer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           char[] cbuffer) throws IOException {
     while (field_count > 0) {
       switch ((byte) marker) {
@@ -338,6 +343,7 @@ public class XTalkTransporter implements FrameTransporter {
   }
 
   static public String consumeString(InputStream is, byte[] buffer, char[] cbuffer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     int utflen = readInt(is);
     if (utflen > OVERSIZE_KEY_LENGTH) {
@@ -496,6 +502,7 @@ public class XTalkTransporter implements FrameTransporter {
   }
 
   static public void stringToBin(char[] str, int begin, int len, OutputStream os)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     byte[] write_me = UTFConverter.convertStringToUTF(str, begin, len);
     writeInt(write_me.length, os);
@@ -590,6 +597,7 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre attributes != null
    */
   public void attributesToBin(OutputStream os, Attributes attributes, byte[] workbuf)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     int size = attributes.getKeyValuePairCount();
     writeInt(size, os);

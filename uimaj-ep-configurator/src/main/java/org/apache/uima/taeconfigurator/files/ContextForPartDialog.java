@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.Text;
  * The Class ContextForPartDialog.
  */
 public class ContextForPartDialog extends /*LimitedResourceSelectionDialog*/ 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
         ResourcePickerDialog /*implements
         ICheckStateListener*/ {
 
@@ -73,9 +74,11 @@ public class ContextForPartDialog extends /*LimitedResourceSelectionDialog*/
    * @param aInitialPath the a initial path
    */
   public ContextForPartDialog(Shell parentShell, IAdaptable rootElement,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLizable thingBeingEdited, IPath aExcludeDescriptor, MultiPageEditor aEditor,
           String aInitialPath) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     super(parentShell);
     initialPath = aInitialPath;
     setTitle("Context for importable part");
@@ -105,6 +108,7 @@ public class ContextForPartDialog extends /*LimitedResourceSelectionDialog*/
     AbstractSection.spacer(parent);
     Label instructions = new Label(parent, SWT.WRAP);
     instructions
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .setText(MessageFormat
                     .format(
                             "You are about to edit a UIMA {0} descriptor.  \n"
@@ -147,6 +151,7 @@ public class ContextForPartDialog extends /*LimitedResourceSelectionDialog*/
    */
   @Override
   public void handleEvent(Event event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     super.handleEvent(event);
     
     if (event.widget == resourcesUI && event.type == SWT.Selection) {
@@ -187,6 +192,7 @@ public class ContextForPartDialog extends /*LimitedResourceSelectionDialog*/
       contextPathGUI.setText(((IFile) event.getElement()).getLocation().toString());
     }
     okButton.setEnabled(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             selectionGroup.getCheckedElementCount() > 0 || contextPathGUI.getText().length() > 0);
   }
 

@@ -58,6 +58,7 @@ public class VinciSaxParser {
    * @throws SAXException the SAX exception
    */
   public void parse(VinciFrame aFrame) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     parse(aFrame, true);
   }
 

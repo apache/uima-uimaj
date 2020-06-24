@@ -36,6 +36,7 @@ public class UIMAStreamHandler extends StreamHandler {
    * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
    */
   public synchronized void publish(LogRecord record) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (record != null) {
       super.publish(record);
       this.flush();

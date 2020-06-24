@@ -61,22 +61,27 @@ public class TypeSystemDescription_implTest extends TestCase {
    */
   protected void tearDown() throws Exception {
     super.tearDown();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
   public void testBuildFromXmlElement() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       File descriptor = JUnitExtension.getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
       TypeSystemDescription ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(descriptor));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       assertEquals("TestTypeSystem", ts.getName());
       assertEquals("This is a test.", ts.getDescription());
+//IC see: https://issues.apache.org/jira/browse/UIMA-37
       assertEquals("The Apache Software Foundation", ts.getVendor());
       assertEquals("0.1", ts.getVersion());
       Import[] imports = ts.getImports();
       assertEquals(3, imports.length);
       assertEquals("org.apache.uima.resource.metadata.impl.TypeSystemImportedByName", imports[0]
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getName());
       assertNull(imports[0].getLocation());
       assertNull(imports[1].getName());
@@ -95,6 +100,7 @@ public class TypeSystemDescription_implTest extends TestCase {
       assertEquals("uima.cas.FSArray", features[0].getRangeTypeName());
       assertEquals("Sentence", features[0].getElementType());
       assertFalse(features[0].getMultipleReferencesAllowed());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 
       // ts.toXML(System.out);
     } catch (Exception e) {
@@ -107,6 +113,7 @@ public class TypeSystemDescription_implTest extends TestCase {
       File descriptor = JUnitExtension.getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
       TypeSystemDescription ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(descriptor));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       TypeDescription[] types = ts.getTypes();
       assertEquals(6, types.length);
@@ -124,6 +131,7 @@ public class TypeSystemDescription_implTest extends TestCase {
       // set data path correctly and it should work
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getAbsolutePath());
       ts.resolveImports(resMgr);
 
@@ -138,6 +146,7 @@ public class TypeSystemDescription_implTest extends TestCase {
 
       // calling resolveImports when there are none should do nothing
       descriptor = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml");
       ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(new XMLInputSource(descriptor));
       assertEquals(2, ts.getTypes().length);
@@ -146,6 +155,7 @@ public class TypeSystemDescription_implTest extends TestCase {
 
       // test import from programatically created TypeSystemDescription
       TypeSystemDescription typeSystemDescription = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .createTypeSystemDescription();
       Import[] imports = new Import[1];
       imports[0] = new Import_impl();
@@ -154,7 +164,9 @@ public class TypeSystemDescription_implTest extends TestCase {
       imports[0].setLocation("TypeSystemImportedByLocation.xml");
       typeSystemDescription.setImports(imports);
       TypeSystemDescription typeSystemWithResolvedImports = (TypeSystemDescription) typeSystemDescription
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .clone();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1230
       typeSystemWithResolvedImports.resolveImports(resMgr);
       assertTrue(typeSystemWithResolvedImports.getTypes().length > 0);      
     
@@ -182,6 +194,7 @@ public class TypeSystemDescription_implTest extends TestCase {
   public void testInvalidTypeSystem() throws Exception {
     File file = JUnitExtension.getFile("TypeSystemDescriptionImplTest/InvalidTypeSystem1.xml");
     TypeSystemDescription tsDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new XMLInputSource(file));
     try {
       CasCreationUtils.createCas(tsDesc, null, null);

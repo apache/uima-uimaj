@@ -30,6 +30,7 @@ import junit.framework.TestCase;
  */
 public class Logger_implTest extends TestCase {
   public Logger_implTest(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(arg0);
   }
 
@@ -59,6 +60,7 @@ public class Logger_implTest extends TestCase {
     org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = Logger_impl.getInstance(this.getClass());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     try {
     rootLogger.setLevel(Level.INFO);
 
@@ -119,6 +121,7 @@ public class Logger_implTest extends TestCase {
     Assert.assertTrue(classLogger.isLoggable(Level.WARNING));
     Assert.assertTrue(classLogger.isLoggable(Level.SEVERE));
     Assert.assertTrue(classLogger.isLoggable(Level.OFF));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     } finally {
       rootLogger.setLevel(Level.INFO);
       classLogger.setLevel(Level.INFO);

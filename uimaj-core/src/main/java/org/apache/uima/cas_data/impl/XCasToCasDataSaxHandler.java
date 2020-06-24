@@ -138,6 +138,8 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    *      java.lang.String, org.xml.sax.Attributes)
    */
   public void startElement(String nameSpaceURI, String localName, String qualifiedName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Attributes attrs) throws SAXException {
     resetBuffer();
     switch (state) {
@@ -166,6 +168,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
 
   // Get ready to read array element.
   private void readArrayElement(String eleName, Attributes attrs) throws SAXParseException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (!eleName.equals(XCASSerializer.ARRAY_ELEMENT_TAG)) {
       throw createException(XCASParsingException.ARRAY_ELE_EXPECTED, eleName);
     }
@@ -178,6 +181,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
 
   // Create a new FS.
   private void readFS(String qualifiedName, Attributes attrs) throws SAXParseException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (isArrayType(qualifiedName)) {
       readArray(qualifiedName, attrs);
     } else {
@@ -203,6 +207,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
 
   private void readFS(FeatureStructureImpl fsImpl, Attributes attrs) throws SAXParseException {
     String attrName, attrValue;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     for (int i = 0; i < attrs.getLength(); i++) {
       attrName = attrs.getQName(i);
       attrValue = attrs.getValue(i);
@@ -316,6 +321,8 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
 
   // Create a feature value from a string representation.
   private void handleFeature(FeatureStructureImpl fsImpl, String featName, String featVal)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXParseException {
     if (featName.startsWith(XCASSerializer.REF_PREFIX)) {
       String realFeatName = featName.substring(XCASSerializer.REF_PREFIX.length());
@@ -331,7 +338,9 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * @see org.xml.sax.ContentHandler#characters(char[], int, int)
    */
   public void characters(char[] chars, int start, int length) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     if ((this.state == CONTENT_STATE)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || (this.state == ARRAY_ELE_CONTENT_STATE) || (this.state == FEAT_CONTENT_STATE)) {
       // When we're in a text expecting state, add the characters to the
       // text buffer. Else, do nothing.
@@ -412,6 +421,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
         if (!emptyVal(content)) {
           try {
             ((PrimitiveArrayFS) this.currentFS).toFloatArray()[arrayPos] = Float
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     .parseFloat(content);
           } catch (NumberFormatException e) {
             throw createException(XCASParsingException.FLOAT_EXPECTED, content);
@@ -447,6 +457,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
     String source = unknownXMLSource;
     String line = unknownXMLSource;
     String col = unknownXMLSource;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (locator != null) {
       source = locator.getSystemId();
       if (source == null) {
@@ -527,6 +538,8 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
 
   private boolean isArrayType(String typeName) {
     return CAS.TYPE_NAME_INTEGER_ARRAY.equals(typeName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || CAS.TYPE_NAME_FLOAT_ARRAY.equals(typeName)
             || CAS.TYPE_NAME_STRING_ARRAY.equals(typeName)
             || CAS.TYPE_NAME_FS_ARRAY.equals(typeName);

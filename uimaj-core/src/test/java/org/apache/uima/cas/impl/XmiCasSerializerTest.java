@@ -103,6 +103,7 @@ public class XmiCasSerializerTest extends TestCase {
     
     //but when XML 1.1 output is being generated, don't fail on control characters which are valid in 1.1.
     if (XML1_1_SUPPORTED) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-387
       out = new FileOutputStream(this.outputFile);
       try {
         XMLSerializer xml11Serializer = new XMLSerializer(out);
@@ -113,6 +114,7 @@ public class XmiCasSerializerTest extends TestCase {
         out.close();
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-6128
       this.outputFile.delete();
       out = new FileOutputStream(this.outputFile);
       CasIOUtils.save(cas, out, SerialFormat.XMI_1_1);
@@ -138,6 +140,7 @@ public class XmiCasSerializerTest extends TestCase {
     
     //but when XML 1.1 output is being generated, don't fail on control characters which are valid in 1.1.
     if (XML1_1_SUPPORTED) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-387
       out = new FileOutputStream(this.outputFile);
       try {
         XMLSerializer xml11Serializer = new XMLSerializer(out);

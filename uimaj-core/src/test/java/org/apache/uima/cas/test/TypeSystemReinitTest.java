@@ -47,15 +47,18 @@ import junit.framework.TestCase;
 public class TypeSystemReinitTest extends TestCase {
   public void testReinitCASCompleteSerializer() throws Exception {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension
                       .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
       TypeSystemDescription tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(getClass().getResource("/org/apache/uima/examples/SourceDocumentInformation.xml")));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<MetaDataObject> l = new ArrayList<>();
       l.add(aed);
       l.add(tsd);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       CAS cas1 = CasCreationUtils.createCas(l);
       cas1.setDocumentText("foo");
       CASCompleteSerializer ser = Serialization.serializeCASComplete((CASMgr) cas1);
@@ -81,6 +84,7 @@ public class TypeSystemReinitTest extends TestCase {
     }
   }
   public void testReinitCASCompleteSerializerWithArrays() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-476
     try {
       AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension
@@ -91,12 +95,15 @@ public class TypeSystemReinitTest extends TestCase {
       CASCompleteSerializer ser = Serialization.serializeCASComplete((CASMgr) cas1);
 
       CAS tcas2 = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       CASImpl cas2 = ((CASImpl) tcas2).getBaseCAS();
       tcas2.setDocumentText("bar");
 
       // reinit
       //  This uses cas2 which only has a base type system to start, 
       //    and loads it from a complete serialization which has other new types
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
       cas2.getBinaryCasSerDes().reinit(ser);
       CAS tcas3 = cas2.getCurrentView();
 
@@ -106,6 +113,7 @@ public class TypeSystemReinitTest extends TestCase {
       
       TypeSystemImpl ts = (TypeSystemImpl)cas2.getTypeSystem();
       Type arrayType = ts.getType("Test.ArrayType");
+//IC see: https://issues.apache.org/jira/browse/UIMA-476
       Feature arrayFeat = arrayType.getFeatureByBaseName("arrayFeature");
       TypeImpl featRange = (TypeImpl)(arrayFeat.getRange());
      

@@ -113,9 +113,12 @@ public class XmiCasDeserializerTest extends TestCase {
   protected void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
 
     // large type system
     typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new XMLInputSource(typeSystemFile));
     
     // bag index for Entities and Relations
@@ -326,6 +329,7 @@ public class XmiCasDeserializerTest extends TestCase {
   public void testDeserializeAndReserializeV2() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
       File tsWithNoMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
+//IC see: https://issues.apache.org/jira/browse/UIMA-547
       doTestDeserializeAndReserialize(tsWithNoMultiRefs,false);
       File tsWithMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem_withMultiRefs.xml");
       doTestDeserializeAndReserialize(tsWithMultiRefs,false);
@@ -362,12 +366,16 @@ public class XmiCasDeserializerTest extends TestCase {
     serCasStream.close();
 
     // reserialize as XMI
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
     String xml = serialize(cas, null);
 //    dumpStr2File(xml, "145");
 
     
     // deserialize into another CAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-522
     CAS cas2 = CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), indexes);
+//IC see: https://issues.apache.org/jira/browse/UIMA-547
     if (useJCas) {
       cas2.getJCas();
     }
@@ -396,6 +404,7 @@ public class XmiCasDeserializerTest extends TestCase {
 //      }
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     assertEquals(cas.getAnnotationIndex().size(), cas2.getAnnotationIndex().size());
     assertEquals(cas.getDocumentText(), cas2.getDocumentText());
     CasComparer.assertEquals(cas,cas2);
@@ -403,6 +412,7 @@ public class XmiCasDeserializerTest extends TestCase {
     // check that array refs are not null
     Type entityType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
     assertTrue(iter.hasNext());
     while (iter.hasNext()) {
@@ -413,8 +423,10 @@ public class XmiCasDeserializerTest extends TestCase {
         assertNotNull(arrayFS.get(i));
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-522
     Type annotArrayTestType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.AnnotationArrayTest");
     Feature annotArrayFeat = annotArrayTestType.getFeatureByBaseName("arrayOfAnnotations");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
     Iterator<AnnotationFS> iter2 = cas2.getAnnotationIndex(annotArrayTestType).iterator();
     assertTrue(iter2.hasNext());
     while (iter2.hasNext()) {
@@ -428,7 +440,9 @@ public class XmiCasDeserializerTest extends TestCase {
     
     // test that lenient mode does not report errors
     CAS cas3 = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new TypePriorities_impl(), new FsIndexDescription[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-547
     if (useJCas) {
       cas3.getJCas();
     }
@@ -460,6 +474,7 @@ public class XmiCasDeserializerTest extends TestCase {
       ir1.removeFS(anAnnot1);
       ir1.addFS(anAnnot1);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       assertTrue(ir1.getAddedFSs().size() == 1);
       assertTrue(ir1.getDeletedFSs().size() == 0);
       assertTrue(ir1.getReindexedFSs().size() == 0);
@@ -501,7 +516,11 @@ public class XmiCasDeserializerTest extends TestCase {
   	}
   	
 		public void run() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1129
+//IC see: https://issues.apache.org/jira/browse/UIMA-1256
+//IC see: https://issues.apache.org/jira/browse/UIMA-1569
 			try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
 			  while (true) {
   			  if (!MultiThreadUtils.wait4go((ThreadM) Thread.currentThread())) {
   			    break;
@@ -549,6 +568,7 @@ public class XmiCasDeserializerTest extends TestCase {
     }
     
     // start n threads, serializing as XMI
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
     MultiThreadUtils.ThreadM [] threads = new MultiThreadUtils.ThreadM[MAX_THREADS];
     for (int i = 0; i < MAX_THREADS; i++) {
       threads[i] = new MultiThreadUtils.ThreadM(new DoSerialize(cases[i]));
@@ -574,6 +594,7 @@ public class XmiCasDeserializerTest extends TestCase {
   }
 
   public void testDeltaCasIndexExistingFsInView() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1965
     CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
             indexes);
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -624,6 +645,8 @@ public class XmiCasDeserializerTest extends TestCase {
 
   // test - initial view, no Sofa, 
   public void testDeltaCasIndexExistingFsInInitialView() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2486
+//IC see: https://issues.apache.org/jira/browse/UIMA-2490
     CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
             indexes);
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -731,6 +754,7 @@ public class XmiCasDeserializerTest extends TestCase {
   public void testMultipleSofas() throws Exception {
     try {
       CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new FsIndexDescription[0]);
       // set document text for the initial view
       cas.setDocumentText("This is a test");
@@ -761,6 +785,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
       // deserialize into another CAS (repeat twice to check it still works after reset)
       CAS newCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new FsIndexDescription[0]);
       for (int i = 0; i < 2; i++) {
         XmiCasDeserializer newDeser = new XmiCasDeserializer(newCas.getTypeSystem());
@@ -786,8 +811,10 @@ public class XmiCasDeserializerTest extends TestCase {
 //        assertFalse(it2.hasNext());        assertTrue(tIndex.size() == 2); // document annot and this one
 //        assertTrue(t2Index.size() == 2); // ditto
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         newCas.reset();
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -809,7 +836,9 @@ public class XmiCasDeserializerTest extends TestCase {
       serCasStream.close();
 
       // now read in a TypeSystem that's a subset of those types
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       TypeSystemDescription partialTypeSystemDesc = UIMAFramework.getXMLParser()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .parseTypeSystemDescription(
                       new XMLInputSource(JUnitExtension
                               .getFile("ExampleCas/partialTestTypeSystem.xml")));
@@ -833,6 +862,7 @@ public class XmiCasDeserializerTest extends TestCase {
       xmlReader.parse(new InputSource(new StringReader(xml)));
 
       // check that types have been filtered out
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       Type orgType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Organization");
       assertNotNull(orgType);
       assertTrue(cas2.getAnnotationIndex(orgType).size() == 0);
@@ -855,6 +885,7 @@ public class XmiCasDeserializerTest extends TestCase {
  
   public void testNoInitialSofa() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new FsIndexDescription[0]);
     // create non-annotation type so as not to create the _InitialView Sofa
     IntArrayFS intArrayFS = cas.createIntArrayFS(5);
@@ -873,8 +904,10 @@ public class XmiCasDeserializerTest extends TestCase {
     String xml = sw.getBuffer().toString();
 
     // deserialize into another CAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
             new FsIndexDescription[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     XmiCasDeserializer deser2 = new XmiCasDeserializer(cas2.getTypeSystem());
     ContentHandler deserHandler2 = deser2.getXmiCasHandler(cas2);
@@ -885,7 +918,9 @@ public class XmiCasDeserializerTest extends TestCase {
     xmlReader.parse(new InputSource(new StringReader(xml)));
 
     //test that index is correctly populated
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     Type intArrayType = cas2.getTypeSystem().getType(CAS.TYPE_NAME_INTEGER_ARRAY);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     Iterator<FeatureStructure> iter = cas2.getIndexRepository().getAllIndexedFS(intArrayType);
     assertTrue(iter.hasNext());
     IntArrayFS intArrayFS2 = (IntArrayFS)iter.next();
@@ -908,7 +943,9 @@ public class XmiCasDeserializerTest extends TestCase {
 
   public void testv1FormatXcas() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new FsIndexDescription[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     TypeSystem ts = cas.getTypeSystem();
     CAS v1cas = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
             new FsIndexDescription[0], null);
@@ -951,6 +988,7 @@ public class XmiCasDeserializerTest extends TestCase {
     // test it
     CAS engView = v1cas.getView("EnglishDocument");
     assertTrue(engView.getDocumentText().equals("this beer is good"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     assertTrue(engView.getAnnotationIndex().size() == 5); // 4 annots plus documentAnnotation
     CAS gerView = v1cas.getView("GermanDocument");
     assertTrue(gerView.getDocumentText().equals("das bier ist gut"));
@@ -976,6 +1014,7 @@ public class XmiCasDeserializerTest extends TestCase {
     // test it
     engView = cas.getView("EnglishDocument");
     assertTrue(engView.getDocumentText().equals("this beer is good"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     assertTrue(engView.getAnnotationIndex().size() == 5); // 4 annots plus documentAnnotation
     gerView = cas.getView("GermanDocument");
     assertTrue(gerView.getDocumentText().equals("das bier ist gut"));
@@ -985,6 +1024,7 @@ public class XmiCasDeserializerTest extends TestCase {
   }
   
   public void testDuplicateNsPrefixes() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-298
     TypeSystemDescription ts = new TypeSystemDescription_impl();
     ts.addType("org.bar.foo.Foo", "", "uima.tcas.Annotation");
     ts.addType("org.baz.foo.Foo", "", "uima.tcas.Annotation");
@@ -1011,6 +1051,7 @@ public class XmiCasDeserializerTest extends TestCase {
   }
 
   public void testMerging() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1228
     testMerging(false);
   }
 
@@ -1022,6 +1063,7 @@ public class XmiCasDeserializerTest extends TestCase {
   private void testMerging(boolean useDeltas) throws Exception {
     // deserialize a complex CAS from XCAS
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     TypeSystem ts = cas.getTypeSystem();
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
     XCASDeserializer.deserialize(serCasStream, cas);
@@ -1029,6 +1071,7 @@ public class XmiCasDeserializerTest extends TestCase {
     int numAnnotations = cas.getAnnotationIndex().size(); //for comparison later
     String docText = cas.getDocumentText(); //for comparison later
     //add a new Sofa to test that multiple Sofas in original CAS work
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
     CAS preexistingView = cas.createView("preexistingView");
     String preexistingViewText = "John Smith blah blah blah";
     preexistingView.setDocumentText(preexistingViewText);
@@ -1042,6 +1085,7 @@ public class XmiCasDeserializerTest extends TestCase {
         
     // deserialize into two new CASes, each with its own instance of XmiSerializationSharedData 
     // so we can get consistent IDs later when serializing back.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     CAS newCas1 = CasCreationUtils.createCas(ts, new TypePriorities_impl(), indexes, null);
     XmiSerializationSharedData deserSharedData1 = new XmiSerializationSharedData();
     deserialize(xmiStr, newCas1, deserSharedData1, false, -1);
@@ -1050,6 +1094,7 @@ public class XmiCasDeserializerTest extends TestCase {
     XmiSerializationSharedData deserSharedData2 = new XmiSerializationSharedData();
     deserialize(xmiStr, newCas2, deserSharedData2, false, -1);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1228
     Marker marker1 = null;
     Marker marker2 = null;
     if (useDeltas) {
@@ -1095,6 +1140,7 @@ public class XmiCasDeserializerTest extends TestCase {
     int annotStart1 = sofaText1.indexOf(annotText);
     AnnotationFS annot1 = newView1.createAnnotation(orgType, annotStart1, annotStart1 + annotText.length());
     newView1.addFsToIndexes(annot1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-578
     CAS newView2 = newCas2.createView("newSofa2");
     final String sofaText2 = "This is another new Sofa, created in CAS 2.";
     newView2.setDocumentText(sofaText2);
@@ -1104,6 +1150,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
     // Add an FS with an array of existing annotations in another view
     int nToks = 3;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1228
     ArrayFS array = newView2.createArrayFS(nToks);
     Type thingType = newCas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Thing");
     FSIterator thingIter = newCas2.getAnnotationIndex(thingType).iterator();
@@ -1172,6 +1219,7 @@ public class XmiCasDeserializerTest extends TestCase {
     assertTrue(targetView1.getSofa().getSofaRef() != 
             targetView2.getSofa().getSofaRef());
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
     CAS checkPreexistingView = cas.getView("preexistingView");
     assertEquals(preexistingViewText, checkPreexistingView.getDocumentText());
     Type personType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Person");    
@@ -1179,6 +1227,7 @@ public class XmiCasDeserializerTest extends TestCase {
     assertEquals("John Smith", targetAnnot3.getCoveredText());
 
     // Check the FS with an array of pre-existing FSs
+//IC see: https://issues.apache.org/jira/browse/UIMA-1228
     iter = targetView2.getAnnotationIndex(annotArrayTestType).iterator();
     componentIdFeat = thingType.getFeatureByBaseName("componentId");
     while (iter.hasNext()) {
@@ -1240,6 +1289,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	  assertTrue(cas2.getAnnotationIndex().size() == 3);
 	  
 	  //modify language feature
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
 	  Feature languageF2 = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
 	  docAnnot.setStringValue(languageF2, "en");
 	  // serialize cas2 in delta format 
@@ -1253,6 +1303,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	  //check language feature of doc annot is not changed.
 	  //System.out.println(cas1.getDocumentAnnotation().getStringValue(languageF));
     Feature languageF1 = cas1.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
 
 	  assertTrue( cas1.getAnnotationIndex().iterator().next().getStringValue(languageF1).equals("x-unspecified"));
 	  //check new annotation exists and preexisting is not deleted
@@ -1312,6 +1363,7 @@ public class XmiCasDeserializerTest extends TestCase {
         this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.disallow);
       } catch (CASRuntimeException e) {
     	assertTrue(e.getMessageKey() == CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     	threw = true;
       }
     	assertTrue(threw);
@@ -1425,6 +1477,7 @@ public class XmiCasDeserializerTest extends TestCase {
     try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               indexes);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       TypeSystem ts = cas1.getTypeSystem();
       CAS cas2 = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
               indexes, null);
@@ -1689,6 +1742,7 @@ public class XmiCasDeserializerTest extends TestCase {
       cas2.getIndexRepository().removeFS(delAnnot);
       
       //modify FS - string feature and FS feature.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
       Iterator<FeatureStructure> personIter = cas2personIndex.iterator();     
       AnnotationFS cas2person1 = (AnnotationFS) personIter.next();
       AnnotationFS cas2person2 = (AnnotationFS) personIter.next();
@@ -1699,6 +1753,7 @@ public class XmiCasDeserializerTest extends TestCase {
       cas2person2.setStringValue(componentIdFeat, "delataCas2");
       cas2person2.setStringValue(mentionTypeFeat, "FIRSTNAME");
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
       Iterator<FeatureStructure> orgIter = cas2orgIndex.iterator();
       AnnotationFS cas2orgAnnot = (AnnotationFS) orgIter.next();
       cas2orgAnnot.setStringValue(mentionTypeFeat, "ORGNAME");
@@ -1748,6 +1803,7 @@ public class XmiCasDeserializerTest extends TestCase {
       //serialize complete cas and deserialize into cas3 and compare with cas1.
       String fullxml = serialize(cas2, sharedData2);
       XmiSerializationSharedData sharedData3 = new XmiSerializationSharedData();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
       this.deserialize(fullxml, cas3, sharedData3, true, -1);
       CasComparer.assertEquals(cas1, cas3); 
       
@@ -1763,6 +1819,11 @@ public class XmiCasDeserializerTest extends TestCase {
 	   try {
 	      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
 	              indexes);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
 	      TypeSystem ts = cas1.getTypeSystem();
 	      CAS cas2 = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
 	              indexes, null);
@@ -1816,6 +1877,11 @@ public class XmiCasDeserializerTest extends TestCase {
 	       
 	      //serialize complete  
 	      XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
 	      String xml = serialize(cas1, sharedData);
 	      int maxOutgoingXmiId = sharedData.getMaxXmiId();
 	      //System.out.println("CAS1 " + xml);
@@ -1841,6 +1907,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	      assertTrue(cas2tIndex.size() == 7); // prev annots and twonew one
 	      
 	      //add to FSList 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
 	      Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
 	      FeatureStructure cas2EntityFS = iter.next();
 	      FeatureStructure cas2linksFS = cas2EntityFS.getFeatureValue(linksFeat);
@@ -1856,6 +1923,11 @@ public class XmiCasDeserializerTest extends TestCase {
 	      cas2fourthNode.setFeatureValue(tailFeat, cas2emptyNode);
 	      
 	      // serialize cas2 in delta format 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
 	      String deltaxml1 = serialize(cas2, sharedData2, marker);
 	      //System.out.println("delta cas");
 	      //System.out.println(deltaxml1);
@@ -1866,6 +1938,8 @@ public class XmiCasDeserializerTest extends TestCase {
 	      CasComparer.assertEquals(cas2linksFS, entityFS.getFeatureValue(linksFeat));
 	      //======================================================================
 	      //serialize complete cas and deserialize into cas3 and compare with cas1.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
 	      String fullxml = serialize(cas2, sharedData2);
 	      XmiSerializationSharedData sharedData3 = new XmiSerializationSharedData();
 	      this.deserialize(fullxml, cas3, sharedData3, true,-1);
@@ -1902,6 +1976,7 @@ public class XmiCasDeserializerTest extends TestCase {
     
     //deserialize both original and new XMI into CASes that do have the full typesystem
     CAS newCas1 = CasCreationUtils.createCas(typeSystem, null, indexes);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     TypeSystem ts = newCas1.getTypeSystem();
     deserialize(xmiStr, newCas1, null, false, -1);
     CAS newCas2 = CasCreationUtils.createCas(ts, null, indexes, null);
@@ -1918,6 +1993,7 @@ public class XmiCasDeserializerTest extends TestCase {
     deserialize(xmiStr, partialTsCas, sharedData2, true, -1);
     
     assertEquals(1,sharedData2.getOutOfTypeSystemElements().size());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     OotsElementData ootsFeats3 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(3));
     assertEquals(1, ootsFeats3.attributes.size());
     XmlAttribute ootsAttr = ootsFeats3.attributes.get(0);
@@ -1984,6 +2060,7 @@ public class XmiCasDeserializerTest extends TestCase {
     FeatureStructure arrayFs2 = testAnnot2.getFeatureValue(arrayFeat2);
     List ootsElems = sharedData.getOutOfTypeSystemElements();
     assertEquals(2, ootsElems.size());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     List ootsArrayElems = sharedData.getOutOfTypeSystemArrayElements((FSArray) arrayFs2);
     assertEquals(2, ootsArrayElems.size());
     for (int i = 0; i < 2; i++) {
@@ -2010,6 +2087,7 @@ public class XmiCasDeserializerTest extends TestCase {
     //populate a CAS with such an list
     CAS cas = CasCreationUtils.createCas(typeSystem, null, null);
     Type testAnnotType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.TestAnnotation");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     Type orgType       = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Organization");
     
     AnnotationFS orgAnnot1 = cas.createAnnotation(orgType, 0, 10);
@@ -2059,6 +2137,7 @@ public class XmiCasDeserializerTest extends TestCase {
     List ootsElems = sharedData.getOutOfTypeSystemElements();
     assertEquals(2, ootsElems.size());
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     OotsElementData oed = sharedData.getOutOfTypeSystemFeatures((TOP) listFs);
     XmlAttribute attr = oed.attributes.get(0);
     assertNotNull(attr);
@@ -2097,6 +2176,7 @@ public class XmiCasDeserializerTest extends TestCase {
     
     //deserialize into a new CAS that has the full type system
     CAS newCas = CasCreationUtils.createCas(typeSystem, null, indexes);
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
     deserialize(xmiStr2, newCas, null, false, -1);
     
     //compare
@@ -2172,6 +2252,8 @@ public class XmiCasDeserializerTest extends TestCase {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();    
     XmiCasSerializer.serialize(cas, null, baos, false, serSharedData, marker);
     baos.close();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
     String xmiStr = new String(baos.toByteArray(), StandardCharsets.UTF_8);   //note by default XmiCasSerializer generates UTF-8
     
     //workaround for newline serialization problem in Sun Java 1.4.2
@@ -2185,6 +2267,7 @@ public class XmiCasDeserializerTest extends TestCase {
   
   /** Utility method for deserializing a CAS from an XMI String */
   private void deserialize(String xmlStr, CAS cas, XmiSerializationSharedData sharedData, boolean lenient, int mergePoint) throws FactoryConfigurationError, ParserConfigurationException, SAXException, IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
     byte[] bytes = xmlStr.getBytes(StandardCharsets.UTF_8); //this assumes the encoding is UTF-8, which is the default output encoding of the XmiCasSerializer
     ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
     XmiCasDeserializer.deserialize(bais, cas, lenient, sharedData, mergePoint);
@@ -2230,6 +2313,7 @@ public class XmiCasDeserializerTest extends TestCase {
    */
   private static void dumpStr2File(String s, String namepart) throws FileNotFoundException {
  
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     File f = new File("C:/au/wksp431/apache/json-work/temp" + namepart + ".xml");
     PrintWriter pw = new PrintWriter(f);
     pw.println(s);

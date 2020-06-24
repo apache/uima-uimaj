@@ -56,6 +56,7 @@ class CasDocumentProviderFactory {
             Platform.getExtensionRegistry().getConfigurationElementsFor(CAS_EDITOR_EXTENSION);
 
     for (IConfigurationElement element : config) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2219
 
       if ("provider".equals(element.getName())) {
 

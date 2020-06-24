@@ -60,11 +60,13 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
    * @see org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
    */
   public final void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aCAS instanceof CAS) {
       checkTypeSystemChange((CAS) aCAS);
       process((CAS) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
                   aCAS.getClass() });
     }

@@ -62,6 +62,7 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
 
   /** The capability section. */
   CapabilitySection capabilitySection;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The capability. */
   private Capability capability;
@@ -115,6 +116,7 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
    */
   public AddCapabilityTypeDialog(AbstractSection aSection, Capability c) {
     super(aSection, "Add Types to a Capability Set", "Mark one or more types as "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + ((aSection.isCasConsumerDescriptor()) ? "Input"
                     : (aSection.isCasInitializerDescriptor() || aSection
                             .isCollectionReaderDescriptor()) ? "Output" : "Input and/or Output")
@@ -144,6 +146,7 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent, existing);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     f_tree = newTree(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION);
     // ((GridData)table.getLayoutData()).heightHint = 100;
     f_tree.setHeaderVisible(true);
@@ -158,7 +161,9 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
 
       for (int i = 0; i < allTypes.length; i++) {
         if (!excludedTypes.contains(allTypes[i]) && !hasType(capability.getInputs(), allTypes[i])
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 && !hasType(capability.getOutputs(), allTypes[i])) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
           TreeItem item = new TreeItem(f_tree, SWT.NONE);
           setGuiTypeName(item, allTypes[i]);
         }
@@ -168,6 +173,7 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
       item.setText(NAME, existing.getText(CapabilitySection.NAME_COL));
       item.setText(NAMESPACE, existing.getText(CapabilitySection.NAMESPACE_COL));
       TypeOrFeature tof = AbstractSection.getTypeOrFeature(capability.getInputs(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               capabilitySection.getFullyQualifiedName(existing));
       setChecked(item, 1, null != tof);
       tof = AbstractSection.getTypeOrFeature(capability.getOutputs(), capabilitySection
@@ -191,6 +197,7 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
    * @return true, if successful
    */
   private boolean hasType(TypeOrFeature[] items, String name) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (null == items)
       return false;
     for (int i = 0; i < items.length; i++) {
@@ -205,13 +212,16 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
    */
   @Override
   public void copyValuesFromGUI() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     List<String> names = new ArrayList<>();
     List<Boolean> ins = new ArrayList<>();
     List<Boolean> outs = new ArrayList<>();
 
     for (int i = f_tree.getItemCount() - 1; i >= 0; i--) {
       TreeItem item = f_tree.getItem(i);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (item.getText(INPUT).equals(checkedIndicator(INPUT))
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || item.getText(OUTPUT).equals(checkedIndicator(OUTPUT))) {
         names.add(capabilitySection.getFullyQualifiedName(item.getText(NAMESPACE), item
                 .getText(NAME)));
@@ -225,6 +235,7 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
     outputs = new boolean[types.length];
 
     for (int i = 0; i < types.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       inputs[i] = (Boolean) ins.get(i);
       outputs[i] = (Boolean) outs.get(i);
     }

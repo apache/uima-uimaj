@@ -89,6 +89,7 @@ public class CASSerializer implements Serializable {
   static final long serialVersionUID = -7972011651957420295L;
 
   static class AddrPlusValue {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     final int addr;   // heap or aux heap addr
     final long value;  // boolean, byte, short, long, double value
     AddrPlusValue(int addr, long value) {
@@ -152,9 +153,13 @@ public class CASSerializer implements Serializable {
    */
   public void addCAS(CASImpl cas, boolean addMetaData) {
     synchronized (cas.svd) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
       // next call runs the setup, which scans all the reachables
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(cas.getBaseCAS(), false);  // saves the csds in the cas
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       bcsd.scanAllFSsForBinarySerialization(null, csds);  // no mark
       this.fsIndex = bcsd.getIndexedFSs(csds.fs2addr);  // must follow scanAll...
       
@@ -189,12 +194,15 @@ public class CASSerializer implements Serializable {
     // total size = char buffer length + length of strings in the string list;
     int stringHeapLength = shdh.charHeapPos;
     int stringListLength = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2493
     for (int i = 0; i < shdh.refHeap.length; i += 3) {
       int ref = shdh.refHeap[i + StringHeapDeserializationHelper.STRING_LIST_ADDR_OFFSET];
       // this is a string in the string list
       // get length and add to total string heap length
       if (ref != 0) {
         // terminate each string with a null
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         stringListLength += 1 + bcsd.stringHeap.getStringForCode(ref).length();
       }
     }
@@ -206,9 +214,11 @@ public class CASSerializer implements Serializable {
       stringTotalLength += 1;
     }
     dos.writeInt(stringTotalLength);
+//IC see: https://issues.apache.org/jira/browse/UIMA-359
 
     // write the data in the stringheap, if there is any
     if (stringTotalLength > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1067
       if (shdh.charHeapPos > 0) {
         dos.writeChars(String.valueOf(shdh.charHeap, 0, shdh.charHeapPos));
       } else {
@@ -231,12 +241,14 @@ public class CASSerializer implements Serializable {
     refheapsz++;
     dos.writeInt(refheapsz);
     dos.writeInt(0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1067
     for (int i = StringHeapDeserializationHelper.FIRST_CELL_REF; i < shdh.refHeap.length; i += 3) {
       dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET]);
       dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET]);
     }
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
   void addTsiCAS(CASImpl cas, OutputStream ostream) {
     
   }
@@ -270,16 +282,21 @@ public class CASSerializer implements Serializable {
    * @param ostream -
    */
   public void addCAS(CASImpl cas, OutputStream ostream) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       addCAS(cas, ostream, false);
   }
   
   public void addCAS(CASImpl cas, OutputStream ostream, boolean includeTsi) {
     synchronized (cas.svd) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       final BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
       
       // next call runs the setup, which scans all the reachables
       // these may have changed since this was previously computed due to updates in the CAS    
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(cas.getBaseCAS(), false);  // saves the csds in the cas, used for possible future delta deser
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       bcsd.scanAllFSsForBinarySerialization(null, csds);  // no mark
       
       try {
@@ -291,7 +308,9 @@ public class CASSerializer implements Serializable {
   
         // output the key and version number
         CommonSerDes.createHeader()
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           .seqVer(2)  // 0 original, 1 UIMA-4743 2 for uima v3
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
           .typeSystemIndexDefIncluded(includeTsi)
           .v3()
           .write(dos);
@@ -371,6 +390,8 @@ public class CASSerializer implements Serializable {
         }
   
         // 8bit heap
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         final int byteheapsz = bcsd.byteHeap.getSize();
         dos.writeInt(byteheapsz);
         dos.write(bcsd.byteHeap.heap, 0, byteheapsz);
@@ -382,6 +403,8 @@ public class CASSerializer implements Serializable {
         }
   
         // 16bit heap
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         final int shortheapsz = bcsd.shortHeap.getSize();
         dos.writeInt(shortheapsz);
         final short[] sh = bcsd.shortHeap.heap;
@@ -397,6 +420,8 @@ public class CASSerializer implements Serializable {
         // 64bit heap
         int longheapsz = bcsd.longHeap.getSize();
         dos.writeInt(longheapsz);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         final long[] lh = bcsd.longHeap.heap;
         for (int i = 0; i < longheapsz; i++) {
           dos.writeLong(lh[i]);
@@ -407,6 +432,8 @@ public class CASSerializer implements Serializable {
       
       bcsd.setHeapExtents();
       // non delta serialization
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
       csds.setHeapEnd(bcsd.nextHeapAddrAfterMark);
     }
   }
@@ -458,16 +485,19 @@ public class CASSerializer implements Serializable {
     }
     MarkerImpl mark = (MarkerImpl) trackingMark;
     synchronized (cas.svd) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       final BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
       // next call runs the setup, which scans all the reachables
       final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(cas.getBaseCAS(), true);  // saves the csds in the cas
       // because the output is only the new elements, this populates the arrays with only the new elements
       //   Note: all heaps reserve slot 0 for null, real data starts at position 1
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       List<TOP> all = bcsd.scanAllFSsForBinarySerialization(mark, csds);
   
       //  if (csds.getHeapEnd() == 0) {
       //  System.out.println("debug");
       //}
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       final Obj2IntIdentityHashMap<TOP> fs2auxOffset = new Obj2IntIdentityHashMap<>(TOP.class, TOP._singleton);
   
       int byteOffset = 1;
@@ -479,6 +509,7 @@ public class CASSerializer implements Serializable {
         if (trackingMark.isNew(fs)) {
           break;
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
         if (fs instanceof CommonArrayFS) {
           CommonArrayFS ca = (CommonArrayFS) fs;
           SlotKind kind = fs._getTypeImpl().getComponentSlotKind();
@@ -515,6 +546,7 @@ public class CASSerializer implements Serializable {
    
         CommonSerDes.createHeader()
           .delta()
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           .seqVer(2)  // 1 for UIMA-4743 2 for uima v3
           .v3()
           .write(dos);
@@ -536,6 +568,7 @@ public class CASSerializer implements Serializable {
         // could make additions to those.
   
         // addresses are in terms of modeled v2 arrays, as absolute addr in the aux arrays, and values
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         List<AddrPlusValue> chgMainAvs = new ArrayList<>();
         List<AddrPlusValue> chgByteAvs = new ArrayList<>();
         List<AddrPlusValue> chgShortAvs = new ArrayList<>();
@@ -553,6 +586,7 @@ public class CASSerializer implements Serializable {
         // this is output in a way that is the total number of slots changed == 
         //   the sum over all fsChanges of
         //     for each fsChange, the number of slots (heap-sited-array or feature) modified
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         final int modHeapSize = chgMainAvs.size();
         dos.writeInt(modHeapSize);  //num modified
         for (AddrPlusValue av : chgMainAvs) {
@@ -580,6 +614,8 @@ public class CASSerializer implements Serializable {
         // 16bit heap new
         int shortheapsz = bcsd.shortHeap.getSize() - 1;
         dos.writeInt(shortheapsz);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         for (int i = 1; i <= shortheapsz; i++) {  // <= in test because we're starting at 1
           dos.writeShort(bcsd.shortHeap.heap[i]);
         }
@@ -597,6 +633,7 @@ public class CASSerializer implements Serializable {
         }
         
         // 8bit heap modified cells
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         writeMods(chgByteAvs, dos, av -> dos.writeByte((byte)av.value));
   
         // word alignment
@@ -623,6 +660,7 @@ public class CASSerializer implements Serializable {
   }
   
   private void writeMods(
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       List<AddrPlusValue> avs, 
       DataOutputStream dos, 
       Consumer_T_withIOException<AddrPlusValue> writeValue) throws IOException  {
@@ -668,6 +706,7 @@ public class CASSerializer implements Serializable {
    * @param chgMainHeapValue corresponding values
    */
   static void scanModifications(BinaryCasSerDes bcsd, CommonSerDesSequential csds, FsChange[] fssModified, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       Obj2IntIdentityHashMap<TOP> fs2auxOffset,
       List<AddrPlusValue> chgMainAvs, 
       List<AddrPlusValue> chgByteAvs, 
@@ -684,10 +723,12 @@ public class CASSerializer implements Serializable {
     final Obj2IntIdentityHashMap<TOP> fs2addr = csds.fs2addr;
     for (FsChange fsChange : fssModified) {
       final TOP fs = fsChange.fs;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final TypeImpl type = fs._getTypeImpl();
       if (fsChange.arrayUpdates != null) {
         switch(type.getComponentSlotKind()) {
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         case Slot_BooleanRef: 
           fsChange.arrayUpdates.forAllInts(index -> {
             chgByteAvs.add(new AddrPlusValue(convertArrayIndexToAuxHeapAddr(bcsd, index, fs, fs2auxOffset), 
@@ -756,6 +797,7 @@ public class CASSerializer implements Serializable {
         } // end of switch
       } else { // end of if-array
         // 1 or more features modified
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
         if (fs instanceof UimaSerializable) {
           ((UimaSerializable)fs)._save_to_cas_data();
         }
@@ -766,8 +808,10 @@ public class CASSerializer implements Serializable {
           int value = 0;
 
           FeatureImpl feat = type.getFeatureImpls()[offset];
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
           switch (feat.getSlotKind()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           case Slot_Boolean: value = fs._getBooleanValueNc(feat) ? 1 : 0; break;
             
           case Slot_Byte:    value = fs._getByteValueNc(feat); break;

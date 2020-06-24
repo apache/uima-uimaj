@@ -50,6 +50,7 @@ public final class LowerRightAnnotationSideAction extends BaseSelectionListenerA
     super(ID);
 
     this.editor = editor;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
     setEnabled(false);
   }
@@ -69,6 +70,7 @@ public final class LowerRightAnnotationSideAction extends BaseSelectionListenerA
    */
   public static void lowerRightAnnotationSide(ICasDocument document, AnnotationFS annotation) {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1419
     Type annotationType = annotation.getType();
     Feature endFeature = annotationType.getFeatureByBaseName("end");
     
@@ -88,6 +90,7 @@ public final class LowerRightAnnotationSideAction extends BaseSelectionListenerA
 
     AnnotationFS annotation = annotations.getFirst();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     lowerRightAnnotationSide(editor.getDocument(), annotation);
   }
 }

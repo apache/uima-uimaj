@@ -34,6 +34,7 @@ class VarValCellModifier implements ICellModifier {
 
   /** The table row list. */
   VarValList tableRowList;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Constructor.
@@ -43,6 +44,7 @@ class VarValCellModifier implements ICellModifier {
    * @param tableRowList the table row list
    */
   public VarValCellModifier(VarValViewerHandler tableViewerExample, String[] columnNames,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           VarValList tableRowList) {
     super();
     this.tableRowList = tableRowList;

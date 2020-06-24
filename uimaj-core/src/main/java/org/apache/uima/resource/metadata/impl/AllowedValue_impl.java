@@ -91,6 +91,8 @@ public class AllowedValue_impl extends MetaDataObject_impl implements AllowedVal
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("value",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("string"),
               new PropertyXmlInfo("description", false), });
 }

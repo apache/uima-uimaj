@@ -39,6 +39,7 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
   
   public CopyOnWriteObjHashSet(ObjHashSet<T> original) {
     this.ohs = original;    
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     this.original = original;
     this.original_size = original.size();
   }
@@ -92,6 +93,7 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
   }
   
   public Iterator<T> iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     return new Iterator<T>() {
       /**
        * Keep this always pointing to a non-0 entry, or
@@ -177,6 +179,7 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
    */
   @Override
   public boolean isOriginal() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     return ohs == original;
   }
 
@@ -188,6 +191,7 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
     Iterator<T> it = iterator();
     int i = startingIndexInTarget;
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
       target[i++] = it.next();
     }
     return i;

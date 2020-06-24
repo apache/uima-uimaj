@@ -52,11 +52,14 @@ public abstract class JCasFlow_ImplBase implements Flow {
    * @see Flow#newCasProduced(AbstractCas, String)
    */
   public final Flow newCasProduced(AbstractCas newCas, String producedBy)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws AnalysisEngineProcessException {
     if (newCas instanceof JCas) {
       return newCasProduced((JCas) newCas, producedBy);
     } else {
       throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-10
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
                   newCas.getClass() });
     }
@@ -68,6 +71,7 @@ public abstract class JCasFlow_ImplBase implements Flow {
    * @see org.apache.uima.flow.Flow#continueOnFailure(String, java.lang.Exception)
    */
   public boolean continueOnFailure(String failedAeKey, Exception failure) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
     return false;
   }
   
@@ -96,6 +100,7 @@ public abstract class JCasFlow_ImplBase implements Flow {
    * 
    */
   protected Flow newCasProduced(JCas newCas, String producedBy)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
             UIMA_UnsupportedOperationException.CAS_MULTIPLIER_NOT_SUPPORTED, new Object[] { this

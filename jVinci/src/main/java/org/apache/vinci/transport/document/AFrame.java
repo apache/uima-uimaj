@@ -63,6 +63,7 @@ public class AFrame extends VinciFrame {
 
   private static TransportableFactory aFrameFactory = new TransportableFactory() {
     public Transportable makeTransportable() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       return new AFrame();
     }
   };
@@ -438,6 +439,7 @@ public class AFrame extends VinciFrame {
    *           if VNS_HOST is not specified.
    */
   static public AFrame rpc(Transportable in, String service_name) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ServiceException, ServiceDownException, VNSException {
     return (AFrame) VinciClient.sendAndReceive(in, service_name, getAFrameFactory());
   }
@@ -459,6 +461,7 @@ public class AFrame extends VinciFrame {
    *           if VNS_HOST is not specified.
    */
   static public AFrame rpc(Transportable in, String service_name, int socket_timeout)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException, ServiceException, ServiceDownException, VNSException {
     return (AFrame) VinciClient
             .sendAndReceive(in, service_name, getAFrameFactory(), socket_timeout);

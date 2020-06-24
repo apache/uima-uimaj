@@ -47,12 +47,15 @@ public class ResourceService_implTest extends TestCase {
    * @see TestCase#setUp()
    */
   protected void setUp() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       super.setUp();
       // create resource specifier and a pool containing 2 instances
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Test Annotator");
       ConfigurationParameter p1 = new ConfigurationParameter_impl();

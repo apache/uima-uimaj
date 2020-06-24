@@ -95,6 +95,8 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     // element tag determines whether this is a type or a feature
     if (aElement.getTagName().equals("type")) {
@@ -117,6 +119,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
     if (null == serialContext.get()) {
       getSerialContext(aContentHandler);  
       try {
@@ -130,6 +133,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
   }
     
   public void toXMLinner(boolean aWriteDefaultNamespaceAttribute)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       throws SAXException {    
     SerialContext sc = serialContext.get();
     Serializer serializer = sc.serializer;
@@ -160,6 +164,8 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
     {
       Node node = serializer.findMatchingSubElement("feature");
       serializer.outputStartElement(node, namespace, "feature", "feature",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new AttributesImpl());
 //      aContentHandler.startElement(getXmlizationInfo().namespace, "feature", "feature",
 //              new AttributesImpl());
@@ -192,6 +198,8 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
 
   @Override
   public int hashCode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
     final int prime = 31;
     int result = super.hashCode();
     result = prime * result + (mAllAnnotatorFeatures ? 1231 : 1237);

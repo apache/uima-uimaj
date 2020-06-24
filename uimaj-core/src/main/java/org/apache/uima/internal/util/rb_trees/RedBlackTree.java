@@ -61,6 +61,7 @@ public class RedBlackTree<T> implements Iterable<T> {
 
   // The root node of the tree.
   RBTNode<T> root = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
 
   // A counter to keep track of the size of the tree.
   int size = 0;
@@ -109,6 +110,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    * @return <code>true</code>, if value is there; <code>false</code>, else.
    */
   public final boolean containsValue(T o) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
     Iterator<T> it = this.iterator();
     while (it.hasNext()) {
       if (o == it.next()) {
@@ -130,6 +132,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    *         new one.
    */
   public final boolean put(int key, T el) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     if (put(new RBTNode<>(key, el))) {
       this.size++;
       return true;
@@ -145,6 +148,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    * @return -         
    */
   public final T remove(int key) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
     RBTNode<T> node = RBTNode.find(this.root, key);
     T ret = null;
     if (node != null) {
@@ -169,6 +173,7 @@ public class RedBlackTree<T> implements Iterable<T> {
     if (this.root == null) {
       return null;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
     RBTNode<T> node = RBTNode.find(this.root, key);
     if (node == null) {
       return null;
@@ -215,6 +220,7 @@ public class RedBlackTree<T> implements Iterable<T> {
     if (this.root == null) {
       return null;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
     RBTNode<T> x = this.root;
     while (x.left != null) {
       x = x.left;
@@ -227,6 +233,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    *         of the corresponding keys.
    */
   public Iterator<T> iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new RBTIterator<>(this);
   }
 
@@ -247,6 +254,7 @@ public class RedBlackTree<T> implements Iterable<T> {
       if (this.current == null) {
         throw new java.util.NoSuchElementException();
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
       T ret = this.current.element;
       this.current = this.current.successor();
       return ret;
@@ -287,6 +295,7 @@ public class RedBlackTree<T> implements Iterable<T> {
   }
 
   public static void main(String[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     RedBlackTree<String> tree = new RedBlackTree<>();
     tree.put(1, "a");
     tree.printKeys();

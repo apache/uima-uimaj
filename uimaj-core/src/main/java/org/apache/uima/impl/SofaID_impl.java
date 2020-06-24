@@ -31,6 +31,7 @@ import org.apache.uima.cas.SofaID;
 public class SofaID_impl implements SofaID {
 
   String mSofaID;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   String mComponentSofaName;
 

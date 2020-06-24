@@ -112,6 +112,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
   public void initialize() throws ResourceInitializationException {
     startTime = System.currentTimeMillis();
     System.out
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .println("Time: " + (System.currentTimeMillis() - startTime) + " initialize() called");
     mOutputDir = new File((String) getConfigParameterValue(PARAM_OUTPUTDIR));
     if (!mOutputDir.exists()) {
@@ -121,6 +122,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
     // make this the derby home by setting system property
     System.setProperty("derby.system.home", mOutputDir.toString());
     System.out.println("Time: " + (System.currentTimeMillis() - startTime)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + " DB Writer: Set derby system home to: '" + mOutputDir.toString() + "'");
   }
 
@@ -139,6 +141,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
    */
   public void processCas(CAS aCAS) throws ResourceProcessException {
     System.out.println("Time: " + (System.currentTimeMillis() - startTime)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + " DB Writer: ProcessCas called");
     JCas jcas;
     try {
@@ -151,6 +154,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
       if (firstCall) {
         firstCall = false;
         System.out.println("Time: " + (System.currentTimeMillis() - startTime)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + " DB Writer: First Time Initiailization: ");
         // NOTE TO USERS: a better design will be to do the loading of the
         // driver in the initialize() method, where it can
@@ -165,6 +169,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
         if (firstEverCall) {
           firstEverCall = false;
           System.out
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .println("Time: "
                           + (System.currentTimeMillis() - startTime)
                           + " DB Writer: Doing first process call ever (even during re-runs) initialization");
@@ -202,6 +207,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
         File db = new File(mOutputDir.toString() + "/ExamplePersonTitleDB");
         if (db.exists()) {
           System.out.println("Time: " + (System.currentTimeMillis() - startTime)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   + " DB Writer: First Time Initiailization: Deleting Database");
           deleteDir(db);
           System.out.println("Time: " + (System.currentTimeMillis() - startTime)
@@ -227,6 +233,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
         } catch (SQLException e) {
         }
         sqlStmt.execute("create table PersonTitle(" + "uri varchar(" + MAX_URI_LENGTH
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + "), spannedText varchar(" + MAX_TITLE_LENGTH
                 + "), beginOffset int, endOffset int)");
         System.out.println("Time: " + (System.currentTimeMillis() - startTime)
@@ -260,6 +267,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
         batchCounter--;
         if (batchCounter <= 0) {
           System.out.println("Time: " + (System.currentTimeMillis() - startTime)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   + " DB Writer: Batch writing updates - process call");
           stmt.executeBatch();
           // NOTE TO USERS: Although we "commit" here, you may want
@@ -287,6 +295,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
         // TODO Auto-generated catch block
         e2.printStackTrace();
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       throw new ResourceProcessException(e);
     }
   }
@@ -295,6 +304,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
    * @see org.apache.uima.collection.CasConsumer_ImplBase#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException {
     firstCall = true;
 
@@ -311,6 +321,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
       con.close();
       System.out.println("Time: " + (System.currentTimeMillis() - startTime)
               + " DB Writer: Sucessfully closed the connection - done.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     } catch (SQLException e) {
       System.err.println("Unexpected SQL exception");

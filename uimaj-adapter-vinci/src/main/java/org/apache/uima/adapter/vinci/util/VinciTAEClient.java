@@ -38,6 +38,7 @@ public class VinciTAEClient {
    */
   public static void main(String[] args) {
     System.out.println("Invoking the service...");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       String serviceName = args[0];
       VinciFrame query = new VinciFrame();
@@ -51,6 +52,7 @@ public class VinciTAEClient {
         System.out.println("Analyzing Document...");
         File aFile = new File(args[1]);
         String fileData = FileUtils.file2String(aFile);
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
 
         VinciFrame data = new VinciFrame();
         VinciFrame key = new VinciFrame();

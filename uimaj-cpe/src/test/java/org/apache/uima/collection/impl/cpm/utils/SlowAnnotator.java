@@ -39,6 +39,7 @@ public class SlowAnnotator extends JTextAnnotator_ImplBase {
   }
 
   private int fibonacci(int n) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (n <= 2)
       return 1;
     else

@@ -56,6 +56,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
    * @see Precondition#getPreconditionType()
    */
   public String getPreconditionType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return PRECONDITION_TYPE;
   }
 
@@ -151,6 +152,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
     // check to make sure value is legal
     if (!isValidPredicateName(aPredicate)) {
       throw new UIMA_IllegalArgumentException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
                   aPredicate, "predicate" });
     }
@@ -177,6 +179,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "simplePrecondition",
           new PropertyXmlInfo[] { new PropertyXmlInfo("featureDescription", null),
               new PropertyXmlInfo("comparisonValue"), new PropertyXmlInfo("predicate", "predicate") });

@@ -63,6 +63,7 @@ public class PrintAnnotations {
     
     // Version 3 using select with Stream support
     aCAS.select(Annotation.class).forEach(fs -> printFS(fs, aCAS, 0, aOut));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5625
 
 //    // Version 3 using select with extended for
 //    for (Annotation fs : aCAS.getAnnotationIndex().select(Annotation.class)) {
@@ -97,6 +98,8 @@ public class PrintAnnotations {
     FSIterator iter = aCAS.getAnnotationIndex(aAnnotType).iterator();
 
     // iterate
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (iter.isValid()) {
       FeatureStructure fs = iter.get();
       printFS(fs, aCAS, 0, aOut);
@@ -123,6 +126,7 @@ public class PrintAnnotations {
     aOut.println(aFS.getType().getName());
 
     // if it's an annotation, print the first 64 chars of its covered text
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aFS instanceof AnnotationFS) {
       AnnotationFS annot = (AnnotationFS) aFS;
       String coveredText = annot.getCoveredText();
@@ -147,10 +151,12 @@ public class PrintAnnotations {
       aOut.print(" = ");
       // prnt feature value (how we get this depends on feature's range type)
       String rangeTypeName = feat.getRange().getName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (aCAS.getTypeSystem().subsumes(stringType, feat.getRange())) // must check for subtypes of
                                                                       // string
       {
         String str = aFS.getStringValue(feat);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         if (str == null) {
           aOut.println("null");
         } else {
@@ -213,6 +219,7 @@ public class PrintAnnotations {
           }
           aOut.println("]\"");
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       } else // non-primitive type
       {
         FeatureStructure val = aFS.getFeatureValue(feat);
@@ -247,6 +254,7 @@ public class PrintAnnotations {
    * @param args - see above
    */
   public static void main(String[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       File taeDescriptor = new File(args[0]);
       File inputFile = new File(args[1]);
@@ -263,8 +271,10 @@ public class PrintAnnotations {
       // build ResultSpec if Type and Feature names were specified on commandline
       ResultSpecification resultSpec = null;
       if (args.length > 2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
         resultSpec = ae.createResultSpecification(cas.getTypeSystem());
         for (int i = 2; i < args.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           if (args[i].indexOf(':') > 0) // feature name
           {
             resultSpec.addResultFeature(args[i]);
@@ -276,6 +286,7 @@ public class PrintAnnotations {
 
       // read contents of file
       String document = FileUtils.file2String(inputFile);
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
 
       // send doc through the AE
       cas.setDocumentText(document);

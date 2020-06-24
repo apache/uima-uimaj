@@ -53,6 +53,7 @@ public class OutlinePageBook extends CasEditorViewPage
       viewer.removeSelectionChangedListener(this);
     
     IPageSite site = new SubPageSite(getSite());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
 
     if (book != null && page != null) {
       try {
@@ -81,6 +82,7 @@ public class OutlinePageBook extends CasEditorViewPage
    * @return the cas view page
    */
   public IPageBookViewPage getCasViewPage() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
     return casViewPage;
   }
 }

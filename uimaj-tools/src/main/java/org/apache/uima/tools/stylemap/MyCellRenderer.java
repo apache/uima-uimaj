@@ -34,6 +34,7 @@ import org.apache.uima.tools.images.Images;
  * The Class MyCellRenderer.
  */
 // cell renderer for the JTable
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 class MyCellRenderer extends DefaultTableCellRenderer {
   
   /** The Constant serialVersionUID. */
@@ -58,6 +59,7 @@ class MyCellRenderer extends DefaultTableCellRenderer {
           boolean hasFocus, int row, int column, ArrayList styleList) {
     Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
             column);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     StyleMapEntry e = (StyleMapEntry) styleList.get(row);
     if (e != null) {

@@ -191,6 +191,7 @@ public class ParameterSection extends AbstractSectionParm {
    */
   public ParameterSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Configuration Parameters",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "This section shows all configuration parameters defined for this engine.");
   }
 
@@ -227,6 +228,7 @@ public class ParameterSection extends AbstractSectionParm {
 
     usingGroupsButton = newCheckBox(sectionClient, "Use Parameter Groups",
             "Check this box if Groups are being used with Parameters");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     groupingControl = new2ColumnComposite(sectionClient);
     ((GridData) groupingControl.getLayoutData()).grabExcessVerticalSpace = false;
@@ -234,7 +236,9 @@ public class ParameterSection extends AbstractSectionParm {
     toolkit.paintBordersFor(groupingControl);
 
     defaultGroup = newLabeledTextField(groupingControl, "Default Group",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Specify the name of the default group.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
     newLabelWithTip(groupingControl, "SearchStrategy", 
             "Fallback strategy when a parameter is not found in the specified group");
     searchStrategy = newCComboWithTip(groupingControl, 
@@ -257,6 +261,7 @@ public class ParameterSection extends AbstractSectionParm {
     Composite buttonContainer = newButtonContainer(tableContainer);
     addButton = newPushButton(buttonContainer, S_ADD, "Click here to add a new parameter");
     addGroupButton = newPushButton(buttonContainer, "AddGroup",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Click here to add a group specification.  A group specification names one or more group names.");
     editButton = newPushButton(buttonContainer, S_EDIT, S_EDIT_TIP);
     removeButton = newPushButton(buttonContainer, S_REMOVE, S_REMOVE_TIP);
@@ -281,6 +286,7 @@ public class ParameterSection extends AbstractSectionParm {
     cpd = getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
 
     if ((firstTime && isParmGroup()) || isAggregate()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || (!firstTime && usingGroupsButton.getSelection())) {
       usingGroupsButton.setSelection(true);
       groupingControl.setVisible(true);
@@ -298,6 +304,7 @@ public class ParameterSection extends AbstractSectionParm {
     splitGroupNames = false;
     clearAndRefillTree(usingGroupsButton.getSelection());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     maybeSetSelection(tree, 0);
     enable();
 
@@ -305,6 +312,7 @@ public class ParameterSection extends AbstractSectionParm {
     // to this page after having shown settings page - may be out of date
     ParameterSettingsSection settingsSection = editor.getSettingsPage()
             .getParameterSettingsSection();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (null != settingsSection) {
       setSettings(settingsSection);
@@ -327,6 +335,7 @@ public class ParameterSection extends AbstractSectionParm {
       if (usingGroupsButton.getSelection()) {
       } else {
         if (Window.CANCEL == Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .popOkCancel(
                         "Confirm Remove Groups",
                         "This action will delete any group information that may be present in this descriptor.  Proceed?",
@@ -357,6 +366,7 @@ public class ParameterSection extends AbstractSectionParm {
         setFileDirty();
     } else if (event.widget == addGroupButton) {
       CommonInputDialog dialog = new CommonInputDialog(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               this,
               "Add Group",
               "Specify one or more unique group names, separated by 1 space character, and press OK",
@@ -381,6 +391,7 @@ public class ParameterSection extends AbstractSectionParm {
       if (!valid) {
         if (isPrimitive())
           Utility.popMessage("Wrong item selected",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "Please first select the group under which to add a parameter",
                   MessageDialog.ERROR);
         else
@@ -395,6 +406,7 @@ public class ParameterSection extends AbstractSectionParm {
         if (isParmSelection())
           parentGroup = parentGroup.getParentItem();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
         AddParameterDialog dialog = new AddParameterDialog(this, getCorrespondingModelGroup(parentGroup));
                 //getName(parentGroup));
         if (dialog.open() == Window.CANCEL)
@@ -405,6 +417,7 @@ public class ParameterSection extends AbstractSectionParm {
         if (null != parentGroup)
           parentGroup.setExpanded(true);
         commonActionFinish();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       } else { // is aggregate - add an override
         TreeItem parentParm = tree.getSelection()[0];
         if (isOverride(parentParm))
@@ -416,6 +429,7 @@ public class ParameterSection extends AbstractSectionParm {
       TreeItem editItem = tree.getSelection()[0];
       if (isParameter(editItem) && isPrimitive()) {
         AddParameterDialog dialog = new AddParameterDialog(this,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 getCorrespondingModelParm(editItem));
         if (dialog.open() == Window.CANCEL)
           return;
@@ -424,6 +438,7 @@ public class ParameterSection extends AbstractSectionParm {
         alterExistingConfigurationParameter(dialog, editItem);
         // TODO consequences of changes in rest of model?
         commonActionFinishDirtyIfChange();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       } else if (isParameter(editItem) && isAggregate()) {
         // can edit name and description, but not Type (set from override)
         ConfigurationParameter existingCP = getCorrespondingModelParm(editItem);
@@ -445,6 +460,7 @@ public class ParameterSection extends AbstractSectionParm {
           return; // can't change the name of these groups
 
         CommonInputDialog dialog = new CommonInputDialog(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 this,
                 "Edit group",
                 "Specify one or more unique group names, separated by 1 space character, and press OK",
@@ -461,6 +477,7 @@ public class ParameterSection extends AbstractSectionParm {
       }
     } else if ((event.widget == removeButton)
             || (event.widget == tree && event.type == SWT.KeyUp && event.character == SWT.DEL)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // handle remove - of all selected items
       // if a group is selected, removing the group also removes all the parms in the group
@@ -489,6 +506,7 @@ public class ParameterSection extends AbstractSectionParm {
    * @param overrideIndex the override index
    */
   private void addOrEditOverride(TreeItem parmItem, int overrideIndex) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
     ConfigurationParameter cp = getCorrespondingModelParm(parmItem);
     TreeItem groupItem = parmItem.getParentItem();
     ConfigGroup cg = getCorrespondingModelGroup(groupItem);
@@ -505,8 +523,10 @@ public class ParameterSection extends AbstractSectionParm {
     }
     // only picks one override key - but code is from earlier design where multiple keys were
     // possible
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     PickOverrideKeysAndParmName dialog = new PickOverrideKeysAndParmName(this, delegateMap,
             "Override Keys and Parameter Name Selection", cp, cg, overrideIndex == -1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
 
     dialog.setTitle("Delegate Keys and Parameter Name Selection");
     dialog
@@ -529,6 +549,7 @@ public class ParameterSection extends AbstractSectionParm {
       String[] overrides = cp.getOverrides();
       overrides[overrideIndex] = setValueChanged(overrideSpec, overrides[overrideIndex]);
       cp.setOverrides(overrides);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
       parmItem.getItems()[overrideIndex].setText(OVERRIDE_HEADER + overrideSpec);
     }
     // TODO consequences of changes in rest of model?
@@ -556,6 +577,8 @@ public class ParameterSection extends AbstractSectionParm {
       if (isGroup[i]) {
         if (NOT_IN_ANY_GROUP.equals(namesToRemove[i]))
           msgGroup
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .append("\nThis action removes all parameter descriptions in the <Not in any group> section.");
         else {
           if (i > 0)
@@ -581,11 +604,13 @@ public class ParameterSection extends AbstractSectionParm {
         else
           oMsg.append("\nOverride being removed: \n");
         oMsg.append(namesToRemove[i]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       } else
         throw new InternalErrorCDE("invalid state");
     }
 
     if (giveWarningMsg
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && Window.CANCEL == Utility.popOkCancel("Confirm Remove",
                     "Please confirm remove, or Cancel.\n" + msgGroup.toString() + msg.toString()
                             + oMsg.toString(), MessageDialog.WARNING))
@@ -624,6 +649,7 @@ public class ParameterSection extends AbstractSectionParm {
     String parentGroupName = getName(parentItem.getText());
     if (parentGroupName.equals(NOT_IN_ANY_GROUP))
       cpd.setConfigurationParameters(removeConfigurationParameter(cpd.getConfigurationParameters(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               nameToRemove));
     else if (parentGroupName.equals(COMMON_GROUP))
       cpd.setCommonParameters(commonParms = removeConfigurationParameter(cpd.getCommonParameters(),
@@ -663,6 +689,7 @@ public class ParameterSection extends AbstractSectionParm {
       // remove all non-group parm definitions
       disposeAllChildItems(itemToRemove);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } else {
       ConfigurationGroup cg = getConfigurationGroup(nameToRemove);
       // remove settings for all parms in the group too
@@ -685,8 +712,10 @@ public class ParameterSection extends AbstractSectionParm {
    * @param override the override
    */
   public void addParm(String name, ConfigurationParameter modelParm, ConfigGroup group,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String override) {
     TreeItem parentGroup = getTreeItemGroup(group);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
     AddParameterDialog dialog = new AddParameterDialog(this, group);
     dialog.parmName = name;
     dialog.description = modelParm.getDescription();
@@ -694,6 +723,7 @@ public class ParameterSection extends AbstractSectionParm {
     dialog.multiValue = modelParm.isMultiValued();
     dialog.parmType = modelParm.getType();
     // dialog.overrideSpec = override;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     ConfigurationParameter parmInGroup = addNewConfigurationParameter(dialog, parentGroup);
     addOverride(parmInGroup, override);
     parentGroup.setExpanded(true);
@@ -725,6 +755,7 @@ public class ParameterSection extends AbstractSectionParm {
    * @return the configuration group[]
    */
   private ConfigurationGroup[] removeConfigurationGroup(ConfigurationGroup[] groups,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ConfigurationGroup cg) {
     return (ConfigurationGroup[]) Utility.removeElementFromArray(groups, cg,
             ConfigurationGroup.class);
@@ -758,6 +789,8 @@ public class ParameterSection extends AbstractSectionParm {
   private String[] removeOverride(ConfigurationParameter cp, int i) {
     String[] oldOverrides = cp.getOverrides();
     String[] newOverrides = new String[oldOverrides.length - 1];
+//IC see: https://issues.apache.org/jira/browse/UIMA-414
+//IC see: https://issues.apache.org/jira/browse/UIMA-415
     if (i > 0)
       System.arraycopy(oldOverrides, 0, newOverrides, 0, i);
     if (oldOverrides.length - 1 - i > 0)
@@ -773,6 +806,7 @@ public class ParameterSection extends AbstractSectionParm {
    */
   public ConfigGroup addGroup(ConfigGroup group) {
     String groupName = group.getName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String[] groupNameArray = group.getNameArray();
     if (group.getKind() == ConfigGroup.COMMON) {
       groupNameArray = getAllGroupNames(group.getCPD());
@@ -784,6 +818,7 @@ public class ParameterSection extends AbstractSectionParm {
     // fill(commonParms, item); // don't add common parsm, they're added by definition
     addGroupToModel(cg);
     cg.setNames(groupNameArray);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     tree.setSelection( item );
     return new ConfigGroup(cpd, cg);
   }
@@ -820,6 +855,7 @@ public class ParameterSection extends AbstractSectionParm {
     // shouldn't be defined more than once
     if (groupNameAlreadyDefined(newGroupNames)) {
       Utility.popMessage("Group Already Defined",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "This set of group names has already been defined." + "\n\nGroup: " + names,
               MessageDialog.ERROR);
       return false;
@@ -850,6 +886,7 @@ public class ParameterSection extends AbstractSectionParm {
             settingsItem.setData(null);
             fill(mcg.getConfigParms(), settingsItem);
             fill(commonParms, settingsItem);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           } else {
             fillInFrontOfCommon(mcg.getConfigParms(), settingsItem);
           }
@@ -858,6 +895,7 @@ public class ParameterSection extends AbstractSectionParm {
 
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     tree.setSelection( item );
     return true;
   }
@@ -964,6 +1002,8 @@ public class ParameterSection extends AbstractSectionParm {
     cp.setOverrides(addOverrideToArray(cp.getOverrides(), override));
     addOverrideToGUI(parent, override);
     parent.setExpanded(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-414
+//IC see: https://issues.apache.org/jira/browse/UIMA-415
     commonActionFinish();
   }
 
@@ -974,6 +1014,7 @@ public class ParameterSection extends AbstractSectionParm {
    * @param existingTreeItem the existing tree item
    */
   private void alterExistingConfigurationParameter(AddParameterDialog dialog,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           TreeItem existingTreeItem) {
     ConfigurationParameter existingCP = getCorrespondingModelParm(existingTreeItem);
     ConfigurationParameter previousCP = existingCP;
@@ -991,6 +1032,7 @@ public class ParameterSection extends AbstractSectionParm {
     // If the name changes, change existing settings for that parm name in all groups
 
     if ((!previousCP.getType().equals(existingCP.getType()))
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || (previousCP.isMultiValued() != existingCP.isMultiValued())) {
       removeParmSettingFromMultipleGroups(existingTreeItem, !REMOVE_FROM_GUI);
     }
@@ -1006,6 +1048,7 @@ public class ParameterSection extends AbstractSectionParm {
    * @param prevName the prev name
    */
   private void commonParmUpdate(TreeItem existingTreeItem, ConfigurationParameter existingCP,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String prevName) {
     updateParmInSettingsGUI(existingCP, existingTreeItem, prevName);
 
@@ -1016,6 +1059,7 @@ public class ParameterSection extends AbstractSectionParm {
       String[] allGroupNames = new String[] { null };
       if (usingGroupsButton.getSelection()) {
         allGroupNames = (String[]) Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .addElementToArray(getAllGroupNames(), null, String.class);
       }
       Object value;
@@ -1040,11 +1084,13 @@ public class ParameterSection extends AbstractSectionParm {
     valueChanged = false;
     existingCP.setName(setValueChanged(dialog.parmName, existingCP.getName()));
     existingCP.setDescription(setValueChanged(multiLineFix(dialog.description), existingCP
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getDescription()));
     existingCP.setMandatory(setValueChangedBoolean(dialog.mandatory, existingCP.isMandatory()));
     existingCP
             .setMultiValued(setValueChangedBoolean(dialog.multiValue, existingCP.isMultiValued()));
     existingCP.setType(setValueChanged(dialog.parmType, existingCP.getType()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
     existingCP.setExternalOverrideName(setValueChanged(dialog.extParmName, existingCP.getExternalOverrideName()));
     if (valueChanged)
       setFileDirty();
@@ -1059,6 +1105,7 @@ public class ParameterSection extends AbstractSectionParm {
    * @return the configuration parameter
    */
   private ConfigurationParameter addNewConfigurationParameter(AddParameterDialog dialog,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           TreeItem group) {
     ConfigurationParameter newCP = new ConfigurationParameter_impl();
     fillModelParm(dialog, newCP);
@@ -1123,6 +1170,7 @@ public class ParameterSection extends AbstractSectionParm {
    */
   private ConfigurationParameter[] addParmToArray(ConfigurationParameter[] cps,
           ConfigurationParameter newCP) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (null == cps) {
       return new ConfigurationParameter[] { newCP };
@@ -1158,6 +1206,7 @@ public class ParameterSection extends AbstractSectionParm {
    * @return true, if successful
    */
   public static boolean parameterNameAlreadyDefinedNoMsg(String name,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ConfigurationParameterDeclarations pCpd) {
     if (pCpd.getCommonParameters() != null) {
       if (parameterInArray(name, pCpd.getCommonParameters()))
@@ -1189,6 +1238,7 @@ public class ParameterSection extends AbstractSectionParm {
    * @return true, if successful
    */
   public boolean parameterNameAlreadyDefinedNoMsg(String name, ConfigGroup cgset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
     if (cgset.getKind() == ConfigGroup.NOT_IN_ANY_GROUP) {
       return parameterInArray(name, cgset.getConfigParms());
     }
@@ -1240,6 +1290,7 @@ public class ParameterSection extends AbstractSectionParm {
     boolean alreadyDefined = parameterNameAlreadyDefinedNoMsg(name, cgset);
     if (alreadyDefined) {
       Utility.popMessage("Parameter Already Defined",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "The following parameter is already defined in the list. Parameter names must be unique."
                       + "\n\nParameter: " + name
                       + (cgset.getKind() == ConfigGroup.NOT_IN_ANY_GROUP ? "" : "\nGroup: " + cgset.getName()),
@@ -1294,6 +1345,7 @@ public class ParameterSection extends AbstractSectionParm {
 
     addButton.setEnabled(isPrimitive() || tree.getSelectionCount() == 1
             && (isParmSelection() || isOverrideSelection()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     addGroupButton.setEnabled(isPrimitive() && usingGroups);
 

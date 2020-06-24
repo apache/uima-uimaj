@@ -47,6 +47,7 @@ public class DescriptorMetaData {
    * @return the name
    */
   public String getName() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (editor.isLocalProcessingDescriptor())
       return editor.getAeDescription().getMetaData().getName();
     if (editor.isTypeSystemDescriptor())

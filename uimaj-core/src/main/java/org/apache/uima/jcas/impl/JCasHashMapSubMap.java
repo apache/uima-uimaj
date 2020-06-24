@@ -102,6 +102,7 @@ class JCasHashMapSubMap implements Iterable<TOP> {
   private void incrementSize() {
 //    synchronized(synclock) {  // guaranteed by caller
   //    assert(lock.getHoldCount() > 0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
       if (size >= sizeWhichTriggersExpansion) {
         increaseTableCapacity();
       }
@@ -155,6 +156,7 @@ class JCasHashMapSubMap implements Iterable<TOP> {
    */
   private TOP find(final TOP[] localTable, final int key, final int hash, final int[] probeInfo) {
     int nbrProbes = 1;  // for histogram
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
     final int localTblLength = localTable.length;
     final int bitMask = localTblLength - 1;
 
@@ -516,6 +518,7 @@ class JCasHashMapSubMap implements Iterable<TOP> {
   final TOP get(final int key, final int hash) {
 
     final int[] probeInfo = probeInfoGet.get();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
     resetProbeInfo(probeInfo);
     
     TOP[] localTable = table;
@@ -575,6 +578,7 @@ class JCasHashMapSubMap implements Iterable<TOP> {
       System.out.println("Capacity increasing from " + oldCapacity + " to " + newCapacity);
     }
     table = newTableKeepSize(newCapacity);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
     final int[] probeInfo = probeInfoPutInner.get();
     for (int i = 0; i < oldCapacity; i++) {
       TOP fs = oldTable[i];
@@ -606,6 +610,7 @@ class JCasHashMapSubMap implements Iterable<TOP> {
 
   
   private TOP re_find(TOP[] localTable, int key, int hash, int[] probeInfo) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
     if (localTable != table) {
       resetProbeInfo(probeInfo);
     }

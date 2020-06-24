@@ -68,6 +68,7 @@ public class IndexCorruptionReportingTest extends TestCase {
   
   private FsIndex_bag<TOP> cbi() {
     FSIndexComparator comparatorForIndexSpecs = new FSIndexComparatorImpl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new FsIndex_bag<>(cas, ts.getTopType(), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
   }
 
@@ -79,6 +80,7 @@ public class IndexCorruptionReportingTest extends TestCase {
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 10);
     a.addToIndexes();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     try {
       a.setBegin(2);
     } catch (UIMARuntimeException e) {

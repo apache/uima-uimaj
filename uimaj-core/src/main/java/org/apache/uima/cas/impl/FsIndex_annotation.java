@@ -52,10 +52,12 @@ public class FsIndex_annotation <T extends AnnotationFS>
     }
     // return non-constrained, non-strict, unambiguous iterator
     boolean strict = false;  // https://issues.apache.org/jira/browse/UIMA-5063
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new Subiterator<>(iterator(),
         null,
         ambiguous,
         strict,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
         null, // no BoundsUse
         true, // type priority used
         true // ignored
@@ -74,6 +76,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
       return iterator(orderNotNeeded, ignoreType);
     }
     // return non-constrained, non-strict, unambiguous iterator
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new Subiterator<>(iterator(orderNotNeeded, ignoreType),
         null,   // no bounding fs
         ambiguous,
@@ -102,12 +105,15 @@ public class FsIndex_annotation <T extends AnnotationFS>
    */
   @Override
   public FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new Subiterator<>(iterator(),
         (Annotation) annot,
         ambiguous,
         strict,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
         BoundsUse.coveredBy,  // isBounded 
         true,  // uses type priority
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
         true  // skip returning results equal to annot
     );
   }
@@ -119,6 +125,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
    */
   @Override
   public AnnotationTree<T> tree(T annot) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     AnnotationTreeImpl<T> tree = new AnnotationTreeImpl<>();
     AnnotationTreeNodeImpl<T> root = new AnnotationTreeNodeImpl<>();
     tree.setRoot(root);
@@ -131,7 +138,9 @@ public class FsIndex_annotation <T extends AnnotationFS>
     AnnotationTreeNodeImpl<T> dtr;
     T annot;
     while (it.isValid()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       annot = it.nextNvc();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       dtr = new AnnotationTreeNodeImpl<>();
       dtr.set(annot);
       node.addChild(dtr);
@@ -141,6 +150,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
 
   @Override
   public FSIndex<T> withSnapshotIterators() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     FsIndex_singletype<T> idx = getFsIndex_singleType();
     return new FsIndex_snapshot<>(this, idx.comparatorWithoutID, 
                                         idx.comparatorNoTypeWithoutID);

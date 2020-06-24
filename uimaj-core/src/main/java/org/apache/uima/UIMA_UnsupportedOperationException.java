@@ -86,6 +86,7 @@ public class UIMA_UnsupportedOperationException extends UIMARuntimeException {
    *          arguments.
    */
   public UIMA_UnsupportedOperationException(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
@@ -107,7 +108,10 @@ public class UIMA_UnsupportedOperationException extends UIMARuntimeException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public UIMA_UnsupportedOperationException(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments, Throwable aCause) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5574
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     super(aCause, aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -141,6 +145,7 @@ public class UIMA_UnsupportedOperationException extends UIMARuntimeException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public UIMA_UnsupportedOperationException(String aMessageKey, Object[] aArguments,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Throwable aCause) {
     super(aMessageKey, aArguments, aCause);
   }

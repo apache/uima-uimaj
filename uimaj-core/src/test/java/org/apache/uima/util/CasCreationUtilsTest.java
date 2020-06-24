@@ -91,20 +91,25 @@ public class CasCreationUtilsTest extends TestCase {
     try {
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/TypeSystem1.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       Assert.assertEquals(1, ts1desc.getType("Type1").getFeatures().length);
       Assert.assertEquals(1, ts1desc.getType("Type2").getFeatures().length);
       Assert.assertEquals(1, ts1desc.getType("Type3").getFeatures().length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-182
 
       TypeSystemDescription ts2desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/TypeSystem2.xml")));
       Assert.assertEquals(1, ts2desc.getType("Type1").getFeatures().length);
       Assert.assertEquals(1, ts2desc.getType("Type2").getFeatures().length);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       ArrayList<TypeSystemDescription> tsList = new ArrayList<>();
       tsList.add(ts1desc);
       tsList.add(ts2desc);
+//IC see: https://issues.apache.org/jira/browse/UIMA-182
       Map typesWithMergedFeatures = new HashMap();
+//IC see: https://issues.apache.org/jira/browse/UIMA-402
       TypeSystemDescription merged = CasCreationUtils.mergeTypeSystems(tsList, UIMAFramework
               .newDefaultResourceManager(), typesWithMergedFeatures);
 
@@ -113,6 +118,7 @@ public class CasCreationUtilsTest extends TestCase {
       Assert.assertEquals(1, merged.getType("Type3").getFeatures().length);
 
       assertEquals(2, typesWithMergedFeatures.size());
+//IC see: https://issues.apache.org/jira/browse/UIMA-182
       assertTrue(typesWithMergedFeatures.containsKey("Type1"));
       assertTrue(typesWithMergedFeatures.containsKey("Type2"));
 
@@ -126,6 +132,7 @@ public class CasCreationUtilsTest extends TestCase {
   
   public void testMergeTypeSystemElementType() throws Exception {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-529
 
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser()
           .parseTypeSystemDescription(
@@ -149,8 +156,10 @@ public class CasCreationUtilsTest extends TestCase {
 
       checkMergeTypeSystem(ts1desc, "TypeSystemMergeOkMultiRef.xml", null);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-529
       checkMergeTypeSystem(ts1desc, "TypeSystemMergeNoElementType.xml", null);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-655
       checkMergeTypeSystem(ts1desc, "typeSystemMergeTopElementType.xml", null);
       
       checkMergeTypeSystem(ts1desc, "TypeSystemMergeWrongElementTypeWithNone.xml",
@@ -161,6 +170,7 @@ public class CasCreationUtilsTest extends TestCase {
   }
     
   private TypeSystemDescription checkMergeTypeSystem(TypeSystemDescription ts1desc, String typeFile, String msgKey)
+//IC see: https://issues.apache.org/jira/browse/UIMA-655
   throws Exception {
     TypeSystemDescription mergedTS = null;
     try {
@@ -202,6 +212,8 @@ public class CasCreationUtilsTest extends TestCase {
               new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/SupertypeMergeTest2.xml")));
       assertEquals("uima.test.Super", ts2desc.getType("uima.test.Sub").getSupertypeName());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<TypeSystemDescription> tsList = new ArrayList<>();
       tsList.add(ts1desc);
       tsList.add(ts2desc);
@@ -211,6 +223,7 @@ public class CasCreationUtilsTest extends TestCase {
 
       // try merging in the other order - bug UIMA-826 was an order dependency in the behavior of
       // this kind of merging
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       tsList = new ArrayList<>();
       tsList.add(ts2desc);
       tsList.add(ts1desc);
@@ -229,6 +242,7 @@ public class CasCreationUtilsTest extends TestCase {
       String pathSep = System.getProperty("path.separator");
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getAbsolutePath()
               + pathSep
               + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir").getAbsolutePath()
@@ -239,8 +253,10 @@ public class CasCreationUtilsTest extends TestCase {
               .getFile("CasCreationUtilsTest/AggregateTaeWithImports.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(taeDescriptorWithImport));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       ArrayList<AnalysisEngineDescription> mdList = new ArrayList<>();
       mdList.add(desc);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       CAS tcas = CasCreationUtils.createCas(mdList, UIMAFramework
               .getDefaultPerformanceTuningProperties(), resMgr);
       // check that imports were resolved correctly
@@ -262,7 +278,9 @@ public class CasCreationUtilsTest extends TestCase {
       assertTrue(sentenceArrayType.isArray());
       assertEquals(tcas.getTypeSystem().getType("Sentence"), sentenceArrayType.getComponentType());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       Feature arrayFeat2 = tcas.getTypeSystem().getFeatureByFullName(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "Paragraph:testMultiRefAllowedFeature");
       assertNotNull(arrayFeat2);
       assertTrue(arrayFeat2.isMultipleReferencesAllowed());
@@ -287,7 +305,9 @@ public class CasCreationUtilsTest extends TestCase {
               .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(descFile));
+//IC see: https://issues.apache.org/jira/browse/UIMA-182
       Map mergedTypes = new HashMap();
+//IC see: https://issues.apache.org/jira/browse/UIMA-402
       TypeSystemDescription typeSys = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(desc,
               UIMAFramework.newDefaultResourceManager(), mergedTypes);
 
@@ -336,6 +356,7 @@ public class CasCreationUtilsTest extends TestCase {
 
       // Place has merged features, Person has different supertype
       assertEquals(2, mergedTypes.size());
+//IC see: https://issues.apache.org/jira/browse/UIMA-182
       assertTrue(mergedTypes.containsKey("Place"));
       assertTrue(mergedTypes.containsKey("Person"));
 
@@ -350,6 +371,7 @@ public class CasCreationUtilsTest extends TestCase {
   public void testMergeDelegateAnalysisEngineTypePriorities() throws Exception {
     try {
       File descFile = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(descFile));
@@ -375,6 +397,7 @@ public class CasCreationUtilsTest extends TestCase {
   public void testMergeDelegateAnalysisEngineFsIndexCollections() throws Exception {
     try {
       File descFile = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(descFile));
@@ -414,6 +437,7 @@ public class CasCreationUtilsTest extends TestCase {
       CasCreationUtils.setupTypeSystem(casMgr, tsd1);
       assertNotNull(casMgr.getTypeSystemMgr().getType("test.Super")
               .getFeatureByBaseName("testfeat"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       TypeSystemDescription tsd2 = new TypeSystemDescription_impl();
       tsd2.setTypes(new TypeDescription[] { subtype, supertype });
@@ -422,6 +446,7 @@ public class CasCreationUtilsTest extends TestCase {
       CasCreationUtils.setupTypeSystem(casMgr, tsd2);
       assertNotNull(casMgr.getTypeSystemMgr().getType("test.Super")
               .getFeatureByBaseName("testfeat"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     } catch (ResourceInitializationException e) {
       JUnitExtension.handleException(e);
@@ -432,6 +457,7 @@ public class CasCreationUtilsTest extends TestCase {
     try {
       // parse an AE descriptor
       File taeDescriptorWithImport = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("CasCreationUtilsTest/TaeWithImports.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(taeDescriptorWithImport));
@@ -447,6 +473,7 @@ public class CasCreationUtilsTest extends TestCase {
               + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsolutePath());
 
       // call method
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       ArrayList<AnalysisEngineDescription> descList = new ArrayList<>();
       descList.add(desc);
       CAS cas = CasCreationUtils.createCas(descList, UIMAFramework
@@ -470,6 +497,7 @@ public class CasCreationUtilsTest extends TestCase {
   }
 
   public void testCreateCasCollection() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-61
     try {
       // create two Type System description objects
       TypeSystemDescription tsd1 = new TypeSystemDescription_impl();
@@ -501,6 +529,7 @@ public class CasCreationUtilsTest extends TestCase {
       // create a CAS containing all these definitions
       ArrayList descList = new ArrayList();
       descList.add(tsd1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-402
       descList.add(tsd2);
       descList.add(indexes);
       descList.add(priorities);
@@ -527,6 +556,7 @@ public class CasCreationUtilsTest extends TestCase {
       cas.createFS(subtypeHandle);
       FSIterator iter = cas.getAnnotationIndex().iterator();
       while (iter.isValid()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-402
         if (iter.get().getType() == subtypeHandle) // expected
           break;
         if (iter.get().getType() == supertypeHandle) // unexpected
@@ -570,6 +600,7 @@ public class CasCreationUtilsTest extends TestCase {
   public void testMergeDelegateAnalysisEngineMetaData() throws Exception {
     try {
       File descFile = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(descFile));
@@ -639,6 +670,7 @@ public class CasCreationUtilsTest extends TestCase {
       String[] list2 = priLists[2].getTypes();
       // order of the three lists is not defined
       Assert.assertTrue((list0.length == 2 && list1.length == 2 && list2.length == 3)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || (list0.length == 2 && list1.length == 3 && list2.length == 2)
               || (list0.length == 3 && list1.length == 2 && list2.length == 2));
 
@@ -650,6 +682,7 @@ public class CasCreationUtilsTest extends TestCase {
       String label1 = indexes[1].getLabel();
       String label2 = indexes[2].getLabel();
       Assert.assertTrue(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || label2.equals("DocStructIndex"));
       Assert.assertTrue(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
               || label2.equals("PlaceIndex"));

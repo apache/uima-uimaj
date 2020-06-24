@@ -196,6 +196,7 @@ public class JCasHashMap implements Iterable<TOP> {
             Misc.nextHigherPowerOf2(
                 Math.max(1, capacity / 32)) :
             DEFAULT_CONCURRENCY_LEVEL);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4470
     if (check && (capacity / DEFAULT_CONCURRENCY_LEVEL) < 32) {
       System.out.println(String.format("JCasHashMap concurrency reduced, capacity: %,d DefaultConcur: %d, concur: %d%n",
           capacity, DEFAULT_CONCURRENCY_LEVEL, 
@@ -224,6 +225,7 @@ public class JCasHashMap implements Iterable<TOP> {
     
     initialCapacity = capacity;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4175
     subMaps = new JCasHashMapSubMap[concurrencyLevel];
     subMapInitialCapacity = initialCapacity / concurrencyLevel;  // always 32 or more
     for (int i = 0; i < concurrencyLevel; i++) {
@@ -244,6 +246,7 @@ public class JCasHashMap implements Iterable<TOP> {
    */
   // method used in JCasImpl, when clearing
   static boolean concurrencyLimitedByInitialCapacity(int currentConcurrencyLevel, int curMapSize) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4470
     if (DEFAULT_CONCURRENCY_LEVEL <= currentConcurrencyLevel) {
       return false;
     }
@@ -273,6 +276,7 @@ public class JCasHashMap implements Iterable<TOP> {
   //   shrink if current number of entries
   //      wouldn't trigger an expansion if the size was reduced by 1/2 
   public synchronized void clear() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4175
     for (JCasHashMapSubMap m : subMaps) {
       m.clear();
     }
@@ -281,11 +285,13 @@ public class JCasHashMap implements Iterable<TOP> {
   }
     
   private JCasHashMapSubMap getSubMap(int hash) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3794
     return (null != oneSubmap) ? oneSubmap : subMaps[hash & concurrencyBitmask];
   }
   
   public final TOP putIfAbsent(int key, IntFunction<TOP> creator) {
     final int hash = hashInt(key);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
     final TOP r = getSubMap(hash).putIfAbsent(key, hash >>> concurrencyLevelBits, creator);
     return r;
   }
@@ -351,7 +357,10 @@ public class JCasHashMap implements Iterable<TOP> {
   int[] getCapacities() {
     int[] r = new int[subMaps.length];
     int i = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4175
     for (JCasHashMapSubMap subMap : subMaps) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3774
+//IC see: https://issues.apache.org/jira/browse/UIMA-3784
       r[i++] = subMap.table.length;
     }
     return r;
@@ -369,7 +378,9 @@ public class JCasHashMap implements Iterable<TOP> {
   
   int getCapacity() {
     int r = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4175
     for (JCasHashMapSubMap subMap : subMaps) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3794
       r += subMap.table.length;
     }
     return r;    
@@ -381,6 +392,7 @@ public class JCasHashMap implements Iterable<TOP> {
    */
   public int getApproximateSize() {
     int s = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4175
     for (JCasHashMapSubMap subMap : subMaps) {
       synchronized (subMap) {
         s += subMap.size;
@@ -393,6 +405,7 @@ public class JCasHashMap implements Iterable<TOP> {
     if (TUNE) {
       int sm = -1;
       int agg_tableLength = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4175
       for (JCasHashMapSubMap m : subMaps) {
         sm++;
         int sumI = 0;

@@ -45,8 +45,10 @@ public class IntegerField extends JFormattedTextField {
    */
   public IntegerField(int min, int max, int initialValue) {
     super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     NumberFormatter formatter = new NumberFormatter(numberFormat);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     formatter.setMinimum(min);
     formatter.setMaximum(max);
     formatter.setCommitsOnValidEdit(true);

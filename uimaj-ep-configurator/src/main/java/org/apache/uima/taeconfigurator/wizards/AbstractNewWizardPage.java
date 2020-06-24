@@ -71,11 +71,14 @@ public abstract class AbstractNewWizardPage extends WizardPage {
    * @param defaultNewName the default new name
    */
   public AbstractNewWizardPage(ISelection pSelection, String image, String title,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String description, String defaultNewName) {
     super("wizardPage");
     setTitle(title);
     setDescription(description);
     setImageDescriptor(TAEConfiguratorPlugin.getDefault().getImageDescriptor("big_t_s.gif"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4988
 
     selection = pSelection;
     this.defaultNewName = defaultNewName;
@@ -135,6 +138,7 @@ public abstract class AbstractNewWizardPage extends WizardPage {
   private void initialize() {
 
     if (selection != null && selection.isEmpty() == false
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && selection instanceof IStructuredSelection) {
       IStructuredSelection ssel = (IStructuredSelection) selection;
       if (ssel.size() > 1)
@@ -162,7 +166,9 @@ public abstract class AbstractNewWizardPage extends WizardPage {
    */
   void handleBrowse() {
     ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), ResourcesPlugin
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getWorkspace().getRoot(), false, "Select a containing folder");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     if (dialog.open() == Window.OK) {
       Object[] result = dialog.getResult();
       if (result.length == 1) {

@@ -97,6 +97,7 @@ public class Span implements Comparable<Span> {
    */
   public boolean isIntersecting(Span s) {
     int sstart = s.getStart();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1408
     return this.isContaining(s) || s.isContaining(this) ||
 	   getStart() <= sstart && sstart < getEnd() ||
 	   sstart <= getStart() && getStart() < s.getEnd();

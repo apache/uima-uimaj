@@ -54,10 +54,12 @@ public abstract class SerializationUtils {
    *           if an I/O error occurs
    */
   public static byte[] serialize(Serializable aObject) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aObject == null) {
       return null;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
             ObjectOutputStream objStream = new ObjectOutputStream(byteStream)) {
       objStream.writeObject(aObject);
@@ -85,6 +87,7 @@ public abstract class SerializationUtils {
       return null;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (ByteArrayInputStream byteStream = new ByteArrayInputStream(aBytes);
             ObjectInputStream objStream = new ObjectInputStream(byteStream)) {
       return objStream.readObject();

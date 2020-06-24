@@ -34,6 +34,8 @@ import org.xml.sax.helpers.AttributesImpl;
  * The Class CasProcessorMaxRestartsImpl.
  */
 public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CasProcessorMaxRestarts {
   
   /** The Constant serialVersionUID. */
@@ -124,6 +126,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     setAction(aElement.getAttribute("action"));
     setValue(aElement.getAttribute("value"));
@@ -151,6 +154,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
     attrs.addAttribute("", "value", "value", "CDATA", getValue());
     if (getWaitTimeBetweenRetries() != 0) {
       attrs.addAttribute("", "waitTimeBetweenRetries", "waitTimeBetweenRetries", "CDATA", String
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .valueOf(getWaitTimeBetweenRetries()));
     }
     return attrs;
@@ -167,6 +171,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "maxConsecutiveRestarts", new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the wait time between retries.

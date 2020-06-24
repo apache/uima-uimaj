@@ -38,6 +38,7 @@ import org.eclipse.jface.text.DocumentEvent;
  * Note: Before an instance can be used the document must be set.
  */
 class AnnotationDocument extends Document implements ICasDocument {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2222
 
   /** The m document. */
   private ICasDocument mDocument;
@@ -49,6 +50,8 @@ class AnnotationDocument extends Document implements ICasDocument {
    * Instantiates a new annotation document.
    */
   public AnnotationDocument() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1895
+//IC see: https://issues.apache.org/jira/browse/UIMA-2271
     IPreferenceStore prefStore = CasEditorPlugin.getDefault().getPreferenceStore();
     lineLengthHint = prefStore.getInt(AnnotationEditorPreferenceConstants.EDITOR_LINE_LENGTH_HINT);
 
@@ -63,9 +66,13 @@ class AnnotationDocument extends Document implements ICasDocument {
    * @return the string
    */
   private String transformText(String text) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2107
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     if (lineLengthHint != 0 && text != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
       return wrapWords(text, lineLengthHint);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2107
       if (text != null)
         return text;
       else
@@ -81,6 +88,7 @@ class AnnotationDocument extends Document implements ICasDocument {
   private String getText() {
 
     String text = getCAS().getDocumentText();
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
     return transformText(text);
   }
 
@@ -293,6 +301,9 @@ class AnnotationDocument extends Document implements ICasDocument {
     // but without sending out notifications.
     // The stop and resume notification methods do not yield
     // the desired effect
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
+//IC see: https://issues.apache.org/jira/browse/UIMA-2271
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     String text = transformText(getCAS().getView(viewName).getDocumentText());
     getStore().set(text);
     getTracker().set(text);
@@ -304,6 +315,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   @Override
   public String getTypeSystemText() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2671
     if(mDocument != null) {
       return mDocument.getTypeSystemText();
     }

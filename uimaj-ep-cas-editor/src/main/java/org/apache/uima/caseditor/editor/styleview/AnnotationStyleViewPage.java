@@ -72,6 +72,8 @@ import org.eclipse.ui.part.Page;
  */
 // create new listener interface for this
 class AnnotationStyleViewPage extends Page {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
   /**
    * The Class AnnotationTypeContentProvider.
@@ -89,6 +91,8 @@ class AnnotationStyleViewPage extends Page {
      *
      * @param editor the editor
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     AnnotationTypeContentProvider(AnnotationEditor editor) {
       this.editor = editor;
     }
@@ -121,6 +125,8 @@ class AnnotationStyleViewPage extends Page {
 
     @Override
     public Object[] getElements(Object inputElement) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       return annotationTypes;
     }
 
@@ -298,6 +304,8 @@ class AnnotationStyleViewPage extends Page {
     styleColumn.setText("Style");
     styleColumn.setWidth(100);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     treeViewer.setContentProvider(new AnnotationTypeContentProvider(editor));
     treeViewer.setLabelProvider(new AnnotationStylingLabelProvider(editor));
     
@@ -325,9 +333,12 @@ class AnnotationStyleViewPage extends Page {
       }
     };
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     editor.getCasDocumentProvider().getTypeSystemPreferenceStore(editor.getEditorInput()).
         addPropertyChangeListener(changeListener);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     treeViewer.setCheckedElements(typesToNodes(editor.getShownAnnotationTypes(), editor));
     
     treeViewer.setGrayed(new AnnotationTypeNode(editor, editor.getAnnotationMode()), true);
@@ -413,6 +424,7 @@ class AnnotationStyleViewPage extends Page {
 
   @Override
   public void setFocus() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     treeViewer.getControl().setFocus();
   }
 
@@ -421,11 +433,15 @@ class AnnotationStyleViewPage extends Page {
     super.dispose();
     
     IPreferenceStore store = editor.getCasDocumentProvider().getTypeSystemPreferenceStore(
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
             editor.getEditorInput()); // TODO: Use old input, which was used when the view was created!
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2293
     if (store != null && changeListener != null)        
       store.removePropertyChangeListener(changeListener);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2265
     editor.removeAnnotationListener(editorListener);
   }
 }

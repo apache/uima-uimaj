@@ -33,6 +33,7 @@ public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
   private FsGeneratorArray generatorArray;
   
   public TypeImpl_array(String name, TypeImpl componentType, TypeSystemImpl tsi, TypeImpl supertype, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       SlotKind componentSlotKind, boolean isHeapStoredArray, Class<?> javaClass) {
     super(name, tsi, supertype, javaClass);
     this.isInheritanceFinal = true;
@@ -49,6 +50,7 @@ public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
   
   @Override
   TypeImpl consolidateType(TypeImpl topType, TypeImpl fsArrayType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     if (!(componentType.isPrimitive())) {
         return fsArrayType;  // booleanArrayType, stringArrayType etc.
     }
@@ -68,17 +70,20 @@ public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
   
   @Override
   boolean isAuxStoredArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return !isHeapStoredArray;
   }
   
   /** Component Slot Kind */
   @Override
   public SlotKind getComponentSlotKind() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return componentSlotKind;
   }
   
   @Override
   public boolean subsumes(TypeImpl subType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     if (this == subType) {
       return true;
     }
@@ -102,6 +107,7 @@ public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
     final int superTypeCode = getCode();
     
     if (superTypeCode == fsArrayTypeCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       return !subType.isPrimitiveArrayType();    // primitive 
     }
     
@@ -136,6 +142,7 @@ public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
    */
   @Override
   public boolean isTypedFsArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return componentType.isRefType && 
            componentType.getCode() != fsArrayTypeCode && 
            componentType.getCode() != topTypeCode;

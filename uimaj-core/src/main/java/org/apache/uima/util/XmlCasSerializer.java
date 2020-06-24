@@ -49,6 +49,7 @@ public abstract class XmlCasSerializer {
    *           if an I/O failure occurs
    */
   public static void serialize(CAS aCAS, OutputStream aStream) throws SAXException, IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     XmiCasSerializer.serialize(aCAS, aStream);
   }
 
@@ -72,6 +73,7 @@ public abstract class XmlCasSerializer {
    *           if an I/O failure occurs
    */
   public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException, IOException {
     XmiCasSerializer.serialize(aCAS, aTargetTypeSystem, aStream);
   }

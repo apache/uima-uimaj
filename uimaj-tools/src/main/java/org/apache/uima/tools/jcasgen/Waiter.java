@@ -35,6 +35,7 @@ public class Waiter {
    * Waitfor GUI.
    */
   void waitforGUI() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     synchronized (waitObject) {
       wokeUpIntentionally = false;
       while (wokeUpIntentionally == false) {

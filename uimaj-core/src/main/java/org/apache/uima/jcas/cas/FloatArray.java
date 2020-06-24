@@ -33,6 +33,7 @@ import org.apache.uima.jcas.JCasRegistry;
 
 /** Java Cas model for Cas FloatArray. */
 public final class FloatArray extends TOP 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
                               implements CommonPrimitiveArray<Float>,
                                          Iterable<Float>,
                                          FloatArrayFSImpl {
@@ -61,6 +62,7 @@ public final class FloatArray extends TOP
   private final float[] theArray;
 
   private FloatArray() { // never called. Here to disable default constructor
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     theArray = null;
   }
 
@@ -70,6 +72,7 @@ public final class FloatArray extends TOP
    * @param length the size of the array
    */
   public FloatArray(JCas jcas, int length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     super(jcas);
     theArray = new float[length];
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
@@ -94,6 +97,8 @@ public final class FloatArray extends TOP
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
       _casView.adjustLastFsV2Size_arrays(length);
     }    
   }
@@ -114,6 +119,7 @@ public final class FloatArray extends TOP
    * return the indexed value from the corresponding Cas FloatArray as a float,
    */
   public float get(int i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return theArray[i];
   }
 
@@ -126,7 +132,9 @@ public final class FloatArray extends TOP
    *          value to set
    */
   public void set(int i, float v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     theArray[i] = v;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     _casView.maybeLogArrayUpdate(this, null, i);
   }
 
@@ -135,6 +143,7 @@ public final class FloatArray extends TOP
    */
   public void copyFromArray(float[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
@@ -159,6 +168,7 @@ public final class FloatArray extends TOP
    */
 
   public int size() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return theArray.length;
   }
 
@@ -179,12 +189,14 @@ public final class FloatArray extends TOP
     _casView.checkArrayBounds(theArray.length, destOffset, length);
     for (int i = 0; i < length; i++) {
       // use "set" to get proper journaling
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
       set(i + destOffset, Float.parseFloat(src[i + srcOffset]));
     }
   }
   
   // internal use only
   public float[] _getTheArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return theArray;
   }
   
@@ -195,6 +207,7 @@ public final class FloatArray extends TOP
   public void copyValuesFrom(CommonArrayFS v) {
     FloatArray bv = (FloatArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
@@ -203,6 +216,7 @@ public final class FloatArray extends TOP
    */
   @Override
   public void setArrayValueFromString(int i, String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     set(i, Float.parseFloat(v));    
   }
   
@@ -212,6 +226,7 @@ public final class FloatArray extends TOP
    * @return a newly created and populated array
    */
   public static FloatArray create(JCas jcas, float[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     FloatArray floatArray = new FloatArray(jcas, a.length);
     floatArray.copyFromArray(a, 0, 0, a.length);
     return floatArray;
@@ -223,6 +238,7 @@ public final class FloatArray extends TOP
   @Override
   public Iterator<Float> iterator() {
     return new Iterator<Float>() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
 
       int i = 0;
       

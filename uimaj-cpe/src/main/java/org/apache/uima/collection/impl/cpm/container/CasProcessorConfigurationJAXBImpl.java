@@ -111,7 +111,9 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * @throws ResourceConfigurationException if descriptor error
    */
   public CasProcessorConfigurationJAXBImpl(CpeCasProcessor aCasProcessorConfig, ResourceManager aResourceManager)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     this.resourceManager = aResourceManager;
     
     if (aCasProcessorConfig == null) {
@@ -145,14 +147,17 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
     if (!isJavaProcess()) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_config_non_java_service__FINEST",
                 new Object[] { Thread.currentThread().getName(), name });
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
       nonJavaApp = new NonJavaApplication(this, aCasProcessorConfig); 
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_config_java_service__FINEST",
                 new Object[] { Thread.currentThread().getName(), name });
@@ -205,6 +210,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   private void addIsJavaProcess(CpeCasProcessor aCasProcessorConfig) {
     isJavaProcess = false;
     CasProcessorRunInSeperateProcess runInProcessType = aCasProcessorConfig
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getRunInSeparateProcess();
     if (runInProcessType != null && runInProcessType.getExecutable() != null
             && "java".equals(runInProcessType.getExecutable().getExecutable().trim())) {
@@ -219,6 +225,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    *          configuration object containing Cas Processor configuration
    */
   private void addErrorHandling(CpeCasProcessor aCasProcessorConfig)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     CasProcessorErrorHandling casProcessorErrorHandling = aCasProcessorConfig.getErrorHandling();
 
@@ -245,6 +252,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
 
     if (!validActionOnError(maxRestarts.getAction())) {
       throw new ResourceConfigurationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] { "action",
                   "CPE" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
                       CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_bad_action_string__WARNING",
@@ -271,6 +279,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
 
     if (!validActionOnError(errorRateThresholdType.getAction())) {
       throw new ResourceConfigurationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] { "action",
                   "CPE" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
                       CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_bad_action_string__WARNING",
@@ -293,6 +302,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    *          configuration object containing Cas Processor configuration
    */
   private void addDeploymentParameters(CpeCasProcessor aCasProcessorConfig)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
@@ -308,6 +318,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
       for (int i = 0; parameters != null && i < parameters.length; i++) {
         try {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMAFramework.getLogger(this.getClass()).logrb(
                     Level.FINEST,
                     this.getClass().getName(),
@@ -323,6 +334,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
           // If a value is a path to a file and IS a relative path convert to absolute path using
           // CPE_HOME variable
           String value = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   CPEFactory.CPM_HOME, parameters[i].getParameterValue());
           nvp.setValue(value);
           if (deploymentParameters == null) {
@@ -337,6 +349,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
     }
     CasProcessorRunInSeperateProcess rsp = null;
     if ((rsp = aCasProcessorConfig.getRunInSeparateProcess()) != null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && rsp.getExecutable() != null) {
       // List args = rsp.getExecutable().getArg();
       if (deploymentParameters == null) {
@@ -353,6 +366,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * @throws ResourceConfigurationException -
    */
   private void addDeploymentType(CpeCasProcessor aCasProcessorConfig)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
@@ -380,6 +394,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    *          configuration object containing Cas Processor configuration
    */
   private void addFiltering(CpeCasProcessor aCasProcessorConfig)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
@@ -398,6 +413,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    *          configuration object containing Cas Processor configuration
    */
   private void addBatchSize(CpeCasProcessor aCasProcessorConfig)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
@@ -421,6 +437,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
         batchSize = checkpoint.getBatchSize();
       }
     } catch (NumberFormatException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
               new Object[] { "batch", "<checkpoint>" }, new Exception(CpmLocalizedMessage
                       .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -440,6 +457,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * @throws ResourceConfigurationException -
    */
   private void addDescriptor(CpeCasProcessor aCasProcessorConfig)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
@@ -448,6 +466,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
                       "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING", new Object[] { Thread
                               .currentThread().getName() })));
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     descriptor = aCasProcessorConfig.getCpeComponentDescriptor();
     
     if (descriptor.getInclude() != null) {
@@ -480,6 +499,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    */
   private boolean validActionOnError(String aActionOnError) {
     if (Constants.CONTINUE_DESPITE_ERROR.equals(aActionOnError.toLowerCase())
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || Constants.DISABLE_CASPROCESSOR.equals(aActionOnError.toLowerCase())
             || Constants.TERMINATE_CPE.equals(aActionOnError.toLowerCase())
             || Constants.KILL_PROCESSING_PIPELINE.equals(aActionOnError.toLowerCase())) {
@@ -613,6 +633,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
       filterExpression = getFilterString();
       if (filterExpression != null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                   "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_show_cp_filter__FINEST",
@@ -644,6 +665,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
       String[] keysToDrop = null;
       if (dropFeatureFile != null && dropFeatureFile.trim().length() > 0) {
         String descriptorPath = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 CPEFactory.CPM_HOME, dropFeatureFile);
         try {
           keysToDrop = CPMUtils.getKeys2Drop(descriptorPath); // CPMUtils.scrubThePath(dropFeatureFile));
@@ -654,6 +676,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
       }
     } catch (Exception e) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "parameter" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
                       CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
@@ -679,6 +702,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * @throws ResourceConfigurationException if an import could not be resolved
    */
   public URL getDescriptorUrl() throws ResourceConfigurationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     return descriptor.findAbsoluteUrl(resourceManager);
   }
   

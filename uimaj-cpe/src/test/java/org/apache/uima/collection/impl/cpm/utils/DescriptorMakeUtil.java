@@ -38,6 +38,7 @@ public class DescriptorMakeUtil {
   public static String makeAnalysisEngine(String descFileName) throws Exception {
 
     return makeAnalysisEngine(descFileName, false, null, 0, null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   }
 
@@ -47,6 +48,7 @@ public class DescriptorMakeUtil {
     AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     // set the function to crash, if desired
     aed.getMetaData().getConfigurationParameterSettings().setParameterValue("default",
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
             "TestAnnotator", shouldCrash);
     if (shouldCrash) {
       aed.getMetaData().getConfigurationParameterSettings().setParameterValue(functionName,
@@ -84,6 +86,7 @@ public class DescriptorMakeUtil {
       ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
               "ErrorFunction", functionName);
       ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
               "ErrorCount", errorCount);
       ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
               "ErrorException", exceptionName);
@@ -116,6 +119,7 @@ public class DescriptorMakeUtil {
     CollectionReaderDescription crd = UIMAFramework.getXMLParser()
             .parseCollectionReaderDescription(in);
     crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
             "DocumentCount", documentCount);
     // set the function to crash, if desired
     if (shouldCrash) {
@@ -127,6 +131,9 @@ public class DescriptorMakeUtil {
               "ErrorException", exceptionName);
     }
     File baseDir = JUnitExtension.getFile("CpmTests" + FS + "CpeDesc");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
 
     if (!baseDir.exists()) {
       baseDir.mkdir();
@@ -139,6 +146,7 @@ public class DescriptorMakeUtil {
   }
 
   private static void serializeDescriptor(ResourceCreationSpecifier specifier, OutputStream out)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws Exception {
     specifier.toXML(out);
 

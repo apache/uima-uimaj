@@ -314,6 +314,7 @@ public class TimeSpan {
     boolean started = false;
     if (this.years > 0) {
       buf.append(this.years);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
       buf.append(' ');
       buf.append(yearsString);
       started = true;

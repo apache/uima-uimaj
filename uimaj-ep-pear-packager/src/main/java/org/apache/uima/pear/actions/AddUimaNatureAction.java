@@ -47,6 +47,7 @@ public class AddUimaNatureAction implements IObjectActionDelegate {
    * Constructor.
    */
   public AddUimaNatureAction() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -79,6 +80,7 @@ public class AddUimaNatureAction implements IObjectActionDelegate {
         boolean addNature = false;
         if (currentProject.hasNature(ProjectCustomizer.UIMA_NATURE_ID)) {
           addNature = MessageDialog
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .openQuestion(
                           shell,
                           "UIMA Nature",
@@ -102,6 +104,7 @@ public class AddUimaNatureAction implements IObjectActionDelegate {
             ProjectCustomizer.customizeProject(currentProject, insd);
             if (currentProject.hasNature(ProjectCustomizer.UIMA_NATURE_ID)) {
               MessageDialog.openInformation(shell, "UIMA Nature",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       "The UIMA Nature was added successfully to the '" + currentProject.getName()
                               + "' project.");
             }

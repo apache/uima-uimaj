@@ -39,6 +39,7 @@ public class WorkspaceConfig {
   protected ArrayList search = null;
 
   VNS parent = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   public WorkspaceConfig() {
     workspace = null;

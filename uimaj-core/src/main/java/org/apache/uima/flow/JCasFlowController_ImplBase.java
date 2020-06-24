@@ -33,6 +33,7 @@ public abstract class JCasFlowController_ImplBase extends FlowController_ImplBas
    * @see org.apache.uima.flow.FlowController#getRequiredCasInterface()
    */
   public Class<JCas> getRequiredCasInterface() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-10
     return JCas.class;
   }
 
@@ -41,10 +42,12 @@ public abstract class JCasFlowController_ImplBase extends FlowController_ImplBas
    * {@link #computeFlow(JCas)} is called. If not, an exception is thrown.
    */
   public final Flow computeFlow(AbstractCas aCAS) throws AnalysisEngineProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aCAS instanceof JCas) {
       return computeFlow((JCas) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
                   aCAS.getClass() });
     }

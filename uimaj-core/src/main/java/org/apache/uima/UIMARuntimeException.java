@@ -213,7 +213,9 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
    */
   public UIMARuntimeException(Throwable aCause) {
     super(aCause);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     mCause = aCause;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     if (mMessageKey == null && (aCause instanceof I18nExceptionI)) {
       I18nExceptionI cause = (I18nExceptionI)aCause;
       mMessageKey = cause.getMessageKey();
@@ -233,6 +235,7 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
    *          arguments.
    */
   public UIMARuntimeException(String aMessageKey, Object ... aArguments) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     this((Throwable)null, aMessageKey, aArguments);
   }
 
@@ -242,6 +245,8 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
   }
   
   public UIMARuntimeException(Throwable aCause, String messageBundle, String messageKey, Object ... aArguments) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5574
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     this(aCause, messageKey, aArguments);
     mMessageBundle = messageBundle;
   }
@@ -260,6 +265,7 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
    *          the original exception that caused this exception to be thrown, if any
    */
   public UIMARuntimeException(Throwable aCause, String aMessageKey, Object ... aArguments) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     super();
     mCause = aCause;
     mMessageKey = aMessageKey;
@@ -283,6 +289,7 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
    */
   @Override
   public String getResourceBundleName() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     return mMessageBundle;
   }
   

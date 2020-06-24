@@ -64,6 +64,7 @@ public class PearMergerTest extends TestCase {
   protected void setUp() throws Exception {
     
     // create temporary working directory
+//IC see: https://issues.apache.org/jira/browse/UIMA-269
     File tempFile = File.createTempFile("pear_merger_test_", "tmp");
     if (tempFile.delete()) {
       File tempDir = tempFile;
@@ -95,6 +96,7 @@ public class PearMergerTest extends TestCase {
       throw new FileNotFoundException("temp directory not found");
     // check sample PEAR files
     File[] inpPearFiles = new File[2];
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     inpPearFiles[0] = JUnitExtension.getFile(TEST_FOLDER + File.separator + INP_PEAR_1_FILE);
     if (!inpPearFiles[0].isFile())
       throw new FileNotFoundException("sample PEAR 1 not found");
@@ -112,6 +114,7 @@ public class PearMergerTest extends TestCase {
     Assert.assertTrue(outPearFile.isFile());
     // install the output PEAR file and check the results
     InstallationController insController = new InstallationController(OUT_PEAR_ID, outPearFile,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             _tempWorkingDir);
     InstallationDescriptor insDesc = insController.installComponent();
     Assert.assertTrue(insDesc != null);
@@ -120,6 +123,7 @@ public class PearMergerTest extends TestCase {
     // customize ResourceManager by adding component CLASSPATH
     ResourceManager resMngr = UIMAFramework.newDefaultResourceManager();
     String compClassPath = InstallationController.buildComponentClassPath(insDesc
+//IC see: https://issues.apache.org/jira/browse/UIMA-1273
             .getMainComponentRoot(), insDesc, false);
     // instantiate the aggregate AE
     resMngr.setExtensionClassPath(compClassPath, true);
@@ -130,6 +134,7 @@ public class PearMergerTest extends TestCase {
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpec, resMngr, null);
     Assert.assertTrue(ae != null);
     // create CAS object
+//IC see: https://issues.apache.org/jira/browse/UIMA-269
     CAS cas = ae.newCAS();
     Assert.assertTrue(cas != null);
     

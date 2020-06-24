@@ -77,6 +77,7 @@ public interface ASB extends Resource {
    *           <code>aComponentSpecifiers</code>.
    */
   public void setup(Map<String, ResourceSpecifier> aComponentSpecifiers, UimaContextAdmin aParentContext,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           FlowControllerDeclaration aFlowControllerDeclaration,
           AnalysisEngineMetaData aAggregateMetadata) throws ResourceInitializationException;
 

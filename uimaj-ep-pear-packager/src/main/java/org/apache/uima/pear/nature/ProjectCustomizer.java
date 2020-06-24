@@ -59,6 +59,8 @@ public class ProjectCustomizer {
    *           If a problem occurs
    */
   public static void customizeProject(IContainer container, InstallationDescriptor insd)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws PearException {
     createPearFolderStructure(container);
     PearInstallationDescriptor.createInstallationDescriptor(container, insd, false);
@@ -134,6 +136,7 @@ public class ProjectCustomizer {
       }
     } catch (Throwable e) {
       PearException subEx = new PearException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "The PEAR folder structure could not be created properly.", e);
       throw subEx;
     }
@@ -186,6 +189,7 @@ public class ProjectCustomizer {
           boolean overrideContentIfExist) throws PearException {
     InputStream is = null;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
       is = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
       return createFile(project, fileName, is, overrideContentIfExist);
     } catch (Throwable e) {

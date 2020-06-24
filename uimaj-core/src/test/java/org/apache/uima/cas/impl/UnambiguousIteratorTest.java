@@ -57,8 +57,10 @@ public class UnambiguousIteratorTest extends TestCase {
     // second one contains all annotations twice. So in that case, every
     // other annotation is filtered by the unambiguous iterator.
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File dataDir = JUnitExtension.getFile(casDataDirName);
     File xcasDir = new File(dataDir, xcasSampleDirName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     try {
 
@@ -85,7 +87,9 @@ public class UnambiguousIteratorTest extends TestCase {
        * cas.getAnnotationIndex().size());
        */
       LowLevelCAS llc = cas.getLowLevelCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       final int tokType = llc.ll_getTypeSystem().ll_getCodeForTypeName("uima.tt.TokenAnnotation");
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       LowLevelIndex annotIdx = llc.ll_getIndexRepository().ll_getIndex(CAS.STD_ANNOTATION_INDEX,
               tokType);
       final int annotSizeA1 = iteratorSize(annotIdx.ll_iterator());
@@ -97,6 +101,7 @@ public class UnambiguousIteratorTest extends TestCase {
       xcasFile = new File(xcasDir, sampleXcas2FileName);
       parser.parse(xcasFile, xcasDeserializer.getXCASHandler(cas));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       annotIdx = llc.ll_getIndexRepository().ll_getIndex(CAS.STD_ANNOTATION_INDEX, tokType);
       final int annotSizeA2 = iteratorSize(annotIdx.ll_iterator());
       final int annotSizeU2 = iteratorSize(annotIdx.ll_iterator(false));
@@ -110,6 +115,8 @@ public class UnambiguousIteratorTest extends TestCase {
       assertTrue(annotSizeA2 > annotSizeU2);
       assertEquals(annotSizeA2, annotSizeU2 * 2);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       annotIdx = llc.ll_getIndexRepository().ll_getIndex(CAS.STD_ANNOTATION_INDEX, ((TypeImpl)(cas.getAnnotationType())).getCode());
       iteratorSize(annotIdx.ll_iterator());
       iteratorSize(annotIdx.ll_iterator(false));

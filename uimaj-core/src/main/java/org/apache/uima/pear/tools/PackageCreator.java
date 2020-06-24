@@ -252,6 +252,7 @@ public class PackageCreator {
           throws PackageCreatorException {
     // package pear file with all data from the mainComponentDir
     ZipOutputStream zipFile;
+//IC see: https://issues.apache.org/jira/browse/UIMA-377
     File pearFile;
     
     try {
@@ -272,6 +273,7 @@ public class PackageCreator {
               "error_package_creator_creating_pear_package", new Object[] { componentID }, ex);
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-377
     return pearFile.getAbsolutePath();
   }
 

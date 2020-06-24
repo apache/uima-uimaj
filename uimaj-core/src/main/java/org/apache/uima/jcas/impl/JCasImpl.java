@@ -225,6 +225,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     return casImpl.getTypeSystem();
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4679
   TypeSystemImpl getTypeSystemImpl() {
     return casImpl.getTypeSystemImpl();
   }
@@ -233,6 +235,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getType(int)
    */
   public TOP_Type getType(final int i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     throw new UnsupportedOperationException("UIMA V2 operation not supported in V3");
 //    if (i >= typeArray.length || null == typeArray[i]) {
 //      getTypeInit(i); 
@@ -312,6 +315,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 //   * @throws CASException -
    */
   public static JCasImpl getJCas(CASImpl cas) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4679
     return getJCasImpl(cas);
   }
   
@@ -535,6 +540,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public Type getRequiredType(String s) throws CASException {
     Type t = getTypeSystem().getType(s);
     if (null == t) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4679
       throw new CASException(CASException.JCAS_TYPENOTFOUND_ERROR, s);
     }
     return t;
@@ -548,6 +555,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public Feature getRequiredFeature(Type t, String s) throws CASException {
     Feature f = t.getFeatureByBaseName(s);
     if (null == f) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4679
       throw new CASException(CASException.JCAS_FEATURENOTFOUND_ERROR, t.getName(), s);
     }
     return f;
@@ -632,6 +641,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#reset()
    */
   public void reset() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-143
     casImpl.reset();
   }
   
@@ -670,6 +680,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getSofa()
    */
   public Sofa getSofa() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-143
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
     return (Sofa) casImpl.getSofa();
   }
 
@@ -688,6 +700,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getJCas(org.apache.uima.jcas.cas.Sofa)
    */
   public JCas getJCas(Sofa sofa) throws CASException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-143
     return casImpl.getView(sofa).getJCas();
   }
 
@@ -723,6 +736,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getDocumentAnnotationFs()
    */
   public TOP getDocumentAnnotationFs() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-143
     return (TOP) casImpl.getDocumentAnnotation();
   }
 
@@ -741,6 +755,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getSofaDataString()
    */
   public String getSofaDataString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-187
     return casImpl.getSofaDataString();
   }
 
@@ -768,6 +783,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getSofaMimeType()
    */
   public String getSofaMimeType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-207
     return casImpl.getSofaMimeType();
   }
 
@@ -870,6 +886,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    */
   @Deprecated
   public StringArray getStringArray0L() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     return this.getCas().emptyStringArray();
   }
 
@@ -935,6 +952,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#release()
    */
   public void release() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-143
     casImpl.release();
   }
 
@@ -983,6 +1001,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#removeAllIncludingSubtypes(int)
    */
   public void removeAllIncludingSubtypes(int i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2434
     getFSIndexRepository().removeAllIncludingSubtypes(getCasType(i));    
   }
 
@@ -997,6 +1016,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.cas.CAS#fs2listIterator(FSIterator)
    */
   public <T extends FeatureStructure> ListIterator<T> fs2listIterator(FSIterator<T> it) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-143
     return casImpl.fs2listIterator(it);
   }
 
@@ -1056,6 +1076,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getAnnotationIndex()
    */
   public AnnotationIndex<Annotation> getAnnotationIndex() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
     return casImpl.<Annotation>getAnnotationIndex();
   }
 
@@ -1066,6 +1087,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    */
   @Override
   public <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(Type type) throws CASRuntimeException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
     return (AnnotationIndex<T>) casImpl.<T>getAnnotationIndex(type);
   }
 
@@ -1075,10 +1097,12 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getAnnotationIndex(int)
    */
   public <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(int type) throws CASRuntimeException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
     return (AnnotationIndex<T>) casImpl.<T>getAnnotationIndex(this.getCasType(type));
   }
   
   public <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(Class<T> clazz) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
     return getAnnotationIndex(getCasType(clazz));
   }
 
@@ -1089,6 +1113,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getViewIterator()
    */
   public Iterator<JCas> getViewIterator() throws CASException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<JCas> viewList = new ArrayList<>();
     Iterator<CAS> casViewIter = casImpl.getViewIterator();
     while (casViewIter.hasNext()) {
@@ -1103,6 +1128,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getViewIterator(java.lang.String)
    */
   public Iterator<JCas> getViewIterator(String localViewNamePrefix) throws CASException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<JCas> viewList = new ArrayList<>();
     Iterator<CAS> casViewIter = casImpl.getViewIterator(localViewNamePrefix);
     while (casViewIter.hasNext()) {
@@ -1116,6 +1142,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    */
   @Override
   public AutoCloseable protectIndexes() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4162
+//IC see: https://issues.apache.org/jira/browse/UIMA-4160
+//IC see: https://issues.apache.org/jira/browse/UIMA-4158
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
     return casImpl.protectIndexes();
   }
 
@@ -1131,6 +1161,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * Static method to get the corresponding Type for a JCas class object 
    */
   private static int getTypeRegistryIndex(Class<? extends FeatureStructure> clazz) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
     try {
       return clazz.getField("type").getInt(clazz);
     } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {

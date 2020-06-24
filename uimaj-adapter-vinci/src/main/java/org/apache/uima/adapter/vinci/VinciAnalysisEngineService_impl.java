@@ -87,6 +87,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * @throws Exception passthru
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath, boolean debug, String instanceId)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws Exception {
     this(serviceConfigPath, debug);
     serviceInstanceId = Integer.parseInt(instanceId);
@@ -110,6 +112,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
     String aResourceSpecifierPath = descriptor.getResourceSpecifierPath();
     UIMAFramework.getLogger().log(Level.CONFIG,
             "Resource Specifier Path::" + aResourceSpecifierPath);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
             new XMLInputSource(aResourceSpecifierPath));
@@ -251,6 +254,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
       } else if (Constants.IS_READONLY.equals(op)) {
         ct.cleanup();
         return new AFrame().fadd("Result", mAE.isReadOnly());
+//IC see: https://issues.apache.org/jira/browse/UIMA-216
       } else if (Constants.GET_SUPPORTED_XCAS_VERSIONS.equals(op)) {
         return new AFrame().fadd("Result", Constants.SUPPORTED_XCAS_VERSIONS_RESPONSE);
       } else if (Constants.SHUTDOWN.equals(op)) {
@@ -295,6 +299,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
       }
       UIMAFramework.getLogger().log(
               Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-123
               "VinciAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
       System.out
@@ -302,6 +307,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
                       + descriptor.getServerSocketTimeout());
       _server.setSocketTimeout(descriptor.getServerSocketTimeout());
       _server.setThreadPoolSize(descriptor.getThreadPoolMinSize(), descriptor.getThreadPoolMaxSize());
+//IC see: https://issues.apache.org/jira/browse/UIMA-821
 
       _server.serve();
     } catch (ServiceDownException e) {
@@ -341,6 +347,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
       // check arguments
       if (args.length < 1) {
         System.err.println("Usage: java " + VinciAnalysisEngineService_impl.class.getName()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + " <deployment descriptor file>");
         System.exit(1);
       }
@@ -370,6 +377,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
 
       if (args != null && args.length > 1) {
         vinciService = new VinciAnalysisEngineService_impl(descriptorFile.toString(), debug,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 args[1]);
       } else {
 

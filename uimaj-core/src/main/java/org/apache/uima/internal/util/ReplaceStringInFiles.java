@@ -37,6 +37,7 @@ public class ReplaceStringInFiles {
     private String ext;
 
     private ExtFileFilter(String extension) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       this.ext = extension;
     }
 
@@ -101,6 +102,7 @@ public class ReplaceStringInFiles {
    * @param caseSensitive -         
    */
   public static final void replaceStringInString(String text, String toReplace, String replacement,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ReplacementResult res, boolean caseSensitive) {
     StringBuffer buf = new StringBuffer();
     int current = 0;
@@ -133,6 +135,7 @@ public class ReplaceStringInFiles {
    *           Whenever anything goes wrong reading or writing a file.
    */
   public static final void replaceStringInFiles(File dir, FileFilter fileFilter, String toReplace,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String replacement, boolean caseSensitive) throws IOException {
     // Get all files with correct extension.
     File[] fileList = null;
@@ -188,6 +191,7 @@ public class ReplaceStringInFiles {
   public static void main(String[] args) {
     if (args.length != 4 && args.length != 5) {
       System.out
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .println("Usage: java org.apache.uima.util.ReplaceStringInFile <Dir> <Extension> <ToReplace> <Replacement> [-ignorecase]");
       System.exit(1);
     }
@@ -209,6 +213,7 @@ public class ReplaceStringInFiles {
       File dir = new File(dirName);
       if (dir.isDirectory()) {
         replaceStringInFiles(dir, new ExtFileFilter(extension), toReplace, replacement,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 caseSensitive);
       }
 

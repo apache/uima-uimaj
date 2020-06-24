@@ -67,6 +67,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
   
   private final Map<String, ResultSpecification> lastResultSpecForComponent =
       new HashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
   /**
    * main language separator e.g 'en' and 'en-US'
@@ -83,8 +84,10 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
     mComponentMetaDataMap = aContext.getAnalysisEngineMetaDataMap();
 
     // build a list of AnalysisSequenceNodes from the capabilityLanguageFlow
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     mStaticSequence = new ArrayList<>();
     CapabilityLanguageFlow flowConstraints = (CapabilityLanguageFlow) aContext
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getAggregateMetadata().getFlowConstraints();
     for (String aeKey : flowConstraints.getCapabilityLanguageFlow()) {
       mStaticSequence.add(
@@ -119,6 +122,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
    */
   protected Map<String, List<AnalysisSequenceCapabilityNode>> computeFlowTable(Capability[] aCapabilities) {
     // create flowTable
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, List<AnalysisSequenceCapabilityNode>> flowTable =
         new HashMap<>();
 
@@ -150,10 +154,13 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
    */
   protected List<AnalysisSequenceCapabilityNode> computeSequence(String language, Capability[] aCapabilities) {
     language = Language.normalize(language);  // lower-cases, replaces _ with -, changes null to x-unspecified
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
 
     // create resultSpec from the current aggregate capabilities
+//IC see: https://issues.apache.org/jira/browse/UIMA-730
     ResultSpecification aggrResultsToProduce = UIMAFramework.getResourceSpecifierFactory()
             .createResultSpecification();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (aCapabilities != null) {
       aggrResultsToProduce.addCapabilities(aCapabilities);
@@ -163,12 +170,14 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
 
     // create array list for the current sequence
     List<AnalysisSequenceCapabilityNode> newSequence = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
     // loop over all annotators that should be called
     // In this loop we will gradually reduce the set of output capabilities 
     for (int sequenceIndex = 0; sequenceIndex < mStaticSequence.size(); sequenceIndex++) {
       // get array of output capabilities for the current language from the current result spec
       TypeOrFeature[] tofsNeeded = aggrResultsToProduce.getResultTypesAndFeatures(language);
+//IC see: https://issues.apache.org/jira/browse/UIMA-730
 
       // Augment these outputCapabilities if the language-spec is for a country, to 
       // include the outputCapabilities for the language without the country-spec.
@@ -180,10 +189,12 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
       if (index >= 0) {
         // create Set for outputSpecs, so we can eliminate duplicates
         Set<TypeOrFeature> outputSpec = new HashSet<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
         // add language with country extension removed, 
         // to the existing output capabilities (or if non exist, just use
         // the capabilities for the language without the country extension)
+//IC see: https://issues.apache.org/jira/browse/UIMA-730
         if (tofsNeeded.length > 0) {
           // copy all existing capabilities to the Set
           for (TypeOrFeature outputCapability : tofsNeeded) {
@@ -220,18 +231,22 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
 
       // get next analysis engine from the sequence node
       node = mStaticSequence.get(sequenceIndex);
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
 
       // get capability container from the current analysis engine
       ResultSpecification delegateProduces = node.getCapabilityContainer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-730
 
       // create current analysis result spec without any language information
       currentAnalysisResultSpec = UIMAFramework.getResourceSpecifierFactory()
               .createResultSpecification();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // check if engine should be called - 
       //   loop over all remaining output capabilities of the aggregate's result spec
       //     to see if this component of the aggregate produces that type or feature,
       //     for this language
+//IC see: https://issues.apache.org/jira/browse/UIMA-730
       for (TypeOrFeature tof : tofsNeeded) {
         if ((tof.isType() && delegateProduces.containsType(tof.getName(), language)) ||
             (!tof.isType() && delegateProduces.containsFeature(tof.getName(), language))) {
@@ -268,6 +283,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
   }
 
   public static FlowControllerDescription getDescription() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6200
     FlowControllerDescription desc = getResourceSpecifierFactory().createFlowControllerDescription();
     
     desc.setImplementationName(CapabilityLanguageFlowController.class.getName());

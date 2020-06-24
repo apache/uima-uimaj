@@ -50,6 +50,7 @@ public class Token extends Annotation {
      * @see org.apache.uima.jcas.tcas.Annotation#getTypeIndexID()
      */
     public int getTypeIndexID() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
         return typeIndexID;
     }
 

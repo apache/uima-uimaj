@@ -33,6 +33,7 @@ import org.apache.uima.jcas.cas.TOP;
  *   base on the setting of IteratorExtraFunction
  */
 public class FsIndex_snapshot <T extends FeatureStructure>
+//IC see: https://issues.apache.org/jira/browse/UIMA-5619
                 extends AbstractCollection<T>
                 implements LowLevelIndex<T>, Comparator<FeatureStructure> {
     
@@ -44,6 +45,7 @@ public class FsIndex_snapshot <T extends FeatureStructure>
   private final Comparator<TOP> comparatorNoTypeWithoutId;
   
   public FsIndex_snapshot(FsIndex_iicp<T> wrapped, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
                          Comparator<TOP> comparatorWithoutId,
                          Comparator<TOP> comparatorTypeWithoutId) {
     this.wrapped = wrapped;
@@ -74,6 +76,7 @@ public class FsIndex_snapshot <T extends FeatureStructure>
    */
   @Override
   public LowLevelIterator<T> iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return iterator(IS_ORDERED, IS_TYPE_ORDER);
   }
 
@@ -83,6 +86,7 @@ public class FsIndex_snapshot <T extends FeatureStructure>
   @Override
   public LowLevelIterator<T> iterator(boolean orderNotNeeded, boolean ignoreType) {
     Comparator<TOP> comparatorMaybeNoTypeWithoutID = ignoreType ? comparatorNoTypeWithoutId : comparatorWithoutId;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new FsIterator_subtypes_snapshot<>(new FsIndex_flat<>(wrapped), comparatorMaybeNoTypeWithoutID);
   }
   
@@ -98,6 +102,7 @@ public class FsIndex_snapshot <T extends FeatureStructure>
    */
   @Override
   public FSIndex<T> withSnapshotIterators() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new FsIndex_snapshot<>(wrapped, comparatorWithoutId, comparatorNoTypeWithoutId);
   }
 
@@ -116,9 +121,11 @@ public class FsIndex_snapshot <T extends FeatureStructure>
   
   @Override
   public LowLevelIterator<T> ll_iterator(boolean ambiguous) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     LowLevelIterator<T> it = iterator(IS_ORDERED, IS_TYPE_ORDER);
     return ambiguous 
             ? it
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
             : new LLUnambiguousIteratorImpl<>(it);
   }
 
@@ -137,6 +144,7 @@ public class FsIndex_snapshot <T extends FeatureStructure>
    */
   @Override
   public Comparator<TOP> getComparator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     return wrapped.getComparator();
   }
 
@@ -147,11 +155,13 @@ public class FsIndex_snapshot <T extends FeatureStructure>
 
   @Override
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return wrapped.ll_maxAnnotSpan();
   }
   
   @Override 
   public boolean isSorted() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return wrapped.isSorted();
   }  
   

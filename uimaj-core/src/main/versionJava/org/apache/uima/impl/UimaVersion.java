@@ -57,6 +57,7 @@ public class UimaVersion {
    * @return build year as a String, e.g. "2010"
    */
   public static String getBuildYear() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1934
     return "${buildYear}";
   }
   
@@ -64,6 +65,7 @@ public class UimaVersion {
    * @return build version as a String, e.g., "2.3.1-SNAPSHOT"
    */
   public static String getFullVersionString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1960
     return "${project.version}";
   }
   

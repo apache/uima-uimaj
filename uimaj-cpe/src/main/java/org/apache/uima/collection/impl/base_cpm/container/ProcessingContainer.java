@@ -35,6 +35,8 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * instances at runtime. Aggregates stats and totals and helps with error recovery.
  */
 public abstract class ProcessingContainer extends Resource_ImplBase implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         ConfigurableResource, CasProcessorController {
   public abstract boolean processCas(Object[] aCas);
 
@@ -44,6 +46,7 @@ public abstract class ProcessingContainer extends Resource_ImplBase implements
 
   public abstract boolean isEndOfBatch(CasProcessor aCasProcessor, int aProcessedSize)
           throws ResourceProcessException, IOException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   public abstract boolean abortCPMOnError();
 

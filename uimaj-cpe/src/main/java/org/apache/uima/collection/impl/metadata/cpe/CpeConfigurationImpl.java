@@ -68,6 +68,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
    */
   @Override
   public void setDeployment(String aDeploy) throws CpeDescriptorException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     deployAs = aDeploy;
   }
 
@@ -289,6 +290,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
 
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeConfig",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("numToProcess"),
               new PropertyXmlInfo("deployAs"), new PropertyXmlInfo("checkpoint", null),
               new PropertyXmlInfo("timerImpl"), new PropertyXmlInfo("outputQueue", null),

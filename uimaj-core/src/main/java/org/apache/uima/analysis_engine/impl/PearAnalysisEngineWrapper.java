@@ -217,6 +217,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
             "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_set_system_var__CONFIG",
             new Object[] { key + "=" + value, pkgBrowser.getRootDirectory().getName() });
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
 
       }
 
@@ -235,12 +236,16 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
         }
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1273
       String classPath = pkgBrowser.buildComponentRuntimeClassPath();
       String dataPath = pkgBrowser.getComponentDataPath();
       StringPair sp = new StringPair(classPath, dataPath);
       ResourceManager innerRM;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1493
+//IC see: https://issues.apache.org/jira/browse/UIMA-1494
       synchronized (cachedResourceManagers) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
         Map<StringPair, ResourceManager> c1 = cachedResourceManagers.get(applicationRM);
         if (null == c1) {
           innerRM = createRM(sp, pkgBrowser, applicationRM);
@@ -264,6 +269,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       // Parse the resource specifier
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5730
+//IC see: https://issues.apache.org/jira/browse/UIMA-5730
       AnalysisEngineDescription analysisEngineDescription = (AnalysisEngineDescription) specifier;
       AnalysisEngineMetaData analysisEngineMetaData = analysisEngineDescription
               .getAnalysisEngineMetaData();
@@ -272,6 +279,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
       // Legacy parameters that only support string values.
       Parameter[] parameters = pearSpec.getParameters();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5936
 
       if (parameters != null) {
         for (Parameter parameter : parameters) {
@@ -282,6 +290,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
       // Parameters supporting arbitrary objects as values
       NameValuePair[] pearParameters = pearSpec.getPearParameters();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5936
 
       if (pearParameters != null) {
         for (NameValuePair pearParameter : pearParameters) {
@@ -301,6 +310,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       // modified, and the aAdditionalParameters original object
       // is re-used by the ASB_impl - a caller of this method,
       // for other delegates.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Map<String, Object> clonedAdditionalParameters = (aAdditionalParams == null) ?
           new HashMap<>() : new HashMap<>(aAdditionalParams);
       // clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
@@ -316,6 +326,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     super.initialize(aSpecifier, aAdditionalParams);
 
     UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-351
         "initialize", LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_init_successful__CONFIG",
         new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
 
@@ -378,6 +389,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1562
     CasIterator result = this.ae.processAndOutputNewCASes(aCAS);
     if (logger.isLoggable(Level.FINE)) {    
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE,
@@ -409,6 +421,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    public void reconfigure() throws ResourceConfigurationException {
      // don't call super.reconfigure - that will be done by the call below, but
      // with the correct context.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1466
+//IC see: https://issues.apache.org/jira/browse/UIMA-1467
      ae.reconfigure();
    }
 

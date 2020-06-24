@@ -49,6 +49,7 @@ public interface ArrayFS<E extends FeatureStructure> extends CommonArrayFS<E> {
    *              If <code>i</code> is out of bounds.
    */
   void set(int i, E fs) throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
 
   /**
    * Copy the contents of the array from <code>start</code> to <code>end</code> to the
@@ -67,8 +68,12 @@ public interface ArrayFS<E extends FeatureStructure> extends CommonArrayFS<E> {
    *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
    *              <code>destOffset + length &gt; destArray.length</code>.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
+//IC see: https://issues.apache.org/jira/browse/UIMA-5632
   <U extends FeatureStructure> void copyToArray(int srcOffset, U[] dest, int destOffset, int length)
       throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
 
   /**
    * Copy the contents of an external array into this array.
@@ -86,8 +91,12 @@ public interface ArrayFS<E extends FeatureStructure> extends CommonArrayFS<E> {
    *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
    *              <code>destOffset + length &gt; destArray.length</code>.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
+//IC see: https://issues.apache.org/jira/browse/UIMA-5632
   <T extends FeatureStructure> void copyFromArray(T[] src, int srcOffset, int destOffset, int length)
       throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
 
   /**
    * Creates a new array the this array is copied to.
@@ -103,5 +112,7 @@ public interface ArrayFS<E extends FeatureStructure> extends CommonArrayFS<E> {
    * @return the populated array
    */
   <T extends TOP> T[] toArray(T[] a);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
+//IC see: https://issues.apache.org/jira/browse/UIMA-5632
 
 }

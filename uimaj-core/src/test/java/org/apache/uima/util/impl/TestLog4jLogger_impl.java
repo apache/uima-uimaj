@@ -78,6 +78,7 @@ public class TestLog4jLogger_impl extends TestCase {
 
    public void testIsLoggable() throws Exception {
       // create logger
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
      org.apache.uima.util.Logger uimaLogger = null;
       try {
         uimaLogger = Log4jLogger_impl.getInstance();
@@ -91,12 +92,14 @@ public class TestLog4jLogger_impl extends TestCase {
 
       assertNotNull(uimaLogger);
       assertNotNull(classLogger);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
       Logger log4jLogger = org.apache.logging.log4j.LogManager.getLogger("org.apache.uima");
       while (log4jLogger.getLevel() == null) {
          log4jLogger = LogManager.getRootLogger();
       }
 
       String key = "INFO"; // log4jLogger.getLevel().toString();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
 
       Level defaultLogLevel = Level.INFO; // logLevels.get(key); // doesn't work
 
@@ -186,6 +189,7 @@ public class TestLog4jLogger_impl extends TestCase {
 
    public void testMessageLogMethods() throws Exception {
 //     final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
      final int[] nbrcalls = new int[1];
      nbrcalls[0] = 0;
      
@@ -220,6 +224,7 @@ public class TestLog4jLogger_impl extends TestCase {
      try {
       // create Logger
        // debug
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
       org.apache.uima.util.Logger tempLogger = null;
       try {
         tempLogger = Log4jLogger_impl.getInstance(getClass());
@@ -272,6 +277,8 @@ public class TestLog4jLogger_impl extends TestCase {
       thrown = null;
       logger.log(Level.INFO, "My fourth test message", thrown);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2374
+//IC see: https://issues.apache.org/jira/browse/UIMA-2375
       new Runnable() {
         public void run() {
           logger.log(getClass().getName(), Level.INFO, "Message from wrapper", null);
@@ -288,6 +295,7 @@ public class TestLog4jLogger_impl extends TestCase {
       logger.logException(ex);
       logger.logException(null);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
       assertEquals(16, nbrcalls[0]);  // all calls except those with null or "" msgs (including non-null throwable/exception)
       // https://issues.apache.org/jira/browse/UIMA-5719
       logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
@@ -306,6 +314,7 @@ public class TestLog4jLogger_impl extends TestCase {
      // Tell the logger to log everything
      org.apache.logging.log4j.core.Logger rootLogger = (org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger();
      // create Logger
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
      org.apache.uima.util.Logger logger = Log4jLogger_impl.getInstance();
   
      try {
@@ -398,11 +407,13 @@ public class TestLog4jLogger_impl extends TestCase {
             thrown);
       logger.logrb(Level.INFO, "testClass", "testMethod", null, null, thrown);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
       assertEquals(18, nbrcalls[0]);
      } finally {
        app.removeFilter(filter);  // otherwise, subsequent test's filter gets appended, not replace
      }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
      } finally {
        logger.setLevel(Level.INFO);
        rootLogger.setLevel(org.apache.logging.log4j.Level.INFO);

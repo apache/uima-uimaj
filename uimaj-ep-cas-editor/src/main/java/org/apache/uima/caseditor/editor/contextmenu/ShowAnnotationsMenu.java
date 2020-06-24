@@ -90,6 +90,7 @@ public class ShowAnnotationsMenu extends TypeMenu {
 	protected void insertAction(final Type type, Menu parentMenu) {
 		final MenuItem actionItem = new MenuItem(parentMenu, SWT.CHECK);
 		actionItem.setText(type.getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2120
 
 		// TODO: find another way to select the annotation mode also
 		if (editorAnnotationMode != null && editorAnnotationMode.equals(type)) {
@@ -112,6 +113,7 @@ public class ShowAnnotationsMenu extends TypeMenu {
 					typesToDisplay.remove(type);
 				}
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
 				fireChanged();
 			}
 		});
@@ -138,6 +140,7 @@ public class ShowAnnotationsMenu extends TypeMenu {
 	 * Fire changed.
 	 */
 	private void fireChanged() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
 	   for (IShowAnnotationsListener listener : listeners) {
 	      listener.selectionChanged(getSelectedTypes());
 	    }
@@ -189,6 +192,7 @@ public class ShowAnnotationsMenu extends TypeMenu {
 		if (typesToDisplay.contains(newMode)) {
 			if (editorAnnotationMode != null) {
 				editorAnnotationMode = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
 				fireChanged();
 			}
 		} else {

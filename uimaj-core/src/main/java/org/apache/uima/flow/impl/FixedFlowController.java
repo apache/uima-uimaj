@@ -91,6 +91,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   //      -- this has the added "benefit" (maybe eventually) of having better semantics for letting existing
   //         Flow objects continue to use the "old" settings, and only the new ones picking up the new ones.
   final private List<String> mSequence = new CopyOnWriteArrayList<>();  //UIMA-4013
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
   private int mActionAfterCasMultiplier;
 
@@ -102,11 +103,15 @@ public synchronized void initialize(FlowControllerContext aContext) throws Resou
     mSequence.clear();  // not cleared for multiple init calls (perhaps on multiple threads) with the same context
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
+//IC see: https://issues.apache.org/jira/browse/UIMA-348
     if (flowConstraints instanceof FixedFlow) {
       String[] sequence = ((FixedFlow) flowConstraints).getFixedFlow();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       ArrayList<String> keysToAdd = new ArrayList<>(sequence.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3654
       for( String key : sequence ) {
     	  if( !aContext.getAnalysisEngineMetaDataMap().containsKey(key) )
+//IC see: https://issues.apache.org/jira/browse/UIMA-6200
             throw new ResourceInitializationException(ResourceInitializationException.FLOW_CONTROLLER_MISSING_DELEGATE,
                   new Object[]{this.getClass().getName(), key, aContext.getAggregateMetadata().getSourceUrlString()});
         keysToAdd.add(key);
@@ -117,6 +122,7 @@ public synchronized void initialize(FlowControllerContext aContext) throws Resou
               new Object[]{this.getClass().getName(), "fixedFlow", aContext.getAggregateMetadata().getSourceUrlString()});
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String actionAfterCasMultiplier = (String) aContext
             .getConfigParameterValue(PARAM_ACTION_AFTER_CAS_MULTIPLIER);
     if ("continue".equalsIgnoreCase(actionAfterCasMultiplier)) {
@@ -151,6 +157,7 @@ public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
   @Override
 public void addAnalysisEngines(Collection<String> aKeys) {
     // Append new keys to end of Sequence
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
     mSequence.addAll(aKeys);
   }
 
@@ -164,6 +171,7 @@ public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngin
   }
 
   public static FlowControllerDescription getDescription() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6200
     FlowControllerDescription desc = getResourceSpecifierFactory().createFlowControllerDescription();
     
     desc.setImplementationName(FixedFlowController.class.getName());
@@ -203,6 +211,7 @@ public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngin
   }
   
   public static FlowControllerDescription makeDefaultDescription() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6200
     FlowControllerDescription desc = getResourceSpecifierFactory().createFlowControllerDescription();
     
     desc.setImplementationName(FixedFlowController.class.getName());
@@ -257,6 +266,7 @@ public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngin
      *          index of mSequence to start at
      */
     public FixedFlowObject(int startStep) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
       this(startStep, false);
     }
 
@@ -326,9 +336,11 @@ public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngin
     @Override
     public Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
       // record that the input CAS has been segmented (affects its subsequent flow)
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
       casMultiplierProducedNewCas = true;
       // start the new output CAS from the next node after the CasMultiplier that produced it
       int i = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
       while (!mSequence.get(i).equals(producedBy))
         i++;
       return new FixedFlowObject(i + 1, true);

@@ -88,6 +88,7 @@ public class TypeCombo extends Composite {
    * @param filterTypes the filter types
    */
   public void setInput(Type superType, TypeSystem typeSystem,
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
           Collection<Type> filterTypes) {
     this.typeSystem = typeSystem;
     
@@ -125,6 +126,7 @@ public class TypeCombo extends Composite {
    * @param type the type
    */
   public void select(Type type) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1418
     Integer typeIndex = typeNameList.indexOf(type.getName());
     
     if (typeIndex != null) {

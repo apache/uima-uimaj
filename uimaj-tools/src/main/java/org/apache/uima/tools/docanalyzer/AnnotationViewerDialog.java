@@ -127,6 +127,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   private File styleMapFile;
 
   /** the list of analyzed results */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5563
   JList<String> analyzedResultsList;
   
   /** The input dir path. */
@@ -187,16 +188,19 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     annotationViewGenerator = new AnnotationViewGenerator(tempDir);
 
     launchThatViewer(med.getOutputDir(), interactiveTempFN, aTypeSystem, aTypesToDisplay,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRBisSelected, aStyleMapFile,
             tempDir);
   }
 
   private void resetFiles(String filenameFilter) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5563
     File dir = new File(inputDirPath);
     // Select documents via filter. JMP
     final InteractiveFilter iFilter = new InteractiveFilter(filenameFilter);
     String[] documents = dir.list(iFilter);
     //create an empty array to display
+//IC see: https://issues.apache.org/jira/browse/UIMA-898
     if(documents == null) {
       documents = new String[] {};
     }
@@ -220,6 +224,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   public AnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
           final String[] aTypesToDisplay, boolean generatedStyleMap, CAS cas) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
     super(aParentFrame, aDialogTitle);
     this.med1 = med;
@@ -243,6 +248,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
     // create an jlist to list the the analyzed documents
     inputDirPath = med.getOutputDir();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5563
     analyzedResultsList = new JList<>();
     resetFiles("");
 
@@ -257,6 +263,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     JPanel southernPanel = new JPanel();
     southernPanel.setLayout(new BoxLayout(southernPanel, BoxLayout.Y_AXIS));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5563
     JPanel filterPanel = new JPanel();
     filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.X_AXIS));
     filterPanel.add(new JLabel("Filter: Filename contains "));
@@ -302,6 +309,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     displayFormatButtonGroup.add(xmlRB);
 
     // select the appropraite viewer button according to user's prefs
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     javaViewerRB.setSelected(true); // default, overriden below
     if ("Java Viewer".equals(med.getViewType())) {
       javaViewerRB.setSelected(true);
@@ -320,7 +328,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
     controlsPanel.add(displayFormatPanel);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     SpringUtilities.makeCompactGrid(controlsPanel, 1, 2, // rows, cols
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             4, 4, // initX, initY
             0, 0); // xPad, yPad
 
@@ -345,6 +355,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent ae) {
           JOptionPane.showMessageDialog((Component) ae.getSource(), performanceStats, null,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   JOptionPane.PLAIN_MESSAGE);
         }
       });
@@ -362,14 +373,17 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     getContentPane().add(southernPanel, BorderLayout.SOUTH);
 
     // event for the closeButton button
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     closeButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent ae) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-247
         AnnotationViewerDialog.this.setVisible(false);
       }
     });
 
     // event for analyzedResultsDialog window closing
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     setLF(); // set default look and feel
     analyzedResultsList.setCellRenderer(new MyListCellRenderer());
@@ -393,14 +407,18 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     // read style map XML file if it exists
+//IC see: https://issues.apache.org/jira/browse/UIMA-300
     String styleMapXml = null;
     AnalysisEngineDescription selectedAE = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       if (styleMapFile.exists()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
         styleMapXml = FileUtils.file2String(styleMapFile);
       }
 
       // have user select AE if they haven't done so already
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (selectedAE == null) {
         selectedAE = promptForAE();
       }
@@ -409,6 +427,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
         // launch StyleMapEditor GUI
         String newStyleMap = styleMapEditor.launchEditor(selectedAE.getAnalysisEngineMetaData(),
                 styleMapXml, cas);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
         if (newStyleMap != null) {
           // write new file using AE+StyleMap convention
@@ -434,6 +453,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     private final String filenameFilter;
 
     public InteractiveFilter(String filenameFilter) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5563
       this.filenameFilter = filenameFilter;
     }
     
@@ -446,6 +466,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
         return false;
       if (name.equals("interactive_out"))
         return false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5563
       if (!name.isEmpty())
         return name.contains(filenameFilter);  
       return true;
@@ -459,6 +480,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    * @return the default cas view name
    */
   public String getDefaultCasViewName() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
     return defaultCasViewName;
   }
 
@@ -490,6 +512,8 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    * @param viewerDirectory the viewer directory
    */
   public void launchThatViewer(String inputDirPath, String fileName, TypeSystem typeSystem,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           final String[] aTypesToDisplay, boolean javaViewerRBisSelected,
           boolean javaViewerUCRBisSelected, boolean xmlRBisSelected, File styleMapFile,
           File viewerDirectory) {
@@ -500,12 +524,14 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
       CAS cas = CasCreationUtils.createCas(Collections.EMPTY_LIST, typeSystem, UIMAFramework
               .getDefaultPerformanceTuningProperties());
       // deserialize XCAS into CAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
       try (InputStream xcasInStream = new FileInputStream(xcasFile)) {
         XmlCasDeserializer.deserialize(xcasInStream, cas, true);
       }
       
       //get the specified view
       cas = cas.getView(this.defaultCasViewName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
 
       // launch appropriate viewer
       if (javaViewerRBisSelected || javaViewerUCRBisSelected) { // JMP
@@ -521,7 +547,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
           viewer.setHiddenTypes(new String[] { "uima.cpm.FileLocation" });
         // launch viewer in a new dialog
         viewer.setCAS(cas);
+//IC see: https://issues.apache.org/jira/browse/UIMA-247
         JDialog dialog = new JDialog(AnnotationViewerDialog.this, "Annotation Results for "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + fileName + " in " + inputDirPath); // JMP
         dialog.getContentPane().add(viewer);
         dialog.setSize(850, 630);
@@ -535,10 +563,12 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
         }
         // generate inline XML
         File inlineXmlFile = new File(viewerDirectory, "inline.xml");
+//IC see: https://issues.apache.org/jira/browse/UIMA-3934
         CasToInlineXml casToInlineXml = new CasToInlineXml();
         casToInlineXml.setFormattedOutput(false);
         String xmlAnnotations = casToInlineXml.generateXML(defaultView);
         FileOutputStream outStream = new FileOutputStream(inlineXmlFile);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
         outStream.write(xmlAnnotations.getBytes(StandardCharsets.UTF_8));
         outStream.close();
 
@@ -548,6 +578,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
           med1.setViewType("XML");
 
           BrowserUtil.openUrlInDefaultBrowser(inlineXmlFile.getAbsolutePath());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         } else
         // HTML view
         {
@@ -555,6 +586,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
           // generate HTML view
           // first process style map if not done already
           if (!processedStyleMap) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-304
             if (!styleMapFile.exists()) {
               annotationViewGenerator.autoGenerateStyleMapFile(
                       promptForAE().getAnalysisEngineMetaData(), styleMapFile);
@@ -618,6 +650,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    */
 
   public void getColorsForTypesFromFile(CasAnnotationViewer viewer, File aStyleMapFile) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<Color> colorList = new ArrayList<>();
     List<String> typeList = new ArrayList<>();
     List<String> notCheckedList = new ArrayList<>();
@@ -625,6 +658,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     hiddenList.add("uima.cpm.FileLocation");
 
     if (aStyleMapFile.exists()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       FileInputStream stream = null;
       Document parse = null;
@@ -688,6 +722,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
       }
 
       if (stream != null)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         try {
           stream.close();
         } catch (IOException e) {
@@ -715,6 +750,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     int charCount = 0;
     StringTokenizer tokenizer = new StringTokenizer(aErrorString, " \n", true);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (tokenizer.hasMoreTokens()) {
       String tok = tokenizer.nextToken();
 
@@ -730,7 +766,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
       }
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-247
     JOptionPane.showMessageDialog(AnnotationViewerDialog.this, buf.toString(), "Error",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             JOptionPane.ERROR_MESSAGE);
   }
 
@@ -774,6 +812,8 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    * @throws ResourceInitializationException the resource initialization exception
    */
   protected AnalysisEngineDescription promptForAE() throws IOException, InvalidXMLException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceInitializationException {
     if (med1.getTAEfile() != null) {
       File taeFile = new File(med1.getTAEfile());
@@ -817,6 +857,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    * @return the file
    */
   private File createTempDir() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-300
     File temp = new File(System.getProperty("java.io.tmpdir"), System.getProperty("user.name"));
     temp.mkdir();
     return temp;
@@ -871,6 +912,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
             analyzedResultsList.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             // Start LTV here
             launchThatViewer(inputDirPath, fileName, typeSystem, typesToDisplay, javaViewerRB
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     .isSelected(), javaViewerUCRB.isSelected(), xmlRB.isSelected(), styleMapFile,
                     tempDir);
 

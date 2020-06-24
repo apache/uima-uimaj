@@ -36,6 +36,7 @@ public class Prefs {
    * @param gui the gui
    */
   static void set(GUI gui) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     prefs.putInt("WindowPos X", gui.getLocation().x);
     prefs.putInt("WindowPos Y", gui.getLocation().y);
     prefs.putInt("WindowH", gui.getHeight());
@@ -51,6 +52,7 @@ public class Prefs {
    */
   static void get(GUI gui) {
     gui.setBounds(prefs.getInt("WindowPos X", 200), prefs.getInt("WindowPos Y", 200), prefs.getInt(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "WindowW", 520), prefs.getInt("WindowH", 400));
     gui.pnG.tfOutDirName.setText(prefs.get("outDir", "/temp"));
     String userDir = System.getProperty("user.dir").replaceAll("\\\\", "/");

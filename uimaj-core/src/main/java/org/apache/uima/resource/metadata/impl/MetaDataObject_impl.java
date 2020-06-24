@@ -1639,6 +1639,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   private void writePrimitiveValue(Object aObj)
       throws SAXException {
     // final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
     final SerialContext sc = serialContext.get();
     final Serializer serializer = sc.serializer;
 

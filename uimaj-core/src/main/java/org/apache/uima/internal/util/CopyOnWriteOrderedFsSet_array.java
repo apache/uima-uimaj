@@ -34,6 +34,7 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
     
   final public int a_firstUsedslot;
   final public int a_nextFreeslot;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
   final public OrderedFsSet_array<T> original;
   final private int original_size;
   
@@ -56,6 +57,7 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
    */
   @Override
   public void makeReadOnlyCopy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.set = new OrderedFsSet_array<>(set, true); // true = make read only copy
     this.a = (T[]) set.a;
   }
@@ -120,6 +122,7 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
   @Override
   public Iterator<T> iterator() {
     return new Iterator<T>() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
 
       int pos = a_firstUsedslot;
       
@@ -133,6 +136,7 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure> implement
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
         return (T) a[pos++];
       }      
     };

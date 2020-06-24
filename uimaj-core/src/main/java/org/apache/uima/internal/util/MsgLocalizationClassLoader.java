@@ -99,6 +99,7 @@ public class MsgLocalizationClassLoader {
       // UIMA-3692, UIMA-4793 try the thread context class loader
       // if not found, will return class not found exception
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5721
       ClassLoader cl = original_thread_context_class_loader.get();
       if (cl != null) {
         try {

@@ -37,6 +37,8 @@ import org.apache.uima.resource.metadata.LanguagePrecondition;
  */
 public class LanguagePrecondition_impl extends SimplePrecondition_impl implements
         LanguagePrecondition {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private static final long serialVersionUID = -5526826405334750929L;
 
@@ -44,6 +46,7 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
     FSTypeConstraint typeCon = ConstraintFactory.instance().createTypeConstraint();
     typeCon.add("uima.tcas.DocumentAnnotation");
     super.setFsMatchConstraint(typeCon);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     super.setFeatureName(CAS.FEATURE_BASE_NAME_LANGUAGE);
     super.setPredicate(LANGUAGE_SUBSUMED);
   }
@@ -52,6 +55,7 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
    * @see org.apache.uima.resource.metadata.LanguagePrecondition#getLanguages()
    */
   public String[] getLanguages() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return (String[]) getComparisonValue();
   }
 
@@ -69,8 +73,10 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
     // value must be a string array
     if (!(aValue instanceof String[])) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { aValue, "aValue", "setComparisonValue" });
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-722
     String [] languages = (String []) aValue;
     String [] normalizedLanguages = new String[languages.length];
     int i = 0;
@@ -90,6 +96,8 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setFeatureName(String aFeatureName) {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
                 this.getClass().getName(), "setFeatureName" });
   }
@@ -99,6 +107,7 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setFsIndexName(String aIndexName) {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
                 this.getClass().getName(), "setFsIndexName" });
   }
@@ -108,6 +117,7 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setFsMatchConstraint(FSMatchConstraint aConstraint) {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
                 this.getClass().getName(), "setFsMatchConstraint" });
   }
@@ -117,6 +127,7 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setPredicate(String aPredicate) {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
                 this.getClass().getName(), "setPredicate" });
   }

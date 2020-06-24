@@ -87,6 +87,7 @@ public class StringSubtypeTest extends TestCase {
   }
 
   public void testJcas() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-136
     StringSubtypeAnnotation annot = new StringSubtypeAnnotation(this.jcas);
     annot.setStringSetFeature(definedValue1);
     annot.setStringSetFeature(definedValue2);
@@ -122,6 +123,7 @@ public class StringSubtypeTest extends TestCase {
   }
 
   public void testCas() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-128
     CAS cas = this.jcas.getCas();
     TypeSystem ts = cas.getTypeSystem();
     Type annotType = ts.getType(annotationTypeName);

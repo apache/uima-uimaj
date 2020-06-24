@@ -63,6 +63,7 @@ public abstract class AxisResourceServiceStub implements ResourceServiceStub {
    */
   public AxisResourceServiceStub(String aEndpoint, Integer aTimeout) throws MalformedURLException {
     mEndpoint = new URL(aEndpoint);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mTimeout = aTimeout;
   }
 
@@ -78,6 +79,7 @@ public abstract class AxisResourceServiceStub implements ResourceServiceStub {
     final QName operationQName = new QName("http://uima.apache.org/resource", "getMetaData");
     final QName resourceMetaDataTypeQName = new QName("http://uima.apache.org/resourceSpecifier",
             "resourceMetaData");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     try {
       Service service = new Service();
@@ -88,6 +90,7 @@ public abstract class AxisResourceServiceStub implements ResourceServiceStub {
 
       call.registerTypeMapping(ResourceMetaData.class, resourceMetaDataTypeQName,
               new XmlSerializerFactory(), new XmlDeserializerFactory());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       return (ResourceMetaData) call.invoke(new Object[0]);
     } catch (ServiceException e) {

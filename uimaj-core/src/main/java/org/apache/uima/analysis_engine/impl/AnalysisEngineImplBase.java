@@ -93,6 +93,8 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   //*****************************************************************************************
   
   protected void setMetaData(ResourceMetaData aMetaData) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1466
+//IC see: https://issues.apache.org/jira/browse/UIMA-1467
     super.setMetaData(aMetaData);
   }
 
@@ -133,6 +135,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   private Properties mPerformanceTuningSettings = UIMAFramework
           .getDefaultPerformanceTuningProperties();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private UimaTimer mProcessTimer = UIMAFramework.newTimer();
 
@@ -156,6 +159,8 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     boolean result = super.initialize(aSpecifier, aAdditionalParams);
     if (result) {
@@ -164,10 +169,12 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       // CasManager's version doesn't change).
       AnalysisEngineMetaData md = getAnalysisEngineMetaData();
       getCasManager().addMetaData((AnalysisEngineMetaData)md.clone());
+//IC see: https://issues.apache.org/jira/browse/UIMA-347
 
       // read parameters from additionalParams map
       Properties perfSettings = null;
       mMBeanServer = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-358
       mMBeanNamePrefix = null;
       if (aAdditionalParams != null) {
         perfSettings = (Properties) aAdditionalParams.get(PARAM_PERFORMANCE_TUNING_SETTINGS);
@@ -181,6 +188,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       // register MBean with MBeanServer. If no MBeanServer specified in the
       // additionalParams map, this will use the platform MBean Server
       // (Java 1.5 only)
+//IC see: https://issues.apache.org/jira/browse/UIMA-358
       getMBean().setName(getMetaData().getName(), getUimaContextAdmin(), mMBeanNamePrefix);
       JmxMBeanAgent.registerMBean(getManagementInterface(), mMBeanServer);
       
@@ -238,6 +246,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see org.apache.uima.analysis_engine.AnalysisEngine#newJCas()
    */
   public JCas newJCas() throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       return newCAS().getJCas();
     } catch (CASException e) {
@@ -250,6 +259,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
   public ProcessTrace process(CAS aCAS, ResultSpecification aResultSpec)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     setResultSpecification(aResultSpec);
     return process(aCAS);
@@ -260,6 +270,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
   public void process(CAS aCAS, ResultSpecification aResultSpec, ProcessTrace aTrace)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     setResultSpecification(aResultSpec);
     process(aCAS);
@@ -292,6 +303,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
   public ProcessTrace process(JCas aJCas, ResultSpecification aResultSpec)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     return process(aJCas.getCas(), aResultSpec);
   }
@@ -301,6 +313,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
   public void process(JCas aJCas, ResultSpecification aResultSpec, ProcessTrace aTrace)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     process(aJCas.getCas(), aResultSpec, aTrace);
   }
@@ -310,6 +323,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   @Deprecated
   public void process(org.apache.uima.analysis_engine.AnalysisProcessData aProcessData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResultSpecification aResultSpec) throws ResultNotSupportedException,
           AnalysisEngineProcessException {
     process(aProcessData.getCAS(), aResultSpec, aProcessData.getProcessTrace());
@@ -358,6 +372,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see AnalysisEngine#createResultSpecification(TypeSystem)
    */
   public ResultSpecification createResultSpecification(TypeSystem aTypeSystem) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
     return new ResultSpecification_impl(aTypeSystem);
   }
 
@@ -371,6 +386,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     getCasManager().releaseCas(cas);
 
     TypeImpl t = ts.getType(aTypeName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return (t == null) ? null : t.getFeaturesAsStream().map(f -> f.getShortName()).toArray(size -> new String[size]);
   }
 
@@ -436,6 +452,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException {
     batchProcessComplete();
 
@@ -456,6 +473,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   protected void setPerformanceTuningSettings(Properties aSettings) {
     mPerformanceTuningSettings = (Properties) aSettings.clone();
     String procTrEnabled = mPerformanceTuningSettings
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED);
     mProcessTraceEnabled = procTrEnabled == null || procTrEnabled.equalsIgnoreCase("true");
   }
@@ -486,6 +504,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   protected ConfigurationParameterSettings getCurrentConfigParameterSettings() {
     return getUimaContextAdmin().getConfigurationManager().getCurrentConfigParameterSettings(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             getUimaContextAdmin().getQualifiedContextName());
   }
 
@@ -555,6 +574,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
 
       // now check Analysis time
       int analysisTime = (int) getMBean().getAnalysisTimeSinceMark();
+//IC see: https://issues.apache.org/jira/browse/UIMA-941
       if (analysisTime > 0 || 
           // Jira http://issues.apache.org/jira/browse/uima-941
           // intent is to skip recording analysis times of 0
@@ -566,6 +586,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
           //   returning serviceCallTime.
           (analysisTime == 0 && serviceCallTime == 0)) {
         ProcessTraceEvent_impl analysisEvent = new ProcessTraceEvent_impl(getMetaData().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "Analysis", "");
         analysisEvent.setDuration(analysisTime);
         if (serviceCallEvent != null) {
@@ -593,6 +614,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
   
   protected Object getMBeanServer() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-358
     return mMBeanServer;
   }
   
@@ -602,12 +624,14 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   
   private static final boolean isMDC;
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
     MDC.put("uima_test", "uima_test");
     isMDC = null != MDC.get("uima_test");
     MDC.remove("uima_test");
   }
   protected void callInitializeMethod(AnalysisComponent component, UimaContext context) throws ResourceInitializationException {
 //    component.initialize(context);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
     try {
       withContexts(component, context, null, () -> component.initialize(context));
     } catch (Exception e) {
@@ -628,6 +652,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
   
   private void withContexts(AnalysisComponent component, UimaContext context, AbstractCas cas, Runnable_withException r) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
     if (isMDC) {
     UimaContext_ImplBase ucib = (UimaContext_ImplBase)context;
     String prevCN = pushMDCstring(MDC_ANNOTATOR_CONTEXT_NAME, ucib.getQualifiedContextName());
@@ -649,6 +674,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
         popMDCstring(MDC_CAS_ID, prevCAS);
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5652
     } else {
       r.run();
     }

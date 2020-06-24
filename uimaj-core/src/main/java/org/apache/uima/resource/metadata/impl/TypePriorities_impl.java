@@ -133,6 +133,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aImports", "setImports" });
     }
     mImports = aImports;
@@ -143,6 +144,8 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    * synchronized to prevent concurrent mod exceptions
    */
   public TypePriorityList[] getPriorityLists() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     synchronized (mPriorityLists) { // saw concurrent mod exception 3/2014
       TypePriorityList[] result = new TypePriorityList[mPriorityLists.size()];
       mPriorityLists.toArray(result);
@@ -168,6 +171,8 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    * @see TypePriorities#addPriorityList(TypePriorityList)
    */
   public void addPriorityList(TypePriorityList aPriorityList) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     synchronized (mPriorityLists) { // saw concurrent mod exceptions 3/2014 
       mPriorityLists.add(aPriorityList);
     }
@@ -178,6 +183,8 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    */
   public TypePriorityList addPriorityList() {
     TypePriorityList newPriorityList = new TypePriorityList_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     synchronized (mPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
       mPriorityLists.add(newPriorityList);
     }
@@ -188,6 +195,8 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    * @see TypePriorities#removePriorityList(TypePriorityList)
    */
   public void removePriorityList(TypePriorityList aPriorityList) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     synchronized (mPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
       mPriorityLists.remove(aPriorityList);
     }
@@ -202,6 +211,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     if (getImports().length == 0) {
       resolveImports(null, null);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       resolveImports(new TreeSet<>(), UIMAFramework.newDefaultResourceManager());
     }
   }
@@ -211,15 +221,18 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypePrioritiesURLs,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceManager aResourceManager) throws InvalidXMLException {
     List<TypePriorityList> importedPriorityLists = null;
     if (getImports().length != 0) {
   
       // add our own URL, if known, to the collection of already imported URLs
+//IC see: https://issues.apache.org/jira/browse/UIMA-105
       if (getSourceUrl() != null) {
         aAlreadyImportedTypePrioritiesURLs.add(getSourceUrl().toString());
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       importedPriorityLists = new ArrayList<>();
       Import[] imports = getImports();
       for (int i = 0; i < imports.length; i++) {
@@ -234,6 +247,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
           aAlreadyImportedTypePrioritiesURLs.add(url.toString());
           try {
             resolveImport(url, aAlreadyImportedTypePrioritiesURLs, importedPriorityLists,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     aResourceManager);
           } catch (IOException e) {
             throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
@@ -249,6 +263,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     }
     if (importedPriorityLists != null ) {
       TypePriorityList[] newPriorityLists = new TypePriorityList[existingPriorityLists.length
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + importedPriorityLists.size()];
       System.arraycopy(existingPriorityLists, 0, newPriorityLists, 0, existingPriorityLists.length);
       for (int i = 0; i < importedPriorityLists.size(); i++) {
@@ -262,13 +277,17 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   private void resolveImport(URL aURL, Collection<String> aAlreadyImportedTypePrioritiesURLs,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1488
           Collection<TypePriorityList> aResults, ResourceManager aResourceManager) throws InvalidXMLException,
           IOException {
     //check the import cache
+//IC see: https://issues.apache.org/jira/browse/UIMA-1230
     TypePriorities desc;    
     String urlString = aURL.toString();
     Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
     Map<String, Set<String>> importUrlsCache = ((ResourceManager_impl)aResourceManager).getImportUrlsCache();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     synchronized(importCache) {
       XMLizable cachedObject = importCache.get(urlString);
       if (cachedObject instanceof TypePriorities) {
@@ -279,6 +298,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
         XMLInputSource input;
         input = new XMLInputSource(aURL);
         desc = UIMAFramework.getXMLParser().parseTypePriorities(input);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         TreeSet<String> previouslyImported = new TreeSet<>(aAlreadyImportedTypePrioritiesURLs);
         desc.resolveImports(aAlreadyImportedTypePrioritiesURLs, aResourceManager);
         importCache.put(urlString, desc);
@@ -303,6 +323,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
       // call writeArrayPropertyAsElement directly, which will not generate the
       // <priorityLists> tag
       writeArrayPropertyAsElement(aPropInfo.propertyName, TypePriorityList[].class,
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
               getPriorityLists(), null, aNamespace);
     } else // normal handling
     {
@@ -315,6 +336,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    */
   public Object clone() {
     TypePriorities_impl clone = (TypePriorities_impl) super.clone();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     clone.mPriorityLists = new ArrayList<>();
     final List<TypePriorityList> origPriorityLists = mPriorityLists;
     synchronized (origPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014

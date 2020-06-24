@@ -89,6 +89,7 @@ public class XmiEcoreCasConsumer extends CasConsumer_ImplBase {
       mOutputDir.mkdirs();
     }
     writeEcoreTypeSystem = Boolean.TRUE.equals(getUimaContext().getConfigParameterValue(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             PARAM_WRITE_ECORE_TYPESYSTEM));
   }
 
@@ -164,6 +165,7 @@ public class XmiEcoreCasConsumer extends CasConsumer_ImplBase {
       // Generate E-core for type system, but only once
       if (writeEcoreTypeSystem && !isModelGenerated) {
         TypeSystemDescription tsDesc = TypeSystemUtil.typeSystem2TypeSystemDescription(aCas
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getTypeSystem());
         // register default resource factory
         Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("*",

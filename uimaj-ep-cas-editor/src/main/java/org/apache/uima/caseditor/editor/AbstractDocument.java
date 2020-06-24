@@ -64,6 +64,7 @@ public abstract class AbstractDocument implements ICasDocument {
    */
   protected void fireAddedFeatureStructure(final FeatureStructure annotation) {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2281
     for (Object listener : mListener.getListeners()) {
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
       
@@ -82,6 +83,7 @@ public abstract class AbstractDocument implements ICasDocument {
    * @param annotations the annotations
    */
   protected void fireAddedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2281
     for (Object listener : mListener.getListeners()) {
       
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
@@ -101,6 +103,7 @@ public abstract class AbstractDocument implements ICasDocument {
    * @param annotation the annotation
    */
   protected void fireRemovedFeatureStructure(final FeatureStructure annotation) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2281
     for (Object listener : mListener.getListeners()) {
       
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
@@ -120,6 +123,7 @@ public abstract class AbstractDocument implements ICasDocument {
    * @param annotations the annotations
    */
   protected void fireRemovedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2281
     for (Object listener : mListener.getListeners()) {
       
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
@@ -139,6 +143,7 @@ public abstract class AbstractDocument implements ICasDocument {
    * @param annotation the annotation
    */
   protected void fireUpdatedFeatureStructure(final FeatureStructure annotation) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2281
     for (Object listener : mListener.getListeners()) {
       
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
@@ -158,6 +163,7 @@ public abstract class AbstractDocument implements ICasDocument {
    * @param annotations the annotations
    */
   protected void fireUpdatedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2281
     for (Object listener : mListener.getListeners()) {
       
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;

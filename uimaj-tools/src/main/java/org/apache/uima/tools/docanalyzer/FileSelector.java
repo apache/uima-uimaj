@@ -83,6 +83,7 @@ public class FileSelector extends JPanel implements FocusListener {
   // JFileChooser.DIRECTORIES_ONLY or
   // JFileChooser.FILES_AND_DIRECTORIES
   {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this(initialValue, fileChooserTitle, selectionMode, null);
   }
 
@@ -99,6 +100,7 @@ public class FileSelector extends JPanel implements FocusListener {
           // JFileChooser.FILES_ONLY,
           // JFileChooser.DIRECTORIES_ONLY or
           // JFileChooser.FILES_AND_DIRECTORIES
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           File currentDir) {
     if (currentDir == null && initialValue != null) {
       currentDir = new File(initialValue).getAbsoluteFile();

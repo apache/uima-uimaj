@@ -75,6 +75,7 @@ public class XMLInputSource {
    */
   public XMLInputSource(String aUrlOrFileName) throws IOException {
     //try as URL first, then as file name
+//IC see: https://issues.apache.org/jira/browse/UIMA-78
     try {
       mURL = new URL(aUrlOrFileName);
     }

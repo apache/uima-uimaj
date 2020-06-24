@@ -77,6 +77,7 @@ public class PositiveIntSetTest extends TestCase {
   
 
   public void testBasic() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     PositiveIntSet_impl s = new PositiveIntSet_impl();
     s.add(128);
     assertTrue(s.isBitSet);
@@ -85,6 +86,7 @@ public class PositiveIntSetTest extends TestCase {
     
     IntListIterator it = s.getOrderedIterator();
     assertTrue(it.hasNext());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
     assertEquals(128, it.nextNvc());
     assertTrue(it.hasNext());
     assertEquals(128128, it.nextNvc());
@@ -98,6 +100,7 @@ public class PositiveIntSetTest extends TestCase {
 
     s.add(bb);
     s.add(bb+1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     assertTrue(s.isBitSet);
     s.add(bb+2);
     
@@ -117,6 +120,8 @@ public class PositiveIntSetTest extends TestCase {
 
     
     bb = 67;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     s = new PositiveIntSet_impl();
     assertTrue(s.useOffset);
     s.add(bb);
@@ -140,6 +145,7 @@ public class PositiveIntSetTest extends TestCase {
     
     // test switch from IntSet to bit set
     s.clear();  // keeps useOffset false
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     s.add(1216);  // makes the space used by bit set = 41 words
     
     for (int i = 1; i < 23; i++) {
@@ -163,6 +169,7 @@ public class PositiveIntSetTest extends TestCase {
 //      if (!s.isBitSet) {
 //        System.out.println("is Bit set? " + s.isBitSet + ", i = " + i + ", # of entries is " + s.size());
 //      }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
       reached = i >= 2560;
       assertTrue((!reached) ? s.isBitSet : !s.isBitSet);
     }
@@ -309,6 +316,7 @@ public class PositiveIntSetTest extends TestCase {
    */
   private void runRandomTests() { 
     s = r.useInitParms ? new PositiveIntSet_impl(r.initSize, r.estMin, r.estMax) : new PositiveIntSet_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     cs = new HashSet<>();
     dadd(r.firstValue);
     
@@ -352,6 +360,7 @@ public class PositiveIntSetTest extends TestCase {
     IntListIterator it2 = s.iterator();
     i = 0;
     while (it2.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
       v1[i++] = it2.nextNvc();
     }
     Arrays.sort(v1);

@@ -435,6 +435,8 @@ public class PackageBrowser {
   public String getComponentDataPath() throws IOException {
 
     // get all environment variables that are specified for the current pear file
+//IC see: https://issues.apache.org/jira/browse/UIMA-354
+//IC see: https://issues.apache.org/jira/browse/UIMA-351
     Properties pearEnvProps = InstallationController.buildTableOfEnvVars(this
             .getInstallationDescriptor());
 

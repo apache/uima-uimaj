@@ -235,6 +235,7 @@ public class CasCompare {
      */
     void rmvLast(TOP fs) {
       int toBeRemoved = fsList.size() - 1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6017
       if (toBeRemoved == -1) {
         System.out.println("debug stop wrong call to rmvLast");
       }
@@ -255,6 +256,7 @@ public class CasCompare {
         cycleStart = -1;
       }
 //      System.out.println("debug rmvlast sz b4: " + fsList.size());
+//IC see: https://issues.apache.org/jira/browse/UIMA-6017
       if (toBeRemoved >= 0) {
         fsList.remove(toBeRemoved);
       }
@@ -372,6 +374,7 @@ public class CasCompare {
   /** 
    * key = _id, value = arraylist holding well-formed list with this node in it 
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5707
   final private Int2ObjHashMap<ArrayList<CommonList>, ArrayList<CommonList>> map_e_to_a_list = 
             new Int2ObjHashMap(ArrayList.class);
   
@@ -384,6 +387,7 @@ public class CasCompare {
    * a map from list nodes which might be removed, to their place in the fss array list
    *   The index is 1 more, to avoid colliding with the 0 value, used for missing value
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
   final private Obj2IntIdentityHashMap<CommonList> node_indexes =
       new Obj2IntIdentityHashMap<>(CommonList.class, removed_list_marker);
   
@@ -402,6 +406,7 @@ public class CasCompare {
   private boolean isCompareAll = false;
   private boolean isCompareIds = false;
   private Pair<TOP, TOP> leafErrorReported = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6017
   final private Set<String> excludedRootNames = new HashSet<String>(0);
   final private Set<String> includedTypeNames = new HashSet<String>(0);
 //  /** key is feature long name (with type) */
@@ -486,6 +491,7 @@ public class CasCompare {
    * @param v defaults to false, set to true to continue the comparison after a miscompare
    */
   public void compareAll(boolean v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5689
     isCompareAll = v;
   }
   
@@ -504,6 +510,7 @@ public class CasCompare {
    * @param c the customization to be applied to both CASs
    */
   public void applyToBoth(Consumer<CASImpl> c) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
     c.accept(c1);
     c.accept(c2);
   }
@@ -542,6 +549,7 @@ public class CasCompare {
    */
   public List<Runnable> type_feature_to_runnable(String typeName, String featureBaseName, BiFunction<TOP, Feature, Runnable> c) {
     List<Runnable> r = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-6042
     working_on = 1;
     r.addAll(type_feature_to_runnable(c1, typeName, featureBaseName, c));
     working_on = 2;
@@ -587,6 +595,7 @@ public class CasCompare {
   }
   
   public List<Runnable> sort_dedup_FSArray(String typeName, String featureBaseName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6042
     return type_feature_to_runnable(typeName, featureBaseName, (fs, feat) ->
     sort_dedup_FSArray(fs, feat));
   }
@@ -712,6 +721,7 @@ public class CasCompare {
    *              Use -1 if not applicable.
    */
   public void addStringCongruenceSet(String typeName, String featureBaseName, String[] set_of_strings_that_are_equivalent, int index) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
     TypeImpl t1 = ts1.getType(typeName);
     stringCongruenceSets.put(
         new ScsKey(t1, t1.getFeatureByBaseName(featureBaseName), index),
@@ -723,6 +733,7 @@ public class CasCompare {
    * call this to show progress of the compare - useful for long compares
    */
   public static void showProgress() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6042
     IS_SHOW_PROGRESS = true;
   }
     
@@ -741,21 +752,25 @@ public class CasCompare {
       
 //        processIndexedFeatureStructures(c1, false);
       Predicate<TOP> includeFilter = isTypeMapping ? (fs -> isTypeInTgt(fs)) : null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6042
       if (IS_SHOW_PROGRESS) System.out.println("Finding all FSs in cas 1");
       // this next call doesn't get just the indexed ones, it includes the "reachable" ones too
       c1FoundFSs = new AllFSs(c1, null, includeFilter, isTypeMapping ? typeMapper : null)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5689
                         .getAllFSsAllViews_sofas_reachable()
                         .getAllFSs();
       
 //        c1FoundFSs = fssToSerialize;  // all reachable FSs, filtered by CAS1 -> CAS2 type systems.
       
 //        processIndexedFeatureStructures(c2, false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6042
       if (IS_SHOW_PROGRESS) System.out.println("Finding all FSs in cas 2");
       c2FoundFSs = new AllFSs(c2, null, null, null)
                      .getAllFSsAllViews_sofas_reachable()
                      .getAllFSs(); // get just the indexed ones.
       
       // filter out items only of interest when reached via ref
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
       if (excludedRootNames.size() > 0) {
         System.out.println("Excluding Root Names with: " + 
           Misc.ppList(Arrays.asList(excludedRootNames.toArray())));
@@ -791,6 +806,7 @@ public class CasCompare {
           
       // convert_linear_lists_to_arrays may add more items
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5707
       convert_linear_lists_to_arrays(c1FoundFSs);
       convert_linear_lists_to_arrays(c2FoundFSs);
  
@@ -798,6 +814,7 @@ public class CasCompare {
       final int sz2 = c2FoundFSs.size();
 
       isSrcCas = true;   // avoids sorting on types/features not present in ts2
+//IC see: https://issues.apache.org/jira/browse/UIMA-6042
       if (IS_SHOW_PROGRESS) System.out.println("Sorting FSs in cas 1");
       sort(c1FoundFSs);
       
@@ -806,6 +823,7 @@ public class CasCompare {
       sort(c2FoundFSs);
      
 //      miscompares.clear();
+//IC see: https://issues.apache.org/jira/browse/UIMA-6017
       prevReport.clear();
       
       int fsz = Math.max(sz1,  sz2);
@@ -828,6 +846,7 @@ public class CasCompare {
         
         leafErrorReported = null;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5707
         if (null == fs1) {  // nulls at end indicate list elements converted to arrays
           if (null != fs2) {
             System.err.format("%,d Feature Structures in CAS2 with no matches in CAS2, e.g. %s%n",
@@ -920,6 +939,7 @@ public class CasCompare {
           }
         } else {  // not type mapping
           int rr = -1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6017
           try {
           rr = compareFss(fs1, fs2, null, null);
           } catch (Throwable e) {
@@ -929,6 +949,8 @@ public class CasCompare {
           if (0 != rr) {
             
             mismatchFsDisplay();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5689
+//IC see: https://issues.apache.org/jira/browse/UIMA-5689
             if (!isCompareAll) return false;
             allOk = false;
             int tc = fs1._getTypeImpl().compareTo(fs2._getTypeImpl());
@@ -1052,6 +1074,7 @@ public class CasCompare {
    * @return a runnable, which (when invoked) updates the original array with the sorted result.
    */
   public Runnable sort_dedup_FSArray(TOP fs, Feature feat) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6042
     FSArray<?> fsArray = (FSArray<?>)(fs.getFeatureValue(feat));
     if (fsArray == null || fsArray.size() < 2) {
       return null;
@@ -1107,6 +1130,7 @@ public class CasCompare {
    *         callers should insure the runnable is garbage collected after use 
    */
   public Runnable sortStringArray(StringArray stringArray) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
     if (stringArray == null || stringArray.size() < 2) {
       return null;
     }
@@ -1121,6 +1145,7 @@ public class CasCompare {
    * *******************************************************************************/
   
   private void convert_linear_lists_to_arrays(ArrayList<TOP> fss) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5707
     map_e_to_a_list.clear();
     non_linear_list_elements.clear();
     node_indexes.clear();
@@ -1350,12 +1375,14 @@ public class CasCompare {
     r = ti1.compareTo(ti2);
     if (r != 0) {
       if (!inSortContext) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
         mismatchFs(fs1, fs2, "Different Types", callerTi, callerFi); // types mismatch
       }
       return r;
     }
  
     if (isCompareIds && !inSortContext) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5707
       if (fs1._id < maxId1 && fs2._id < maxId2 && fs1._id != fs2._id) {
         mismatchFs(fs1, fs2, "IDs miscompare", callerTi, callerFi);        
         return Integer.compare(fs1._id, fs2._id);
@@ -1477,6 +1504,7 @@ public class CasCompare {
     r = Integer.compare(len1,  len2);
     if (r != 0) {
       if (!inSortContext) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
         mismatchFs(fs1, fs2, callerTi, callerFi);
       }
       return r;
@@ -1681,6 +1709,7 @@ public class CasCompare {
    * @return -
    */
   private int compareRefs(TOP rfs1, TOP rfs2, TypeImpl callerTi, FeatureImpl callerFi) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5689
     if (inSortContext && isTypeMapping) {
       if (isSrcCas) {
         if (rfs1 != null && typeMapper.mapTypeSrc2Tgt(rfs1._getTypeImpl()) == null) {
@@ -1725,6 +1754,8 @@ public class CasCompare {
            typeMapper.mapTypeSrc2Tgt(rfs1._getTypeImpl()) == null) {
          return 0;
        } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
          if (! inSortContext && IS_DEBUG_STOP_ON_MISCOMPARE && !inSortContext) {
            System.out.println("debug stop rfs1 is not null rfs2 is null");
          } 
@@ -1752,11 +1783,13 @@ public class CasCompare {
 //    if (rfs1._id == 1103 && ! inSortContext) {
 //      System.out.println("debug stop 1103");
 //    }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Pair<TOP, TOP> refs = new Pair<>(rfs1, rfs2);
     Integer prevComp = prevCompare.get(refs);
      if (prevComp != null) {  
        int v = prevComp;
        if (v == 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6017
          v = compareRefResult(rfs1, rfs2); // stop recursion, return based on loops
          if (v != 0 && ! inSortContext) {
            mismatchFs(rfs1,  rfs2, callerTi, callerFi);
@@ -1817,6 +1850,7 @@ public class CasCompare {
   private int compareRefResult(TOP rfs1, TOP rfs2) {
     
     // exception: treat canonical empty lists
+//IC see: https://issues.apache.org/jira/browse/UIMA-5707
     if (!inSortContext && IS_CANONICAL_EMPTY_LISTS && rfs1 instanceof EmptyList) {
 //      if (prev1.size() <= 0 || prev2.size() <= 0) {
         return 0;
@@ -1837,6 +1871,8 @@ public class CasCompare {
       int r = prev1.compareCycleLen(prev2);
       
       if (r != 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
+//IC see: https://issues.apache.org/jira/browse/UIMA-6017
         if (! inSortContext && IS_DEBUG_STOP_ON_MISCOMPARE) {
           System.out.println("debug stop");
         }
@@ -1864,6 +1900,7 @@ public class CasCompare {
           //debug 
 //          System.out.println("debug compareAllArrayElements i = " + i);
 //          System.out.println("debug compareAllArrayElements, fs1: " + fs1.toString(3));
+//IC see: https://issues.apache.org/jira/browse/UIMA-6017
           miscompare_index = i;
           mismatchFs(fs1, fs2, "Comparing array of length " + len + ", miscompare on index " + i, callerTi, callerFi);
         }
@@ -1950,6 +1987,7 @@ public class CasCompare {
   }
   
   private void mismatchFs(TOP fs1, TOP fs2, TypeImpl callerTi, FeatureImpl callerFi) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6017
     if (isSkipMismatch) return;
     Pair<TOP, TOP> pair = new Pair<>(fs1, fs2);
     
@@ -1962,6 +2000,7 @@ public class CasCompare {
     prevReport.add(pair);
     if (leafErrorReported == null) {
       leafErrorReported = pair;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
       mismatchSb.append(String.format("Mismatched Feature Structures refd from %s %s:%n %s%n %s%n", 
           (callerTi == null) ? "null" : callerTi.getName(), (callerFi == null) ? "null" : callerFi.getName(), 
               ps(fs1), ps(fs2)));
@@ -1993,6 +2032,7 @@ public class CasCompare {
   
   private void mismatchFs(TOP fs1, TOP fs2, Feature fi, Feature fi2) {
     if (isSkipMismatch) return;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6017
 
     Pair<TOP, TOP> pair = new Pair<>(fs1, fs2);
     if (prevReport.contains(pair)) {
@@ -2006,6 +2046,7 @@ public class CasCompare {
     if (leafErrorReported == null) {
 
       leafErrorReported = pair;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
       String mapmsg = fi.equals(fi2) 
                         ? ""
                         : "which mapped to target feature " + fi2.getShortName() + " ";
@@ -2054,6 +2095,7 @@ public class CasCompare {
     clearPrevFss();
 
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       fss.sort((afs1, afs2) -> sortCompare(afs1, afs2));
 //            (afs1, afs2) -> Integer.compare(afs1._id, afs2._id));
     } finally {
@@ -2075,6 +2117,7 @@ public class CasCompare {
    */
   private int sortCompare(TOP scFs1, TOP scFs2) {  
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5707
     if (scFs1 == null) {
       return (scFs2 == null) ? 0 : 1;
     } 
@@ -2114,6 +2157,7 @@ public class CasCompare {
    * @return a StringBuilder with a report
    */
   public static StringBuilder compareNumberOfFSsByType(CAS cas1, CAS cas2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6042
     if (IS_SHOW_PROGRESS) {
       System.out.println("comparing the number of FSs by type");
     }
@@ -2162,6 +2206,7 @@ public class CasCompare {
     } else {
       sba.append("\nDifferent numbers of types");
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5991
     return sba.append('\n');
   }
 

@@ -116,6 +116,7 @@ public static int getStringOffset(String s) {
     assertEquals(os.getCommonStrings()[1], "defgh");
     assertEquals(os.getCommonStrings()[2], "abcde");
     assertEquals(os.getSavedCharsExact() + os.getSavedCharsSubstr(), 3);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3003
     checkOffset(fg, 0);
     checkOffset(defgh, 0);
     checkOffset(abc, 0);
@@ -142,6 +143,7 @@ public static int getStringOffset(String s) {
     assertEquals(os.getCommonStrings()[0], "fgdefgh");
     assertEquals(os.getCommonStrings()[1], "abcde");
     assertEquals(os.getSavedCharsExact() + os.getSavedCharsSubstr(), 3);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3003
     checkOffset(fg, 0);
     checkOffset(defgh, 2);
     checkOffset(abc, 0);
@@ -167,6 +169,7 @@ public static int getStringOffset(String s) {
     assertEquals("fg", fg);
     assertEquals(os.getCommonStrings()[0], "fgdefghabcde");
     assertEquals(os.getSavedCharsExact() + os.getSavedCharsSubstr(), 3);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3003
     checkOffset(fg, 0);
     checkOffset(defgh, 2);
     checkOffset(abc, 7);

@@ -51,5 +51,6 @@ public class StyleConstants {
   /** The Constant columnNames. */
   static final String[] columnNames = { "|", "Annotation Label", "Annotation Type / Feature",
       "Background", "Foreground", "Checked", "Hidden" };
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 }

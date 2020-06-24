@@ -51,6 +51,7 @@ public interface JFSIndexRepository {
    *         is defined.
    */
   <T extends TOP> FSIndex<T> getIndex(String label);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
 
   /**
    * Retrieve an index according to a label and a type. The type is used to narrow down the index of
@@ -65,6 +66,7 @@ public interface JFSIndexRepository {
    *         or it exists but <code>type</code> is not a subtype of the index's type.
    */
   <T extends TOP> FSIndex<T> getIndex(String label, int type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
 
   /**
    * Get the standard annotation index.
@@ -82,6 +84,7 @@ public interface JFSIndexRepository {
    * @return The standard annotation index, restricted to <code>type</code>.
    */
   <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(int type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
 
   /**
    * Get all labels for all indexes.
@@ -95,6 +98,8 @@ public interface JFSIndexRepository {
    * @return All indexes.
    */
   Iterator<FSIndex<TOP>> getIndexes();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1519
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
 
   /**
    * Get the underlying FSIndexRepository associated with this JFSIndexRepository.
@@ -120,6 +125,7 @@ public interface JFSIndexRepository {
    *         in no particular order.
    */
   <T extends TOP> FSIterator<T> getAllIndexedFS(Type aType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
 
   /**
    * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
@@ -138,5 +144,6 @@ public interface JFSIndexRepository {
    *         in no particular order.
    */
   <T extends TOP> FSIterator<T> getAllIndexedFS(int aType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
 
 }

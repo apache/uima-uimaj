@@ -331,6 +331,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    */
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
           throws CpeDescriptorException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   public CpeSofaMappings getSofaNameMappings();
 

@@ -48,6 +48,7 @@ public class JavaTimer implements Timer, Serializable {
   // starts the time
   @Override
   public void start() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     start = System.currentTimeMillis();
   }
 

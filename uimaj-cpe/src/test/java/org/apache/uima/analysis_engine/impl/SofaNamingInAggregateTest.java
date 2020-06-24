@@ -42,6 +42,7 @@ import org.apache.uima.util.XMLInputSource;
 
 public class SofaNamingInAggregateTest extends TestCase {
   HashMap additionalParams;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   AggregateAnalysisEngine_impl aggregateAE;
 
@@ -64,6 +65,7 @@ public class SofaNamingInAggregateTest extends TestCase {
       UIMAFramework.getXMLParser().enableSchemaValidation(true);
       // create aggregate analysis engine with sofa name mappings
       XMLInputSource in1 = new XMLInputSource(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("CpeSofaTest/TransAnnotatorAggregate.xml"));
       // parse XML descriptor
       aeDescriptor = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in1);
@@ -76,6 +78,7 @@ public class SofaNamingInAggregateTest extends TestCase {
 
       // get the delegate AE and the Flow Controller
       delegateAE = (PrimitiveAnalysisEngine_impl) aggregateAE._getASB()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getComponentAnalysisEngines().get("Translator1");
       flowController = ((ASB_impl) aggregateAE._getASB()).getFlowControllerContainer();
 
@@ -221,6 +224,7 @@ public class SofaNamingInAggregateTest extends TestCase {
     try {
       // create aggregate analysis engine with sofa name mappings
       XMLInputSource in1 = new XMLInputSource(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("CpeSofaTest/TransAnnotatorAggregateWithoutSofaNameMapping.xml"));
       // parse XML descriptor
       AnalysisEngineDescription desc1 = UIMAFramework.getXMLParser()
@@ -257,6 +261,7 @@ public class SofaNamingInAggregateTest extends TestCase {
 
       // get the first delegate AE
       AnalysisEngine delegateAE1 = (PrimitiveAnalysisEngine_impl) aggregateAE._getASB()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getComponentAnalysisEngines().get("Translator1");
       Assert.assertEquals(2, delegateAE1.getUimaContext().getSofaMappings().length);
       Assert.assertEquals("SourceDocument", delegateAE1.getUimaContext().mapToSofaID(

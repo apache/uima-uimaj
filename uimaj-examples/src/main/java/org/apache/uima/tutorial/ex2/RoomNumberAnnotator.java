@@ -45,6 +45,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // Get config. parameter values
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String[] patternStrings = (String[]) aContext.getConfigParameterValue("Patterns");
     mLocations = (String[]) aContext.getConfigParameterValue("Locations");
 
@@ -65,11 +66,14 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
     // loop over patterns
     for (int i = 0; i < mPatterns.length; i++) {
       Matcher matcher = mPatterns[i].matcher(docText);
+//IC see: https://issues.apache.org/jira/browse/UIMA-235
       while (matcher.find()) {
         // found one - create annotation
+//IC see: https://issues.apache.org/jira/browse/UIMA-5625
         RoomNumber annotation = new RoomNumber(aJCas, matcher.start(), matcher.end());
         annotation.addToIndexes();
         annotation.setBuilding(mLocations[i]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
         getLogger().log(Level.FINEST, "Found: " + annotation);
         // or, using slf4j
         // note: this call skips constructing the message if tracing is not enabled

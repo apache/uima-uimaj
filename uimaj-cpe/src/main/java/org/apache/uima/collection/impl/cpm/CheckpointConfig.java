@@ -48,6 +48,7 @@ public class CheckpointConfig {
    *          frequency of checkpoints
    */
   public CheckpointConfig(String aChpFile, String aFrequency) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     checkpointFile = aChpFile;
     determineFrequency(aFrequency);
   }

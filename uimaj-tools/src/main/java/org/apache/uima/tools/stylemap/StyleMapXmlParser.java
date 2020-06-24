@@ -70,6 +70,7 @@ public class StyleMapXmlParser extends DefaultHandler {
    */
   // constructor
   public StyleMapXmlParser(String xmlFile) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // create new SAX Parser
       SAXParserFactory saxParserFactory = XMLUtils.createSAXParserFactory();
@@ -100,6 +101,7 @@ public class StyleMapXmlParser extends DefaultHandler {
    */
   @Override
   public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
   }
 

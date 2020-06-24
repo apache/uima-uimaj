@@ -37,6 +37,7 @@ public class CasDataImpl implements CasData {
    * Initializes FeatureStructure list
    */
   public CasDataImpl() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     fsList = new LinkedList<>();
   }
 

@@ -111,6 +111,7 @@ public interface BaseCPM {
    */
   public void addCasProcessor(CasProcessor aCasProcessor, int aIndex)
           throws ResourceConfigurationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Removes a <code>CasProcessor</code> to this CPM's list of consumers.

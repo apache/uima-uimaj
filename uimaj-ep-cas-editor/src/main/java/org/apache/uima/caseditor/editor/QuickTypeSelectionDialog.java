@@ -149,6 +149,7 @@ class QuickTypeSelectionDialog extends PopupDialog {
 
     // Now assign letters to the remaining types
     for (Iterator<Type> it = types.iterator(); it.hasNext() && shortcuts.size() > 0;) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2112
 
       Character candidateChar = shortcuts.iterator().next();
 
@@ -182,6 +183,7 @@ class QuickTypeSelectionDialog extends PopupDialog {
     List<Type> types =
             typeSystem.getProperlySubsumedTypes(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1896
     types.add(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
     
     return types.toArray(new Type[types.size()]);
@@ -309,6 +311,7 @@ class QuickTypeSelectionDialog extends PopupDialog {
 
         Character key = typeShortcutMap.get(type);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2112
         if (key != null) {
           return "[" + key + "] " + type.getShortName();
         } else {
@@ -378,6 +381,7 @@ class QuickTypeSelectionDialog extends PopupDialog {
       }
     });
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2137
     Collection<Type> shownAnnotationTypes = editor.getShownAnnotationTypes();
     
     Type[] types = shownAnnotationTypes.toArray(new Type[shownAnnotationTypes.size()]);

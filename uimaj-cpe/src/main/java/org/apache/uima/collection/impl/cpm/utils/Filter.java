@@ -35,6 +35,7 @@ public class Filter {
   
   /** The stack. */
   Stack stack = new Stack();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The expression list. */
   LinkedList expressionList = new LinkedList();
@@ -73,6 +74,7 @@ public class Filter {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_expression__FINEST",
                 new Object[] { Thread.currentThread().getName(), sb.toString() });
 
@@ -279,6 +281,7 @@ public class Filter {
       // supported
       if (filter.isAndFilter) {
         throw new ParseException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "Filter.Expression.setIsOrFilter()-Mixing <AND> and <OR> currently not supported. Choose one conjunction <AND> or disjunction <OR> in your filter.",
                 0);
       }
@@ -296,6 +299,7 @@ public class Filter {
       // supported
       if (filter.filterInitialized && filter.isOrFilter) {
         throw new ParseException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "Filter.Expression.setIsOrFilter()-Mixing <AND> and <OR> currently not supported. Choose one conjunction <AND> or disjunction <OR> in your filter.",
                 0);
       }

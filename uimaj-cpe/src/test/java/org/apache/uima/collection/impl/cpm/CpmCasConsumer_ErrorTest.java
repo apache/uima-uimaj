@@ -71,6 +71,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
   private static final String FS = System.getProperties().getProperty("file.separator");
 
   private void cpeProcessNoMsg(CollectionProcessingEngine cpe, TestStatusCallbackListener listener) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
     UIMAFramework.getLogger().setLevel(Level.OFF);
     try {
       cpe.process();
@@ -94,6 +95,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean exceptionThrown = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     TestStatusCallbackListener listener = null;
     ManageOutputDevice.setAllSystemOutputToNirvana();
     try {
@@ -143,6 +145,8 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
       cpe.addStatusCallbackListener(listener);
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
       cpeProcessNoMsg(cpe, listener);
     } catch (NullPointerException e) {
       // e.printStackTrace();
@@ -179,10 +183,14 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
     try {
       CollectionProcessingEngine cpe = setupCpm(documentCount, "OutOfMemoryError",
               exceptionSequence, "initialize");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
       cpe.addStatusCallbackListener(listener);
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
       cpeProcessNoMsg(cpe, listener);
     } catch (OutOfMemoryError er) {
       errorThrown = true;
@@ -190,6 +198,9 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
       // check the results, if everything worked as expected
       ManageOutputDevice.setAllSystemOutputToDefault();
       assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "The cpm called the listener, that the cpm has finished - which normally could not be.",
               false, listener.isFinished());
       assertEquals("The aborted-method of the listener was called. (new behaviour?)", false,
@@ -218,10 +229,12 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
     cpeProcessNoMsg(cpe, listener);
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
     assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
             true, listener.isFinished());
     assertEquals("The aborted-method of the listener was called. (new behaviour?)", false, listener
@@ -280,11 +293,14 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
     CollectionReaderStatusCallbackListener listener = null;
     CollectionProcessingEngine cpe = setupCpm(documentCount, "OutOfMemoryError", exceptionSequence,
             "processCas");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // Create and register a Status Callback Listener
     listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
     cpeProcessNoMsg(cpe, listener);
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
 
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
@@ -308,14 +324,20 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "NullPointerException",
             exceptionSequence, "processCas");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
     cpeProcessNoMsg(cpe, listener);
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
     assertEquals("The cpm did not call the listener, that the cpm has finished.", true, listener
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .isFinished());
     assertEquals("The aborted-method of the listener was called!", false, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", countExceptions(documentCount,
@@ -350,6 +372,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
     CollectionProcessingEngine cpe = null;
 
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       String colReaderBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestCollectionReader.xml").getAbsolutePath();
       String taeBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestAnnotator.xml").getAbsolutePath();
       String casConsumerBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestCasConsumer.xml").getAbsolutePath();
@@ -359,6 +382,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
       String taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
       String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase, true,
               functionName, exceptionSequence, exceptionName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // secondly, create the cpm based on the descriptors
       cpeDesc = CpeDescriptorFactory.produceDescriptor();
@@ -434,6 +458,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
         while (iter.hasNext()) {
           // if there is an error ... call the cpm to kill and check for a null CAS
           if (iter.next() instanceof java.lang.Error) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
             this.cpe.kill();
             this.errorThrown = true;
             assertEquals("The cas is not null, as expected.", null, aCas);
@@ -443,6 +468,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
     }
 
     public boolean hasError() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       return this.errorThrown;
     }
   }

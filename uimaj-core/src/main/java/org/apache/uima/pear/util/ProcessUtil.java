@@ -46,6 +46,7 @@ public class ProcessUtil {
 
     public void outMsgPrinted(String outMsg);
   } // end of StdStreamListener
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * The <code>ProcessUtil.Runner</code> class allows collecting, printing and distributing
@@ -199,6 +200,7 @@ public class ProcessUtil {
       try {
         // create appropriate standard stream reader
         reader = (threadId.equals("ERR")) ? new BufferedReader(new InputStreamReader(_process
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getErrorStream())) : new BufferedReader(new InputStreamReader(_process
                 .getInputStream()));
         // create appropriate string writer
@@ -220,6 +222,7 @@ public class ProcessUtil {
             // get last printed message
             String message = sWriter.getBuffer().substring(sIndex);
             // distribute message to listeners
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
             Iterator<StdStreamListener> list = _listeners.iterator();
             while (message.length() > 0 && list.hasNext()) {
               StdStreamListener listener = list.next();

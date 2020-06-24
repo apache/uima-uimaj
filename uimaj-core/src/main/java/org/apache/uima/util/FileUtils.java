@@ -58,7 +58,9 @@ public class FileUtils {
     if (!directory.exists() || !directory.isDirectory()) {
       return null;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<File> fileList = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     for (File file : directory.listFiles()) {
       if (file.isDirectory()) {
         if (getRecursive) {
@@ -96,7 +98,9 @@ public class FileUtils {
       return null;
     }
     ArrayList<File> dirList = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     for (File file : directory.listFiles()) {
        if (file.isDirectory()) {
         dirList.add(file);
@@ -115,6 +119,7 @@ public class FileUtils {
    *           Various I/O errors.
    */
   public static String reader2String(Reader reader) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     StringBuilder sb = new StringBuilder();
     char[] buf = new char[10000];
     int charsRead;
@@ -138,6 +143,7 @@ public class FileUtils {
    *           Various I/O errors.
    */
   public static String file2String(File file) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
     return reader2String(new FileReader(file));
   }
 
@@ -154,6 +160,7 @@ public class FileUtils {
    *           Various I/O errors.
    */
   public static String file2String(File file, String fileEncoding) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
     if (fileEncoding == null) { // use default
       return file2String(file);
     }
@@ -171,6 +178,7 @@ public class FileUtils {
    *           If for any reason the file can't be written.
    */
   public static void saveString2File(String fileContents, File file) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1142
     saveString2File(fileContents, file, Charset.defaultCharset().name());
   }
 
@@ -187,8 +195,10 @@ public class FileUtils {
    *           If for any reason the file can't be written.
    */
   public static void saveString2File(String s, File file, String encoding) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (BufferedWriter writer = new BufferedWriter(
         new OutputStreamWriter(new FileOutputStream(file), encoding))) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
       writer.write(s);
     }
   }
@@ -201,6 +211,8 @@ public class FileUtils {
    */
   public static void writeToFile(Path path, String data) {   
     // try with resources, closes bw at end
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     try (BufferedWriter bw = Files.newBufferedWriter(path, StandardOpenOption.CREATE)) {  
       bw.write(data);
     } catch (IOException e) {
@@ -263,6 +275,7 @@ public class FileUtils {
     // Check if directory already exists. The documentation is silent on
     // what
     // could actually cause File.mkdir() to fail.
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
     if (directory.exists()) {
       return false;
     }
@@ -283,6 +296,7 @@ public class FileUtils {
    */
   @Deprecated
   public static final File createTempDir(File parent, String prefix) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
     Random rand = new Random();
     File tempDir;
     while (true) {
@@ -308,6 +322,7 @@ public class FileUtils {
    */
   @Deprecated
   public static final File createTempFile(String prefix, String suffix, File tempDir)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       throws IOException {
     File file = File.createTempFile(prefix, suffix, tempDir);
     file.deleteOnExit();
@@ -341,6 +356,7 @@ public class FileUtils {
     }
     if (!dir.exists() || !dir.isDirectory()) {
       throw new IOException("Destination does not exist or is not a directory: "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           + dir.getAbsolutePath());
     }
     File outFile = new File(dir, file.getName());
@@ -348,6 +364,7 @@ public class FileUtils {
       throw new IOException("Can't write output file: " + outFile);
     }
     byte[] bytes = new byte[(int) file.length()];
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (FileInputStream is = new FileInputStream(file);
          FileOutputStream os = new FileOutputStream(outFile)) {
 
@@ -377,10 +394,12 @@ public class FileUtils {
     String[] filePathComponents = getPathComponents(canonicalFile);
     String[] relToPathComponents = getPathComponents(canonicalRelTo);
     int i = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1142
     while (i < filePathComponents.length && i < relToPathComponents.length
         && filePathComponents[i].equals(relToPathComponents[i])) {
       i++;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     StringBuilder sb = new StringBuilder();
     for (int j = i; j < relToPathComponents.length; j++) {
       sb.append("../");

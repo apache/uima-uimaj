@@ -56,6 +56,7 @@ public class UndoMgr extends UndoManager implements ActionListener {
   public void actionPerformed(ActionEvent arg0) {
     undo();
     if (!canUndo()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-416
       this.main.setUndoEnabled(false);
     }
   }

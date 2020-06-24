@@ -36,7 +36,9 @@ public class FlowControllerNewWizardPage extends AbstractNewWizardPage {
    * @param selection the selection
    */
   public FlowControllerNewWizardPage(ISelection selection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(selection, "big_ae.gif", "Flow Controller Descriptor File",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Create a new Flow Controller Descriptor file", "flowControllerDescriptor.xml");
   }
 }

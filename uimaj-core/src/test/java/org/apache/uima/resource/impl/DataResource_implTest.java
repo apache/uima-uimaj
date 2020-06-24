@@ -56,10 +56,12 @@ public class DataResource_implTest extends TestCase {
   }
 
   public void testInitialize() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // create a FileResourceSpecifier
       FileResourceSpecifier_impl spec = new FileResourceSpecifier_impl();
       File tempDataFile = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("ResourceTest/DataResource_implTest_tempDataFile.dat");
       String fileUrl = tempDataFile.toURL().toString();
       String localCacheFile = "c:\\temp\\cache";
@@ -78,6 +80,7 @@ public class DataResource_implTest extends TestCase {
       ResourceInitializationException ex = null;
       try {
         FileResourceSpecifier_impl invalidSpec = new FileResourceSpecifier_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
         invalidSpec.setFileUrl("file:/this/file/does/not/exist");
         DataResource_impl dr2 = new DataResource_impl();
         dr2.initialize(invalidSpec, Collections.EMPTY_MAP);
@@ -94,6 +97,7 @@ public class DataResource_implTest extends TestCase {
     try {
       // write a File (APL: changed to use preexisting file - 6/28/04)
       File tempDataFile = JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("ResourceTest/DataResource_implTest_tempDataFile.dat");
       // FileWriter writer = new FileWriter(tempDataFile);
       String testString = "This is a test.  This is only a test.";
@@ -108,6 +112,7 @@ public class DataResource_implTest extends TestCase {
 
       // try to get an input stream and read from the file
       InputStream inStr = dr.getInputStream();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
       BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr, StandardCharsets.UTF_8));
       String result = bufRdr.readLine();
       inStr.close();

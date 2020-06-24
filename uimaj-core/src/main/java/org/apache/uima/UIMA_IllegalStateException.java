@@ -119,6 +119,7 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    *          arguments.
    */
   public UIMA_IllegalStateException(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
@@ -140,7 +141,10 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public UIMA_IllegalStateException(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments, Throwable aCause) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5574
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     super(aCause, aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -174,6 +178,8 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public UIMA_IllegalStateException(String aMessageKey, Object[] aArguments, Throwable aCause) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5574
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     super(aCause, aMessageKey, aArguments);
   }
 }

@@ -26,6 +26,7 @@ public class Pair<T, U> {
   public U u;  
 
   public Pair(T t, U u) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     this.t = t;
     this.u = u;
   }

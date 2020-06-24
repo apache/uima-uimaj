@@ -39,6 +39,7 @@ public class URISpecifier_implTest extends TestCase {
     uriSpec = new URISpecifier_impl();
     uriSpec.setProtocol("Vinci");
     uriSpec.setUri("foo.bar");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     uriSpec.setParameters(new Parameter[] { new Parameter_impl("VNS_HOST", "myhost"),
         new Parameter_impl("VNS_PORT", "42") });
   }
@@ -48,6 +49,7 @@ public class URISpecifier_implTest extends TestCase {
       StringWriter sw = new StringWriter();
       uriSpec.toXML(sw);
       URISpecifier uriSpec2 = (URISpecifier) UIMAFramework.getXMLParser().parse(
+//IC see: https://issues.apache.org/jira/browse/UIMA-1202
               new XMLInputSource(new ByteArrayInputStream(sw.getBuffer().toString().getBytes(encoding)),
                       null));
       assertEquals(uriSpec, uriSpec2);

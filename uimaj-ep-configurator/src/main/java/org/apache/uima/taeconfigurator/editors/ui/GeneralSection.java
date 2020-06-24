@@ -72,6 +72,7 @@ public class GeneralSection extends AbstractSection {
    * @param parent the parent
    */
   public GeneralSection(MultiPageEditor aEditor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(aEditor, parent, "Implementation Details", null);
   }
 
@@ -90,14 +91,17 @@ public class GeneralSection extends AbstractSection {
     if (isAeDescriptor() || isCasConsumerDescriptor()) {
       toolkit.createLabel(sectionClient, "Implementation Language").setToolTipText(
               "Choose the implementation language here.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       Composite buttons = new2ColumnComposite(sectionClient);
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       cppButton = newRadioButton(buttons, "C/C++", "C/C++", NOT_SELECTED);
       javaButton = newRadioButton(buttons, "Java", "Java", SELECTED);
 
       // DescriptorType choose, 2 radio buttons
       toolkit.createLabel(sectionClient, "Engine Type").setToolTipText(
               "Choose the type of the engine here.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       buttons = new2ColumnComposite(sectionClient);
 
@@ -122,6 +126,7 @@ public class GeneralSection extends AbstractSection {
 
       // select C++ or Java
       String implType = editor.getAeDescription().getFrameworkImplementation();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       cppButton.setSelection(Constants.CPP_FRAMEWORK_NAME.equals(implType));
       javaButton.setSelection(Constants.JAVA_FRAMEWORK_NAME.equals(implType));
     }
@@ -146,6 +151,7 @@ public class GeneralSection extends AbstractSection {
       if (!isPrimitive && isAggregate())
         return; // nothing changed
       if (isPrimitive) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         if (Window.CANCEL == Utility.popOkCancel("Switching from Aggregate",
                 "This action will clear the capabilities, reset the delegates, "
                         + "reset the flow, reset the parameters, reset any resource information "
@@ -167,6 +173,7 @@ public class GeneralSection extends AbstractSection {
         // return;
         // }
         if (Window.CANCEL == Utility.popOkCancel("Switching from Primitive AE",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "This action will clear the capabilities, reset the delegates, "
                         + "reset the parameters, reset any resource information "
                         + "and reset the type system.  Are you sure?", MessageDialog.WARNING)) {
@@ -183,6 +190,7 @@ public class GeneralSection extends AbstractSection {
       } catch (ResourceInitializationException e) {
         throw new InternalErrorCDE("invalid state", e);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       javaButton.setEnabled(isPrimitive);
       cppButton.setEnabled(isPrimitive);
       HeaderPage page = editor.getAggregatePage();
@@ -207,6 +215,7 @@ public class GeneralSection extends AbstractSection {
       if (null != page)
         page.markStale();
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
     if (event.widget == javaButton || event.widget == cppButton) {
       valueChanged = false;
       if (cppButton.getSelection()) {
@@ -239,7 +248,9 @@ public class GeneralSection extends AbstractSection {
     editor.getResolvedDelegates().clear();
     if (isAggregate()) {
       // reset the flow to fixed flow with null as the set
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       FlowConstraints flowConstraints = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .createFixedFlow();
       flowConstraints.setAttributeValue("fixedFlow", stringArray0);
       getAnalysisEngineMetaData().setFlowConstraints(flowConstraints);
@@ -251,6 +262,7 @@ public class GeneralSection extends AbstractSection {
     // reset parameters
     // reset the parameters not declared in a group
     getConfigurationParameterDeclarations().setConfigurationParameters(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new ConfigurationParameter[0]);
     // reset groups
     getConfigurationParameterDeclarations().setConfigurationGroups(
@@ -264,6 +276,7 @@ public class GeneralSection extends AbstractSection {
 
     // reset the parm settings
     ConfigurationParameterSettings configParmSettings = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .createConfigurationParameterSettings();
     getAnalysisEngineMetaData().setConfigurationParameterSettings(configParmSettings);
     // reset typesystem, needed when going from primitive to aggregate

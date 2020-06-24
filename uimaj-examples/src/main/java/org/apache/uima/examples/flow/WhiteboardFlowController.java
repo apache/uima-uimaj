@@ -62,6 +62,7 @@ public class WhiteboardFlowController extends CasFlowController_ImplBase {
    * @see org.apache.uima.flow.FlowController_ImplBase#initialize(org.apache.uima.flow.FlowControllerContext)
    */
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-92
     super.initialize(aContext);
     mLogger = aContext.getLogger();
   }
@@ -83,6 +84,7 @@ public class WhiteboardFlowController extends CasFlowController_ImplBase {
    * A separate instance of WhiteboardFlow is created for each input CAS, and is responsible for
    * routing that CAS to all appropriate AnalysisEngines.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   class WhiteboardFlow extends CasFlow_ImplBase {
     private Set mAlreadyCalled = new HashSet();
 
@@ -113,6 +115,7 @@ public class WhiteboardFlowController extends CasFlowController_ImplBase {
           }
           if (satisfied) {
             mAlreadyCalled.add(aeKey);
+//IC see: https://issues.apache.org/jira/browse/UIMA-92
             if (mLogger.isLoggable(Level.FINEST)) {
               getContext().getLogger().log(Level.FINEST, "Next AE is: " + aeKey);
             }

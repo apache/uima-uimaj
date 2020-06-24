@@ -27,6 +27,7 @@ public enum SerialFormat {
   /**
    *  Unknown format 
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
   UNKNOWN(""), 
   
   /**
@@ -76,6 +77,7 @@ public enum SerialFormat {
    *
    * specifies the type system used for the serialized form
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
   COMPRESSED_FILTERED_TS("bcas"),
   
   /** 
@@ -101,6 +103,7 @@ public enum SerialFormat {
    * XML-serialized CAS, using xml version 1.1
    */
   XCAS_1_1("xcas"),
+//IC see: https://issues.apache.org/jira/browse/UIMA-6128
 
   /**
    * XML-serialized CAS, using xml version 1.1

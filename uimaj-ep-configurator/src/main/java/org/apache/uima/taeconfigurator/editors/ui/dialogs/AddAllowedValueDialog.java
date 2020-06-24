@@ -55,7 +55,9 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
    * @param aExistingAv the a existing av
    */
   public AddAllowedValueDialog(AbstractSection aSection, AllowedValue aExistingAv) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(aSection, "Add an Allowed Value for a String subtype",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Use this panel to add or edit an allowed value.  The allowed value is any string.");
     existingAv = aExistingAv;
   }
@@ -75,6 +77,7 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
     Composite twoCol = new2ColumnComposite(mainArea);
 
     allowedValueUI = newLabeledSingleLineStyledText(twoCol, "Allowed Value",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "A literal string value which this string is allowed to have");
     descriptionUI = newDescription(twoCol, "Description of the allowed value");
     newErrorMessage(twoCol, 2);

@@ -98,6 +98,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    */
   private Map<String, AnalysisEngineMetaData> mComponentAnalysisEngineMetaDataMap =
       new HashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
   /**
    * Map from String key to component (AnalysisEngine or FlowController) metadata.
@@ -139,6 +140,8 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     UIMAFramework.getLogger(CLASS_NAME).logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize",
             LOG_RESOURCE_BUNDLE, "UIMA_asb_init_begin__CONFIG");
@@ -148,6 +151,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
 
     // copy the additional parameters, since this method will modify them
     super.initialize(aSpecifier, aAdditionalParams = new HashMap<>(aAdditionalParams));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
     // save parameters for later
     mInitParams = aAdditionalParams;
@@ -160,6 +164,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     // mInitParams.remove(mInitParams.get(Resource.PARAM_AGGREGATE_SOFA_MAPPINGS));
 
     UIMAFramework.getLogger(CLASS_NAME).logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             LOG_RESOURCE_BUNDLE, "UIMA_asb_init_successful__CONFIG");
     return true;
   }
@@ -170,6 +175,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   public void destroy() {
     // destroy component AnalysisEngines that have been successfully initialized
     //   unsuccessful initializations are not put into the Map
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
     Iterator<Map.Entry<String, AnalysisEngine>> i = mComponentAnalysisEngineMap.entrySet().iterator();
     while (i.hasNext()) {
       Map.Entry<String, AnalysisEngine> entry = i.next();
@@ -177,6 +183,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       delegate.destroy();
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1251
     if (mFlowControllerContainer != null &&
         // the container might be non-null, but the initialization could have failed
         mFlowControllerContainer.isInitialized()) {
@@ -200,6 +207,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * @throws ResourceInitializationException passthru
    */
   public void setup(Map<String, ResourceSpecifier> aSpecifiers, UimaContextAdmin aParentContext,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           FlowControllerDeclaration aFlowControllerDeclaration,
           AnalysisEngineMetaData aAggregateMetadata) throws ResourceInitializationException {
     mAggregateUimaContext = aParentContext;
@@ -210,6 +218,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     mAllComponentMetaDataMap.clear();
 
     // loop through all entries in the (key, specifier) map
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
     Iterator<Map.Entry<String,ResourceSpecifier>> i = aSpecifiers.entrySet().iterator();
     while (i.hasNext()) {
       Map.Entry<String,ResourceSpecifier> entry = i.next();
@@ -217,6 +226,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       ResourceSpecifier spec = entry.getValue();
 
       Map<String, String> sofamap = new TreeMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
       // retrieve the sofa mappings for input/output sofas of this analysis engine
       if (mSofaMappings != null && mSofaMappings.length > 0) {
@@ -239,6 +249,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       //  preceeding call to initialize().
       
       if (mInitParams == null)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         mInitParams = new HashMap<>();
       UimaContextAdmin childContext = aParentContext.createChild(key, sofamap);
       mInitParams.put(Resource.PARAM_UIMA_CONTEXT, childContext);
@@ -247,6 +258,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
 
       // if running in "validation mode", don't try to connect to any services
       if (mInitParams.containsKey(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               && !(spec instanceof ResourceCreationSpecifier)) {
         // but we need placeholder entries in maps to satisfy later checking
         ae = new DummyAnalysisEngine();
@@ -267,6 +279,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     mComponentAnalysisEngineMap = Collections.unmodifiableMap(mComponentAnalysisEngineMap);
     mComponentAnalysisEngineMetaDataMap = Collections
             .unmodifiableMap(mComponentAnalysisEngineMetaDataMap);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     mOutputNewCASes = aAggregateMetadata.getOperationalProperties().getOutputsNewCASes();
 
@@ -274,6 +287,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     initFlowController(aFlowControllerDeclaration, aParentContext, aAggregateMetadata);
 
     // initialize the AllComponentMetaData map to include AEs plus the FlowController
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     mAllComponentMetaDataMap = new LinkedHashMap<>(mComponentAnalysisEngineMetaDataMap);
     mAllComponentMetaDataMap.put(aFlowControllerDeclaration.getKey(), mFlowControllerContainer
             .getProcessingResourceMetaData());
@@ -284,6 +298,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * Initializes the FlowController for this aggregate.
    */
   protected void initFlowController(FlowControllerDeclaration aFlowControllerDeclaration,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           UimaContextAdmin aParentContext, AnalysisEngineMetaData aAggregateMetadata)
           throws ResourceInitializationException {
     String key = aFlowControllerDeclaration.getKey();
@@ -292,6 +307,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     }
 
     Map<String, Object> flowControllerParams = new HashMap<>(mInitParams);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
     // retrieve the sofa mappings for the FlowControler
     Map<String, String> sofamap = new TreeMap<>();
@@ -302,8 +318,12 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           // if component sofa name is null, replace it with the default for TCAS sofa name
           // This is to support single-view annotators.
           if (mSofaMappings[s].getComponentSofaName() == null)
+//IC see: https://issues.apache.org/jira/browse/UIMA-200
+//IC see: https://issues.apache.org/jira/browse/UIMA-200
             mSofaMappings[s].setComponentSofaName(CAS.NAME_DEFAULT_SOFA);
           sofamap.put(mSofaMappings[s].getComponentSofaName(), mSofaMappings[s]
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getAggregateSofaName());
         }
       }
@@ -374,6 +394,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
      * stack.
      */
     Stack<StackFrame> casIteratorStack = new Stack<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
     /**
      * Set of CASes that are in circulation (that is, they have been passed to FlowController and
@@ -422,6 +443,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
      */
     public boolean hasNext() throws AnalysisEngineProcessException {
       timer.startIt();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       try {
         if (nextCas == null)
           nextCas = processUntilNextOutputCas();
@@ -441,6 +463,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           toReturn = processUntilNextOutputCas();
         if (toReturn == null) {
           throw new UIMA_IllegalStateException(UIMA_IllegalStateException.NO_NEXT_CAS,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   new Object[0]);
         }
         nextCas = null;
@@ -460,7 +483,9 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     public void release() {
       // pop all frames off the casIteratorStack, calling Flow.abort() on flow objects and
       //CasIterator.release() on the CAS iterators
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
       while (!casIteratorStack.isEmpty()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
         StackFrame frame = casIteratorStack.pop();
         frame.originalCasFlow.aborted();
         frame.casIterator.release();
@@ -478,6 +503,8 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       }
       //clear the active CASes list, to guard against ever trying to
       //reuse these CASes or trying to release them a second time.
+//IC see: https://issues.apache.org/jira/browse/UIMA-200
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
       activeCASes.clear();       
     }
 
@@ -495,10 +522,12 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
      *           if a failure occurs during processing
      */
     private CAS processUntilNextOutputCas() throws AnalysisEngineProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
       FlowContainer flow = null;
       try {
         while (true) {
           CAS cas = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
           Step nextStep = null;
           flow = null;
           // get an initial CAS from the CasIteratorStack
@@ -507,6 +536,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               return null; // there are no more CAS Iterators to obtain CASes from
             }
             StackFrame frame = casIteratorStack.peek();
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
             try {
               if (frame.casIterator.hasNext()) {
                 cas = frame.casIterator.next();
@@ -520,6 +550,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               //and ask the Flow Controller if we should continue routing the CAS that was input to the CasMultiplier.
               if (!frame.originalCasFlow.continueOnFailure(frame.casMultiplierAeKey, e)) {
                 throw e;              
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
               } else {
                 UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "processUntilNextOutputCas",
                         LOG_RESOURCE_BUNDLE, "UIMA_continuing_after_exception__FINE", e);
@@ -534,6 +565,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               // that stack frame and continue with its flow
               cas = frame.originalCas;
               flow = frame.originalCasFlow;
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
               nextStep = frame.incompleteParallelStep; //in case we need to resume a parallel step
               cas.setCurrentComponentInfo(null); // this CAS is done being processed by the previous AnalysisComponent
               casIteratorStack.pop(); // remove this state from the stack now
@@ -545,6 +577,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
 
           // if we're not in the middle of parallel step already, ask the FlowController 
           // for the next step
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
           if (nextStep == null) {
             nextStep = flow.next();
           }
@@ -557,6 +590,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               AnalysisEngine nextAe = mComponentAnalysisEngineMap.get(nextAeKey);
               if (nextAe != null) {
                 //check if we have to set result spec, to support capability language flow
+//IC see: https://issues.apache.org/jira/browse/UIMA-443
                 if (nextStep instanceof SimpleStepWithResultSpec) {
                   ResultSpecification rs = ((SimpleStepWithResultSpec)nextStep).getResultSpecification();
                   if (rs != null) {
@@ -564,6 +598,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                   }
                 }
                 // invoke next AE in flow
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
                 CasIterator casIter = null;
                 CAS outputCas = null; //used if the AE we call outputs a new CAS
                 try {
@@ -605,8 +640,10 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               }
             } 
             //ParallelStep (TODO: refactor out common parts with SimpleStep?)
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
             else if (nextStep instanceof ParallelStep) {
               //create modifiable list of destinations 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
               List<String> destinations = new LinkedList<>(((ParallelStep) nextStep).getAnalysisEngineKeys());
               //iterate over all destinations, removing them from the list as we go
               while (!destinations.isEmpty()) {
@@ -616,6 +653,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                 AnalysisEngine nextAe = mComponentAnalysisEngineMap.get(nextAeKey);
                 if (nextAe != null) {
                   // invoke next AE in flow
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
                   CasIterator casIter = null;
                   CAS outputCas = null; //used if the AE we call outputs a new CAS
                   try {
@@ -627,6 +665,8 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                   catch(Exception e) {
                     //ask the FlowController if we should continue
                     //TODO: should this be configurable?
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
                     if (!flow.continueOnFailure(nextAeKey, e)) {
                       throw e;
                     }
@@ -658,6 +698,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                   }
                 } else {
                   throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                           AnalysisEngineProcessException.UNKNOWN_ID_IN_SEQUENCE,
                           new Object[] { nextAeKey });
                 }
@@ -679,6 +720,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           if (cas == mInputCas) {
             if (finalStep.getForceCasToBeDropped()) {
               throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       AnalysisEngineProcessException.ILLEGAL_DROP_CAS, new Object[0]);
             }
             return null;
@@ -694,6 +736,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
         }
       } catch (Exception e) {
         //notify Flow that processing has aborted on this CAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
         if (flow != null) {
           flow.aborted();
         }
@@ -714,7 +757,9 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    */
   static class StackFrame {
     StackFrame(CasIterator casIterator, CAS originalCas, FlowContainer originalCasFlow,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             String lastAeKey) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
       this(casIterator, originalCas, originalCasFlow, lastAeKey, null);
     }
 
@@ -745,6 +790,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
      * the remaining parts of the parallel step, so we can pick up processing from there
      * once we've processed all the output CASes.
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
     ParallelStep incompleteParallelStep;
   }
 

@@ -37,6 +37,7 @@ public class XMLFileFilter extends FileFilter {
    */
   @Override
   public boolean accept(File file) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (file.isDirectory())
       return true;
     else {

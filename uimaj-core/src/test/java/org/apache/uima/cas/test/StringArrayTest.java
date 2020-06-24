@@ -46,11 +46,14 @@ public class StringArrayTest extends TestCase {
    * @param arg0
    */
   public StringArrayTest(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
     super(arg0);
   }
 
   public void setUp() {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
     } catch (Exception e) {
@@ -86,6 +89,7 @@ public class StringArrayTest extends TestCase {
     } catch (ArrayIndexOutOfBoundsException e) {
       assertTrue(false);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-301
     String[] stringArray = array.toStringArray();
     assertTrue(array.size() == stringArray.length);
     for (int i = 0; i < stringArray.length; i++) {
@@ -166,6 +170,7 @@ public class StringArrayTest extends TestCase {
 
   public void testStringArrayValue() {
     String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 	+ CASTestSetup.LEMMA_LIST_FEAT;
     final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
     assertTrue(lemmaList != null);
@@ -183,6 +188,7 @@ public class StringArrayTest extends TestCase {
   
 
   public void testStringArrayNullValue() throws Exception{
+//IC see: https://issues.apache.org/jira/browse/UIMA-936
      String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
     + CASTestSetup.LEMMA_LIST_FEAT;
      final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
@@ -199,6 +205,7 @@ public class StringArrayTest extends TestCase {
      assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == "1");
      assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(1) == null);
      LowLevelCAS llc = casArray.getCAS().getLowLevelCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
      assertTrue(llc.ll_getStringArrayValue(llc.ll_getFSRef(casArray), 1) == null);
   }
 

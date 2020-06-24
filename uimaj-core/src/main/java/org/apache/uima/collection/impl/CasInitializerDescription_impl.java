@@ -47,6 +47,8 @@ import org.w3c.dom.Element;
 @Deprecated
 public class CasInitializerDescription_impl extends ResourceCreationSpecifier_impl implements
         CasInitializerDescription {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private static final long serialVersionUID = -4559482063745943204L;
 
@@ -56,6 +58,7 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
    */
   public CasInitializerDescription_impl() {
     setMetaData(new ProcessingResourceMetaData_impl());
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
     setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     // set default operational properties (may be overrriden during parsing)
     OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
@@ -79,6 +82,7 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
   public void doFullValidation(ResourceManager aResourceManager)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // check that user class was specified
     if (getImplementationName() == null || getImplementationName().length() == 0) {
@@ -88,11 +92,14 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
     }
     // try to load user class
     // just UIMA extension ClassLoader if available
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
     Class<?> implClass;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
       implClass = Class_TCCL.forName(getImplementationName(), aResourceManager);
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { getImplementationName(), getSourceUrlString() }, e);
     }
     // verify the user class implements CasInitializer
@@ -102,6 +109,7 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
                   getImplementationName(), CasInitializer.class.getName(), getSourceUrlString() });
     }
     // try to create a CAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<ProcessingResourceMetaData> metadata = new ArrayList<>();
     metadata.add(getCasInitializerMetaData());
     CasCreationUtils.createCas(metadata);
@@ -111,10 +119,12 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
    * Overridden to set default operational properties if they are not specified in descriptor.
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     if (getCasInitializerMetaData().getOperationalProperties() == null) {
       OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .createOperationalProperties();
       opProps.setModifiesCas(true);
       opProps.setMultipleDeploymentAllowed(true);
@@ -128,6 +138,7 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "casInitializerDescription", new PropertyXmlInfo[] {
               new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),

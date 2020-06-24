@@ -69,6 +69,7 @@ public class Logger_impl extends Logger_common_impl {
    * creates a new Logger object and set <code>System.out</code> as default output
    */
   private Logger_impl(Class<?> component) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
     super(component);
     // set default Output
     mOut = defaultOut;
@@ -92,6 +93,7 @@ public class Logger_impl extends Logger_common_impl {
    * @return Logger - returns the Logger object for the specified class
    */
   public static synchronized Logger getInstance(Class<?> component) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
     return new Logger_impl(component);
   }
 
@@ -105,7 +107,9 @@ public class Logger_impl extends Logger_common_impl {
   }
 
   public Logger_impl getLimitedLogger(int aLimit) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
     if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
       return this;
     }
     return new Logger_impl(this, aLimit);
@@ -145,6 +149,7 @@ public class Logger_impl extends Logger_common_impl {
   }
   
   public boolean isLoggable(Level level, Marker marker) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
     return configLevel.isGreaterOrEqual(level);
   }
     
@@ -165,6 +170,7 @@ public class Logger_impl extends Logger_common_impl {
   }
 
   public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
     if (mOut != null) {
       mOut.print(new Date());
       mOut.print(": " + level.toString() + ": ");
@@ -190,11 +196,13 @@ public class Logger_impl extends Logger_common_impl {
 
   @Override
   public String getName() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
     return loggerName;
   }
  
   @Override
   public boolean isDebugEnabled() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
     return isLoggable(Level.FINE);
   }
 
@@ -226,6 +234,7 @@ public class Logger_impl extends Logger_common_impl {
 
   @Override
   public boolean isTraceEnabled() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
     return isLoggable(Level.FINER) ||
         isLoggable(Level.FINEST);
   }

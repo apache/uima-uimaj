@@ -34,6 +34,8 @@ import org.xml.sax.helpers.AttributesImpl;
  * The Class CasProcessorErrorRateThresholdImpl.
  */
 public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CasProcessorErrorRateThreshold {
   
   /** The Constant serialVersionUID. */
@@ -152,6 +154,7 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     setAction(aElement.getAttribute("action"));
     setValue(aElement.getAttribute("value"));
@@ -182,6 +185,7 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("errorRateThreshold",
           new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the value.

@@ -56,6 +56,8 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     setQueueClass(aElement.getAttribute("queueClass"));
     String timeout = aElement.getAttribute("dequeueTimeout");
@@ -75,6 +77,7 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     attrs.addAttribute("", "dequeueTimeout", "dequeueTimeout", "CDATA", String
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .valueOf(getDequeueTimeout()));
     attrs.addAttribute("", "queueClass", "queueClass", "CDATA", String.valueOf(getQueueClass()));
     return attrs;
@@ -91,6 +94,7 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("outputQueue",
           new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the dequeue timeout.

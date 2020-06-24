@@ -48,6 +48,8 @@ import org.xml.sax.SAXException;
  * 
  */
 public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         AnalysisEngineMetaData {
   static final long serialVersionUID = -3030574527767871396L;
 
@@ -73,6 +75,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
    * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#resolveImports()
    */
   public void resolveImports() throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     resolveImports(UIMAFramework.newDefaultResourceManager());
   }
 
@@ -106,6 +109,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   public void setCapabilities(Capability[] aCapabilities) {
     if (aCapabilities == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aCapabilities", "setCapabilities" });
     }
     mCapabilities = aCapabilities;
@@ -189,11 +193,13 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
     // Prevent the fsIndexes property from being written to XML - it exists only so old-style XML
     // can be read.
     if (!"fsIndexes".equals(aPropInfo.propertyName)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
       super.writePropertyAsElement(aPropInfo, aNamespace);
     }
   }
 
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException {
     // Catch the case where both fsIndexes and fsIndexCollection are specified
     if ("fsIndexes".equals(aPropXmlInfo.xmlElementName)
@@ -207,6 +213,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   }
 
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1505
           ParsingOptions aOptions, List<String> aKnownPropertyNames) throws InvalidXMLException {
     // Catch the case where both fsIndexes and fsIndexCollection are specified
     if ("fsIndexes".equals(aElement.getTagName())
@@ -276,6 +283,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
     if (capabilities != null) {
       for (int i = 0; i < capabilities.length; i++) {
         if (capabilities[i].getInputSofas().length > 0
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 || capabilities[i].getOutputSofas().length > 0) {
           return true;
         }
@@ -293,11 +301,13 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
    * @return XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
    */
   protected static XmlizationInfo getXmlizationInfoForClass() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return XMLIZATION_INFO;
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "analysisEngineMetaData", null); // properties assigned below
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static {
     // this class's Xmlization info is derived from that of its superclass
@@ -308,6 +318,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
     PropertyXmlInfo[] newProperties = new PropertyXmlInfo[] {
         new PropertyXmlInfo("flowConstraints"), new PropertyXmlInfo("typeSystem", null),
         new PropertyXmlInfo("typePriorities", null),
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
         new PropertyXmlInfo("fsIndexCollection", null), 
         new PropertyXmlInfo("fsIndexes"),
         new PropertyXmlInfo("capabilities", false),
@@ -315,6 +326,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
         new PropertyXmlInfo("casInterface") };
 
     XMLIZATION_INFO.propertyInfo = new PropertyXmlInfo[superclassInfo.propertyInfo.length
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + newProperties.length];
     System.arraycopy(superclassInfo.propertyInfo, 0, XMLIZATION_INFO.propertyInfo, 0,
             superclassInfo.propertyInfo.length);

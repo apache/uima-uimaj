@@ -24,5 +24,6 @@ import org.eclipse.core.resources.IFile;
 public interface ITypeSystemSearchStrategy {
 
   IFile findTypeSystem(IFile casFile);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
 
 }

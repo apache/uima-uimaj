@@ -33,6 +33,7 @@ public class TagRule extends MultiLineRule {
    * @param token the token
    */
   public TagRule(IToken token) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super("<", ">", token);
   }
 

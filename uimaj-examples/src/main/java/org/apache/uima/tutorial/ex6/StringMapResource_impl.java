@@ -41,6 +41,7 @@ public class StringMapResource_impl implements StringMapResource, SharedResource
    * @see org.apache.uima.resource.SharedResourceObject#load(DataResource)
    */
   public void load(DataResource aData) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (InputStream inStr = aData.getInputStream()) {
       // open input stream to data
       // read each line

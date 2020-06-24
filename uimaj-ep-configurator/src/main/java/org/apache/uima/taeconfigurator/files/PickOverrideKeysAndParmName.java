@@ -100,6 +100,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
    */
   public PickOverrideKeysAndParmName(AbstractSection aSection,
           Map delegateMap,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
           String message, ConfigurationParameter aCp, ConfigGroup aCg,
           boolean aAdding) {
     super(aSection, "Delegate Keys and Parameter Name Selection", message);
@@ -145,6 +146,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
   public void handleEvent(Event event) {
     if (event.widget == keysUI && event.type == SWT.Selection) {
       fillParameterCandidates();
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
       super.handleEvent(event);
     }
     
@@ -175,6 +177,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
               .getMetaData().getConfigurationParameterDeclarations();
       
       addSelectedParms(delegateCpd, keyName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
 
     }
     if (0 < paramsUI.getItemCount()) {
@@ -209,6 +212,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
     // Then build a list of all config params in the first group
     String[] groupNames = cg.getNameArray();
     ConfigurationGroup[] dcgs = delegateCpd.getConfigurationGroupDeclarations(groupNames[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<ConfigurationParameter> cps = new ArrayList<>();
     for (ConfigurationGroup dcg : dcgs) {
       cps.addAll(Arrays.asList(dcg.getConfigurationParameters()));
@@ -217,6 +221,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
     // Then for each of the other groups keep only those parameters in that group
     // Quite inefficient as searches for each parameter in turn in the group, but .... !!
     for (int i = 1; i < groupNames.length; ++i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       ArrayList<ConfigurationParameter> newCps = new ArrayList<>();
       for (ConfigurationParameter cp : cps) {
         ConfigurationParameter sameCp = delegateCpd.getConfigurationParameter(groupNames[i], cp.getName());
@@ -262,6 +267,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
           continue;
         // parameter must not be already overridden, unless we're editing an existing one
         String override = keyName + '/' + parms[i].getName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1320
         if (adding && null != ParameterDelegatesSection.getOverridingParmName(override, cg))
           continue;
 
@@ -301,6 +307,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
     /*
   protected TreeGroup createTreeGroup(Composite composite, Object rootObject) {
     return new TreeGroup(composite, rootObject, (keyTreeProvider = new KeyTreeProvider()),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new KeyTreeLabelProvider(), new ParmNameProvider(), new ParmNameLabelProvider(),
             SWT.NONE, -1, -1, true); // set single selection
     // mode
@@ -341,6 +348,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
     }
 
     public boolean hasChildren(Object element) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       return false;
     }
  */
@@ -434,6 +442,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
 
       ResourceSpecifier rs = (ResourceSpecifier) entry.getValue();
       if (rs instanceof AnalysisEngineDescription || rs instanceof CasConsumerDescription
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || rs instanceof FlowControllerDescription) {
         ConfigurationParameterDeclarations delegateCpd = ((ResourceCreationSpecifier) rs)
                 .getMetaData().getConfigurationParameterDeclarations();

@@ -61,6 +61,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
     
     @Override
     public final int nextNvc()  {   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
       final int r = keys[curPosition];
       curPosition = moveToNextFilled(curPosition + 1);
       return r;     
@@ -102,6 +103,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
   
 //  private boolean secondTimeShrinkable = false;
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
   final private Class<T> componentType;  // needed to make new instances of the value array
   
 //  /** set to the first found_removed when searching */
@@ -125,6 +127,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
    * @param initialCapacity
    */
   private Int2ObjHashMap(Int2ObjHashMap orig) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     super(orig);
     this.componentType = orig.componentType;
     this.keys = Arrays.copyOf(orig.keys, keys.length);
@@ -478,6 +481,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
     final int[] r = new int[size];
     int i = 0;
     for (int k : keys) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
       if (k != 0 && k != REMOVED_KEY) {
         r[i++] = k;
       }
@@ -518,6 +522,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
 
       @Override
       public E next() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
         if (!hasNext()) {
           throw new NoSuchElementException();
         }

@@ -30,6 +30,8 @@ import org.apache.uima.resource.metadata.MimeTypePrecondition;
  * 
  */
 public class MimeTypePrecondition_impl extends SimplePrecondition_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         MimeTypePrecondition {
   private static final long serialVersionUID = -2496834003359218342L;
 
@@ -42,6 +44,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
    * @see org.apache.uima.resource.metadata.MimeTypePrecondition#getMimeTypes()
    */
   public String[] getMimeTypes() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return (String[]) getComparisonValue();
   }
 
@@ -59,6 +62,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
     // value must be a string array
     if (!(aValue instanceof String[])) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { aValue, "aValue", "setComparisonValue" });
     }
     super.setComparisonValue(aValue);
@@ -69,6 +73,8 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setFeatureName(String aFeatureName) {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
                 this.getClass().getName(), "setFeatureName" });
   }
@@ -78,6 +84,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setFsIndexName(String aIndexName) {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
                 this.getClass().getName(), "setFsIndexName" });
   }
@@ -87,6 +94,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setFsMatchConstraint(FSMatchConstraint aConstraint) {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
                 this.getClass().getName(), "setFsMatchConstraint" });
   }
@@ -98,6 +106,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setMetaDataKeyName(String aKey) {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
                 this.getClass().getName(), "setMetaDataKeyName" });
   }
@@ -107,6 +116,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setPredicate(String aPredicate) {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
                 this.getClass().getName(), "setPredicate" });
   }

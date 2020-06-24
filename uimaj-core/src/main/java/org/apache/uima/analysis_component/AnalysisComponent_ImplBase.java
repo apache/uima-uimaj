@@ -63,6 +63,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    */
   public void reconfigure() throws ResourceConfigurationException, ResourceInitializationException {
     destroy();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1874
     initialize(getContext());
   }
 
@@ -112,6 +113,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * @return the UimaContext for this AnalysisComponent
    */
   protected final UimaContext getContext() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1874
     if (null == mContext) {
       // wrapped in RuntimeException because we don't want to change the API of this method
       throw new UIMARuntimeException(UIMARuntimeException.UIMA_CONTEXT_NULL, new Object[] {} );
@@ -136,6 +138,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * @return the ResultSpecification for this Analysis Component to use.
    */
   protected ResultSpecification getResultSpecification() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1874
     if (null == mResultSpecification) {
       // wrapped in RuntimeException because we don't want to change the API of this method
       throw new UIMARuntimeException(UIMARuntimeException.RESULT_SPEC_NULL, new Object[] {} );

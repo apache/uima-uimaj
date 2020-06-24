@@ -41,6 +41,7 @@ public class ParameterPage extends HeaderPageWithSash {
    * @param editor the editor
    */
   public ParameterPage(MultiPageEditor editor) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, "Configuration Parameters");
   }
 
@@ -55,6 +56,7 @@ public class ParameterPage extends HeaderPageWithSash {
     Form2Panel form2Panel = setup2ColumnLayout(managedForm, 55, 45);
     managedForm.addPart(parameterSection = new ParameterSection(editor, form2Panel.left));
     managedForm.addPart(parameterDelegatesSection = new ParameterDelegatesSection(editor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             form2Panel.right));
     createToolBarActions(managedForm);
   }

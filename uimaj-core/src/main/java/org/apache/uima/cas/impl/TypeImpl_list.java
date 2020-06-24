@@ -23,6 +23,7 @@ import org.apache.uima.cas.Type;
 
 public class TypeImpl_list extends TypeImpl {
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   TypeImpl componentType;
       
   public TypeImpl_list(String name, TypeImpl componentType, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaClass) {

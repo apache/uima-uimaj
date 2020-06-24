@@ -43,6 +43,7 @@ final class ValueColumnLabelProvider extends CellLabelProvider {
       FeatureValue featureValue = (FeatureValue) element;
 
       if (featureValue.getFeature().getRange().isPrimitive()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2148
         cell.setText(Primitives.getPrimitive(featureValue.getFeatureStructure(), featureValue.getFeature()).toString());
       }
       else {

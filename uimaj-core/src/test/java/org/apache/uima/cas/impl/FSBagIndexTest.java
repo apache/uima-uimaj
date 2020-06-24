@@ -53,6 +53,7 @@ public class FSBagIndexTest extends TestCase {
   File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   FsIndex_bag<TOP> bi;
   
   
@@ -70,6 +71,7 @@ public class FSBagIndexTest extends TestCase {
   private FsIndex_bag<TOP> cbi() {
     FSIndexComparator comparatorForIndexSpecs = new FSIndexComparatorImpl();
     comparatorForIndexSpecs.setType(ts.getTopType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new FsIndex_bag<>(cas, ts.getType("uima.cas.TOP"), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
   }
 
@@ -78,6 +80,7 @@ public class FSBagIndexTest extends TestCase {
   }
 
   public void testInsert() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     JCas jcas = cas.getJCas();
     // starts out as bit set;
     TOP[] ns = new TOP[] {new TOP(jcas), new TOP(jcas), new TOP(jcas)};
@@ -110,6 +113,7 @@ public class FSBagIndexTest extends TestCase {
       r.add(it.get());
       it.moveToNext();
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     r.sort(FeatureStructureImplC::compare);
     Arrays.sort(ns, FeatureStructureImplC::compare);
     assertTrue(Arrays.equals(ns, r.toArray()));

@@ -42,6 +42,7 @@ public class ResourceState_impl {
   /**
    * Creates a new ResourceState_impl
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   ResourceState_impl() {
   }
 

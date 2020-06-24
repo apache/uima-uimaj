@@ -49,6 +49,7 @@ public class VNSQuery {
    *           when unable to connect to VNS
    */
   public VNSQuery(String aVnsHost, int aVnsPort) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     vnsQuery = new VinciVNSQuery(aVnsHost, aVnsPort);
   }
 
@@ -129,6 +130,7 @@ public class VNSQuery {
       VinciServiceInfo service = (VinciServiceInfo) oldList.get(i);
 
       if (aService.getHost().equals(service.getHost()) && aService.getPort() == service.getPort()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               && service.isAvailable() == false) {
         return false;
       }
@@ -205,6 +207,7 @@ public class VNSQuery {
               if (client.isOpen()) {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                   UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                           Level.FINEST,
                           this.getClass().getName(),
                           "initialize",
@@ -220,6 +223,7 @@ public class VNSQuery {
             } catch (ConnectException ce) {
               if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
                 UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                         Level.WARNING,
                         this.getClass().getName(),
                         "initialize",
@@ -259,6 +263,7 @@ public class VNSQuery {
       int service_port = aServiceFrame.fgetInt("PORT");
 
       VinciServiceInfo serviceInfo = new VinciServiceInfo(serviceName, service_host_IP,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               service_port);
       return serviceInfo;
     }

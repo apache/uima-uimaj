@@ -110,6 +110,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
    * @param type the type of this Feature Structure 
    */
   public FSHashSet(TypeImpl type, CASImpl casImpl) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5650
     this(new HashSet<>(), type, casImpl);
   }
   
@@ -145,6 +146,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
    * @param length initial size
    */
   public FSHashSet(JCas jcas, int length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5650
     this (new HashSet<>(length), jcas, length);
   }
     
@@ -193,6 +195,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
     isPendingInit = false;
     fsHashSet.clear();
     FSArray<T> a = getFsArray();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
 
     for (T fs : a) {
       fsHashSet.add((T) fs);
@@ -206,8 +209,10 @@ public class FSHashSet <T extends TOP> extends TOP implements
   public void _save_to_cas_data() {
     if (isSaveNeeded) {
       isSaveNeeded = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
       FSArray<T> fsa = getFsArray();
       if (fsa == null || fsa.size() != fsHashSet.size()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
         fsa = new FSArray(_casView.getJCasImpl(), fsHashSet.size());
         setFsArray(fsa);
       }
@@ -219,6 +224,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
       for (TOP fs : fsHashSet) {
         TOP currentValue = fsa.get(i);
         if (currentValue != fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
           fsa.set_without_PEAR_conversion(i, fs); // done this way to record for journaling for delta CAS
         }
         i++;
@@ -231,6 +237,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public T[] _toArrayForSelect() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     return toArray(); 
   }
 
@@ -243,6 +250,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
   private TOP[] gta() {
     FSArray fsa = getFsArray();
     if (null == fsa) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       return Constants.EMPTY_TOP_ARRAY;
     }
     return fsa._getTheArray();
@@ -258,6 +266,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
     if (size() != other.size()) return false;
     if (size() == 0) return true;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     maybeLazyInit();
     other.maybeLazyInit();
     
@@ -275,6 +284,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
 //    return isSaveNeeded
 //        ? fsHashSet.hashCode()    // no good - hash codes different
 //        : Arrays.hashCode(gta());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     maybeLazyInit();
     return fsHashSet.hashCode();
   }
@@ -284,6 +294,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public T[] toArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     if (isSaveNeeded) {
       T[] r = (T[]) new TOP[size()];
       fsHashSet.toArray(r);
@@ -310,6 +321,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
   @Override
   public <N> N[] toArray(N[] a) {
     if (isSaveNeeded) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
       N[] aa = fsHashSet.toArray(a);
       _casView.swapInPearVersion(aa);
       return aa;
@@ -322,6 +334,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
     
     TOP[] d = gta();
     System.arraycopy(d, 0, a, 0, d.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     _casView.swapInPearVersion(a);
     return a;
   }
@@ -331,11 +344,13 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public Iterator<T> iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     if (size() == 0) {
       return Collections.emptyIterator();
     }
     
     return new Iterator<T>() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
 
       final private Iterator<T> baseIt = isSaveNeeded 
           ? fsHashSet.iterator()
@@ -369,6 +384,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public int size() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     return isSaveNeeded 
         ? fsHashSet.size()
         : gta().length;
@@ -382,6 +398,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public boolean isEmpty() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     return size() == 0;
   }
 
@@ -395,6 +412,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
   @Override
   public boolean contains(Object o) {
     maybeLazyInit();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     return fsHashSet.contains((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
   }
 
@@ -435,6 +453,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public void clear() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     if (size() == 0) return;
     maybeLazyInit();
     isSaveNeeded = true;
@@ -451,6 +470,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
   @Override
   public boolean containsAll(Collection<?> c) {
     maybeLazyInit();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     for (Object o : c) {
       if (!contains(o)) {
         return false;
@@ -468,6 +488,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public boolean addAll(Collection<? extends T> c) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     if (c.size() == 0) {
       return false;
     }
@@ -490,7 +511,9 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public Spliterator<T> spliterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     Spliterator<T> baseSi =  isSaveNeeded
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
         ? fsHashSet.spliterator()
         : (Spliterator<T>) Arrays.asList(gta()).spliterator();
         
@@ -506,6 +529,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public boolean retainAll(Collection<?> c) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     if (c.size() == 0) {
       boolean wasNotEmpty = !isEmpty();
       clear();

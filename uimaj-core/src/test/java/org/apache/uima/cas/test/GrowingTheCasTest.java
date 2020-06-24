@@ -144,6 +144,7 @@ public class GrowingTheCasTest extends TestCase {
     }
     
     // performance testing of "unordered" iterators
+//IC see: https://issues.apache.org/jira/browse/UIMA-4198
     for (int i = 0; i < 10; i++) {
       timeIt(i);
     }
@@ -191,6 +192,7 @@ public class GrowingTheCasTest extends TestCase {
 //  }
 
 //  System.out.format("JVM total memory: %,d, JVM Max Mem: %,d%n", Runtime.getRuntime().totalMemory(), Runtime.getRuntime().maxMemory());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   File textFile = JUnitExtension.getFile("data/moby.txt");
   String text = null;
   try {
@@ -203,6 +205,7 @@ public class GrowingTheCasTest extends TestCase {
   for (int i = 0; i < 10; i++) {
     buf.append(text);
   }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
   jcas = null;
   try {
     jcas = this.ae.newJCas();
@@ -353,6 +356,7 @@ public class GrowingTheCasTest extends TestCase {
 //    System.gc();
 //    System.out.format("Size of 2 heaps: %,d after 2 gcs%n", r.totalMemory() - r.freeMemory());
 //
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
     } catch (AnalysisEngineProcessException e) {
       e.printStackTrace();
       assertTrue(false);

@@ -97,6 +97,7 @@ public class TestFruitObject extends MetaDataObject_impl {
    * {@link #listAttributes()}.
    */
   static public Set<NameClassPair> getAttributeSet() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     HashSet<NameClassPair> result = new HashSet<>();
     result.add(new NameClassPair("name", String.class.getName()));
     result.add(new NameClassPair("color", String.class.getName()));
@@ -108,6 +109,7 @@ public class TestFruitObject extends MetaDataObject_impl {
   }
   
   static public Set<MetaDataAttr> getMetaDataAttrSet() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     HashSet<MetaDataAttr> result = new HashSet<>();
     try {
     result.add(new MetaDataAttr(

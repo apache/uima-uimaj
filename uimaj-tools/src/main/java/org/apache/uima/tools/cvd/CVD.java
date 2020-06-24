@@ -66,6 +66,7 @@ public class CVD {
    * Instantiates a new cvd.
    */
   private CVD() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -75,6 +76,7 @@ public class CVD {
    * @return the main frame
    */
   public static MainFrame createMainFrame() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1046
     return createMainFrame(null);
   }
 
@@ -87,10 +89,12 @@ public class CVD {
   public static MainFrame createMainFrame(File iniFile) {
     final MainFrame frame = new MainFrame(iniFile);
     // Set icon.
+//IC see: https://issues.apache.org/jira/browse/UIMA-295
     ImageIcon icon = Images.getImageIcon(Images.MICROSCOPE);
     if (icon != null) {
       frame.setIconImage(icon.getImage());
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-989
     try {
       javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
 
@@ -119,9 +123,11 @@ public class CVD {
     parser.addParameter(TEXT_FILE_PARAM, true);
     parser.addParameter(DESC_FILE_PARAM, true);
     parser.addParameter(DATA_PATH_PARAM, true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-171
     parser.addParameter(LOOK_AND_FEEL_PARAM, true);
     parser.addParameter(EXECUTE_SWITCH);
     parser.addParameter(XMI_FILE_PARAM, true); 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1046
     parser.addParameter(INI_FILE_PARAM, true);
     return parser;
   }
@@ -131,6 +137,7 @@ public class CVD {
    */
   private static final void printUsage() {
     System.out
+//IC see: https://issues.apache.org/jira/browse/UIMA-989
         .println("Usage: java org.apache.uima.cvd.CVD [-text <TextFile>] [-desc <XmlDescriptor>] [-datapath <DataPath>] [-exec]");
     System.out.println("Additional optional parameters:");
     System.out.println("  -lookandfeel <LookAndFeelClassName>");
@@ -177,8 +184,10 @@ public class CVD {
         printUsage();
         System.exit(2);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-171
       String lookAndFeel = null;
       if (clp.isInArgsList(LOOK_AND_FEEL_PARAM)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-989
         lookAndFeel = clp.getParamArgument(LOOK_AND_FEEL_PARAM);
         try {
           UIManager.setLookAndFeel(lookAndFeel);
@@ -186,6 +195,7 @@ public class CVD {
           System.err.println(e.getMessage());
         }
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1046
       File iniFile = null;
       if (clp.isInArgsList(INI_FILE_PARAM)) {
         String iniFileName = clp.getParamArgument(INI_FILE_PARAM);

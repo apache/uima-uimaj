@@ -50,6 +50,7 @@ class OutlineLabelProvider extends LabelProvider implements ITableLabelProvider 
     AnnotationFS annotation = (AnnotationFS) ((IAdaptable) element).getAdapter(AnnotationFS.class);
 
     if (annotation != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2107
       if (annotation.getCoveredText() != null)
         return getStringWithoutNewLine(annotation.getCoveredText());
       else

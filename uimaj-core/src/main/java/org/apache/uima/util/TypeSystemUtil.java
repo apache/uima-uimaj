@@ -48,9 +48,13 @@ public class TypeSystemUtil {
     ResourceSpecifierFactory fact = UIMAFramework.getResourceSpecifierFactory();
     TypeSystemDescription tsDesc = fact.createTypeSystemDescription();
     Iterator<Type> typeIter = aTypeSystem.getTypeIterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<TypeDescription> typeDescs = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (typeIter.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Type type = typeIter.next();
+//IC see: https://issues.apache.org/jira/browse/UIMA-467
       if (!type.getName().startsWith("uima.cas") && !type.getName().equals("uima.tcas.Annotation") &&
           !type.isArray()) {
         typeDescs.add(type2TypeDescription(type, aTypeSystem));
@@ -89,7 +93,9 @@ public class TypeSystemUtil {
       }
       typeDesc.setAllowedValues(avObjs);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<FeatureDescription> featDescs = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       for (Feature feat : aType.getFeatures()){ 
         if (!superType.getFeatures().contains(feat)) {
           featDescs.add(feature2FeatureDescription(feat));
@@ -111,11 +117,14 @@ public class TypeSystemUtil {
    */
   public static FeatureDescription feature2FeatureDescription(Feature aFeature) {
     FeatureDescription featDesc = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .createFeatureDescription();
     featDesc.setName(aFeature.getShortName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-1877
     if (aFeature.isMultipleReferencesAllowed()) {
       featDesc.setMultipleReferencesAllowed(true);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-467
     Type rangeType = aFeature.getRange();
     //special check for array range types, which are represented in the CAS as
     //elementType[] but in the descriptor as an FSArray with an <elementType>
@@ -142,6 +151,7 @@ public class TypeSystemUtil {
    *         Type.
    */
   public static String[] getAllowedValuesForType(Type aType, TypeSystem aTypeSystem) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-128
     LowLevelTypeSystem lts = aTypeSystem.getLowLevelTypeSystem();
     return lts.ll_getStringSet(lts.ll_getCodeForType(aType));
   }

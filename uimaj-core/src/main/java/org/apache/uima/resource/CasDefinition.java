@@ -49,6 +49,8 @@ public class CasDefinition {
   private ResourceManager resourceManager;
 
   public CasDefinition(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           FsIndexDescription[] aFsIndexes, ResourceManager aResourceManager,
           Properties aPerformanceTuningSettings) {
     this.typeSystemDescription = aTypeSystem;
@@ -58,17 +60,21 @@ public class CasDefinition {
   }
 
   public CasDefinition(Collection<? extends ProcessingResourceMetaData> aMetaDataToMerge, ResourceManager aResourceManager)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // extract TypeSystems, TypePriorities, and FsIndexes from metadata
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<TypeSystemDescription> typeSystems = new ArrayList<>();
     List<TypePriorities> typePrioritiesList = new ArrayList<>();
     List<FsIndexCollection> fsIndexes = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1488
     Iterator<? extends ProcessingResourceMetaData> it = aMetaDataToMerge.iterator();
     while (it.hasNext()) {
       ProcessingResourceMetaData md = it.next();
       if (md.getTypeSystem() != null)
         typeSystems.add(md.getTypeSystem());
       if (md.getTypePriorities() != null)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         typePrioritiesList.add(md.getTypePriorities());
       if (md.getFsIndexCollection() != null)
         fsIndexes.add(md.getFsIndexCollection());
@@ -76,6 +82,7 @@ public class CasDefinition {
 
     // merge TypePriorities and FsIndexes
     TypePriorities aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePrioritiesList,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             aResourceManager);
     FsIndexCollection aggIndexColl = CasCreationUtils.mergeFsIndexes(fsIndexes, aResourceManager);
     TypeSystemDescription aggTypeDesc = CasCreationUtils.mergeTypeSystems(typeSystems,
@@ -182,6 +189,7 @@ public class CasDefinition {
    * @return the typeSystemImpl
    */
   public TypeSystemImpl getTypeSystemImpl() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4701
     return typeSystemImpl;
   }
 

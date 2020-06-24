@@ -41,6 +41,7 @@ public interface AnalysisEngineManagementImplMBean extends Serializable {
 
   void resetStats();
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-2217
   String getState();
   
   public long getThreadId();

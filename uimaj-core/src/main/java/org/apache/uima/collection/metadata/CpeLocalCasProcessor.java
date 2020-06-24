@@ -72,6 +72,7 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
 
   public void setRunInSeperateProcess(CasProcessorRunInSeperateProcess aSepProcess)
           throws CpeDescriptorException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   public CasProcessorRunInSeperateProcess getRunInSeperateProcess() throws CpeDescriptorException;
 

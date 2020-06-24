@@ -65,6 +65,8 @@ public class EncodedPrintStream extends PrintStream {
    *           If the character encoding is not supported by the JVM.
    */
   public EncodedPrintStream(OutputStream out, boolean autoFlush, String encoding)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws UnsupportedEncodingException {
     super(out, autoFlush);
     this.encoding = encoding;

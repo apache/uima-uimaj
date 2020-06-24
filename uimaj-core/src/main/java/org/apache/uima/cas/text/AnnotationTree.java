@@ -32,5 +32,6 @@ public interface AnnotationTree<T extends AnnotationFS> {
    * @return The root node of the tree.
    */
   AnnotationTreeNode<? extends T> getRoot();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
 
 }

@@ -58,6 +58,7 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
   private int mDocNum;
 
   public void initialize() throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mDocNum = 0;
     mOutputDir = new File((String) getConfigParameterValue(PARAM_OUTPUTDIR));
     if (!mOutputDir.exists()) {
@@ -133,6 +134,7 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
    */
   private void writeXmi(CAS aCas, File name, String modelFileName) throws IOException, SAXException {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (OutputStream out = new FileOutputStream(name)) {
       // write XMI
       XmiCasSerializer ser = new XmiCasSerializer(aCas.getTypeSystem());

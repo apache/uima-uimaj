@@ -177,6 +177,7 @@ public class AnnotationViewGenerator {
   public void processStyleMap(File aStyleMap) throws TransformerException {
     // Copy static files annotations.xsl, annotationViewer.js, and index.html to
     // the output dir as well, where they will be used later
+//IC see: https://issues.apache.org/jira/browse/UIMA-300
     writeToFile("annotations.xsl", mOutputDir);
     writeToFile("annotationViewer.js", mOutputDir);
     writeToFile("index.html", mOutputDir);
@@ -184,6 +185,7 @@ public class AnnotationViewGenerator {
     // Generate CSS from Style Map
     Transformer cssTransformer = mStyleMapToCss.newTransformer();
     cssTransformer.transform(new StreamSource(aStyleMap), new StreamResult(new File(mOutputDir,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "annotations.css").getAbsolutePath()));
     // NOTE: getAbsolutePath() seems to be necessary on Java 1.5
 
@@ -211,6 +213,7 @@ public class AnnotationViewGenerator {
   public void processDocument(File aInlineXmlDoc) throws TransformerException {
     // Generate document view HTML from Inline XML
     Transformer docHtmlTransformer = mTFactory.newTransformer(new StreamSource(new File(mOutputDir,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "docFrame.xsl")));
     docHtmlTransformer.transform(new StreamSource(aInlineXmlDoc), new StreamResult(new File(
             mOutputDir, "docView.html").getAbsolutePath()));
@@ -367,8 +370,10 @@ public class AnnotationViewGenerator {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public void autoGenerateStyleMapFile(AnalysisEngineMetaData aMetaData, File aStyleMapFile)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     String xmlStr = autoGenerateStyleMap(aMetaData);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (Writer out = new FileWriter(aStyleMapFile)) {
       out.write(xmlStr);
     }
@@ -383,8 +388,10 @@ public class AnnotationViewGenerator {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public void autoGenerateStyleMapFile(TypeSystemDescription aTypeSystem, File aStyleMapFile)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     String xmlStr = autoGenerateStyleMap(aTypeSystem);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (Writer out = new FileWriter(aStyleMapFile)) {
       out.write(xmlStr);
     }

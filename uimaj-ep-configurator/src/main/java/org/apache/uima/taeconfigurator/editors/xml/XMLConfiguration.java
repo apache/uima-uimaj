@@ -55,6 +55,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
    * @param colorManager the color manager
    */
   public XMLConfiguration(ColorManager colorManager) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this.colorManager = colorManager;
   }
 
@@ -72,6 +73,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
    */
   @Override
   public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String contentType) {
     if (doubleClickStrategy == null)
       doubleClickStrategy = new XMLDoubleClickStrategy();
@@ -87,6 +89,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
     if (scanner == null) {
       scanner = new XMLScanner(colorManager);
       scanner.setDefaultReturnToken(new Token(new TextAttribute(colorManager
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getColor(IXMLColorConstants.DEFAULT))));
     }
     return scanner;
@@ -101,6 +104,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
     if (tagScanner == null) {
       tagScanner = new XMLTagScanner(colorManager);
       tagScanner.setDefaultReturnToken(new Token(new TextAttribute(colorManager
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getColor(IXMLColorConstants.TAG))));
     }
     return tagScanner;
@@ -122,6 +126,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
     reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
     NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(new TextAttribute(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             colorManager.getColor(IXMLColorConstants.XML_COMMENT)));
     reconciler.setDamager(ndr, XMLPartitionScanner.XML_COMMENT);
     reconciler.setRepairer(ndr, XMLPartitionScanner.XML_COMMENT);
@@ -147,6 +152,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
     int indent = getTabWidth(null);
     for (int i = 0; i < indent; i++)
       spaces.append(' ');
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     return new String[] { "\t", spaces.toString() /* , "" */}; //$NON-NLS-1$ 
   }
 

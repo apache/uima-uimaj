@@ -72,6 +72,8 @@ public class ResourcePool {
    *           if the Resource instances could not be created
    */
   public ResourcePool(int aNumInstances, ResourceSpecifier aResourceSpecifier, Class<? extends Resource> aResourceClass)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     this(aNumInstances, aResourceSpecifier, aResourceClass, null);
   }
@@ -94,6 +96,7 @@ public class ResourcePool {
    *           if the Resource instances could not be created
    */
   public ResourcePool(int aNumInstances, ResourceSpecifier aResourceSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1509
           Class<? extends Resource> aResourceClass, Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
@@ -136,6 +139,7 @@ public class ResourcePool {
     // make sure this Resource was actually belongs to this pool and is checked out
     if (!mAllInstances.contains(aResource) || mFreeInstances.contains(aResource)) {
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "releaseResource", LOG_RESOURCE_BUNDLE, "UIMA_return_resource_to_pool__WARNING");
     } else {
       /*
@@ -183,6 +187,7 @@ public class ResourcePool {
    */
 
   public synchronized void checkoutSpecificResource(Resource r) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-367
     while (!mFreeInstances.contains(r)) {
       try {
         wait();
@@ -196,6 +201,7 @@ public class ResourcePool {
    * Destroys all Resources in this pool.
    */
   public synchronized void destroy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Iterator<Resource> i = mAllInstances.iterator();
     while (i.hasNext()) {
       Resource current = i.next();
@@ -211,6 +217,7 @@ public class ResourcePool {
    * @return the size of this pool
    */
   public int getSize() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return mNumInstances;
   }
 
@@ -240,6 +247,7 @@ public class ResourcePool {
    *           if the Resource instances could not be created
    */
   protected void fillPool(ResourceSpecifier aResourceSpecifier, Class<? extends Resource> aResourceClass,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     // fill the pool
     for (int i = 0; i < mNumInstances; i++) {

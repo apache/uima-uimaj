@@ -57,6 +57,7 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
    */
   @Override
   public void set(int aFrequency) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     max = String.valueOf(aFrequency);
   }
 
@@ -82,6 +83,7 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     setMax(aElement.getAttribute("max"));
     setDefaultTimeout(aElement.getAttribute("default"));
@@ -114,6 +116,7 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("timeout",
           new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the xmlization info.

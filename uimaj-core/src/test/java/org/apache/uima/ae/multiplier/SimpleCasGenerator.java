@@ -87,6 +87,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
     lastDocument = null;
     lastResultSpec = null;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     this.nToGen = (Integer) aContext.getConfigParameterValue("NumberToGenerate");
     FileInputStream fis = null;
     try {

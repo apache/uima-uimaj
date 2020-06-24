@@ -65,6 +65,7 @@ public class DataIO {
           }
           sb.setCharAt(i, (char)b);
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5904
         ((Buffer)in).position(in.position() + length);
         return sb.toString();  // doesn't copy the string char array
       } 
@@ -78,10 +79,12 @@ public class DataIO {
       DECODER.set(decoder);       
     }
     ByteBuffer partToDecode = in.slice();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5904
     ((Buffer)partToDecode).limit(length);
     CharBuffer cb;
     try {
       cb = decoder.decode(partToDecode);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5904
       ((Buffer)in).position(in.position() + length);
     } catch (CharacterCodingException e) {
       // should never happen
@@ -128,6 +131,8 @@ public class DataIO {
     if (null == string) {
       return 1;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
     byte[] bb = string.getBytes(StandardCharsets.UTF_8);
     if (bb.length > (Integer.MAX_VALUE - 1)) {
       throw new RuntimeException(String.format("String UTF-8 representation too long, was %,d", bb.length));

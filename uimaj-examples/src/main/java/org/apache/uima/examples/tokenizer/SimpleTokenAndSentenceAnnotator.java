@@ -47,6 +47,7 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
      * @param end the end
      * @return the annotation
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     abstract Annotation newAnnotation(JCas jcas, int start, int end);
   }
 
@@ -112,6 +113,7 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
   void makeAnnotations(Maker m, BreakIterator b) {
     b.setText(input);
     for (int end = b.next(), start = b.first(); end != BreakIterator.DONE; start = end, end = b
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .next()) {
       // eliminate all-whitespace tokens
       boolean isWhitespace = true;

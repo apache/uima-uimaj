@@ -37,6 +37,7 @@ public class IntSet implements PositiveIntSet {
 
   /** Creates a new instance of this set. */
   public IntSet() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     this.iVec = new IntVector();
   }
   
@@ -61,8 +62,10 @@ public class IntSet implements PositiveIntSet {
    */
   @Override
   public boolean add(int element) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     if (!this.iVec.contains(element)) {
       this.iVec.add(element);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       return true;
     }
     return false;
@@ -78,6 +81,7 @@ public class IntSet implements PositiveIntSet {
    */
   @Override
   public boolean contains(int element) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     return this.iVec.contains(element);
   }
 
@@ -135,6 +139,7 @@ public class IntSet implements PositiveIntSet {
       // maybe a speedup - is order size(), vs order size*size
       int sum1 = 0;
       int sum2 = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4188
       final IntVector v1 = this.iVec;
       final IntVector v2 = s.iVec;
       for (int i = 0; i < size; i++) {
@@ -154,6 +159,7 @@ public class IntSet implements PositiveIntSet {
   }
 
   public int hashCode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     if (this.iVec == null) {
       return 0;
     }
@@ -209,6 +215,8 @@ public class IntSet implements PositiveIntSet {
     
     @Override
     public int previousNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
       return iVec.get(--pos);
     }
 
@@ -247,6 +255,7 @@ public class IntSet implements PositiveIntSet {
 
   @Override
   public int moveToNext(int position) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4377
     if (position < 0) {
       return -1;
     }
@@ -270,11 +279,13 @@ public class IntSet implements PositiveIntSet {
 
   @Override
   public void bulkAddTo(IntVector v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4155
     v.addBulk(iVec);
   }
 
   @Override
   public int[] toIntArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4188
     return iVec.toIntArray();
   }
 
@@ -283,6 +294,7 @@ public class IntSet implements PositiveIntSet {
    */
   @Override
   public String toString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4193
     return String.format("IntSet [iVec=%s]", iVec);
   }
   

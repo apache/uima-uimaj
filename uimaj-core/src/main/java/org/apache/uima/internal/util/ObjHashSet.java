@@ -78,6 +78,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
    * @param removedMarker - a unique value never stored in the table, used to mark removed items
    */
   public ObjHashSet(int initialCapacity, Class<T> clazz, T removedMarker) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     super(initialCapacity);
     this.clazz = clazz;
 //    this.emptyKeyArray = (T[]) Array.newInstance(clazz, 1);
@@ -97,6 +98,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
    * @param ohs -
    */
   public ObjHashSet(ObjHashSet<T> ohs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     super(ohs);
     this.removedMarker = ohs.removedMarker;
     this.clazz = ohs.clazz;
@@ -106,6 +108,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
 //    this.sizeWhichTriggersExpansion = ohs.sizeWhichTriggersExpansion;
 //    this.size = ohs.size;
 //    this.nbrRemoved = ohs.nbrRemoved;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     this.keys = Arrays.copyOf(ohs.keys, ohs.keys.length);
 //    this.secondTimeShrinkable = ohs.secondTimeShrinkable;
 //    this.modificationCount = ohs.modificationCount;
@@ -235,6 +238,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
   * @return the probeAddr in keys array - might reference a slot holding null, or the key value if found
   */
   private int findPosition(final T key) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     if (key == null) {
       throw new IllegalArgumentException("null is an invalid key");
     }
@@ -301,6 +305,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
    * @return the position of obj in the table, or -1 if not in the table
    */
   public int find(T obj) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     if (obj == null || size() == 0) {
       return -1;
     }
@@ -316,6 +321,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
    */
   @Override
   public boolean add(T obj) {           
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     final int i = findPosition(obj); 
     if (obj.equals(keys[i])) { // keys[i] may be null
       return false;  // false if already present
@@ -361,6 +367,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
     
     final int pos = findPosition((T) rawKey);  // null or equal obj
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     if (keys[pos] == null) {
       return false;
     }
@@ -372,6 +379,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
   } 
   
   private void removeAtPosition(int pos) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     keys[pos] = removedMarker;  // at runtime, this cast is a no-op
     commonRemove();
 //    val259();
@@ -491,6 +499,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
 
     @Override
     public final T next() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
       if (!hasNext()) {
         throw new NoSuchElementException();
       }
@@ -554,6 +563,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
         return pos;
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return -1; 
   }
 
@@ -562,6 +572,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
     final int s = size();
     if (s == 0) {
       if (a.length >= 1) { 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         a[0] = null;  // part of the contract of toArray, where the array a size is > 
       }
       return a;
@@ -569,11 +580,13 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
     
     final T2[] r = (a.length >= s)? a : (T2[]) Array.newInstance(a.getClass(), s);
     int pos = moveToFirst();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     for (int i = 0; i < s; i ++) {
       r[i] = (T2) get(pos);
       pos = moveToNextFilled(pos + 1);
     }
     if (a.length > s) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       r[s] = null; // part of the contract of toArray, where the array a size is > 
     }
     return r;
@@ -592,6 +605,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
     return String
         .format(
             "%s [loadFactor=%s, initialCapacity=%s, sizeWhichTriggersExpansion=%s, size=%s, secondTimeShrinkable=%s%n keys=%s]",
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
             this.getClass().getName(), loadFactor, initialCapacity, sizeWhichTriggersExpansion, size(), secondTimeShrinkable, 
             Arrays.toString(keys));
   }
@@ -638,6 +652,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
 
   @Override
   protected boolean is_valid_key(int pos) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     return keys[pos] != null & keys[pos] != removedMarker;
   }
 

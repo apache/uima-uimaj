@@ -48,10 +48,13 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
   private AnalysisEngine ae = null;
 
   protected void setUp() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super.setUp();
     // Start up TAE
     XMLInputSource input = new XMLInputSource(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getFile("CASTests/desc/ArrayIndexTest.xml"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
     AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(input);
     this.ae = UIMAFramework.produceAnalysisEngine(desc);
 
@@ -65,6 +68,7 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
       Type annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
       Type annotArrayType = ts.getArrayType(annotationType);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
       FSIndex<FeatureStructure> arrayIndexAll = ir.getIndex(idxId);
       assertEquals(countIndexMembers(arrayIndexAll), 0);
       FSIndex<FeatureStructure> arrayIndexFSArray = ir.getIndex(idxId, ts.getType(CAS.TYPE_NAME_FS_ARRAY));
@@ -77,6 +81,7 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
   }
 
   private static final int countIndexMembers(FSIndex<? extends FeatureStructure> idx) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIterator<? extends FeatureStructure> it = idx.iterator();
     int count = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
@@ -87,6 +92,7 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
   protected void tearDown() throws Exception {
     super.tearDown();
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
     this.ae.destroy();
   }
 
@@ -95,6 +101,7 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
   }
 
   public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AnnotatorConfigurationException {
     // do nothing
   }

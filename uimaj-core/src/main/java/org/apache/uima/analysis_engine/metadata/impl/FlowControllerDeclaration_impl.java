@@ -43,6 +43,8 @@ import org.xml.sax.helpers.AttributesImpl;
  * Declares which FlowController is used by the Aggregate Analysis Engine.
  */
 public class FlowControllerDeclaration_impl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         FlowControllerDeclaration {
   private static final long serialVersionUID = 1526130202197517743L;
 
@@ -112,6 +114,8 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
    * @see FlowControllerDeclaration#resolveImports()
    */
   public void resolveImports() throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     if (getImport() != null) {
       resolveImports(UIMAFramework.newDefaultResourceManager());      
     }
@@ -156,6 +160,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     // set key from attributes
@@ -171,6 +176,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
     // write key as attribute
     AttributesImpl attrs = new AttributesImpl();
     if (mKey != null && mKey.length() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1817
       attrs.addAttribute("", "key", "key", "string", mKey);
     }
     return attrs;
@@ -181,6 +187,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("flowController",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("import", null),
               new PropertyXmlInfo("specifier", null) });
 }

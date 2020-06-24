@@ -46,6 +46,7 @@ public class NameValuePairImpl implements NameValuePair {
    * @param aValue the a value
    */
   public NameValuePairImpl(String aName, Object aValue) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     name = aName;
     value = aValue;
   }

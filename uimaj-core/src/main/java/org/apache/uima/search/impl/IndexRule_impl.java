@@ -58,9 +58,11 @@ public class IndexRule_impl extends MetaDataObject_impl implements IndexRule {
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   protected XmlizationInfo getXmlizationInfo() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return XMLIZATION_INFO;
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("indexRule",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("styles", null), });
 }

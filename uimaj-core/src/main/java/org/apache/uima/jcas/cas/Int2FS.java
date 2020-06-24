@@ -214,6 +214,7 @@ public class Int2FS <T extends TOP> extends TOP implements
       IntegerArray ia = getIntArray();         
       int newSize = int2FS.size();
       if (fsa == null || fsa.size() != newSize) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         fsa = new FSArray<>(_casView.getJCasImpl(), newSize);
         setFsArray(fsa);
         ia = new IntegerArray(_casView.getJCasImpl(), newSize);

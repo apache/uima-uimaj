@@ -81,6 +81,7 @@ public interface CollectionProcessingEngine {
    */
   public void initialize(CpeDescription aCpeDescription, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Registers a listener to receive status callbacks.

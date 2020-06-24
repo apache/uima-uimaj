@@ -36,6 +36,7 @@ public class EmptyStringList extends StringList implements EmptyList {
   public final static int type = typeIndexID;
 
   public int getTypeIndexID() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return typeIndexID;
   }
   
@@ -44,6 +45,7 @@ public class EmptyStringList extends StringList implements EmptyList {
   }
 
   public EmptyStringList(TypeImpl_list ti) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     super(ti, null);
   }
   

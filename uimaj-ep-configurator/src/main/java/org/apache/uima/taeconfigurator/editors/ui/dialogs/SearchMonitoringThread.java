@@ -33,6 +33,7 @@ public class SearchMonitoringThread extends Thread {
 
   /** The m dialog. */
   FindComponentDialog m_dialog;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Instantiates a new search monitoring thread.

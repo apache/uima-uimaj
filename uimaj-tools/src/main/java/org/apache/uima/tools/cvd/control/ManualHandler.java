@@ -91,6 +91,7 @@ public class ManualHandler implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent event) {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1934
       String manFileName = "tools.html";
       JFrame manFrame = new JFrame("CVD Manual");
       JEditorPane editorPane = new JEditorPane();
@@ -106,6 +107,7 @@ public class ManualHandler implements ActionListener {
             manURL = manFile.toURL();
           } else {
             String msg = String.format("Can't find manual in directory: %s", manpath);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1934
             if (!manDir.exists()) {
               msg += String.format("\n Directory doesn't exist");
             }

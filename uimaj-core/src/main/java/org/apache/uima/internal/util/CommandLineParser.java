@@ -47,6 +47,7 @@ public class CommandLineParser {
     private final boolean hasArg;
 
     private CmdLineParam(boolean hasArg) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       super();
       this.hasArg = hasArg;
     }
@@ -64,6 +65,7 @@ public class CommandLineParser {
    */
   public CommandLineParser() {
     super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.paramMap = new HashMap<>();
   }
 
@@ -123,6 +125,7 @@ public class CommandLineParser {
    *           parameter in the list).
    */
   public void parseCmdLine(String[] args) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.cmdLineMap = new HashMap<>();
     int i = 0;
     while (i < args.length) {

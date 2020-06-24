@@ -49,6 +49,7 @@ public class TypePriorities_implTest extends TestCase {
    */
   protected void setUp() throws Exception {
     super.setUp();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
   }
 
@@ -57,6 +58,7 @@ public class TypePriorities_implTest extends TestCase {
    */
   protected void tearDown() throws Exception {
     super.tearDown();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
@@ -65,6 +67,7 @@ public class TypePriorities_implTest extends TestCase {
       // simple type priorties (backwards compatibility check)
       File descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/SimpleTypePriorities.xml");
       TypePriorities pri = UIMAFramework.getXMLParser().parseTypePriorities(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new XMLInputSource(descriptor));
       assertEquals(null, pri.getName());
       assertEquals(null, pri.getDescription());
@@ -80,6 +83,7 @@ public class TypePriorities_implTest extends TestCase {
 
       assertEquals("TestTypePriorities", pri.getName());
       assertEquals("This is a test.", pri.getDescription());
+//IC see: https://issues.apache.org/jira/browse/UIMA-37
       assertEquals("The Apache Software Foundation", pri.getVendor());
       assertEquals("0.1", pri.getVersion());
       Import[] imports = pri.getImports();
@@ -101,6 +105,7 @@ public class TypePriorities_implTest extends TestCase {
       File descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/TestTypePriorities.xml");
       TypePriorities pri = UIMAFramework.getXMLParser().parseTypePriorities(
               new XMLInputSource(descriptor));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       TypePriorityList[] priLists = pri.getPriorityLists();
       assertEquals(1, priLists.length);
@@ -119,6 +124,7 @@ public class TypePriorities_implTest extends TestCase {
       // set data path correctly and it should work
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getAbsolutePath());
       pri.resolveImports(resMgr);
 
@@ -130,6 +136,7 @@ public class TypePriorities_implTest extends TestCase {
       pri = UIMAFramework.getXMLParser().parseTypePriorities(new XMLInputSource(descriptor));
       pri.resolveImports();
       assertEquals(2, pri.getPriorityLists().length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-105
 
       // calling resolveImports when there are none should do nothing
       descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/SimpleTypePriorities.xml");
@@ -147,6 +154,7 @@ public class TypePriorities_implTest extends TestCase {
       File descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/TestTypePriorities.xml");
       TypePriorities pri = UIMAFramework.getXMLParser().parseTypePriorities(
               new XMLInputSource(descriptor));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       TypePriorities clone = (TypePriorities) pri.clone();
 

@@ -216,6 +216,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /** The java viewer UCRB. */
   private final JRadioButton javaViewerUCRB = new JRadioButton(
           "<html><font color=maroon>JV user colors</font></html>");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The html RB. */
   private final JRadioButton htmlRB = new JRadioButton("HTML");
@@ -287,6 +289,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     // Set frame icon image
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-295
       this.setIconImage(Images.getImage(Images.MICROSCOPE));
       // new
       // ImageIcon(getClass().getResource(FRAME_ICON_IMAGE)).getImage());
@@ -295,6 +298,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     }
 
     // create about dialog
+//IC see: https://issues.apache.org/jira/browse/UIMA-22
     aboutDialog = new AboutDialog(this, "About Document Analyzer");
     this.outputFileSelected = outputFileSelected;
     this.interactive = interactiveDA;
@@ -372,6 +376,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     TfFileSelectorListener fsl = new TfFileSelectorListener(prefsMed);
     TfDocumentListener dl = new TfDocumentListener(prefsMed);
     inputFileSelector = new FileSelector(prefsMed.getInputDir(), "Input Directory",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             JFileChooser.DIRECTORIES_ONLY, browserRootDir);
     // inputFileSelector.addFocusListener(tlf);
     inputFileSelector.addFileSelectorListener(fsl);
@@ -416,6 +422,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     String[] charsetArr = charsets.toArray(new String[charsets.size()]);
     encodingComboBox = new JComboBox(charsetArr);
     encodingComboBox.setEditable(false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-31
     encodingComboBox.setSelectedItem(prefsMed.getEncoding());
     
     JPanel displayEncodingFormatPanel = new JPanel();
@@ -441,6 +448,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     prefsMed.setFileSelectors(inputFileSelector, outputFileSelector, xmlFileSelector);
     runParametersField = new JTextField(16);
     runParametersField.setText(prefsMed.getXmlTag());
+//IC see: https://issues.apache.org/jira/browse/UIMA-31
 
     JPanel runParametersPanel = new JPanel();
     runParametersPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
@@ -449,6 +457,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     languageComboBox = new JComboBox(new Object[] { "en", "de", "es", "fr", "it", "pt", "ja",
         "ko-kr", "pt-br", "zh-cn", "zh-tw", "x-unspecified" });
     languageComboBox.setEditable(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-31
     languageComboBox.setSelectedItem(prefsMed.getLanguage());
     JPanel languagePanel = new JPanel();
     languagePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
@@ -468,7 +477,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     controlPanel.add(labelLanguage);
     controlPanel.add(languagePanel);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     SpringUtilities.makeCompactGrid(controlPanel, 6, 2, // rows, cols
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             4, 4, // initX, initY
             4, 4); // xPad, yPad
 
@@ -494,6 +505,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       @Override
       public void actionPerformed(ActionEvent evt) {
         JOptionPane.showMessageDialog(DocumentAnalyzer.this, HELP_MESSAGE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "Document Analyzer Help", JOptionPane.PLAIN_MESSAGE);
       }
     });
@@ -533,6 +545,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     setContentPane(contentPanel);
 
     // Event Handling of run Button
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     runButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent ee) {
@@ -565,6 +578,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // load user preferences
     restorePreferences();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     progressTimer = new Timer(100, new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent ee) {
@@ -604,6 +618,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     try {
       aeSpecifierFile = new File(xmlFileSelector.getSelected());
       interactive = false; // prevent re-viewing temp file
+//IC see: https://issues.apache.org/jira/browse/UIMA-214
       showAnalysisResults(outputDirectory);
     } 
     catch (Exception ex) {
@@ -631,6 +646,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     // reset file pointers in case of typed-in text. JMP
     String tempFileDir = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if ((analysisText != null) && (outputDirectory != null)) {
       tempFileDir = outputFileSelector.getSelected() + "/interactive_temp";
       inputDir = new File(tempFileDir);
@@ -659,6 +675,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       displayError("An Analysis Engine Descriptor is Required");
     } else if (!aeSpecifierFile.exists()) {
       displayError("Analysis Engine Descriptor \"" + xmlFileSelector.getSelected()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + "\" does not exist.");
     } else if (aeSpecifierFile.isDirectory()) {
       displayError("The Analysis Engine Descriptor (" + xmlFileSelector.getSelected()
@@ -714,6 +731,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
           }
           if (!new File(inputDir, filename).exists()) {
             int choice = JOptionPane.showConfirmDialog(DocumentAnalyzer.this, "All files in "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     + outputDirectory.getPath() + " will be deleted.  These files don't "
                     + "appear to match the files in the input directory.  Is this OK?", "Confirm",
                     JOptionPane.YES_NO_OPTION);
@@ -738,6 +756,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       // start separate thread to do component initialization and
       // processing
       ProcessingThread thread = new ProcessingThread(inputDir, inputFileFormat, lenient, outputDirectory, aeSpecifierFile,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               xmlTag, language, encoding);
       thread.start();
     }
@@ -766,7 +786,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   @Override
   public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
     // if an error occurred, display error
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aStatus.isException()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
       displayError(aStatus.getExceptions().get(0));
       // CPM will stop itself on error, we don't need to call
       // mCPM.stop(). In fact it causes a hang to do so, since
@@ -774,6 +796,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     }
     // increment the number of documents processed and update the
     // ProgressMonitor
+//IC see: https://issues.apache.org/jira/browse/UIMA-79
     numDocsProcessed++;
     progressMonitor.setProgress(numDocsProcessed + 2);
     progressMonitor.setNote("Processed " + numDocsProcessed + " of " + numDocs + " documents.");
@@ -787,6 +810,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   @Override
   public void aborted() {
     // close progress monitor
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (progressMonitor != null) {
       progressMonitor.close();
     }
@@ -830,6 +854,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // if everything works, output performance stats and print them to a
     // pane. Allow users to open generated files.
     showAnalysisResults(new AnalysisEnginePerformanceReports(mCPM.getPerformanceReport()),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             outputDirectory);
   }
 
@@ -884,6 +910,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   public void showAnalysisResults(File aOutputDir) {
 
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       cas = createCasFromDescriptor(prefsMed.getTAEfile());
       currentTypeSystem = cas.getTypeSystem();
     } catch (Exception e) {
@@ -897,6 +925,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // in that file.  But why is this only done in "View" mode?  It seems like this
     // belongs in AnnotationViewerDialog with the other code that sets up the
     // viewer (e.g., the colors) from the style map file.
+//IC see: https://issues.apache.org/jira/browse/UIMA-214
     if (prefsMed.getStylemapFile().exists()) {
       StyleMapEditor sedit = new StyleMapEditor(this, cas);
       String sXml = readStylemapFile(prefsMed.getStylemapFile());
@@ -921,12 +950,14 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * @throws IOException -
    */
   protected CAS createCasFromDescriptor(String aDescriptorFile) // JMP
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException, InvalidXMLException, IOException {
     ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(
             new XMLInputSource(aDescriptorFile));
     if (spec instanceof AnalysisEngineDescription) {
       return CasCreationUtils.createCas((AnalysisEngineDescription) spec);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-214
       AnalysisEngine currentAe = UIMAFramework.produceAnalysisEngine(spec);
       return CasCreationUtils.createCas(currentAe.getAnalysisEngineMetaData());
     }
@@ -944,6 +975,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     if (smapFile.exists()) {
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
         return FileUtils.file2String(smapFile);
       } catch (FileNotFoundException e) {
         e.printStackTrace();
@@ -971,8 +1003,10 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     if (interactive) {
       // this version of the AnnotationViewerDialog automatically
       // calls setVisible(true) to make the dialog visible
+//IC see: https://issues.apache.org/jira/browse/UIMA-247
       new AnnotationViewerDialog(this, "Analysis Results", prefsMed, styleMapFile, statsString,
               currentTypeSystem, currentTaeOutputTypes, interactiveTempFN + ".xmi",
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
               javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRB.isSelected(), cas);
     } else {
       // this version of the AnnotationViewerDialog constructor does
@@ -980,6 +1014,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       AnnotationViewerDialog viewerDialog = new AnnotationViewerDialog(this,
               "Analysis Results", prefsMed, styleMapFile, statsString, currentTypeSystem,
               currentTaeOutputTypes, useGeneratedStyleMap, cas);
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
       if (usingXmlDetagger) {
         viewerDialog.setDefaultCasViewName("plainTextDocument");
       }
@@ -1025,6 +1060,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     int charCount = 0;
     StringTokenizer tokenizer = new StringTokenizer(aErrorString, " \n", true);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (tokenizer.hasMoreTokens()) {
       String tok = tokenizer.nextToken();
 
@@ -1041,6 +1077,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     }
 
     JOptionPane.showMessageDialog(DocumentAnalyzer.this, buf.toString(), "Error",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             JOptionPane.ERROR_MESSAGE);
   }
 
@@ -1091,6 +1128,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * Class for dialog in which user types in text to be analyzed, and sets browser parameters.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   class TextAreaViewer extends JPanel {
     
     /** The Constant serialVersionUID. */
@@ -1162,6 +1200,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       displayFormatPanel.add(htmlRB);
       displayFormatPanel.add(xmlRB);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (generatedStyleMap) {
         javaViewerRB.setSelected(true);
         javaViewerUCRB.setEnabled(false);
@@ -1192,6 +1231,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       // vertSplitPane.setBottomComponent(buttonPanel);
       mainPanel.add(southernPanel);
       // Event Handling of analyze Button
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       analyzeButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent ee) {
@@ -1237,6 +1277,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * @param encoding the encoding
    */
   public void runProcessingThread(File inputDir, String inputFileFormat, Boolean lenient, File outputDir, File aeSpecifierFile,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String xmlTag, String language, String encoding) {
     try {
       // create and configure collection reader that will read input docs
@@ -1256,6 +1297,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       // show progress Monitor
       String progressMsg = "  Processing " + collectionReader.getNumberOfDocuments()
               + " Documents.";
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       numDocs = collectionReader.getNumberOfDocuments();
       progressMonitor = new ProgressMonitor(DocumentAnalyzer.this, progressMsg, "", 0, numDocs + 2);
@@ -1263,6 +1305,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       progressMonitor.setNote(initial);
       progressMonitor.setMillisToPopup(-1);
       progressMonitor.setMillisToDecideToPopup(-1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-79
       numDocsProcessed = 0;
       progressTimer.start();
 
@@ -1283,6 +1326,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       // XMI format)
       CasConsumerDescription casConsumerDesc = XmiWriterCasConsumer.getDescription();
       ConfigurationParameterSettings consumerParamSettings = casConsumerDesc.getMetaData()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getConfigurationParameterSettings();
       consumerParamSettings.setParameterValue(XmiWriterCasConsumer.PARAM_OUTPUTDIR, outputDir
               .getAbsolutePath());
@@ -1292,10 +1337,12 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
               true);
 
       // if XML tag was specified, also create XmlDetagger annotator that handles this
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
       AnalysisEngineDescription xmlDetaggerDesc = null;
       if (xmlTag != null && xmlTag.length() > 0) {
         xmlDetaggerDesc = XmlDetagger.getDescription();
         ConfigurationParameterSettings xmlDetaggerParamSettings = xmlDetaggerDesc.getMetaData()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getConfigurationParameterSettings();
         xmlDetaggerParamSettings.setParameterValue(XmlDetagger.PARAM_TEXT_TAG, xmlTag);
         usingXmlDetagger = true;
@@ -1347,10 +1394,12 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       aggDesc.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(
               false);            
       progressMonitor.setProgress(1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-79
 
       // instantiate AE
       // keep this a local variable - so it doesn't hang on to the ae object
       //   preventing gc (some ae objects are huge)
+//IC see: https://issues.apache.org/jira/browse/UIMA-475
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aggDesc);
       mCPM.setAnalysisEngine(ae);
 
@@ -1365,13 +1414,16 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       descriptorList.add(collectionReaderDesc);
       descriptorList.add(ae.getMetaData());
       descriptorList.add(casConsumerDesc);
+//IC see: https://issues.apache.org/jira/browse/UIMA-214
       cas = CasCreationUtils.createCas(descriptorList);
       currentTypeSystem = cas.getTypeSystem();
 
       // save AE output types for later use in configuring viewer
       if (aeSpecifier instanceof AnalysisEngineDescription) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         ArrayList<String> outputTypeList = new ArrayList<>();
         Capability[] capabilities = ((AnalysisEngineDescription) aeSpecifier)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getAnalysisEngineMetaData().getCapabilities();
         for (int i = 0; i < capabilities.length; i++) {
           TypeOrFeature[] outputs = capabilities[i].getOutputs();
@@ -1414,6 +1466,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     } catch (Throwable t) {
       // special check for using XML detagger with remotes, which will generate an error
       // since sofa mappings aren't supported for remotes
+//IC see: https://issues.apache.org/jira/browse/UIMA-213
       if (usingXmlDetagger
               && (t instanceof UIMAException)
               && ((UIMAException) t)
@@ -1469,6 +1522,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
      * @param encoding the encoding
      */
     ProcessingThread(File inputDir, String inputFileFormat, Boolean lenient, File outputDir, File taeSpecifierFile, String xmlTag,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             String language, String encoding) {
       this.inputDir = inputDir;
       this.inputFileFormat = inputFileFormat;
@@ -1497,6 +1552,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * @return Returns the styleMapFile.
    */
   public File getStyleMapFile() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-304
     if (userStyleMapFile == null && prefsMed != null) {
       return prefsMed.getStylemapFile();
     }
@@ -1509,6 +1565,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * @param styleMapFile          The styleMapFile to set.
    */
   public void setStyleMapFile(File styleMapFile) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-304
     this.userStyleMapFile = styleMapFile;
   }
 

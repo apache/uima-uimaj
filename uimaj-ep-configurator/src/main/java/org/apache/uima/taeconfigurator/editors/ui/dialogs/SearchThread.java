@@ -58,6 +58,7 @@ public class SearchThread implements Runnable /* extends Thread */{
 
   /** The m dialog. */
   FindComponentDialog m_dialog;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The m aggregate section. */
   private AbstractSection m_aggregateSection;
@@ -89,11 +90,13 @@ public class SearchThread implements Runnable /* extends Thread */{
    * @param componentHeaders the component headers
    */
   public SearchThread(FindComponentDialog dialog, AbstractSection aggregateSection,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String fileNameSearch, String inputTypeSearch, String outputTypeSearch,
           String projectToSearch, String[] componentHeaders) {
 
     m_dialog = dialog;
     m_aggregateSection = aggregateSection;
+//IC see: https://issues.apache.org/jira/browse/UIMA-84
     m_fileNameSearch = (null == fileNameSearch)? null : Pattern.compile(fileNameSearch);
     m_inputTypeSearch = (null == inputTypeSearch)? null : Pattern.compile(inputTypeSearch);
     m_outputTypeSearch = (null == outputTypeSearch)? null : Pattern.compile(outputTypeSearch);
@@ -157,7 +160,9 @@ public class SearchThread implements Runnable /* extends Thread */{
       case IResource.FILE:
         if (resource.getName().toLowerCase().endsWith(".xml")
                 // exclude potentially many data files, not descriptors
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 && !resource.getName().toLowerCase().endsWith(".txt.xml")
+//IC see: https://issues.apache.org/jira/browse/UIMA-84
                 && (m_fileNameSearch == null || m_fileNameSearch.matcher(resource.getName()).find())) {
           String fileDescriptorRelPath = m_aggregateSection.editor
                   .getDescriptorRelativePath(resource.getLocation().toString());
@@ -172,6 +177,7 @@ public class SearchThread implements Runnable /* extends Thread */{
               return; // don't find remote descriptors when types are wanted
 
           if (!(rs instanceof ResourceCreationSpecifier) || // is a remote descriptor
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   delegateComponentMatchesCapabilityReqs((ResourceCreationSpecifier) rs,
                           m_inputTypeSearch, m_outputTypeSearch)) {
             m_matchingDelegateComponentDescriptors.add(fileDescriptorRelPath);
@@ -206,6 +212,7 @@ public class SearchThread implements Runnable /* extends Thread */{
       try {
         if (projectToSearch.equals(FindComponentDialog.ALL_PROJECTS)
                 || projects[i].getName().equals(projectToSearch)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
           if (projectToSearch.equals(FindComponentDialog.ALL_PROJECTS)) {
             setStatusMsg(2, "Looking in " + projects[i].getName() + "....");
@@ -261,6 +268,7 @@ public class SearchThread implements Runnable /* extends Thread */{
    */
   private boolean delegateComponentMatchesCapabilityReqs(ResourceCreationSpecifier rs,
           Pattern inputTypeSearch, Pattern outputTypeSearch) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-84
 
     if (inputTypeSearch == null && outputTypeSearch == null) {
       return true;
@@ -295,15 +303,18 @@ public class SearchThread implements Runnable /* extends Thread */{
       return true;
     for (int i = 0; i < capabilities.length; i++) {
       TypeOrFeature[] typeOrFeatures = isInput ? capabilities[i].getInputs() : capabilities[i]
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getOutputs();
       if (null != typeOrFeatures) {
         for (int j = 0; j < typeOrFeatures.length; j++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-84
           if (search.matcher(typeOrFeatures[j].getName()).find()) {
             return true;
           }
         }
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return false;
   }
 

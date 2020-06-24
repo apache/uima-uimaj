@@ -36,6 +36,7 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
 
     @Override
     public boolean hasNext() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5305
       return false;
     }
 
@@ -69,11 +70,13 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
 	}
 	
   public NonEmptyIntegerList createNonEmptyNode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     NonEmptyIntegerList node = new NonEmptyIntegerList(this._casView.getTypeSystemImpl().intNeListType, this._casView);
     return node;
   }
   
   public NonEmptyIntegerList pushNode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     NonEmptyIntegerList n = createNonEmptyNode();
     n.setTail(this);
     return n;
@@ -87,6 +90,7 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
    */
   @Override
   public OfInt iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5305
     return EMPTY_INT_ITERATOR;
   }
 
@@ -101,6 +105,7 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
    
   @Override
   public EmptyIntegerList emptyList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     return this._casView.emptyIntegerList();
   }
 
@@ -111,6 +116,7 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
    * @return an IntegerList, with the elements from the array
    */
   public static IntegerList create(JCas jcas, int[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     IntegerList integerList = jcas.getCasImpl().emptyIntegerList();   
     for (int i = a.length - 1; i >= 0; i--) {
       integerList = integerList.push(a[i]);
@@ -119,6 +125,7 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
   }
     
   public Stream<Integer> stream() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     return StreamSupport.stream(spliterator(), false);
   }
   

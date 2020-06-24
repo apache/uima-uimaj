@@ -106,6 +106,7 @@ public class AxisResourceServiceManager {
 
       // see if we have a ResourceService_impl registered for that name
       ResourceService_impl serviceImpl = (ResourceService_impl) mResourceServiceImplMap
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .get(serviceName);
       if (serviceImpl != null) {
         return serviceImpl;
@@ -118,6 +119,7 @@ public class AxisResourceServiceManager {
       String resourceSpecifierPath = (String) self.getOption(PARAM_RESOURCE_SPECIFIER_PATH);
       if (resourceSpecifierPath == null || resourceSpecifierPath.trim().length() == 0) {
         throw new Exception("Invalid Configuration - " + PARAM_RESOURCE_SPECIFIER_PATH
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + " not Defined.  Check your deployment descriptor file (WSDD)");
       }
       // parse ResourceSpecifier
@@ -131,6 +133,8 @@ public class AxisResourceServiceManager {
         numInstances = Integer.parseInt(numInstancesStr);
       } catch (NumberFormatException e) {
         throw new Exception("Invalid Configuration - " + PARAM_NUM_INSTANCES
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + " not valid.  Check your deployment descriptor file (WSDD)");
       }
 
@@ -141,6 +145,7 @@ public class AxisResourceServiceManager {
       // create and initialize the service implementation
       serviceImpl = (ResourceService_impl) aServiceImplClass.newInstance();
       HashMap initParams = new HashMap();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, numInstances);
       serviceImpl.initialize(resourceSpecifier, initParams);
 

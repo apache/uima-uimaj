@@ -173,6 +173,7 @@ public class DotCorpus {
    * @return - the annotation styles
    */
   public Collection<AnnotationStyle> getAnnotationStyles() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1576
     return Collections.unmodifiableCollection(mStyleMap.values());
   }
   

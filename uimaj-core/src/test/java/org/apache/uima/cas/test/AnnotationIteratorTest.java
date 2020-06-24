@@ -123,6 +123,7 @@ public class AnnotationIteratorTest extends TestCase {
   public void setUp() {
     try {
       // make a cas with various types, fairly complex -- see CASTestSetup class
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       assertTrue(this.cas != null);
       this.ts = this.cas.getTypeSystem();
@@ -159,8 +160,10 @@ public class AnnotationIteratorTest extends TestCase {
     assertTrue(this.endFeature != null);
     this.sentenceType = this.ts.getType(CASTestSetup.SENT_TYPE);
     assertTrue(this.sentenceType != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     this.phraseType = this.ts.getType(CASTestSetup.PHRASE_TYPE);
     assertTrue(this.phraseType != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     types[0] = sentenceType;
     types[1] = phraseType;
     types[2] = tokenType;
@@ -204,12 +207,14 @@ public class AnnotationIteratorTest extends TestCase {
   
 
   public void testIterator1() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6160
     final int annotCount = setupTheCas();
     FSIndexRepository ir = this.cas.getIndexRepository();
 
     /***************************************************
      * iterate over them
      ***************************************************/
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     fss = new ArrayList<>();
     callCount = -1;
     iterateOverAnnotations(annotCount, fss); // annotCount is the total number of sentences and tokens
@@ -229,13 +234,17 @@ public class AnnotationIteratorTest extends TestCase {
     ir.addFS(a2 = this.cas.createAnnotation(this.tokenType, 1, 6));
     a2.setStringValue(lemmaFeat, "lemma2");
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     FSIterator<Annotation> it;
     AnnotationIndex<Annotation> tokenIndex = cas.getAnnotationIndex(tokenType);
     it = tokenIndex.subiterator(a1);
     assertCount("multi equal", 0, it);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
+//IC see: https://issues.apache.org/jira/browse/UIMA-5121
     it = tokenIndex.subiterator(a1);
     // make a new iterator that hasn't been converted to a list form internally
     it.moveTo(cas.getDocumentAnnotation());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     assertFalse(it.isValid()); 
         
   }
@@ -259,7 +268,9 @@ public class AnnotationIteratorTest extends TestCase {
    */
   // called twice, the 2nd time should be with flattened indexes (List afss non empty the 2nd time)
   private void iterateOverAnnotations(final int annotCount, List<Annotation> afss) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     this.fss = afss;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     isSave = fss.size() == 0;   // on first call is 0, so save on first call
 //    int count;
     AnnotationIndex<Annotation> annotIndex = this.cas.getAnnotationIndex();
@@ -273,8 +284,10 @@ public class AnnotationIteratorTest extends TestCase {
     assertEquals(annotCount, select(annotIndex).toArray().length);  // stream op
     assertEquals(annotCount, select(annotIndex).asArray(Annotation.class).length);  // select op
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-6160
     assertEquals(annotCount - 5, annotIndex.select().startAt(2).asArray(Annotation.class).length);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     Annotation[] tokensAndSentencesAndPhrases = annotIndex.select().asArray(Annotation.class);
     JCas jcas = null;
     try {
@@ -292,11 +305,13 @@ public class AnnotationIteratorTest extends TestCase {
     assertCount("fslhead ambiguous select annot iterator", annotCount, select_it);
     
     // backwards
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     select_it = select(annotIndex).backwards().fsIterator();
     assertCount("Normal select backwards ambiguous annot iterator", annotCount, select_it);
     
     it = annotIndex.iterator(false);  // false means create an unambiguous iterator
     assertCount("Unambiguous annot iterator", 1, it);  // because of document Annotation - spans the whole range
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     select_it = annotIndex.select().nonOverlapping().fsIterator();
     assertCount("Unambiguous select annot iterator", 1, select_it);  // because of document Annotation - spans the whole range
     select_it = annotIndex.select().nonOverlapping().backwards(true).fsIterator();
@@ -314,6 +329,7 @@ public class AnnotationIteratorTest extends TestCase {
     
     AnnotationFS bigBound = this.cas.createAnnotation(this.sentenceType, 10, 41);
     it = annotIndex.subiterator(bigBound, true, true);  // ambiguous, and strict
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     assertCount("Subiterator over annot with big bound, strict", 38, it);
     select_it = annotIndex.select().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).fsIterator();
     assertCount("Subiterator select over annot with big bound, strict", 38, select_it);
@@ -342,8 +358,10 @@ public class AnnotationIteratorTest extends TestCase {
     
     assertTrue(Arrays.equals(o1, l2r.toArray()));
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     it = annotIndex.subiterator(bigBound, false, true);  // unambiguous, strict  bigBound= sentenceType 10-41
     assertCount("Subiterator over annot unambiguous strict", 3, it);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     select_it = annotIndex.select().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator();
     assertCount("Subiterator select over annot unambiguous strict", 3, select_it);
     select_it = annotIndex.select().backwards().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator();
@@ -360,7 +378,9 @@ public class AnnotationIteratorTest extends TestCase {
     
     // covered by implies endWithinBounds
     select_it = select(annotIndex).coveredBy(bigBound).fsIterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     assertCount("Subiterator select over annot ambiguous strict", 38, select_it);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     select_it = annotIndex.select().coveredBy(bigBound).includeAnnotationsWithEndBeyondBounds(false).fsIterator();
     assertCount("Subiterator select over annot ambiguous strict", 38, select_it);
     select_it = select(annotIndex).coveredBy(bigBound).includeAnnotationsWithEndBeyondBounds(true).fsIterator();
@@ -374,12 +394,14 @@ public class AnnotationIteratorTest extends TestCase {
     AnnotationFS sent = this.cas.getAnnotationIndex(this.sentenceType).iterator().get();
     it = annotIndex.subiterator(sent, false, true);
     assertCount("Subiterator over annot unambiguous strict", 2, it);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     select_it = annotIndex.select().nonOverlapping().coveredBy(sent).fsIterator();
     assertCount("Subiterator select over annot unambiguous strict", 2, select_it);
     
     // strict skips first item
     bigBound = this.cas.createAnnotation(this.sentenceType,  11, 30);
     it = sentIndex.subiterator(bigBound, true, true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     assertCount("Subiteratover over sent ambiguous strict", 4, it);
     it = sentIndex.subiterator(bigBound, true, false);
     assertCount("Subiteratover over sent ambiguous", 9, it);
@@ -388,6 +410,7 @@ public class AnnotationIteratorTest extends TestCase {
     
     // single, get, nullOK
          
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     assertTrue(annotIndex.select().nonOverlapping().get().getType().getShortName().equals("DocumentAnnotation"));
     boolean x = false;
     try {
@@ -398,6 +421,7 @@ public class AnnotationIteratorTest extends TestCase {
       }
     }
     assertTrue(x);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5845
     assertNull(annotIndex.select().coveredBy(3, 3).nullOK().get());
     assertNotNull(annotIndex.select().get(3));
     assertNull(annotIndex.select().nullOK().coveredBy(3, 5).get(3));
@@ -409,6 +433,7 @@ public class AnnotationIteratorTest extends TestCase {
         x= true;
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     assertTrue(x);
     assertTrue(annotIndex.select().nonOverlapping().get().getType().getShortName().equals("DocumentAnnotation"));
     
@@ -429,6 +454,7 @@ public class AnnotationIteratorTest extends TestCase {
     assertTrue(x);
     x = false;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
       annotIndex.select().coveredBy(3, 10).singleOrNull();
     } catch (CASRuntimeException e) {
       if (e.hasMessageKey(CASRuntimeException.SELECT_GET_TOO_MANY_INSTANCES)) {
@@ -438,6 +464,7 @@ public class AnnotationIteratorTest extends TestCase {
     assertTrue(x);
     x = false;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
       annotIndex.select().coveredBy(3, 5).single();
     } catch (CASRuntimeException e) {
       if (e.hasMessageKey(CASRuntimeException.SELECT_GET_NO_INSTANCES)) {
@@ -447,6 +474,7 @@ public class AnnotationIteratorTest extends TestCase {
     assertTrue(x);
     annotIndex.select().coveredBy(3, 5).singleOrNull();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     select_it = select(annotIndex).following(2, 39).limit(2).fsIterator();
     assertCountLimit("Following", 2, select_it);
     select_it = select(annotIndex).following(2, 39).backwards().limit(2).fsIterator();
@@ -492,6 +520,7 @@ public class AnnotationIteratorTest extends TestCase {
        it.moveToLast();
        it.next();
        
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
        it.moveTo(posFs);
        assertEquals(msg, it.get().hashCode(), posFs.hashCode());
       
@@ -527,8 +556,10 @@ public class AnnotationIteratorTest extends TestCase {
   // called by assertCount
   // called by asserCountLimit
   private int assertCountCmn(String msg, int expected, FSIterator<? extends Annotation> it) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6016
     msg = flatStateMsg(msg);   // add with-flattened-index if isSave is false
     int count = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     callCount  ++;
     int fssStart;
     if (isSave) {
@@ -538,6 +569,7 @@ public class AnnotationIteratorTest extends TestCase {
     }
     while (it.isValid()) {
       ++count;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
       Annotation fs = it.next();
       if (showFSs) {
         System.out.format("assertCountCmn: %2d " + msg + "   %10s  %d - %d%n", count, fs.getType().getName(), fs.getBegin(), fs.getEnd() );
@@ -563,6 +595,7 @@ public class AnnotationIteratorTest extends TestCase {
   
   public void testIncorrectIndexTypeException() {
     boolean caughtException = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-110
     try {
       this.cas.getAnnotationIndex(this.stringType);
     } catch (CASRuntimeException e) {
@@ -573,6 +606,7 @@ public class AnnotationIteratorTest extends TestCase {
     
     caughtException = false;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     	this.cas.getAnnotationIndex(ts.getType(CASTestSetup.TOKEN_TYPE_TYPE));
     } catch (CASRuntimeException e) {
     	caughtException = true;
@@ -598,9 +632,11 @@ public class AnnotationIteratorTest extends TestCase {
       //                                                  -------- sentence ---------
       //                                                                        -tk-
       this.cas.setDocumentText("Sentence A with no value. Sentence B with value 377.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     } catch (CASRuntimeException e) {
       assertTrue(false);
     }   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     AnnotationIndex<Annotation> ai = cas.getAnnotationIndex();
           
     cas.addFsToIndexes(cas.createAnnotation(this.sentenceType, 0, 25));
@@ -618,11 +654,13 @@ public class AnnotationIteratorTest extends TestCase {
       }
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
     SelectFSs<Annotation> ssi = ai.select(this.sentenceType);
     
     for (AnnotationFS sa : ssi) {
     
       FSIterator<Annotation> ti2 = tokenIdx.select()
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
           .coveredBy(sa).includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator();
       
       while (ti2.hasNext()) {
@@ -815,6 +853,7 @@ public class AnnotationIteratorTest extends TestCase {
    for (int i = 0; i < text.length() - 10; i += 5) {
      ++annotCount;
      ir.addFS(fs = this.cas.createAnnotation(this.phraseType,  i + beginAlt, i + 5 + endAlt));
+//IC see: https://issues.apache.org/jira/browse/UIMA-6160
      beginAlt = (beginAlt == 1) ? -1 : beginAlt + 1; // sequence: start @ 0, then 1, -1, 0, 1, ...
      endAlt = (endAlt == -1) ? 1 : endAlt - 1; //sequence: start At 0, then -1, 1, 0, -1, ...
      if (showFSs) {

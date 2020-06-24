@@ -50,6 +50,7 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
     super("WideLeftAnnotationSside");
 
     this.editor = editor;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
     setEnabled(false);
   }
@@ -76,6 +77,7 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
       annotation.setIntValue(beginFeature, annotation.getBegin() - 1);
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1419
     document.update(annotation);
   }
   
@@ -88,6 +90,7 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
 
     AnnotationFS annotation = annotations.getFirst();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     wideLeftAnnotationSide(editor.getDocument(), annotation);
   }
 }

@@ -64,6 +64,7 @@ public class FileSaveAsEventHandler implements ActionListener {
     int rc = fileChooser.showSaveDialog(this.main);
     if (rc == JFileChooser.APPROVE_OPTION) {
       File tmp = this.main.getTextFile();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1866
       File fileToSaveTo = fileChooser.getSelectedFile();
       if (!this.main.confirmOverwrite(fileToSaveTo)) {
         return;
@@ -73,6 +74,7 @@ public class FileSaveAsEventHandler implements ActionListener {
       if (fileSaved) {
         this.main.setDirty(false);
         this.main.setTitle();
+//IC see: https://issues.apache.org/jira/browse/UIMA-416
         this.main.setSaveTextFileEnable(true);
         this.main.setFileStatusMessage();
         this.main.setStatusbarMessage("Text file " + this.main.getTextFile().getName() + " saved.");

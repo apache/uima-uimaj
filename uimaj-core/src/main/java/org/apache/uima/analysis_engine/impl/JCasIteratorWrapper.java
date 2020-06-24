@@ -50,6 +50,7 @@ public class JCasIteratorWrapper implements JCasIterator {
    * @see org.apache.uima.analysis_engine.CasIterator#next()
    */
   public JCas next() throws AnalysisEngineProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       return mCasIterator.next().getJCas();
     } catch (CASException e) {

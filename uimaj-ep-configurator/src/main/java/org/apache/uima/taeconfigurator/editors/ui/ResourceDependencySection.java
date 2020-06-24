@@ -80,7 +80,9 @@ public class ResourceDependencySection extends AbstractSection {
    * @param parent the parent
    */
   public ResourceDependencySection(MultiPageEditor editor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, parent, "Resource Dependencies",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Primitives declare what resources they need. A primitive can only bind to one external resource.");
   }
 
@@ -122,6 +124,7 @@ public class ResourceDependencySection extends AbstractSection {
    */
   @Override
   public void refresh() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super.refresh();
     table.getParent().setRedraw(false);
     table.removeAll();
@@ -149,12 +152,14 @@ public class ResourceDependencySection extends AbstractSection {
    * @param o the o
    */
   private void addDelegateToGUI(String keys, String newKey, ResourceSpecifier o) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (o instanceof AnalysisEngineDescription) {
       AnalysisEngineDescription aeDescription = (AnalysisEngineDescription) o;
       if (aeDescription.isPrimitive())
         addPrimitiveToGUI(keys + newKey + "/", aeDescription);
       else {
         for (Iterator it = editor.getDelegateAEdescriptions(aeDescription).entrySet().iterator(); it
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .hasNext();) {
           Map.Entry item = (Map.Entry) it.next();
           addDelegateToGUI(keys + newKey + "/", (String) item.getKey(), (ResourceSpecifier) item
@@ -207,6 +212,7 @@ public class ResourceDependencySection extends AbstractSection {
    * @return true, if is bound
    */
   private boolean isBound(String key) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-663
     ResourceManagerConfiguration rmc = editor.getResolvedExternalResourcesAndBindings();
     if (null == rmc) { // happens if there is no such xml element in the descriptor
       return false;
@@ -231,6 +237,7 @@ public class ResourceDependencySection extends AbstractSection {
     if (null != xrb)
       for (int i = 0; i < xrb.length; i++) {
         if (oldKey.equals(xrb[i].getKey())) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           xrb[i].setKey(newKey);
           editor.getResourcesPage().getResourceBindingsSection().markStale();
           return; // only 1 binding at most
@@ -259,6 +266,8 @@ public class ResourceDependencySection extends AbstractSection {
     if (event.widget == addButton) {
       handleAdd();
     } else if (event.widget == removeButton
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || (event.type == SWT.KeyUp && event.character == SWT.DEL)) {
       handleRemove();
     } else if (event.widget == editButton || event.type == SWT.MouseDoubleClick) {
@@ -282,6 +291,7 @@ public class ResourceDependencySection extends AbstractSection {
    * @return the XR dependency from table item
    */
   public ExternalResourceDependency getXRDependencyFromTableItem(TableItem item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return (ExternalResourceDependency) item.getData();
   }
 
@@ -310,6 +320,7 @@ public class ResourceDependencySection extends AbstractSection {
   private void handleEdit() {
     TableItem item = table.getSelection()[0];
     ExternalResourceDependency xrd = getXRDependencyFromTableItem(item);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     AddExternalResourceDependencyDialog dialog = new AddExternalResourceDependencyDialog(this, xrd);
     if (dialog.open() == Window.CANCEL)
       return;
@@ -340,6 +351,7 @@ public class ResourceDependencySection extends AbstractSection {
   private void handleRemove() {
     TableItem item = table.getSelection()[0];
     editor.getAeDescription().setExternalResourceDependencies(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             (ExternalResourceDependency[]) Utility.removeElementFromArray(
                     getExternalResourceDependencies(), getXRDependencyFromTableItem(item),
                     ExternalResourceDependency.class));
@@ -354,6 +366,7 @@ public class ResourceDependencySection extends AbstractSection {
    */
   private void handleAdd() {
     AddExternalResourceDependencyDialog dialog = new AddExternalResourceDependencyDialog(this);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (dialog.open() == Window.CANCEL)
       return;
@@ -369,6 +382,8 @@ public class ResourceDependencySection extends AbstractSection {
    * @param dialog the dialog
    */
   private void alterExistingExternalResourceDependency(ExternalResourceDependency xrd,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AddExternalResourceDependencyDialog dialog) {
     valueChanged = false;
     String oldKey = xrd.getKey();
@@ -392,6 +407,8 @@ public class ResourceDependencySection extends AbstractSection {
    * @return the external resource dependency
    */
   private ExternalResourceDependency addNewExternalResourceDependency(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AddExternalResourceDependencyDialog dialog) {
     ExternalResourceDependency[] xrds = getExternalResourceDependencies();
 
@@ -400,6 +417,8 @@ public class ResourceDependencySection extends AbstractSection {
 
     if (null == xrds)
       editor.getAeDescription().setExternalResourceDependencies(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new ExternalResourceDependency[] { xrd });
     else {
       ExternalResourceDependency[] newXrds = new ExternalResourceDependency[xrds.length + 1];
@@ -437,6 +456,7 @@ public class ResourceDependencySection extends AbstractSection {
       for (int i = 0; i < xrds.length; i++) {
         if (key.equals(xrds[i].getKey())) {
           Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .popMessage(
                           "Key Already Defined",
                           MessageFormat

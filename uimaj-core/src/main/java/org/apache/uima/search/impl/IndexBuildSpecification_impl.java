@@ -30,6 +30,8 @@ import org.apache.uima.search.IndexBuildSpecification;
  * 
  */
 public class IndexBuildSpecification_impl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         IndexBuildSpecification {
   private static final long serialVersionUID = -5922996488248689708L;
 
@@ -63,6 +65,7 @@ public class IndexBuildSpecification_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "indexBuildSpecification", new PropertyXmlInfo[] { new PropertyXmlInfo("indexBuildItems",
                   null), });
 }

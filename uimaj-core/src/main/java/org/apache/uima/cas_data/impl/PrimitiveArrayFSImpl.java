@@ -60,6 +60,7 @@ public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements Primit
    * @see org.apache.uima.cas_data.PrimitiveArrayFS#toIntArray()
    */
   public int[] toIntArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (mArrayObject instanceof int[]) {
       return (int[]) mArrayObject;
     } else {
@@ -115,6 +116,7 @@ public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements Primit
     if (getId() != null) {
       buf.append("ID = ").append(getId()).append('\n');
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
     buf.append('[');
     for (int i = 0; i < strArray.length; i++) {
       buf.append(strArray[i]);

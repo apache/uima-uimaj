@@ -52,6 +52,7 @@ import org.apache.uima.jcas.cas.TOP;
  */
 public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<T> {
 //  public boolean specialDebug = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
   final private static boolean TRACE = false;
   final private static boolean MEASURE = false;
    
@@ -60,6 +61,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   private static final int DEFAULT_MULTIPLICATION_LIMIT = 1024 * 1024 * 16;
 
   final private int multiplication_limit = DEFAULT_MULTIPLICATION_LIMIT;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5496
 
   TOP[] a;
   /**
@@ -70,6 +72,8 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     // comparators are over TOP, not "T", because it's allowed to compare
     //   items which are supertypes of the index's items
     //   e.g. compare something of type Annotation with "Token"
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
   final private Comparator<TOP> comparatorNoTypeWithID;  
   final private Comparator<TOP> comparatorNoTypeWithoutID;
   private int maxSize = 0; // managing shrinking
@@ -82,6 +86,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   private StringBuilder tr = TRACE ? new StringBuilder() : null;
   
   public OrderedFsSet_array(Comparator<TOP> comparatorNoTypeWithID, Comparator<TOP> comparatorNoTypeWithoutID) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     this.comparatorNoTypeWithID = comparatorNoTypeWithID;
     this.comparatorNoTypeWithoutID = comparatorNoTypeWithoutID;
     a = new TOP[DEFAULT_SIZE];
@@ -107,6 +112,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     System.arraycopy(set.a, 0, this.a, 0, set.a_nextFreeslot);
     this.a_firstUsedslot = set.a_firstUsedslot;
     this.a_nextFreeslot = set.a_nextFreeslot;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     this.comparatorNoTypeWithID = set.comparatorNoTypeWithID;
     this.comparatorNoTypeWithoutID = set.comparatorNoTypeWithoutID;
     
@@ -191,6 +197,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
                     ? a.length + multiplication_limit
                     : (a.length << 1);
        
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
     a = Arrays.copyOf(a, newSize);
   }
       
@@ -319,6 +326,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
    * @return -
    */
   public int findWithoutID(TOP fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return binarySearch(a, a_firstUsedslot, a_nextFreeslot, fs, comparatorNoTypeWithoutID);
   }
   
@@ -383,6 +391,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
    */
 
   public boolean remove(Object o) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5478
     if (o == null) {
       throw new IllegalArgumentException("Null cannot be the argument to remove");
     }
@@ -411,6 +420,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     final int distanceFromEnd = a_nextFreeslot - pos;
     final int distanceFromFront = pos - a_firstUsedslot;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5496
     if (distanceFromFront < distanceFromEnd) {
       if (distanceFromFront > 0) {  // skip when distance is 0 - no move needed
         System.arraycopy(a, a_firstUsedslot,  a,  a_firstUsedslot + 1, distanceFromFront);
@@ -514,6 +524,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   }
   
   public TOP[] toArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     TOP[] r = new TOP[size()];
     System.arraycopy(a, a_firstUsedslot, r, 0, size());
     return r;    
@@ -543,12 +554,14 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     if (a != null) {
       boolean firstTime = true;
       for (TOP i : a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5251
         if (firstTime) {
           firstTime = false;
         } else {
           b.append(",\n");
         }
         if (i != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
           b.append(((TOP)i).toShortString());
         } else {
           b.append("null");
@@ -560,8 +573,10 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     }
     b   .append(", a_nextFreeslot=").append(a_nextFreeslot)
         .append(", a_firstUsedslot=").append(a_firstUsedslot)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
         .append(", origComparator=").append(comparatorNoTypeWithID)
         .append(", maxSize=").append(maxSize)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5496
         .append("]");
     return b.toString();
   } 

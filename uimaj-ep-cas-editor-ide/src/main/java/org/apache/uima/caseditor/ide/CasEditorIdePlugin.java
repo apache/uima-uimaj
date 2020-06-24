@@ -64,6 +64,7 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
    */
   @Override
   public void start(BundleContext context) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2151
 	    super.start(context);
 	    
 	    // Backward compatibility: Migrate old Cas Editor Projects
@@ -80,6 +81,7 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
 	        String typeSystemLocation;
 	        try {
 	          typeSystemLocation = project.getPersistentProperty(new QualifiedName("", 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2151
 	        		  TypeSystemLocationPropertyPage.TYPE_SYSTEM_PROPERTY));
 	        } catch (CoreException e) {
 	          typeSystemLocation = null;
@@ -152,6 +154,7 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
 	  /**
 	   * Resource bundle.
 	   */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
 	  ResourceBundle mResourceBundle = null;
   }
 

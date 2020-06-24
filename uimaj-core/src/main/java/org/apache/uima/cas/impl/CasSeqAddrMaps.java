@@ -52,6 +52,7 @@ public class CasSeqAddrMaps {
    *      
    * index 0 is reserved for null
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
   final private List<TOP> tgtId2SrcFs; // the key is the index
   
 //  /**
@@ -78,6 +79,7 @@ public class CasSeqAddrMaps {
   public CasSeqAddrMaps() {
     // this call makes the first real seq number == 1.
     // seq 0 refers to the NULL fs value.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     this.tgtId2SrcFs = new ArrayList<>();
     this.srcId2TgtId = new Int2IntRBT();
     addItemId(null, 0, true);
@@ -110,6 +112,7 @@ public class CasSeqAddrMaps {
    */
   public void addSrcFsForTgt(TOP srcFs, boolean inSrc) {
     if (inSrc) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       srcId2TgtId.put(srcFs._id, nextTgt);
       tgtId2SrcFs.add(srcFs);
     } else {
@@ -132,6 +135,7 @@ public class CasSeqAddrMaps {
    * @return 0 means target seq doesn't exist in source CAS
    */
   public TOP getSrcFsFromTgtSeq(int seq) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     if (seq >= tgtId2SrcFs.size()) {
       return null;
     }
@@ -150,8 +154,10 @@ public class CasSeqAddrMaps {
     return srcId2TgtId.size();
   }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
   CasSeqAddrMaps copy() {
     CasSeqAddrMaps c = new CasSeqAddrMaps(
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         new ArrayList<>(tgtId2SrcFs),
         srcId2TgtId.copy());
     c.nextTgt = nextTgt;

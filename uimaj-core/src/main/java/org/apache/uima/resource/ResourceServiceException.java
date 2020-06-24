@@ -87,6 +87,7 @@ public class ResourceServiceException extends UIMAException {
    *          arguments.
    */
   public ResourceServiceException(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
@@ -108,6 +109,7 @@ public class ResourceServiceException extends UIMAException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public ResourceServiceException(String aResourceBundleName, String aMessageKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }

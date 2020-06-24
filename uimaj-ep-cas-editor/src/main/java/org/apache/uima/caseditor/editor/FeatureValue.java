@@ -73,6 +73,7 @@ public final class FeatureValue implements IAdaptable {
    */
   public Object getValue() {
     if (mFeature.getRange().isPrimitive()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2148
       return Primitives.getPrimitive(mStructure, mFeature);
     }
 

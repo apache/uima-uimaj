@@ -38,6 +38,7 @@ public abstract class FSTreeNode {
    * Instantiates a new FS tree node.
    */
   public FSTreeNode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     // TODO Auto-generated constructor stub
   }
@@ -46,6 +47,7 @@ public abstract class FSTreeNode {
    * Removes the all children.
    */
   void removeAllChildren() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.children = new ArrayList<>();
   }
 

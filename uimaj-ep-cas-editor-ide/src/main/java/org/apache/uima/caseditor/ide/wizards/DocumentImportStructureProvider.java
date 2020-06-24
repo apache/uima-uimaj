@@ -64,7 +64,9 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
    * @param containerFullPath
    */
   public DocumentImportStructureProvider(String language, String importEncoding,
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
           SerialFormat casFormat) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2174
     this.language = language;
     this.importEncoding = importEncoding; // https://issues.apache.org/jira/browse/UIMA-1808
     this.casFormat = casFormat;
@@ -73,6 +75,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
   private static String removeNonXmlChars(String input) {
 
     char inputChars[] = input.toCharArray();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2165
 
     StringBuilder cleanedString = new StringBuilder(inputChars.length);
 
@@ -122,6 +125,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     String failedToImportLine = "Failed to import: " + fileName + "\n\n";
 
     CAS cas = createEmtpyCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2165
     cas.setDocumentText(removeNonXmlChars(text));
     cas.setDocumentLanguage(language);
 
@@ -142,8 +146,10 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     String fileName = fileToImport.getName();
 
     if (fileName.endsWith(".rtf")) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
       try (InputStream in = new FileInputStream(fileToImport)) {
         String text = convert(in);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2174
         return getDocument(fileToImport.getAbsolutePath(), text, language, casFormat);
       } catch (IOException e) {
         return null;
@@ -196,6 +202,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
       int nameWithouEndingLength = fileName.lastIndexOf(".");
       String nameWithouEnding = fileName.substring(0, nameWithouEndingLength);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       String ending = casFormat.getDefaultFileExtension();
       return nameWithouEnding + "." + ending;
     } else {

@@ -427,6 +427,7 @@ public interface UimaContext {
    */
   public InputStream getResourceAsStream(String aKey, String[] aParams)
           throws ResourceAccessException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Retrieves the named resource object. This can be used to acquire references to external

@@ -64,12 +64,14 @@ public class Import_implTest extends TestCase {
   }
 
   public void testBuildFromXmlElement() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 
       // name import
       String importXml = "<import name=\"this.is.a.test\"/>";
+//IC see: https://issues.apache.org/jira/browse/UIMA-1202
       Document importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes(encoding)));
       Import_impl importObj = new Import_impl();
       importObj.buildFromXMLElement(importDoc.getDocumentElement(), null);
@@ -78,6 +80,7 @@ public class Import_implTest extends TestCase {
 
       // location import
       importXml = "<import location=\"foo/bar/MyFile.xml\"/>";
+//IC see: https://issues.apache.org/jira/browse/UIMA-1202
       importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes(encoding)));
       importObj = new Import_impl();
       importObj.buildFromXMLElement(importDoc.getDocumentElement(), null);
@@ -98,6 +101,8 @@ public class Import_implTest extends TestCase {
 
       // invalid - empty import
       importXml = "<import/>";
+//IC see: https://issues.apache.org/jira/browse/UIMA-1202
+//IC see: https://issues.apache.org/jira/browse/UIMA-1202
       importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes(encoding)));
       importObj = new Import_impl();
       ex = null;
@@ -120,18 +125,21 @@ public class Import_implTest extends TestCase {
       Import_impl importObj = new Import_impl();
       importObj.setLocation("foo/bar/MyFile.xml");
       URL absUrl = importObj.findAbsoluteUrl(UIMAFramework.newDefaultResourceManager());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2051
       URL expectedUrl = new File(System.getProperty("user.dir"), "foo/bar/MyFile.xml").getAbsoluteFile().toURL();
       assertEquals(expectedUrl, absUrl);
 
       // name import
       importObj = new Import_impl();
       importObj.setName("TypeSystemDescriptionImplTest.TestTypeSystem");
+//IC see: https://issues.apache.org/jira/browse/UIMA-137
       String workingDir = JUnitExtension.getFile("TypeSystemDescriptionImplTest").getParentFile()
       		.getAbsolutePath();
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(workingDir);
       absUrl = importObj.findAbsoluteUrl(resMgr);
       expectedUrl = new File(workingDir, "TypeSystemDescriptionImplTest/TestTypeSystem.xml")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       .toURL();
       assertEquals(expectedUrl, absUrl);
 
@@ -157,6 +165,7 @@ public class Import_implTest extends TestCase {
               .getFile("ImportImplTest/subdir/subdir2/AggregateTaeForNestedImportTest.xml");
       File importedFile = JUnitExtension
               .getFile("ImportImplTest/subdir/PrimitiveTaeForNestedImportTest.xml");
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription_impl agg = (AnalysisEngineDescription_impl) UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(baseDescriptorFile));
       assertEquals(baseDescriptorFile.toURL(), agg.getSourceUrl());

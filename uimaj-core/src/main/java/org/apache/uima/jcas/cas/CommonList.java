@@ -66,6 +66,7 @@ public interface CommonList extends FeatureStructure {
 			if (i == 0) {
 				return node;
 			}
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 			node = node.getCommonTail();
       if (node instanceof EmptyList) {
         throw new CASRuntimeException(CASRuntimeException.JCAS_GET_NTH_PAST_END, originali);
@@ -78,6 +79,7 @@ public interface CommonList extends FeatureStructure {
 	 * @param i - 
 	 * @return -
 	 */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 	default CommonList getNonEmptyNthNode(int i) {
 	  CommonList node = getNthNode(i);
     if (node instanceof EmptyList) {
@@ -92,6 +94,7 @@ public interface CommonList extends FeatureStructure {
 	 * @return the number of items in the list
 	 */
 	default int getLength() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
 	  final int[] length = {0};
     walkList(n -> length[0]++, () -> {});
 	  return length[0];
@@ -131,6 +134,7 @@ public interface CommonList extends FeatureStructure {
     CommonList node = this;
     while (node instanceof NonEmptyList) {
       consumer.accept((NonEmptyList) node);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       node = node.getCommonTail();
       if (node == null) {
         break;
@@ -151,6 +155,7 @@ public interface CommonList extends FeatureStructure {
 	/**
 	 * @return a shared instance of the empty node.
 	 */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
 	CommonList emptyList();
 	
 	/**
@@ -182,6 +187,7 @@ public interface CommonList extends FeatureStructure {
 	default CommonList insertNode() {
 	  assert(this instanceof NonEmptyList);
 	  CommonList newNode = createNonEmptyNode();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 	  CommonList tail = getCommonTail();
 	  setTail(newNode);
 	  newNode.setTail(tail);
@@ -192,6 +198,7 @@ public interface CommonList extends FeatureStructure {
 	 * Creates a new node and pushes it onto the front of the existing node
 	 * @return the new node
 	 */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
 	default CommonList pushNode() {
 	  CommonList newNode = createNonEmptyNode();
 	  newNode.setTail(this);
@@ -219,6 +226,7 @@ public interface CommonList extends FeatureStructure {
     if (this instanceof NonEmptyFSList) {
       return ((NonEmptyFSList)this).getTail();
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     throw new UnsupportedOperationException();
   }
 
@@ -246,6 +254,7 @@ public interface CommonList extends FeatureStructure {
    * @param out - a Consumer of strings
    */
   default void anyListToOutput(XmiSerializationSharedData sharedData, CasSerializerSupport.CasDocSerializer cds, Consumer<String> out) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
 
 //    final int type = cas.getHeapValue(curNode);
 //    final int headFeat = getHeadFeatCode(type);
@@ -292,6 +301,7 @@ public interface CommonList extends FeatureStructure {
       
 
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       curNode = curNode.getCommonTail();
     } // end of while loop
   } 
@@ -303,6 +313,7 @@ public interface CommonList extends FeatureStructure {
    * @return -
    */
   default List<String> anyListToStringList(XmiSerializationSharedData sharedData, CasSerializerSupport.CasDocSerializer cds) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     final List<String> list = new ArrayList<>();
     anyListToOutput(sharedData, cds, s -> list.add(s)); 
     return list;
@@ -311,6 +322,7 @@ public interface CommonList extends FeatureStructure {
   /**
    * @return true if this object represents an empty list
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
   default boolean isEmpty() {
     return this instanceof EmptyList;
   }

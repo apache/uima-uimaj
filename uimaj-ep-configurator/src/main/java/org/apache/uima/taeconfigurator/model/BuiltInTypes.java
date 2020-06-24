@@ -53,10 +53,14 @@ public class BuiltInTypes extends AbstractModelPart {
   public static final Map typeDescriptions = new TreeMap();
 
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     CAS tcas = null;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       tcas = CasCreationUtils.createCas((TypeSystemDescription) null, null,
               new FsIndexDescription[0], casCreateProperties);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     } catch (ResourceInitializationException e1) {
       throw new InternalErrorCDE("invalid ResourceInitializationException", e1);

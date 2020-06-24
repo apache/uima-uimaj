@@ -80,6 +80,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    * @throws ResourceInitializationException the resource initialization exception
    */
   public VinciBinaryAnalysisEngineServiceStub(String endpointURI, AnalysisEngineServiceAdapter owner)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     this(endpointURI, null, owner, null);
   }
@@ -100,10 +101,13 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
 
     // open Vinci connection
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
       VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
       // Override vinci default VNS settings
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
       String vnsHost = null;
       String vnsPort = null; 
+//IC see: https://issues.apache.org/jira/browse/UIMA-821
       String getMetaDataTimeout = null; 
       if (parameters != null) {
          vnsHost = 
@@ -138,10 +142,12 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       
       //store timeout for use in later RPC calls
       if (timeout != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         mTimeout = timeout;
       } else {
        mTimeout = mVinciClient.getSocketTimeout(); //default
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-821
       if (getMetaDataTimeout != null) {
         mGetMetaDataTimeout = Integer.parseInt(getMetaDataTimeout);
       } else {
@@ -182,6 +188,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    * @see ResourceServiceStub#callGetMetaData()
    */
   public ResourceMetaData callGetMetaData() throws ResourceServiceException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // create Vinci Frame
       VinciFrame queryFrame = new VinciFrame();
@@ -195,6 +202,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
 
       mVinciClient.setTransportableFactory(AFrame.getAFrameFactory());
       VinciFrame resultFrame = mVinciClient.rpc(queryFrame, mGetMetaDataTimeout);
+//IC see: https://issues.apache.org/jira/browse/UIMA-821
 
       if (debug) {
         System.out.println("Success");
@@ -217,6 +225,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
 
       // Parse the XML into the AnalysisEngineMetaData object
       SaxDeserializer saxDeser = UIMAFramework.getXMLParser().newSaxDeserializer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
 
       VinciSaxParser vinciSaxParser = new VinciSaxParser();
       vinciSaxParser.setContentHandler(saxDeser);
@@ -247,12 +256,16 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       requestFrame.fsetTrueBinary("BinaryCAS", SerializationUtils.serialize(serializer));
 
       AFrame responseFrame = (AFrame) mVinciClient.sendAndReceive(requestFrame, mTimeout);
+//IC see: https://issues.apache.org/jira/browse/UIMA-33
 
       // deserialize CAS from response frame
       byte[] responseCasBytes = responseFrame.fgetTrueBinary("BinaryCAS");
       CASSerializer responseSerializer = (CASSerializer) SerializationUtils
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .deserialize(responseCasBytes);
       ((CASImpl) cas).getBinaryCasSerDes().reinit(responseSerializer);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
 
       // also read annotation time and enter into AnalysisEngineManagementMBean
       int annotationTime = responseFrame.fgetInt(Constants.ANNOTATION_TIME);
@@ -292,6 +305,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    * @see AnalysisEngineServiceStub#callCollectionProcessComplete()
    */
   public void callCollectionProcessComplete() throws ResourceServiceException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // create Vinci Frame ( Data Cargo)
       AFrame queryFrame = new AFrame();
@@ -299,7 +313,9 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       queryFrame.fadd("vinci:COMMAND", Constants.COLLECTION_PROCESS_COMPLETE);
 
       // make RPC call (return val ignored)
+//IC see: https://issues.apache.org/jira/browse/UIMA-33
       mVinciClient.rpc(queryFrame, mTimeout);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       throw new ResourceServiceException(e);
     }
@@ -322,6 +338,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    * @return if socketKeepAlive is enabled
    */
   private boolean isSocketKeepAliveEnabled() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
     Properties settings = mOwner.getPerformanceTuningSettings();
     if (settings != null) {
       String enabledStr = (String)settings.get(UIMAFramework.SOCKET_KEEPALIVE_ENABLED);

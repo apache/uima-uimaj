@@ -38,6 +38,7 @@ public class VinciServerRunnable extends BaseServerRunnable {
     if (header != null) {
       if (header.key.equals(TransportConstants.SHUTDOWN_KEY)) {
         if (((VinciServer) getParent()).shutdown(header.getValueAsString())) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           out = (VinciFrame) new VinciFrame().fadd(TransportConstants.STATUS_KEY,
                   TransportConstants.OK_VALUE);
         } else {

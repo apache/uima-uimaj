@@ -49,6 +49,7 @@ public class MainFrameClosing extends WindowAdapter {
    */
   @Override
   public void windowClosing(WindowEvent e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-425
     handleClosingEvent(this.main);
   }
 

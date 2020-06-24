@@ -85,6 +85,7 @@ public class IndexSection extends AbstractSection {
 
   /** The m built in index description. */
   FsIndexDescription m_builtInIndexDescription = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The export button. */
   private Button exportButton;
@@ -100,6 +101,7 @@ public class IndexSection extends AbstractSection {
    */
   public IndexSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Indexes",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The following indexes are defined on the type system for this engine.");
   }
 
@@ -115,6 +117,7 @@ public class IndexSection extends AbstractSection {
     enableBorders(sectionClient);
 
     tt = newTree(sectionClient, SWT.SINGLE | SWT.FULL_SELECTION);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
 
 //    final Table table = tt.getTable();
     tt.setHeaderVisible(true);
@@ -125,6 +128,7 @@ public class IndexSection extends AbstractSection {
     final Composite buttonContainer = newButtonContainer(sectionClient);
     addIndexButton = newPushButton(buttonContainer, "Add Index", "Click here to add a new index.");
     addKeyButton = newPushButton(buttonContainer, "Add Key",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Click here to add a new key for the selected index.");
     editButton = newPushButton(buttonContainer, S_EDIT, S_EDIT_TIP);
     removeButton = newPushButton(buttonContainer, S_REMOVE, S_REMOVE_TIP);
@@ -134,6 +138,7 @@ public class IndexSection extends AbstractSection {
 
     // in addition to normal keyup and mouse up:
     tt.addListener(SWT.MouseHover, this);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
 
     toolkit.paintBordersFor(sectionClient);
   }
@@ -152,6 +157,7 @@ public class IndexSection extends AbstractSection {
 
     // add built-in annotation index
     updateIndexSpec(new TreeItem(tt, SWT.NONE), getBuiltInIndexDescription());
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
 
     FsIndexDescription[] fsIndexes = getAnalysisEngineMetaData().getFsIndexes();
 
@@ -179,6 +185,7 @@ public class IndexSection extends AbstractSection {
     FsIndexKeyDescription[] keys = ndx.getKeys();
     if (null != keys)
       for (int i = 0; i < keys.length; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         updateKeySpec(new TreeItem(item, SWT.NONE), keys[i]);
       }
   }
@@ -193,6 +200,7 @@ public class IndexSection extends AbstractSection {
     String name = key.getFeatureName();
     item.setText(INDEX_NAME_COL, null == name ? "TYPE PRIORITY" : name);
     item.setText(ASC_DES_COL,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             key.getComparator() == FSIndexComparator.STANDARD_COMPARE ? "Standard" : "Reverse");
     item.setData(key);
   }
@@ -215,6 +223,7 @@ public class IndexSection extends AbstractSection {
     if (m_builtInIndexDescription == null) {
       m_builtInIndexDescription = UIMAFramework.getResourceSpecifierFactory()
               .createFsIndexDescription();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       m_builtInIndexDescription.setLabel(ANNOTATION_INDEX_BUILT_IN);
       m_builtInIndexDescription.setTypeName(CAS.TYPE_NAME_ANNOTATION);
@@ -244,6 +253,7 @@ public class IndexSection extends AbstractSection {
   private boolean notAllowed(String message) {
     if (isIndexDescriptor() && !editor.getIsContextLoaded()) {
       Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .popMessage(
                       "Not Allowed",
                       "Editing or Adding Indexes can't be done here because the information about the type system is missing.",
@@ -271,6 +281,7 @@ public class IndexSection extends AbstractSection {
 
       FsIndexDescription id = UIMAFramework.getResourceSpecifierFactory()
               .createFsIndexDescription();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       id.setLabel(dialog.indexName);
       id.setTypeName(dialog.indexType);
@@ -282,6 +293,7 @@ public class IndexSection extends AbstractSection {
       updateIndexSpec(new TreeItem(tt, SWT.NONE), id);
 
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       maybeSetSelection(tt, tt.getItemCount() - 1);
       packTree(tt);
       setFileDirty();
@@ -295,10 +307,12 @@ public class IndexSection extends AbstractSection {
         return;
       FsIndexDescription fsid = getFsIndexDescriptionFromTableTreeItem(parent);
       AddIndexKeyDialog dialog = new AddIndexKeyDialog(this, fsid.getTypeName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               handleDefaultIndexKind(fsid.getKind()), getAlreadyUsedFeatures(fsid));
       FsIndexKeyDescription newKey = addOrEditIndexKey(dialog, null);
       if (null != newKey) {
         addFsIndexKeyDescription(fsid, newKey);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         updateKeySpec(new TreeItem(parent, SWT.NONE), newKey);
         parent.setExpanded(true);
         setFileDirty();
@@ -310,6 +324,7 @@ public class IndexSection extends AbstractSection {
       Object o = item.getData();
       if (o instanceof FsIndexDescription) {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Remove",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "Do you want to remove this index?", MessageDialog.WARNING))
           return;
         removeFsIndexDescription((FsIndexDescription) o);
@@ -321,6 +336,7 @@ public class IndexSection extends AbstractSection {
         FsIndexDescription fsid = getFsIndexDescriptionFromTableTreeItem(parent);
         removeFsIndexKeyDescription(fsid, (FsIndexKeyDescription) o);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       setSelectionOneUp(tt, item);
 //      tt.setSelection(tt.getTable().getSelectionIndex() - 1);
       item.dispose();
@@ -330,6 +346,7 @@ public class IndexSection extends AbstractSection {
         return;
       if (tt.getSelectionCount() != 1)
         return;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       TreeItem item = tt.getSelection()[0];
       if (foolingAroundWithAnnotationIndex(item))
         return;
@@ -349,6 +366,7 @@ public class IndexSection extends AbstractSection {
         updateIndexSpec(item, fsid);
 
         if (valueChanged) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
           packTree(tt);
           setFileDirty();
         }
@@ -359,11 +377,13 @@ public class IndexSection extends AbstractSection {
         TreeItem parent = item.getParentItem();
         FsIndexDescription fsid = getFsIndexDescriptionFromTableTreeItem(parent);
         AddIndexKeyDialog dialog = new AddIndexKeyDialog(this, fsid.getTypeName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 handleDefaultIndexKind(fsid.getKind()), getAlreadyUsedFeatures(fsid), key);
         valueChanged = false;
         addOrEditIndexKey(dialog, key);
         if (valueChanged) {
           updateKeySpec(item, key);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
           packTree(tt);
           setFileDirty();
         }
@@ -375,11 +395,13 @@ public class IndexSection extends AbstractSection {
     } else if (event.widget == downButton) {
       int i = getIndex(tt.getSelection()[0]);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       TreeItem[] items = tt.getSelection()[0].getParentItem().getItems();
       swapIndexKeys(items[i + 1], i + 1);
     } else if (event.widget == exportButton) {
       try {
         indexImportSection.exportImportablePart("<fsIndexCollection>",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 FsIndexCollectionNewWizard.FSINDEXCOLLECTION_TEMPLATE);
       } finally {
         refresh(); // update in case of throw, even
@@ -400,6 +422,7 @@ public class IndexSection extends AbstractSection {
 
     if (ANNOTATION_INDEX_BUILT_IN.equals(item.getText(0))) {
       Utility.popMessage("Not Allowed",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "You cannot edit or delete the built-in Annotation Index or its keys",
               MessageDialog.ERROR);
       return true;
@@ -416,6 +439,7 @@ public class IndexSection extends AbstractSection {
   public void addFsIndexKeyDescription(FsIndexDescription fsid, FsIndexKeyDescription key) {
     FsIndexKeyDescription[] prevKeys = fsid.getKeys();
     FsIndexKeyDescription[] newKeys = new FsIndexKeyDescription[prevKeys == null ? 1
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             : prevKeys.length + 1];
     if (null != prevKeys)
       System.arraycopy(prevKeys, 0, newKeys, 0, prevKeys.length);
@@ -431,6 +455,7 @@ public class IndexSection extends AbstractSection {
   public void addFsIndexDescription(FsIndexDescription fsid) {
     FsIndexDescription[] oldFsIndexes = getAnalysisEngineMetaData().getFsIndexes();
     FsIndexDescription[] newFsIndexes = new FsIndexDescription[oldFsIndexes == null ? 1
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             : oldFsIndexes.length + 1];
     if (null != oldFsIndexes)
       System.arraycopy(oldFsIndexes, 0, newFsIndexes, 0, oldFsIndexes.length);
@@ -445,6 +470,7 @@ public class IndexSection extends AbstractSection {
    */
   public void removeFsIndexDescription(FsIndexDescription fsid) {
     getAnalysisEngineMetaData().setFsIndexes(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             (FsIndexDescription[]) Utility.removeElementFromArray(getAnalysisEngineMetaData()
                     .getFsIndexes(), fsid, FsIndexDescription.class));
   }
@@ -467,6 +493,7 @@ public class IndexSection extends AbstractSection {
    * @return the already used features
    */
   public List<String> getAlreadyUsedFeatures(FsIndexDescription ndx) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     List<String> result = new ArrayList<>();
     FsIndexKeyDescription[] items = ndx.getKeys();
     if (null == items)
@@ -508,6 +535,7 @@ public class IndexSection extends AbstractSection {
    * @return true, if is duplicate index label
    */
   public boolean isDuplicateIndexLabel(String indexLabel) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     FsIndexDescription[] indexes = getAnalysisEngineMetaData().getFsIndexes();
     if (indexes == null) {
       return false;
@@ -526,6 +554,7 @@ public class IndexSection extends AbstractSection {
   @Override
   public void enable() {
     boolean selected = tt.getSelectionCount() == 1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     TreeItem item = null;
     TreeItem parent = null;
     if (selected) {
@@ -534,9 +563,11 @@ public class IndexSection extends AbstractSection {
     }
     boolean notBuiltInSelected = (selected && item != tt.getItems()[0]);
     notBuiltInSelected &= !(null != parent && parent == tt.getItems()[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     addIndexButton.setEnabled(true);
     addKeyButton.setEnabled(notBuiltInSelected
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && (null != parent || /* null == parent && */!"bag".equals(item
                     .getText(INDEX_KIND_COL))));
     editButton.setEnabled(notBuiltInSelected);
@@ -547,6 +578,7 @@ public class IndexSection extends AbstractSection {
     downButton.setEnabled(false);
     if (selected) {
       if (null != parent && notBuiltInSelected) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         TreeItem[] items = parent.getItems();
         TreeItem firstItem = items[0];
         TreeItem lastItem = items[items.length - 1];

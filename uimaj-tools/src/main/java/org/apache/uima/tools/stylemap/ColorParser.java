@@ -36,6 +36,7 @@ public class ColorParser {
    * Instantiates a new color parser.
    */
   public ColorParser() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     initializeColorNameMap();
   }
 
@@ -122,6 +123,7 @@ public class ColorParser {
    */
   // --------------------
   public StyleMapEntry parseAndAssignColors(String typeName, String featureValue,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String labelString, String styleColor) {
     StyleMapEntry sme = new StyleMapEntry();
     sme.setAnnotationTypeName(typeName);
@@ -179,6 +181,7 @@ public class ColorParser {
         if (tf.equals("true")) {
           checked = true;
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         sme.setChecked(checked);
       }
     } else {
@@ -203,6 +206,7 @@ public class ColorParser {
         if (tf.equals("true")) {
           checked = true;
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         sme.setHidden(checked);
       }
     } else {

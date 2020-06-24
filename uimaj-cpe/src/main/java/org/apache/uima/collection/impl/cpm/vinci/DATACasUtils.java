@@ -58,6 +58,7 @@ public class DATACasUtils {
    * @throws Exception the exception
    */
   public static String getXCASasString(CasData aCasData, String[] keysToFilter) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     CasDataToXCas generator = new CasDataToXCas();
     generator.setTypesToFilter(keysToFilter);
 
@@ -79,6 +80,7 @@ public class DATACasUtils {
    * @param featureValue the feature value
    */
   public static void addFeatureStructure(CasData dataCas, String featureType, String featureName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String featureValue) {
     FeatureStructure vfs = new FeatureStructureImpl();
     vfs.setType(featureType);
@@ -110,6 +112,7 @@ public class DATACasUtils {
    * @param featureValue the feature value
    */
   public static void addFeature(CasData dataCas, String featureType, String featureName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String featureValue) {
     Iterator it = dataCas.getFeatureStructures();
     while (it.hasNext()) {
@@ -167,6 +170,7 @@ public class DATACasUtils {
         // this case, the feature MUST be null.
 
         if ((filterExpression.getOperand() == null && featureValue == null || featureValue.trim()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .length() == 0)
                 || // this means that the feature must exist in CAS
                 ("!".equals(filterExpression.getOperand().getOperand()) && featureValue != null) // this
@@ -210,6 +214,7 @@ public class DATACasUtils {
    */
   public static boolean dropIt(String aKey, String[] dropKeyList) {
     for (int i = 0; aKey != null && dropKeyList != null && i < dropKeyList.length
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && dropKeyList[i] != null; i++) {
       if (dropKeyList[i].equals(aKey)) {
         return true;
@@ -229,6 +234,7 @@ public class DATACasUtils {
 
     if (aKey.indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM) > -1) {
       aKey = StringUtils.replaceAll(aKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM,
               org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM);
     }
@@ -282,6 +288,7 @@ public class DATACasUtils {
       if (object instanceof FeatureStructure) {
         FeatureStructure fs = (FeatureStructure) object;
         String type = StringUtils.replaceAll(fs.getType(), Constants.LONG_COLON_TERM,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Constants.SHORT_COLON_TERM);
         if (type.equals(aName)) {
           return true;
@@ -304,6 +311,7 @@ public class DATACasUtils {
         FeatureStructure fs = (FeatureStructure) object;
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(DATACasUtils.class).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   DATACasUtils.class.getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_show_cas_fs_type__FINEST",
                   new Object[] { Thread.currentThread().getName(), fs.getType() });
@@ -314,6 +322,7 @@ public class DATACasUtils {
           FeatureValue fValue = fs.getFeatureValue(names[i]);
           if (fValue != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               UIMAFramework.getLogger(DATACasUtils.class)
                       .logrb(
                               Level.FINEST,
@@ -346,6 +355,7 @@ public class DATACasUtils {
       if (object instanceof FeatureStructure) {
         FeatureStructure fs = (FeatureStructure) object;
         if (System.getProperty("SHOWFEATURES") != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           UIMAFramework.getLogger(DATACasUtils.class).logrb(Level.FINEST,
                   DATACasUtils.class.getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_search_cas_by_value__FINEST",
@@ -397,6 +407,7 @@ public class DATACasUtils {
    * @return tbd
    */
   public static String[] getFeatureStructureValues(CasData aCAS, String featureStructureName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String featureName) {
     Iterator it = aCAS.getFeatureStructures();
     String featureValue = null;
@@ -434,6 +445,7 @@ public class DATACasUtils {
    * @return tbd
    */
   public static String getFeatureValueByType(CasData aCAS, String aFeatureStructure,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String featureName) {
     Iterator it = aCAS.getFeatureStructures();
     String featureValue = null;
@@ -500,6 +512,7 @@ public class DATACasUtils {
     while (it.hasNext()) {
       Object object = it.next();
       if (object instanceof FeatureStructure
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               && ((FeatureStructure) object).getType().equals(aFeatureStructureName)) {
         FeatureStructure fs = (FeatureStructure) object;
         String[] featureNames = fs.getFeatureNames();

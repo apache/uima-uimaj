@@ -75,6 +75,7 @@ public interface ICasDocument {
    * @param structures the structures
    */
   void addFeatureStructures(Collection<? extends FeatureStructure> structures);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1398
 
   /**
    * Removes an {@link FeatureStructure} from the Document.
@@ -90,6 +91,7 @@ public interface ICasDocument {
    * @param structuresToRemove the structures to remove
    */
   void removeFeatureStructures(Collection<? extends FeatureStructure> structuresToRemove);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1398
 
   /**
    * Updates the given {@link FeatureStructure}.
@@ -104,6 +106,7 @@ public interface ICasDocument {
    * @param structures the structures
    */
   void updateFeatureStructure(Collection<? extends FeatureStructure> structures);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1398
 
   /**
    * The document was changed. Its unknown what changed.
@@ -141,5 +144,6 @@ public interface ICasDocument {
    * @return the string representation of the applied type system
    */
   String getTypeSystemText();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2671
 
 }

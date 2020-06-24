@@ -81,7 +81,9 @@ public class MainFrame extends JFrame {
     @Override
     public void valueChanged(TreeSelectionEvent event) {
       // System.out.println("");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) MainFrame.this.typeTree
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getLastSelectedPathComponent();
       if (node == null) {
         return;
@@ -190,6 +192,7 @@ public class MainFrame extends JFrame {
    */
   public void showAnnotFeats() {
     // Debug...
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     this.selectedType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     updateFeatureTable();
   }
@@ -274,6 +277,7 @@ public class MainFrame extends JFrame {
    * @return the tree model listeners
    */
   public static TreeModelListener[] getTreeModelListeners(DefaultTreeModel model) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     EventListener[] eventListeners = model.getListeners(TreeModelListener.class);
     TreeModelListener[] modelListeners = new TreeModelListener[eventListeners.length];
     for (int i = 0; i < modelListeners.length; i++) {

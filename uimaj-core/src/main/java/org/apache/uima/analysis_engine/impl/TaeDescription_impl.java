@@ -40,6 +40,7 @@ public class TaeDescription_impl extends AnalysisEngineDescription_impl implemen
   // property info set below
 
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     XMLIZATION_INFO.propertyInfo = AnalysisEngineDescription_impl.getXmlizationInfoForClass().propertyInfo;
   }
 }

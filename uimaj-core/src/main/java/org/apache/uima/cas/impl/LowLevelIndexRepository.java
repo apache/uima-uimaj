@@ -40,6 +40,7 @@ public interface LowLevelIndexRepository {
    * @return The corresponding index, or <code>null</code> if no such index exists.
    */
   <T extends FeatureStructure> LowLevelIndex<T> ll_getIndex(String indexName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
   /**
    * Get an index by a name and type. The type must be a subtype of the index's type. Note that
@@ -55,6 +56,7 @@ public interface LowLevelIndexRepository {
    *              If the type code argument is not a valid type code.
    */
   <T extends FeatureStructure> LowLevelIndex<T> ll_getIndex(String indexName, int typeCode);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
   /**
    * Add a FS reference to all appropriate indexes in the repository.

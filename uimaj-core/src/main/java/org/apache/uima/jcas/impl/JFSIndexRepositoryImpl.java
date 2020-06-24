@@ -99,6 +99,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
   @Override
   public Iterator<FSIndex<TOP>> getIndexes() {
     return (Iterator<FSIndex<TOP>>)(Object)fsIndexRepository.getIndexes();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
 
   }
 
@@ -115,6 +116,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * @see org.apache.uima.jcas.JFSIndexRepository#getAllIndexedFS(org.apache.uima.cas.Type)
    */
   public <T extends TOP> FSIterator<T> getAllIndexedFS(Type aType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-179
     return fsIndexRepository.getAllIndexedFS(aType);
   }
 

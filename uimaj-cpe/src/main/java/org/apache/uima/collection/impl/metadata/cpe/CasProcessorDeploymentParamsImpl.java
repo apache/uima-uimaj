@@ -43,6 +43,8 @@ import org.xml.sax.helpers.AttributesImpl;
  * The Class CasProcessorDeploymentParamsImpl.
  */
 public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CasProcessorDeploymentParams {
   
   /** The Constant serialVersionUID. */
@@ -102,6 +104,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
   @Override
   public void remove(CasProcessorDeploymentParam aParam) throws CpeDescriptorException {
     for (int i = 0; params != null && i < params.size(); i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-289
       if (aParam.equals(params.get(i))) {
         params.remove(i);
       }
@@ -120,6 +123,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     NodeList nodes = aElement.getChildNodes();
     for (int i = 0; i < nodes.getLength(); i++) {
@@ -135,6 +139,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
         }
         // nodeMap.getNamedItem("type").getNodeValue();
         CasProcessorDeploymentParam p = new CasProcessorDeploymentParamImpl(paramName, paramValue,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 paramType);
         params.add(p);
       }
@@ -165,6 +170,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
     // write child elements
     for (int i = 0; i < params.size(); i++) {
       ((CasProcessorDeploymentParam) params.get(i)).toXML(aContentHandler,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               aWriteDefaultNamespaceAttribute);
     }
 
@@ -183,5 +189,6 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("deploymentParameters",
           new PropertyXmlInfo[] { new PropertyXmlInfo("parameter"), });
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 }

@@ -22,6 +22,7 @@ package org.apache.uima.internal.util;
  * Data structure representing an XML attribute.
  */
 public class XmlAttribute {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   final public String name;
   final public String value;
   

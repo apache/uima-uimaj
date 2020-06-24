@@ -276,6 +276,7 @@ public class InstallPear extends JFrame {
     String selectedFileName = null;
     fileChooser.addChoosableFileFilter(new PEARFilter());
     String lastFileName = (pearFileTextField.getText().length() > 0) ? pearFileTextField.getText()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             : userPrefs.get(LAST_FILE_NAME_CHOOSEN_KEY, "./");
     File directory = (lastFileName.length() > 0) ? new File(lastFileName).getParentFile()
             : new File("./");
@@ -314,6 +315,7 @@ public class InstallPear extends JFrame {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.addChoosableFileFilter(new PEARFilter());
     String lastDirName = (installDirTextField.getText().length() > 0) ? installDirTextField
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getText() : userPrefs.get(LAST_DIRECTORY_CHOOSEN_KEY, "./");
     String selectedDirName = null;
     File directory = (lastDirName.length() > 0) ? new File(lastDirName).getParentFile() : new File(
@@ -351,6 +353,7 @@ public class InstallPear extends JFrame {
   private static void installPear(File localPearFile, File installationDir) {
     InstallationController.setLocalMode(true);
     InstallationDescriptorHandler installationDescriptorHandler = new InstallationDescriptorHandler();
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
     pearConsole.setText("");
     printInConsole(false, "");
     // check input parameters
@@ -359,6 +362,7 @@ public class InstallPear extends JFrame {
       message = localPearFile.getAbsolutePath() + "file not found \n";
       printInConsole(errorFlag, message);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-989
       if (localPearFile != null) {
         pearConsole.append("PEAR file to install is => " + localPearFile.getAbsolutePath() + "\n");
       }
@@ -392,6 +396,7 @@ public class InstallPear extends JFrame {
       return;
     }
     InstallationController installationController = new InstallationController(mainComponentId,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             localPearFile, installationDir);
     // adding installation controller message listener
     installationController.addMsgListener(new MessageRouter.StdChannelListener() {
@@ -411,6 +416,7 @@ public class InstallPear extends JFrame {
       /* installation failed */
       errorFlag = true;
       message = " \nInstallation of " + mainComponentId + " failed => \n "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + installationController.getInstallationMsg();
       printInConsole(errorFlag, message);
 
@@ -424,6 +430,7 @@ public class InstallPear extends JFrame {
         message = " \nInstallation of " + mainComponentId + " completed \n";
         printInConsole(errorFlag, message);
         message = "The " + mainComponentRootPath + "/" + SET_ENV_FILE
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + " \n    file contains required " + "environment variables for this component\n";
         printInConsole(errorFlag, message);
         /* 2nd step: verification of main component installation */
@@ -433,6 +440,7 @@ public class InstallPear extends JFrame {
           try {
             String uimaCompCtg = UIMAUtil.identifyUimaComponentCategory(xmlDescFile);
             if (UIMAUtil.ANALYSIS_ENGINE_CTG.equals(uimaCompCtg))
+//IC see: https://issues.apache.org/jira/browse/UIMA-101
               runButton.setEnabled(true);
           } catch (Exception e) {
             // Ignore exceptions!
@@ -444,6 +452,7 @@ public class InstallPear extends JFrame {
           runButton.setEnabled(false);
           errorFlag = true;
           message = "Verification of " + mainComponentId + " failed => \n "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   + installationController.getVerificationMsg();
           printInConsole(errorFlag, message);
         }
@@ -464,6 +473,7 @@ public class InstallPear extends JFrame {
 
     
     Runnable runCVD = new Runnable() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-989
 
       @Override
       public void run() {
@@ -479,6 +489,7 @@ public class InstallPear extends JFrame {
 
           // Prevent CVD from shutting down JVM after exit
           frame.setExitOnClose(false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-425
 
           // load pear descriptor
           frame.loadAEDescriptor(new File(pearDesc));
@@ -487,6 +498,7 @@ public class InstallPear extends JFrame {
           frame.runAE(true);
         } catch (Throwable e) {
           pearConsole.append(" Error in runCVD() " + e.toString());
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
           StringWriter strWriter = new StringWriter();
           PrintWriter printWriter = new PrintWriter(strWriter, true);
           e.printStackTrace(printWriter);
@@ -511,6 +523,7 @@ public class InstallPear extends JFrame {
   private JTextField getPearFileTextField() {
     if (pearFileTextField == null) {
       pearFileTextField = new JTextField();
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
       pearFileTextField.setBounds(83, 40, 492, 20);
       // hazel's change
       pearFileTextField.setLayout(new BorderLayout());
@@ -567,6 +580,7 @@ public class InstallPear extends JFrame {
   private JButton getbrowseButton() {
     if (browseButton == null) {
       browseButton = new JButton();
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
       browseButton.setBounds(579, 40, 114, 20);
       browseButton.setText("Browse...");
       browseButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -595,6 +609,7 @@ public class InstallPear extends JFrame {
   private JTextField getInstallDirTextField() {
     if (installDirTextField == null) {
       installDirTextField = new JTextField();
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
       installDirTextField.setBounds(83, 80, 492, 20);
       installDirTextField.isEditable();
       // handling text input
@@ -640,6 +655,7 @@ public class InstallPear extends JFrame {
   private JButton getBrowseDirButton() {
     if (browseDirButton == null) {
       browseDirButton = new JButton();
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
       browseDirButton.setBounds(579, 80, 114, 20);
       browseDirButton.setText("Browse Dir...");
       browseDirButton.setEnabled(false);
@@ -675,6 +691,7 @@ public class InstallPear extends JFrame {
   private JButton getInstallButton() {
     if (installButton == null) {
       installButton = new JButton();
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
       installButton.setBounds(100, 120, 108, 24);
       installButton.setText("Install");
       installButton.setEnabled(false);
@@ -718,8 +735,10 @@ public class InstallPear extends JFrame {
   private JButton getRunButton() {
     if (runButton == null) {
       runButton = new JButton();
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
       runButton.setBounds(255, 120, 240, 24);
       runButton.setText("Run your AE in the CAS Visual Debugger");
+//IC see: https://issues.apache.org/jira/browse/UIMA-989
       runButton.setEnabled(false);
       runButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       runButton.setMnemonic('r');
@@ -779,6 +798,7 @@ public class InstallPear extends JFrame {
    */
   private JScrollPane getJScrollPane() {
     if (jScrollPane == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
       jScrollPane = new JScrollPane(getPearConsole(),
               ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
               ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -797,6 +817,7 @@ public class InstallPear extends JFrame {
   private JButton getHelpButton() {
     if (helpButton == null) {
       helpButton = new JButton();
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
       helpButton.setBounds(540, 120, 108, 24);
       helpButton.setText("Help");
       helpButton.setEnabled(helpExists);
@@ -824,6 +845,7 @@ public class InstallPear extends JFrame {
               manFrame.pack();
               manFrame.setVisible(true);
             } catch (Exception ex) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
               JOptionPane.showMessageDialog(InstallPear.this, ex.getMessage(),
                       "Error showing help", JOptionPane.ERROR_MESSAGE);
             }
@@ -882,6 +904,8 @@ public class InstallPear extends JFrame {
       System.err.println("Could not set look and feel: " + exception.getMessage());
     }
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-37
+//IC see: https://issues.apache.org/jira/browse/UIMA-295
       setIconImage(ImageIO.read(getClass().getResource(Images.MICROSCOPE)));
     } catch (IOException ioexception) {
       System.err.println("Image could not be loaded: " + ioexception.getMessage());
@@ -912,8 +936,10 @@ public class InstallPear extends JFrame {
     helpMenuItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-101
         if (e.getActionCommand() == "Help") {
           try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-101
             URL helpFileUrl = getClass().getResource("piHelp.html");
             if (helpFileUrl == null) {
               String msg = "PEAR Installer help file does not exist.";
@@ -942,6 +968,7 @@ public class InstallPear extends JFrame {
       @Override
       public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "About") {
+//IC see: https://issues.apache.org/jira/browse/UIMA-22
           AboutDialog dialog = new AboutDialog(InstallPear.this, "About PEAR Installer");
           dialog.setVisible(true);
         }
@@ -955,8 +982,10 @@ public class InstallPear extends JFrame {
      */
     JLabel installDirLabel = new JLabel();
     JLabel pearFileLabel = new JLabel();
+//IC see: https://issues.apache.org/jira/browse/UIMA-22
     JPanel mainPane = new JPanel();
     mainPane.setLayout(null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
     pearFileLabel.setBounds(83, 20, 126, 20);
     pearFileLabel.setText("PEAR File:");
     installDirLabel.setBounds(83, 60, 126, 20);
@@ -988,6 +1017,7 @@ public class InstallPear extends JFrame {
    */
   private void initialize() {
     this.setTitle("Local PEAR Installation, Verification and Testing");
+//IC see: https://issues.apache.org/jira/browse/UIMA-271
     this.setSize(735, 620);
     this.setResizable(false);
     // center the frame on the screen

@@ -54,6 +54,7 @@ public class AggregatePage extends HeaderPageWithSash {
 
     final Form2Panel form = setup2ColumnLayout(managedForm, !EQUAL_WIDTH);
     managedForm.getForm().setText("Aggregate Delegates and Flows");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     managedForm.addPart(aggregateSection = new AggregateSection(editor, form.left));
     managedForm.addPart(flowSection = new FlowSection(editor, form.right));

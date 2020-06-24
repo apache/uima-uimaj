@@ -66,6 +66,7 @@ public class DescriptorTCAS extends AbstractModelPart {
     try {
       // long time = System.currentTimeMillis();
       // System.out.println("Creating TCas model");
+//IC see: https://issues.apache.org/jira/browse/UIMA-462
       cachedResult = modelRoot.createCas(ae, casCreateProperties, modelRoot.createResourceManager());
       // System.out.println("Finished Creating TCas model; time= " +
       // (System.currentTimeMillis() - time));
@@ -107,6 +108,7 @@ public class DescriptorTCAS extends AbstractModelPart {
     try {
       validate();
     } catch (ResourceInitializationException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-462
       throw new InternalErrorCDE("Unexpected Exception", e);
     }
   }

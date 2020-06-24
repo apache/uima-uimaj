@@ -46,6 +46,7 @@ public class SofaUnawareCasConsumer extends CasConsumer_ImplBase {
     Assert.assertEquals("das bier ist gut", cas.getDocumentText());
     Type cross = cas.getTypeSystem().getType("sofa.test.CrossAnnotation");
     Feature other = cross.getFeatureByBaseName("otherAnnotation");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     FSIndex anIndex = cas.getAnnotationIndex(cross);
     FSIterator anIter = anIndex.iterator();
     AnnotationFS annot = (AnnotationFS) anIter.next();

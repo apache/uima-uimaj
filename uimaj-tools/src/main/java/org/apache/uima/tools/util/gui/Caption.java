@@ -40,6 +40,7 @@ public class Caption extends JLabel {
    * @param s the s
    */
   public Caption(String s) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(s);
     setHorizontalAlignment(SwingConstants.RIGHT);
   }

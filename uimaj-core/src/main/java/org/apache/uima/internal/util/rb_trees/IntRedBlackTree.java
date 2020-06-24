@@ -40,6 +40,7 @@ public class IntRedBlackTree {
 
   // The root node of the tree.
   IntRBTNode root = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   // A counter to keep track of the size of the tree.
   int size = 0;
@@ -218,6 +219,7 @@ public class IntRedBlackTree {
   }
 
   public IntRedBlackTree copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     IntRedBlackTree c = new IntRedBlackTree();
     c.root = (null == root) ? null : root.copyNode(null);
     c.size = size;

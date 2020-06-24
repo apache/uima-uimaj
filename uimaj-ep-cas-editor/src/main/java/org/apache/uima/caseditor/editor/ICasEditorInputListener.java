@@ -44,6 +44,7 @@ public interface ICasEditorInputListener {
    * @param newInput the new input
    * @param newDocument          - the new, current document {@link ICasDocument}.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
   void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument, IEditorInput newInput, ICasDocument newDocument);
   
 }

@@ -77,16 +77,21 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
    * @see junit.framework.TestCase#setUp()
    */
   protected void setUp() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       super.setUp();
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       mSimpleDesc = new AnalysisEngineDescription_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mSimpleDesc.setPrimitive(true);
       mSimpleDesc
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       mSimpleDesc.getMetaData().setName("Simple Test");
       TypeSystemDescription typeSys = new TypeSystemDescription_impl();
       typeSys.addType("foo.Bar", "test", "uima.tcas.Annotation");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       typeSys.addType("NamedEntity", "test", "uima.tcas.Annotation");
       typeSys.addType("DocumentStructure", "test", "uima.tcas.Annotation");
       mSimpleDesc.getAnalysisEngineMetaData().setTypeSystem(typeSys);
@@ -96,6 +101,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       Capability[] caps = new Capability[] {cap};
        mSimpleDesc.getAnalysisEngineMetaData().setCapabilities(caps);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       mAggDesc = new AnalysisEngineDescription_impl();
       mAggDesc.setPrimitive(false);
       mAggDesc.getMetaData().setName("Simple Test Aggregate");
@@ -103,6 +109,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       FixedFlow_impl flow = new FixedFlow_impl();
       flow.setFixedFlow(new String[] { "Test" });
       mAggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       mAggDesc.getAnalysisEngineMetaData().setCapabilities(caps);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -126,7 +133,9 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       Assert.assertNotNull(ex);
 
       // initialize a new TAE with parameters
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Map<String, Object> map = new HashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       map.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, 5);
       map.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, 60000);
       MultiprocessingAnalysisEngine_impl mtae2 = new MultiprocessingAnalysisEngine_impl();
@@ -218,13 +227,17 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
        *   
        */
       MultiprocessingAnalysisEngine_impl ae = new MultiprocessingAnalysisEngine_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Map<String, Object> params = new HashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       params.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, 8);
       ae.initialize(mAggDesc, params);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-3799
       final int NUM_THREADS = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
       ProcessThread[] threads = new ProcessThread[NUM_THREADS];
       Random random = new Random();      
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
 
       for (int i = 0; i < NUM_THREADS; i++) {
         threads[i] = new ProcessThread(ae);
@@ -264,6 +277,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       //we can't test from the threads themselves since the state of
       //these fields is nondeterministic during the multithreaded processing.
       assertEquals("testing...", TestAnnotator.getLastDocument());
+//IC see: https://issues.apache.org/jira/browse/UIMA-828
       ResultSpecification lastResultSpec = TestAnnotator.getLastResultSpec();
       ResultSpecification resultSpec = new ResultSpecification_impl(lastResultSpec.getTypeSystem());
       resultSpec.addResultType("NamedEntity", true);
@@ -296,12 +310,14 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
   
   // rename to run this in a loop
   public void tstLoopProcessManyAgg() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleTestAggregate.xml");
     ResourceSpecifier specifier = 
         UIMAFramework.getXMLParser().parseResourceSpecifier(in);
     Misc.timeLoops("ProcessManyAgg", 1000, () -> processMany(specifier));   
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-3799
   final int NUM_THREADS = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
   final int NUM_INSTANCES = (int)(NUM_THREADS * .7);
          
@@ -310,6 +326,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
 
       // multiple threads!
       MultiprocessingAnalysisEngine_impl ae = new MultiprocessingAnalysisEngine_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Map<String, Object> params = new HashMap<>();
       params.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, NUM_INSTANCES);
 
@@ -321,6 +338,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
         threads[i].start();
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
       MultiThreadUtils.kickOffThreads(threads);
         
         // wait for all threads to finish and check if they got exceptions
@@ -346,6 +364,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       ResultSpecification resultSpec = new ResultSpecification_impl(lastResultSpec.getTypeSystem());
       resultSpec.addResultType("NamedEntity", true);
       assertEquals(resultSpec, lastResultSpec);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
       MultiThreadUtils.terminateThreads(threads);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -355,9 +375,11 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
   public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Reconfigure Test 1");
       ConfigurationParameter p1 = new ConfigurationParameter_impl();
@@ -384,7 +406,9 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       assertEquals("Test2", TestAnnotator.stringParamValue);
 
       // test aggregate TAE
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription aggDesc = new AnalysisEngineDescription_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       aggDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggDesc.setPrimitive(false);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
@@ -396,8 +420,10 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       p2.setName("StringParam");
       p2.setDescription("parameter with String data type");
       p2.setType(ConfigurationParameter.TYPE_STRING);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
       p2.setOverrides(new String[] {"Test/StringParam"});
       aggDesc.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new ConfigurationParameter[] { p2 });
       aggDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test3") });
@@ -441,6 +467,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     // We use thse to make sure the information propogates correctly to the annotator.
 
     // process(CAS)
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     CAS tcas = tae.newCAS();
     tcas.setDocumentText("new test");
     tae.process(tcas);
@@ -450,6 +477,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     // process(CAS,ResultSpecification)
     ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
     resultSpec.addResultType("NamedEntity", true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
 
     tcas.setDocumentText("testing...");
     tae.process(tcas, resultSpec);
@@ -458,17 +486,20 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     tcas.reset();
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4383
   class ProcessThread extends ThreadM {
     
     Throwable mFailure = null;
     
     AnalysisEngine mAE;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     ProcessThread(AnalysisEngine aAE) {
       mAE = aAE;
     }
 
     public void run() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3757
       Random r = new Random();
       while (true) {
 
@@ -542,6 +573,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
 
         try {
           
+//IC see: https://issues.apache.org/jira/browse/UIMA-3757
           Random r = new Random();
   
           // Test each form of the process method. When TestAnnotator executes, it
@@ -554,6 +586,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
           // process(CAS)
           for (int i = 0; i < 5; i++) {
             CAS tcas = mAE.newCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
             mLastTypeSystem = tcas.getTypeSystem();
             tcas.setDocumentText("new test");
             mAE.process(tcas);
@@ -561,6 +594,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
             tcas.reset();
     
             // process(CAS,ResultSpecification)
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
             ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
             resultSpec.addResultType("NamedEntity", true);
     

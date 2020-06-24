@@ -158,6 +158,7 @@ public class CPEFactory {
    * @throws ResourceInitializationException the resource initialization exception
    */
   public CPEFactory(CpeDescription aDescriptor, ResourceManager aResourceManager)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     if (aDescriptor == null) {
       throw new UIMARuntimeException(new InvalidObjectException(CpmLocalizedMessage
@@ -166,6 +167,7 @@ public class CPEFactory {
                               .currentThread().getName() })));
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-78
     if (aResourceManager == null) {
       aResourceManager = UIMAFramework.newDefaultResourceManager();
     }
@@ -175,6 +177,8 @@ public class CPEFactory {
     }
 
     uimaContext = UIMAFramework.newUimaContext(UIMAFramework.getLogger(), aResourceManager,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMAFramework.newConfigurationManager());
     // if CpeDescription contains a ResourceManagerConfiguration, parse it and use it
     // to configure the ResourceManager
@@ -184,6 +188,7 @@ public class CPEFactory {
       try {
         if (resMgrCfgDesc.get().length() > 0) {
           String descriptorPath = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   CPM_HOME, resMgrCfgDesc.get());
           resMgrCfg = UIMAFramework.getXMLParser().parseResourceManagerConfiguration(
                   new XMLInputSource(descriptorPath));
@@ -210,6 +215,7 @@ public class CPEFactory {
 
     if (aDescriptor == null || aDescriptor.trim().length() == 0) {
       throw new UIMARuntimeException(new FileNotFoundException(CpmLocalizedMessage
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_EXP_no_cpe_descriptor__WARNING", new Object[] { Thread
                               .currentThread().getName() })));
@@ -237,6 +243,7 @@ public class CPEFactory {
 
     if (aDescriptorStream == null) {
       throw new UIMARuntimeException(new IOException(CpmLocalizedMessage.getLocalizedMessage(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_EXP_invalid_cpe_descriptor_stream__WARNING", new Object[] { Thread
                       .currentThread().getName() })));
@@ -279,6 +286,7 @@ public class CPEFactory {
   private void checkForErrors() throws ResourceConfigurationException {
     if (cpeDescriptor == null) {
       throw new ResourceConfigurationException(new Exception(CpmLocalizedMessage
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_EXP_no_cpe_descriptor__WARNING", new Object[] { Thread
                               .currentThread().getName() })));
@@ -300,6 +308,7 @@ public class CPEFactory {
       CpeCollectionReader reader = (getCpeDescriptor().getAllCollectionCollectionReaders())[0];
       if (reader == null) {
         throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { "<collectionReader>", "<cpeDescriptor>" }, new Exception(
                         CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                                 "UIMA_CPM_EXP_missing_required_element__WARNING", new Object[] {
@@ -307,6 +316,7 @@ public class CPEFactory {
       }
 
       CpeCollectionReaderIterator cit = reader.getCollectionIterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
       if (cit == null || cit.getDescriptor() == null || 
               (cit.getDescriptor().getInclude() == null && cit.getDescriptor().getImport() == null)) {
         throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
@@ -324,6 +334,7 @@ public class CPEFactory {
                                     "<collectionIterator>" })));
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
       URL descriptorUrl = cit.getDescriptor().findAbsoluteUrl(getResourceManager());
       // create new collection reader from the descriptor
       XMLInputSource in1 = new XMLInputSource(descriptorUrl);
@@ -348,6 +359,7 @@ public class CPEFactory {
 
       // create child UimaContext for the CollectionReader
       UimaContextAdmin collectionReaderContext = uimaContext.createChild("_CollectionReader",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               sofamap);
       Map additionalParams = new HashMap();
       additionalParams.put(Resource.PARAM_UIMA_CONTEXT, collectionReaderContext);
@@ -364,6 +376,7 @@ public class CPEFactory {
                                   "UIMA_CPM_EXP_missing_required_element__WARNING", new Object[] {
                                       Thread.currentThread().getName(), "<descriptor>" })));
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
         if (casInit.getDescriptor().getInclude() == null && casInit.getDescriptor().getImport() == null) {
           throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
                   new Object[] { "<include>", "<casInitializer>" }, new Exception(
@@ -383,6 +396,7 @@ public class CPEFactory {
         }
 
         URL casInitDescUrl = casInit.getDescriptor().findAbsoluteUrl(getResourceManager());
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
 
         XMLInputSource in4 = new XMLInputSource(casInitDescUrl);
         ResourceSpecifier casIniSp = UIMAFramework.getXMLParser().parseCasInitializerDescription(
@@ -417,6 +431,7 @@ public class CPEFactory {
           ((CollectionReader) colreader).setCasInitializer((CasInitializer) initializer);
         } else {
           throw new ResourceConfigurationException(InvalidXMLException.INVALID_ELEMENT_TYPE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   new Object[] { "CasDataInitializer", initializer.getClass().getName() },
                   new Exception(CpmLocalizedMessage.getLocalizedMessage(
                           CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -435,6 +450,7 @@ public class CPEFactory {
       }
       // Provide CollectionReader with the number of documents to process
       ((ConfigurableResource_ImplBase) colreader).setConfigParameterValue("processSize",
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
           (int) numDocs2Process);
       CpeConfiguration cpeType = getCpeDescriptor().getCpeConfiguration();
       if (cpeType != null && cpeType.getStartingEntityId() != null
@@ -483,6 +499,7 @@ public class CPEFactory {
     try {
       if (getCpeDescriptor().getCpeCasProcessors() == null) {
         throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { "<casProcessors>", "<cpeDescriptor>" }, new Exception(
                         CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                                 "UIMA_CPM_EXP_bad_cpe_descriptor__WARNING", new Object[] { Thread
@@ -494,6 +511,7 @@ public class CPEFactory {
       Vector v = new Vector();
       if (casProcessorList == null || casProcessorList.length == 0) {
         throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { "<casProcessor>", "<casProcessors>" }, new Exception(
                         CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                                 "UIMA_CPM_EXP_bad_cpe_descriptor__WARNING", new Object[] { Thread
@@ -505,6 +523,7 @@ public class CPEFactory {
         CpeCasProcessor processorType = casProcessorList[i];
         if (processorType == null) {
           throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   new Object[] { "<casProcessor>", "<casProcessors>" }, new Exception(
                           CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                                   "UIMA_CPM_EXP_bad_cpe_descriptor__WARNING", new Object[] { Thread
@@ -545,6 +564,7 @@ public class CPEFactory {
           casProcessor = (CasProcessor) cpMap.get(processorType.getName());
           // Check operational parameters to determine if multiple instances of the CP are allowed
           if (!casProcessor.getProcessingResourceMetaData().getOperationalProperties()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .isMultipleDeploymentAllowed()) {
             continue; // one instance already created. Multiple instances of this CP not allowed
           }
@@ -562,6 +582,7 @@ public class CPEFactory {
           deployModel = Constants.DEPLOYMENT_REMOTE;
         } else {
           throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   new Object[] { "deployment", "<casProcessor>" }, new Exception(
                           CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                                   "UIMA_CPM_Exception_invalid_deployment__WARNING", new Object[] {
@@ -591,6 +612,7 @@ public class CPEFactory {
           // CPE descriptor
           if (firstTime && Constants.DEPLOYMENT_INTEGRATED.equalsIgnoreCase(deployModel)) {
             throw new ResourceConfigurationException(new CPMException(CpmLocalizedMessage
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                             "UIMA_CPM_EXP_duplicate_name__WARNING", new Object[] {
                                 Thread.currentThread().getName(), processorType.getName() })));
@@ -625,6 +647,7 @@ public class CPEFactory {
    * @throws ResourceConfigurationException -
    */
   public boolean isDefinitionInstanceOf(Class aResourceClass, ResourceSpecifier resourceSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aDescriptor) throws ResourceConfigurationException {
     boolean validDefinition = false;
     String implementationClass = null;
@@ -642,12 +665,14 @@ public class CPEFactory {
         return false;
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       if (frameworkName.startsWith(org.apache.uima.Constants.CPP_FRAMEWORK_NAME)) {
         validDefinition = true;
       } else {
         // String className = ((CasConsumerDescription) resourceSpecifier).getImplementationName();
         // load class using UIMA Extension ClassLoader if there is one
         Class currentClass = Class_TCCL.forName(implementationClass, getResourceManager());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
 
         // check to see if this is a subclass of aResourceClass
         if (aResourceClass.isAssignableFrom(currentClass)) {
@@ -656,6 +681,7 @@ public class CPEFactory {
       }
     } catch (Exception e) {
       throw new ResourceConfigurationException(ResourceInitializationException.CLASS_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { implementationClass, aDescriptor }, e);
     }
     return validDefinition;
@@ -675,6 +701,7 @@ public class CPEFactory {
    * @throws ResourceInitializationException -
    */
   public CasProcessor produceCasDataConsumer(Class aResourceClass, ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Map aAdditionalParams) throws ResourceInitializationException {
     String className = null;
     try {
@@ -704,6 +731,7 @@ public class CPEFactory {
     // if an exception occurs, log it but do not throw it... yet
     catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { className, aSpecifier.getSourceUrlString() }, e);
     } catch (IllegalAccessException e) {
       throw new ResourceInitializationException(
@@ -730,11 +758,13 @@ public class CPEFactory {
    * @throws ResourceInitializationException -
    */
   private Object produceInitializer(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     String className = null;
     try {
       className = ((CasInitializerDescription) aSpecifier).getImplementationName();
       // load class using UIMA Extension ClassLoader if there is one
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
       Class<?> currentClass = Class_TCCL.forName(className, getResourceManager());
       Object initializer = currentClass.newInstance();
       // check to see if this is a subclass of aResourceClass
@@ -746,6 +776,7 @@ public class CPEFactory {
         return initializer;
       } else {
         throw new InstantiationException("Unexpected CasInitializer-"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + initializer.getClass().getName());
       }
     }
@@ -773,7 +804,9 @@ public class CPEFactory {
    * @throws ResourceConfigurationException -
    */
   public URL getDescriptorURL(CpeCasProcessor aCasProcessorCfg)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     if (aCasProcessorCfg.getCpeComponentDescriptor() == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "descriptor", "casProcessor" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
@@ -807,6 +840,7 @@ public class CPEFactory {
    * @throws ResourceConfigurationException -
    */
   private CasProcessor produceLocalCasProcessor(CpeCasProcessor aCasProcessorCfg)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     if (aCasProcessorCfg == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
@@ -831,6 +865,7 @@ public class CPEFactory {
    */
   private NameValuePair findMatchingNameValuePair(ConfigurationParameterSettings aCps,
           String aParamName) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     NameValuePair[] nvp = aCps.getParameterSettings();
 
@@ -909,6 +944,8 @@ public class CPEFactory {
    */
   private void replaceArray(String aType, boolean aMandatoryParam,
           ConfigurationParameterSettings aCps,
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
           org.apache.uima.collection.metadata.NameValuePair aCPE_nvp,
           String aComponentName) throws Exception {
     boolean newParamSetting = false;
@@ -953,6 +990,7 @@ public class CPEFactory {
    *           error during processing
    */
   private boolean overrideParameterIfExists(ResourceSpecifier aResourceSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
           org.apache.uima.collection.metadata.NameValuePair aCPE_nvp,
           String aComponentName) throws Exception {
     // Retrieve component's parameter settings from the in-memory descriptor
@@ -966,6 +1004,7 @@ public class CPEFactory {
     if (cparam != null) {
       // Retrieve component's parameter settings from the in-memory descriptor
       ConfigurationParameterSettings cps = ((ResourceCreationSpecifier) aResourceSpecifier)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getMetaData().getConfigurationParameterSettings();
       // Determie if it is a multi-value parameter (array)
       boolean isMultiValue = cparam.isMultiValued();
@@ -974,10 +1013,12 @@ public class CPEFactory {
         boolean mandatory = cparam.isMandatory();
         if (isMultiValue) {
           // Override array with values from the CPE descriptor
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
           replaceArray(cparam.getType(), mandatory, cps, aCPE_nvp, aComponentName);
         } else {
           // Override primitive parameter with value from the CPE descriptor
           replacePrimitive(cparam.getType(), mandatory, cps, aCPE_nvp,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   aComponentName);
         }
         return true; // Found a match and did the override
@@ -999,6 +1040,7 @@ public class CPEFactory {
    *           failure during processing
    */
   private void overrideParameterSettings(ResourceSpecifier aResourceSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
           CasProcessorConfigurationParameterSettings aCpe_cps,
           String aComponentName) throws Exception {
 
@@ -1010,6 +1052,7 @@ public class CPEFactory {
       for (int i = 0; i < nvp.length; i++) {
         // Next parameter to overridde
         if (nvp[i] != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
           overrideParameterIfExists(aResourceSpecifier, nvp[i], aComponentName);
         }
       }
@@ -1029,6 +1072,7 @@ public class CPEFactory {
     ResourceSpecifier resourceSpecifier = null;
     try {
       if (aCasProcessorType != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
         URL descriptorUrl = getDescriptorURL(aCasProcessorType);
         resourceSpecifier = getSpecifier(descriptorUrl);
 
@@ -1047,8 +1091,10 @@ public class CPEFactory {
 
         // Replace parameters in component descriptor with values defined in the CPE descriptor
         overrideParameterSettings(resourceSpecifier, aCasProcessorType
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
                 .getConfigurationParameterSettings(), "CasProcessor:"
                 + aCasProcessorType.getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
         // create child UimaContext and insert into mInitParams map
         UimaContextAdmin childContext = uimaContext.createChild(aCasProcessorType.getName(),
@@ -1058,6 +1104,7 @@ public class CPEFactory {
 
         // need this check to do specific CasDataConsumer processing
         if (resourceSpecifier instanceof CasConsumerDescription
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
                 && !isDefinitionInstanceOf(CasConsumer.class, resourceSpecifier, descriptorUrl.toString())) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -1095,6 +1142,7 @@ public class CPEFactory {
     // Override the name of the component with the name specified in the cpe descriptor
     // Uniqueness of names is enforced on names in the cpe descriptor not those defined
     // in the component descriptor
+//IC see: https://issues.apache.org/jira/browse/UIMA-1560
     if ( casProcessor != null && aCasProcessorType != null ) {
       casProcessor.getProcessingResourceMetaData().setName(aCasProcessorType.getName());
     }
@@ -1111,7 +1159,9 @@ public class CPEFactory {
    * @throws ResourceConfigurationException -
    */
   private CasProcessor produceRemoteCasProcessor(CpeCasProcessor aCasProcessorType)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     String protocol = DeployFactory.getProtocol(aCasProcessorType, getResourceManager());
     CasProcessor casProcessor = null;
     if (Constants.SOCKET_PROTOCOL.equalsIgnoreCase(protocol)) {
@@ -1160,6 +1210,7 @@ public class CPEFactory {
     } catch (Exception e) {
 
       throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "processingUnitThreadCount" }, new Exception(CpmLocalizedMessage
                       .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                               "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
@@ -1209,6 +1260,7 @@ public class CPEFactory {
   private boolean isUniqueName(String aName) throws CpeDescriptorException {
     int index = 0;
     if (getCpeDescriptor().getCpeCasProcessors() != null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && getCpeDescriptor().getCpeCasProcessors().getAllCpeCasProcessors() != null) {
       index = getCpeDescriptor().getCpeCasProcessors().getAllCpeCasProcessors().length;
     }
@@ -1232,6 +1284,7 @@ public class CPEFactory {
    * @throws ResourceConfigurationException -
    */
   private void verifyDeploymentParams(String aCasProcessorName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CasProcessorDeploymentParams aDepParams) throws ResourceConfigurationException {
     if (aDepParams == null) {
       throw new ResourceConfigurationException(new Exception(CpmLocalizedMessage
@@ -1247,6 +1300,7 @@ public class CPEFactory {
     try {
       CasProcessorDeploymentParam param = aDepParams.get(Constants.VNS_HOST);
       if (param == null || param.getParameterValue() == null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || param.getParameterValue().trim().length() == 0) {
         throw new ResourceConfigurationException(
                 ResourceInitializationException.CONFIG_SETTING_ABSENT,
@@ -1334,6 +1388,7 @@ public class CPEFactory {
    * @throws ResourceConfigurationException the resource configuration exception
    */
   private CpeCasProcessor addCasProcessor(String aCasProcessorName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceConfigurationException {
     CpeCasProcessor newProcessor = null;
     try {
@@ -1371,6 +1426,7 @@ public class CPEFactory {
       // Specifically, VNS host and port are required. Do validation now. If it fails, the
       // ResourceConfigurationException is thrown and we are out here.
       if (Constants.DEPLOYMENT_REMOTE.equals(processor.getDeployment())) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
         String protocol = DeployFactory.getProtocol(processor, getResourceManager());
         if (Constants.VINCI_PROTOCOL.equals(protocol)) {
           verifyDeploymentParams(aCasProcessorName, processor.getDeploymentParams());
@@ -1394,6 +1450,7 @@ public class CPEFactory {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 "getCpeDescriptor().getCasProcessors().getCasProcessor.getAttributeValue(name) "
                         + " "
@@ -1438,6 +1495,7 @@ public class CPEFactory {
       String[] casInitializer = (String[]) aList.get(1);
 
       getCpeDescriptor().getAllCollectionCollectionReaders()[0].getCollectionIterator()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getDescriptor().getInclude().set(colReader[0]);
       // Populate collection iterator descriptor path
       // Populate collection initializer descriptor path
@@ -1473,6 +1531,7 @@ public class CPEFactory {
         if (create) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_create_new_cp_from_list__FINEST",
                     new Object[] { Thread.currentThread().getName(), casProcInfo[0] });
@@ -1520,6 +1579,7 @@ public class CPEFactory {
     try {
       aProcDesc.setName(aName);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass())
                 .logrb(
                         Level.FINEST,

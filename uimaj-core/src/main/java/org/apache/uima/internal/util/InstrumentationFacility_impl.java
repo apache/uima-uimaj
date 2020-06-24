@@ -44,6 +44,7 @@ public class InstrumentationFacility_impl implements InstrumentationFacility {
    *      java.lang.String, java.lang.String)
    */
   public void startEvent(String aComponentName, String aEventType, String aDescription) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (mProcessTrace != null) {
       mProcessTrace.startEvent(aComponentName, aEventType, aDescription);
     }
@@ -64,6 +65,7 @@ public class InstrumentationFacility_impl implements InstrumentationFacility {
    *      java.lang.String, int, java.lang.String)
    */
   public void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aResultMsg) {
     if (mProcessTrace != null) {
       mProcessTrace.addEvent(aResourceName, aType, aDescription, aDuration, aResultMsg);

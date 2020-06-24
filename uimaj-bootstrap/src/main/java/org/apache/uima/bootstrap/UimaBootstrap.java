@@ -67,13 +67,16 @@ public class UimaBootstrap {
       
       System.exit(1);
     }    
+//IC see: https://issues.apache.org/jira/browse/UIMA-1545
     suppressClassPathDisplay = System.getProperty("UimaBootstrapSuppressClassPathDisplay") != null;
     URL[] urls = getUrls();
 //    URLClassLoader cl = new ParentFirstWithResourceClassLoader(urls);
 //    Thread.currentThread().setContextClassLoader(cl);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5754
     ClassLoader myClassLoader = addUrlsToSystemLoader(urls);
     
     Class<?> classToLaunch = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1631
     try {
       classToLaunch = myClassLoader.loadClass(args[0]);
     } catch (ClassNotFoundException e) {
@@ -93,9 +96,11 @@ public class UimaBootstrap {
       System.err.println("Missing the -Dorg.apache.uima.jarpath=XXXX property");
       System.exit(1);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1545
     if (!suppressClassPathDisplay) {
       System.out.println("UimaBootstrap ClassPath:");
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<URL> urls = new ArrayList<>();
     String[] jpaths = jps.split(File.pathSeparator);
     for (String p : jpaths) {
@@ -114,15 +119,18 @@ public class UimaBootstrap {
   private static void addUrlsFromPath(String p, List<URL> urls) throws MalformedURLException, IOException, URISyntaxException {
     // handle case where the path part is written x/y/z/*  by dropping the /* at the end
     // This is the form used by Java itself for classpath
+//IC see: https://issues.apache.org/jira/browse/UIMA-5382
     if (p.endsWith("*") && p.length() > 2 && p.charAt(p.length() - 2) == File.separatorChar) {
       p = p.substring(0, p.length() - 2);
     }
     File pf = new File(p);
     if (pf.isDirectory()) {
       File[] jars = pf.listFiles(jarFilter);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1544
       if (jars.length == 0) {
         // this is the case where the user wants to include
         // a directory containing non-jar'd .class files
+//IC see: https://issues.apache.org/jira/browse/UIMA-1545
         add(urls, pf); 
       } else {
       for (File f : jars) {
@@ -143,6 +151,7 @@ public class UimaBootstrap {
   }
 
   private static ClassLoader addUrlsToSystemLoader(URL[] urls) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5754
     return new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
     
 //    URLClassLoader systemClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();

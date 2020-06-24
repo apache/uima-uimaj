@@ -53,8 +53,10 @@ public class JCasHashMapCompareTest extends TestCase {
   public void testComp() throws Exception {
     Thread.sleep(0000);  // set non-zero to delay so you can get yourkit tooling hooked up, if using yourkit
     int numberOfThreads =  Utilities.numberOfCores; 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4501
     numberOfThreads = Math.min(8, Utilities.nextHigherPowerOf2(numberOfThreads));  // avoid too big slowdown on giant machines.
     System.out.format("test JCasHashMapComp with %d threads%n", numberOfThreads);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
     for (int i = 0; i < 3; i++) {
 //      for (int j = 0; j < 10000; j++) {
 //      for (int j = 0; j < 10000; j++) {
@@ -71,6 +73,7 @@ public class JCasHashMapCompareTest extends TestCase {
     
 //    stats("custom", runCustom(numberOfThreads));  // not accurate, use yourkit retained size instead
 //    stats("concur", runConCur(numberOfThreads));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Set<Integer> ints = new HashSet<>();
     for (Entry<Integer, TOP> e : concurrentMap.entrySet()) {
       assertFalse(ints.contains(Integer.valueOf(e.getKey())));
@@ -85,10 +88,12 @@ public class JCasHashMapCompareTest extends TestCase {
   }
   
   private int runConCur(int numberOfThreads) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     final ConcurrentMap<Integer, TOP> m =
         new ConcurrentHashMap<>(200, 0.75F, numberOfThreads);
     concurrentMap = m;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-3807
     final int numberOfWaiters = numberOfThreads*2;
     final Object[] waiters = new Object[numberOfWaiters];
     for (int i = 0; i < numberOfWaiters; i++) {
@@ -100,7 +105,9 @@ public class JCasHashMapCompareTest extends TestCase {
 //        int founds = 0, puts = 0;
         for (int i = 0; i < sizeOfTest*threadNumber; i++) {
           final int key = hash(i, threadNumber) / 2;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3807
           final Object waiter = waiters[key & (numberOfWaiters - 1)];
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
           TOP newFs = TOP._createSearchKey(key);
           TOP fs = m.putIfAbsent(key, newFs);
 //          while (fs != null && fs._isJCasHashMapReserve()) {
@@ -136,6 +143,7 @@ public class JCasHashMapCompareTest extends TestCase {
       }  
     };  
     long start = System.currentTimeMillis();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3797
     MultiThreadUtils.tstMultiThread("JCasHashMapTestCompConcur",  numberOfThreads, 10, run2isb,
         new Runnable() {
           public void run() {
@@ -153,6 +161,7 @@ public class JCasHashMapCompareTest extends TestCase {
       public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
 //        int founds = 0, puts = 0;
         for (int i = 0; i < sizeOfTest*threadNumber; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
           final int key = hash(i, threadNumber) / 2;
           m.putIfAbsent(key, TOP::_createSearchKey);
 //          if (key == 456551)
@@ -170,11 +179,13 @@ public class JCasHashMapCompareTest extends TestCase {
       }
     };  
     long start = System.currentTimeMillis();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3797
     MultiThreadUtils.tstMultiThread("JCasHashMapTestComp0",  numberOfThreads,  10, run2isb,
         new Runnable() {
           public void run() {
             m.clear();
         }});
+//IC see: https://issues.apache.org/jira/browse/UIMA-5249
     long el = System.currentTimeMillis() - start;
     if (custNbr == 100) {
       custNbr = 1;

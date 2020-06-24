@@ -82,6 +82,7 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
   public void initialize() throws ResourceInitializationException {
     mDocNum = 0;
     mOutputDir = new File((String) getConfigParameterValue(PARAM_OUTPUTDIR));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (!mOutputDir.exists()) {
       mOutputDir.mkdirs();
     }
@@ -147,6 +148,7 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
    */
   private void writeXCas(CAS aCas, File name) throws IOException, SAXException {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (OutputStream out = new FileOutputStream(name)) {
       XCASSerializer ser = new XCASSerializer(aCas.getTypeSystem());
       XMLSerializer xmlSer = new XMLSerializer(out, false);

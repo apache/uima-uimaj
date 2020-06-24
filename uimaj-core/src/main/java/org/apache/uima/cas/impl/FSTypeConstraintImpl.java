@@ -43,6 +43,8 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 	private transient TypeSystem ts;
 
 	public boolean match(FeatureStructure fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     final FeatureStructureImplC fsi = (FeatureStructureImplC) fs;
 		compile(fsi.getCAS().getTypeSystem());
 		final int typeCode = fsi._getTypeCode();
@@ -56,6 +58,7 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 	}
 
 	private final void compile(TypeSystem ts1) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1445
 		if (ts == ts1) {
 			return;
 		}
@@ -63,8 +66,11 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 		TypeSystemImpl tsi = (TypeSystemImpl) ts1;
 		int typeCode;
 		for (String typeName : nameSet) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-408
 			typeCode = tsi.ll_getCodeForTypeName(typeName);
 			if (typeCode < tsi.getSmallestType()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 				throw new CASRuntimeException(CASRuntimeException.UNKNOWN_CONSTRAINT_TYPE, typeName);
 			}
 			typeSet.add(typeCode);
@@ -92,6 +98,7 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 				buf.append("| ");
 			}
 			buf.append(name);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
 			buf.append(' ');
 		}
 		buf.append(')');

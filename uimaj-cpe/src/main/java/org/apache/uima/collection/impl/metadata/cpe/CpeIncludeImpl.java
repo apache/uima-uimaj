@@ -54,6 +54,7 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
    */
   @Override
   public void set(String aPath) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     href = aPath;
   }
 
@@ -79,6 +80,7 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     setHref(aElement.getAttribute("href"));
 
@@ -108,6 +110,7 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("include",
           new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the href.

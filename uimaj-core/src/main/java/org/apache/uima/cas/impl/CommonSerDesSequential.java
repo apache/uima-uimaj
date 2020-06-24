@@ -82,6 +82,8 @@ public class CommonSerDesSequential {
    *   
    * Before accessing this, any pending items must be merged (sorting done lazily)  
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
   final private List<TOP> sortedFSs = new ArrayList<>();  // holds the FSs sorted by id
   
   final private List<TOP> pending = new ArrayList<>();    // batches up FSs that need to be inserted into sortedFSs
@@ -101,6 +103,7 @@ public class CommonSerDesSequential {
   }
   
   public boolean isEmpty() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return sortedFSs.isEmpty() && pending.isEmpty();
   }
 
@@ -123,6 +126,7 @@ public class CommonSerDesSequential {
    * @param fs
    */
   void addFSunordered(TOP fs, int addr) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     addFS1(fs, addr);
     pending.add(fs);
   }  
@@ -144,6 +148,7 @@ public class CommonSerDesSequential {
    * @param fromAddr often 1 but sometimes the mark next fsid
    * @return all (not filtered) FSs sorted
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
   List<TOP> setup(MarkerImpl mark, int fromAddr) {
     if (mark == null) {
       clear();
@@ -152,12 +157,15 @@ public class CommonSerDesSequential {
     int nextAddr = fromAddr;
     if (TRACE_SETUP) System.out.println("Cmn serDes sequential setup called by: " + Misc.getCaller());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5471
+//IC see: https://issues.apache.org/jira/browse/UIMA-5470
     List<TOP> all =  new AllFSs(baseCas).getAllFSsAllViews_sofas_reachable().getAllFSsSorted();
     List<TOP> filtered = CASImpl.filterAboveMark(all, mark);
     for (TOP fs : filtered) {
       addFS1(fs, nextAddr);   // doesn't update sortedFSs, that will be done below in batch
       if (TRACE_SETUP) {
           System.out.format("Cmn serDes sequential setup: add FS id: %,4d addr: %,5d  type: %s%n",
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
               fs._id,
               nextAddr,
               fs._getTypeImpl().getShortName());
@@ -188,6 +196,8 @@ public class CommonSerDesSequential {
   /**
    * @return sorted FSs above mark if mark set, otherwise all, sorted
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
   List<TOP> getSortedFSs() {
     if (pending.size() != 0) {
       merge();
@@ -202,6 +212,7 @@ public class CommonSerDesSequential {
   }
   
   private void merge() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     pending.sort(FeatureStructureImplC::compare);
     sortedFSs.addAll(pending);
     pending.clear();

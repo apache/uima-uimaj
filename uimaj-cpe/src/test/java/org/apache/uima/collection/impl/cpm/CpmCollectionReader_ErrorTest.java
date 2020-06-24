@@ -69,9 +69,11 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
 
    private static final String FS = System.getProperties().getProperty(
          "file.separator");
+//IC see: https://issues.apache.org/jira/browse/UIMA-665
 
    private void cpeProcessNoMsg(CollectionProcessingEngine cpe,
          TestStatusCallbackListener listener) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
       UIMAFramework.getLogger().setLevel(Level.OFF);
       try {
          cpe.process();
@@ -177,6 +179,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
       // setup CPM
       CollectionProcessingEngine cpe = setupCpm(documentCount, "IOException",
             exceptionSequence, "getNext");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // Create and register a Status Callback Listener
       TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(
@@ -242,6 +246,9 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
       ManageOutputDevice.setAllSystemOutputToDefault();
       // check the results, if everything worked as expected
       assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
             true, listener.isFinished());
       assertEquals(
@@ -275,6 +282,9 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
       cpe.addStatusCallbackListener(listener);
 
       cpeProcessNoMsg(cpe, listener);
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
+//IC see: https://issues.apache.org/jira/browse/UIMA-585
 
       ManageOutputDevice.setAllSystemOutputToDefault();
       // check the results, if everything worked as expected
@@ -432,6 +442,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
          // check the results, if everything worked as expected
          assertEquals("Abort was called.", false, listener.isAborted());
          assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                "The cpm called the listener, that the cpm has finished - which normally could not be.",
                false, listener.isFinished());
          assertEquals("There are not as much exceptions as expected! ", 1,
@@ -483,6 +494,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
                true, outOfMemoryError);
          assertEquals("Abort was called.", false, listener.isAborted());
          assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                "The cpm called the listener, that the cpm has finished - which normally could not be.",
                false, listener.isFinished());
          assertEquals("There are not as much exceptions as expected! ", 1,
@@ -507,6 +520,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
       // setup CPM
       CollectionProcessingEngine cpe = setupCpm(documentCount, "IOException",
             exceptionSequence, "getProgress");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // Create and register a Status Callback Listener
       TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(
@@ -524,6 +538,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
       // check the results, if everything worked as expected
       assertEquals("Abort was called.", false, listener.isAborted());
       assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
             true, listener.isFinished());
       assertEquals("There are not as much exceptions as expected! ",
@@ -606,6 +621,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
       // check the results, if everything worked as expected
       assertEquals("Abort was called.", false, listener.isAborted());
       assertEquals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
             true, listener.isFinished());
       assertEquals("There are not as much exceptions as expected! ",
@@ -725,6 +741,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
 
          // managing the default behaviour of this client
          CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                .produceCasProcessor("ErrorTestAnnotator");
          integratedProcessor.setDescriptor(taeDesc);
 
@@ -767,6 +784,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
       public void aborted() {
          super.aborted();
          // System.out.println("abort was called.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
          this.cpe.stop();
       }
 
@@ -786,6 +804,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
                // if there is an error ... call the cpm to kill and check for a
                // null CAS
                if (iter.next() instanceof java.lang.Error) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
                   this.cpe.kill();
                   this.errorThrown = true;
                   assertEquals("The cas is not null, as expected.", null, aCas);
@@ -795,6 +814,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
       }
 
       public boolean hasError() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
          return this.errorThrown;
       }
    }

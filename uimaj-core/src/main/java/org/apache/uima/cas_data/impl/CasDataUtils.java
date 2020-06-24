@@ -48,6 +48,7 @@ public class CasDataUtils {
   public static boolean hasFeature(CasData aCAS, String featureName) {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1471
         FeatureStructure fs = it.next();
         FeatureValue fValue = fs.getFeatureValue(featureName);
         if (fValue != null) {
@@ -60,6 +61,7 @@ public class CasDataUtils {
   public static boolean hasFeatureStructure(CasData aCAS, String aName) {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1471
         FeatureStructure fs = it.next();
         if (fs.getType().equals(aName)) {
           return true;
@@ -71,9 +73,11 @@ public class CasDataUtils {
   public static void dumpFeatures(CasData aCAS) {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1471
         FeatureStructure fs = it.next();
         UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "dumpFeatures",
                 LOG_RESOURCE_BUNDLE, "UIMA_cas_feature_structure_type__FINE", fs.getType());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
         String[] names = fs.getFeatureNames();
         for (int i = 0; names != null && i < names.length; i++) {
@@ -92,9 +96,11 @@ public class CasDataUtils {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     String featureValue = null;
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1471
         FeatureStructure fs = it.next();
         if (System.getProperty("DEBUG") != null)
           System.out.println("FeatureName::::::::::::::::::::::::::::::::::::::::::>"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   + fs.getType() + " Searching For::" + featureName);
         if (featureName.equals(fs.getType())) {
           String[] names = fs.getFeatureNames();
@@ -131,8 +137,10 @@ public class CasDataUtils {
           String featureName) {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     String featureValue = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Vector<String> v = new Vector<>();
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1471
         FeatureStructure fs = it.next();
         if (featureStructureName.equals(fs.getType())) {
           String[] names = fs.getFeatureNames();
@@ -153,10 +161,17 @@ public class CasDataUtils {
   }
 
   public static String getFeatureValueByType(CasData aCAS, String aFeatureStructure,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String featureName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     String featureValue = null;
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1471
       FeatureStructure fs = it.next();
       if (fs.getType().equals(aFeatureStructure)) {
         FeatureValue fValue = fs.getFeatureValue(featureName);
@@ -172,8 +187,10 @@ public class CasDataUtils {
   public static NameValuePair[] getCasDataFeatures(CasData aCasData, String aFeatureStructureName) {
     NameValuePair[] valuePairSet = null;
     Iterator<FeatureStructure> it = aCasData.getFeatureStructures();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
 
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1471
       FeatureStructure fs = it.next();
       if (fs.getType().equals(aFeatureStructureName)) {
         String[] featureNames = fs.getFeatureNames();

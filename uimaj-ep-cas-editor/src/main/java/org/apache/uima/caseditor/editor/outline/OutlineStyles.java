@@ -26,6 +26,7 @@ package org.apache.uima.caseditor.editor.outline;
 public enum OutlineStyles {
 
 	/** The mode. */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1360
 	MODE,
 	
 	/** The type. */

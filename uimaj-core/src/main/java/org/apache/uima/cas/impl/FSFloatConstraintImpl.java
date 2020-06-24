@@ -48,8 +48,10 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
 
   private Vector<Float> values;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   FSFloatConstraintImpl() {
     this.codes = new IntVector();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.values = new Vector<>();
   }
 
@@ -59,6 +61,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
     for (int i = 0; i < max; i++) {
       switch (this.codes.get(i)) {
         case LT: {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
           if (f >= this.values.get(i)) {
             return false;
           }
@@ -142,6 +145,10 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
   @Override
   public void gt(float f) {
     this.codes.add(GT);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     this.values.add(f);
   }
 
@@ -154,6 +161,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
   @Override
   public void geq(float f) {
     this.codes.add(GEQ);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     this.values.add(f);
   }
 
@@ -166,6 +174,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
     buf.append("( ");
     for (int i = 0; i < this.codes.size(); i++) {
       buf.append(toString(this.codes.get(i)));
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
       buf.append(' ');
       buf.append(this.values.get(i).toString());
       buf.append(' ');

@@ -40,6 +40,7 @@ public class VarValList {
    * Constructor.
    */
   public VarValList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.initData();
   }

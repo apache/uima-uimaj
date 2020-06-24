@@ -83,6 +83,7 @@ abstract class TypeMenu extends ContributionItem {
         if (isParentIncluded) {
           MenuItem  subMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
           subMenuItem.setText(parentType.getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2120
 
           newSubMenu = new Menu(subMenuItem);
           subMenuItem.setMenu(newSubMenu);

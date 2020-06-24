@@ -41,6 +41,7 @@ public class XMLSerializerTest extends TestCase {
     ch.startElement("","foo","foo", new AttributesImpl());
     ch.endElement("", "foo", "foo");
     ch.endDocument();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
     String xmlStr = new String(baos.toByteArray(), StandardCharsets.UTF_8);
     assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><foo/>", xmlStr);    
   }
@@ -54,12 +55,14 @@ public class XMLSerializerTest extends TestCase {
     ch.startElement("","foo","foo", new AttributesImpl());
     ch.endElement("", "foo", "foo");
     ch.endDocument();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
     String xmlStr = new String(baos.toByteArray(), StandardCharsets.UTF_8);
 //    if (xmlStr.contains("1.0")) {
     // useful to investigate issues when bad XML output is produced
     //   related to which Java implementation is being used
       TransformerFactory transformerFactory = XMLUtils.createTransformerFactory();
       Transformer t = transformerFactory.newTransformer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4089
       t.setOutputProperty(OutputKeys.VERSION, "1.1");
       
       System.out.println("Java version is " + 
@@ -76,6 +79,7 @@ public class XMLSerializerTest extends TestCase {
   }
   
   public void testXml10Error() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2849
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);
     ContentHandler ch = sax2xml.getContentHandler();    
@@ -88,6 +92,7 @@ public class XMLSerializerTest extends TestCase {
       ch.characters(data, 0, 4);
     } catch (SAXParseException e) {
       String msg = e.getMessage();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5338
       String expected = "Trying to serialize non-XML 1.0 character: " + "0x5 at offset 2";
       assertEquals(msg.substring(0, expected.length()), expected);
       eh = true;
@@ -128,6 +133,7 @@ public class XMLSerializerTest extends TestCase {
     } catch (SAXParseException e) {
       String msg = e.getMessage();
       System.out.println(msg);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5338
       String expected = "Trying to serialize non-XML 1.1 character: " + "0x0 at offset 2";
       assertEquals(msg.substring(0, expected.length()), expected);
       eh = true;

@@ -315,6 +315,7 @@ public class AnalysisEngineManagementImpl
   private static String makeMBeanName(String prefix, String contextName, int depth) {
     int firstSlash = contextName.indexOf('/');
     if (firstSlash == contextName.length() - 1) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-199
       return prefix + "name=" + escapeValue(contextName.substring(0, contextName.length() - 1));
     } else {
       String newPrefix = prefix + "p" + depth + "=" + escapeValue(contextName.substring(0, firstSlash)

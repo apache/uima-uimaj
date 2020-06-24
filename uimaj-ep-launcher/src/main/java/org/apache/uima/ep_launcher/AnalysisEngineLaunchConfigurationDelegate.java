@@ -66,6 +66,7 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
   }
 
   private static void ensureResourceExists(IResource resource, String resourceName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
           throws CoreException {
     if (resource == null)
       throw new CoreException(new Status(IStatus.ERROR, LauncherPlugin.ID, "The " + resourceName
@@ -81,8 +82,10 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     
     StringBuilder cmdline = new StringBuilder();
     cmdline.append(RemoteLauncher.DESCRIPTOR_PARAM + " ");
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
     String descriptorPath = configuration.getAttribute(LauncherConstants.ATTR_DESCRIPTOR_NAME, "");
     IResource descriptor = ResourcesPlugin.getWorkspace().getRoot().findMember(descriptorPath);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
     ensureResourceExists(descriptor, "Analysis Engine Descritpor");
     cmdline.append(descriptor.getLocation().toOSString() + " ");
     cmdline.append(RemoteLauncher.INPUT_RESOURCE_PARAM + " ");
@@ -102,6 +105,7 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
       cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_INPUT_ENCODING_NAME, "") 
               + " ");
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
       cmdline.append(RemoteLauncher.INPUT_LANGUAGE_PARAM + " ");
       cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_INPUT_LANGUAGE_NAME, "") + " "); 
       
@@ -110,13 +114,17 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     cmdline.append(RemoteLauncher.INPUT_RECURSIVE_PARAM + " ");
     cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME, false) + " ");
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
     String outputFolderPath = configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, "");
     // zero length string means that is is not set
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
     if (outputFolderPath.length() != 0) {
       IResource outputFolder = ResourcesPlugin.getWorkspace().getRoot().findMember(outputFolderPath);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
       ensureResourceExists(outputFolder, "Output Folder");
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
 		  cmdline.append(RemoteLauncher.OUTPUT_FOLDER_PARAM + " ");
 		  cmdline.append(outputFolder.getLocation().toOSString() + " ");
 		  
@@ -129,6 +137,7 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
 		  }
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-3134
     String pgmArgs = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "");
     if (pgmArgs != null) {
       cmdline.append(' ').append(pgmArgs);
@@ -147,10 +156,12 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     
     // The class path already contains the jars which are specified in the Classpath tab
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> extendedClasspath = new ArrayList<>();
     Collections.addAll(extendedClasspath, super.getClasspath(configuration));
     
     // Normal mode, add the launcher plugin and uima runtime jar to the classpath
+//IC see: https://issues.apache.org/jira/browse/UIMA-3133
     try {
       if (!Platform.inDevelopmentMode()) {     
         // Add this plugin jar to the classpath 
@@ -175,6 +186,7 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
         //     any other jars will be provided by the launching project's class path
         //     uimaj-core provided because the launcher itself needs uimaj-core classes
         //  Found empirically that recursion is need to find the jar in development mode
+//IC see: https://issues.apache.org/jira/browse/UIMA-3133
         Enumeration<?> jarEnum = bundle.findEntries("/", "uimaj-core*.jar", Platform.inDevelopmentMode());
         while (jarEnum != null && jarEnum.hasMoreElements()) {
           URL element = (URL) jarEnum.nextElement();
@@ -212,6 +224,7 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
       }
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2100
     String outputFolderPath = configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, "");
     // zero length string means that is is not set
     if (outputFolderPath.length() != 0) {

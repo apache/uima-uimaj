@@ -76,6 +76,7 @@ public class CommonSerDes {
     boolean form6;
     boolean typeSystemIncluded;  // for form 6, TS only
     boolean typeSystemIndexDefIncluded;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     byte seqVersionNbr = 2;  // safety, might be changed to write v2 style 
     boolean isV3;
     boolean swap;
@@ -96,6 +97,7 @@ public class CommonSerDes {
     
     
     public void write(DataOutputStream dos) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       if (isV3) {
         assert seqVersionNbr >= 2; 
       } else {
@@ -104,7 +106,9 @@ public class CommonSerDes {
       v = (!isCompressed && !isDelta) ? 1 : 0;
       if (isDelta) v |= 0x02;
       if (isCompressed) v |= 0x04;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       if (typeSystemIndexDefIncluded) v |= 0x08;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5103
       if (typeSystemIncluded) v |= 0x10;
       v |= (seqVersionNbr << 8);
       if (isV3) v |= 0x010000;
@@ -129,6 +133,7 @@ public class CommonSerDes {
 
     /* ******** Header Properties **********/
     public boolean isDelta() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       return isDelta;
     }
     public boolean isCompressed() {
@@ -168,6 +173,7 @@ public class CommonSerDes {
       bytebuf[1] = dis.readByte(); // I
       bytebuf[2] = dis.readByte(); // M
       bytebuf[3] = dis.readByte(); // A
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
       String s = new String(bytebuf, StandardCharsets.UTF_8);
       return s.equals("UIMA") || s.equals("AMIU");
     } catch (IOException e) {
@@ -200,9 +206,12 @@ public class CommonSerDes {
     
     h.isDelta = (v & 2) != 0;
     h.isCompressed = (v & 4) != 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     h.typeSystemIndexDefIncluded = (v & 8) != 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5103
     h.typeSystemIncluded = (v & 16) != 0;
     h.seqVersionNbr = (byte) ((v & 0xFF00) >> 8);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     h.isV3 = (v & 0x010000) != 0;
    
     if (h.isCompressed) {
@@ -222,6 +231,7 @@ public class CommonSerDes {
   }
   
   public static DataInputStream maybeWrapToDataInputStream(InputStream os) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     if (os instanceof DataInputStream) {
       return (DataInputStream) os;
     }

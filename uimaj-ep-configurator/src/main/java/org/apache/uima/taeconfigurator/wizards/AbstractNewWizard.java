@@ -84,6 +84,7 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
   static {COMMON_HEADER = 
     "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" 
     + "<{2} " + XMLNS_PART + ">\n";}
+//IC see: https://issues.apache.org/jira/browse/UIMA-2844
 
   /** The Constant COMMON_NDVV. */
   public final static String COMMON_NDVV;
@@ -118,6 +119,7 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
     + "  <externalResourceDependencies></externalResourceDependencies>\n"
     + "  <resourceManagerConfiguration></resourceManagerConfiguration>\n"
     + "</{2}>"
+//IC see: https://issues.apache.org/jira/browse/UIMA-2844
     ;}
   
   /** The common partial descriptor. */
@@ -143,6 +145,7 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
    * @param windowTitle the window title
    */
   public AbstractNewWizard(String windowTitle) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     setDialogSettings(TAEConfiguratorPlugin.getDefault().getDialogSettings());
     setNeedsProgressMonitor(true);
@@ -206,6 +209,7 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
    * @throws CoreException the core exception
    */
   void doFinish(String containerName, String fileName, IProgressMonitor monitor)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CoreException {
     // create a sample file
     monitor.beginTask("Creating " + fileName, 2);

@@ -37,6 +37,7 @@ public final class Timer {
    * {@link #start() start()} explicitly.
    */
   public Timer() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.time = 0;
     this.start = 0;

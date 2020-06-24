@@ -37,6 +37,7 @@ public class EntityProcessStatusImpl implements EntityProcessStatus {
   private static final long serialVersionUID = -5101356145458558249L;
 
   ProcessTrace prT;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   HashMap eventMap = new HashMap();
 

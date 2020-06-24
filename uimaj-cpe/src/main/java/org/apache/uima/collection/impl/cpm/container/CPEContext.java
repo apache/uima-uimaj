@@ -33,6 +33,7 @@ public class CPEContext {
    * @param aDescriptorPath -
    */
   public CPEContext(String aDescriptorPath) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3256
     cpeDescriptorPath = aDescriptorPath;
   }
 

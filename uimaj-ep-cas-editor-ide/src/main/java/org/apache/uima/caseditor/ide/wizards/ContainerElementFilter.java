@@ -30,6 +30,7 @@ public class ContainerElementFilter extends ViewerFilter {
   @Override
   public boolean select(Viewer viewer, Object parentElement, Object element) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1894
     if (element instanceof IAdaptable) {
       IResource resourceElement = (IResource) ((IAdaptable) element).getAdapter(IResource.class);
       

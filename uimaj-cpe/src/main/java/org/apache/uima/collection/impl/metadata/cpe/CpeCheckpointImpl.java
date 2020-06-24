@@ -61,6 +61,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    */
   @Override
   public void setFilePath(String aCheckpointFilePath) throws CpeDescriptorException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     file = aCheckpointFilePath;
   }
 
@@ -162,6 +163,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     setFile(aElement.getAttribute("file"));
     String batch = aElement.getAttribute("batch");
@@ -202,6 +204,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("checkpoint",
           new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    *  METHODS CALLED BY THE PARSER *.

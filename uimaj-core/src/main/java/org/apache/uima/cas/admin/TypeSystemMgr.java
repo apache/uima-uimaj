@@ -49,6 +49,7 @@ public interface TypeSystemMgr extends TypeSystem {
    *              <code>mother</code> is inheritance final.
    */
   Type addType(String typeName, Type mother) throws CASAdminException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Inherit from String. The only way you can inherit from String is by providing a restriction to
@@ -134,6 +135,7 @@ public interface TypeSystemMgr extends TypeSystem {
    *         different (but equal) object.  Type systems are cached and recreating the exact same type system
    *         repeatedly will return the original one.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4720
   TypeSystem commit();
   
   /**

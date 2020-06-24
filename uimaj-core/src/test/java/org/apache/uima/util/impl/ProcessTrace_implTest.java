@@ -47,10 +47,12 @@ public class ProcessTrace_implTest extends TestCase {
   }
 
   public void testStartAndEndEvent() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     ProcessTrace pt = new ProcessTrace_impl();
     // should be nothing on event list
     Assert.assertTrue(pt.getEvents().isEmpty());
     // start two events
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     pt.startEvent("c1", "t1", "testing");
     pt.startEvent("c1", "t2", "testing");
     // should be nothing on event list until both are closed
@@ -75,6 +77,7 @@ public class ProcessTrace_implTest extends TestCase {
     Assert.assertEquals(2, pt.getEvents().size());
 
     // verify contents of the ProcessTrace
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     List<ProcessTraceEvent> evts = pt.getEvents();
     ProcessTraceEvent evt0 = evts.get(0);
     Assert.assertEquals("c1", evt0.getComponentName());
@@ -126,6 +129,7 @@ public class ProcessTrace_implTest extends TestCase {
   public void testGetEventsByComponentName() {
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     pt.startEvent("c1", "t1", "testing");
     pt.startEvent("c1", "t2", "testing");
     pt.endEvent("c1", "t2", "success");
@@ -139,6 +143,7 @@ public class ProcessTrace_implTest extends TestCase {
     pt.endEvent("c2", "t1", "success");
 
     // get top-level events for component c1
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     List<ProcessTraceEvent> c1evts = pt.getEventsByComponentName("c1", false);
     Assert.assertEquals(1, c1evts.size());
     ProcessTraceEvent evt = c1evts.get(0);
@@ -151,6 +156,7 @@ public class ProcessTrace_implTest extends TestCase {
     Assert.assertEquals(evt.getType(), "t2");
 
     // get top-level events for component c2
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     List<ProcessTraceEvent> c2evts = pt.getEventsByComponentName("c2", false);
     Assert.assertEquals(1, c2evts.size());
     evt = c2evts.get(0);
@@ -167,6 +173,8 @@ public class ProcessTrace_implTest extends TestCase {
    * Test for List getEventsByType(String, boolean)
    */
   public void testGetEventsByType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
     pt.startEvent("c1", "t1", "testing");
@@ -182,6 +190,7 @@ public class ProcessTrace_implTest extends TestCase {
     pt.endEvent("c2", "t1", "success");
 
     // get top-level events of type t1
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     List<ProcessTraceEvent> t1evts = pt.getEventsByType("t1", false);
     Assert.assertEquals(2, t1evts.size());
     ProcessTraceEvent evt = t1evts.get(0);

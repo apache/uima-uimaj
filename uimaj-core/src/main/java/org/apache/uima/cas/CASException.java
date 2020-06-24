@@ -84,6 +84,7 @@ public class CASException extends UIMAException {
   
 
   public CASException() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
     super();
   }
 

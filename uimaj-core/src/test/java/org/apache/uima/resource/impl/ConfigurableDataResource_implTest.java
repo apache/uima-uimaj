@@ -55,6 +55,7 @@ public class ConfigurableDataResource_implTest extends TestCase {
   }
 
   public void testInitialize() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // create a ConfigurableDataResourceSpecifier
       ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();
@@ -74,7 +75,9 @@ public class ConfigurableDataResource_implTest extends TestCase {
       cdr.initialize(cspec, Collections.EMPTY_MAP);
       assertEquals(new URI("jdbc:db2:MyDatabase"), cdr.getUri());
       assertEquals("foo", cdr.getMetaData().getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       ConfigurationParameter param0 = cdr.getMetaData().getConfigurationParameterDeclarations()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getConfigurationParameters()[0];
       assertEquals("param", param0.getName());
       assertEquals("String", param0.getType());

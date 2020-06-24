@@ -33,6 +33,7 @@ public class ExceptionPrinter {
    *          exception message
    */
   public static void printException(StackTraceElement[] stackTrace, String message) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     Throwable ex = new Throwable();
     StackTraceElement[] stackTraceElement = ex.getStackTrace();
 

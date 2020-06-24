@@ -92,12 +92,14 @@ public class TaeDescription_implTest extends TestCase {
    * @see TestCase#setUp()
    */
   protected void setUp() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       super.setUp();
 
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Fake", "A Fake Type", "Annotation");
       FeatureDescription feature1 = type1.addFeature("TestFeature", "For Testing Only",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               CAS.TYPE_NAME_STRING);
       TypeDescription enumType = typeSystem.addType("EnumType", "Test Enumerated Type",
               "uima.cas.String");
@@ -132,7 +134,9 @@ public class TaeDescription_implTest extends TestCase {
       index2.setKeys(new FsIndexKeyDescription[] { key1a });
 
       // create primitive TAE description
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       primitiveDesc = new AnalysisEngineDescription_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       primitiveDesc.setPrimitive(true);
       primitiveDesc.setAnnotatorImplementationName("org.apache.uima.examples.TestAnnotator");
@@ -175,6 +179,7 @@ public class TaeDescription_implTest extends TestCase {
       cfgGrp2.setNames(new String[] { "cfgGrp2a", "cfgGrp2b" });
       cfgGrp2.setConfigurationParameters(new ConfigurationParameter[] { cfgParam3 });
       md.getConfigurationParameterDeclarations().setConfigurationGroups(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
       md.getConfigurationParameterDeclarations().setDefaultGroupName("cfgGrp1");
 
@@ -188,9 +193,12 @@ public class TaeDescription_implTest extends TestCase {
       settings.getSettingsForGroups().put("cfgGrp2b", new NameValuePair[] { nvp3b });
 
       // create aggregate TAE description
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       aggregateDesc = new AnalysisEngineDescription_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       aggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggregateDesc.setPrimitive(false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
       Map<String, MetaDataObject> delegateTaeMap = aggregateDesc.getDelegateAnalysisEngineSpecifiersWithImports();
       delegateTaeMap.put("Test", primitiveDesc);
       AnalysisEngineDescription_impl primDesc2 = new AnalysisEngineDescription_impl();
@@ -198,9 +206,11 @@ public class TaeDescription_implTest extends TestCase {
       primDesc2.setAnnotatorImplementationName("fakeClass");
       primDesc2.getAnalysisEngineMetaData().setName("fakeAnnotator");
       primDesc2.getAnalysisEngineMetaData().setCapabilities(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Capability[] { new Capability_impl() });
       delegateTaeMap.put("Empty", primDesc2);
       URISpecifier uriSpec = new URISpecifier_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-37
       uriSpec.setUri("http://www.incubator.apache.org/uima");
       uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
       ExternalResourceDependency dep = UIMAFramework.getResourceSpecifierFactory()
@@ -247,6 +257,7 @@ public class TaeDescription_implTest extends TestCase {
   }
 
   public void tearDown() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
     primitiveDesc = null;
     aggregateDesc = null;
   }
@@ -264,8 +275,11 @@ public class TaeDescription_implTest extends TestCase {
       // System.out.println(aggregateDescXml);
 
       // parse objects back from XML
+//IC see: https://issues.apache.org/jira/browse/UIMA-1202
       InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes(encoding));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription newPrimitiveDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new XMLInputSource(is, null));
       is = new ByteArrayInputStream(aggregateDescXml.getBytes(encoding));
       AnalysisEngineDescription newAggregateDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
@@ -281,7 +295,9 @@ public class TaeDescription_implTest extends TestCase {
   public void testSerialization() throws Exception {
     try {
       byte[] primitiveDescBytes = SerializationUtils.serialize(primitiveDesc);
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription_impl primitiveDesc2 = (AnalysisEngineDescription_impl) SerializationUtils
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .deserialize(primitiveDescBytes);
       Assert.assertEquals(primitiveDesc, primitiveDesc2);
 

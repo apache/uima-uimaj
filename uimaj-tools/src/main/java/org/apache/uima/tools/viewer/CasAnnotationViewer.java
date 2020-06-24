@@ -153,6 +153,7 @@ public class CasAnnotationViewer extends JPanel {
   /** The Constant COLORS. */
   private static final Color[] COLORS = new Color[] {
       // low saturation colors are best, so put them first
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       Color.getHSBColor(55f / 360, 0.25f, BRIGHT), // butter yellow?
       Color.getHSBColor(0f / 360, 0.25f, BRIGHT), // pink?
       Color.getHSBColor(210f / 360, 0.25f, BRIGHT), // baby blue?
@@ -164,6 +165,7 @@ public class CasAnnotationViewer extends JPanel {
       Color.getHSBColor(160f / 360, 0.25f, BRIGHT), // aqua?
       Color.getHSBColor(250f / 360, 0.25f, BRIGHT), // light violet?
       // higher saturation colors
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
       Color.getHSBColor(55f / 360, 0.5f, BRIGHT),
       Color.getHSBColor(0f / 360, 0.5f, BRIGHT),
       Color.getHSBColor(210f / 360, 0.5f, BRIGHT),
@@ -175,6 +177,7 @@ public class CasAnnotationViewer extends JPanel {
       Color.getHSBColor(160f / 360, 0.5f, BRIGHT),
       Color.getHSBColor(250f / 360, 0.5f, BRIGHT),
       // even higher saturation colors
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
       Color.getHSBColor(55f / 360, 0.75f, BRIGHT),
       Color.getHSBColor(0f / 360, 0.75f, BRIGHT),
       Color.getHSBColor(210f / 360, 0.75f, BRIGHT),
@@ -339,6 +342,7 @@ public class CasAnnotationViewer extends JPanel {
    * Creates a CAS Annotation Viewer.
    */
   public CasAnnotationViewer() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     this.viewMode = MODE_ANNOTATIONS;
     this.setLayout(new BorderLayout());
     // create a horizonal JSplitPane
@@ -351,6 +355,7 @@ public class CasAnnotationViewer extends JPanel {
     this.add(this.createControlPanel(), BorderLayout.SOUTH);
 
     // initialize hidden feature names map
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     this.hiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
   }
 
@@ -374,6 +379,7 @@ public class CasAnnotationViewer extends JPanel {
    */
   private JPanel createSelectButtonPanel() {
     JPanel selectButtonPanel = new JPanel();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     selectButtonPanel.add(this.createSelectAllButton());
     selectButtonPanel.add(this.createDeselectAllButton());
     this.createShowHideUnselectedButton();
@@ -391,6 +397,7 @@ public class CasAnnotationViewer extends JPanel {
     viewPanel.setLayout(new BorderLayout());
     this.createSofaSelectionPanel();
     viewPanel.add(this.sofaSelectionPanel, BorderLayout.NORTH);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     viewPanel.add(this.createViewModePanel(), BorderLayout.CENTER);
     return viewPanel;
   }
@@ -441,6 +448,7 @@ public class CasAnnotationViewer extends JPanel {
    * Creates the entity mode button.
    */
   private void createEntityModeButton() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     this.entityModeButton = new JRadioButton("Entities", this.viewMode == MODE_ENTITIES);
     this.entityModeButton.addActionListener(new ActionListener() {
       @Override
@@ -473,6 +481,8 @@ public class CasAnnotationViewer extends JPanel {
           return;
         }
         viewMode = MODE_ANNOTATIONS;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
         resetTabbedPane();
         display();
       }
@@ -498,6 +508,8 @@ public class CasAnnotationViewer extends JPanel {
     this.sofaSelectionComboBox.addItemListener(new ItemListener() {
       @Override
       public void itemStateChanged(ItemEvent e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3484
+//IC see: https://issues.apache.org/jira/browse/UIMA-4863
         if (disableSofaSelectionComboBoxStateChangeAction) { // UIMA-4863
           return;
         }
@@ -508,6 +520,7 @@ public class CasAnnotationViewer extends JPanel {
         String sofaId = (String) e.getItem();
         CAS newCas = "DEFAULT".equalsIgnoreCase(sofaId) ? cas.getView(CAS.NAME_DEFAULT_SOFA) : cas.getView(sofaId);
         if (newCas != cas) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
           setCAS(newCas);
         }
       }
@@ -523,6 +536,7 @@ public class CasAnnotationViewer extends JPanel {
       @Override
       public void actionPerformed(ActionEvent e) {
         hideUnselectedCheckBoxes = !hideUnselectedCheckBoxes;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
         switch (viewMode) {
         case MODE_ANNOTATIONS:
           if (typeToCheckBoxMap.size() > 0) {
@@ -788,6 +802,7 @@ public class CasAnnotationViewer extends JPanel {
     treePanel.add(new JLabel("Click In Text to See Annotation Detail"), BorderLayout.NORTH);
     this.createSelectedAnnotationTree();
     treePanel.add(new JScrollPane(this.selectedAnnotationTree), BorderLayout.CENTER);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     return treePanel;
   }
 
@@ -813,6 +828,7 @@ public class CasAnnotationViewer extends JPanel {
       public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
         // if FS node is expanded and it has a dummy child, replace with
         // feature value nodes (this is what lets us do infinite tree)
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
         Object lastPathComponent = event.getPath().getLastPathComponent();
         if (lastPathComponent instanceof DefaultMutableTreeNode) {
           DefaultMutableTreeNode expandedNode = (DefaultMutableTreeNode) lastPathComponent;
@@ -820,6 +836,7 @@ public class CasAnnotationViewer extends JPanel {
           if (userObject instanceof FsTreeNodeObject) {
             TreeNode firstChild = expandedNode.getFirstChild();
             if (firstChild instanceof DefaultMutableTreeNode
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               && ((DefaultMutableTreeNode) firstChild).getUserObject() == null) {
               expandedNode.removeAllChildren();
               FeatureStructure fs = ((FsTreeNodeObject) userObject).getFeatureStructure();
@@ -870,6 +887,7 @@ public class CasAnnotationViewer extends JPanel {
     this.createTextScrollPane();
     this.verticalSplitPane.setTopComponent(this.textScrollPane);
     // bottom pane is the legend, with checkboxes
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     this.verticalSplitPane.setBottomComponent(this.createTabbedChoicePane());
   }
 
@@ -929,6 +947,7 @@ public class CasAnnotationViewer extends JPanel {
     this.featureValueCheckBoxVerticalScrollPanel.setLayout(new GridLayout(0, 5));
 
     this.featureValueCheckBoxScrollPane = new JScrollPane();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     this.featureValueCheckBoxScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     this.featureValueCheckBoxScrollPane.setViewportView(this.featureValueCheckBoxVerticalScrollPanel);
   }
@@ -942,6 +961,8 @@ public class CasAnnotationViewer extends JPanel {
 
     this.featureRadioButtonScrollPane = new JScrollPane();
     this.featureRadioButtonScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3484
+//IC see: https://issues.apache.org/jira/browse/UIMA-4863
   this.featureRadioButtonScrollPane.setViewportView(this.featureRadioButtonVerticalScrollPanel);
   }
 
@@ -994,6 +1015,7 @@ public class CasAnnotationViewer extends JPanel {
       @Override
       public void mouseClicked(MouseEvent e) {
         int pos = textPane.viewToModel(e.getPoint());
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
         updateSelectedAnnotationTree(pos);
       }
 
@@ -1014,6 +1036,7 @@ public class CasAnnotationViewer extends JPanel {
       }
     });
     // Added a key listener to support CTRL-C for copy selected text into clipboard.
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     this.textPane.addKeyListener(new KeyListener() {
       @Override
       public void keyTyped(KeyEvent e) {
@@ -1022,6 +1045,7 @@ public class CasAnnotationViewer extends JPanel {
       @Override
       public void keyPressed(KeyEvent ke) {
         if (ke != null && ke.getKeyCode() == KeyEvent.VK_C &&
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
             (ke.getModifiers() & InputEvent.CTRL_MASK) != 0) {
           String selection = textPane.getSelectedText();
           if (selection != null && selection.length() > 0) {
@@ -1101,10 +1125,13 @@ public class CasAnnotationViewer extends JPanel {
    *          should be highlighted.
    */
   public void setDisplayedTypes(String[] aDisplayedTypeNames) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aDisplayedTypeNames == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
       this.displayedTypeNames = null;
     } else {
       if (this.displayedTypeNames == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         this.displayedTypeNames = new HashSet<>();
       }
       if (this.displayedTypeNames.size() > 0) {
@@ -1135,6 +1162,7 @@ public class CasAnnotationViewer extends JPanel {
    *          array of fully-qualified names of types to be initially selected
    */
   public void setInitiallySelectedTypes(String[] aTypeNames) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.initiallySelectedTypeNames = new HashSet<>();
     for (int i = 0; i < aTypeNames.length; i++) {
       this.initiallySelectedTypeNames.add(aTypeNames[i]);
@@ -1143,6 +1171,7 @@ public class CasAnnotationViewer extends JPanel {
     Iterator<Map.Entry<Type, JCheckBox>> iterator = this.typeToCheckBoxMap.entrySet().iterator();
     while (iterator.hasNext()) {
       Map.Entry<Type, JCheckBox> entry = iterator.next();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
       String type = entry.getKey().getName();
       JCheckBox checkbox = entry.getValue();
       checkbox.setSelected(typeNamesContains(this.initiallySelectedTypeNames, type));
@@ -1177,6 +1206,7 @@ public class CasAnnotationViewer extends JPanel {
    *   to the same entity.
    */
   public void setEntityResolver(EntityResolver aEntityResolver) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     this.entityResolver = aEntityResolver;
   }
 
@@ -1192,6 +1222,7 @@ public class CasAnnotationViewer extends JPanel {
    *          to vary
    */
   public void setConsistentColors(boolean aConsistent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     this.useConsistentColors = aConsistent;
   }
 
@@ -1203,8 +1234,10 @@ public class CasAnnotationViewer extends JPanel {
    *          true to put the viewer in right-to-left mode, false for left-to-right (the default).
    */
   public void setRightToLeftTextOrientation(boolean aRightToLeft) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     if (this.textPane != null) {
       this.textPane.applyComponentOrientation(aRightToLeft ? ComponentOrientation.RIGHT_TO_LEFT
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             : ComponentOrientation.LEFT_TO_RIGHT);
     }
   }
@@ -1217,6 +1250,7 @@ public class CasAnnotationViewer extends JPanel {
    * @param aHideUnselected the new hide unselected checkboxes
    */
   public void setHideUnselectedCheckboxes(boolean aHideUnselected) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     this.hideUnselectedCheckBoxes = aHideUnselected;
     this.display();
   }
@@ -1228,6 +1262,7 @@ public class CasAnnotationViewer extends JPanel {
    *          the CSA to be viewed
    */
   public void setCAS(CAS aCAS) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     this.reset();
     this.cas = aCAS;
     this.typeSystem = this.cas.getTypeSystem();
@@ -1251,6 +1286,8 @@ public class CasAnnotationViewer extends JPanel {
     if (this.sofaSelectionComboBox == null) {
       return;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3484
+//IC see: https://issues.apache.org/jira/browse/UIMA-4863
     this.disableSofaSelectionComboBoxStateChangeAction = true; // UIMA-4863
     this.sofaSelectionComboBox.removeAllItems();
     boolean hasNonDefaultSofa = false;
@@ -1274,6 +1311,8 @@ public class CasAnnotationViewer extends JPanel {
         this.sofaSelectionComboBox.setSelectedIndex(this.sofaSelectionComboBox.getItemCount() - 1);
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3484
+//IC see: https://issues.apache.org/jira/browse/UIMA-4863
     this.disableSofaSelectionComboBoxStateChangeAction = false; // UIMA-4863
     if (this.sofaSelectionComboBox.getItemCount() == 0) {
       throw new RuntimeException("This CAS contains no document to view.");
@@ -1296,6 +1335,7 @@ public class CasAnnotationViewer extends JPanel {
     // clear type to color map if color consistency is off
     this.resetTypeColorMap();
     // Clear the panel holding radio buttons for annotation types.
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     this.resetTypeRadioButtonPanel();
     // Clear the panel holding radio buttons for features of selected annotation type.
     this.resetFeaturePanel();
@@ -1333,6 +1373,7 @@ public class CasAnnotationViewer extends JPanel {
     if (this.entityToCheckBoxMap.size() > 0) {
       this.entityToCheckBoxMap.clear();
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     if (this.entityCheckBoxVerticalScrollPanel != null) {
       this.entityCheckBoxVerticalScrollPanel.removeAll();
     }
@@ -1416,6 +1457,7 @@ public class CasAnnotationViewer extends JPanel {
    *          array of words to highlight in boldface.
    */
   public void applyBoldfaceToKeywords(String[] aWords) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     this.boldFaceKeyWords = aWords;
     this.doBoldFace();
   }
@@ -1429,6 +1471,7 @@ public class CasAnnotationViewer extends JPanel {
    *          spans to appear in boldface (begin1, end1, begin2, end2, ...)
    */
   public void applyBoldfaceToSpans(int[] aSpans) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     this.boldFaceSpans = aSpans;
     this.doBoldFace();
   }
@@ -1449,6 +1492,7 @@ public class CasAnnotationViewer extends JPanel {
    */
   public void configureViewForXmlFragmentsQuery(String aQuery, String aTypeNamespace) {
     // need to parse query and produce type list and keyword list
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> typeList = new ArrayList<>();
     List<String> keywordList = new ArrayList<>();
 
@@ -1480,6 +1524,7 @@ public class CasAnnotationViewer extends JPanel {
     // System.out.println(typeList);
     // System.out.println(keywordList);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     setInitiallySelectedTypes(typeList.toArray(new String[0]));
     display();
     applyBoldfaceToKeywords(keywordList.toArray(new String[0]));
@@ -1508,6 +1553,7 @@ public class CasAnnotationViewer extends JPanel {
     if (aNotChecked == null || aNotChecked.size() == 0) {
       return;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     this.typesNotChecked.addAll(aNotChecked);
   }
 
@@ -1537,6 +1583,7 @@ public class CasAnnotationViewer extends JPanel {
     }
 
     // clear checkbox panel so it will be refreshed
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     if (this.typeRadioButtonVerticalScrollPanel != null) {
       this.typeRadioButtonVerticalScrollPanel.removeAll();
     }
@@ -1572,6 +1619,7 @@ public class CasAnnotationViewer extends JPanel {
     }
 
     // clear checkbox panel so it will be refreshed
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     if (this.typeRadioButtonVerticalScrollPanel != null) {
       this.typeRadioButtonVerticalScrollPanel.removeAll();
     }
@@ -1595,6 +1643,7 @@ public class CasAnnotationViewer extends JPanel {
     int verticalScrollPos = this.textScrollPane.getVerticalScrollBar().getValue();
 
     // type of display depends on whether we are in annotation or entity mode
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     switch (this.viewMode) {
       case MODE_ANNOTATIONS:
         this.displayAnnotationView();
@@ -1602,6 +1651,7 @@ public class CasAnnotationViewer extends JPanel {
       case MODE_ENTITIES:
         this.displayEntityView();
         break;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
       case MODE_FEATURES:
         this.displayFeatureView();
         break;
@@ -1632,6 +1682,7 @@ public class CasAnnotationViewer extends JPanel {
    * Create/update the feature view.
    */
   private void displayFeatureView() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     StyledDocument doc = (StyledDocument) this.textPane.getDocument();
     Document blank = new DefaultStyledDocument();
     this.textPane.setDocument(blank);
@@ -1684,6 +1735,7 @@ public class CasAnnotationViewer extends JPanel {
       return;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<JCheckBox> checkBoxes = new ArrayList<>(this.featureValueCheckBoxMap.values());
     checkBoxes.sort(new Comparator<JCheckBox>() {
       @Override
@@ -1708,6 +1760,7 @@ public class CasAnnotationViewer extends JPanel {
       return;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<JRadioButton> radioButtons = new ArrayList<>(this.featureRadioButtonMap.values());
     radioButtons.sort(new Comparator<JRadioButton>() {
       @Override
@@ -1733,6 +1786,7 @@ public class CasAnnotationViewer extends JPanel {
       return;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, JRadioButton> radioButtonMap = new HashMap<>();
     Set<JRadioButton> radioButtonSet = new HashSet<>();
     for (Type type : this.typeRadioButtonMap.keySet()) {
@@ -1754,6 +1808,7 @@ public class CasAnnotationViewer extends JPanel {
     }
 
     if (radioButtonSet != null && radioButtonSet.size() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<JRadioButton> remainingRadioButtons = new ArrayList<>(radioButtonSet);
       remainingRadioButtons.sort(new Comparator<JRadioButton>() {
         @Override
@@ -1976,6 +2031,7 @@ public class CasAnnotationViewer extends JPanel {
 
     // make sure annotationCheckboxPanel is showing
     this.typeCheckBoxVerticalScrollPanel.removeAll();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
 
     // add text from CAS
     try {
@@ -2011,12 +2067,14 @@ public class CasAnnotationViewer extends JPanel {
       return;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, JCheckBox> checkBoxMap = new HashMap<>();
     Set<JCheckBox> checkBoxSet = new HashSet<>();
     for (Type type : this.typeToCheckBoxMap.keySet()) {
       JCheckBox typeCheckBox = this.typeToCheckBoxMap.get(type);
       // If the type check box is already added or not selected but needs
       // to be hidden, skip it.
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
       if (typeCheckBox.getParent() == this.typeCheckBoxVerticalScrollPanel ||
           (!typeCheckBox.isSelected() && this.hideUnselectedCheckBoxes)) {
         continue;
@@ -2037,6 +2095,7 @@ public class CasAnnotationViewer extends JPanel {
     // If we still have remaining type check boxes that need to be added,
     // add them in sorted order.
     if (checkBoxSet != null && checkBoxSet.size() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<JCheckBox> remainingCheckBoxes = new ArrayList<>(checkBoxSet);
       remainingCheckBoxes.sort(new Comparator<JCheckBox>() {
         @Override
@@ -2045,6 +2104,7 @@ public class CasAnnotationViewer extends JPanel {
         }
       });
       for (JCheckBox checkBox : remainingCheckBoxes) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
         this.typeCheckBoxVerticalScrollPanel.add(checkBox);
       }
     }
@@ -2061,6 +2121,7 @@ public class CasAnnotationViewer extends JPanel {
     String typeName = type.getName();
     // check that type should be displayed
     if ((this.displayedTypeNames != null && !typeNamesContains(this.displayedTypeNames, typeName)) ||
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
         typeNamesContains(this.hiddenTypeNames, typeName)) {
       return;
     }
@@ -2077,6 +2138,7 @@ public class CasAnnotationViewer extends JPanel {
       // should type be initially selected?
       // document annotation is not initially selected in default case
       boolean selected = (this.initiallySelectedTypeNames == null &&
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
           !CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(typeName) && !this.typesNotChecked.contains(typeName)) ||
           (this.initiallySelectedTypeNames != null && typeNamesContains(this.initiallySelectedTypeNames, typeName));
       // add checkbox
@@ -2142,6 +2204,7 @@ public class CasAnnotationViewer extends JPanel {
     } catch (CASException e) {
       throw new RuntimeException(e);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     AnnotationIndex<Annotation> annotationIndex = jcas.getAnnotationIndex();
     if (annotationIndex == null) {
       return;
@@ -2157,6 +2220,7 @@ public class CasAnnotationViewer extends JPanel {
     // add/remove checkboxes from display as determined by the
     // mHideUnselectedCheckboxes toggle
     for (JCheckBox entityCheckBox : this.entityToCheckBoxMap.values()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
       if (entityCheckBox.getParent() != this.entityCheckBoxVerticalScrollPanel &&
           (entityCheckBox.isSelected() || !this.hideUnselectedCheckBoxes)) {
         this.entityCheckBoxVerticalScrollPanel.add(entityCheckBox);
@@ -2175,6 +2239,7 @@ public class CasAnnotationViewer extends JPanel {
    */
   private void processOneAnnotationInEntityView(StyledDocument doc, Annotation annotation) {
     // find out what entity this annotation represents
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     Entity entity = this.entityResolver.getEntity(annotation);
     //if not an entity, skip it
     if (entity == null) {
@@ -2193,7 +2258,11 @@ public class CasAnnotationViewer extends JPanel {
       entityCheckBox.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
           resetSelectedAnnotationTree();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
           display();
         }
       });
@@ -2207,6 +2276,7 @@ public class CasAnnotationViewer extends JPanel {
       int end = annotation.getEnd();
       // be careful of 0-length annotation. If we try to set background color when there
       // is no selection, it will set the input text style, which is not what we want.
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
       if (begin == 0 && end == this.cas.getDocumentText().length()) {
         end--;
       }
@@ -2226,12 +2296,18 @@ public class CasAnnotationViewer extends JPanel {
    *          point will be rendered in the tree.
    */
   private void updateSelectedAnnotationTree(int aPosition) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     if (this.cas == null || this.selectedAnnotationTreeModel == null) {
       return;
     }
     JCas jcas = null;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3484
+//IC see: https://issues.apache.org/jira/browse/UIMA-4863
       jcas = this.cas.getJCas();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4533
+//IC see: https://issues.apache.org/jira/browse/UIMA-3484
+//IC see: https://issues.apache.org/jira/browse/UIMA-4863
     } catch (CASException e) {
         e.printStackTrace();
         return;
@@ -2267,6 +2343,7 @@ public class CasAnnotationViewer extends JPanel {
     this.selectedAnnotationTree.treeDidChange();
     // this.selectedAnnotationTree.setPreferredSize(this.selectedAnnotationTree.getSize());
     this.selectedAnnotationTree.revalidate();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     this.horizontalSplitPane.revalidate();
   }
 
@@ -2278,9 +2355,12 @@ public class CasAnnotationViewer extends JPanel {
    * @return true, if is match
    */
   private boolean isMatch(Annotation annotation) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     Type type = annotation.getType();
     switch (this.viewMode) {
       case MODE_ANNOTATIONS:
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
         if (this.typeToCheckBoxMap.size() == 0) {
           return false;
         }
@@ -2296,6 +2376,7 @@ public class CasAnnotationViewer extends JPanel {
         }
         JCheckBox entityCheckBox = this.entityToCheckBoxMap.get(entity);
         return entityCheckBox != null && entityCheckBox.isSelected();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
       case MODE_FEATURES:
         JRadioButton typeRadioButton = this.typeRadioButtonMap.get(type);
         if (typeRadioButton == null || !typeRadioButton.isSelected()) {
@@ -2336,9 +2417,11 @@ public class CasAnnotationViewer extends JPanel {
    *          the annotation to add
    */
   protected void addAnnotationToTree(AnnotationFS aAnnotation) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel.getRoot();
     // try to find a node for the type
     DefaultMutableTreeNode typeNode = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
     for (int i = 0; i < root.getChildCount(); i++) {
       DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(i);
       if (aAnnotation.getType().equals(((TypeTreeNodeObject) child.getUserObject()).getType())) {
@@ -2373,6 +2456,7 @@ public class CasAnnotationViewer extends JPanel {
     for (Feature feature : features) {
       String featureName = feature.getShortName();
       // skip hidden features
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
       if (this.hiddenFeatureNames.contains(featureName)) {
         continue;
       }
@@ -2450,6 +2534,7 @@ public class CasAnnotationViewer extends JPanel {
     }
     if (rangeType.isArray()) {
 //      String rangeTypeName = rangeType.getName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4533
       CommonArrayFS arrayFS = (CommonArrayFS) aFS.getFeatureValue(feature);
       String[] values = (arrayFS == null) ? null : arrayFS.toStringArray();
       if (values == null || values.length == 0) {
@@ -2503,6 +2588,7 @@ public class CasAnnotationViewer extends JPanel {
    * @return True iff name matches a name in type names
    */
   private static boolean typeNamesContains(Set<String> names, String name) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     if (names.contains(name)) {
       return true;
     }
@@ -2531,6 +2617,7 @@ public class CasAnnotationViewer extends JPanel {
    * @return True iff the string matches the pattern.
    */
   private static boolean wildCardMatch(String name, String pattern) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     if (pattern == null || pattern.length() == 0) {
       return false;
     }
@@ -2565,7 +2652,9 @@ public class CasAnnotationViewer extends JPanel {
     Insets insets = getInsets();
     Dimension paneSize = new Dimension(d.width - insets.left - insets.right, d.height - insets.top
             - insets.bottom);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-3347
     this.horizontalSplitPane.setPreferredSize(paneSize);
     this.horizontalSplitPane.setSize(paneSize);
   }
@@ -2671,6 +2760,7 @@ public class CasAnnotationViewer extends JPanel {
      */
     @Override
     public Entity getEntity(final Annotation inAnnotation) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
       return new Entity() {
         
         @Override
@@ -2802,6 +2892,7 @@ public class CasAnnotationViewer extends JPanel {
             boolean expanded, boolean leaf, int row, boolean hasFocus) {
       // set background color if this is an Annotation or a Type
       Color background = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (value instanceof DefaultMutableTreeNode) {
         Object userObj = ((DefaultMutableTreeNode) value).getUserObject();
         Type type = null;
@@ -2813,6 +2904,7 @@ public class CasAnnotationViewer extends JPanel {
         }
         if (type != null) {
           // look up checkbox to get color
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
           background = typeColorMap.get(type.getName());
         }
       }
@@ -2828,6 +2920,7 @@ public class CasAnnotationViewer extends JPanel {
         @Override
         public void keyPressed(KeyEvent ke) {
           if (ke == null || ke.getKeyCode() != KeyEvent.VK_C ||
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
               (ke.getModifiers() & InputEvent.CTRL_MASK) == 0) {
             return;
           }
@@ -2844,6 +2937,7 @@ public class CasAnnotationViewer extends JPanel {
         }
       });
       Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               row, hasFocus);
       return component;
     }
@@ -2868,6 +2962,7 @@ public class CasAnnotationViewer extends JPanel {
      */
     @Override
     public Dimension getPreferredScrollableViewportSize() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3374
       return this.getPreferredSize();
     }
 

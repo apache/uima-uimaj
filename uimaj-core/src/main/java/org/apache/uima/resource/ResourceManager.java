@@ -235,6 +235,7 @@ public interface ResourceManager {
    */
   public InputStream getResourceAsStream(String aKey, String[] aParams)
           throws ResourceAccessException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Initializes all external resources declared in a ResourceCreationSpecifier.
@@ -265,6 +266,7 @@ public interface ResourceManager {
    *           if an initialization failure occurs
    */
   public void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           String aQualifiedContextName, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
 
@@ -296,6 +298,7 @@ public interface ResourceManager {
    */
   public void resolveAndValidateResourceDependencies(ExternalResourceDependency[] aDependencies,
           String aQualifiedContextName) throws ResourceInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Sets the classpath for the UIMA extension ClassLoader and specifies if the extension
@@ -311,6 +314,7 @@ public interface ResourceManager {
    */
   public void setExtensionClassPath(String classpath, boolean resolveResource)
           throws MalformedURLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Sets the classpath for the UIMA extension ClassLoader and specifies if the extension
@@ -329,6 +333,7 @@ public interface ResourceManager {
    */
   public void setExtensionClassPath(ClassLoader parent, String classpath, boolean resolveResource)
           throws MalformedURLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Set an extension class loader into the Resource Manager

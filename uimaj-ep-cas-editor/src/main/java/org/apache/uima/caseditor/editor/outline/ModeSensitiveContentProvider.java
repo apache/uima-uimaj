@@ -32,6 +32,9 @@ import org.eclipse.swt.widgets.Display;
    * This <code>OutlineContentProvider</code> synchronizes the <code>AnnotationFS</code>s with
    * the <code>TableViewer</code>.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 class ModeSensitiveContentProvider extends OutlineContentProviderBase {
 	  
   /** The m annotation node list. */
@@ -106,6 +109,7 @@ class ModeSensitiveContentProvider extends OutlineContentProviderBase {
 
   @Override
   public void viewChanged(String oldViewName, String newViewName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
       changed();
 }
 

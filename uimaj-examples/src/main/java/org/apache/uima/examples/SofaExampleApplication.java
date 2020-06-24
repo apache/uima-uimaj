@@ -54,6 +54,8 @@ public class SofaExampleApplication {
   public static void main(String[] args) throws UIMAException, IOException {
     // parse AnalysisEngine descriptor
     XMLInputSource input = new XMLInputSource(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "descriptors/analysis_engine/SofaExampleAnnotator.xml");
     AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
             input);
@@ -73,6 +75,7 @@ public class SofaExampleApplication {
     seAnnotator.process(cas);
 
     System.out.println("---Printing all annotations for English Sofa---");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5259
     englishView.select(Annotation.class).forEach(annot -> 
           System.out.println(" " + annot.getType().getName() + ": " + annot.getCoveredText()));
     
@@ -95,6 +98,7 @@ public class SofaExampleApplication {
 
     System.out.println("---Printing all annotations for German Sofa---");
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5625
     for (Annotation annot : germanView.select(Annotation.class)) {
       System.out.println(" " + annot.getType().getName() + ": " + annot.getCoveredText());
       if (annot.getType() == cross) {

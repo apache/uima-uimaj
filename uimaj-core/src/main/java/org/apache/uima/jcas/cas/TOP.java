@@ -65,6 +65,8 @@ public class TOP extends FeatureStructureImplC {
    * @param id -
    */
   private TOP(int id) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
     super(id);
   }
 
@@ -76,6 +78,7 @@ public class TOP extends FeatureStructureImplC {
    */
 
 	public TOP(TypeImpl t, CASImpl c) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 	  super(t, c);
 	}
 

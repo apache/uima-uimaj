@@ -90,9 +90,11 @@ public class XMLParser_impl implements XMLParser {
   private static final URL SCHEMA_URL;
   static
   {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
     URL schemaURL = XMLParser_impl.class.getResource(RESOURCE_SPECIFIER_SCHEMA_NAME);
     if (schemaURL == null) {
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "getSchemaURL", LOG_RESOURCE_BUNDLE,
               "UIMA_resource_specifier_schema_not_found__WARNING");
     }
@@ -111,6 +113,7 @@ public class XMLParser_impl implements XMLParser {
    */
   protected Map<String, Class<? extends XMLizable>> mElementToClassMap = Collections.synchronizedMap(
       new HashMap<>());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
   /**
    * Whether schema validation is enabled.
@@ -153,6 +156,7 @@ public class XMLParser_impl implements XMLParser {
    *           if the input XML is not valid or does not specify a valid object
    */
   public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     URL urlToParse = aInput.getURL();
     try {
@@ -160,6 +164,7 @@ public class XMLParser_impl implements XMLParser {
 
       // Turn on namespace support
       factory.setNamespaceAware(true);        
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
       SAXParser parser = factory.newSAXParser();  // unless multi-threaded, in the future, if performance issue, can save this , and reuse with reset()
         
       XMLReader reader = parser.getXMLReader();
@@ -168,6 +173,7 @@ public class XMLParser_impl implements XMLParser {
 
       // enable validation if requested
       if (mSchemaValidationEnabled && aNamespaceForSchema != null && aSchemaUrl != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-192
         try {
           reader.setFeature("http://apache.org/xml/features/validation/schema", true);
           reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
@@ -197,7 +203,9 @@ public class XMLParser_impl implements XMLParser {
       // Parse with SaxDeserializer
       SaxDeserializer deser = new SaxDeserializer_impl(this, aOptions);
       reader.setContentHandler(deser);
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
       if (aOptions.preserveComments) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
         reader.setProperty ("http://xml.org/sax/properties/lexical-handler", deser);
       }
       reader.parse(input);
@@ -218,6 +226,7 @@ public class XMLParser_impl implements XMLParser {
     } catch (Exception e) {
       String sourceFile = urlToParse != null ? urlToParse.toString() : "<unknown source>";
       throw new InvalidXMLException(InvalidXMLException.INVALID_DESCRIPTOR_FILE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { sourceFile }, e);
     }
   }
@@ -241,6 +250,7 @@ public class XMLParser_impl implements XMLParser {
    */
   public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl)
           throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     return parse(aInput, aNamespaceForSchema, aSchemaUrl, DEFAULT_PARSING_OPTIONS);
   }
 
@@ -256,6 +266,7 @@ public class XMLParser_impl implements XMLParser {
    *           if the input XML is not valid or does not specify a valid object
    */
   public XMLizable parse(XMLInputSource aInput) throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     return parse(aInput, null, null, DEFAULT_PARSING_OPTIONS);
   }
 
@@ -281,6 +292,7 @@ public class XMLParser_impl implements XMLParser {
    *           if the XML element does not specify a valid object
    */
   public XMLizable buildObject(Element aElement) throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     return buildObject(aElement, new ParsingOptions(true));
   }
 
@@ -315,6 +327,7 @@ public class XMLParser_impl implements XMLParser {
     }
     
     callBuildFromXMLElement(aElement, object, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
 
     return object;
   }
@@ -335,8 +348,12 @@ public class XMLParser_impl implements XMLParser {
    * @see org.apache.uima.util.XMLParser#buildObjectOrPrimitive(Element, ParsingOptions)
    */
   public Object buildObjectOrPrimitive(Element aElement, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     // attempt to locate a Class that can be built from the element
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Class<? extends XMLizable> cls = mElementToClassMap.get(aElement.getTagName());
     if (cls == null) {
       // attempt to parse as primitive
@@ -347,6 +364,8 @@ public class XMLParser_impl implements XMLParser {
 
       // unknown element - throw exception
       throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { aElement
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getTagName() });
     }
 
@@ -356,11 +375,14 @@ public class XMLParser_impl implements XMLParser {
       object = cls.newInstance();
     } catch (Exception e) {
       throw new UIMA_IllegalStateException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               UIMA_IllegalStateException.COULD_NOT_INSTANTIATE_XMLIZABLE, new Object[] { cls
                       .getName() }, e);
     }
 
     // construct the XMLizable object from the XML element
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
     callBuildFromXMLElement(aElement, object, aOptions);
     return object;
   }
@@ -396,6 +418,7 @@ public class XMLParser_impl implements XMLParser {
   public ResourceSpecifier parseResourceSpecifier(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
     if (object instanceof ResourceSpecifier) {
       return (ResourceSpecifier) object;
@@ -437,6 +460,7 @@ public class XMLParser_impl implements XMLParser {
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof ResourceMetaData) {
       return (ResourceMetaData) object;
@@ -478,6 +502,7 @@ public class XMLParser_impl implements XMLParser {
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof URISpecifier) {
       return (URISpecifier) object;
@@ -500,6 +525,7 @@ public class XMLParser_impl implements XMLParser {
    *           if the input XML is not valid or does not specify a valid AnalysisEngineDescription
    */
   public AnalysisEngineDescription parseAnalysisEngineDescription(XMLInputSource aInput)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     return parseAnalysisEngineDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -520,6 +546,7 @@ public class XMLParser_impl implements XMLParser {
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof AnalysisEngineDescription) {
       return (AnalysisEngineDescription) object;
@@ -567,6 +594,7 @@ public class XMLParser_impl implements XMLParser {
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof TaeDescription) {
       return (TaeDescription) object;
@@ -580,6 +608,7 @@ public class XMLParser_impl implements XMLParser {
    * @see org.apache.uima.util.XMLParser#parseResultSpecification(org.apache.uima.util.XMLInputSource)
    */
   public ResultSpecification parseResultSpecification(XMLInputSource aInput)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     return parseResultSpecification(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -588,6 +617,7 @@ public class XMLParser_impl implements XMLParser {
    * @see org.apache.uima.util.XMLParser#parseResultSpecification(org.apache.uima.util.XMLInputSource)
    */
   public ResultSpecification parseResultSpecification(XMLInputSource aInput, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, null, aOptions);
 
@@ -603,6 +633,7 @@ public class XMLParser_impl implements XMLParser {
    * @see org.apache.uima.util.XMLParser#parseCasConsumerDescription(org.apache.uima.util.XMLInputSource)
    */
   public CasConsumerDescription parseCasConsumerDescription(XMLInputSource aInput)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     return parseCasConsumerDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -614,6 +645,7 @@ public class XMLParser_impl implements XMLParser {
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof CasConsumerDescription) {
       return (CasConsumerDescription) object;
@@ -628,6 +660,7 @@ public class XMLParser_impl implements XMLParser {
    */
   @Deprecated
 public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     return parseCasInitializerDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -640,6 +673,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof CasInitializerDescription) {
       return (CasInitializerDescription) object;
@@ -650,6 +684,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
   }
 
   public CollectionReaderDescription parseCollectionReaderDescription(XMLInputSource aInput)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     return parseCollectionReaderDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -658,6 +693,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof CollectionReaderDescription) {
       return (CollectionReaderDescription) object;
@@ -701,6 +737,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof TypePriorities) {
       return (TypePriorities) object;
@@ -716,6 +753,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    * @see org.apache.uima.util.XMLParser#parseTypeSystemDescription(org.apache.uima.util.XMLInputSource)
    */
   public TypeSystemDescription parseTypeSystemDescription(XMLInputSource aInput)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     return parseTypeSystemDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -729,6 +767,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof TypeSystemDescription) {
       return (TypeSystemDescription) object;
@@ -756,6 +795,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof FsIndexCollection) {
       return (FsIndexCollection) object;
@@ -771,6 +811,13 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    * @see org.apache.uima.util.XMLParser#parseResourceManagerConfiguration(org.apache.uima.util.XMLInputSource)
    */
   public ResourceManagerConfiguration parseResourceManagerConfiguration(XMLInputSource aInput)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     return parseResourceManagerConfiguration(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -781,9 +828,15 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    * @see org.apache.uima.util.XMLParser#parseResourceManagerConfiguration(org.apache.uima.util.XMLInputSource)
    */
   public ResourceManagerConfiguration parseResourceManagerConfiguration(XMLInputSource aInput,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof ResourceManagerConfiguration) {
       return (ResourceManagerConfiguration) object;
@@ -797,6 +850,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    * @see org.apache.uima.util.XMLParser#parseFlowControllerDescription(org.apache.uima.util.XMLInputSource)
    */
   public FlowControllerDescription parseFlowControllerDescription(XMLInputSource aInput) throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-338
     return parseFlowControllerDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
 
@@ -806,6 +860,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
   public FlowControllerDescription parseFlowControllerDescription(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof FlowControllerDescription) {
       return (FlowControllerDescription) object;
@@ -819,6 +874,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    * @see org.apache.uima.util.XMLParser#parseCustomResourceSpecifier(org.apache.uima.util.XMLInputSource)
    */
   public CustomResourceSpecifier parseCustomResourceSpecifier(XMLInputSource aInput) throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-352
     return parseCustomResourceSpecifier(aInput, DEFAULT_PARSING_OPTIONS);
   }
 
@@ -828,6 +884,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
   public CustomResourceSpecifier parseCustomResourceSpecifier(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof CustomResourceSpecifier) {
       return (CustomResourceSpecifier) object;
@@ -841,6 +898,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    * @see org.apache.uima.util.XMLParser#parsePearSpecifier(org.apache.uima.util.XMLInputSource)
    */
   public PearSpecifier parsePearSpecifier(XMLInputSource aInput) throws InvalidXMLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-351
     return parsePearSpecifier(aInput, DEFAULT_PARSING_OPTIONS);
   }
 
@@ -850,6 +908,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
   public PearSpecifier parsePearSpecifier(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3690
 
     if (object instanceof PearSpecifier) {
       return (PearSpecifier) object;
@@ -865,6 +924,8 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    * @see org.apache.uima.util.XMLParser#parseIndexBuildSpecification(org.apache.uima.util.XMLInputSource)
    */
   public IndexBuildSpecification parseIndexBuildSpecification(XMLInputSource aInput)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     return parseIndexBuildSpecification(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -876,6 +937,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    *      org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public IndexBuildSpecification parseIndexBuildSpecification(XMLInputSource aInput,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ParsingOptions aOptions) throws InvalidXMLException {
     XMLizable object = parse(aInput, aOptions);
 
@@ -910,12 +972,14 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
       return;
     }
     // resolve the class name and ensure that it implements XMLizable
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Class<? extends XMLizable> cls = (Class<? extends XMLizable>) Class.forName(aClassName);
     if (XMLizable.class.isAssignableFrom(cls)) {
       // add to the map
       mElementToClassMap.put(aElementName, cls);
     } else {
       throw new UIMA_IllegalArgumentException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               UIMA_IllegalArgumentException.MUST_IMPLEMENT_XMLIZABLE, new Object[] { aClassName });
     }
   }
@@ -924,6 +988,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    * @see org.apache.uima.util.XMLParser#newSaxDeserializer()
    */
   public SaxDeserializer newSaxDeserializer() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
     return new SaxDeserializer_impl(this, new XMLParser.ParsingOptions(true));
   }
 
@@ -942,6 +1007,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
     private SAXParseException mException = null;
 
     public void error(SAXParseException aError) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
       if (mException == null)
         mException = aError;
     }

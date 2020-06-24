@@ -33,6 +33,7 @@ public class BinaryTree {
   private Object value;
 
   public BinaryTree() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.mother = null;
     this.left = null;

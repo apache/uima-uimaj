@@ -89,6 +89,7 @@ public class UimacppDeserializationTest extends TestCase {
    * assertTrue(false); // } // assertTrue(text != null); }
    */
   public static void main(String[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-11
     junit.textui.TestRunner.run(UimacppDeserializationTest.class);
   }
 

@@ -227,6 +227,7 @@ public class ArtifactProducer extends Thread {
             .getParameterValue("fetchSize") != null) {
       // Determines how many at a time this Collection Reader will return
       // for each fetch
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       readerFetchSize = (Integer) collectionReader.getProcessingResourceMetaData()
           .getConfigurationParameterSettings().getParameterValue("fetchSize");
     }
@@ -289,6 +290,7 @@ public class ArtifactProducer extends Thread {
     if (capacity > maxToProcess) {
       capacity = maxToProcess;
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_reset_queue_size__FINEST",
                 new Object[] { Thread.currentThread().getName(), String.valueOf(capacity) });
@@ -310,6 +312,7 @@ public class ArtifactProducer extends Thread {
           casObjectList = readNext(readerFetchSize);
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINEST,
                     this.getClass().getName(),
                     "process",
@@ -338,6 +341,7 @@ public class ArtifactProducer extends Thread {
         if (progress != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINEST,
                     this.getClass().getName(),
                     "process",
@@ -413,6 +417,7 @@ public class ArtifactProducer extends Thread {
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cr_fetch_new_cas__FINEST",
                   new Object[] { Thread.currentThread().getName() });
         }
@@ -424,6 +429,7 @@ public class ArtifactProducer extends Thread {
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "process",
@@ -442,6 +448,7 @@ public class ArtifactProducer extends Thread {
             totalFetchTime += (timer.getTimeInMillis() - start);
           }
           for (int listCounter = 0; casList != null && casList[i] != null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   && listCounter < casList.length; listCounter++) {
             casPool.releaseCas(casList[listCounter]);
 //            synchronized (casPool) { // redundant - releaseCas call does this
@@ -455,6 +462,7 @@ public class ArtifactProducer extends Thread {
           }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_in_shutdown_state__FINEST",
                     new Object[] { Thread.currentThread().getName() });
@@ -466,6 +474,7 @@ public class ArtifactProducer extends Thread {
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_got_new_cas__FINEST",
                   new Object[] { Thread.currentThread().getName() });
         }
@@ -486,6 +495,7 @@ public class ArtifactProducer extends Thread {
         else
           capabilities = ((CollectionReader) collectionReader).getProcessingResourceMetaData()
                   .getCapabilities();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
         boolean sofaUnaware = true;
         for (int j = 0; j < capabilities.length; j++) {
@@ -506,6 +516,7 @@ public class ArtifactProducer extends Thread {
           if (sofaUnaware) {
             // sofa-unaware CR, give it whatever is mapped to the
             // initial view (creating that view first if it's not the default)
+//IC see: https://issues.apache.org/jira/browse/UIMA-138
             String absSofaName = context.getComponentInfo().mapToSofaID(CAS.NAME_DEFAULT_SOFA);
             if (!CAS.NAME_DEFAULT_SOFA.equals(absSofaName)) {
               casList[i].createView(CAS.NAME_DEFAULT_SOFA);
@@ -529,6 +540,7 @@ public class ArtifactProducer extends Thread {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_call_cr_next_finished__FINEST",
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
                       new Object[] { Thread.currentThread().getName(), "CAS" });
             }
           } else
@@ -537,6 +549,7 @@ public class ArtifactProducer extends Thread {
             CAS baseCas = ((CASImpl) casList[i]).getBaseCAS();
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_call_cr_next__FINEST",
                       new Object[] { Thread.currentThread().getName(), "CAS" });
@@ -584,6 +597,7 @@ public class ArtifactProducer extends Thread {
           if (((CASImpl) casList[0]).isBackwardCompatibleCas()) {
             CAS view = casList[0].getView(CAS.NAME_DEFAULT_SOFA);
             lastDocId[0] = ConsumerCasUtils.getStringFeatValue(view, Constants.METADATA_KEY,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Constants.DOC_ID);
           } else {
             lastDocId[0] = "";
@@ -603,6 +617,7 @@ public class ArtifactProducer extends Thread {
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_call_cr_next__FINEST",
                 new Object[] { Thread.currentThread().getName(), "CasData" });
       }
@@ -628,6 +643,7 @@ public class ArtifactProducer extends Thread {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_call_cr_next_finished__FINEST",
                 new Object[] { Thread.currentThread().getName(), "CasData" });
@@ -644,11 +660,15 @@ public class ArtifactProducer extends Thread {
     if (cpmStatTable != null) {
       Progress[] progress = collectionReader.getProgress();
       cpmStatTable.put("COLLECTION_READER_PROGRESS", progress);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       cpmStatTable.put("COLLECTION_READER_TIME", totalFetchTime);
     }
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_return_cases_from_cr__FINEST",
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
               new Object[] { Thread.currentThread().getName(), "CAS" });
     }
     return casObjects;
@@ -664,6 +684,7 @@ public class ArtifactProducer extends Thread {
     // ProcessTrace event
     if (!cpm.isRunning()) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cpm_not_running__WARNING",
               new Object[] { Thread.currentThread().getName() });
       return;
@@ -674,6 +695,7 @@ public class ArtifactProducer extends Thread {
     if (endOfProcessingReached()) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cr_done_producing__FINEST",
                 new Object[] { Thread.currentThread().getName() });
       }
@@ -692,24 +714,29 @@ public class ArtifactProducer extends Thread {
 
       casList = null;
       casObjectList = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
       synchronized (cpm.lockForPause) {
         if (cpm.isPaused()) {
           try {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_pausing_cr__FINEST",
                       new Object[] { Thread.currentThread().getName() });
             }
             // Wait until resumed
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
             cpm.lockForPause.wait();
           } catch (Exception e) {
           }
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
           if (!cpm.isRunning()) {
             break;
           }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resume_cr__FINEST",
                     new Object[] { Thread.currentThread().getName() });
           }
@@ -748,6 +775,7 @@ public class ArtifactProducer extends Thread {
                 if (meta != null) {
                   if (timedoutDocs.containsKey(meta.getDocId())) {
                     notifyListeners(casList[i], new ResourceProcessException(new SkipCasException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                             "Dropping CAS due chunk Timeout. Doc Id::" + meta.getDocId()
                                     + " Sequence:" + meta.getSequence())));
 
@@ -765,6 +793,7 @@ public class ArtifactProducer extends Thread {
             }
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       Level.FINEST,
                       this.getClass().getName(),
                       "process",
@@ -779,6 +808,7 @@ public class ArtifactProducer extends Thread {
             // (Moved this code inside if (casObjectList != null)
             // block to avoid NullPointerException. -Adam
             if (cpm.isRunning() == true
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     || (cpm.isRunning() == false && cpm.isHardKilled() == false)) {
               threadState = 1005; // Entering enqueue
               workQueue.enqueue(casObjectList);
@@ -789,6 +819,7 @@ public class ArtifactProducer extends Thread {
               entityCount += casObjectList.length;
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                 UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                         Level.FINEST,
                         this.getClass().getName(),
                         "process",
@@ -803,6 +834,7 @@ public class ArtifactProducer extends Thread {
           } else {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_terminate_cr_thread__FINEST",
                       new Object[] { Thread.currentThread().getName() });
@@ -813,6 +845,7 @@ public class ArtifactProducer extends Thread {
         } else {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_processed_all__FINEST",
                     new Object[] { Thread.currentThread().getName() });
           }
@@ -829,6 +862,7 @@ public class ArtifactProducer extends Thread {
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_end_of_processing__FINEST",
                     new Object[] { Thread.currentThread().getName() });
@@ -839,6 +873,8 @@ public class ArtifactProducer extends Thread {
         // The following conditional is true if hasNext() has failed
         if (!crEventCompleted) {
           localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "Process", "failure");
         }
         // e.printStackTrace();
@@ -878,6 +914,7 @@ public class ArtifactProducer extends Thread {
         localTrace.clear();
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_show_cpm_running_status__FINEST",
@@ -913,6 +950,7 @@ public class ArtifactProducer extends Thread {
   private void notifyListeners(CAS aCas, Exception anException) {
     for (int i = 0; callbackListeners != null && i < callbackListeners.size(); i++) {
       StatusCallbackListener statCL = (StatusCallbackListener) callbackListeners.get(i);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1727
       if ( statCL != null ) {
         ProcessTrace prTrace = new ProcessTrace_impl(cpm.getPerformanceTuningSettings());
         EntityProcessStatusImpl aEntityProcStatus = new EntityProcessStatusImpl(prTrace);
@@ -941,6 +979,7 @@ public class ArtifactProducer extends Thread {
       // only need one member in the array
       eofToken[0] = new EOFToken();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_enqueue_eof_token__FINEST",
                 new Object[] { Thread.currentThread().getName(), String.valueOf(cpm.isRunning()) });
@@ -960,6 +999,7 @@ public class ArtifactProducer extends Thread {
       e.printStackTrace();
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
                 new Object[] { Thread.currentThread().getName(), e.getMessage() });
         UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE, "", e);

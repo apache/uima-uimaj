@@ -42,6 +42,7 @@ public class NonEmptyStringList extends StringList implements Iterable<String>, 
   public final static int type = typeIndexID;
 
   public int getTypeIndexID() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return typeIndexID;
   }
 
@@ -87,6 +88,7 @@ public class NonEmptyStringList extends StringList implements Iterable<String>, 
    * @param tail -
    */
   public NonEmptyStringList(JCas jcas, String head, StringList tail) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4980
     this(jcas);
     setHead(head);
     setTail(tail);
@@ -98,6 +100,7 @@ public class NonEmptyStringList extends StringList implements Iterable<String>, 
    * @param head -
    */
   public NonEmptyStringList(JCas jcas, String head) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     this(jcas, head, jcas.getCasImpl().emptyStringList());
   }
   
@@ -108,6 +111,7 @@ public class NonEmptyStringList extends StringList implements Iterable<String>, 
 
   /* setter for head * */
   public void setHead(String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setStringValueNfc(wrapGetIntCatchException(_FH_head), v);
   }
   
@@ -120,15 +124,18 @@ public class NonEmptyStringList extends StringList implements Iterable<String>, 
 
   /* setter for tail * */
   public void setTail(StringList v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_tail), v); 
   }
   
   @Override
   public void setTail(CommonList v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     setTail((StringList)v);
   }
   
@@ -139,6 +146,7 @@ public class NonEmptyStringList extends StringList implements Iterable<String>, 
    */
   @Override
   public String get_headAsString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     return ((NonEmptyStringList)this).getHead();
   }
 
@@ -153,6 +161,7 @@ public class NonEmptyStringList extends StringList implements Iterable<String>, 
   @Override
   public Iterator<String> iterator() {
     return new Iterator<String>() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
 
       StringList node = NonEmptyStringList.this;
       

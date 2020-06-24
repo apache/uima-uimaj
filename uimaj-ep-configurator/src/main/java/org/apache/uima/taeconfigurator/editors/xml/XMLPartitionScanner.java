@@ -41,6 +41,7 @@ public class XMLPartitionScanner extends RuleBasedPartitionScanner {
    */
   public XMLPartitionScanner() {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     IToken xmlComment = new Token(XML_COMMENT);
     IToken tag = new Token(XML_TAG);
 

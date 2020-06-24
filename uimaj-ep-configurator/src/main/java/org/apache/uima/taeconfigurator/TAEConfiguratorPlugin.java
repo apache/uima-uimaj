@@ -125,6 +125,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
    * The constructor, version 3.
    */
   public TAEConfiguratorPlugin() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4988
     super();
     plugin = this;
     pluginId = getBundle().getSymbolicName();
@@ -209,6 +210,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
    */
   public FormColors getFormColors(Display display) {
     if (null == formColors) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1451
       FormColors tempToAvoidSyncIssues = new FormColors(display);
       tempToAvoidSyncIssues.markShared(); // keep it from being disposed early
       formColors = tempToAvoidSyncIssues;
@@ -242,6 +244,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
    * @return the image descriptor
    */
   public ImageDescriptor getImageDescriptor(String imageFile) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4988
     URL url = getBundle().getEntry("icons/" + imageFile);    
     return ImageDescriptor.createFromURL(url);
   }

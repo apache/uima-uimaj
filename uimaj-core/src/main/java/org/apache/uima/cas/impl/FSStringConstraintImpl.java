@@ -36,6 +36,7 @@ class FSStringConstraintImpl implements FSStringConstraint {
   /**
    * Constructor is package private.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   FSStringConstraintImpl() {
     super();
     this.string = "";
@@ -72,6 +73,7 @@ class FSStringConstraintImpl implements FSStringConstraint {
           buf.append(c);
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
     buf.append('"');
     return buf.toString();
   }

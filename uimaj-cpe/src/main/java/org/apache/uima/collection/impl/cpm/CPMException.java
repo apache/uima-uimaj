@@ -23,6 +23,7 @@ public class CPMException extends Exception {
   private static final long serialVersionUID = -8398570626529912770L;
 
   public CPMException(String msg) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(msg);
   }
 }

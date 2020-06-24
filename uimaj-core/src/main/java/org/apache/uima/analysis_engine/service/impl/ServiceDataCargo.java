@@ -100,6 +100,7 @@ public class ServiceDataCargo implements Serializable {
    * @throws CASException -
    */
   public void unmarshalInto(AnalysisProcessData aDataContainer, boolean aReplaceCasTypeSystem)
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
           throws CASException {
     unmarshalCas(aDataContainer.getCAS(), aReplaceCasTypeSystem);
     aDataContainer.getProcessTrace().addAll(mProcessTrace.getEvents());

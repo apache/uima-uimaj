@@ -235,9 +235,11 @@ public class BinaryCasSerDes {
    */
   void reinit(int[] heapMetadata, int[] heapArray, String[] stringTable, int[] fsIndex,
       byte[] byteHeapArray, short[] shortHeapArray, long[] longHeapArray) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     CommonSerDesSequential csds = new CommonSerDesSequential(baseCas);  // for non Delta case, not held on to
             // compare with compress form 4, which does cas.getCsds() or cas.newCsds() which saves it in cas.svd
     csds.setup(null, 1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     heap = new Heap();
     byteHeap = new ByteHeap();
     shortHeap = new ShortHeap();
@@ -264,6 +266,7 @@ public class BinaryCasSerDes {
 
   public CASImpl setupCasFromCasMgrSerializer(CASMgrSerializer casMgrSerializer) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     if (null != casMgrSerializer) {
   
       TypeSystemImpl ts = casMgrSerializer.getTypeSystem();
@@ -384,10 +387,14 @@ public class BinaryCasSerDes {
      * @param heapAddr - 
      */
     private void maybeRemove(int heapAddr) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       TypeImpl type = fs._getTypeImpl();
       boolean wasRemoved;
       if (!type.isArray()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         FeatureImpl feat = type.getFeatureImpls()[heapAddr - fsStartAddr - 1];
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
         wasRemoved = baseCas.checkForInvalidFeatureSetting(fs, feat.getCode(), tobeAddedback);
         addrOfFsToBeAddedBack = wasRemoved ? fsStartAddr : 0;
         fsToBeAddedBack = wasRemoved ? fs : null; 
@@ -482,6 +489,7 @@ public class BinaryCasSerDes {
   
     try {
       Header h = CommonSerDes.readHeader(dis);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       return reinit(h, istream, null, CasLoadMode.DEFAULT, null, AllowPreexistingFS.allow, null);
     } catch (IOException e) {
       String msg = e.getMessage();
@@ -527,6 +535,7 @@ public class BinaryCasSerDes {
   
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
     if (!h.isV3) {
       if (h.getSeqVersionNbr() < 2) {
         isBeforeV3 = true; // adjusts binary type numbers 
@@ -550,6 +559,7 @@ public class BinaryCasSerDes {
     try {
       final boolean delta = h.isDelta;
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5201
       if (h.getSeqVersionNbr() < 2 && delta) { // is version 2 and delta
         /** Deserializing a Version 2 Delta Cas into UIMA Version 3 not supported. */
         throw new CASRuntimeException(CASRuntimeException.DESERIALIZING_V2_DELTA_V3);
@@ -566,6 +576,7 @@ public class BinaryCasSerDes {
           System.out.format("BinDeser version = %d%n", h.v);
         }
         if (h.form4) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
           BinaryCasSerDes4 bcsd4 = new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false);
           bcsd4.deserialize(baseCas, dis, delta, h);
           return h.typeSystemIndexDefIncluded ? SerialFormat.COMPRESSED_TSI : SerialFormat.COMPRESSED;
@@ -602,6 +613,8 @@ public class BinaryCasSerDes {
         }
       }
      
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
       return binaryDeserialization(h);
     } catch (IOException e) {
       String msg = e.getMessage();
@@ -667,12 +680,15 @@ public class BinaryCasSerDes {
    */
   private SerialFormat binaryDeserialization(Header h) {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
     final boolean delta = h.isDelta;
     
     final Reading r = h.reading;
     
     final DataInputStream dis = r.dis;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(baseCas, delta);
     
     if (delta) {
@@ -692,6 +708,8 @@ public class BinaryCasSerDes {
     
     try {
     // main fsheap
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
       final int fsheapsz = r.readInt();
       
       // reading the 0th (null) element, because that's what V2 did
@@ -704,11 +722,14 @@ public class BinaryCasSerDes {
       }
       if (TRACE_DESER) {
         System.out.format("BinDes Plain %s startPos: %,d mainHeapSize: %d%n", 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
             delta ? "Delta" : "", startPos, fsheapsz);
       }
             
       // add new heap slots
       for (int i = startPos; i < fsheapsz+startPos; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
         heap.heap[i] = r.readInt();
 //        if (TRACE_DESER) {
 //          if (i < 101 + startPos) {
@@ -726,6 +747,8 @@ public class BinaryCasSerDes {
       
       shdh.charHeap = new char[stringheapsz];
       for (int i = 0; i < stringheapsz; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
         shdh.charHeap[i] = (char) r.readShort();
       }
       shdh.charHeapPos = stringheapsz;
@@ -748,12 +771,15 @@ public class BinaryCasSerDes {
 
       dis.readInt(); // 0
       for (int i = shdh.refHeapPos; i < shdh.refHeap.length; i += StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
         shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET] = r.readInt();
         shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET] = r.readInt();
         shdh.refHeap[i + StringHeapDeserializationHelper.STRING_LIST_ADDR_OFFSET] = 0;
       }
       shdh.refHeapPos = refheapsz + StringHeapDeserializationHelper.FIRST_CELL_REF;
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       stringHeap.reinit(shdh, delta);
             
       final int fsmodssz2;
@@ -772,6 +798,8 @@ public class BinaryCasSerDes {
          *   - Phase 2 happens after the FSs are created from the heap data.
          *   
          */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
         fsmodssz2 = 2 * r.readInt();
         modWords = new int[fsmodssz2];
         
@@ -790,8 +818,11 @@ public class BinaryCasSerDes {
       // indexed FSs
       int fsindexsz = r.readInt();
       int[] fsindexes = new int[fsindexsz];
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       if (TRACE_DESER) System.out.format("BinDes indexedFSs count: %,d%n", fsindexsz);
       for (int i = 0; i < fsindexsz; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
         fsindexes[i] = r.readInt();
         if (TRACE_DESER) {
           if (i % 5 == 0) System.out.format("%n i: %5d ", i);
@@ -817,7 +848,10 @@ public class BinaryCasSerDes {
       BinaryCasSerDes6.skipBytes(dis, align);
 
       // short heap
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
       heapsz = r.readInt();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       if (TRACE_DESER) System.out.format("BinDes ShortHeap size: %,d%n", heapsz);
       
       if (!delta) {
@@ -839,7 +873,11 @@ public class BinaryCasSerDes {
       }
 
       // long heap
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
       heapsz = r.readInt();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       if (TRACE_DESER) System.out.format("BinDes LongHeap size: %,d%n", heapsz);
       
       if (!delta) {
@@ -866,6 +904,8 @@ public class BinaryCasSerDes {
          */
         
         //modified Byte Heap        
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
         heapsz = updateAuxArrayMods(r, byteAuxAddr2fsa, (ba, arrayIndex) -> {
             if (ba instanceof ByteArray) {
               ((ByteArray)ba).set(arrayIndex, dis.readByte());
@@ -879,8 +919,11 @@ public class BinaryCasSerDes {
         BinaryCasSerDes6.skipBytes(dis, align);
         
         //modified Short Heap
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
         heapsz = updateAuxArrayMods(r, shortAuxAddr2fsa, (sa, arrayIndex) -> {
           ((ShortArray)sa).set(arrayIndex, r.readShort());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         });
                 
         // word alignment
@@ -889,6 +932,8 @@ public class BinaryCasSerDes {
         }
       
         //modified Long Heap
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
         updateAuxArrayMods(r, longAuxAddr2fsa, (la, arrayIndex) -> {
           if (la instanceof LongArray) {
             ((LongArray)la).set(arrayIndex, r.readLong());
@@ -914,6 +959,7 @@ public class BinaryCasSerDes {
         IntListIterator it = csds.addr2fs.keyIterator();
         int iaa = 0;
         while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
           bds.fssAddrArray[iaa++] = it.nextNvc();
         }
         // iaa at this point refs the last entry in the table
@@ -926,6 +972,7 @@ public class BinaryCasSerDes {
         // loop over all heap modifications to existing FSs
         
         // first disable auto addbacks for index corruption - this routine is handling that
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         baseCas.svd.disableAutoCorruptionCheck = true;        
         
         try {
@@ -938,6 +985,7 @@ public class BinaryCasSerDes {
           bds.addBackIfRemoved();
           bds.fssAddrArray = null;  // free storage
         } finally {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           baseCas.svd.disableAutoCorruptionCheck = false;
         }
       }
@@ -948,6 +996,8 @@ public class BinaryCasSerDes {
       
       if (!delta) {
         setHeapExtents();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
         csds.setHeapEnd(nextHeapAddrAfterMark);
       }
 
@@ -967,6 +1017,7 @@ public class BinaryCasSerDes {
       longHeap = null;
       
       // cleared because only used for delta deser, for mods, and mods not allowed for multiple deltas
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       clearAuxAddr2fsa();
     } catch (IOException e) {
       String msg = e.getMessage();
@@ -983,9 +1034,12 @@ public class BinaryCasSerDes {
         baseCas.forAllViews(view -> view.set_deserialized_doc_annot_not_indexed(null));
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     return h.typeSystemIndexDefIncluded ? SerialFormat.BINARY_TSI : SerialFormat.BINARY;
   }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
   void setHeapExtents() {
     // We subtract 1 because the when creating the new entries in these heaps, the first one is
     //   at location 1, not 0, due to how the heaps are set up, 
@@ -995,6 +1049,8 @@ public class BinaryCasSerDes {
     nextStringHeapAddrAfterMark = stringHeap.getSize() - 1;
     nextByteHeapAddrAfterMark   = byteHeap.getSize() - 1;
     nextShortHeapAddrAfterMark  = shortHeap.getSize() - 1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
     nextLongHeapAddrAfterMark   = longHeap.getSize() - 1;
   }
   /**
@@ -1245,6 +1301,7 @@ public class BinaryCasSerDes {
   // [FS-1 ... FS-n]
   // etc.
   int[] getIndexedFSs(Obj2IntIdentityHashMap<TOP> fs2addr) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     IntVector v = new IntVector();
     Collection<TOP> fss;
 
@@ -1343,6 +1400,7 @@ public class BinaryCasSerDes {
 
   public static int getFsSpaceReq(TOP fs, TypeImpl type) {
     // use method in type; pass in array size if array
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return type.getFsSpaceReq(fs);
   }  
   
@@ -1410,6 +1468,7 @@ public class BinaryCasSerDes {
    *        used by delta cas.
    * @return null or for delta, all the found FSs
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
   List<TOP> scanAllFSsForBinarySerialization(MarkerImpl mark, CommonSerDesSequential csds) {
     final boolean isMarkSet = mark != null;
 
@@ -1429,6 +1488,7 @@ public class BinaryCasSerDes {
     
     if (!isMarkSet) {
       clearDeltaOffsets();  // set nextXXheapAfterMark to 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       clearAuxAddr2fsa();
     }
 
@@ -1463,6 +1523,7 @@ public class BinaryCasSerDes {
    * @param isMarkSet true if mark is set, used to compute first 
    */
   private void extractFsToV2Heaps(TOP fs, boolean isMarkSet, Obj2IntIdentityHashMap<TOP> fs2addr) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     TypeImpl type = fs._getTypeImpl();
     // pos is the pos in the new heaps; for delta it needs adjustment if written out  
     int pos = heap.add(getFsSpaceReq(fs, type), type.getCode());  
@@ -1470,6 +1531,7 @@ public class BinaryCasSerDes {
     if (type.isArray()) {
       
       // next slot is the length
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       final int length = ((CommonArrayFS)fs).size();
       heap.heap[pos + arrayLengthFeatOffset] = length;
       // next slot are the values
@@ -1508,6 +1570,8 @@ public class BinaryCasSerDes {
         
       case Slot_ByteRef: {
           int baAddr = byteHeap .addByteArray   (((ByteArray   )fs)._getTheArray());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           heap.heap[i] = nextByteHeapAddrAfterMark + baAddr;
           byteAuxAddr2fsa.put(nextByteHeapAddrAfterMark + baAddr, fs);
 //        // hack to find first above-the-mark ref
@@ -1519,6 +1583,7 @@ public class BinaryCasSerDes {
       case Slot_ShortRef: {
           int saAddr = shortHeap.addShortArray  (((ShortArray  )fs)._getTheArray());
           heap.heap[i] = nextShortHeapAddrAfterMark + saAddr;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           shortAuxAddr2fsa.put(nextShortHeapAddrAfterMark + saAddr, fs);        
         }
         break;
@@ -1544,12 +1609,15 @@ public class BinaryCasSerDes {
       default: Misc.internalError();
       } // end of switch
     } else {  // end of is-array
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
       if (fs instanceof UimaSerializable) {
         ((UimaSerializable)fs)._save_to_cas_data();
       }
       int i = pos + 1;
       for (FeatureImpl feat : type.getFeatureImpls()) {
         switch (feat.getSlotKind()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
         case Slot_Boolean:   heap.heap[i++] = fs._getBooleanValueNc(feat) ? 1 : 0; break;
         case Slot_Byte:      heap.heap[i++] = fs._getByteValueNc(feat); break;
         case Slot_Short:     heap.heap[i++] = fs._getShortValueNc(feat); break;
@@ -1612,6 +1680,7 @@ public class BinaryCasSerDes {
     
     List<Runnable> fixups4forwardFsRefs = new ArrayList<>();
     List<Runnable> fixups4UimaSerialization = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
 
     for (int heapIndex = startPos; heapIndex < heapsz; heapIndex += getFsSpaceReq(fs, type)) {
       int typecode = heap.heap[heapIndex];
@@ -1620,6 +1689,7 @@ public class BinaryCasSerDes {
 //      }
       type = tsi.getTypeForCode(heap.heap[heapIndex]);
       if (type == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         throw new CASRuntimeException(CASRuntimeException.deserialized_type_not_found, heap.heap[heapIndex]);
       }
       if (type.isArray()) {
@@ -1628,6 +1698,8 @@ public class BinaryCasSerDes {
         final int hhi = heapIndex + arrayContentOffset;
 
         fs = baseCas.createArray(type, len);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
         csds.addFS(fs, heapIndex);
         switch(type.getComponentSlotKind()) {
 
@@ -1707,6 +1779,8 @@ public class BinaryCasSerDes {
         boolean isSofa = false;
         boolean documentAnnotationPreviouslyIndexed = false;
         if (type.isAnnotationBaseType()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
           Sofa sofa = getSofaFromAnnotBase(heapIndex, stringHeap, addr2fs, csds);  // creates sofa if needed and exists (forward ref case)
           view = (sofa == null) ? baseCas.getInitialView() : baseCas.getView(sofa);
           if (type == tsi.docType) {
@@ -1719,17 +1793,22 @@ public class BinaryCasSerDes {
             } else {
                 fs = documentAnnotationPrevious;  
                 // remove from Corruptable indexes, because we'll be updating it.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4792
                 view.removeFromCorruptableIndexAnyView(fs, view.getAddbackSingle());
                 documentAnnotationPreviouslyIndexed = true;
             }
           } else {
             fs = view.createFS(type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
             if (fs instanceof UimaSerializable) {
               final UimaSerializable ufs = (UimaSerializable) fs;
               fixups4UimaSerialization.add(() -> ufs._init_from_cas_data());
             }
           }          
         } else if (type == tsi.sofaType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
           fs = makeSofaFromHeap(heapIndex, stringHeap, csds, SOFA_IN_NORMAL_ORDER);  // creates Sofa if not already created due to annotationbase code above
           isSofa = true;
         } else {
@@ -1739,6 +1818,7 @@ public class BinaryCasSerDes {
             fixups4UimaSerialization.add(() -> ufs._init_from_cas_data());
           }
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         if (!isSofa) { // if it was a sofa, other code added or pended it
           csds.addFS(fs, heapIndex);
         }
@@ -1752,6 +1832,8 @@ public class BinaryCasSerDes {
           case Slot_Int: 
           case Slot_Float: 
             if (!isSofa || feat != tsi.sofaNum) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
               fs._setIntLikeValueNcNj(slotKind, feat, heapFeat(heapIndex, feat));
             }
             break;
@@ -1775,6 +1857,8 @@ public class BinaryCasSerDes {
                 if (feat == tsi.sofaArray) {
                   ((Sofa)finalFs).setLocalSofaData(item);
                 } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
                   finalFs._setFeatureValueNcNj(feat, item);
                 }}, addr2fs);                        
             break;
@@ -1795,6 +1879,7 @@ public class BinaryCasSerDes {
       r.run();
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     for (Runnable r : fixups4UimaSerialization) {
       r.run();
     }
@@ -1828,6 +1913,8 @@ public class BinaryCasSerDes {
   }
   
   private Sofa getSofaFromAnnotBase(int annotBaseAddr, StringHeap stringHeap2, Int2ObjHashMap<TOP, TOP> addr2fs,
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
                                     CommonSerDesSequential csds) {
     int sofaAddr = heapFeat(annotBaseAddr, tsi.annotBaseSofaFeat);
     if (0 == sofaAddr) {
@@ -1846,6 +1933,8 @@ public class BinaryCasSerDes {
     int sofaNum = heapFeat(sofaAddr, tsi.sofaNum);
     String sofaName = stringHeap2.getStringForCode(heapFeat(sofaAddr, tsi.sofaId));
     sofa = baseCas.createSofa(sofaNum, sofaName, null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
     if (isUnordered) {
       csds.addFSunordered(sofa, sofaAddr);
     } else {
@@ -1874,6 +1963,7 @@ public class BinaryCasSerDes {
    */
   private void updateHeapSlot(BinDeserSupport bds, int slotAddr, int slotValue, Int2ObjHashMap<TOP, TOP> addr2fs) {
     TOP fs = bds.fs;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     TypeImpl type = fs._getTypeImpl();
     if (type.isArray()) {
       // only heap stored arrays have mod updates.  
@@ -1891,6 +1981,7 @@ public class BinaryCasSerDes {
     } else { // end of arrays
       // is plain fs with fields
       final int offset0 = slotAddr - bds.fsStartAddr - 1;  // 0 based offset of feature, -1 for type code word
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       FeatureImpl feat = type.getFeatureImpls()[offset0];
       SlotKind slotKind = feat.getSlotKind();
       switch(slotKind) {
@@ -1898,6 +1989,8 @@ public class BinaryCasSerDes {
       case Slot_Byte:   
       case Slot_Short:  
       case Slot_Int:    
+//IC see: https://issues.apache.org/jira/browse/UIMA-4825
+//IC see: https://issues.apache.org/jira/browse/UIMA-4820
       case Slot_Float: fs._setIntLikeValue(slotKind, feat, slotValue); break;
       
       case Slot_LongRef:   fs.setLongValue(feat, longHeap.getHeapValue(slotValue)); break;
@@ -1970,6 +2063,7 @@ public class BinaryCasSerDes {
   }
   
   private void clearAuxAddr2fsa() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     byteAuxAddr2fsa.clear();
     shortAuxAddr2fsa.clear();
     longAuxAddr2fsa.clear();    

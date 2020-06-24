@@ -36,6 +36,8 @@ import org.apache.uima.util.Level;
  * interface to access the CAS.
  */
 public abstract class CasDataCollectionReader_ImplBase extends ConfigurableResource_ImplBase
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         implements CasDataCollectionReader {
   /**
    * current class
@@ -52,6 +54,7 @@ public abstract class CasDataCollectionReader_ImplBase extends ConfigurableResou
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // aSpecifier must be a CollectionReaderDescription
     if (aSpecifier instanceof CollectionReaderDescription) {

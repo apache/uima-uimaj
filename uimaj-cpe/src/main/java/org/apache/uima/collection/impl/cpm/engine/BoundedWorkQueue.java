@@ -69,6 +69,7 @@ public class BoundedWorkQueue {
    *          CPE Engine reference
    */
   public BoundedWorkQueue(int aQueueSize, String aQueueName, CPMEngine aCpmEngine) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
     queueMaxSize = aQueueSize;
     queueName = aQueueName;
     cpm = aCpmEngine;
@@ -107,6 +108,7 @@ public class BoundedWorkQueue {
    * @return - queue max size
    */
   public int getCapacity() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
     return queueMaxSize;
   }
 
@@ -119,6 +121,7 @@ public class BoundedWorkQueue {
   public synchronized void enqueue(Object anObject) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -134,9 +137,11 @@ public class BoundedWorkQueue {
       // terminating the CPE
       if (!(anObject instanceof Object[] && ((Object[]) anObject)[0] instanceof EOFToken)) {
         // Block if the queue is full AND the CPE is running
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
         while (numberElementsInQueue == queueMaxSize && (cpm == null || cpm.isRunning())) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINEST,
                     this.getClass().getName(),
                     "process",
@@ -153,6 +158,7 @@ public class BoundedWorkQueue {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -167,6 +173,7 @@ public class BoundedWorkQueue {
     numberElementsInQueue++;
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -175,6 +182,7 @@ public class BoundedWorkQueue {
               new Object[] { Thread.currentThread().getName(), queueName,
                   String.valueOf(numberElementsInQueue) });
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
     notifyAll();  
   }
 
@@ -186,6 +194,7 @@ public class BoundedWorkQueue {
   public synchronized Object dequeue() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -205,6 +214,7 @@ public class BoundedWorkQueue {
     if (returnedObject instanceof Object[]) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 this.getClass().getName(),
                 "process",
@@ -254,6 +264,7 @@ public class BoundedWorkQueue {
 //        // add 1 millisecond to expire time to account for "rounding" issues
 //        long timeExpire = (0 == aTimeout)? Long.MAX_VALUE : (System.currentTimeMillis() + aTimeout + 1);
 //        long timeLeft = timeExpire - System.currentTimeMillis();
+//IC see: https://issues.apache.org/jira/browse/UIMA-686
     if (resource == null) {
       try {
         // add 1 millisecond to expire time to account for "rounding" issues
@@ -265,9 +276,11 @@ public class BoundedWorkQueue {
                   Long.MAX_VALUE : 
                   timeNow + aTimeout + 1);
         long timeLeft = timeExpire - timeNow;
+//IC see: https://issues.apache.org/jira/browse/UIMA-303
         while (timeLeft > 0) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_queue_empty__FINEST",
                     new Object[] { Thread.currentThread().getName(), queueName });
           }

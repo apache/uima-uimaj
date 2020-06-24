@@ -124,6 +124,7 @@ public class ValueSection extends AbstractSectionParm {
 
     valueTextStack = newComposite(sectionClient);
     valueTextStack.setLayoutData(new GridData(GridData.FILL_HORIZONTAL
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + GridData.VERTICAL_ALIGN_FILL));
     ((GridData) valueTextStack.getLayoutData()).horizontalSpan = 2;
     valueTextStack.setLayout(valueTextStackLayout = new StackLayout());
@@ -135,7 +136,9 @@ public class ValueSection extends AbstractSectionParm {
     enableBorders(vtc2);
     toolkit.paintBordersFor(vtc1);
     toolkit.paintBordersFor(vtc2);
+//IC see: https://issues.apache.org/jira/browse/UIMA-99
     valueText = newLabeledTextField(vtc1, "Value", "Specify the value",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             SWT.NONE);
     valueTextCombo = newLabeledCComboWithTip(vtc2, "Value",
             "Use the combo pulldown to pick True or False");
@@ -184,6 +187,7 @@ public class ValueSection extends AbstractSectionParm {
 
       modelValue = (NOT_IN_ANY_GROUP.equals(groupName)) ? modelSettings.getParameterValue(parmName)
               : modelSettings.getParameterValue(groupName, parmName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       if (selectedCP.isMultiValued()) {
         // use list, not text field
@@ -219,6 +223,7 @@ public class ValueSection extends AbstractSectionParm {
   public void enable() {
 
     boolean mvValue = (null != selectedCP) && (selectedCP.isMultiValued());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     valueText.setVisible((null != selectedCP) && (!selectedCP.isMultiValued()));
     valueTextCombo.setVisible((null != selectedCP) && (!selectedCP.isMultiValued()));
 
@@ -228,6 +233,7 @@ public class ValueSection extends AbstractSectionParm {
     removeButton.setEnabled(mvValue && selected > -1);
     upButton.setEnabled(mvValue && selected > 0);
     downButton.setEnabled(mvValue && (selected > -1)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && (selected < (valueTable.getItemCount() - 1)));
     valueText.getParent().redraw();
   }
@@ -252,6 +258,7 @@ public class ValueSection extends AbstractSectionParm {
       // open dialog to enter value
       String dataType = selectedCP.getType();
       int validationFilter = "Boolean".equals(dataType) ? CommonInputDialog.TRUE_FALSE : "Integer"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .equals(dataType) ? CommonInputDialog.INTEGER
               : "Float".equals(dataType) ? CommonInputDialog.FLOAT : CommonInputDialog.ALLOK;
 
@@ -271,6 +278,7 @@ public class ValueSection extends AbstractSectionParm {
       TableItem item = valueTable.getItems()[valueTable.getSelectionIndex()];
       CommonInputDialog dialog = new CommonInputDialog(this, "Add value", "Enter a value",
               CommonInputDialog.ALLOK, item.getText());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       if (dialog.open() == Window.CANCEL)
         return;
@@ -301,6 +309,7 @@ public class ValueSection extends AbstractSectionParm {
     }
 
     else if (event.widget == removeButton
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || (event.widget == valueTable && event.character == SWT.DEL)) {
       handleRemove(event);
     }
@@ -391,6 +400,7 @@ public class ValueSection extends AbstractSectionParm {
         }
       } catch (NumberFormatException e) {
         Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .popMessage(
                         "Invalid Number",
                         "If typing a floating point exponent, please complete the exponent.\nOtherwise, please retype the proper kind of number",
@@ -433,9 +443,11 @@ public class ValueSection extends AbstractSectionParm {
         for (int i = 0; i < valueArr.length; i++) {
           valueArr[i] = Boolean.valueOf(aValues[i].getText());
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       } else
         throw new InternalErrorCDE("invalid state");
     } catch (NumberFormatException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       Utility.popMessage("Invalid Number",
               "One or more values is not of the proper kind of number."
                       + " If this entry is the only one with the wrong numeric type,"
@@ -457,6 +469,7 @@ public class ValueSection extends AbstractSectionParm {
     boolean changed = false;
     if (COMMON_GROUP.equals(groupName)) {
       ConfigurationGroup[] groups = getConfigurationParameterDeclarations()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getConfigurationGroups();
       for (int i = 0; i < groups.length; i++) {
         String[] groupNames = groups[i].getNames();

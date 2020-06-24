@@ -53,6 +53,7 @@ public class Class_TCCL {
   
   static public <T> Class<T> forName(String className, ResourceManager rm, boolean resolve) 
       throws ClassNotFoundException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
     try {
       return (Class<T>) Class.forName(className, resolve, get_cl(rm));
     } catch (ClassNotFoundException x) {  // 
@@ -72,6 +73,7 @@ public class Class_TCCL {
     
     ClassLoader cl = (rm == null) ? null : rm.getExtensionClassLoader();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
     if (cl == null) {
       cl = get_parent_cl();Thread.currentThread().getContextClassLoader();
     }

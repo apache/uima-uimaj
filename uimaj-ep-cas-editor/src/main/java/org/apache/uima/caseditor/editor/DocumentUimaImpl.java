@@ -117,6 +117,7 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   @Override
   public String getTypeSystemText() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2671
     return typeSystemText;
   }
 
@@ -126,6 +127,7 @@ public class DocumentUimaImpl extends AbstractDocument {
    * @param featureStructure the feature structure
    */
   private void addFeatureStructureInternal(FeatureStructure featureStructure) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2279
     getCAS().getIndexRepository().addFS(featureStructure);
   }
 
@@ -144,6 +146,7 @@ public class DocumentUimaImpl extends AbstractDocument {
   @Override
   public void addFeatureStructures(Collection<? extends FeatureStructure> annotations) {
     for (FeatureStructure annotation : annotations) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2279
       addFeatureStructureInternal(annotation);
     }
 
@@ -170,6 +173,7 @@ public class DocumentUimaImpl extends AbstractDocument {
   public void removeFeatureStructure(FeatureStructure annotation) {
     removeAnnotationInternal(annotation);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1398
     fireRemovedFeatureStructure(annotation);
   }
 
@@ -207,6 +211,7 @@ public class DocumentUimaImpl extends AbstractDocument {
    */
   @Override
   public void updateFeatureStructure(Collection<? extends FeatureStructure> annotations) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1398
     fireUpdatedFeatureStructure(annotations);
   }
 
@@ -227,6 +232,7 @@ public class DocumentUimaImpl extends AbstractDocument {
 
     StrictTypeConstraint typeConstrain = new StrictTypeConstraint(type);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     FSIterator<AnnotationFS> strictTypeIterator = mCAS
             .createFilteredIterator(annotationIndex.iterator(), typeConstrain);
 
@@ -264,6 +270,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   @Override
   public void switchView(String viewName) {
     String oldViewName = mCAS.getViewName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
     mCAS = mCAS.getView(viewName);
 
@@ -282,14 +290,17 @@ public class DocumentUimaImpl extends AbstractDocument {
     boolean withPartialTypesystem = store
             .getBoolean(AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     URI uri = casFile.getLocationURI();
     if (casFile.isLinked()) {
       uri = casFile.getRawLocationURI();
     }
     File file = EFS.getStore(uri).toLocalFile(0, new NullProgressMonitor());
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       format = CasIOUtils.load(file.toURI().toURL(), null, mCAS, withPartialTypesystem);
     } catch (IOException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2011
       throwCoreException(e);
     }
 
@@ -302,6 +313,7 @@ public class DocumentUimaImpl extends AbstractDocument {
    * @throws CoreException the core exception
    */
   private void throwCoreException(Exception e) throws CoreException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2011
     String message = e.getMessage() != null ? e.getMessage() : "";
     IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
     throw new CoreException(s);
@@ -314,9 +326,11 @@ public class DocumentUimaImpl extends AbstractDocument {
    * @throws CoreException the core exception
    */
   public void serialize(OutputStream out) throws CoreException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     try {
       CasIOUtils.save(mCAS, out, format);
     } catch (IOException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2011
       throwCoreException(e);
     }
   }
@@ -339,6 +353,8 @@ public class DocumentUimaImpl extends AbstractDocument {
       return null;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2012
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     XMLInputSource xmlTypeSystemSource = new XMLInputSource(inTypeSystem,
             extensionTypeSystemFile.getLocation().toFile());
 
@@ -350,6 +366,7 @@ public class DocumentUimaImpl extends AbstractDocument {
       typeSystemDesciptor = (TypeSystemDescription) xmlParser.parse(xmlTypeSystemSource);
 
       IProject project = extensionTypeSystemFile.getProject();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5021
       ClassLoader classLoader = getProjectClassLoader(project);
       
       ResourceManager resourceManager;
@@ -384,6 +401,7 @@ public class DocumentUimaImpl extends AbstractDocument {
               new FsIndexDescription[] { indexDesciptor });
     } catch (ResourceInitializationException e) {
       String message = e.getMessage() != null ? e.getMessage() : "";
+//IC see: https://issues.apache.org/jira/browse/UIMA-3652
       IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
       throw new CoreException(s);
     }
@@ -399,6 +417,7 @@ public class DocumentUimaImpl extends AbstractDocument {
    * @throws CoreException the core exception
    */
   public static ClassLoader getProjectClassLoader(IProject project) throws CoreException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5021
     IProjectNature javaNature = project.getNature(JAVA_NATURE);
     if (javaNature != null) {
       JavaProject javaProject = (JavaProject) JavaCore.create(project);

@@ -43,6 +43,7 @@ public class PearProjectCustomizationException extends Exception {
    * Instantiates a new pear project customization exception.
    */
   public PearProjectCustomizationException() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -101,6 +102,7 @@ public class PearProjectCustomizationException extends Exception {
     if (e != null) {
       String msg = e.getMessage();
       msg = msg == null ? "" : msg;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
       a.add(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR, msg, e));
       StackTraceElement[] trace = e.getStackTrace();
       for (int i = 0; i < trace.length; i++) {
@@ -124,7 +126,9 @@ public class PearProjectCustomizationException extends Exception {
       getCause().printStackTrace();
       String msg = getCause().getMessage();
       msg = msg == null ? "" : msg;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
       MultiStatus status = new MultiStatus(PLUGIN_ID, IStatus.ERROR, getCustomStackTrace(), msg,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               getCause());
       ErrorDialog.openError(shell, "Project Customization Error", getMessage()
               + " \nPlease see the details (below).", status, 0xFFFF);
@@ -141,6 +145,7 @@ public class PearProjectCustomizationException extends Exception {
    */
   public static void openErrorDialog(Throwable e, Shell shell) {
     PearProjectCustomizationException subEx = new PearProjectCustomizationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "A error occured during the project customization process.", e);
     subEx.openErrorDialog(shell);
   }

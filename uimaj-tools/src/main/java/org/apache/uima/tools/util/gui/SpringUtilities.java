@@ -59,6 +59,7 @@ public class SpringUtilities {
    */
   public static void makeGrid(Container parent, int rows, int cols, int initialX, int initialY,
           int xPad, int yPad) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     SpringLayout layout;
     try {
       layout = (SpringLayout) parent.getLayout();
@@ -117,6 +118,7 @@ public class SpringUtilities {
     // Set the parent's size.
     SpringLayout.Constraints pCons = layout.getConstraints(parent);
     pCons.setConstraint(SpringLayout.SOUTH, Spring.sum(Spring.constant(yPad), lastCons
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getConstraint(SpringLayout.SOUTH)));
     pCons.setConstraint(SpringLayout.EAST, Spring.sum(Spring.constant(xPad), lastCons
             .getConstraint(SpringLayout.EAST)));

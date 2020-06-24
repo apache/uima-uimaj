@@ -40,6 +40,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  */
 @Deprecated
 public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CpeCollectionReaderCasInitializer {
   
   /** The Constant serialVersionUID. */
@@ -101,6 +103,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
    */
   @Override
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     cfps = settings;
 
@@ -109,6 +112,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
       if (length > 0) {
         configurationParameterSettings = new ConfigurationParameterSettings_impl();
         org.apache.uima.resource.metadata.NameValuePair[] nvp = new NameValuePair_impl[settings
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getParameterSettings().length];
         for (int i = 0; i < settings.getParameterSettings().length; i++) {
           nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(), settings
@@ -166,6 +170,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
 
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casInitializer",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
               new PropertyXmlInfo("parameterSettings", null),
               new PropertyXmlInfo("sofaNameMappings", null),

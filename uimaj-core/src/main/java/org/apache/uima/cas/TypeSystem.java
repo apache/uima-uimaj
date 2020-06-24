@@ -75,6 +75,7 @@ public interface TypeSystem extends Iterable<Type> {
    * @return A type object, or <code>null</code> if no such type exists.
    */
   Type getType(String typeName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Get or Create an array type with component type <code>componentType</code>.
@@ -103,6 +104,7 @@ public interface TypeSystem extends Iterable<Type> {
    * @return The iterator.
    */
   Iterator<Type> getTypeIterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Get the top type, i.e., the root of the type system.
@@ -121,6 +123,7 @@ public interface TypeSystem extends Iterable<Type> {
    */
   @Deprecated
   Vector<Type> getDirectlySubsumedTypes(Type type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Get a List of the types directly subsumed by a given type.
@@ -130,6 +133,7 @@ public interface TypeSystem extends Iterable<Type> {
    * @return A List of the directly subsumed types.
    */
   List<Type> getDirectSubtypes(Type type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Return the list of all types subsumed by the input type. Note: the list does not include the
@@ -140,6 +144,7 @@ public interface TypeSystem extends Iterable<Type> {
    * @return The list of types subsumed by <code>type</code>.
    */
   List<Type> getProperlySubsumedTypes(Type type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Get the parent type for input type.
@@ -167,6 +172,7 @@ public interface TypeSystem extends Iterable<Type> {
    * @return An iterator over the features.
    */
   Iterator<Feature> getFeatures();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Create a type name space object for the name parameter.

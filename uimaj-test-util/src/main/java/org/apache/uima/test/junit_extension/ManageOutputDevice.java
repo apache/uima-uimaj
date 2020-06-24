@@ -36,6 +36,7 @@ public class ManageOutputDevice {
 
   private static PrintStream sysErrPS;
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     sysOutPS = System.out;
     sysErrPS = System.err;
   }

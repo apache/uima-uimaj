@@ -63,6 +63,7 @@ public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBui
    * @see org.apache.uima.search.IndexBuildItem#getIndexRule()
    */
   public IndexRule getIndexRule() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return mRule;
   }
 
@@ -103,6 +104,7 @@ public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBui
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("indexBuildItem",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("name", "name"),
               new PropertyXmlInfo("indexRule", null), new PropertyXmlInfo("filter", null), });
 }

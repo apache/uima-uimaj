@@ -78,6 +78,7 @@ public class XMLToXTalk {
     int depth = 0;
 
     StackEntry[] childrenCount = new StackEntry[6969];
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     ArrayList countList = new ArrayList();
 
@@ -202,10 +203,12 @@ public class XMLToXTalk {
    * @throws IOException -
    */
   public static void xmlToXTalk(Reader r, String filename, boolean purgeWhitespace,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String xml_filename) throws ServiceException, IOException {
     Writer xml_os = null;
     if (xml_filename != null) {
       xml_os = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(xml_filename),
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
               StandardCharsets.UTF_8));
     }
     File file = new File(filename);
@@ -253,6 +256,7 @@ public class XMLToXTalk {
         xml_os.close();
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (RandomAccessFile raf = new RandomAccessFile(filename, "rw")) {
       raf.skipBytes(7);
       // int return_val =
@@ -262,6 +266,7 @@ public class XMLToXTalk {
   }
 
   static private int updateElement(RandomAccessFile raf, ArrayList counts, int index)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     skipString(raf);
     int skipCount = raf.readInt();
@@ -291,6 +296,7 @@ public class XMLToXTalk {
   }
 
   static private void skipString(RandomAccessFile raf) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2844
     final int count = raf.readInt();
     // Debug.p("Skipping string of size: " + count);
     final int skipped = raf.skipBytes(count); 

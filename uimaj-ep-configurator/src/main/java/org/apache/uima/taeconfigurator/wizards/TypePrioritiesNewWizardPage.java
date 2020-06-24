@@ -36,7 +36,9 @@ public class TypePrioritiesNewWizardPage extends AbstractNewWizardPage {
    * @param selection the selection
    */
   public TypePrioritiesNewWizardPage(ISelection selection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(selection, "big_t_s_.gif", "Type Priorities Descriptor File",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Create a new Type Priorities Descriptor file", "typePrioritiesDescriptor.xml");
   }
 

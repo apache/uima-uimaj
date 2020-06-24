@@ -97,11 +97,13 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
     super.initialize(aContext);
 
     // read configuration parameter values
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mCivilianTitles = (String[]) getContext().getConfigParameterValue("CivilianTitles");
     mMilitaryTitles = (String[]) getContext().getConfigParameterValue("MilitaryTitles");
     mGovernmentTitles = (String[]) getContext().getConfigParameterValue("GovernmentTitles");
 
     // write log messages
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
     logger = getLogger();
     logger.log(Level.CONFIG, "PersonTitleAnnotator initialized");
     logger.log(Level.CONFIG, "CivilianTitles = " + Arrays.asList(mCivilianTitles));
@@ -119,6 +121,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
     mPersonTitleType = aTypeSystem.getType("example.PersonTitle");
     if (mPersonTitleType == null) {
       throw new AnalysisEngineProcessException(AnnotatorInitializationException.TYPE_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { getClass().getName(), "example.PersonTitle" });
     }
 
@@ -154,7 +157,9 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
     try {
       // If the ResultSpec doesn't include the PersonTitle type, we have
       // nothing to do.
+//IC see: https://issues.apache.org/jira/browse/UIMA-891
       if (!getResultSpecification().containsType("example.PersonTitle",aCAS.getDocumentLanguage())) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1852
         if (!warningMsgShown) {
           String m = String.format(
               "No output is being produced by the PersonTitleAnnotator because the Result Specification did not contain" +
@@ -177,8 +182,10 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
 
         //v3
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-5625
         for (Annotation annot : aCAS.<Annotation>select(mContainingType)) {
           
+//IC see: https://issues.apache.org/jira/browse/UIMA-5259
           String coveredText = annot.getCoveredText();  // Get text covered by this annotation
           int annotBegin = annot.getBegin();            // Get begin position of this annotation
           annotateRange(aCAS, coveredText, annotBegin); // search for matches within this
@@ -241,6 +248,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
    * 
    */
   protected void annotateRange(CAS aCAS, String aText, int aBeginPos, String aTitleType,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String[] aTitles) {
     // Loop over the matchStrings.
     
@@ -256,7 +264,9 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
         int absStart = aBeginPos + start;
         int absEnd = aBeginPos + end;
         // Write log message
+//IC see: https://issues.apache.org/jira/browse/UIMA-5259
         logger.log(Level.FINER,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "Found \"" + aTitles[i] + "\" at (" + absStart + "," + absEnd + ")");
         // Create a new annotation for the most recently discovered match.
         createAnnotation(aCAS, absStart, absEnd, aTitleType);
@@ -281,8 +291,10 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
    *          the type of person title. This becomes the value of the <code>Kind</code> feature.
    */
   protected void createAnnotation(CAS aCAS, int aBeginPos, int aEndPos, String aTitleType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     AnnotationFS title = aCAS.createAnnotation(mPersonTitleType, aBeginPos, aEndPos);
     // Set the "kind" feature if it's part of the ResultSpec
+//IC see: https://issues.apache.org/jira/browse/UIMA-891
     if (getResultSpecification().containsFeature("example.PersonTitle:Kind",aCAS.getDocumentLanguage())) {
       title.setStringValue(mPersonTitleKindFeature, aTitleType);
     }

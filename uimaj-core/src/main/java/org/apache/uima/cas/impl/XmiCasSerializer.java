@@ -493,6 +493,7 @@ public class XmiCasSerializer {
   // package private for test case access
   void serialize(CAS cas, ContentHandler contentHandler, XmiDocSerializer ser) throws SAXException {
     contentHandler.startDocument();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     try {
       ser.cds.serialize();
     } catch (Exception e) {
@@ -510,6 +511,7 @@ public class XmiCasSerializer {
    * @return the original instance, possibly updated
    */
   public XmiCasSerializer setPrettyPrint(boolean pp) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     css.setPrettyPrint(pp);
     return this;
   }
@@ -521,6 +523,7 @@ public class XmiCasSerializer {
    * @return the original instance, possibly updated
    */
   public XmiCasSerializer setFilterTypes(TypeSystemImpl ts) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     css.setFilterTypes(ts);
     return this;
   }
@@ -543,10 +546,14 @@ public class XmiCasSerializer {
    * @return the original instance, possibly updated
    */
   public XmiCasSerializer setErrorHandler(ErrorHandler eh) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4146
+//IC see: https://issues.apache.org/jira/browse/UIMA-4135
+//IC see: https://issues.apache.org/jira/browse/UIMA-4126
     css.errorHandler = eh;
     return this;
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
   class XmiDocSerializer extends CasSerializerSupportSerialize {
     
     private final CasDocSerializer cds;
@@ -577,6 +584,7 @@ public class XmiCasSerializer {
 //    }
     
     private XmiDocSerializer(ContentHandler ch, CASImpl cas, XmiSerializationSharedData sharedData, MarkerImpl marker) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
       cds = css.new CasDocSerializer(ch, cas, sharedData, marker, this);
       this.ch = ch;
     }
@@ -622,12 +630,15 @@ public class XmiCasSerializer {
       workAttrs.clear();
       computeNamespaceDeclarationAttrs(workAttrs);
       workAttrs.addAttribute(XMI_NS_URI, XMI_VERSION_LOCAL_NAME, XMI_VERSION_QNAME, "CDATA",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMI_VERSION_VALUE);
       startElement(XMI_TAG, workAttrs, iElementCount);
       writeNullObject(); // encodes 1 element
       cds.encodeIndexed(); // encodes indexedFSs.size() element
       cds.encodeQueued(); // encodes queue.size() elements
       if (!cds.isDelta) {  // if delta, the out-of-type-system elements, are guaranteed not to be modified
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
         serializeOutOfTypeSystemElements(); //encodes sharedData.getOutOfTypeSystemElements().size() elements
       }
 
@@ -641,6 +652,7 @@ public class XmiCasSerializer {
     @Override
     protected void writeEndOfSerialization() throws SAXException {
       endElement(XMI_TAG);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1817
       endPrefixMappings();    
     }
     
@@ -648,10 +660,12 @@ public class XmiCasSerializer {
     protected void writeView(Sofa sofa, Collection<TOP> members) throws Exception {
       workAttrs.clear();
       // this call should never generate a new XmiId, it should just retrieve the existing one for the sofa
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       String sofaXmiId = (sofa == null) ? null : cds.getXmiId(sofa);   
       if (sofaXmiId != null && sofaXmiId.length() > 0) {
         addAttribute(workAttrs, "sofa", sofaXmiId);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
       StringBuilder membersString = new StringBuilder();
       boolean isPastFirstElement = writeViewMembers(membersString, members);
       //check for out-of-typesystem members
@@ -702,16 +716,19 @@ public class XmiCasSerializer {
     private boolean writeViewMembers(StringBuilder sb, Collection<TOP> members) throws SAXException {
       boolean isPastFirstElement = false;
       int nextBreak = (((sb.length() - 1) / CasSerializerSupport.PP_LINE_LENGTH) + 1) * CasSerializerSupport.PP_LINE_LENGTH;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       for (TOP member : members) {
         int xmiId = cds.getXmiIdAsInt(member);
         if (xmiId != 0) { // to catch filtered FS         
           if (isPastFirstElement) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
             sb.append(' ');
           } else {
             isPastFirstElement = true;
           }
           sb.append(xmiId);
           if (cds.isFormattedOutput_inner && (sb.length() > nextBreak)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4020
             sb.append(SYSTEM_LINE_FEED);
             nextBreak += CasSerializerSupport.PP_LINE_LENGTH; 
           }
@@ -730,6 +747,7 @@ public class XmiCasSerializer {
 
     @Override
     protected void writeView(Sofa sofa, Collection<TOP> added, Collection<TOP> deleted, Collection<TOP> reindexed) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       String sofaXmiId = cds.getXmiId(sofa);
       workAttrs.clear();
       if (sofaXmiId != null && sofaXmiId.length() > 0) {
@@ -760,6 +778,7 @@ public class XmiCasSerializer {
 
     @Override
     protected void writeFs(TOP fs, int typeCode) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       writeFsOrLists(fs, typeCode, false);
     }
 
@@ -786,6 +805,7 @@ public class XmiCasSerializer {
       if (fsArray instanceof StringArray && ((StringArray)fsArray).size() != 0) {
 
         // string arrays are encoded as elements, in case they contain whitespace
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         List<XmlElementNameAndContents> childElements = new ArrayList<>();
         stringArrayToElementList("elements", (StringArray) fsArray, childElements);
         startElement(xmlElementName, workAttrs, childElements.size());
@@ -802,6 +822,7 @@ public class XmiCasSerializer {
     
     private void endPrefixMappings() throws SAXException {
       Iterator<Map.Entry<String, String>> it = cds.nsUriToPrefixMap.entrySet().iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1817
       while (it.hasNext()) {
         Map.Entry<String, String> entry = it.next();
         String prefix = entry.getValue();
@@ -833,6 +854,7 @@ public class XmiCasSerializer {
                                "xmlns:" + prefix, 
                                "CDATA", 
                                nsUri);  
+//IC see: https://issues.apache.org/jira/browse/UIMA-1817
         ch.startPrefixMapping(prefix, nsUri);
       }
       // also add schemaLocation if specified
@@ -842,12 +864,15 @@ public class XmiCasSerializer {
         ch.startPrefixMapping("xsi", XSI_NS_URI);
         
         // write xsi:schemaLocation attributaiton
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
         StringBuilder buf = new StringBuilder();
         it = nsUriToSchemaLocationMap.entrySet().iterator();
         while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
           Map.Entry<String, String> entry = it.next();
           buf.append(entry.getKey()).append(' ').append(entry.getValue()).append(' ');
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-449
         workAttrs.addAttribute(XSI_NS_URI, "xsi", "xsi:schemaLocation", "CDATA", buf.toString());
       }
       
@@ -872,10 +897,12 @@ public class XmiCasSerializer {
         // Add other attributes
         Iterator<XmlAttribute> attrIt = oed.attributes.iterator();
         while (attrIt.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
           XmlAttribute attr = attrIt.next();
           addAttribute(workAttrs, attr.name, attr.value);
         }
         // debug
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
         if (oed.elementName.qName.endsWith("[]")) {
           Misc.internalError(new Exception("XMI Cas Serialization: out of type system data has type name ending with []"));
         }
@@ -883,12 +910,15 @@ public class XmiCasSerializer {
         startElement(oed.elementName, workAttrs, oed.childElements.size());
         
         //serialize features encoded as child elements
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
         Iterator<XmlElementNameAndContents> childElemIt = oed.childElements.iterator();
         while (childElemIt.hasNext()) {
           XmlElementNameAndContents child = childElemIt.next();
           workAttrs.clear();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
           Iterator<XmlAttribute> attrIter = child.attributes.iterator();
           while (attrIter.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
             XmlAttribute attr =attrIter.next();
             addAttribute(workAttrs, attr.name, attr.value);
           }
@@ -922,7 +952,9 @@ public class XmiCasSerializer {
      * @throws SAXException passthru
      */
     private List<XmlElementNameAndContents> encodeFeatures(TOP fs, AttributesImpl attrs, boolean insideListNode)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<XmlElementNameAndContents> childElements = new ArrayList<>();
 //      int heapValue = cds.cas.getHeapValue(addr);
 //      int[] feats = cds.tsi.ll_getAppropriateFeatures(heapValue);
@@ -935,6 +967,7 @@ public class XmiCasSerializer {
       // isSofa = true;
       // }
       for (final FeatureImpl fi : fs._getTypeImpl().getFeatureImpls()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
         if (cds.isFiltering) {
           // skip features that aren't in the target type system
@@ -956,6 +989,7 @@ public class XmiCasSerializer {
         case LowLevelCAS.TYPE_CLASS_FLOAT:
         case LowLevelCAS.TYPE_CLASS_DOUBLE: 
         case LowLevelCAS.TYPE_CLASS_BOOLEAN:
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
           attrValue = fs.getFeatureValueAsString(fi);
           break;
         
@@ -972,6 +1006,7 @@ public class XmiCasSerializer {
         case LowLevelCAS.TYPE_CLASS_LONGARRAY:
         case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
         case LowLevelCAS.TYPE_CLASS_FSARRAY: 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           if (cds.isStaticMultiRef(fi)) {
             attrValue = cds.getXmiId(fs.getFeatureValue(fi));
           } else {
@@ -983,6 +1018,7 @@ public class XmiCasSerializer {
           // than attributes.
         case LowLevelCAS.TYPE_CLASS_STRINGARRAY: 
           StringArray stringArray = (StringArray) fs.getFeatureValue(fi);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           if (cds.isStaticMultiRef(fi)) {
             attrValue = cds.getXmiId(stringArray);
           } else if (stringArray != null && stringArray.size() == 0) {
@@ -998,6 +1034,7 @@ public class XmiCasSerializer {
         case CasSerializerSupport.TYPE_CLASS_FLOATLIST:
         case CasSerializerSupport.TYPE_CLASS_FSLIST: 
           TOP startNode = fs.getFeatureValue(fi);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           if (insideListNode || cds.isStaticMultiRef(fi)) {
             // If the feature has multipleReferencesAllowed = true OR if we're already
             // inside another list node (i.e. this is the "tail" feature), serialize as a normal FS.
@@ -1015,6 +1052,7 @@ public class XmiCasSerializer {
           // special case for StringLists, which stored values as child elements rather
           // than attributes.
         case CasSerializerSupport.TYPE_CLASS_STRINGLIST: 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
           if (insideListNode || cds.isStaticMultiRef(fi)) {
             attrValue = cds.getXmiId(fs.getFeatureValue(fi));
           } else {
@@ -1054,11 +1092,14 @@ public class XmiCasSerializer {
       
       //add out-of-typesystem features, if any
       if (cds.sharedData != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
         OotsElementData oed = cds.sharedData.getOutOfTypeSystemFeatures(fs);
         if (oed != null) {
           //attributes
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
           Iterator<XmlAttribute> attrIter = oed.attributes.iterator();
           while (attrIter.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
             XmlAttribute attr = attrIter.next();
             addAttribute(workAttrs, attr.name, attr.value);
           }
@@ -1078,11 +1119,15 @@ public class XmiCasSerializer {
      * @throws SAXException
      */
     private String arrayToString(TOP fsIn, int arrayType) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       if (fsIn == null) {
         return null;
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
       StringBuilder buf = new StringBuilder();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       CommonArrayFS fs = (CommonArrayFS) fsIn;
       String elemStr = null;
       
@@ -1102,8 +1147,11 @@ public class XmiCasSerializer {
             // However, this null array element might have been a reference to an 
             //out-of-typesystem FS, so check the ootsArrayElementsList
             if (ootsArrayElementsList != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-325
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
 
              while (ootsIndex < ootsArrayElementsList.size()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
                 XmiArrayElement arel = ootsArrayElementsList.get(ootsIndex++);
                 if (arel.index == j) {
                   elemStr = arel.xmiId;
@@ -1115,6 +1163,7 @@ public class XmiCasSerializer {
           } else {  // not null
             String xmiId = cds.getXmiId(elemFS);
             if (cds.isFiltering) { // return as null any references to types not in target TS
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
               String typeName = elemFS._getTypeImpl().getName();
               if (cds.filterTypeSystem_inner.getType(typeName) == null) {
                 xmiId = "0";
@@ -1131,6 +1180,7 @@ public class XmiCasSerializer {
         
         return buf.toString();
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       } else if (fs instanceof ByteArray) {
         
         // special case for byte arrays: serialize as hex digits 
@@ -1185,6 +1235,7 @@ public class XmiCasSerializer {
 
         for (String s : fsvalues) {
           if (buf.length() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
             buf.append(' ');
           }
           buf.append(s);
@@ -1195,6 +1246,7 @@ public class XmiCasSerializer {
     
     private void stringArrayToElementList(
         String featName, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
         StringArray stringArray, 
         List<? super XmlElementNameAndContents> resultList) {
       if (stringArray == null) {
@@ -1205,6 +1257,7 @@ public class XmiCasSerializer {
       
       for (String s : stringArray._getTheArray()) {
         resultList.add(new XmlElementNameAndContents(new XmlElementName("", featName, featName),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             s));
       }
     }
@@ -1222,6 +1275,7 @@ public class XmiCasSerializer {
      * @throws SAXException passthru
      */
     private String listToString(CommonList fs) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
       if (fs == null) {
         return null;  // different from ""
       }
@@ -1244,6 +1298,7 @@ public class XmiCasSerializer {
      * @throws SAXException passthru
      */
     private void sendElementEvents(List<? extends XmlElementNameAndContents> elements) throws SAXException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Iterator<? extends XmlElementNameAndContents> childIter = elements.iterator();
       while (childIter.hasNext()) {
         XmlElementNameAndContents elem = childIter.next();
@@ -1259,6 +1314,8 @@ public class XmiCasSerializer {
 
     
     private void startElement(XmlElementName name, Attributes attrs, int aNumChildren)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         throws SAXException {
       // Previously the NS URI was omitted, claiming:	
       //    >>> That causes XMI serializer to include the xmlns attribute in every element <<<
@@ -1330,6 +1387,7 @@ public class XmiCasSerializer {
      */
     @Override
     protected XmlElementName uimaTypeName2XmiElementName(String uimaTypeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       if (uimaTypeName.endsWith(TypeSystemImpl.ARRAY_TYPE_SUFFIX)) {
         // can't write out xyz[] as the qname.  Use FSArray instead
         uimaTypeName = CASImpl.TYPE_NAME_FS_ARRAY;

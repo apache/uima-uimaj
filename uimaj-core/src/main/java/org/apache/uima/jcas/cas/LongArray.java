@@ -64,6 +64,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
   private LongArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     theArray = null;
   }
 
@@ -73,6 +74,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
    * @param length The number of elements in the new array
    */
   public LongArray(JCas jcas, int length) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     super(jcas);
     theArray = new long[length];
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
@@ -97,6 +99,8 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
+//IC see: https://issues.apache.org/jira/browse/UIMA-5683
       _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
@@ -169,11 +173,14 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
     for (int i = 0; i < length; i++) {
       theArray[i + destPos] = Long.parseLong(src[i + srcPos]);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
   // internal use
   public long[] _getTheArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return theArray;
   }
   
@@ -184,6 +191,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
   public void copyValuesFrom(CommonArrayFS v) {
     LongArray bv = (LongArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
@@ -192,21 +200,27 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
    */
   @Override
   public void setArrayValueFromString(int i, String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     set(i, Long.parseLong(v));
   }
   
   @Override
   public Spliterator.OfLong spliterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     return Arrays.spliterator(theArray);
   }
   
   @Override
   public OfLong iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     return new OfLong() {
       int i = 0;
       
       @Override
       public boolean hasNext() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
         return i < size();
       }
 
@@ -219,6 +233,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
 
       @Override
       public long nextLong() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
         if (!hasNext())
           throw new NoSuchElementException();
         return get(i++);
@@ -239,6 +254,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
    * @return a newly created and populated array
    */
   public static LongArray create(JCas jcas, long[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     LongArray longArray = new LongArray(jcas, a.length);
     longArray.copyFromArray(a, 0, 0, a.length);
     return longArray;
@@ -249,6 +265,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
    * @param action to be performed on each element
    */
   public void forEach(LongConsumer action) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5305
     for (long l : theArray) {
       action.accept(l);
     }
@@ -260,6 +277,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, 
    * @return true if the item is in the array
    */
   public boolean contains(long item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     for (long b : theArray) {
       if (b == item) {
         return true;

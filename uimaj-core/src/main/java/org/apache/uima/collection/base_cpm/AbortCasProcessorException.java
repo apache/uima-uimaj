@@ -30,6 +30,7 @@ public class AbortCasProcessorException extends Exception {
   private static final long serialVersionUID = 6667835751923326076L;
 
   public AbortCasProcessorException(String msg) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(msg);
   }
 }

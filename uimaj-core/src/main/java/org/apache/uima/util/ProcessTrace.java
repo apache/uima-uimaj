@@ -87,6 +87,7 @@ public interface ProcessTrace extends java.io.Serializable {
    */
   public void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
           String aResultMsg);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Adds a completed event object to this <code>ProcessTrace</code>. This method is useful for

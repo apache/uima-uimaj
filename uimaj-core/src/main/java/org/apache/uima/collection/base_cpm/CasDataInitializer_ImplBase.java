@@ -39,6 +39,8 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  */
 @Deprecated
 public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_ImplBase implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CasDataInitializer {
   public CasDataInitializer_ImplBase() {
     super();
@@ -54,6 +56,7 @@ public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_I
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // aSpecifier must be a CasInitializerDescription
     if (aSpecifier instanceof CasInitializerDescription) {

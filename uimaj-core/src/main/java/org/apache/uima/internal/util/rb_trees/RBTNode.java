@@ -47,6 +47,7 @@ class RBTNode<T> {
   // accessed from RedBlackTree.
 
   RBTNode<T> left; // The left daughter.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
 
   RBTNode<T> right; // The right daughter.
 
@@ -59,7 +60,9 @@ class RBTNode<T> {
    * The real constructor, used only internally.
    */
   private RBTNode(int key, boolean color, RBTNode<T> parent, RBTNode<T> left, RBTNode<T> right,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
           T element) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this.key = key;
     this.color = color;
     this.parent = parent;
@@ -76,6 +79,7 @@ class RBTNode<T> {
    * @param element
    *          The value to be inserted.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
   RBTNode(int key, T element) {
     // The default color is completely arbitrary.
     this(key, BLACK, null, null, null, element);
@@ -98,6 +102,7 @@ class RBTNode<T> {
   /** 
    * Find the successor node to this. 
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
   final RBTNode<T> successor() {
     RBTNode<T> x = this;
     // If this has a right daughter, then the successor will be the
@@ -113,6 +118,7 @@ class RBTNode<T> {
     // If this does not have a right daughter, we need to move up in
     // the tree until we hit a node we're the left daughter of. That
     // will be the successor.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
     RBTNode<T> y = x.parent;
     while (y != null && x == y.right) {
       x = y;
@@ -130,6 +136,7 @@ class RBTNode<T> {
       // there is nothing left to do.
       return false;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
     RBTNode<T> y;
     x.color = RED;
     while (x != tree.root && x.parent.color == RED) {
@@ -173,6 +180,7 @@ class RBTNode<T> {
 
   /** Auxiliary function for insert(). See CLR. */
   private static final <T> boolean treeInsert(RedBlackTree<T> tree, RBTNode<T> z) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
     RBTNode<T> y = null;
     RBTNode<T> x = tree.root;
     while (x != null) {
@@ -200,6 +208,7 @@ class RBTNode<T> {
 
   /** Left rotation, used to keep the tree balanced. See CLR. */
   private final void leftRotate(RedBlackTree<T> tree) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
     RBTNode<T> y = this.right;
     this.right = y.left;
     if (y.left != null) {
@@ -220,6 +229,7 @@ class RBTNode<T> {
 
   /** Right rotation, used to keep the tree balanced. See CLR. */
   private final void rightRotate(RedBlackTree<T> tree) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
     RBTNode<T> y = this.left;
     this.left = y.right;
     if (y.right != null) {
@@ -243,6 +253,7 @@ class RBTNode<T> {
    * complicated than CLR because we don't use a NIL sentinel.
    */
   static final <T> void delete(RedBlackTree<T> tree, RBTNode<T> z) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
     RBTNode<T> x;
     RBTNode<T> y;
     RBTNode<T> xParent = null;
@@ -356,6 +367,8 @@ class RBTNode<T> {
     }
 
     RBTNode<T> w;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
+//IC see: https://issues.apache.org/jira/browse/UIMA-1442
 
     if (x.left == null) {
       w = x.right;

@@ -48,6 +48,7 @@ public interface FloatArrayFS extends CommonArrayFS<Float> {
    *              If <code>index</code> is out of bounds.
    */
   void set(int index, float value) throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Copy the contents of the array to an external array.
@@ -64,8 +65,10 @@ public interface FloatArrayFS extends CommonArrayFS<Float> {
    *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
    *              <code>destOffset + length &gt; destArray.length</code>.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
   void copyToArray(int srcOffset, float[] dest, int destOffset, int length) 
           throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Copy the contents of an external array into this array.
@@ -79,8 +82,10 @@ public interface FloatArrayFS extends CommonArrayFS<Float> {
    * @param length
    *          The number of elements to copy.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
   void copyFromArray(float[] src, int srcOffset, int destOffset, int length) 
           throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Create a Java array that is a copy of the internal CAS array.

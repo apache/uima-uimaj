@@ -33,6 +33,7 @@ public class SortedIntSet {
 
   /** Default constructor. */
   public SortedIntSet() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.vector = new IntVector();
   }
@@ -131,6 +132,9 @@ public class SortedIntSet {
   }
   
   public int[] getArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2715
+//IC see: https://issues.apache.org/jira/browse/UIMA-2716
+//IC see: https://issues.apache.org/jira/browse/UIMA-2498
     return vector.getArray();
   }
 

@@ -56,6 +56,7 @@ public class TableGUIMediator {
    * @param t the new table
    */
   public void setTable(StyleMapTable t) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     table = t;
   }
 

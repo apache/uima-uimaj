@@ -121,6 +121,7 @@ public class XmiSerializationSharedData {
    * Used when deserializing a Delta CAS to find and serialize the encompassing FS when 
    * the non-shared array/list FS is modified. 
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
   Map<TOP, TOP> nonsharedfeatureIdToFSId = new IdentityHashMap<>();
 //  Int2IntHashMap nonsharedfeatureIdToFSId = new Int2IntHashMap();
 
@@ -186,8 +187,10 @@ public class XmiSerializationSharedData {
    * TODO: maybe a more general reset that resets other things?
    */
   public void clearIdMap() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     fsToXmiId.clear();
     xmiIdToFs.clear();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1129
     nonsharedfeatureIdToFSId.clear();
     maxXmiId = 0;
   }
@@ -200,6 +203,7 @@ public class XmiSerializationSharedData {
     this.ootsFs.add(elemData);
     //check if we need to update max ID
     int xmiId = Integer.parseInt(elemData.xmiId);
+//IC see: https://issues.apache.org/jira/browse/UIMA-326
     if (xmiId > maxXmiId)
       maxXmiId = xmiId;
   }
@@ -221,6 +225,7 @@ public class XmiSerializationSharedData {
    *   a member of the view for the given Sofa
    */
   public void addOutOfTypeSystemViewMember(String sofaXmiId, String memberXmiId) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> membersList = this.ootsViewMembers.computeIfAbsent(sofaXmiId, k -> new ArrayList<>());
     membersList.add(memberXmiId);
   }
@@ -232,6 +237,7 @@ public class XmiSerializationSharedData {
    * @return List of xmi:id's of members of the view for the given Sofa.
    */
   public List<String> getOutOfTypeSystemViewMembers(String sofaXmiId) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
     List<String> members = this.ootsViewMembers.get(sofaXmiId);
     return members == null ? null : Collections.unmodifiableList(members);
   }
@@ -244,6 +250,7 @@ public class XmiSerializationSharedData {
    * @param featVal value of the feature, as a string
    */
   public void addOutOfTypeSystemAttribute(TOP fs, String featName, String featVal) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     OotsElementData oed = this.ootsFeatures.get(fs);
     if (oed == null) {
       oed = new OotsElementData(null, null, -1, -1);
@@ -265,6 +272,7 @@ public class XmiSerializationSharedData {
       oed = new OotsElementData(null, null, -1, -1);
       this.ootsFeatures.put(fs, oed);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     addOutOfTypeSystemFeature(oed, featName, featVals);
   }
   
@@ -284,6 +292,7 @@ public class XmiSerializationSharedData {
    *   (both attributes and child elements)
    */
   public OotsElementData getOutOfTypeSystemFeatures(TOP fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     return this.ootsFeatures.get(fs);
   }
   
@@ -305,10 +314,12 @@ public class XmiSerializationSharedData {
    *   reference to an out-of-typesystem FS.
    */
   public List<XmiArrayElement> getOutOfTypeSystemArrayElements(FSArray fsarray) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     return this.ootsArrayElements.get(fsarray);
   }
   
   public boolean hasOutOfTypeSystemArrayElements() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4004
     return ootsArrayElements != null && ootsArrayElements.size() > 0;
   }
   
@@ -320,6 +331,7 @@ public class XmiSerializationSharedData {
    * @param xmiId xmi:id of the out-of-typesystem element that is the value at the given index
    */
   public void addOutOfTypeSystemArrayElement(FSArray fsarray, int index, int xmiId) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<XmiArrayElement> list = this.ootsArrayElements.computeIfAbsent(fsarray, k -> new ArrayList<>());
     list.add(new XmiArrayElement(index, Integer.toString(xmiId)));
   }
@@ -332,6 +344,7 @@ public class XmiSerializationSharedData {
    * @param fs - the encompassing Feature Structure
    */
   public void addNonsharedRefToFSMapping(TOP nonsharedFS, TOP fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
 	this.nonsharedfeatureIdToFSId.put(nonsharedFS, fs);
   }
   
@@ -407,6 +420,7 @@ public class XmiSerializationSharedData {
     /**
      * List of XmlAttribute objects each holding name and value of an attribute.
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     final public List<XmlAttribute> attributes = new ArrayList<>();
     
     /**
@@ -498,6 +512,7 @@ public class XmiSerializationSharedData {
    */
   public static class XmiArrayElement {
     final public int index;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
     final public String xmiId;
 

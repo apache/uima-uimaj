@@ -61,8 +61,12 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
   /**
    * Instrumentation Facility (wraps ProcessTrace)
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
   final private InstrumentationFacility_impl mInstrumentationFacility = new InstrumentationFacility_impl(
           null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Current Session
@@ -105,6 +109,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    */
   @Override
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ConfigurationManager aConfigurationManager) {
     mLogger = aLogger;
 //    mResourceManager = aResourceManager;
@@ -127,6 +132,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    */
   @Override
   public void setLogger(Logger aLogger) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
     mLogger = maybeThrottleLogger(aLogger);
   }
 

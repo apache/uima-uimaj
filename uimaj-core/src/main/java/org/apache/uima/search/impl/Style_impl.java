@@ -76,6 +76,7 @@ public class Style_impl extends MetaDataObject_impl implements Style {
    * @see org.apache.uima.search.Style#setAttributes(org.apache.uima.search.Attribute[])
    */
   public void setAttributes(Attribute[] aAttributes) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mAttributes = (aAttributes == null) ? new Attribute[0] : aAttributes;
   }
 
@@ -120,6 +121,7 @@ public class Style_impl extends MetaDataObject_impl implements Style {
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     setName(aElement.getAttribute("name"));
 
@@ -138,6 +140,7 @@ public class Style_impl extends MetaDataObject_impl implements Style {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("style",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] {
           // name is an attribute, not an element
               new PropertyXmlInfo("attributes", null), new PropertyXmlInfo("attributeMappings") });

@@ -33,6 +33,7 @@ public class FrameComponent {
    */
   public void setAttributes(Attributes s) {
     Debug.p("WARNING: Attempt to set attributes of FrameComponent "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + "which does not support them. Attribute info will be lost.");
   }
 

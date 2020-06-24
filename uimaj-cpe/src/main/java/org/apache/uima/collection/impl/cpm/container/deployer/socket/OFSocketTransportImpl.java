@@ -45,6 +45,7 @@ public class OFSocketTransportImpl implements SocketTransport {
    */
   public OFSocketTransportImpl() {
     super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   }
 
@@ -70,6 +71,7 @@ public class OFSocketTransportImpl implements SocketTransport {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Thread.currentThread().getName() + "-Created Connection to Fenced Service");
       }
       return new Socket(aURI.getHost(), aURI.getPort());
@@ -95,6 +97,7 @@ public class OFSocketTransportImpl implements SocketTransport {
     try {
       if (aSocket.isClosed()) {
         aSocket = connect(new URL("http", aSocket.getInetAddress().getHostName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 aSocket.getPort(), ""), 100000);
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -114,6 +117,7 @@ public class OFSocketTransportImpl implements SocketTransport {
       String responseLine;
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Thread.currentThread().getName() + "-Showing Response");
       }
       if ((responseLine = reader.readLine()) != null) {
@@ -152,6 +156,7 @@ public class OFSocketTransportImpl implements SocketTransport {
   @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData(Socket aSocket)
           throws SocketException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     return null;
   }

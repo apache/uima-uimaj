@@ -84,6 +84,8 @@ import org.apache.uima.util.impl.Constants;
  */
 
 public class FSArrayList <T extends TOP> extends TOP implements 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
+//IC see: https://issues.apache.org/jira/browse/UIMA-5632
                          UimaSerializableFSs, CommonArrayFS<T>, SelectViaCopyToArray<T>, 
                          List<T>, RandomAccess, Cloneable {
  
@@ -195,6 +197,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
    * @param v value to set into the feature 
    */
   private void setFsArray(FSArray v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_fsArray), v);
   }    
     
@@ -202,6 +205,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
    * Maybe start using array list.
    */
   private void maybeStartUsingArrayList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     if (fsArray_asList != null) {
       fsArrayList.clear();
       fsArrayList.addAll(fsArray_asList);
@@ -215,8 +219,10 @@ public class FSArrayList <T extends TOP> extends TOP implements
   @Override
   public void _init_from_cas_data() {
     // special handling to have getter and setter honor pear trampolines
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     final FSArray fsa = getFsArray();
     if (null == fsa) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
       fsArray_asList = Collections.emptyList();
     } else {
     
@@ -251,6 +257,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
   @Override
   public void _save_to_cas_data() {
     // if fsArraysAsList is not null, then the cas data form is still valid, do nothing
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     if (null != fsArray_asList) {
       return;
     }
@@ -259,11 +266,13 @@ public class FSArrayList <T extends TOP> extends TOP implements
     final int sz = size();
     FSArray fsa = getFsArray();
     if (fsa == null || fsa.size() != sz) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
       setFsArray(fsa = new FSArray(_casView.getJCasImpl(), sz));
     }
     
     //   in case fsa was preallocated and right size, may need journaling
     int i = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     for (TOP fs : fsArrayList) {  // getting non-PEAR values
       TOP currentValue = fsa.get_without_PEAR_conversion(i);  
       if (currentValue != fs) {
@@ -654,6 +663,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     return _maybeGetPearFs(gl().set(i,  _maybeGetBaseForPearFs(v)));
   }
   
@@ -687,6 +697,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
           String.format("FSArrayList.copyFromArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
     for (;srcPos < srcEnd && destPos < destEnd;) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
       set(destPos++, (T) src[srcPos++]);
     }
   }
@@ -721,6 +732,8 @@ public class FSArrayList <T extends TOP> extends TOP implements
    */
   @Override
   public TOP[] toArray() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
+//IC see: https://issues.apache.org/jira/browse/UIMA-5632
     TOP[] r = new TOP[size()];
     copyToArray(0, r, 0, size());
     return r;
@@ -767,6 +780,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     _casView.checkArrayBounds(size(), srcPos, length);
     int i = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     for (T fs : this) {
       dest[i + destPos] = (fs == null) ? null : fs.toString();
       i++;
@@ -782,6 +796,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
    */
   @Override
   public void copyValuesFrom(CommonArrayFS v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     clear();
     Spliterator<T> si;
     if (v instanceof FSArrayList) {
@@ -805,7 +820,9 @@ public class FSArrayList <T extends TOP> extends TOP implements
    * @return -
    */
   public static <E extends TOP, F extends FeatureStructure> FSArrayList<E> create(JCas jcas, F[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     FSArrayList<E> fsa = new FSArrayList<>(jcas, a.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     fsa.copyFromArray(a, 0, 0, a.length);  // does pear and journaling actions as needed
     return fsa;
   }
@@ -821,6 +838,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
    */
   @Override
   public boolean containsAll(Collection<?> c) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     return gl_read_pear(gl()).containsAll(c);
   }
 
@@ -839,6 +857,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
   public boolean contains(Object o) {
     if (!(o instanceof TOP)) return false;
     TOP fs = (TOP) o;    
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     return gl().contains(_maybeGetBaseForPearFs(fs));
   }
 
@@ -876,12 +895,14 @@ public class FSArrayList <T extends TOP> extends TOP implements
    */
   @Override
   public String toString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     final int maxLen = 10;
     return "FSArrayList [size="
         + size()
         + ", fsArrayList="
         + (fsArrayList != null ? fsArrayList.subList(0, Math.min(fsArrayList.size(), maxLen))
             : null)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
         + ", fsArray_asList=" + (fsArray_asList != null
             ? fsArray_asList.subList(0, Math.min(fsArray_asList.size(), maxLen)) : null)
         + "]";
@@ -905,6 +926,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
     FSArrayList<T> other = (FSArrayList<T>) o;
     if (size() != other.size()) return false;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     List<T> items = gl();  // non-pear form
     List<T> other_items = other.gl(); // non-pear form
     
@@ -939,6 +961,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
   @Override
   public boolean remove(Object o) {
     maybeStartUsingArrayList();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     if (!(o instanceof TOP)) {
       return false;
     }
@@ -974,6 +997,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
    */
   @Override
   public boolean addAll(Collection<? extends T> c) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5286
     return addAll(size(), c);
   }
 

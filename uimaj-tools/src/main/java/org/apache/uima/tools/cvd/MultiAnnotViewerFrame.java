@@ -48,6 +48,7 @@ public class MultiAnnotViewerFrame extends JFrame {
    * @throws java.awt.HeadlessException the java.awt. headless exception
    */
   public MultiAnnotViewerFrame() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     // TODO Auto-generated constructor stub
   }

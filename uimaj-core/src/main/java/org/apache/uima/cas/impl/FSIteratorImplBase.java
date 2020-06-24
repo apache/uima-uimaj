@@ -57,6 +57,7 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
    * @see java.util.Iterator#hasNext()
    */
   public boolean hasNext() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return isValid();
   }
 
@@ -66,6 +67,7 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
    * @see java.util.Iterator#next()
    */
   public T next() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
     T result = get();
     moveToNext();
     return result;
@@ -82,6 +84,9 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
   
   // methods to be overridden that can speed up this operation
   int getBegin() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4392
+//IC see: https://issues.apache.org/jira/browse/UIMA-4391
+//IC see: https://issues.apache.org/jira/browse/UIMA-4393
     return ((AnnotationFS)get()).getBegin();
   }
   
@@ -103,6 +108,7 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
    * default implementation of getComparator
    */
   public Comparator<TOP> getComparator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5572
     return ll_getIndex().getComparator();
   }
 }

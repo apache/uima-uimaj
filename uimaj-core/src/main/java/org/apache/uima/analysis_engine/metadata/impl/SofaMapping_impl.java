@@ -44,6 +44,7 @@ public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping
    * @see org.apache.uima.analysis_engine.metadata.SofaMapping#getComponentKey()
    */
   public String getComponentKey() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return mComponentKey;
   }
 
@@ -97,6 +98,7 @@ public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("sofaMapping",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("componentKey"),
               new PropertyXmlInfo("componentSofaName"), new PropertyXmlInfo("aggregateSofaName") });
 }

@@ -60,6 +60,7 @@ public class AnnotationTreeNodeList {
    * @param document the document
    * @param annotations the annotations
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1397
   AnnotationTreeNodeList(ICasDocument document, Collection<AnnotationFS> annotations) {
     mDocument = document;
 

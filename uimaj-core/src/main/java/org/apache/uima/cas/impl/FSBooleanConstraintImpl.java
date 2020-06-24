@@ -55,9 +55,11 @@ public class FSBooleanConstraintImpl implements FSBooleanConstraint {
   @Override
   public String toString() {
     // need to escape quotes and backslashes
+//IC see: https://issues.apache.org/jira/browse/UIMA-1188
     StringBuffer buf = new StringBuffer();
     buf.append("= \"");
     buf.append(this.condition);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
     buf.append('"');
     return buf.toString();
 }

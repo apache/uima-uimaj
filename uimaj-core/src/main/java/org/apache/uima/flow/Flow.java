@@ -97,6 +97,7 @@ public interface Flow {
    * This method provides the Flow object with an opportunity to clean up any resources.
    * Also, it could be used to allow the FlowController to reuse a Flow object if desired.
    */  
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
   void aborted();
   
 }

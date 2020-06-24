@@ -43,6 +43,7 @@ public class MarkerImpl implements Marker {
   
   CASImpl cas;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
   MarkerImpl(int nextFSId, CASImpl cas) {
     this.nextFSId = nextFSId;
     this.cas = cas;
@@ -63,6 +64,7 @@ public class MarkerImpl implements Marker {
 	  if (isNew(fs)) {
 	    return false;  // new fs's are not modified ones
 	  }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4718
     return this.cas.isInModifiedPreexisting((TOP)fs);
   }
     

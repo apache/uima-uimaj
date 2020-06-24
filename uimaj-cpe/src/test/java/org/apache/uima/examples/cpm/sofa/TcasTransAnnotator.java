@@ -40,6 +40,7 @@ public class TcasTransAnnotator extends Annotator_ImplBase implements TextAnnota
 
   public void process(CAS aCas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     CAS engTcas, germTcas;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
     // get English text Sofa and open CAS view
     // SofaID realSofaName = getContext().mapToSofaID("EnglishDocument");
@@ -56,6 +57,7 @@ public class TcasTransAnnotator extends Annotator_ImplBase implements TextAnnota
     // realSofaName.getSofaID());
     // Create the output German text Sofa and open CAS view
     germTcas = aCas.getView(aCas.createSofa(realSofaName, "text"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
     // Get some necessary Type System constants
     Type annot = engTcas.getAnnotationType();
@@ -73,6 +75,7 @@ public class TcasTransAnnotator extends Annotator_ImplBase implements TextAnnota
 
     // Parse the English text
     StringTokenizer st = new StringTokenizer(engText);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (st.hasMoreTokens()) {
       String thisTok = st.nextToken();
       int engBegin = engText.indexOf(thisTok, engEnd);
@@ -86,6 +89,7 @@ public class TcasTransAnnotator extends Annotator_ImplBase implements TextAnnota
       String germWord = Translate(thisTok);
 
       // Accumulate the translated text
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (germBegin > 0) {
         translation.append(' ');
         germBegin += 1;
@@ -116,6 +120,7 @@ public class TcasTransAnnotator extends Annotator_ImplBase implements TextAnnota
   private String Translate(String word) {
     String lword = word.toLowerCase();
     if (Arrays.equals(wThis, lword.toCharArray()))
+//IC see: https://issues.apache.org/jira/browse/UIMA-1560
       return "das";
     if (Arrays.equals(wBeer, lword.toCharArray()))
       return "bier";

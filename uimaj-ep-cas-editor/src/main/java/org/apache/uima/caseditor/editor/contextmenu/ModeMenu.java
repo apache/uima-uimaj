@@ -52,6 +52,7 @@ public class ModeMenu extends TypeMenu {
    */
   public ModeMenu(TypeSystem typeSystem, AnnotationEditor editor) {
     super(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION), typeSystem);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1893
     this.editor = editor;
   }
 
@@ -75,7 +76,9 @@ public class ModeMenu extends TypeMenu {
 
   @Override
   protected void insertAction(final Type type, Menu parentMenu) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1893
     MenuItem actionItem = new MenuItem(parentMenu, SWT.CHECK);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2120
     actionItem.setText(type.getName());
     
     if (type.equals(editor.getAnnotationMode()))

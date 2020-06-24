@@ -33,6 +33,7 @@ public class IntBitSetTest extends TestCase {
   
   public void setUp() {
     ibs = new IntBitSet();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     ibs1k = new IntBitSet(63, 1000);
   }
 
@@ -43,6 +44,7 @@ public class IntBitSetTest extends TestCase {
     
     IntListIterator it = ibs.iterator();    
     assertTrue(it.hasNext());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
     assertEquals(15, it.nextNvc());
     assertTrue(it.hasNext());
     assertEquals(188, it.nextNvc());
@@ -56,6 +58,7 @@ public class IntBitSetTest extends TestCase {
     ibs.add(1188);
     it = ibs.iterator();    
     assertTrue(it.hasNext());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
     assertEquals(1015, it.nextNvc());
     assertTrue(it.hasNext());
     assertEquals(1188, it.nextNvc());
@@ -65,6 +68,7 @@ public class IntBitSetTest extends TestCase {
     assertEquals(3*64, ibs.getSpaceUsed_in_bits_no_overhead());
     assertEquals(6, ibs.getSpaceUsed_in_words_no_overhead());
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     ibs = new IntBitSet(64, 1000);
     ibs.add(1064);
     assertEquals(1,ibs.size());
@@ -87,16 +91,20 @@ public class IntBitSetTest extends TestCase {
   }
   
   public void testoffset() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4201
     ibs = new IntBitSet(64,1000);
     ibs.add(1064);
     IntListIterator it = ibs.iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<Integer> ints = new ArrayList<>();
     while (it.hasNext()) {
       ints.add(it.nextNvc());
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     assertTrue(Arrays.equals(ints.toArray(), new Object[]{1064}));
     
     ibs.add(1063);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     it = ibs.iterator();
     ints.clear();
     while (it.hasNext()) {
@@ -123,8 +131,11 @@ public class IntBitSetTest extends TestCase {
     ibs.remove(188);
     assertEquals(101, ibs.getLargestMenber());
     assertEquals(2,ibs.size());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     IntListIterator it = ibs.iterator();    
     assertTrue(it.hasNext());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
     assertEquals(15, it.nextNvc());
     assertTrue(it.hasNext());
     assertEquals(101, it.nextNvc());
@@ -134,6 +145,7 @@ public class IntBitSetTest extends TestCase {
   }
   
   public void testContains() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     ibs = new IntBitSet(63, 1000);
     
     ibs.add(1015);
@@ -149,6 +161,7 @@ public class IntBitSetTest extends TestCase {
   }
   
   public void testIterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
     ibs = new IntBitSet(63, 1000);
     for (int i = 0; i < 10; i = i + 4) {
       ibs.add(1000 + i);
@@ -157,6 +170,7 @@ public class IntBitSetTest extends TestCase {
     IntListIterator it = ibs.iterator();
     for (int i = 0; i < 10; i += 4) {
       assertTrue(it.hasNext());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
       assertEquals(1000 + i, it.nextNvc());        
     }
     assertFalse(it.hasNext());

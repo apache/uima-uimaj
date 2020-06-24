@@ -88,6 +88,7 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * @exception NoSuchElementException
    *              If the iterator is not valid.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
   default T get() throws NoSuchElementException {
     if (!isValid()) {
       throw new NoSuchElementException();
@@ -100,6 +101,7 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * Throws various unchecked exceptions, if the iterator is not valid
    * @return The structure the iterator is pointing at.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   T getNvc();
   
   /**
@@ -132,6 +134,7 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * version of moveToPrevious which bypasses the isValid check - call only if you've just done this check yourself
    */
   void moveToPreviousNvc();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
   /**
    * Move the iterator to the first element. The iterator will be valid iff the underlying
@@ -191,12 +194,16 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * 
    * @return A copy of this iterator, pointing at the same element.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
   FSIterator<T> copy();
   
   /**
    * @return the type this iterator is over
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
+//IC see: https://issues.apache.org/jira/browse/UIMA-5121
   default Type getType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5839
     LowLevelIndex<T> idx = ((LowLevelIterator<T>)this).ll_getIndex();
     return (null == idx) // happens with a low level empty index, maybe wrapped by others
              ? TypeSystemImpl.staticTsi.getTopType()
@@ -213,6 +220,7 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * @see java.util.Iterator#hasNext()
    */
   @Override
+//IC see: https://issues.apache.org/jira/browse/UIMA-4671
   default boolean hasNext() {
     return isValid();
   }
@@ -224,12 +232,14 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    */
   @Override
   default T next() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     if (!isValid()) {
       throw new NoSuchElementException();
     }
     return nextNvc();
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   default T nextNvc() {
     T result = getNvc();
     moveToNextNvc();
@@ -237,12 +247,14 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
   }
   
   @Override
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
   default boolean hasPrevious() {
     return isValid();
   }
 
   @Override
   default T previous() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     if (!isValid()) {
       throw new NoSuchElementException();
     }
@@ -251,6 +263,8 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
   
   default T previousNvc() {
     moveToPreviousNvc();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
     return getNvc();
   }
 
@@ -284,6 +298,7 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    *   DISTINCT, SIZED, SUBSIZED
    *   
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
   default Spliterator<T> spliterator() {
     return Spliterators.spliterator(
         this, 
@@ -327,6 +342,7 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * @see org.apache.uima.cas.FSIterator#size()
    */
   default int size() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
     FSIterator<T> it = copy();
     it.moveToFirst();
     int count = 0;

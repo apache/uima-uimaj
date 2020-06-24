@@ -237,16 +237,20 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
     NameValuePair[] nvps = cfgParamSettings.getParameterSettings();
     if (nvps.length > 0) {
       validateConfigurationParameterSettings(nvps, null, cfgParamDecls);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3123
       support240bug = true; // System.getenv("UIMA_Jira3123") != null;  // restore this post 2.4.1
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-3123
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1488
       Map<String, NameValuePair[]> settingsForGroups = cfgParamSettings.getSettingsForGroups();
       Set<Map.Entry<String, NameValuePair[]>> entrySet = settingsForGroups.entrySet();
       Iterator<Entry<String, NameValuePair[]>> it = entrySet.iterator();
       while (it.hasNext()) {
         Map.Entry<String, NameValuePair[]> entry = it.next();
         String groupName = entry.getKey();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3123
         NameValuePair[] gnvps = entry.getValue();
         if (gnvps != null) {
           validateConfigurationParameterSettings(gnvps, groupName, cfgParamDecls);
@@ -279,10 +283,12 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    *           if the configuration parameter settings are invalid
    */
   protected void validateConfigurationParameterSettings(NameValuePair[] aNVPs, String aGroupName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ConfigurationParameterDeclarations aParamDecls) throws ResourceConfigurationException {
     for (int i = 0; i < aNVPs.length; i++) {
       // look up the parameter info
       String name = aNVPs[i].getName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3123
       if (name == null) {
         throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
                 new Object[] { "name", "nameValuePair" });
@@ -291,6 +297,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
       if (param == null) {
         if (aGroupName == null) {
           throw new ResourceConfigurationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceConfigurationException.NONEXISTENT_PARAMETER, new Object[] { name,
                       getName() });
         } else {
@@ -321,19 +328,23 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    *           if the data types do not match
    */
   protected void validateConfigurationParameterDataTypeMatch(ConfigurationParameter aParam,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           NameValuePair aNVP) throws ResourceConfigurationException {
     String paramName = aParam.getName();
     String paramType = aParam.getType();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3123
     if (aNVP.getValue() == null) {
       throw new ResourceConfigurationException(ResourceConfigurationException.CONFIG_SETTING_ABSENT,
               new Object[] { paramName });
     }
     Class<?> valClass = aNVP.getValue().getClass();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
 
     if (aParam.isMultiValued()) // value must be an array
     {
       if (!valClass.isArray()) {
         throw new ResourceConfigurationException(ResourceConfigurationException.ARRAY_REQUIRED,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { paramName, getName() });
       }
       valClass = valClass.getComponentType();
@@ -346,9 +357,11 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
 
     if (valClass != getClassForParameterType(paramType)) {
       throw new ResourceConfigurationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ResourceConfigurationException.PARAMETER_TYPE_MISMATCH, new Object[] { getName(),
                   valClass.getName(), paramName, paramType });
       /*  Parameter type mismatch in component "{0}".  A value of class {1} cannot be 
+//IC see: https://issues.apache.org/jira/browse/UIMA-3123
           assigned to the configuration parameter {2}, which has type {3}.
        */
     }
@@ -383,6 +396,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     try {
@@ -401,10 +415,12 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    * @return -
    */
   protected static XmlizationInfo getXmlizationInfoForClass() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return XMLIZATION_INFO;
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("resourceMetaData",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("name", false),
               new PropertyXmlInfo("description"), new PropertyXmlInfo("version"),
               new PropertyXmlInfo("vendor"), new PropertyXmlInfo("copyright"),

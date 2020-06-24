@@ -46,11 +46,13 @@ public abstract class CasFlowController_ImplBase extends FlowController_ImplBase
    * @see FlowController#computeFlow(AbstractCas)
    */
   public final Flow computeFlow(AbstractCas aCAS) throws AnalysisEngineProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aCAS instanceof CAS) {
       checkTypeSystemChange((CAS) aCAS);
       return computeFlow((CAS) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
                   aCAS.getClass() });
     }

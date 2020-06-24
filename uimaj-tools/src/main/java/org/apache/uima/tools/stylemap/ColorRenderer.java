@@ -33,6 +33,7 @@ import javax.swing.table.TableCellRenderer;
  * The Class ColorRenderer.
  */
 class ColorRenderer extends JLabel implements TableCellRenderer {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 4260743930100354668L;

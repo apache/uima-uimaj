@@ -483,6 +483,7 @@ public class Ecore2UimaTypeSystem {
     {
       if (aEcoreType.equals(EcorePackage.eINSTANCE.getEInt())) {
         return aMultiValued ? (useUimaLists ? CAS.TYPE_NAME_INTEGER_LIST
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 : CAS.TYPE_NAME_INTEGER_ARRAY) : CAS.TYPE_NAME_INTEGER;
       } else if (aEcoreType.equals(EcorePackage.eINSTANCE.getEShort())) {
         return aMultiValued ? CAS.TYPE_NAME_SHORT_ARRAY : CAS.TYPE_NAME_SHORT;
@@ -492,6 +493,7 @@ public class Ecore2UimaTypeSystem {
         return aMultiValued ? CAS.TYPE_NAME_BYTE_ARRAY : CAS.TYPE_NAME_BYTE;
       } else if (aEcoreType.equals(EcorePackage.eINSTANCE.getEFloat())) {
         return aMultiValued ? (useUimaLists ? CAS.TYPE_NAME_FLOAT_LIST : CAS.TYPE_NAME_FLOAT_ARRAY)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 : CAS.TYPE_NAME_FLOAT;
       } else if (aEcoreType.equals(EcorePackage.eINSTANCE.getEDouble())) {
         return aMultiValued ? CAS.TYPE_NAME_DOUBLE_ARRAY : CAS.TYPE_NAME_DOUBLE;
@@ -507,6 +509,7 @@ public class Ecore2UimaTypeSystem {
       {
         if (!aEcoreType.equals(EcorePackage.eINSTANCE.getEString())) {
           System.err.println("Warning: unknown EDataType " + aEcoreType.getName()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   + " being mapped to uima.cas.String.");
         }
         return aMultiValued ? (useUimaLists ? CAS.TYPE_NAME_STRING_LIST
@@ -559,6 +562,7 @@ public class Ecore2UimaTypeSystem {
   public static void main(String[] args) throws Exception {
     if (args.length != 2) {
       System.err.println("Usage: java " + Ecore2UimaTypeSystem.class.getName()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + " <ecore filename> <filename of UIMA TypeSystem file to generate>");
       return;
     }
@@ -571,6 +575,7 @@ public class Ecore2UimaTypeSystem {
     // options.put(OPTION_GENERATE_UIMA_LIST_TYPES, Boolean.TRUE);
     TypeSystemDescription tsDesc = ecore2UimaTypeSystem(args[0], options);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (FileOutputStream os = new FileOutputStream(args[1])) {
       tsDesc.toXML(os);
     }
@@ -580,6 +585,7 @@ public class Ecore2UimaTypeSystem {
       CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[0]);
     } catch (Exception e) {
       System.err
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .println("Warning: CAS could not be created from the output type system.  The following problem occurred:");
       System.err.println(e.getMessage());
     }

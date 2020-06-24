@@ -345,10 +345,13 @@ public class CASRuntimeException extends UIMARuntimeException {
 	}
 	
 	public CASRuntimeException(String aMessageKey, Object[] aArguments, Throwable aCause) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5574
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
 		super(aCause, aMessageKey, aArguments);
 	}
 	
   public CASRuntimeException(Throwable aCause, String aMessageKey, Object ... aArguments) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
     super(aCause, aMessageKey, aArguments);
   }
 
@@ -358,6 +361,8 @@ public class CASRuntimeException extends UIMARuntimeException {
 
 	public CASRuntimeException(String aResourceBundleName, String aMessageKey, Object[] aArguments,
 			Throwable aCause) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5574
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
 		super(aCause, aResourceBundleName, aMessageKey, aArguments);
 	}
 

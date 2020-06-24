@@ -81,7 +81,9 @@ public class PrimitiveSection extends AbstractSection {
    * @param parent the parent
    */
   public PrimitiveSection(MultiPageEditor editor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, parent, "Runtime Information",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "This section describes information about how to run this component");
   }
 
@@ -96,6 +98,7 @@ public class PrimitiveSection extends AbstractSection {
     enableBorders(sectionClient);
 
     modifiesCas = newCheckBox(sectionClient, "updates the CAS",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "check this if this component updates the CAS");
     spacer(sectionClient);
     if (isAeDescriptor() || isCasConsumerDescriptor() || isFlowControllerDescriptor()) {
@@ -135,6 +138,7 @@ public class PrimitiveSection extends AbstractSection {
 
     // set description for enter field (either .class or .dll file)
     String implKind = editor.getAeDescription().getFrameworkImplementation();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
     if (Constants.CPP_FRAMEWORK_NAME.equals(implKind)) {
       implNameLabel.setText("Name of the .dll file");
       implName.setToolTipText("Enter the name of the .dll file here.");
@@ -182,6 +186,7 @@ public class PrimitiveSection extends AbstractSection {
       String className = null;
       try {
         String implKind = editor.getAeDescription().getFrameworkImplementation();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
         if (Constants.CPP_FRAMEWORK_NAME.equals(implKind)) {
           FileDialog dialog = new FileDialog(getSection().getShell(), SWT.NONE);
           String[] extensions = { "*.dll" };
@@ -192,6 +197,7 @@ public class PrimitiveSection extends AbstractSection {
 
         } else {
           SelectionDialog typeDialog = JavaUI.createTypeDialog(getSection().getShell(), editor
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getEditorSite().getWorkbenchWindow(), editor.getSearchScopeForDescriptorType(),
                   IJavaElementSearchConstants.CONSIDER_CLASSES, false, "*");
           typeDialog.setTitle(MessageFormat.format("Choose the {0} implementation class",
@@ -215,6 +221,7 @@ public class PrimitiveSection extends AbstractSection {
       ops.setModifiesCas(setValueChangedBoolean(modifiesCas.getSelection(), ops.getModifiesCas()));
     } else if (event.widget == multipleDeploymentAllowed) {
       ops.setMultipleDeploymentAllowed(setValueChangedBoolean(multipleDeploymentAllowed
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getSelection(), ops.isMultipleDeploymentAllowed()));
     } else if (event.widget == outputsNewCASes) {
       ops.setOutputsNewCASes(setValueChangedBoolean(outputsNewCASes.getSelection(), ops

@@ -98,6 +98,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
         FUNC_GETNEXT_KEY, FUNC_HASNEXT_KEY };
     errorConfig = new HashMap();
     logger = getLogger();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     documentCount = ((Integer) getConfigParameterValue(DOCUMENT_COUNT));
     documentsCounted = 0;
     String errorFunction = (String) getConfigParameterValue(ERROR_FUNCTION);
@@ -107,6 +108,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
       int errorCountName = 0;
       String errorExceptionName = "RuntimeException";
       if (errorCount != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         errorCountName = errorCount;
       }
       if (errorException != null) {
@@ -115,6 +117,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
       System.out.println("adding error!");
       // add the error object to the corresponding HashMap Entry
       addError(errorFunction, new FunctionErrorStore(errorExceptionName, errorCountName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               errorFunction));
     }
 

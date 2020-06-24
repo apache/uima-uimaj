@@ -53,6 +53,7 @@ import org.apache.uima.jcas.cas.TOP;
    */
   
 @SuppressWarnings("serial")  
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 class DeferredIndexUpdates extends IdentityHashMap<FSIndexRepositoryImpl, List<TOP>> {
     
   void addTodo(FSIndexRepositoryImpl ir, TOP fs) {
@@ -64,6 +65,7 @@ class DeferredIndexUpdates extends IdentityHashMap<FSIndexRepositoryImpl, List<T
    * @param ir
    * @param fsAddr
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   List<TOP> getTodos(FSIndexRepositoryImpl ir) {
     List<TOP> s = get(ir);
     if (null == s) {

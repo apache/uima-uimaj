@@ -63,6 +63,7 @@ public class Messages {
    * @return the formatted string
    */
   public static String getFormattedString(String key, String[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return MessageFormat.format(RESOURCE_BUNDLE.getString(key), args);
   }
 

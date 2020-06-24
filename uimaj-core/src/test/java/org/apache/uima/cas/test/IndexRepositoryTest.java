@@ -55,20 +55,24 @@ public class IndexRepositoryTest extends TestCase {
    */
   protected void setUp() throws Exception {
     super.setUp();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     this.cas = CASInitializer.initCas(new CASTestSetup(), null);
     this.typeSystem = this.cas.getTypeSystem();
     this.indexRep = this.cas.getIndexRepository();
   }
 
   public void tearDown() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
     cas = null;
     typeSystem = null;
     indexRep = null;
   }
   
   public void testMissingSofaRef() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4932
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 4);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     FeatureImpl feat = (FeatureImpl) cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION_BASE)
                          .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA);
     a._setFeatureValueNcNj(feat, null);
@@ -91,6 +95,7 @@ public class IndexRepositoryTest extends TestCase {
     this.indexRep.addFS(tokenTypeFs1);
 
     // now try to retrieve
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIterator<FeatureStructure> iter = this.indexRep.getAllIndexedFS(tokenTypeType);
     assertTrue(iter.hasNext());
     assertEquals(tokenTypeFs1, iter.next());
@@ -102,6 +107,7 @@ public class IndexRepositoryTest extends TestCase {
     this.indexRep.addFS(tokenTypeFs2);
 
     // now there should be two instances in the index
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIterator<FeatureStructure> iter2 = this.indexRep.getAllIndexedFS(tokenTypeType);
     assertTrue(iter2.hasNext());
     iter2.next();
@@ -128,12 +134,14 @@ public class IndexRepositoryTest extends TestCase {
     FSIndexRepository ir = cas.getIndexRepository();
     FSIndex<FeatureStructure> index = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX);
     assertEquals(1, index.size());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
     index = ir.getIndex(CASTestSetup.ANNOT_SORT_INDEX);
     assertEquals(2, index.size());
 
     // Annotation is supertype of token
     // test if set observes implicit key of type
+//IC see: https://issues.apache.org/jira/browse/UIMA-5497
     Type annotType = this.typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
     Feature annotBeginFeat = this.typeSystem.getFeatureByFullName(CAS.TYPE_NAME_ANNOTATION + ":begin");
     cas.getIndexRepository().removeAllIncludingSubtypes(annotType);
@@ -149,6 +157,7 @@ public class IndexRepositoryTest extends TestCase {
     
     // shows type is implicit key for set compares
     index = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX_NO_TYPEORDER);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3399
     assertEquals(2, index.size());
     
 
@@ -160,6 +169,7 @@ public class IndexRepositoryTest extends TestCase {
    * @throws CASException
    */
   public void testDupFsIndex() throws CASException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4932
     cas.setSofaDataString("something", "text"); // otherwise triggers failure in addFsToIndex - no sofa ref
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 4);
@@ -186,6 +196,7 @@ public class IndexRepositoryTest extends TestCase {
     }
     
     // warmup and jit
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     timeAdd2Indexes(fsa, false);
     timeRemoveFromIndexes(fsa);
     
@@ -206,6 +217,7 @@ public class IndexRepositoryTest extends TestCase {
   }
   
   public void testAddSpeed() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     running = "testAddSpeed - 2 sorted, 1 set, 1 bag";
     runAddSpeed();
   }

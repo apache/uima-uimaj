@@ -65,6 +65,7 @@ public class CasTypeSystemMapper {
    * Source type code used as index, 
    * value is target type or null if the type doesn't exist in the target
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4718
   final private List<TypeImpl> tSrc2Tgt = new ArrayList<>();
   
   /** 
@@ -101,6 +102,7 @@ public class CasTypeSystemMapper {
       throw new CASRuntimeException(CASRuntimeException.TYPESYSTEMS_NOT_COMMITTED);
     }
     this.tsSrc = tsSrc;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.tsTgt = new WeakReference<>(tsTgt);
     boolean tss = true;
 
@@ -114,6 +116,7 @@ public class CasTypeSystemMapper {
       boolean b3 = addFeatures(fSrc2Tgt, tsSrc, tsTgt);
       boolean b4 = addFeatures(fTgt2Src, tsTgt, tsSrc);
      
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (!b1 || !b2 || !b3 || !b4) {
         tss = false;
       }
@@ -129,6 +132,7 @@ public class CasTypeSystemMapper {
    * @return Type in other type system, or this one if map is empty
    */
   public TypeImpl mapTypeSrc2Tgt(TypeImpl srcType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return (tSrc2Tgt.size() == 0) ? srcType : tSrc2Tgt.get(srcType.getCode());
   }
   
@@ -141,6 +145,7 @@ public class CasTypeSystemMapper {
    * @return 0 if type doesn't have corresponding code in other type system
    */
   public TypeImpl mapTypeTgt2Src(TypeImpl tgtType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return (tTgt2Src.size() == 0) ? tgtType : tTgt2Src.get(tgtType.getCode());
   }
   
@@ -179,14 +184,17 @@ public class CasTypeSystemMapper {
    * @return array of corresponding source features, in target type order
    */
   public FeatureImpl[] getSrcFeatures(TypeImpl tgtType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return fTgt2Src[tgtType.getCode()];
   }
   
   public FeatureImpl getToFeature(FeatureImpl[][] mapByTypeCode, TypeImpl fromType, FeatureImpl fromFeat) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (mapByTypeCode == null) { // is null if type systems ==
       return fromFeat;
     }
     FeatureImpl[] map = mapByTypeCode[fromType.getCode()];
+//IC see: https://issues.apache.org/jira/browse/UIMA-4718
     if (map == null) {
       return null;
     }
@@ -236,6 +244,7 @@ public class CasTypeSystemMapper {
         continue;  // no corresponding type in tsTo
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final FeatureImpl[] map1 = map[ti.getCode()] = new FeatureImpl[ti.getFeatureImpls().length];
       
       for (FeatureImpl fi : ti.getFeatureImpls()) {

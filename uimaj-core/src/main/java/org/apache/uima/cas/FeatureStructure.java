@@ -47,6 +47,7 @@ public interface FeatureStructure extends Cloneable {
    * @return The type.
    */
   Type getType();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Set a feature value to another FS.
@@ -266,6 +267,8 @@ public interface FeatureStructure extends Cloneable {
    * @exception CASRuntimeException If <code>feat</code> is not defined for the type of this FS
    */
   void setDoubleValue(Feature feat, double i) throws CASRuntimeException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
 
   /**
    * Get the value of the feature as a string if the type of the feature is one of the primitive
@@ -302,6 +305,7 @@ public interface FeatureStructure extends Cloneable {
   /**
    * @return the JCas view where this Feature Structure was created
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5552
   default JCas getJCas() {
     return getCAS().getJCasImpl();  // getJCas defined (from v2) to throw exception, this one doesn't
   };

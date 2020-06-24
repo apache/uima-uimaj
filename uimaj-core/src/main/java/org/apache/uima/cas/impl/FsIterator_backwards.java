@@ -36,6 +36,7 @@ class FsIterator_backwards<T extends FeatureStructure>
     
   FsIterator_backwards(FSIterator<T> iterator) {
     this.it = (LowLevelIterator<T>) iterator;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5844
     it.moveToLast();  // will act like move to first
   }
 
@@ -46,6 +47,7 @@ class FsIterator_backwards<T extends FeatureStructure>
 
   @Override
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return it.ll_maxAnnotSpan();
   }
   
@@ -76,6 +78,7 @@ class FsIterator_backwards<T extends FeatureStructure>
 
   @Override
   public void moveToFirstNoReinit() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     it.moveToLastNoReinit();
   }
 
@@ -100,6 +103,7 @@ class FsIterator_backwards<T extends FeatureStructure>
         if (isValid()) {
           it.moveToPreviousNvc();
         } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
           it.moveToLastNoReinit();
         }
       } else {
@@ -108,6 +112,7 @@ class FsIterator_backwards<T extends FeatureStructure>
       }
     } else {
       // moved to one past the end.  Backwards: would be at the (backwards) first position
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
       it.moveToLastNoReinit();
     }
   }
@@ -119,6 +124,7 @@ class FsIterator_backwards<T extends FeatureStructure>
 
   @Override
   public FSIterator<T> copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new FsIterator_backwards<>(it.copy());
   }
 
@@ -127,11 +133,13 @@ class FsIterator_backwards<T extends FeatureStructure>
    */
   @Override
   public boolean isIndexesHaveBeenUpdated() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     return it.isIndexesHaveBeenUpdated();
   }
 
   @Override
   public boolean maybeReinitIterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     return it.maybeReinitIterator();
   }
 

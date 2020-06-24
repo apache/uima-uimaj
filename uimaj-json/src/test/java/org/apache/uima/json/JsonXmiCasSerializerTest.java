@@ -29,6 +29,7 @@ public class JsonXmiCasSerializerTest extends JsonCasSerializerTest {
    *********************************************************************/
   @Override 
   protected void setUp() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5041
     super.setUp();
     jcs = new JsonCasSerializer();
     doJson = false;

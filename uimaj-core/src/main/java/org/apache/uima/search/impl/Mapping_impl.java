@@ -79,6 +79,7 @@ public class Mapping_impl extends MetaDataObject_impl implements Mapping {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "mapping",
           new PropertyXmlInfo[] { new PropertyXmlInfo("feature"), new PropertyXmlInfo("indexName") });
 }

@@ -54,6 +54,7 @@ public class AnnotationTreeNode implements IAdaptable {
     Assert.isNotNull(annotation);
     mAnnotation = annotation;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     mChildren = new AnnotationTreeNodeList(document);
   }
 
@@ -126,6 +127,7 @@ public class AnnotationTreeNode implements IAdaptable {
 
   @Override
   public int hashCode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5225
     return mAnnotation._id();
   }
 

@@ -33,6 +33,7 @@ public class PrimitiveValueImpl implements PrimitiveValue {
   }
 
   public PrimitiveValueImpl(int aValue) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     aValueObject = aValue;
   }
 
@@ -49,7 +50,9 @@ public class PrimitiveValueImpl implements PrimitiveValue {
 
   public int toInt() {
     if (aValueObject instanceof Integer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       return (Integer) aValueObject;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     else if (aValueObject instanceof String) {
       try {
         return Integer.parseInt((String) aValueObject);
@@ -64,6 +67,7 @@ public class PrimitiveValueImpl implements PrimitiveValue {
 
   public float toFloat() {
     if (aValueObject instanceof Float)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       return (Float) aValueObject;
     else if (aValueObject instanceof String) {
       try {

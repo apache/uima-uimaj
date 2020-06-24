@@ -47,6 +47,8 @@ public class MergerImpl implements org.apache.uima.tools.jcasgen.IMerge {
    */
   @Override
   public void doMerge(Jg jg, IProgressMonitor progressMonitor, String sourceContents,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String targetContainer, String targetPath, String targetClassName, File targetFile)
           throws IOException {
     JMerger jMerger = new JMerger();
@@ -71,6 +73,7 @@ public class MergerImpl implements org.apache.uima.tools.jcasgen.IMerge {
         jMerger.setTargetCompilationUnit(jMerger.createCompilationUnitForURI(targetPath));
       } catch (NullPointerException e) {
         jg.error.newError(IError.ERROR, jg.getString("nullPtr", new Object[] { targetClassName }),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 e);
       }
 

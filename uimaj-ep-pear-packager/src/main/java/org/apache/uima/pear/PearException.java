@@ -46,6 +46,7 @@ public class PearException extends Exception {
    * Instantiates a new pear exception.
    */
   public PearException() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -128,6 +129,7 @@ public class PearException extends Exception {
       String msg = getCause().getMessage();
       msg = msg == null ? "" : msg; //$NON-NLS-1$
       MultiStatus status = new MultiStatus(PLUGIN_ID, IStatus.ERROR, getCustomStackTrace(), msg,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               getCause());
       ErrorDialog.openError(shell, "Operation Error", getMessage()
               + " \nPlease see the details (below).", status, 0xFFFF);

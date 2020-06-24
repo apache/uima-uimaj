@@ -170,6 +170,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    */
   public String getCoveredText() {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     final String text = _casView.getDocumentText();
     if (text == null) {
       return null;
@@ -249,6 +250,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
   public void trim(IntPredicate aIsTrimChar) {
     int begin = getBegin();
     int end = getEnd();
+//IC see: https://issues.apache.org/jira/browse/UIMA-6152
     String text = _casView.getDocumentText();
       
     // If the span is empty, or there is no text, there is nothing to trim

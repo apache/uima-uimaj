@@ -67,7 +67,9 @@ public class TypeSystemTest extends TestCase {
       // Check type names.
 
       boolean exc = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       Type annot = tsm.getType(CAS.TYPE_NAME_ANNOTATION);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       assertTrue(annot != null);
       // Check for some illegal characters in type names.
       try {
@@ -126,6 +128,13 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("test_embedded.Under__Score", annot);
       } catch (CASAdminException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
@@ -161,6 +170,7 @@ public class TypeSystemTest extends TestCase {
       // type.
       assertTrue(tsm.getFeatureByFullName(annot2name + TypeSystem.FEATURE_SEPARATOR
               + CAS.FEATURE_BASE_NAME_BEGIN) != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
       String inhTestFeat = "inhTestFeat";
       tsm.addFeature(inhTestFeat, annot1, nameTest);
@@ -208,6 +218,7 @@ public class TypeSystemTest extends TestCase {
         e.printStackTrace();
         assertTrue(false);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       assertTrue(feat2 != null);
       // Check that a feature of the same name can not be created on a
       // subtype.
@@ -224,6 +235,7 @@ public class TypeSystemTest extends TestCase {
         feat2 = tsm.addFeature(featName, annot2, annot2);
       } catch (CASAdminException e) {
         exc = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         assertTrue(e.getMessageKey().equals(CASAdminException.DUPLICATE_FEATURE));
       }
       assertTrue(exc);
@@ -253,6 +265,8 @@ public class TypeSystemTest extends TestCase {
         tsm.addFeature("testFeature", intT, intT);
       } catch (CASAdminException e) {
         exc = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_FEATURE_FINAL));
       }
       assertTrue(exc);
@@ -261,6 +275,7 @@ public class TypeSystemTest extends TestCase {
         tsm.addType("newType", intT);
       } catch (CASAdminException e) {
         exc = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_INH_FINAL));
       }
       assertTrue(exc);
@@ -269,6 +284,7 @@ public class TypeSystemTest extends TestCase {
         tsm.addType("newType", tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY));
       } catch (CASAdminException e) {
         exc = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
         assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_INH_FINAL));
       }
       assertTrue(exc);
@@ -303,6 +319,7 @@ public class TypeSystemTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
     } catch (Exception e) {
@@ -317,7 +334,9 @@ public class TypeSystemTest extends TestCase {
   }
 
   public void testSuperTypeBuiltIn() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     CAS cas = CASInitializer.initCas(new SetupTest(), null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4031
     TypeSystem ts = cas.getTypeSystem();
     Type stringArray = ts.getType("uima.cas.StringArray");
     assertEquals("uima.cas.ArrayBase", ts.getParent(stringArray).getName());
@@ -341,6 +360,7 @@ public class TypeSystemTest extends TestCase {
     Type top = this.ts.getTopType();
     assertTrue(top != null);
     assertTrue(top.getName().equals(CAS.TYPE_NAME_TOP));
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annot = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(annot != null);
     Type token = this.ts.getType(CASTestSetup.TOKEN_TYPE);
@@ -351,6 +371,7 @@ public class TypeSystemTest extends TestCase {
    * Test for Feature getFeature(String)
    */
   public void testGetFeature() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annot = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     Feature start = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     Feature end = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
@@ -376,6 +397,7 @@ public class TypeSystemTest extends TestCase {
     assertTrue(v.contains(CAS.TYPE_NAME_TOP));
     assertTrue(v.contains(CAS.TYPE_NAME_FLOAT));
     assertTrue(v.contains(CAS.TYPE_NAME_FS_ARRAY));
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     assertTrue(v.contains(CAS.TYPE_NAME_ANNOTATION));
     assertTrue(v.contains(CASTestSetup.SENT_TYPE));
   }
@@ -383,10 +405,13 @@ public class TypeSystemTest extends TestCase {
   public void testGetFeatures() {
     Iterator<Feature> it = this.ts.getFeatures();
     // Put feature names in vector and test for some known features.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> v = new ArrayList<>();
     while (it.hasNext()) {
       v.add(it.next().getName());
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     String annotPrefix = CAS.TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR;
     String arrayPrefix = CAS.TYPE_NAME_ARRAY_BASE + TypeSystem.FEATURE_SEPARATOR;
     assertTrue(arrayPrefix != null);
@@ -404,9 +429,11 @@ public class TypeSystemTest extends TestCase {
   }
 
   public void testGetDirectlySubsumedTypes() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     List<Type> subTypes = this.ts.getDirectSubtypes(this.ts.getType(CAS.TYPE_NAME_TOP));
     Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
     assertTrue(subTypes.contains(intType));
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annotBaseType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
     assertTrue(subTypes.contains(annotBaseType));
     Type annotType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
@@ -421,6 +448,7 @@ public class TypeSystemTest extends TestCase {
   public void testSubsumes() {
     Type top = this.ts.getTopType();
     Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annotType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     Type tokenType = this.ts.getType(CASTestSetup.TOKEN_TYPE);
     assertTrue(this.ts.subsumes(top, intType));
@@ -430,6 +458,7 @@ public class TypeSystemTest extends TestCase {
     assertTrue(!this.ts.subsumes(tokenType, annotType));
     assertTrue(!this.ts.subsumes(tokenType, top));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     Type stringType = this.ts.getType(CAS.TYPE_NAME_STRING);
     Type substringType = this.ts.getType(CASTestSetup.GROUP_1);
     assertTrue(this.ts.subsumes(stringType, substringType));
@@ -495,12 +524,14 @@ public class TypeSystemTest extends TestCase {
     assertTrue(intMatrix.isArray());
     assertTrue(intMatrix.getComponentType().equals(intArrayType));
     // Check array inheritance.
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annotationArray = this.ts.getArrayType(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
     assertTrue(this.ts.subsumes(fsArrayType, annotationArray));
     // assertFalse(this.ts.subsumes(annotationArray, fsArrayType));
   }
   
   public void testSerializeTypeSystem() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1242
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/arrayValueDescriptor.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
         .exists());
@@ -559,6 +590,7 @@ public class TypeSystemTest extends TestCase {
   
   public void testSerializeParameterizedArrayTypeSystem() {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     try {
       TypeSystem2Xml.typeSystem2Xml(ts, os);

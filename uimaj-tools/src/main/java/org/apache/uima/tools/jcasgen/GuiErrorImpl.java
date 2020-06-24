@@ -46,8 +46,10 @@ public class GuiErrorImpl implements IError {
    */
   @Override
   public void newError(int severity, String message, Exception exception) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     Logger log = UIMAFramework.getLogger();
     log.log(logLevels[severity], GUI.theGUI.pnG.showInStatus("JCasGen " + sevMsg[severity] + ": "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + message), exception);
     if (null != exception) {
       ByteArrayOutputStream b = new ByteArrayOutputStream();

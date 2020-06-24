@@ -50,6 +50,7 @@ public class CharArrayString {
    * @pre string != null
    */
   public CharArrayString(String string) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.len = string.length();
     this.start = 0;

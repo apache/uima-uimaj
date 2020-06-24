@@ -53,6 +53,7 @@ abstract class CommonAuxHeap {
   
   private final int[] shrinkableCount = new int[1];
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   CommonAuxHeap() {
     this(DEFAULT_HEAP_BASE_SIZE, DEFAULT_HEAP_MULT_LIMIT);
   }
@@ -67,6 +68,7 @@ abstract class CommonAuxHeap {
   abstract void initMemory();
   
   abstract void initMemory(int size);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4281
 
   abstract void resetToZeros();
 
@@ -93,6 +95,7 @@ abstract class CommonAuxHeap {
   void reset(boolean doFullReset) {
     if (doFullReset) {
       if (DEBUG_LOG_SHRINK) System.out.format("Debug shrink CommonAux full reset from %,d to %,d for %s%n",
+//IC see: https://issues.apache.org/jira/browse/UIMA-4281
           getCapacity(), heapBaseSize, this.getClass().getSimpleName());
       this.initMemory();
     } else {
@@ -172,6 +175,7 @@ abstract class CommonAuxHeap {
     // this if for shrinking down 1 step if possible
     int oneSizeLowerCapacity = ((capacity - multiplication_limit) < multiplication_limit) ?
         // the last expansion was by multiplying; the next expansion would be by adding
+//IC see: https://issues.apache.org/jira/browse/UIMA-4281
         (capacity / growth_factor) :
         (capacity - multiplication_limit);
 

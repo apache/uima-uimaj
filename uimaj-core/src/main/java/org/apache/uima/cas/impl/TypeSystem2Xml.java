@@ -58,6 +58,8 @@ public class TypeSystem2Xml {
    *           if an error occurs during the translation of the type system to XML
    */
   public static void typeSystem2Xml(TypeSystem aTypeSystem, OutputStream aOutputStream)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException, IOException {
     XMLSerializer sax2xml = new XMLSerializer(aOutputStream);
     typeSystem2Xml(aTypeSystem, sax2xml.getContentHandler());
@@ -75,16 +77,20 @@ public class TypeSystem2Xml {
    *           if an exception is thrown by the ContentHandler
    */
   public static void typeSystem2Xml(TypeSystem aTypeSystem, ContentHandler aContentHandler)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
     ResourceSpecifierFactory factory = UIMAFramework.getResourceSpecifierFactory();
     TypeSystemDescription tsDesc = factory.createTypeSystemDescription();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<TypeDescription> typeDescs = new ArrayList<>();
     Iterator<Type> typeIterator = aTypeSystem.getTypeIterator();
     while (typeIterator.hasNext()) {
       TypeImpl type = (TypeImpl) typeIterator.next();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
 
       Type superType = aTypeSystem.getParent(type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1242
       if ((type.getName().startsWith("uima.cas") && type.isFeatureFinal()) || type.isArray()) {
         continue; // this indicates a primitive type
       }
@@ -93,7 +99,9 @@ public class TypeSystem2Xml {
       typeDesc.setName(type.getName());
       typeDesc.setSupertypeName(superType.getName());
       LowLevelTypeSystem llts = aTypeSystem.getLowLevelTypeSystem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<FeatureDescription> featDescs = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       Iterator<FeatureImpl> featIterator = Arrays.asList(type.getFeatureImpls()).iterator();
       while (featIterator.hasNext()) {
         Feature feat = featIterator.next();
@@ -158,7 +166,9 @@ public class TypeSystem2Xml {
       typeDesc.setFeatures(featDescArr);
 
       // check for string subtypes
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (type instanceof TypeImpl_string) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-128
         LowLevelTypeSystem lts = aTypeSystem.getLowLevelTypeSystem();
         final int typeCode = lts.ll_getCodeForType(type);
         String[] strings = lts.ll_getStringSet(typeCode);

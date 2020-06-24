@@ -75,6 +75,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * @param aCasProcessorType -
    */
   public NetworkCasProcessorImpl(CpeCasProcessor aCasProcessorType) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     casProcessorType = aCasProcessorType;
     retryCount = casProcessorType.getErrorHandling().getMaxConsecutiveRestarts().getRestartCount();
     if (retryCount == 0) {
@@ -135,6 +136,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
   public CasData process(CasData aCas) throws ResourceProcessException {
     if (textAnalysisProxy == null) {
       throw new ResourceProcessException(new Exception(Thread.currentThread().getName()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_EXP_no_proxy__WARNING", new Object[] { Thread.currentThread()
                               .getName() })));
@@ -153,6 +155,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
       if (textAnalysisProxy.isConnected() == false) {
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_down__INFO",
                   new Object[] { Thread.currentThread().getName(), name });
         }
@@ -181,6 +184,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
   public CasData[] process(CasData[] aCasList) throws ResourceProcessException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               Thread.currentThread().getName()
                       + " ===================================Calling Proxy");
@@ -207,6 +211,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isStateless()
    */
   public boolean isStateless() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     if (resourceMetadata == null) {
       try {
         resourceMetadata = textAnalysisProxy.getAnalysisEngineMetaData();
@@ -229,6 +234,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
    */
   public boolean isReadOnly() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     if (resourceMetadata == null) {
       try {
         resourceMetadata = textAnalysisProxy.getAnalysisEngineMetaData();
@@ -254,6 +260,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
     if (textAnalysisProxy == null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_use_default_metadata__FINEST",
                 new Object[] { Thread.currentThread().getName(), name });
@@ -280,6 +287,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
       if (textAnalysisProxy.isConnected() == false) {
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_down__INFO",
                   new Object[] { Thread.currentThread().getName(), name });
         }
@@ -294,6 +302,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
     } catch (Exception e) {
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_unable_to_read_meta__SEVERE",
                 new Object[] { Thread.currentThread().getName(), e });
@@ -309,6 +318,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * @see org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException {
     // Check if batch noitification is disabled == 0
     if (!doSendNotification()) {
@@ -331,6 +341,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * @see org.apache.uima.collection.base_cpm.CasProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -365,6 +376,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
     // <checkpoint> element
     // in the Cpe descriptor for this Cas Processor.
     if (casProcessorType.getCheckpoint() != null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && casProcessorType.getCheckpoint().getBatchSize() == 0) {
       return false;
     }

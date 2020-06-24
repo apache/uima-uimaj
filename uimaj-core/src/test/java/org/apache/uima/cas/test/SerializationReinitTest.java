@@ -79,6 +79,8 @@ public class SerializationReinitTest extends TestCase {
 
   public static final String TOKEN_TYPE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
           + TOKEN_TYPE_FEAT;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   public static final String TOKEN_TYPE_TYPE = "TokenType";
 
@@ -172,6 +174,7 @@ public class SerializationReinitTest extends TestCase {
     super.setUp();
     casMgr = initCAS();
     cas = (CASImpl)casMgr;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
@@ -180,11 +183,13 @@ public class SerializationReinitTest extends TestCase {
     eosType = ts.getType(EOS_TYPE);
     tokenType = ts.getType(TOKEN_TYPE);
     tokenTypeFeature = ts.getFeatureByFullName(TOKEN_TYPE_FEAT_Q);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     sentenceType = ts.getType(SENT_TYPE);
     strSub1 = ts.getType(STRING_SUBTYPE_1);
     assertTrue(strSub1 != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-359
     theTypeType = ts.getType(OSTR_TYPE);
     theStringFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OSTR_TYPE_FEAT);
     theByteFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OBYTE_TYPE_FEAT);
@@ -195,6 +200,7 @@ public class SerializationReinitTest extends TestCase {
     theLongArrayFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OLONGA_TYPE_FEAT);
  
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
@@ -205,6 +211,7 @@ public class SerializationReinitTest extends TestCase {
   }
 
   public void tearDown() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     casMgr = null;
     cas = null;
     wordType = null;
@@ -217,6 +224,7 @@ public class SerializationReinitTest extends TestCase {
     endFeature = null;
     sentenceType = null;
     strSub1 = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
     indexes = null;
     typeSystem = null;
   }
@@ -238,6 +246,7 @@ public class SerializationReinitTest extends TestCase {
     TypeSystemMgr tsa = aCas.getTypeSystemMgr();
     // Add new types and features.
     Type topType = tsa.getTopType();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annotType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
     tsa.addType(SENT_TYPE, annotType);
@@ -248,6 +257,7 @@ public class SerializationReinitTest extends TestCase {
     tsa.addType(EOS_TYPE, tokenTypeType);
     tsa.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     tsa.addStringSubtype(STRING_SUBTYPE_1, STR_1_VALS);
+//IC see: https://issues.apache.org/jira/browse/UIMA-359
     Type stringType = tsa.getType(CAS.TYPE_NAME_STRING);
     Type byteType = tsa.getType(CAS.TYPE_NAME_BYTE);
     Type byteArrayType = tsa.getType(CAS.TYPE_NAME_BYTE_ARRAY);
@@ -280,6 +290,7 @@ public class SerializationReinitTest extends TestCase {
     // assert(cas.getIndexRepositoryMgr().isCommitted());
 
     // Create the default text Sofa and return CAS view
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     return (CASMgr) aCas.getCAS().getCurrentView();
   }
 
@@ -290,6 +301,7 @@ public class SerializationReinitTest extends TestCase {
     try {
       cas.reset();
     } catch (CASAdminException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
       assertTrue(e.getMessageKey() == CASAdminException.FLUSH_DISABLED);
       exc = true;
     }
@@ -303,6 +315,7 @@ public class SerializationReinitTest extends TestCase {
     // System.out.println("Tokenizing text.");
 
     // Create FSs for the token types.
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     FeatureStructure wordFS = cas.createFS(wordType);
     FeatureStructure sepFS = cas.createFS(separatorType);
     FeatureStructure eosFS = cas.createFS(eosType);
@@ -320,6 +333,7 @@ public class SerializationReinitTest extends TestCase {
     AnnotationFS tokenAnnot;
     while (tokenizer.isValid()) {
       tokenAnnot = cas.createAnnotation(tokenType, tokenizer.getTokenStart(), tokenizer
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getTokenEnd());
       tokenTypeCode = tokenizer.getTokenType();
       switch (tokenTypeCode) {
@@ -383,9 +397,11 @@ public class SerializationReinitTest extends TestCase {
     // Get a handle to the index repository.
     FSIndexRepository indexRepository = cas.getIndexRepository();
     // assert(indexRepository != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     Iterator<String> labelIt = indexRepository.getLabels();
     assertTrue(labelIt != null);
     // Get the standard index for tokens.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIndex<AnnotationFS> tokenIndex = cas.getAnnotationIndex(tokenType);
     // assert(tokenIndex != null);
     // Get an iterator over tokens.
@@ -439,12 +455,16 @@ public class SerializationReinitTest extends TestCase {
 
     time = System.currentTimeMillis();
     // Read the document into a String. I'm sure there are better ways to
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File textFile = JUnitExtension.getFile("data/moby.txt");
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
     String moby = FileUtils.file2String(textFile);
     // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
     String line;
 //    BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer(10000);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> docs = new ArrayList<>();
     Matcher m = nlPattern.matcher(moby);
     while (m.find()) {
@@ -481,6 +501,7 @@ public class SerializationReinitTest extends TestCase {
         cas.setDocumentText(docs.get(i));
 
         tokenize();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         numTok = cas.getAnnotationIndex(tokenType).size();
         assertTrue(numTok > 0);
         // System.out.println(" Number of tokens: " + numTok);
@@ -499,6 +520,7 @@ public class SerializationReinitTest extends TestCase {
         // System.out.println("Serializing...");
         cs = Serialization.serializeCAS(cas);
         cas = Serialization.createCAS(casMgr, cs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
@@ -506,6 +528,7 @@ public class SerializationReinitTest extends TestCase {
         // System.out.println("Serializing...");
         cs = Serialization.serializeCAS(cas);
         cas = Serialization.createCAS(casMgr, cs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
@@ -535,6 +558,7 @@ public class SerializationReinitTest extends TestCase {
      * Throw in tests of the byte, short and long heaps as well
      * 
      */
+//IC see: https://issues.apache.org/jira/browse/UIMA-359
   String testString = "testString";
   cas.reset();
   LowLevelCAS ll_cas = cas.getLowLevelCAS();
@@ -562,6 +586,7 @@ public class SerializationReinitTest extends TestCase {
     newFS1.setFeatureValue(theByteArrayFeature, newBA1);
     newFS1.setFeatureValue(theShortArrayFeature, newSA1);
     ir.addFS(newFS1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4135
 
     FeatureStructure newFS2 = cas.createFS(theTypeType);
     ByteArrayFS newBA2 = cas.createByteArrayFS(1);
@@ -586,6 +611,7 @@ public class SerializationReinitTest extends TestCase {
     newFS2.setFeatureValue(theByteArrayFeature, newBA2);
     newFS2.setFeatureValue(theShortArrayFeature, newSA2);
     ir.addFS(newFS2);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4135
 
     ByteArrayOutputStream fos = new ByteArrayOutputStream();
     Serialization.serializeCAS(cas, fos);
@@ -593,6 +619,7 @@ public class SerializationReinitTest extends TestCase {
     ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
     Serialization.deserializeCAS(cas, fis);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIndex<AnnotationFS> idx = cas.getAnnotationIndex(theTypeType);
     FSIterator<AnnotationFS> iter = idx.iterator();
     for (int tc = 0; tc < cycle + 1; tc++) {
@@ -679,6 +706,7 @@ public class SerializationReinitTest extends TestCase {
    * @throws Exception
    */
   public void testDeltaBlobSerialization() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1207
    try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               indexes);
@@ -726,6 +754,7 @@ public class SerializationReinitTest extends TestCase {
       cas1.getIndexRepository().addFS(anAnnot3);
       AnnotationFS anAnnot4 = cas1.createAnnotation(cas1.getAnnotationType(), 15, 30);
       cas1.getIndexRepository().addFS(anAnnot4);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
       FSIndex<AnnotationFS> tIndex = cas1.getAnnotationIndex();
       assertTrue(tIndex.size() == 5); //doc annot plus 4 annots
       
@@ -780,6 +809,7 @@ public class SerializationReinitTest extends TestCase {
       //=======================================================================
       //create Marker, add/modify fs and serialize in delta xmi format.
       Marker marker = cas2.createMarker();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
       FSIndex<AnnotationFS> cas2tIndex = cas2.getAnnotationIndex();
       CAS cas2preexistingView = cas2.getView("preexistingView");
       FSIndex<AnnotationFS> cas2personIndex = cas2preexistingView.getAnnotationIndex(personType);
@@ -799,6 +829,7 @@ public class SerializationReinitTest extends TestCase {
       //create an annotation in View1
       AnnotationFS cas2view1Annot = cas2view1.createAnnotation(cas2.getAnnotationType(), 1, 5);
       cas2view1.getIndexRepository().addFS(cas2view1Annot);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
       FSIndex<AnnotationFS> cas2view1Index = cas2view1.getAnnotationIndex();
       assertTrue(cas2view1Index.size() == 2); //document annot and this annot
      
@@ -821,6 +852,7 @@ public class SerializationReinitTest extends TestCase {
       cas2.getIndexRepository().removeFS(delAnnot);
   
       //modify FS - string feature and FS feature.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
       Iterator<AnnotationFS> personIter = cas2personIndex.iterator();     
       AnnotationFS cas2person1 = personIter.next();
       AnnotationFS cas2person2 = personIter.next();
@@ -831,6 +863,7 @@ public class SerializationReinitTest extends TestCase {
       cas2person2.setStringValue(componentIdFeat, "delataCas2");
       cas2person2.setStringValue(mentionTypeFeat, "FIRSTNAME");
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
       Iterator<AnnotationFS> orgIter = cas2orgIndex.iterator();
       AnnotationFS cas2orgAnnot = orgIter.next();
       cas2orgAnnot.setStringValue(mentionTypeFeat, "ORGNAME");
@@ -893,6 +926,7 @@ public class SerializationReinitTest extends TestCase {
   }
   
   public void testDeltaBlobWithInvalidMarker() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1569
     try {
        CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
                indexes);

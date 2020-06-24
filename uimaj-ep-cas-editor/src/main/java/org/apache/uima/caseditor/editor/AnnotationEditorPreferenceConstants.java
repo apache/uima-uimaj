@@ -34,6 +34,7 @@ public class AnnotationEditorPreferenceConstants {
   /** The Constant EDITOR_LINE_LENGTH_HINT. */
   public static final String EDITOR_LINE_LENGTH_HINT = 
           "EDITOR_LINE_LENGTH_HINT";
+//IC see: https://issues.apache.org/jira/browse/UIMA-2271
 
   /** The Constant ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM. */
   public static final String ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM = "ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM";

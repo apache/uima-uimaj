@@ -89,6 +89,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
    *          description of event
    */
   public ProcessTraceEvent_impl(String aComponentName, String aType, String aDescription) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mComponentName = aComponentName;
     mType = aType;
     mDescription = aDescription;
@@ -176,6 +177,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
    */
   public List<ProcessTraceEvent> getSubEvents() {
     if (mSubEvents == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       return Collections.emptyList();
     } else {
       return mSubEvents;
@@ -187,6 +189,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
    */
   public void addSubEvent(ProcessTraceEvent aEvent) {
     if (mSubEvents == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       mSubEvents = new ArrayList<>();
     }
     mSubEvents.add(aEvent);
@@ -215,6 +218,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
     final DecimalFormat pctFmt = new DecimalFormat("##.##%");
 
     writeTabs(aIndentLevel, aBuf);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
     aBuf.append("Component Name: ").append(getComponentName()).append('\n');
     writeTabs(aIndentLevel, aBuf);
     aBuf.append("Event Type: ").append(getType()).append('\n');
@@ -237,9 +241,11 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
 
     if (getResultMessage() != null && getResultMessage().length() > 0) {
       writeTabs(aIndentLevel, aBuf);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
       aBuf.append("Result: ").append(getResultMessage()).append('\n');
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     List<ProcessTraceEvent> subEvents = getSubEvents();
     if (!subEvents.isEmpty()) {
       writeTabs(aIndentLevel, aBuf);
@@ -257,6 +263,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
    */
   public int getDurationExcludingSubEvents() {
     int result = getDuration();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     for (ProcessTraceEvent evt : getSubEvents()) {
       result -= evt.getDuration();
     }

@@ -266,6 +266,7 @@ public class UimaDecompiler {
 //  }
 
   public boolean writeIfOk(ByteArrayOutputStream baos, String className) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     if (!decompiledFailed(baos)) {
       Misc.toFile(baos, new File(outputDirectory, className));
       return true;
@@ -297,16 +298,19 @@ public class UimaDecompiler {
         }
       }      
     }; 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4518
     ITypeLoader tc = new CompositeTypeLoader(tl, getClasspathTypeLoader(), new InputTypeLoader());
     decompilerSettings.setTypeLoader(tc);
   }
     
   private void setDecompilerSettingsForClassLoader() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     ITypeLoader tc = new CompositeTypeLoader(getClasspathTypeLoader(), new InputTypeLoader());
     decompilerSettings.setTypeLoader(tc);
   }
     
   private ITypeLoader getClasspathTypeLoader() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4518
     return new ITypeLoader() {
       
       @Override

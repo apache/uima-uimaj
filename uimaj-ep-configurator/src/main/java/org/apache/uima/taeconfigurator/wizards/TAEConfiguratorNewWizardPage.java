@@ -36,7 +36,9 @@ public class TAEConfiguratorNewWizardPage extends AbstractNewWizardPage {
    * @param selection the selection
    */
   public TAEConfiguratorNewWizardPage(ISelection selection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(selection, "big_ae.gif", "Analysis Engine (AE) Descriptor File",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Create a new AE Descriptor File", "aeDescriptor.xml");
   }
 }

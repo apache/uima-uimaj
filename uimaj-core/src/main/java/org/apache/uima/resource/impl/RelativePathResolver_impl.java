@@ -56,6 +56,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
     // initialize data path based on uima.datapath System property; if not
     // present fall back on user.dir
     String dataPath = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       dataPath = System.getProperty(UIMA_DATAPATH_PROP);
     } catch (SecurityException e) {
@@ -97,6 +98,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
    */
   public void setDataPath(String aPath) throws MalformedURLException {
     List<URL> urls = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
     // tokenize based on path.separator system property
     String pathSepChar = System.getProperty("path.separator");
@@ -165,6 +167,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
    * Utility method that checks to see if a file exists at the specified URL.
    */
   protected boolean fileExistsAtUrl(URL aUrl) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (InputStream testStream = aUrl.openStream()) {
       return true;
     } catch (IOException e) {

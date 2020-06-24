@@ -36,5 +36,6 @@ public interface CommonPrimitiveArray<T> extends CommonArrayFS<T> {
    * @param i the index
    * @param v the value to set at the above index
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
   void setArrayValueFromString(int i, String v);
 }

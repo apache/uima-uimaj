@@ -51,6 +51,7 @@ public class Util {
 //    } else {
 //      ci = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);
 //    }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3765
     ci = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);
     
     return ci;
@@ -79,6 +80,7 @@ public class Util {
       boolean sofaAware, 
       ComponentInfo componentInfo,
       ResourceManager resourceManager, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
       Class<T> casInterface) {
     CASImpl ci = getStartingView(cas, sofaAware, componentInfo);
     // get requested interface to CAS (CAS or JCas)
@@ -101,6 +103,7 @@ public class Util {
    * @param userCode run this code within the current context
    */
   public static void preserveContextHolder(Runnable userCode) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5320
     UimaContext prevContext = UimaContextHolder.getContext();
     try {
       userCode.run();

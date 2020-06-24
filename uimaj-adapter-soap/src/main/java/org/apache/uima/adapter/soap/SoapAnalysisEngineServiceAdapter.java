@@ -48,6 +48,7 @@ public class SoapAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdapt
    */
   @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // aSpecifier must be a URISpecifier using the SOAP protocol
     if (!(aSpecifier instanceof URISpecifier)) {
@@ -76,11 +77,13 @@ public class SoapAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdapt
 
     } catch (MalformedURLException e) {
       throw new ResourceInitializationException(ResourceInitializationException.MALFORMED_URL,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { uriSpec.getUri(), uriSpec.getSourceUrlString() }, e);
     }
     
     // Sofa mappings are currently not implemented for remote AEs.  Catch this
     // and report an error.
+//IC see: https://issues.apache.org/jira/browse/UIMA-213
     if (getUimaContextAdmin().getSofaMap().size() > 0) {
       throw new ResourceInitializationException(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE,
               new Object[]{getMetaData().getName()});

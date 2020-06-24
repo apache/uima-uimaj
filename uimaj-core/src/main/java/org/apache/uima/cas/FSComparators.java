@@ -25,6 +25,7 @@ package org.apache.uima.cas;
  *     - with or without type order (with only includes typeOrder if there is such a key included) 
  */
 public enum FSComparators {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     WITH_ID,             // include the id in the comparator
     WITHOUT_ID,          // no          id in the comparator
     WITH_TYPE_ORDER,     // include the typeOrder in the comparator

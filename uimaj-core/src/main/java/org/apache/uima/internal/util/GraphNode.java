@@ -35,6 +35,7 @@ public class GraphNode {
   protected ArrayList<GraphNode> predecessors = new ArrayList<>();
 
   public GraphNode(Object element) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this.element = element;
   }
 

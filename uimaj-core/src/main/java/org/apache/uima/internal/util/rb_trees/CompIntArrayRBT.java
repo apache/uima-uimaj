@@ -46,6 +46,8 @@ public class CompIntArrayRBT extends IntArrayRBT {
   }
   
   protected int compare(int v1, int v2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     return this.comp.compare(v1, v2);
   }
   

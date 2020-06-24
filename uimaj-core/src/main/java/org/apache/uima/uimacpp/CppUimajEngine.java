@@ -71,6 +71,7 @@ public class CppUimajEngine {
   private long[] longHeapArray;
 
   private void logException(Exception exc) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     exc.printStackTrace(pw);
@@ -83,6 +84,7 @@ public class CppUimajEngine {
 
   public int initialize(String config, String dataPath, int[] typeInheritance,
           int[] typePriorities, int[] featureDefs, int[] featureOffset, String[] typeNames,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String[] featureNames, int[] stringSubTypes, String[] stringSubTypeValues,
           int[] stringSubTypeValuePos, String[] indexIDs, int[] indexKinds, int[] compStarts,
           int[] compDefs) {
@@ -113,6 +115,7 @@ public class CppUimajEngine {
       serializer.stringSubtypeValues = stringSubTypeValues;
       serializer.stringSubtypeValuePos = stringSubTypeValuePos;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
       byte[] bar = config.getBytes(StandardCharsets.UTF_16);
       ByteArrayInputStream bais = new ByteArrayInputStream(bar);
       XMLInputSource in = new XMLInputSource(bais, null);
@@ -148,6 +151,7 @@ public class CppUimajEngine {
       completeSerializer.setCasSerializer(Serialization.serializeCAS(casImpl));
 
       casImpl.getBinaryCasSerDes().reinit(completeSerializer);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
 
       // System.out.println(cc.getProcessingResourceMetaData().getName());
     } catch (Exception exc) {
@@ -168,6 +172,7 @@ public class CppUimajEngine {
 
   public int process(String doc, int[] heapArray, int[] fsIndex, String[] stringTable,
           int[] resultSpecTypes, int[] resultSpecFeatures, int sofaNum, byte[] aByteHeapArray,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           short[] aShortHeapArray, long[] aLongHeapArray) {
     int result = 0;
     try {
@@ -183,15 +188,18 @@ public class CppUimajEngine {
       serializer.fsIndex = fsIndex;
       serializer.stringTable = stringTable;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       serializer.byteHeapArray = aByteHeapArray;
       serializer.shortHeapArray = aShortHeapArray;
       serializer.longHeapArray = aLongHeapArray;
 
       casImpl.getBinaryCasSerDes().reinit(serializer);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4667
 
       // 2. create result spec
       if (ae != null) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
         ResultSpecification rs = ae.createResultSpecification(casImpl.getTypeSystem());
         for (int i = 0; i < resultSpecTypes.length; ++i) {
           // allAnnotatorFeatures is not considere here! (TODO)
@@ -200,6 +208,7 @@ public class CppUimajEngine {
                           false);
         }
         for (int i = 0; i < resultSpecFeatures.length; ++i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-408
           rs.addResultFeature(casImpl.getTypeSystemImpl().ll_getFeatureForCode(resultSpecFeatures[i])
                   .getName());
         }
@@ -210,6 +219,7 @@ public class CppUimajEngine {
         // 3. call process with tcas or cas
         if (requiresTCas && sofaNum == 0) {
           result = 1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
           exceptionString = "This CasConsumer expects a View, but the Sofa from which to construct one is not specified.";
         } else if (sofaNum > 0) {
           CAS view = casImpl.getView(sofaNum);
@@ -314,6 +324,7 @@ public class CppUimajEngine {
 
     try {
       byte[] bar;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
       bar = inDesc.getBytes(StandardCharsets.UTF_16);
       ByteArrayInputStream bais = new ByteArrayInputStream(bar);
       XMLInputSource in = new XMLInputSource(bais, null);

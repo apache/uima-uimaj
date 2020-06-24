@@ -36,6 +36,7 @@ import org.apache.uima.jcas.cas.TOP;
  * @param <T> result type
  */
 public class FsIterator_subtypes_ordered<T extends FeatureStructure> 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
                     extends FsIterator_multiple_indexes<T> {
  
   /**
@@ -67,6 +68,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   
   // call used by select framework to specify ignoring type priority
   public FsIterator_subtypes_ordered(FsIndex_iicp<T> iicp, Comparator<TOP> comparatorMaybeNoTypeWithoutId) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     super(iicp, iicp.getIterators(), comparatorMaybeNoTypeWithoutId);
     this.iicp = iicp;
     FsIndex_set_sorted<T> idx2 = (FsIndex_set_sorted<T>)iicp.fsIndex_singletype;
@@ -99,6 +101,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     }
     // configured to continue with forward iterations
     this.wentForward = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     this.lastValidIteratorIndex = lvi;
   }
   
@@ -112,6 +115,8 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     // Set all iterators to insertion point.
     int i = 0;
     while (i <= lvi) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
       final LowLevelIterator<T> it = this.nonEmptyIterators[i];
 //      it.resetConcurrentModification();
       it.moveToLastNoReinit();
@@ -128,6 +133,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     }
     // configured to continue with backward iterations
     this.wentForward = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     this.lastValidIteratorIndex = lvi;
   }
 
@@ -135,6 +141,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   public void moveToNextNvc() {
     final LowLevelIterator<T> it0 = nonEmptyIterators[0]/*.checkConcurrentModification()*/;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (this.wentForward) {
       it0.moveToNextNvc();
       heapify_down(it0, 1);
@@ -155,6 +162,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       // Any iterator other than the current one needs to be
       // incremented until it's pointing at something that's
       // greater than the current element.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
       final LowLevelIterator<T> it = nonEmptyIterators[i]/*.checkConcurrentModification()*/;
       // If the iterator we're considering is not valid, we
       // set it to the first element. This should be it for this iterator...
@@ -180,6 +188,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       }
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     this.lastValidIteratorIndex = lvi;
     this.wentForward = true;
 
@@ -190,6 +199,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   
   @Override
   public void moveToPreviousNvc() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     final LowLevelIterator<T> it0 = nonEmptyIterators[0]/*.checkConcurrentModification()*/;
     if (!this.wentForward) {
       it0.moveToPreviousNvc();
@@ -203,6 +213,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
         // Any iterator other than the current one needs to be
         // decremented until it's pointing at something that's
         // smaller than the current element.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
         final LowLevelIterator<T> it = nonEmptyIterators[i]/*.checkConcurrentModification()*/;
         // If the iterator we're considering is not valid, we
         // set it to the last element. This should be it for this iterator...
@@ -222,12 +233,19 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
         } else {
           // swap this iterator with the last possibly valid one
           // lvi might be equal to i, this will not be a problem
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
           this.nonEmptyIterators[i] = this.nonEmptyIterators[lvi];
           this.nonEmptyIterators[lvi] = it;
           --lvi;
         }
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
       this.lastValidIteratorIndex = lvi;
       this.wentForward = false;
 
@@ -260,6 +278,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
 //    }
         
     int d = compare(l.getNvc(), r.getNvc());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return d * dir < 0;
   }
   
@@ -283,6 +302,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     if (d == 0) {
       d = fsLeft._id() - fsRight._id();
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return d;
   }
 
@@ -306,6 +326,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
 
     while (idx > SORTED_SECTION) {
       nidx = (idx + SORTED_SECTION - 1) >> 1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
       if (!is_before(it, this.nonEmptyIterators[nidx], dir)) {
         this.nonEmptyIterators[idx] = it;
         return;
@@ -344,6 +365,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     if (!it.isValid()) {
       // if at the end of the iteration, the lastValidIteratorIndex is this one (e.g., is 0)
       // and this operation is a noop, but sets the lastValidIteratorIndex to -1, indicating the iterator is invalid
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
       final LowLevelIterator<T> itl = this.nonEmptyIterators[this.lastValidIteratorIndex]/*.checkConcurrentModification()*/;
       this.nonEmptyIterators[this.lastValidIteratorIndex] = it;
       this.nonEmptyIterators[0] = itl;
@@ -366,6 +388,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     // in case of a concurrent modification
     try {
       while (nidx <= end) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
         if (!is_before(this.nonEmptyIterators[nidx]/*.checkConcurrentModification()*/, it, dir)) {
           return; // passes through finally
         }
@@ -378,6 +401,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       nidx = SORTED_SECTION + 1;
       while (nidx <= num) {
         if ((nidx < num)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
             && is_before(this.nonEmptyIterators[nidx+1]/*.checkConcurrentModification()*/,
                 this.nonEmptyIterators[nidx]/*.checkConcurrentModification()*/, dir)) {
           ++nidx;
@@ -401,6 +425,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    */
   @Override
   public boolean isValid() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     return lastValidIteratorIndex >= 0;
   }
 
@@ -409,6 +434,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    */
   @Override
   public T getNvc() throws NoSuchElementException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return nonEmptyIterators[0].get();
   }
 
@@ -434,6 +460,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     // Set all iterators to insertion point.
     int i = 0;
     while (i <= lastValidIterator_local) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
       final LowLevelIterator<T> it = this.nonEmptyIterators[i];
       it.moveToNoReinit(fs);  
       if (it.isValid()) {
@@ -442,6 +469,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       } else {
         // swap this iterator with the last possibly valid one
         // lvi might be equal to i, this will not be a problem
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
         this.nonEmptyIterators[i] = this.nonEmptyIterators[lastValidIterator_local];
         this.nonEmptyIterators[lastValidIterator_local] = it;
         --lastValidIterator_local;
@@ -486,11 +514,13 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    */
   @Override
   public FSIterator<T> copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     FsIterator_subtypes_ordered<T> it = new FsIterator_subtypes_ordered<>(iicp, comparatorMaybeNoTypeWithoutId);
     if (!isValid()) {
       it.moveToPrevious();  // mark new one also invalid
     } else {
       T posFs = getNvc();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
       it.moveToNoReinit(posFs);  // moves to left-most position
       while(it.get() != posFs) {
         it.moveToNext();
@@ -501,6 +531,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
 
   @Override
   public Comparator<TOP> getComparator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return comparatorMaybeNoTypeWithoutId;    
   }
 

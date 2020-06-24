@@ -125,6 +125,7 @@ public class VinciTAP {
 
   /** The vinci cas data converter. */
   private VinciCasDataConverter vinciCasDataConverter = new VinciCasDataConverter(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           org.apache.uima.collection.impl.cpm.Constants.METADATA_KEY,
           org.apache.uima.collection.impl.cpm.Constants.DOC_ID,
           org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG,
@@ -185,6 +186,7 @@ public class VinciTAP {
         maxConnectRetryCount = Integer.parseInt(System.getProperty("CONNECT_RETRY_COUNT"));
       } catch (Exception e) {
         throw new ConnectException(CpmLocalizedMessage.getLocalizedMessage(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_retry_count__WARNING",
                 new Object[] { Thread.currentThread().getName(), aHost, String.valueOf(aPort) }));
       }
@@ -210,6 +212,7 @@ public class VinciTAP {
         serviceHost = conn.getHost();
         servicePort = String.valueOf(conn.getPort());
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                   "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_connected_to_service__FINEST",
@@ -223,6 +226,7 @@ public class VinciTAP {
                     new Object[] { Thread.currentThread().getName() });
           }
           try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
             Thread.sleep(100);
           } catch (InterruptedException ex) {
           }
@@ -235,6 +239,7 @@ public class VinciTAP {
             // Send shutdown request to the TAE service
             AFrame resp = (AFrame) conn.sendAndReceive(query);
             if (resp.fgetString("vinci:STATUS") != null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     && resp.fgetString("vinci:STATUS").equals("OK")) {
               fencedProcessPID = resp.fgetString("PID");
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -250,6 +255,7 @@ public class VinciTAP {
         } else {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_connection_closed__FINEST",
                     new Object[] { Thread.currentThread().getName() });
@@ -276,6 +282,7 @@ public class VinciTAP {
                                 String.valueOf(aPort) });
           }
           try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
             Thread.sleep(100);
           } catch (Exception ex) {
           }
@@ -288,6 +295,7 @@ public class VinciTAP {
       }
     }
     if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
               "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_connection_failed__WARNING",
@@ -321,6 +329,7 @@ public class VinciTAP {
 
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_vns_not_provided__SEVERE",
                 new Object[] { Thread.currentThread().getName() });
@@ -336,6 +345,7 @@ public class VinciTAP {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 this.getClass().getName(),
                 "initialize",
@@ -351,6 +361,7 @@ public class VinciTAP {
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 Thread.currentThread().getName() + " Connecting to::" + aServiceName
                         + " VinciContext.getVNSHost():" + vctx.getVNSHost()
@@ -362,6 +373,7 @@ public class VinciTAP {
       conn.setRetry(false);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 this.getClass().getName(),
                 "initialize",
@@ -379,6 +391,7 @@ public class VinciTAP {
     } catch (Exception e) {
       if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_connection_failed__WARNING",
                 new Object[] { Thread.currentThread().getName(), aServiceName, "" });
@@ -407,6 +420,7 @@ public class VinciTAP {
         if (serviceName != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_down__INFO",
                     new Object[] { Thread.currentThread().getName(), serviceName });
           }
@@ -452,6 +466,7 @@ public class VinciTAP {
     currentTimeout = conn.getSocketTimeout();
     if (UIMAFramework.getLogger().isLoggable(Level.FINE)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINE,
               this.getClass().getName(),
               "process",
@@ -472,6 +487,7 @@ public class VinciTAP {
       long memStart = Runtime.getRuntime().freeMemory();
       if (System.getProperty("SHOW_MEMORY") != null) {
         UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 this.getClass().getName(),
                 "process",
@@ -604,6 +620,7 @@ public class VinciTAP {
         String featureStructureType = kvp.getKey();
         // Convert WF keys from ':' representation to '_colon_'
         if (featureStructureType
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
           featureStructureType = StringUtils.replaceAll(featureStructureType,
                   org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
@@ -655,6 +672,7 @@ public class VinciTAP {
             FeatureValue fValue = fs.getFeatureValue(names[i]);
             if (fValue != null) {
               s = "\n\t\tCAS FEATURE NAME::" + names[i] + " CAS FEATURE VALUE::"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       + fValue.toString();
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                 UIMAFramework.getLogger(VinciTAP.class).log(Level.FINEST, s);
@@ -683,6 +701,7 @@ public class VinciTAP {
    */
   private void produceXCASRequestFrame(CasData aCasData, AFrame dataFrame, String[] aDropKeyList)
           throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     AFrame keysFrame = new AFrame();
     dataFrame.fadd("KEYS", keysFrame);
@@ -722,6 +741,7 @@ public class VinciTAP {
         String type = fs.getType();
         if (type.indexOf(org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM) > -1) {
           type = StringUtils.replaceAll(type,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM,
                   org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM);
         }
@@ -748,6 +768,7 @@ public class VinciTAP {
    */
   private static boolean isText(String feature) {
     if ("Doc:SpannedText".equals(feature) || "Detag:Content".equals(feature)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || "Detag:DetagContent".equals(feature) || "uima.cpm.DocumentText".equals(feature)) {
       return true;
     }
@@ -794,6 +815,7 @@ public class VinciTAP {
         newCasData.addFeatureStructure(casDataFs);
       }
       vinciCasDataConverter.appendVinciFrameToCasData(responseFrame.fgetAFrame("DATA").fgetAFrame(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "KEYS"), newCasData);
       aCas = newCasData;
 
@@ -811,6 +833,7 @@ public class VinciTAP {
         aPT.addEvent(aResourceName, ProcessTraceEvent.ANALYSIS, "", annotationTime, "success");
       }
       int casToFrameTime = responseFrame.fgetVinciFrame("DATA")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .fgetInt(Constants.CAS_TO_FRAME_TIME);
       if (casToFrameTime > 0) {
         totalCasToFrameTime += casToFrameTime;
@@ -822,6 +845,7 @@ public class VinciTAP {
     } catch (ServiceException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
                 new Object[] { Thread.currentThread().getName(), e.getMessage() });
       }
@@ -858,6 +882,7 @@ public class VinciTAP {
       for (int inx = 0; inx < keyList.size(); inx++) {
         if (System.getProperty("SHOWKEYS") != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_drop_key__FINEST",
                     new Object[] { Thread.currentThread().getName(), (String) keyList.get(inx) });
@@ -898,6 +923,8 @@ public class VinciTAP {
    * @throws ServiceException - passthru, wraps Exception
    * @throws ServiceConnectionException passthru   */
   public CasData[] analyze(CasData[] aCasList, ProcessTrace aPT, String aResourceName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ServiceException, ServiceConnectionException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -922,6 +949,7 @@ public class VinciTAP {
             FeatureStructure fs = (FeatureStructure) it.next();
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_dump_casdata__FINEST",
                       new Object[] { Thread.currentThread().getName(), fs.getType() });
@@ -952,6 +980,7 @@ public class VinciTAP {
       if (serviceName != null && System.getProperty("SHOW_NAME") != null)
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_send_casdata_to_service__FINEST",
                   new Object[] { Thread.currentThread().getName(), serviceName });
@@ -970,10 +999,12 @@ public class VinciTAP {
       }
 
       if (System.getProperty("SHOW_RAW_RESPFRAME") != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).log(Level.INFO,
                 " responseFrame from service::" + serviceName + "\n" + responseFrame.toXML());
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1560
       if (responseFrame != null && responseFrame.fgetAFrame("DATA") == null) {
         // No annotations found in reply so just leave
         return aCasList;
@@ -990,6 +1021,7 @@ public class VinciTAP {
         dataFrame = (AFrame) d.remove(0);
         try {
           if (System.getProperty("SHOW_RESPFRAME") != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMAFramework.getLogger(this.getClass()).log(Level.INFO,
                     " Converting XCAS in responseFrame to CasData.XCAS=" + dataFrame.toXML());
           }
@@ -1007,6 +1039,7 @@ public class VinciTAP {
               newCasData.addFeatureStructure(casDataFs);
             }
             vinciCasDataConverter.appendVinciFrameToCasData(dataFrame.fgetAFrame("KEYS"),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     newCasData);
             aCasList[instanceCount] = newCasData;
           }
@@ -1042,6 +1075,7 @@ public class VinciTAP {
         } catch (Exception e) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINER,
                     this.getClass().getName(),
                     "process",
@@ -1056,6 +1090,7 @@ public class VinciTAP {
       }
       aPT.endEvent(aResourceName, "Vinci Call", "");
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_done_analyzing_bundle__FINEST",
@@ -1096,6 +1131,7 @@ public class VinciTAP {
   public ProcessingResourceMetaData getAnalysisEngineMetaData() throws ResourceServiceException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -1115,6 +1151,7 @@ public class VinciTAP {
       resultFrame = (AFrame) conn.sendAndReceive(queryFrame, AFrame.getAFrameFactory(), timeout);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 this.getClass().getName(),
                 "process",
@@ -1125,6 +1162,7 @@ public class VinciTAP {
       }
       // Parse the XML into the ProcessingResourceMetaData object
       SaxDeserializer saxDeser = UIMAFramework.getXMLParser().newSaxDeserializer();
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
 
       VinciSaxParser vinciSaxParser = new VinciSaxParser();
       vinciSaxParser.setContentHandler(saxDeser);
@@ -1134,6 +1172,7 @@ public class VinciTAP {
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 this.getClass().getName(),
                 "process",
@@ -1157,6 +1196,7 @@ public class VinciTAP {
     } catch (Exception e) {
       if ("No Such Command supported".equals(e.getMessage())) {
         if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           UIMAFramework.getLogger(this.getClass())
                   .logrb(
                           Level.WARNING,
@@ -1197,6 +1237,7 @@ public class VinciTAP {
         query.fadd("vinci:COMMAND", Constants.BATCH_PROCESS_COMPLETE);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "process",
@@ -1210,6 +1251,7 @@ public class VinciTAP {
       }
     } catch (Exception e) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_exception__SEVERE",
               new Object[] { Thread.currentThread().getName(), e.getMessage() });
       e.printStackTrace();
@@ -1232,6 +1274,7 @@ public class VinciTAP {
         query.fadd("vinci:COMMAND", Constants.COLLECTION_PROCESS_COMPLETE);
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "process",
@@ -1290,6 +1333,9 @@ public class VinciTAP {
                       new Object[] { Thread.currentThread().getName(),
                           String.valueOf(totalDeSerializeTime) });
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       UIMAFramework.getLogger(this.getClass())
               .logrb(
                       Level.FINEST,
@@ -1314,6 +1360,7 @@ public class VinciTAP {
             query.fadd("vinci:COMMAND", Constants.SHUTDOWN);
             if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       Level.INFO,
                       this.getClass().getName(),
                       "process",
@@ -1338,6 +1385,7 @@ public class VinciTAP {
       ex.printStackTrace();
 
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_exception__SEVERE",
               new Object[] { Thread.currentThread().getName(), ex.getMessage() });
       return false;
@@ -1375,14 +1423,17 @@ public class VinciTAP {
         
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINEST,
                     this.getClass().getName(),
                     "process",
                     CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_waiting_for_service_shutdown__FINEST",
                     new Object[] { Thread.currentThread().getName(), String.valueOf(10 - retry),
+//IC see: https://issues.apache.org/jira/browse/UIMA-1560
                         "10" });
           }
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
           Thread.sleep(100); // wait for 100ms to give the service time to exit cleanly
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
@@ -1398,6 +1449,7 @@ public class VinciTAP {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_service_shutdown_completed__FINEST",
               new Object[] { Thread.currentThread().getName() });
@@ -1444,6 +1496,7 @@ public class VinciTAP {
    * @return - service port
    */
   public int getServicePort() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     return Integer.valueOf(servicePort);
   }
 

@@ -90,6 +90,7 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
   			AnnotationTreeNode annotationNode = new AnnotationTreeNode(mInputDocument, annotation); 
   			typeNode.remove(annotationNode);
   			
+//IC see: https://issues.apache.org/jira/browse/UIMA-1421
   			removeAnnotations.add(annotationNode);
 			}
 			else {
@@ -109,9 +110,11 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 	@Override
   public Object getParent(Object element) {
 	
+//IC see: https://issues.apache.org/jira/browse/UIMA-1599
 		if (element instanceof AnnotationTreeNode) {
 			AnnotationTreeNode annotation = (AnnotationTreeNode) element;
 		
+//IC see: https://issues.apache.org/jira/browse/UIMA-1690
 			Type type = annotation.getAnnotation().getType();
 		
 			if (type != null) {
@@ -155,13 +158,18 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 
 	@Override
   public void viewChanged(String oldViewName, String newViewName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
 		changed();
 	}
 
 @Override
   public void changed() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1690
 		nameAnnotationTypeNodeMap.clear();
 		
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 		TypeSystem typeSystem = mInputDocument.getCAS().getTypeSystem();
 		
 		List<Type> types = typeSystem.getProperlySubsumedTypes(

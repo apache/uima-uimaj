@@ -44,11 +44,13 @@ public class CollectionReaderFactory_impl implements ResourceFactory {
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     if (aSpecifier instanceof CollectionReaderDescription) {
       CollectionReaderDescription desc = (CollectionReaderDescription) aSpecifier;
       
       //check framework implementation (CollectionReaders only supported in Java)
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       String frameworkImpl = desc.getFrameworkImplementation();
       if (frameworkImpl == null || frameworkImpl.length() == 0) {
         throw new ResourceInitializationException(
@@ -72,10 +74,12 @@ public class CollectionReaderFactory_impl implements ResourceFactory {
       // load class using UIMA Extension ClassLoader if there is one
       try {
         Class<?> implClass = Class_TCCL.forName(className, aAdditionalParams);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5802
 
         // check to see if this is a subclass of BaseCollectionReader and of aResourceClass
         if (!BaseCollectionReader.class.isAssignableFrom(implClass)) {
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceInitializationException.NOT_A_COLLECTION_READER, new Object[] {
                       className, aSpecifier.getSourceUrlString() });
         }
@@ -98,6 +102,7 @@ public class CollectionReaderFactory_impl implements ResourceFactory {
         } else // failure, for some unknown reason :( This isn't likely to happen
         {
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
                       className, aSpecifier.getSourceUrlString() });
         }

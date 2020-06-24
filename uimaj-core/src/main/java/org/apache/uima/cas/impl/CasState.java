@@ -28,6 +28,7 @@ import java.lang.invoke.MethodType;
 public enum CasState {
    UIMA_AS_WAIT_4_RESPONSE,   // when in this state, uima-as is awaiting response from a remote,
                               // any attempt "release" this cas will throw an exception
+//IC see: https://issues.apache.org/jira/browse/UIMA-5842
    READ_ONLY,              // multi-threaded access for reading allowed, no updating 
    NO_ACCESS,              // no reading or writing (except by selected thread)
    ;

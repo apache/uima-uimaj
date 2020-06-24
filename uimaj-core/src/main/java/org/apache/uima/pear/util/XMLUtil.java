@@ -171,6 +171,7 @@ public class XMLUtil {
       do {
         nextByte = iStream.read();
         // store as possible UTF signature or BOM
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
         if (byteCounter < 16) {
             prefix[byteCounter] = nextByte;
         }
@@ -179,6 +180,7 @@ public class XMLUtil {
             throw new IOException("cannot read file");
         }
       } while (nextByte == 0xEF || nextByte == 0xBB || nextByte == 0xBF || nextByte == 0xFE
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || nextByte == 0xFF || nextByte == 0x00);
       int prefixLength = byteCounter < 17 ? byteCounter - 1 : 16;
       String utfSignature = (prefixLength > 0) ? FileUtil
@@ -188,6 +190,7 @@ public class XMLUtil {
       boolean utf32Signature = false;
       if (utfSignature != null) {
         // check signature name
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
         if (utfSignature.startsWith("UTF-8")) {
             utf8Signature = true;
         }
@@ -205,6 +208,7 @@ public class XMLUtil {
         // UTF-16 - put 2 bytes of signature + 7x2 bytes
         bytes2put = 7 * 2; // <?xml?>
         buffer = new byte[prefixLength + bytes2put];
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
         for (int i = 0; i < prefixLength; i++) {
             buffer[i] = (byte) prefix[i];
         }
@@ -228,8 +232,10 @@ public class XMLUtil {
       // this next bit is because the "read(...)" is not obliged to return all the bytes
       // and must be put in a while loop to guarantee getting them
       int offset = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
       while (offset < (bytes2put - 1)) {
         int bytesRead = iStream.read(buffer, offset + byteCounter, bytes2put - 1 - offset);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
         if (bytesRead == -1) {
             break;
         }
@@ -246,7 +252,9 @@ public class XMLUtil {
       System.arraycopy(buffer, 0, buffer6, 0, 6);  
       if (utf8Signature) {
         // check for UTF-8
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
         String test = new String(buffer, StandardCharsets.UTF_8);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
         if (test.startsWith(FIRST_XML_CHARS)) {
             encoding = "UTF-8";
         }
@@ -282,12 +290,14 @@ public class XMLUtil {
       if (encoding == null) {
         // last resort: check 1st non-space XML character - '<'
         // check 1st non-space XML character for UTF-8
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
         fReader = new BufferedReader(new InputStreamReader(new FileInputStream(xmlFile), StandardCharsets.UTF_8));
         String line = null;
         try {
           while ((line = fReader.readLine()) != null) {
             String xmlLine = line.trim();
             if (xmlLine.length() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
               if (xmlLine.charAt(0) == '<') {
                 encoding = "UTF-8";
             }
@@ -300,11 +310,13 @@ public class XMLUtil {
         if (encoding == null) {
           // check 1st non-space XML character for UTF-16
           fReader = new BufferedReader(
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
                   new InputStreamReader(new FileInputStream(xmlFile), StandardCharsets.UTF_16));
           try {
             while ((line = fReader.readLine()) != null) {
               String xmlLine = line.trim();
               if (xmlLine.length() > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
                 if (xmlLine.charAt(0) == '<') {
                     encoding = "UTF-16";
                 }
@@ -321,6 +333,7 @@ public class XMLUtil {
     } catch (Throwable err) {
       throw new IOException(err.toString());
     } finally {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
       if (iStream != null) {
         try {
           iStream.close();
@@ -360,6 +373,7 @@ public class XMLUtil {
     } catch (SAXException err) {
       isValid = false;
     } finally {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
       if (iStream != null) {
         try {
           iStream.close();
@@ -383,10 +397,12 @@ public class XMLUtil {
 
     if (ex == null) {
       System.err.print("SAX Parse Exception was null! Therefore, no further details are available.");
+//IC see: https://issues.apache.org/jira/browse/UIMA-288
     } else {
       String systemId = ex.getSystemId();
       if (systemId != null) {
         int index = systemId.lastIndexOf('/');
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
         if (index != -1) {
             systemId = systemId.substring(index + 1);
         }
@@ -417,6 +433,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printAllXMLElements(Properties elements, PrintWriter oWriter, int level)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     printAllXMLElements(elements, null, oWriter, level);
   }
@@ -441,6 +458,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printAllXMLElements(Properties elements, String valueDelimiter,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String[] tagOrder, PrintWriter oWriter, int level) throws IOException {
     // check if elements might be multi- valued
     boolean multiValue = valueDelimiter != null && valueDelimiter.length() > 0;
@@ -464,6 +482,7 @@ public class XMLUtil {
         }
       }
       // print all other elements
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Enumeration<Object> keys = elements.keys();
       while (keys.hasMoreElements()) {
         String tag = (String) keys.nextElement();
@@ -480,6 +499,8 @@ public class XMLUtil {
         if (!done) {
           // print XML element(s)
           String eValue = elements.getProperty(tag);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
           if (multiValue) {
             printXMLElements(tag, eValue, valueDelimiter, oWriter, level);
         }
@@ -509,6 +530,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printAllXMLElements(Properties elements, String[] tagOrder,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           PrintWriter oWriter, int level) throws IOException {
     printAllXMLElements(elements, null, tagOrder, oWriter, level);
   }
@@ -552,6 +574,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElement(String tag, Properties attributes, String elemValue,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           PrintWriter oWriter, int level) throws IOException {
     printXMLElement(tag, attributes, elemValue, false, oWriter, level, false);
   }
@@ -612,6 +635,7 @@ public class XMLUtil {
    */
   public static void printXMLElement(String tag, Properties attributes, String elemValue,
           boolean putInCdataSection, PrintWriter oWriter, int level, boolean useNewLine4Value)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     // print XML tag beginning
     printXMLTag(tag, attributes, oWriter, false, level);
@@ -647,6 +671,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElement(String tag, String elemValue, PrintWriter oWriter, int level)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     printXMLElement(tag, null, elemValue, oWriter, level);
   }
@@ -672,6 +697,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElement(String tag, String elemValue, boolean putInCdataSection,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           PrintWriter oWriter, int level) throws IOException {
     printXMLElement(tag, null, elemValue, putInCdataSection, oWriter, level);
   }
@@ -695,6 +721,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElements(String tag, String elemValue, String valueDelimiter,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           PrintWriter oWriter, int level) throws IOException {
     if (elemValue != null) {
       // get list of tokens in the element value
@@ -723,6 +750,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElementValue(String elemValue, PrintWriter oWriter, int level)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     printXMLElementValue(elemValue, false, oWriter, level);
   }
@@ -746,6 +774,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElementValue(String elemValue, boolean putInCdataSection,
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
           PrintWriter oWriter, int level)
       throws IOException
   {
@@ -785,6 +814,7 @@ public class XMLUtil {
    */
   public static void printXMLHeader(String encoding, PrintWriter oWriter) throws IOException {
     oWriter.print(XML_HEADER_BEG);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
     if (encoding != null && encoding.length() > 0) {
         oWriter.print(" " + XML_ENCODING_TAG + "=\"" + encoding + "\"");
     }
@@ -808,6 +838,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLTag(String tag, PrintWriter oWriter, boolean tagEnd, int level)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     printXMLTag(tag, null, oWriter, tagEnd, level);
   }
@@ -833,6 +864,7 @@ public class XMLUtil {
   public static void printXMLTag(String tag, Properties attributes, PrintWriter oWriter,
           boolean tagEnd, int level) throws IOException {
     // add marginal tabs
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
     for (int l = 0; l < level; l++) {
         oWriter.print('\t');
     }
@@ -847,6 +879,7 @@ public class XMLUtil {
     oWriter.print(tag);
     if (!tagEnd && attributes != null) {
       // print attributes
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       Enumeration<Object> attrNames = attributes.keys();
       while (attrNames.hasMoreElements()) {
         // print attribute: name="value"
@@ -866,6 +899,7 @@ public class XMLUtil {
   
   private static String xmlEscape(String value)
   {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6225
       if (value == null) {
           return value;
       }

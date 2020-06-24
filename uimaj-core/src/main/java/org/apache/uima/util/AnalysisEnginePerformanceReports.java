@@ -55,8 +55,10 @@ public class AnalysisEnginePerformanceReports {
     pctFormat = NumberFormat.getPercentInstance();
     pctFormat.setMaximumFractionDigits(2);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     for (ProcessTraceEvent evt : aProcessTrace.getEvents()) {
       if (ProcessTraceEvent.ANALYSIS_ENGINE.equals(evt.getType())
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || ProcessTraceEvent.SERVICE_CALL.equals(evt.getType())) {
         mTotalTime += evt.getDuration();
       }
@@ -69,6 +71,7 @@ public class AnalysisEnginePerformanceReports {
     if (ProcessTraceEvent.ANALYSIS.equals(aEvent.getType())) {
       mAnalysisTime += aEvent.getDuration();
       String componentName = aEvent.getComponentName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       mAnnotatorAnalysisTimes.put(componentName, aEvent.getDuration());
     } else if (ProcessTraceEvent.ANALYSIS_ENGINE.equals(aEvent.getType())) {
       // framework overhead is difference between this event's duration and
@@ -102,6 +105,7 @@ public class AnalysisEnginePerformanceReports {
       }
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     for (ProcessTraceEvent subEvt : aEvent.getSubEvents()) {
       addEventData(subEvt);
     }
@@ -147,6 +151,7 @@ public class AnalysisEnginePerformanceReports {
     }
     if (frameworkOver > 0) {
       buf.append("Framework Overhead: " + frameworkOver + "ms (" + toPct(frameworkOver, total)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + ")\n");
     } else {
       buf.append("Framework Overhead: <10ms\n");
@@ -183,6 +188,7 @@ public class AnalysisEnginePerformanceReports {
    */
   private int getSubEventDuration(ProcessTraceEvent aEvent, String[] aEventTypes) {
     int duration = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     List<ProcessTraceEvent> subEvents = aEvent.getSubEvents();
     Iterator<ProcessTraceEvent> it = subEvents.iterator();
     whileLoop: while (it.hasNext()) {

@@ -54,6 +54,8 @@ public class XmlSerializer_Axis11 implements Serializer {
    */
   @Override
   public void serialize(QName name, Attributes attributes, Object value,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           SerializationContext context) throws IOException {
     if (value instanceof XMLizable) {
       try {
@@ -68,6 +70,7 @@ public class XmlSerializer_Axis11 implements Serializer {
       }
     } else {
       throw new IOException("Can't serialize a " + value.getClass().getName()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + " with an XmlSerializer.");
     }
   }
@@ -167,6 +170,7 @@ public class XmlSerializer_Axis11 implements Serializer {
      */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             throws SAXException {
       try {
         // System.out.println("Calling SerializationContext.startElement(" + qName + ")");

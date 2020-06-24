@@ -34,6 +34,7 @@ public class PearEncodingTest extends TestCase {
 
   public void testUTF8NoSignature() throws Exception {
     // get XML file
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF8_no_signature.xml");
     // get encoding
     String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);
@@ -53,6 +54,7 @@ public class PearEncodingTest extends TestCase {
             return;
     }
     // get XML file
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF8_with_signature.xml");
     // get encoding
     String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);
@@ -68,6 +70,7 @@ public class PearEncodingTest extends TestCase {
     //NOTE: this test fails when using SUN JVM 1.4.2_12
     
     // get XML file
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF16_no_signature.xml");
     // get encoding
     String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);
@@ -87,6 +90,7 @@ public class PearEncodingTest extends TestCase {
             return;
     }
     // get XML file
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF16_with_signature.xml");
     // get encoding
     String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);

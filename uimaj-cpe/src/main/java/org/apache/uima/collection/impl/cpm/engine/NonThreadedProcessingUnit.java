@@ -135,6 +135,7 @@ public class NonThreadedProcessingUnit {
    *          queue to write to
    */
   public NonThreadedProcessingUnit(CPMEngine acpm, BoundedWorkQueue aInputQueue,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           BoundedWorkQueue aOutputQueue) {
     cpm = acpm;
     try {
@@ -149,6 +150,7 @@ public class NonThreadedProcessingUnit {
     outputQueue = aOutputQueue;
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -285,6 +287,7 @@ public class NonThreadedProcessingUnit {
   public void setUimaTimer(UimaTimer aTimer) {
     timer = aTimer;
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_timer_class__FINEST",
               new Object[] { Thread.currentThread().getName(), timer.getClass().getName() });
@@ -341,6 +344,8 @@ public class NonThreadedProcessingUnit {
         pc.setStatus(Constants.CAS_PROCESSOR_DISABLED);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_disabled_cp__FINEST",
                   new Object[] { Thread.currentThread().getName(), pc.getName() });
         }
@@ -362,6 +367,7 @@ public class NonThreadedProcessingUnit {
       if (pc.getName().equals(aCasProcessorName)) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_enabled_cp__FINEST",
                   new Object[] { Thread.currentThread().getName(), pc.getName() });
         }
@@ -386,6 +392,7 @@ public class NonThreadedProcessingUnit {
   {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_start_analysis__FINEST",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -397,6 +404,7 @@ public class NonThreadedProcessingUnit {
     if (aCasObjectList == null || aCasObjectList[0] == null) {
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_invalid_cas_reference__SEVERE",
                 new Object[] { Thread.currentThread().getName() });
@@ -412,6 +420,7 @@ public class NonThreadedProcessingUnit {
     // String docid = "";
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_entering_pipeline__FINEST",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -425,6 +434,7 @@ public class NonThreadedProcessingUnit {
     for (int i = 0; processContainers != null && i < processContainers.size(); i++) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_retrieve_container__FINEST",
                 new Object[] { Thread.currentThread().getName(), String.valueOf(i) });
       }
@@ -451,6 +461,7 @@ public class NonThreadedProcessingUnit {
           if (System.getProperty("SHOW_MEMORY") != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       Level.FINEST,
                       this.getClass().getName(),
                       "process",
@@ -474,6 +485,7 @@ public class NonThreadedProcessingUnit {
           if (processor == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_checkout_null_cp_from_container__SEVERE",
                       new Object[] { Thread.currentThread().getName(), containerName });
@@ -490,6 +502,7 @@ public class NonThreadedProcessingUnit {
           if (!isProcessorReady(container.getStatus())) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_container_not_ready__FINEST",
                       new Object[] { Thread.currentThread().getName(), containerName });
@@ -508,6 +521,7 @@ public class NonThreadedProcessingUnit {
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINEST,
                     this.getClass().getName(),
                     "process",
@@ -527,6 +541,7 @@ public class NonThreadedProcessingUnit {
           }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINEST,
                     this.getClass().getName(),
                     "process",
@@ -553,6 +568,7 @@ public class NonThreadedProcessingUnit {
           if (retry == false) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       Level.FINEST,
                       this.getClass().getName(),
                       "process",
@@ -578,6 +594,7 @@ public class NonThreadedProcessingUnit {
           // pipeline
           if (processor != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               UIMAFramework.getLogger(this.getClass()).logrb(
                       Level.FINEST,
                       this.getClass().getName(),
@@ -640,6 +657,7 @@ public class NonThreadedProcessingUnit {
    * @throws Exception -
    */
   private void postAnalysis(Object[] aCasObjectList, boolean isCasObject, Object[] casObjects,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ProcessTrace aProcessTr, boolean doneAlready) throws Exception {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -661,6 +679,7 @@ public class NonThreadedProcessingUnit {
         threadState = 2014;
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_done_notify_listeners__FINEST",
                   new Object[] { Thread.currentThread().getName() });
@@ -703,6 +722,7 @@ public class NonThreadedProcessingUnit {
         if (System.getProperty("DEBUG_RELEASE") != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     Level.FINEST,
                     this.getClass().getName(),
                     "process",
@@ -773,6 +793,7 @@ public class NonThreadedProcessingUnit {
    * @param howManyCases the how many cases
    */
   private void doEndOfBatch(ProcessingContainer aContainer, CasProcessor aProcessor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ProcessTrace aProcessTr, int howManyCases) {
     String containerName = aContainer.getName();
     try {
@@ -814,6 +835,7 @@ public class NonThreadedProcessingUnit {
    * @throws Exception -
    */
   private boolean handleErrors(Throwable e, ProcessingContainer aContainer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CasProcessor aProcessor, ProcessTrace aProcessTrace, Object[] aCasObjectList,
           boolean isCasObject) throws Exception {
     boolean retry = true;
@@ -850,6 +872,7 @@ public class NonThreadedProcessingUnit {
         clearCasCache();
       }
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.WARNING,
               this.getClass().getName(),
               "process",
@@ -871,6 +894,7 @@ public class NonThreadedProcessingUnit {
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_container_paused_do_retry__FINEST",
                 new Object[] { Thread.currentThread().getName(), containerName });
@@ -881,6 +905,7 @@ public class NonThreadedProcessingUnit {
     if (e instanceof Exception && pauseContainer(aContainer, (Exception) e, threadId)) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_pausing_container__FINEST",
                 new Object[] { Thread.currentThread().getName(), containerName });
       }
@@ -909,6 +934,7 @@ public class NonThreadedProcessingUnit {
       }
       aContainer.setStatus(Constants.CAS_PROCESSOR_KILLED);
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_abort_cpm__SEVERE",
                 new Object[] { Thread.currentThread().getName(), aProcessor.getClass().getName() });
@@ -924,6 +950,7 @@ public class NonThreadedProcessingUnit {
         aContainer.resume();
       }
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_disable_cp__SEVERE",
                 new Object[] { Thread.currentThread().getName(), aProcessor.getClass().getName() });
@@ -958,6 +985,7 @@ public class NonThreadedProcessingUnit {
     } catch (Exception ex) {
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Thread.currentThread().getName(), e);
       }
       retry = false;
@@ -977,6 +1005,7 @@ public class NonThreadedProcessingUnit {
    * @throws Exception -
    */
   private void invokeCasObjectCasProcessor(ProcessingContainer container, CasProcessor processor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aCasObjectList, ProcessTrace pTrTemp, boolean isCasObject) throws Exception {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
@@ -1027,6 +1056,7 @@ public class NonThreadedProcessingUnit {
       if (processor instanceof AnalysisEngine) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "process",
@@ -1054,6 +1084,7 @@ public class NonThreadedProcessingUnit {
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "process",
@@ -1089,6 +1120,7 @@ public class NonThreadedProcessingUnit {
    * @throws Exception -
    */
   private void convertCasDataToCasObject(int casIndex, String aContainerName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aCasObjectList) throws Exception {
     // The following may be true if the CollectionReader is CasData based and this is the first
     // CasObject based annotator in the chain.
@@ -1099,6 +1131,7 @@ public class NonThreadedProcessingUnit {
       while (casList[casIndex] == null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_get_cas_from_pool__FINEST",
                   new Object[] { Thread.currentThread().getName(), aContainerName });
@@ -1143,6 +1176,7 @@ public class NonThreadedProcessingUnit {
    * @throws Exception -
    */
   private void invokeCasDataCasProcessor(ProcessingContainer container, CasProcessor processor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aCasObjectList, ProcessTrace pTrTemp, boolean isCasObject, boolean retry)
           throws Exception {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1182,6 +1216,7 @@ public class NonThreadedProcessingUnit {
     long pStart = System.currentTimeMillis();
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -1255,6 +1290,7 @@ public class NonThreadedProcessingUnit {
       if (!isProcessorReady(aContainer.getStatus())) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_container_not_ready__FINEST",
                   new Object[] { Thread.currentThread().getName(), aContainer.getName() });
@@ -1290,6 +1326,7 @@ public class NonThreadedProcessingUnit {
    * @return true, if successful
    */
   private boolean filterOutTheCAS(ProcessingContainer aContainer, boolean isCasObject,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Object[] aCasObjectList) {
     // Check if any of the Cas'es in the set has a required feature structure.
     // This is currently only supported for the CasData instances and provides
@@ -1319,6 +1356,7 @@ public class NonThreadedProcessingUnit {
    *          status object that may contain exceptions and trace
    */
   protected void notifyListeners(Object aCas, boolean isCasObject,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           EntityProcessStatus aEntityProcStatus) {
     if (aCas instanceof Object[]) {
       for (int i = 0; i < ((Object[]) aCas).length; i++) {
@@ -1341,6 +1379,7 @@ public class NonThreadedProcessingUnit {
    *          status object containing exceptions and trace info
    */
   protected void doNotifyListeners(Object aCas, boolean isCasObject,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           EntityProcessStatus aEntityProcStatus) {
     // Notify Listener that the entity has been processed
     Object casObjectCopy = aCas;
@@ -1356,6 +1395,7 @@ public class NonThreadedProcessingUnit {
         }
         // Notify the listener that the Cas has been processed
         ((CasDataStatusCallbackListener) statCL).entityProcessComplete((CasData) casObjectCopy,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 aEntityProcStatus);
       } else if (statCL instanceof StatusCallbackListener) {
         boolean casFromPool = false;
@@ -1383,6 +1423,7 @@ public class NonThreadedProcessingUnit {
         // Notify the listener that the Cas has been processed
 //        ((StatusCallbackListener) statCL).entityProcessComplete((CAS) casObjectCopy,
 //                aEntityProcStatus);
+//IC see: https://issues.apache.org/jira/browse/UIMA-386
         CPMEngine.callEntityProcessCompleteWithCAS(
                 (StatusCallbackListener) statCL, (CAS) casObjectCopy, aEntityProcStatus);
         if (conversionCas != null) {
@@ -1410,6 +1451,7 @@ public class NonThreadedProcessingUnit {
         if (casCache[index] != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_release_cas_from_cache__FINEST",
                     new Object[] { Thread.currentThread().getName() });
@@ -1421,6 +1463,7 @@ public class NonThreadedProcessingUnit {
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_release_cas_from_cache_done__FINEST",
                     new Object[] { Thread.currentThread().getName() });
@@ -1447,6 +1490,7 @@ public class NonThreadedProcessingUnit {
    * @return true, if successful
    */
   private boolean pauseContainer(ProcessingContainer aContainer, Exception aException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aThreadId) {
     if (aContainer.isRemote() && aContainer.isSingleFencedService()
             && aException.getCause() instanceof ServiceConnectionException && aThreadId == null) {
@@ -1466,6 +1510,7 @@ public class NonThreadedProcessingUnit {
    * @throws Exception -
    */
   private void handleServiceException(ProcessingContainer aContainer, CasProcessor aProcessor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ProcessTrace aProcessTr, Exception ex) throws Exception {
     if (aProcessor instanceof NetworkCasProcessorImpl) {
       ((NetworkCasProcessorImpl) aProcessor).collectionProcessComplete(aProcessTr);
@@ -1485,6 +1530,7 @@ public class NonThreadedProcessingUnit {
       if (Thread.currentThread().getName().equals(threadId)) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "process",
@@ -1514,6 +1560,7 @@ public class NonThreadedProcessingUnit {
         threadId = null;
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "process",
@@ -1574,6 +1621,7 @@ public class NonThreadedProcessingUnit {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_skip_CAS__FINEST",
               new Object[] { Thread.currentThread().getName(), aContainer.getName() });
     }
@@ -1600,6 +1648,7 @@ public class NonThreadedProcessingUnit {
           releaseCases(casList, isLastCP, aContainer.getName());
         } catch (Exception ex2) {
           if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_exception_releasing_cas__SEVERE",
@@ -1646,6 +1695,7 @@ public class NonThreadedProcessingUnit {
   {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -1670,6 +1720,7 @@ public class NonThreadedProcessingUnit {
         cpm.releaseCASes((CAS[]) aCasList);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_done_releasing_cases__FINEST",
                   new Object[] { Thread.currentThread().getName(), aName });
@@ -1700,6 +1751,7 @@ public class NonThreadedProcessingUnit {
   public void stopCasProcessors(boolean kill) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stop_containers__FINEST",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -1717,6 +1769,7 @@ public class NonThreadedProcessingUnit {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
 
         UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 Level.FINEST,
                 this.getClass().getName(),
                 "process",
@@ -1732,6 +1785,7 @@ public class NonThreadedProcessingUnit {
         if (kill || (!cpm.isRunning() && isProcessorReady(container.getStatus()))) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_kill_cp__FINEST",
                     new Object[] { Thread.currentThread().getName(), container.getName() });
           }
@@ -1745,6 +1799,7 @@ public class NonThreadedProcessingUnit {
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   this.getClass().getName(),
                   "process",
@@ -1761,6 +1816,7 @@ public class NonThreadedProcessingUnit {
           if (deployer != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       Level.FINEST,
                       this.getClass().getName(),
                       "process",

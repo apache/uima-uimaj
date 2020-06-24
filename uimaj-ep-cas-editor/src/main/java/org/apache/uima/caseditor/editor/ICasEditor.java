@@ -37,6 +37,7 @@ public interface ICasEditor extends IEditorPart {
    *
    * @return the document
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1397
   ICasDocument getDocument();
   
   /**
@@ -49,6 +50,7 @@ public interface ICasEditor extends IEditorPart {
   /**
    * Reopen editor with new type system.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2159
   void reopenEditorWithNewTypeSystem();
   
   /**
@@ -56,6 +58,7 @@ public interface ICasEditor extends IEditorPart {
    *
    * @param listener the listener
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
   void addCasEditorInputListener(ICasEditorInputListener listener);
   
   /**

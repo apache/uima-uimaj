@@ -81,6 +81,7 @@ public abstract class AbstractDialogKeyVerify extends AbstractDialog implements 
    */
   @Override
   public void verifyKey(VerifyEvent event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     event.doit = true;
     errorMessageUI.setText("");
     if (verifyKeyChecks(event))

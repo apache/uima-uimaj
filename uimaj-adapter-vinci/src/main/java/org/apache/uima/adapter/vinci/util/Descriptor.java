@@ -70,6 +70,7 @@ public class Descriptor extends DefaultHandler {
    * @param filePath Fully qualified path the xml descriptor.
    */
   public Descriptor(String filePath) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       parse(filePath);
     } catch (Exception ex) {
@@ -92,6 +93,7 @@ public class Descriptor extends DefaultHandler {
       // Create the builder and parse the file
       SAXParser parser = factory.newSAXParser();
       parser.parse(configFile, this);
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
 
       UIMAFramework.getLogger().log(Level.CONFIG, "Resource::" + getResourceSpecifierPath());
       UIMAFramework.getLogger().log(Level.CONFIG, "Instance Count::" + getInstanceCount());
@@ -100,6 +102,7 @@ public class Descriptor extends DefaultHandler {
       UIMAFramework.getLogger().log(Level.CONFIG, "Naming Service Host::" + getNamingServiceHost());
       UIMAFramework.getLogger().log(Level.CONFIG,
               "Server Socket Timeout::" + getServerSocketTimeout());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -154,6 +157,7 @@ public class Descriptor extends DefaultHandler {
     } else if (elementName.equals("parameter")) {
       String att = getAttribute("name", attribs);
       String value = getAttribute("value", attribs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-75
       if ("resourceSpecifierPath".equals(att)) {
         setResourceSpecifierPath(value);
       } else if ("filterString".equals(att)) {
@@ -176,6 +180,7 @@ public class Descriptor extends DefaultHandler {
         } catch (NumberFormatException nbe) {
           setNamingServiceHost("localhost");
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-821
       } else if ("threadPoolMinSize".equals(att)) {
         try {
           setThreadPoolMinSize(Integer.parseInt(value));

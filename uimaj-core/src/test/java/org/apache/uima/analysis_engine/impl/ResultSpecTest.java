@@ -81,6 +81,7 @@ public class ResultSpecTest extends TestCase {
   }
   
   private void checkl(String... args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> rs1List = new ArrayList<>();
     List<String> rs2List = new ArrayList<>();
     List<String> expList = new ArrayList<>();
@@ -100,6 +101,8 @@ public class ResultSpecTest extends TestCase {
     String[] rs2langs = rs2List.toArray(new String[rs2List.size()]);
     String[] explangs = expList.toArray(new String[expList.size()]);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
     ResultSpecification_impl rs1 = new ResultSpecification_impl(ts);
     ResultSpecification_impl rs2 = new ResultSpecification_impl(ts);
     ResultSpecification_impl rsE = new ResultSpecification_impl(ts); //expected
@@ -134,6 +137,8 @@ public class ResultSpecTest extends TestCase {
       PrimitiveAnalysisEngine_impl ae = (PrimitiveAnalysisEngine_impl) UIMAFramework
               .produceAnalysisEngine(aeDesc);
       CAS cas = ae.newCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
       ResultSpecification_impl resultSpec = new ResultSpecification_impl();
       resultSpec.addResultType("uima.tt.TokenLikeAnnotation", true);
       resultSpec.setTypeSystem(cas.getTypeSystem());
@@ -157,6 +162,8 @@ public class ResultSpecTest extends TestCase {
       PrimitiveAnalysisEngine_impl ae = (PrimitiveAnalysisEngine_impl) UIMAFramework
               .produceAnalysisEngine(aeDesc);
       CAS cas = ae.newCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
       ResultSpecification_impl resultSpec = new ResultSpecification_impl(cas.getTypeSystem());
       resultSpec.addResultType("uima.tcas.Annotation", true);
       

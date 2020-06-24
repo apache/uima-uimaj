@@ -74,6 +74,7 @@ public interface Resource {
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the metadata that describes this <code>Resource</code>.

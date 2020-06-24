@@ -62,6 +62,7 @@ public class CDEpropertyPage extends PropertyPage {
    * Instantiates a new CD eproperty page.
    */
   public CDEpropertyPage() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -78,6 +79,7 @@ public class CDEpropertyPage extends PropertyPage {
 
     Label instructions = new Label(composite, SWT.WRAP);
     instructions
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .setText("Enter the data path to use for finding resources by name;\n"
                     + "This is a series of absolute paths, separated by\n"
                     + "whatever character this platform uses for path separation (similar to class paths).\n\n");
@@ -94,6 +96,7 @@ public class CDEpropertyPage extends PropertyPage {
 
     try {
       String dataPath = ((IResource) getElement()).getPersistentProperty(new QualifiedName("",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               DATAPATH_PROPERTY_KEY));
       dataPathUI.setText((dataPath != null) ? dataPath : DEFAULT_DATAPATH);
     } catch (CoreException e) {
@@ -138,6 +141,7 @@ public class CDEpropertyPage extends PropertyPage {
     // store the value in the owner text field
     try {
       ((IResource) getElement()).setPersistentProperty(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new QualifiedName("", DATAPATH_PROPERTY_KEY), dataPathUI.getText());
     } catch (CoreException e) {
       return false;
@@ -159,6 +163,7 @@ public class CDEpropertyPage extends PropertyPage {
       dataPath = "";
     }
     if (null == dataPath)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       dataPath = "";
     return dataPath;
   }
@@ -191,6 +196,7 @@ public class CDEpropertyPage extends PropertyPage {
       byDefault = "";
     }
     if (null == byDefault)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       byDefault = "";
     return byDefault;
   }
@@ -216,6 +222,7 @@ public class CDEpropertyPage extends PropertyPage {
    * @return the adds the to flow
    */
   public static String getAddToFlow(IProject project) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-792
     String byDefault;
     try {
       byDefault = project.getPersistentProperty(new QualifiedName("", ADD_TO_FLOW_PROPERTY_KEY));

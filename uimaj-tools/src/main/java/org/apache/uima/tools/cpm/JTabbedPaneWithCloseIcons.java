@@ -60,6 +60,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
    * @param aTabClosedListener the a tab closed listener
    */
   public void addTabClosedListener(TabClosedListener aTabClosedListener) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this.tabClosedListener = aTabClosedListener;
   }
 
@@ -106,6 +107,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
     if (tabIndex < 0)
       return;
     Rectangle rect = ((CloseTabIcon) getIconAt(tabIndex)).getBounds();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (rect.contains(e.getX(), e.getY())) {
       removeTabAt(tabIndex);
       if (tabClosedListener != null)

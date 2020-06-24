@@ -60,6 +60,7 @@ public class ExampleApplication {
         inputDir = new File(args[1]);
 
         validArgs = taeDescriptor.exists() && !taeDescriptor.isDirectory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 && inputDir.isDirectory();
       }
       if (!validArgs) {
@@ -115,9 +116,12 @@ public class ExampleApplication {
    *          CAS that will be used to hold analysis results
    */
   private static void processFile(File aFile, AnalysisEngine aAE, CAS aCAS) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AnalysisEngineProcessException {
     System.out.println("Processing file " + aFile.getName());
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
+//IC see: https://issues.apache.org/jira/browse/UIMA-1853
     String document = FileUtils.file2String(aFile);
     document = document.trim();
 

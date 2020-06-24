@@ -197,6 +197,7 @@ public interface AnalysisComponent {
    * @return the required CAS interface. This must specify a subtype of {@link AbstractCas}.
    */
   Class<? extends AbstractCas> getRequiredCasInterface();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Returns the maximum number of CAS instances that this AnalysisComponent expects to use at the

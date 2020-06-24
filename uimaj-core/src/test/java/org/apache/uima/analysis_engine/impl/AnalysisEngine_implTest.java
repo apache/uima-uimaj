@@ -126,10 +126,12 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testInitialize() throws Exception {
     try {
       PrimitiveAnalysisEngine_impl ae1 = new PrimitiveAnalysisEngine_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
 
       // try to initialize with the wrong kind of specifier - should return false
       boolean result = ae1.initialize(new URISpecifier_impl(), null);
       assertFalse(result);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
       // try to initialize with an empty TaeDescription - should throw exception
       Exception ex = null;
@@ -141,16 +143,19 @@ public class AnalysisEngine_implTest extends TestCase {
         ex = e;
       }
       assertNotNull(ex);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
       // initialize simple primitive TextAnalysisEngine
       ae1 = new PrimitiveAnalysisEngine_impl();
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       primitiveDesc.setPrimitive(true);
       primitiveDesc
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       result = ae1.initialize(primitiveDesc, null);
       assertTrue(result);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
       // initialize again - should fail
       ex = null;
@@ -160,9 +165,11 @@ public class AnalysisEngine_implTest extends TestCase {
         ex = e;
       }
       assertNotNull(ex);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
       // initialize simple aggregate TextAnalysisEngine (also pass TextAnalysisEngineProcessData as
       // parameter)
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription aggDesc = new AnalysisEngineDescription_impl();
       aggDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggDesc.setPrimitive(false);
@@ -173,10 +180,13 @@ public class AnalysisEngine_implTest extends TestCase {
       AggregateAnalysisEngine_impl ae2 = new AggregateAnalysisEngine_impl();
       result = ae2.initialize(aggDesc, null);
       assertTrue(result);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
       // try some descriptors that are invalid due to config. param problems
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
       for (int i = 1; i <= 14; i++) {
         _testInvalidDescriptor(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
                 .getFile("TextAnalysisEngineImplTest/InvalidConfigParams" + i + ".xml"));
       }
 
@@ -184,6 +194,7 @@ public class AnalysisEngine_implTest extends TestCase {
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeWithConfigParamOverrides.xml"));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       AggregateAnalysisEngine_impl ae = new AggregateAnalysisEngine_impl();
       ae.initialize(desc, Collections.EMPTY_MAP);
@@ -196,6 +207,7 @@ public class AnalysisEngine_implTest extends TestCase {
               .getFlowControllerContainer();
       String strVal1 = (String) delegate1.getUimaContext().getConfigParameterValue("en",
               "StringParam");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       assertEquals("override", strVal1);
       String strVal2 = (String) delegate2.getUimaContext().getConfigParameterValue("en",
               "StringParam");
@@ -207,6 +219,7 @@ public class AnalysisEngine_implTest extends TestCase {
       Integer intVal1 = (Integer) delegate1.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
       assertEquals(100, intVal1.intValue());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
       Integer intVal2 = (Integer) delegate2.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
       assertEquals(100, intVal2.intValue());
@@ -228,6 +241,7 @@ public class AnalysisEngine_implTest extends TestCase {
       in = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeWithConfigParamOverrides2.xml"));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       ae = new AggregateAnalysisEngine_impl();
       ae.initialize(desc, Collections.EMPTY_MAP);
@@ -239,6 +253,7 @@ public class AnalysisEngine_implTest extends TestCase {
       flowController = ((ASB_impl) ae._getASB()).getFlowControllerContainer();
 
       strVal1 = (String) delegate1.getUimaContext().getConfigParameterValue("StringParam");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       assertEquals("override", strVal1);
       strVal2 = (String) delegate2.getUimaContext().getConfigParameterValue("StringParam");
       assertEquals("myString", strVal2);
@@ -253,6 +268,7 @@ public class AnalysisEngine_implTest extends TestCase {
       assertEquals(100, intVal3.intValue());
 
       strArrVal1 = (String[]) delegate1.getUimaContext()
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               .getConfigParameterValue("StringArrayParam");
       assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal1));
       strArrVal2 = (String[]) delegate2.getUimaContext()
@@ -266,9 +282,11 @@ public class AnalysisEngine_implTest extends TestCase {
       _testInvalidDescriptor(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/UnsatisfiedResourceDependency.xml"));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       ae.destroy();
       
    // anotherdescriptor with configuration parameter overrides (this time no groups)
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
       in = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeWithConfigParamOverrides2.xml"));
 
@@ -302,6 +320,7 @@ public class AnalysisEngine_implTest extends TestCase {
       ae.destroy();
       
       // aggregate with duplicate group overrides
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
       in = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateWithDuplicateGroupOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
@@ -314,6 +333,7 @@ public class AnalysisEngine_implTest extends TestCase {
               "Annotator2");
       String commonParamA = (String) delegate1.getUimaContext().getConfigParameterValue("a",
               "CommonParam");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       assertEquals("AggregateParam1a", commonParamA);
       String ann1_groupBParamBC = (String) delegate1.getUimaContext().getConfigParameterValue("b",
               "BCParam");
@@ -329,8 +349,10 @@ public class AnalysisEngine_implTest extends TestCase {
       // Load 1st from filesystem, 2nd from classpath, and 3rd from datapath
 
       String resDir = "src/test/resources/TextAnalysisEngineImplTest/";
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
       String prevDatapath = System.setProperty(RelativePathResolver.UIMA_DATAPATH_PROP, resDir);
       System.setProperty("UimaExternalOverrides", 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5411
                       resDir+"testExternalOverride.settings," +
                       "path:TextAnalysisEngineImplTest.testExternalOverride2," +
                       "path:testExternalOverride4");
@@ -339,11 +361,14 @@ public class AnalysisEngine_implTest extends TestCase {
       ae1 = new PrimitiveAnalysisEngine_impl();
       ae1.initialize(desc, null);
       String[] arrayParam = (String[]) ae1.getUimaContext().getConfigParameterValue("StringArrayParam");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       assertNotNull(arrayParam);
       assertEquals(5, arrayParam.length);
       String[] expect = { "Prefix", "-", "Suffix", "->", "Prefix-Suffix" };
       assertTrue(Arrays.equals(expect, arrayParam));
       Integer[] intArr = (Integer[]) ae1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
+//IC see: https://issues.apache.org/jira/browse/UIMA-5273
       assertNotNull(intArr);
       assertEquals(4, intArr.length);
       Integer[] intExpect = { 1, 22, 333, 4444 };
@@ -353,6 +378,8 @@ public class AnalysisEngine_implTest extends TestCase {
       Integer intValue = (Integer) ae1.getUimaContext().getConfigParameterValue("IntegerParam");
       assertEquals(43,  intValue.intValue());  // Will be 42 if external override not defined
       System.clearProperty("UimaExternalOverrides");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
+//IC see: https://issues.apache.org/jira/browse/UIMA-5273
       if (prevDatapath == null) {
         System.clearProperty(RelativePathResolver.UIMA_DATAPATH_PROP);
       } else {
@@ -367,9 +394,12 @@ public class AnalysisEngine_implTest extends TestCase {
       System.setProperty("UimaExternalOverrides", "missing file");  // Will fail if used
       in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateWithExternalOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Map<String,Object> additionalParams = new HashMap<>();
       Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
       try (FileInputStream fis = new FileInputStream(new File(resDir,"testExternalOverride2.settings"))) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2435
         extSettings.load(fis);
       }
       additionalParams.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
@@ -377,6 +407,7 @@ public class AnalysisEngine_implTest extends TestCase {
       System.clearProperty("UimaExternalOverrides");
       
       // Same aggregate with invalid syntax for an array in the external overrides file
+//IC see: https://issues.apache.org/jira/browse/UIMA-5411
       System.setProperty("UimaExternalOverrides", "file:"+resDir+"testExternalOverride3.settings");
       try {
         UIMAFramework.produceAnalysisEngine(desc);
@@ -399,6 +430,7 @@ public class AnalysisEngine_implTest extends TestCase {
     XMLInputSource in = new XMLInputSource(aFile);
     Exception ex = null;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       UIMAFramework.produceAnalysisEngine(desc);
     } catch (InvalidXMLException e) {
@@ -408,6 +440,7 @@ public class AnalysisEngine_implTest extends TestCase {
       // e.printStackTrace();
       ex = e;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     assertNotNull(ex);
     assertNotNull(ex.getMessage());
     assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
@@ -427,7 +460,9 @@ public class AnalysisEngine_implTest extends TestCase {
     in.close();
     // For now parse should always work ... in a later release will fail unless special environment variable set
     boolean support240bug = true; // System.getenv("UIMA_Jira3123") != null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-3123
     if (support240bug) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       assertNotNull(desc);
     } else {
       fail();
@@ -470,6 +505,7 @@ public class AnalysisEngine_implTest extends TestCase {
 //      tsd.addType("NamedEntity", "", "uima.tcas.Annotation");
 //      tsd.addType("DocumentStructure", "", "uima.cas.TOP");
 //      primitiveDesc.getAnalysisEngineMetaData().setTypeSystem(tsd);
+//IC see: https://issues.apache.org/jira/browse/UIMA-186
       Capability cap = new Capability_impl();
       cap.addOutputType("NamedEntity", true);
       cap.addOutputType("DocumentStructure", true);
@@ -477,9 +513,12 @@ public class AnalysisEngine_implTest extends TestCase {
       primitiveDesc.getAnalysisEngineMetaData().setCapabilities(caps);
       _testProcess(primitiveDesc);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
       primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
 
@@ -502,6 +541,7 @@ public class AnalysisEngine_implTest extends TestCase {
       FixedFlow_impl flow = new FixedFlow_impl();
       flow.setFixedFlow(new String[] { "Test" });
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
+//IC see: https://issues.apache.org/jira/browse/UIMA-186
       aggDesc.getAnalysisEngineMetaData().setCapabilities(caps);
       _testProcess(aggDesc);
 
@@ -509,6 +549,7 @@ public class AnalysisEngine_implTest extends TestCase {
       File outFile = JUnitExtension.getFile("CpmOutput.txt");
       if(outFile != null && outFile.exists()) {
         //outFile.delete() //can't be relied upon.  Instead set file to zero length.
+//IC see: https://issues.apache.org/jira/browse/UIMA-188
         FileOutputStream fos = new FileOutputStream(outFile, false);
         fos.close();
         assertEquals(0,outFile.length());
@@ -524,10 +565,12 @@ public class AnalysisEngine_implTest extends TestCase {
         outFile = JUnitExtension.getFile("CpmOutput.txt");
       }
       assertTrue(outFile != null && outFile.exists());
+//IC see: https://issues.apache.org/jira/browse/UIMA-188
       assertTrue(outFile.length() > 0);
       outFile.delete();
       
       //test aggregate that uses ParallelStep
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
         new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForParallelStepTest.xml")));
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc);
@@ -554,6 +597,7 @@ public class AnalysisEngine_implTest extends TestCase {
     CAS tcas = ae.newCAS();
 
     // process(CAS,ResultSpecification)
+//IC see: https://issues.apache.org/jira/browse/UIMA-721
     ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
     resultSpec.addResultType("NamedEntity", true);
 
@@ -566,6 +610,8 @@ public class AnalysisEngine_implTest extends TestCase {
 
     // process(CAS,ResultSpecification)
     ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
+//IC see: https://issues.apache.org/jira/browse/UIMA-1860
+//IC see: https://issues.apache.org/jira/browse/UIMA-1840
     resultSpec.addResultType("NamedEntity", true);   // includes subtypes Person, Sentence, Place, Paragraph
                                                      // sets for lang = x-unspecified
     
@@ -605,10 +651,12 @@ public class AnalysisEngine_implTest extends TestCase {
 
     // process(CAS,ResultSpecification)
     tcas.setDocumentText("testing...");
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
     ae.process(tcas, resultSpec);
     assertEquals("testing...", TestAnnotator.lastDocument);
     assertEquals(expectedLastResultSpec, TestAnnotator.lastResultSpec);
     tcas.reset();
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
     ae.destroy();
   }
 
@@ -619,6 +667,7 @@ public class AnalysisEngine_implTest extends TestCase {
       primitiveDesc.setPrimitive(true);
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
       primitiveDesc
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       ConfigurationParameter p1 = new ConfigurationParameter_impl();
       p1.setName("StringParam");
@@ -628,8 +677,10 @@ public class AnalysisEngine_implTest extends TestCase {
               .setConfigurationParameters(new ConfigurationParameter[] { p1 });
       primitiveDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
 
       // instantiate TextAnalysisEngine
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       PrimitiveAnalysisEngine_impl ae = new PrimitiveAnalysisEngine_impl();
       ae.initialize(primitiveDesc, null);
 
@@ -645,6 +696,8 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // test aggregate TAE
       AnalysisEngineDescription aggDesc = new AnalysisEngineDescription_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       aggDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggDesc.setPrimitive(false);
       aggDesc.getMetaData().setName("Test Aggregate TAE");
@@ -656,8 +709,10 @@ public class AnalysisEngine_implTest extends TestCase {
       p2.setName("StringParam");
       p2.setDescription("parameter with String data type");
       p2.setType(ConfigurationParameter.TYPE_STRING);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
       p2.setOverrides(new String[] {"Test/StringParam"});
       aggDesc.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               new ConfigurationParameter[] { p2 });
       aggDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test3") });
@@ -682,6 +737,7 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testCreateAnalysisProcessData() throws Exception {
     try {
       // create simple primitive TAE with type system and indexes
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription desc = new AnalysisEngineDescription_impl();
       desc.setPrimitive(true);
       desc.getMetaData().setName("Test Primitive TAE");
@@ -689,6 +745,7 @@ public class AnalysisEngine_implTest extends TestCase {
 
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Type1", "Test Type One",
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
               CAS.TYPE_NAME_ANNOTATION);
       FeatureDescription feat1 = new FeatureDescription_impl();
       feat1.setName("Feature1");
@@ -726,6 +783,7 @@ public class AnalysisEngine_implTest extends TestCase {
       FsIndexKeyDescription key2 = new FsIndexKeyDescription_impl();
       key2.setFeatureName("Feature2");
       key2.setComparator(FSIndexComparator.REVERSE_STANDARD_COMPARE);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       index2.setKeys(new FsIndexKeyDescription[] { key2 });
       FsIndexDescription index3 = new FsIndexDescription_impl();
       index3.setLabel("Index3");
@@ -739,8 +797,10 @@ public class AnalysisEngine_implTest extends TestCase {
       index3.setKeys(new FsIndexKeyDescription[] { key3, key4 });
       desc.getAnalysisEngineMetaData().setFsIndexes(
               new FsIndexDescription[] { index1, index2, index3 });
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
 
       // instantiate TextAnalysisEngine
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       PrimitiveAnalysisEngine_impl ae = new PrimitiveAnalysisEngine_impl();
       ae.initialize(desc, null); // this calls createAnalysisProcessData
 
@@ -749,6 +809,7 @@ public class AnalysisEngine_implTest extends TestCase {
       CAS cas = ae.newCAS();
       TypeSystem ts = cas.getTypeSystem();
       Type t1 = ts.getType("Type1");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       assertEquals("Type1", t1.getName());
       Feature f1 = t1.getFeatureByBaseName("Feature1");
       Feature f1a = ts.getFeatureByFullName("Type1:Feature1");
@@ -811,6 +872,7 @@ public class AnalysisEngine_implTest extends TestCase {
       } catch (CASRuntimeException e) {
         ex = e;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       assertNotNull(ex);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -822,7 +884,9 @@ public class AnalysisEngine_implTest extends TestCase {
       // create aggregate analysis engine whose delegates each declare
       // type system, type priorities, and indexes
       XMLInputSource in = new XMLInputSource(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       AggregateAnalysisEngine_impl ae = new AggregateAnalysisEngine_impl();
       ae.initialize(desc, Collections.EMPTY_MAP);
@@ -832,6 +896,7 @@ public class AnalysisEngine_implTest extends TestCase {
       // TypeSystem
       TypeSystemDescription typeSys = ae.getAnalysisEngineMetaData().getTypeSystem();
       assertEquals(8, typeSys.getTypes().length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
       TypeDescription type0 = typeSys.getType("NamedEntity");
       assertNotNull(type0);
@@ -874,6 +939,7 @@ public class AnalysisEngine_implTest extends TestCase {
       assertEquals(1, type7.getFeatures().length);
 
       // TypePriorities
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       TypePriorities pri = ae.getAnalysisEngineMetaData().getTypePriorities();
       assertNotNull(pri);
       TypePriorityList[] priLists = pri.getPriorityLists();
@@ -883,10 +949,12 @@ public class AnalysisEngine_implTest extends TestCase {
       String[] list2 = priLists[2].getTypes();
       // order of the three lists is not defined
       assertTrue((list0.length == 2 && list1.length == 2 && list2.length == 3)
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               || (list0.length == 2 && list1.length == 3 && list2.length == 2)
               || (list0.length == 3 && list1.length == 2 && list2.length == 2));
 
       // Indexes
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       FsIndexDescription[] indexes = ae.getAnalysisEngineMetaData().getFsIndexes();
       assertEquals(3, indexes.length);
       // order of indexes is not defined
@@ -894,6 +962,7 @@ public class AnalysisEngine_implTest extends TestCase {
       String label1 = indexes[1].getLabel();
       String label2 = indexes[2].getLabel();
       assertTrue(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               || label2.equals("DocStructIndex"));
       assertTrue(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
               || label2.equals("PlaceIndex"));
@@ -902,6 +971,7 @@ public class AnalysisEngine_implTest extends TestCase {
               || label2.equals("FlowControllerTestIndex"));
 
       // test that we can create a CAS
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       CAS cas = ae.newCAS();
       TypeSystem ts = cas.getTypeSystem();
       assertNotNull(ts.getType("NamedEntity"));
@@ -912,6 +982,7 @@ public class AnalysisEngine_implTest extends TestCase {
       assertNotNull(ts.getType("Paragraph"));
       assertNotNull(ts.getType("Sentence"));
       assertNotNull(ts.getType("test.flowController.Test"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -920,6 +991,7 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testCollectionProcessComplete() throws Exception {
     try {
       // test simple primitive TextAnalysisEngine (using TestAnnotator class)
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
@@ -941,6 +1013,7 @@ public class AnalysisEngine_implTest extends TestCase {
       aggAe.collectionProcessComplete(new ProcessTrace_impl());
       
       //test that fixedFlow order is used
+//IC see: https://issues.apache.org/jira/browse/UIMA-348
       File descFile = JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForCollectionProcessCompleteTest.xml");
       AnalysisEngineDescription cpcTestDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(descFile));
       AnalysisEngine cpcTestAe = UIMAFramework.produceAnalysisEngine(cpcTestDesc);
@@ -954,9 +1027,14 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testBatchProcessComplete() throws Exception {
     try {
       // test simple primitive TextAnalysisEngine (using TestAnnotator class)
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
       PrimitiveAnalysisEngine_impl ae = new PrimitiveAnalysisEngine_impl();
@@ -964,6 +1042,7 @@ public class AnalysisEngine_implTest extends TestCase {
       ae.batchProcessComplete(new ProcessTrace_impl());
 
       // test simple aggregate TextAnalysisEngine (again using TestAnnotator class)
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription aggDesc = new AnalysisEngineDescription_impl();
       aggDesc.setPrimitive(false);
       aggDesc.getMetaData().setName("Test Aggregate TAE");
@@ -981,6 +1060,8 @@ public class AnalysisEngine_implTest extends TestCase {
 
   public void testTypeSystemInit() throws Exception {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription aggWithCcDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension
                       .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
@@ -991,6 +1072,7 @@ public class AnalysisEngine_implTest extends TestCase {
       aggAe.process(tcas);
       assertTrue(TestAnnotator.typeSystemInitCalled);
       assertTrue(AnnotationWriter.typeSystemInitCalled);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -999,10 +1081,12 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testProcessAndOutputNewCASes() throws Exception {
     try {
       // primitive
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
       AnalysisEngineDescription segmenterDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(
                       new XMLInputSource(JUnitExtension
                               .getFile("TextAnalysisEngineImplTest/NewlineSegmenter.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
       CAS cas = ae.newCAS();
       cas.setDocumentText("Line one\nLine two\nLine three");
@@ -1022,10 +1106,12 @@ public class AnalysisEngine_implTest extends TestCase {
       assertFalse(iter.hasNext());
 
       // aggregate
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
       AnalysisEngineDescription aggSegDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(
                       new XMLInputSource(JUnitExtension
                               .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenter.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       ae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
       cas = ae.newCAS();
       cas.setDocumentText("Line one\nLine two\nLine three");
@@ -1050,12 +1136,15 @@ public class AnalysisEngine_implTest extends TestCase {
       assertEquals("Line three", TestAnnotator.lastDocument);
 
       // nested aggregate
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       AnalysisEngineDescription nestedAggSegDesc = UIMAFramework
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               .getXMLParser()
               .parseAnalysisEngineDescription(
                       new XMLInputSource(
                               JUnitExtension
                                       .getFile("TextAnalysisEngineImplTest/AggregateContainingAggregateSegmenter.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       ae = UIMAFramework.produceAnalysisEngine(nestedAggSegDesc);
       cas = ae.newCAS();
       cas.setDocumentText("Line one\nLine two\nLine three");
@@ -1080,10 +1169,12 @@ public class AnalysisEngine_implTest extends TestCase {
       assertEquals("Line three", TestAnnotator.lastDocument);
 
       // two segmenters
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
       AnalysisEngineDescription twoSegDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(
                       new XMLInputSource(JUnitExtension
                               .getFile("TextAnalysisEngineImplTest/AggregateWith2Segmenters.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       ae = UIMAFramework.produceAnalysisEngine(twoSegDesc);
       cas = ae.newCAS();
       cas.setDocumentText("One\tTwo\nThree\tFour");
@@ -1113,9 +1204,11 @@ public class AnalysisEngine_implTest extends TestCase {
       assertEquals("Four", TestAnnotator.lastDocument);
 
       // dropping segments
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
       aggSegDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension
                       .getFile("TextAnalysisEngineImplTest/AggregateSegmenterForDropTest.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       ae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
       cas = ae.newCAS();
       cas.setDocumentText("Line one\nDROP\nLine two\nDROP\nLine three");
@@ -1142,12 +1235,15 @@ public class AnalysisEngine_implTest extends TestCase {
       assertEquals("Line three", TestAnnotator.lastDocument);
       
       //with ParallelStep
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
         new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForParallelStepCasMultiplierTest.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       ae = UIMAFramework.produceAnalysisEngine(desc);
       cas.reset();
       cas.setDocumentText("One\tTwo\nThree\tFour");
       iter = ae.processAndOutputNewCASes(cas);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Set<String> expectedOutputs = new HashSet<>();
       expectedOutputs.add("One");
       expectedOutputs.add("Two\nThree");
@@ -1163,12 +1259,14 @@ public class AnalysisEngine_implTest extends TestCase {
 
       
       // test aggregate with 2 AEs sharing resource manager
+//IC see: https://issues.apache.org/jira/browse/UIMA-1400
       AnalysisEngineDescription aggregateSegDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(
                       new XMLInputSource(JUnitExtension
                               .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenter.xml")));
       
       ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Map<String, Object> params = new HashMap<>();
       AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
       AnalysisEngine ae2 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
@@ -1211,6 +1309,7 @@ public class AnalysisEngine_implTest extends TestCase {
       outCas1.release();
       assertFalse(iter1.hasNext());
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -1219,12 +1318,15 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testProcessAndOutputNewCASesWithError() throws Exception {
     try {
       // aggregate
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       AnalysisEngineDescription aggSegDesc = UIMAFramework
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               .getXMLParser()
               .parseAnalysisEngineDescription(
                       new XMLInputSource(
                               JUnitExtension
                                       .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenterForErrorTest.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
       
       CAS cas = ae.newCAS();
@@ -1241,17 +1343,23 @@ public class AnalysisEngine_implTest extends TestCase {
         outCas = iter.next();
         assertEquals("Line two", outCas.getDocumentText());
         outCas.release();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2381
+//IC see: https://issues.apache.org/jira/browse/UIMA-2381
           UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
         } catch (Exception e) {
         } finally {
           UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
         }
         //check that FlowController was notified twice, once for the 
         //segment's flow and once for the complete document's flow
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
         assertEquals(2, FlowControllerForErrorTest.abortedDocuments.size());
         assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("ERROR"));
         assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR"));
@@ -1261,15 +1369,19 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // nested aggregate
       AnalysisEngineDescription nestedAggSegDesc = UIMAFramework
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               .getXMLParser()
               .parseAnalysisEngineDescription(
                       new XMLInputSource(
                               JUnitExtension
                                       .getFile("TextAnalysisEngineImplTest/NestedAggregateSegmenterForErrorTest.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       ae = UIMAFramework.produceAnalysisEngine(nestedAggSegDesc);
       cas = ae.newCAS();
       for (int i = 0; i < 2; i++) // verify we can do this more than once
       {
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
         FlowControllerForErrorTest.reset();
         cas.setDocumentText("Line one\nLine two\nERROR");
         CasIterator iter = ae.processAndOutputNewCASes(cas);
@@ -1281,11 +1393,14 @@ public class AnalysisEngine_implTest extends TestCase {
         outCas = iter.next();
         assertEquals("Line two", outCas.getDocumentText());
         outCas.release();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         try {
           UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
         } catch (Exception e) {
         } finally {
           UIMAFramework.getLogger().setLevel(Level.INFO); 
@@ -1293,6 +1408,7 @@ public class AnalysisEngine_implTest extends TestCase {
         //check that FlowController was notified three times, once for the 
         //segment's flow and twice for the complete document's flow (once
         //in each aggregate)
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
         assertEquals(3, FlowControllerForErrorTest.abortedDocuments.size());
         assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("ERROR"));
         assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR"));
@@ -1303,16 +1419,22 @@ public class AnalysisEngine_implTest extends TestCase {
       }
 
       // 2 segmenters
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       AnalysisEngineDescription twoSegDesc = UIMAFramework
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
               .getXMLParser()
               .parseAnalysisEngineDescription(
                       new XMLInputSource(
                               JUnitExtension
                                       .getFile("TextAnalysisEngineImplTest/AggregateWith2SegmentersForErrorTest.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       ae = UIMAFramework.produceAnalysisEngine(twoSegDesc);
       cas = ae.newCAS();
       for (int i = 0; i < 2; i++) // verify we can do this more than once
       {
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
         FlowControllerForErrorTest.abortedDocuments.clear();
         cas.setDocumentText("One\tTwo\nThree\tERROR");
         CasIterator iter = ae.processAndOutputNewCASes(cas);
@@ -1329,15 +1451,19 @@ public class AnalysisEngine_implTest extends TestCase {
         assertEquals("Three", outCas.getDocumentText());
         outCas.release();
         try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2381
           UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
         } catch (Exception e) {
         } finally {
           UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
         }
         //check that FlowController was notified three times, once for each level of granularity
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
         assertEquals(3, FlowControllerForErrorTest.abortedDocuments.size());
         assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("ERROR"));
         assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("Three\tERROR"));
@@ -1347,10 +1473,12 @@ public class AnalysisEngine_implTest extends TestCase {
       }
 
       // segmenter that requests too many CASes
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
       AnalysisEngineDescription segmenterDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(
                       new XMLInputSource(JUnitExtension
                               .getFile("TextAnalysisEngineImplTest/BadSegmenter.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       ae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
       cas = ae.newCAS();
       cas.setDocumentText("Line one\nLine two\nLine three");
@@ -1361,6 +1489,7 @@ public class AnalysisEngine_implTest extends TestCase {
       assertTrue(iter.hasNext());
       // next call should fail with AnalysisEngineProcessException
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2381
         UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
         iter.next();
         fail(); // should not get here
@@ -1370,10 +1499,12 @@ public class AnalysisEngine_implTest extends TestCase {
       }
       
       // bad segmenter in an aggregate
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
       AnalysisEngineDescription aggWithBadSegmenterDesc = UIMAFramework.getXMLParser()
       .parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension
                       .getFile("TextAnalysisEngineImplTest/AggregateWithBadSegmenterForErrorTest.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       ae = UIMAFramework.produceAnalysisEngine(aggWithBadSegmenterDesc);
       FlowControllerForErrorTest.reset();
       cas = ae.newCAS();
@@ -1386,6 +1517,7 @@ public class AnalysisEngine_implTest extends TestCase {
       assertTrue(FlowControllerForErrorTest.failedAEs.isEmpty());
       // next call should fail with AnalysisEngineProcessException
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2381
         UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
         if (iter.hasNext()) {
           iter.next();
@@ -1401,6 +1533,7 @@ public class AnalysisEngine_implTest extends TestCase {
       assertTrue(FlowControllerForErrorTest.failedAEs.contains("Segmenter"));
 
       //configure AE to continue after error
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       ae = UIMAFramework.produceAnalysisEngine(aggWithBadSegmenterDesc);
       ae.setConfigParameterValue("ContinueOnFailure", Boolean.TRUE);
       ae.reconfigure();
@@ -1417,7 +1550,10 @@ public class AnalysisEngine_implTest extends TestCase {
       
       //next call should not have aborted, but FC should have been notified of the failiure,
       // and no CAS should come back
+//IC see: https://issues.apache.org/jira/browse/UIMA-2381
       UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
       try {
         assertFalse(iter.hasNext());
       } finally {
@@ -1436,10 +1572,12 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testResegment() throws Exception {
     try {
       // primitive
+//IC see: https://issues.apache.org/jira/browse/UIMA-67
       AnalysisEngineDescription segmenterDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(
                       new XMLInputSource(JUnitExtension
                               .getFile("TextAnalysisEngineImplTest/NewlineResegmenter.xml")));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
       CAS inputCas1 = ae.newCAS();
       Type sdiType = inputCas1.getTypeSystem().getType(
@@ -1449,6 +1587,7 @@ public class AnalysisEngine_implTest extends TestCase {
       FeatureStructure sdiFS = inputCas1.createFS(sdiType);
       sdiFS.setStringValue(uriFeat, "cas1");
       inputCas1.getIndexRepository().addFS(sdiFS);
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       CAS inputCas2 = ae.newCAS();
       inputCas2.setDocumentText(" one.\nThis is");
       FeatureStructure sdiFS2 = inputCas2.createFS(sdiType);
@@ -1467,6 +1606,7 @@ public class AnalysisEngine_implTest extends TestCase {
       iter = ae.processAndOutputNewCASes(inputCas2);
       assertTrue(iter.hasNext());
       CAS outCas = iter.next();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
       JCas outJCas = outCas.getJCas();
       assertEquals("This is one.", outCas.getDocumentText());
       // -- check SourceDocumentInformation FSs
@@ -1494,9 +1634,11 @@ public class AnalysisEngine_implTest extends TestCase {
       assertFalse(iter.hasNext());
 
       // input third CAS. We should get back one more segment.
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       iter = ae.processAndOutputNewCASes(inputCas3);
       assertTrue(iter.hasNext());
       outCas = iter.next();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
       outJCas = outCas.getJCas();
       assertEquals("This is two.", outCas.getDocumentText());
       // -- check SourceDocumentInformation FSs
@@ -1519,12 +1661,14 @@ public class AnalysisEngine_implTest extends TestCase {
 
 
   public void testProcessWithError() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-53
     try {
       //This test uses an aggregate AE fails if the document text is set to "ERROR".
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(
                       new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForErrorTest.xml")));
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeDesc);
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
       FlowControllerForErrorTest.reset();
       CAS cas = ae.newCAS();
       //try document that should succeed
@@ -1538,15 +1682,23 @@ public class AnalysisEngine_implTest extends TestCase {
       cas.reset();
       cas.setDocumentText("ERROR");
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2381
         UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
         ae.process(cas);
         fail();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
       } catch (Exception e) {
       } finally {
         UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
       assertEquals(1, FlowControllerForErrorTest.abortedDocuments.size());
       assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("ERROR"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-327
       assertEquals(1, FlowControllerForErrorTest.failedAEs.size());
       assertTrue(FlowControllerForErrorTest.failedAEs.contains("ErrorAnnotator"));
     
@@ -1563,7 +1715,10 @@ public class AnalysisEngine_implTest extends TestCase {
       ae.reconfigure();
       cas.reset();
       cas.setDocumentText("ERROR");
+//IC see: https://issues.apache.org/jira/browse/UIMA-2381
       UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
       try {
         ae.process(cas); //should not throw exception now
       } finally {
@@ -1582,6 +1737,8 @@ public class AnalysisEngine_implTest extends TestCase {
   
   public void testThrottleLogging() throws Exception {
   //This test uses an aggregate AE fails if the document text is set to "ERROR".
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
             .parseAnalysisEngineDescription(
                     new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForErrorTest.xml")));
@@ -1634,6 +1791,7 @@ public class AnalysisEngine_implTest extends TestCase {
   }
   
   public void testMissingSuper() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1874
     try {
       // initialize simple primitive TextAnalysisEngine
       AnalysisEngine ae1 = new PrimitiveAnalysisEngine_impl();
@@ -1650,6 +1808,8 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testManyDelegates() throws Exception {
     // test with and without validation - UIMA-2453
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     try {
       manyDelegatesCommon();
     } finally {
@@ -1659,6 +1819,7 @@ public class AnalysisEngine_implTest extends TestCase {
   }
   private void manyDelegatesCommon() throws Exception {
     // Test that an aggregate can be copied preserving all comments and ordering of delegates
+//IC see: https://issues.apache.org/jira/browse/UIMA-2418
     XMLParser.ParsingOptions parsingOptions = new XMLParser.ParsingOptions(false);
     parsingOptions.preserveComments = true;
     XMLParser parser = UIMAFramework.getXMLParser();
@@ -1667,13 +1828,17 @@ public class AnalysisEngine_implTest extends TestCase {
 
     // Write out descriptor
     File cloneFile = new File(inFile.getParentFile(), "CopyOfAggregateWithManyDelegates.xml");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(cloneFile))) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5753
       XMLSerializer xmlSerializer = new XMLSerializer(false);
       xmlSerializer.setOutputStream(os);
       // set the amount to a value which will show up if used
       // indent should not be used because we're using a parser mode which preserves
       // comments and ignorable white space.
       // NOTE: Saxon appears to force the indent to be 3 - which is what the input file now uses.
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
       xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
       ContentHandler contentHandler = xmlSerializer.getContentHandler();
       contentHandler.startDocument();
@@ -1691,6 +1856,7 @@ public class AnalysisEngine_implTest extends TestCase {
     // NOTE:  This fails with Saxon as it omits the xmlns attribute (why?) and omits the newlines between adjacent comments.
     // It also produces many differences in indentation if the input is not indented by 3
     assertTrue("File size changed by "+diff+" should be no more than 2", diff >= -2 && diff <= 2);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2408
 
     // Initialize all delegates and check the initialization order (should be declaration order)
     TestAnnotator2.allContexts = "";
@@ -1702,10 +1868,12 @@ public class AnalysisEngine_implTest extends TestCase {
     TestAnnotator2.allContexts = "";
     UIMAFramework.produceAnalysisEngine(desc);
     assertEquals("D/C/B/A/F/E/", TestAnnotator2.allContexts);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3504
     cloneFile.delete();
   }
 
   public void testMultiViewAnnotatorInput() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3765
     try {
       AnalysisEngineDescription transAnnotatorDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension
@@ -1749,6 +1917,8 @@ public class AnalysisEngine_implTest extends TestCase {
             new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForMultipleAeTest.xml")));
     UIMAFramework.getLogger().setLevel(Level.CONFIG);
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
       AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(desc);
       ae1.newCAS();
       

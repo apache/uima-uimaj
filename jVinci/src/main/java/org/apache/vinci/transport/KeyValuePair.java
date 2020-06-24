@@ -32,6 +32,7 @@ package org.apache.vinci.transport;
 
 public final class KeyValuePair {
   final String key;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   FrameComponent value; // Frame or FrameLeaf
 

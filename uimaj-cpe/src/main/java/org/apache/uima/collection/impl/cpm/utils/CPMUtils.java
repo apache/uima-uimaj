@@ -66,6 +66,7 @@ public class CPMUtils {
    */
   public static String[] getKeys2Drop(String aKeyDropMapFile) throws ResourceConfigurationException {
     return new String[] { "", "" };
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   }
 
@@ -164,6 +165,7 @@ public class CPMUtils {
       if (System.getProperty("DEBUG_EVENTS") != null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(CPMUtils.class).log(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   "Returning Report With Event::" + aEvType + " For Component:::"
                           + prEvent.getComponentName() + " Duration:::"
@@ -222,6 +224,7 @@ public class CPMUtils {
    * @throws ConfigurationException -
    */
   private static ConfigurableFeature getConfigurableFeature(Node entityNode)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ConfigurationException // SITHException
   {
     ConfigurableFeature featureStructure = null;
@@ -323,6 +326,7 @@ public class CPMUtils {
   public static File findDeployDirectory(String aServiceName) throws Exception {
     if (aServiceName == null) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_CPM_EXP_service_not_defined__WARNING", new Object[] {
                   Thread.currentThread().getName(), "NULL" }));
     }
@@ -332,6 +336,7 @@ public class CPMUtils {
     for (int i = 0; dirList != null && i < dirList.length; i++) {
 
       String taeDescriptor = dirList[i].getAbsolutePath() + System.getProperty("file.separator")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + "bin" + System.getProperty("file.separator") + "desc.xml";
       Descriptor descriptor = null;
       try {
@@ -362,6 +367,7 @@ public class CPMUtils {
     File rootDir = new File(rootPath, appRoot);
     if (rootDir.isDirectory() == false) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_CPM_EXP_not_directory__WARNING", new Object[] {
                   Thread.currentThread().getName(), appRoot }));
     }
@@ -372,6 +378,7 @@ public class CPMUtils {
     for (int i = 0; i < list.length; i++) {
       currentFile = list[i];
       aFile = new File(rootDir.getAbsolutePath() + System.getProperty("file.separator")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + currentFile);
       if (aFile.isDirectory()) {
         dirList.add(aFile);
@@ -395,6 +402,7 @@ public class CPMUtils {
   public static int getFeatureAsInt(CAS aCas, Feature aFeature, String aName) throws Exception {
     Feature seqNo2 = aFeature.getRange().getFeatureByBaseName(aName);
     FeatureStructure documentMetaData = aCas.getView(CAS.NAME_DEFAULT_SOFA).getDocumentAnnotation()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getFeatureValue(aFeature);
     return documentMetaData.getIntValue(seqNo2);
   }
@@ -412,6 +420,7 @@ public class CPMUtils {
    * @throws Exception the exception
    */
   public static String getFeatureAsString(CAS aCas, Feature aFeature, String aName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws Exception {
     Feature seqNo2 = aFeature.getRange().getFeatureByBaseName(aName);
     FeatureStructure documentMetaData = aCas.getView(CAS.NAME_DEFAULT_SOFA).getDocumentAnnotation()
@@ -429,6 +438,7 @@ public class CPMUtils {
    */
   public static synchronized ChunkMetadata getChunkMetadata(CAS aCas) {
     Feature feat = aCas.getTypeSystem().getFeatureByFullName(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "uima.tcas.DocumentAnnotation:esDocumentMetaData");
     if (feat != null) {
       try {
@@ -439,6 +449,7 @@ public class CPMUtils {
         String url = getFeatureAsString(aCas, feat, ChunkMetadata.DOCUMENTURL); // "isCompleted");
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(CPMUtils.class).log(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Level.FINEST,
                   Thread.currentThread().getName() + "===========================>SeqNo::"
                           + sequenceNo + " docId::" + docId + " isComplete::" + isCompleted
@@ -456,6 +467,7 @@ public class CPMUtils {
       } catch (NullPointerException e) {
         if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
           Exception newE = new CPMException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "Possible misconfiguration. CPM configured to use chunking but chunk metadata is not present in the CAS. Check if the CAS has been properly initialized by the CollectionReader.");
           UIMAFramework.getLogger(CPMUtils.class).log(Level.WARNING,
                   Thread.currentThread().getName(), newE);

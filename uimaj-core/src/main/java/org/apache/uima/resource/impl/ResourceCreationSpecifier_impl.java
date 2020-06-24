@@ -49,6 +49,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  */
 public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implements
         ResourceCreationSpecifier {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private String mImplementationName;
 
@@ -115,6 +117,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    */
   public ExternalResourceDependency[] getExternalResourceDependencies() {
     ExternalResourceDependency[] result = new ExternalResourceDependency[mExternalResourceDependencies
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .size()];
     mExternalResourceDependencies.toArray(result);
     return result;
@@ -125,6 +128,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    */
   public void setExternalResourceDependencies(ExternalResourceDependency[] aDependencies) {
     // can't just clear the ArrayList since that breaks clone(). Create a new list.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     mExternalResourceDependencies = new ArrayList<>();
     if (aDependencies != null) {
       for (int i = 0; i < aDependencies.length; i++) {
@@ -137,6 +141,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getExternalResourceDependency(java.lang.String)
    */
   public ExternalResourceDependency getExternalResourceDependency(String aKey) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1488
     for (ExternalResourceDependency dep : mExternalResourceDependencies) {
       if (aKey.equals(dep.getKey()))
         return dep;
@@ -159,6 +164,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.resource.ResourceCreationSpecifier#setResourceManagerConfiguration(org.apache.uima.resource.metadata.ResourceManagerConfiguration)
    */
   public void setResourceManagerConfiguration(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceManagerConfiguration aResourceManagerConfiguration) {
     mResourceManagerConfiguration = aResourceManagerConfiguration;
   }
@@ -178,10 +184,12 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
   public void doFullValidation(ResourceManager aResourceManager)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // try to instantiate dummy resource - this checks config params
     // and resources
     DummyResource dummy = new DummyResource();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, Object> params = new HashMap<>();
     params.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
     dummy.initialize(this, params);
@@ -202,6 +210,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    *           if the configuration parameter settings in <code>aDesc</code> are invalid
    */
   public final void validate() throws ResourceInitializationException, ResourceConfigurationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-130
     validate(UIMAFramework.newDefaultResourceManager());
   }
   
@@ -232,6 +241,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    */
   protected void validateConfigurationParameters(ResourceManager aResourceManager) throws ResourceInitializationException {
     ConfigurationParameterDeclarations cfgParamDecls = getMetaData()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getConfigurationParameterDeclarations();
     ConfigurationParameter[] params = cfgParamDecls.getConfigurationParameters();
     if (params.length > 0) {
@@ -241,11 +251,13 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
     } else {
       ConfigurationParameter[] commonParams = cfgParamDecls.getCommonParameters();
       // check for duplicates in common params
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Set<String> commonParamNames = new HashSet<>();
       if (commonParams != null) {
         for (int i = 0; i < commonParams.length; i++) {
           if (!commonParamNames.add(commonParams[i].getName())) {
             throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     ResourceInitializationException.DUPLICATE_CONFIGURATION_PARAMETER_NAME,
                     new Object[] { commonParams[i].getName(), getMetaData().getName(),
                         commonParams[i].getSourceUrlString() });
@@ -255,6 +267,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
       // check for duplicates in groups
       ConfigurationGroup[] groups = cfgParamDecls.getConfigurationGroups();
       if (groups != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         Map<String, Set<String>> groupToParamSetMap = new HashMap<>(); // map from group name to HashSet of param names
         // in that group
         for (int i = 0; i < groups.length; i++) {
@@ -263,6 +276,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
             Set<String> paramNamesInGroup = groupToParamSetMap.get(names[j]);
             if (paramNamesInGroup == null) {
               // first time we've seen this group. create an entry and add common params
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
               paramNamesInGroup = new HashSet<>(commonParamNames);
             }
 
@@ -272,12 +286,14 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
               for (int k = 0; k < paramsInGroup.length; k++) {
                 if (!paramNamesInGroup.add(paramsInGroup[k].getName())) {
                   throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                           ResourceInitializationException.DUPLICATE_CONFIGURATION_PARAMETER_NAME,
                           new Object[] { paramsInGroup[k].getName(), getMetaData().getName(),
                               paramsInGroup[k].getSourceUrlString() });
                 }
               }
             }
+//IC see: https://issues.apache.org/jira/browse/UIMA-130
             checkForInvalidParameterOverrides(paramsInGroup, names[j], aResourceManager);
             if (commonParams != null) {
               checkForInvalidParameterOverrides(commonParams, names[j], aResourceManager);
@@ -298,7 +314,9 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    *           if there is a duplicate parameter name in the arrays
    */
   protected void checkForDuplicateParameterNames(ConfigurationParameter[] aParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Set<String> paramNames = new HashSet<>();
     for (int i = 0; i < aParams.length; i++) {
       if (!paramNames.add(aParams[i].getName())) {
@@ -343,6 +361,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "resourceCreationSpecifier", new PropertyXmlInfo[] {
               new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("implementationName"), 

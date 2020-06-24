@@ -180,6 +180,8 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * To suppress all logging, use 0.  
    */
   public static final String PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING = 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
       "PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING";
   
   public static final String MDC_ANNOTATOR_IMPL_NAME = "uima_annotator";
@@ -201,6 +203,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the metadata that describes this <code>AnalysisEngine</code>. This is just a
@@ -344,6 +347,8 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    */
   public void process(CAS aCAS, ResultSpecification aResultSpec, ProcessTrace aTrace)
           throws ResultNotSupportedException, AnalysisEngineProcessException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Invokes this AnalysisEngine's analysis logic. Prior to calling this method, the caller must
@@ -375,6 +380,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
   @Deprecated
   public void process(AnalysisProcessData aProcessData, ResultSpecification aResultSpec)
           throws ResultNotSupportedException, AnalysisEngineProcessException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Similar to {@link #process(CAS)} but uses the Java-object-based {@link JCas} interface instead
@@ -454,6 +460,8 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    */
   public void process(JCas aJCas, ResultSpecification aResultSpec, ProcessTrace aTrace)
           throws ResultNotSupportedException, AnalysisEngineProcessException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Processes a CAS, possibly producing multiple CASes as a result. The application uses the

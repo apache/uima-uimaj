@@ -94,6 +94,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
       mOutputDir.mkdirs();
     }
     cas2xml = new CasToInlineXml();
+//IC see: https://issues.apache.org/jira/browse/UIMA-413
     mXCAS = (String) getConfigParameterValue(PARAM_XCAS);
     mTEXT = !("xcas".equalsIgnoreCase(mXCAS) || "xmi".equalsIgnoreCase(mXCAS));
   }
@@ -122,6 +123,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
     File outFile = null;
     boolean hasDefaultView = false;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-413
     if (mTEXT) {
       // get the default View if it exists
       try {
@@ -156,9 +158,11 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
       outStream = new FileOutputStream(outFile);
       if (hasDefaultView) {
         String xmlAnnotations = cas2xml.generateXML(aCAS);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
         outStream.write(xmlAnnotations.getBytes(StandardCharsets.UTF_8));
       } else {
         XMLSerializer xmlSer = new XMLSerializer(outStream, false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-413
         if (mXCAS.equalsIgnoreCase("xcas")) {
           XCASSerializer ser = new XCASSerializer(aCAS.getTypeSystem());
           ser.serialize(aCAS, xmlSer.getContentHandler());

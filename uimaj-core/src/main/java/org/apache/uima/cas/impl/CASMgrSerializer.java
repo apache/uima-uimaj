@@ -198,12 +198,14 @@ public class CASMgrSerializer implements Serializable {
     this.typeOrder = ir.getDefaultTypeOrder().getOrder();
     // Collect the index labels in a list, as we don't know how many there
     // are.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     final List<String> names = new ArrayList<>();
     // Create an iterator over the names.
     final Iterator<String> namesIt = ir.getLabels();
     // Add the names to the list, filtering out auto-indexes.
     while (namesIt.hasNext()) {
       String name = namesIt.next();
+//IC see: https://issues.apache.org/jira/browse/UIMA-297
       if (ir.getIndex(name).getIndexingStrategy() != FSIndex.DEFAULT_BAG_INDEX) { 
         names.add(name);
       }
@@ -222,12 +224,14 @@ public class CASMgrSerializer implements Serializable {
     }
     // Create a vector of the indexes, and build the name-to-index map.
     this.nameToIndexMap = new int[numNames];
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Vector<FSIndex<FeatureStructure>> indexVector = new Vector<>();
     FSIndex<FeatureStructure> index;
     int pos;
     for (int i = 0; i < numNames; i++) {
       index = ir.getIndex(this.indexNames[i]);
       pos = indexVector.indexOf(index);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       if (pos < 0) {                  // if we haven't yet recorded this index in indexVector
         indexVector.add(index);       // add it to the indexVector
         pos = indexVector.size() - 1; // set the pos to the entry just added
@@ -246,6 +250,7 @@ public class CASMgrSerializer implements Serializable {
     // Create the array with the indexing strategy.
     this.indexingStrategy = new int[numIndexes];
     for (int i = 0; i < numIndexes; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
       this.indexingStrategy[i] = indexVector.get(i).getIndexingStrategy();
     }
 
@@ -264,6 +269,7 @@ public class CASMgrSerializer implements Serializable {
       // array.
       this.comparatorIndex[i] = compPos;
       // Get the comparator.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
       comp = ((LowLevelIndex<FeatureStructure>) indexVector.get(i)).getComparatorForIndexSpecs();
       // Encode the type of the comparator.
       comps.add(((TypeImpl) comp.getType()).getCode());
@@ -280,6 +286,7 @@ public class CASMgrSerializer implements Serializable {
             comps.add(0);
             break;
           }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           default: Misc.internalError();
         }
         // Encode key comparator - which is the boolean standard/reversed flag
@@ -293,6 +300,7 @@ public class CASMgrSerializer implements Serializable {
   }
 
   public void addTypeSystem(TypeSystemImpl ts) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     this.typeNames = ts.types.stream()
                        .map(type -> (null == type) ? null : type.getName())
                        .toArray(String[]::new);
@@ -306,7 +314,9 @@ public class CASMgrSerializer implements Serializable {
     final int size = list.size();
     this.stringSubtypes = new int[size];
     this.stringSubtypeValuePos = new int[size];
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> strVals = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     TypeImpl_string type;
     int pos = 0, typeCode;
     String[] stringSet;
@@ -315,6 +325,7 @@ public class CASMgrSerializer implements Serializable {
       typeCode = type.getCode();
       this.stringSubtypes[i] = typeCode;
       this.stringSubtypeValuePos[i] = pos;
+//IC see: https://issues.apache.org/jira/browse/UIMA-128
       stringSet = ts.ll_getStringSet(typeCode);
       pos += stringSet.length;
       for (int j = 0; j < stringSet.length; j++) {
@@ -351,9 +362,11 @@ public class CASMgrSerializer implements Serializable {
   private void encodeFeatureDecls(TypeSystemImpl ts) {
     final int max = ts.getSmallestFeature() + ts.getNumberOfFeatures();
     this.featureNames = new String[max];
+//IC see: https://issues.apache.org/jira/browse/UIMA-476
     this.featDecls = new int[max * 3];
     Feature f;
     for (int i = ts.getSmallestFeature(); i < max; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-408
       f = ts.ll_getFeatureForCode(i);
       this.featureNames[i] = f.getShortName();
       this.featDecls[i * 3] = ((TypeImpl) f.getDomain()).getCode();
@@ -363,6 +376,7 @@ public class CASMgrSerializer implements Serializable {
   }
 
   private void encodeTypeInheritance(TypeSystemImpl ts) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     final int tsize = ts.getTypeArraySize();  
     this.typeInheritance = new int[tsize];
     // The smallest type is top, which doesn't inherit.
@@ -431,15 +445,18 @@ public class CASMgrSerializer implements Serializable {
 //        }
 //      }
 //    } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     for (int i = 2; i < this.typeNames.length; i++) {
       name = this.typeNames[i];
       int pos = isStringSubtype(i);
       if (pos >= 0) {
         ts.addStringSubtype(name, getStringArray(pos));
+//IC see: https://issues.apache.org/jira/browse/UIMA-476
       } else if (TypeSystemImpl.isArrayTypeNameButNotBuiltIn(name)) {
       	  ts.getArrayType(ts.getType(TypeSystemImpl.getArrayComponentName(name)));
       } else {
         if (ts.getType(name) == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
           ts.addType(name, ts.ll_getTypeForCode(this.typeInheritance[i]));
         }
       }
@@ -454,6 +471,7 @@ public class CASMgrSerializer implements Serializable {
         name = this.featureNames[i];
 //      }
       ts.addFeature(name, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
                     ts.getTypeForCode(this.featDecls[i * 3]), 
                     ts.getTypeForCode(this.featDecls[(i * 3) + 1]),
                     this.featDecls[(i * 3) + 2] == 1);
@@ -473,12 +491,14 @@ public class CASMgrSerializer implements Serializable {
                                 // index creation refs via the cas the index repository
     // Get the type order.
     ir.setDefaultTypeOrder(LinearTypeOrderBuilderImpl.createTypeOrder(this.typeOrder, cas
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getTypeSystem()));
     FSIndexComparator comp;
     final int max = this.indexNames.length;
     int pos = 0, next, maxComp;
     Type type;
     Feature feat;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     if (this.nameToIndexMap == null) {      // if nameToIndexMap is null
       this.nameToIndexMap = new int[max];   // create an identity map by default
       for (int i = 0; i < max; i++) {
@@ -488,6 +508,7 @@ public class CASMgrSerializer implements Serializable {
     for (int i = 0; i < max; i++) {
       comp = ir.createComparator();
       // assert(pos == comparatorIndex[i]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       pos = this.comparatorIndex[this.nameToIndexMap[i]];  // pos jumps by odd numbers, 1: type, 2-3, 4-5 etc are pairs: feature code and direction
       type = cas.getTypeSystemImpl().ll_getTypeForCode(this.comparators[pos]);
       comp.setType(type);
@@ -506,6 +527,7 @@ public class CASMgrSerializer implements Serializable {
         // System.out.println("Type system: " +
         // cas.getTypeSystem().toString());
         if (this.comparators[pos] > 0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-408
           feat = tsi.ll_getFeatureForCode(this.comparators[pos]);
           // assert(feat != null);
           // System.out.println("Adding feature: " + feat.getName());
@@ -515,6 +537,7 @@ public class CASMgrSerializer implements Serializable {
         } else {
           LinearTypeOrder order = ir.getDefaultTypeOrder();
           ++pos;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           comp.addKey(order, this.comparators[pos]);  // the direction is always standard, never reverse
         }
         ++pos;
@@ -527,6 +550,7 @@ public class CASMgrSerializer implements Serializable {
   }
 
   public boolean hasIndexRepository() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
     return this.typeOrder != null;
   }
 }

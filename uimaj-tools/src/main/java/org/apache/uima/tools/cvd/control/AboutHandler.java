@@ -64,6 +64,7 @@ public class AboutHandler implements ActionListener {
       versionInfo = "Running Java " + javaVersion + " from " + javaVendor;
     }
     String msg = "CVD (CAS Visual Debugger)\n" + "Apache UIMA Version "
+//IC see: https://issues.apache.org/jira/browse/UIMA-1934
         + UIMAFramework.getVersionString() 
         + " Copyright 2006, " + UimaVersion.getBuildYear() + " The Apache Software Foundation\n" + versionInfo + "\n";
     Icon icon = Images.getImageIcon(Images.UIMA_LOGO_SMALL);

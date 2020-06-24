@@ -53,6 +53,7 @@ public class AnalysisProcessData_impl implements AnalysisProcessData {
    * @param aTrace -
    */
   public AnalysisProcessData_impl(CAS aCAS, ProcessTrace aTrace) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mCAS = aCAS;
     mProcessTrace = aTrace;
   }

@@ -50,6 +50,7 @@ public class ConfigurableResource_implTest extends TestCase {
   }
 
   public void testReconfigure() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // set up some resource metadata and create a resource
       ResourceCreationSpecifier specifier = new MyTestSpecifier();
@@ -93,6 +94,8 @@ public class ConfigurableResource_implTest extends TestCase {
       p8.setType(ConfigurationParameter.TYPE_FLOAT);
       p8.setMultiValued(true);
       md.getConfigurationParameterDeclarations().setConfigurationParameters(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new ConfigurationParameter[] { p1, p2, p3, p4, p5, p6, p7, p8 });
       ConfigurableResource testResource1 = new MyTestResource();
       testResource1.initialize(specifier, null);
@@ -102,6 +105,7 @@ public class ConfigurableResource_implTest extends TestCase {
           "StringArrayParam", "BooleanArrayParam", "IntegerArrayParam", "FloatArrayParam" };
 
       String theStr = "hello world";
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       Boolean theBool = Boolean.FALSE;
       Integer theInt = 42;
       Float theFloat = 2.718281828459045F;
@@ -127,6 +131,7 @@ public class ConfigurableResource_implTest extends TestCase {
       // invalid settings
       // wrong type
       Exception ex = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       testResource1.setConfigParameterValue("StringParam", 13);
       try {
         testResource1.reconfigure();
@@ -146,6 +151,7 @@ public class ConfigurableResource_implTest extends TestCase {
 
       // inappropriate array
       ex = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       testResource1.setConfigParameterValue("FloatParam", new Float[] {0.1F,
           0.2F, 0.3F});
       try {
@@ -157,6 +163,7 @@ public class ConfigurableResource_implTest extends TestCase {
 
       // array required
       ex = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       testResource1.setConfigParameterValue("BooleanArrayParam", Boolean.TRUE);
       try {
         testResource1.reconfigure();
@@ -178,7 +185,9 @@ public class ConfigurableResource_implTest extends TestCase {
       // Now try a resource that defines configuration groups
       // (instantiate metadata from XML TAE descriptor because it's convenient)
       XMLInputSource in = new XMLInputSource(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       ResourceMetaData metadata = desc.getMetaData();
       MyTestSpecifier spec = new MyTestSpecifier();
@@ -194,6 +203,7 @@ public class ConfigurableResource_implTest extends TestCase {
           new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
           new String[] { "StringParam", "StringArrayParam", "FloatParam", "FloatArrayParam" } };
       Object[][] grpValues = new Object[][] {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
           new Object[] { "test", new String[] { "foo", "bar" }, 1024,
               new Integer[] {1, 3, 5} },
           new Object[] { "blah", new String[] { "abc", "def" }, 32768,
@@ -229,10 +239,12 @@ public class ConfigurableResource_implTest extends TestCase {
   public void testGetConfigParameterValueString() throws Exception {
     try {
       XMLInputSource in = new XMLInputSource(JUnitExtension
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               in);
       AnalysisEngine test = UIMAFramework.produceAnalysisEngine(desc);
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
 
       // test default fallback
       String str3 = (String) test.getConfigParameterValue("StringParam");
@@ -269,6 +281,7 @@ public class ConfigurableResource_implTest extends TestCase {
  */
 class MyTestResource extends ConfigurableResource_ImplBase {
   public boolean initialize(ResourceSpecifier aSpecifier, Map aParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     return super.initialize(aSpecifier, aParams);
     // if (aSpecifier instanceof ResourceCreationSpecifier)
@@ -296,5 +309,6 @@ class MyTestSpecifier extends ResourceCreationSpecifier_impl {
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("testSpecifier",
           new PropertyXmlInfo[] { new PropertyXmlInfo("metaData", null, false), });
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 }

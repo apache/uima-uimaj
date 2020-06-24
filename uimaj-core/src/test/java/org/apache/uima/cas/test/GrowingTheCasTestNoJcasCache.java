@@ -63,11 +63,13 @@ public class GrowingTheCasTestNoJcasCache extends TestCase {
 
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1068
       ResourceSpecifier spec = parser.parseResourceSpecifier(new XMLInputSource(
           descriptorFile));
       // Create a new properties object to hold the settings.
       Properties performanceTuningSettings = new Properties();
       // Set the initial CAS heap size.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1068
       performanceTuningSettings.setProperty(
             UIMAFramework.CAS_INITIAL_HEAP_SIZE, 
             "1000000");
@@ -77,6 +79,7 @@ public class GrowingTheCasTestNoJcasCache extends TestCase {
             "false");
       // Create a wrapper properties object that can
       // be passed to the framework.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       Map<String, Object> additionalParams = new HashMap<>();
       // Set the performance tuning properties as value to
       // the appropriate parameter.

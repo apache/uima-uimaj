@@ -57,9 +57,11 @@ public class CpeCasProcessorAPI_Test extends TestCase {
    */
   protected void setUp() throws Exception {
     // Creates the Cpe Descriptor
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     cpe = CpeDescriptorFactory.produceDescriptor();
     // Create CollectionReader and associate it with the descriptor
     CpeDescriptorFactory.produceCollectionReader(confLocation + "collectionReaders/WFReader.xml",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             cpe);
     // Crate CasInitializer and associate it with the CollectionReader
     CpeDescriptorFactory.produceCollectionReaderCasInitializer(confLocation
@@ -74,6 +76,7 @@ public class CpeCasProcessorAPI_Test extends TestCase {
     // CpeDescriptorFactory.produceComponentDescriptor("c://cpm/annotators/wfminers/detag/service.xml");
     remoteProcessor.setDescriptor("c://cpm/annotators/wfminers/detag/service.xml"); // detagDesc);
     remoteProcessor.addDeployParam("vnsPort", "9003");
+//IC see: https://issues.apache.org/jira/browse/UIMA-37
     remoteProcessor.addDeployParam("vnsHost", "localhost");
     remoteProcessor.setCasProcessorFilter("where Detag:DetagContent");
     remoteProcessor.setBatchSize(3);
@@ -88,6 +91,7 @@ public class CpeCasProcessorAPI_Test extends TestCase {
 
     // Create Detag CasProcessor
     CpeLocalCasProcessor localProcessor = CpeDescriptorFactory.produceLocalCasProcessor(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "DupShingle Miner", "Detag:DetagContent");
     localProcessor.setDescriptor("c://cpm/annotators/wfminers/detag/descriptor.xml");
     localProcessor
@@ -107,6 +111,7 @@ public class CpeCasProcessorAPI_Test extends TestCase {
     processors.addCpeCasProcessor(localProcessor);
 
     CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .produceCasProcessor("WF Writer");
     integratedProcessor.setDescriptor(confLocation + "consumers/wf/store/descriptor.xml");
     integratedProcessor.setBatchSize(100);
@@ -134,9 +139,11 @@ public class CpeCasProcessorAPI_Test extends TestCase {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 
     CpeRemoteCasProcessor remoteProcessor = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .produceRemoteCasProcessor("Detag Miner _2_");
     remoteProcessor.setDescriptor("c://cpm/annotators/dummy.xml");
     remoteProcessor.addDeployParam("vnsPort", "9999");
+//IC see: https://issues.apache.org/jira/browse/UIMA-37
     remoteProcessor.addDeployParam("vnsHost", "localhost");
     remoteProcessor.setCasProcessorFilter("where Detag:DetagContent_2");
     remoteProcessor.setBatchSize(5);
@@ -151,6 +158,7 @@ public class CpeCasProcessorAPI_Test extends TestCase {
     assertEquals("Name", "Detag Miner _2_", remoteProcessor.getName());
     assertEquals("Descriptor()", "c://cpm/annotators/dummy.xml", remoteProcessor.getDescriptor());
     assertEquals("DeploymentParam", "9999",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             ((remoteProcessor.getDeploymentParams()).get("vnsPort")).getParameterValue());
     assertEquals("DeploymentParam", "localhost", ((remoteProcessor.getDeploymentParams())
             .get("vnsHost")).getParameterValue());
@@ -175,6 +183,7 @@ public class CpeCasProcessorAPI_Test extends TestCase {
 
     // Create Detag CasProcessor
     CpeLocalCasProcessor localProcessor = CpeDescriptorFactory.produceLocalCasProcessor(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "DupShingle Miner", "Detag:DetagContent");
     localProcessor.setDescriptor("c://cpm/annotators/example.xml");
     localProcessor.setExecutable("/some/path/executable.sh");
@@ -195,6 +204,7 @@ public class CpeCasProcessorAPI_Test extends TestCase {
     assertEquals("Name", "DupShingle Miner", localProcessor.getName());
     assertEquals("Descriptor()", "c://cpm/annotators/example.xml", localProcessor.getDescriptor());
     assertEquals("DeploymentParam", "Value1x",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             ((localProcessor.getDeploymentParams()).get("Parm1")).getParameterValue());
     assertEquals("DeploymentParam", "Host1x", ((localProcessor.getDeploymentParams())
             .get("vnsHost")).getParameterValue());
@@ -218,6 +228,7 @@ public class CpeCasProcessorAPI_Test extends TestCase {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 
     CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .produceCasProcessor("WF Writer_X");
     assertEquals("name", "WF Writer_X", integratedProcessor.getName());
     integratedProcessor.setDescriptor(confLocation + "consumers/bla.xml");
@@ -237,6 +248,7 @@ public class CpeCasProcessorAPI_Test extends TestCase {
 
     assertEquals("name", "special name", integratedProcessor.getName());
     assertEquals("Descriptor()", confLocation + "consumers/bla.xml", integratedProcessor
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getDescriptor());
     assertEquals("DeploymentParam", "V1.0", ((integratedProcessor.getDeploymentParams())
             .get("testversion")).getParameterValue());

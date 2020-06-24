@@ -55,6 +55,8 @@ public class PearInstallationDescriptor {
    * @throws IOException           if there is problem writing to the corresponding resource
    */
   public static void saveInstallationDescriptor(IContainer currentContainer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           InstallationDescriptor insd) throws CoreException, IOException {
     IFile installFile = currentContainer.getFile(new Path(INSTALLATION_DESCRIPTOR_PATH));
     installFile.setContents(InstallationDescriptorHandler.getInstallationDescriptorAsStream(insd),
@@ -80,6 +82,7 @@ public class PearInstallationDescriptor {
    * 
    */
   public static InstallationDescriptor getInstallationDescriptor(IContainer currentContainer)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException, SAXException, CoreException, PearException {
     InstallationDescriptor insd = new InstallationDescriptor();
     InstallationDescriptorHandler insdh = new InstallationDescriptorHandler();
@@ -106,6 +109,7 @@ public class PearInstallationDescriptor {
    *           If a problem occurs.
    */
   public static void createInstallationDescriptor(IContainer newContainer,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           InstallationDescriptor insd, boolean overrideContentIfExist) throws PearException {
     try {
       ProjectCustomizer.createFile(newContainer, INSTALLATION_DESCRIPTOR_PATH,

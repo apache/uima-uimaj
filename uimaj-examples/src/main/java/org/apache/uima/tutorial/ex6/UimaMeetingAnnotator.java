@@ -54,6 +54,7 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
   @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // get a reference to the String Map Resource
       mMap = (StringMapResource) getContext().getResourceObject("UimaTermTable");
@@ -102,6 +103,7 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
         if (mMap.get(token) != null) {
           // create annotation
           UimaMeeting annot = new UimaMeeting(aJCas, meeting.getBegin(), meeting.getEnd(), meeting
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getRoom(), meeting.getDate(), meeting.getStartTime(), meeting.getEndTime());
           // Add annotation to a list, to be later added to the indexes.
           // We need to do this because it's not allowed to add to an

@@ -40,6 +40,7 @@ public class ImageButton extends JButton {
    * @param imageFile the image file
    */
   public ImageButton(String imageFile) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(Images.getImageIcon(imageFile));
   }
 

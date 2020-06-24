@@ -31,6 +31,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  */
 public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl implements
         FileLanguageResourceSpecifier {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static final long serialVersionUID = 4660680936104675527L;
 
@@ -79,6 +81,7 @@ public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl impl
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "fileLanguageResourceSpecifier", new PropertyXmlInfo[] {
               new PropertyXmlInfo("fileUrlPrefix"), new PropertyXmlInfo("fileUrlSuffix"), });
 }

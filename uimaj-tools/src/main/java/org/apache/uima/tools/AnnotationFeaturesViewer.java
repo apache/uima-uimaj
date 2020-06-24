@@ -70,6 +70,7 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
   public AnnotationFeaturesViewer() {
 
     super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     setLayout(new BorderLayout());
 

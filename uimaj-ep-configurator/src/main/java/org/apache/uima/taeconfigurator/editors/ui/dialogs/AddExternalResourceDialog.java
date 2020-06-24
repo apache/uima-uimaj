@@ -86,6 +86,7 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
    * @param aSection the a section
    */
   public AddExternalResourceDialog(AbstractSection aSection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(aSection, "Add an External Resource Definition", "Define and name an external resource");
     extnlResBindSection = (ExtnlResBindSection) aSection;
   }
@@ -97,6 +98,7 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
    * @param aExistingXRD the a existing XRD
    */
   public AddExternalResourceDialog(AbstractSection aSection,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ExternalResourceDescription aExistingXRD) {
     this(aSection);
     existingXRD = aExistingXRD;
@@ -123,6 +125,7 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     // (optional)
 
     createWideLabel(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             composite,
             "The first URL field is used to identify the external resource.\nIf both URL fields are used, they form a name by concatenating the first with the document language and then with the second (suffix) URL.\nThe (optional) Implementation specifies a Java class which implements the interface used by the Analysis Engine to access the resource.");
 
@@ -154,6 +157,7 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
         xrUrlSuffixUI.setText(((FileLanguageResourceSpecifier) rs).getFileUrlSuffix());
       } else {
         Utility.popMessage("Unknown resource type", "The resource type '" + rs.getClass().getName()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + "' is unknown.  Editing should be done by hand in the source view.",
                 MessageDialog.WARNING);
       }
@@ -190,6 +194,7 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
       return true;
 
     if ((event.widget == xrUrlUI || event.widget == xrUrlSuffixUI)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && (event.character == '/' || event.character == ':'))
       return true;
     return false;

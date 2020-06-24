@@ -99,6 +99,7 @@ public interface XMLParser {
    */
   public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses an XML input stream and produces an object.
@@ -124,6 +125,7 @@ public interface XMLParser {
    */
   public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl,
           ParsingOptions aOptions) throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses an XML input stream and produces an object. XIncludes will be expanded but no schema
@@ -182,6 +184,7 @@ public interface XMLParser {
    */
   public ResourceSpecifier parseResourceSpecifier(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a ResourceMetaData object from an XML input stream. XML schema validation will be done
@@ -213,6 +216,7 @@ public interface XMLParser {
    */
   public ResourceMetaData parseResourceMetaData(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a URISpecifier from an XML input stream.
@@ -242,6 +246,7 @@ public interface XMLParser {
    */
   public URISpecifier parseURISpecifier(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses an AnalysisEngineDescription from an XML input stream.
@@ -258,6 +263,7 @@ public interface XMLParser {
    */
   public AnalysisEngineDescription parseAnalysisEngineDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses an AnalysisEngineDescription from an XML input stream.
@@ -272,6 +278,7 @@ public interface XMLParser {
    */
   public AnalysisEngineDescription parseAnalysisEngineDescription(XMLInputSource aInput)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a TaeDescription from an XML input stream.
@@ -323,6 +330,8 @@ public interface XMLParser {
    */
   public CasConsumerDescription parseCasConsumerDescription(XMLInputSource aInput)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a CasConsumerDescription from an XML input stream.
@@ -339,6 +348,7 @@ public interface XMLParser {
    */
   public CasConsumerDescription parseCasConsumerDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a CasInitializerDescription from an XML input stream.
@@ -353,6 +363,7 @@ public interface XMLParser {
    */
   public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a CasInitializerDescription from an XML input stream.
@@ -369,6 +380,7 @@ public interface XMLParser {
    */
   public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a CollectionReaderDescription from an XML input stream.
@@ -383,6 +395,7 @@ public interface XMLParser {
    */
   public CollectionReaderDescription parseCollectionReaderDescription(XMLInputSource aInput)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a CollectionReaderDescription from an XML input stream.
@@ -399,6 +412,7 @@ public interface XMLParser {
    */
   public CollectionReaderDescription parseCollectionReaderDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a CpeDescription from an XML input stream.
@@ -429,6 +443,7 @@ public interface XMLParser {
    */
   public ResultSpecification parseResultSpecification(XMLInputSource aInput)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a ResultSpecification from an XML input stream.
@@ -459,6 +474,8 @@ public interface XMLParser {
    */
   public TypeSystemDescription parseTypeSystemDescription(XMLInputSource aInput)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a TypeSystemDescription from an XML input stream.
@@ -475,6 +492,7 @@ public interface XMLParser {
    */
   public TypeSystemDescription parseTypeSystemDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a TypePriorities declaration from an XML input stream.
@@ -504,6 +522,7 @@ public interface XMLParser {
    */
   public TypePriorities parseTypePriorities(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a FsIndexCollection from an XML input stream.
@@ -548,6 +567,8 @@ public interface XMLParser {
    */
   public ResourceManagerConfiguration parseResourceManagerConfiguration(XMLInputSource aInput)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses a ResourceManagerConfiguration from an XML input stream.
@@ -579,6 +600,7 @@ public interface XMLParser {
    */
   public FlowControllerDescription parseFlowControllerDescription(XMLInputSource aInput)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-338
 
   /**
    * Parses a FlowControllerDescription from an XML input stream.
@@ -609,6 +631,7 @@ public interface XMLParser {
    */
   public CustomResourceSpecifier parseCustomResourceSpecifier(XMLInputSource aInput)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-352
 
   /**
    * Parses a CustomResourceSpecifier from an XML input stream.
@@ -639,6 +662,7 @@ public interface XMLParser {
    */
   public PearSpecifier parsePearSpecifier(XMLInputSource aInput)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-351
 
   /**
    * Parses a PearSpecifier from an XML input stream.
@@ -655,6 +679,7 @@ public interface XMLParser {
    */
   public PearSpecifier parsePearSpecifier(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses an IndexBuildSpecification from an XML input stream.
@@ -669,6 +694,7 @@ public interface XMLParser {
    */
   public IndexBuildSpecification parseIndexBuildSpecification(XMLInputSource aInput)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Parses an IndexBuildSpecification from an XML input stream.
@@ -685,6 +711,7 @@ public interface XMLParser {
    */
   public IndexBuildSpecification parseIndexBuildSpecification(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Builds an object from its XML DOM representation. This method is not typically called by
@@ -718,6 +745,7 @@ public interface XMLParser {
    */
   public XMLizable buildObject(Element aElement, ParsingOptions aOptions)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Builds an object from its XML DOM representation. This method is not typically called by
@@ -742,6 +770,7 @@ public interface XMLParser {
    */
   public Object buildObjectOrPrimitive(Element aElement, ParsingOptions aOptions)
           throws InvalidXMLException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Creates a new <code>SaxDeserializer</code> object, which implements the SAX
@@ -848,6 +877,7 @@ public interface XMLParser {
      *          substituting the value of the System property VARNAME.
      */
     public ParsingOptions(boolean aExpandEnvVarRefs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-9
       expandEnvVarRefs = aExpandEnvVarRefs;
     }
   }

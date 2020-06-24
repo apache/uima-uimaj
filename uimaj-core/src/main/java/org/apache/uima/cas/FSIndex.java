@@ -147,6 +147,8 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
    * @see FSIterator#moveTo(FeatureStructure)
    */
   T find(FeatureStructure fs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4671
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
 
   /**
    * Compare two feature structures according to the ordering relation of the index. If the input
@@ -174,8 +176,13 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
    *          specifying where to initially position the iterator.
    * @return An iterator positioned at <code>fs</code>, if it exists; else, an invalid iterator.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4671
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
   default FSIterator<T> iterator(FeatureStructure fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     FSIterator<T> it = iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
+//IC see: https://issues.apache.org/jira/browse/UIMA-5121
     if (fs != null) {
       it.moveTo(fs);
     }
@@ -190,6 +197,8 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
    * @return An FSIterator positioned at the beginning, or an invalid iterator.
    */
   @Override
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
   FSIterator<T> iterator();
   
   /**
@@ -212,11 +221,14 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
    * ConcurrentModificationExceptions.
    */
   FSIndex<T> withSnapshotIterators();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4146
 
   /**
     * @return a newly created selection object for accessing feature structures
    */
  SelectFSs<T> select();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
+//IC see: https://issues.apache.org/jira/browse/UIMA-5632
 
   /**
    * @param type specifies the type (and subtypes of that type) to access

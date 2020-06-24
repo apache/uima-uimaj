@@ -36,6 +36,7 @@ public interface AnnotationTreeNode<T extends AnnotationFS> {
    * @return The parent of this node, or <code>null</code> if this node has no parent (root).
    */
   AnnotationTreeNode<T> getParent();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1491
 
   /**
    * Get the number of children this node has.
@@ -54,6 +55,7 @@ public interface AnnotationTreeNode<T extends AnnotationFS> {
    *           If <code>i &lt; 0</code> or <code>i &gt;= getChildCount()</code>.
    */
   AnnotationTreeNode<T> getChild(int i) throws CASRuntimeException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1491
 
   /**
    * Get the next sibling (to the right) of this node.

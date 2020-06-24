@@ -50,6 +50,7 @@ public class TypeSystemUtilTest extends TestCase {
     CasCreationUtils.createCas(tsDesc2, null, null);
     
     // Check that can be written (without cluttering up the console)
+//IC see: https://issues.apache.org/jira/browse/UIMA-2381
     StringWriter out = new StringWriter();
     tsDesc2.toXML(out);
   }

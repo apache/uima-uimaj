@@ -36,7 +36,9 @@ public class CasInitializerNewWizardPage extends AbstractNewWizardPage {
    * @param selection the selection
    */
   public CasInitializerNewWizardPage(ISelection selection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(selection, "big_ae.gif", "Cas Initializer Descriptor File",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Create a new Cas Initializer Descriptor file", "casInitializerDescriptor.xml");
   }
 

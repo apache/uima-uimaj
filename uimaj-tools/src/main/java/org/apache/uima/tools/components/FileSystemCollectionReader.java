@@ -112,7 +112,9 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     mXCAS = (String) getConfigParameterValue(PARAM_XCAS);
     //XCAS parameter can be set to "xcas" or "xmi", as well as "true" (which for historical reasons
     //means the same as "xcas").  Any other value will cause the input file to be treated as a text document.
+//IC see: https://issues.apache.org/jira/browse/UIMA-413
     mTEXT = !("xcas".equalsIgnoreCase(mXCAS) || "xmi".equalsIgnoreCase(mXCAS) || "true".equalsIgnoreCase(mXCAS));
+//IC see: https://issues.apache.org/jira/browse/UIMA-158
     String mLenient = (String) getConfigParameterValue(PARAM_LENIENT);
     lenient = "true".equalsIgnoreCase(mLenient);
 
@@ -154,7 +156,9 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
     // open input stream to file
     File file = (File) mFiles.get(mCurrentIndex++);
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
     FileInputStream fis = new FileInputStream(file);
+//IC see: https://issues.apache.org/jira/browse/UIMA-413
     if (mTEXT) {
       try {
         // if there's a CAS Initializer, call it
@@ -162,6 +166,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
           getCasInitializer().initializeCas(fis, aCAS);
         } else // No CAS Initiliazer, so read file and set document text ourselves
         {
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
           String text = FileUtils.file2String(file, mEncoding);      
           // put document text in JCas
           jcas.setDocumentText(text);
@@ -173,6 +178,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
       // set language if it was explicitly specified as a configuration parameter
       if (mLanguage != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1027
         jcas.setDocumentLanguage(mLanguage);
       }
 
@@ -191,6 +197,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     // XCAS input files
     else {
       try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-413
         if (mXCAS.equalsIgnoreCase("xmi")) {
           XmiCasDeserializer.deserialize(fis, aCAS, lenient);
         }

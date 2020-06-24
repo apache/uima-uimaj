@@ -126,6 +126,7 @@ public class FSNode extends FSTreeNode {
    * @return the int
    */
   private int k2nc(SlotKind kind) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     switch(kind) {
     case Slot_Boolean: 
     case Slot_BooleanRef: return BOOL_FS;
@@ -206,6 +207,7 @@ public class FSNode extends FSTreeNode {
       return;
     }
     // only FSs or Arrays have children
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     if (this.fs == null) {
       return;
     }
@@ -240,6 +242,7 @@ public class FSNode extends FSTreeNode {
 //      } else {
 //        nodeClass1 = FSNode.STD_FS;
 //      }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       List<FSNode> arrayNodes = new ArrayList<>(arrayLength);
       SlotKind kind = type.getComponentSlotKind();
       int nc = k2nc(kind);
@@ -294,7 +297,10 @@ public class FSNode extends FSTreeNode {
       
       this.children = FSTreeModel.createArrayChildren(0, arrayLength, arrayNodes, this.fSTreeModel);
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       this.children = new ArrayList<>(type.getNumberOfFeatures());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       FeatureImpl[] feats = type.getFeatureImpls();
       for (FeatureImpl f : feats) {
         SlotKind kind = f.getSlotKind();
@@ -339,6 +345,7 @@ public class FSNode extends FSTreeNode {
     buf.append("<html>");
     if (this.isArrayElem) {
       buf.append('[');
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       buf.append(this.arrayElemIdx);
       buf.append("] = ");
     } else if (this.feat != null) {
@@ -365,6 +372,7 @@ public class FSNode extends FSTreeNode {
    * @return if this is a string node displaying a shortened string
    */
   boolean isShortenedString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-178
     return this.isShortenedString;
   }
   
@@ -375,6 +383,7 @@ public class FSNode extends FSTreeNode {
     if (getNodeClass() != STRING_FS) {
       return null;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return this.string;
   }
 
@@ -409,6 +418,7 @@ public class FSNode extends FSTreeNode {
         }
         String s = this.string;
         // Check if we need to shorten the string for display purposes
+//IC see: https://issues.apache.org/jira/browse/UIMA-178
         String s1 = shortenString(s);
         // Remember if string is shortened
         this.isShortenedString = (s != s1);
@@ -419,6 +429,7 @@ public class FSNode extends FSTreeNode {
           return getNullString();
         }
         return "<font color=blue>" + getType().getName() + "</font>["
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
                 + ((CommonArrayFS)fs).size() + "]";
       }
       case STD_FS: {
@@ -438,6 +449,7 @@ public class FSNode extends FSTreeNode {
    * @return the string
    */
   private static final String shortenString(String s) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-178
     if (s.length() <= maxStringLength) {
       return s;
     }
@@ -454,6 +466,7 @@ public class FSNode extends FSTreeNode {
    * @return the string
    */
   private static final String escapeLt(String s) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-81
     final int max = s.length();
     int i = 0;
     while (i < max) {
@@ -492,6 +505,7 @@ public class FSNode extends FSTreeNode {
    * @return the array pos
    */
   int getArrayPos() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return this.arrayElemIdx;
   }
 
@@ -501,6 +515,8 @@ public class FSNode extends FSTreeNode {
    * @return the type
    */
   TypeImpl getType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return fs._getTypeImpl();
   }
 

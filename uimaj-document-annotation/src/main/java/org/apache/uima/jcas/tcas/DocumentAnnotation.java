@@ -85,6 +85,7 @@ public class DocumentAnnotation extends Annotation {
    * @param v the language
    */
   public void setLanguage(String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setStringValueNfc(wrapGetIntCatchException(_FH_language), v);
   }
 }

@@ -32,6 +32,7 @@ public class TypeNameSpaceImpl implements TypeNameSpace {
 
   private TypeSystemImpl ts;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   TypeNameSpaceImpl(String name, TypeSystemImpl ts) {
     this.name = name;
     this.ts = ts;

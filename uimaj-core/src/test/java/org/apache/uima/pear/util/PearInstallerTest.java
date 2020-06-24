@@ -110,6 +110,7 @@ public class PearInstallerTest extends TestCase {
     
     // Create a CAS with a sample document text and process the CAS   
     CAS cas = ae.newCAS();
+//IC see: https://issues.apache.org/jira/browse/UIMA-351
     cas.setDocumentText("Sample text to process with a date 05/29/07 and a time 9:45 AM");
     cas.setDocumentLanguage("en");
     ae.process(cas);

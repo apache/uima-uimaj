@@ -46,6 +46,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   static final boolean isLog4j;
   
   static {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5381
     Class<?> staticLoggerBinderClass = null;
     try {
       staticLoggerBinderClass = Class.forName("org.slf4j.impl.StaticLoggerBinder");
@@ -89,6 +90,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   /**
    * logger object from the underlying Slf4j logging framework
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5339
   final private org.slf4j.Logger logger;
   final private boolean isLocationCapable;  // the slf4j simple logger is not 
   
@@ -104,6 +106,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
                                  ? component.getName()
                                  : "org.apache.uima";
  
+//IC see: https://issues.apache.org/jira/browse/UIMA-5339
     logger = org.slf4j.LoggerFactory.getLogger(loggerName);
     isLocationCapable = logger instanceof org.slf4j.spi.LocationAwareLogger;
   }
@@ -142,6 +145,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
   
   public Slf4jLogger_impl getLimitedLogger(int aLimit) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
     if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
       return this;
     }
@@ -154,6 +158,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     case Level.WARNING_INT: return LocationAwareLogger.WARN_INT;
     case Level.INFO_INT: return LocationAwareLogger.INFO_INT;
     case Level.CONFIG_INT: return LocationAwareLogger.INFO_INT;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
     case Level.FINE_INT: return LocationAwareLogger.DEBUG_INT;
     case Level.FINER_INT: return LocationAwareLogger.TRACE_INT;
     case Level.FINEST_INT: return LocationAwareLogger.TRACE_INT;
@@ -178,6 +183,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     case org.apache.uima.util.Level.INFO_INT:
       return logger.isInfoEnabled();
     case org.apache.uima.util.Level.CONFIG_INT:
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
       return logger.isInfoEnabled(UIMA_MARKER_CONFIG);
     case org.apache.uima.util.Level.FINE_INT:
       return logger.isDebugEnabled();
@@ -203,6 +209,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     case org.apache.uima.util.Level.CONFIG_INT:
       return logger.isInfoEnabled(marker);
     case org.apache.uima.util.Level.FINE_INT:
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
       return logger.isDebugEnabled(marker);
     case org.apache.uima.util.Level.FINER_INT:
       return logger.isTraceEnabled(marker);
@@ -268,6 +275,8 @@ public class Slf4jLogger_impl extends Logger_common_impl {
 
   // does the slf4j style of message formatting
   public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
+//IC see: https://issues.apache.org/jira/browse/UIMA-5579
     m = (m == null) 
         ? getMarkerForLevel(level) 
         : m;

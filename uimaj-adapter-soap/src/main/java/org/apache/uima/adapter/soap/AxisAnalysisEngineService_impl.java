@@ -44,7 +44,9 @@ public class AxisAnalysisEngineService_impl {
    * @throws AxisFault the axis fault
    */
   public AxisAnalysisEngineService_impl() throws AxisFault {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mServiceImpl = (AnalysisEngineService_impl) AxisResourceServiceManager
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getServiceImpl(AnalysisEngineService_impl.class);
   }
 
@@ -75,6 +77,7 @@ public class AxisAnalysisEngineService_impl {
    * @throws ResourceServiceException the resource service exception
    */
   public ServiceDataCargo process(ServiceDataCargo aData, ResultSpecification aResultSpec)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceServiceException {
     try {
       return mServiceImpl.process(aData, aResultSpec);

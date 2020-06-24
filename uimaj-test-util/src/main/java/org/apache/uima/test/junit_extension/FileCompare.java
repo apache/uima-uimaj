@@ -64,11 +64,13 @@ public class FileCompare {
    */
   public static boolean compare(String filename1, String filename2) throws IOException {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (InputStream file1 = new FileInputStream(filename1);
          InputStream file2 = new FileInputStream(filename2)) {
       // create file input stream of the two bytes
 
       return compare(file1, file2);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     }
   }
@@ -86,6 +88,7 @@ public class FileCompare {
    */
   public static boolean compare(File file1, File file2) throws IOException {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (InputStream inputStream1 = new FileInputStream(file1);
          InputStream inputStream2 = new FileInputStream(file2)) {
       // create file input stream of the two bytes
@@ -107,6 +110,7 @@ public class FileCompare {
    * @throws IOException -
    */
   public static boolean compare(String filename1, InputStream in) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (InputStream file1 = new FileInputStream(filename1)) {
       // create file input stream of the two bytes
       return compare(file1, in);
@@ -170,6 +174,7 @@ public class FileCompare {
    */
   public static boolean compareStrings(String in1, String in2) {
     char c1, c2;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1582
 
     int i1 = 0;
     int i2 = 0;
@@ -264,6 +269,7 @@ public class FileCompare {
    * @throws IOException -
    */
   public static boolean compareWithFilter(String filename1, String filename2, Pattern pattern)
+//IC see: https://issues.apache.org/jira/browse/UIMA-582
       throws IOException {
     File file1 = null;
     File file2 = null;
@@ -424,6 +430,7 @@ public class FileCompare {
    * sure what the best way of handling this is.
    */
   public static String file2String(File file) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
     return reader2String(
             new FileReader(file),
             (int) file.length());   

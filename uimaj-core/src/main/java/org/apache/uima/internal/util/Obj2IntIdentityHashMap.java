@@ -68,6 +68,7 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
    * @param removedMarker - a unique value never stored in the table, used to mark removed items
    */
   public Obj2IntIdentityHashMap(int initialCapacity, Class<T> clazz, T removedMarker) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     super(initialCapacity);
     this.componentType = clazz;
     this.removedMarker = removedMarker;
@@ -170,6 +171,7 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
       throw new IllegalArgumentException("null is an invalid key");
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     return findPosition( 
         
         // key hash
@@ -227,6 +229,7 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
    * @return the position of obj in the table, or -1 if not in the table
    */
   public int find(T obj) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     if (obj == null || size() == 0) {
       return -1;
     }
@@ -254,6 +257,7 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
     if (keys[i] == obj) {  // identityHashMap
       int prevValue = values[i];
       values[i] = value;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
       return prevValue;  
     }
    
@@ -293,6 +297,7 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
     final int pos = findPosition((T) rawKey);  // null or equal obj
     int r = values[pos];
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
     if (rawKey == keys[pos]) {
       values[pos] = 0;
       keys[pos] = removedMarker;
@@ -426,6 +431,7 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
       }
       int r = values[curPosition];
       curPosition = moveToNextFilled(curPosition + 1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
       return r; 
     }
 
@@ -440,6 +446,7 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
     @Override
     public final int nextNvc() {
       int r = values[curPosition];
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
       curPosition = moveToNextFilled(curPosition + 1);
       return r;      
     }
@@ -536,6 +543,7 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
     return String
         .format(
             "%s [loadFactor=%s, initialCapacity=%s, sizeWhichTriggersExpansion=%s, size=%s, secondTimeShrinkable=%s%n keys=%s]",
+//IC see: https://issues.apache.org/jira/browse/UIMA-5674
             this.getClass().getName(), loadFactor, initialCapacity, sizeWhichTriggersExpansion, size(), secondTimeShrinkable, 
             Arrays.toString(keys));
   }

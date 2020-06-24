@@ -31,6 +31,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  */
 public class ExternalResourceDependency_impl extends MetaDataObject_impl implements
         ExternalResourceDependency {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   static final long serialVersionUID = 8416783152191685356L;
 
@@ -104,6 +106,7 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl impleme
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           "externalResourceDependency", new PropertyXmlInfo[] { new PropertyXmlInfo("key"),
               new PropertyXmlInfo("description", false), new PropertyXmlInfo("interfaceName"),
               new PropertyXmlInfo("optional"), });

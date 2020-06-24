@@ -42,6 +42,8 @@ public interface IntListIterator {
    *              If no next element exists, i.e., when the iterator points at the last position in
    *              the index.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
   default int next() throws NoSuchElementException {
     if (!hasNext()) {
       throw new NoSuchElementException();
@@ -71,6 +73,8 @@ public interface IntListIterator {
    *              If no previous element exists, i.e., when the iterator points at the first
    *              position in the index.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
   default int previous() throws NoSuchElementException {
     if (!hasPrevious()) {
       throw new NoSuchElementException();

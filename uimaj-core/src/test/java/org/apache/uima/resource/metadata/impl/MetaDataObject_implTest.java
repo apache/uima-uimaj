@@ -68,8 +68,10 @@ public class MetaDataObject_implTest extends TestCase {
   
     // create two identical apples and an orange
     apple1 = new TestFruitObject();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     apple1.setAttributeValue("name", "Apple");
     apple1.setAttributeValue("color", "red");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     apple1.setAttributeValue("avgWeightLbs", 0.3F);
     apple1.setAttributeValue("avgCostCents", 40);
     apple1.setAttributeValue("citrus", Boolean.FALSE);
@@ -118,7 +120,9 @@ public class MetaDataObject_implTest extends TestCase {
    * Test the getAttributes method
    */
   public void testGetAttributes() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3684
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       HashSet<MetaDataAttr> apple1Attrs = new HashSet<>(Arrays.asList(apple1.getAttributes()));
       HashSet<MetaDataAttr> orangeAttrs = new HashSet<>(Arrays.asList(orange.getAttributes()));
       HashSet<MetaDataAttr> bagAttrs = new HashSet<>(Arrays.asList(fruitBag.getAttributes()));
@@ -156,6 +160,7 @@ public class MetaDataObject_implTest extends TestCase {
       
       // test with maps
       ConfigurationParameterSettings cps1 = UIMAFramework.getResourceSpecifierFactory().createConfigurationParameterSettings();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1281
       cps1.getSettingsForGroups().put("k1", new NameValuePair[] {new NameValuePair_impl("s1", "o1")});
       cps1.getSettingsForGroups().put("k2", new NameValuePair[] {new NameValuePair_impl("s2", "o2")});
       ConfigurationParameterSettings cps2 = UIMAFramework.getResourceSpecifierFactory().createConfigurationParameterSettings();
@@ -251,6 +256,7 @@ public class MetaDataObject_implTest extends TestCase {
 
       // single-property object where property name is omitted from XML
       String xmlStr = "<fruitBag><fruit><name>banana</name><color>yellow</color></fruit>"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + "<fruit><name>raspberry</name><color>red</color></fruit></fruitBag>";
       Document xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
       TestFruitBagObject bag = new TestFruitBagObject();

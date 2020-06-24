@@ -41,11 +41,13 @@ import org.slf4j.helpers.MessageFormatter;
 public class JSR47Logger_impl extends Logger_common_impl {
   
   final static private Object[] zeroLengthArray = new Object[0];
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
 
   /**
    * logger object from the underlying JSR-47 logging framework
    */
   final private java.util.logging.Logger logger;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
 
   /**
    * create a new LogWrapper class for the specified source class
@@ -54,6 +56,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
    *          specified source class
    */
   private JSR47Logger_impl(Class<?> component) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
     super(component);
     
     logger = java.util.logging.Logger.getLogger(
@@ -80,6 +83,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
   }
   
   public static synchronized Logger getInstance(JSR47Logger_impl l, int limit) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
     if (limit == Integer.MAX_VALUE) {
       return l;
     }
@@ -97,6 +101,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
   
   @Override
   public JSR47Logger_impl getLimitedLogger(int limit) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
     if (limit == Integer.MAX_VALUE || limit == this.limit_common) {
       return this;
     }
@@ -181,6 +186,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
    * @return Level - corresponding JSR47 level
    */
   public static java.util.logging.Level getJSR47Level(Level level, Marker m) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4183
     if (null == level) {
       return null;
     }
@@ -192,6 +198,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
       case org.apache.uima.util.Level.WARNING_INT:
         return java.util.logging.Level.WARNING;
       case org.apache.uima.util.Level.INFO_INT:
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
         return (m == UIMA_MARKER_CONFIG) 
                  ? java.util.logging.Level.CONFIG
                  : java.util.logging.Level.INFO;
@@ -219,6 +226,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
    */
   @Override
   public boolean isLoggable(Level level) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
     return logger.isLoggable(getJSR47Level(level, null));
   }
   
@@ -308,6 +316,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
   @Override
   public void log2(Marker m, String aFqcn, Level level, String msg, Object[] args, Throwable throwable) {
     // this version of MessageFormatter does the {} style
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
     log(m, aFqcn, level, MessageFormatter.format(msg, args).getMessage(), zeroLengthArray, throwable);
   }
   
@@ -318,6 +327,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
 
   @Override
   public boolean isDebugEnabled() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
     return logger.isLoggable(java.util.logging.Level.FINE);
   }
 
@@ -349,6 +359,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
 
   @Override
   public boolean isTraceEnabled() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
     return logger.isLoggable(java.util.logging.Level.FINER) ||
         logger.isLoggable(java.util.logging.Level.FINEST);
   }

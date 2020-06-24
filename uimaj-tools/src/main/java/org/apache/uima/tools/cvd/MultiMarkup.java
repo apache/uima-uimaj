@@ -60,6 +60,7 @@ public abstract class MultiMarkup {
      * @param depth the depth
      */
     private Extent(int start, int end, int depth) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       this.start = start;
       this.end = end;
       this.depth = depth;
@@ -100,6 +101,7 @@ public abstract class MultiMarkup {
    */
   public static AnnotationExtent[] createAnnotationMarkups(FSIterator it, int textLen,
           Map<String, Style> styleMap) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<AnnotExtent> list = new ArrayList<>();
     list.add(new AnnotExtent(0, textLen, 0, null));
     AnnotationFS fs;
@@ -122,6 +124,7 @@ public abstract class MultiMarkup {
       if (ext.start < fs.getBegin()) {
         ++pos;
         list.add(pos,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new AnnotExtent(fs.getBegin(), ext.end, ext.depth + 1, fs.getType().getName()));
         ext.end = fs.getBegin();
         ext = list.get(pos);
@@ -166,7 +169,9 @@ public abstract class MultiMarkup {
 
     }
     Style unmarkedStyle = StyleContext.getDefaultStyleContext()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getStyle(StyleContext.DEFAULT_STYLE);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     Style annotStyle = styleMap.get(CAS.TYPE_NAME_ANNOTATION);
     // Copy our internal extents to the public representation.
     final int size = list.size();
@@ -205,6 +210,7 @@ public abstract class MultiMarkup {
    */
   public static MarkupExtent[] createMarkupExtents(FSIterator it, int textLen) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<Extent> list = new ArrayList<>();
     list.add(new Extent(0, textLen, 0));
     AnnotationFS fs;
@@ -216,6 +222,8 @@ public abstract class MultiMarkup {
       if (fs.getEnd() == fs.getBegin()) {
         continue;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       ext = list.get(pos);
       // Skip extents until we have overlap with the current annotation.
       while (fs.getBegin() >= ext.end) {
@@ -228,6 +236,8 @@ public abstract class MultiMarkup {
         ++pos;
         list.add(pos, new Extent(fs.getBegin(), ext.end, ext.depth + 1));
         ext.end = fs.getBegin();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
         ext = list.get(pos);
       } else {
         // Start at same point.
@@ -249,6 +259,8 @@ public abstract class MultiMarkup {
         tmp = pos;
         while (ext.end < fs.getEnd()) {
           ++tmp;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
           ext = list.get(tmp);
           ++ext.depth;
         }
@@ -273,6 +285,7 @@ public abstract class MultiMarkup {
     final int size = list.size();
     MarkupExtent[] extentArray = new MarkupExtent[size];
     for (int i = 0; i < size; i++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       ext = list.get(i);
       extentArray[i] = new MarkupExtent(ext.start, ext.end, ext.depth);
     }

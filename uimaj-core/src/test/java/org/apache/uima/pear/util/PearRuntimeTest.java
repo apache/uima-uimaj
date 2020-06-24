@@ -75,6 +75,7 @@ public class PearRuntimeTest extends TestCase {
   }
 
   public void testPearSofaMapping() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
     AnalysisEngineDescription desc = createAeDescriptionFromPears(new String[]{"pearTests/pearSofaMap.pear"});
     Capability[] capabilities = new Capability[]{UIMAFramework.getResourceSpecifierFactory().createCapability()};
     capabilities[0].setInputSofas(new String[] {"_InitialView"});
@@ -105,6 +106,7 @@ public class PearRuntimeTest extends TestCase {
     // The 3 annotations are the doc annotation, plus 2 room numbers
     //  The date-time annotators are skipped because the default result spec is "en"
     //    and is missing the "x-unspecified"
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
     assertEquals(cas.getAnnotationIndex().size(), 3);
 //    FSIterator i = cas.getAnnotationIndex().iterator();
 //    while (i.hasNext()) {
@@ -117,12 +119,15 @@ public class PearRuntimeTest extends TestCase {
   public void testPearRuntimeDocAnnot() throws Exception {
 
     CAS cas = this.runPearRuntimeTestcase(new String[]{"pearTests/analysisEngine.pear", "pearTests/analysisEngine2.pear"});
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
 
     //check if 3 annotations are available in the CAS index
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
     assertEquals(cas.getAnnotationIndex().size(), 3);
    }
 
   private Import [] installPears(String [] pears) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<Import> result = new ArrayList<>();
     for (String s : pears) {
       result.add(installPear(s));
@@ -139,6 +144,7 @@ public class PearRuntimeTest extends TestCase {
     // get pear files to install
     File pearFile = JUnitExtension.getFile(pear);
     assertNotNull(pearFile);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
 
     // Install PEAR packages
     PackageBrowser instPear = PackageInstaller
@@ -164,6 +170,7 @@ public class PearRuntimeTest extends TestCase {
     desc.setPrimitive(false);
 
     // add delegates as imports
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     Map<String, MetaDataObject> delegates = desc.getDelegateAnalysisEngineSpecifiersWithImports();
     String [] keys = new String[impPears.length];
     for (int i = 0; i < impPears.length; i++) {
@@ -190,6 +197,7 @@ public class PearRuntimeTest extends TestCase {
 //    new XMLSerializer(); xmlSerializer.setWriter(writer);
 //    desc.toXML(xmlSerializer.getContentHandler(), true); writer.close();
     return desc;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
 
   }
   
@@ -197,6 +205,7 @@ public class PearRuntimeTest extends TestCase {
     // Create analysis engine from aggregate ae description
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, null, null);
     assertNotNull(ae);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
 
     // Create a CAS with a sample document text and process the CAS
     CAS cas = ae.newCAS();
@@ -210,6 +219,7 @@ public class PearRuntimeTest extends TestCase {
 
   private CAS runPearRuntimeTestcase(String[] pears) throws Exception {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
     AnalysisEngineDescription desc = createAeDescriptionFromPears(pears);    
     return runDesc(desc);
   }

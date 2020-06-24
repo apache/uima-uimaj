@@ -69,6 +69,8 @@ abstract class AbstractVarValViewerHandler {
    * @param labelProvider the label provider
    */
   public AbstractVarValViewerHandler(Composite parent, String[] columnNames, int numParentColumns,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           VarValList tableRowList, ITableLabelProvider labelProvider) {
     this.tableRowList = tableRowList;
     this.columnNames = columnNames;
@@ -145,6 +147,7 @@ abstract class AbstractVarValViewerHandler {
   protected void createTable(Composite parent) {
     int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION
             | SWT.HIDE_SELECTION;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     table = new Table(parent, style);
 
@@ -278,6 +281,7 @@ abstract class AbstractVarValViewerHandler {
       public void widgetSelected(SelectionEvent e) {
         if (!tableRowList.addTableRow()) {
           MessageDialog.openWarning(new Shell(), "Duplicate Variable",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "The variable 'New_Variable' already exists");
         }
       }
@@ -296,6 +300,7 @@ abstract class AbstractVarValViewerHandler {
       @Override
       public void widgetSelected(SelectionEvent e) {
         VarVal tableRow = (VarVal) ((IStructuredSelection) tableViewer.getSelection())
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .getFirstElement();
         if (tableRow != null) {
           tableRowList.removeTableRow(tableRow);

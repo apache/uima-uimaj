@@ -85,6 +85,7 @@ public class Level {
   /** message level "FINE" */
   final static public Level FINE = new Level(FINE_INT, "FINE");
   final static public Level DEBUG = FINE;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
 
   /** message level "FINER" */
   final static public Level FINER = new Level(FINER_INT, "FINER");
@@ -140,6 +141,7 @@ public class Level {
    * @return boolean true if the message level is less than OFF
    */
   public boolean isOn() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
     return level < OFF_INT;
   }
 

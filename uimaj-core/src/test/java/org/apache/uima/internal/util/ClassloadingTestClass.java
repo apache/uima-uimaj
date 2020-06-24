@@ -27,6 +27,7 @@ public class ClassloadingTestClass {
   private int value;
 
   public ClassloadingTestClass() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     value = 10;
   }
 }

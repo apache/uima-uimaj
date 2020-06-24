@@ -55,6 +55,7 @@ public class JmxMBeanAgent {
         aMBeanServer = platformMBeanServer;
       } else {
         UIMAFramework.getLogger().logrb(Level.CONFIG, JmxMBeanAgent.class.getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "registerMBean", LOG_RESOURCE_BUNDLE,
                 "UIMA_JMX_platform_mbean_server_not_available__CONFIG");
         return;
@@ -68,6 +69,7 @@ public class JmxMBeanAgent {
       // MBean the first time and just skip the registration each subsequent time.
 //      Object mbeanName = objectNameConstructor.newInstance(new Object[] { aMBean
 //              .getUniqueMBeanName() });
+//IC see: https://issues.apache.org/jira/browse/UIMA-3761
       ObjectName mbeanName = new ObjectName(aMBean.getUniqueMBeanName());
       // synchronize to prevent multiple threads from initializing same thing UIMA-1247
       synchronized (aMBeanServer) {
@@ -99,6 +101,8 @@ public class JmxMBeanAgent {
    *          in that case, this method will do nothing.
    */
   public static void unregisterMBean(ManagementObject aMBean, Object aMBeanServerO) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3761
+//IC see: https://issues.apache.org/jira/browse/UIMA-3761
     MBeanServer aMBeanServer = (MBeanServer)aMBeanServerO;
     if (!jmxAvailable) // means we couldn't find the required classes and methods
     {
@@ -110,6 +114,7 @@ public class JmxMBeanAgent {
         aMBeanServer = platformMBeanServer;
       } else {
         UIMAFramework.getLogger().logrb(Level.CONFIG, JmxMBeanAgent.class.getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "unregisterMBean", LOG_RESOURCE_BUNDLE,
                 "UIMA_JMX_platform_mbean_server_not_available__CONFIG");
         return;
@@ -121,6 +126,7 @@ public class JmxMBeanAgent {
       String mbeanName = aMBean.getUniqueMBeanName();
       if (mbeanName != null) // guards against uninitialized AE instances
       {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3761
         ObjectName objName = new ObjectName(mbeanName);
         if (aMBeanServer.isRegistered(objName)) {
           aMBeanServer.unregisterMBean(objName);
@@ -133,6 +139,7 @@ public class JmxMBeanAgent {
     } catch (Exception e) {
       // don't fail catastrophically if we can't unregister. Just log a warning and continue.
       UIMAFramework.getLogger().logrb(Level.WARNING, JmxMBeanAgent.class.getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "unregisterMBean", LOG_RESOURCE_BUNDLE,
               "UIMA_JMX_failed_to_unregister_mbean__WARNING", e);
       return;

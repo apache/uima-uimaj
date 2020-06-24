@@ -80,6 +80,7 @@ public abstract class XmlCasDeserializer {
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
           throws SAXException, IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
     deserializeR(aStream, aCAS, aLenient);
   }
 
@@ -102,6 +103,8 @@ public abstract class XmlCasDeserializer {
    *           if an I/O failure occurs
    */
   static SerialFormat deserializeR(InputStream aStream, CAS aCAS, boolean aLenient)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
       throws SAXException, IOException {
     XMLReader xmlReader = XMLUtils.createXMLReader();
     XmlCasDeserializerHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
@@ -125,6 +128,7 @@ public abstract class XmlCasDeserializer {
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             throws SAXException {
       if (mDelegateHandler == null) {
         // try to find out whether we should use the XCAS or XMI deserializers
@@ -137,6 +141,7 @@ public abstract class XmlCasDeserializer {
         {
           XCASDeserializer deser = new XCASDeserializer(mCAS.getTypeSystem());
           mDelegateHandler = deser
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getXCASHandler(mCAS, mLenient ? new OutOfTypeSystemData() : null);
         } else // default to XMI
         {

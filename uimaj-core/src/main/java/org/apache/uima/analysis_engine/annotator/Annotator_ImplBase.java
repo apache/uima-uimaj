@@ -47,6 +47,8 @@ public abstract class Annotator_ImplBase implements BaseAnnotator {
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
    */
   public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AnnotatorConfigurationException {
     mContext = aContext;
   }
@@ -60,6 +62,7 @@ public abstract class Annotator_ImplBase implements BaseAnnotator {
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnnotatorInitializationException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AnnotatorConfigurationException {
     mTypeSystem = aTypeSystem;
   }
@@ -81,6 +84,7 @@ public abstract class Annotator_ImplBase implements BaseAnnotator {
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#reconfigure()
    */
   public void reconfigure() throws AnnotatorConfigurationException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AnnotatorInitializationException {
     destroy();
     initialize(getContext());

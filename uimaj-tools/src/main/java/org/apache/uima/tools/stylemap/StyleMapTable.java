@@ -47,6 +47,8 @@ public class StyleMapTable extends JTable {
    * @param tmed the tmed
    */
   public StyleMapTable(TableModel model, AnnotationFeaturesViewer av, StyleMapEditor edit,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           TableGUIMediator tmed) {
     super(model);
     med = tmed;

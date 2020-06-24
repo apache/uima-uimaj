@@ -45,8 +45,10 @@ public abstract class ArrayUtils {
     int length = aArray1.length + aArray2.length;
 
     // determine the component type for the new array
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Class<?> componentType1 = aArray1.getClass().getComponentType();
     Class<?> componentType2 = aArray2.getClass().getComponentType();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (componentType1 == componentType2) {
       result = Array.newInstance(componentType1, length);
     } else {

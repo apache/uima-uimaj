@@ -45,6 +45,8 @@ public interface CasProcessorDeployer {
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
           throws ResourceConfigurationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Method used to redeploy a single instance of a Cas Processor.

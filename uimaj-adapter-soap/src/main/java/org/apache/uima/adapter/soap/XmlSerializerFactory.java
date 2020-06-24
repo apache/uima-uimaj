@@ -53,6 +53,7 @@ public class XmlSerializerFactory implements SerializerFactory {
     // So that UIMA can support both Axis versions, we have different
     // versions of each of our serializer classes. Here we check the
     // Axis version number and return an insance of the correct class.
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String ver = Version.getVersion();
     if (ver.startsWith("Apache Axis version: 1.1")) {
       return new XmlSerializer_Axis11();

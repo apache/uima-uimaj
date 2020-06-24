@@ -86,6 +86,7 @@ public class JcasSofaTest extends TestCase {
    * @see junit.framework.TestCase#setUp()
    */
   protected void setUp() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       super.setUp();
       casMgr = CASFactory.createCAS();
@@ -93,6 +94,7 @@ public class JcasSofaTest extends TestCase {
       // Create a writable type system.
       TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
       // Add new types and features.
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       Type annotType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
       Type crossType = tsa.addType("org.apache.uima.cas.test.CrossAnnotation", annotType);
       tsa.addFeature("otherAnnotation", crossType, annotType);
@@ -113,6 +115,7 @@ public class JcasSofaTest extends TestCase {
   }
   
   public void tearDown() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
     casMgr = null;
     jcas = null;
     cas = null;
@@ -125,6 +128,7 @@ public class JcasSofaTest extends TestCase {
     try {
 
       // Create a Sofa using OLD APIs for now
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       CAS view = cas.createView("EnglishDocument");
 //      SofaID_impl id = new SofaID_impl();
 //      id.setSofaID("EnglishDocument");
@@ -143,6 +147,7 @@ public class JcasSofaTest extends TestCase {
       XMLSerializer xmlSer = new XMLSerializer(outputXCAS);
       try {
         ser.serialize(cas, xmlSer.getContentHandler());
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
         outputXCAS.close();
       } catch (IOException e) {
         e.printStackTrace();
@@ -155,6 +160,7 @@ public class JcasSofaTest extends TestCase {
       InputStream inputXCAS = new FileInputStream(xcasFilename);
       try {
         XCASDeserializer.deserialize(inputXCAS, cas, false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
         inputXCAS.close();
       } catch (SAXException e2) {
         e2.printStackTrace();
@@ -191,6 +197,7 @@ public class JcasSofaTest extends TestCase {
       assertTrue(4 == fs.getSofaRef());
 
       // Open JCas views of some Sofas
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       JCas engJcas = view.getJCas();
       JCas frJcas = jcas.getView("FrenchDocument");
 
@@ -265,6 +272,7 @@ public class JcasSofaTest extends TestCase {
       Annotation engAnnot = (Annotation) engIt.get();
       Annotation gerAnnot = (Annotation) gerIt.get();
       Annotation frAnnot = (Annotation) frIt.get();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       assertTrue((CAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(engAnnot.getType().getName()));
       assertTrue((CAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(gerAnnot.getType().getName()));
       assertTrue((CAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(frAnnot.getType().getName()));
@@ -275,16 +283,19 @@ public class JcasSofaTest extends TestCase {
       engAnnot = (Annotation) engIt.get();
       CrossAnnotation gerCrossAnnot = (CrossAnnotation) gerIt.get();
       frAnnot = (Annotation) frIt.get();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       assertTrue((CAS.TYPE_NAME_ANNOTATION).equals(engAnnot.getType().getName()));
       assertTrue(("this").equals(engAnnot.getCoveredText()));
       assertTrue((CAS.TYPE_NAME_ANNOTATION).equals(frAnnot.getType().getName()));
       assertTrue(("cette").equals(frAnnot.getCoveredText()));
       assertTrue(("org.apache.uima.cas.test.CrossAnnotation").equals(gerCrossAnnot.getType()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getName()));
       assertTrue(("das").equals(gerCrossAnnot.getCoveredText()));
 
       // Test that the other annotation feature of cross annotations works
       Annotation crossAnnot = gerCrossAnnot.getOtherAnnotation();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       assertTrue((CAS.TYPE_NAME_ANNOTATION).equals(crossAnnot.getType().getName()));
       assertTrue(("this").equals(crossAnnot.getCoveredText()));
 
@@ -411,6 +422,7 @@ public class JcasSofaTest extends TestCase {
 
       // create remote sofa and set the SofaURI feature
       JCas remoteView = jcas.createView("remoteSofaData");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       String sofaFileName = "./Sofa.xcas";
       remoteView.setSofaDataURI("file:" + sofaFileName, "text");
       PrintWriter out = new PrintWriter(sofaFileName);
@@ -428,9 +440,12 @@ public class JcasSofaTest extends TestCase {
       assertTrue(buf.toString().equals("this beer is good"));
 
       dest = new byte[4];
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       is.close();
       is = intArrayView.getSofaDataStream();
       assertTrue(is != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
       BufferedInputStream bis = new BufferedInputStream(is);
       int i = 0;
       while (bis.read(dest) != -1) {
@@ -495,6 +510,7 @@ public class JcasSofaTest extends TestCase {
         buf.append((char) dest[0]);
       }
       assertTrue(buf.toString().equals("this beer is good"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       is.close();
       
       // Delete the generated file.
@@ -508,6 +524,7 @@ public class JcasSofaTest extends TestCase {
   }
   
   public void testIndexTwice() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-389
     try {
       CAS newCas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
       JCas newJCas = newCas.getJCas();
@@ -517,6 +534,7 @@ public class JcasSofaTest extends TestCase {
       Annotation annot = new Annotation(newJCas);
       annot.addToIndexes();
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-1491
       Iterator<Annotation> annotIter = newJCas.getAnnotationIndex(Annotation.type).iterator();
       Annotation annot2 = annotIter.next();
       assertEquals(annot, annot2);

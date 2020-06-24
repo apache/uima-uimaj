@@ -68,6 +68,7 @@ public interface CasManager extends CasOwner {
    * @throws ResourceInitializationException
    *           if a CAS could not be created.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-358
   void defineCasPool(String aRequestorContextName, int aMinimumSize, Properties aPerformanceTuningSettings)
           throws ResourceInitializationException;
   
@@ -87,6 +88,9 @@ public interface CasManager extends CasOwner {
    */
   void defineCasPool(UimaContextAdmin aRequestorContext, int aMinimumSize, Properties aPerformanceTuningSettings)
           throws ResourceInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Gets an empty CAS. An AnalysisEngine may only call this method after it has first called
@@ -114,6 +118,7 @@ public interface CasManager extends CasOwner {
    * @throws ResourceInitializationException if the CAS could not be created
    */
   CAS createNewCas(Properties aPerformanceTuningSettings) throws ResourceInitializationException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-234
 
   /**
    * Gets a specified interface to a CAS.
@@ -124,6 +129,7 @@ public interface CasManager extends CasOwner {
    *          interface to get. Currently must be either CAS or JCas.
    * @return the CAS Interface
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
   AbstractCas getCasInterface(CAS cas, Class<? extends AbstractCas> requiredInterface);
   
   /**

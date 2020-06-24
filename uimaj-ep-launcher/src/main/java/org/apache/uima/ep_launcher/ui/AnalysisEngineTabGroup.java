@@ -39,6 +39,7 @@ public class AnalysisEngineTabGroup extends AbstractLaunchConfigurationTabGroup 
 
     ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
             new AnalysisEngineMainTab(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-3134
             new JavaArgumentsTab(),
             new JavaJRETab(),  // Java Runtime Environment
             new JavaClasspathTab(),

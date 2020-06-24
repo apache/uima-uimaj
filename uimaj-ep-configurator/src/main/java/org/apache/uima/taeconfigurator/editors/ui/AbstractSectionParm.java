@@ -53,6 +53,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /** The Constant NOT_IN_ANY_GROUP. */
   public final static String NOT_IN_ANY_GROUP = Messages
           .getString("AbstractSectionParm.notInAnyGroup"); //$NON-NLS-1$
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The Constant COMMON_GROUP. */
   public final static String COMMON_GROUP = Messages.getString("AbstractSectionParm.common"); //$NON-NLS-1$
@@ -112,9 +114,11 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /** The Constant typeNamesW. */
   protected final static Map<String,String> typeNamesW = new HashMap<>(4);
   static { // map extra spaces to get these to take the same
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
     typeNamesW.put("Boolean", "Boolean "); //$NON-NLS-1$ //$NON-NLS-2$
     typeNamesW.put("Float",   "Float      "); //$NON-NLS-1$ //$NON-NLS-2$
     typeNamesW.put(Messages.getString("AbstractSectionParm.16"), 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
                               "Integer   "); //$NON-NLS-1$ 
     typeNamesW.put("String",  "String     "); //$NON-NLS-1$ //$NON-NLS-2$
   }
@@ -166,6 +170,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * @param description the description
    */
   public AbstractSectionParm(MultiPageEditor aEditor, Composite parent, String header,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String description) {
     super(aEditor, parent, header, description);
   }
@@ -232,6 +237,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
       for (int i = 0; i < groups.length; i++) {
         ConfigurationParameter[] cps = groups[i].getConfigurationParameters();
         if (null == cps)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           groups[i].setConfigurationParameters(cps = configurationParameterArray0);
         fillGroup(groups[i].getConfigurationParameters(), groups[i].getNames(), groups[i]);
       }
@@ -285,6 +291,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
     if (splitGroupNames) {
       if (names.equals(COMMON_GROUP)) {
         commonParms = parms;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       } else {
         String[] nameArray = groupNamesToArray(names);
         if (nameArray.length == 1 && nameArray[0].equals(NOT_IN_ANY_GROUP)) {
@@ -312,6 +319,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * Fill groups from group parms.
    */
   private void fillGroupsFromGroupParms() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     for (Iterator grpInfo = groupParms.entrySet().iterator(); grpInfo.hasNext();) {
       Map.Entry entry = (Map.Entry) grpInfo.next();
       String key = (String) entry.getKey();
@@ -363,6 +371,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * @return the string[]
    */
   protected String[] groupNamesToArray(String names) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (names.equals(NOT_IN_ANY_GROUP))
       return new String[] { names };
 
@@ -415,6 +424,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
             + ((parm.isMandatory()) ? REQUIRED_INDICATOR : OPTIONAL_INDICATOR)
             + typeNamesW.get(parm.getType())
             + ((parm.getExternalOverrideName()==null) ? NO_EXTERNAL_OVERRIDE_INDICATOR : EXTERNAL_OVERRIDE_INDICATOR)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
             + nameHeader + parm.getName();    
   }
 
@@ -499,6 +509,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
     // is part of group but could be NOT_IN_ANY_GROUP
     if (null != settingsTree) {
       boolean isCommonOrNotInAnyGrp = COMMON_GROUP.equals(getName(group))
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || NOT_IN_ANY_GROUP.equals(getName(group));
       TreeItem[] groups = getSettingsGroups(group);
       for (int i = 0; i < groups.length; i++) {
@@ -551,6 +562,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
   protected boolean isParameter(TreeItem item) {
     String s = item.getText();
     return (!isGroup(item) && !s.startsWith(DELEGATE_HEADER) && !s.startsWith(FLOWCTLR_HEADER) && !item
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getText().startsWith(OVERRIDE_HEADER));
   }
 
@@ -711,6 +723,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
             // in
             // settings
             // pg
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             : containingGroup);
     TreeItem[] results = new TreeItem[groups.length];
 
@@ -850,6 +863,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
     if (!groupName.equals(NOT_IN_ANY_GROUP)) {
       String[] groupNames = (getName(parent.getText()).equals(COMMON_GROUP)) ? getAllGroupNames()
               : getCorrespondingModelGroup(parent).getNameArray();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       for (int i = 0; i < groupNames.length; i++) {
         modelSettings.setParameterValue(groupNames[i], parmName, null);
@@ -878,6 +892,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * @param prevName the prev name
    */
   public void updateParmInSettingsGUI(ConfigurationParameter existingCP, TreeItem existingTreeItem,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String prevName) {
     if (null != settings) {
       TreeItem[] settingsTreeParms = getSettingsParameter(existingTreeItem.getParentItem(),
@@ -960,6 +976,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * @param cps the cps
    */
   public void removeIncludedParmSettingsFromMultipleGroups(String[] groupNames,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ConfigurationParameter[] cps) {
     for (int j = 0; j < groupNames.length; j++) {
       removeIncludedParmSettingsFromSingleGroup(groupNames[j], cps);
@@ -974,6 +991,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    *          particular group, or a set of items from different groups
    */
   public void removeIncludedParmSettingsFromSingleGroup(String groupName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ConfigurationParameter[] cps) {
     ConfigurationParameterSettings modelSettings = getModelSettings();
     // modelSettings.setParameterValue()
@@ -1024,6 +1042,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    */
   protected void showDescriptionAsToolTip(Event event) {
     TreeItem item = tree.getItem(new Point(event.x, event.y));
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
     String text = null;
     if (null != item && isParameter(item)) {
       text = getCorrespondingModelParm(item).getDescription();

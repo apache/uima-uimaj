@@ -108,6 +108,7 @@ public class FeatureStructureTest extends TestCase {
 
 	public void setUp() {
 		try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 			this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
 			assertTrue(this.cas != null);
 			this.ts = (TypeSystemImpl) this.cas.getTypeSystem();
@@ -144,10 +145,12 @@ public class FeatureStructureTest extends TestCase {
 		assertTrue(this.sentLenFeat != null);
 		this.tokenFloatFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
 		assertTrue(this.tokenFloatFeat != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     this.tokenDoubleFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_DOUBLE_FEAT_Q);
     assertTrue(this.tokenDoubleFeat != null);
     this.tokenLongFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_LONG_FEAT_Q);
     assertTrue(this.tokenLongFeat != null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 		this.startFeature = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
 		assertTrue(this.startFeature != null);
 		this.langPairType = this.ts.getType(CASTestSetup.LANG_PAIR);
@@ -192,7 +195,9 @@ public class FeatureStructureTest extends TestCase {
 	}
 
 	public void testErrorDerefDifferentCAS() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
 	  CAS cas2 = CASInitializer.initCas(new CASTestSetup(), null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3429
 	  Type tokenType1 = this.ts.getType(CASTestSetup.TOKEN_TYPE);
 	  Feature tokenTypeFeature = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":" + CASTestSetup.TOKEN_TYPE_FEAT);
 	  FeatureStructure fs1 = cas2.createFS(tokenType1);
@@ -222,6 +227,7 @@ public class FeatureStructureTest extends TestCase {
 	 * The area this is testing is the use of the LL int operations to change the type of an existing feature structure.
 	 */
 	public void testLLsetType() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 	  LowLevelCAS llc = cas.getLowLevelCAS();
     FSArray fsa = new FSArray(ts.getType(CAS.TYPE_NAME_FS_ARRAY), cas, 3);
     fsa.addToIndexes();  // otherwise won't be replaced later
@@ -258,6 +264,7 @@ public class FeatureStructureTest extends TestCase {
     Annotation fs = cas.getFsFromId(tokId);
     assertTrue(fs == token);
     assertTrue(fs._id() == token._id());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     assertEquals(ts.annotType, fs._getTypeImpl());
     assertEquals(fs.getBegin(), 3);
     assertEquals(fs.getEnd(), 5);
@@ -287,6 +294,7 @@ public class FeatureStructureTest extends TestCase {
     TOP ttt = cas.getFsFromId(tokId);
     assertTrue(ttt != token);
     assertTrue(ttt._id() == tokId);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     assertEquals(ttt._getTypeImpl(), tokenTypeType);
     assertTrue(fsa.get(0) == ttt);
     assertTrue(fsl.getHead() == ttt);
@@ -309,6 +317,7 @@ public class FeatureStructureTest extends TestCase {
 	public void testSetArrayValuedFeature() {
 		FeatureStructure testFS = this.cas.createFS(this.arrayFsWithSubtypeType);
 		assertTrue(testFS.getFeatureValue(this.arrayFsWithSubtypeTypeFeat) == null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
 		ArrayFS arrayFS = this.cas.createArrayFS(1);
 		testFS.setFeatureValue(this.arrayFsWithSubtypeTypeFeat, arrayFS);
 		assertTrue(true);
@@ -324,6 +333,7 @@ public class FeatureStructureTest extends TestCase {
 
 	public void testSetFeatureValue() {
 //		FeatureStructure token = this.cas.createFS(this.tokenType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int i = llcas.ll_createFS(this.tokenType.getCode());
     AnnotationFS token = llcas.ll_getFSForRef(i);
@@ -338,6 +348,7 @@ public class FeatureStructureTest extends TestCase {
 			assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_FEAT));
 		}
 		assertTrue(caughtExc);
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
 		FeatureStructure word = this.cas.createFS(this.wordType);
 		token.setFeatureValue(this.tokenTypeFeat, word);
 		caughtExc = false;
@@ -350,6 +361,7 @@ public class FeatureStructureTest extends TestCase {
 		assertTrue(caughtExc);
 
 		try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
 			token.setFeatureValue(this.tokenTypeFeat, null);
 		} catch (CASRuntimeException e) {
 			assertTrue(false);
@@ -365,10 +377,12 @@ public class FeatureStructureTest extends TestCase {
 		assertTrue(caughtExc);
 		
 		// a "getter" test, not "setter" test, on purpose
+//IC see: https://issues.apache.org/jira/browse/UIMA-5740
     caughtExc = false;
     try {
       token.getFeatureValue(this.startFeature);
     } catch (CASRuntimeException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5740
       assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE_NOT_FS));
       caughtExc = true;
     }
@@ -388,6 +402,7 @@ public class FeatureStructureTest extends TestCase {
 		int fc = ((FeatureImpl)tokenTypeFeat).getCode();
 		assertEquals(llcas.ll_getIntValue(fsRef, fc), word._id());
 		int word2_id = llcas.ll_createFS(((TypeImpl)wordType).getCode());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 		TOP word2 = llcas.ll_getFSForRef(word2_id);
 //		TOP word2 = cas.createFS(wordType);
 		llcas.ll_setIntValue(fsRef, fc, word2._id());
@@ -420,6 +435,7 @@ public class FeatureStructureTest extends TestCase {
 			token.setFloatValue(this.sentLenFeat, 0.0f);
 		} catch (CASRuntimeException e) {
 			caughtExc = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5706
 			assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE));
 		}
 		assertTrue(caughtExc);
@@ -428,12 +444,14 @@ public class FeatureStructureTest extends TestCase {
 		// low level
 		int ffc = ((FeatureImpl)tokenFloatFeat).getCode();
 		llcas.ll_setIntValue(token._id(), ffc, CASImpl.float2int(123.456f));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 		assertEquals(token.getFloatValue(tokenFloatFeat), 123.456f);
 		assertEquals(llcas.ll_getIntValue(token._id(), ffc), CASImpl.float2int(123.456f));
 	}
 	
   public void testSetLongValue() {
 //	  AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int i = llcas.ll_createFS(this.tokenType.getCode());
     AnnotationFS token = llcas.ll_getFSForRef(i);
@@ -463,6 +481,7 @@ public class FeatureStructureTest extends TestCase {
 
   public void testSetDoubleValue() {
 //    AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int i = llcas.ll_createFS(this.tokenType.getCode());
     AnnotationFS token = llcas.ll_getFSForRef(i);
@@ -493,6 +512,7 @@ public class FeatureStructureTest extends TestCase {
 	public void testSetIntValue() {
 //		AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
 //  AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int j = llcas.ll_createFS(this.tokenType.getCode());
     AnnotationFS token = llcas.ll_getFSForRef(j);
@@ -508,6 +528,7 @@ public class FeatureStructureTest extends TestCase {
 			token.setIntValue(this.tokenTypeFeat, 0);
 		} catch (CASRuntimeException e) {
 			caughtExc = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4824
 			assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE));
 		}
 		assertTrue(caughtExc);
@@ -593,6 +614,7 @@ public class FeatureStructureTest extends TestCase {
 
 		// try accessing low level strings using ll_setIntValue
 		
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 		final int stringcode = llc.ll_getIntValue(addr,  lemmaFeatCode);
 		assertTrue(stringcode == 1);
     llc.ll_setStringValue(addr, lemmaFeatCode, "test", true);

@@ -60,6 +60,7 @@ public class TokenDrawingStrategy implements IDrawingStrategy {
 
           boolean isDrawOpenBracket = annotationFS.getBegin() == offset;
           // and no space before offset
+//IC see: https://issues.apache.org/jira/browse/UIMA-2279
           if (isDrawOpenBracket && offset > 1 && !isWhitespace(annotationFS.getCAS().getDocumentText(), offset - 1)) {
             gc.drawLine(bounds.x, bounds.y + bounds.height - 1, bounds.x + BRACKET_WIDTH, bounds.y
                     + bounds.height - 1);
@@ -72,6 +73,7 @@ public class TokenDrawingStrategy implements IDrawingStrategy {
           boolean isDrawCloseBracket = annotationFS.getEnd() == offset + length;
           // and no space after offset
           if (isDrawCloseBracket && offset + length < textWidget.getText().length()
+//IC see: https://issues.apache.org/jira/browse/UIMA-2279
                   && !isWhitespace(annotationFS.getCAS().getDocumentText(), offset + length)) {
             gc.drawLine(bounds.x + bounds.width, bounds.y + bounds.height - 1, bounds.x
                     + bounds.width - BRACKET_WIDTH, bounds.y + bounds.height - 1);

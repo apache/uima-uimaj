@@ -34,6 +34,8 @@ import org.apache.uima.jcas.JCasRegistry;
 @Deprecated
 public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Type {
   protected FSGenerator<?> getFSGenerator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
+//IC see: https://issues.apache.org/jira/browse/UIMA-5225
     return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
   }
 //
@@ -104,6 +106,7 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
    * @return null or the covered text
    */
   public String getCoveredText(int inst) { 
+//IC see: https://issues.apache.org/jira/browse/UIMA-10
     final CASImpl casView = ll_cas.ll_getSofaCasView(inst);
     final String text = casView.getDocumentText();
     if (text == null) {

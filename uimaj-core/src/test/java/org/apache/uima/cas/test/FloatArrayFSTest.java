@@ -35,11 +35,14 @@ public class FloatArrayFSTest extends TestCase {
    * @param arg0
    */
 	public FloatArrayFSTest(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
 		super(arg0);
 	}
 
 	public void setUp() {
 		try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
 			this.cas = CASInitializer.initCas(new CASTestSetup(), null);
 		} catch (Exception e) {
 			assertTrue(false);

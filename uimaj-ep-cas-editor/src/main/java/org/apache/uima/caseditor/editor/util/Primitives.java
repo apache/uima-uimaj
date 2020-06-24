@@ -41,6 +41,7 @@ public class Primitives {
    * @return the primitive java class
    */
   public static Class<?> getPrimitiveClass(TypeSystem ts, Type type) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2148
     if (!type.isPrimitive())
       throw new IllegalArgumentException("Type " + type.getName() + " is not primitive!");
     
@@ -98,6 +99,7 @@ public class Primitives {
    */
   public static Object getPrimitive(FeatureStructure structure, Feature feature) {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2148
     TypeSystem ts = structure.getCAS().getTypeSystem();
     
     Class<?> primitiveClass = getPrimitiveClass(ts, feature);
@@ -121,6 +123,7 @@ public class Primitives {
     } else if (String.class.equals(primitiveClass)) {
       result = structure.getStringValue(feature);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-1950
       if (result == null)
         result = "";
     } else {

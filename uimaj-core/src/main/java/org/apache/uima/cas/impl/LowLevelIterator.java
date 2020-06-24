@@ -56,6 +56,8 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
    * @param fsRef
    *          The FS reference the iterator should be set to.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4665
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
   default void moveTo(int fsRef) {
     moveTo(ll_getIndex().getCasImpl().ll_getFSForRef(fsRef));
   }
@@ -99,6 +101,7 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
    * @see org.apache.uima.cas.FSIterator#moveToFirst()
    */
   @Override
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
   default void moveToFirst() {
     maybeReinitIterator();
     moveToFirstNoReinit();
@@ -146,6 +149,7 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
    * @return the comparator used by this iterator.  It is always a withoutID style, and may be
    *         either a withType or NoType style.  
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   Comparator<TOP> getComparator();
     
   default void ll_remove() {
@@ -179,6 +183,7 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
    * 
    * NOTE: This operation will move the iterator from its current position to the end.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5844
   default void getArrayList(ArrayList<? super T> arrayList) {
     while (isValid()) {
       arrayList.add(nextNvc());

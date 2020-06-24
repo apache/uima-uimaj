@@ -47,6 +47,7 @@ import org.apache.uima.util.ProcessTrace;
 public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsumer {
   // output file
   File outFile;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   // output file writer
   OutputStreamWriter fileWriter;
@@ -66,6 +67,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
     this.outFile = new File(testBaseDir, "CpmOutput.txt");
 
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
       this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false),
               StandardCharsets.UTF_8);
     } catch (Exception e) {
@@ -98,10 +100,12 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
     try {
       // iterate and print annotations
       FSIterator<Annotation> typeIterator = aCAS.getCurrentView().<Annotation>getAnnotationIndex().iterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
       for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext()) {
         AnnotationFS annot = typeIterator.get();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
         this.fileWriter.write(annot.getCoveredText());
         this.fileWriter.write(System.getProperty("line.separator"));
         this.fileWriter.write(annot.toString());
@@ -125,6 +129,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * @see org.apache.uima.collection.CasConsumer#batchProcessComplete(ProcessTrace)
    */
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException {
     // nothing to do in this case as AnnotationPrinter doesnot do
     // anything cumulatively
@@ -142,6 +147,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * @see org.apache.uima.collection.CasConsumer#collectionProcessComplete(ProcessTrace)
    */
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException {
     if (this.fileWriter != null) {
       this.fileWriter.close();
@@ -168,6 +174,8 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * @see org.apache.uima.resource.Resource#destroy()
    */
   public void destroy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     if (this.fileWriter != null) {
       try {
         this.fileWriter.close();

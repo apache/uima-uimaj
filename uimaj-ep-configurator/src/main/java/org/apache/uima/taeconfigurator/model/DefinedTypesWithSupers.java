@@ -56,8 +56,10 @@ public class DefinedTypesWithSupers extends AbstractModelPart {
    *         said types.
    */
   public Set get() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (dirty) {
       update();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       dirty = false;
     }
     return cachedResult;
@@ -78,6 +80,7 @@ public class DefinedTypesWithSupers extends AbstractModelPart {
 
     TypeDescription[] types = typeSystemDescription.getTypes();
     TypeSystem typeSystem = modelRoot.descriptorCAS.get().getTypeSystem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
     String typeName;
     Map allTypes = modelRoot.allTypes.get();

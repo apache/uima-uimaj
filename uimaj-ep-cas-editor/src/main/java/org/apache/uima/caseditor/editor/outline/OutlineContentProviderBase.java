@@ -36,6 +36,8 @@ import org.eclipse.swt.widgets.Display;
 /**
  * The Class OutlineContentProviderBase.
  */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentListener
 		implements ITreeContentProvider {
 	
@@ -55,6 +57,7 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
      * @param viewer the viewer
      */
     protected OutlineContentProviderBase(AnnotationEditor editor, TreeViewer viewer) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     	this.viewer = viewer;
     	this.mEditor = editor;
     }
@@ -78,6 +81,7 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
 	@Override
   public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	  if (oldInput != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1397
 	    ((ICasDocument) oldInput).removeChangeListener(this);
 	  }
 	

@@ -38,6 +38,7 @@ public class LoggerPrintStream extends PrintStream {
   StringBuffer buf = new StringBuffer();
 
   public LoggerPrintStream(Logger logger, Level level) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(System.out); // hopefully nothing will actually reach stdout
     this.logger = logger;
     this.level = level;
@@ -104,6 +105,7 @@ public class LoggerPrintStream extends PrintStream {
   }
 
   public void println(char[] x) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-148
     println(new String(x));
   }
 

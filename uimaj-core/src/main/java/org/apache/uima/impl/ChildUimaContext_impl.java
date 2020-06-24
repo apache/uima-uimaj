@@ -72,12 +72,17 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * (non-Javadoc) Creates a child context.
    */
   public ChildUimaContext_impl(UimaContextAdmin aParentContext, String aContextName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
           Map<String, String> aSofaMappings) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3693
+//IC see: https://issues.apache.org/jira/browse/UIMA-3694
     super(aParentContext.getQualifiedContextName() + aContextName + '/', aSofaMappings);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mRootContext = aParentContext.getRootContext();
     mLogger = aParentContext.getRootContext().getLogger();
     mSessionNamespaceView = new SessionNamespaceView_impl(mRootContext.getSession(),
             mQualifiedContextName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
     parentContext = aParentContext;
   }
 
@@ -90,6 +95,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    */
   @Override
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ConfigurationManager aConfigurationManager) {
     throw new UIMA_UnsupportedOperationException();
   }
@@ -111,6 +117,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    */
   @Override
   public void setLogger(Logger aLogger) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
     mLogger = maybeThrottleLogger(aLogger);
   }
 
@@ -121,6 +128,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    */
   @Override
   public ResourceManager getResourceManager() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
     if (null == mPearResourceManager) {
       return parentContext.getResourceManager();
     }

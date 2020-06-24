@@ -31,6 +31,7 @@ import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
 
 class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T> {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
 
   private static final AtomicInteger moveToCount = new AtomicInteger(0);
   
@@ -43,7 +44,9 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   
 
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5840
   FsIterator_bag(FsIndex_bag<T> fsBagIndex, TypeImpl ti, CopyOnWriteIndexPart<T> cow_wrapper) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     super(ti);
     this.fsBagIndex = fsBagIndex;  // need for copy()
     bag = (CopyOnWriteObjHashSet<T>) cow_wrapper;
@@ -97,6 +100,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   @Override
   public void moveToNextNvc() {
 //    checkConcurrentModification(); 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     isGoingForward = true;
     position = bag.moveToNextFilled(++position);
   }
@@ -104,6 +108,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   @Override
   public void moveToPreviousNvc() {
 //    checkConcurrentModification();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     isGoingForward = false;
     position = bag.moveToPreviousFilled(--position);
   }
@@ -114,6 +119,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
 //    throw new UnsupportedOperationException("MoveTo operations for unordered iterators is not supported");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     Misc.decreasingWithTrace(moveToCount, "MoveTo operations on iterators over Bag indexes are likely mistakes." , UIMAFramework.getLogger());
 //    resetConcurrentModification();
     // for backwards compatibility
@@ -134,6 +140,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public FsIterator_bag<T> copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     FsIterator_bag<T> copy = new FsIterator_bag<>(this.fsBagIndex, this.ti, bag);
     copyCommonSetup(copy);
     return copy;
@@ -154,6 +161,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
 
   @Override
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return Integer.MAX_VALUE;
   }
 
@@ -178,16 +186,19 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public boolean isIndexesHaveBeenUpdated() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     return bag != fsBagIndex.getCopyOnWriteIndexPart();
   }
 
   @Override
   public Comparator<TOP> getComparator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return null;  // not used for bag
   }
 
   @Override
   public int size() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5848
     return bag.size();
   }
   

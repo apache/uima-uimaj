@@ -50,12 +50,14 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
   @Override
   protected void createFieldEditors() {
     // editor line length hint
+//IC see: https://issues.apache.org/jira/browse/UIMA-2271
     mEditorLineLengthHint = new IntegerFieldEditor(
             AnnotationEditorPreferenceConstants.EDITOR_LINE_LENGTH_HINT,
             "Line Length Hint", getFieldEditorParent());
     addField(mEditorLineLengthHint);
     
     // editor text size
+//IC see: https://issues.apache.org/jira/browse/UIMA-2169
     mEditorTextSize = new IntegerFieldEditor(
             AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE,
             "Editor Text Size", getFieldEditorParent());
@@ -77,6 +79,7 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
   protected void checkState() {
     super.checkState();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2271
     if (mEditorLineLengthHint.getIntValue() > 0) {
       setErrorMessage(null);
       setValid(true);
@@ -86,6 +89,7 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
       setValid(false);
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2169
     if (mEditorTextSize.getIntValue() > 5) {
       setErrorMessage(null);
       setValid(true);

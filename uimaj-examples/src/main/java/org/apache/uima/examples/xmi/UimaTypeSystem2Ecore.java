@@ -515,6 +515,7 @@ public class UimaTypeSystem2Ecore {
     // register default resource factory
     Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("*",
             new XMIResourceFactoryImpl());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     ResourceSet resourceSet = new ResourceSetImpl();
     URI outputURI = URI.createFileURI(args[1]);

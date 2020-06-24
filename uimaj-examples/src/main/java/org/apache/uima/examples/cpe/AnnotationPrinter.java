@@ -56,6 +56,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
   
   /** The out file. */
   File outFile;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The file writer. */
   FileWriter fileWriter;
@@ -80,6 +81,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
     // Output file should be specified in the descriptor
     if (oPath == null) {
       throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[] { "outputFile" });
     }
     // If specified output directory does not exist, try to create it
@@ -168,6 +170,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
    * @see org.apache.uima.collection.CasConsumer#batchProcessComplete(ProcessTrace)
    */
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException {
     // nothing to do in this case as AnnotationPrinter doesnot do
     // anything cumulatively
@@ -185,6 +188,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
    * @see org.apache.uima.collection.CasConsumer#collectionProcessComplete(ProcessTrace)
    */
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException {
     if (fileWriter != null) {
       fileWriter.close();
@@ -216,6 +220,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
         if (oFile.getParentFile() != null && !oFile.getParentFile().exists()) {
           if (!oFile.getParentFile().mkdirs())
             throw new ResourceConfigurationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     ResourceInitializationException.RESOURCE_DATA_NOT_VALID, new Object[] { oPath,
                         "outputFile" });
         }

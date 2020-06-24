@@ -42,6 +42,7 @@ class AllFSs {
   final private MarkerImpl mark;
   final private PositiveIntSet foundFSs = new PositiveIntSet_impl(4096, 1, 4096);
   final private PositiveIntSet foundFSsBelowMark;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
   final private ArrayList<TOP> toBeScanned = new ArrayList<>();
   final private Predicate<TOP> includeFilter;
   final private CasTypeSystemMapper typeMapper;
@@ -67,6 +68,7 @@ class AllFSs {
   }
     
   ArrayList<TOP> getAllFSsSorted() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     toBeScanned.sort(FeatureStructureImplC::compare);
     return toBeScanned;
   }
@@ -75,11 +77,14 @@ class AllFSs {
    * simpler version, no mark info, no filter or type mapper
    * @param cas -
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   AllFSs(CASImpl cas) {
     this.cas = cas;
     this.mark = null;
     foundFSsBelowMark = null;
     this.includeFilter = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5471
+//IC see: https://issues.apache.org/jira/browse/UIMA-5470
     this.typeMapper = null; 
   }
 
@@ -109,6 +114,8 @@ class AllFSs {
       }
       
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5471
+//IC see: https://issues.apache.org/jira/browse/UIMA-5470
     return this;
   }
   
@@ -147,11 +154,13 @@ class AllFSs {
     }
     
     // not an FS Array
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
     if (fs instanceof CommonArrayFS) {
       return;  // no refs
     }
   
     final TypeImpl srcType = fs._getTypeImpl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5164
     if (srcType.getStaticMergedNonSofaFsRefs().length > 0) {
       if (fs instanceof UimaSerializableFSs) {
         ((UimaSerializableFSs)fs)._save_fsRefs_to_cas_data();

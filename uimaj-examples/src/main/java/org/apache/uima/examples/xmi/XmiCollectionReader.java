@@ -65,12 +65,14 @@ public class XmiCollectionReader extends CollectionReader_ImplBase {
 	if (null == mFailOnUnknownType) {
 	  mFailOnUnknownType = true;  // default to true if not specified
 	}
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     File directory = new File(((String) getConfigParameterValue(PARAM_INPUTDIR)).trim());
     mCurrentIndex = 0;
 
     // if input directory does not exist or is not a directory, throw exception
     if (!directory.exists() || !directory.isDirectory()) {
       throw new ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { PARAM_INPUTDIR, this.getMetaData().getName(), directory.getPath() });
     }
 
@@ -96,6 +98,7 @@ public class XmiCollectionReader extends CollectionReader_ImplBase {
    */
   public void getNext(CAS aCAS) throws IOException, CollectionException {
     File currentFile = (File) mFiles.get(mCurrentIndex++);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (InputStream inputStream = new FileInputStream(currentFile)) {
       XmiCasDeserializer.deserialize(inputStream, aCAS, !mFailOnUnknownType);
     } catch (SAXException e) {
@@ -113,6 +116,7 @@ public class XmiCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
   public Progress[] getProgress() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return new Progress[] { new ProgressImpl(mCurrentIndex, mFiles.size(), Progress.ENTITIES) };
   }
 

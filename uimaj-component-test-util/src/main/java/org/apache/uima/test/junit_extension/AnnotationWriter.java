@@ -104,6 +104,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
 			}
 			try
 			{
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
 				this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false),
 								StandardCharsets.UTF_8);
 			}
@@ -367,6 +368,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
 							new Object[] { oPath, "outputFile" });
 				}
 				//write result specification to the output file
+//IC see: https://issues.apache.org/jira/browse/UIMA-5390
 				this.fileWriter = new OutputStreamWriter(new FileOutputStream(oFile, false), StandardCharsets.UTF_8);
 			}
 			catch (IOException e)

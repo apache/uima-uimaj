@@ -38,6 +38,7 @@ public interface CommonArrayFS<E> extends FeatureStructure {
    * 
    * @return A Java array copy of this array.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
   default String[] toStringArray() {
     final int size = size();
     String[] strArray = new String[size];
@@ -63,6 +64,8 @@ public interface CommonArrayFS<E> extends FeatureStructure {
    */
   void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
       throws ArrayIndexOutOfBoundsException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-301
 
   /**
    * Copy the contents of an external string array into this array. The strings
@@ -85,10 +88,12 @@ public interface CommonArrayFS<E> extends FeatureStructure {
    */
   void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
       throws ArrayIndexOutOfBoundsException, NumberFormatException;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * @return a comma-separated string of the string values of the elements of the array
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
   default String getValuesAsCommaSeparatedString() { 
     String [] sa = toStringArray();
     StringBuilder sb = new StringBuilder();
@@ -107,6 +112,7 @@ public interface CommonArrayFS<E> extends FeatureStructure {
    * Copy values from another array of the same kind
    * @param v the other array
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
   void copyValuesFrom(CommonArrayFS<E> v);
   
   /**

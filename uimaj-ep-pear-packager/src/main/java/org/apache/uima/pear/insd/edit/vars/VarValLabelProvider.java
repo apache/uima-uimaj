@@ -41,6 +41,7 @@ class VarValLabelProvider extends LabelProvider implements ITableLabelProvider {
    */
   @Override
   public String getColumnText(Object element, int columnIndex) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     String result = "";
     VarVal tableRow = (VarVal) element;
     switch (columnIndex) {

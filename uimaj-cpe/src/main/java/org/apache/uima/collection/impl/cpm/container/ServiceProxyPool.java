@@ -51,6 +51,7 @@ public class ServiceProxyPool {
     if (!mFreeInstances.isEmpty()) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_checking_out_cp_from_pool__FINEST",
                 new Object[] { Thread.currentThread().getName() });
@@ -92,6 +93,7 @@ public class ServiceProxyPool {
   public synchronized void checkIn(CasProcessor aResource) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -128,6 +130,7 @@ public class ServiceProxyPool {
     }
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",
@@ -187,6 +190,7 @@ public class ServiceProxyPool {
   public synchronized void addCasProcessor(CasProcessor aCasProcessor) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               Level.FINEST,
               this.getClass().getName(),
               "process",

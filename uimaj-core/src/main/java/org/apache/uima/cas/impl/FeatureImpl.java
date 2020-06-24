@@ -109,6 +109,7 @@ public class FeatureImpl implements Feature {
                      ? false 
                      : (rangeType.getTypeSystem().isInInt(rangeType));
     this.rangeTypeClass = (rangeType == null) 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5710
                      ? CASImpl.TYPE_CLASS_FS
                      : CasSerializerSupport.classifyType(rangeType);
     this.hashCodeLong = computeHashCodeLong();
@@ -132,6 +133,8 @@ public class FeatureImpl implements Feature {
    * @return The domain type. This can not be <code>null</code>.
    */
   public Type getDomain() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return this.highestDefiningType;
   }
  
@@ -168,6 +171,7 @@ public class FeatureImpl implements Feature {
   @Override
   public String toString() {
     return String.format(
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         "%s [%s: rangeType=%s, isMultipleRefsAllowed=%s, slotKind=%s]",
         this.getClass().getSimpleName(), getName(), rangeType, isMultipleRefsAllowed,
         slotKind);
@@ -192,6 +196,7 @@ public class FeatureImpl implements Feature {
   }
   
   void setOffset(int offset) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (offset > Short.MAX_VALUE) {
       throw new RuntimeException("Feature Offset exceeds maximum of 32767");
     }
@@ -203,6 +208,7 @@ public class FeatureImpl implements Feature {
   }
   
   void setAdjustedOffset(int offset) {    
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (offset > Short.MAX_VALUE) {
       throw new RuntimeException("Feature Offset exceeds maximum of 32767");
     }
@@ -252,6 +258,7 @@ public class FeatureImpl implements Feature {
    * @param v the value to check
    */
   public void validateIsInAllowedValue(String v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     TypeImpl_stringSubtype ti = (TypeImpl_stringSubtype) getRangeImpl();
     ti.validateIsInAllowedValues(v);
   }

@@ -31,6 +31,8 @@ import org.xml.sax.helpers.AttributesImpl;
  * The Class CasProcessorDeploymentParamImpl.
  */
 public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CasProcessorDeploymentParam {
   
   /** The Constant serialVersionUID. */
@@ -152,5 +154,6 @@ public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl impleme
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("parameter",
           new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 }

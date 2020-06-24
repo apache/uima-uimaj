@@ -67,7 +67,9 @@ public class HeaderPageWithSash extends HeaderPage {
    */
   protected void createToolBarActions(IManagedForm managedForm) {
     final ScrolledForm form = managedForm.getForm();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     haction = new Action("hor", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
       @Override
       public void run() {
@@ -77,12 +79,15 @@ public class HeaderPageWithSash extends HeaderPage {
     };
     haction.setChecked(true);
     haction.setToolTipText("Horizontal Orientation");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4988
     TAEConfiguratorPlugin instance = TAEConfiguratorPlugin.getDefault();
     haction.setImageDescriptor(instance
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
     haction.setDisabledImageDescriptor(instance
             .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     vaction = new Action("ver", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
       @Override
       public void run() {
@@ -92,7 +97,9 @@ public class HeaderPageWithSash extends HeaderPage {
     };
     vaction.setChecked(false);
     vaction.setToolTipText("Vertical Orientation");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4988
     vaction.setImageDescriptor(instance
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));
     vaction.setDisabledImageDescriptor(instance
             .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));

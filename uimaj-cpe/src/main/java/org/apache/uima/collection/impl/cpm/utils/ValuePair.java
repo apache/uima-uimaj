@@ -38,6 +38,7 @@ public class ValuePair {
    * @param newValue the new value
    */
   public ValuePair(String oldValue, String newValue) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     oldV = oldValue;
     newV = newValue;
   }

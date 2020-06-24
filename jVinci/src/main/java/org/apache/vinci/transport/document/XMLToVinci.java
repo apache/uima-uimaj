@@ -67,6 +67,7 @@ public class XMLToVinci {
 
   private static class StackEntry {
     List sub_entries = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     StackEntry parent = null;
 
@@ -231,6 +232,7 @@ public class XMLToVinci {
    *              if there is a parse error.
    */
   public static Transportable xmlToTransportable(Reader r, Transportable empty)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ServiceException {
     TransportableConverter.convert(xmlToAFrame(r), empty);
     return empty;

@@ -43,6 +43,7 @@ public class QueueEntity {
    * @param hasTimedOut the has timed out
    */
   public QueueEntity(Object anEntity, boolean hasTimedOut) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     timedOut = hasTimedOut;
     entity = anEntity;
   }

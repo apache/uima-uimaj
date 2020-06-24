@@ -130,6 +130,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
       }
     }
     throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_Exception_invalid_deployment__WARNING",
             new Object[] { Thread.currentThread().getName(), "", aDeployMode }));
   }
@@ -155,6 +156,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
   public void setDescriptor(String aDescriptorPath) throws CpeDescriptorException {
     if (descriptor == null) {
       CpeComponentDescriptor comp_desc = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .produceComponentDescriptor(aDescriptorPath);
       this.setCpeComponentDescriptor(comp_desc);
     } else {
@@ -219,6 +221,7 @@ public String getDescriptor() {
     if (filter != null) {
       if (filterString.indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
         filterString = StringUtils.replaceAll(filterString,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
                 org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM);
       }
@@ -243,6 +246,7 @@ public String getDescriptor() {
     }
     if (getErrorHandling() == null) {
       CasProcessorErrorHandling errorHandling = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .produceCasProcessorErrorHandling();
       CasProcessorMaxRestarts maxRestart = CpeDescriptorFactory.produceCasProcessorMaxRestarts();
       maxRestart.setRestartCount(30);
@@ -252,6 +256,7 @@ public String getDescriptor() {
       timeout.set(100000);
       errorHandling.setTimeout(timeout);
       CasProcessorErrorRateThreshold errorThreshold = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .produceCasProcessorErrorRateThreshold();
       errorThreshold.setMaxErrorCount(100);
       errorThreshold.setMaxErrorSampleSize(1000);
@@ -337,6 +342,7 @@ public String getDescriptor() {
     }
     if (!found) {
       deploymentParameters.add(new CasProcessorDeploymentParamImpl(aParamName, aParamValue,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "string"));
     }
   }
@@ -348,6 +354,7 @@ public String getDescriptor() {
    * @throws CpeDescriptorException tbd
    */
   protected void setDeploymentParams(CasProcessorDeploymentParams aParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     deploymentParameters = aParams;
   }
@@ -375,6 +382,7 @@ public String getDescriptor() {
 
     if (aName == null || aName.trim().length() == 0) {
       throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_reference__WARNING",
               new Object[] { Thread.currentThread().getName(), "casProcessor name=NULL" }));
     }
@@ -432,6 +440,7 @@ public String getSOFA() {
    */
   @Override
   public void setCpeComponentDescriptor(CpeComponentDescriptor aDescriptor)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     descriptor = aDescriptor;
   }
@@ -458,6 +467,7 @@ public String getSOFA() {
    * @see org.apache.uima.collection.metadata.CpeCasProcessor#setErrorHandling(org.apache.uima.collection.metadata.CasProcessorErrorHandling)
    */
   public void setErrorHandling(CasProcessorErrorHandling aErrorHandling)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     errorHandling = aErrorHandling;
   }
@@ -684,6 +694,7 @@ public String getSOFA() {
    */
   @Override
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     configurationParameterSettings = settings;
     if (settings != null && settings.getParameterSettings() != null) {
@@ -722,6 +733,7 @@ public String getSOFA() {
     parameterSettings = settings;
     if (parameterSettings != null) {
       configurationParameterSettings = new CasProcessorConfigurationParameterSettingsImpl(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               parameterSettings);
     }
   }
@@ -842,6 +854,7 @@ public String getSOFA() {
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     String field = "name";
@@ -851,6 +864,7 @@ public String getSOFA() {
       setDeployment(aElement.getAttribute("deployment"));
     } catch (Exception e) {
       throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
                   Thread.currentThread().getName(), "casProcessor", field, "casProcessor" });
 
@@ -883,6 +897,7 @@ public String getSOFA() {
 
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casProcessor",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("cpeComponentDescriptor", null),
               new PropertyXmlInfo("deploymentParameters", null),
               new PropertyXmlInfo("runInSeparateProcess", null),

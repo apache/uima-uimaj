@@ -52,6 +52,7 @@ public class NoOpAnnotator extends CasAnnotator_ImplBase {
     }
 
     if (getContext().getConfigParameterValue("ErrorFrequency") != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       errorFrequency = (Integer) getContext().getConfigParameterValue("ErrorFrequency");
       countDown = errorFrequency;
     }

@@ -34,11 +34,13 @@ public class TypeImpl_string extends TypeImpl_primitive {  // string considered 
   
   @Override
   public boolean isStringOrStringSubtype() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     return true;
   }
   
   @Override
   public boolean subsumes(TypeImpl ti) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (this.isStringSubtype()) {
       return this == ti;  // a string subtype only can subsume itself
     }

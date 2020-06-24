@@ -36,6 +36,7 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
    */
   @Override
   public Iterator<String> iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     return Collections.emptyIterator(); // overridden by NonEmptyStringList
   }
 
@@ -63,16 +64,19 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
   }
    
   public NonEmptyStringList createNonEmptyNode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     NonEmptyStringList node = new NonEmptyStringList(this._casView.getTypeSystemImpl().stringNeListType, this._casView);
     return node;
   }  
   
   public NonEmptyStringList push(String item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
     return new NonEmptyStringList(this._casView.getJCasImpl(), item, this);
   } 
   
   @Override
   public EmptyStringList emptyList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     return this._casView.emptyStringList();
   }
 
@@ -83,6 +87,7 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
    * @return an StringList, with the elements from the array
    */
   public static StringList create(JCas jcas, String[] a) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     StringList stringList = jcas.getCasImpl().emptyStringList();   
     for (int i = a.length - 1; i >= 0; i--) {
       stringList = stringList.push(a[i]);
@@ -94,6 +99,7 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
    * @return a stream over this FSList
    */
   public Stream<String> stream() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     return StreamSupport.stream(spliterator(), false);
   }
  

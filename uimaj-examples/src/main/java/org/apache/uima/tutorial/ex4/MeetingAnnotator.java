@@ -47,6 +47,7 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     // Get config. parameter value
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     mWindowSize = (Integer) aContext.getConfigParameterValue("WindowSize");
   }
 
@@ -55,6 +56,7 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
    */
   public void process(JCas aJCas) {
     // get annotation indexes
+//IC see: https://issues.apache.org/jira/browse/UIMA-5625
     FSIndex<RoomNumber> roomNumberIndex = aJCas.getAnnotationIndex(RoomNumber.class);
     FSIndex<DateAnnot> dateIndex = aJCas.getAnnotationIndex(DateAnnot.class);
     FSIndex<TimeAnnot> timeIndex = aJCas.getAnnotationIndex(TimeAnnot.class);

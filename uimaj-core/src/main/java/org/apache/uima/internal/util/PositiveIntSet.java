@@ -32,6 +32,7 @@ public interface PositiveIntSet {
    * remove all members of the set
    */
   void clear();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4061
 
   /**
    * @param key -
@@ -50,6 +51,7 @@ public interface PositiveIntSet {
    * add all elements in this set to the IntVector v as a bulk operation
    * @param v - to be added to
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4155
   void bulkAddTo(IntVector v);
   /**
    * 
@@ -124,9 +126,12 @@ public interface PositiveIntSet {
    * @param v the consumer to run
    */
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
   default void forAllInts(IntConsumer v) {
     IntListIterator it = iterator();
     while (it.hasNext()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5677
+//IC see: https://issues.apache.org/jira/browse/UIMA-5675
       v.accept(it.nextNvc());
     }
   }

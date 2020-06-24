@@ -202,6 +202,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
         pos = text.length();
       keyTextPrev = keyText.getText() + ".xml";
       genFilePathUI.setText(text.substring(0, pos) + keyTextPrev);
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
       if (okButton != null)
         enableOK();
     }
@@ -227,6 +228,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     public void verifyText(VerifyEvent e) {
       if (0 <= e.text.indexOf('.')) {
         setErrorMessage(MessageFormat.format("invalid character(s): ''{0}''",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new Object[] { e.text }));
         e.doit = false;
       } else
@@ -242,6 +244,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
    */
   public AddRemoteServiceDialog(AbstractSection aSection, String aRootPath) {
     super(aSection, "Add Remote Service",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Fill in the information about the remote service and press OK");
     rootPath = aRootPath;
   }
@@ -254,6 +257,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
 
     Composite composite = (Composite) super.createDialogArea(parent);
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
     Composite tc1 = new2ColumnComposite(composite);
     Label tempLabel;
     
@@ -298,6 +302,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
 
     createWideLabel(
             composite,
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
             "Timeouts, in milliseconds.  This is ignored for the Vinci protocol.  Specify 0 to wait forever. If not specified, a default timeout is used.");
     
     tc1 = new2ColumnComposite(composite);
@@ -332,6 +337,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     importByNameUI = new Button(composite, SWT.RADIO);
     importByNameUI.setText("Import by Name");
     importByNameUI
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .setToolTipText("Importing by name looks up the name on the classpath and datapath.");
     importByNameUI.setSelection(true);
 
@@ -360,6 +366,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
    * @return the c combo
    */
   private CCombo wideCCombo(Composite tc, String tip, String ... entries) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
     CCombo cc = newCCombo(tc, tip);
     for (String e : entries) {
       cc.add(e);
@@ -438,6 +445,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     ignoreProcessErrorsCombo.setVisible(isJms);
 
     boolean bEnableOk = (serviceTypeCombo.getText() != null && !serviceTypeCombo.getText().equals(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             ""))
             && (uriText != null && !uriText.getText().trim().equals(""))
             && (keyText != null && !keyText.getText().trim().equals(""));
@@ -458,6 +466,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
       }
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
     if (isJms && 
         (endpointText.getText() == null || 
          endpointText.getText().trim().equals(""))) {
@@ -526,6 +535,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     vnsHost = vnsHostUI.getText();
     vnsPort = vnsPortUI.getText();
     CDEpropertyPage.setImportByDefault(editor.getProject(), isImportByName ? "name" : "location");
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
     getmetaTimeout = timeoutGetmetaText.getText();
     cpcTimeout = timeoutJmsCpcText.getText();
     endpoint = endpointText.getText();

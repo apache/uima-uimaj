@@ -82,7 +82,10 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
      */
     @Override
     public void valueChanged(TreeSelectionEvent event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) AnnotationDisplayCustomizationFrame.this.tree
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
           .getLastSelectedPathComponent();
       String typeName = (String) node.getUserObject();
       if (typeName.equals(AnnotationDisplayCustomizationFrame.this.currentTypeName)) {
@@ -104,6 +107,8 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     @Override
     public void actionPerformed(ActionEvent event) {
       Color color = JColorChooser.showDialog(AnnotationDisplayCustomizationFrame.this,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
           "Choose color", AnnotationDisplayCustomizationFrame.this.bgColor);
       if (color != null) {
         AnnotationDisplayCustomizationFrame.this.bgColor = color;
@@ -128,6 +133,8 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     @Override
     public void actionPerformed(ActionEvent event) {
       Color color = JColorChooser.showDialog(AnnotationDisplayCustomizationFrame.this,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
           "Choose color", AnnotationDisplayCustomizationFrame.this.fgColor);
       if (color != null) {
         AnnotationDisplayCustomizationFrame.this.fgColor = color;
@@ -151,6 +158,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       Style style = AnnotationDisplayCustomizationFrame.this.styleMap
           .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
       if (style == null) {
@@ -180,6 +188,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
       Style style = AnnotationDisplayCustomizationFrame.this.styleMap
           .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
       if (style == null) {
@@ -322,6 +331,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     this.tree.addTreeSelectionListener(new TypeTreeSelectionListener());
     JScrollPane treeScrollPane = new JScrollPane(this.tree);
     this.splitPane.setLeftComponent(treeScrollPane);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     this.splitPane.setRightComponent(createCustomizationPanel(CAS.TYPE_NAME_ANNOTATION));
   }
 
@@ -334,6 +344,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
   private JPanel createCustomizationPanel(String typeName) {
     this.currentTypeName = typeName;
     String defaultAnnotStyleName = CAS.TYPE_NAME_ANNOTATION;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     Style defaultAnnotStyle = this.styleMap.get(defaultAnnotStyleName);
     GridLayout layout = new GridLayout(0, 1);
     JPanel topPanel = new JPanel(layout);
@@ -366,6 +377,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
    */
   private void setCustomizationPanel(String typeName) {
     this.currentTypeName = typeName;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1048
     Style defaultAnnotStyle = this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
     Style style = this.styleMap.get(typeName);
     if (style == null) {
@@ -452,6 +464,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
    * @return the tree model
    */
   private TreeModel createTreeModel(TypeSystem ts) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     String typeName = CAS.TYPE_NAME_ANNOTATION;
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeName);
     // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7

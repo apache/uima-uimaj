@@ -42,6 +42,7 @@ public class JgPlugin extends Plugin {
 //  @edu.umd.cs.findbugs.annotations.SuppressWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
   public JgPlugin() {
     super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     plugin = this;
   }
 

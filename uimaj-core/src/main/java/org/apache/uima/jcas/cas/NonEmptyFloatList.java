@@ -42,6 +42,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
   public final static int type = typeIndexID;
 
   public int getTypeIndexID() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return typeIndexID;
   }
 
@@ -85,6 +86,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
    * @param tail -
    */
   public NonEmptyFloatList(JCas jcas, float v, FloatList tail) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4980
     this(jcas);
     setHead(v);
     setTail(tail);
@@ -96,6 +98,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
    * @param v -
    */
   public NonEmptyFloatList(JCas jcas, float v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     this(jcas, v, jcas.getCasImpl().emptyFloatList());
   }
   
@@ -106,6 +109,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
 
   /* setter for head * */
   public void setHead(float v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     this._setFloatValueNfc(wrapGetIntCatchException(_FH_head), v);
   }
 
@@ -118,10 +122,12 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
 
   /* setter for tail * */
   public void setTail(FloatList v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_tail), v); 
   }
 
@@ -132,6 +138,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
    */
   @Override
   public String get_headAsString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4697
     return Float.toString(((NonEmptyFloatList)this).getHead());
   }
 
@@ -146,6 +153,9 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
   @Override
   public Iterator<Float> iterator() {
     return new Iterator<Float>() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5137
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
+//IC see: https://issues.apache.org/jira/browse/UIMA-5208
 
       FloatList node = NonEmptyFloatList.this;
       

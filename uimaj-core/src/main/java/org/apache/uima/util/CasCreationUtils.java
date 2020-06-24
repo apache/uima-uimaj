@@ -100,6 +100,7 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas() throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6152
     return createCas((TypeSystemDescription) null, null, null);
   }
   
@@ -118,6 +119,7 @@ public class CasCreationUtils {
    */
   public static CAS createCas(AnalysisEngineMetaData aMetaData)
       throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<AnalysisEngineMetaData> list = new ArrayList<>();
     list.add(aMetaData);
     return createCas(list);
@@ -136,7 +138,14 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(ProcessingResourceMetaData aMetaData)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<ProcessingResourceMetaData> list = new ArrayList<>();
     list.add(aMetaData);
     return createCas(list);
@@ -156,6 +165,7 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(AnalysisEngineDescription aDescription)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       throws ResourceInitializationException {
     return createCas(aDescription, UIMAFramework.getDefaultPerformanceTuningProperties());
   }
@@ -177,7 +187,11 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(AnalysisEngineDescription aDescription,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<AnalysisEngineDescription> list = new ArrayList<>();
     list.add(aDescription);
     return createCas(list, aPerformanceTuningSettings);
@@ -208,6 +222,10 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(Collection<? extends MetaDataObject> aComponentDescriptionsOrMetaData)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       throws ResourceInitializationException {
     return createCas(aComponentDescriptionsOrMetaData, UIMAFramework
         .getDefaultPerformanceTuningProperties());
@@ -241,6 +259,8 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(Collection<? extends MetaDataObject> aComponentDescriptionsOrMetaData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     return createCas(aComponentDescriptionsOrMetaData, aPerformanceTuningSettings, UIMAFramework
         .newDefaultResourceManager());
@@ -302,6 +322,7 @@ public class CasCreationUtils {
     FsIndexCollection aggIndexColl = mergeFsIndexes(fsIndexes, aResourceManager);
 
     return doCreateCas(null, aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
         aPerformanceTuningSettings, aResourceManager);
   }
 
@@ -321,6 +342,7 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       FsIndexDescription[] aFsIndexes) throws ResourceInitializationException {
     return createCas(aTypeSystem, aTypePriorities, aFsIndexes, null, null);
   }
@@ -369,6 +391,8 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
       ResourceManager aResourceManager) throws ResourceInitializationException {
     return doCreateCas(null, aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings,
@@ -406,6 +430,9 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(Collection<? extends MetaDataObject> aComponentDescriptionsOrMetaData, TypeSystem aTypeSystem,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     return createCas(aComponentDescriptionsOrMetaData, aTypeSystem, aPerformanceTuningSettings,
         UIMAFramework.newDefaultResourceManager());
@@ -445,12 +472,19 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(Collection<? extends MetaDataObject> aComponentDescriptionsOrMetaData, TypeSystem aTypeSystem,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
       throws ResourceInitializationException {
     // build a list of metadata objects
     List<ProcessingResourceMetaData> mdList = getMetaDataList(aComponentDescriptionsOrMetaData, aResourceManager);
 
     // extract TypeSystems, TypePriorities, and FsIndexes from metadata
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<TypeSystemDescription> typeSystems = new ArrayList<>();
     List<TypePriorities> typePriorities = new ArrayList<>();
     List<FsIndexCollection> fsIndexes = new ArrayList<>();
@@ -472,11 +506,16 @@ public class CasCreationUtils {
     if (aTypeSystem != null) // existing type system object was specified; use that
     {
       return doCreateCas(aTypeSystem, null, aggTypePriorities, aggIndexColl.getFsIndexes(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
           aPerformanceTuningSettings, aResourceManager);
     } else {
       // no type system object specified; merge type system descriptions in metadata
       TypeSystemDescription aggTypeDesc = mergeTypeSystems(typeSystems);
       return doCreateCas(null, aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           aPerformanceTuningSettings, aResourceManager);
     }
   }
@@ -499,6 +538,12 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings)
       throws ResourceInitializationException {
     return createCas(aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings, null);
@@ -525,6 +570,10 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
       ResourceManager aResourceManager) throws ResourceInitializationException {
     return doCreateCas(aTypeSystem, null, aTypePriorities, aFsIndexes, aPerformanceTuningSettings,
@@ -555,6 +604,8 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   private static CAS doCreateCas(TypeSystem aTypeSystem, TypeSystemDescription aTypeSystemDesc,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       TypePriorities aTypePriorities, FsIndexDescription[] aFsIndexes,
       Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
       throws ResourceInitializationException {
@@ -568,6 +619,7 @@ public class CasCreationUtils {
         aTypeSystemDesc.resolveImports(aResourceManager);
         //even though there's only one Type System, we still need to do a merge, to handle the
         //case where this TypeSystem defines the same type more than once (or has imports that do)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         List<TypeSystemDescription> tsList = new ArrayList<>();
         tsList.add(aTypeSystemDesc);
         aTypeSystemDesc = mergeTypeSystems(tsList, aResourceManager, null);        
@@ -580,9 +632,12 @@ public class CasCreationUtils {
     }
     
  // get initial heap size
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     String initialHeapSizeStr = null;
     if (aPerformanceTuningSettings != null) {
       initialHeapSizeStr = aPerformanceTuningSettings
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
           .getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE);
     }
     
@@ -605,9 +660,11 @@ public class CasCreationUtils {
     // create CAS using either aTypeSystem or aTypeSystemDesc
     CASMgr casMgr;
     if (aTypeSystem != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       casMgr = CASFactory.createCAS(initialHeapSize, aTypeSystem, useJcasCache);
       
       // Set JCas ClassLoader - before setupTypeSystem
+//IC see: https://issues.apache.org/jira/browse/UIMA-4701
       if (aResourceManager.getExtensionClassLoader() != null) {
         casMgr.setJCasClassLoader(aResourceManager.getExtensionClassLoader());
       }
@@ -615,6 +672,7 @@ public class CasCreationUtils {
     } else // no TypeSystem to reuse - create a new one
     {
       boolean skip_loading_user_jcas = false;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5712
       if (aPerformanceTuningSettings != null) {
         String v = aPerformanceTuningSettings.getProperty(UIMAFramework.SKIP_USER_JCAS_LOADING, "false");
         skip_loading_user_jcas = "true".equalsIgnoreCase(v);
@@ -629,6 +687,7 @@ public class CasCreationUtils {
       // install type system
       setupTypeSystem(casMgr, aTypeSystemDesc);
       // Commit the type system
+//IC see: https://issues.apache.org/jira/browse/UIMA-5712
       ((CASImpl) casMgr).commitTypeSystem(skip_loading_user_jcas);
     }
 
@@ -670,7 +729,9 @@ public class CasCreationUtils {
 
    */
   public static CAS createCas(CasDefinition casDef, Properties performanceTuningSettings)
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4701
     TypeSystemImpl tsi = casDef.getTypeSystemImpl();
     CAS cas;
     if (null == tsi) {
@@ -704,6 +765,7 @@ public class CasCreationUtils {
    *                 if CAS creation fails
    */
   public static CAS createCas(CasDefinition casDef, Properties performanceTuningSettings,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       TypeSystem typeSystem) throws ResourceInitializationException {
     return createCas(typeSystem, casDef.getTypePriorities(), casDef.getFsIndexDescriptions(),
         performanceTuningSettings, casDef.getResourceManager());
@@ -721,6 +783,7 @@ public class CasCreationUtils {
    *                 if an error occurs during modification of the type system
    */
   public static void setupTypeSystem(CASMgr aCASMgr, TypeSystemDescription aTypeSystem)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       throws ResourceInitializationException {
     TypeSystemMgr typeSystemMgr = aCASMgr.getTypeSystemMgr();
     if (aTypeSystem != null) {
@@ -734,6 +797,7 @@ public class CasCreationUtils {
         // over this, adding types to the CAS and removing them from the linked
         // list. We continue until the list is empty or we cannot make any
         // progress.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         LinkedList<TypeDescription> typeList = new LinkedList<>();
         typeList.addAll(Arrays.asList(types));
         int numTypes = typeList.size();
@@ -749,10 +813,13 @@ public class CasCreationUtils {
             String superTypeName = curTypeDesc.getSupertypeName();
             if (superTypeName == null) {
               throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
                   ResourceInitializationException.NO_SUPERTYPE, new Object[] { typeName,
                       curTypeDesc.getSourceUrlString() });
             }
             // Check if it's a built-in type: must not change supertype!
+//IC see: https://issues.apache.org/jira/browse/UIMA-733
             Type builtIn = typeSystemMgr.getType(typeName);
             if (builtIn != null) {
               if (!superTypeName.equals(typeSystemMgr.getParent(builtIn).getName())) {
@@ -770,6 +837,8 @@ public class CasCreationUtils {
                 AllowedValue[] vals = curTypeDesc.getAllowedValues();
                 if (vals == null) {
                   throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
                       ResourceInitializationException.MISSING_ALLOWED_VALUES, new Object[] {
                           typeName, curTypeDesc.getSourceUrlString() });
                 }
@@ -782,6 +851,8 @@ public class CasCreationUtils {
               {
                 // make sure that allowed values are NOT specified for non-string subtypes
                 if (curTypeDesc.getAllowedValues() != null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
                     && curTypeDesc.getAllowedValues().length > 0) {
                   throw new ResourceInitializationException(
                       ResourceInitializationException.ALLOWED_VALUES_ON_NON_STRING_TYPE,
@@ -804,6 +875,7 @@ public class CasCreationUtils {
         // ancestor in the list as it is the likely cause of the issue. The
         // implementation of this is not as efficient as it could be but avoids
         // issues with cyclic definitions.
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
         for (int i = 0; i < typeList.size(); i++) {
           TypeDescription td_i = typeList.get(i);
           boolean foundSuperType = false;
@@ -829,6 +901,7 @@ public class CasCreationUtils {
           // type definition, or there was a cycle.
           TypeDescription firstFailed = typeList.getFirst();
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               ResourceInitializationException.UNDEFINED_SUPERTYPE, new Object[] {
                   firstFailed.getSupertypeName(), firstFailed.getName(),
                   firstFailed.getSourceUrlString() });
@@ -841,6 +914,7 @@ public class CasCreationUtils {
         // ignored when we get to the subtype. Although this is a dubious type system, we support it
         // for backwards
         // compatibility (but we might want to think about generating a warning).
+//IC see: https://issues.apache.org/jira/browse/UIMA-1496
         Iterator<TypeDescription> typeIter = typesInOrderOfCreation.iterator();
         while (typeIter.hasNext()) {
           TypeDescription typeDesc = typeIter.next();
@@ -855,6 +929,8 @@ public class CasCreationUtils {
               Type rangeType = typeSystemMgr.getType(rangeTypeName);
               if (rangeType == null) {
                 throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
                     ResourceInitializationException.UNDEFINED_RANGE_TYPE, new Object[] {
                         rangeTypeName, featName, typeDesc.getName(),
                         features[j].getSourceUrlString() });
@@ -868,6 +944,8 @@ public class CasCreationUtils {
                   Type elementType = typeSystemMgr.getType(elementTypeName);
                   if (elementType == null) {
                     throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
                         ResourceInitializationException.UNDEFINED_RANGE_TYPE, new Object[] {
                             elementTypeName, featName, typeDesc.getName(),
                             features[j].getSourceUrlString() });
@@ -879,6 +957,7 @@ public class CasCreationUtils {
               if (multiRefAllowed == null) {
                 multiRefAllowed = Boolean.FALSE; // default to false if unspecified
               }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
               typeSystemMgr.addFeature(featName, type, rangeType, multiRefAllowed);
             }
           }
@@ -899,6 +978,8 @@ public class CasCreationUtils {
    *                 if an error occurs during type priority setup
    */
   public static void setupTypePriorities(CASMgr aCASMgr, TypePriorities aTypePriorities)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       throws ResourceInitializationException {
     if (aTypePriorities != null) {
       LinearTypeOrderBuilder typeOrderBuilder = aCASMgr.getIndexRepositoryMgr()
@@ -912,6 +993,8 @@ public class CasCreationUtils {
         for (int j = 0; j < typeList.length; j++) {
           if (aCASMgr.getTypeSystemMgr().getType(typeList[j]) == null) {
             throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
                 ResourceInitializationException.UNDEFINED_TYPE_FOR_PRIORITY_LIST, new Object[] {
                     typeList[j], priorityLists[i].getSourceUrlString() });
           }
@@ -922,6 +1005,8 @@ public class CasCreationUtils {
           // typically caused by a cycle in the priorities - the caused-by message
           // will clarify.
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
               ResourceInitializationException.INVALID_TYPE_PRIORITIES,
               new Object[] { priorityLists[i].getSourceUrlString() }, e);
         }
@@ -941,6 +1026,8 @@ public class CasCreationUtils {
    *                 if an error occurs during index creation
    */
   public static void setupIndexes(CASMgr aCASMgr, FsIndexDescription[] aIndexes)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       throws ResourceInitializationException {
     if (aIndexes != null) {
       TypeSystemMgr tsm = aCASMgr.getTypeSystemMgr();
@@ -959,8 +1046,11 @@ public class CasCreationUtils {
         }
 
         Type type = tsm.getType(aIndexes[i].getTypeName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         if (type == null) {
           throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
               ResourceInitializationException.UNDEFINED_TYPE_FOR_INDEX, new Object[] {
                   aIndexes[i].getTypeName(), aIndexes[i].getLabel(),
                   aIndexes[i].getSourceUrlString() });
@@ -977,6 +1067,8 @@ public class CasCreationUtils {
               Feature feature = type.getFeatureByBaseName(keys[j].getFeatureName());
               if (feature == null) {
                 throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
                     ResourceInitializationException.INDEX_KEY_FEATURE_NOT_FOUND, new Object[] {
                         keys[j].getFeatureName(), aIndexes[i].getLabel(),
                         aIndexes[i].getSourceUrlString() });
@@ -1000,9 +1092,11 @@ public class CasCreationUtils {
    * @return a description of a TypeSystem to which the CAS Data conforms
    */
   public static TypeSystemDescription convertData2TypeSystem(CasData aCasData) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     TypeSystemDescription result = UIMAFramework.getResourceSpecifierFactory()
         .createTypeSystemDescription();
     Iterator<FeatureStructure> iter = aCasData.getFeatureStructures();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<TypeDescription> typesArr = new ArrayList<>();
     while (iter.hasNext()) {
       FeatureStructure casFS = iter.next();
@@ -1028,6 +1122,7 @@ public class CasCreationUtils {
       typesArr.add(newType);
     }
     TypeDescription td[] = new TypeDescription[typesArr.size()];
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     for (int j = 0; j < typesArr.size(); j++) {
       td[j] = typesArr.get(j);
     }
@@ -1049,6 +1144,7 @@ public class CasCreationUtils {
    *                 if an incompatibility exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeTypeSystems(Collection<? extends TypeSystemDescription> aTypeSystems)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       throws ResourceInitializationException {
     return mergeTypeSystems(aTypeSystems, UIMAFramework.newDefaultResourceManager());
   }
@@ -1069,6 +1165,7 @@ public class CasCreationUtils {
    *                 if an incompatibility exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeTypeSystems(Collection<? extends TypeSystemDescription> aTypeSystems,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       ResourceManager aResourceManager) throws ResourceInitializationException {
     return mergeTypeSystems(aTypeSystems, aResourceManager, null);
   }
@@ -1101,10 +1198,13 @@ public class CasCreationUtils {
    *                 if an incompatibility exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeTypeSystems(Collection<? extends TypeSystemDescription> aTypeSystems,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1496
       ResourceManager aResourceManager, Map<String, Set<String>> aOutputMergedTypes)
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       throws ResourceInitializationException {
     // also build a Map from Type names to Types.  Use a TreeMap so we get a consistent ordering of types.
     Map<String, TypeDescription> typeNameMap = new TreeMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
     // Iterate through all type systems and add types to the merged TypeSystem.
     // If a type is defined more than once, we need to check if the superType
@@ -1117,6 +1217,7 @@ public class CasCreationUtils {
     // over this, adding types to the merged type system when their supertypes
     // become defined.  We continue until the list is empty or we cannot make any
     // progress.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     LinkedList<TypeDescription> typeList = new LinkedList<>();
     Iterator<? extends TypeSystemDescription> it = aTypeSystems.iterator();
     while (it.hasNext()) {
@@ -1134,6 +1235,7 @@ public class CasCreationUtils {
     int lastNumTypes;
     do {
       lastNumTypes = typeList.size();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1496
       Iterator<TypeDescription> typeIter = typeList.iterator();
       while (typeIter.hasNext()) {
         TypeDescription type = typeIter.next();
@@ -1141,6 +1243,7 @@ public class CasCreationUtils {
         if (supertypeName.startsWith("uima.cas") || supertypeName.startsWith("uima.tcas") || typeNameMap.containsKey(supertypeName)) {
           //supertype is defined, ok to proceed
           //check if type is already defined 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1257
           addTypeToMergedTypeSystem(aOutputMergedTypes, typeNameMap, type);
           typeIter.remove();
         }
@@ -1150,14 +1253,18 @@ public class CasCreationUtils {
     //At this point, if the typeList is not empty, then we either have a type with an undefined supertype, or a cycle.
     //We go ahead and merge the type definitions anyway - these problems will be caught at CAS creation time. Undefined supertypes 
     //may be OK at this stage - this type system will have to be further merged before it can be used.
+//IC see: https://issues.apache.org/jira/browse/UIMA-1496
     Iterator<TypeDescription> typeIter = typeList.iterator();
     while (typeIter.hasNext()) {
       TypeDescription type = typeIter.next();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1257
       addTypeToMergedTypeSystem(aOutputMergedTypes, typeNameMap, type);
     }    
 
     // create the type system and populate from the typeNamesMap
     TypeSystemDescription result = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
         .createTypeSystemDescription();
     TypeDescription[] types = new TypeDescription[typeNameMap.values().size()];
     typeNameMap.values().toArray(types);
@@ -1235,6 +1342,7 @@ public class CasCreationUtils {
       return false;
     }
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Set<String> s1 = new HashSet<>(av1.length);
     Set<String> s2 = new HashSet<>(av1.length);
     
@@ -1282,11 +1390,13 @@ public class CasCreationUtils {
    *                TypeDescription that already existed for the same name
    */
   private static void reportMerge(Map<String, Set<String>> aOutputMergedTypes, TypeDescription currentType,
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       TypeDescription existingType) {
     if (aOutputMergedTypes != null) {
       String typeName = currentType.getName();
       Set<String> descriptorUrls = aOutputMergedTypes.get(typeName);
       if (descriptorUrls == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         descriptorUrls = new TreeSet<>();
         descriptorUrls.add(existingType.getSourceUrlString());
         descriptorUrls.add(currentType.getSourceUrlString());
@@ -1311,6 +1421,7 @@ public class CasCreationUtils {
    *                 if an incompatibility exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       AnalysisEngineDescription aAggregateDescription) throws ResourceInitializationException {
     return mergeDelegateAnalysisEngineTypeSystems(aAggregateDescription, UIMAFramework
         .newDefaultResourceManager());
@@ -1338,6 +1449,7 @@ public class CasCreationUtils {
    *                 if an incompatibility exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
       throws ResourceInitializationException {
     return mergeDelegateAnalysisEngineTypeSystems(aAggregateDescription, aResourceManager, null);
@@ -1385,6 +1497,7 @@ public class CasCreationUtils {
       if (md.getTypeSystem() != null)
         typeSystems.add(md.getTypeSystem());
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-182
     return mergeTypeSystems(typeSystems, aResourceManager, aOutputMergedTypes);
   }
 
@@ -1402,7 +1515,9 @@ public class CasCreationUtils {
    */
   public static FsIndexCollection mergeFsIndexes(List<? extends FsIndexCollection> aFsIndexCollections,
       ResourceManager aResourceManager) throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, FsIndexDescription> aggIndexes = new HashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1496
     Iterator<? extends FsIndexCollection> it = aFsIndexCollections.iterator();
     while (it.hasNext()) {
       FsIndexCollection indexColl = it.next();
@@ -1417,6 +1532,8 @@ public class CasCreationUtils {
         for (int i = 0; i < indexes.length; i++) {
           // does an index with this label already exist?
           FsIndexDescription duplicateIndex = aggIndexes.get(indexes[i]
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
               .getLabel());
           if (duplicateIndex == null) {
             // no, so add it
@@ -1434,7 +1551,10 @@ public class CasCreationUtils {
 
     // convert index map to FsIndexCollection
     FsIndexCollection aggIndexColl = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
         .createFsIndexCollection();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1496
     Collection<FsIndexDescription> indexes = aggIndexes.values();
     FsIndexDescription[] indexArray = new FsIndexDescription[indexes.size()];
     indexes.toArray(indexArray);
@@ -1456,6 +1576,7 @@ public class CasCreationUtils {
    *                 if an incompatibility exists or if an import could not be resolved
    */
   public static FsIndexCollection mergeDelegateAnalysisEngineFsIndexCollections(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       AnalysisEngineDescription aAggregateDescription) throws ResourceInitializationException {
     return mergeDelegateAnalysisEngineFsIndexCollections(aAggregateDescription, UIMAFramework
         .newDefaultResourceManager());
@@ -1480,6 +1601,8 @@ public class CasCreationUtils {
       AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
       throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<AnalysisEngineDescription> l = new ArrayList<>();
     l.add(aAggregateDescription);
     List<ProcessingResourceMetaData> mdList = getMetaDataList(l, aResourceManager);
@@ -1508,9 +1631,14 @@ public class CasCreationUtils {
    *                 if an import could not be resolved
    */
   public static TypePriorities mergeTypePriorities(List<? extends TypePriorities> aTypePriorities,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       ResourceManager aResourceManager) throws ResourceInitializationException {
     TypePriorities aggTypePriorities = UIMAFramework.getResourceSpecifierFactory()
         .createTypePriorities();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1496
     Iterator<? extends TypePriorities> it = aTypePriorities.iterator();
     while (it.hasNext()) {
       TypePriorities tp = it.next();
@@ -1543,6 +1671,8 @@ public class CasCreationUtils {
    *                 if an incompatibility exists
    */
   public static TypePriorities mergeDelegateAnalysisEngineTypePriorities(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       AnalysisEngineDescription aAggregateDescription) throws ResourceInitializationException {
     return mergeDelegateAnalysisEngineTypePriorities(aAggregateDescription, UIMAFramework
         .newDefaultResourceManager());
@@ -1564,9 +1694,15 @@ public class CasCreationUtils {
    *                 if an incompatibility exists
    */
   public static TypePriorities mergeDelegateAnalysisEngineTypePriorities(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
       throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<AnalysisEngineDescription> l = new ArrayList<>();
     l.add(aAggregateDescription);
     List<ProcessingResourceMetaData> mdList = getMetaDataList(l, aResourceManager);
@@ -1617,9 +1753,11 @@ public class CasCreationUtils {
    *                 if an incompatibility exists or if an import could not be resolved
    */
   public static ProcessingResourceMetaData mergeDelegateAnalysisEngineMetaData(
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager,
       Map<String, Set<String>> aOutputMergedTypes, Map<String, ? super Exception> aOutputFailedRemotes) throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<AnalysisEngineDescription> l = new ArrayList<>();
     l.add(aAggregateDescription);
     List<ProcessingResourceMetaData> mdList = getMetaDataList(l, aResourceManager, aOutputFailedRemotes);
@@ -1628,6 +1766,7 @@ public class CasCreationUtils {
         .createProcessingResourceMetaData();
 
     // extract type systems and merge
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<TypeSystemDescription> typeSystems = new ArrayList<>();
     Iterator<ProcessingResourceMetaData> it = mdList.iterator();
     while (it.hasNext()) {
@@ -1638,6 +1777,7 @@ public class CasCreationUtils {
     result.setTypeSystem(mergeTypeSystems(typeSystems, aResourceManager, aOutputMergedTypes));
 
     // extract TypePriorities and merge
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<TypePriorities> typePriorities = new ArrayList<>();
     it = mdList.iterator();
     while (it.hasNext()) {
@@ -1648,6 +1788,7 @@ public class CasCreationUtils {
     result.setTypePriorities(mergeTypePriorities(typePriorities, aResourceManager));
 
     // extract FsIndexCollections and merge
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<FsIndexCollection> fsIndexes = new ArrayList<>();
     it = mdList.iterator();
     while (it.hasNext()) {
@@ -1676,6 +1817,7 @@ public class CasCreationUtils {
    */
   protected static boolean subsumes(String aType1Name, String aType2Name, Map<String, ? extends TypeDescription> aNameMap) {
     // Top type subsumes everything
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     if (CAS.TYPE_NAME_TOP.equals(aType1Name)) {
       return true;
     }
@@ -1683,6 +1825,7 @@ public class CasCreationUtils {
     // "walk up the tree" from aType2Name until we reach aType1Name or null
     String current = aType2Name;
     while (current != null && !current.equals(aType1Name)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1496
       TypeDescription curType = aNameMap.get(current);
       if (curType == null)
         current = null;
@@ -1705,6 +1848,8 @@ public class CasCreationUtils {
    *                 if an incompatibility exists
    */
   protected static void mergeFeatures(TypeDescription aType, FeatureDescription[] aFeatures)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-529
       throws ResourceInitializationException {
     FeatureDescription[] existingFeatures = aType.getFeatures();
     if (existingFeatures == null) {
@@ -1731,6 +1876,7 @@ public class CasCreationUtils {
         FeatureDescription featDesc = aType.addFeature(featName, aFeatures[i].getDescription(),
             rangeTypeName, elementTypeName, multiRefsAllowed);
         featDesc.setSourceUrl(aFeatures[i].getSourceUrl());
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       } else {// feature does exist
         // check that the range types match
         if (!feat.getRangeTypeName().equals(rangeTypeName)) {
@@ -1748,16 +1894,20 @@ public class CasCreationUtils {
         // OK if one is null, the other has boolean-value of false (false is the default)
         // not ok otherwise
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
         if (!(((mra1 == null) && (mra2 == null)) || ((mra1 != null) && mra1.equals(mra2))
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
             || ((mra1 == null) && !mra2) || ((mra2 == null) && !mra1))) {
           throw new ResourceInitializationException(
               ResourceInitializationException.INCOMPATIBLE_MULTI_REFS, new Object[] {
                   aType.getName() + ":" + feat.getName(), aType.getSourceUrlString() });
         }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-529
         if (!elementTypesCompatible(feat.getElementType(), elementTypeName)) {
           throw new ResourceInitializationException(
               ResourceInitializationException.INCOMPATIBLE_ELEMENT_RANGE_TYPES, new Object[] {
+//IC see: https://issues.apache.org/jira/browse/UIMA-529
                   aType.getName() + TypeSystem.FEATURE_SEPARATOR + feat.getName(), elementTypeName,
                   feat.getElementType(), aType.getSourceUrlString() });
         }
@@ -1774,6 +1924,7 @@ public class CasCreationUtils {
   private static boolean elementTypesCompatible(String o1, String o2) {
     return ((null == o1) && (null == o2)) || ((null != o1) && o1.equals(o2)) ||
       // allow missing types to be equal to TOP
+//IC see: https://issues.apache.org/jira/browse/UIMA-529
       (o1 != null && o1.equals(CAS.TYPE_NAME_TOP) && o2 == null) ||
       (o2 != null && o2.equals(CAS.TYPE_NAME_TOP) && o1 == null)
     ;
@@ -1828,6 +1979,7 @@ public class CasCreationUtils {
 
     @Override
     public String toString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       return this.getClass().getSimpleName() + " [resourceSpecifier=" + resourceSpecifier + ", rmClassLoader="
           + rmClassLoader + ", rmDataPath=" + rmDataPath + "]";
     }
@@ -1891,6 +2043,7 @@ public class CasCreationUtils {
                   System.err.format("GetMetaDataCache: cleanup task terminating, cache empty%n");
                 }
                 cancel();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2246
                 cleanupTimer.cancel();  // probably not needed, but for safety ...
                 cleanupTimer = null;
               }
@@ -1900,6 +2053,7 @@ public class CasCreationUtils {
             }
           }
         };
+//IC see: https://issues.apache.org/jira/browse/UIMA-2246
         cleanupTimer.schedule(metaDataCacheCleanupTask, HOLD_TIME, HOLD_TIME);
       }
     }
@@ -1950,6 +2104,7 @@ public class CasCreationUtils {
    *                 if a failure occurs because an import could not be resolved
    */
   public static List<ProcessingResourceMetaData> getMetaDataList(Collection<? extends MetaDataObject> aComponentDescriptionOrMetaData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1496
       ResourceManager aResourceManager, Map<String, ? super Exception> aOutputFailedRemotes)
       throws ResourceInitializationException {
     return getMetaDataList(aComponentDescriptionOrMetaData, aResourceManager, aOutputFailedRemotes,
@@ -1959,7 +2114,9 @@ public class CasCreationUtils {
   private static List<ProcessingResourceMetaData> getMetaDataList(Collection<? extends MetaDataObject> aComponentDescriptionOrMetaData,
       ResourceManager aResourceManager, Map<String, ? super Exception> aOutputFailedRemotes, String aContextName)
       throws ResourceInitializationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<ProcessingResourceMetaData> mdList = new ArrayList<>();
     if (null == aComponentDescriptionOrMetaData) {
       return mdList;
@@ -1969,6 +2126,7 @@ public class CasCreationUtils {
       Object current = iter.next();
       if (current instanceof ProcessingResourceMetaData) {
         mdList.add((ProcessingResourceMetaData) ((ProcessingResourceMetaData) current).clone());
+//IC see: https://issues.apache.org/jira/browse/UIMA-61
       } else if (current instanceof AnalysisEngineDescription) {
         AnalysisEngineDescription aeDesc = (AnalysisEngineDescription) current;
         mdList.add((ProcessingResourceMetaData) aeDesc.getAnalysisEngineMetaData().clone());
@@ -1983,6 +2141,7 @@ public class CasCreationUtils {
           Iterator<Map.Entry<String, ResourceSpecifier>> delIter = delegateMap.entrySet().iterator();
           while (delIter.hasNext()) {
             Map.Entry<String, ResourceSpecifier> delEntry = delIter.next();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
             List<ResourceSpecifier> tempList = new ArrayList<>();
             tempList.add(delEntry.getValue());
             mdList.addAll(getMetaDataList(tempList, aResourceManager, aOutputFailedRemotes,
@@ -1997,6 +2156,7 @@ public class CasCreationUtils {
         mdList.add((ProcessingResourceMetaData) ((CasConsumerDescription) current).getCasConsumerMetaData().clone());
       } else if (current instanceof FlowControllerDescription) {
         mdList.add((ProcessingResourceMetaData) ((FlowControllerDescription) current).getFlowControllerMetaData().clone());
+//IC see: https://issues.apache.org/jira/browse/UIMA-61
       } else if (current instanceof TypeSystemDescription) {
         ProcessingResourceMetaData md = new ProcessingResourceMetaData_impl();
         md.setTypeSystem((TypeSystemDescription) current);
@@ -2029,7 +2189,9 @@ public class CasCreationUtils {
         // try to instantiate the resource
         
         Resource resource = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         Map<String, Object> prParams = new HashMap<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1695
         if (aResourceManager != null) {
           prParams.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
         }
@@ -2048,6 +2210,7 @@ public class CasCreationUtils {
           // failed. If aOutputFailedRemotes is non-null, add an entry to it to it, else throw the
           // exception.
           if (aOutputFailedRemotes != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
             aOutputFailedRemotes.put(aContextName, e);
           } else {
             if (e instanceof ResourceInitializationException)
@@ -2069,12 +2232,14 @@ public class CasCreationUtils {
 
         if (resource != null) {
           if (metadata instanceof ProcessingResourceMetaData) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1496
             mdList.add((ProcessingResourceMetaData) metadata);
           }
           resource.destroy();
         }
       } else {
         throw new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
             ResourceInitializationException.UNSUPPORTED_OBJECT_TYPE_IN_CREATE_CAS,
             new Object[] { current.getClass().getName() });
       }
@@ -2115,6 +2280,7 @@ public class CasCreationUtils {
    *                 if a failure occurs because an import could not be resolved
    */
   public static List<ProcessingResourceMetaData> getMetaDataList(Collection<? extends MetaDataObject> aComponentDescriptionOrMetaData,
+//IC see: https://issues.apache.org/jira/browse/UIMA-619
       ResourceManager aResourceManager) throws ResourceInitializationException {
     return getMetaDataList(aComponentDescriptionOrMetaData, aResourceManager, null);
   }

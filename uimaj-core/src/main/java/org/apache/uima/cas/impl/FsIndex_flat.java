@@ -43,22 +43,26 @@ import org.apache.uima.jcas.cas.TOP;
 public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype<T> {
   
   // The index, an array.
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   final private TOP[] indexedFSs;
   
   final private FsIndex_iicp<T> iicp;
   
   final private Comparator<TOP> comparatorWithoutId;
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
   final private int maxAnnotSpan;
     
   FsIndex_flat(FsIndex_iicp<T> iicp) {
     super(iicp.getCasImpl(), 
           iicp.fsIndex_singletype.getType(), 
           iicp.fsIndex_singletype.getIndexingStrategy(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
           iicp.fsIndex_singletype.getComparatorImplForIndexSpecs());
     this.iicp = iicp;
     indexedFSs = fillFlatArray();
     comparatorWithoutId = iicp.fsIndex_singletype.comparatorWithoutID;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     maxAnnotSpan = iicp.ll_maxAnnotSpan();
   }  
   
@@ -68,6 +72,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
    */
   private TOP[] fillFlatArray() {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     TOP[] a =  (TOP[]) Array.newInstance(TOP.class, iicp.size());
     
     FSIterator<T> it = iicp.iterator();
@@ -83,6 +88,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
     return a;
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
   FeatureStructure[] getFlatArray() {
     return indexedFSs;
   }
@@ -92,6 +98,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
    */
   @Override
   public LowLevelIterator<T> iterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return iterator(IS_ORDERED, IS_TYPE_ORDER);
   }
   
@@ -106,6 +113,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
                              : ignoreType
                                 ? idx.comparatorNoTypeWithoutID
                                 : idx.comparatorWithoutID;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new FsIterator_subtypes_snapshot<>(this, comp);
   }
 
@@ -113,6 +121,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
    * @see org.apache.uima.cas.impl.FsIndex_singletype#insert(org.apache.uima.cas.FeatureStructure)
    */
   @Override
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
   void insert(T fs) {
     throw new UnsupportedOperationException();  
   }
@@ -131,6 +140,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   @Override
   public T find(FeatureStructure fs) {
     if (isSorted()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
       for (TOP item : indexedFSs) {
         if (comparatorWithoutId.compare(item, (TOP)fs) == 0) {
           return (T) item;
@@ -202,12 +212,14 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
    */    
   @Override
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return comparatorWithoutId.compare((TOP)fs1, (TOP)fs2);
   }
 
   @Override
   protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {
     Misc.internalError();  // should never be called
+//IC see: https://issues.apache.org/jira/browse/UIMA-5250
     return null;  // no copy on write index part implemented for this kind
   }
 
@@ -221,6 +233,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   
   @Override
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     return maxAnnotSpan;
   }
   

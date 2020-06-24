@@ -45,6 +45,8 @@ public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdap
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // aSpecifier must be a URISpecifier
     if (!(aSpecifier instanceof URISpecifier)) {
@@ -54,6 +56,7 @@ public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdap
     URISpecifier uriSpec = (URISpecifier) aSpecifier;
     // protocol must be Vinci or VinciBinaryCAS
     if (!uriSpec.getProtocol().equals(Constants.PROTOCOL_VINCI)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && !uriSpec.getProtocol().equals(Constants.PROTOCOL_VINCI_BINARY_CAS)) {
       return false;
     }
@@ -64,6 +67,7 @@ public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdap
     // create proxy to service
     if (uriSpec.getProtocol().equals(Constants.PROTOCOL_VINCI)) {
       setStub(new VinciAnalysisEngineServiceStub(uriSpec.getUri(), uriSpec.getTimeout(), this,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               uriSpec.getParameters()));
     } else {
       setStub(new VinciBinaryAnalysisEngineServiceStub(uriSpec.getUri(), uriSpec.getTimeout(),
@@ -77,6 +81,7 @@ public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdap
 
     // Sofa mappings are currently not implemented for remote AEs.  Catch this
     // and report an error.
+//IC see: https://issues.apache.org/jira/browse/UIMA-213
     if (getUimaContextAdmin().getSofaMap().size() > 0) {
       throw new ResourceInitializationException(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE,
               new Object[]{getMetaData().getName()});

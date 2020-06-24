@@ -55,6 +55,8 @@ public class IndexSerializationTest extends TestCase {
 
   public static final String TOKEN_TYPE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
           + TOKEN_TYPE_FEAT;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   public static final String TOKEN_TYPE_TYPE = "TokenType";
 
@@ -99,6 +101,7 @@ public class IndexSerializationTest extends TestCase {
     super.setUp();
     casMgr = initCAS();
     cas = (CASImpl)casMgr;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
@@ -107,6 +110,7 @@ public class IndexSerializationTest extends TestCase {
     eosType = ts.getType(EOS_TYPE);
     tokenType = ts.getType(TOKEN_TYPE);
     tokenTypeFeature = ts.getFeatureByFullName(TOKEN_TYPE_FEAT_Q);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     sentenceType = ts.getType(SENT_TYPE);
@@ -115,6 +119,7 @@ public class IndexSerializationTest extends TestCase {
   }
 
   public void tearDown() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
     casMgr = null;
     cas = null;
     annotationType = null;
@@ -142,6 +147,7 @@ public class IndexSerializationTest extends TestCase {
     TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
     // Add new types and features.
     Type topType = tsa.getTopType();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annotType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
     tsa.addType(SENT_TYPE, annotType);
@@ -153,6 +159,7 @@ public class IndexSerializationTest extends TestCase {
     tsa.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     // Commit the type system.
     ((CASImpl) casMgr).commitTypeSystem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     tsa = casMgr.getTypeSystemMgr();  // because of type system consolidation
     // assert(tsa.isCommitted());
     // // Create the CAS indexes.
@@ -166,9 +173,11 @@ public class IndexSerializationTest extends TestCase {
 
     FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
     FSIndexComparator comp = irm.createComparator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     Type annotation = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
     comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             FSIndexComparator.STANDARD_COMPARE);
     comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END),
             FSIndexComparator.REVERSE_STANDARD_COMPARE);
@@ -180,6 +189,7 @@ public class IndexSerializationTest extends TestCase {
     // assert(cas.getIndexRepositoryMgr().isCommitted());
 
     // Create the default text Sofa and return CAS view
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     return (CASMgr) casMgr.getCAS().getCurrentView();
   }
 
@@ -229,10 +239,13 @@ public class IndexSerializationTest extends TestCase {
     CASMgr realCasMgr = CASFactory.createCAS();  // creates base view, but no ts, so no ir
     ((CASImpl) realCasMgr).commitTypeSystem();   // also makes index repo (which will be replaced), but doesn't init the built-in indexes
     Serialization.deserializeCASComplete(cs, realCasMgr);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     cas = ((CASImpl) realCasMgr).getCurrentView();
     casMgr = (CASMgr) cas;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
     // System.out.println("After serialization\n");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
     FSIndex<? extends FeatureStructure> index = cas.getAnnotationIndex();
     assertTrue(index != null);
     assertTrue(index.getIndexingStrategy() == FSIndex.SORTED_INDEX);

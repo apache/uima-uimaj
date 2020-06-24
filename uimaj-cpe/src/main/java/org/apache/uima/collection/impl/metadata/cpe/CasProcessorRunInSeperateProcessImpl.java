@@ -31,6 +31,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  */
 public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl implements
         CasProcessorRunInSeperateProcess {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1074137401279020375L;
@@ -75,6 +77,7 @@ public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl im
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("runInSeparateProcess",
           new PropertyXmlInfo[] { new PropertyXmlInfo("exec", null), });
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Gets the exec.

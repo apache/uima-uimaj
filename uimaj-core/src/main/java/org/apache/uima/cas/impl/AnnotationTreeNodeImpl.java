@@ -38,6 +38,7 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
 
   AnnotationTreeNodeImpl() {
     super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.dtrs = new ArrayList<>();
   }
 
@@ -51,8 +52,10 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
 
   public AnnotationTreeNode<T> getChild(int i) throws CASRuntimeException {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1491
       return this.dtrs.get(i);
     } catch (IndexOutOfBoundsException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
       throw new CASRuntimeException(CASRuntimeException.CHILD_INDEX_OOB, null);
     }
   }
@@ -100,6 +103,7 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
   // ////////////////////////////////////////////////////////////////////////////
   // Package private APIs for building the tree.
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1491
   void set(T annot) {
     this.annot = annot;
   }

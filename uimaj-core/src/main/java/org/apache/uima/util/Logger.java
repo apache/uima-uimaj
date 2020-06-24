@@ -181,6 +181,7 @@ public void setOutputStream(OutputStream aStream);
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Logs a message with a message key and one parameter. The real message is extracted from a
@@ -201,6 +202,7 @@ public void setOutputStream(OutputStream aStream);
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Object param1);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Logs a message with a message key and an arbitrary number of parameters. The real message is
@@ -221,6 +223,7 @@ public void setOutputStream(OutputStream aStream);
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Object[] params);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Logs a message with a message key and a throwable object. The real message is extracted from a
@@ -241,6 +244,7 @@ public void setOutputStream(OutputStream aStream);
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Throwable thrown);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Generic logging method intended for logging wrappers.
@@ -309,6 +313,7 @@ public void setOutputStream(OutputStream aStream);
    */
   public String rb(String resourceBundle, String key, Object... params);
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5712
   default String rb_ue(String key, Object... params) {
     return rb(UIMAException.STANDARD_MESSAGE_CATALOG, key, params);
   }
@@ -335,6 +340,7 @@ public void setOutputStream(OutputStream aStream);
    * @param msgSupplier A function, which when called, produces the desired log message
    */
   void debug(Supplier<String> msgSupplier);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5380
 
   /**
    * @param msgSupplier A function, which when called, produces the desired log message

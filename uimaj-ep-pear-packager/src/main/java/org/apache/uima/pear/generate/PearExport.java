@@ -37,8 +37,10 @@ public class PearExport {
    * @throws PearException -
    */
   protected boolean ensureTargetFileIsValid(File targetFile) throws PearException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (targetFile.exists() && targetFile.isDirectory()) {
       throw new PearException("The target pear File must not be a directory", new PearException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "The target pear File must not be a directory"));
     }
     if (targetFile.exists()) {

@@ -70,6 +70,7 @@ public class AnnotationTreeTest extends TestCase {
       // map file if there is none.
       TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-5483
       TypePriorities typePriorities = new TypePriorities_impl();
       TypePriorityList priorityList = typePriorities.addPriorityList();
       priorityList.addType("uima.cas.TOP");

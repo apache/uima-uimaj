@@ -46,6 +46,7 @@ public class JgPluginRunner implements IPlatformRunnable {
    */
   @Override
   public Object run(Object object) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       final String[] arguments = (String[]) object;
       final IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -54,10 +55,12 @@ public class JgPluginRunner implements IPlatformRunnable {
         @Override
         public void run(IProgressMonitor progressMonitor) throws CoreException {
           jg.main0(arguments, new MergerImpl(), null, // no progressMonitor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   new EP_LogThrowErrorImpl());
         }
       };
       workspace.run(runnable, null);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       return 0;
     } catch (Exception exception) {
       exception.printStackTrace();

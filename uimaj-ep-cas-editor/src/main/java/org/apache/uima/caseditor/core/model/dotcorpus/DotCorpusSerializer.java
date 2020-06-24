@@ -119,6 +119,7 @@ public class DotCorpusSerializer {
       documentBuilder = documentBuilderFactory.newDocumentBuilder();
     } catch (ParserConfigurationException e) {
       String message = "This should never happen:" + (e.getMessage() != null ? e.getMessage() : "");
+//IC see: https://issues.apache.org/jira/browse/UIMA-2082
 
       IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
 
@@ -180,6 +181,7 @@ public class DotCorpusSerializer {
 
         String drawingLayerString = corporaChildElement.getAttribute(STYLE_LAYER_ATTRIBUTE);
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
         String drawingConfigString = corporaChildElement.getAttribute(STYLE_CONFIG_ATTRIBUTE);
         
         if (drawingConfigString.length() == 0)
@@ -195,6 +197,7 @@ public class DotCorpusSerializer {
 
         AnnotationStyle style = new AnnotationStyle(type, AnnotationStyle.Style
                 .valueOf(styleString), color, drawingLayer, drawingConfigString);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
 
         dotCorpus.setStyle(style);
       } else if (CAS_PROCESSOR_ELEMENT.equals(corporaChildElement.getNodeName())) {
@@ -207,6 +210,7 @@ public class DotCorpusSerializer {
         int lineLengthHint = Integer.parseInt(lineLengthHintString);
 
         dotCorpus.setEditorLineLength(lineLengthHint);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1576
       } else if (SHOWN_ELEMENT.equals(corporaChildElement.getNodeName())) {
         String type = corporaChildElement.getAttribute(SHOWN_TYPE_ATTRIBUTE);
         
@@ -266,6 +270,7 @@ public class DotCorpusSerializer {
         styleAttributes.addAttribute("", "", STYLE_COLOR_ATTRIBUTE, "", Integer.toString(colorInt));
         styleAttributes.addAttribute("", "", STYLE_LAYER_ATTRIBUTE, "", Integer.toString(style
                 .getLayer()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-1875
         if (style.getConfiguration() != null) {
           styleAttributes.addAttribute("", "", STYLE_CONFIG_ATTRIBUTE, "", style
                   .getConfiguration());
@@ -275,6 +280,7 @@ public class DotCorpusSerializer {
         xmlSerHandler.endElement("", STYLE_ELEMENT, STYLE_ELEMENT);
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1576
       for (String type : dotCorpus.getShownTypes()) {
         
         AttributesImpl shownAttributes = new AttributesImpl();

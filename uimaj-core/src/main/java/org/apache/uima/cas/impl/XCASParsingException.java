@@ -35,6 +35,8 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
 
   private static final String missing_resource_error = "Could not load message catalog: "
           + resource_file;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private static final int MESSAGES_NOT_FOUND = -1;
 
@@ -118,6 +120,7 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
   public static final int BYTE_ARRAY_LENGTH_NOT_EVEN = 14;
   
   private static final String[] identifiers = { "WRONG_ROOT_TAG", "TEXT_EXPECTED",
+//IC see: https://issues.apache.org/jira/browse/UIMA-4670
       "ARRAY_ELE_EXPECTED", "ARRAY_ELE_ATTRS", "UNKNOWN_TYPE", 
       "ILLEGAL_ID", "ILLEGAL_ARRAY_SIZE", "ILLEGAL_ARRAY_ATTR", "UNKNOWN_FEATURE", "INTEGER_EXPECTED", 
       "FLOAT_EXPECTED", "EXCESS_ARRAY_ELE", "UNKNOWN_ID", "SOFA_REF_MISSING", "BYTE_ARRAY_LENGTH_NOT_EVEN"};

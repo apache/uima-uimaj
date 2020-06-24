@@ -40,6 +40,7 @@ public class TfFocusListener implements FocusListener {
    * @param med the med
    */
   public TfFocusListener(PrefsMediator med) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this.med = med;
   }
 

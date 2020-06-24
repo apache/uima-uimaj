@@ -38,6 +38,7 @@ public class SpanTest {
     Span a = new Span(100, 1000);
     Span b = new Span(100, 1000);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     assertEquals(a, b);
   }
 
@@ -46,6 +47,7 @@ public class SpanTest {
    */
   @Test
   public void testEqualsWithAnotherObject() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     assertNotEquals(new Span(0, 0), Boolean.TRUE);
   }
 
@@ -55,6 +57,7 @@ public class SpanTest {
   @Test
   public void testEqualsWithNull() {
     Span a = new Span(0, 0);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     assertFalse(a.equals(null));
   }
 
@@ -77,6 +80,8 @@ public class SpanTest {
     Span a = new Span(100, 1000);
     Span b = new Span(900, 900);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     assertTrue(a.compareTo(b) > 0);
   }
 
@@ -99,6 +104,8 @@ public class SpanTest {
     Span a = new Span(5000, 900);
     Span b = new Span(4900, 1000);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     assertTrue(a.compareTo(b) < 0);
   }
 
@@ -110,6 +117,7 @@ public class SpanTest {
     Span a = new Span(4900, 1000);
     Span b = new Span(4900, 1000);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     assertEquals(0, a.compareTo(b));
   }
 
@@ -121,6 +129,7 @@ public class SpanTest {
     Span a = new Span(5000, 900);
     Span b = new Span(5200, 600);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     assertTrue(a.isContaining(b));
   }
 
@@ -131,6 +140,7 @@ public class SpanTest {
   public void testIsContainingWithEqual() {
     Span a = new Span(5000, 900);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     assertTrue(a.isContaining(a));
   }
 
@@ -142,6 +152,7 @@ public class SpanTest {
     Span a = new Span(5000, 900);
     Span b = new Span(4500, 1000);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     assertFalse(a.isContaining(b));
   }
 
@@ -153,6 +164,7 @@ public class SpanTest {
     Span a = new Span(5000, 900);
     Span b = new Span(5000, 1000);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     assertFalse(a.isContaining(b));
   }
 }

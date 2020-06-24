@@ -29,6 +29,7 @@ import org.apache.uima.jcas.cas.TOP;
  */
 class FsIterator_set_sorted_pear<T extends FeatureStructure> extends FsIterator_set_sorted2<T> {
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
   FsIterator_set_sorted_pear(FsIndex_set_sorted<T> ll_index, CopyOnWriteIndexPart cow_wrapper, Comparator<TOP> comparatorMaybeNoTypeWithoutID) {
     super(ll_index, cow_wrapper, comparatorMaybeNoTypeWithoutID);
   }
@@ -44,6 +45,7 @@ class FsIterator_set_sorted_pear<T extends FeatureStructure> extends FsIterator_
 
   @Override
   public FsIterator_set_sorted_pear<T> copy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     return new FsIterator_set_sorted_pear<>(ll_index, ofsa, this.comparatorMaybeNoTypeWithoutID);
   }
 }

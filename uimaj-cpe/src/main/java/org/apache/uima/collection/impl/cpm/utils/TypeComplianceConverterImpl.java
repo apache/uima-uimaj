@@ -42,6 +42,7 @@ public class TypeComplianceConverterImpl {
   public static String replace(String aSourceString, String aPattern, String aReplaceString) {
     int offset = 0;
     int e = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     StringBuffer convertedString = new StringBuffer();
     // while pattern exists in the source String
     // get a start position of pattern in String
@@ -65,6 +66,7 @@ public class TypeComplianceConverterImpl {
    */
   public static void main(String[] args) {
     System.out.println(TypeComplianceConverterImpl.replace("Detag_colon_DetagContent", "_colon_",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             ":"));
     System.out.println(TypeComplianceConverterImpl.replace("Detag:DetagContent", ":", "_colon_"));
     System.out.println(TypeComplianceConverterImpl

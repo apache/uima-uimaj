@@ -83,6 +83,7 @@ public class TypesWithNameSpaces32 implements IContentProposalProvider {
      * @see org.eclipse.jface.fieldassist.IContentProposal#getContent()
      */
     CasTypeProposal(String aCompareKey, String shortName, String nameSpace) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-191
       fullName = (null == nameSpace || "".equals(nameSpace))? shortName : nameSpace + "." + shortName;
       labelForm = (null == nameSpace || "".equals(nameSpace))? shortName : shortName + " - " + nameSpace;
       compareKey = aCompareKey.toLowerCase();

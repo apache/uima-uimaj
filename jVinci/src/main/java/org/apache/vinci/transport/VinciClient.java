@@ -95,6 +95,8 @@ public class VinciClient extends BaseClient {
    *           if no VNS_HOST has been specified.
    */
   public VinciClient(String service_name, TransportableFactory factory, VinciContext myContext)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ServiceDownException, VNSException {
     super(factory);
     setContext(myContext);
@@ -112,6 +114,7 @@ public class VinciClient extends BaseClient {
    *           if no VNS_HOST has been specified.
    */
   public VinciClient(String service_name, VinciContext myContext) throws ServiceDownException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           VNSException {
     this(service_name, VinciFrame.getVinciFrameFactory(), myContext);
   }
@@ -199,6 +202,7 @@ public class VinciClient extends BaseClient {
    *           if no VNS_HOST has been specified.
    */
   public VinciClient(String service_name, VinciContext myContext, int connectTimeout)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ServiceDownException, VNSException {
     this(service_name, VinciFrame.getVinciFrameFactory(), myContext, connectTimeout);
   }
@@ -353,6 +357,7 @@ public class VinciClient extends BaseClient {
    * @pre getHost() != null
    */
   public String getQualifiedServiceName() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return ResolveResult.unqualifiedName(serviceName) + '[' + getLevel() + ',' + getHost() + ','
             + getInstance() + ']';
   }
@@ -417,6 +422,7 @@ public class VinciClient extends BaseClient {
           if (query == null) {
             query = ResolveResult.composeQuery(serviceName);
           }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           response = (ResolveResult) BaseClient.sendAndReceive(query, vnsHost, vnsPort,
                   ResolveResult.factory, myContext.getVNSResolveTimeout());
           myContext.cacheResolveResult(serviceName, response);
@@ -454,6 +460,7 @@ public class VinciClient extends BaseClient {
             Debug.p("Resolved " + serviceName + " to: " + locator.host + ":" + locator.port);
             return;
           } catch (IOException e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             Debug.p("WARNING: Failed to connect to service at (" + locator.host + ":"
                     + locator.port + "):" + e.getMessage());
             connectFailed = true;
@@ -472,6 +479,7 @@ public class VinciClient extends BaseClient {
       } else if (response.priority != 0 && !ResolveResult.isQualified(serviceName)) {
         // If a service name was specified without qualifications, then
         // we allow fail-over to lower-priority services.
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         Debug.p("VinciClient.open(String)", "Resolving with lower priority than: "
                 + response.priority);
         myContext.flushFromCache(serviceName);
@@ -507,6 +515,7 @@ public class VinciClient extends BaseClient {
    * @return whether socket keepAlive is enabled.
    */
   protected boolean isSocketKeepAliveEnabled() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-212
     return getContext().isSocketKeepAliveEnabled();
   }
 
@@ -529,6 +538,7 @@ public class VinciClient extends BaseClient {
    * @pre service_name != null
    */
   static public VinciFrame rpc(Transportable in, String service_name) throws IOException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ServiceException, ServiceDownException, VNSException {
     return VinciContext.getGlobalContext().rpc(in, service_name);
   }

@@ -71,6 +71,7 @@ public class TransportableConverter {
     try {
       ByteArrayOutputStream byte_out = new ByteArrayOutputStream();
       convert_me.toStream(byte_out);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
 
       try (ByteArrayInputStream byte_in = new ByteArrayInputStream(byte_out.toByteArray())) {
         into_me.fromStream(byte_in);
@@ -80,4 +81,5 @@ public class TransportableConverter {
     }
   }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 } // class

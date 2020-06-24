@@ -34,6 +34,8 @@ import org.xml.sax.helpers.AttributesImpl;
  * The Class CpeResourceManagerConfigurationImpl.
  */
 public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CpeResourceManagerConfiguration {
   
   /** The Constant serialVersionUID. */
@@ -80,8 +82,10 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     setHref(aElement.getAttribute("href"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-239
     if (aOptions.preserveComments) {
       setInfoset(aElement);
     }
@@ -103,6 +107,7 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "resourceManagerConfiguration", new PropertyXmlInfo[0]);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /* (non-Javadoc)
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()

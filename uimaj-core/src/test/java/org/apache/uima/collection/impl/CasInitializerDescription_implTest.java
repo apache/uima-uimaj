@@ -68,6 +68,7 @@ public class CasInitializerDescription_implTest extends TestCase {
   CasInitializerDescription_impl mTestDesc;
 
   protected void setUp() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       super.setUp();
 
@@ -75,6 +76,7 @@ public class CasInitializerDescription_implTest extends TestCase {
       TypeDescription type1 = typeSystem.addType("Fake", "<b>Fake</b> Type", "Annotation");
       type1.addFeature("TestFeature", "For Testing Only", CAS.TYPE_NAME_STRING);
       TypeDescription enumType = typeSystem.addType("EnumType", "Test Enumerated Type",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "uima.cas.String");
       enumType.setAllowedValues(new AllowedValue[] { new AllowedValue_impl("One", "First Value"),
           new AllowedValue_impl("Two", "Second Value") });
@@ -108,6 +110,7 @@ public class CasInitializerDescription_implTest extends TestCase {
 
       // create primitive TAE description
       mTestDesc = new CasInitializerDescription_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       mTestDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mTestDesc.setImplementationName("org.apache.uima.examples.TestAnnotator");
       ProcessingResourceMetaData md = mTestDesc.getCasInitializerMetaData();
@@ -145,6 +148,8 @@ public class CasInitializerDescription_implTest extends TestCase {
       cfgGrp2.setConfigurationParameters(new ConfigurationParameter[] { cfgParam3 });
       md.getConfigurationParameterDeclarations().setConfigurationGroups(
               new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       NameValuePair nvp1 = new NameValuePair_impl("param1", "test");
       NameValuePair nvp2 = new NameValuePair_impl("param2", Integer.valueOf("42"));
@@ -156,9 +161,12 @@ public class CasInitializerDescription_implTest extends TestCase {
       settings.getSettingsForGroups().put("cfgGrp2b", new NameValuePair[] { nvp3b });
 
       URISpecifier uriSpec = new URISpecifier_impl();
+//IC see: https://issues.apache.org/jira/browse/UIMA-37
       uriSpec.setUri("http://www.incubator.apache.org/uima");
       uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
       ExternalResourceDependency dep = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .createExternalResourceDependency();
       dep.setKey("ResourceKey");
       dep.setDescription("Test");
@@ -191,9 +199,11 @@ public class CasInitializerDescription_implTest extends TestCase {
       // System.out.println(testDescXml);
 
       // parse objects from XML (no schema validation)
+//IC see: https://issues.apache.org/jira/browse/UIMA-1202
       InputStream is = new ByteArrayInputStream(testDescXml.getBytes(encoding));
       CasInitializerDescription newDesc = (CasInitializerDescription) UIMAFramework.getXMLParser()
               .parse(new XMLInputSource(is, null));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // compare
       Assert.assertEquals(mTestDesc, newDesc);
@@ -211,6 +221,7 @@ public class CasInitializerDescription_implTest extends TestCase {
       // deserialize
       CasInitializerDescription newDesc = (CasInitializerDescription) SerializationUtils
               .deserialize(testDescBytes);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       Assert.assertEquals(mTestDesc, newDesc);
     } catch (Exception e) {

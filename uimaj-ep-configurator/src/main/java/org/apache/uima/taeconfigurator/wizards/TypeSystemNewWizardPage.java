@@ -36,7 +36,9 @@ public class TypeSystemNewWizardPage extends AbstractNewWizardPage {
    * @param selection the selection
    */
   public TypeSystemNewWizardPage(ISelection selection) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(selection, "big_t_s_.gif", "Type System Descriptor File",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Create a new Type System Descriptor file", "typeSystemDescriptor.xml");
   }
 

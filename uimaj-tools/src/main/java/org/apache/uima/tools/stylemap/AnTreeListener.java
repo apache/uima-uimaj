@@ -39,6 +39,7 @@ public class AnTreeListener implements TreeSelectionListener {
    * @param med the med
    */
   public AnTreeListener(TableGUIMediator med) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this.med = med;
   }
 

@@ -48,11 +48,14 @@ import org.apache.uima.jcas.cas.TOP;
  * This class is package private to share with FSIndexFlat
  * For Internal Use
  */  
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
 class FsIndex_iicp<T extends FeatureStructure> 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5619
           extends AbstractCollection<T>
           implements Comparable<FsIndex_iicp<? extends FeatureStructure>>,
                      Comparator<FeatureStructure>,
                      LowLevelIndex<T> {  
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
 
 //  private final static boolean DEBUG = false;
 
@@ -127,6 +130,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     }
     @SuppressWarnings("rawtypes")
     final FsIndex_iicp iicp = (FsIndex_iicp) o;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     return
         this.getIndexingStrategy() == iicp.getIndexingStrategy() &&
         this.fsIndex_singletype.getComparatorImplForIndexSpecs().equals(iicp.fsIndex_singletype.getComparatorImplForIndexSpecs()); 
@@ -141,6 +145,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     final int prime = 31;
     int result = 1;
       // next hashCode includes the type
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     result = prime * result + this.fsIndex_singletype.getComparatorImplForIndexSpecs().hashCode();  
     result = prime * result + this.getIndexingStrategy();
     return result;
@@ -160,13 +165,16 @@ class FsIndex_iicp<T extends FeatureStructure>
         return;
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
       final TypeImpl rootType = (TypeImpl) this.fsIndex_singletype.getComparatorImplForIndexSpecs().getType();
       final int indexKind = this.getIndexingStrategy();
       int size = (indexKind == FSIndex.DEFAULT_BAG_INDEX) ? 1 : 1 + (int) rootType.getAllSubtypes().count();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       final ArrayList<FsIndex_singletype<FeatureStructure>> tempSubIndexCache = new ArrayList<>();
       sortedTypeCodes = (indexKind == FSIndex.SORTED_INDEX) ? new int[size] : null;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
       initOneTypeThenAllSubtypes(rootType, tempSubIndexCache, indexKind);
       
       
@@ -189,6 +197,7 @@ class FsIndex_iicp<T extends FeatureStructure>
 //                                         }
 //                                         tempSubIndexCache.add(singleIndex);});
  
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
       this.cachedSubFsLeafIndexes = tempSubIndexCache.toArray(new FsIndex_singletype[tempSubIndexCache.size()]); 
       if (this.getIndexingStrategy() == FSIndex.SORTED_INDEX) {
         Arrays.sort(sortedTypeCodes);
@@ -206,6 +215,7 @@ class FsIndex_iicp<T extends FeatureStructure>
    */
   private void initOneTypeThenAllSubtypes(TypeImpl ti, ArrayList<FsIndex_singletype<FeatureStructure>> cache, int indexKind) {
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     final FsIndex_singletype<FeatureStructure> singleIndex =  fsIndexRepositoryImpl.getIndexBySpec(
            ti.getCode(),
            getIndexingStrategy(),
@@ -219,6 +229,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     cache.add(singleIndex);
     if (indexKind != FSIndex.DEFAULT_BAG_INDEX) {
       for (TypeImpl subti : ti.getDirectSubtypes()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
         initOneTypeThenAllSubtypes(subti, cache, indexKind);        
       }
     }
@@ -245,6 +256,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     } else if (typeCode1 > typeCode2) {
       return 1;
     } else { // types are equal
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
       return this.fsIndex_singletype.getComparatorImplForIndexSpecs()
           .compareTo(cp.fsIndex_singletype.getComparatorImplForIndexSpecs());
     }
@@ -259,6 +271,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     createIndexIteratorCache();  // does nothing if already created
     int size = 0;
     for (FsIndex_singletype<TOP> iicp : cachedSubFsLeafIndexes) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
       size += iicp.size();
     }
     return size;
@@ -266,6 +279,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   
   @Override
   public int ll_maxAnnotSpan() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5115
     createIndexIteratorCache();  // does nothing if already created
     int span = -1;
     FsIndex_singletype<T> idx = getFsIndex_singleType();
@@ -281,6 +295,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   }
   
   public boolean isEmpty() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     createIndexIteratorCache();  
     for (FsIndex_singletype<TOP> index : cachedSubFsLeafIndexes) {
       if (index.size() > 0) {
@@ -404,6 +419,7 @@ class FsIndex_iicp<T extends FeatureStructure>
    */
   @Override
   public Comparator<TOP> getComparator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
     return fsIndex_singletype.comparatorWithoutID;
   }
 
@@ -413,11 +429,13 @@ class FsIndex_iicp<T extends FeatureStructure>
   }
   
   public FSIndexComparatorImpl getComparatorImplForIndexSpecs() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     return fsIndex_singletype.getComparatorImplForIndexSpecs();
   }
 
   @Override
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return fsIndex_singletype.comparatorWithoutID.compare((TOP)fs1, (TOP)fs2);
   }
   
@@ -436,6 +454,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   public T find(FeatureStructure fs) {
     createIndexIteratorCache();  // does nothing if already created
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
     for (FsIndex_singletype<TOP> idx : cachedSubFsLeafIndexes) {
      FeatureStructure result = idx.find(fs);
       if (result != null) {
@@ -451,6 +470,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   }
   
   int getTypeCode() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     return fsIndex_singletype.getTypeCode();
   }
 
@@ -461,6 +481,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   
   @Override
   public boolean isSorted() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     return fsIndex_singletype.isSorted();
   }
   
@@ -504,6 +525,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     
     if (! fsIndex_singletype.isSorted() ||  // is a set index, or 
                          orderNotNeeded) {  // order is not needed 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       return new FsIterator_aggregation_common<>(getIterators(), this, comparatorMaybeNoTypeWithoutId);
     }
     
@@ -524,6 +546,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     LowLevelIterator<T> it = iterator(IS_ORDERED, IS_TYPE_ORDER);
     return ambiguous
              ? it
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
              : new LLUnambiguousIteratorImpl<>(it);
   }
   
@@ -549,6 +572,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     
   @Override
   public FSIndex<T> withSnapshotIterators() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5546
     FsIndex_singletype<T> idx = getFsIndex_singleType();
     return new FsIndex_snapshot<>(this, idx.comparatorWithoutID, idx.comparatorNoTypeWithoutID);
   }
@@ -574,7 +598,9 @@ class FsIndex_iicp<T extends FeatureStructure>
     }
   }
   
+//IC see: https://issues.apache.org/jira/browse/UIMA-5504
   LowLevelIterator<T>[] getIterators() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4664
     createIndexIteratorCache();
     LowLevelIterator<T>[] r = new LowLevelIterator[cachedSubFsLeafIndexes.length];
     int i = 0;

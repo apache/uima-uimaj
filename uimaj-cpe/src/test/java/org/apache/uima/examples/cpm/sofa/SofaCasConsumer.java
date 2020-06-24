@@ -44,6 +44,7 @@ public class SofaCasConsumer extends CasConsumer_ImplBase {
   public void processCas(CAS cas) throws ResourceProcessException {
 
     // print out annotations of the Source SofA
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     CAS englishView = cas.getView("SourceDocument");
     Assert.assertNotNull(englishView);
     Assert.assertEquals("this beer is good", englishView.getDocumentText());

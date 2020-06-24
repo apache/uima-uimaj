@@ -54,6 +54,7 @@ public interface AnnotationFS extends AnnotationBaseFS {
    * @param begin The start position.
    */
   void setBegin(int begin);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
   /**
    * Set the end position of the annotation as character offset into the text. The end position
@@ -79,6 +80,7 @@ public interface AnnotationFS extends AnnotationBaseFS {
    * method is aware of Unicode codepoints. It expects that the begin/end offsets point to valid
    * codepoints.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-6152
   default void trim() {
       trim(Character::isWhitespace);
   }

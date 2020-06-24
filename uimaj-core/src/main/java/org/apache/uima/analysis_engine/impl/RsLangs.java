@@ -76,6 +76,7 @@ public class RsLangs {
     }
     builder.append(", isShared=");
     builder.append(isShared);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
     builder.append(']');
     return builder.toString();
   }
@@ -98,6 +99,7 @@ public class RsLangs {
   
   // make a copy when needed
   private RsLangs(RsLangs original) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     languages = (null == original.languages) ? null : new ArrayList<>(original.languages);
   }
   
@@ -186,6 +188,7 @@ public class RsLangs {
       if (rsl == null || rsl.isShared) {
         rsl = new RsLangs();
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       rsl.languages = new ArrayList<>(0);  // special form means empty, not x-unspec
     }
     return addAll(rsl, langs);
@@ -243,6 +246,7 @@ public class RsLangs {
    * @param canonicalLang
    */
   private void removeSubsumedLanguages(String canonicalLang, String baseLang) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     languages.removeIf(s -> subsumesCanonical(s, canonicalLang, baseLang));
   }
   
@@ -264,6 +268,7 @@ public class RsLangs {
     }
     
     RsLangs r = new RsLangs();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     r.languages = new ArrayList<>(0);  // creates an empty, not null arraylist
     
     for (String lang : this.languages) {

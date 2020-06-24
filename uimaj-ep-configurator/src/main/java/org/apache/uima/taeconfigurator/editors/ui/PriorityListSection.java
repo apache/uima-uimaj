@@ -75,6 +75,7 @@ public class PriorityListSection extends AbstractSection {
    * @param parent the parent
    */
   public PriorityListSection(MultiPageEditor editor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, parent, "Priority Lists", "This section shows the defined Prioirity Lists");
   }
 
@@ -92,6 +93,7 @@ public class PriorityListSection extends AbstractSection {
 
     final Composite buttonContainer = newButtonContainer(sectionClient);
     addSetButton = newPushButton(buttonContainer, "Add Set",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Click here to add another priority list.");
     addButton = newPushButton(buttonContainer, S_ADD, "Click here to add a type");
     removeButton = newPushButton(buttonContainer, S_REMOVE, S_REMOVE_TIP);
@@ -135,6 +137,7 @@ public class PriorityListSection extends AbstractSection {
         item.setExpanded(true);
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     maybeSetSelection(tree, 0);
     enable();
   }
@@ -147,6 +150,7 @@ public class PriorityListSection extends AbstractSection {
    */
   public TypePriorityList getTypePriorityListFromTreeItem(TreeItem item) {
     TypePriorityList[] typePriorityLists = getAnalysisEngineMetaData().getTypePriorities()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getPriorityLists();
     return typePriorityLists[tree.indexOf(item)];
   }
@@ -171,11 +175,13 @@ public class PriorityListSection extends AbstractSection {
       TreeItem item = new TreeItem(tree, SWT.NONE);
       item.setText(PRIORITY_LIST);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
       tree.setSelection( item );
       setFileDirty();
     } else if (event.widget == addButton) { // add type to set
       if (editor.isTypePriorityDescriptor() && !editor.getIsContextLoaded()) {
         Utility
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 .popMessage(
                         "Can''t add types here",
                         "Types cannot be added here, because there is no loaded context type system to pick the types from",
@@ -208,6 +214,7 @@ public class PriorityListSection extends AbstractSection {
 
       if (null == parent) { // removing a priority set
         if (Window.CANCEL == Utility.popOkCancel("ConfirmRemove", "ConfirmRemoveSet",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 MessageDialog.WARNING))
           return;
         TypePriorityList removedTypePriorityList = getTypePriorityListFromTreeItem(item);
@@ -225,6 +232,7 @@ public class PriorityListSection extends AbstractSection {
 
       } else { // removing a type
         if (Window.CANCEL == Utility.popOkCancel("ConfirmRemove", "ConfirmRemoveType",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 MessageDialog.WARNING))
           return;
         TypePriorityList typePriorityList = getTypePriorityListFromTreeItem(parent);
@@ -234,6 +242,7 @@ public class PriorityListSection extends AbstractSection {
       TreeItem previousSelection = getPreviousSelection(parent == null ? tree.getItems() : parent
               .getItems(), item);
       if (null != previousSelection)
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         tree.setSelection(previousSelection);
       item.dispose();
       setFileDirty();
@@ -257,6 +266,7 @@ public class PriorityListSection extends AbstractSection {
         TreeItem t = new TreeItem(parent, SWT.NONE, i + 1);
         t.setText(formatName(types[i + 1]));
         tree.setSelection( t);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
 
         items[i].dispose();
         items[i + 1].dispose();
@@ -267,6 +277,7 @@ public class PriorityListSection extends AbstractSection {
 
         TreeItem t = new TreeItem(parent, SWT.NONE, i - 1);
         t.setText(formatName(types[i - 1]));
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
         tree.setSelection( t);
         new TreeItem(parent, SWT.NONE, i).setText(formatName(types[i]));
 
@@ -279,6 +290,7 @@ public class PriorityListSection extends AbstractSection {
       getTypePriorities().setPriorityLists(tpl);
     } else if (event.widget == exportButton) {
       typePriorityImportSection.exportImportablePart("<typePriorities>",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               TypePrioritiesNewWizard.TYPEPRIORITIES_TEMPLATE);
       refresh();
     }
@@ -302,6 +314,7 @@ public class PriorityListSection extends AbstractSection {
         downButton.setEnabled(i < (items.length - 1));
       }
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       addButton.setEnabled(false);
       removeButton.setEnabled(false);
       upButton.setEnabled(false);

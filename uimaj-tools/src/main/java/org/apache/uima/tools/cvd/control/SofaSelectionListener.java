@@ -57,6 +57,7 @@ public class SofaSelectionListener implements ItemListener {
   public void itemStateChanged(ItemEvent e) {
     // a new sofa was selected. Switch to that view and update
     // display
+//IC see: https://issues.apache.org/jira/browse/UIMA-416
     String sofaId = (String) e.getItem();
     this.main.setCas(this.main.getCas().getView(sofaId));
     String text = this.main.getCas().getDocumentText();
@@ -70,6 +71,7 @@ public class SofaSelectionListener implements ItemListener {
         }
       }
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-429
     String oldText = this.main.getTextArea().getText();
     if ((oldText == null) || (text == null) || !oldText.equals(text)) {
       this.main.setText(text);

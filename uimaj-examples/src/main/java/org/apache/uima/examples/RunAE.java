@@ -123,6 +123,7 @@ public class RunAE implements StatusCallbackListener {
    * @param args the args
    */
   public RunAE(String[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // Read and validate command line arguments
       if (!processCmdLineArgs(args)) {
@@ -135,6 +136,7 @@ public class RunAE implements StatusCallbackListener {
 
       // build a Collection Processing Engine descriptor that will drive processing
       CpeDescription cpeDesc = CpeDescriptorFactory.produceDescriptor();
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
 
       // add collection reader that will read input docs
       cpeDesc.addCollectionReader(FileSystemCollectionReader.getDescriptorURL().toString());
@@ -147,6 +149,7 @@ public class RunAE implements StatusCallbackListener {
               .getAbsolutePath());
       crSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
       crSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1015
       if (xcasInput) {
         crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, "XCAS");
       } else if (xmiInput) {
@@ -173,6 +176,7 @@ public class RunAE implements StatusCallbackListener {
 
       // add user's AE to CPE
       CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor("UserAE");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1015
       CpeComponentDescriptor cpeComponentDescriptor = 
         CpeDescriptorFactory.produceComponentDescriptor(aeSpecifierFile.getAbsolutePath());
       casProc.setCpeComponentDescriptor(cpeComponentDescriptor);
@@ -184,6 +188,7 @@ public class RunAE implements StatusCallbackListener {
       CpeCasProcessor casCon = null;
       if (outputDir != null) {
         casCon = CpeDescriptorFactory.produceCasProcessor("CasConsumer");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1015
         cpeComponentDescriptor = 
           CpeDescriptorFactory.produceComponentDescriptor(InlineXmlCasConsumer.getDescriptorURL().toString());
         casCon.setCpeComponentDescriptor(cpeComponentDescriptor);        
@@ -239,6 +244,7 @@ public class RunAE implements StatusCallbackListener {
     } catch (Exception e) {
       //special check for using XML detagger with remotes, which will generate an error
       //since sofa mappings aren't supported for remotes
+//IC see: https://issues.apache.org/jira/browse/UIMA-213
       if (xmlTagName != null && xmlTagName.length() > 0 && e instanceof UIMAException &&
               ((UIMAException)e).hasMessageKey(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE)) {
         System.err.println("The XML detagging feature (-t) is not supported for remote Analysis Engines or for Aggregates containing remotes.");
@@ -268,6 +274,7 @@ public class RunAE implements StatusCallbackListener {
    */
   public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
     if (aStatus.isException()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
       Iterator iter = aStatus.getExceptions().iterator();
       while (iter.hasNext()) {
         ((Throwable) iter.next()).printStackTrace();
@@ -275,6 +282,7 @@ public class RunAE implements StatusCallbackListener {
     } else if (genProgressMessages) {
       // retrieve the filename of the input file from the CAS
       // (it was put there by the FileSystemCollectionReader)
+//IC see: https://issues.apache.org/jira/browse/UIMA-1015
       if (!(xcasInput || xmiInput)) {
         Type fileLocType = aCas.getTypeSystem().getType(
                 "org.apache.uima.examples.SourceDocumentInformation");
@@ -316,6 +324,7 @@ public class RunAE implements StatusCallbackListener {
     // output performance stats
     if (statsLevel > 0) {
       AnalysisEnginePerformanceReports performanceReports = new AnalysisEnginePerformanceReports(
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
               mCPE.getPerformanceReport());
       System.out.println("\n\nPERFORMANCE STATS\n-----------------\n\n");
       if (statsLevel > 1) {
@@ -347,6 +356,7 @@ public class RunAE implements StatusCallbackListener {
    */
   private void printUsageMessage() {
     System.err.println("\nUsage: java " + this.getClass().getName()
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
             + " [OPTIONS] <AE descriptor filename> <input dir> [<output dir>] ");
     System.err.println("\nIf <output dir> is not specified, the analysis "
             + "results will not be output.  This can be useful when only interested "
@@ -375,6 +385,7 @@ public class RunAE implements StatusCallbackListener {
    * @return true if command line args were valid, false if not
    */
   private boolean processCmdLineArgs(String[] args) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     encoding = "UTF-8"; // default
     int index = 0;
     while (index < args.length) {
@@ -409,9 +420,11 @@ public class RunAE implements StatusCallbackListener {
           return false;
         }
         encoding = args[index++];
+//IC see: https://issues.apache.org/jira/browse/UIMA-28
       } else if (arg.equals("-x")) // XCAS file input
       {
         xcasInput = true;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1015
       } else if (arg.equals("-xmi")) // XMI file input
       {
         xmiInput = true;

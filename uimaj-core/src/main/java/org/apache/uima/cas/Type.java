@@ -52,6 +52,7 @@ public interface Type extends Iterable<Feature> {
    * @return The name of the type.
    */
   String getName();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Get the <a href="#names">unqualified, short name</a> of this type.
@@ -70,6 +71,7 @@ public interface Type extends Iterable<Feature> {
    */
   @Deprecated
   Vector<Feature> getAppropriateFeatures();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Get a vector of the features for which this type is a subtype of the features' domain (i.e.,
@@ -79,6 +81,7 @@ public interface Type extends Iterable<Feature> {
    * @return The List of features defined for this type.
    */
   List<Feature> getFeatures();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1341
 
   /**
    * Get the number of features for which this type defines the domain. This includes inherited
@@ -96,6 +99,7 @@ public interface Type extends Iterable<Feature> {
    * @return The feature, if it exists; <code>null</code>, else.
    */
   Feature getFeatureByBaseName(String featureName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
   /**
    * Check if type is feature final, i.e., if no more new features may be defined for it.

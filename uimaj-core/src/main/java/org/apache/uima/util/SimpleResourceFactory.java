@@ -65,6 +65,7 @@ public class SimpleResourceFactory implements ResourceFactory {
    */
   protected Map<Class<? extends ResourceSpecifier>, List<Class<? extends Resource>>> mClassMap =
 	      Collections.synchronizedMap(new HashMap<>());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
   /**
    * Produces an appropriate <code>Resource</code> instance from a <code>ResourceSpecifier</code>.
@@ -88,6 +89,7 @@ public class SimpleResourceFactory implements ResourceFactory {
    * @see org.apache.uima.ResourceFactory#produceResource(Class, ResourceSpecifier,Map)
    */
   public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1509
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     ResourceInitializationException lastException = null;
 
@@ -106,6 +108,7 @@ public class SimpleResourceFactory implements ResourceFactory {
       // iterate backwards through the elements of the list, so that
       // we attempt to initialize the most recently registered Resource
       // classes first
+//IC see: https://issues.apache.org/jira/browse/UIMA-1509
       ListIterator<Class<? extends Resource>> i = resourceClasses.listIterator(resourceClasses.size());
       while (i.hasPrevious()) {
         Class<? extends Resource> currentClass = i.previous();
@@ -117,6 +120,7 @@ public class SimpleResourceFactory implements ResourceFactory {
             Resource resource = currentClass.newInstance();
             // attempt to initialize it
             UIMAFramework.getLogger(CLASS_NAME).logrb(Level.CONFIG, CLASS_NAME.getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "produceResource", LOG_RESOURCE_BUNDLE, "UIMA_trying_resource_class__CONFIG",
                     currentClass.getName());
 
@@ -129,6 +133,7 @@ public class SimpleResourceFactory implements ResourceFactory {
         // if an exception occurs, log it but do not throw it... yet
         catch (IllegalAccessException e) {
           currentException = new ResourceInitializationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
                       currentClass.getName(), aSpecifier.getSourceUrlString() }, e);
         } catch (InstantiationException e) {
@@ -171,6 +176,7 @@ public class SimpleResourceFactory implements ResourceFactory {
    *          specifiers of the given class.
    */
   public void addMapping(Class<? extends ResourceSpecifier> aSpecifierInterface, Class<? extends Resource> aResourceClass) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<Class<? extends Resource>> mappingList = mClassMap.computeIfAbsent(aSpecifierInterface, k -> new ArrayList<>());
     // No mapping exists. Create a new list and put it in the map.
 
@@ -191,7 +197,9 @@ public class SimpleResourceFactory implements ResourceFactory {
    */
   @SuppressWarnings("unchecked")
   public void addMapping(String aSpecifierInterfaceName, String aResourceClassName)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ClassNotFoundException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1509
     addMapping((Class<? extends ResourceSpecifier>) Class.forName(aSpecifierInterfaceName),
     		(Class<? extends Resource>) Class.forName(aResourceClassName));
   }

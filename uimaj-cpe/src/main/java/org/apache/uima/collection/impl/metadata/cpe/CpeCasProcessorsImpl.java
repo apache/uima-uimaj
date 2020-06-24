@@ -74,6 +74,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * Instantiates a new cpe cas processors impl.
    */
   public CpeCasProcessorsImpl() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -145,6 +146,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    */
   @Override
   public void addCpeCasProcessor(CpeCasProcessor aCasProcessor, int aInsertPosition)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws CpeDescriptorException {
     casProcessors.add(aInsertPosition, aCasProcessor);
   }
@@ -172,6 +174,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     }
 
     throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
             new Object[] { Thread.currentThread().getName(), "CpeCasProcessor" }));
   }
@@ -201,6 +204,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    */
   public void setAllCpeCasProcessors(CpeCasProcessor[] aCpeProcessors)
           throws CpeDescriptorException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     for (int i = 0; aCpeProcessors != null && i < aCpeProcessors.length; i++) {
       casProcessors.add(aCpeProcessors[i]);
@@ -219,6 +223,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     }
     else {
       throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
               new Object[] { Thread.currentThread().getName() }));
     }
@@ -238,6 +243,8 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
       casProcessors.remove(aPosition);
       return getAllCpeCasProcessors();
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-163
+//IC see: https://issues.apache.org/jira/browse/UIMA-163
     else {
       throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
               CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
@@ -317,8 +324,10 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws InvalidXMLException {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       setDropCasOnException(Boolean.valueOf(aElement.getAttribute("dropCasOnException")));
     } catch (Exception e) {
       throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -333,6 +342,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
         setPoolSize(Integer.parseInt(cps));
       } catch (Exception e) {
         throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
                     Thread.currentThread().getName(), "casProcessors", "casPoolSize",
                     "casProcessors" });
@@ -345,6 +355,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
         setConcurrentPUCount(Integer.parseInt(aElement.getAttribute("processingUnitThreadCount")));
       } catch (Exception e) {
         throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
                     Thread.currentThread().getName(), "casProcessors", "processingUnitThreadCount",
                     "casProcessors" });
@@ -371,6 +382,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
       }
     } catch (Exception e) {
       throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
                   Thread.currentThread().getName(), "casProcessors", "field", "casProcessors" });
 
@@ -406,6 +418,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
           }
         }
         // Continue to parse
+//IC see: https://issues.apache.org/jira/browse/UIMA-1560
         if ( cp != null ) {
           cp.buildFromXMLElement((Element) node, aParser, aOptions);
         }
@@ -421,6 +434,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    */
   @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
 
@@ -440,6 +454,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     // write child elements
     for (int i = 0; i < casProcessors.size(); i++) {
       ((CpeCasProcessor) casProcessors.get(i)).toXML(aContentHandler,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               aWriteDefaultNamespaceAttribute);
     }
 
@@ -458,6 +473,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     AttributesImpl attrs = super.getXMLAttributes();
     if (isDropCasOnException() == true) {
       attrs.addAttribute("", "dropCasOnException", "dropCasOnException", "CDATA", String
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .valueOf(isDropCasOnException()));
     }
     attrs.addAttribute("", "casPoolSize", "casPoolSize", "CDATA", String.valueOf(getCasPoolSize()));
@@ -486,6 +502,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
   /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casProcessors",
           new PropertyXmlInfo[] { new PropertyXmlInfo("allCpeCasProcessors", null), });
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /* (non-Javadoc)
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#getCasPoolSize()

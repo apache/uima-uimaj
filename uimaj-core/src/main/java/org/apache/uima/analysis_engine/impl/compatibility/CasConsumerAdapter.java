@@ -60,6 +60,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
    *          metadata for the annotator. Needed to compute ResultSpecification.
    */
   public CasConsumerAdapter(CasConsumer aCasConsumer, AnalysisEngineMetaData aMetaData) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     mCasConsumer = aCasConsumer;
     mMetaData = aMetaData;
   }
@@ -75,6 +76,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
     AnalysisEngineDescription_impl desc = new AnalysisEngineDescription_impl();
     desc.setMetaData(mMetaData);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Map<String, Object> paramsMap = new HashMap<>();
     paramsMap.put(Resource.PARAM_UIMA_CONTEXT, aContext);
     mCasConsumer.initialize(desc, paramsMap);
@@ -86,8 +88,10 @@ public class CasConsumerAdapter implements AnalysisComponent {
    * @see org.apache.uima.annotator.Annotator#process(org.apache.uima.core.AbstractCas)
    */
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (!CAS.class.isAssignableFrom(aCAS.getClass())) {
       throw new AnalysisEngineProcessException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
                   aCAS.getClass() });
     }
@@ -112,6 +116,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
       TypeSystem typeSystem;
       if (aCAS instanceof JCas) {
         typeSystem = ((JCas) aCAS).getTypeSystem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       } else // CAS 
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();
@@ -189,6 +194,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
                 AnnotatorAdapter.class, "next" });
   }

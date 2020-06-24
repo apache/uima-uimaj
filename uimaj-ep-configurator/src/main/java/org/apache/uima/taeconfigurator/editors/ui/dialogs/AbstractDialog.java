@@ -61,6 +61,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
   static {
     boolean contentAssistIsOK = false;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
       Class.forName("org.eclipse.ui.fieldassist.ContentAssistField");
       contentAssistIsOK = true;
     } catch (ClassNotFoundException e) {
@@ -95,6 +96,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    */
   protected AbstractDialog(AbstractSection section, String title, String description) {
     // maintainers: don't use new shell; see comment in Dialog class
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     super(section.getSection().getShell());
     commonInit(section, title, description);
   }
@@ -150,6 +152,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
   @Override
   protected Control createDialogArea(Composite parent) {
     // create composite
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     Composite composite = (Composite) super.createDialogArea(parent);
     createWideLabel(composite, dialogDescription);
     return composite;
@@ -202,6 +205,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    */
   @Override
   protected void createButtonsForButtonBar(Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super.createButtonsForButtonBar(parent);
     okButton = getButton(IDialogConstants.OK_ID);
     okButton.setEnabled(false);
@@ -256,6 +260,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    * @param horizGrab the horiz grab
    */
   protected void setTextAndTip(Label c, String label, String tip, int horizStyle, boolean horizGrab) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2116
     setTextAndTip(c, label, tip);
     c.setLayoutData(new GridData(horizStyle, SWT.BEGINNING, horizGrab, false));
   }
@@ -300,6 +305,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    * @return the c combo
    */
   protected CCombo newLabeledCCombo(Composite parent, String label, String tip) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     setTextAndTip(new Label(parent, SWT.NONE), label, tip);
     return newCCombo(parent, tip);
   }
@@ -317,6 +323,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     cc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     // without these next lines, the height of the ccombo is too small
     // especially on a Mac
+//IC see: https://issues.apache.org/jira/browse/UIMA-83
     FontData [] fontData = cc.getFont().getFontData();
     ((GridData) cc.getLayoutData()).heightHint = 2 * fontData[0].getHeight();
     cc.addListener(SWT.Selection, this);
@@ -349,6 +356,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
         if (iBefore >= 0)
           cc.setText(cc.getItem(iBefore));
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     });
     return cc;
   }
@@ -408,9 +416,11 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    * @return the tree
    */
   protected Tree newTree(Composite parent, int style) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     Tree tree = new Tree(parent, style | SWT.BORDER);
     GridData gd = new GridData(GridData.FILL_BOTH);
     tree.setLayoutData(gd);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6094
     tree.addListener(SWT.Selection, this);
     tree.addListener(SWT.KeyUp, this); // delete key
     return tree;
@@ -424,6 +434,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    * @return the new table widget
    */
   protected Table newTable(Composite parent, int style) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     Table table = new Table(parent, style | SWT.BORDER);
     GridData gd = new GridData(GridData.FILL_BOTH);
     table.setLayoutData(gd);
@@ -458,6 +469,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     Composite buttonContainer = new Composite(parent, SWT.NONE);
     buttonContainer.setLayout(new GridLayout());
     buttonContainer.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             | GridData.HORIZONTAL_ALIGN_FILL));
     return buttonContainer;
   }
@@ -474,6 +486,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     Button button = new Button(parent, SWT.PUSH);
     button.setText(label);
     button.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             | GridData.HORIZONTAL_ALIGN_FILL));
     // button.pack();
     button.setToolTipText(tip);
@@ -523,6 +536,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
   // subclasses override, and often use super.handleEvent to call this
   @Override
   public void handleEvent(Event event) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
     if (okButton != null)  // may be null if handler called from 
                            // main area setText event, during construction
                            // because button bar is constructed after main area
@@ -622,6 +636,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    */
   protected Text newLabeledTypeInput(AbstractSection aSection, Composite parent, String label, String tip) {
     setTextAndTip(new Label(parent, SWT.NONE), label, tip);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     return newTypeInput(aSection, parent);
   }
 
@@ -636,6 +651,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     Composite tc = new2ColumnComposite(twoCol);
     final TypesWithNameSpaces candidatesToPickFrom = getTypeSystemInfoList(); // provide an ArrayList of
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     final Text text;
     if (contentAssistAvailable) {
       ContentAssistField32 caf = new ContentAssistField32(tc, candidatesToPickFrom);
@@ -649,6 +665,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     text.getParent().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     text.addListener(SWT.KeyUp, this);
     text.addListener(SWT.MouseUp, this); // for paste operation
+//IC see: https://issues.apache.org/jira/browse/UIMA-274
     text.addListener(SWT.Modify, this);  // for content assist
     
 //    newText(tc, SWT.NONE,
@@ -674,10 +691,12 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
         if (dialog.open() != IDialogConstants.OK_ID)
           return;
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-191
         text.setText((null == dialog.nameSpaceName || 
                 "".equals(dialog.nameSpaceName)) ? 
                 dialog.typeName :
                 dialog.nameSpaceName + "." + dialog.typeName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
         if (okButton != null)
           enableOK();
     /*
@@ -692,6 +711,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     });
     /*
     TypeSystemCompletionProcessor processor = new TypeSystemCompletionProcessor(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             candidatesToPickFrom);
     ControlContentAssistHelper.createTextContentAssistant(text, processor);
     text.addListener(SWT.KeyDown, new Listener() {
@@ -723,6 +743,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    */
   // default implementation - always overridden when used
   public TypesWithNameSpaces getTypeSystemInfoList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     return new TypesWithNameSpaces();
   }
 

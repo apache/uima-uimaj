@@ -77,6 +77,7 @@ public class UIMAClassLoader extends URLClassLoader {
   
   // not static
   final private Object[] syncLocks = new Object[nbrLocks];
+//IC see: https://issues.apache.org/jira/browse/UIMA-4501
 
   private boolean isClosed = false;
    
@@ -93,10 +94,12 @@ public class UIMAClassLoader extends URLClassLoader {
    */
   public static URL[] transformClasspath(String classpath) throws MalformedURLException {
     // initialize StringTokenizer to separate the classpath
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     StringTokenizer tok = new StringTokenizer(classpath, File.pathSeparator);
     
     // pathList of the classpath entries
     List<String> pathList = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
     // extract all classpath entries and add them to the pathList
     while (tok.hasMoreTokens()) {
@@ -124,6 +127,7 @@ public class UIMAClassLoader extends URLClassLoader {
    *           if a malformed URL has occurred in the classpath string.
    */
   public UIMAClassLoader(String classpath) throws MalformedURLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5388
     super(Misc.classpath2urls(classpath));
     commonInit();
   }
@@ -136,6 +140,7 @@ public class UIMAClassLoader extends URLClassLoader {
    */
   public UIMAClassLoader(URL[] classpath) {
     super(classpath);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4501
     commonInit();
   }
   
@@ -166,7 +171,11 @@ public class UIMAClassLoader extends URLClassLoader {
    *           if a malformed URL has occurred in the classpath string.
    */
   public UIMAClassLoader(String classpath, ClassLoader parent) throws MalformedURLException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5388
     super(Misc.classpath2urls(classpath), parent);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4501
+//IC see: https://issues.apache.org/jira/browse/UIMA-4501
+//IC see: https://issues.apache.org/jira/browse/UIMA-4501
     commonInit();
   }
   
@@ -203,12 +212,14 @@ public class UIMAClassLoader extends URLClassLoader {
    * String is like x.y.Foo
    */
   protected Class<?> loadClass(String name, boolean resolve)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ClassNotFoundException {
  
     // requirement: ensure that the protected defineClass() method is called only once for each class loader and class name pair.
     // pick a random syncLock to synchronize
     // Although the sync locks are not one/per/class, there should be enough of them to make the likelyhood
     //   of needing to wait very low (unless it's the same class-name being loaded, of course).
+//IC see: https://issues.apache.org/jira/browse/UIMA-4501
     synchronized (syncLocks[name.hashCode() & (nbrLocks - 1)]) {
       // First, check if the class has already been loaded
       Class<?> c = findLoadedClass(name);
@@ -228,6 +239,7 @@ public class UIMAClassLoader extends URLClassLoader {
       if (resolve) {
         resolveClass(c);
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-3642
       return c;    
   
     }
@@ -241,7 +253,10 @@ public class UIMAClassLoader extends URLClassLoader {
   @Override
   public URL getResource(String name) {
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-5803
+//IC see: https://issues.apache.org/jira/browse/UIMA-5741
     synchronized (syncLocks[name.hashCode() & (nbrLocks - 1)]) { // https://issues.apache.org/jira/browse/UIMA-5741
+//IC see: https://issues.apache.org/jira/browse/UIMA-5435
       URL url = findResource(name);
       
       if (null == url) {

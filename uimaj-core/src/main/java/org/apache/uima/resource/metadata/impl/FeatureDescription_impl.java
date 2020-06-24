@@ -60,6 +60,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
    *          name of the feature's range type
    */
   public FeatureDescription_impl(String aName, String aDescription, String aRangeTypeName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     setName(aName);
     setDescription(aDescription);
     setRangeTypeName(aRangeTypeName);
@@ -83,6 +84,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
    *          represent the case where the user has not specified a value.
    */
   public FeatureDescription_impl(String aName, String aDescription, String aRangeTypeName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aElementTypeName, Boolean aMultipleReferencesAllowed) {
     setName(aName);
     setDescription(aDescription);
@@ -174,6 +176,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("featureDescription",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
               new PropertyXmlInfo("description", false),
               new PropertyXmlInfo("rangeTypeName", true), new PropertyXmlInfo("elementType", true),

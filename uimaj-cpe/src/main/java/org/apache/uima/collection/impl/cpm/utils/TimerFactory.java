@@ -89,6 +89,7 @@ public class TimerFactory {
         if (anObject instanceof UimaTimer) {
           timer = (UimaTimer) anObject;
           if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG,
                     TimerFactory.class.getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_show_timer_class__CONFIG",
@@ -111,6 +112,8 @@ public class TimerFactory {
 
       if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
         UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 TimerFactory.class.getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_java_timer__CONFIG", new Object[] { Thread.currentThread().getName() });
       }

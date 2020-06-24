@@ -120,6 +120,7 @@ public class MessageRouter implements Runnable {
     if (!_stdListeners.contains(listener)) {
       if (_stdHistory.size() > 0) {
         // send previous messages from the queue
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
         Iterator<String> list = _stdHistory.iterator();
         while (list.hasNext()) {
           String entry = list.next();
@@ -192,6 +193,7 @@ public class MessageRouter implements Runnable {
           if (outMessage != null)
             _stdHistory.add(OUT_MSG_ID + "^" + outMessage);
           // send messages to listeners
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
           Iterator<StdChannelListener> list = _stdListeners.iterator();
           while (list.hasNext()) {
             StdChannelListener client = list.next();

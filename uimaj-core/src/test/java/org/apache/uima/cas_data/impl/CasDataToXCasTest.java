@@ -45,6 +45,7 @@ public class CasDataToXCasTest extends TestCase {
    * Test for void generateXCas(CasData)
    */
   public void testGenerateXCasCasData() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       CasData casData = new CasDataImpl();
       FeatureStructure testFS = new FeatureStructureImpl();
@@ -101,6 +102,7 @@ public class CasDataToXCasTest extends TestCase {
      *      java.lang.String, org.xml.sax.Attributes)
      */
     public void startElement(String arg0, String arg1, String arg2, Attributes arg3)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             throws SAXException {
       this.inElement = arg1;
       this.buf = new StringBuffer();

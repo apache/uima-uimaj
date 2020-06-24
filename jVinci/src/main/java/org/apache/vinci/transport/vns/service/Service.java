@@ -108,6 +108,7 @@ public class Service implements ServiceInterface {
 
     if (name.equals("instance"))
       return instance;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 
     if (name.equals("level")) {
       if (level == null || level.equals(""))
@@ -162,6 +163,7 @@ public class Service implements ServiceInterface {
       dict.put("LEVEL", level);
     if (realhost != null)
       dict.put("IP", realhost);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     dict.put("INSTANCE", instance);
     dict.put("MINPORT", minport);
     dict.put("MAXPORT", maxport);
@@ -235,6 +237,7 @@ public class Service implements ServiceInterface {
         str.append("   " + ((Frame) value).toXML());
       } else {
         str.append("   <" + xmlquote(key.toString()) + ">" + xmlquote(value.toString()) + "</"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 + xmlquote(key.toString()) + ">\n");
       }
     }
@@ -285,6 +288,7 @@ public class Service implements ServiceInterface {
   }
 
   public String toString() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return "NAME/REALHOST/LEVEL/INSTANCE=" + name + "/" + getHostByName(host) + "/" + level + "/"
             + instance;
   }

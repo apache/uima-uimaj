@@ -45,6 +45,7 @@ public class ResolveResult extends Frame {
 
   static public TransportableFactory factory = new TransportableFactory() {
     public Transportable makeTransportable() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       return new ResolveResult();
     }
   };

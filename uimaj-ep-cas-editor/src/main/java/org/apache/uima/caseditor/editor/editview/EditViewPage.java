@@ -159,6 +159,7 @@ final class EditViewPage extends Page implements ISelectionListener {
           else {
             editor = new TextCellEditor(viewer.getTree());
             editor.setValidator(CellEditorValidatorFacotory.createValidator(Primitives
+//IC see: https://issues.apache.org/jira/browse/UIMA-2148
                     .getPrimitiveClass(value.getFeatureStructure().getCAS().getTypeSystem(), value.getFeature())));
           }
 
@@ -176,6 +177,8 @@ final class EditViewPage extends Page implements ISelectionListener {
         CellEditor editor;
 
         if (arrayFS instanceof BooleanArrayFS) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2298
+//IC see: https://issues.apache.org/jira/browse/UIMA-2298
           editor = new CheckboxCellEditor(viewer.getTree(), SWT.CHECK);
         }
         else {
@@ -224,10 +227,12 @@ final class EditViewPage extends Page implements ISelectionListener {
         // otherwise return boolean number
         if (!featureValue.getFeature().getRange().getName().equals(
                 CAS.TYPE_NAME_BOOLEAN)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2148
           return Primitives.getPrimitive(featureValue.getFeatureStructure(), featureValue.getFeature()).toString();
         }
         else {
           // for booleans
+//IC see: https://issues.apache.org/jira/browse/UIMA-2298
           return Primitives.getPrimitive(featureValue.getFeatureStructure(), featureValue.getFeature());
         }
 
@@ -240,6 +245,7 @@ final class EditViewPage extends Page implements ISelectionListener {
             return value.get().toString();
           }
           else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2298
             return value.get();
           }
       }
@@ -269,6 +275,7 @@ final class EditViewPage extends Page implements ISelectionListener {
             }
           }
           else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2298
             featureValue.getFeatureStructure().setBooleanValue(featureValue.getFeature(),(Boolean) value);
           }
           document.update(featureValue.getFeatureStructure());
@@ -283,6 +290,7 @@ final class EditViewPage extends Page implements ISelectionListener {
             arrayValue.set((String) value);
           }
           else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2298
             arrayValue.set(value.toString());
           }
 
@@ -387,6 +395,7 @@ final class EditViewPage extends Page implements ISelectionListener {
      */
     FeatureStructure createFS(Type type, int arraySize) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2298
       if (type.isPrimitive()) {
         throw new IllegalArgumentException("Cannot create FS for primitive type!");
       }
@@ -425,6 +434,7 @@ final class EditViewPage extends Page implements ISelectionListener {
             fs = document.getCAS().createArrayFS(arraySize);
             break;
           default:
+//IC see: https://issues.apache.org/jira/browse/UIMA-2040
             throw new CasEditorError("Unkown array type: " + type.getName() + "!");
         }
       }
@@ -604,7 +614,9 @@ final class EditViewPage extends Page implements ISelectionListener {
    * @param document the document
    */
   EditViewPage(EditView editView, ICasEditor editor, ICasDocument document) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1520
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2298
 	if (editView == null || document == null) {
 		throw new IllegalArgumentException("Parameters must not be null!");
 	}
@@ -642,6 +654,8 @@ final class EditViewPage extends Page implements ISelectionListener {
 
     FeatureStructureContentProvider contentProvider =
         new FeatureStructureContentProvider(document);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 
     viewer.setContentProvider(contentProvider);
 
@@ -700,6 +714,7 @@ final class EditViewPage extends Page implements ISelectionListener {
               FeatureValue value = (FeatureValue) tableItem.getData();
 
               TypeSystem typeSystem = value.getFeatureStructure().getCAS().getTypeSystem();
+//IC see: https://issues.apache.org/jira/browse/UIMA-1404
 
               Type range = value.getFeature().getRange();
 
@@ -797,6 +812,7 @@ final class EditViewPage extends Page implements ISelectionListener {
 
   @Override
   public void setFocus() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
     viewer.getControl().setFocus();
   }
 
@@ -820,6 +836,7 @@ final class EditViewPage extends Page implements ISelectionListener {
     // delete action
     DeleteFeatureStructureValue deleteAction = new DeleteFeatureStructureValue();
     actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
 
     getSite().getSelectionProvider().addSelectionChangedListener(deleteAction);
 
@@ -830,6 +847,7 @@ final class EditViewPage extends Page implements ISelectionListener {
   @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
     if (getSite().getPage().getActiveEditor() == editor) {
       if (selection instanceof IStructuredSelection) {
 
@@ -850,6 +868,8 @@ final class EditViewPage extends Page implements ISelectionListener {
   @Override
   public void dispose() {
     getSite().getPage().removeSelectionListener(this);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     super.dispose();
   }
 }

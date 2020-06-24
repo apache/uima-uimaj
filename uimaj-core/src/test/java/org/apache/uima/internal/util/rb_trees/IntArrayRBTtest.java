@@ -33,6 +33,7 @@ public class IntArrayRBTtest extends TestCase {
   static {  
 //     long seed = 7853174522311867210L;
      long seed = rand.nextLong();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4378
      rand.setSeed(seed);
      System.out.println("IntArrayRBTtest seed is " + seed);
   }
@@ -102,6 +103,7 @@ public class IntArrayRBTtest extends TestCase {
   
   
   public void testFindInsertionPoint() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4171
     IntArrayRBT ia = new IntArrayRBT();
     Integer[] vs = new Integer[] {2, 2, 5, 1, 6, 7, 3, 4};
     for (Integer i : vs) {
@@ -116,6 +118,7 @@ public class IntArrayRBTtest extends TestCase {
   public void testIterator() {
     IntArrayRBT ia = new IntArrayRBT();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4378
     ia.insertKey(4);
     ia.insertKey(8);
     ia.insertKey(2);

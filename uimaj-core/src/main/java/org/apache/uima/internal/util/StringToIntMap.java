@@ -39,7 +39,9 @@ public class StringToIntMap {
    * @see java.lang.Object#Object()
    */
   public StringToIntMap() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     this.map = new HashMap<>();
   }
 
@@ -69,6 +71,7 @@ public class StringToIntMap {
     if (i == null) {
       return DEFAULT_VALUE;
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     return i;
   }
 
@@ -87,6 +90,7 @@ public class StringToIntMap {
     if (i == null) {
       rc = 0;
     } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       rc = i;
     }
     i = value;

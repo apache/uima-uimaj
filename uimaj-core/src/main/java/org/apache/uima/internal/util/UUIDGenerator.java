@@ -50,6 +50,7 @@ public abstract class UUIDGenerator {
     // host ID appears to be first part of VMID - the rest of the VMID is
     // repeated in each UID
     int colonOffset = vmid.indexOf(':');
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (colonOffset > 0) {
       mHostId = vmid.substring(0, colonOffset + 1);
     } else {

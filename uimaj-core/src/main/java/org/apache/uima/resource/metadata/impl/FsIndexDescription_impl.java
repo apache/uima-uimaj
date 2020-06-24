@@ -99,8 +99,10 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
    * @see FsIndexDescription#setKeys(FsIndexKeyDescription[])
    */
   public void setKeys(FsIndexKeyDescription[] aKeys) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (aKeys == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new Object[] { "null", "aKeys", "setKeys" });
     }
     mKeys = aKeys;
@@ -111,6 +113,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fsIndexDescription",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           new PropertyXmlInfo[] { new PropertyXmlInfo("label"), new PropertyXmlInfo("typeName"),
               new PropertyXmlInfo("kind"), new PropertyXmlInfo("keys", true)
 

@@ -79,6 +79,7 @@ public class DebugFSLogicalStructure {
 
     public UnexpandedFeatureStructures(FSIndex<? extends FeatureStructure> fsIndex) {
       this.fsIndex = fsIndex;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       isIndex = true;
     }
 
@@ -122,6 +123,7 @@ public class DebugFSLogicalStructure {
      */
     public String toString() {
       SofaFS sofaFS = cas.getSofa();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (null == sofaFS)
         return "No Sofa";
       return sofaFS.getSofaID();
@@ -187,14 +189,17 @@ public class DebugFSLogicalStructure {
       FSIndexRepository ir = cas.getIndexRepository();
       Type type = fsIndex.getType();
       List<Type> subtypes = cas.getTypeSystem().getProperlySubsumedTypes(type);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
 
       DebugNameValuePair[] r = new DebugNameValuePair[subtypes.size()];
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       int i = 0;
       Iterator<Type> it = subtypes.iterator();
       while (it.hasNext()) {
         Type stype = it.next();
         r[i++] = new DebugNameValuePair("Type: " + stype.getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 new UnexpandedFeatureStructures(ir.getIndex(indexName, stype)));
       }
       return r;
@@ -212,6 +217,7 @@ public class DebugFSLogicalStructure {
 
   public static Object getDebugLogicalStructure_FeatureStructure(FeatureStructure fs) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (fs instanceof StringArrayFS) {
       return ((StringArrayFS) fs).toArray();
     }
@@ -243,6 +249,7 @@ public class DebugFSLogicalStructure {
     DebugNameValuePair[] result;
     String typeName = fsType.getName();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
     List<Feature> features = fsType.getFeatures();
     int nbrFeats = features.size();
     boolean isAnnotation = false;
@@ -255,7 +262,9 @@ public class DebugFSLogicalStructure {
       isAnnotation = true;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     result = new DebugNameValuePair[(isJCasClass ? 0 : 1) // slot for type name if not JCas
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + (isAnnotation ? 3 : nbrFeats) // annotations have 4 slot display
     ];
     int i = 0;
@@ -269,6 +278,7 @@ public class DebugFSLogicalStructure {
       result[i++] = new DebugNameValuePair("Features", featResults);
       result[i++] = new DebugNameValuePair("Covered Text", ((AnnotationFS) fs).getCoveredText());
       result[i++] = new DebugNameValuePair("SubAnnotations", new UnexpandedFeatureStructures(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               (AnnotationFS) fs));
     } else {
       fillFeatures(result, isJCasClass ? 0 : 1, fs, features);
@@ -278,6 +288,7 @@ public class DebugFSLogicalStructure {
   }
 
   private static void fillFeatures(DebugNameValuePair[] result, int startOffset,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
           FeatureStructure fs, List<Feature> features) {
     int nbrFeats = features.size();
     int i = startOffset;
@@ -286,6 +297,7 @@ public class DebugFSLogicalStructure {
       DebugNameValuePair nv = new DebugNameValuePair(feat.getShortName(), null);
       String rangeTypeName = feat.getRange().getName();
       if ("uima.cas.Integer".equals(rangeTypeName))
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
         nv.setValue(fs.getIntValue(feat));
       else if ("uima.cas.Float".equals(rangeTypeName))
         nv.setValue(fs.getFloatValue(feat));
@@ -319,6 +331,7 @@ public class DebugFSLogicalStructure {
       isJCasClass = true;
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     DebugNameValuePair[] result = new DebugNameValuePair[3 + (isJCasClass ? 0 : 1)]; // slot for
     // type name
     // if not JCas
@@ -411,6 +424,7 @@ public class DebugFSLogicalStructure {
 
   public static IndexInfo[] getIndexes(CAS cas) {
     Iterator<String> it = cas.getIndexRepository().getLabels();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<IndexInfo> ll = new ArrayList<>();
     while (it.hasNext()) {
       ll.add(new IndexInfo(cas, it.next()));
@@ -421,6 +435,7 @@ public class DebugFSLogicalStructure {
 
   public static ViewInfo[] getOtherViews(CAS cas) {
     Iterator<SofaFS> sofaIt = cas.getSofaIterator();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<ViewInfo> r = new ArrayList<>();
     while (sofaIt.hasNext()) {
       SofaFS item = sofaIt.next();
@@ -437,6 +452,7 @@ public class DebugFSLogicalStructure {
 
   @SuppressWarnings("unchecked")
   private static <T> T[] iteratorToArray(Iterator<? extends T> it, Class<T> c) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<T> items = new ArrayList<>();
     while (it.hasNext()) {
       items.add(it.next());
@@ -446,6 +462,7 @@ public class DebugFSLogicalStructure {
 
   public static Object floatListToArray(FeatureStructure fs) {
     List<Float> list = new ArrayList<>();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
 
     TypeSystem ts = fs.getCAS().getTypeSystem();
     Type emptyFSList = ts.getType("uima.cas.EmptyFloatList");
@@ -454,6 +471,7 @@ public class DebugFSLogicalStructure {
     Set<FeatureStructure> alreadySeen = new HashSet<>();
     FeatureStructure nextFs;
     for (FeatureStructure currentFs = fs; currentFs.getType() != emptyFSList; currentFs = nextFs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       list.add(currentFs.getFloatValue(headFeature));
       nextFs = currentFs.getFeatureValue(tailFeature);
       if (alreadySeen.contains(nextFs)) {
@@ -469,6 +487,7 @@ public class DebugFSLogicalStructure {
   }
 
   public static Object integerListToArray(FeatureStructure fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<Integer> list = new ArrayList<>();
     TypeSystem ts = fs.getCAS().getTypeSystem();
     Type emptyFSList = ts.getType("uima.cas.EmptyIntegerList");
@@ -478,6 +497,7 @@ public class DebugFSLogicalStructure {
     Set<FeatureStructure> alreadySeen = new HashSet<>();
     FeatureStructure nextFs;
     for (FeatureStructure currentFs = fs; currentFs.getType() != emptyFSList; currentFs = nextFs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       list.add(currentFs.getIntValue(headFeature));
       nextFs = currentFs.getFeatureValue(tailFeature);
       if (alreadySeen.contains(nextFs)) {
@@ -493,6 +513,7 @@ public class DebugFSLogicalStructure {
   }
 
   public static Object stringListToArray(FeatureStructure fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> list = new ArrayList<>();
     TypeSystem ts = fs.getCAS().getTypeSystem();
     Type emptyFSList = ts.getType("uima.cas.EmptyStringList");
@@ -513,6 +534,7 @@ public class DebugFSLogicalStructure {
   }
 
   public static Object fsListToArray(FeatureStructure fs) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<FeatureStructure> list = new ArrayList<>();
     TypeSystem ts = fs.getCAS().getTypeSystem();
     Type emptyFSList = ts.getType("uima.cas.EmptyFSList");
@@ -537,6 +559,7 @@ public class DebugFSLogicalStructure {
     for (int i = 0; i < list.size(); i++) {
       Object v = list.get(i);
       array[i] = (v instanceof Integer) ? ((Integer) v).toString()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               : (v instanceof Float) ? ((Float) v).toString() : list.get(i);
     }
     array[list.size()] = "... loop in list";

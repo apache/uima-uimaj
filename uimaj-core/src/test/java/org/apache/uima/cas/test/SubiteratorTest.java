@@ -103,6 +103,8 @@ public class SubiteratorTest extends TestCase {
     try {
       this.ae.process(jcas);
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
       iterateAndcheck(jcas);
           
       iterateAndcheck(jcas);
@@ -116,11 +118,14 @@ public class SubiteratorTest extends TestCase {
   }
   
   private void iterateAndcheck(JCas jcas) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4379
+//IC see: https://issues.apache.org/jira/browse/UIMA-4352
     AnnotationIndex<Token> tokenIndex = jcas.getAnnotationIndex(Token.class);
     Annotation sentence = jcas.getAnnotationIndex(Sentence.class).iterator().next();
     FSIterator<Token> tokenIterator = tokenIndex.subiterator(sentence);
     Annotation token = tokenIndex.iterator().next();
     // debug token.toString();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4385
     tokenIterator.moveTo(token); //throws ClassCastException 
     
     // check unambiguous iterator creation

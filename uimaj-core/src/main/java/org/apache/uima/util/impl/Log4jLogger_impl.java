@@ -41,13 +41,16 @@ import org.slf4j.Marker;
  */
 public class Log4jLogger_impl extends Logger_common_impl {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
   final static private Object[] zeroLengthArray = new Object[0];
   /**
    * <p>Markers that are for marking levels not supported by log4j.
    * <p>
    * These are log4j class versions of the slf4j markers.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
   final static private org.apache.logging.log4j.Marker LOG4J_CONFIG = m(UIMA_MARKER_CONFIG);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
   final static private org.apache.logging.log4j.Marker LOG4J_FINEST = m(UIMA_MARKER_FINEST);
    
   /**
@@ -127,6 +130,7 @@ public class Log4jLogger_impl extends Logger_common_impl {
   final static private org.apache.logging.log4j.core.filter.AbstractFilter FILTER_CONFIG = 
       makeFilter(org.apache.logging.log4j.Level.INFO, LOG4J_CONFIG);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
   final static private org.apache.logging.log4j.core.filter.AbstractFilter FILTER_FINEST = 
       makeFilter(org.apache.logging.log4j.Level.TRACE, LOG4J_FINEST);
          
@@ -148,7 +152,9 @@ public class Log4jLogger_impl extends Logger_common_impl {
     */
    private Log4jLogger_impl(Class<?> component) {
       super(component);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
       coreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getLogger( (null == component) 
                                        ?  "org.apache.uima"
                                        : component.getName());
@@ -186,6 +192,7 @@ public class Log4jLogger_impl extends Logger_common_impl {
    }
    
    public Log4jLogger_impl getLimitedLogger(int aLimit) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5556
      if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
        return this;
      }
@@ -221,8 +228,10 @@ public class Log4jLogger_impl extends Logger_common_impl {
       case org.apache.uima.util.Level.CONFIG_INT:
          return org.apache.logging.log4j.Level.INFO;
       case org.apache.uima.util.Level.FINE_INT:
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
          return org.apache.logging.log4j.Level.DEBUG;
       case org.apache.uima.util.Level.FINER_INT:
+//IC see: https://issues.apache.org/jira/browse/UIMA-5293
         return org.apache.logging.log4j.Level.TRACE;
       case org.apache.uima.util.Level.FINEST_INT:
         return org.apache.logging.log4j.Level.TRACE;
@@ -248,6 +257,7 @@ public class Log4jLogger_impl extends Logger_common_impl {
        return r == Result.ACCEPT ||
               (r == Result.NEUTRAL && coreLogger.isEnabled(org.apache.logging.log4j.Level.TRACE));
      }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
      if (level == Level.FINEST) {
        Result r = filterTest(org.apache.logging.log4j.Level.TRACE, LOG4J_FINEST);
        return r == Result.ACCEPT ||
@@ -292,6 +302,7 @@ public class Log4jLogger_impl extends Logger_common_impl {
        coreLogger.get().removeFilter(FILTER_CONFIG);
      }
      
+//IC see: https://issues.apache.org/jira/browse/UIMA-5343
      if (level == Level.FINEST) {
        coreLogger.get().addFilter(FILTER_FINEST);
      } else {
@@ -312,6 +323,7 @@ public class Log4jLogger_impl extends Logger_common_impl {
    }
 
    public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5571
      if (thrown != null) {
        assert args == null;
        logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), message, thrown);

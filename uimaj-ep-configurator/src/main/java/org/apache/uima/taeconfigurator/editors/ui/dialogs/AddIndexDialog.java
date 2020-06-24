@@ -152,6 +152,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
 
     indexNameUI = newLabeledSingleLineStyledText(twoCol, "Index Name:",
             "The globally unique index name");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     indexKindUI = newLabeledCCombo(twoCol, "Index Kind:",
             "Specify the kind of index - sorted, set, or bag");
@@ -161,8 +162,10 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
 
     new Label(twoCol, SWT.NONE).setText("CAS Type");
     indexTypeUI = newTypeInput(section, twoCol);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
 
     setTextAndTip(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             keyTable = new Label(twoCol, SWT.NONE),
             "Index Keys:",
             "For Set and Sorted index kinds, specify the keys; for Sorted indexes specify also the sort direction.");
@@ -202,6 +205,8 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     section.packTable(table);
     indexKindUI.addListener(SWT.Modify, this);
     boolean showKeys = "sorted".equals(indexKindUI.getText())
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             || "set".equals(indexKindUI.getText());
     tableContainer.setVisible(showKeys);
     keyTable.setVisible(showKeys);
@@ -213,6 +218,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
    */
   @Override
   public TypesWithNameSpaces getTypeSystemInfoList() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2
     TypesWithNameSpaces result = super.getTypeSystemInfoList();
     String[] allTypes = getAllTypesAsSortedArray();
     for (int i = 0; i < allTypes.length; i++) {
@@ -248,6 +254,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     } else {
       item.setText(0, key.getFeatureName());
       item.setText(1, key.getComparator() == FSIndexComparator.STANDARD_COMPARE ? STANDARD
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               : REVERSE);
     }
   }
@@ -287,6 +294,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
       TableItem[] items = table.getItems();
       AbstractSection.swapTableItems(items[i + 1], i + 1);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-364
     super.handleEvent(event);
   }
 
@@ -332,6 +340,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
    */
   private FsIndexKeyDescription makeKey(TableItem item) {
     FsIndexKeyDescription key = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .createFsIndexKeyDescription();
     boolean typePriority = TYPE_PRIORITY.equals(item.getText(1));
     key.setTypePriority(typePriority);
@@ -352,6 +361,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
       return false;
     if (!indexName.equals(originalIndexName) && indexSection.isDuplicateIndexLabel(indexName)) {
       errorMessageUI
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .setText("The name on this index duplicates anexisting name.  Please specify a globally unique name.");
       return false;
     }

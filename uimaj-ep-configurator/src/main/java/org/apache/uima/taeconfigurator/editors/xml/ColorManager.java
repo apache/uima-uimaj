@@ -40,6 +40,7 @@ public class ColorManager {
    * Dispose.
    */
   public void dispose() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     Iterator e = fColorTable.values().iterator();
     while (e.hasNext())
       ((Color) e.next()).dispose();

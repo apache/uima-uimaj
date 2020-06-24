@@ -49,6 +49,7 @@ public class EditInstallationDescriptorAction implements IObjectActionDelegate {
    * Constructor.
    */
   public EditInstallationDescriptorAction() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
   }
 
@@ -79,6 +80,7 @@ public class EditInstallationDescriptorAction implements IObjectActionDelegate {
       // create the wizard
       EditInstallationDescriptorWizard wizard = new EditInstallationDescriptorWizard(installFile
               .getProject());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // Initialize the wizard
       wizard.init(PlatformUI.getWorkbench(), ssel);
@@ -92,6 +94,7 @@ public class EditInstallationDescriptorAction implements IObjectActionDelegate {
     } catch (Throwable e) {
       e.printStackTrace();
       MessageDialog.openWarning(shell, "Action not supported",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "This action was not supported for the selected item. ");
     }
   }

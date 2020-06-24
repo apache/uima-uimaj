@@ -79,6 +79,7 @@ public class FileUtil {
      *           <code>Comparator</code>.
      */
     public int compare(File o1, File o2) throws ClassCastException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
       long t1 = o1.lastModified();
       long t2 = o2.lastModified();
       return (t1 >= t2) ? -1 : 1;
@@ -313,6 +314,7 @@ public class FileUtil {
    */
   public static int cleanUpDirectoryFiles(File directory, int maxLimit) throws IOException {
     int counter = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Collection<File> fileList = createFileList(directory, false);
     SortedSet<File> sortedFileSet = sortFileListByTime(fileList);
     if (sortedFileSet.size() > maxLimit) {
@@ -388,6 +390,7 @@ public class FileUtil {
    */
   @Deprecated
   public static boolean copyFile(File source, File destination) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (BufferedInputStream iStream = new BufferedInputStream(new FileInputStream(source));
          BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(destination))) {
       byte[] block = new byte[4096];
@@ -414,6 +417,7 @@ public class FileUtil {
    */
   @Deprecated
   public static boolean copyFile(URL sourceUrl, File destination) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (BufferedInputStream iStream = new BufferedInputStream(sourceUrl.openStream());
          BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(destination))) {
       byte[] block = new byte[4096];
@@ -458,6 +462,7 @@ public class FileUtil {
    *              If any I/O exception occurs.
    */
   public static Collection<File> createDirList(File rootDir, boolean includeSubdirs) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<File> listOfDirs = new ArrayList<>();
     File[] allDirFiles = rootDir.listFiles();
     if (allDirFiles == null)
@@ -486,6 +491,7 @@ public class FileUtil {
    *           If any I/O exception occurs.
    */
   public static Collection<File> createDirList(JarFile archive) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<File> listOfDirs = new ArrayList<>();
     // set root_dir_path = archive_file_path (w/o file name extension)
     int nameEndIndex = archive.getName().lastIndexOf('.');
@@ -544,6 +550,7 @@ public class FileUtil {
    *              If any I/O exception occurs.
    */
   public static Collection<File> createFileList(File filesDir, boolean includeSubdirs) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<File> listOfFiles = new ArrayList<>();
     File[] allDirFiles = filesDir.listFiles();
     if (allDirFiles == null)
@@ -570,10 +577,13 @@ public class FileUtil {
    *           If any I/O exception occurs.
    */
   public static Collection<File> createFileList(JarFile archive) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<File> listOfFiles = new ArrayList<>();
     // set root_dir_path = archive_file_path (w/o file name extension)
     int nameEndIndex = archive.getName().lastIndexOf('.');
     String rootDirPath = (nameEndIndex > 0) ? archive.getName().substring(0, nameEndIndex)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             : archive.getName();
     File rootDir = new File(rootDirPath);
     // add directories to the list
@@ -666,6 +676,7 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static long extractDirectoryFromJar(JarFile jarFile, String dirPath, File targetDir)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     return extractFilesFromJar(jarFile, targetDir, new DirFileFilter(dirPath, null));
   }
@@ -686,6 +697,7 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static long extractFilesWithExtFromJar(JarFile jarFile, String fileExt, File targetDir)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     return extractFilesFromJar(jarFile, targetDir, new DirFileFilter(null, fileExt));
   }
@@ -720,9 +732,11 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static long extractFilesFromJar(JarFile jarFile, File targetDir, FileFilter filter)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     long totalBytes = 0;
     byte[] block = new byte[4096];
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     Enumeration<JarEntry> jarList = jarFile.entries();
     while (jarList.hasMoreElements()) {
       JarEntry jarEntry = jarList.nextElement();
@@ -736,6 +750,7 @@ public class FileUtil {
         File dir = file.getParentFile();
         if (!dir.exists() && !dir.mkdirs())
           throw new IOException("could not create directory " + dir.getAbsolutePath());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
         try (BufferedInputStream iStream = new BufferedInputStream(jarFile.getInputStream(jarEntry));
              BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(file))) {
           int bCount = 0;
@@ -941,6 +956,7 @@ public class FileUtil {
    */
   public static String[] loadListOfStrings(BufferedReader iStream) throws IOException {
     String[] outputArray = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     List<String> outputList = new ArrayList<>();
     String line = null;
     while ((line = iStream.readLine()) != null) {
@@ -968,6 +984,7 @@ public class FileUtil {
    */
   @Deprecated
   public static String[] loadListOfStrings(File textFile) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     String[] outputArray;
     try (BufferedReader iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile)))) {
       outputArray = loadListOfStrings(iStream);
@@ -988,6 +1005,7 @@ public class FileUtil {
     URLConnection urlConnection = textFileURL.openConnection();
     // See https://issues.apache.org/jira/browse/UIMA-1746
     urlConnection.setUseCaches(false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     String[] outputArray;
     try (BufferedReader iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
       outputArray = loadListOfStrings(iStream);
@@ -1008,11 +1026,13 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static Properties loadPropertiesFromJar(String propFilePath, JarFile jarFile)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     Properties properties = null;
     String name = propFilePath.replace('\\', '/');
     JarEntry jarEntry = jarFile.getJarEntry(name);
     if (jarEntry != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
       try (InputStream iStream = jarFile.getInputStream(jarEntry)) {
         properties = new Properties();
         properties.load(iStream);
@@ -1067,6 +1087,7 @@ public class FileUtil {
    */
   @Deprecated
   public static String loadTextFile(File textFile) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     String content;
     try (BufferedReader iStream = new BufferedReader(new FileReader(textFile))) {
       content = loadTextFile(iStream);
@@ -1090,6 +1111,7 @@ public class FileUtil {
    */
   @Deprecated
   public static String loadTextFile(File textFile, String encoding) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (BufferedReader iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), encoding))) {
       return loadTextFile(iStream);
     }
@@ -1122,6 +1144,7 @@ public class FileUtil {
    */
   public static String loadTextFile(URLConnection urlConnection) throws IOException {
     // See https://issues.apache.org/jira/browse/UIMA-1746
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     urlConnection.setUseCaches(false);
     try (BufferedReader iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
       return loadTextFile(iStream);
@@ -1145,6 +1168,7 @@ public class FileUtil {
     String name = filePath.replace('\\', '/');
     JarEntry jarEntry = jarFile.getJarEntry(name);
     if (jarEntry != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
       try (BufferedReader iStream = new BufferedReader(new InputStreamReader(jarFile.getInputStream(jarEntry)))) {
         content = loadTextFile(iStream);
       }
@@ -1217,6 +1241,7 @@ public class FileUtil {
    *           If any I/O exception occurs.
    */
   public static int replaceStringInFile(File textFile, String subStringRegex, String replacement)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws IOException {
     int counter = 0;
     // for general text file - supporting ASCII encoding only
@@ -1227,6 +1252,7 @@ public class FileUtil {
     if (".xml".equalsIgnoreCase(fileExt)) {
       // for XML file - supporting UTF-8 (ASCII) and UTF-16 encodings
       String xmlEncoding = XMLUtil.detectXmlFileEncoding(textFile);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1268
       if (xmlEncoding != null) {
         encoding = xmlEncoding;
       } else {
@@ -1303,6 +1329,7 @@ public class FileUtil {
    * @return The list of files sorted by the 'last modified' time in the descending order.
    */
   public static SortedSet<File> sortFileListByTime(Collection<File> fileList) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     TreeSet<File> set = new TreeSet<>(new FileTimeComparator());
     set.addAll(fileList);
     return set;
@@ -1337,6 +1364,7 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static File zipDirectory(File dir2zip, File zippedFile) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (ZipOutputStream zoStream = new ZipOutputStream(new FileOutputStream(zippedFile))) {
       // open compressed output stream
       // add output zip file to exclusions
@@ -1366,6 +1394,7 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static ZipOutputStream zipDirectory(File dir2zip, ZipOutputStream zoStream,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           File referenceDir, File[] excludeFiles) throws IOException {
     byte[] block = new byte[4096];
     int inBytes = 0;
@@ -1392,6 +1421,7 @@ public class FileUtil {
           iStream = new FileInputStream(entry);
           // put ZipEntry for the file
           String zipEntryName = (referenceDir != null) ? getRelativePath(referenceDir, entry
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getAbsolutePath()) : getRelativePath(dir2zip, entry.getAbsolutePath());
           ZipEntry zipEntry = new ZipEntry(zipEntryName);
           zoStream.putNextEntry(zipEntry);
@@ -1429,6 +1459,7 @@ public class FileUtil {
     String zipFileName = file2zip.getName();
     int extIndex = zipFileName.lastIndexOf('.');
     zipFileName = (extIndex >= 0) ? zipFileName.substring(0, extIndex) + ".zip" : zipFileName
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + ".zip";
     File zipFile = new File(file2zip.getParentFile(), zipFileName);
     return zipFile(file2zip, zipFile);

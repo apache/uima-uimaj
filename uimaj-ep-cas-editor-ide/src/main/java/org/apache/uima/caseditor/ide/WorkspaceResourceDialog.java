@@ -36,6 +36,7 @@ import org.eclipse.ui.views.navigator.ResourceSorter;
 public class WorkspaceResourceDialog 
 {
     public static IResource getWorkspaceResourceElement (Shell shell, IResource root,
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
                                     String dialogTitle, String dialogMessage) 
     {
         IResource resource = null;

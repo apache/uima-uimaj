@@ -113,6 +113,7 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
         outFileName += ".xmi";
         outFile = new File(mOutputDir, outFileName);
         modelFileName = mOutputDir.getAbsolutePath() + "/" + inFile.getName() + ".ecore";
+//IC see: https://issues.apache.org/jira/browse/UIMA-1879
       } catch (URISyntaxException e) {
         // bad URI, use default processing below
       }
@@ -144,6 +145,7 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
    */
   private void writeXmi(CAS aCas, File name, String modelFileName) throws IOException, SAXException {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
     try (FileOutputStream out = new FileOutputStream(name)) {
       // write XMI
       XmiCasSerializer ser = new XmiCasSerializer(aCas.getTypeSystem());

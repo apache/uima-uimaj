@@ -37,11 +37,13 @@ import java.util.logging.LogRecord;
 public class UIMALogFormatter extends Formatter {
 
   SimpleDateFormat tsFormatter = new SimpleDateFormat( "hh:mm:ss.SS" ); 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2485
 
   private static final String CRLF = System.getProperties().getProperty("line.separator");
 
   public synchronized String format(LogRecord record) {
     // if record is null, return an empty String
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (record == null) {
       return "";
     }
@@ -50,6 +52,7 @@ public class UIMALogFormatter extends Formatter {
 
     // create timestamp
     Date timestamp = new Date(record.getMillis());
+//IC see: https://issues.apache.org/jira/browse/UIMA-2485
     String timestampStr = tsFormatter.format(timestamp);
     // append timestamp to the output string
     buffer.append(timestampStr);
@@ -68,6 +71,7 @@ public class UIMALogFormatter extends Formatter {
 
     // append source method if logrb() was used
     if (record.getSourceMethodName() != null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3823
       buffer.append('.');
       buffer.append(record.getSourceMethodName());
     }

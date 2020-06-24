@@ -55,6 +55,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
    * Instantiates a new preference page.
    */
   public PreferencePage() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(GRID);
     setPreferenceStore(TAEConfiguratorPlugin.getDefault().getPreferenceStore());
     setDescription("UIMA Component Descriptor Editor Preferences");
@@ -82,8 +83,10 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     addField(new BooleanFieldEditor(P_JCAS, "&Automatically run JCasGen when Types change",
             getFieldEditorParent()));
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
     addField(new BooleanFieldEditor(P_JCAS_LIMIT_TO_PROJECT_SCOPE, "&Limit JCasGen to types defined in this project",
         getFieldEditorParent()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     addField(new BooleanFieldEditor(P_SHOW_FULLY_QUALIFIED_NAMES, "&Show fully qualified names",
             getFieldEditorParent()));

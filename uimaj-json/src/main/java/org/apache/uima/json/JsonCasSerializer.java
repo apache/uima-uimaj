@@ -166,6 +166,7 @@ public class JsonCasSerializer {
    *
    */
   public enum JsonContextFormat {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     omitContext,      // omit the entire context  
     omitSubtypes,       
     omitExpandedTypeNames,
@@ -174,6 +175,7 @@ public class JsonCasSerializer {
   private final CasSerializerSupport css = new CasSerializerSupport();
   
   // for testing
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
   CasSerializerSupport getCss() {
     return css;
   }
@@ -222,6 +224,7 @@ public class JsonCasSerializer {
    * @throws IOException if there was an IOException
    */
   public static void jsonSerialize(CAS aCAS, Object output) throws IOException {  
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     jsonSerialize(aCAS, null, output, false, null, null);
   }
 
@@ -242,6 +245,7 @@ public class JsonCasSerializer {
    */
   public static void jsonSerialize(CAS aCAS, TypeSystem aTargetTypeSystem, Object output)
           throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     jsonSerialize(aCAS, aTargetTypeSystem, output, false, null, null);
   }
 
@@ -269,6 +273,7 @@ public class JsonCasSerializer {
    * @throws IOException if there was an IOException
    */
   public static void jsonSerialize(CAS aCAS, TypeSystem aTargetTypeSystem, Object output, boolean aPrettyPrint, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
       Marker aMarker, XmiSerializationSharedData sharedData) 
           throws IOException {
     JsonCasSerializer ser = new JsonCasSerializer();
@@ -305,6 +310,7 @@ public class JsonCasSerializer {
    * @throws IOException if there was an IOException
    */
   public void serialize(CAS cas, Object output) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     serialize(cas, output, null, null);
   }
   
@@ -327,6 +333,7 @@ public class JsonCasSerializer {
    * @throws IOException if there was an IOException 
    */
   public void serialize(CAS cas, JsonContentHandlerJacksonWrapper jch) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     serialize(cas, jch, null, null);
   } 
   
@@ -379,6 +386,7 @@ public class JsonCasSerializer {
   }
   
   public JsonCasSerializer setTypeSystemReference(String reference) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     typeSystemReference = reference;
     return this;
   }
@@ -411,6 +419,7 @@ public class JsonCasSerializer {
    * @return the original instance, possibly updated
    */
   public JsonCasSerializer setStaticEmbedding() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
     isDynamicEmbedding = false;
     return this;
   }
@@ -425,6 +434,7 @@ public class JsonCasSerializer {
   public JsonCasSerializer setJsonContext(JsonContextFormat format) {
     switch (format) {
     case omitContext: 
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
       isWithContext = false;                                                             
       isWithSubtypes = false;
       isWithExpandedTypeNames = false; break;
@@ -439,6 +449,8 @@ public class JsonCasSerializer {
   }
       
   public JsonCasSerializer setOmit0Values(boolean omitDefaultValues) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
     isOmit0Values = omitDefaultValues;
     return this;
   }
@@ -503,11 +515,14 @@ public class JsonCasSerializer {
     
     private JsonDocSerializer(ContentHandler ch, CASImpl cas, XmiSerializationSharedData sharedData, MarkerImpl marker) {
       cds = css.new CasDocSerializer(ch, cas, sharedData, marker, this, JsonCasSerializer.this.isDynamicEmbedding);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
       this.isOmitDefaultValues = JsonCasSerializer.this.isOmit0Values;  
       isWithSubtypes = JsonCasSerializer.this.isWithSubtypes; 
       jch = (JsonContentHandlerJacksonWrapper) ch;
       jg = jch.getJsonGenerator();
       isWithContext = JsonCasSerializer.this.isWithContext || isWithSubtypes || isWithExpandedTypeNames; 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
       usedTypeName2XmlElementName = new HashMap<>(cds.tsi.getNumberOfTypes());
     }
     
@@ -518,6 +533,8 @@ public class JsonCasSerializer {
            cds.sharedData.hasOutOfTypeSystemArrayElements())) {
         throw new UnsupportedOperationException("Can't do JSON serialization "
             + "if there are out-of-type-system elements,"
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
             + " because there's no type information available (needed for _context)");
       }
     }
@@ -554,6 +571,7 @@ public class JsonCasSerializer {
       jg.writeFieldName(VIEWS_NAME);
       jg.writeStartObject();
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final List<TOP>[] byViewByTypeFSs = sortByViewType(); 
       
       for (int viewNbr = 1; viewNbr <= byViewByTypeFSs.length; viewNbr++) {
@@ -577,6 +595,8 @@ public class JsonCasSerializer {
         jg.writeEndObject();
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
       jg.writeEndObject();  // end of value for _views
       
       // write the non-embeddable referenced FSs
@@ -592,6 +612,8 @@ public class JsonCasSerializer {
       
     @Override
     protected void writeEndOfSerialization() throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
       jg.writeEndObject(); // wrapper of _context and cas
       jg.flush();
     }
@@ -604,11 +626,13 @@ public class JsonCasSerializer {
     private List<TOP>[] sortByViewType() {
       
       @SuppressWarnings("unchecked")
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final List<TOP>[] r = new List[cds.indexedFSs.length]; 
       
       int i = 0;
       for (final List<TOP> fss : cds.indexedFSs) {
         r[i] = (fss == null) ? Collections.EMPTY_LIST : (List<TOP>) ((ArrayList<TOP>)fss).clone();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
         r[i++].sort(cds.sortFssByType);
       }
       return r;
@@ -640,8 +664,10 @@ public class JsonCasSerializer {
     @Override
     protected void writeView(Sofa sofa, Collection<TOP> added, Collection<TOP> deleted, Collection<TOP> reindexed) throws IOException {
       jch.writeNlJustBeforeNext();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       jg.writeFieldName(cds.getXmiId(sofa));
       jg.writeStartObject();
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
       writeViewForDeltas(ADDED_MEMBERS_NAME, added);
       writeViewForDeltas(DELETED_MEMBERS_NAME, deleted);
       writeViewForDeltas(REINDEXED_MEMBERS_NAME, reindexed);      
@@ -651,6 +677,7 @@ public class JsonCasSerializer {
     private void writeViewMembers(Collection<TOP> members) throws IOException {
       int nextBreak = CasSerializerSupport.PP_ELEMENTS;
       int i = 0;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       for (TOP member : members) {
         int xmiId = cds.getXmiIdAsInt(member);
         if (xmiId == 0) {
@@ -750,8 +777,10 @@ public class JsonCasSerializer {
       }
       
       // write out contexts for types in the supertype chain which have no instances
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       for (final TypeImpl ti : parentTypesWithNoInstances) {
         jch.writeNlJustBeforeNext();      
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         jg.writeFieldName(getSerializedTypeName(ti));
         jg.writeStartObject();
         XmlElementName xe = cds.typeCode2namespaceNames[ti.getCode()];
@@ -769,6 +798,8 @@ public class JsonCasSerializer {
         
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4116
+//IC see: https://issues.apache.org/jira/browse/UIMA-4117
       jg.writeEndObject();  // end of _types
       
       jg.writeEndObject();  // end of _context
@@ -781,6 +812,7 @@ public class JsonCasSerializer {
      * @throws IOException 
      */
     private void addJsonFeatContext(TypeImpl type) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       final FeatureImpl[] feats = type.getFeatureImpls();
       startedFeatureTypes = false;
    
@@ -816,6 +848,7 @@ public class JsonCasSerializer {
      * @throws IOException 
      */
     private void addJsonSubtypes(TypeImpl ti) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       IntVector iv = mapType2Subtypes.get(ti.getCode());
       if (null != iv && iv.size() > 0) {
         jch.writeNlJustBeforeNext();
@@ -847,6 +880,7 @@ public class JsonCasSerializer {
           // https://issues.apache.org/jira/browse/UIMA-5171
           // if parent not contained in tiArray 
           if (Arrays.binarySearch(tiArray, parent, CasSerializerSupport.COMPARATOR_SHORT_TYPENAME) < 0 ) {  
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
             if (!parentTypesWithNoInstances.contains(parent)) {
               parentTypesWithNoInstances.add(parent);
             }
@@ -861,11 +895,13 @@ public class JsonCasSerializer {
     }
     
     private SerializedString getSerializedTypeName(TypeImpl ti) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       XmlElementName xe = cds.typeCode2namespaceNames[ti.getCode()];
       if (null == xe) {
         // happens for supertypes which have no instantiations
         String typeName = ti.getName();
         xe = uimaTypeName2XmiElementName(typeName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5041
         checkForNameCollision(xe);
         cds.typeCode2namespaceNames[ti.getCode()] = xe;
       }
@@ -907,6 +943,7 @@ public class JsonCasSerializer {
     
     @Override
     protected boolean writeFsStart(TOP fs, int typeCode) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
       if (isEmbedded) {
         if (!isEmbeddedFromFsFeature) {
           jch.writeNlJustBeforeNext();  // if from feature, already did nl
@@ -920,6 +957,7 @@ public class JsonCasSerializer {
           startedReferencedFSs = true;
         }
         jch.writeNlJustBeforeNext();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         jg.writeFieldName(cds.getXmiId(fs));
         jg.writeStartObject();  // start of feat : value
       } else { // fs's as arrays under typeName
@@ -946,6 +984,7 @@ public class JsonCasSerializer {
     
     @Override
     protected void writeFsRef(TOP fs) throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
        jg.writeNumber(cds.getXmiIdAsInt(fs));      
     }    
 
@@ -957,8 +996,10 @@ public class JsonCasSerializer {
 //    }
     
     private void maybeWriteTypeFeat(TypeImpl ti) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
       if (indexId || isEmbedded) {
         jg.writeFieldName(TYPE_NAME);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         jg.writeString(getSerializedTypeName(ti));
       }
     }
@@ -1102,6 +1143,7 @@ public class JsonCasSerializer {
      */
     private void writeFsOrRef(TOP fs) throws IOException {
       if (fs == null || !cds.isDynamicMultiRef || cds.multiRefFSs.contains(fs)) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
         jg.writeNumber(cds.getXmiIdAsInt(fs));
       } else {
         isEmbeddedFromFsFeature = false;
@@ -1148,6 +1190,7 @@ public class JsonCasSerializer {
     protected void writeArrays(TOP fs, int typeCode, int typeClass) throws IOException {
 //      maybeWriteIdFeat(addr);
       maybeWriteTypeFeat(fs._getTypeImpl());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
 
       jg.writeFieldName(COLLECTION_NAME);            
       writeJsonArrayValues(fs, typeClass);
@@ -1163,12 +1206,14 @@ public class JsonCasSerializer {
     // 0 length arrays are written as []
     //   Note: FSs can be embedded for FS Arrays
     private void writeJsonArrayValues(TOP array, int arrayType) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (array == null) {
         jg.writeNull();
         return;
       }
       
       cds.visited_not_yet_written.remove(array);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
       CommonArrayFS ca = (CommonArrayFS) array;
       final int array_size = ca.size();
 
@@ -1247,6 +1292,7 @@ public class JsonCasSerializer {
       int ootsIndex = 0;
       TOP[] fsItems = fsArray._getTheArray();
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
       for (int j = 0; j < array_size; j++) {  // j used to id the oots things
         TOP fsItem = fsItems[j];  // int heapValue = cds.cas.getHeapValue(pos++);
 
@@ -1293,10 +1339,12 @@ public class JsonCasSerializer {
      * @throws IOException
      */
     private void writeJsonListValues(TOP curNode) throws IOException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       if (curNode == null) {
         Misc.internalError();
       }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4083
       final PositiveIntSet visited = new PositiveIntSet_impl();
      
       jg.writeStartArray();
@@ -1365,6 +1413,7 @@ public class JsonCasSerializer {
           // we have refs only if the feature has
           // multipleReferencesAllowed = true
           return FEATURE_ARRAY_NAME;   
+//IC see: https://issues.apache.org/jira/browse/UIMA-3969
 
         case LowLevelCAS.TYPE_CLASS_BYTEARRAY:
           return FEATURE_BYTE_ARRAY_NAME;
@@ -1421,6 +1470,7 @@ public class JsonCasSerializer {
     
     private boolean isDynamicOrStaticMultiRef(FeatureImpl fi, TOP fs) {
       return (!cds.isDynamicMultiRef) ? 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
                 cds.isStaticMultiRef(fi) : 
                 cds.multiRefFSs.contains(fs);
     }

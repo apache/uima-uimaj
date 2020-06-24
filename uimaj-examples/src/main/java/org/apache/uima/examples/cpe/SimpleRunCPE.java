@@ -61,6 +61,7 @@ public class SimpleRunCPE extends Thread {
     mStartTime = System.currentTimeMillis();
 
     // check command line args
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (args.length < 1) {
       printUsageMessage();
       System.exit(1);
@@ -69,6 +70,7 @@ public class SimpleRunCPE extends Thread {
     // parse CPE descriptor
     System.out.println("Parsing CPE Descriptor");
     CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new XMLInputSource(args[0]));
     // instantiate CPE
     System.out.println("Instantiating CPE");
@@ -99,6 +101,7 @@ public class SimpleRunCPE extends Thread {
    */
   private static void printUsageMessage() {
     System.out.println(" Arguments to the program are as follows : \n"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + "args[0] : path to CPE descriptor file");
   }
 
@@ -132,6 +135,7 @@ public class SimpleRunCPE extends Thread {
      */
     public void initializationComplete() {      
       System.out.println("CPM Initialization Complete");
+//IC see: https://issues.apache.org/jira/browse/UIMA-380
       mInitCompleteTime = System.currentTimeMillis();
     }
 
@@ -157,8 +161,10 @@ public class SimpleRunCPE extends Thread {
      * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
      */
     public void collectionProcessComplete() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-380
       long time = System.currentTimeMillis();
       System.out.print("Completed " + entityCount + " documents");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (size > 0) {
         System.out.print("; " + size + " characters");
       }

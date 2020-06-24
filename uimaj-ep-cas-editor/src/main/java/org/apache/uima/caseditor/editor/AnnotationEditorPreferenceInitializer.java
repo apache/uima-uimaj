@@ -31,8 +31,10 @@ public class AnnotationEditorPreferenceInitializer extends AbstractPreferenceIni
   @Override
   public void initializeDefaultPreferences() {
     IPreferenceStore store = CasEditorPlugin.getDefault().getPreferenceStore();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2271
     store.setDefault(AnnotationEditorPreferenceConstants.EDITOR_LINE_LENGTH_HINT, 80);
     store.setDefault(AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE, 13);
+//IC see: https://issues.apache.org/jira/browse/UIMA-2011
     store.setDefault(AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM, false);
   }
 }

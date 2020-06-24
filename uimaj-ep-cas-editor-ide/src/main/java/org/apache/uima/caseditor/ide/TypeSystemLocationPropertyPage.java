@@ -93,6 +93,7 @@ public class TypeSystemLocationPropertyPage extends PropertyPage {
     gd = new GridData(GridData.FILL_HORIZONTAL);
     typeSystemText.setLayoutData(gd);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2122
     typeSystemText.addModifyListener(new ModifyListener() {
       
       public void modifyText(ModifyEvent event) {

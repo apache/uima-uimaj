@@ -60,6 +60,7 @@ public interface SofaFS extends FeatureStructure {
    *           if the Sofa data has already been set
    */
   void setRemoteSofaURI(String aURI);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5233
 
   /**
    * Set the Local Subject of Analysis to be a predefined ArrayFS. Once set, the Sofa data cannot be

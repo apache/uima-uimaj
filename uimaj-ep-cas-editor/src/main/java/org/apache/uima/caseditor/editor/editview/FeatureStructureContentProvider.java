@@ -41,6 +41,8 @@ import org.eclipse.swt.widgets.Display;
 /**
  * The Class FeatureStructureContentProvider.
  */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
 final class FeatureStructureContentProvider extends AbstractDocumentListener
         implements ITreeContentProvider {
 
@@ -56,6 +58,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
    * @param document the document
    */
   FeatureStructureContentProvider(ICasDocument document) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1397
 
     if (document == null) {
       throw new IllegalArgumentException("document parameter must not be null!");
@@ -116,6 +119,8 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
         return featureValues.toArray();
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       else {
         int size = arraySize(featureStructure);
 
@@ -135,6 +140,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
   @Override
   public void dispose() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     if (mDocument != null)
       mDocument.removeChangeListener(this);
   }
@@ -154,6 +160,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
   @Override
   public void viewChanged(String oldViewName, String newViewName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-572
     changed();
   }
 
@@ -170,6 +177,8 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
   @Override
   public void removed(Collection<FeatureStructure> deletedFeatureStructure) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     for(FeatureStructure fs : deletedFeatureStructure) {
       if (viewer.getInput() == fs) {
         viewer.setInput(null);
@@ -211,6 +220,8 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
       return getElements(array.get(value.slot()));
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     else {
       throw new CasEditorError("Unexpected element type!");
     }
@@ -240,6 +251,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
       } else {
         result = value.getType().getFeatures().size() > 0;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     } else {
       result = false;
     }
@@ -256,6 +268,8 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
       if (value.getFeature().getRange().isPrimitive()) {
         return false;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       else {
         return hasChildren((FeatureStructure) value.getValue());
       }
@@ -269,6 +283,8 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
         return hasChildren(array.get(value.slot()));
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-2225
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
       else {
         // false for primitive arrays
         return false;

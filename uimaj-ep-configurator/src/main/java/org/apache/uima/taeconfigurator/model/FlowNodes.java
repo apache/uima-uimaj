@@ -43,6 +43,7 @@ public class FlowNodes {
    */
   public FlowNodes(FlowConstraints flow) {
     if (flow instanceof FixedFlow)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       fixedFlow = (FixedFlow) flow;
     else if (flow instanceof CapabilityLanguageFlow)
       capabilityLanguageFlow = (CapabilityLanguageFlow) flow;
@@ -78,6 +79,7 @@ public class FlowNodes {
       return;
     }
     // throw new InternalErrorCDE("invalid state");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return; // ignore in null case
   }
 }

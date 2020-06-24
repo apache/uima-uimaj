@@ -46,6 +46,7 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
   public static boolean typeSystemInitCalled;
 
   public static synchronized String getLastDocument() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     return lastDocument;  
   }
   
@@ -57,6 +58,8 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
    * @see org.apache.uima.analysis_engine.annotator.Annotator#initialize(AnnotatorContext)
    */
   public void initialize(AnnotatorContext aContext) throws AnnotatorConfigurationException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AnnotatorInitializationException {
     super.initialize(aContext);
     typeSystemInitCalled = false;
@@ -79,6 +82,7 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
   public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     // set static fields to contain document text, result spec,
     // and value of StringParam configuration parameter.
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     lastDocument = aCAS.getDocumentText();
     lastResultSpec = aResultSpec;
   }

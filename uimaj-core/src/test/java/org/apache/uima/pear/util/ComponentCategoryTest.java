@@ -55,10 +55,12 @@ public class ComponentCategoryTest extends TestCase {
    * Runs test case for Analysis Engine descriptor.
    */
   public void testAeDescriptor() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File aeDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + AE_DESC_NAME);
     if (!aeDescFile.isFile())
       throw new FileNotFoundException("AE descriptor not found");
     Assert.assertTrue(UIMAUtil.ANALYSIS_ENGINE_CTG.equals(UIMAUtil
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .identifyUimaComponentCategory(aeDescFile)));
   }
 
@@ -66,10 +68,12 @@ public class ComponentCategoryTest extends TestCase {
    * Runs test case for CAS Consumer descriptor.
    */
   public void testCcDescriptor() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File ccDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CC_DESC_NAME);
     if (!ccDescFile.isFile())
       throw new FileNotFoundException("CC descriptor not found");
     Assert.assertTrue(UIMAUtil.CAS_CONSUMER_CTG.equals(UIMAUtil
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .identifyUimaComponentCategory(ccDescFile)));
   }
 
@@ -77,10 +81,12 @@ public class ComponentCategoryTest extends TestCase {
    * Runs test case for CAS Initializer descriptor.
    */
   public void testCiDescriptor() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File ciDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CI_DESC_NAME);
     if (!ciDescFile.isFile())
       throw new FileNotFoundException("CI descriptor not found");
     Assert.assertTrue(UIMAUtil.CAS_INITIALIZER_CTG.equals(UIMAUtil
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .identifyUimaComponentCategory(ciDescFile)));
   }
 
@@ -88,10 +94,12 @@ public class ComponentCategoryTest extends TestCase {
    * Runs test case for Collection Reader descriptor.
    */
   public void testCrDescriptor() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File crDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CR_DESC_NAME);
     if (!crDescFile.isFile())
       throw new FileNotFoundException("CR descriptor not found");
     Assert.assertTrue(UIMAUtil.COLLECTION_READER_CTG.equals(UIMAUtil
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .identifyUimaComponentCategory(crDescFile)));
   }
 
@@ -99,10 +107,13 @@ public class ComponentCategoryTest extends TestCase {
    * Runs test case for Type System descriptor.
    */
   public void testTsDescriptor() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     File tsDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + TS_DESC_NAME);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     if (!tsDescFile.isFile())
       throw new FileNotFoundException("TS descriptor not found");
     Assert.assertTrue(UIMAUtil.TYPE_SYSTEM_CTG.equals(UIMAUtil
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .identifyUimaComponentCategory(tsDescFile)));
   }
 }

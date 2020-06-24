@@ -187,8 +187,10 @@ public class UIMAFramework_impl extends UIMAFramework {
     mDefaultPerformanceTuningProperties = new Properties();
     mDefaultPerformanceTuningProperties.load(UIMAFramework_impl.class
             .getResourceAsStream("performanceTuning.properties"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     // create new HashMap for the LogWrappers
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
     mLoggers = new ConcurrentHashMap<>(200, 1.0f);
   }
 
@@ -197,6 +199,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    */
   @Override
   public short _getMajorVersion() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1834
     return UimaVersion.getMajorVersion(); // major version
   }
 
@@ -254,6 +257,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    */
   @Override
   protected CollectionProcessingManager _newCollectionProcessingManager(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResourceManager aResourceManager) {
     try {
       Class cpmClass = Class.forName(mCpmImplClassName);
@@ -291,6 +295,7 @@ public class UIMAFramework_impl extends UIMAFramework {
     
     // search for the source class logger in the HashMap
     Logger o = mLoggers.get(component.getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
 
     if (o == null) // source class logger not available
     {
@@ -308,6 +313,7 @@ public class UIMAFramework_impl extends UIMAFramework {
             // get static method getInstance(Class component)
             Method instanceMethod = mLoggerClass.getMethod("getInstance", argumentTypes);
             // invoke getInstance(Class component) method and retrieve logger object
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
             o = (Logger) instanceMethod.invoke(null, arguments);
             if (AnalysisComponent_ImplBase.class.isAssignableFrom(component) || 
                 // Watch out: next Annotat_ImplBase class exists in 2 packages, this one is old one, needed for backwards compat.
@@ -328,6 +334,7 @@ public class UIMAFramework_impl extends UIMAFramework {
       }
     }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5324
     return o;
   }
 
@@ -377,6 +384,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    */
   @Override
   protected ResourceManager _newDefaultResourceManagerPearWrapper() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
     try {
       return (ResourceManager) Class.forName(mResourceManagerPearWrapperImplClassName).newInstance();
     } catch (InstantiationException e) {
@@ -447,6 +455,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    */
   @Override
   protected CollectionProcessingEngine _produceCollectionProcessingEngine(
+//IC see: https://issues.apache.org/jira/browse/UIMA-1504
           CpeDescription aCpeDescription, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     try {
@@ -487,6 +496,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * @throws IOException -
    */
   protected void parseFactoryConfig() throws ParserConfigurationException, SAXException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
     FactoryConfigParseHandler handler = new FactoryConfigParseHandler();
     // TOOD: Need UtilityClassLoader here? I don't think we do; this works
@@ -500,6 +510,7 @@ public class UIMAFramework_impl extends UIMAFramework {
     reader.setContentHandler(handler);
     reader.setErrorHandler(handler);
     reader
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .parse(new InputSource(UIMAFramework_impl.class
                     .getResourceAsStream("factoryConfig.xml")));
   }
@@ -540,6 +551,7 @@ public class UIMAFramework_impl extends UIMAFramework {
      */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             throws SAXException {
       if ("logger".equals(qName)) {
         if (context != CONTEXT_FACTORY_CONFIG) {
@@ -550,6 +562,7 @@ public class UIMAFramework_impl extends UIMAFramework {
         try {
           // get logger class
           // check first if a system property for the logger class was specified
+//IC see: https://issues.apache.org/jira/browse/UIMA-282
           String loggerClass = System.getProperty(LOGGER_CLASS_SYSTEM_PROPERTY);
           if(loggerClass == null) {
              //no system property was specified, use factoryConfig.xml setting
@@ -566,6 +579,7 @@ public class UIMAFramework_impl extends UIMAFramework {
       } else if ("cpm".equals(qName)) {
         if (context != CONTEXT_FACTORY_CONFIG) {
           throw new SAXException(I18nUtil.localizeMessage(UIMAException.STANDARD_MESSAGE_CATALOG,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   Locale.getDefault(), "element_unexpected_in_context", new Object[] { "<cpm>" }));
         }
         mCpmImplClassName = attributes.getValue("class");
@@ -576,6 +590,7 @@ public class UIMAFramework_impl extends UIMAFramework {
                   new Object[] { "<resourceManager>" }));
         }
         mResourceManagerImplClassName = attributes.getValue("class");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1107
       } else if ("resourceManagerPearWrapper".equals(qName)) {
         if (context != CONTEXT_FACTORY_CONFIG) {
           throw new SAXException(I18nUtil.localizeMessage(UIMAException.STANDARD_MESSAGE_CATALOG,
@@ -637,6 +652,7 @@ public class UIMAFramework_impl extends UIMAFramework {
           try {
             mXMLParser.addMapping(attributes.getValue("element"), attributes.getValue("class"));
             mResourceSpecifierFactory.addMapping(attributes.getValue("interface"), attributes
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     .getValue("class"));
           } catch (ClassNotFoundException e) {
             // not an error
@@ -680,6 +696,7 @@ public class UIMAFramework_impl extends UIMAFramework {
           // not an error
           if (debug) {
             UIMAFramework.getLogger(CLASS_NAME).logrb(Level.INFO, CLASS_NAME.getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     "startElement", LOG_RESOURCE_BUNDLE,
                     "UIMA_class_in_framework_config_not_found__INFO", e.getLocalizedMessage());
           }
@@ -713,6 +730,7 @@ public class UIMAFramework_impl extends UIMAFramework {
           mResourceFactory.registerFactory(specifierClass, simpleFactory);
         } catch (ClassNotFoundException e) {
           UIMAFramework.getLogger(CLASS_NAME).logrb(Level.INFO, CLASS_NAME.getName(), "endElement",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   LOG_RESOURCE_BUNDLE, "UIMA_class_in_framework_config_not_found__INFO",
                   e.getLocalizedMessage());
         }
@@ -727,6 +745,7 @@ public class UIMAFramework_impl extends UIMAFramework {
     public void warning(SAXParseException e) throws SAXException {
       if (_getLogger() != null) {
         UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "warning",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 LOG_RESOURCE_BUNDLE, "UIMA_factory_config_parse__WARNING", e.getLocalizedMessage());
       }
     }

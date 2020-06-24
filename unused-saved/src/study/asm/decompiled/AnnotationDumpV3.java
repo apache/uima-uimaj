@@ -25,6 +25,7 @@ public class AnnotationDumpV3 implements Opcodes {
 
   public static byte[] dump() throws Exception {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     ClassWriter cw = new ClassWriter(0);
     FieldVisitor fv;
     MethodVisitor mv;

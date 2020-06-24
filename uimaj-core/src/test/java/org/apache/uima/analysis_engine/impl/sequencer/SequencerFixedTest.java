@@ -57,6 +57,7 @@ public class SequencerFixedTest extends TestCase {
    */
   protected void setUp() throws Exception {
     // get test base path
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
@@ -87,6 +88,7 @@ public class SequencerFixedTest extends TestCase {
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
               .createResultSpecification();
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
@@ -175,6 +177,7 @@ public class SequencerFixedTest extends TestCase {
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
               .createResultSpecification();
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
@@ -219,6 +222,7 @@ public class SequencerFixedTest extends TestCase {
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
               .createResultSpecification();
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
@@ -263,6 +267,8 @@ public class SequencerFixedTest extends TestCase {
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
               .createResultSpecification();
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
@@ -307,6 +313,7 @@ public class SequencerFixedTest extends TestCase {
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
               .createResultSpecification();
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
@@ -341,6 +348,13 @@ public class SequencerFixedTest extends TestCase {
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
       // Create a new CAS.
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
       CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
@@ -351,12 +365,20 @@ public class SequencerFixedTest extends TestCase {
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
               .createResultSpecification();
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ae.process(cas, resultSpec);
       // check fileoutput
       Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
               .getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
       ((CASImpl)cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);

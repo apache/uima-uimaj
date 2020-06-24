@@ -63,7 +63,9 @@ public class MetaDataSection extends AbstractSection {
    * @param parent the parent
    */
   public MetaDataSection(MultiPageEditor editor, Composite parent) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(editor, parent, "Overall Identification Information",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "This section specifies the basic identification information for this descriptor");
   }
 
@@ -81,6 +83,7 @@ public class MetaDataSection extends AbstractSection {
 
     // description enter field
     descriptionText = newDescriptionTextBox(sectionClient,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             "Enter a description of this component here.");
     toolkit.paintBordersFor(sectionClient);
 
@@ -126,6 +129,7 @@ public class MetaDataSection extends AbstractSection {
     dmd.setVendor(setValueChanged(vendorText.getText(), dmd.getVendor()));
     dmd.setDescription(setValueChanged(multiLineFix(descriptionText.getText()), dmd
             .getDescription()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
     if (valueChanged)
       setFileDirty();

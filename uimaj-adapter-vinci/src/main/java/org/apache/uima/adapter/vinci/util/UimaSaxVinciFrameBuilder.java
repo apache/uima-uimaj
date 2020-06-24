@@ -67,6 +67,8 @@ public class UimaSaxVinciFrameBuilder extends SaxVinciFrameBuilder {
    * @see SaxVinciFrameBuilder#getLeafContent(String, Attributes, StringBuffer)
    */
   protected String getLeafContent(String aFrameName, Attributes aAttributes,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           StringBuffer aContentBuf) {
     // supress documen text if requested
     if ("uima.tcas.Document".equals(aFrameName)

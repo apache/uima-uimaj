@@ -47,6 +47,7 @@ public class BinarySerializerFactory implements SerializerFactory {
    * Instantiates a new binary serializer factory.
    */
   public BinarySerializerFactory() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     this(true);
   }
 

@@ -39,6 +39,7 @@ public class Session_impl implements Session {
    */
   public void put(String aKey, Object aValue) {
     mMap.put(aKey, aValue);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   }
 

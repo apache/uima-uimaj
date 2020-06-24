@@ -39,6 +39,7 @@ public class RelativePathResolver_implTest extends TestCase {
   }
 
   public void testSetDataPath() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       RelativePathResolver_impl resolver = new RelativePathResolver_impl();
       // specify path by file names
@@ -62,6 +63,7 @@ public class RelativePathResolver_implTest extends TestCase {
       Assert.assertNull(absUrl);
 
       // specify path
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       String path = JUnitExtension.getFile("ResourceTest/subdir").getAbsolutePath();
       resolver.setDataPath(path);
 

@@ -134,6 +134,7 @@ public class VinciServer extends BaseServer {
    * @throws UnknownHostException -
    */
   public VinciServer(String service_name, VinciServable servable, int myPriority)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws UnknownHostException {
     this(service_name, InetAddress.getLocalHost().getHostAddress(), servable, myPriority);
   }
@@ -150,6 +151,7 @@ public class VinciServer extends BaseServer {
    * @throws UnknownHostException -
    */
   public VinciServer(String service_name, VinciServable servable, int myPriority, int myInstance)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws UnknownHostException {
     this(service_name, InetAddress.getLocalHost().getHostName(), servable, myPriority, myInstance);
   }
@@ -287,6 +289,7 @@ public class VinciServer extends BaseServer {
     // Override this method if shutdown is to be ignored in certain cases (by returning
     // false). Default implementation unconditionally halts serving,
     // and hence always returns true.
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     Debug.printDebuggingMessage("VinciServer.shutdown()", "Accepted shutdown request: "
             + shutdown_message);
     new Thread(new Runnable() {
@@ -313,6 +316,7 @@ public class VinciServer extends BaseServer {
   protected int getPort() throws ServiceDownException, VNSException {
     try {
       VinciContext myContext = getContext();
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       ServeonResult response = (ServeonResult) VinciClient.sendAndReceive(ServeonResult
               .composeQuery(serviceName, hostName, priority, instance), myContext.getVNSHost(),
               myContext.getVNSPort(), ServeonResult.factory, myContext.getVNSServeonTimeout());

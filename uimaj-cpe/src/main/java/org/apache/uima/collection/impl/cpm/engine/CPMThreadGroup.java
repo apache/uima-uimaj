@@ -51,6 +51,7 @@ public class CPMThreadGroup extends ThreadGroup {
    * @param name the name
    */
   public CPMThreadGroup(String name) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super(name);
   }
 
@@ -92,6 +93,7 @@ public class CPMThreadGroup extends ThreadGroup {
   public void uncaughtException(Thread t, Throwable e) {
     if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_unhandled_error__SEVERE",
               new Object[] { Thread.currentThread().getName(), e.getClass().getName() });
 
@@ -106,6 +108,7 @@ public class CPMThreadGroup extends ThreadGroup {
     } catch (Throwable tr) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
                 new Object[] { Thread.currentThread().getName(), tr.getClass().getName() });
         tr.printStackTrace();

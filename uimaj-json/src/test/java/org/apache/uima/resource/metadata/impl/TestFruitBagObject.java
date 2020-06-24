@@ -55,6 +55,7 @@ public class TestFruitBagObject extends MetaDataObject_impl {
 //  }
   
   static public Set<MetaDataAttr> getMetaDataAttrSet() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Set<MetaDataAttr> result = new HashSet<>();
     try {
     result.add(new MetaDataAttr("fruits", 

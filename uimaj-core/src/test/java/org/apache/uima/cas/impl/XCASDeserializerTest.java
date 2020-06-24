@@ -76,8 +76,10 @@ public class XCASDeserializerTest extends TestCase {
   protected void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
 
     typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new XMLInputSource(typeSystemFile));
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
             .getFsIndexes();
@@ -130,6 +132,7 @@ public class XCASDeserializerTest extends TestCase {
   
   public void testDeserializeAndReserializeV2Ids() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-547
       doTestDeserializeAndReserialize(false);
       doTestDeserializeAndReserialize(true);      
     }
@@ -198,6 +201,7 @@ public class XCASDeserializerTest extends TestCase {
     // check that array refs are not null
     Type entityType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     Iterator<FeatureStructure> iter = cas.getIndexRepository().getIndex("testEntityIndex").iterator();
     assertTrue(iter.hasNext());
     while (iter.hasNext()) {
@@ -217,6 +221,7 @@ public class XCASDeserializerTest extends TestCase {
     String xml = sw.getBuffer().toString();
 
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+//IC see: https://issues.apache.org/jira/browse/UIMA-547
     if (useJCas) {
       cas2.getJCas();
     }
@@ -286,8 +291,10 @@ public class XCASDeserializerTest extends TestCase {
     // check that array refs are not null
     Type entityType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
+//IC see: https://issues.apache.org/jira/browse/UIMA-1345
     Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
     assertTrue(iter.hasNext());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     while (iter.hasNext()) {
       FeatureStructure fs = iter.next();
       StringArrayFS arrayFS = (StringArrayFS) fs.getFeatureValue(classesFeat);
@@ -301,6 +308,8 @@ public class XCASDeserializerTest extends TestCase {
   public void testOutOfTypeSystem3() throws Exception {
     // deserialize an XCAS using the implicit value feature into a CAS with no TypeSystem
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             new TypePriorities_impl(), new FsIndexDescription[0]);
     String xcas = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><CAS>"
             + "<uima.tcas.Document _content=\"text\">Test Document</uima.tcas.Document>"
@@ -437,6 +446,7 @@ public class XCASDeserializerTest extends TestCase {
     assertTrue(v1cas.getDocumentText().equals("some text for the default text sofa."));
     CAS engView = v1cas.getView("EnglishDocument");
     assertTrue(engView.getDocumentText().equals("this beer is good"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     assertTrue(engView.getAnnotationIndex().size() == 5); // 4 annots plus documentAnnotation
     CAS gerView = v1cas.getView("GermanDocument");
     assertTrue(gerView.getDocumentText().equals("das bier ist gut"));
@@ -460,6 +470,7 @@ public class XCASDeserializerTest extends TestCase {
     assertTrue(v1cas.getDocumentText().equals("some text for the default text sofa."));
     engView = cas.getView("EnglishDocument");
     assertTrue(engView.getDocumentText().equals("this beer is good"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     assertTrue(engView.getAnnotationIndex().size() == 5); // 4 annots plus documentAnnotation
     gerView = cas.getView("GermanDocument");
     assertTrue(gerView.getDocumentText().equals("das bier ist gut"));
@@ -467,6 +478,7 @@ public class XCASDeserializerTest extends TestCase {
   }
   
   public void testStringArrayWithNullValues() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1344
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     StringArrayFS strArray = cas.createStringArrayFS(3);
     strArray.set(1, "value");

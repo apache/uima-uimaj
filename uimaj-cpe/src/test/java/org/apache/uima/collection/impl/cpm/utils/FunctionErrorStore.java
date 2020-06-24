@@ -63,6 +63,7 @@ public class FunctionErrorStore {
   private final static Level LOG_LEVEL = Level.SEVERE;
 
   protected FunctionErrorStore(String exception, int functionCount, String functionName) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     functionCounter = functionCount;
     functionError = exception;
     this.functionName = functionName;
@@ -77,6 +78,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("AnnotatorProcessException")) {
         throw new AnnotatorProcessException();
@@ -88,6 +90,7 @@ public class FunctionErrorStore {
 
   // exceptions from JTextAnnotator_ImplBase.initialize and JTextAnnotator_ImplBase.reconfigure
   public synchronized void methodeCalled2() throws AnnotatorConfigurationException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AnnotatorInitializationException {
     functionCounted++;
 
@@ -112,6 +115,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("ResourceProcessException")) {
         throw new ResourceProcessException();
@@ -144,6 +148,8 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("ResourceInitializationException")) {
         throw new ResourceInitializationException();
@@ -160,6 +166,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("IOException")) {
         throw new IOException();
@@ -178,6 +185,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("IOException")) {
         throw new IOException();
@@ -194,6 +202,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               + " is trying to throw the following exception: " + functionError);
       throwAnException(functionError);
     }
@@ -330,6 +339,7 @@ public class FunctionErrorStore {
     sb.append("All counted Exceptions: " + allCountedExceptions + LS);
     sb.append("CollectionReader instances: " + collectionReaderCount + LS);
     sb
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .append("CollectionReader 'getNext'-methode call count: "
                     + collectionReaderGetNextCount + LS);
     sb.append("Annotator instances: " + annotatorCount + LS);

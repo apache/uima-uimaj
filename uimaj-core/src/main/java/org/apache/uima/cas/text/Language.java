@@ -41,6 +41,7 @@ public class Language {
 
   
   public Language(String language) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.lang = normalize(language);
     this.parseLanguage();
@@ -83,6 +84,7 @@ public class Language {
 
   public String toString() {
     return "Full language string: " + this.getFullLanguage() + ", language part: "
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + this.getLanguagePart() + ", territory part: " + this.getTerritoryPart();
   }
 

@@ -36,6 +36,7 @@ public class TabSegmenter extends CasMultiplier_ImplBase {
    * @see org.apache.uima.analysis_component.CasSegmenter_ImplBase#process(org.apache.uima.cas.CAS)
    */
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     String doc = aCAS.getCurrentView().getDocumentText();
     mStringTok = new StringTokenizer(doc, "\t");
   }
@@ -57,6 +58,7 @@ public class TabSegmenter extends CasMultiplier_ImplBase {
   public AbstractCas next() throws AnalysisEngineProcessException {
     String nextSeg = mStringTok.nextToken();
     CAS cas = getContext().getEmptyCas(CAS.class);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
     cas.getCurrentView().setDocumentText(nextSeg);
     return cas;
   }

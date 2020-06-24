@@ -48,8 +48,10 @@ public class AnalysisEngineUtils {
    */
   public static FSMatchConstraint createOutputFilter(AnalysisEngineMetaData aMetaData) {
     // get a list of the AE's output type names
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     Set<String> outputTypes = new TreeSet<>();
     // outputTypes.add("Document"); //always output the document
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     Capability[] capabilities = aMetaData.getCapabilities();
     for (int i = 0; i < capabilities.length; i++) {
       TypeOrFeature[] outputs = capabilities[i].getOutputs();
@@ -62,6 +64,7 @@ public class AnalysisEngineUtils {
 
     FSTypeConstraint constraint = ConstraintFactory.instance().createTypeConstraint();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1452
     for (String typeName  : outputTypes) {
       // add type to constraint
       constraint.add(typeName);

@@ -69,6 +69,7 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class IntegerArrayList extends TOP implements 
                           Iterable<Integer>,
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
                           UimaSerializable, CommonArrayFS<Integer>, 
                           RandomAccess, Cloneable {
  
@@ -182,6 +183,7 @@ public class IntegerArrayList extends TOP implements
    * @param v value to set into the feature 
    */
   private void setIntArray(IntegerArray v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_intArray), v);
   }    
     
@@ -207,6 +209,7 @@ public class IntegerArrayList extends TOP implements
     IntegerArray ia = getIntArray();
     final int size = intArrayList.size();
     if (ia == null || ia.size() != size) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2147
       ia = new IntegerArray(_casView.getJCasImpl(), size);
       setIntArray(ia);
     }
@@ -342,6 +345,7 @@ public class IntegerArrayList extends TOP implements
    */
   @Override
   public void copyValuesFrom(CommonArrayFS<Integer> v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     clear();
     Spliterator.OfInt si;
     
@@ -540,6 +544,7 @@ public class IntegerArrayList extends TOP implements
   }
   
   public Spliterator.OfInt spliterator() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     return (null == intArrayAsList) 
         ? Arrays.spliterator(intArrayList.toIntArray())
         : Arrays.spliterator(getIntArray()._getTheArray());
@@ -549,6 +554,7 @@ public class IntegerArrayList extends TOP implements
    * @return a stream over the integers
    */
   public IntStream stream() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5207
     return StreamSupport.intStream(spliterator(), false);
   }
 
@@ -557,6 +563,7 @@ public class IntegerArrayList extends TOP implements
    * @param action -
    */
   public void forEach(IntConsumer action) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5305
     OfInt ii = iterator();
     while (ii.hasNext()) {
       action.accept(ii.nextInt());

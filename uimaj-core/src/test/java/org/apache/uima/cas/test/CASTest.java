@@ -45,11 +45,14 @@ public class CASTest extends TestCase {
    * @param arg0
    */
   public CASTest(String arg0) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-185
     super(arg0);
   }
 
   public void setUp() {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
     } catch (Exception e) {
@@ -63,10 +66,12 @@ public class CASTest extends TestCase {
   }
 
   public void testGetTypeSystem() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     assertTrue(this.cas.getTypeSystem() != null);
   }
   
   public void testGetAnnotationIndex() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-649
     AnnotationIndex index = this.cas.getAnnotationIndex();
     assertNotNull(index);
     assertTrue(index.iterator() != null);
@@ -110,6 +115,7 @@ public class CASTest extends TestCase {
 //    assertTrue(arraySize > Heap.DEFAULT_SIZE);
     IntArrayFS array = null;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       array = this.cas.createIntArrayFS(arraySize);
     } catch (CASRuntimeException e) {
       assertTrue(false);
@@ -131,6 +137,7 @@ public class CASTest extends TestCase {
   }
 
   public void testCreateCAS() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     TypeSystemMgr tsm = CASFactory.createTypeSystem();
     tsm.commit();
   }

@@ -32,6 +32,7 @@ public class XMLWhitespaceDetector implements IWhitespaceDetector {
    */
   @Override
   public boolean isWhitespace(char c) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
   }
 }

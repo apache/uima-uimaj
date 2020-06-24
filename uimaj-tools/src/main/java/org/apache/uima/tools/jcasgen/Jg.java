@@ -420,6 +420,8 @@ public class Jg {
     Prefs.get(gui);
     gui.pnG.taStatus.setLineWrap(true);
     gui.pnG.taStatus.setWrapStyleWord(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
     gui.setVisible(true);
     waiter = new Waiter();
     waiter.waitforGUI();
@@ -433,6 +435,7 @@ public class Jg {
   // exits with -1 if failure
   public static void main(String[] args) {
     int rc = (new Jg()).main0(args, null, null, new LogThrowErrorImpl());
+//IC see: https://issues.apache.org/jira/browse/UIMA-853
     System.exit(rc);
   }
 
@@ -449,6 +452,7 @@ public class Jg {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public void mainForCde(IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String inputFile, String outputDirectory, TypeDescription[] tds, CASImpl aCas)
           throws IOException {
     mainForCde(aMerger, aProgressMonitor, aError,
@@ -478,6 +482,8 @@ public class Jg {
     try {
       // Generate type classes by using DEFAULT templates
       mainGenerateAllTypesFromTemplates(aMerger, aProgressMonitor, aError, inputFile,
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
               outputDirectory, tds, aCas, JCasTypeTemplate.class,
               pProjectPathDir, limitToProjectScope, pMergedTypesAddingFeatures);
       // convert thrown things to IOExceptions to avoid changing API for this
@@ -513,6 +519,8 @@ public class Jg {
       throws IOException, InstantiationException, IllegalAccessException {
     mainGenerateAllTypesFromTemplates(aMerger, aProgressMonitor, 
              aError, inputFile, outputDirectory, tds, aCas, 
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
              jcasTypeClass, "", false, null);
   }
   
@@ -549,6 +557,8 @@ public class Jg {
     this.mergedTypesAddingFeatures = pMergedTypesAddingFeatures;
 
     // Generate type classes by using SPECIFIED templates
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     generateAllTypesFromTemplates(outputDirectory, tds, aCas, jcasTypeClass);
   }
 
@@ -570,6 +580,7 @@ public class Jg {
       if (args[i].equals("-jcasgeninput")) {
         if (i == args.length - 1) {
           driveGui();
+//IC see: https://issues.apache.org/jira/browse/UIMA-853
           return 0;
         } else {
           foundInput = true;
@@ -578,6 +589,7 @@ public class Jg {
       }
     }
     if (foundInput)
+//IC see: https://issues.apache.org/jira/browse/UIMA-853
       return main1(args);
     else {
       driveGui();
@@ -611,6 +623,7 @@ public class Jg {
         TypeSystemDescription typeSystemDescription = null;
         TypeDescription[] tds = null;
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
         projectPathDir = "";  // init to default value
         limitJCasGenToProjectScope = false;
 
@@ -629,6 +642,7 @@ public class Jg {
             classPath = arguments[++i];
             continue;
           }
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
           if (arguments[i].equalsIgnoreCase("-limitToDirectory")) {
             projectPathDir = arguments[++i];
             limitJCasGenToProjectScope = (projectPathDir.length() > 0);
@@ -661,6 +675,7 @@ public class Jg {
             File dir = file.getParentFile();
             if (null == dir) {
               error.newError(IError.ERROR, getString("sourceArgNeedsDirectory",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                       new Object[] { inputFile }), null);
             }
             outputDirectory = dir.getPath() + File.separator + "JCas"
@@ -680,6 +695,7 @@ public class Jg {
           XMLInputSource in = new XMLInputSource(url);
           XMLizable specifier = UIMAFramework.getXMLParser().parse(in);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-177
           mergedTypesAddingFeatures.clear();
           if (specifier instanceof AnalysisEngineDescription) {
             AnalysisEngineDescription aeSpecifier = (AnalysisEngineDescription) specifier;
@@ -706,7 +722,9 @@ public class Jg {
 
             // no ResourceManager, since everything has been
             // imported/merged by previous actions
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
             casLocal = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, typePriorities,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     fsIndexDescription);
           } catch (ResourceInitializationException e) {
             error.newError(IError.WARN, getString("resourceInitializationException",
@@ -720,6 +738,7 @@ public class Jg {
           error.newError(IError.ERROR, getString("invalidXML", new Object[] { inputFile }), e);
         } catch (ResourceInitializationException e) {
           error.newError(IError.ERROR, getString("resourceInitializationExceptionError",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   new Object[] {}), e);
         }
 
@@ -728,9 +747,12 @@ public class Jg {
 
         // Generate type classes from DEFAULT templates
         generateAllTypesFromTemplates(outputDirectory, tds, casLocal, JCasTypeTemplate.class);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
 
       } catch (IOException e) {
         error.newError(IError.ERROR, getString("IOException", new Object[] {}), e);
+//IC see: https://issues.apache.org/jira/browse/UIMA-853
       } catch (ErrorExit e) { 
         hadError = true;
       } catch (InstantiationException e) {
@@ -741,6 +763,7 @@ public class Jg {
     } finally {
       progressMonitor.done();
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-853
     return (hadError) ? -1 : 0;    
   }
 
@@ -791,10 +814,12 @@ public class Jg {
 
     Set<String> generatedBuiltInTypes = new TreeSet<>();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-166
     this.cas = aCas;
     this.typeSystem = cas.getTypeSystem();
     this.casStringType = typeSystem.getType(CAS.TYPE_NAME_STRING);
     this.tcasAnnotationType = typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
     for (int i = 0; i < tds.length; i++) {
       TypeDescription td = tds[i];
@@ -803,6 +828,7 @@ public class Jg {
         continue;
       if (td.getSupertypeName().equals("uima.cas.String"))
         continue;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
       if (limitJCasGenToProjectScope && 
           isOutOfScope(td, projectPathDir)) {
         Set<String> mt = mergedTypesAddingFeatures.get(td.getName());
@@ -819,6 +845,7 @@ public class Jg {
 
       // if the type is built-in - augment it with the built-in's features
       FeatureDescription[] builtInFeatures = (FeatureDescription[]) extendableBuiltInTypes.get(td
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getName());
       if (null != builtInFeatures) {
         generatedBuiltInTypes.add(td.getName());
@@ -831,6 +858,7 @@ public class Jg {
           for (int j = builtInFeatures.length, k = 0; k < newFeaturesSize; j++, k++)
             newFds[j] = (FeatureDescription) newFeatures.get(k);
           td.setFeatures(newFds);
+//IC see: https://issues.apache.org/jira/browse/UIMA-166
         } else {
           // The only built-in type which is extensible is DocumentAnnotation.
           // If we get here, the user defined DocumentAnnotation, but did not add any features
@@ -838,6 +866,8 @@ public class Jg {
           continue;
         }
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       generateClassesFromTemplate(td, outputDirectory, jcasTypeInstance);
     }
 
@@ -871,6 +901,7 @@ public class Jg {
    Feature f = (Feature) vFeatures.get(i);
    if (f.getDomain().equals(type)) {
    FeatureDescription fd = UIMAFramework.getResourceSpecifierFactory()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
    .createFeatureDescription();
    fd.setName(f.getShortName());
    fd.setRangeTypeName(f.getRange().getName());
@@ -893,6 +924,7 @@ public class Jg {
    * @return true, if is out of scope
    */
   private boolean isOutOfScope(TypeDescription td, String projectDirPath) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1176
     URI typeDefinitionUri;
     try {
       typeDefinitionUri = new URI (td.getSourceUrlString());
@@ -976,6 +1008,8 @@ public class Jg {
    * @throws IOException -
    */
   private void generateClassesFromTemplate(TypeDescription td, String outputDirectory,
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
           IJCasTypeTemplate jcasTypeInstance)
           throws IOException {
     simpleClassName = removePkg(getJavaName(td));
@@ -1021,6 +1055,7 @@ public class Jg {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   private void generateClass(IProgressMonitor progressMonitorGenerateClass, String outputDirectory,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           TypeDescription td, String sourceContents, String className, IMerge mergerGenerateClass)
           throws IOException {
 
@@ -1032,6 +1067,7 @@ public class Jg {
 
     if (null != mergerGenerateClass) {
       mergerGenerateClass.doMerge(this, progressMonitorGenerateClass, sourceContents,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               targetContainer, targetPath, qualifiedClassName, targetFile);
     } else {
       if (targetFile.exists()) {
@@ -1040,6 +1076,7 @@ public class Jg {
       } else
         progressMonitorGenerateClass.subTask(getString("creatingTarget",
                 new Object[] { qualifiedClassName }));
+//IC see: https://issues.apache.org/jira/browse/UIMA-5931
       new File(targetContainer).mkdirs();
       try (Writer fw = new FileWriter(targetPath)) {
         fw.write(sourceContents);
@@ -1091,6 +1128,8 @@ public class Jg {
       return "Long";
     if (v.equals("double"))
       return "Double";
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     return "Feature"; // for user defined features and other built-ins which are FSs
   }
 
@@ -1104,6 +1143,7 @@ public class Jg {
    * @return the java pkg
    */
   String getJavaPkg(TypeDescription td) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     TypeInfo bi = Jg.builtInTypes.get(td.getName());
     if (null == bi)
       return getPkg(td);
@@ -1235,9 +1275,12 @@ public class Jg {
           String rangeTypeNameCAS = fd.getRangeTypeName();
           Type rangeCasType = typeSystem.getType(rangeTypeNameCAS);
           if (typeSystem.subsumes(casStringType, rangeCasType))
+//IC see: https://issues.apache.org/jira/browse/UIMA-166
             continue;
         }
         collectImport(fd.getRangeTypeName(), false);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
         if (isRangeTypeGeneric(fd)) {
           collectImport(getJavaRangeArrayElementType(fd), false);
         }
@@ -1256,6 +1299,8 @@ public class Jg {
     String rangeTypeNameCAS = fd.getRangeTypeName();
     if (null != typeSystem) {
       Type rangeCasType = typeSystem.getType(rangeTypeNameCAS);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
       if (rangeCasType instanceof TypeImpl_string) {
         // type is a subtype of string, make its java type = to string
         return "String";
@@ -1270,6 +1315,8 @@ public class Jg {
    * @param fd the fd
    * @return the java range type
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
   String getJavaRangeType2(FeatureDescription fd) {
 	  if (isRangeTypeGeneric(fd)) {
 		  String generic = getJavaRangeArrayElementType2(fd);
@@ -1300,6 +1347,7 @@ public class Jg {
    * @return true, if successful
    */
   boolean hasArrayRange(FeatureDescription fd) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     TypeInfo bi = Jg.builtInTypes.get(fd.getRangeTypeName());
     if (null == bi)
       return false;
@@ -1313,6 +1361,7 @@ public class Jg {
    * @return true, if is possible index key
    */
   boolean isPossibleIndexKey(FeatureDescription fd) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
     String rangeTypeName = fd.getRangeTypeName();
     // keys are primitives + string + string subtypes
     TypeImpl rangeType = (null == typeSystem) ? null : (TypeImpl) typeSystem.getType(rangeTypeName);
@@ -1344,6 +1393,7 @@ public class Jg {
    */
   String getJavaRangeArrayElementType(FeatureDescription fd) {
     String arrayElementCasNameWithNameSpace = fd.getElementType();
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
     TypeInfo bi = Jg.builtInTypes.get(fd.getRangeTypeName());
     if (null == bi) {
       if (null == arrayElementCasNameWithNameSpace)
@@ -1362,6 +1412,8 @@ public class Jg {
    * @param fd the fd
    * @return the java range array element type
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
   String getJavaRangeArrayElementType2(FeatureDescription fd) {
 	if(this.isElementTypeGeneric(fd))
 		return getJavaRangeArrayElementType(fd) + "<?>";
@@ -1402,7 +1454,10 @@ public class Jg {
    */
   // *******************************
   String castResult(String resultType, String core) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     if ("Feature".equals(sc(resultType)) && resultType != null
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             && !resultType.equals("FeatureStructure"))
       return "(" + resultType + ")(" + core + ")";
     return core;
@@ -1422,6 +1477,8 @@ public class Jg {
    * @return -
    */
   String wrapToGetFS(String core, String range) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     if (range.equals("Feature"))
       return "jcasType.ll_cas.ll_getFSForRef(" + core + ")";
     return core;
@@ -1442,6 +1499,7 @@ public class Jg {
 //    boolean isInInt = ! (range.equals("String") || range.equals("Feature") || range.equals("JavaObject"));
     String chksfx = getCheckSuffix(get_set, range);
     //wrapGetIntCatchException(_FH_begin)
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     String featOrOffset = "wrapGetIntCatchException(_FH_" + fname + ")";
     return "_" + get_set + range + "Value" + chksfx + "(" + featOrOffset  +
         ((get_set.equals("set")) ? v : "") + ")";
@@ -1460,6 +1518,7 @@ public class Jg {
     // if (get_set.equals("set") && range.equals("Feature"))
     // v = ", ll_cas.ll_getFSRef(v)";
     return "ll_cas.ll_" + get_set + range + "Value(addr, casFeatCode_" + fname
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + ((get_set.equals("set")) ? v : "") + ")";
   }
 
@@ -1521,6 +1580,8 @@ public class Jg {
   String getFeatureValue(FeatureDescription fd, TypeDescription td) {
     String getSetNamePart = getGetSetNamePart(fd);
     String core = simpleCore("get", getSetNamePart, fd.getName());
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
     return castResult(getJavaRangeType2(fd), core);
   }
 
@@ -1544,6 +1605,8 @@ public class Jg {
    */
   String getArrayFeatureValue(FeatureDescription fd, TypeDescription td) {
     String getSetArrayNamePart = getGetSetArrayNamePart(fd);
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
     String core = arrayCore("get", getSetArrayNamePart, getJavaRangeType2(fd), fd.getName());
     return castResult(getJavaRangeArrayElementType2(fd), core);
   }
@@ -1556,6 +1619,8 @@ public class Jg {
    * @return the string
    */
   String setArrayFeatureValue(FeatureDescription fd, TypeDescription td) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
     return arrayCore("set", getGetSetArrayNamePart(fd), getJavaRangeType2(fd), fd.getName());
   }
 
@@ -1566,6 +1631,8 @@ public class Jg {
    * @return the gets the set name part
    */
   String getGetSetNamePart(FeatureDescription fd) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
     return sc(getJavaRangeType2(fd));
   }
 
@@ -1599,6 +1666,7 @@ public class Jg {
   public ResourceManager createResourceManager() {
     ResourceManager resourceManager = UIMAFramework.newDefaultResourceManager();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5576
     if (classPath != null && classPath.trim().length() > 0) {
       try {
         resourceManager.setExtensionClassPath(this.getClass().getClassLoader(), classPath, true);
@@ -1623,6 +1691,7 @@ public class Jg {
           throws ResourceInitializationException {
     Collection<TypeSystemDescription> tsdc = new ArrayList<>(1);
     tsdc.add((TypeSystemDescription) tsd.clone());
+//IC see: https://issues.apache.org/jira/browse/UIMA-177
     mergedTypesAddingFeatures.clear();
     TypeSystemDescription mergedTsd = CasCreationUtils.mergeTypeSystems(tsdc,
             createResourceManager(), mergedTypesAddingFeatures);
@@ -1671,12 +1740,16 @@ public class Jg {
    * @return the check suffix
    */
   private String getCheckSuffix(String get_set, String range) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4666
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     if (get_set.equals("get")) return "Nc";
     
     return (range.equals("Feature")) ? "NcWj" : "Nfc";  
   }
   
   boolean isRangeTypeGeneric(FeatureDescription fd) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-6056
+//IC see: https://issues.apache.org/jira/browse/UIMA-6055
 	  return fd == null ? false : genericFeatureDescriptorTypes.contains(fd.getRangeTypeName());
   }
 

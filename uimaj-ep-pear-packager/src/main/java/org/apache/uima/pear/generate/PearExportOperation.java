@@ -68,6 +68,8 @@ public class PearExportOperation implements IRunnableWithProgress {
    *          otherwise
    */
   public PearExportOperation(final IFile[] exports, final IContainer virtualRoot,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           final String filename, final boolean compress) {
     fExports = exports;
     fRoot = virtualRoot;
@@ -82,6 +84,7 @@ public class PearExportOperation implements IRunnableWithProgress {
    */
   @Override
   public void run(final IProgressMonitor monitor) throws InvocationTargetException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           InterruptedException {
     try {
       final int SCALE = 100;

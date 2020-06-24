@@ -47,6 +47,7 @@ public class CpmProcessingTest extends TestCase {
   protected void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
@@ -197,6 +198,10 @@ public class CpmProcessingTest extends TestCase {
 
     // check if CasConsumer was called
     Assert.assertEquals("StatusCallbackListener", documentCount, listener
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getEntityProcessCompleteCount());
     Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
             .getCasConsumerProcessCount());
@@ -222,6 +227,7 @@ public class CpmProcessingTest extends TestCase {
     CollectionProcessingEngine cpe = null;
 
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       String colReaderBase = JUnitExtension.getFile("CpmTests" + separator
               + "ErrorTestCollectionReader.xml").getAbsolutePath();
       String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml").getAbsolutePath();
@@ -241,6 +247,7 @@ public class CpmProcessingTest extends TestCase {
 
       // add tae
       CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .produceCasProcessor("ErrorTestAnnotator");
       integratedProcessor.setDescriptor(taeDesc);
       cpeDesc.addCasProcessor(integratedProcessor);

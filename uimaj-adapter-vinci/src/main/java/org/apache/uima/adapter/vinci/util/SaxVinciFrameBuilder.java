@@ -84,6 +84,8 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
    * @throws SAXException the SAX exception
    */
   public void startElement(String namespaceURI, String localName, String qualifiedName,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           org.xml.sax.Attributes attributes) throws SAXException {
     // I would like to create a VinciFrame here and put it on the
     // mOpenFrames stack, but I don't know whether to create a VinciFrame or
@@ -155,11 +157,13 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
       AFrame parent = (AFrame) mOpenFrames.peek();
       org.apache.vinci.transport.Attributes vinciAttrs = parent
               .aadd(mCurrentFrameName, leafContent);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       // set attributes
       if (mCurrentFrameAttrs != null) {
         for (int i = 0; i < mCurrentFrameAttrs.getLength(); i++) {
           String attrName = getName(mCurrentFrameAttrs.getLocalName(i), mCurrentFrameAttrs
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   .getQName(i));
           vinciAttrs.fadd(attrName, mCurrentFrameAttrs.getValue(i));
         }
@@ -189,6 +193,7 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
    * @return the data to be included in the Vinci FrameLeaf
    */
   protected String getLeafContent(String aFrameName, Attributes aAttributes,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           StringBuffer aContentBuf) {
     return aContentBuf.toString();
   }

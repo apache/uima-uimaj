@@ -76,6 +76,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
     //surprise: super.clone sets the final field to the same array list as the original
     TypePriorityList_impl clone = (TypePriorityList_impl) super.clone();
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
     clone.mTypeNames = new ArrayList<>();  // because above clone has set it to the == object
     for (String name : mTypeNames) {
       clone.addType(name);
@@ -89,6 +90,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
    */
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo("priorityList", new PropertyXmlInfo[] { new PropertyXmlInfo("types",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             null, false, "type") });
   }
 }

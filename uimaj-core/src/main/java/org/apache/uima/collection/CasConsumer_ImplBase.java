@@ -46,6 +46,8 @@ import org.apache.uima.util.ProcessTrace;
  *  
  */
 public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase implements
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
         CasConsumer {
   /**
    * Called by the framework to initialize this CAS Consumer. Subclasses should NOT override this
@@ -57,6 +59,7 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           throws ResourceInitializationException {
     // aSpecifier must be a CasConsumerDescription
     if (aSpecifier instanceof ResourceCreationSpecifier) {
@@ -125,6 +128,7 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    * @see org.apache.uima.collection.base_cpm.CasProcessor#getProcessingResourceMetaData()
    */
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     return (ProcessingResourceMetaData) getMetaData();
   }
 
@@ -139,6 +143,7 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    * @see org.apache.uima.collection.base_cpm.CasProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           IOException {
     // no default behavior
   }

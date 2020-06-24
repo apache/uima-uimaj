@@ -88,6 +88,7 @@ public abstract class CASFactory {
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS(int initialHeapSize, TypeSystem ts) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1068
     return createCAS(initialHeapSize, ts, USE_JCAS_CACHE_DEFAULT);
   }
   
@@ -95,6 +96,7 @@ public abstract class CASFactory {
     if (ts == null) {
       throw new NullPointerException("TypeSystem");
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return new CASImpl((TypeSystemImpl) ts, initialHeapSize);
   }
 
@@ -106,6 +108,7 @@ public abstract class CASFactory {
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS(TypeSystem ts) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-1068
     return createCAS(ts, USE_JCAS_CACHE_DEFAULT);
   }
   
@@ -114,6 +117,7 @@ public abstract class CASFactory {
     if (ts == null) {
       throw new NullPointerException("TypeSystem");
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     return new CASImpl((TypeSystemImpl) ts, CASImpl.DEFAULT_INITIAL_HEAP_SIZE);
   }
 

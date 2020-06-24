@@ -48,6 +48,7 @@ public interface FSIndexRepository {
    *         is defined.
    */
   <T extends FeatureStructure> FSIndex<T> getIndex(String label);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
 
   /**
    * Retrieve an index according to a label and a type. The type is used to narrow down the index of
@@ -63,6 +64,7 @@ public interface FSIndexRepository {
    * @return The specified, or <code>null</code> if an index with that name doesn't exist.
    * @exception CASRuntimeException When <code>type</code> is not a subtype of the index's type.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
   <T extends FeatureStructure> FSIndex<T> getIndex(String label, Type type) throws CASRuntimeException;
   
   /**
@@ -79,6 +81,8 @@ public interface FSIndexRepository {
    * @return All indexes.
    */
   <T extends FeatureStructure> Iterator<FSIndex<T>> getIndexes();
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
 
   /**
    * Get all indexes in this repository as low level indexes
@@ -105,6 +109,7 @@ public interface FSIndexRepository {
    *              If the <code>fs</code> parameter is <code>null</code>.
    */
   <T extends FeatureStructure> void addFS(T fs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
 
   /**
    * Remove a feature structure from all indexes in the repository.
@@ -117,12 +122,14 @@ public interface FSIndexRepository {
    *              If the <code>fs</code> parameter is <code>null</code>.
    */
   <T extends FeatureStructure> void removeFS(T fs);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4669
 
   /**
    * Remove all instances of type, including all subtypes from all indexes in the repository view.
    * @param type the type to remove
    * @exception NullPointerException if the <code>type</code> parameter is <code>null</code>.
   */
+//IC see: https://issues.apache.org/jira/browse/UIMA-2434
   void removeAllIncludingSubtypes(Type type);
   
   /**
@@ -132,6 +139,7 @@ public interface FSIndexRepository {
    * @exception NullPointerException if the <code>clazz</code> parameter is <code>null</code>.
   */
   default <T extends TOP> void removeAllIncludingSubtypes(Class<T> clazz) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5505
     removeAllIncludingSubtypes(((FSIndexRepositoryImpl)this).getCasImpl().getJCasImpl().getCasType(clazz));
   }
   
@@ -163,6 +171,7 @@ public interface FSIndexRepository {
    * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>
    *         and its subtypes, in no particular order.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-4299
   <T extends FeatureStructure> FSIterator<T> getAllIndexedFS(Type aType);
   
   /**
@@ -176,6 +185,7 @@ public interface FSIndexRepository {
    * @return An iterator that returns all indexed FeatureStructures of the specified type
    *         and its subtypes, in no particular order.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-5505
   default <T extends FeatureStructure> FSIterator<T> getAllIndexedFS(Class<T> clazz) {
     return getAllIndexedFS(((FSIndexRepositoryImpl)this).getCasImpl().getCasType((Class<TOP>) clazz));
   }

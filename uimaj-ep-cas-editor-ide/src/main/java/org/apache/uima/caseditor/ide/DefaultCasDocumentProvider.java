@@ -83,6 +83,7 @@ public class DefaultCasDocumentProvider extends
     private FileEditorInput fileInput;
 
     public ModifyElementListener(FileEditorInput fileInput) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2151
       this.fileInput = fileInput;
     }
 
@@ -93,12 +94,14 @@ public class DefaultCasDocumentProvider extends
           public boolean visit(IResourceDelta delta) throws CoreException {
             if (delta.getFlags() != IResourceDelta.MARKERS
                     && delta.getResource().getType() == IResource.FILE) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
               IResource resource = delta.getResource();
               if (resource.equals(fileInput.getFile())) {
                 if (delta.getKind() == IResourceDelta.REMOVED) {
                   handleElementDeleted(fileInput);
                 } else if (delta.getKind() == IResourceDelta.CHANGED) {
                   
+//IC see: https://issues.apache.org/jira/browse/UIMA-2293
                   if (isFileChangeTrackingEnabled)
                     handleElementChanged(fileInput);
                 }
@@ -121,6 +124,7 @@ public class DefaultCasDocumentProvider extends
     private ModifyElementListener deleteListener;
 
     FileElementInfo(ElementInfo info) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2222
       super(info.element);
     }
   }
@@ -128,6 +132,7 @@ public class DefaultCasDocumentProvider extends
   private class SaveSessionPreferencesTrigger implements IPropertyChangeListener {
     private Object element;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2261
     SaveSessionPreferencesTrigger(Object element) {
       this.element = element;
     }
@@ -135,6 +140,7 @@ public class DefaultCasDocumentProvider extends
     public void propertyChange(PropertyChangeEvent event) {
       IResource tsFile = ResourcesPlugin.getWorkspace().getRoot()
               .findMember((getTypesystemId(element)));
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
 
       PreferenceStore prefStore = (PreferenceStore) getSessionPreferenceStore(element);
 
@@ -147,6 +153,7 @@ public class DefaultCasDocumentProvider extends
 
       try {
         tsFile.setPersistentProperty(new QualifiedName("", CAS_EDITOR_SESSION_PROPERTIES),
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
                 new String(prefBytes.toByteArray(), StandardCharsets.UTF_8));
       } catch (CoreException e) {
         CasEditorIdePlugin.log(e);
@@ -186,6 +193,7 @@ public class DefaultCasDocumentProvider extends
   private String getStyleFileForTypeSystem(String typeSystemFile) {
     int lastSlashIndex = typeSystemFile.lastIndexOf("/");
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
     String styleId = typeSystemFile.substring(0, lastSlashIndex + 1);
     styleId = styleId + ".style-" + typeSystemFile.substring(lastSlashIndex + 1);
 
@@ -205,6 +213,7 @@ public class DefaultCasDocumentProvider extends
           TypeSystem types) {
     // TODO: for each annotation type, try to retrieve annotation styles
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
     return new HashSet<>();
   }
 
@@ -218,12 +227,15 @@ public class DefaultCasDocumentProvider extends
       // Try to find a type system for the CAS file
       // TODO: Change to only use full path
       IFile typeSystemFile = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-2122
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
 
       // First check if a type system is already known or was
       // set by the editor for this specific CAS.
       // apply that type system only if the setting is active in the preferences
       String typeSystemFileString = null;
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2603
       String document = casFile.getFullPath().toPortableString();
       if(typeSystemForNextDocumentOnly.get(document) != null) {
         // the type system was already set internally. Use this one and forget the information.
@@ -231,9 +243,11 @@ public class DefaultCasDocumentProvider extends
         typeSystemForNextDocumentOnly.put(document, null);
       }
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-2280
       IPreferenceStore prefStore = CasEditorIdePlugin.getDefault().getPreferenceStore();
       boolean useLastTypesystem = prefStore
               .getBoolean(CasEditorIdePreferenceConstants.CAS_EDITOR_REMEMBER_TYPESYSTEM);
+//IC see: https://issues.apache.org/jira/browse/UIMA-3086
       if (typeSystemFileString == null && useLastTypesystem) {
         typeSystemFileString = documentToTypeSystemMap
                 .get(document);
@@ -258,11 +272,13 @@ public class DefaultCasDocumentProvider extends
       }
 
       // If non was found get it from project
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
       if (typeSystemFile == null)
         typeSystemFile = TypeSystemLocationPropertyPage.getTypeSystemLocation(casFile.getProject());
 
       if (typeSystemFile != null && typeSystemFile.exists()) {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2267
         if (!typeSystemFile.isSynchronized(IResource.DEPTH_ZERO)) {
           typeSystemFile.refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
         }
@@ -275,6 +291,7 @@ public class DefaultCasDocumentProvider extends
         // colors could change completely when the a type is
         // added or removed to the type system
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
         IFile prefFile = ResourcesPlugin
                 .getWorkspace()
                 .getRoot()
@@ -295,6 +312,7 @@ public class DefaultCasDocumentProvider extends
               e.printStackTrace(); // TODO: Handle this correctly!
             }
           } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
 
             // UIMA-2245
             // DotCorpus to Eclipse PreferenceStore migration code.
@@ -310,6 +328,7 @@ public class DefaultCasDocumentProvider extends
 
             if (styleFile.exists()) {
               InputStream styleFileIn = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
               DotCorpus dotCorpus;
               try {
                 styleFileIn = styleFile.getContents();
@@ -355,6 +374,7 @@ public class DefaultCasDocumentProvider extends
             CAS cas = DocumentUimaImpl.getVirginCAS(typeSystemFile);
             TypeSystem ts = cas.getTypeSystem();
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
             Collection<AnnotationStyle> defaultStyles = getConfiguredAnnotationStyles(tsPrefStore,
                     ts);
 
@@ -369,6 +389,7 @@ public class DefaultCasDocumentProvider extends
           typeSystemPreferences.put(prefFile.getFullPath().toPortableString(), tsPrefStore);
         }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2603
         documentToTypeSystemMap.put(document, typeSystemFile
                 .getFullPath().toPortableString());
 
@@ -384,6 +405,7 @@ public class DefaultCasDocumentProvider extends
 
           if (sessionPreferenceString != null) {
             try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
               newStore.load(new ByteArrayInputStream(sessionPreferenceString.getBytes(StandardCharsets.UTF_8)));
             } catch (IOException e) {
               CasEditorPlugin.log(e);
@@ -398,13 +420,18 @@ public class DefaultCasDocumentProvider extends
         CAS cas = DocumentUimaImpl.getVirginCAS(typeSystemFile);
 
         ICasDocument   doc = new DocumentUimaImpl(cas, casFile, typeSystemFile.getFullPath().makeRelative().toString());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4685
 
         elementErrorStatus.remove(element);
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2222
         return doc;
       } else {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
 
         String message;
+//IC see: https://issues.apache.org/jira/browse/UIMA-5920
 
         if (typeSystemFile != null) {
           message = "Cannot find type system!\nPlease place a valid type system in this path:\n"
@@ -412,6 +439,7 @@ public class DefaultCasDocumentProvider extends
         } else
           message = "Type system is not set, please choose a type system to open the CAS.";
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2151
         IStatus status = new Status(IStatus.ERROR, "org.apache.uima.dev",
                 CasDocumentProvider.TYPE_SYSTEM_NOT_AVAILABLE_STATUS_CODE, message, null);
 
@@ -435,11 +463,13 @@ public class DefaultCasDocumentProvider extends
 
         DocumentUimaImpl documentImpl = (DocumentUimaImpl) document;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
         ByteArrayOutputStream outStream = new ByteArrayOutputStream(40000);
         documentImpl.serialize(outStream);
 
         InputStream stream = new ByteArrayInputStream(outStream.toByteArray());
         
+//IC see: https://issues.apache.org/jira/browse/UIMA-2293
         isFileChangeTrackingEnabled = false;
         
         try {
@@ -471,6 +501,7 @@ public class DefaultCasDocumentProvider extends
     PreferenceStore preferences = typeSystemPreferences.get(prefereceFileId);
 
     // serialize ...
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
     IFile preferenceFile = ResourcesPlugin.getWorkspace().getRoot()
             .getFile(Path.fromPortableString(prefereceFileId));
 
@@ -501,6 +532,7 @@ public class DefaultCasDocumentProvider extends
   public IPreferenceStore getTypeSystemPreferenceStore(Object element) {
     String tsId = getTypesystemId(element);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     if (tsId != null)
       return typeSystemPreferences.get(getPreferenceFileForTypeSystem(tsId));
     else
@@ -509,13 +541,16 @@ public class DefaultCasDocumentProvider extends
 
   @Override
   public IPreferenceStore getSessionPreferenceStore(Object element) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2261
     return sessionPreferenceStores.get(getTypesystemId(element));
   }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1887
   void setTypeSystem(String document, String typeSystem) {
     documentToTypeSystemMap.put(document, typeSystem);
   }
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2603
   void setTypeSystemForNextDocumentOnly(String document, String typeSystem) {
     typeSystemForNextDocumentOnly.put(document, typeSystem);
   }
@@ -532,6 +567,7 @@ public class DefaultCasDocumentProvider extends
     // How to fix the exception ?!
     // Only tested on OS X Snow Leopard
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2159
     Composite provideTypeSystemForm = new Composite(parent, SWT.NONE);
     provideTypeSystemForm.setLayout(new GridLayout(1, false));
     Label infoLabel = new Label(provideTypeSystemForm, SWT.NONE);
@@ -549,6 +585,7 @@ public class DefaultCasDocumentProvider extends
         if (resource != null) {
 
           FileEditorInput editorInput = (FileEditorInput) editor.getEditorInput();
+//IC see: https://issues.apache.org/jira/browse/UIMA-2603
           setTypeSystemForNextDocumentOnly(editorInput.getFile().getFullPath().toPortableString(),
                   resource.getFullPath().toString());
 
@@ -570,10 +607,12 @@ public class DefaultCasDocumentProvider extends
   protected ElementInfo createElementInfo(Object element) {
 
     FileElementInfo info = new FileElementInfo(super.createElementInfo(element));
+//IC see: https://issues.apache.org/jira/browse/UIMA-2151
 
     // Register listener to listens for deletion events,
     // if the file opened in this editor is deleted, the editor should be closed!
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     info.deleteListener = new ModifyElementListener((FileEditorInput) element);
     ResourcesPlugin.getWorkspace().addResourceChangeListener(info.deleteListener,
             IResourceChangeEvent.POST_CHANGE);
@@ -587,6 +626,7 @@ public class DefaultCasDocumentProvider extends
     FileElementInfo fileInfo = (FileElementInfo) info;
     ResourcesPlugin.getWorkspace().removeResourceChangeListener(fileInfo.deleteListener);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-2266
     super.disposeElementInfo(element, info);
   }
 
@@ -595,6 +635,7 @@ public class DefaultCasDocumentProvider extends
   }
 
   private void handleElementChanged(Object element) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-2273
     fireElementChanged(element);
   }
 }

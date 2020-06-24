@@ -72,6 +72,8 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
    *          result specification to be passed to this AnalysisEngine
    */
   public AnalysisSequenceCapabilityNode(String aKey, CasObjectProcessor aCasProcessor,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           ResultSpecification aResultSpec) {
     mCasProcessorKey = aKey;
     mCasProcessor = aCasProcessor;
@@ -85,6 +87,7 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
 
       // create capability container and compile only output capabilities
 //      mCapabilityContainer = new CapabilityContainer(capabilities, false, true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-730
       mCapabilityContainer = new ResultSpecification_impl();
       mCapabilityContainer.addCapabilities(capabilities);
     }
@@ -102,6 +105,7 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
    *          result specification to be passed to this AnalysisEngine
    */
   public AnalysisSequenceCapabilityNode(String aCasProcessorKey,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           Capability[] aCasProcessorCapabilities, ResultSpecification aResultSpec) {
     mCasProcessorKey = aCasProcessorKey;
     mResultSpec = aResultSpec;
@@ -109,6 +113,7 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
 
     // analysis engine is not set, so we cannot create capabilityContainer
 //    mCapabilityContainer = new CapabilityContainer(aCasProcessorCapabilities, false, true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-730
     mCapabilityContainer = new ResultSpecification_impl();
     mCapabilityContainer.addCapabilities(aCasProcessorCapabilities);
   }

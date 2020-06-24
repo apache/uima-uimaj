@@ -47,12 +47,15 @@ import junit.framework.TestCase;
 public class IndexComparitorTest extends TestCase {
 
   CAS cas;
+//IC see: https://issues.apache.org/jira/browse/UIMA-115
 
   TypeSystem ts;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   Type topType;
 
   Type integerType;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
   Type shortType;
   Type byteType;
   Type doubleType;
@@ -67,6 +70,7 @@ public class IndexComparitorTest extends TestCase {
   Type type1Sub2;
 
   Feature type1Used;
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
   Feature type1UsedShort;
   Feature type1UsedByte;
   Feature type1UsedBoolean;
@@ -108,6 +112,7 @@ public class IndexComparitorTest extends TestCase {
   FeatureStructure fss[][][];
 
   FSIndex<FeatureStructure> sortedType1;
+//IC see: https://issues.apache.org/jira/browse/UIMA-1489
 
   FSIndex<FeatureStructure> sortedType1TypeOrder;
 
@@ -149,6 +154,7 @@ public class IndexComparitorTest extends TestCase {
       // Add new types and features.
       topType = tsm.getTopType();
       integerType = tsm.getType("uima.cas.Integer");
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
       stringType = tsm.getType("uima.cas.String");
       booleanType = tsm.getType("uima.cas.Boolean");
       doubleType = tsm.getType("uima.cas.Double");
@@ -205,6 +211,8 @@ public class IndexComparitorTest extends TestCase {
       parmIrm.createIndex(newComparator(type1Sub1), "SetType1Sub1", FSIndex.SET_INDEX);
       parmIrm.createIndex(newComparator(type1Sub1), "BagType1Sub1", FSIndex.BAG_INDEX);
       parmIrm.createIndex(newComparatorTypePriority(type1Sub1), "SortedType1Sub1TypeOrder",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               FSIndex.SORTED_INDEX);
       parmIrm.createIndex(newComparatorTypePriority(type1Sub1), "SetType1Sub1TypeOrder",
               FSIndex.SET_INDEX);
@@ -217,6 +225,7 @@ public class IndexComparitorTest extends TestCase {
       FSIndexComparator c = irm.createComparator();
       c.setType(type);
       c.addKey(type1Used, FSIndexComparator.STANDARD_COMPARE);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
       c.addKey(type1UsedShort, FSIndexComparator.STANDARD_COMPARE);
       c.addKey(type1UsedByte, FSIndexComparator.STANDARD_COMPARE);
       c.addKey(type1UsedBoolean, FSIndexComparator.STANDARD_COMPARE);
@@ -247,6 +256,7 @@ public class IndexComparitorTest extends TestCase {
 
   public void setUp() throws Exception {
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
       this.cas = CASInitializer.initCas(new SetupForIndexCompareTesting(), ts -> reinitTypes(ts));
       assertNotNull(cas);
       ir = cas.getIndexRepository();
@@ -267,6 +277,7 @@ public class IndexComparitorTest extends TestCase {
       fss = new FeatureStructure[3][2][2];
       for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
           FeatureStructure tfs = createFs(type1, i, j);
           fss[0][i][j] = tfs;
           ir.addFS(tfs);
@@ -282,6 +293,7 @@ public class IndexComparitorTest extends TestCase {
   private void reinitTypes(TypeSystemImpl tsm) {
     
     // Add new types and features.
+//IC see: https://issues.apache.org/jira/browse/UIMA-4673
     topType = tsm.getTopType();
     integerType = tsm.refreshType(integerType);
     stringType = tsm.refreshType(stringType);
@@ -341,6 +353,7 @@ public class IndexComparitorTest extends TestCase {
     type1Sub2Used = null;
     type1Sub2Ignored = null;
     
+//IC see: https://issues.apache.org/jira/browse/UIMA-3759
     irm = null;
     ir = null;
     sortedType1 = null;
@@ -360,6 +373,7 @@ public class IndexComparitorTest extends TestCase {
   private FeatureStructure createFs(Type type, int i, int j) {
     FeatureStructure f = cas.createFS(type);
     f.setIntValue(type.getFeatureByBaseName("used"), i);
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
     f.setShortValue(type.getFeatureByBaseName("usedShort"), (short) i);
     f.setByteValue(type.getFeatureByBaseName("usedByte"), (byte) i);
     f.setBooleanValue(type.getFeatureByBaseName("usedBoolean"), i == 0 ? false : true);
@@ -372,6 +386,7 @@ public class IndexComparitorTest extends TestCase {
   }
 
   public void testFindSubtype() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4152
     cas.reset();
     
     ir.addFS(createFs(type1, 0, 0));
@@ -434,6 +449,10 @@ public class IndexComparitorTest extends TestCase {
       assertFalse(bagType1.contains(testType1_0_x));
       assertFalse(bagType1.contains(testTypeSub1_0_x));
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-4162
+//IC see: https://issues.apache.org/jira/browse/UIMA-4160
+//IC see: https://issues.apache.org/jira/browse/UIMA-4158
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
       FeatureStructure testType1_0_0_eq = fss[0][0][0];
       FeatureStructure testType1_0_x_eq = fss[0][0][0];
       FeatureStructure testTypeSub1_0_x_eq = fss[1][0][0];
@@ -486,6 +505,10 @@ public class IndexComparitorTest extends TestCase {
       assertTrue(setType1.iterator(testType1_0_0).isValid());
       assertTrue(setType1.iterator(testType1_0_x).isValid());
       assertTrue(setType1.iterator(testTypeSub1_0_x).isValid());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4162
+//IC see: https://issues.apache.org/jira/browse/UIMA-4160
+//IC see: https://issues.apache.org/jira/browse/UIMA-4158
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
       assertTrue(bagType1.iterator(testType1_0_0_eq).isValid());
       assertTrue(bagType1.iterator(testType1_0_x_eq).isValid());
       assertTrue(bagType1.iterator(testTypeSub1_0_x_eq).isValid());
@@ -496,6 +519,10 @@ public class IndexComparitorTest extends TestCase {
       assertTrue(setType1TypeOrder.iterator(testType1_0_0).isValid());
       assertTrue(setType1TypeOrder.iterator(testType1_0_x).isValid());
       assertTrue(setType1TypeOrder.iterator(testTypeSub1_0_x).isValid());
+//IC see: https://issues.apache.org/jira/browse/UIMA-4162
+//IC see: https://issues.apache.org/jira/browse/UIMA-4160
+//IC see: https://issues.apache.org/jira/browse/UIMA-4158
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
       assertTrue(bagType1TypeOrder.iterator(testType1_0_0_eq).isValid());
       assertTrue(bagType1TypeOrder.iterator(testType1_0_x_eq).isValid());
       assertTrue(bagType1TypeOrder.iterator(testTypeSub1_0_x_eq).isValid());
@@ -507,6 +534,10 @@ public class IndexComparitorTest extends TestCase {
       assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_0).get()));
       assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_x).get()));
       assertTrue(fss[0][0][0].equals(setType1.iterator(testTypeSub1_0_x).get()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4162
+//IC see: https://issues.apache.org/jira/browse/UIMA-4160
+//IC see: https://issues.apache.org/jira/browse/UIMA-4158
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
       assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_0_eq).get()));
       assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_x_eq).get()));
       assertTrue(fss[1][0][0].equals(bagType1.iterator(testTypeSub1_0_x_eq).get()));
@@ -518,6 +549,10 @@ public class IndexComparitorTest extends TestCase {
       assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_0).get()));
       assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_x).get()));
       assertTrue(fss[0][0][0].equals(setType1.iterator(testTypeSub1_0_x).get()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-4162
+//IC see: https://issues.apache.org/jira/browse/UIMA-4160
+//IC see: https://issues.apache.org/jira/browse/UIMA-4158
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
       assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_0_eq).get()));
       assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_x_eq).get()));
       assertTrue(fss[1][0][0].equals(bagType1.iterator(testTypeSub1_0_x_eq).get()));
@@ -560,10 +595,12 @@ public class IndexComparitorTest extends TestCase {
 
   // note: this test is here because the setup is done
   public void testProtectIndex() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4166
     FSIterator<FeatureStructure> it = sortedType1.iterator();
     FeatureStructure fs = it.get();
     boolean ok = false;
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5050
       System.setProperty(CASImpl.THROW_EXCEPTION_FS_UPDATES_CORRUPTS, "true");
       fs.setBooleanValue(type1UsedBoolean, ! fs.getBooleanValue(type1UsedBoolean));  // should cause protection
     } catch (Exception e) {

@@ -46,6 +46,7 @@ public class IndexTreeNode {
    * @param size the size
    */
   public IndexTreeNode(String name, Type type, int size) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super();
     this.name = name;
     this.type = type;

@@ -50,9 +50,11 @@ import junit.framework.TestCase;
 public class UimaContext_implTest extends TestCase {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
           + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   protected final String TEST_EXTENSION_CLASSPATH = JUnitExtension.getFile(
           "ResourceTest/spaces in dir name").getPath();
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
 
   private UimaContext mContext;
 
@@ -84,9 +86,11 @@ public class UimaContext_implTest extends TestCase {
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
       rm.setDataPath(TEST_DATAPATH);
       rm.setExtensionClassPath(TEST_EXTENSION_CLASSPATH, true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
 
       // create a UimaContext with Config Params and Resources
       UIMAFramework.getXMLParser().enableSchemaValidation(true);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       CasConsumerDescription ccDesc = UIMAFramework.getXMLParser().parseCasConsumerDescription(
               new XMLInputSource(JUnitExtension
                       .getFile("UimaContextTest/CasConsumerForUimaContextTest.xml")));
@@ -96,6 +100,7 @@ public class UimaContext_implTest extends TestCase {
       // create a UimaContext with Config Params in Groups but no resources
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
       AnalysisEngineDescription taeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(taeDesc, rm, null);
       mContext2 = ae.getUimaContext();
@@ -132,6 +137,7 @@ public class UimaContext_implTest extends TestCase {
    * @see TestCase#tearDown()
    */
   protected void tearDown() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5333
     super.tearDown();
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
@@ -145,12 +151,14 @@ public class UimaContext_implTest extends TestCase {
       Integer integer = (Integer) mContext.getConfigParameterValue("IntegerParam");
       Assert.assertEquals(Integer.valueOf(42), integer);
       Integer[] intArr = (Integer[]) mContext.getConfigParameterValue("IntegerArrayParam");
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
       Assert.assertEquals(Arrays.asList(new Integer[] {1, 2,
           3}), Arrays.asList(intArr));
       Float flt = (Float) mContext.getConfigParameterValue("FloatParam");
       Assert.assertEquals(Float.valueOf(3.14F), flt);
 
       // default fallback
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       String str2 = (String) mContext2.getConfigParameterValue("StringParam");
       Assert.assertEquals("en", str2);
 
@@ -169,6 +177,7 @@ public class UimaContext_implTest extends TestCase {
    * Test for Object getConfigParameterValue(String, String)
    */
   public void testGetConfigParameterValueStringString() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // en-US group
       String str = (String) mContext2.getConfigParameterValue("en-US", "StringParam");
@@ -186,6 +195,8 @@ public class UimaContext_implTest extends TestCase {
       Assert.assertEquals(1776, intVal.intValue());
 
       Integer[] intArr = (Integer[]) mContext2
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getConfigParameterValue("en-US", "IntegerArrayParam");
       Assert.assertEquals(3, intArr.length); // language fallback
       Assert.assertEquals(1, intArr[0].intValue());
@@ -206,6 +217,7 @@ public class UimaContext_implTest extends TestCase {
 
       Integer intVal2 = (Integer) mContext2.getConfigParameterValue("de", "IntegerParam");
       Assert.assertEquals(42, intVal2.intValue()); // default fallback
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       Integer[] intArr2 = (Integer[]) mContext2.getConfigParameterValue("de", "IntegerArrayParam");
       Assert.assertEquals(3, intArr2.length);
@@ -215,6 +227,7 @@ public class UimaContext_implTest extends TestCase {
 
       Float floatVal2 = (Float) mContext2.getConfigParameterValue("de", "FloatParam");
       Assert.assertEquals(null, floatVal2);
+//IC see: https://issues.apache.org/jira/browse/UIMA-372
 
       // zh group
       String str3 = (String) mContext2.getConfigParameterValue("zh", "StringParam");
@@ -227,6 +240,7 @@ public class UimaContext_implTest extends TestCase {
 
       Integer intVal3 = (Integer) mContext2.getConfigParameterValue("zh", "IntegerParam");
       Assert.assertEquals(42, intVal3.intValue()); // default fallback
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
       Integer[] intArr3 = (Integer[]) mContext2.getConfigParameterValue("zh", "IntegerArrayParam");
       Assert.assertEquals(3, intArr3.length); // default fallback
@@ -236,6 +250,7 @@ public class UimaContext_implTest extends TestCase {
 
       Float floatVal3 = (Float) mContext2.getConfigParameterValue("zh", "FloatParam");
       Assert.assertEquals(3.14, floatVal3, 0.0001);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
 
       // testing duplicate groups
       assertEquals("common-a", mContext4.getConfigParameterValue("a", "CommonParam"));
@@ -255,6 +270,7 @@ public class UimaContext_implTest extends TestCase {
   public void testGetConfigurationGroupNames() {
     String[] names = mContext2.getConfigurationGroupNames();
     Assert.assertEquals(5, names.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<String> l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("en"));
     Assert.assertTrue(l.contains("en-US"));
@@ -265,6 +281,7 @@ public class UimaContext_implTest extends TestCase {
     // try on something with both groups and groupless parameters
     names = mContext3.getConfigurationGroupNames();
     Assert.assertEquals(5, names.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("en"));
     Assert.assertTrue(l.contains("en-US"));
@@ -301,6 +318,7 @@ public class UimaContext_implTest extends TestCase {
   public void testGetConfigParameterNamesString() {
     String[] names = mContext2.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     ArrayList<String> l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("StringParam"));
     Assert.assertTrue(l.contains("StringArrayParam"));
@@ -318,6 +336,7 @@ public class UimaContext_implTest extends TestCase {
     // try on something with both groups and groupless params
     names = mContext3.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5921
     l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("StringParam"));
     Assert.assertTrue(l.contains("StringArrayParam"));
@@ -327,6 +346,7 @@ public class UimaContext_implTest extends TestCase {
   }
 
   public void testGetResourceObjectString() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       // custom object
       Object r = mContext.getResourceObject("TestResourceObject");
@@ -407,6 +427,7 @@ public class UimaContext_implTest extends TestCase {
       Assert.assertNotNull(url7);
 
       // spaces as part of extension classpath (spaces should be URL-encoded)
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
       URL url8 = mContext.getResourceURL("OtherFileResource");
       assertNotNull(url8);
       assertTrue(url8.getPath().indexOf("%20") > -1);
@@ -557,6 +578,7 @@ public class UimaContext_implTest extends TestCase {
 
       // passthrough to class loader
       InputStream strm4 = mContext
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               .getResourceAsStream("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
       Assert.assertNotNull(strm4);
 
@@ -569,6 +591,7 @@ public class UimaContext_implTest extends TestCase {
       Assert.assertNotNull(strm6);
 
       // spaces as part of extension classpath
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
       InputStream strm7 = mContext.getResourceAsStream("OtherFileResource");
       assertNotNull(strm7);
     } catch (Exception e) {
@@ -598,6 +621,7 @@ public class UimaContext_implTest extends TestCase {
 
       // parameter values for which no resource exists (should fail)
       ResourceAccessException ex = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       try {
         mContext.getResourceObject("TestFileLanguageResource", new String[] { "zh" });
       } catch (ResourceAccessException e) {
@@ -642,6 +666,7 @@ public class UimaContext_implTest extends TestCase {
     try {
       // standard data resource
       InputStream strm = mContext.getResourceAsStream("TestFileLanguageResource",
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               new String[] { "en" });
       Assert.assertNotNull(strm);
 
@@ -706,6 +731,7 @@ public class UimaContext_implTest extends TestCase {
       URL url2 = mContext.getResourceURL("TestFileLanguageResource", new String[] { "de" });
       Assert.assertNotNull(url2);
       Assert.assertFalse(url2.toString().equals(url.toString()));
+//IC see: https://issues.apache.org/jira/browse/UIMA-148
 
       // custom object (should return null)
       URL url3 = mContext.getResourceURL("TestLanguageResourceObject", new String[] { "en" });
@@ -713,6 +739,7 @@ public class UimaContext_implTest extends TestCase {
 
       // parameter values for which no resource exists (should fail)
       ResourceAccessException ex = null;
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       try {
         mContext.getResourceURL("TestFileLanguageResource", new String[] { "zh" });
       } catch (ResourceAccessException e) {
@@ -754,6 +781,7 @@ public class UimaContext_implTest extends TestCase {
   }
 
   public void testGetResourceURIStringStringArray() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-132
     try {
       // standard data resource
       URI uri = mContext.getResourceURI("TestFileLanguageResource", new String[] { "en" });
@@ -902,5 +930,6 @@ class MyTestSpecifier extends ResourceCreationSpecifier_impl {
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("testSpecifier",
           new PropertyXmlInfo[] { new PropertyXmlInfo("metaData", null, false), });
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
 }

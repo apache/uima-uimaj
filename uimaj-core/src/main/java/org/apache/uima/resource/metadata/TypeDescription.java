@@ -124,6 +124,7 @@ public interface TypeDescription extends MetaDataObject {
    */
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
           String aRangeTypeName);
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   /**
    * Convenience method which adds a FeatureDescription to this TypeDescription. Used for array or
@@ -145,5 +146,6 @@ public interface TypeDescription extends MetaDataObject {
    * @return description of the new Feature
    */
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed);
 }

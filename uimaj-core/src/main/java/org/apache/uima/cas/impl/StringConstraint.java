@@ -38,6 +38,7 @@ class StringConstraint extends PathConstraint implements FSMatchConstraint {
 
   private FSStringConstraint stringConstraint;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
   StringConstraint(ArrayList<String> path, FSStringConstraint cons) {
     super(path);
     this.stringConstraint = cons;

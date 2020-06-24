@@ -83,6 +83,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
 	    // because the index definitions are transmitted with the serialized CAS. So we can
 	    // just null it out.
       // BUT do this in a clone, so we don't affect Java!
+//IC see: https://issues.apache.org/jira/browse/UIMA-347
       this.resourceDescription = (ResourceCreationSpecifier)aeDescription.clone();
 	    ((ProcessingResourceMetaData)this.resourceDescription.getMetaData()).setFsIndexCollection(null);
 	    this.tsReinit = true;
@@ -108,6 +109,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
         if (aggSofaMapping != null && aggSofaMapping.length > 0) {
           for (int i = 0; i < aggSofaMapping.length; i++) {
             String absoluteSofaName = compInfo
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                     .mapToSofaID(aggSofaMapping[i].getAggregateSofaName());
             aggSofaMapping[i].setAggregateSofaName(absoluteSofaName);
           }
@@ -119,6 +121,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
        * 
        */
       
+//IC see: https://issues.apache.org/jira/browse/UIMA-1281
       AnalysisEngineDescription aed = (AnalysisEngineDescription) resourceDescription;
       ConfigurationParameterSettings parmSettings = aed.getAnalysisEngineMetaData().getConfigurationParameterSettings();
       /*
@@ -177,6 +180,8 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * @throws AnnotatorInitializationException pass thru
    */
   public void typeSystemInit(TypeSystem ts) throws AnnotatorConfigurationException,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           AnnotatorInitializationException {
     // set flag to update TAF type system on next call to process
     this.tsReinit = true;
@@ -191,6 +196,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
     engine = null;
     // get new config. settings
     ConfigurationParameterSettings settings = ae.getUimaContextAdmin().getConfigurationManager()
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             .getCurrentConfigParameterSettings(ae.getUimaContextAdmin().getQualifiedContextName());
     resourceDescription.getMetaData().setConfigurationParameterSettings(settings);
   }
@@ -204,8 +210,11 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   public void process(CAS cas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     try {
       if (engine == null) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-11
         UimacppEngine.configureResourceManager(System.getProperty("java.io.tmpdir"), ae
                 .getResourceManager().getDataPath());
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
         StringWriter strWriter = new StringWriter();
         resourceDescription.toXML(strWriter);
@@ -213,6 +222,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
         engine = UimacppEngine.createJTafTAE(strWriter.getBuffer().toString());
         this.tsReinit = true;
       }
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (this.tsReinit) {
         this.tsReinit = false;
         CASMgrSerializer serializer = Serialization.serializeCASMgr((CASMgr) cas);
@@ -272,6 +282,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       if (engine != null) {
         CAS cas = getEmptyCAS();
@@ -331,6 +342,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#destroy()
    */
   public void destroy() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       if (engine != null) {
         engine.destroy();
@@ -365,6 +377,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   public static int getLoggingLevel() {
 
     Logger uimacppLogger = UIMAFramework.getLogger(UimacppAnalysisComponent.class);
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
 
     if (uimacppLogger.isLoggable(Level.FINEST) || uimacppLogger.isLoggable(Level.FINER)
             || uimacppLogger.isLoggable(Level.FINE) || uimacppLogger.isLoggable(Level.CONFIG)
@@ -381,6 +394,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
 
   // log a message
   public static void log(int msglevel, String sourceClass, String sourceMethod, String message) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
     Logger uimacppLogger = UIMAFramework.getLogger(UimacppAnalysisComponent.class);
     Level level = Level.INFO; // default
     if (msglevel == TAF_LOGLEVEL_MESSAGE) {
@@ -391,6 +405,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
       level = Level.SEVERE;
     }
     if (sourceMethod.length() > 0)
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
       uimacppLogger.log(level, sourceClass + "::" + sourceMethod + ": " + message);
     else
       uimacppLogger.log(level, sourceClass + ": " + message);
@@ -421,6 +436,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
 
       log.logrb(Level.SEVERE, CLASS_NAME.getName(), "logJTafException", LOG_RESOURCE_BUNDLE,
               "UIMA_taf_internal_exception__SEVERE",
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
               new Object[] {errorCode, errorName });
     }
     Exception et = e.getEmbeddedException();

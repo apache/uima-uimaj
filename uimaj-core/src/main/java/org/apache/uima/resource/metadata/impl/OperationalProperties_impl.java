@@ -28,6 +28,8 @@ import org.w3c.dom.Node;
 
 public class OperationalProperties_impl extends MetaDataObject_impl implements
         OperationalProperties {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
 
   private static final long serialVersionUID = 8649608701550531026L;
 
@@ -90,6 +92,7 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
           new PropertyXmlInfo[] { new PropertyXmlInfo("modifiesCas"),
               new PropertyXmlInfo("multipleDeploymentAllowed"),
               new PropertyXmlInfo("outputsNewCASes")});
+//IC see: https://issues.apache.org/jira/browse/UIMA-2378
 
   /* (non-Javadoc)
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)

@@ -43,6 +43,7 @@ class TableDropAdapter extends DropTargetAdapter {
    * @param edit the edit
    */
   public TableDropAdapter(AnnotationFeaturesViewer av, StyleMapEditor edit) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     annotationFeaturesViewer = av;
     this.edit = edit;
   }

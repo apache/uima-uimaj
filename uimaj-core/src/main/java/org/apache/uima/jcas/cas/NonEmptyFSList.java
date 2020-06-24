@@ -87,6 +87,7 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
    * @param tail -
    */
   public NonEmptyFSList(JCas jcas, T head, FSList<?> tail) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4980
     this(jcas);
     setHead(head);
     setTail(tail);
@@ -98,6 +99,7 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
    * @param head -
    */
   public NonEmptyFSList(JCas jcas, T head) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5584
     this(jcas, head, jcas.getCasImpl().emptyFSList());
   }
   
@@ -115,6 +117,7 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, vt, vt._casView, _casView);
     }
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_head), vt); }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
 
 //  public void _setHeadNcNj(TOP v) { _F_head = v; }
   
@@ -125,18 +128,22 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
 
   /* setter for tail * */
   public void setTail(FSList v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4674
     if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
     }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5573
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_tail), v); }
    
   @Override
   public void setTail(CommonList v) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-4663
     setTail((FSList) v);
   }
   
   public T getNthElement(int i) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     return ((NonEmptyFSList<T>)getNonEmptyNthNode(i)).getHead();
   }
 
@@ -146,6 +153,7 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
    * @return the NonEmptyFSList node created  
    */
   public NonEmptyFSList<T> add(T item) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
     FSList<T> tail = getTail();
     NonEmptyFSList<T> node = tail.push(item);
     setTail(node);
@@ -156,6 +164,7 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
   public Iterator<T> iterator() {
     return new Iterator<T>() {
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-5633
       FSList<T> node = NonEmptyFSList.this;
       
       @Override
@@ -168,6 +177,7 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
+//IC see: https://issues.apache.org/jira/browse/UIMA-5620
         NonEmptyFSList<T> nn = (NonEmptyFSList<T>)node; 
         T element = nn.getHead();
         node = nn.getTail();

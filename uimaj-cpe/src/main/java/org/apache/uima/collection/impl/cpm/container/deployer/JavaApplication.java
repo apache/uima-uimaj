@@ -54,7 +54,10 @@ public class JavaApplication extends RunnableApplication {
    * @throws ResourceConfigurationException passthru
    */
   public JavaApplication(CasProcessorConfiguration aCasProcessorConfiguration,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CpeCasProcessor aJaxbCasProcessorConfig) throws ResourceConfigurationException {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
     addApplicationInfo(aCasProcessorConfiguration, aJaxbCasProcessorConfig); 
   }
 
@@ -69,6 +72,7 @@ public class JavaApplication extends RunnableApplication {
    */
   @Override
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
           CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
     super.addApplicationInfo(aCasProcessorConfiguration, aCasProcessor);
     String[] cmdLine = addApplicationCmdLineArguments(aCasProcessorConfiguration, argList,
@@ -90,6 +94,7 @@ public class JavaApplication extends RunnableApplication {
    * @throws ResourceConfigurationException the resource configuration exception
    */
   protected String[] addApplicationCmdLineArguments(
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
           CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable) 
       throws ResourceConfigurationException {
     ArrayList cmdArgs = new ArrayList();
@@ -120,6 +125,7 @@ public class JavaApplication extends RunnableApplication {
         continue; // ignore
       }
       if (argValue == null || argValue.trim().length() == 0 || argValue.startsWith("-DVNS_HOST")
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               || argValue.startsWith("-DVNS_PORT")) {
         continue; // skip
       }
@@ -137,6 +143,7 @@ public class JavaApplication extends RunnableApplication {
       // the classpath
       // string
       {
+//IC see: https://issues.apache.org/jira/browse/UIMA-668
         String systemClasspath = getSysEnvVarValue("CLASSPATH");
         if (systemClasspath == null) {
           systemClasspath = "";
@@ -150,6 +157,7 @@ public class JavaApplication extends RunnableApplication {
         argList.add(i + 1, classpath + System.getProperty("path.separator") + systemClasspath);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_show_cmd_classpath__FINEST",
                   new Object[] { Thread.currentThread().getName(), classpath });
@@ -157,6 +165,7 @@ public class JavaApplication extends RunnableApplication {
         continue; // next iteration will copy the classpath into cmdArgs
       }
       if ("${descriptor}".equals(argValue.trim())) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-341
         URL descriptorUrl = aCasProcessorConfiguration.getDescriptorUrl();
         String descriptorPath;
         try {

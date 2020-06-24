@@ -65,6 +65,7 @@ public class StyleMapEntry {
   @Override
   public String toString() {
     return "(" + annotationTypeName + ";" + label + ";" + featureValue + ";"
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
             + Integer.toHexString(foreground.getRGB()) + ";"
             + Integer.toHexString(background.getRGB())
 
@@ -86,6 +87,7 @@ public class StyleMapEntry {
    * @param hid the new hidden
    */
   public void setHidden(Boolean hid) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     isHidden = hid;
   }
 
@@ -104,6 +106,7 @@ public class StyleMapEntry {
    * @param chk the new checked
    */
   public void setChecked(Boolean chk) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-5922
     isChecked = chk;
   }
 

@@ -38,6 +38,7 @@ public class CpmStopTest extends TestCase {
    * @see junit.framework.TestCase#tearDown()
    */
   protected void tearDown() throws Exception {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     super.tearDown();
     FunctionErrorStore.resetCount();
   }
@@ -158,6 +159,7 @@ public class CpmStopTest extends TestCase {
     CpeDescription cpeDesc = null;
     CollectionProcessingEngine cpe = null;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
     String colReaderBase = JUnitExtension.getFile("CpmTests" + separator
             + "ErrorTestCollectionReader.xml").getAbsolutePath();
     String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml").getAbsolutePath();
@@ -165,6 +167,7 @@ public class CpmStopTest extends TestCase {
             + "ErrorTestCasConsumer.xml").getAbsolutePath();
 
     // created needed descriptors
+//IC see: https://issues.apache.org/jira/browse/UIMA-24
     String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
     String taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
     String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase);
@@ -185,6 +188,7 @@ public class CpmStopTest extends TestCase {
     if (useSlowAnnotator) {
       CpeIntegratedCasProcessor slowProcessor = CpeDescriptorFactory
               .produceCasProcessor("SlowAnnotator");
+//IC see: https://issues.apache.org/jira/browse/UIMA-45
       slowProcessor.setDescriptor(JUnitExtension.getFile("CpmTests" + separator + "SlowAnnotator.xml").getAbsolutePath());
       cpeDesc.addCasProcessor(slowProcessor);
     }

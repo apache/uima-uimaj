@@ -38,6 +38,7 @@ class IntConstraint extends PathConstraint implements FSMatchConstraint {
 
   private FSIntConstraint intConstraint;
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-1444
   IntConstraint(ArrayList<String> path, FSIntConstraint cons) {
     super(path);
     this.intConstraint = cons;

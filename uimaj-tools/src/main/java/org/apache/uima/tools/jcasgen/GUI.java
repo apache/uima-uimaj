@@ -70,6 +70,7 @@ public class GUI extends JFrame {
   /**
    * The Class G.
    */
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
   class G extends JPanel implements ActionListener {
     
     /** The Constant serialVersionUID. */
@@ -174,6 +175,7 @@ public class GUI extends JFrame {
       // 5 status
       // 6 go-button txt-status result
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       lbLabel17 = new JLabel("Welcome to the JCasGen tool. You can drag corners to resize.");
       lbLabel17.setRequestFocusEnabled(false);
       lbLabel17.setToolTipText(null);
@@ -238,6 +240,7 @@ public class GUI extends JFrame {
       gbcG.fill = GridBagConstraints.BOTH;
       gbcG.anchor = GridBagConstraints.NORTHWEST;
       areaScrollPane = new JScrollPane(taStatus);
+//IC see: https://issues.apache.org/jira/browse/UIMA-5172
       areaScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
       gbG.setConstraints(areaScrollPane, gbcG);
       add(areaScrollPane);
@@ -267,6 +270,7 @@ public class GUI extends JFrame {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
       if (e.getSource() == btInputFileBrowse) {
         browseFile(tfInputFileName); // Action for btInputFileBrowse
       }
@@ -337,6 +341,7 @@ public class GUI extends JFrame {
         @Override
         public void run() {
           jg.main0(new String[] { "-jcasgeninput", inFileName, "-jcasgenoutput", outDirName },
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                   jg.merger, new GuiProgressMonitor(), new GuiErrorImpl());
         }
       };
@@ -352,6 +357,7 @@ public class GUI extends JFrame {
     String showInStatus(String message) {
       taStatus.setText(taStatus.getText() + message + NL);
       areaScrollPane.getVerticalScrollBar().setValue(
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               areaScrollPane.getVerticalScrollBar().getMaximum());
       gui.repaint();
       return message;
@@ -368,6 +374,7 @@ public class GUI extends JFrame {
    */
   // for testing only
   public static void main(String args[]) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     } catch (ClassNotFoundException e) { // do nothing
@@ -392,6 +399,7 @@ public class GUI extends JFrame {
 
     setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     } catch (Exception e) {
@@ -402,6 +410,7 @@ public class GUI extends JFrame {
 
     // Set frame icon image
     try {
+//IC see: https://issues.apache.org/jira/browse/UIMA-295
       this.setIconImage(Images.getImage(Images.MICROSCOPE));
     } catch (IOException e) {
       System.err.println("Image could not be loaded: " + e.getMessage());
@@ -416,6 +425,7 @@ public class GUI extends JFrame {
     this.getContentPane().add(pnG, BorderLayout.CENTER);
 
     aboutDialog = new AboutDialog(this, "About JCasGen");
+//IC see: https://issues.apache.org/jira/browse/UIMA-22
 
     setJMenuBar(createMenuBar());
 
@@ -434,6 +444,7 @@ public class GUI extends JFrame {
     JMenu fileMenu = new JMenu("File");
 
     JMenuItem exitMenuItem = new JMenuItem("Exit");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     exitMenuItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -445,6 +456,7 @@ public class GUI extends JFrame {
 
     JMenu helpMenu = new JMenu("Help");
     JMenuItem aboutMenuItem = new JMenuItem("About");
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     aboutMenuItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {

@@ -66,6 +66,7 @@ public class DebugControlThread implements Runnable {
    * @param aCheckpointFrequency the a checkpoint frequency
    */
   public DebugControlThread(CPMEngine aCpm, String aFilename, int aCheckpointFrequency) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
     cpm = aCpm;
     fileName = aFilename;
     checkpointFrequency = aCheckpointFrequency;
@@ -80,6 +81,7 @@ public class DebugControlThread implements Runnable {
     if (fileName == null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_checkpoint_target_not_defined__FINEST",
                 new Object[] { Thread.currentThread().getName() });
@@ -120,6 +122,7 @@ public class DebugControlThread implements Runnable {
   public void run() {
     // isRunning = true;
     while (!stop && cpm.isRunning()) {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
       synchronized (lockForPause) {
         if (pause) {
           try {
@@ -139,6 +142,7 @@ public class DebugControlThread implements Runnable {
     }
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_thread_terminating__FINEST",
               new Object[] { Thread.currentThread().getName() });
     }
@@ -175,6 +179,7 @@ public class DebugControlThread implements Runnable {
             if (value.trim().equalsIgnoreCase("off") && System.getProperties().containsKey(key)) {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                 UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                         this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                         "UIMA_CPM_disabling_key__FINEST",
                         new Object[] { Thread.currentThread().getName(), key, value });
@@ -228,6 +233,7 @@ public class DebugControlThread implements Runnable {
    * Resume.
    */
   public void resume() {
+//IC see: https://issues.apache.org/jira/browse/UIMA-284
     synchronized (lockForPause) {
       if (pause) {
         try {
@@ -250,6 +256,7 @@ public class DebugControlThread implements Runnable {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_show_access_control_file__FINEST",
                 new Object[] { Thread.currentThread().getName(), fileName });
@@ -257,10 +264,12 @@ public class DebugControlThread implements Runnable {
       inF = new File(fileName);
 
       return FileUtils.file2String(inF);
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
 
     } catch (FileNotFoundException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+//IC see: https://issues.apache.org/jira/browse/UIMA-48
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_access_control_file_not_found__FINEST",
                 new Object[] { Thread.currentThread().getName(), fileName });
@@ -269,6 +278,7 @@ public class DebugControlThread implements Runnable {
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
+//IC see: https://issues.apache.org/jira/browse/UIMA-210
       try {
         inF.delete();
       } catch (Exception e) {
