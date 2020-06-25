@@ -885,7 +885,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
     private final int annotSofaFeatCode;
     
-
     JCasFsGenerator(int type, Constructor<T> c, boolean isSubtypeOfAnnotationBase,
         int sofaNbrFeatCode, int annotSofaFeatCode) {
       this.type = type;
@@ -973,6 +972,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       final int sofa = casView.ll_getIntValue(addr, annotSofaFeatCode, false);
       return (sofa == 0) ? 0 : casView.ll_getIntValue(sofa, sofaNbrFeatCode);
     }
+    
+    public int getTypeIndex() {
+      return type;
+    }
   }
 
   // per JCas instance - so don't need to synch.
@@ -1003,24 +1006,46 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     //     these are created lazily - so it calls instantiateJCas_Types to make them.
     //     If they were already made, this next test short circuits this.
     int typeIndex = jcasTypeInfo.index;
-    if (typeArray[typeIndex] != null) {
+    TypeImpl casType = (TypeImpl) casImpl.getTypeSystem().getType(jcasTypeInfo.typeName);
+    FSGenerator<?> generator = (fsGenerators == null) ? null : fsGenerators[casType.getCode()];
+    if (typeArray[typeIndex] != null &&
+        // https://issues.apache.org/jira/browse/UIMA-6243
+        // Catch the case where
+        //   a previously loaded JCas class for this type happened, but
+        //   the type in the fsGenerators is not for this JCas class
+        //     For example, this happens in the test case
+        //       JCasClassLoaderTest.thatTypeSystemCanComeFromItsOwnClassLoader
+        //       where the AddATokenAnnotator instantiates the _Type in the typeArray,
+        //         only within that annotator's process scope,
+        //         and outside of its scope, it is not instantiated
+        //       In that case, the JCas class is copied-down from some supertype
+        (alreadyLoaded ||
+          // ! already loaded here
+          (! (generator instanceof JCasFsGenerator) ||
+            // generator is an instanceof JCasFsGenerator here
+            // if the next is false, this falls thru and we instantiate 
+            // a loaded version of the JCas type into the generators
+           ((JCasFsGenerator<?>)generator).getTypeIndex() == typeIndex) )       
+       ) {
       return false;
     }
     
     Constructor<?> c_Type = jcasTypeInfo.constructorFor_Type;
     Constructor<T> cType = jcasTypeInfo.constructorForType;
-    TypeImpl casType = (TypeImpl) casImpl.getTypeSystem().getType(jcasTypeInfo.typeName);
+    
 
     try {
       constructorArgsFor_Type[0] = this;
       constructorArgsFor_Type[1] = casType;
-      TOP_Type x_Type_instance = (TOP_Type) c_Type.newInstance(constructorArgsFor_Type);
-      typeArray[typeIndex] = x_Type_instance;
+      if (typeArray[typeIndex] == null) {
+        TOP_Type x_Type_instance = (TOP_Type) c_Type.newInstance(constructorArgsFor_Type);
+        typeArray[typeIndex] = x_Type_instance;
+      }
       // install the standard generator
       // this is sharable by all views, since the CAS is passed to the generator
       // Also sharable by all in a CasPool, except for "swapping" due to PEARs/Classloaders.
       if (!alreadyLoaded) {
-        final TypeSystemImpl ts = casImpl.getTypeSystemImpl();
+//        final TypeSystemImpl ts = casImpl.getTypeSystemImpl();
         fsGenerators[casType.getCode()] = new JCasFsGenerator<T>(typeIndex, cType,
             jcasTypeInfo.isSubtypeOfAnnotationBase, TypeSystemImpl.sofaNumFeatCode, TypeSystemImpl.annotSofaFeatCode);
         // this.casImpl.getFSClassRegistry().loadJCasGeneratorForType(typeIndex, cType, casType,
