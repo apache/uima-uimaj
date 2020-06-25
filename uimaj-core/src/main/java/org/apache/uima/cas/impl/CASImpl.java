@@ -4822,16 +4822,14 @@ public JCasImpl getJCasImpl() {
     svd.fssTobeAddedback.add(r);
     return r;
   }
-
-  // never used
-//  void dropProtectIndexesLevel (FSsTobeAddedback fssTobeAddedback) {
-//    int last_index = svd.fssTobeAddedback.size() -1;
-//    if (last_index < 0) return; 
-//    FSsTobeAddedback last_one = svd.fssTobeAddedback.get(last_index);
-//    if (fssTobeAddedback == last_one) {
-//       svd.fssTobeAddedback.remove(last_index);
-//    }
-//  }
+  
+  void dropProtectIndexesLevel () {
+    if (svd.fssTobeAddedback.isEmpty()) {
+      return;
+    }
+    
+    svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() -1);
+  }
   
   /**
    * This design is to support normal operations where the

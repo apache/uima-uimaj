@@ -50,7 +50,10 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
    * does an add back if needed 
    */
   @Override
-  public void close() { addback();}
+  public void close() { 
+  	addback();
+  	((FSsTobeAddedbackMultiple) this).cas.dropProtectIndexesLevel();
+  }
 
   protected void logPart(FSIndexRepository view) {
     System.out.format("%,d tobeReindexed: view: %s", removes.incrementAndGet(), view);
@@ -216,7 +219,7 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
         }
       }
       clear();
-//      cas.dropProtectIndexesLevel(this); // callers who use the stack do this
+//      cas.dropProtectIndexesLevel();  // all callers of addback do what's needed, don't do it here 6/2020 MIS
     }
     
     @Override

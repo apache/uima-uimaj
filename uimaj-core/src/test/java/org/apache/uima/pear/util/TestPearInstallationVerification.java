@@ -74,7 +74,7 @@ public class TestPearInstallationVerification {
     assertThatPearInstalls(
             getFile("pearTests/analysisEngine.pear"),
             // on windows, can't use these chars
-            //   <>:"/\|?*          
+            //   <>:"/\|?*  
             temp.newFolder("!'&"));
   }
 

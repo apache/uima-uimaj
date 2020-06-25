@@ -109,6 +109,10 @@
 
     </repository>
     
+    <!--
+      - The Eclipse Plugin modules use version ranges for their dependencies. These could resolve to
+      - SNAPSHOT versions if we have a SNAPSHOT repo declaration here. Thus, this repo should only
+      - be enabled when really needed.
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
@@ -116,11 +120,15 @@
       <releases>
         <enabled>false</enabled>
       </releases>
-    </repository>    
-    
+    </repository>
+    -->
   </repositories>
   
   <pluginRepositories>
+    <!--
+      - The Eclipse Plugin modules use version ranges for their dependencies. These could resolve to
+      - SNAPSHOT versions if we have a SNAPSHOT repo declaration here. Thus, this repo should only
+      - be enabled when really needed.
     <pluginRepository>
       <id>apache.snapshots.plugins</id>
       <name>Apache Snapshot Repository - Maven plugins</name>
@@ -135,6 +143,7 @@
         <updatePolicy>never</updatePolicy>        
       </snapshots>
     </pluginRepository>
+    -->
   </pluginRepositories>
   
   <properties>
@@ -203,11 +212,11 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
   
   <build>
     <pluginManagement>
       <plugins>
-        
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -215,7 +224,7 @@
             <argLine>@{jacoco.argLine} -Xmx@{maven.surefire.heap} -Xms@{maven.surefire.heap} @{maven.surefire.argLine} @{maven.surefire.java9}</argLine>
           </configuration>
         </plugin>
-                
+
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
@@ -327,6 +336,7 @@
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
             <configuration>
+
               <excludes combine.children="append">
                 <!-- Duplicates on classpath cause an exception in JaCoCo report -->
                 <exclude>**/org/apache/uima/examples/SourceDocumentInformation*</exclude>
@@ -374,7 +384,6 @@
         </file>
       </activation>
       <build>
-
         <pluginManagement>
           <plugins>
             <plugin>
@@ -392,8 +401,8 @@
 	          </executions>
 	          </plugin>
           </plugins>
-        </pluginManagement>
-         
+        </pluginManagement> 
+        
         <plugins>
           <!-- https://siom79.github.io/japicmp/MavenPlugin.html -->
           <plugin>              
@@ -407,7 +416,7 @@
                   <artifactId>${project.artifactId}</artifactId>
                   <version>${api_check_oldVersion}</version>
                 </dependency>
-              </oldVersion> 
+              </oldVersion>
               <parameter>
                 <onlyModified>true</onlyModified>
                 <!-- filter out classes with impl in their package or class name -->
@@ -447,7 +456,6 @@
                 </configuration>
               </execution>
             </executions>
-            
           </plugin>
         </plugins>
       </build>
@@ -501,6 +509,6 @@
           </plugins>
         </pluginManagement>
       </build>
-    </profile>  
+    </profile>
   </profiles>
 </project>
