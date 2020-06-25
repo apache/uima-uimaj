@@ -49,34 +49,38 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class BinarySerializer_Axis11 implements Serializer {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -1968145589342023832L;
 
-  /**
-   * 
-   * Whether attachments should be used to send binary-serialized data
-   */
+  /** Whether attachments should be used to send binary-serialized data. */
   private boolean mUseAttachments;
 
+  /**
+   * Instantiates a new binary serializer axis 11.
+   */
   public BinarySerializer_Axis11() {
     this(true);
   }
 
+  /**
+   * Instantiates a new binary serializer axis 11.
+   *
+   * @param aUseAttachments the a use attachments
+   */
   public BinarySerializer_Axis11(boolean aUseAttachments) {
     mUseAttachments = aUseAttachments;
   }
 
   /**
    * Serialize an element named name, with the indicated attributes and value.
-   * 
-   * @param name
-   *          is the element name
-   * @param attributes
-   *          are the attributes...serializer is free to add more.
-   * @param value
-   *          is the value
-   * @param context
-   *          is the SerializationContext
+   *
+   * @param name          is the element name
+   * @param attributes          are the attributes...serializer is free to add more.
+   * @param value          is the value
+   * @param context          is the SerializationContext
+   * @throws IOException Signals that an I/O exception has occurred.
    */
+  @Override
   public void serialize(QName name, Attributes attributes, Object value,
           SerializationContext context) throws IOException {
     if (value instanceof Serializable) {
@@ -130,14 +134,25 @@ public class BinarySerializer_Axis11 implements Serializer {
     }
   }
 
+  /* (non-Javadoc)
+   * @see javax.xml.rpc.encoding.Serializer#getMechanismType()
+   */
+  @Override
   public String getMechanismType() {
     return Constants.AXIS_SAX;
   }
 
   /**
+   * Write schema.
+   *
+   * @param javaType the java type
+   * @param types the types
+   * @return the element
+   * @throws Exception the exception
    * @see org.apache.axis.encoding.Serializer#writeSchema(java.lang.Class,
    *      org.apache.axis.wsdl.fromJava.Types)
    */
+  @Override
   public Element writeSchema(Class javaType, Types types) throws Exception {
     return null;
   }

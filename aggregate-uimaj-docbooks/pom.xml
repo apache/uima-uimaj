@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>3.1.2-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -42,14 +42,15 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/aggregate-uimaj-docbooks
+      scm:git:https://github.com/apache/uima-uimaj/aggregate-uimaj-docbooks
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/aggregate-uimaj-docbooks
+      scm:git:https://github.com/apache/uima-uimaj/aggregate-uimaj-docbooks
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/aggregate-uimaj-docbooks
+      https://github.com/apache/uima-uimaj/tree/master/aggregate-uimaj-docbooks
     </url>
+    <tag>HEAD</tag>
   </scm>
   
   <properties>
@@ -85,6 +86,7 @@
     <module>../uima-docbook-references</module>
     <module>../uima-docbook-tools</module>
     <module>../uima-docbook-tutorials-and-users-guides</module>
+    <module>../uima-docbook-v3-users-guide</module>
     <!--module>../../branches/mavenAlign/PearPackagingMavenPlugin</module>  not used - is old version of doc -->
   </modules>  
 </project>

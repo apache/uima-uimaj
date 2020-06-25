@@ -23,6 +23,7 @@ import java.text.MessageFormat;
 
 import org.eclipse.ui.INewWizard;
 
+
 /**
  * Create a new file resource in the provided container. If the container resource (a folder or a
  * project) is selected in the workspace when the wizard is opened, it will accept it as the target
@@ -32,6 +33,7 @@ import org.eclipse.ui.INewWizard;
 
 public class TypePrioritiesNewWizard extends AbstractNewWizard implements INewWizard {
 
+  /** The Constant TYPEPRIORITIES_TEMPLATE. */
   public static final String TYPEPRIORITIES_TEMPLATE = 
     MessageFormat.format(COMMON_PARTIAL_DESCRIPTOR,
         "{0}",       // 0 = name of component (e.g. type name, type priority name, ae descriptor name)
@@ -48,15 +50,26 @@ public class TypePrioritiesNewWizard extends AbstractNewWizard implements INewWi
 //          + "<vendor></vendor>\n"
 //          + "{1}" + "</typePriorities>\n";
 
-  public TypePrioritiesNewWizard() {
+  /**
+     * Instantiates a new type priorities new wizard.
+     */
+    public TypePrioritiesNewWizard() {
     super("New Type Priorities Descriptor File");
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.wizard.Wizard#addPages()
+   */
+  @Override
   public void addPages() {
     page = new TypePrioritiesNewWizardPage(selection);
     addPage(page);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.wizards.AbstractNewWizard#getPrototypeDescriptor(java.lang.String)
+   */
+  @Override
   public String getPrototypeDescriptor(String name) {
     return MessageFormat.format(TYPEPRIORITIES_TEMPLATE, 
         name,

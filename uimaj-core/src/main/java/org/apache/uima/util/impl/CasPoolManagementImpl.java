@@ -32,7 +32,7 @@ public class CasPoolManagementImpl implements CasPoolManagement, CasPoolManageme
   private String mUniqueMBeanName;
   
   public CasPoolManagementImpl(CasPool aCasPool, String aUniqueMBeanName) {
-    mCasPoolRef = new WeakReference<CasPool>(aCasPool);
+    mCasPoolRef = new WeakReference<>(aCasPool);
     mUniqueMBeanName = aUniqueMBeanName; 
   }
   

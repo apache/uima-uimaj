@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.naming.ConfigurationException;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContextAdmin;
@@ -90,6 +88,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 
+
 /**
  * Component responsible for generating objects representing cpe descriptor configuration. Provides
  * various ways to instantiate object model representing cpe configuration. In the simplest form it
@@ -106,29 +105,41 @@ import org.apache.uima.util.XMLInputSource;
  * 
  */
 public class CPEFactory {
+  
+  /** The Constant CPM_HOME. */
   public static final String CPM_HOME = "${CPM_HOME}";
 
+  /** The processor count. */
   private int processorCount = 0;
 
+  /** The default config file. */
   private String DEFAULT_CONFIG_FILE = "defaultCpeDescriptor.xml";
 
+  /** The default config. */
   private boolean defaultConfig = true;
 
+  /** The cas processor config map. */
   public HashMap casProcessorConfigMap = new HashMap();
 
+  /** The cpe descriptor. */
   private CpeDescription cpeDescriptor = null;
 
+  /** The initialized. */
   private boolean initialized = false;
 
+  /** The uima context. */
   private UimaContextAdmin uimaContext;
 
+  /** The first time. */
   private boolean firstTime = true;
 
+  /** The cp map. */
   private HashMap cpMap = new HashMap();
 
   /**
    * Create a new CPEFactory on which we will later call parse(String) to parse a CPE descriptor.
-   * @param aResourceManager -
+   *
+   * @param aResourceManager the a resource manager
    */
   public CPEFactory(ResourceManager aResourceManager) {
     if (aResourceManager == null) {
@@ -140,12 +151,11 @@ public class CPEFactory {
 
   /**
    * Create a new CPEFactory for a CpeDescription that's already been parsed.
-   * 
-   * @param aDescriptor -
-   * @param aResourceManager 
-   *          the resource manager that all components of this CPE will share If null, a new
+   *
+   * @param aDescriptor the a descriptor
+   * @param aResourceManager          the resource manager that all components of this CPE will share If null, a new
    *          ResourceManager will be created.
-   * @throws ResourceInitializationException -
+   * @throws ResourceInitializationException the resource initialization exception
    */
   public CPEFactory(CpeDescription aDescriptor, ResourceManager aResourceManager)
           throws ResourceInitializationException {
@@ -216,8 +226,8 @@ public class CPEFactory {
   }
 
   /**
-   * Creates an object representation for configuration in a given stream
-   * 
+   * Creates an object representation for configuration in a given stream.
+   *
    * @param aDescriptorStream -
    *          stream containing cpe description
    * @throws InstantiationException -
@@ -262,9 +272,9 @@ public class CPEFactory {
   }
 
   /**
-   * Checks if cpe description has been created
-   * 
-   * @throws ConfigurationException -
+   * Checks if cpe description has been created.
+   *
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   private void checkForErrors() throws ResourceConfigurationException {
     if (cpeDescriptor == null) {
@@ -279,10 +289,9 @@ public class CPEFactory {
    * Returns Collection Reader instantiated from configuration in the cpe descriptor. It also
    * creates and intializes the Cas Initializer if one is defined and associates it with the
    * CollectionReader.
-   * 
+   *
    * @return CollectionReader instance
-   * 
-   * @throws ResourceConfigurationException -
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   public BaseCollectionReader getCollectionReader() throws ResourceConfigurationException {
     checkForErrors();
@@ -426,7 +435,7 @@ public class CPEFactory {
       }
       // Provide CollectionReader with the number of documents to process
       ((ConfigurableResource_ImplBase) colreader).setConfigParameterValue("processSize",
-              Integer.valueOf((int)numDocs2Process) );
+          (int) numDocs2Process);
       CpeConfiguration cpeType = getCpeDescriptor().getCpeConfiguration();
       if (cpeType != null && cpeType.getStartingEntityId() != null
               && cpeType.getStartingEntityId().trim().length() > 0) {
@@ -464,10 +473,9 @@ public class CPEFactory {
   }
 
   /**
-   * Returns an array of Cas Processors instantiated from the cpe descriptor
-   * 
+   * Returns an array of Cas Processors instantiated from the cpe descriptor.
+   *
    * @return - array of CasProcessor instances
-   * 
    * @throws ResourceConfigurationException -
    */
   public CasProcessor[] getCasProcessors() throws ResourceConfigurationException {
@@ -605,17 +613,15 @@ public class CPEFactory {
   }
 
   /**
-   * Check if a class has appropriate type
-   * 
+   * Check if a class has appropriate type.
+   *
    * @param aResourceClass -
    *          class to check
    * @param resourceSpecifier -
    *          specifier containing expected type
    * @param aDescriptor -
    *          descriptor name
-   * 
    * @return true - if class matches type
-   * 
    * @throws ResourceConfigurationException -
    */
   public boolean isDefinitionInstanceOf(Class aResourceClass, ResourceSpecifier resourceSpecifier,
@@ -759,12 +765,11 @@ public class CPEFactory {
   }
 
   /**
-   * Returns a descriptor path associated with Cas Processor
-   * 
+   * Returns a descriptor path associated with Cas Processor.
+   *
    * @param aCasProcessorCfg -
    *          Cas Processor configuration
    * @return - Descriptor path
-   * 
    * @throws ResourceConfigurationException -
    */
   public URL getDescriptorURL(CpeCasProcessor aCasProcessorCfg)
@@ -794,12 +799,11 @@ public class CPEFactory {
   }
 
   /**
-   * Instantiates a local (managed) Cas Processor
-   * 
+   * Instantiates a local (managed) Cas Processor.
+   *
    * @param aCasProcessorCfg -
    *          Cas Processor configuration
    * @return - Local CasProcessor
-   * 
    * @throws ResourceConfigurationException -
    */
   private CasProcessor produceLocalCasProcessor(CpeCasProcessor aCasProcessorCfg)
@@ -815,15 +819,13 @@ public class CPEFactory {
   }
 
   /**
-   * Find a parameter with a given name in the in-memory component descriptor
-   * 
+   * Find a parameter with a given name in the in-memory component descriptor.
+   *
    * @param aCps -
    *          parameter settings from the component's descriptor
    * @param aParamName -
    *          name of the parameter to look for
-   * 
    * @return - parameter as {@link NameValuePair} instance. If not found, returns null.
-   * 
    * @throws Exception -
    *           any error
    */
@@ -844,14 +846,16 @@ public class CPEFactory {
   }
 
   /**
-   * Replace a primitive value of a given parameter with a value defined in the CPE descriptor
-   * 
+   * Replace a primitive value of a given parameter with a value defined in the CPE descriptor.
+   *
    * @param aType -
    *          type of the primitive value ( String, Integer, Boolean, or Float)
+   * @param aMandatoryParam the a mandatory param
    * @param aCps -
    *          parameter settings from the component's descriptor
    * @param aCPE_nvp -
    *          parameter containing array of values to replace values in the component's descriptor
+   * @param aComponentName the a component name
    * @throws Exception -
    */
   private void replacePrimitive(String aType, boolean aMandatoryParam,
@@ -890,15 +894,16 @@ public class CPEFactory {
 
   /**
    * Replace array values found in the component's descriptor with values found in the CPE
-   * descriptor
-   * 
+   * descriptor.
+   *
    * @param aType -
    *          primitive type of the array (Sting, Integer, Float, or Boolean)
+   * @param aMandatoryParam the a mandatory param
    * @param aCps -
    *          parameter settings from the component's descriptor
    * @param aCPE_nvp -
    *          parameter containing array of values to replace values in the component's descriptor
-   * 
+   * @param aComponentName the a component name
    * @throws Exception -
    *           any error
    */
@@ -936,13 +941,14 @@ public class CPEFactory {
   /**
    * Override component's parameters. This overridde effects the in-memory settings. The actual
    * component's descriptor will not be changed.
-   * 
+   *
    * @param aResourceSpecifier -
    *          in-memory descriptor of the component
    * @param aCPE_nvp -
    *          parameter represented as name-value pair. If the name of the parameter is found in the
    *          component's descriptor its value will be changed.
-   * 
+   * @param aComponentName the a component name
+   * @return true, if successful
    * @throws Exception -
    *           error during processing
    */
@@ -984,12 +990,11 @@ public class CPEFactory {
   /**
    * Replace component's parameters. Its parameter values will be changed to match those defined in
    * the CPE descriptor.
-   * 
+   *
    * @param aResourceSpecifier -
    *          component's descriptor containing parameters to override
-   * @param aCasProcessorCPEConfig -
-   *          cas processor configuration containing optional parameters to be used for overriding
-   *          parameters in the descriptor
+   * @param aCpe_cps the a cpe cps
+   * @param aComponentName the a component name
    * @throws Exception -
    *           failure during processing
    */
@@ -1012,10 +1017,9 @@ public class CPEFactory {
   }
 
   /**
-   * Instantiates integrated Cas Processor
-   * 
-   * @param aCasProcessorCfg -
-   *          Cas processor configuration
+   * Instantiates integrated Cas Processor.
+   *
+   * @param aCasProcessorType the a cas processor type
    * @return - Integrated CasProcessor
    * @throws ResourceConfigurationException -
    */
@@ -1100,12 +1104,10 @@ public class CPEFactory {
   }
 
   /**
-   * Instantiates remote Cas Processor
-   * 
-   * @param aCasProcessorCfg -
-   *          Cas Processor Configuration
+   * Instantiates remote Cas Processor.
+   *
+   * @param aCasProcessorType the a cas processor type
    * @return - Remote CasProcessor
-   * 
    * @throws ResourceConfigurationException -
    */
   private CasProcessor produceRemoteCasProcessor(CpeCasProcessor aCasProcessorType)
@@ -1131,10 +1133,10 @@ public class CPEFactory {
    * <li>Number of documents to process</li>
    * <li>Checkpoint configuration</li>
    * <li>id of the document begin processing</li>
-   * </ul>
-   * 
+   * </ul>.
+   *
    * @return Global CPE Configuration
-   * @throws InstantiationException -
+   * @throws InstantiationException the instantiation exception
    */
   public CpeConfiguration getCPEConfig() throws InstantiationException {
     try {
@@ -1145,10 +1147,9 @@ public class CPEFactory {
   }
 
   /**
-   * Returns number of processing threads (Processing Units)
-   * 
+   * Returns number of processing threads (Processing Units).
+   *
    * @return Number of processing threads
-   * 
    * @throws ResourceConfigurationException -
    */
   public int getProcessingUnitThreadCount() throws ResourceConfigurationException {
@@ -1170,7 +1171,8 @@ public class CPEFactory {
   }
 
   /**
-   * 
+   * Checks if is default.
+   *
    * @return true if the configuration is the default
    */
   public boolean isDefault() {
@@ -1178,8 +1180,8 @@ public class CPEFactory {
   }
 
   /**
-   * Returns Cpe Descriptor
-   * 
+   * Returns Cpe Descriptor.
+   *
    * @return the Cpe Descriptor
    */
   public CpeDescription getCpeDescriptor() {
@@ -1187,9 +1189,9 @@ public class CPEFactory {
   }
 
   /**
-   * Assigns Cpe configuration to use
-   * 
-   * @param description
+   * Assigns Cpe configuration to use.
+   *
+   * @param description the new cpe descriptor
    */
   private void setCpeDescriptor(CpeDescription description) {
     cpeDescriptor = description;
@@ -1198,11 +1200,11 @@ public class CPEFactory {
   /**
    * Checks uniqueness of a given name. This name is compared against all Cas Processors already
    * defined. Cas Processor names must be unique.
-   * 
+   *
    * @param aName -
    *          name to check
    * @return - true if name is unique, false otherwise
-   * 
+   * @throws CpeDescriptorException the cpe descriptor exception
    */
   private boolean isUniqueName(String aName) throws CpeDescriptorException {
     int index = 0;
@@ -1224,9 +1226,9 @@ public class CPEFactory {
    * Checks for existance of two parameters required to launch remote Cas Processor vnsHost and
    * vnsPort. If not found the remote CasProcessor can not be located since the VNS is not
    * specified. In this case an exception is thrown.
-   * 
-   * @param aCasProcessorName
-   * @param aDepParams
+   *
+   * @param aCasProcessorName the a cas processor name
+   * @param aDepParams the a dep params
    * @throws ResourceConfigurationException -
    */
   private void verifyDeploymentParams(String aCasProcessorName,
@@ -1311,11 +1313,11 @@ public class CPEFactory {
   }
 
   /**
-   * Appends given Cas Processor to the list of CasProcessors
-   * 
+   * Appends given Cas Processor to the list of CasProcessors.
+   *
    * @param aCasProcessor -
    *          CasProcessor to add
-   * @throws ResourceConfigurationException -
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   public void addCasProcessor(CasProcessor aCasProcessor) throws ResourceConfigurationException {
     if (!initialized) {
@@ -1325,11 +1327,11 @@ public class CPEFactory {
 
   /**
    * Adds new Cas Processor with given name.
-   * 
+   *
    * @param aCasProcessorName -
    *          name of the CasProcessor to add
-   * 
    * @return -
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   private CpeCasProcessor addCasProcessor(String aCasProcessorName)
           throws ResourceConfigurationException {
@@ -1420,8 +1422,9 @@ public class CPEFactory {
   }
 
   /**
-   * 
-   * @param aList -
+   * Gets the descriptor.
+   *
+   * @param aList the a list
    * @return the cpe descriptor constructed from the list
    * @throws ResourceConfigurationException -
    */
@@ -1508,8 +1511,10 @@ public class CPEFactory {
   }
 
   /**
-   * @param newProcessor
-   * @param aCasProcessor
+   * Copy cas processor.
+   *
+   * @param aProcDesc the a proc desc
+   * @param aName the a name
    */
   private void copyCasProcessor(CpeCasProcessor aProcDesc, String aName) {
     try {
@@ -1531,8 +1536,8 @@ public class CPEFactory {
   }
 
   /**
-   * 
-   * 
+   * Adds the collection reader.
+   *
    * @param collectionReader -
    *          collection reader to use by the CPM
    */

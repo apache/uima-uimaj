@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
@@ -176,7 +177,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
     xmlBuffer.append(XML_HEADER);
     xmlBuffer.append('\n');
     xmlBuffer.append(insdObject.toString());
-    byte[] xmlContentBytes = xmlBuffer.toString().getBytes("UTF-8");
+    byte[] xmlContentBytes = xmlBuffer.toString().getBytes(StandardCharsets.UTF_8);
     iStream = new ByteArrayInputStream(xmlContentBytes);
     return iStream;
   }
@@ -397,21 +398,14 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    */
   public static void saveInstallationDescriptor(InstallationDescriptor insdObject, File xmlFile)
           throws IOException {
-    PrintWriter oWriter = null;
-    try {
-      oWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(xmlFile), "UTF-8"));
+    try (PrintWriter oWriter = new PrintWriter(
+                                 new OutputStreamWriter(
+                                   new FileOutputStream(xmlFile), StandardCharsets.UTF_8))) {
       oWriter.println(XML_HEADER);
       printInstallationDescriptor(insdObject, oWriter);
     } catch (IOException exc) {
       throw exc;
-    } finally {
-      if (oWriter != null) {
-        try {
-          oWriter.close();
-        } catch (Exception e) {
-        }
-      }
-    }
+    }    
   }
 
   /**

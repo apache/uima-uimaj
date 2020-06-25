@@ -32,29 +32,47 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 
+
+/**
+ * The Class CDEpropertyPage.
+ */
 public class CDEpropertyPage extends PropertyPage {
 
+  /** The Constant DATAPATH_LABEL. */
   private static final String DATAPATH_LABEL = "&Data Path:";
 
+  /** The Constant DATAPATH_PROPERTY_KEY. */
   private static final String DATAPATH_PROPERTY_KEY = "CDEdataPath";
 
+  /** The Constant DEFAULT_DATAPATH. */
   private static final String DEFAULT_DATAPATH = "";
 
+  /** The Constant BY_DEFAULT_PROPERTY_KEY. */
   private static final String BY_DEFAULT_PROPERTY_KEY = "CDEByDefault";
 
+  /** The Constant ADD_TO_FLOW_PROPERTY_KEY. */
   private static final String ADD_TO_FLOW_PROPERTY_KEY = "CDEAddToFlow";
 
   // private static final int TEXT_FIELD_WIDTH = 50;
 
+  /** The data path UI. */
   private Text dataPathUI;
 
+  /**
+   * Instantiates a new CD eproperty page.
+   */
   public CDEpropertyPage() {
     super();
   }
 
   /**
+   * Creates the contents.
+   *
+   * @param parent the parent
+   * @return the control
    * @see PreferencePage#createContents(Composite)
    */
+  @Override
   protected Control createContents(Composite parent) {
     Composite composite = create2ColComposite(parent);
 
@@ -84,6 +102,12 @@ public class CDEpropertyPage extends PropertyPage {
     return composite;
   }
 
+  /**
+   * Creates the 2 col composite.
+   *
+   * @param parent the parent
+   * @return the composite
+   */
   private Composite create2ColComposite(Composite parent) {
     Composite composite = new Composite(parent, SWT.NULL);
     GridLayout layout = new GridLayout();
@@ -98,10 +122,18 @@ public class CDEpropertyPage extends PropertyPage {
     return composite;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
+   */
+  @Override
   protected void performDefaults() {
     dataPathUI.setText(DEFAULT_DATAPATH);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.preference.PreferencePage#performOk()
+   */
+  @Override
   public boolean performOk() {
     // store the value in the owner text field
     try {
@@ -113,6 +145,12 @@ public class CDEpropertyPage extends PropertyPage {
     return true;
   }
 
+  /**
+   * Gets the data path.
+   *
+   * @param project the project
+   * @return the data path
+   */
   public static String getDataPath(IProject project) {
     String dataPath;
     try {
@@ -125,6 +163,12 @@ public class CDEpropertyPage extends PropertyPage {
     return dataPath;
   }
 
+  /**
+   * Sets the data path.
+   *
+   * @param project the project
+   * @param dataPath the data path
+   */
   public static void setDataPath(IProject project, String dataPath) {
     try {
       project.setPersistentProperty(new QualifiedName("", DATAPATH_PROPERTY_KEY), dataPath);
@@ -133,6 +177,12 @@ public class CDEpropertyPage extends PropertyPage {
     }
   }
 
+  /**
+   * Gets the import by default.
+   *
+   * @param project the project
+   * @return the import by default
+   */
   public static String getImportByDefault(IProject project) {
     String byDefault;
     try {
@@ -145,6 +195,12 @@ public class CDEpropertyPage extends PropertyPage {
     return byDefault;
   }
 
+  /**
+   * Sets the import by default.
+   *
+   * @param project the project
+   * @param byDefault the by default
+   */
   public static void setImportByDefault(IProject project, String byDefault) {
     try {
       project.setPersistentProperty(new QualifiedName("", BY_DEFAULT_PROPERTY_KEY), byDefault);
@@ -153,6 +209,12 @@ public class CDEpropertyPage extends PropertyPage {
     }
   }
 
+  /**
+   * Gets the adds the to flow.
+   *
+   * @param project the project
+   * @return the adds the to flow
+   */
   public static String getAddToFlow(IProject project) {
     String byDefault;
     try {
@@ -165,6 +227,12 @@ public class CDEpropertyPage extends PropertyPage {
     return byDefault;
   }
 
+  /**
+   * Sets the add to flow.
+   *
+   * @param project the project
+   * @param byDefault the by default
+   */
   public static void setAddToFlow(IProject project, String byDefault) {
     try {
       project.setPersistentProperty(new QualifiedName("", ADD_TO_FLOW_PROPERTY_KEY), byDefault);

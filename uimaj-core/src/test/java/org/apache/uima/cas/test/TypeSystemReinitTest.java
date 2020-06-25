@@ -22,8 +22,6 @@ package org.apache.uima.cas.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
@@ -43,6 +41,8 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
+import junit.framework.TestCase;
+
 
 public class TypeSystemReinitTest extends TestCase {
   public void testReinitCASCompleteSerializer() throws Exception {
@@ -53,7 +53,7 @@ public class TypeSystemReinitTest extends TestCase {
       TypeSystemDescription tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(getClass().getResource("/org/apache/uima/examples/SourceDocumentInformation.xml")));
 
-      List<MetaDataObject> l = new ArrayList<MetaDataObject>();
+      List<MetaDataObject> l = new ArrayList<>();
       l.add(aed);
       l.add(tsd);
       CAS cas1 = CasCreationUtils.createCas(l);
@@ -67,7 +67,7 @@ public class TypeSystemReinitTest extends TestCase {
       // reinit
       //  This uses cas2 which only has a base type system to start, 
       //    and loads it from a complete serialization which has other new types
-      cas2.reinit(ser);
+      cas2.getBinaryCasSerDes().reinit(ser);
       CAS tcas3 = cas2.getCurrentView();
 
       assertTrue(tcas2 == tcas3);
@@ -97,7 +97,7 @@ public class TypeSystemReinitTest extends TestCase {
       // reinit
       //  This uses cas2 which only has a base type system to start, 
       //    and loads it from a complete serialization which has other new types
-      cas2.reinit(ser);
+      cas2.getBinaryCasSerDes().reinit(ser);
       CAS tcas3 = cas2.getCurrentView();
 
       assertTrue(tcas2 == tcas3);

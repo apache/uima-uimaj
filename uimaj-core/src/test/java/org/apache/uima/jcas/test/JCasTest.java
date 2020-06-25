@@ -21,9 +21,9 @@ package org.apache.uima.jcas.test;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.PrimitiveIterator.OfInt;
 
-import junit.framework.TestCase;
-
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
@@ -33,12 +33,10 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
-import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
-import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.BooleanArray;
@@ -53,6 +51,7 @@ import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.FloatList;
 import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.IntegerArrayList;
 import org.apache.uima.jcas.cas.IntegerList;
 import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
@@ -63,19 +62,17 @@ import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.jcas.tcas.Annotation_Type;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 
+import aa.ConcreteType;
+import aa.Root;
+import junit.framework.TestCase;
 import x.y.z.EndOfSentence;
 import x.y.z.Sentence;
 import x.y.z.Token;
-import aa.ConcreteType;
-import aa.MissingFeatureInCas;
-import aa.Root;
 
 /**
  * Class comment for CASTest.java goes here.
@@ -87,7 +84,7 @@ public class JCasTest extends TestCase {
 
 	private JCas jcas;
 
-	private TypeSystem ts;
+//	private TypeSystem ts;
 
 	public EndOfSentence endOfSentenceInstance;
 
@@ -103,8 +100,8 @@ public class JCasTest extends TestCase {
 	public void setUp() throws Exception {
 		try {
 			try {
-				this.cas = CASInitializer.initCas(new CASTestSetup());
-				this.ts = this.cas.getTypeSystem();
+				this.cas = CASInitializer.initCas(new CASTestSetup(), null);
+//				this.ts = this.cas.getTypeSystem();
 				this.jcas = cas.getJCas();
 				endOfSentenceInstance = new EndOfSentence(jcas);
 			} catch (Exception e1) {
@@ -116,21 +113,24 @@ public class JCasTest extends TestCase {
 	}
 
 	public void checkOkMissingImport(Exception e1) {
-		if (e1 instanceof CASException) {
+		if (e1 instanceof CASRuntimeException) {
 			System.out.print("setup caught CAS Exception with message: ");
 			String m = e1.getMessage();
 			System.out.println(m);
-			if (!m
-					.equals("Error initializing JCas: Error: can't access feature information from CAS in initializing JCas type: aa.Root, feature: testMissingImport\n")) {
-				assertTrue(false);
-			}
+			assertEquals("The JCas cannot be initialized.  The following errors occurred: "
+			    + "\nUnable to find required getPlainRef method for JCAS type aa.Root with return type of org.apache.uima.jcas.cas.TOP."
+			    + "\nUnable to find required setPlainRef method for JCAS type aa.Root with argument type of org.apache.uima.jcas.cas.TOP.\n", m);
+//			if (!m
+//					.equals("Error initializing JCas: Error: can't access feature information from CAS in initializing JCas type: aa.Root, feature: testMissingImport\n")) {
+//				assertTrue(false);
+//			}
 		} else
 			assertTrue(false);
 	}
 
 	public void checkExpectedBadCASError(Exception e1, String err) {
-		if (e1 instanceof CASException) {
-			CASException e = (CASException) e1;
+		if (e1 instanceof UIMARuntimeException) {
+			UIMARuntimeException e = (UIMARuntimeException) e1;
 			System.out.print("\nCaught CAS Exception with message: ");
 			String m = e1.getMessage();
 			System.out.println(m);
@@ -143,7 +143,7 @@ public class JCasTest extends TestCase {
 
 	public void tearDown() {
 		this.cas = null;
-		this.ts = null;
+//		this.ts = null;
 		this.jcas = null;
 		this.endOfSentenceInstance = null;
 	}
@@ -151,34 +151,14 @@ public class JCasTest extends TestCase {
 	public void testMissingFeatureInCas() throws Exception {
 		try {
 			// jcasCasMisMatch(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS, CASException.JCAS_INIT_ERROR);
-			CAS localCas;
-			JCas localJcas = null;
-			boolean errFound = false;
+//			CAS localCas;
+//			JCas localJcas = null;
+//			boolean errFound = false;
 			try {
-				localCas = CASInitializer.initCas(new CASTestSetup(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS));
-				ts = this.cas.getTypeSystem();
-				try {
-					localJcas = localCas.getJCas();
-				} catch (Exception e1) {
-					assertTrue(false);
-					return;
-				}
-			} catch (Exception e) {
-				// System.out.println("\n" + e.toString());
-				assertTrue(false);
-			}
-			// error happens when we try and ref the missing feature
-			MissingFeatureInCas t = new MissingFeatureInCas(localJcas);
-			try {
-				t.setHaveThisOne(1);
-			} catch (Exception e) {
-				assertTrue(false);
-			}
-			try {
-				t.setMissingThisOne((float) 1.0);
-				assertTrue(false); // above should throw
+			  // error happens during setup
+				/*localCas =*/ CASInitializer.initCas(new CASTestSetup(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS), null);
 			} catch (CASRuntimeException e) {
-				assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_FEAT));
+				assertTrue(e.getMessageKey().equals(CASException.JCAS_INIT_ERROR));
 			}
 		} catch (Exception e) {
 			JUnitExtension.handleException(e);
@@ -187,7 +167,7 @@ public class JCasTest extends TestCase {
 
 	public void testChangedFType() throws Exception {
 		try {
-			jcasCasMisMatch(CASTestSetup.BAD_CHANGED_FEATURE_TYPE, CASException.JCAS_INIT_ERROR);
+			jcasCasMisMatch(CASTestSetup.BAD_CHANGED_FEATURE_TYPE, UIMARuntimeException.INTERNAL_ERROR);
 		} catch (Exception e) {
 			JUnitExtension.handleException(e);
 		}
@@ -195,21 +175,21 @@ public class JCasTest extends TestCase {
 
 	public void jcasCasMisMatch(int testId, String expectedErr) throws Exception {
 		try {
-			CAS localCas;
-			JCas localJcas;
+//			CAS localCas;
+//			JCas localJcas;
 			boolean errFound = false;
 			try {
-				localCas = CASInitializer.initCas(new CASTestSetup(testId));
-				ts = this.cas.getTypeSystem();
-				try {
-					localJcas = localCas.getJCas();
-				} catch (Exception e1) {
-					checkExpectedBadCASError(e1, expectedErr);
-					errFound = true;
-				}
+				/*localCas = */CASInitializer.initCas(new CASTestSetup(testId), null);
+//				ts = this.cas.getTypeSystem();
+//				try {
+//					localJcas = localCas.getJCas();
+//				} catch (Exception e1) {
+//					checkExpectedBadCASError(e1, expectedErr);
+//					errFound = true;
+//				}
 			} catch (Exception e) {
-				System.out.println("\n" + e.toString());
-				assertTrue(false);
+		    checkExpectedBadCASError(e, expectedErr);
+		    errFound = true;
 			}
 			assertTrue(errFound);
 		} catch (Exception e) {
@@ -222,9 +202,9 @@ public class JCasTest extends TestCase {
 		something.addToIndexes();
 
 		JFSIndexRepository ir = jcas.getJFSIndexRepository();
-		FSIterator i1 = ir.getAnnotationIndex().iterator();
-		FSIterator i2 = i1.copy();
-		FSIterator i3 = i2.copy();
+		FSIterator<Annotation> i1 = ir.getAnnotationIndex().iterator();
+		FSIterator<Annotation> i2 = i1.copy();
+		FSIterator<Annotation> i3 = i2.copy();
 		assertTrue(i3 != null);
 	}
 
@@ -258,30 +238,25 @@ public class JCasTest extends TestCase {
 			}
 
 			try {
-				jcas.getRequiredFeature(jcas.getType(Annotation.type).casType, "begin");
+				jcas.getRequiredFeature(jcas.getCasType(Annotation.type), "begin");
 			} catch (CASException e2) {
 				assertTrue(false);
 			}
 			try {
-				jcas.getRequiredFeature(jcas.getType(Annotation.type).casType, "Begin");
+				jcas.getRequiredFeature(jcas.getCasType(Annotation.type), "Begin");
 				assertTrue(false);
 			} catch (CASException e2) {
 				System.out.print("This error msg expected: ");
 				System.out.println(e2);
 			}
-
 			CAS localCas = jcas.getCas();
 			assertTrue(localCas == this.cas);
 			LowLevelCAS ll_cas = jcas.getLowLevelCas();
 			assertTrue(ll_cas == this.cas);
 			CASImpl casImpl = jcas.getCasImpl();
 			assertTrue(casImpl == this.cas);
-			TOP_Type type = jcas.getType(org.apache.uima.jcas.tcas.Annotation.type);
-			assertTrue(type instanceof org.apache.uima.jcas.tcas.Annotation_Type);
-			type = jcas.getType(Annotation.typeIndexID);
-			assertTrue(type instanceof Annotation_Type);
 
-			Annotation a1 = new Annotation(jcas, 4, 5);
+			/* Annotation a1 =*/ new Annotation(jcas, 4, 5);
 		} catch (Exception e) {
 			JUnitExtension.handleException(e);
 		}
@@ -320,36 +295,37 @@ public class JCasTest extends TestCase {
 
 			// error paths
 			// array out of bounds
+			boolean caught = false;
 			try {
 				r2.getArrayString(2);
-			} catch (LowLevelException e) {
-				if (e.getError() != LowLevelException.ARRAY_INDEX_OUT_OF_RANGE)
-					assertTrue(false);
+			} catch (ArrayIndexOutOfBoundsException e) {
+			  caught = true;
 			}
+			assertTrue(caught);
+			caught = false;
 			try {
 				r2.setArrayString(-1, "should fail");
-			} catch (LowLevelException e) {
-				if (e.getError() != LowLevelException.ARRAY_INDEX_OUT_OF_RANGE)
-					assertTrue(false);
+			} catch (ArrayIndexOutOfBoundsException e) {
+				caught = true;
 			}
+      assertTrue(caught);
 
-			// float values
-			r1 = new Root(jcas);
-			r1.setPlainFloat(1247.3F);
-			r1.setArrayFloat(new FloatArray(jcas, 3));
-			r1.setArrayFloat(2, 321.4F);
-			assertEquals(1247.3F, r1.getPlainFloat());
-			assertEquals(321.4F, r1.getArrayFloat(2));
-
-			// double values
+      // float values
+      r1 = new Root(jcas);
+      r1.setPlainFloat(1247.3F);
+      r1.setArrayFloat(new FloatArray(jcas, 3));
+      r1.setArrayFloat(2, 321.4F);
+      assertEquals(1247.3F, r1.getPlainFloat());
+      assertEquals(321.4F, r1.getArrayFloat(2));
+      
+      // double values
       r1 = new Root(jcas);
       r1.setPlainDouble(2247.3D);
       r1.setArrayDouble(new DoubleArray(jcas, 3));
       r1.setArrayDouble(2, 421.4D);
       assertEquals(2247.3D, r1.getPlainDouble());
       assertEquals(421.4D, r1.getArrayDouble(2));
-			
-			
+      
 			// null values
 			r2.setArrayString(0, null);
 			r2.setArrayRef(0, null);
@@ -359,12 +335,13 @@ public class JCasTest extends TestCase {
 			r2.setPlainString(null);
 			assertTrue(null == r2.getPlainString());
 			assertTrue(null == r2.getPlainRef());
+			caught = false;
 			try {
 				r2.getArrayRef(0);
-			} catch (LowLevelException e) {
-				if (e.getError() != LowLevelException.NULL_ARRAY_ACCESS)
-					assertTrue(false);
+			} catch (NullPointerException e) {
+			  caught = true;
 			}
+			assertTrue(caught);
 			assertTrue(null == r2.getArrayString());
 			assertTrue(null == r2.getArrayRef());
 
@@ -372,8 +349,8 @@ public class JCasTest extends TestCase {
 			r1.addToIndexes();
 
 			JFSIndexRepository jfsi = jcas.getJFSIndexRepository();
-			FSIndex fsi1 = jfsi.getIndex("all", Root.type);
-			FSIterator fsit1 = fsi1.iterator();
+			FSIndex<Root> fsi1 = jfsi.getIndex("all", Root.type);
+			FSIterator<Root> fsit1 = fsi1.iterator();
 			assertTrue(fsit1.isValid());
 			Root[] fetched = new Root[2];
 			
@@ -405,6 +382,7 @@ public class JCasTest extends TestCase {
 			// oI.moveToNext();
 			// assertTrue(oI.isValid());
 			// assertTrue(r1 == oI.get());
+			((CASImpl)cas).traceFSflush();
 		} catch (Exception e) {
 			JUnitExtension.handleException(e);
 		}
@@ -432,7 +410,7 @@ public class JCasTest extends TestCase {
 				// System.out.print("m");
 			}
 			JFSIndexRepository jir = jcas.getJFSIndexRepository();
-			FSIterator it = jir.getIndex("all", Root.type).iterator();
+			FSIterator<Root> it = jir.<Root>getIndex("all", Root.type).iterator();
 			// System.out.print("\nTesting Random: ");
 			while (it.isValid()) {
 				root1.test(it.get());
@@ -488,10 +466,15 @@ public class JCasTest extends TestCase {
 	public void test2CASs() throws Exception {
 		try {
 			try {
-				CAS cas2 = CASInitializer.initCas(new CASTestSetup());
-				TypeSystem ts2 = cas2.getTypeSystem();
+				CAS cas2 = CASInitializer.initCas(new CASTestSetup(), null);
+//				TypeSystem ts2 = cas2.getTypeSystem();
 				JCas jcas2 = cas2.getJCas();
-				assertTrue(jcas.getType(Annotation.type) != jcas2.getType(Annotation.type));
+				if (TypeSystemImpl.IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
+  				assertTrue(jcas.getCasType(Annotation.type).equals(jcas2.getCasType(Annotation.type)));
+  				assertFalse(jcas.getCasType(Annotation.type) == jcas2.getCasType(Annotation.type));
+				} else {
+          assertTrue(jcas.getCasType(Annotation.type) == jcas2.getCasType(Annotation.type));
+				}
 			} catch (Exception e) {
 				checkOkMissingImport(e);
 			}
@@ -534,8 +517,8 @@ public class JCasTest extends TestCase {
 			localCas.getIndexRepository().addFS(f1);
 
 			JFSIndexRepository ir = jcas.getJFSIndexRepository();
-			FSIndex index = ir.getAnnotationIndex();
-			FSIterator it = index.iterator();
+			FSIndex<Annotation> index = ir.getAnnotationIndex();
+			FSIterator<Annotation> it = index.iterator();
 
 			try {
 
@@ -566,7 +549,7 @@ public class JCasTest extends TestCase {
 
 	public void testCreateFSafterReset() throws Exception {
 		try {
-			CAS localCas = jcas.getCas();
+//			CAS localCas = jcas.getCas();
 			cas.reset();
 			TypeSystem ts = cas.getTypeSystem();
 			Type fsl = ts.getType("uima.cas.NonEmptyFSList");
@@ -581,7 +564,7 @@ public class JCasTest extends TestCase {
 		try {
 			Token tok1 = new Token(jcas);
 			tok1.addToIndexes();
-			FSIterator it = jcas.getJFSIndexRepository().getIndex("all", Token.type).iterator();
+			FSIterator<Token> it = jcas.getJFSIndexRepository().<Token>getIndex("all", Token.type).iterator();
 			while (it.hasNext()) {
 				Token token = (Token) it.next();
 				token.addToIndexes(); // something to do to keep Java from optimizing this away.
@@ -591,74 +574,71 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	private static final boolean doJava7test = false; // disabled because may be dependent on java vendor etc.
-  public void testSubiterator() throws Exception {
-    for (int i = 0; i < 5; i++) {   // tokens: 0,1,  1,3   2,5,  3,7  4,9
-      Token tok1 = new Token(jcas, i, 1 + 2*i);
-      tok1.addToIndexes();
-    }
-    FSIndexRepositoryMgr irm = (FSIndexRepositoryMgr)jcas.getIndexRepository();
-    TypeSystem ts = cas.getTypeSystem();
-    LinearTypeOrder lo = irm.getDefaultTypeOrder();
-    Type tokenType = ts.getType("x.y.z.Token");
-    Type sentenceType = ts.getType("x.y.z.Sentence");
-    Type annotType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
-
-    boolean java7 = System.getProperty("java.version").startsWith("1.7");
-    
-    /*********************************************************
-     * Surprise: Type Order is different between Java 7 and 8
-     *********************************************************/
-    if (doJava7test) {
-      assertEquals(java7, lo.lessThan(annotType, tokenType));   // annotation < token for java 7, opposite for Java 8
-    }
-    assertTrue(lo.lessThan(sentenceType, tokenType));
-    
-    
-    /********************************************************
-     * This iterator is always empty 
-     ********************************************************/
-    Iterator<Annotation> iter = jcas.getAnnotationIndex(Token.type).subiterator(new Token(jcas, 2, 5));
-    assertFalse(iter.hasNext()); // because is empty because of definition of where to start, step #2 (see above)
-
-    /*********************************************************
-     * Surprise: This iterator is empty only for Java 8
-     *   due to type ordering
-     *********************************************************/
-    iter = jcas.getAnnotationIndex(Token.type).subiterator(new Annotation(jcas, 2, 5));
-    if (doJava7test) {
-      assertEquals(java7, iter.hasNext()); // Ok for java 7, empty for java 8 because of type order difference 
-    }
-    
-    /*********************************************************
-     * This iterator is never empty because type order for
-     * Sentence is before Token in both Java 7 and 8
-     *********************************************************/
-    iter = jcas.getAnnotationIndex(Token.type).subiterator(new Sentence(jcas, 2, 5));
-    assertTrue(iter.hasNext());    // OK for both, because Sentence is before Token in both Java 7 and 8    
-  }
-
+	// THis test is Java impl specific, works with Oracle Java 7 and 8, not tested with other Javas
+	// uncomment to run, but normally commented out.
+//  public void testSubiterator() throws Exception {
+//    for (int i = 0; i < 5; i++) {   // tokens: 0,1,  1,3   2,5,  3,7  4,9
+//      Token tok1 = new Token(jcas, i, 1 + 2*i);
+//      tok1.addToIndexes();
+//    }
+//    FSIndexRepositoryMgr irm = (FSIndexRepositoryMgr)jcas.getIndexRepository();
+//    TypeSystem ts = cas.getTypeSystem();
+//    LinearTypeOrder lo = irm.getDefaultTypeOrder();
+//    Type tokenType = ts.getType("x.y.z.Token");
+//    Type sentenceType = ts.getType("x.y.z.Sentence");
+//    Type annotType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
+//
+//    boolean java7 = System.getProperty("java.version").startsWith("1.7");
+//    
+//    /*********************************************************
+//     * Surprise: Type Order is different between Java 7 and 8
+//     *********************************************************/
+//    assertEquals(java7, lo.lessThan(annotType, tokenType));   // annotation < token for java 7, opposite for Java 8
+//    assertTrue(lo.lessThan(sentenceType, tokenType));
+//    
+//    
+//    /********************************************************
+//     * This iterator is always empty 
+//     ********************************************************/
+//    Iterator<Annotation> iter = jcas.getAnnotationIndex(Token.type).subiterator(new Token(jcas, 2, 5));
+//    assertFalse(iter.hasNext()); // because is empty because of definition of where to start, step #2 (see above)
+//
+//    /*********************************************************
+//     * Surprise: This iterator is empty only for Java 8
+//     *   due to type ordering
+//     *********************************************************/
+//    iter = jcas.getAnnotationIndex(Token.type).subiterator(new Annotation(jcas, 2, 5));
+//    assertEquals(java7, iter.hasNext()); // Ok for java 7, empty for java 8 because of type order difference 
+//
+//    /*********************************************************
+//     * This iterator is never empty because type order for
+//     * Sentence is before Token in both Java 7 and 8
+//     *********************************************************/
+//    iter = jcas.getAnnotationIndex(Token.type).subiterator(new Sentence(jcas, 2, 5));
+//    assertTrue(iter.hasNext());    // OK for both, because Sentence is before Token in both Java 7 and 8    
+//  }  
+  
 	public void testGetNthFSList() throws Exception {
 		try {
 			Token tok1 = new Token(jcas);
 			Token tok2 = new Token(jcas);
 
-			NonEmptyFSList fsList1 = new NonEmptyFSList(jcas);
+			NonEmptyFSList<Token> fsList1 = new NonEmptyFSList<>(jcas);
 			fsList1.setHead(tok2);
-			fsList1.setTail(new EmptyFSList(jcas));
-			NonEmptyFSList fsList = new NonEmptyFSList(jcas);
+			fsList1.setTail(new EmptyFSList<>(jcas));
+			NonEmptyFSList<Token> fsList = new NonEmptyFSList<>(jcas);
 			fsList.setHead(tok1);
 			fsList.setTail(fsList1);
-			EmptyFSList emptyFsList = new EmptyFSList(jcas);
+			/* EmptyFSList emptyFsList = */ new EmptyFSList<Token>(jcas);
 
-			try {
-				emptyFsList.getNthElement(0);
-				assertTrue(false); // error if we get here
-			} catch (CASRuntimeException e) {
-				assertTrue(e.getMessageKey().equals(CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST));
-				System.out.print("Expected Error: ");
-				System.out.println(e.getMessage());
-			}
+//			try {
+//				emptyFsList.getNthElement(0);
+//				assertTrue(false); // error if we get here
+//			} catch (CASRuntimeException e) {
+//				assertTrue(e.getMessageKey().equals(CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST));
+//				System.out.print("Expected Error: ");
+//				System.out.println(e.getMessage());
+//			}
 
 			try {
 				fsList.getNthElement(-1);
@@ -818,7 +798,7 @@ public class JCasTest extends TestCase {
 			JUnitExtension.handleException(e);
 		}
 	}
-	
+  
 	public void testStringListAPI() {
 	  StringList sl = new EmptyStringList(jcas);
 	  sl = sl.push("2");
@@ -846,7 +826,7 @@ public class JCasTest extends TestCase {
 	}
 
   public void testFSListAPI() {
-    FSList sl = new EmptyFSList(jcas);
+    FSList<TOP> sl = new EmptyFSList<>(jcas);
     TOP fs1 = new TOP(jcas);
     TOP fs2 = new TOP(jcas);
     sl = sl.push(fs2);
@@ -854,6 +834,12 @@ public class JCasTest extends TestCase {
    
     TOP[] fss = new TOP[2];
     int i = 0;
+    Iterator<TOP> it = sl.iterator();
+    while (it.hasNext()) {
+      fss[i++] = it.next();
+    }
+    
+    i = 0;   
     for (TOP s : sl) {
       fss[i++] = s;
     }
@@ -863,14 +849,16 @@ public class JCasTest extends TestCase {
   }
 	  
   public void testFSArrayAPI() {
-    FSArray sa = new FSArray(jcas, 2);
+    FSArray sa = new FSArray<>(jcas, 2);
     TOP fs1 = new TOP(jcas);
     TOP fs2 = new TOP(jcas);
     TOP[] values = {fs1, fs2}; 
     sa.copyFromArray(values, 0, 0, 2);
     
     int i = 0;
-    for (FeatureStructure s : sa) {
+    sa.iterator();
+    
+    for (Object s : sa) {
       assert(s.equals(values[i++]));
     }
   }
@@ -938,6 +926,21 @@ public class JCasTest extends TestCase {
       assertEquals(expectedIna[i++], v);
     }
     
+    IntegerArrayList inal = new IntegerArrayList(jcas, 2);
+    inal.add(15);
+    inal.add(22);
+    
+    OfInt ialit = inal.iterator();
+    i = 0;
+    while (ialit.hasNext()) {
+      assertEquals(expectedIna[i++], ialit.nextInt());
+    }
+    
+    i = 0;
+    for (int v : inal) {
+      assertEquals(expectedIna[i++], v);
+    }
+    
     LongArray loa = new LongArray(jcas, 2);
     loa.set(0, (long)15);
     loa.set(1, (long)22);
@@ -946,6 +949,8 @@ public class JCasTest extends TestCase {
     for (long v : loa) {
       assertEquals(expectedLoa[i++], v);
     }
+    
+    
 
     DoubleArray doa = new DoubleArray(jcas, 2);
     doa.set(0, (double)15);
@@ -956,21 +961,22 @@ public class JCasTest extends TestCase {
       assertEquals(expectedDoa[i++], v);
     }
     
-  }
-
+  }  
+  
   public void testUndefinedType() throws Exception {
     //create jcas with no type system
-    JCas jcas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null).getJCas();
-    jcas.setDocumentText("This is a test.");
+    JCas localJcas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null).getJCas();
+    localJcas.setDocumentText("This is a test.");
     try {
       //this should throw an exception
-      jcas.getType(Sentence.type);
+      localJcas.getCasType(Sentence.type);
       fail(); 
     } catch(CASRuntimeException e) {
+      assertEquals(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, e.getMessageKey());
     }
     //check that this does not leave JCAS in an inconsistent state
     //(a check for bug UIMA-738)
-    Iterator<Annotation> iter = jcas.getAnnotationIndex().iterator();
+    Iterator<Annotation> iter = localJcas.getAnnotationIndex().iterator();
     assertTrue(iter.hasNext());
     Annotation annot = iter.next();
     assertEquals("This is a test.", annot.getCoveredText());

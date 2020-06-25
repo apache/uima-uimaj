@@ -38,7 +38,7 @@
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.10.5-SNAPSHOT</version>
+  <version>3.1.2-SNAPSHOT</version>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the uimaj SDK</description>
   <url>${uimaWebsiteUrl}</url>
@@ -53,14 +53,15 @@
        element, and just changing the following two properties -->
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-parent
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-parent
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-parent
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-parent
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-parent
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-parent
     </url>
+    <tag>HEAD</tag>
   </scm>
 
   <!-- The repositories and pluginRepositories section is duplicated from
@@ -72,6 +73,21 @@
        This allows maven to find the snapshots when looking for the parent of
        this pom -->
   <repositories>
+    <repository>
+      <id>eclipsePlugins</id>
+      <name>Eclipse components</name>
+      <layout>default</layout>
+      <url>https://repo1.maven.org/eclipse</url>
+      
+      <releases>
+        <updatePolicy>never</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+      
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
 
     <!-- modify central repository access:
          Turn on checksum checking-->
@@ -133,30 +149,26 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <!-- 
-     BACKWARD_COMPATIBLE_IMPLEMENTER - patch version (=.=.+)
-     BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
-     NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
-     -->
-    <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
-    <compat.previous.version>2.10.3</compat.previous.version>
-    <api_check_oldVersion>2.10.3</api_check_oldVersion>
 
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
      Local configurations within plugins should be avoided. Where plugins do not pick up default
      properties already, they should be injected manually into the plugins. 
-    -->    
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    --> 
+    <slf4j.version>1.7.25</slf4j.version>
+    <log4j.version>2.10.0</log4j.version>
+    <jackson.version>2.9.2</jackson.version>
+    
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.surefire.heap>512m</maven.surefire.heap>
     <maven.surefire.argLine />
     <maven.surefire.java9 />
     
     <jacoco.argLine />
-    <java.version>8</java.version>
+    <api_check_oldVersion>3.1.1</api_check_oldVersion>
   </properties>
-
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -169,6 +181,18 @@
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>3.14.0</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- set dependency versions for logger parts -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>xmlunit</groupId>
@@ -178,10 +202,21 @@
     </dependencies>
   </dependencyManagement>
   
+  <dependencies>
+    <!-- Used to enable findbug rule suppression annotations -->
+    <!-- This is the Apache v2 license version -->      
+    <dependency>
+      <groupId>com.github.stephenc.findbugs</groupId>
+      <artifactId>findbugs-annotations</artifactId>
+      <version>1.3.9-1</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  
   <build>
     <pluginManagement>
       <plugins>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -189,22 +224,37 @@
             <argLine>@{jacoco.argLine} -Xmx@{maven.surefire.heap} -Xms@{maven.surefire.heap} @{maven.surefire.argLine} @{maven.surefire.java9}</argLine>
           </configuration>
         </plugin>
-        
-        <!-- Code quality checking plugins mostly used for CI builds -->
-             
+
         <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.7.6.201602180812</version>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes combine.children="append">
+                  <exclude>src/main/run_configuration/*.launch</exclude>
+                </excludes>    
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>   
+        
+        <!-- https://issues.apache.org/jira/browse/UIMA-5367 -->
+        <plugin> 
+          <groupId>org.apache.maven.plugins</groupId> 
+          <artifactId>maven-deploy-plugin</artifactId>
+          <configuration> 
+            <retryFailedDeploymentCount>10</retryFailedDeploymentCount> 
+          </configuration> 
         </plugin>
+         
       </plugins>
     </pluginManagement>
     
-    <plugins>
-    </plugins>
   </build>
- 
-  <profiles>     
+  <profiles>
+    
     <profile>
       <id>pmd</id>
       <build>
@@ -230,6 +280,7 @@
         </plugins>
       </build>
     </profile>
+    
     <profile>
       <id>findbugs</id>
       <build>
@@ -285,7 +336,8 @@
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
             <configuration>
-              <excludes>
+
+              <excludes combine.children="append">
                 <!-- Duplicates on classpath cause an exception in JaCoCo report -->
                 <exclude>**/org/apache/uima/examples/SourceDocumentInformation*</exclude>
                 <exclude>**/org/apache/uima/examples/SourceDocumentInformation_Type*</exclude>
@@ -332,7 +384,6 @@
         </file>
       </activation>
       <build>
-        
         <pluginManagement>
           <plugins>
             <plugin>
@@ -405,9 +456,58 @@
                 </configuration>
               </execution>
             </executions>
-            
           </plugin>
         </plugins>
+      </build>
+    </profile>
+    
+    <!-- ************** m2e  profile ************* -->
+    <profile>
+      <id>m2e</id>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>         
+            <!-- This plugin's configuration is used to store Eclipse m2e settings 
+                only. It has no influence on the Maven build itself. -->
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                  
+                    <!-- ***************************** -->
+                    <!-- IGNORE maven-bundle-plugin    -->
+                    <!-- ***************************** -->
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>
+                          maven-bundle-plugin
+                        </artifactId>
+                        <versionRange>[3,)</versionRange>
+                        <goals>
+                          <goal>process</goal>
+                          <goal>bundle</goal>
+                          <goal>manifest</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
       </build>
     </profile>
   </profiles>

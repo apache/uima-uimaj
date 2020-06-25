@@ -24,9 +24,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.DataResource;
@@ -40,6 +37,9 @@ import org.apache.uima.resource.metadata.impl.ExternalResourceBinding_impl;
 import org.apache.uima.resource.metadata.impl.ResourceManagerConfiguration_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 
 public class ResourceManager_implTest extends TestCase {
@@ -208,6 +208,14 @@ public class ResourceManager_implTest extends TestCase {
       URI expectedUri = expectedBaseUri.resolve("Test.dat");
       Assert.assertEquals(expectedUri, r3.getUri());
 
+      mManager.destroy();
+      boolean caught = false;
+      try {
+        mManager.getResource(TEST_CONTEXT_NAME + "myResourceWithSpaceInPathKey");
+      } catch (IllegalStateException e) {
+        caught = true;
+      }
+      assertTrue(caught);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

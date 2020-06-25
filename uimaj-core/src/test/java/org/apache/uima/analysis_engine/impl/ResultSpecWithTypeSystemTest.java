@@ -18,14 +18,14 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.impl.TypeSystemImpl;
+
+import junit.framework.TestCase;
 
 /**
  * Test various kinds of inheritance issues 
@@ -47,16 +47,17 @@ public class ResultSpecWithTypeSystemTest extends TestCase {
 	
 	// types
   
-  private static final TypeSystemMgr ts = new TypeSystemImpl();
-  private static final Type t1 = ts.addType("T1", ts.getTopType());
-  private static final Type t2 = ts.addType("T2", t1);
-  private static final Type t3 = ts.addType("T3", t2);
-  private static final Type t4 = ts.addType("T4", t1);  // doesn't inherit from t2
-  private static final Feature f1 = ts.addFeature("F1", t1, t1);
-  private static final Feature f2 = ts.addFeature("F2", t2, t3);
-  private static final Feature f3 = ts.addFeature("F3", t3, t3);
-  private static final Feature f4 = ts.addFeature("F4", t4, t4);
-  static {ts.commit();};
+  private static final TypeSystemMgr tsm = CASFactory.createTypeSystem();
+  private static final Type t1 = tsm.addType("T1", tsm.getTopType());
+  private static final Type t2 = tsm.addType("T2", t1);
+  private static final Type t3 = tsm.addType("T3", t2);
+  private static final Type t4 = tsm.addType("T4", t1);  // doesn't inherit from t2
+  private static final Feature f1 = tsm.addFeature("F1", t1, t1);
+  private static final Feature f2 = tsm.addFeature("F2", t2, t3);
+  private static final Feature f3 = tsm.addFeature("F3", t3, t3);
+  private static final Feature f4 = tsm.addFeature("F4", t4, t4);
+  private static final TypeSystem ts;
+  static {ts = tsm.commit();};
   
   // TypeOrFeature instances
   private static TypeOrFeature makeTof(String name, boolean isType, boolean allFeats) {

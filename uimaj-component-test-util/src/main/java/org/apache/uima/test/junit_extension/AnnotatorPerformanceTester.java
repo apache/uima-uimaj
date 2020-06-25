@@ -37,6 +37,7 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 
+
 /**
  * AnnotatorPerfTester is a helper class to execute annotator performance tests. The performance
  * test results are returned as {@link PerformanceTestResultImpl} object.
@@ -44,18 +45,29 @@ import org.apache.uima.util.XMLInputSource;
  */
 public class AnnotatorPerformanceTester {
 
+  /**
+   * The Class FileFileFilter.
+   */
   private static class FileFileFilter implements FileFilter {
 
+    /**
+     * Instantiates a new file file filter.
+     */
     private FileFileFilter() {
       super();
     }
 
+    /* (non-Javadoc)
+     * @see java.io.FileFilter#accept(java.io.File)
+     */
+    @Override
     public boolean accept(File arg0) {
       return arg0.isFile();
     }
 
   }
 
+  /** The log levels. */
   private static HashMap logLevels = new HashMap(9);
   static {
     logLevels.put("OFF", Level.OFF);
@@ -70,25 +82,17 @@ public class AnnotatorPerformanceTester {
   }
 
   /**
-   * runs an annotator performance test
-   * 
-   * @param repeatSingle
-   *          if true, every document is process "numsToRun" times before the next document is
+   * runs an annotator performance test.
+   *
+   * @param repeatSingle          if true, every document is process "numsToRun" times before the next document is
    *          processed. If false, all documents are processed and this is repeated "numsToRun"
    *          times.
-   * 
-   * @param numsToRun
-   *          repeat count for the input documents
-   * @param taeDescFilePath
-   *          ae descriptor - absolute file path
-   * @param testFileDir
-   *          test file directory
-   * @param dataPath
-   *          ae datapath
-   * @param doWarmup
-   *          do warum for analysis engine - runs an short english sample document
+   * @param numsToRun          repeat count for the input documents
+   * @param taeDescFilePath          ae descriptor - absolute file path
+   * @param testFileDir          test file directory
+   * @param dataPath          ae datapath
+   * @param doWarmup          do warum for analysis engine - runs an short english sample document
    * @return PerformanceTestResult - returns the performance test results
-   * 
    * @throws Exception passthru
    */
   public static PerformanceTestResult runPerformanceTest(boolean repeatSingle, int numsToRun,

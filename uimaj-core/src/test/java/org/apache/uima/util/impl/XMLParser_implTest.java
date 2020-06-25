@@ -27,9 +27,6 @@ import java.io.File;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.flow.FlowControllerDescription;
@@ -43,6 +40,9 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.xml.sax.XMLReader;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 public class XMLParser_implTest extends TestCase {
 
@@ -70,6 +70,15 @@ public class XMLParser_implTest extends TestCase {
     // schema validation will be enabled for the whole suite.
     mXmlParser.enableSchemaValidation(true);
   }
+  
+  /*
+   * @see TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    UIMAFramework.getXMLParser().enableSchemaValidation(false);
+  }
+
 
   public void testParse() throws Exception {
     try {

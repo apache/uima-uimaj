@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>3.1.2-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -43,13 +43,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-cas-editor-ide
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-ep-cas-editor-ide
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-cas-editor-ide
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-ep-cas-editor-ide
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-cas-editor-ide
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-ep-cas-editor-ide
     </url>
     <tag>HEAD</tag>
   </scm>
@@ -62,7 +62,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.5</version>
       <scope>test</scope>
 		</dependency>
 
@@ -76,6 +75,16 @@
 			<artifactId>uimaj-core</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-compilertools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-core</artifactId>
+        </exclusion>
+      </exclusions>
 		</dependency>
 
 		<dependency>
@@ -169,7 +178,7 @@
       <scope>provided</scope>
     </dependency>
     -->
-
+      
 		<dependency>
 			<groupId>org.eclipse.swt</groupId>
 			<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
@@ -180,7 +189,7 @@
 			<version>[3.2.0,5.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
-
+   
 
     <!-- 
 		<dependency>
@@ -190,8 +199,9 @@
 			<scope>provided</scope>
 		</dependency>
      -->
-
-		<dependency>
+     
+     
+    <dependency>
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.ui.views</artifactId>
       <!-- changing the lower version number to 3.2.0, 
@@ -199,7 +209,7 @@
         because only 3.2.0 and 3.2.1 are in 
         repo -->
       <version>[3.9.0,4.0.0)</version>
-			<scope>provided</scope>
+      <scope>provided</scope>
       <exclusions>
          <exclusion>
            <groupId>org.eclipse.platform</groupId>
@@ -207,9 +217,9 @@
          </exclusion>
        </exclusions>
       
-		</dependency>
+    </dependency>
 
-		<dependency>
+    <dependency>
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
       <version>[3.10.0,4.0.0)</version>
@@ -227,14 +237,14 @@
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.jface</artifactId>
       <version>[3.16.0, 4.0.0)</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.jface.text</artifactId>
       <version>[3.11.0,4.0.0)</version>
-			<scope>provided</scope>
+      <scope>provided</scope>
        <exclusions>
          <exclusion>
            <groupId>org.eclipse.platform</groupId>
@@ -242,19 +252,19 @@
          </exclusion>
        </exclusions>
       
-		</dependency>
+    </dependency>
 		
     <!-- https://issues.apache.org/jira/browse/UIMA-3510 -->
     <!-- 
     <dependency>
       <groupId>org.eclipse.equinox</groupId>
       <artifactId>app</artifactId>
-      <!  - - https://issues.apache.org/jira/browse/UIMA-3695
+      <! - - https://issues.apache.org/jira/browse/UIMA-3695
           <version>[1.0.0,1.0.1)</version>
        - - >
        <version>[1.2.0,2.0.0)</version>
        <scope>provided</scope>
-    </dependency>		
+    </dependency>
      -->		
 	</dependencies>
 

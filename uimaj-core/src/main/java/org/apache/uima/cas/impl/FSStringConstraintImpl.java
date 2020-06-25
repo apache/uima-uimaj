@@ -41,10 +41,12 @@ class FSStringConstraintImpl implements FSStringConstraint {
     this.string = "";
   }
 
+  @Override
   public void equals(String s) {
     this.string = s;
   }
 
+  @Override
   public boolean match(String s) {
     if (this.string == null) {
       return (s == null);
@@ -52,6 +54,7 @@ class FSStringConstraintImpl implements FSStringConstraint {
     return (this.string.equals(s));
   }
 
+  @Override
   public String toString() {
     // need to escape quotes and backslashes
     StringBuffer buf = new StringBuffer();

@@ -40,7 +40,7 @@ public class StringToIntMap {
    */
   public StringToIntMap() {
     super();
-    this.map = new HashMap<String, Integer>();
+    this.map = new HashMap<>();
   }
 
   /**
@@ -69,7 +69,7 @@ public class StringToIntMap {
     if (i == null) {
       return DEFAULT_VALUE;
     }
-    return i.intValue();
+    return i;
   }
 
   /**
@@ -87,9 +87,9 @@ public class StringToIntMap {
     if (i == null) {
       rc = 0;
     } else {
-      rc = i.intValue();
+      rc = i;
     }
-    i = Integer.valueOf(value);
+    i = value;
     this.map.put(key, i);
     return rc;
   }

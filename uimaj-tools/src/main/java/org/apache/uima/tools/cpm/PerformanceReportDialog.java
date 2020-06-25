@@ -38,21 +38,29 @@ import javax.swing.tree.DefaultTreeModel;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
 
+
 /**
  * Mock-up of dialog for reporting performance stats.
  * 
  */
 public class PerformanceReportDialog extends JDialog {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 7747258424181047062L;
 
+  /** The status label. */
   private JLabel statusLabel = new JLabel("Processing completed successfully.");
 
+  /** The docs processed label. */
   private JLabel docsProcessedLabel = new JLabel("Documents Processed: 0");
 
+  /** The total time label. */
   private JLabel totalTimeLabel = new JLabel("Total Time: 0.0 seconds");
 
+  /** The tree. */
   private JTree tree = new JTree();
 
+  /** The m event type map. */
   private Map mEventTypeMap;
 
   /**
@@ -60,6 +68,7 @@ public class PerformanceReportDialog extends JDialog {
    *
    * @param aFrame the a frame
    * @throws HeadlessException the headless exception
+   * @throws java.awt.HeadlessException the java.awt. headless exception
    */
   public PerformanceReportDialog(Frame aFrame) throws HeadlessException {
     super(aFrame, true);
@@ -86,6 +95,13 @@ public class PerformanceReportDialog extends JDialog {
 
   }
 
+  /**
+   * Display stats.
+   *
+   * @param aProcessTrace the a process trace
+   * @param aNumDocsProcessed the a num docs processed
+   * @param aStatusMessage the a status message
+   */
   public void displayStats(ProcessTrace aProcessTrace, int aNumDocsProcessed, String aStatusMessage) {
     statusLabel.setText(aStatusMessage);
     docsProcessedLabel.setText("Documents Processed: " + aNumDocsProcessed);
@@ -114,6 +130,13 @@ public class PerformanceReportDialog extends JDialog {
     this.setVisible(true);
   }
 
+  /**
+   * Builds the event tree.
+   *
+   * @param aEvent the a event
+   * @param aParentNode the a parent node
+   * @param aTotalTime the a total time
+   */
   public void buildEventTree(ProcessTraceEvent aEvent, DefaultMutableTreeNode aParentNode,
           long aTotalTime) {
     final DecimalFormat pctFmt = new DecimalFormat("##.##%");

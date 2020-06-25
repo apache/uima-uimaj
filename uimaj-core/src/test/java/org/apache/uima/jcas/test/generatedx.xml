@@ -28,7 +28,14 @@
 <name>x.y.z.Sentence</name>
 <description/>
 <supertypeName>uima.tcas.Annotation</supertypeName>
-</typeDescription>
+<features>
+        <featureDescription>
+          <name>sentenceLength</name>
+          <description/>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
 <typeDescription>
 <name>x.y.z.Token</name>
 <description/>
@@ -48,11 +55,6 @@
 <name>lemma</name>
 <description/>
 <rangeTypeName>uima.cas.String</rangeTypeName>
-</featureDescription>
-<featureDescription>
-<name>sentenceLength</name>
-<description/>
-<rangeTypeName>uima.cas.Integer</rangeTypeName>
 </featureDescription>
 <featureDescription>
 <name>lemmaList</name>
@@ -323,5 +325,27 @@
 </featureDescription>
 </features>
 </typeDescription>
-</types>
+<typeDescription>
+      <name>org.apache.uima.cas.test.CrossAnnotation</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>otherAnnotation</name>
+          <description/>
+          <rangeTypeName>uima.tcas.Annotation</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  <typeDescription>
+      <name>org.apache.uima.cas.test.Sentence</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>org.apache.uima.cas.test.Token</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+    </typeDescription>
+  </types>
 </typeSystemDescription>

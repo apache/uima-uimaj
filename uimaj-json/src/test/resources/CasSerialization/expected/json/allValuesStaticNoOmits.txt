@@ -21,11 +21,11 @@
   "_views" : {
     "_InitialView" : {
       "AllTypes" : [
-        {"sofa" : 29,  "begin" : 0,  "end" : 0,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aInteger" : 0,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"",  "aFS" : 36,  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : 165,  "aArrayMrByte" : 168,  "aArrayByte" : "D+4=",  "aArrayShort" : [ ],  "aArrayMrShort" : 171,  "aArrayString" : [null ],  "aArrayMrString" : 174,  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] } ] } }, 
+        {"sofa" : 1,  "begin" : 0,  "end" : 0,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aInteger" : 0,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"",  "aFS" : 3,  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : 12,  "aArrayMrByte" : 13,  "aArrayByte" : "D+4=",  "aArrayShort" : [ ],  "aArrayMrShort" : 14,  "aArrayString" : [null ],  "aArrayMrString" : 15,  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [19 ] } ] } }, 
   "_referenced_fss" : {
-    "29" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
-    "36" : {"_type" : "AllTypes",  "sofa" : 29,  "begin" : 0,  "end" : 0,  "aBoolean" : false,  "aByte" : 0,  "aShort" : 0,  "aInteger" : 0,  "aLong" : 0,  "aFloat" : 0.0,  "aDouble" : 0.0 }, 
-    "165" : {"_type" : "BooleanArray",  "_collection" : [false ] }, 
-    "168" : {"_type" : "ByteArray",  "_collection" : "AAA=" }, 
-    "171" : {"_type" : "ShortArray",  "_collection" : [ ] }, 
-    "174" : {"_type" : "StringArray",  "_collection" : [null ] } } }
+    "1" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "3" : {"_type" : "AllTypes",  "sofa" : 1,  "begin" : 0,  "end" : 0,  "aBoolean" : false,  "aByte" : 0,  "aShort" : 0,  "aInteger" : 0,  "aLong" : 0,  "aFloat" : 0.0,  "aDouble" : 0.0 }, 
+    "12" : {"_type" : "BooleanArray",  "_collection" : [false ] }, 
+    "13" : {"_type" : "ByteArray",  "_collection" : "AAA=" }, 
+    "14" : {"_type" : "ShortArray",  "_collection" : [ ] }, 
+    "15" : {"_type" : "StringArray",  "_collection" : [null ] } } }

@@ -20,7 +20,6 @@
 package org.apache.uima.analysis_engine.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.apache.uima.cas.text.Language;
 
@@ -69,7 +68,7 @@ public class RsLangs {
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
-    builder.append("RsLangs [languages=");
+    builder.append(this.getClass().getSimpleName() + " [languages=");
     if (languages != null) {
       for (String l : languages) {
         builder.append(l).append(',');
@@ -99,7 +98,7 @@ public class RsLangs {
   
   // make a copy when needed
   private RsLangs(RsLangs original) {
-    languages = (null == original.languages) ? null : new ArrayList<String>(original.languages);
+    languages = (null == original.languages) ? null : new ArrayList<>(original.languages);
   }
   
   static boolean isEmpty(RsLangs rsl) {
@@ -187,7 +186,7 @@ public class RsLangs {
       if (rsl == null || rsl.isShared) {
         rsl = new RsLangs();
       }
-      rsl.languages = new ArrayList<String>(1);  // special form means empty, not x-unspec
+      rsl.languages = new ArrayList<>(0);  // special form means empty, not x-unspec
     }
     return addAll(rsl, langs);
   }
@@ -244,11 +243,7 @@ public class RsLangs {
    * @param canonicalLang
    */
   private void removeSubsumedLanguages(String canonicalLang, String baseLang) {
-    for (Iterator<String> it = languages.iterator(); it.hasNext();) {
-      if (subsumesCanonical(it.next(), canonicalLang, baseLang)) {
-        it.remove();
-      }
-    } 
+    languages.removeIf(s -> subsumesCanonical(s, canonicalLang, baseLang));
   }
   
   /**
@@ -269,7 +264,7 @@ public class RsLangs {
     }
     
     RsLangs r = new RsLangs();
-    r.languages = new ArrayList<String>(1);  // creates an empty, not null arraylist
+    r.languages = new ArrayList<>(0);  // creates an empty, not null arraylist
     
     for (String lang : this.languages) {
       if (subsumesCanonical(other, lang)) {
