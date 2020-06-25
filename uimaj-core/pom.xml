@@ -82,6 +82,7 @@
 		  <groupId>commons-io</groupId>
 		  <artifactId>commons-io</artifactId>
 		  <version>2.6</version>
+      <scope>test</scope>
 		</dependency>
 
 		<!--  Uncomment one of these to add Saxon8 or 9 to the classpath for JUnit tests. 
