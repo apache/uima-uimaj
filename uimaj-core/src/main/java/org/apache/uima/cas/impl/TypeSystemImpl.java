@@ -2620,7 +2620,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return - the type impl associated with that JCas cover class
    */
   public TypeImpl getJCasRegisteredType(int i) {
-    TypeImpl ti;
+    // first try without sync lock https://issues.apache.org/jira/browse/UIMA-6249
+    TypeImpl ti = (i >= jcasRegisteredTypes.size()) ? null : jcasRegisteredTypes.get(i);
+    if (ti != null) {
+      return ti;
+    }
     synchronized(jcasRegisteredTypes) {
       ti = (i >= jcasRegisteredTypes.size()) ? null : jcasRegisteredTypes.get(i);
     }
