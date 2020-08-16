@@ -225,6 +225,7 @@
             <execution>
               <id>default-cli</id>
               <configuration>
+                <consoleOutput>true</consoleOutput>
                 <excludes combine.children="append">
                   <!-- Plain documentation -->
                   <exclude>README*</exclude>
