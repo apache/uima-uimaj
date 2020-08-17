@@ -44,6 +44,7 @@ pipeline {
     // build issues.
     stage("Build info") {
       steps {
+        echo '=== Environment variables ==='
         sh 'printenv'
       }
     }
@@ -73,7 +74,7 @@ pipeline {
     // merge request has been merged. On success, it deploys the generated artifacts to the
     // Maven repository server.
     stage("SNAPSHOT build") {
-      when { branch pattern: "master", comparator: "REGEXP" }
+      when { branch pattern: "master|master-v2", comparator: "REGEXP" }
       
       steps {
         withMaven() {
