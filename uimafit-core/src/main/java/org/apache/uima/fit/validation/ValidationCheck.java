@@ -18,25 +18,10 @@
  */
 package org.apache.uima.fit.validation;
 
-import java.util.List;
-
-import org.apache.uima.cas.CAS;
-
 /**
- * CAS validation check.
- * <p>
- * <b>Note:</b> Implementations of this class are typically singletons which are obtained through
- * the Java Service Locator mechanism. This means that the implementations must be stateless to
- * ensure that they can be used by multiple threads concurrently.
+ * Marker interface identifying validation checks that can be located via the Java Service Locator
+ * mechanism.
  */
-@FunctionalInterface
-public interface CasValidationCheck extends ValidationCheck {
-  /**
-   * Apply this check to the given CAS.
-   * 
-   * @param cas
-   *          the CAS to check.
-   * @return the results of the check.
-   */
-  List<ValidationResult> validate(CAS cas) throws ValidationException;
+public interface ValidationCheck {
+  // Marker interface
 }

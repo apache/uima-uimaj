@@ -27,11 +27,11 @@ import org.junit.Test;
 
 public class CasValidatorBuilderTest {
 
-  private CasValidator.Builder sut;
+  private Validator.Builder sut;
 
   @Before
   public void setup() {
-    sut = new CasValidator.Builder();
+    sut = new Validator.Builder();
   }
 
   @Test
@@ -39,7 +39,7 @@ public class CasValidatorBuilderTest {
   public void thatExcludeByNameWorks() {
     sut.excludingFromAutoDetectionByName(EndAfterBeginCheckForTesting.class.getName());
 
-    CasValidator validator = sut.build();
+    Validator validator = sut.build();
 
     assertThat(validator.getChecks())
             .extracting(Object::getClass)
@@ -51,7 +51,7 @@ public class CasValidatorBuilderTest {
   public void thatExcludeByTypeWorks() {
     sut.excludingFromAutoDetectionByType(EndAfterBeginCheckForTesting.class);
 
-    CasValidator validator = sut.build();
+    Validator validator = sut.build();
 
     assertThat(validator.getChecks())
             .extracting(Object::getClass)

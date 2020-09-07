@@ -29,35 +29,68 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
+import org.apache.uima.jcas.JCas;
 
 /**
- * Validate a CAS.
+ * Validate a (J)CAS.
  */
-public class CasValidator {
+public class Validator {
+  private Collection<ValidationCheck> checks;
 
-  private Collection<CasValidationCheck> checks;
-
-  public CasValidator(Collection<CasValidationCheck> checks) {
+  public Validator(Collection<ValidationCheck> checks) {
     this.checks = checks;
   }
 
-  public CasValidationSummary check(CAS cas) {
-    CasValidationSummary summary = new CasValidationSummary();
+  public ValidationSummary check(JCas aJCas) throws ValidationException {
+    ValidationSummary summary = new ValidationSummary();
 
-    for (CasValidationCheck check : checks) {
-      summary.addAll(check.check(cas));
+    for (ValidationCheck check : checks) {
+      if (check instanceof CasValidationCheck) {
+        summary.addAll(((CasValidationCheck) check).validate(aJCas.getCas()));
+      }
+      else if (check instanceof JCasValidationCheck) {
+        summary.addAll(((JCasValidationCheck) check).validate(aJCas));
+      }
+      else {
+        throw new IllegalArgumentException(
+                "Unknown ValidationCheck type: [" + check.getClass().getName() + "]");
+      }
+    }
+
+    return summary;
+  }
+  
+  public ValidationSummary check(CAS cas) throws ValidationException {
+    ValidationSummary summary = new ValidationSummary();
+
+    for (ValidationCheck check : checks) {
+      if (check instanceof CasValidationCheck) {
+        summary.addAll(((CasValidationCheck) check).validate(cas));
+      }
+      else if (check instanceof JCasValidationCheck) {
+        try {
+          summary.addAll(((JCasValidationCheck) check).validate(cas.getJCas()));
+        } catch (CASException e) {
+          throw new ValidationException(e);
+        }
+      }
+      else {
+        throw new IllegalArgumentException(
+                "Unknown ValidationCheck type: [" + check.getClass().getName() + "]");
+      }
     }
 
     return summary;
   }
 
-  public Collection<CasValidationCheck> getChecks() {
+  public Collection<ValidationCheck> getChecks() {
     return checks;
   }
 
   public static class Builder {
 
-    private Set<CasValidationCheck> checks = new LinkedHashSet<>();
+    private Set<ValidationCheck> checks = new LinkedHashSet<>();
     private Set<Pattern> excludePatterns = new HashSet<>();
     private Set<Class<?>> excludeTypes = new HashSet<>();
     private boolean skipAutoDetection = false;
@@ -111,7 +144,7 @@ public class CasValidator {
     }
 
     private void autoDetectChecks() {
-      stream(load(CasValidationCheck.class).spliterator(), false)
+      stream(load(ValidationCheck.class).spliterator(), false)
               .filter(check -> excludePatterns.stream()
                       .noneMatch(p -> p.matcher(check.getClass().getName()).matches()))
               .filter(check -> excludeTypes.stream()
@@ -119,12 +152,12 @@ public class CasValidator {
               .forEachOrdered(checks::add);
     }
 
-    public CasValidator build() {
+    public Validator build() {
       if (!skipAutoDetection) {
         autoDetectChecks();
       }
 
-      return new CasValidator(checks);
+      return new Validator(checks);
     }
   }
 }

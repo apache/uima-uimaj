@@ -18,25 +18,30 @@
  */
 package org.apache.uima.fit.validation;
 
-import java.util.List;
-
-import org.apache.uima.cas.CAS;
-
 /**
- * CAS validation check.
- * <p>
- * <b>Note:</b> Implementations of this class are typically singletons which are obtained through
- * the Java Service Locator mechanism. This means that the implementations must be stateless to
- * ensure that they can be used by multiple threads concurrently.
+ * Exception generated while validating a CAS.
  */
-@FunctionalInterface
-public interface CasValidationCheck extends ValidationCheck {
-  /**
-   * Apply this check to the given CAS.
-   * 
-   * @param cas
-   *          the CAS to check.
-   * @return the results of the check.
-   */
-  List<ValidationResult> validate(CAS cas) throws ValidationException;
+public class ValidationException extends Exception {
+  private static final long serialVersionUID = 3797439484561980758L;
+
+  public ValidationException() {
+    super();
+  }
+
+  public ValidationException(String aMessage, Throwable aCause, boolean aEnableSuppression,
+          boolean aWritableStackTrace) {
+    super(aMessage, aCause, aEnableSuppression, aWritableStackTrace);
+  }
+
+  public ValidationException(String aMessage, Throwable aCause) {
+    super(aMessage, aCause);
+  }
+
+  public ValidationException(String aMessage) {
+    super(aMessage);
+  }
+
+  public ValidationException(Throwable aCause) {
+    super(aCause);
+  }
 }

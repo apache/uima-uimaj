@@ -19,18 +19,18 @@
 package org.apache.uima.fit.validation;
 
 import static java.lang.String.format;
-import static org.apache.uima.fit.validation.CasValidationResult.Severity.DEBUG;
-import static org.apache.uima.fit.validation.CasValidationResult.Severity.ERROR;
-import static org.apache.uima.fit.validation.CasValidationResult.Severity.INFO;
-import static org.apache.uima.fit.validation.CasValidationResult.Severity.TRACE;
-import static org.apache.uima.fit.validation.CasValidationResult.Severity.WARN;
+import static org.apache.uima.fit.validation.ValidationResult.Severity.DEBUG;
+import static org.apache.uima.fit.validation.ValidationResult.Severity.ERROR;
+import static org.apache.uima.fit.validation.ValidationResult.Severity.INFO;
+import static org.apache.uima.fit.validation.ValidationResult.Severity.TRACE;
+import static org.apache.uima.fit.validation.ValidationResult.Severity.WARN;
 
 import java.util.Objects;
 
 /**
  * Individual result from a CAS validation check.
  */
-public class CasValidationResult {
+public class ValidationResult {
 
   public enum Severity {
 
@@ -51,7 +51,7 @@ public class CasValidationResult {
   private final String source;
   private final String message;
 
-  public CasValidationResult(Object source, Severity severity, String format, Object... args) {
+  public ValidationResult(Object source, Severity severity, String format, Object... args) {
 
     super();
 
@@ -79,32 +79,32 @@ public class CasValidationResult {
     return severity;
   }
 
-  public static CasValidationResult error(Object source, String format, Object... args) {
-    return new CasValidationResult(source, ERROR, format, args);
+  public static ValidationResult error(Object source, String format, Object... args) {
+    return new ValidationResult(source, ERROR, format, args);
   }
 
-  public static CasValidationResult warn(Object source, String format, Object... args) {
-    return new CasValidationResult(source, WARN, format, args);
+  public static ValidationResult warn(Object source, String format, Object... args) {
+    return new ValidationResult(source, WARN, format, args);
   }
 
-  public static CasValidationResult info(Object source, String format, Object... args) {
-    return new CasValidationResult(source, INFO, format, args);
+  public static ValidationResult info(Object source, String format, Object... args) {
+    return new ValidationResult(source, INFO, format, args);
   }
 
-  public static CasValidationResult debug(Object source, String format, Object... args) {
-    return new CasValidationResult(source, DEBUG, format, args);
+  public static ValidationResult debug(Object source, String format, Object... args) {
+    return new ValidationResult(source, DEBUG, format, args);
   }
 
-  public static CasValidationResult trace(Object source, String format, Object... args) {
-    return new CasValidationResult(source, TRACE, format, args);
+  public static ValidationResult trace(Object source, String format, Object... args) {
+    return new ValidationResult(source, TRACE, format, args);
   }
 
   @Override
   public boolean equals(final Object other) {
-    if (!(other instanceof CasValidationResult)) {
+    if (!(other instanceof ValidationResult)) {
       return false;
     }
-    CasValidationResult castOther = (CasValidationResult) other;
+    ValidationResult castOther = (ValidationResult) other;
     return Objects.equals(severity, castOther.severity) && Objects.equals(source, castOther.source)
             && Objects.equals(message, castOther.message);
   }

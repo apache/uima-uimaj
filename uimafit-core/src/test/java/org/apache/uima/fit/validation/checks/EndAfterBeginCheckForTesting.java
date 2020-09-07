@@ -19,7 +19,7 @@
 package org.apache.uima.fit.validation.checks;
 
 import static org.apache.uima.fit.util.CasUtil.selectAll;
-import static org.apache.uima.fit.validation.CasValidationResult.error;
+import static org.apache.uima.fit.validation.ValidationResult.error;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.validation.CasValidationCheck;
-import org.apache.uima.fit.validation.CasValidationResult;
+import org.apache.uima.fit.validation.ValidationResult;
 
 /**
  * Simple CAS validation check ensuring that annotations do not end before they start.
@@ -36,8 +36,8 @@ import org.apache.uima.fit.validation.CasValidationResult;
  */
 public class EndAfterBeginCheckForTesting implements CasValidationCheck {
   @Override
-  public List<CasValidationResult> check(CAS cas) {
-    List<CasValidationResult> results = new ArrayList<>();
+  public List<ValidationResult> validate(CAS cas) {
+    List<ValidationResult> results = new ArrayList<>();
 
     for (AnnotationFS anno : selectAll(cas)) {
       if (anno.getEnd() < anno.getBegin()) {

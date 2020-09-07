@@ -18,28 +18,28 @@
  */
 package org.apache.uima.fit.validation.checks;
 
-import static org.apache.uima.fit.util.CasUtil.selectAll;
-import static org.apache.uima.fit.validation.CasValidationResult.error;
+import static org.apache.uima.fit.util.JCasUtil.select;
+import static org.apache.uima.fit.validation.ValidationResult.error;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.fit.validation.CasValidationCheck;
-import org.apache.uima.fit.validation.CasValidationResult;
+import org.apache.uima.fit.validation.ValidationResult;
+import org.apache.uima.fit.validation.JCasValidationCheck;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
- * Simple CAS validation check ensuring that annotations do not have the same start/end position.
+ * Simple JCas validation check ensuring that annotations do not have the same start/end position.
  * <p>
  * <b>Note:</b> This is used for testing in uimaFIT. It is not meant for general use!
  */
-public class EndSameAsBeginCheckForTesting implements CasValidationCheck {
+public class EndSameAsBeginCheckForTesting implements JCasValidationCheck {
   @Override
-  public List<CasValidationResult> check(CAS cas) {
-    List<CasValidationResult> results = new ArrayList<>();
+  public List<ValidationResult> validate(JCas aJCas) {
+    List<ValidationResult> results = new ArrayList<>();
 
-    for (AnnotationFS anno : selectAll(cas)) {
+    for (Annotation anno : select(aJCas, Annotation.class)) {
       if (anno.getEnd() == anno.getBegin()) {
         results.add(error(this, "%s starts and ends at the same position (%d)",
                 anno.getType().getShortName(), anno.getBegin()));

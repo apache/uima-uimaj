@@ -18,37 +18,25 @@
  */
 package org.apache.uima.fit.validation;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.apache.uima.fit.validation.CasValidationResult.Severity;
+import org.apache.uima.jcas.JCas;
 
 /**
- * Container for {@link CasValidationResult CasValidationResults}.
+ * JCas validation check.
+ * <p>
+ * <b>Note:</b> Implementations of this class are typically singletons which are obtained through
+ * the Java Service Locator mechanism. This means that the implementations must be stateless to
+ * ensure that they can be used by multiple threads concurrently.
  */
-public class CasValidationSummary {
-
-  private List<CasValidationResult> results;
-
-  public CasValidationSummary() {
-    results = new ArrayList<>();
-  }
-
-  public void addAll(CasValidationResult result) {
-    results.add(result);
-  }
-
-  public void addAll(Collection<CasValidationResult> moreResults) {
-    results.addAll(moreResults);
-  }
-
-  public List<CasValidationResult> getResults() {
-    return results;
-  }
-
-  public boolean containsResultsEquallyOrMoreSevereThan(Severity threshold) {
-    return results.stream()
-            .anyMatch(result -> result.getSeverity().isEquallyOrMoreSevereThan(threshold));
-  }
+@FunctionalInterface
+public interface JCasValidationCheck extends ValidationCheck {
+  /**
+   * Apply this check to the given CAS.
+   * 
+   * @param cas
+   *          the CAS to check.
+   * @return the results of the check.
+   */
+  List<ValidationResult> validate(JCas cas) throws ValidationException;
 }
