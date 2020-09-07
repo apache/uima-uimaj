@@ -127,9 +127,9 @@
       <directoryMode>755</directoryMode>        
     </fileSet>
 
-    <!-- docbooks -->
+    <!-- manuals -->
     <fileSet>
-      <directory>uimafit-docbook/target/site/</directory>
+      <directory>uimafit-doc/target/site/</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        

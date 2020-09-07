@@ -1,0 +1,72 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_ugr.tools.uimafit.pipelines]]
+= Pipelines
+
+UIMA is a component-based architecture that allows composing various processing components into a complex processing pipeline.
+A pipeline typically involves a _collection
+      reader_ which ingests documents and _analysis engines_ that do the actual processing.
+
+Normally, you would run a pipeline using a UIMA Collection Processing Engine or using UIMA AS.
+uimaFIT offers a third alternative that is much simpler to use and well suited for embedding UIMA pipelines into applications or for writing tests.
+
+As uimaFIT does not supply any readers or processing components, we just assume that we have written three components:
+
+* [class]``TextReader`` - reads text files from a directory
+* [class]``Tokenizer`` - annotates tokens
+* [class]``TokenFrequencyWriter`` - writes a list of tokens and their frequency to a file
+
+We create descriptors for all components and run them as a pipeline:
+
+[source,java]
+----
+CollectionReaderDescription reader = 
+  CollectionReaderFactory.createReaderDescription(
+    TextReader.class, 
+    TextReader.PARAM_INPUT, "/home/uimafit/documents");
+
+AnalysisEngineDescription tokenizer = 
+  AnalysisEngineFactory.createEngineDescription(
+    Tokenizer.class);
+
+AnalysisEngineDescription tokenFrequencyWriter = 
+  AnalysisEngineFactory.createEngineDescription(
+    TokenFrequencyWriter.class, 
+    TokenFrequencyWriter.PARAM_OUTPUT, "counts.txt");
+
+SimplePipeline.runPipeline(reader, tokenizer, writer);
+----
+
+Instead of running the full pipeline end-to-end, we can also process one document at a time and inspect the analysis results:
+
+[source,java]
+----
+CollectionReaderDescription reader = 
+  CollectionReaderFactory.createReaderDescription(
+    TextReader.class, 
+    TextReader.PARAM_INPUT, "/home/uimafit/documents");
+
+AnalysisEngineDescription tokenizer = 
+  AnalysisEngineFactory.createEngineDescription(
+    Tokenizer.class);
+
+for (JCas jcas : SimplePipeline.iteratePipeline(reader, tokenizer)) {
+  System.out.printf("Found %d tokens%n", 
+    JCasUtil.select(jcas, Token.class).size());
+}
+----

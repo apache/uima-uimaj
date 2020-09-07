@@ -126,7 +126,7 @@
     <module>uimafit-examples</module>
     <module>uimafit-spring</module>
     <module>uimafit-maven-plugin</module>
-    <module>uimafit-docbook</module>
+    <module>uimafit-doc</module>
     <module>uimafit-cpe</module>
     <module>uimafit-benchmark</module>
     <module>uimafit-parent</module>
