@@ -1,0 +1,122 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_ugr.tools.uimafit.introduction]]
+= Introduction
+
+While uimaFIT provides many features for a UIMA developer, there are two overarching themes that most features fall under.
+These two sides of uimaFIT are,while complementary, largely independent of each other.
+One of the beauties of uimaFIT is that a developer that uses one side of uimaFIT extensively is not required to use the other side at all. 
+
+== Simplify Component Implementation
+
+The first broad theme of uimaFIT provides features that __simplify component
+        implementation__.
+Our favorite example of this is the [class]``@ConfigurationParameter`` annotation which allows you to annotate a member variable as a configuration parameter.
+This annotation in combination with the method [method]``ConfigurationParameterInitializer.initialize()`` completely automates the process of initializing member variables with values from the [interface]``UimaContext`` passed into your analysis engine's initialize method.
+Similarly, the annotation [class]``@ExternalResource`` annotation in combination with the method [method]``ExternalResourceInitializer.initialize()`` completely automates the binding of an external resource as defined in the [interface]``UimaContext`` to a member variable.
+Dispensing with manually writing the code that performs these two tasks reduces effort, eliminates verbose and potentially buggy boiler-plate code, and makes implementing a UIMA component more enjoyable.
+Consider, for example, a member variable that is of type [class]``Locale``.
+With uimaFIT you can simply annotate the member variable with [class]``@ConfigurationParameter`` and have your initialize method automatically initialize the variable correctly with a string value in the [interface]``UimaContext`` such as ``en_US``. 
+
+== Simplify Component Instantiation
+
+The second broad theme of uimaFIT provides features that __simplify component
+        instantiation__.
+Working with UIMA, have you ever said to yourself "`but I
+        just want to tag some text!?`" What does it take to "`just tag some text?`" Here's a list of things you must do with the traditional approach:
+
+* wrap your tagger as a UIMA analysis engine
+* write a descriptor file for your analysis engine
+* write a CAS consumer that produces the desired output
+* write another descriptor file for the CAS consumer
+* write a descriptor file for a collection reader
+* write a descriptor file that describes a pipeline
+* invoke the Collection Processing Manager with your pipeline descriptor file
+
+
+=== From a class
+
+Each of these steps has its own pitfalls and can be rather time consuming.
+This is a rather unsatisfying answer to our simple desire to just tag some text.
+With uimaFIT you can literally eliminate all of these steps. 
+
+Here's a simple snippet of Java code that illustrates "`tagging some text`" with uimaFIT:
+
+[source,java]
+----
+import static org.apache.uima.fit.factory.JCasFactory.createJCas;
+import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
+import static 
+ org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+      
+JCas jCas = createJCas();
+
+jCas.setDocumentText("some text");
+
+runPipeline(jCas, 
+    createEngineDescription(MyTokenizer.class), 
+    createEngineDescription(MyTagger.class));
+
+for (Token token : iterate(jCas, Token.class)){
+    System.out.println(token.getTag());
+}
+----
+
+This code uses several static method imports for brevity.
+And while the terseness of this code won't make a Python programmer blush - it is certainly much easier than the seven steps outlined above! 
+
+=== From an XML descriptor
+
+uimaFIT provides mechanisms to instantiate and run UIMA components programmatically with or without descriptor files.
+For example, if you have a descriptor file for your analysis engine defined by [class]``MyTagger`` (as shown above), then you can instead instantiate the analysis engine with:
+
+[source,java]
+----
+AnalysisEngineDescription tagger = createEngineDescription(
+    "mypackage.MyTagger");
+----
+
+This will find the descriptor file [path]_mypackage/MyTagger.xml_ by name.
+Similarly, you can find a descriptor file by location with [method]``createEngineDescriptionFromPath()``.
+However, if you want to dispense with XML descriptor files altogether (and you probably do), you can use the method [method]``createEngineDescription()`` as shown above.
+One of the driving motivations for creating the second side of uimaFIT is our frustration with descriptor files and our desire to eliminate them.
+Descriptor files are difficult to maintain because they are generally tightly coupled with java code, they decay without warning, they are wearisome to test, and they proliferate, among other reasons.
+
+== Is this cheating?
+
+One question that is often raised by new uimaFIT users is whether or not it breaks the __UIMA way__.
+That is, does adopting uimaFIT lead me down a path of creating UIMA components and systems that are incompatible with the traditional UIMA approach? The answer to this question is __no__.
+For starters, uimaFIT does not skirt the UIMA mechanism of describing components - it only skips the XML part of it.
+For example, when the method [method]``createEngineDescription()`` is called (as shown above) an [interface]``AnalysisEngineDescription`` is created for the analysis engine.
+This is the same object type that is instantiated when a descriptor file is used.
+So, instead of parsing XML to instantiate an analysis engine description from XML, uimaFIT uses a factory method to instantiate it from method parameters.
+One of the happy benefits of this approach is that for a given [interface]``AnalysisEnginedDescription`` you can generate an XML descriptor file using [method]``AnalysisEngineDescription.toXML()``.
+So, uimaFIT actually provides a very simple and direct path for _generating_ XML descriptor files rather than manually creating and maintaining them! 
+
+It is also useful to clarify that if you only want to use one side or the other of uimaFIT, then you are free to do so.
+This is possible precisely because uimaFIT does not workaround UIMA's mechanisms for describing components but rather uses them directly.
+For example, if the only thing you want to use in uimaFIT is the [class]``@ConfigurationParameter``, then you can do so without worrying about what effect this will have on your descriptor files.
+This is because your analysis engine will be initialized with exactly the same [interface]``UimaContext`` regardless of whether you instantiate your analysis engine in the _UIMA way_ or use one of uimaFIT's factory methods.
+Similarly, a UIMA component does not need to be annotated with [class]``@ConfiguratioParameter`` for you to make use of the [method]``createEngineDescription()`` method.
+This is because when you pass configuration parameter values in to the [method]``createEngineDescription()`` method, they are added to an [interface]``AnalysisEngineDescription`` which is used by UIMA to populate a [interface]``UimaContext`` - just as it would if you used a descriptor file. 
+
+== Conclusion
+
+Because uimaFIT can be used to simplify component implementation and instantiation it is easy to assume that you can't do one without the other.
+This page has demonstrated that while these two sides of uimaFIT complement each other, they are not coupled together and each can be effectively used without the other.
+Similarly, by understanding how uimaFIT uses the UIMA component description mechanisms directly, one can be assured that uimaFIT enables UIMA development that is compatible and consistent with the UIMA standard and APIs. 
