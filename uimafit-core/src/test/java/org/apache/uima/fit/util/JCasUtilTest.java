@@ -15,9 +15,9 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-
-
- getCoveredAnnotations() contains code adapted from the UIMA Subiterator class.
+ *
+ *
+ * getCoveredAnnotations() contains code adapted from the UIMA Subiterator class.
  */
 package org.apache.uima.fit.util;
 
@@ -75,7 +75,6 @@ import org.junit.Test;
 
 /**
  * Test cases for {@link JCasUtil}.
- * 
  */
 public class JCasUtilTest extends ComponentTestBase {
   /**
@@ -139,7 +138,7 @@ public class JCasUtilTest extends ComponentTestBase {
       
       // Prepare the index
       long timeIndexed = System.currentTimeMillis();
-      Map<Sentence, Collection<Token>> index = indexCovered(jcas, Sentence.class, Token.class);
+      Map<Sentence, List<Token>> index = indexCovered(jcas, Sentence.class, Token.class);
       timeIndexed = System.currentTimeMillis() - timeIndexed;
       
       // -- The order of entries in the index is NOT defined!
@@ -771,7 +770,7 @@ public class JCasUtilTest extends ComponentTestBase {
     List<Sentence> sentences = new ArrayList<Sentence>(select(jCas, Sentence.class));
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
 
-    Map<Token, Collection<Sentence>> index = indexCovering(jCas, Token.class, Sentence.class);
+    Map<Token, List<Sentence>> index = indexCovering(jCas, Token.class, Sentence.class);
 
     // Check covering annotations are found
     assertEquals(asList(sentences.get(0)), index.get(tokens.get(0)));
@@ -794,7 +793,7 @@ public class JCasUtilTest extends ComponentTestBase {
     // Check if the reference annotation itself is returned
     Token extra = new Token(jCas, tokens.get(3).getBegin(), tokens.get(3).getEnd());
     extra.addToIndexes();
-    Map<Token, Collection<Token>> index2 = indexCovering(jCas, Token.class, Token.class);
+    Map<Token, List<Token>> index2 = indexCovering(jCas, Token.class, Token.class);
     assertEquals(0, index2.get(0).size());
     assertEquals(1, index2.get(extra).size());
     assertEquals(tokens.get(3), index2.get(extra).iterator().next());
@@ -808,7 +807,7 @@ public class JCasUtilTest extends ComponentTestBase {
     List<Sentence> sentences = new ArrayList<Sentence>(select(jCas, Sentence.class));
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
     
-    Map<Sentence, Collection<Token>> index = indexCovered(jCas, Sentence.class, Token.class);
+    Map<Sentence, List<Token>> index = indexCovered(jCas, Sentence.class, Token.class);
     
     // Check covered annotations are found
     assertEquals(tokens.subList(0, 6), index.get(sentences.get(0)));
@@ -817,7 +816,7 @@ public class JCasUtilTest extends ComponentTestBase {
     // Check if the reference annotation itself is returned
     Token extra = new Token(jCas, tokens.get(3).getBegin(), tokens.get(3).getEnd());
     extra.addToIndexes();
-    Map<Token, Collection<Token>> index2 = indexCovered(jCas, Token.class, Token.class);
+    Map<Token, List<Token>> index2 = indexCovered(jCas, Token.class, Token.class);
     assertEquals(0, index2.get(0).size());
     assertEquals(1, index2.get(extra).size());
     assertEquals(tokens.get(3), index2.get(extra).iterator().next());

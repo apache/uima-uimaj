@@ -425,7 +425,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     
     assertThat(target.customFromString)
             .extracting(CustomClassWithStringConstructor::getValue)
-            .containsExactly("test");
+            .isEqualTo("test");
     assertThat(target.customArrayFromString)
             .extracting(CustomClassWithStringConstructor::getValue)
             .containsExactly("test1", "test2", "test3");

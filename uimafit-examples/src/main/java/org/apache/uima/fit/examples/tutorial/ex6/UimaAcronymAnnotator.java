@@ -19,7 +19,8 @@
 package org.apache.uima.fit.examples.tutorial.ex6;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createSharedResourceDescription;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.StringTokenizer;
@@ -74,8 +75,9 @@ public class UimaAcronymAnnotator extends JCasAnnotator_ImplBase {
     AnalysisEngineDescription aed = createEngineDescription(
             UimaAcronymAnnotator.class,
             UimaAcronymAnnotator.RES_ACRONYM_TABLE,
-            createExternalResourceDescription(StringMapResource_impl.class,
-                    "file:org/apache/uima/fit/examples/tutorial/ex6/uimaAcronyms.txt"));
+            createSharedResourceDescription(
+                    "file:org/apache/uima/fit/examples/tutorial/ex6/uimaAcronyms.txt",
+                    StringMapResource_impl.class));
     
     aed.toXML(new FileOutputStream(new File(outputDirectory, "UimaAcronymAnnotator.xml")));
   }

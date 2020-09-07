@@ -27,9 +27,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.TypePriorities;
@@ -54,10 +54,10 @@ public final class CasFactory {
    * @param aText
    *          the document text to be set in the new CAS.
    * @return a new CAS
-   * @throws UIMAException
+   * @throws ResourceInitializationException
    *           if the CAS could not be initialized
    */
-  public static CAS createText(String aText) throws UIMAException {
+  public static CAS createText(String aText) throws ResourceInitializationException {
     return createText(aText, null);
   }
 
@@ -72,10 +72,11 @@ public final class CasFactory {
    * @param aLanguage 
    *          the document language to be set in the new CAS.
    * @return a new CAS
-   * @throws UIMAException
+   * @throws ResourceInitializationException
    *           if the CAS could not be initialized
    */
-  public static CAS createText(String aText, String aLanguage) throws UIMAException {
+  public static CAS createText(String aText, String aLanguage)
+          throws ResourceInitializationException {
     CAS cas = createCas();
     if (aText != null) {
       cas.setDocumentText(aText);
@@ -93,10 +94,10 @@ public final class CasFactory {
    * detected automatically using {@link FsIndexFactory#createFsIndexCollection()}.
    * 
    * @return a new CAS
-   * @throws UIMAException
+   * @throws ResourceInitializationException
    *           if the CAS could not be initialized
    */
-  public static CAS createCas() throws UIMAException {
+  public static CAS createCas() throws ResourceInitializationException {
     TypeSystemDescription tsd = createTypeSystemDescription();
     TypePriorities tp = createTypePriorities();
     FsIndexCollection indexes = createFsIndexCollection();
@@ -112,10 +113,11 @@ public final class CasFactory {
    *          names of the type system descriptors on the classpath used to initialize the CAS (in
    *          Java notation, e.g. "my.package.TypeSystem" without the ".xml" extension)
    * @return a new CAS
-   * @throws UIMAException
+   * @throws ResourceInitializationException
    *           if the CAS could not be initialized
    */
-  public static CAS createCas(String... typeSystemDescriptorNames) throws UIMAException {
+  public static CAS createCas(String... typeSystemDescriptorNames)
+          throws ResourceInitializationException {
     return CasCreationUtils.createCas(createTypeSystemDescription(typeSystemDescriptorNames), null,
             null);
   }
@@ -127,10 +129,11 @@ public final class CasFactory {
    * @param typeSystemDescriptorPaths
    *          paths to type system descriptor files
    * @return a new CAS
-   * @throws UIMAException
+   * @throws ResourceInitializationException
    *           if the CAS could not be initialized
    */
-  public static CAS createCasFromPath(String... typeSystemDescriptorPaths) throws UIMAException {
+  public static CAS createCasFromPath(String... typeSystemDescriptorPaths)
+          throws ResourceInitializationException {
     return createCas(createTypeSystemDescriptionFromPath(typeSystemDescriptorPaths));
   }
 
@@ -141,10 +144,11 @@ public final class CasFactory {
    * @param typeSystemDescription
    *          a type system description to initialize the CAS
    * @return a new CAS
-   * @throws UIMAException
+   * @throws ResourceInitializationException
    *           if the CAS could not be initialized
    */
-  public static CAS createCas(TypeSystemDescription typeSystemDescription) throws UIMAException {
+  public static CAS createCas(TypeSystemDescription typeSystemDescription)
+          throws ResourceInitializationException {
     return CasCreationUtils.createCas(typeSystemDescription, null, null);
   }
 
@@ -156,13 +160,13 @@ public final class CasFactory {
    * @param typeSystemDescription
    *          a type system description to initialize the CAS
    * @return a new CAS
-   * @throws UIMAException
+   * @throws ResourceInitializationException
    *           if the CAS could not be initialized
    * @throws IOException
    *           if there is a problem reading the file
    */
   public static CAS createCas(String fileName, TypeSystemDescription typeSystemDescription)
-          throws UIMAException, IOException {
+          throws ResourceInitializationException, IOException {
     CAS cas = createCas(typeSystemDescription);
     try (InputStream is = new FileInputStream(fileName)) {
       CasIOUtils.load(is, cas);
