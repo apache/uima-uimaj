@@ -173,6 +173,9 @@
         </executions>
         <configuration>
           <failOnWarning>true</failOnWarning>
+          <ignoredDependencies>
+            <ignoredDependency>junit:junit</ignoredDependency>
+          </ignoredDependencies>
         </configuration>
       </plugin>
       <plugin>
