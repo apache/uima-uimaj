@@ -23,36 +23,36 @@ import static java.util.stream.StreamSupport.stream;
 
 import java.util.ServiceLoader;
 
-import org.apache.uima.fit.validation.CasValidationCheck;
+import org.apache.uima.fit.validation.ValidationCheck;
 import org.assertj.core.api.AbstractAssert;
 
 /**
- * Asserts related to {@link CasValidationCheck} implementations.
+ * Asserts related to {@link ValidationCheck} implementations.
  */
-public class CasValidationCheckAssert
-        extends AbstractAssert<CasValidationCheckAssert, CasValidationCheck> {
-  public CasValidationCheckAssert(CasValidationCheck actual) {
-    super(actual, CasValidationCheckAssert.class);
+public class ValidationCheckAssert
+        extends AbstractAssert<ValidationCheckAssert, ValidationCheck> {
+  public ValidationCheckAssert(ValidationCheck actual) {
+    super(actual, ValidationCheckAssert.class);
   }
 
-  public static CasValidationCheckAssert assertThat(CasValidationCheck actual) {
-    return new CasValidationCheckAssert(actual);
+  public static ValidationCheckAssert assertThat(ValidationCheck actual) {
+    return new ValidationCheckAssert(actual);
   }
 
   /**
    * Checks that the check is correctly registered and available to the Java Service Locator.
    */
-  public CasValidationCheckAssert isAvailableToServiceLoader() {
+  public ValidationCheckAssert isAvailableToServiceLoader() {
     isNotNull();
 
-    ServiceLoader<CasValidationCheck> loader = load(CasValidationCheck.class);
+    ServiceLoader<ValidationCheck> loader = load(ValidationCheck.class);
     boolean found = stream(loader.spliterator(), false)
             .anyMatch(check -> check.getClass().equals(actual.getClass()));
 
     if (!found) {
       failWithMessage(
               "[%s] cannot be found by the service loader. Ensure it is registered in [META-INF/services/%s]",
-              actual.getClass(), CasValidationCheck.class.getName());
+              actual.getClass(), ValidationCheck.class.getName());
     }
 
     return this;
