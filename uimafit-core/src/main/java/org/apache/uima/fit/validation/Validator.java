@@ -90,15 +90,19 @@ public class Validator {
 
   public static class Builder {
 
-    private Set<ValidationCheck> checks = new LinkedHashSet<>();
-    private Set<Pattern> excludePatterns = new HashSet<>();
-    private Set<Class<?>> excludeTypes = new HashSet<>();
+    private final Set<ValidationCheck> checks = new LinkedHashSet<>();
+    private final Set<Pattern> includePatterns = new HashSet<>();
+    private final Set<Class<?>> includeTypes = new HashSet<>();
+    private final Set<Pattern> excludePatterns = new HashSet<>();
+    private final Set<Class<?>> excludeTypes = new HashSet<>();
     private boolean skipAutoDetection = false;
 
     /**
      * Add the given check instance to the validator. This allows even adding checks which are not
      * available via the Java Service Locator, which take parameters or which are otherwise stateful
      * (assuming that the resulting validator is not shared between threads).
+     * <p>
+     * <b>Note:</b> Includes/excludes do also apply do checks added via this method.
      * 
      * @param check
      *          a check instance to use.
@@ -107,19 +111,29 @@ public class Validator {
       checks.add(check);
     }
 
+    /**
+     * Disable auto-detection of checks.
+     */
     public void withoutAutoDetectedChecks() {
       skipAutoDetection = true;
     }
 
-    public void witAutoDetectedChecks() {
+    /**
+     * Enable auto-detection of checks (the default behavior).
+     */
+    public void withAutoDetectedChecks() {
       skipAutoDetection = false;
     }
 
     /**
-     * Skip auto-detection of any checks with the given names. Subtypes of the given classes are not
-     * excluded from auto-detection.
+     * Skip any checks with the given names. Subtypes of the given classes are not skipped.
+     * <p>
+     * <b>Note:</b> Excludes are applied after includes.
+     * 
+     * @param className
+     *          names of check classes to be excluded.
      */
-    public void excludingFromAutoDetectionByName(String... className) {
+    public void excludingByName(String... className) {
       stream(className)
           .map(Pattern::quote)
           .map(Pattern::compile)
@@ -127,34 +141,102 @@ public class Validator {
     }
 
     /**
-     * Skip auto-detection of any checks with the given regular expressions.
+     * Skip any checks with names matching the given regular expressions.
+     * <p>
+     * <b>Note:</b> Excludes are applied after includes.
+     * 
+     * @param patterns
+     *          regular expressions matching check class names to be excluded.
      */
-    public void excludingFromAutoDetectionByPattern(String... patterns) {
+    public void excludingByPattern(String... patterns) {
       stream(patterns)
           .map(Pattern::compile)
           .forEach(excludePatterns::add);
     }
 
     /**
-     * Skips auto-detection of any checks of the given types (includes checks that are subclasses or
-     * implementations of the given types).
+     * Skips any checks of the given types (includes checks that are subclasses or implementations
+     * of the given types).
+     * <p>
+     * <b>Note:</b> Excludes are applied after includes.
+     * 
+     * @param types
+     *          check type names to be excluded.
      */
-    public void excludingFromAutoDetectionByType(Class<?>... classes) {
-      stream(classes).forEach(excludeTypes::add);
+    public void excludingByType(Class<?>... types) {
+      stream(types).forEach(excludeTypes::add);
+    }
+    
+    /**
+     * Retain only checks with the given names. Subtypes of the given classes are not retained.
+     * <p>
+     * <b>Note:</b> Excludes are applied after includes.
+     * 
+     * @param className
+     *          names of check classes to be included.
+     */
+    public void includingByName(String... className) {
+      stream(className)
+          .map(Pattern::quote)
+          .map(Pattern::compile)
+          .forEach(includePatterns::add);
+    }
+
+    /**
+     * Retain any checks with names matching the given regular expressions.
+     * <p>
+     * <b>Note:</b> Excludes are applied after includes.
+     * 
+     * @param patterns
+     *          regular expressions matching check class names to be included.
+     */
+    public void includingByPattern(String... patterns) {
+      stream(patterns)
+          .map(Pattern::compile)
+          .forEach(includePatterns::add);
+    }
+
+    /**
+     * Retain any checks of the given types (includes checks that are subclasses or implementations
+     * of the given types).
+     * <p>
+     * <b>Note:</b> Excludes are applied after includes.
+     * 
+     * @param types
+     *          check type names to be included.
+     */
+    public void includingByType(Class<?>... types) {
+      stream(types).forEach(includeTypes::add);
     }
 
     private void autoDetectChecks() {
       stream(load(ValidationCheck.class).spliterator(), false)
-              .filter(check -> excludePatterns.stream()
-                      .noneMatch(p -> p.matcher(check.getClass().getName()).matches()))
-              .filter(check -> excludeTypes.stream()
-                      .noneMatch(t -> t.isAssignableFrom(check.getClass())))
               .forEachOrdered(checks::add);
     }
 
     public Validator build() {
       if (!skipAutoDetection) {
         autoDetectChecks();
+      }
+      
+      if (!includePatterns.isEmpty()) {
+        checks.removeIf(check -> includePatterns.stream()
+                .noneMatch(p -> p.matcher(check.getClass().getName()).matches()));
+      }
+      
+      if (!includeTypes.isEmpty()) {
+        checks.removeIf(check -> includeTypes.stream()
+                .noneMatch(t -> t.isAssignableFrom(check.getClass())));
+      }
+      
+      if (!excludePatterns.isEmpty()) {
+        checks.removeIf(check -> excludePatterns.stream()
+                .anyMatch(p -> p.matcher(check.getClass().getName()).matches()));
+      }
+      
+      if (!excludeTypes.isEmpty()) {
+        checks.removeIf(check -> excludeTypes.stream()
+                .anyMatch(t -> t.isAssignableFrom(check.getClass())));
       }
 
       return new Validator(checks);

@@ -37,7 +37,7 @@ public class CasValidatorBuilderTest {
   @Test
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void thatExcludeByNameWorks() {
-    sut.excludingFromAutoDetectionByName(EndAfterBeginCheckForTesting.class.getName());
+    sut.excludingByName(EndAfterBeginCheckForTesting.class.getName());
 
     Validator validator = sut.build();
 
@@ -49,7 +49,7 @@ public class CasValidatorBuilderTest {
   @Test
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void thatExcludeByTypeWorks() {
-    sut.excludingFromAutoDetectionByType(EndAfterBeginCheckForTesting.class);
+    sut.excludingByType(EndAfterBeginCheckForTesting.class);
 
     Validator validator = sut.build();
 

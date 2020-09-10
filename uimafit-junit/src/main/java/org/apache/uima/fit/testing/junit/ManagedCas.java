@@ -18,9 +18,15 @@
  */
 package org.apache.uima.fit.testing.junit;
 
+import static java.util.Collections.newSetFromMap;
+import static java.util.Collections.synchronizedSet;
+import static org.apache.uima.fit.factory.CasFactory.createCas;
+
+import java.util.Set;
+import java.util.WeakHashMap;
+
 import org.apache.uima.UIMAException;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.fit.factory.CasFactory;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -28,22 +34,28 @@ import org.junit.runner.Description;
 /**
  * Provides a {@link CAS} object which is automatically reset before the test.
  */
-public final class CasRule
+public final class ManagedCas
     extends TestWatcher
 {
-    private final CAS cas;
+    private final ThreadLocal<CAS> casHolder;
+    
+    private final static Set<CAS> managedCases = synchronizedSet(newSetFromMap(new WeakHashMap<>()));
 
     /**
      * Provides a CAS with an auto-detected type system.
      */
-    public CasRule()
+    public ManagedCas()
     {
-        try {
-            cas = CasFactory.createCas();
-        }
-        catch (UIMAException e) {
-            throw new RuntimeException(e);
-        }
+        casHolder = ThreadLocal.withInitial(() -> {
+            try {
+                CAS cas = createCas();
+                managedCases.add(cas);
+                return cas;
+            }
+            catch (UIMAException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**
@@ -52,14 +64,18 @@ public final class CasRule
      * @param aTypeSystemDescription
      *            the type system used to initialize the CAS.
      */
-    public CasRule(TypeSystemDescription aTypeSystemDescription)
+    public ManagedCas(TypeSystemDescription aTypeSystemDescription)
     {
-        try {
-            cas = CasFactory.createCas(aTypeSystemDescription);
-        }
-        catch (UIMAException e) {
-            throw new RuntimeException(e);
-        }
+        casHolder = ThreadLocal.withInitial(() -> {
+            try {
+                CAS cas = createCas(aTypeSystemDescription);
+                managedCases.add(cas);
+                return cas;
+            }
+            catch (UIMAException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**
@@ -67,12 +83,12 @@ public final class CasRule
      */
     public CAS get()
     {
-        return cas;
+        return casHolder.get();
     }
 
     @Override
     protected void starting(Description description)
     {
-        cas.reset();
+        managedCases.forEach(cas -> cas.reset());
     }
 }

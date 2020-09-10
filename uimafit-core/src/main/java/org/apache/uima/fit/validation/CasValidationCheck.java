@@ -37,6 +37,8 @@ public interface CasValidationCheck extends ValidationCheck {
    * @param cas
    *          the CAS to check.
    * @return the results of the check.
+   * @throws ValidationException
+   *           if there was a problem performing the validation.
    */
   List<ValidationResult> validate(CAS cas) throws ValidationException;
 }
