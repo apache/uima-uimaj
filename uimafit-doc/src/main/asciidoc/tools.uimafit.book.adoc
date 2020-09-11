@@ -29,6 +29,10 @@ include::tools.uimafit.gettingstarted.adoc[leveloffset=+1]
 
 include::tools.uimafit.pipelines.adoc[leveloffset=+1]
 
+include::tools.uimafit.testing.adoc[leveloffset=+1]
+
+include::tools.uimafit.validation.adoc[leveloffset=+1]
+
 include::tools.uimafit.experiments.adoc[leveloffset=+1]
 
 include::tools.uimafit.casutil.adoc[leveloffset=+1]
