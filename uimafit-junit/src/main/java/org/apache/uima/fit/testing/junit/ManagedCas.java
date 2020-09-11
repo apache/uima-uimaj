@@ -32,7 +32,12 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 /**
- * Provides a {@link CAS} object which is automatically reset before the test.
+ * Provides a {@link CAS} object which is automatically reset before the test. The idea of this
+ * class is to re-use CAS objects across different test method to avoid the overhead of having to
+ * set up a new CAS every time. Each thread requesting a CAS gets a different instance (the CASes
+ * are internally managed as {@link ThreadLocal}. When a test completes, all of the CASses that
+ * handed out to any thread are reset (except any CASes which may meanwhile have been garbage
+ * collected).
  */
 public final class ManagedCas
     extends TestWatcher

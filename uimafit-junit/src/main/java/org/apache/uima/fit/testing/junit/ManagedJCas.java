@@ -32,7 +32,12 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 /**
- * Provides a {@link JCas} object which is automatically reset before the test.
+ * Provides a {@link JCas} object which is automatically reset before the test. The idea of this
+ * class is to re-use JCas objects across different test method to avoid the overhead of having to
+ * set up a new JCas every time. Each thread requesting a JCas gets a different instance (the JCases
+ * are internally managed as {@link ThreadLocal}. When a test completes, all of the JCasses that
+ * handed out to any thread are reset (except any JCases which may meanwhile have been garbage
+ * collected).
  */
 public final class ManagedJCas
     extends TestWatcher
