@@ -61,6 +61,7 @@ public class MainFrame extends JFrame {
     /**
      * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
      */
+    @Override
     public void valueChanged(TreeSelectionEvent event) {
       // System.out.println("");
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) MainFrame.this.typeTree
@@ -96,33 +97,16 @@ public class MainFrame extends JFrame {
     init();
   }
 
-  /**
-   * Constructor for MainFrame.
-   * 
-   * @param gc
-   */
   public MainFrame(GraphicsConfiguration gc) {
     super(gc);
     init();
   }
 
-  /**
-   * Constructor for MainFrame.
-   * 
-   * @param title
-   * @throws HeadlessException -
-   */
   public MainFrame(String title) {
     super(title);
     init();
   }
 
-  /**
-   * Constructor for MainFrame.
-   * 
-   * @param title
-   * @param gc
-   */
   public MainFrame(String title, GraphicsConfiguration gc) {
     super(title, gc);
     init();

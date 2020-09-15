@@ -57,13 +57,6 @@ public class DATACasUtils {
     return new String(baos.toByteArray());
   }
 
-  /**
-   * 
-   * @param dataCas -
-   * @param featureType -
-   * @param featureName -
-   * @param featureValue -
-   */
   public static void addFeatureStructure(CasData dataCas, String featureType, String featureName,
           String featureValue) {
     FeatureStructure vfs = new FeatureStructureImpl();
@@ -86,13 +79,6 @@ public class DATACasUtils {
     return false;
   }
 
-  /**
-   * 
-   * @param dataCas -
-   * @param featureType -
-   * @param featureName -
-   * @param featureValue -
-   */
   public static void addFeature(CasData dataCas, String featureType, String featureName,
           String featureValue) {
     Iterator it = dataCas.getFeatureStructures();
@@ -199,12 +185,6 @@ public class DATACasUtils {
     return false;
   }
 
-  /**
-   * 
-   * @param aKey -
-   * @param typeList -
-   * @return true if tbd 
-   */
   public static boolean isValidType(String aKey, String[] typeList) {
 
     if (aKey.indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM) > -1) {
@@ -226,12 +206,6 @@ public class DATACasUtils {
     return false;
   }
 
-  /**
-   * 
-   * @param aCAS -
-   * @param featureName -
-   * @return true if
-   */
   public static boolean hasFeature(CasData aCAS, String featureName) {
     Iterator it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
@@ -247,12 +221,6 @@ public class DATACasUtils {
     return false;
   }
 
-  /**
-   * 
-   * @param aCAS -
-   * @param aName -
-   * @return true if tbd
-   */
   public static boolean hasFeatureStructure(CasData aCAS, String aName) {
     Iterator it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
@@ -269,10 +237,6 @@ public class DATACasUtils {
     return false;
   }
 
-  /**
-   * 
-   * @param aCAS -
-   */
   public static void dumpFeatures(CasData aCAS) {
     Iterator it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
@@ -308,12 +272,6 @@ public class DATACasUtils {
 
   }
 
-  /**
-   * 
-   * @param aCAS -
-   * @param featureName -
-   * @return true if tbd
-   */
   public static String getFeatureValueByType(CasData aCAS, String featureName) {
     Iterator it = aCAS.getFeatureStructures();
     String featureValue = null;
@@ -364,13 +322,6 @@ public class DATACasUtils {
     return featureValue;
   }
 
-  /**
-   * 
-   * @param aCAS
-   * @param featureStructureName
-   * @param featureName
-   * @return tbd
-   */
   public static String[] getFeatureStructureValues(CasData aCAS, String featureStructureName,
           String featureName) {
     Iterator it = aCAS.getFeatureStructures();
@@ -400,13 +351,6 @@ public class DATACasUtils {
     return features;
   }
 
-  /**
-   * 
-   * @param aCAS
-   * @param aFeatureStructure
-   * @param featureName
-   * @return tbd
-   */
   public static String getFeatureValueByType(CasData aCAS, String aFeatureStructure,
           String featureName) {
     Iterator it = aCAS.getFeatureStructures();
@@ -429,11 +373,6 @@ public class DATACasUtils {
     return featureValue;
   }
 
-  /**
-   * 
-   * @param aDataCas
-   * @param aFeatureMap
-   */
   public static void remapFeatureTypes(CasData aDataCas, FeatureMap aFeatureMap) {
     ConfigurableFeature cf = null;
 
@@ -459,12 +398,6 @@ public class DATACasUtils {
     }
   }
 
-  /**
-   * 
-   * @param aCasData
-   * @param aFeatureStructureName
-   * @return tbd
-   */
   public static NameValuePair[] getCasDataFeatures(CasData aCasData, String aFeatureStructureName) {
     NameValuePair[] valuePairSet = null;
     Iterator it = aCasData.getFeatureStructures();

@@ -192,7 +192,8 @@ public class AnnotationViewerMain extends JFrame {
 
     // Event Handlling of "Exit" Menu Item
     exitMenuItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent ae) {
+      @Override
+    public void actionPerformed(ActionEvent ae) {
         savePreferences();
         System.exit(0);
       }
@@ -200,14 +201,16 @@ public class AnnotationViewerMain extends JFrame {
 
     // Event Handlling of "About" Menu Item
     aboutMenuItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent ae) {
+      @Override
+    public void actionPerformed(ActionEvent ae) {
         aboutDialog.setVisible(true);
       }
     });
 
     // Event Handlling of "Help" Menu Item
     helpMenuItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent ae) {
+      @Override
+    public void actionPerformed(ActionEvent ae) {
         JOptionPane.showMessageDialog(AnnotationViewerMain.this, HELP_MESSAGE,
                 "Annotation Viewer Help", JOptionPane.PLAIN_MESSAGE);
       }
@@ -233,7 +236,8 @@ public class AnnotationViewerMain extends JFrame {
 
     // Event Handling of view Button
     viewButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent ee) {
+      @Override
+    public void actionPerformed(ActionEvent ee) {
         try {
           viewDocuments();
         } catch (Exception e) {
@@ -342,6 +346,8 @@ public class AnnotationViewerMain extends JFrame {
 
   /**
    * Gets the name of the style map file for the given AE or TypeSystem descriptor filename.
+   * @param aDescriptorFileName -
+   * @return -
    */
   public File getStyleMapFileName(String aDescriptorFileName) {
     String baseName;
@@ -358,7 +364,8 @@ public class AnnotationViewerMain extends JFrame {
     final AnnotationViewerMain frame = new AnnotationViewerMain();
 
     frame.addWindowListener(new WindowAdapter() {
-      public void windowClosing(WindowEvent e) {
+      @Override
+    public void windowClosing(WindowEvent e) {
         frame.savePreferences();
         System.exit(0);
       }
@@ -457,7 +464,8 @@ public class AnnotationViewerMain extends JFrame {
    * 
    * @see java.awt.Component#getPreferredSize()
    */
-  public Dimension getPreferredSize() {
+  @Override
+public Dimension getPreferredSize() {
     return new Dimension(640, 200);
   }  
 }

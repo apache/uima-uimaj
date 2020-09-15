@@ -40,35 +40,21 @@ public class MultiAnnotViewerFrame extends JFrame {
 
   private static final long serialVersionUID = -920372876117526451L;
 
-  /**
-   * @throws java.awt.HeadlessException
-   */
   public MultiAnnotViewerFrame() {
     super();
     // TODO Auto-generated constructor stub
   }
 
-  /**
-   * @param gc
-   */
   public MultiAnnotViewerFrame(GraphicsConfiguration gc) {
     super(gc);
     // TODO Auto-generated constructor stub
   }
 
-  /**
-   * @param title
-   * @throws java.awt.HeadlessException
-   */
   public MultiAnnotViewerFrame(String title) {
     super(title);
     // TODO Auto-generated constructor stub
   }
 
-  /**
-   * @param title
-   * @param gc
-   */
   public MultiAnnotViewerFrame(String title, GraphicsConfiguration gc) {
     super(title, gc);
     // TODO Auto-generated constructor stub

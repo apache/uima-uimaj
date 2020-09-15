@@ -343,7 +343,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     inputFileFormatComboBox.setEditable(false);
     inputFileFormatComboBox.setSelectedItem(prefsMed.getInputFileFormat());
     inputFileFormatComboBox.addActionListener(new ActionListener() {      
-      public void actionPerformed(ActionEvent e) {
+      @Override
+    public void actionPerformed(ActionEvent e) {
         String inputFileFormat = (String) inputFileFormatComboBox.getSelectedItem();
         lenientCheckbox.setEnabled(
             "xcas".equalsIgnoreCase(inputFileFormat) ||
@@ -424,7 +425,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     // Event Handlling of "Exit" Menu Item
     exitMenuItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
+      @Override
+    public void actionPerformed(ActionEvent evt) {
         savePreferences();
         System.exit(0);
       }
@@ -432,14 +434,16 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     // Event Handlling of "About" Menu Item
     aboutMenuItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
+      @Override
+    public void actionPerformed(ActionEvent evt) {
         aboutDialog.setVisible(true);
       }
     });
 
     // Event Handlling of "Help" Menu Item
     helpMenuItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
+      @Override
+    public void actionPerformed(ActionEvent evt) {
         JOptionPane.showMessageDialog(DocumentAnalyzer.this, HELP_MESSAGE,
                 "Document Analyzer Help", JOptionPane.PLAIN_MESSAGE);
       }
@@ -481,7 +485,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     // Event Handling of run Button
     runButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent ee) {
+      @Override
+    public void actionPerformed(ActionEvent ee) {
         interactive = false;
         savePreferences();
         analyzeDocuments(null); // JMP added arg
@@ -490,9 +495,11 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     // Event Handling of interactive Button
     interButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent ee) {
-        if (outputFileSelector.getSelected().length() == 0)
-          displayError("Need to specify an output directory for temporary results.");
+      @Override
+    public void actionPerformed(ActionEvent ee) {
+        if (outputFileSelector.getSelected().length() == 0) {
+            displayError("Need to specify an output directory for temporary results.");
+        }
         else {
           interactive = true;
           savePreferences();
@@ -511,7 +518,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     restorePreferences();
 
     progressTimer = new Timer(100, new ActionListener() {
-      public void actionPerformed(ActionEvent ee) {
+      @Override
+    public void actionPerformed(ActionEvent ee) {
         checkProgressMonitor();
       }
     });
@@ -539,7 +547,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   }
 
   // View button clicked
-  public void actionPerformed(ActionEvent e) {
+  @Override
+public void actionPerformed(ActionEvent e) {
     savePreferences();
     try {
       aeSpecifierFile = new File(xmlFileSelector.getSelected());
@@ -564,18 +573,21 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     outputFileSelected = outputFileSelector.getSelected();
 
     File inputDir = new File(inputFileSelector.getSelected());
-    if (outputFileSelector.getSelected().length() > 0)
-      outputDirectory = new File(outputFileSelector.getSelected());
-    else
-      outputDirectory = null;
+    if (outputFileSelector.getSelected().length() > 0) {
+        outputDirectory = new File(outputFileSelector.getSelected());
+    }
+    else {
+        outputDirectory = null;
+    }
 
     // reset file pointers in case of typed-in text. JMP
     String tempFileDir = null;
     if ((analysisText != null) && (outputDirectory != null)) {
       tempFileDir = outputFileSelector.getSelected() + "/interactive_temp";
       inputDir = new File(tempFileDir);
-      if (!inputDir.exists())
+      if (!inputDir.exists()) {
         inputDir.mkdirs();
+    }
       outputFileSelected = outputFileSelector.getSelected() + "/interactive_out";
       prefsMed.setOutputDirForInteractiveMode(outputFileSelected, outputFileSelector.getSelected());
       outputDirectory = new File(outputFileSelected);
@@ -700,7 +712,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
    *      org.apache.uima.collection.EntityProcessStatus)
    */
-  public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
+  @Override
+public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
     // if an error occurred, display error
     if (aStatus.isException()) {
       displayError((Throwable) aStatus.getExceptions().get(0));
@@ -718,7 +731,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#aborted()
    */
-  public void aborted() {
+  @Override
+public void aborted() {
     // close progress monitor
     if (progressMonitor != null) {
       progressMonitor.close();
@@ -733,13 +747,15 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#batchProcessComplete()
    */
-  public void batchProcessComplete() {
+  @Override
+public void batchProcessComplete() {
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#collectionProcessComplete()
    */
-  public void collectionProcessComplete() {
+  @Override
+public void collectionProcessComplete() {
     // invoke ProcessingCompleteRunnable in Swing event handler thread
     // SwingUtilities.invokeLater(new ProcessingCompleteRunnable());
     // hide progress bar dialog if it is visible
@@ -763,19 +779,22 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#initializationComplete()
    */
-  public void initializationComplete() {
+  @Override
+public void initializationComplete() {
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#paused()
    */
-  public void paused() {
+  @Override
+public void paused() {
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#resumed()
    */
-  public void resumed() {
+  @Override
+public void resumed() {
   }
 
   /**
@@ -827,6 +846,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * Creates a CAS from an descriptor. Supports both local AE descriptors and remote service
    * specifiers. In the latter case the service is contacted to obtain its type system.
    * 
+   * @param aDescriptorFile -
+   * @return the new CAS
    * @throws ResourceInitializationException -
    * @throws InvalidXMLException -
    * @throws IOException -
@@ -1043,10 +1064,12 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       displayFormatPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
       displayFormatPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-      if (generatedStyleMap)
+      if (generatedStyleMap) {
         javaViewerRB.setSelected(true);
-      else
+    }
+    else {
         javaViewerUCRB.setSelected(true);
+    }
 
       ButtonGroup displayFormatButtonGroup = new ButtonGroup();
       displayFormatButtonGroup.add(javaViewerRB);
@@ -1090,6 +1113,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       mainPanel.add(southernPanel);
       // Event Handling of analyze Button
       analyzeButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent ee) {
           analyzeTextArea();
         }
@@ -1098,6 +1122,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       // event for the closeButton button
       closeButton.addActionListener(new ActionListener() {
 
+        @Override
         public void actionPerformed(ActionEvent evt) {
           setVisible(false);
           aiDialog.dispose();

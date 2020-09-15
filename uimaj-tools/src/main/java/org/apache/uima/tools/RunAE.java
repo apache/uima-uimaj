@@ -105,6 +105,7 @@ public class RunAE implements StatusCallbackListener {
 
   /**
    * Constructor. Sets up and runs an Analysis Engine.
+   * @param args command line arguments.
    */
   public RunAE(String[] args) {
     try {
@@ -236,7 +237,8 @@ public class RunAE implements StatusCallbackListener {
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#initializationComplete()
    */
-  public void initializationComplete() {
+  @Override
+public void initializationComplete() {
   }
 
   /**
@@ -247,7 +249,8 @@ public class RunAE implements StatusCallbackListener {
    * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
    *      org.apache.uima.collection.EntityProcessStatus)
    */
-  public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
+  @Override
+public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
     if (aStatus.isException()) {
       Iterator iter = aStatus.getExceptions().iterator();
       while (iter.hasNext()) {
@@ -273,7 +276,8 @@ public class RunAE implements StatusCallbackListener {
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#aborted()
    */
-  public void aborted() {
+  @Override
+public void aborted() {
     System.out.println("Processing Aborted");
 
   }
@@ -281,13 +285,15 @@ public class RunAE implements StatusCallbackListener {
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#batchProcessComplete()
    */
-  public void batchProcessComplete() {
+  @Override
+public void batchProcessComplete() {
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#collectionProcessComplete()
    */
-  public void collectionProcessComplete() {
+  @Override
+public void collectionProcessComplete() {
     // output performance stats
     if (statsLevel > 0) {
       AnalysisEnginePerformanceReports performanceReports = new AnalysisEnginePerformanceReports(
@@ -304,13 +310,15 @@ public class RunAE implements StatusCallbackListener {
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#paused()
    */
-  public void paused() {
+  @Override
+public void paused() {
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#resumed()
    */
-  public void resumed() {
+  @Override
+public void resumed() {
   }
 
   /**
