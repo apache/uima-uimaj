@@ -198,6 +198,7 @@
             <!-- 
               - Logging is used via reflection and cannot be detected by Maven
             -->
+            <ignoredDependency>junit:junit</ignoredDependency>
             <ignoredDependency>org.slf4j:slf4j-simple</ignoredDependency>
           </ignoredDependencies>
         </configuration>

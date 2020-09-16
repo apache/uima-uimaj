@@ -72,6 +72,10 @@ To use the Maven Shade Plugin with uimaFIT, use the following configuration sect
                   META-INF/org.apache.uima.fit/typepriorities.txt\
                 </resource>
               </transformer>
+              <!-- Merge CAS validation check registrations -->
+              <transformer 
+                implementation="org.apache.maven.plugins.shade.\
+                                resource.ServicesResourceTransformer"/>
             </transformers>
             <!-- 
               Prevent huge shaded artifacts from being deployed

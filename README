@@ -94,6 +94,9 @@ uimafit-core           - the main uimaFIT module
 uimafit-cpe            - support for the Collection Processing Engine (multi-threaded pipelines)
 uimafit-maven          - a Maven plugin to automatically enhance UIMA components with uimaFIT
                          metadata and to generate XML descriptors for uimaFIT-enabled components.
+uimafit-junit          - convenience code facilitating the implementation of UIMA/uimaFIT tests
+                         in JUnit tests
+uimafit-assertj        - adds assertions for UIMA/uimaFIT types via the AssertJ framework
 uimafit-spring         - an experimental module serving as a proof-of-concept for the integration of
                          UIMA with the Spring Framework. It is currently not considered finished and
                          uses invasive reflection in order to patch the UIMA framework such that it

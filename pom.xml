@@ -58,6 +58,16 @@
       <artifactId>uimafit-cpe</artifactId>
       <version>3.1.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimafit-junit</artifactId>
+      <version>3.1.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimafit-assertj</artifactId>
+      <version>3.1.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -123,6 +133,8 @@
 
   <modules>
     <module>uimafit-core</module>
+    <module>uimafit-junit</module>
+    <module>uimafit-assertj</module>
     <module>uimafit-examples</module>
     <module>uimafit-spring</module>
     <module>uimafit-maven-plugin</module>
