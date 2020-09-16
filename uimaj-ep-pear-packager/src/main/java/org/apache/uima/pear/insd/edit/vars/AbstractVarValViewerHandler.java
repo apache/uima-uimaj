@@ -74,6 +74,9 @@ abstract class AbstractVarValViewerHandler {
 
   /**
    * Create a new shell, add the widgets, open the shell
+   * 
+   * @param composite -
+   * @param numColumns -
    */
   protected void addChildControls(Composite composite, int numColumns) {
 
@@ -97,6 +100,8 @@ abstract class AbstractVarValViewerHandler {
 
   /**
    * Create the Table
+   * 
+   * @param parent -
    */
   protected void createTable(Composite parent) {
     int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION

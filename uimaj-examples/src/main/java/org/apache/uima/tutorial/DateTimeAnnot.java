@@ -30,6 +30,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * 
  * @generated
  */
+@SuppressWarnings("javadoc")
 public class DateTimeAnnot extends Annotation {
   /**
    * @generated
@@ -44,7 +45,8 @@ public class DateTimeAnnot extends Annotation {
   public final static int type = typeIndexID;
 
   /** @generated */
-  public int getTypeIndexID() {
+  @Override
+public int getTypeIndexID() {
     return typeIndexID;
   }
 
@@ -97,8 +99,9 @@ public class DateTimeAnnot extends Annotation {
    */
   public String getShortDateString() {
     if (DateTimeAnnot_Type.featOkTst
-            && ((DateTimeAnnot_Type) jcasType).casFeat_shortDateString == null)
-      this.jcasType.jcas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
+            && ((DateTimeAnnot_Type) jcasType).casFeat_shortDateString == null) {
+        this.jcasType.jcas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
+    }
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((DateTimeAnnot_Type) jcasType).casFeatCode_shortDateString);
   }
@@ -110,8 +113,9 @@ public class DateTimeAnnot extends Annotation {
    */
   public void setShortDateString(String v) {
     if (DateTimeAnnot_Type.featOkTst
-            && ((DateTimeAnnot_Type) jcasType).casFeat_shortDateString == null)
-      this.jcasType.jcas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
+            && ((DateTimeAnnot_Type) jcasType).casFeat_shortDateString == null) {
+        this.jcasType.jcas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
+    }
     jcasType.ll_cas.ll_setStringValue(addr,
             ((DateTimeAnnot_Type) jcasType).casFeatCode_shortDateString, v);
   }

@@ -29,6 +29,7 @@ import org.apache.uima.jcas.cas.TOP_Type;
  * 
  * @generated
  */
+@SuppressWarnings("javadoc")
 public class DateAnnot extends DateTimeAnnot {
   /**
    * @generated
@@ -43,7 +44,8 @@ public class DateAnnot extends DateTimeAnnot {
   public final static int type = typeIndexID;
 
   /** @generated */
-  public int getTypeIndexID() {
+  @Override
+public int getTypeIndexID() {
     return typeIndexID;
   }
 

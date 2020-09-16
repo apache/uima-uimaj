@@ -291,6 +291,7 @@ public void createControl(Composite parent) {
    *          <code>true</code> if the button is to be the default button, and <code>false</code>
    *          otherwise
    * @param text -
+   * @return -
    */
   protected Button addButton(Composite parent, String label, boolean defaultButton, final Text text) {
 
@@ -338,6 +339,7 @@ public void createControl(Composite parent) {
    * @param initialSelection
    *          <code>true</code> if the button is to be the default button, and <code>false</code>
    *          otherwise
+   * @return -
    */
   protected Button addRadioButton(Composite parent, String label, boolean initialSelection) {
 

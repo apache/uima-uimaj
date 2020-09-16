@@ -40,18 +40,13 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
 
   private boolean m_bAutoAddToFlow = true;
 
-  /**
-   * @param parentShell
-   * @param rootElement
-   * @param message
-   * @param excludeDescriptor
-   */
   public MultiResourceSelectionDialogWithFlowOption(Shell parentShell, IAdaptable rootElement,
           String message, IPath excludeDescriptor, MultiPageEditor editor) {
     super(parentShell, rootElement, message, excludeDescriptor, editor);
   }
 
-  protected Control createDialogArea(Composite parent) {
+  @Override
+protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent);
 
     new Label(composite, SWT.WRAP).setText(""); //$NON-NLS-1$
@@ -69,7 +64,8 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
     return composite;
   }
 
-  protected void okPressed() {
+  @Override
+protected void okPressed() {
     m_bAutoAddToFlow = autoAddToFlowButton.getSelection();
     CDEpropertyPage.setAddToFlow(editor.getProject(), m_bAutoAddToFlow ? "true" : "false");
     super.okPressed();

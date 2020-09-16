@@ -100,7 +100,6 @@ public class FeatureStructureImpl implements FeatureStructure {
 
   /**
    * @return true if it is indexed
-   * @deprecated
    */
   @Deprecated
   public boolean isIndexed() {
@@ -114,10 +113,6 @@ public class FeatureStructureImpl implements FeatureStructure {
     mId = string;
   }
 
-  /**
-   * @param b -
-   * @deprecated
-   */
   @Deprecated
   public void setIndexed(boolean b) {
     mIndexed = new int[] { 1 }; // index in first index repository for backwards compatibility

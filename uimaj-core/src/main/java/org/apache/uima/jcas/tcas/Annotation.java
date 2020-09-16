@@ -129,8 +129,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   }
 
   /**
-   * @deprecated
-   * @see Annotation#getBegin()
+   * @deprecated Use {@link #getBegin} instead.
    * @return the Annotation "begin" feature value
    */
   @Deprecated

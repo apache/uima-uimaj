@@ -29,6 +29,7 @@ import org.apache.uima.jcas.cas.TOP_Type;
  * 
  * @generated
  */
+@SuppressWarnings("javadoc")
 public class UimaMeeting extends Meeting {
   /**
    * @generated
@@ -43,7 +44,8 @@ public class UimaMeeting extends Meeting {
   public final static int type = typeIndexID;
 
   /** @generated */
-  public int getTypeIndexID() {
+  @Override
+public int getTypeIndexID() {
     return typeIndexID;
   }
 

@@ -591,18 +591,15 @@ public class CPMEngine extends Thread {
     return hardKill;
   }
 
-  /**
-   * @deprecated
-   * 
-   */
   @Deprecated
-public void asynchStop() {
+  public void asynchStop() {
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_terminate_pipelines__INFO",
               new Object[] { Thread.currentThread().getName(), String.valueOf(killed) });
     }
     new Thread() {
+      @Override
       public void run() {
         Object[] eofToken = new Object[1];
         eofToken[0] = new EOFToken();
@@ -865,8 +862,8 @@ public void asynchStop() {
   /**
    * Find the position in the list of the Cas Processor with a given name
    * 
-   * @param aName
-   * @param aList
+   * @param aName -
+   * @param aList -
    * @return the position in the list of the Cas Processor with a given name
    */
   private int getPositionInListIfExists(String aName, List aList) {
@@ -1306,8 +1303,9 @@ public void asynchStop() {
       }
     }
 
-    if (aList.size() == 0)
+    if (aList.size() == 0) {
       return null;
+    }
     casprocessorList = new CasProcessor[aList.size()];
     for (int j = 0; j < aList.size(); j++) {
       casprocessorList[j] = (CasProcessor) aList.get(j);
@@ -1795,6 +1793,7 @@ public void asynchStop() {
    * make decisions during cleanup.
    * 
    */
+  @Override
   public void run() {
     boolean consumerCompleted = false;
     boolean isStarted = false; // Indicates if all threads have been started
@@ -1824,6 +1823,7 @@ public void asynchStop() {
         // owns, including this one, have ended. - Adam
         final ThreadGroup group = this.getThreadGroup();
         Thread threadGroupDestroyer = new Thread(group.getParent(), "threadGroupDestroyer") {
+          @Override
           public void run() {
             while (group.activeCount() > 0) {
               try {
@@ -1956,8 +1956,9 @@ public void asynchStop() {
       //	
       for (int j = 0; j < statusCbL.size(); j++) {
         BaseStatusCallbackListener statCL = (BaseStatusCallbackListener) statusCbL.get(j);
-        if (statCL != null)
+        if (statCL != null) {
           statCL.initializationComplete();
+        }
       }
 
       // Just in case check if the CPM has the right state to start
@@ -2131,8 +2132,9 @@ public void asynchStop() {
         // Add Callback Listeners
         for (int j = 0; j < statusCbL.size(); j++) {
           BaseStatusCallbackListener statCL = (BaseStatusCallbackListener) statusCbL.get(j);
-          if (statCL != null)
+          if (statCL != null) {
             processingUnits[i].addStatusCallbackListener(statCL);
+          }
         }
 
         // Start the Processing Unit thread
@@ -2527,6 +2529,7 @@ public void asynchStop() {
       // owns, including this one, have ended. - Adam
       final ThreadGroup group = this.getThreadGroup();
       Thread threadGroupDestroyer = new Thread(group.getParent(), "threadGroupDestroyer") {
+        @Override
         public void run() {
           Thread[] threads;
           while (group.activeCount() > 0) {
@@ -2749,8 +2752,9 @@ public void asynchStop() {
           //(Exception: when running from "old" CPM interface - where AEs are created outside 
           // and passed in, the AE may not share a ResourceManager with the CPE.  In that case
           // we DO need to register its metadata.)
-          if (((AnalysisEngine)processor).getResourceManager() == this.cpeFactory.getResourceManager())
-            continue;        
+          if (((AnalysisEngine)processor).getResourceManager() == this.cpeFactory.getResourceManager()) {
+            continue;
+          }        
         }
         ProcessingResourceMetaData md = processor.getProcessingResourceMetaData();
   
@@ -2781,8 +2785,9 @@ public void asynchStop() {
           //(Exception: when running from "old" CPM interface - where AEs are created outside 
           // and passed in, the AE may not share a ResourceManager with the CPE.  In that case
           // we DO need to register its metadata.)
-          if (((AnalysisEngine)processor).getResourceManager() == this.cpeFactory.getResourceManager())
-            continue;         
+          if (((AnalysisEngine)processor).getResourceManager() == this.cpeFactory.getResourceManager()) {
+            continue;
+          }         
         }
         ProcessingResourceMetaData md = processor.getProcessingResourceMetaData();
   
@@ -2895,8 +2900,9 @@ public void asynchStop() {
                   new Object[] { Thread.currentThread().getName(), container.getName() });
         }
         CasProcessorDeployer deployer = container.getDeployer();
-        if (deployer != null)
+        if (deployer != null) {
           deployer.undeploy();
+        }
         container.destroy();
       }
     }
@@ -3069,7 +3075,9 @@ public void asynchStop() {
         } else {
           readerState = 1001;
           while (this.isRunning && (casList[0] = casPool.getCas(0)) == null)
+           {
             ; // intentionally empty while loop
+          }
           entity = casList;
         }
 
@@ -3226,8 +3234,9 @@ public void asynchStop() {
     nonThreadedProcessingUnit.setCasPool(casPool);
     for (int j = 0; j < statusCbL.size(); j++) {
       BaseStatusCallbackListener statCL = (BaseStatusCallbackListener) statusCbL.get(j);
-      if (statCL != null)
+      if (statCL != null) {
         nonThreadedProcessingUnit.addStatusCallbackListener(statCL);
+      }
     }
   }
 
@@ -3250,8 +3259,9 @@ public void asynchStop() {
       // Add Callback Listeners
       for (int j = 0; j < statusCbL.size(); j++) {
         BaseStatusCallbackListener statCL = (BaseStatusCallbackListener) statusCbL.get(j);
-        if (statCL != null)
+        if (statCL != null) {
           nonThreadedCasConsumerProcessingUnit.addStatusCallbackListener(statCL);
+        }
       }
       // Notify Callback Listeners when done processing entity
       nonThreadedCasConsumerProcessingUnit.setNotifyListeners(false);
@@ -3304,8 +3314,9 @@ public void asynchStop() {
 
     for (int j = 0; j < statusCbL.size(); j++) {
       BaseStatusCallbackListener statCL = (BaseStatusCallbackListener) statusCbL.get(j);
-      if (statCL != null)
+      if (statCL != null) {
         statCL.initializationComplete();
+      }
     }
 
     while (isRunning) {
@@ -3316,11 +3327,13 @@ public void asynchStop() {
         }
         waitForCpmToResumeIfPaused(); // blocks if CPM is paused
         // check again the state of the cpm after pause
-        if (!isRunning)
+        if (!isRunning) {
           break;
+        }
         readerState = 1000;
-        if (!collectionReader.hasNext())
+        if (!collectionReader.hasNext()) {
           break;
+        }
         long st0 = System.currentTimeMillis();
         entity = getCasWithSOFA(entity, pTrTemp);
         crTime += (System.currentTimeMillis() - st0);
@@ -3474,12 +3487,14 @@ public void asynchStop() {
   public static void callEntityProcessCompleteWithCAS(StatusCallbackListener statCL, CAS cas, EntityProcessStatus eps) {
     if ( statCL != null ) {
       try {
-        if (null != cas)
+        if (null != cas) {
           ((CASImpl)cas).switchClassLoaderLockCas(statCL);
+        }
         statCL.entityProcessComplete(cas, eps);
       } finally {
-        if (null != cas) 
+        if (null != cas) {
           ((CASImpl)cas).restoreClassLoaderUnlockCas();
+        }
       }
     }
   }  

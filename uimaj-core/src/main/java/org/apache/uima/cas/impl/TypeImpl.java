@@ -84,7 +84,6 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * particular order.
    * 
    * @return The vector.
-   * @deprecated
    */
   @Deprecated
   public Vector<Feature> getAppropriateFeatures() {
@@ -194,11 +193,6 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     this.isInheritanceFinal = true;
   }
 
-  /**
-   * @deprecated
-   * @param featureName -
-   * @return -
-   */
   @Deprecated
   public Feature getFeature(String featureName) {
     return getFeatureByBaseName(featureName);

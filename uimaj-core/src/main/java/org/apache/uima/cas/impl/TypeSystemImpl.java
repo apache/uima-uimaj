@@ -563,7 +563,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    *     but they implement the nonJCas interfaces for each subtype.
    *       Those interfaces implement CommonArrayFS interface
    *          
-   * @param componentType
+   * @param componentType -
    * @return the parent type of the corresponding array type 
    */
   int ll_computeArrayParentFromComponentType(int componentType) {
@@ -705,11 +705,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     return this.types.get(typeCode);
   }
 
-  /**
-   * Method checkTypeSyntax.
-   * 
-   * @param typeName
-   */
   private void checkTypeSyntax(String name) throws CASAdminException {
     if (!TypeSystemUtils.isTypeName(name)) {
       CASAdminException e = new CASAdminException(CASAdminException.BAD_TYPE_SYNTAX);
@@ -1766,7 +1761,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
     /**
      * @param offset 0 = typeCode, 1 = first feature, ...
-     * @return
      */
     SlotKind getSlotKind(int offset) {
       if (0 == offset) {

@@ -30,6 +30,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * 
  * @generated
  */
+@SuppressWarnings("javadoc")
 public class RoomNumber extends Annotation {
   /**
    * @generated
@@ -44,7 +45,8 @@ public class RoomNumber extends Annotation {
   public final static int type = typeIndexID;
 
   /** @generated */
-  public int getTypeIndexID() {
+  @Override
+public int getTypeIndexID() {
     return typeIndexID;
   }
 
@@ -96,8 +98,9 @@ public class RoomNumber extends Annotation {
    * @generated
    */
   public String getBuilding() {
-    if (RoomNumber_Type.featOkTst && ((RoomNumber_Type) jcasType).casFeat_building == null)
-      this.jcasType.jcas.throwFeatMissing("building", "org.apache.uima.tutorial.RoomNumber");
+    if (RoomNumber_Type.featOkTst && ((RoomNumber_Type) jcasType).casFeat_building == null) {
+        this.jcasType.jcas.throwFeatMissing("building", "org.apache.uima.tutorial.RoomNumber");
+    }
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((RoomNumber_Type) jcasType).casFeatCode_building);
   }
@@ -108,8 +111,9 @@ public class RoomNumber extends Annotation {
    * @generated
    */
   public void setBuilding(String v) {
-    if (RoomNumber_Type.featOkTst && ((RoomNumber_Type) jcasType).casFeat_building == null)
-      this.jcasType.jcas.throwFeatMissing("building", "org.apache.uima.tutorial.RoomNumber");
+    if (RoomNumber_Type.featOkTst && ((RoomNumber_Type) jcasType).casFeat_building == null) {
+        this.jcasType.jcas.throwFeatMissing("building", "org.apache.uima.tutorial.RoomNumber");
+    }
     jcasType.ll_cas.ll_setStringValue(addr, ((RoomNumber_Type) jcasType).casFeatCode_building, v);
   }
 }

@@ -86,6 +86,7 @@ public class AxisResourceServiceManager {
    * @param aServiceImplClass
    *          the class that will be instantiated when a new <code>ResourceService_impl</code> is
    *          to be created. This must be a subclass of ResourceService_impl.
+   * @return -
    * @throws AxisFault
    *           if the configuration information could not be read
    */

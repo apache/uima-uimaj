@@ -48,7 +48,7 @@ public class VarValList {
   }
 
   /**
-   * Returns a vector of VarVal objects
+   * @return a vector of VarVal objects
    */
   public Vector getTableRows() {
     return tableRows;
@@ -56,6 +56,8 @@ public class VarValList {
 
   /**
    * Adds a new table Row
+   * @param tableRow -
+   * @return -
    */
   public boolean addTableRow(VarVal tableRow) {
     if (!isDuplicate(tableRow)) {
@@ -69,6 +71,7 @@ public class VarValList {
 
   /**
    * Adds a sample tableRow to the table
+   * @return -
    */
   public boolean addTableRow() {
     VarVal tableRow = new VarVal("New_Variable", "Value");

@@ -63,27 +63,23 @@ public class PickTaeForTypesDialog extends AbstractDialog {
   public boolean isImportByName;
 
   public class DialogSelectionListener implements SelectionListener {
+    @Override
     public void widgetSelected(SelectionEvent e) {
       if (e.widget == delegateComponentListGUI) {
         update();
       } else {
-        if (okButton != null)
-          enableOK();
+        if (okButton != null) {
+            enableOK();
+        }
       }
     }
 
+    @Override
     public void widgetDefaultSelected(SelectionEvent e) {
       // nothing to do in this case
     }
   }
 
-  /**
-   * 
-   * @param aSection
-   * @param aggregateFileName
-   * @param delegateComponentDescriptors
-   * @param delegateComponentDescriptions
-   */
   public PickTaeForTypesDialog(AbstractSection aSection, String aggregateFileName,
           java.util.List delegateComponentDescriptors, java.util.List delegateComponentDescriptions) {
 
@@ -94,6 +90,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     m_delegateComponentDescriptions = delegateComponentDescriptions;
   }
 
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent);
     Label specialMsgLabel = new Label(composite, SWT.WRAP);
@@ -200,10 +197,12 @@ public class PickTaeForTypesDialog extends AbstractDialog {
         }
       }
     }
-    if (okButton != null)
-      enableOK();
+    if (okButton != null) {
+        enableOK();
+    }
   }
 
+  @Override
   public void enableOK() {
     boolean bEnableOk = false;
     String[] selections = delegateComponentListGUI.getSelection();
@@ -229,6 +228,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
+  @Override
   public void copyValuesFromGUI() {
     // this is where we do rollup and detect if we need any additional
     // types based on types of features and whether we are a supertype
@@ -260,6 +260,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
+  @Override
   public boolean isValid() {
     return true;
   }

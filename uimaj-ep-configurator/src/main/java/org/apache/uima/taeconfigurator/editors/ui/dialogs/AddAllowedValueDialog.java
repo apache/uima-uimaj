@@ -41,8 +41,8 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
   /**
    * Constructor for Adding or Editing an Allowed Value.
    * 
-   * @param aSection
-   * @param aExistingAv
+   * @param aSection -
+   * @param aExistingAv -
    */
   public AddAllowedValueDialog(AbstractSection aSection, AllowedValue aExistingAv) {
     super(aSection, "Add an Allowed Value for a String subtype",
@@ -50,7 +50,8 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
     existingAv = aExistingAv;
   }
 
-  protected Control createDialogArea(Composite parent) {
+  @Override
+protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingAv);
 
     // This part of the form looks like this sketch
@@ -73,18 +74,22 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
     return mainArea;
   }
 
-  public void copyValuesFromGUI() {
+  @Override
+public void copyValuesFromGUI() {
     allowedValue = allowedValueUI.getText();
     description = nullIf0lengthString(descriptionUI.getText());
   }
 
-  public boolean isValid() {
-    if (allowedValue.length() == 0)
-      return false;
+  @Override
+public boolean isValid() {
+    if (allowedValue.length() == 0) {
+        return false;
+    }
     return true;
   }
 
-  public void enableOK() {
+  @Override
+public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(allowedValue.length() > 0);
   }

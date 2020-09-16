@@ -45,7 +45,7 @@ import org.apache.uima.util.Level;
  * and processCas). In each function different Exceptions are thrown to test the behaviour of the
  * system in such a situation. Therefore special helper classes located in the
  * {@link org.apache.uima.collection.impl.cpm.utils} package are used. For instance
- * {@link DecriptorMakeUtil} generates the customized descriptors which throws the predefined
+ * {@link DescriptorMakeUtil} generates the customized descriptors which throws the predefined
  * Exceptions. {@link FunctionErrorStore} is the class where all data about methodcalls and counts
  * are kept. That's just to point out some important classes.
  * </p>
@@ -325,6 +325,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
+  @Override
   protected void tearDown() throws Exception {
     super.tearDown();
     FunctionErrorStore.resetCount();
@@ -426,6 +427,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
      * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
      *      org.apache.uima.collection.EntityProcessStatus)
      */
+    @Override
     public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
       super.entityProcessComplete(aCas, aStatus);
       // check for a failure in processing...

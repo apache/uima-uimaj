@@ -30,6 +30,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * 
  * @generated
  */
+@SuppressWarnings("javadoc")
 public class WordAnnot extends Annotation {
   /**
    * @generated
@@ -44,7 +45,8 @@ public class WordAnnot extends Annotation {
   public final static int type = typeIndexID;
 
   /** @generated */
-  public int getTypeIndexID() {
+  @Override
+public int getTypeIndexID() {
     return typeIndexID;
   }
 
