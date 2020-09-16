@@ -67,6 +67,10 @@ pipeline {
             params.extraMavenArguments +
             ' -U -Dmaven.test.failure.ignore=true clean verify'
         }
+        
+        scanForIssues tool: mavenConsole()
+        scanForIssues tool: java()
+        scanForIssues tool: javaDoc()
       }
     }
     
@@ -82,6 +86,10 @@ pipeline {
             params.extraMavenArguments +
             ' -U -Dmaven.test.failure.ignore=true clean deploy'
         }
+        
+        scanForIssues tool: mavenConsole()
+        scanForIssues tool: java()
+        scanForIssues tool: javaDoc()
       }
     }
   }
