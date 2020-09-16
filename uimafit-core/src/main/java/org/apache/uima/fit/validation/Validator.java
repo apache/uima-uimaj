@@ -115,22 +115,25 @@ public class Validator {
      * @param check
      *          a check instance to use.
      */
-    public void withCheck(CasValidationCheck check) {
+    public Validator.Builder withCheck(CasValidationCheck check) {
       checks.add(check);
+      return this;
     }
 
     /**
      * Disable auto-detection of checks.
      */
-    public void withoutAutoDetectedChecks() {
+    public Validator.Builder withoutAutoDetectedChecks() {
       skipAutoDetection = true;
+      return this;
     }
 
     /**
      * Enable auto-detection of checks (the default behavior).
      */
-    public void withAutoDetectedChecks() {
+    public Validator.Builder withAutoDetectedChecks() {
       skipAutoDetection = false;
+      return this;
     }
 
     /**
@@ -141,11 +144,12 @@ public class Validator {
      * @param className
      *          names of check classes to be excluded.
      */
-    public void excludingByName(String... className) {
+    public Validator.Builder excludingByName(String... className) {
       stream(className)
           .map(Pattern::quote)
           .map(Pattern::compile)
           .forEach(excludePatterns::add);
+      return this;
     }
 
     /**
@@ -156,10 +160,11 @@ public class Validator {
      * @param patterns
      *          regular expressions matching check class names to be excluded.
      */
-    public void excludingByPattern(String... patterns) {
+    public Validator.Builder excludingByPattern(String... patterns) {
       stream(patterns)
           .map(Pattern::compile)
           .forEach(excludePatterns::add);
+      return this;
     }
 
     /**
@@ -171,8 +176,9 @@ public class Validator {
      * @param types
      *          check type names to be excluded.
      */
-    public void excludingByType(Class<?>... types) {
+    public Validator.Builder excludingByType(Class<?>... types) {
       stream(types).forEach(excludeTypes::add);
+      return this;
     }
     
     /**
@@ -183,11 +189,12 @@ public class Validator {
      * @param className
      *          names of check classes to be included.
      */
-    public void includingByName(String... className) {
+    public Validator.Builder includingByName(String... className) {
       stream(className)
           .map(Pattern::quote)
           .map(Pattern::compile)
           .forEach(includePatterns::add);
+      return this;
     }
 
     /**
@@ -198,10 +205,11 @@ public class Validator {
      * @param patterns
      *          regular expressions matching check class names to be included.
      */
-    public void includingByPattern(String... patterns) {
+    public Validator.Builder includingByPattern(String... patterns) {
       stream(patterns)
           .map(Pattern::compile)
           .forEach(includePatterns::add);
+      return this;
     }
 
     /**
@@ -213,13 +221,15 @@ public class Validator {
      * @param types
      *          check type names to be included.
      */
-    public void includingByType(Class<?>... types) {
+    public Validator.Builder includingByType(Class<?>... types) {
       stream(types).forEach(includeTypes::add);
+      return this;
     }
 
-    private void autoDetectChecks() {
+    private Validator.Builder autoDetectChecks() {
       stream(load(ValidationCheck.class).spliterator(), false)
               .forEachOrdered(checks::add);
+      return this;
     }
 
     public Validator build() {
