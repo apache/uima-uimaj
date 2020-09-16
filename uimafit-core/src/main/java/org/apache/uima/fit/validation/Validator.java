@@ -46,15 +46,19 @@ public class Validator {
     ValidationSummary summary = new ValidationSummary();
 
     for (ValidationCheck check : checks) {
-      if (check instanceof CasValidationCheck) {
-        summary.addAll(((CasValidationCheck) check).validate(aJCas.getCas()));
-      }
-      else if (check instanceof JCasValidationCheck) {
-        summary.addAll(((JCasValidationCheck) check).validate(aJCas));
-      }
-      else {
-        throw new IllegalArgumentException(
-                "Unknown ValidationCheck type: [" + check.getClass().getName() + "]");
+      try {
+        if (check instanceof CasValidationCheck) {
+          summary.addAll(((CasValidationCheck) check).validate(aJCas.getCas()));
+        } else if (check instanceof JCasValidationCheck) {
+          summary.addAll(((JCasValidationCheck) check).validate(aJCas));
+        } else {
+          throw new IllegalArgumentException(
+                  "Unknown ValidationCheck type: [" + check.getClass().getName() + "]");
+        }
+      } catch (ValidationCheckSkippedException e) {
+        summary.add(ValidationResult.info(check, "Skipped: %s", e.getMessage()));
+      } catch (ValidationCheckException e) {
+        summary.add(ValidationResult.error(check, "%s", e.getMessage()));
       }
     }
 
@@ -65,25 +69,29 @@ public class Validator {
     ValidationSummary summary = new ValidationSummary();
 
     for (ValidationCheck check : checks) {
-      if (check instanceof CasValidationCheck) {
-        summary.addAll(((CasValidationCheck) check).validate(cas));
-      }
-      else if (check instanceof JCasValidationCheck) {
-        try {
-          summary.addAll(((JCasValidationCheck) check).validate(cas.getJCas()));
-        } catch (CASException e) {
-          throw new ValidationException(e);
+      try {
+        if (check instanceof CasValidationCheck) {
+          summary.addAll(((CasValidationCheck) check).validate(cas));
+        } else if (check instanceof JCasValidationCheck) {
+          try {
+            summary.addAll(((JCasValidationCheck) check).validate(cas.getJCas()));
+          } catch (CASException e) {
+            throw new ValidationException(e);
+          }
+        } else {
+          throw new IllegalArgumentException(
+                  "Unknown ValidationCheck type: [" + check.getClass().getName() + "]");
         }
-      }
-      else {
-        throw new IllegalArgumentException(
-                "Unknown ValidationCheck type: [" + check.getClass().getName() + "]");
+      } catch (ValidationCheckSkippedException e) {
+        summary.add(ValidationResult.info(check, "Skipped: %s", e.getMessage()));
+      } catch (ValidationCheckException e) {
+        summary.add(ValidationResult.error(check, "%s", e.getMessage()));
       }
     }
 
     return summary;
   }
-
+  
   public Collection<ValidationCheck> getChecks() {
     return checks;
   }

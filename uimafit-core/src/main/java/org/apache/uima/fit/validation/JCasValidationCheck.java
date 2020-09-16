@@ -37,8 +37,8 @@ public interface JCasValidationCheck extends ValidationCheck {
    * @param cas
    *          the CAS to check.
    * @return the results of the check.
-   * @throws ValidationException
+   * @throws ValidationCheckException
    *           if there was a problem performing the validation.
    */
-  List<ValidationResult> validate(JCas cas) throws ValidationException;
+  List<ValidationResult> validate(JCas cas) throws ValidationCheckException;
 }
