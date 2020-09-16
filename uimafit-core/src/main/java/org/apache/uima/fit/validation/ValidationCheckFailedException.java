@@ -19,30 +19,29 @@
 package org.apache.uima.fit.validation;
 
 /**
- * Interface identifying validation checks that can be located via the Java Service Locator
- * mechanism.
+ * Fail the current check.
  */
-public interface ValidationCheck {
-  
-  /**
-   * Fail the check with the given message.
-   * 
-   * @param aMessage the failure message.
-   * @throws ValidationCheckFailedException an exception carrying the failure message.
-   */
-  default void fail(String aMessage) throws ValidationCheckFailedException
-  {
-    throw new ValidationCheckFailedException(aMessage);
+public class ValidationCheckFailedException extends ValidationCheckException {
+  private static final long serialVersionUID = 7135158265431902494L;
+
+  public ValidationCheckFailedException() {
+    super();
   }
 
-  /**
-   * Skip the check with the given reason.
-   * 
-   * @param aMessage the skip reason.
-   * @throws ValidationCheckSkippedException an exception carrying the failure message.
-   */
-  default void skip(String aMessage) throws ValidationCheckSkippedException
-  {
-    throw new ValidationCheckSkippedException(aMessage);
+  public ValidationCheckFailedException(String aMessage, Throwable aCause, boolean aEnableSuppression,
+          boolean aWritableStackTrace) {
+    super(aMessage, aCause, aEnableSuppression, aWritableStackTrace);
+  }
+
+  public ValidationCheckFailedException(String aMessage, Throwable aCause) {
+    super(aMessage, aCause);
+  }
+
+  public ValidationCheckFailedException(String aMessage) {
+    super(aMessage);
+  }
+
+  public ValidationCheckFailedException(Throwable aCause) {
+    super(aCause);
   }
 }

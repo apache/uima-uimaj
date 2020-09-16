@@ -18,25 +18,14 @@
  */
 package org.apache.uima.fit.testing.assertj;
 
-import static org.apache.uima.fit.validation.ValidationResult.Severity.ERROR;
-
-import java.util.stream.Collectors;
-
 import org.apache.uima.cas.CAS;
-import org.apache.uima.fit.validation.ValidationException;
-import org.apache.uima.fit.validation.ValidationResult;
-import org.apache.uima.fit.validation.ValidationSummary;
-import org.apache.uima.fit.validation.Validator;
-import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.Fail;
 
 /**
  * Asserts related to the {@link CAS}.
  */
 public class CasAssert
-    extends AbstractAssert<CasAssert, CAS>
+    extends CasAssert_ImplBase<CasAssert, CAS>
 {
-
     public CasAssert(CAS actual)
     {
         super(actual, CasAssert.class);
@@ -45,31 +34,5 @@ public class CasAssert
     public static CasAssert assertThat(CAS actual)
     {
         return new CasAssert(actual);
-    }
-
-    /**
-     * Checks that the check is correctly registered and available to the Java Service Locator.
-     */
-    public CasAssert isValid()
-    {
-        isNotNull();
-
-        Validator validator = new Validator.Builder().build();
-        try {
-            ValidationSummary summary = validator.check(actual);
-
-            String messageBuffer = summary.getResults().stream()
-                    .filter(result -> result.getSeverity().isEquallyOrMoreSevereThan(ERROR))
-                    .map(ValidationResult::getMessage).collect(Collectors.joining("\n"));
-
-            if (messageBuffer.length() > 0) {
-                Fail.fail(messageBuffer);
-            }
-        }
-        catch (ValidationException e) {
-            Fail.fail("Unable to validate CAS", e);
-        }
-
-        return this;
     }
 }

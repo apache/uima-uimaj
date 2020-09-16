@@ -35,7 +35,7 @@ public class ValidationSummary {
     results = new ArrayList<>();
   }
 
-  public void addAll(ValidationResult result) {
+  public void add(ValidationResult result) {
     results.add(result);
   }
 
