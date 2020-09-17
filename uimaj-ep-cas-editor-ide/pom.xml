@@ -207,15 +207,23 @@
         because only 3.2.0 and 3.2.1 are in 
         repo -->
       <version>[3.9.0,4.0.0)</version>
-			<scope>provided</scope>
+      <scope>provided</scope>
       <exclusions>
-         <exclusion>
-           <groupId>org.eclipse.platform</groupId>
-           <artifactId>org.eclipse.swt</artifactId>
-         </exclusion>
-       </exclusions>
-      
-		</dependency>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.swt</artifactId>
+        </exclusion>
+        <!-- https://issues.apache.org/jira/browse/UIMA-6267 -->
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna.platform</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
 		<dependency>
       <groupId>org.eclipse.platform</groupId>
