@@ -107,8 +107,16 @@ UIMA data structures to the Eclipse Debug displays</description>
 			<version>[3.8.0, 4.0.0)</version>
 			<scope>provided</scope>
 			
-			<!-- https://issues.apache.org/jira/browse/UIMA-5252 -->
       <exclusions>
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna.platform</artifactId>
+        </exclusion>
+        <!-- https://issues.apache.org/jira/browse/UIMA-5252 -->
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.swt</artifactId>
