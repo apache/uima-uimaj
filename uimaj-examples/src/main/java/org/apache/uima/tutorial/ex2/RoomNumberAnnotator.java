@@ -67,12 +67,13 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       Matcher matcher = mPatterns[i].matcher(docText);
       while (matcher.find()) {
         // found one - create annotation
-        RoomNumber annotation = new RoomNumber(aJCas);
-        annotation.setBegin(matcher.start());
-        annotation.setEnd(matcher.end());
+        RoomNumber annotation = new RoomNumber(aJCas, matcher.start(), matcher.end());
         annotation.addToIndexes();
         annotation.setBuilding(mLocations[i]);
-        getContext().getLogger().log(Level.FINEST, "Found: " + annotation);
+        getLogger().log(Level.FINEST, "Found: " + annotation);
+        // or, using slf4j
+        // note: this call skips constructing the message if tracing is not enabled
+//        getSlf4jLogger().trace("Found: {}", annotation);
       }
     }
   }

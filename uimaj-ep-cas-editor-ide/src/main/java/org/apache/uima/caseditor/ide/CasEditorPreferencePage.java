@@ -40,6 +40,4 @@ public class CasEditorPreferencePage extends FieldEditorPreferencePage
   protected void createFieldEditors() {
     
   }
-
-
 }

@@ -30,9 +30,9 @@ public class GraphNode {
 
   protected Object element;
 
-  protected ArrayList<GraphNode> successors = new ArrayList<GraphNode>();
+  protected ArrayList<GraphNode> successors = new ArrayList<>();
 
-  protected ArrayList<GraphNode> predecessors = new ArrayList<GraphNode>();
+  protected ArrayList<GraphNode> predecessors = new ArrayList<>();
 
   public GraphNode(Object element) {
     this.element = element;

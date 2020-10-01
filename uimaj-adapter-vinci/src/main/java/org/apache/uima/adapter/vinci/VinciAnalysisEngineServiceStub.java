@@ -49,9 +49,16 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.context.VinciContext;
 import org.apache.vinci.transport.document.AFrame;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class VinciAnalysisEngineServiceStub.
+ */
 public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub {
+  
+  /** The m vinci client. */
   private VinciClient mVinciClient;
 
+  /** The m owner. */
   private Resource mOwner;
   
   /**
@@ -64,6 +71,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    */
   private int mGetMetaDataTimeout;
 
+  /** The Constant debug. */
   private static final boolean debug = System.getProperty("DEBUG") != null;
   
   /**
@@ -73,11 +81,27 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   private static final List SUPPORT_XCAS_V1 = Collections.unmodifiableList(
           Arrays.asList(new String[]{"1"}));
   
+  /**
+   * Instantiates a new vinci analysis engine service stub.
+   *
+   * @param endpointURI the endpoint URI
+   * @param owner the owner
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   public VinciAnalysisEngineServiceStub(String endpointURI, Resource owner)
           throws ResourceInitializationException {
     this(endpointURI, null, owner, null);
   }
 
+  /**
+   * Instantiates a new vinci analysis engine service stub.
+   *
+   * @param endpointURI the endpoint URI
+   * @param timeout the timeout
+   * @param owner the owner
+   * @param parameters the parameters
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   public VinciAnalysisEngineServiceStub(String endpointURI, Integer timeout, Resource owner,
           Parameter[] parameters) throws ResourceInitializationException {
     mOwner = owner;
@@ -122,7 +146,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       
       //store timeout for use in later RPC calls
       if (timeout != null) {
-        mTimeout = timeout.intValue();
+        mTimeout = timeout;
       } else {
        mTimeout = mVinciClient.getSocketTimeout(); //default
       }
@@ -142,8 +166,11 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
 
   /**
+   * Call get meta data.
+   *
+   * @return the resource meta data
+   * @throws ResourceServiceException the resource service exception
    * @see ResourceServiceStub#callGetMetaData()
-   * @return -
    */
   public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     try {
@@ -193,17 +220,22 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
-   * @see AnalysisEngineServiceStub#callProcess(CAS)
-   * @param aCAS theCAS
+   * Call process.
+   *
+   * @param aCAS the a CAS
    * @throws ResourceServiceException the resource service exception
+   * @see AnalysisEngineServiceStub#callProcess(CAS)
    */
   public void callProcess(CAS aCAS) throws ResourceServiceException {
     doProcess(aCAS);
   }
 
   /**
+   * Call process cas.
+   *
+   * @param aCAS the a CAS
+   * @throws ResourceServiceException the resource service exception
    * @see CasObjectProcessor#processCas(CAS)
-   * @throws ResourceServiceException -
    */
   public void callProcessCas(CAS aCAS) throws ResourceServiceException {
     doProcess(aCAS);
@@ -211,6 +243,9 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
   /**
    * The actual process call.
+   *
+   * @param aCAS the a CAS
+   * @throws ResourceServiceException the resource service exception
    */
   private void doProcess(CAS aCAS) throws ResourceServiceException {
     try {
@@ -241,6 +276,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
+   * Destroy.
+   *
    * @see ResourceServiceStub#destroy()
    */
   public void destroy() {
@@ -248,6 +285,9 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
+   * Call batch process complete.
+   *
+   * @throws ResourceServiceException the resource service exception
    * @see CasObjectProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void callBatchProcessComplete() throws ResourceServiceException {
@@ -264,6 +304,9 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
+   * Call collection process complete.
+   *
+   * @throws ResourceServiceException the resource service exception
    * @see CasObjectProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void callCollectionProcessComplete() throws ResourceServiceException {
@@ -281,9 +324,11 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
+   * Call is read only.
+   *
+   * @return true, if successful
+   * @throws ResourceServiceException the resource service exception
    * @see CasObjectProcessor#isReadOnly()
-   * @return -
-   * @throws ResourceServiceException -
    */
   public boolean callIsReadOnly() throws ResourceServiceException {
     try {
@@ -302,9 +347,11 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
+   * Call is stateless.
+   *
+   * @return true, if successful
+   * @throws ResourceServiceException the resource service exception
    * @see CasObjectProcessor#isStateless()
-   * @return -
-   * @throws ResourceServiceException -
    */
   public boolean callIsStateless() throws ResourceServiceException {
     try {
@@ -322,6 +369,12 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
     }
   }
 
+  /**
+   * Call get supported X cas versions.
+   *
+   * @return the list
+   * @throws ResourceServiceException the resource service exception
+   */
   public List callGetSupportedXCasVersions() throws ResourceServiceException {
     try {
       // create Vinci Frame ( Data Cargo)

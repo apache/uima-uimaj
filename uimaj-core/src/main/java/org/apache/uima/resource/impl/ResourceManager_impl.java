@@ -36,6 +36,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
 import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper;
+import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper.StringPair;
 import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.resource.CasManager;
@@ -62,7 +63,7 @@ import org.apache.uima.util.XMLizable;
  * 
  */
 public class ResourceManager_impl implements ResourceManager {
-  
+
   /**
    * Ties an External Resource instance to
    *   - its description 
@@ -103,6 +104,8 @@ public class ResourceManager_impl implements ResourceManager {
   
   protected static final Class<Resource> EMPTY_RESOURCE_CLASS = Resource.class;
   
+  private static final URL[] emptyURLarray = new URL[0]; 
+
   private AtomicBoolean isDestroyed = new AtomicBoolean(false);
   /**
    * a monitor lock for synchronizing get/set of casManager ref
@@ -152,7 +155,7 @@ public class ResourceManager_impl implements ResourceManager {
 
   /**
    * Internal map from resource names (declared in resource declaration XML) to Class objects
-   * for parameterized Resource.
+   * for parameterized Resource. 
    * 
    *   These class objects may or may not be Resource instances.  
    *   They may be arbitrary classes, except that they must implement SharedResourceObject.
@@ -212,23 +215,23 @@ public class ResourceManager_impl implements ResourceManager {
   //   Because internal users do a sync, only one thread at a time is using this
   //   (for internal calls) anyways, so there's no advantage to the extra overhead
   //   of making this a ConcurrentHashMap  (March 2014)
-  private Map<String, XMLizable> importCache = Collections.synchronizedMap(new HashMap<String,XMLizable>());
+  private Map<String, XMLizable> importCache = Collections.synchronizedMap(new HashMap<>());
   
   /**
    * Cache of imported descriptor URLs from which the parsed objects in importCache
    * were created, so that these URLs are not re-parsed if the same URL is imported again.
    */
-  private Map<String, Set<String>> importUrlsCache = Collections.synchronizedMap(new HashMap<String,Set<String>>());
+  private Map<String, Set<String>> importUrlsCache = Collections.synchronizedMap(new HashMap<>());
   
   /**
    * Creates a new <code>ResourceManager_impl</code>.
    */
   public ResourceManager_impl() {
-    mResourceMap = Collections.synchronizedMap(new HashMap<String, Object>());
-    mInternalResourceRegistrationMap = new ConcurrentHashMap<String, ResourceRegistration>();
-    mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<?>>();
-    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<?>>();
-    mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Object>();
+    mResourceMap = Collections.synchronizedMap(new HashMap<>());
+    mInternalResourceRegistrationMap = new ConcurrentHashMap<>();
+    mParameterizedResourceImplClassMap = new ConcurrentHashMap<>();
+    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<>();
+    mParameterizedResourceInstanceMap = new ConcurrentHashMap<>();
     mRelativePathResolver = new RelativePathResolver_impl(); 
   }
 
@@ -238,11 +241,11 @@ public class ResourceManager_impl implements ResourceManager {
    * @param aClassLoader -
    */
   public ResourceManager_impl(ClassLoader aClassLoader) {
-    mResourceMap = Collections.synchronizedMap(new HashMap<String, Object>());
-    mInternalResourceRegistrationMap = new ConcurrentHashMap<String, ResourceRegistration>();
-    mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<?>>();
-    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<?>>();
-    mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Object>();
+    mResourceMap = Collections.synchronizedMap(new HashMap<>());
+    mInternalResourceRegistrationMap = new ConcurrentHashMap<>();
+    mParameterizedResourceImplClassMap = new ConcurrentHashMap<>();
+    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<>();
+    mParameterizedResourceInstanceMap = new ConcurrentHashMap<>();
     mRelativePathResolver = new RelativePathResolver_impl(aClassLoader);
   }
 
@@ -329,6 +332,19 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
+  // https://issues.apache.org/jira/browse/UIMA-5553
+  // https://issues.apache.org/jira/browse/UIMA-5609
+  // synchronized because the other methods that set the extension class loader are.
+  public synchronized void setExtensionClassLoaderImpl(ClassLoader classLoader, boolean resolveResource) {
+    uimaCL = (classLoader instanceof UIMAClassLoader) 
+               ? ((UIMAClassLoader) classLoader)
+               : new UIMAClassLoader(emptyURLarray, classLoader);
+    if (resolveResource) {
+      // set UIMA extension ClassLoader also to resolve resources
+      getRelativePathResolver().setPathResolverClassLoader(uimaCL);
+    }
+  }
+  
   /**
    * @see org.apache.uima.resource.ResourceManager#getExtensionClassLoader()
    */
@@ -423,7 +439,7 @@ public class ResourceManager_impl implements ResourceManager {
     }
 
     // see if we've already encountered this DataResource under this resource name
-    List<Object> nameAndResource = new ArrayList<Object>(2);
+    List<Object> nameAndResource = new ArrayList<>(2);
     nameAndResource.add(aName);
     nameAndResource.add(dr);
     Object resourceInstance = mParameterizedResourceInstanceMap.get(nameAndResource);
@@ -576,7 +592,7 @@ public class ResourceManager_impl implements ResourceManager {
     // resource manager as the value returned from their getResourceManager call
     // see https://issues.apache.org/jira/browse/UIMA-5148
     if (null == aAdditionalParams) {
-      aAdditionalParams = new HashMap<String, Object>();
+      aAdditionalParams = new HashMap<>();
     }
     if (!aAdditionalParams.containsKey(Resource.PARAM_RESOURCE_MANAGER)) {
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, this);
@@ -634,7 +650,7 @@ public class ResourceManager_impl implements ResourceManager {
 
   /*
    * (non-Javadoc)
-   * 
+   *   
    * Called during resource initialization, when the resource has external resource bindings,
    * to resolve those bindings                                              
    *                                               
@@ -702,7 +718,6 @@ public class ResourceManager_impl implements ResourceManager {
                       aDependencies[i].getInterfaceName(), aDependencies[i].getSourceUrlString() });
         }
       }
-      
     }
   }
 
@@ -712,8 +727,8 @@ public class ResourceManager_impl implements ResourceManager {
   private void registerResource(String aName, ExternalResourceDescription aResourceDescription,
           String aDefiningContext, Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     // add the relative path resolver to the resource init. params
-    Map<String, Object> initParams = (aResourceInitParams == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(
-            aResourceInitParams);
+    Map<String, Object> initParams = (aResourceInitParams == null) ? new HashMap<>() : new HashMap<>(
+        aResourceInitParams);
     initParams.put(DataResource.PARAM_RELATIVE_PATH_RESOLVER, getRelativePathResolver());
     
     // determine if verification mode is on.  If so, we don't want to load the resource data
@@ -891,24 +906,24 @@ public class ResourceManager_impl implements ResourceManager {
     Map<ResourceManager, Map<PearAnalysisEngineWrapper.StringPair, ResourceManager>> cachedResourceManagers =
         PearAnalysisEngineWrapper.getCachedResourceManagers();
     synchronized(cachedResourceManagers) {
-      Map<PearAnalysisEngineWrapper.StringPair, ResourceManager> c1 = cachedResourceManagers.get(this);
+      Map<StringPair, ResourceManager> c1 = cachedResourceManagers.get(this);
       if (c1 != null) {
         for (ResourceManager rm : c1.values()) {
           rm.destroy();
         }
       }
     }
-
+    
     // not clearing mResourcMap, mInternalResourceRegistrationMap, mParameterizedResourceImplClassMap, 
     //   mInternalParameterizedResourceImplClassMap, mParameterizedResourceInstanceMap
     //   because these could be shared with other resource managers
-    // not clearing importCache, importUrlsCache - might be in used by other Resource Managers (shared)    
+    // not clearing importCache, importUrlsCache - might be in used by other Resource Managers (shared) 
     
-    
+       
     // no destroy of caspool at this time
     
   }
-
+  
   /* (non-Javadoc)
    * @see org.apache.uima.resource.ResourceManager#getExternalResources()
    */
@@ -928,9 +943,5 @@ public class ResourceManager_impl implements ResourceManager {
       
     return rs;
   }
-  
-  
-  
-  
 
 }

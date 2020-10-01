@@ -43,29 +43,48 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
+
 /**
+ * The Class ExtnlResBindSection.
  */
 public class ExtnlResBindSection extends AbstractSection {
+  
+  /** The Constant boundHeader. */
   private final static String boundHeader = "Bound to: ";
 
+  /** The section client. */
   private Composite sectionClient;
 
+  /** The tree. */
   private Tree tree;
 
+  /** The add button. */
   private Button addButton;
 
+  /** The edit button. */
   private Button editButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /** The bind button. */
   private Button bindButton;
 
+  /** The export button. */
   private Button exportButton;
 
+  /** The resource dependency section. */
   private ResourceDependencySection resourceDependencySection;
 
+  /** The res bind import section. */
   private ImportResBindSection resBindImportSection;
 
+  /**
+   * Instantiates a new extnl res bind section.
+   *
+   * @param aEditor the a editor
+   * @param parent the parent
+   */
   public ExtnlResBindSection(MultiPageEditor aEditor, Composite parent) {
     super(
             aEditor,
@@ -74,6 +93,10 @@ public class ExtnlResBindSection extends AbstractSection {
             "Specify External Resources; Bind them to dependencies on the right panel by selecting the corresponding dependency and clicking Bind.");
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+   */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
     // set up Composite to hold widgets in the section
@@ -105,6 +128,10 @@ public class ExtnlResBindSection extends AbstractSection {
     tree.addListener(SWT.MouseDoubleClick, this);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
+   */
+  @Override
   public void refresh() {
     if (null == resBindImportSection)
       resBindImportSection = editor.getResourcesPage().getResBindImportSection();
@@ -121,6 +148,12 @@ public class ExtnlResBindSection extends AbstractSection {
     enable();
   }
 
+  /**
+   * Adds the external resource description to GUI.
+   *
+   * @param xrd the xrd
+   * @param bindings the bindings
+   */
   private void addExternalResourceDescriptionToGUI(ExternalResourceDescription xrd,
           ExternalResourceBinding[] bindings) {
     TreeItem item = new TreeItem(tree, SWT.NONE);
@@ -129,6 +162,12 @@ public class ExtnlResBindSection extends AbstractSection {
     item.setExpanded(true);
   }
 
+  /**
+   * Fill xrd item.
+   *
+   * @param item the item
+   * @param xrd the xrd
+   */
   private void fillXrdItem(TreeItem item, ExternalResourceDescription xrd) {
     StringBuffer text = new StringBuffer();
     text.append(xrd.getName());
@@ -151,6 +190,13 @@ public class ExtnlResBindSection extends AbstractSection {
     item.setData(xrd);
   }
 
+  /**
+   * Fill bindings.
+   *
+   * @param parent the parent
+   * @param xrd the xrd
+   * @param bindings the bindings
+   */
   private void fillBindings(TreeItem parent, ExternalResourceDescription xrd,
           ExternalResourceBinding[] bindings) {
     if (null != bindings) {
@@ -162,6 +208,13 @@ public class ExtnlResBindSection extends AbstractSection {
     }
   }
 
+  /**
+   * Adds the binding to GUI.
+   *
+   * @param parent the parent
+   * @param key the key
+   * @param xrb the xrb
+   */
   private void addBindingToGUI(TreeItem parent, String key, ExternalResourceBinding xrb) {
     TreeItem item = new TreeItem(parent, SWT.NONE);
     item.setText(boundHeader + key);
@@ -173,6 +226,7 @@ public class ExtnlResBindSection extends AbstractSection {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     if (event.widget == addButton)
       handleAdd();
@@ -195,6 +249,12 @@ public class ExtnlResBindSection extends AbstractSection {
     enable();
   }
 
+  /**
+   * Gets the XR description from tree item.
+   *
+   * @param item the item
+   * @return the XR description from tree item
+   */
   public ExternalResourceDescription getXRDescriptionFromTreeItem(TreeItem item) {
     return (ExternalResourceDescription) item.getData();
   }
@@ -227,8 +287,7 @@ public class ExtnlResBindSection extends AbstractSection {
   }
 
   /**
-   * Add new external resource, with no bindings
-   * 
+   * Add new external resource, with no bindings.
    */
   private void handleAdd() {
     AddExternalResourceDialog dialog = new AddExternalResourceDialog(this);
@@ -241,6 +300,13 @@ public class ExtnlResBindSection extends AbstractSection {
     getResourceManagerConfiguration().addExternalResource(xrd);
   }
 
+  /**
+   * Alter existing XRD.
+   *
+   * @param dialog the dialog
+   * @param xrd the xrd
+   * @param item the item
+   */
   private void alterExistingXRD(AddExternalResourceDialog dialog, ExternalResourceDescription xrd,
           TreeItem item) {
     valueChanged = false;
@@ -278,7 +344,7 @@ public class ExtnlResBindSection extends AbstractSection {
 
   /**
    * Bind button - enabled only when one dependency is selected, and one External Resource, not
-   * already bound to this key, is selected
+   * already bound to this key, is selected.
    */
   private void handleBind() {
     TreeItem xrItem = tree.getSelection()[0];
@@ -323,10 +389,21 @@ public class ExtnlResBindSection extends AbstractSection {
     }
   }
 
+  /**
+   * Gets the XR binding from tree item.
+   *
+   * @param item the item
+   * @return the XR binding from tree item
+   */
   public ExternalResourceBinding getXRBindingFromTreeItem(TreeItem item) {
     return (ExternalResourceBinding) item.getData();
   }
 
+  /**
+   * Removes the binding.
+   *
+   * @param item the item
+   */
   private void removeBinding(TreeItem item) {
     ExternalResourceBinding xrb = getXRBindingFromTreeItem(item);
     getResourceManagerConfiguration().removeExternalResourceBinding(xrb);
@@ -335,6 +412,11 @@ public class ExtnlResBindSection extends AbstractSection {
     setFileDirty();
   }
 
+  /**
+   * Removes the bound flag in dependency section.
+   *
+   * @param xrb the xrb
+   */
   private void removeBoundFlagInDependencySection(ExternalResourceBinding xrb) {
     String key = xrb.getKey();
     TableItem[] items = resourceDependencySection.getTable().getItems();
@@ -344,6 +426,11 @@ public class ExtnlResBindSection extends AbstractSection {
     }
   }
 
+  /**
+   * Removes the all bindings.
+   *
+   * @param item the item
+   */
   private void removeAllBindings(TreeItem item) {
     TreeItem[] items = item.getItems();
     for (int i = items.length - 1; i >= 0; i--) {
@@ -351,6 +438,11 @@ public class ExtnlResBindSection extends AbstractSection {
     }
   }
 
+  /**
+   * Removes the resource.
+   *
+   * @param item the item
+   */
   private void removeResource(TreeItem item) {
     ExternalResourceDescription xrd = getXRDescriptionFromTreeItem(item);
     getResourceManagerConfiguration().removeExternalResource(xrd);
@@ -358,6 +450,10 @@ public class ExtnlResBindSection extends AbstractSection {
     setFileDirty();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
+   */
+  @Override
   public void enable() {
     // bind enabled when one item in tree and one in table is selected
     bindButton.setEnabled(tree.getSelectionCount() == 1
@@ -370,10 +466,22 @@ public class ExtnlResBindSection extends AbstractSection {
     exportButton.setEnabled(tree.getItemCount() > 0);
   }
 
+  /**
+   * Checks if is bound spec.
+   *
+   * @param item the item
+   * @return true, if is bound spec
+   */
   private boolean isBoundSpec(TreeItem item) {
     return item.getText().startsWith(boundHeader);
   }
 
+  /**
+   * Resource name already defined.
+   *
+   * @param name the name
+   * @return true, if successful
+   */
   public boolean resourceNameAlreadyDefined(String name) {
     ExternalResourceDescription[] xrds = getExternalResources();
     if (xrds != null) {

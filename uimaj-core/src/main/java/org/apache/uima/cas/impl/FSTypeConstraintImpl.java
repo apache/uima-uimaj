@@ -36,16 +36,16 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 
 	private static final long serialVersionUID = 7557683109761796280L;
 
-	private Set<String> nameSet = new HashSet<String>();
+	private Set<String> nameSet = new HashSet<>();
 
 	private transient SortedIntSet typeSet = new SortedIntSet();
 
 	private transient TypeSystem ts;
 
 	public boolean match(FeatureStructure fs) {
-		compile(((FeatureStructureImpl) fs).getCAS().getTypeSystem());
-		final FeatureStructureImpl fsi = (FeatureStructureImpl) fs;
-		final int typeCode = fsi.getCASImpl().getHeapValue(fsi.getAddress());
+    final FeatureStructureImplC fsi = (FeatureStructureImplC) fs;
+		compile(fsi.getCAS().getTypeSystem());
+		final int typeCode = fsi._getTypeCode();
 		TypeSystemImpl tsi = (TypeSystemImpl) this.ts;
 		for (int i = 0; i < typeSet.size(); i++) {
 			if (tsi.subsumes(typeSet.get(i), typeCode)) {
@@ -65,9 +65,7 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 		for (String typeName : nameSet) {
 			typeCode = tsi.ll_getCodeForTypeName(typeName);
 			if (typeCode < tsi.getSmallestType()) {
-				CASRuntimeException e = new CASRuntimeException(
-						CASRuntimeException.UNKNOWN_CONSTRAINT_TYPE, new String[] { typeName });
-				throw e;
+				throw new CASRuntimeException(CASRuntimeException.UNKNOWN_CONSTRAINT_TYPE, typeName);
 			}
 			typeSet.add(typeCode);
 		}

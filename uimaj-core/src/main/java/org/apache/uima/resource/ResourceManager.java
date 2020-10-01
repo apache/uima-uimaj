@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.util.XMLizable;
 
@@ -124,7 +125,7 @@ public interface ResourceManager {
    *         
    *         or, (if the named resource has no implementation) the DataResource instance 
    *         corresponding to the named Resource, given aParams, 
-   *         
+   * 
    *         or if no resource with this name exists, <code>null</code>.  
    * 
    * @throws ResourceAccessException
@@ -142,7 +143,7 @@ public interface ResourceManager {
    * @param aName
    *          the name of a resource
    * @param <N> The generic type for the returned class
-   * 
+   *          
    * @return the Class for the resource named <code>aName</code>, <code>null</code> if there is
    *         no resource registered under that name.
    */
@@ -330,6 +331,17 @@ public interface ResourceManager {
           throws MalformedURLException;
 
   /**
+   * Set an extension class loader into the Resource Manager
+   * @param classLoader the loader to use.  If this is an instance of UIMAClassLoader, it is
+   *               used directly; otherwise, a new UIMAClassLoader with no classpath, having
+   *               the classLoader as a parent is created and used.
+   * @param resolveResources true to also use this to resolve resources
+   */
+  default void setExtensionClassLoader(ClassLoader classLoader, boolean resolveResources) {
+    ((ResourceManager_impl)this).setExtensionClassLoaderImpl(classLoader, resolveResources);
+  }
+  
+  /**
    * Returns the UIMA extension class loader.
    * 
    * @return ClassLoader - returns the UIMA extension class loader of null if it is not available.
@@ -375,7 +387,7 @@ public interface ResourceManager {
    * If the class is not found in the ThreadLocal COntext Class Loader, then 
    * the loader the UIMA framework is running in will be searched.
    * @param name the class to load
-   * @param <N> the generic type for the returned class
+   * @param <N> generic class of class
    * @return the class
    * @throws ClassNotFoundException -
    */
@@ -400,7 +412,7 @@ public interface ResourceManager {
    * knowledgeable source; for example a single ResourceManager might be used for multiple UIMA Pipelines.
    */
   public void destroy();
-  
+      
   /**
    * 
    * @return a List of External Shared Resource instances instantiated by this Resource Manager.

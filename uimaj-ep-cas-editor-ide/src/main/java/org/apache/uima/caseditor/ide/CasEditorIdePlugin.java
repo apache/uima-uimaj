@@ -47,12 +47,7 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
    */
   private static CasEditorIdePlugin sPlugin;
 
-  /**
-   * Resource bundle.
-   */
-  private ResourceBundle mResourceBundle;
-  
-  /**
+	/**
    * The constructor.
    */
   public CasEditorIdePlugin() {
@@ -64,7 +59,7 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
   /**
    * This method is called upon plug-in activation
    *
-   * @param context
+   * @param context -
    * @throws Exception -
    */
   @Override
@@ -146,7 +141,7 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
   /**
    * This method is called when the plug-in is stopped.
    *
-   * @param context
+   * @param context -
    * @throws Exception -
    */
   @Override
@@ -154,7 +149,10 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
     super.stop(context);
 
     sPlugin = null;
-    mResourceBundle = null;
+	  /**
+	   * Resource bundle.
+	   */
+	  ResourceBundle mResourceBundle = null;
   }
 
   /**
@@ -169,7 +167,7 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
   /**
    * Log the throwable.
    *
-   * @param t
+   * @param t -
    */
   public static void log(Throwable t) {
     getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, t.getMessage(), t));

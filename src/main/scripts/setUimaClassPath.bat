@@ -15,6 +15,8 @@ REM   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 REM   KIND, either express or implied.  See the License for the
 REM   specific language governing permissions and limitations
 REM   under the License.
+
+echo This script is not being updated, is obsolete. Please update caller to use java jar directory syntax.
 if not defined UIMA_HOME goto USAGE_UIMA
 goto RUN
 :USAGE_UIMA
@@ -40,6 +42,8 @@ goto EXIT
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\lib\jaxrpc.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\lib\mail.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\lib\saaj.jar
+@set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\procyon-compilertools-0.5.28.jar
+@set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\procyon-core-0.5.28.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\jVinci.jar
 @REM next 3 jars are not present unless uima-as is included
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\uimaj-as-core.jar

@@ -26,8 +26,10 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.base_cpm.BaseStatusCallbackListener;
 import org.apache.uima.collection.impl.EntityProcessStatusImpl;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
+
 
 /**
  * This component catches uncaught errors in the CPM. All critical threads in the CPM are part of
@@ -36,18 +38,25 @@ import org.apache.uima.util.ProcessTrace;
  * 
  */
 public class CPMThreadGroup extends ThreadGroup {
+  
+  /** The callback listeners. */
   private ArrayList callbackListeners = null;
 
+  /** The proc tr. */
   private ProcessTrace procTr = null;
 
   /**
-   * @param name -
+   * Instantiates a new CPM thread group.
+   *
+   * @param name the name
    */
   public CPMThreadGroup(String name) {
     super(name);
   }
 
   /**
+   * Instantiates a new CPM thread group.
+   *
    * @param parent -
    *          parent thread group
    * @param name -
@@ -58,8 +67,8 @@ public class CPMThreadGroup extends ThreadGroup {
   }
 
   /**
-   * Sets listeners to be used in notifications
-   * 
+   * Sets listeners to be used in notifications.
+   *
    * @param aListenerList -
    *          list of registered listners
    */
@@ -67,12 +76,20 @@ public class CPMThreadGroup extends ThreadGroup {
     callbackListeners = aListenerList;
   }
 
+  /**
+   * Sets the process trace.
+   *
+   * @param aProcessTrace the new process trace
+   */
   public void setProcessTrace(ProcessTrace aProcessTrace) {
     procTr = aProcessTrace;
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.ThreadGroup#uncaughtException(java.lang.Thread, java.lang.Throwable)
+   */
+  @Override
   public void uncaughtException(Thread t, Throwable e) {
-    System.out.println("ThreadGroup.uncaughtException()-Got Error");
     if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_unhandled_error__SEVERE",
@@ -97,12 +114,21 @@ public class CPMThreadGroup extends ThreadGroup {
     // System.out.println("ThreadGroup.uncaughtException()-Done Handling Error");
   }
 
+  /**
+   * Notify listener.
+   *
+   * @param aStatCL the a stat CL
+   * @param e the e
+   */
   private void notifyListener(BaseStatusCallbackListener aStatCL, Throwable e) {
     EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(procTr);
     enProcSt.addEventStatus("Process", "Failed", e);
     ((StatusCallbackListener) aStatCL).entityProcessComplete(null, enProcSt);
   }
 
+  /**
+   * Cleanup.
+   */
   public void cleanup() {
     callbackListeners = null;
     procTr = null;

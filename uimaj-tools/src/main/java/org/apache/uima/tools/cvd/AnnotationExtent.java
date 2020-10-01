@@ -21,19 +21,29 @@ package org.apache.uima.tools.cvd;
 
 import javax.swing.text.Style;
 
+
 /**
- * 
- * 
+ * The Class AnnotationExtent.
  */
 public class AnnotationExtent {
 
+  /** The start. */
   private int start;
 
+  /** The end. */
   private int end;
 
+  /** The style. */
   private Style style;
 
   
+  /**
+   * Instantiates a new annotation extent.
+   *
+   * @param start the start
+   * @param end the end
+   * @param style the style
+   */
   public AnnotationExtent(int start, int end, Style style) {
     super();
     this.start = start;
@@ -41,15 +51,27 @@ public class AnnotationExtent {
     this.style = style;
   }
 
+  /**
+   * Gets the length.
+   *
+   * @return the length
+   */
   public int getLength() {
     return this.end - this.start;
   }
 
+  /**
+   * Gets the style.
+   *
+   * @return the style
+   */
   public Style getStyle() {
     return this.style;
   }
 
   /**
+   * Gets the end.
+   *
    * @return int
    */
   public int getEnd() {
@@ -57,6 +79,8 @@ public class AnnotationExtent {
   }
 
   /**
+   * Gets the start.
+   *
    * @return int
    */
   public int getStart() {

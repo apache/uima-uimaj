@@ -21,6 +21,7 @@ package org.apache.uima.taeconfigurator.wizards;
 
 import org.eclipse.jface.viewers.ISelection;
 
+
 /**
  * The "New" wizard page allows setting the container for the new file as well as the file name.
  * Will only accept file name without the extension OR with the extension that matches the expected
@@ -29,6 +30,11 @@ import org.eclipse.jface.viewers.ISelection;
 
 public class CasInitializerNewWizardPage extends AbstractNewWizardPage {
 
+  /**
+   * Instantiates a new cas initializer new wizard page.
+   *
+   * @param selection the selection
+   */
   public CasInitializerNewWizardPage(ISelection selection) {
     super(selection, "big_ae.gif", "Cas Initializer Descriptor File",
             "Create a new Cas Initializer Descriptor file", "casInitializerDescriptor.xml");

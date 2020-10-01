@@ -309,7 +309,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
   
     String defaultEncoding = Charset.defaultCharset().displayName();
     
-    Set<String> charsets = new HashSet<String>();
+    Set<String> charsets = new HashSet<>();
     charsets.add("US-ASCII");
     charsets.add("ISO-8859-1");
     charsets.add("UTF-8");
@@ -460,8 +460,8 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     config.setAttribute(LauncherConstants.ATTR_DESCRIPTOR_NAME, descriptorText.getText());
     
     config.setAttribute(LauncherConstants.ATTR_INPUT_NAME, inputText.getText());
-    config.setAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME, 
-            Boolean.valueOf(recursivelyButton.getSelection()));
+    config.setAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME,
+        recursivelyButton.getSelection());
     
     String formatName;
     if (casButton.getSelection()) {
@@ -482,7 +482,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     
     config.setAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, outputFolderText.getText());
     config.setAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME,
-            Boolean.valueOf(clearFolderButton.getSelection()));
+        clearFolderButton.getSelection());
   }
 
   public void setDefaults(ILaunchConfigurationWorkingCopy config) {

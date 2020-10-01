@@ -286,23 +286,26 @@ public class DebugFSLogicalStructure {
       DebugNameValuePair nv = new DebugNameValuePair(feat.getShortName(), null);
       String rangeTypeName = feat.getRange().getName();
       if ("uima.cas.Integer".equals(rangeTypeName))
-        nv.setValue(Integer.valueOf(fs.getIntValue(feat)));
+        nv.setValue(fs.getIntValue(feat));
       else if ("uima.cas.Float".equals(rangeTypeName))
-        nv.setValue(Float.valueOf(fs.getFloatValue(feat)));
+        nv.setValue(fs.getFloatValue(feat));
       else if ("uima.cas.Boolean".equals(rangeTypeName))
-        nv.setValue(Boolean.valueOf(fs.getBooleanValue(feat)));
+        nv.setValue(fs.getBooleanValue(feat));
       else if ("uima.cas.Byte".equals(rangeTypeName))
-        nv.setValue(Byte.valueOf(fs.getByteValue(feat)));
+        nv.setValue(fs.getByteValue(feat));
       else if ("uima.cas.Short".equals(rangeTypeName))
-        nv.setValue(Short.valueOf(fs.getShortValue(feat)));
+        nv.setValue(fs.getShortValue(feat));
       else if ("uima.cas.Long".equals(rangeTypeName))
-        nv.setValue(Long.valueOf(fs.getLongValue(feat)));
+        nv.setValue(fs.getLongValue(feat));
       else if ("uima.cas.Double".equals(rangeTypeName))
-        nv.setValue(Double.valueOf(fs.getDoubleValue(feat)));
+        nv.setValue(fs.getDoubleValue(feat));
       else if ("uima.cas.String".equals(rangeTypeName))
         nv.setValue(fs.getStringValue(feat));
       else
         nv.setValue(fs.getFeatureValue(feat));
+      if (nv.getValue() == null) {
+        nv.setValue("null");
+      }
       result[i++] = nv;
     }
   }
@@ -408,7 +411,7 @@ public class DebugFSLogicalStructure {
 
   public static IndexInfo[] getIndexes(CAS cas) {
     Iterator<String> it = cas.getIndexRepository().getLabels();
-    List<IndexInfo> ll = new ArrayList<IndexInfo>();
+    List<IndexInfo> ll = new ArrayList<>();
     while (it.hasNext()) {
       ll.add(new IndexInfo(cas, it.next()));
     }
@@ -418,7 +421,7 @@ public class DebugFSLogicalStructure {
 
   public static ViewInfo[] getOtherViews(CAS cas) {
     Iterator<SofaFS> sofaIt = cas.getSofaIterator();
-    List<ViewInfo> r = new ArrayList<ViewInfo>();
+    List<ViewInfo> r = new ArrayList<>();
     while (sofaIt.hasNext()) {
       SofaFS item = sofaIt.next();
       CAS oCas = cas.getView(item);
@@ -434,7 +437,7 @@ public class DebugFSLogicalStructure {
 
   @SuppressWarnings("unchecked")
   private static <T> T[] iteratorToArray(Iterator<? extends T> it, Class<T> c) {
-    ArrayList<T> items = new ArrayList<T>();
+    ArrayList<T> items = new ArrayList<>();
     while (it.hasNext()) {
       items.add(it.next());
     }
@@ -442,16 +445,16 @@ public class DebugFSLogicalStructure {
   }
 
   public static Object floatListToArray(FeatureStructure fs) {
-    List<Float> list = new ArrayList<Float>();
+    List<Float> list = new ArrayList<>();
 
     TypeSystem ts = fs.getCAS().getTypeSystem();
     Type emptyFSList = ts.getType("uima.cas.EmptyFloatList");
     Feature headFeature = ts.getFeatureByFullName("uima.cas.NonEmptyFloatList:head");
     Feature tailFeature = ts.getFeatureByFullName("uima.cas.NonEmptyFloatList:tail");
-    Set<FeatureStructure> alreadySeen = new HashSet<FeatureStructure>();
+    Set<FeatureStructure> alreadySeen = new HashSet<>();
     FeatureStructure nextFs;
     for (FeatureStructure currentFs = fs; currentFs.getType() != emptyFSList; currentFs = nextFs) {
-      list.add(Float.valueOf(currentFs.getFloatValue(headFeature)));
+      list.add(currentFs.getFloatValue(headFeature));
       nextFs = currentFs.getFeatureValue(tailFeature);
       if (alreadySeen.contains(nextFs)) {
         return loopInList(list);
@@ -460,22 +463,22 @@ public class DebugFSLogicalStructure {
     }
     float[] floatArray = new float[list.size()];
     for (int i = 0; i < floatArray.length; i++) {
-      floatArray[i] = list.get(i).floatValue();
+      floatArray[i] = list.get(i);
     }
     return floatArray;
   }
 
   public static Object integerListToArray(FeatureStructure fs) {
-    List<Integer> list = new ArrayList<Integer>();
+    List<Integer> list = new ArrayList<>();
     TypeSystem ts = fs.getCAS().getTypeSystem();
     Type emptyFSList = ts.getType("uima.cas.EmptyIntegerList");
     Feature headFeature = ts.getFeatureByFullName("uima.cas.NonEmptyIntegerList:head");
     Feature tailFeature = ts.getFeatureByFullName("uima.cas.NonEmptyIntegerList:tail");
 
-    Set<FeatureStructure> alreadySeen = new HashSet<FeatureStructure>();
+    Set<FeatureStructure> alreadySeen = new HashSet<>();
     FeatureStructure nextFs;
     for (FeatureStructure currentFs = fs; currentFs.getType() != emptyFSList; currentFs = nextFs) {
-      list.add(Integer.valueOf(currentFs.getIntValue(headFeature)));
+      list.add(currentFs.getIntValue(headFeature));
       nextFs = currentFs.getFeatureValue(tailFeature);
       if (alreadySeen.contains(nextFs)) {
         return loopInList(list);
@@ -484,19 +487,19 @@ public class DebugFSLogicalStructure {
     }
     int[] intArray = new int[list.size()];
     for (int i = 0; i < intArray.length; i++) {
-      intArray[i] = list.get(i).intValue();
+      intArray[i] = list.get(i);
     }
     return intArray;
   }
 
   public static Object stringListToArray(FeatureStructure fs) {
-    List<String> list = new ArrayList<String>();
+    List<String> list = new ArrayList<>();
     TypeSystem ts = fs.getCAS().getTypeSystem();
     Type emptyFSList = ts.getType("uima.cas.EmptyStringList");
     Feature headFeature = ts.getFeatureByFullName("uima.cas.NonEmptyStringList:head");
     Feature tailFeature = ts.getFeatureByFullName("uima.cas.NonEmptyStringList:tail");
 
-    Set<FeatureStructure> alreadySeen = new HashSet<FeatureStructure>();
+    Set<FeatureStructure> alreadySeen = new HashSet<>();
     FeatureStructure nextFs;
     for (FeatureStructure currentFs = fs; currentFs.getType() != emptyFSList; currentFs = nextFs) {
       list.add(currentFs.getStringValue(headFeature));
@@ -510,13 +513,13 @@ public class DebugFSLogicalStructure {
   }
 
   public static Object fsListToArray(FeatureStructure fs) {
-    List<FeatureStructure> list = new ArrayList<FeatureStructure>();
+    List<FeatureStructure> list = new ArrayList<>();
     TypeSystem ts = fs.getCAS().getTypeSystem();
     Type emptyFSList = ts.getType("uima.cas.EmptyFSList");
     Feature headFeature = ts.getFeatureByFullName("uima.cas.NonEmptyFSList:head");
     Feature tailFeature = ts.getFeatureByFullName("uima.cas.NonEmptyFSList:tail");
 
-    Set<FeatureStructure> alreadySeen = new HashSet<FeatureStructure>();
+    Set<FeatureStructure> alreadySeen = new HashSet<>();
     FeatureStructure nextFs;
     for (FeatureStructure currentFs = fs; currentFs.getType() != emptyFSList; currentFs = nextFs) {
       list.add(currentFs.getFeatureValue(headFeature));

@@ -21,6 +21,8 @@ package org.apache.uima.internal.util;
 
 import java.util.Arrays;
 
+import org.apache.uima.util.impl.Constants;
+
 /**
  * An implementation of a text tokenizer for whitespace separated natural lanuage text.
  * 
@@ -84,13 +86,13 @@ public class TextTokenizer {
 
   private int pos;
 
-  private char[] eosDels = new char[0];
+  private char[] eosDels = Constants.EMPTY_CHAR_ARRAY;
 
-  private char[] separators = new char[0];
+  private char[] separators = Constants.EMPTY_CHAR_ARRAY;
 
-  private char[] whitespace = new char[0];
+  private char[] whitespace = Constants.EMPTY_CHAR_ARRAY;
 
-  private char[] wordChars = new char[0];
+  private char[] wordChars = Constants.EMPTY_CHAR_ARRAY;
 
   private int nextTokenStart;
 

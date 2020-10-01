@@ -39,6 +39,9 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.CopyOption;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -54,6 +57,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import org.apache.uima.util.impl.Constants;
 
 /**
  * The <code>FileUtil</code> class provides utility methods for working with general files.
@@ -379,37 +384,19 @@ public class FileUtil {
    *         otherwise.
    * @throws IOException
    *           If any I/O exception occurred.
+   * @deprecated use Java 7 for this see {@link java.nio.file.Files#copy(Path, Path, CopyOption...)}
    */
+  @Deprecated
   public static boolean copyFile(File source, File destination) throws IOException {
-    boolean completed = false;
-    BufferedInputStream iStream = null;
-    BufferedOutputStream oStream = null;
-    try {
-      iStream = new BufferedInputStream(new FileInputStream(source));
-      oStream = new BufferedOutputStream(new FileOutputStream(destination));
+    try (BufferedInputStream iStream = new BufferedInputStream(new FileInputStream(source));
+         BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(destination))) {
       byte[] block = new byte[4096];
       int bCount = 0;
       while ((bCount = iStream.read(block)) > 0) {
         oStream.write(block, 0, bCount);
       }
-      iStream.close();
-      oStream.close();
-      completed = true;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
-      if (oStream != null) {
-        try {
-          oStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
-    return completed;
+    return true;
   }
 
   /**
@@ -423,37 +410,19 @@ public class FileUtil {
    *         otherwise.
    * @throws IOException
    *           If any I/O exception occurred.
+   * @deprecated use Java 7 for this see {@link java.nio.file.Files#copy(InputStream, Path, CopyOption...)}
    */
+  @Deprecated
   public static boolean copyFile(URL sourceUrl, File destination) throws IOException {
-    boolean completed = false;
-    BufferedInputStream iStream = null;
-    BufferedOutputStream oStream = null;
-    try {
-      iStream = new BufferedInputStream(sourceUrl.openStream());
-      oStream = new BufferedOutputStream(new FileOutputStream(destination));
+    try (BufferedInputStream iStream = new BufferedInputStream(sourceUrl.openStream());
+         BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(destination))) {
       byte[] block = new byte[4096];
       int bCount = 0;
       while ((bCount = iStream.read(block)) > 0) {
         oStream.write(block, 0, bCount);
       }
-      iStream.close();
-      oStream.close();
-      completed = true;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
-      if (oStream != null) {
-        try {
-          oStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
-    return completed;
+    return true;
   }
 
   /**
@@ -489,7 +458,7 @@ public class FileUtil {
    *              If any I/O exception occurs.
    */
   public static Collection<File> createDirList(File rootDir, boolean includeSubdirs) throws IOException {
-    ArrayList<File> listOfDirs = new ArrayList<File>();
+    ArrayList<File> listOfDirs = new ArrayList<>();
     File[] allDirFiles = rootDir.listFiles();
     if (allDirFiles == null)
       throw new FileNotFoundException("invalid directory specified");
@@ -517,7 +486,7 @@ public class FileUtil {
    *           If any I/O exception occurs.
    */
   public static Collection<File> createDirList(JarFile archive) throws IOException {
-    ArrayList<File> listOfDirs = new ArrayList<File>();
+    ArrayList<File> listOfDirs = new ArrayList<>();
     // set root_dir_path = archive_file_path (w/o file name extension)
     int nameEndIndex = archive.getName().lastIndexOf('.');
     String rootDirPath = (nameEndIndex > 0) ? archive.getName().substring(0, nameEndIndex)
@@ -575,7 +544,7 @@ public class FileUtil {
    *              If any I/O exception occurs.
    */
   public static Collection<File> createFileList(File filesDir, boolean includeSubdirs) throws IOException {
-    ArrayList<File> listOfFiles = new ArrayList<File>();
+    ArrayList<File> listOfFiles = new ArrayList<>();
     File[] allDirFiles = filesDir.listFiles();
     if (allDirFiles == null)
       throw new FileNotFoundException("invalid directory specified");
@@ -601,7 +570,7 @@ public class FileUtil {
    *           If any I/O exception occurs.
    */
   public static Collection<File> createFileList(JarFile archive) throws IOException {
-    ArrayList<File> listOfFiles = new ArrayList<File>();
+    ArrayList<File> listOfFiles = new ArrayList<>();
     // set root_dir_path = archive_file_path (w/o file name extension)
     int nameEndIndex = archive.getName().lastIndexOf('.');
     String rootDirPath = (nameEndIndex > 0) ? archive.getName().substring(0, nameEndIndex)
@@ -632,7 +601,10 @@ public class FileUtil {
    * @return The <code>File</code> object denoting the newly created file.
    * @throws IOException
    *           If a temporary directory not found or other I/O exception occurred.
+   * @deprecated use Java 7 method for this see
+   *             {@link java.io.File#createTempFile(String, String, File)}
    */
+  @Deprecated
   public static File createTempFile(String prefix, String suffix) throws IOException {
     String tempDirPath = System.getProperty("java.io.tmpdir");
     if (tempDirPath == null)
@@ -764,31 +736,12 @@ public class FileUtil {
         File dir = file.getParentFile();
         if (!dir.exists() && !dir.mkdirs())
           throw new IOException("could not create directory " + dir.getAbsolutePath());
-        BufferedInputStream iStream = null;
-        BufferedOutputStream oStream = null;
-        try {
-          iStream = new BufferedInputStream(jarFile.getInputStream(jarEntry));
-          oStream = new BufferedOutputStream(new FileOutputStream(file));
+        try (BufferedInputStream iStream = new BufferedInputStream(jarFile.getInputStream(jarEntry));
+             BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(file))) {
           int bCount = 0;
           while ((bCount = iStream.read(block)) > 0) {
             totalBytes += bCount;
             oStream.write(block, 0, bCount);
-          }
-          iStream.close();
-          oStream.close();
-        } finally {
-          // close streams
-          if (iStream != null) {
-            try {
-              iStream.close();
-            } catch (Exception e) {
-            }
-          }
-          if (oStream != null) {
-            try {
-              oStream.close();
-            } catch (Exception e) {
-            }
           }
         }
       }
@@ -840,7 +793,9 @@ public class FileUtil {
    * @param fileLocation
    *          The given file location - local file path or URL.
    * @return The given file size, if the specified file can be accessed, -1 otherwise.
+   * @deprecated use Java 7 method for this see {@link java.nio.file.Files#size(Path)}
    */
+  @Deprecated
   public static long getFileSize(String fileLocation) {
     long fileSize = 0;
     // choose file size method: local FS or HTTP
@@ -986,7 +941,7 @@ public class FileUtil {
    */
   public static String[] loadListOfStrings(BufferedReader iStream) throws IOException {
     String[] outputArray = null;
-    List<String> outputList = new ArrayList<String>();
+    List<String> outputList = new ArrayList<>();
     String line = null;
     while ((line = iStream.readLine()) != null) {
       String string = line.trim();
@@ -997,7 +952,7 @@ public class FileUtil {
       outputArray = new String[outputList.size()];
       outputList.toArray(outputArray);
     }
-    return (outputArray != null) ? outputArray : new String[0];
+    return (outputArray != null) ? outputArray : Constants.EMPTY_STRING_ARRAY;
   }
 
   /**
@@ -1009,24 +964,15 @@ public class FileUtil {
    * @return The array of non-empty strings loaded from the given text file.
    * @throws IOException
    *           If any I/O exception occurred.
+   * @deprecated use Java 7 method for this see {@link java.nio.file.Files#readAllLines(Path, Charset)}
    */
+  @Deprecated
   public static String[] loadListOfStrings(File textFile) throws IOException {
-    BufferedReader iStream = null;
-    String[] outputArray = null;
-    try {
-      iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile)));
+    String[] outputArray;
+    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile)))) {
       outputArray = loadListOfStrings(iStream);
-    } catch (IOException exc) {
-      throw exc;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
-    return (outputArray != null) ? outputArray : new String[0];
+    return (outputArray != null) ? outputArray : Constants.EMPTY_STRING_ARRAY;
   }
 
   /**
@@ -1042,22 +988,11 @@ public class FileUtil {
     URLConnection urlConnection = textFileURL.openConnection();
     // See https://issues.apache.org/jira/browse/UIMA-1746
     urlConnection.setUseCaches(false);
-    BufferedReader iStream = null;
-    String[] outputArray = null;
-    try {
-      iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+    String[] outputArray;
+    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
       outputArray = loadListOfStrings(iStream);
-    } catch (IOException exc) {
-      throw exc;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
-    return (outputArray != null) ? outputArray : new String[0];
+    return (outputArray != null) ? outputArray : Constants.EMPTY_STRING_ARRAY;
   }
 
   /**
@@ -1078,18 +1013,9 @@ public class FileUtil {
     String name = propFilePath.replace('\\', '/');
     JarEntry jarEntry = jarFile.getJarEntry(name);
     if (jarEntry != null) {
-      InputStream iStream = null;
-      try {
-        iStream = jarFile.getInputStream(jarEntry);
+      try (InputStream iStream = jarFile.getInputStream(jarEntry)) {
         properties = new Properties();
         properties.load(iStream);
-      } finally {
-        if (iStream != null) {
-          try {
-            iStream.close();
-          } catch (Exception e) {
-          }
-        }
       }
     }
     return properties;
@@ -1135,22 +1061,15 @@ public class FileUtil {
    *          The given text file.
    * @throws IOException
    *           If any I/O exception occurs.
+   * @deprecated use main file util for this, see
+   *             {@link org.apache.uima.util.FileUtils#file2String(File)} 
+   *             if using the default charset is OK
    */
+  @Deprecated
   public static String loadTextFile(File textFile) throws IOException {
-    BufferedReader iStream = null;
-    String content = null;
-    try {
-      iStream = new BufferedReader(new FileReader(textFile));
+    String content;
+    try (BufferedReader iStream = new BufferedReader(new FileReader(textFile))) {
       content = loadTextFile(iStream);
-    } catch (IOException exc) {
-      throw exc;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
     return content;
   }
@@ -1165,24 +1084,15 @@ public class FileUtil {
    *          The given text file encoding name.
    * @throws IOException
    *           If any I/O exception occurs.
+   * @deprecated use main file util for this, see
+   *             {@link org.apache.uima.util.FileUtils#file2String(File, String)}
+   *             if using the default Charset is OK
    */
+  @Deprecated
   public static String loadTextFile(File textFile, String encoding) throws IOException {
-    BufferedReader iStream = null;
-    String content = null;
-    try {
-      iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), encoding));
-      content = loadTextFile(iStream);
-    } catch (IOException exc) {
-      throw exc;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
+    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(new FileInputStream(textFile), encoding))) {
+      return loadTextFile(iStream);
     }
-    return content;
   }
 
   /**
@@ -1211,24 +1121,11 @@ public class FileUtil {
    *           If any I/O exception occurs.
    */
   public static String loadTextFile(URLConnection urlConnection) throws IOException {
-    BufferedReader iStream = null;
-    String content = null;
     // See https://issues.apache.org/jira/browse/UIMA-1746
-    urlConnection.setUseCaches(false);    
-    try {
-      iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-      content = loadTextFile(iStream);
-    } catch (IOException exc) {
-      throw exc;
-    } finally {
-      if (iStream != null) {
-        try {
-          iStream.close();
-        } catch (Exception e) {
-        }
-      }
+    urlConnection.setUseCaches(false);
+    try (BufferedReader iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
+      return loadTextFile(iStream);
     }
-    return content;
   }
 
   /**
@@ -1248,17 +1145,8 @@ public class FileUtil {
     String name = filePath.replace('\\', '/');
     JarEntry jarEntry = jarFile.getJarEntry(name);
     if (jarEntry != null) {
-      BufferedReader iStream = null;
-      try {
-        iStream = new BufferedReader(new InputStreamReader(jarFile.getInputStream(jarEntry)));
+      try (BufferedReader iStream = new BufferedReader(new InputStreamReader(jarFile.getInputStream(jarEntry)))) {
         content = loadTextFile(iStream);
-      } finally {
-        if (iStream != null) {
-          try {
-            iStream.close();
-          } catch (Exception e) {
-          }
-        }
       }
     }
     return content;
@@ -1299,7 +1187,9 @@ public class FileUtil {
    *         otherwise.
    * @throws IOException
    *           If any I/O exception occurred.
+   * @deprecated use Java 7 for this see {@link java.nio.file.Files#move(Path, Path, CopyOption...)}
    */
+  @Deprecated
   public static boolean moveFile(File source, File destinationDir) throws IOException {
     boolean completed = false;
     File destination = new File(destinationDir, source.getName());
@@ -1413,7 +1303,7 @@ public class FileUtil {
    * @return The list of files sorted by the 'last modified' time in the descending order.
    */
   public static SortedSet<File> sortFileListByTime(Collection<File> fileList) {
-    TreeSet<File> set = new TreeSet<File>(new FileTimeComparator());
+    TreeSet<File> set = new TreeSet<>(new FileTimeComparator());
     set.addAll(fileList);
     return set;
   }
@@ -1447,21 +1337,12 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static File zipDirectory(File dir2zip, File zippedFile) throws IOException {
-    ZipOutputStream zoStream = null;
-    try {
+    try (ZipOutputStream zoStream = new ZipOutputStream(new FileOutputStream(zippedFile))) {
       // open compressed output stream
-      zoStream = new ZipOutputStream(new FileOutputStream(zippedFile));
       // add output zip file to exclusions
       File[] excludeFiles = new File[1];
       excludeFiles[0] = zippedFile;
       zipDirectory(dir2zip, zoStream, dir2zip, excludeFiles);
-    } finally {
-      if (zoStream != null) {
-        try {
-          zoStream.close();
-        } catch (Exception e) {
-        }
-      }
     }
     return zippedFile;
   }

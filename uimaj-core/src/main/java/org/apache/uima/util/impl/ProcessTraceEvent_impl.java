@@ -187,7 +187,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
    */
   public void addSubEvent(ProcessTraceEvent aEvent) {
     if (mSubEvents == null) {
-      mSubEvents = new ArrayList<ProcessTraceEvent>();
+      mSubEvents = new ArrayList<>();
     }
     mSubEvents.add(aEvent);
   }

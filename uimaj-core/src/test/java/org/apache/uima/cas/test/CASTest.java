@@ -19,16 +19,15 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.impl.Heap;
 import org.apache.uima.cas.text.AnnotationIndex;
+
+import junit.framework.TestCase;
 
 /**
  * Class comment for CASTest.java goes here.
@@ -51,7 +50,7 @@ public class CASTest extends TestCase {
 
   public void setUp() {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
     } catch (Exception e) {
       assertTrue(false);
@@ -108,7 +107,7 @@ public class CASTest extends TestCase {
     final int arraySize = 1000000;
     // Make sure that the structure we're trying to create is actually larger
     // than the page size we're testing with.
-    assertTrue(arraySize > Heap.DEFAULT_SIZE);
+//    assertTrue(arraySize > Heap.DEFAULT_SIZE);
     IntArrayFS array = null;
     try {
       array = this.cas.createIntArrayFS(arraySize);

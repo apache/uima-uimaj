@@ -90,7 +90,7 @@ public class CasPool {
     mNumInstances = aNumInstances;
     permits = new Semaphore(mNumInstances, true);
     mAllInstances = allInstances;
-    Set<CAS> free = Collections.newSetFromMap(new ConcurrentHashMap<CAS, Boolean>());
+    Set<CAS> free = Collections.newSetFromMap(new ConcurrentHashMap<>());
     free.addAll(mAllInstances);
     mFreeInstances = free;  // concurrent safe publishing idiom 
   }
@@ -352,7 +352,7 @@ public class CasPool {
           throws ResourceInitializationException {
     // create first CAS from metadata
     CAS c0 = CasCreationUtils.createCas(casDef, performanceTuningSettings);
-    Set<CAS> all = new HashSet<CAS>(aNumInstances);
+    Set<CAS> all = new HashSet<>(aNumInstances);
     // set owner so cas.release() can return it to the pool
     ((CASImpl) c0).setOwner(casDef.getCasManager());
     all.add(c0);
@@ -367,7 +367,7 @@ public class CasPool {
 
   private static Set<CAS> fillPool(int aNumInstances, CasManager casManager, Properties performanceTuningSettings)
           throws ResourceInitializationException {
-    Set<CAS> all = new HashSet<CAS>(aNumInstances);
+    Set<CAS> all = new HashSet<>(aNumInstances);
     // create additional CASes that share same type system
     for (int i = 0; i < aNumInstances; i++) {
       CAS c = casManager.createNewCas(performanceTuningSettings);
@@ -380,12 +380,12 @@ public class CasPool {
   // no callers as of March 2014
   // left as Vector
   protected Vector<CAS> getAllInstances() {
-    return new Vector<CAS>(mAllInstances);
+    return new Vector<>(mAllInstances);
   }
 
   // no callers as of March 2014
   // left as Vector
   protected Vector<CAS> getFreeInstances() {
-    return new Vector<CAS>(mFreeInstances);
+    return new Vector<>(mFreeInstances);
   }
 }
