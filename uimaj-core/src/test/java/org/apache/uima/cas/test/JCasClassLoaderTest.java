@@ -19,17 +19,18 @@
 package org.apache.uima.cas.test;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.UIMAFramework.produceAnalysisEngine;
 import static org.apache.uima.util.CasCreationUtils.createCas;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,7 +40,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.analysis_component.Annotator_ImplBase;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -80,7 +83,8 @@ public class JCasClassLoaderTest {
   
   /**
    * This test simulates an environment as it could exist when using e.g. PEARs. We use a vanilla
-   * JCas and the analysis engines each use local JCas wrappers.
+   * JCas and the analysis engines each use local JCas wrappers which are provided as an extra classpath
+   * passed to the resource manager.
    * 
    * <ul>
    * <li>JCas does not know JCas wrappers for the {@code Token} type.</li>
@@ -97,7 +101,81 @@ public class JCasClassLoaderTest {
    * <b>NOTE:</b> This test fails in UIMAv3.
    */
   @Test
-  public void thatCASCanBeDefinedWithoutJCasWrappersAndTheyComeInWithAnnotators() throws Exception {
+  public void thatCASCanBeDefinedWithoutJCasWrappersAndTheyComeInWithAnnotatorsViaClasspath() throws Exception {
+    ClassLoader rootCl = getClass().getClassLoader();
+
+    // We do not want the CAS to know the Token JCas wrapper when it gets initialized
+    ClassLoader clForCas = new IsolatingClassloader("CAS", rootCl)
+            .hiding("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*");
+
+    
+    File cpBase = new File("target/test-output/JCasClassLoaderTest/classes");
+    File cpPackageBase = new File(cpBase, "org/apache/uima/cas/test");
+    cpPackageBase.mkdirs();
+    FileUtils.copyFile(
+            new File("target/test-classes/org/apache/uima/cas/test/Token.class"), 
+            new File(cpPackageBase, "Token.class"));
+    FileUtils.copyFile(
+            new File("target/test-classes/org/apache/uima/cas/test/Token_Type.class"), 
+            new File(cpPackageBase, "Token_Type.class"));
+    FileUtils.copyFile(
+            new File("target/test-classes/org/apache/uima/cas/test/Token_Type$1.class"), 
+            new File(cpPackageBase, "Token_Type$1.class"));
+    FileUtils.copyFile(
+            new File("target/test-classes/org/apache/uima/cas/test/JCasClassLoaderTest$AddATokenAnnotator.class"), 
+            new File(cpPackageBase, "JCasClassLoaderTest$AddATokenAnnotator.class"));
+    FileUtils.copyFile(
+            new File("target/test-classes/org/apache/uima/cas/test/JCasClassLoaderTest$FetchTheTokenAnnotator.class"), 
+            new File(cpPackageBase, "JCasClassLoaderTest$FetchTheTokenAnnotator.class"));
+    
+    JCas jcas = makeJCas(clForCas);
+    AnalysisEngine addATokenAnnotator = makeAnalysisEngine(AddATokenAnnotator.class,
+            cpBase.toURI().toURL());
+    AnalysisEngine fetchTheTokenAnnotator = makeAnalysisEngine(FetchTheTokenAnnotator.class,
+            cpBase.toURI().toURL());
+    
+    jcas.setDocumentText("test");
+    
+    addATokenAnnotator.process(jcas);
+    fetchTheTokenAnnotator.process(jcas);
+    
+    try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
+      softly.assertThat(casTokenClass).isNull();
+      softly.assertThat(addTokenAETokenClass).isNotNull();
+      softly.assertThat(fetchTokenAETokenClass).isNotNull();
+      softly.assertThat(addTokenAETokenClass)
+          .as("AddTokenAnnotator and FetchTokenAnnotator use different Token wrappers")
+          .isNotEqualTo(fetchTokenAETokenClass);
+      softly.assertThat(indexedTokenClass)
+          .as("JCas in FetchTokenAnnotator provides Token JCas wrapper from FetchTokenAnnotator CL")
+          .isEqualTo(fetchTokenAETokenClass);
+      softly.assertThat(fetchThrowsClassCastException)
+          .as("Classcast exception thrown when trying to retrieve Token from index")
+          .isFalse();
+    }
+  }
+  
+  /**
+   * This test simulates an environment as it could exist when using e.g. OSGI. We use a vanilla
+   * JCas and the analysis engines each use local JCas wrappers which are provided via a classloader
+   * that is provided to the resource manager.
+   * 
+   * <ul>
+   * <li>JCas does not know JCas wrappers for the {@code Token} type.</li>
+   * <li>AddATokenAnnotator uses a local version of the {@code Token} type.</li>
+   * <li>FetchTheTokenAnnotator uses a local version of the {@code Token} type.</li>
+   * </ul>
+   * 
+   * The expectation here is that at the moment when the JCas is passed to the analysis engines,
+   * {@link PrimitiveAnalysisEngine_impl#callAnalysisComponentProcess(CAS) it is reconfigured} using
+   * {@link CASImpl#switchClassLoaderLockCasCL(ClassLoader)} to use the classloader defined in the
+   * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the anlysis
+   * engines should use its own version of the JCas wrappers to access the CAS.
+   * 
+   * <b>NOTE:</b> This test fails in UIMAv3.
+   */
+  @Test
+  public void thatCASCanBeDefinedWithoutJCasWrappersAndTheyComeInWithAnnotatorsViaClassloader() throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
 
     // We do not want the CAS to know the Token JCas wrapper when it gets initialized
@@ -294,7 +372,6 @@ public class JCasClassLoaderTest {
 
   private static Class<?> loadTokenClass(ClassLoader cl)
   {
-    Class<?> clazz;
     try {
       return cl.loadClass(Token.class.getName());
     } catch (ClassNotFoundException e) {
@@ -306,9 +383,9 @@ public class JCasClassLoaderTest {
   private static void printTokenClassLoaderInfo(String context, ClassLoader cl) {
     Class<?> clazz = loadTokenClass(cl);
     if (clazz != null) {
-      System.out.printf("[%s] %s %d %n", context, clazz.getName(), clazz.hashCode());
+      System.out.printf("[%s] %s %d %n", context, clazz.getName(), clazz.hashCode());
     } else {
-      System.out.printf("[%s] %s NOT AVAILABLE %n", context, Token.class.getName());
+      System.out.printf("[%s] %s NOT AVAILABLE %n", context, Token.class.getName());
     }
   }
   
@@ -330,13 +407,30 @@ public class JCasClassLoaderTest {
 
   /**
    * Creates a new analysis engine from the given class using the given classloader and sets it up
-   * so it used the given classloader to load its JCas wrappers.
+   * so it using the given classloader to load its JCas wrappers.
    */
   private AnalysisEngine makeAnalysisEngine(Class<? extends Annotator_ImplBase> aeClass,
           ClassLoader cl) throws ResourceInitializationException, MalformedURLException {
-    printTokenClassLoaderInfo("AE creation: " + aeClass.getSimpleName(), cl);
     ResourceManager resMgr = newDefaultResourceManager();
     resMgr.setExtensionClassPath(cl, "", false);
+    printTokenClassLoaderInfo("AE creation: " + aeClass.getSimpleName(), resMgr.getExtensionClassLoader());
+    AnalysisEngineDescription desc = getResourceSpecifierFactory()
+            .createAnalysisEngineDescription();
+    desc.setAnnotatorImplementationName(aeClass.getName());
+    desc.setPrimitive(true);
+    return produceAnalysisEngine(desc, resMgr, null);
+  }
+
+  /**
+   * Creates a new analysis engine from the given class using the given classpath and sets it up
+   * so it using the given classpath to load its JCas wrappers.
+   */
+  private AnalysisEngine makeAnalysisEngine(Class<? extends Annotator_ImplBase> aeClass,
+          URL... classPath) throws ResourceInitializationException, MalformedURLException {
+    String cp = Stream.of(classPath).map(Object::toString).collect(joining(File.pathSeparator));
+    ResourceManager resMgr = newDefaultResourceManager();
+    resMgr.setExtensionClassPath(cp, false);
+    printTokenClassLoaderInfo("AE creation: " + aeClass.getSimpleName(), resMgr.getExtensionClassLoader());
     AnalysisEngineDescription desc = getResourceSpecifierFactory()
             .createAnalysisEngineDescription();
     desc.setAnnotatorImplementationName(aeClass.getName());
@@ -349,7 +443,7 @@ public class JCasClassLoaderTest {
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
       addTokenAETokenClass = Token.class;
       System.out.printf("%s class loader: %s%n", getClass().getName(), getClass().getClassLoader());
-      System.out.printf("[AE runtime: %s] %s %d %n", getClass().getName(), Token.class.getName(),
+      System.out.printf("[AE runtime: %s] %s %d %n", getClass().getName(), Token.class.getName(),
               Token.class.hashCode());
       
       new Token(aJCas, 0, aJCas.getDocumentText().length()).addToIndexes();
@@ -361,10 +455,10 @@ public class JCasClassLoaderTest {
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
       fetchTokenAETokenClass = Token.class;
       System.out.printf("%s class loader: %s%n", getClass().getName(), getClass().getClassLoader());
-      System.out.printf("[AE runtime: %s] %s %d %n", getClass().getName(), Token.class.getName(),
+      System.out.printf("[AE runtime: %s] %s %d %n", getClass().getName(), Token.class.getName(),
               Token.class.hashCode());
       Object casToken = aJCas.getAllIndexedFS(Token.class).get();
-      System.out.printf("[AE runtime CAS: %s] %s %d %n", getClass().getName(),
+      System.out.printf("[AE runtime CAS: %s] %s %d %n", getClass().getName(),
               casToken.getClass().getName(), casToken.getClass().hashCode());
       indexedTokenClass = casToken.getClass();
       
