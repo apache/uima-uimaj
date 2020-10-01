@@ -154,10 +154,18 @@
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.swt</artifactId>
         </exclusion>
-        
+        <!-- https://issues.apache.org/jira/browse/UIMA-6267 -->
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna.platform</artifactId>
+        </exclusion>
       </exclusions>
-      <scope>provided</scope>
-    </dependency>
+			<scope>provided</scope>
+		</dependency>	
     
     <!-- 
     <dependency>
@@ -176,6 +184,15 @@
            <groupId>org.eclipse.platform</groupId>
            <artifactId>org.eclipse.swt</artifactId>
          </exclusion>
+        <!-- https://issues.apache.org/jira/browse/UIMA-6267 -->
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna.platform</artifactId>
+        </exclusion>
        </exclusions>
        <scope>provided</scope>
      </dependency>
@@ -189,14 +206,13 @@
     
     <!-- the need for this one may go away when the ui dependency 
          can be included -->
-     
-   <dependency>
+    <dependency>
       <groupId>org.eclipse.swt</groupId>
       <artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
       <version>[3.2.0,5.0.0)</version>
       <scope>provided</scope>
-    </dependency>
-    
+    </dependency>   
+
     <!-- These next dependencies are just to lock down the
          transitive dependencies of the above.
          This was done because on Sept 7 2010 somebody uploaded
@@ -267,7 +283,7 @@
       <artifactId>org.eclipse.core.variables</artifactId>
       <version>3.1.100</version>
       <scope>provided</scope>      
-    </dependency>
+    </dependency>    
      -->    
 	</dependencies>
 	<build>

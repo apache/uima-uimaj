@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-      <scope>test</scope>
+            <scope>test</scope>
 		</dependency>
 
 		<!-- UIMA dependencies -->
@@ -93,12 +93,12 @@
 			<artifactId>uimaj-tools</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.uima</groupId>
-          <artifactId>uimaj-cpe</artifactId>
-        </exclusion>
-      </exclusions>
+            <exclusions>
+              <exclusion>
+                <groupId>org.apache.uima</groupId>
+                <artifactId>uimaj-cpe</artifactId>
+              </exclusion>
+            </exclusions>
       
 		</dependency>
 
@@ -126,8 +126,8 @@
 			<scope>provided</scope>
 		</dependency>
      -->
-     
-    <dependency>
+
+		<dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>org.eclipse.jdt.ui</artifactId>
       <version>[3.12.0,4.0.0)</version>
@@ -161,7 +161,15 @@
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.swt</artifactId>
         </exclusion>
-        
+        <!-- https://issues.apache.org/jira/browse/UIMA-6267 -->
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna.platform</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
      
@@ -189,8 +197,8 @@
       <version>[1.6.1,2.0.0)</version>
       <scope>provided</scope>
     </dependency>
-    
-    <dependency>
+
+		<dependency>
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.core.resources</artifactId>
       <version>[3.11.1,4.0.0)</version>
@@ -212,6 +220,15 @@
            <groupId>org.eclipse.platform</groupId>
            <artifactId>org.eclipse.swt</artifactId>
          </exclusion>
+        <!-- https://issues.apache.org/jira/browse/UIMA-6267 -->
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jna</groupId>
+          <artifactId>com.sun.jna.platform</artifactId>
+        </exclusion>
        </exclusions>
       
 		</dependency>
@@ -225,6 +242,15 @@
          <exclusion>
            <groupId>org.eclipse.platform</groupId>
            <artifactId>org.eclipse.swt</artifactId>
+         </exclusion>
+         <!-- https://issues.apache.org/jira/browse/UIMA-6267 -->
+         <exclusion>
+           <groupId>com.sun.jna</groupId>
+           <artifactId>com.sun.jna</artifactId>
+         </exclusion>
+         <exclusion>
+           <groupId>com.sun.jna</groupId>
+           <artifactId>com.sun.jna.platform</artifactId>
          </exclusion>
        </exclusions>
       
@@ -241,7 +267,7 @@
            <artifactId>org.eclipse.swt</artifactId>
          </exclusion>
        </exclusions>
-      
+		
 		</dependency>
 		<!-- 
     <dependency>
