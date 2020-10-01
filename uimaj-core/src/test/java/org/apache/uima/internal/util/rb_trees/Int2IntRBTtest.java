@@ -24,10 +24,10 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.internal.util.IntKeyValueIterator;
 import org.apache.uima.internal.util.IntListIterator;
+
+import junit.framework.TestCase;
 
 public class Int2IntRBTtest extends TestCase {
   
@@ -60,7 +60,7 @@ public class Int2IntRBTtest extends TestCase {
     IntListIterator itl = ia.keyIterator();
 
     while(itl.hasNext()){
-      r[i++] = itl.next();  
+      r[i++] = itl.nextNvc();  
     }
     assertEquals(i, vs.length - 1);
     assertTrue(Arrays.equals(r, new Integer[] {1, 2, 3, 4, 5, 6, 7, null}));
@@ -92,7 +92,7 @@ public class Int2IntRBTtest extends TestCase {
   public void testFastLookup() {
     Int2IntRBT ia = new Int2IntRBT();
     Random r = new Random();
-    Set<Integer> keys = new HashSet<Integer>(1000);
+    Set<Integer> keys = new HashSet<>(1000);
     
     for (int i = 0; i < 1000; i++) {
       int k = r.nextInt(1000);

@@ -32,37 +32,61 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+
+/**
+ * The Class CasProcessorFilterImpl.
+ */
 public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasProcessorFilter {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1879442561195094666L;
 
+  /** The filter. */
   private String filter;
 
+  /**
+   * Instantiates a new cas processor filter impl.
+   */
   public CasProcessorFilterImpl() {
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.metadata.CasProcessorFilter#setFilterString(java.lang.String)
+   */
+  @Override
   public void setFilterString(String aFilterString) {
     filter = aFilterString;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.metadata.CasProcessorFilter#getFilterString()
+   */
+  @Override
   public String getFilterString() {
     return filter;
   }
 
   /**
    * Overridden to read "name" and "value" attributes.
-   * @param aElement -
-   * @param aParser -
-   * @param aOptions -
-   * @throws InvalidXMLException -
+   *
+   * @param aElement the a element
+   * @param aParser the a parser
+   * @param aOptions the a options
+   * @throws InvalidXMLException the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     filter = XMLUtils.getText(aElement);
 
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler, boolean)
+   */
+  @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
@@ -86,14 +110,21 @@ public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasPr
     aContentHandler.endElement(inf.namespace, inf.elementTagName, inf.elementTagName);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("filter",
           new PropertyXmlInfo[0]);
 
   /**
+   * Gets the filter.
+   *
    * @return the filter
    */
   public String getFilter() {
@@ -101,7 +132,9 @@ public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasPr
   }
 
   /**
-   * @param string -
+   * Sets the filter.
+   *
+   * @param string the new filter
    */
   public void setFilter(String string) {
     filter = string;

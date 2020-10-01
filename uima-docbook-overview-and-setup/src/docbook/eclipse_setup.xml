@@ -66,8 +66,8 @@ under the License.
           url="&url_eclipse;"/> and follow the instructions there to download Eclipse.
         </para></listitem>
         
-        <listitem><para>We recommend using the latest release level (not an
-          <quote>Integration level</quote>). Navigate to the Eclipse Release version you
+        <listitem><para>We recommend using the latest release level. 
+          Navigate to the Eclipse Release version you
           want and download the archive for your platform.</para></listitem>
         
         <listitem><para>Unzip the archive to install Eclipse somewhere, e.g., c:\</para>
@@ -87,7 +87,7 @@ under the License.
     <section id="ugr.ovv.eclipse_setup.install_uima_eclipse_plugins">
       <title>Installing the UIMA Eclipse Plugins</title>
       
-      <para>The best way to do this is to use the Eclipse Update mechanism, because that will 
+      <para>The best way to do this is to use the Eclipse Install New Software mechanism, because that will 
         insure that all needed prerequisites are also installed.  See below for an alternative,
         manual approach.</para>
       
@@ -98,13 +98,18 @@ under the License.
         information about your proxy. </para></note>
 
       
-      <para>To use the Eclipse Update mechanism, start Eclipse, and then pick the menu 
+      <para>To use the Eclipse Install New Software mechanism, start Eclipse, and then pick the menu 
         <command>Help &rarr; Install new software...</command>.  In the next page, enter
-        the following URL in the "Work with" box and press enter: 
-        http://www.apache.org/dist/uima/eclipse-update-site/.</para>
+        the following URL in the "Work with" box and press enter:
+        <itemizedlist>
+          <listitem><para></para><code>https://www.apache.org/dist/uima/eclipse-update-site/</code> or</listitem>
+          <listitem><para></para><code>https://www.apache.org/dist/uima/eclipse-update-site-uv3/</code>.</listitem>
+        </itemizedlist>
+        Choose the 2nd if you are working with core UIMA Java SDK at version 3 or later.
+       .</para>
       
       <para>Now select the plugin tools you wish to install, and click Next, and follow the 
-        remaining panels to install the UIMA plugins.</para>
+        remaining panels to install the UIMA plugins.  </para>
     </section>
 
     <!--      
@@ -206,7 +211,7 @@ under the License.
       <para>If you are unable to use the Eclipse Update mechanism to install the UIMA plugins, you 
         can do this manually.  In the directory %UIMA_HOME%/eclipsePlugins (The environment variable
         %UIMA_HOME% is where you installed the UIMA SDK), you will see a set of folders. Copy these
-        to your %ECLIPSE_HOME%/eclipse/plugins directory (%ECLIPSE_HOME% is where you
+        to your %ECLIPSE_HOME%/dropins directory (%ECLIPSE_HOME% is where you
         installed Eclipse).</para>
       
     </section>
@@ -223,7 +228,7 @@ under the License.
       <section id="ugr.ovv.eclipse_setup.special_startup_parameter_clean">
         <title>Special startup parameter for Eclipse: -clean</title>
         <para>If you have modified the plugin structure (by copying or files directly in the
-          file system) in Eclipse 3.x after you started it for the first time, please include
+          file system) after you started it for the first time, please include
           the <quote>-clean</quote> parameter in the startup arguments to Eclipse,
           <emphasis>one time</emphasis> (after any plugin modifications were done). This
           is needed because Eclipse may not notice the changes you made, otherwise. This
@@ -235,8 +240,8 @@ under the License.
   </section>
   <section id="ugr.ovv.eclipse_setup.example_code">
     <title>Setting up Eclipse to view Example Code</title>
-    <para>Later chapters refer to example code. You can create a special project in Eclipse to
-      hold the examples. Here's how:</para>
+    <para>Later chapters refer to example code. Here's how to create a special project in Eclipse to
+      hold the examples.</para>
     
     <itemizedlist spacing="compact"><listitem><para>In Eclipse, if the Java
       perspective is not already open, switch to it by going to Window &rarr; Open Perspective
@@ -273,7 +278,7 @@ under the License.
         the <quote>Next</quote> button.</para></listitem>
       
       <listitem><para>Click <quote>Browse</quote> and browse to the
-        %UIMA_HOME%/ directory</para></listitem>
+        %UIMA_HOME%/examples directory</para></listitem>
       
       <listitem><para>Click <quote>Finish.</quote> This will create a new project called
         <quote>uimaj-examples</quote> in your Eclipse workspace. There should be no
@@ -290,8 +295,8 @@ under the License.
     <note><para>If you are running a current version of Eclipse, and have the m2e (Maven extensions for Eclipse) 
     plugin installed, Eclipse should be able to automatically download the source for the jars, so you may not need
     to do anything special (it does take a few seconds, and you need an internet connection).</para></note>
-    <para>If you would like to be able to jump to the UIMA source code in Eclipse or to step
-    through it with the debugger, you can add the UIMA source code to the jar files.  This is
+    <para>Otherwise, if you would like to be able to jump to the UIMA source code in Eclipse or to step
+    through it with the debugger, you can add the UIMA source code directly to the jar files.  This is
     done via a shell script that comes with the source distribution.  To add the source code
     to the jars, you need to:
     </para>

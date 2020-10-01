@@ -25,9 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -45,6 +42,9 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 
 public class UimaContext_implTest extends TestCase {
@@ -128,6 +128,14 @@ public class UimaContext_implTest extends TestCase {
     }
   }
 
+  /*
+   * @see TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    UIMAFramework.getXMLParser().enableSchemaValidation(false);
+  }
+
   public void testGetConfigParameterValueString() throws Exception {
     try {
       String str = (String) mContext.getConfigParameterValue("StringParam");
@@ -137,8 +145,8 @@ public class UimaContext_implTest extends TestCase {
       Integer integer = (Integer) mContext.getConfigParameterValue("IntegerParam");
       Assert.assertEquals(Integer.valueOf(42), integer);
       Integer[] intArr = (Integer[]) mContext.getConfigParameterValue("IntegerArrayParam");
-      Assert.assertEquals(Arrays.asList(new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
-          Integer.valueOf(3) }), Arrays.asList(intArr));
+      Assert.assertEquals(Arrays.asList(new Integer[] {1, 2,
+          3}), Arrays.asList(intArr));
       Float flt = (Float) mContext.getConfigParameterValue("FloatParam");
       Assert.assertEquals(Float.valueOf(3.14F), flt);
 
@@ -227,7 +235,7 @@ public class UimaContext_implTest extends TestCase {
       Assert.assertEquals(3, intArr3[2].intValue());
 
       Float floatVal3 = (Float) mContext2.getConfigParameterValue("zh", "FloatParam");
-      Assert.assertEquals(3.14, floatVal3.floatValue(), 0.0001);
+      Assert.assertEquals(3.14, floatVal3, 0.0001);
 
       // testing duplicate groups
       assertEquals("common-a", mContext4.getConfigParameterValue("a", "CommonParam"));
@@ -247,7 +255,7 @@ public class UimaContext_implTest extends TestCase {
   public void testGetConfigurationGroupNames() {
     String[] names = mContext2.getConfigurationGroupNames();
     Assert.assertEquals(5, names.length);
-    ArrayList<String> l = new ArrayList<String>(Arrays.asList(names));
+    ArrayList<String> l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("en"));
     Assert.assertTrue(l.contains("en-US"));
     Assert.assertTrue(l.contains("de"));
@@ -257,7 +265,7 @@ public class UimaContext_implTest extends TestCase {
     // try on something with both groups and groupless parameters
     names = mContext3.getConfigurationGroupNames();
     Assert.assertEquals(5, names.length);
-    l = new ArrayList<String>(Arrays.asList(names));
+    l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("en"));
     Assert.assertTrue(l.contains("en-US"));
     Assert.assertTrue(l.contains("de"));
@@ -293,7 +301,7 @@ public class UimaContext_implTest extends TestCase {
   public void testGetConfigParameterNamesString() {
     String[] names = mContext2.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
-    ArrayList<String> l = new ArrayList<String>(Arrays.asList(names));
+    ArrayList<String> l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("StringParam"));
     Assert.assertTrue(l.contains("StringArrayParam"));
     Assert.assertTrue(l.contains("IntegerParam"));
@@ -310,7 +318,7 @@ public class UimaContext_implTest extends TestCase {
     // try on something with both groups and groupless params
     names = mContext3.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
-    l = new ArrayList<String>(Arrays.asList(names));
+    l = new ArrayList<>(Arrays.asList(names));
     Assert.assertTrue(l.contains("StringParam"));
     Assert.assertTrue(l.contains("StringArrayParam"));
     Assert.assertTrue(l.contains("IntegerParam"));

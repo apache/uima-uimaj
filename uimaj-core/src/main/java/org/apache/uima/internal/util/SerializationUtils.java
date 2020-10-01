@@ -58,16 +58,11 @@ public abstract class SerializationUtils {
       return null;
     }
 
-    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-    ObjectOutputStream objStream = null;
-    try {
-      objStream = new ObjectOutputStream(byteStream);
+    try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            ObjectOutputStream objStream = new ObjectOutputStream(byteStream)) {
       objStream.writeObject(aObject);
       objStream.flush();
       return byteStream.toByteArray();
-    } finally {
-      if (objStream != null)
-        objStream.close();
     }
   }
 
@@ -90,14 +85,9 @@ public abstract class SerializationUtils {
       return null;
     }
 
-    ByteArrayInputStream byteStream = new ByteArrayInputStream(aBytes);
-    ObjectInputStream objStream = null;
-    try {
-      objStream = new ObjectInputStream(byteStream);
+    try (ByteArrayInputStream byteStream = new ByteArrayInputStream(aBytes);
+            ObjectInputStream objStream = new ObjectInputStream(byteStream)) {
       return objStream.readObject();
-    } finally {
-      if (objStream != null)
-        objStream.close();
     }
   }
 }

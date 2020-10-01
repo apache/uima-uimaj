@@ -53,6 +53,8 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 
 public class CasWrapperForTstng implements CAS {
 
@@ -102,7 +104,7 @@ public class CasWrapperForTstng implements CAS {
     return originalCAS.createFloatArrayFS(length);
   }
 
-  public FeatureStructure createFS(Type type) throws CASRuntimeException {
+  public TOP createFS(Type type) throws CASRuntimeException {
     return originalCAS.createFS(type);
   }
 
@@ -162,7 +164,7 @@ public class CasWrapperForTstng implements CAS {
     return originalCAS.getCurrentView();
   }
 
-  public AnnotationFS getDocumentAnnotation() {
+  public Annotation getDocumentAnnotation() {
     return originalCAS.getDocumentAnnotation();
   }
 

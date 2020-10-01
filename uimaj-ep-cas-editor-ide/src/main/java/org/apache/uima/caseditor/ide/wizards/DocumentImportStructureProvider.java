@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 
 import javax.swing.text.BadLocationException;
@@ -141,60 +142,23 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     String fileName = fileToImport.getName();
 
     if (fileName.endsWith(".rtf")) {
-      InputStream in = null;
-
-      try {
-        in = new FileInputStream((File) element);
+      try (InputStream in = new FileInputStream(fileToImport)) {
         String text = convert(in);
-
         return getDocument(fileToImport.getAbsolutePath(), text, language, casFormat);
-      } catch (FileNotFoundException e) {
-        return null;
       } catch (IOException e) {
         return null;
-      } finally {
-        try {
-          if (in != null) {
-            in.close();
-          }
-        } catch (IOException e) {
-          // sorry that this can happen
-        }
       }
-
     } else if (fileName.endsWith(".txt")) {
-      InputStream in = null;
       try {
-        in = new FileInputStream((File) element);
-
-        StringBuilder textStringBuffer = new StringBuilder();
-
-        byte[] readBuffer = new byte[2048];
-
-        while (in.available() > 0) {
-          int length = in.read(readBuffer);
-
-          textStringBuffer.append(new String(readBuffer, 0, length, importEncoding));
-        }
-
-        return getDocument(fileToImport.getAbsolutePath(), textStringBuffer.toString(), language,
+        String text = new String(Files.readAllBytes(fileToImport.toPath()), importEncoding);
+        return getDocument(fileToImport.getAbsolutePath(), text, language,
                 casFormat);
-      } catch (FileNotFoundException e) {
-        return null;
       } catch (IOException e) {
         return null;
-      } finally {
-        if (in != null) {
-          try {
-            in.close();
-          } catch (IOException e) {
-            // sorry that this can fail
-          }
-        }
       }
     } else {
       try {
-        return new FileInputStream((File) element);
+        return new FileInputStream(fileToImport);
       } catch (FileNotFoundException e) {
         return null;
       }

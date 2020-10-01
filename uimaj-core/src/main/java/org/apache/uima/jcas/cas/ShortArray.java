@@ -19,15 +19,24 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.uima.cas.ShortArrayFS;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CommonArrayFS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.ShortArrayFSImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for ShortArray */
-public final class ShortArray extends TOP implements ShortArrayFS, Iterable<Short> {
+public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>, ShortArrayFSImpl, Iterable<Short> {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = CAS.TYPE_NAME_SHORT_ARRAY;
+
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -46,13 +55,11 @@ public final class ShortArray extends TOP implements ShortArrayFS, Iterable<Shor
     return typeIndexID;
   }
 
+  private final short[] theArray;
   // never called. Here to disable default constructor
+  @SuppressWarnings("unused")
   private ShortArray() {
-  }
-
- /* Internal - Constructor used by generator */
-  public ShortArray(int addr, TOP_Type type) {
-    super(addr, type);
+    theArray = null;
   }
 
   /**
@@ -61,87 +68,115 @@ public final class ShortArray extends TOP implements ShortArrayFS, Iterable<Shor
    * @param length The number of elements in the new array
    */
   public ShortArray(JCas jcas, int length) {
-    this(jcas.getLowLevelCas().ll_createShortArray(length), jcas.getType(typeIndexID));
+    super(jcas);
+    theArray = new short[length];
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+      _casView.traceFSCreate(this);
+    }
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
+    }     
+  }
+
+  /**
+   * used by generator
+   * Make a new ShortArray of given size
+   * @param c -
+   * @param t - 
+   * @param length The number of elements in the new array
+   */
+  public ShortArray(TypeImpl t, CASImpl c, int length) {
+    super(t, c);  
+    theArray = new short[length];
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+      _casView.traceFSCreate(this);
+    }
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
+    }     
   }
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#get(int)
    */
   public short get(int i) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    return jcasType.ll_cas.ll_getShortArrayValue(addr, i);
+    return theArray[i];
   }
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#set(int , short)
    */
   public void set(int i, short v) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    jcasType.ll_cas.ll_setShortArrayValue(addr, i, v);
+    theArray[i] = v;
+    _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#copyFromArray(short[], int, int, int)
    */
-  public void copyFromArray(short[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
-    for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setShortArrayValue(addr, i + destOffset, src[i + srcOffset]);
-    }
+  public void copyFromArray(short[] src, int srcPos, int destPos, int length) {
+    System.arraycopy(src, srcPos, theArray, destPos, length);
+    _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#copyToArray(int, short[], int, int)
    */
-  public void copyToArray(int srcOffset, short[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
-    for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = jcasType.ll_cas.ll_getShortArrayValue(addr, i + srcOffset);
-    }
+  public void copyToArray(int srcPos, short[] dest, int destPos, int length) {
+    System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#toArray()
    */
   public short[] toArray() {
-    final int size = size();
-    short[] outArray = new short[size];
-    copyToArray(0, outArray, 0, size);
-    return outArray;
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
   public int size() {
-    return jcasType.casImpl.ll_getArraySize(addr);
+    return theArray.length;
   }
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#copyToArray(int, String[], int, int)
    */
-  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
+  public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
+    _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = Short.toString(jcasType.ll_cas.ll_getShortArrayValue(addr, i
-              + srcOffset));
+      dest[i + destPos] = Short.toString(theArray[i + srcPos]);
     }
   }
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#copyFromArray(String[], int, int, int)
    */
-  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
+  public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
+    _casView.checkArrayBounds(theArray.length, destPos, length);
     for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setShortArrayValue(addr, i + destOffset, Short.parseShort(src[i
-              + srcOffset]));
+      theArray[i + destPos] = Short.parseShort(src[i + srcPos]);
     }
+    _casView.maybeLogArrayUpdates(this, destPos, length);
+  }
+  
+  // internal use
+  public short[] _getTheArray() {
+    return theArray;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
+   */
+  @Override
+  public void copyValuesFrom(CommonArrayFS v) {
+    ShortArray bv = (ShortArray) v;
+    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
+  // used by deserializers
+  public void setArrayValueFromString(int i, String v) {
+    set(i, Short.parseShort(v));
   }
   
   @Override
@@ -160,12 +195,32 @@ public final class ShortArray extends TOP implements ShortArrayFS, Iterable<Shor
           throw new NoSuchElementException();
         return get(i++);
       }
-
-      @Override
-      public void remove() {
-        throw new UnsupportedOperationException();
-      }
-      
     };
   }
+  
+  /**
+   * @param jcas Which CAS to create the array in
+   * @param a the source for the array's initial values
+   * @return a newly created and populated array
+   */
+  public static ShortArray create(JCas jcas, short[] a) {
+    ShortArray shortArray = new ShortArray(jcas, a.length);
+    shortArray.copyFromArray(a, 0, 0, a.length);
+    return shortArray;
+  }
+
+
+  /**
+   * @param item the item to see if is in the array
+   * @return true if the item is in the array
+   */
+  public boolean contains(short item) {
+    for (short b : theArray) {
+      if (b == item) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

@@ -56,14 +56,6 @@ under the License.
       <para> <xref linkend="ugr.project_overview_doc_use"/> describes a recommended path through the
         documentation to help get the reader up and running with UIMA </para>
     </listitem>
-    <listitem>
-      <para> <xref linkend="ugr.project_overview_migrating_from_ibm_uima"/> is intended for users of IBM
-        UIMA, and describes the steps needed to upgrade to Apache UIMA. </para>
-    </listitem>
-    <listitem>
-      <para> <xref linkend="ugr.project_overview_changes_from_v1"/> lists the changes that occurred between UIMA
-        v1.x and UIMA v2.x (independent of the transition to Apache).</para>
-    </listitem>
   </itemizedlist>
     
     <para>The main website for Apache UIMA is <ulink url="http://uima.apache.org"/>.  Here you 
@@ -98,10 +90,13 @@ under the License.
         <listitem>
           <para> References </para>
         </listitem>
+        <listitem>
+          <para>Version 3 users-guide</para>
+        </listitem>
       </itemizedlist> </para>
     
     <para>
-    The first 2 parts make up this book; the last 3 have individual 
+    The first 2 parts make up this book; the last 4 have individual 
     books.  The books are provided both as
     (somewhat large) html files, viewable in browsers, and also as PDF files.  
     The documentation is fully hyperlinked, with tables of contents.  The PDF versions are set up to 
@@ -162,6 +157,7 @@ under the License.
         </tgroup>
       </informaltable>
     </section>
+    
     <section id="ugr.project_overview_setup">
       <title>Eclipse Tooling Installation and Setup</title>
       <para>Provides step-by-step instructions for installing Apache UIMA in the Eclipse Interactive
@@ -382,6 +378,13 @@ under the License.
         </tgroup>
       </informaltable>
     </section>
+    
+    <section id="ugr.project_overview_v3">
+      <title>Version 3 User's guide</title>
+      <para>This book describes Version 3's features, capabilities, and differences with version 2.
+        </para>
+    </section>
+    
   </section>
   
   <section id="ugr.project_overview_doc_use">
@@ -504,401 +507,20 @@ under the License.
   </section>
   
   <section id="ugr.project_overview_changes_from_previous">
-      <title>Changes from Previous Major Versions</title>
-    <para> There are two previous version of UIMA, available from IBM's alphaWorks: version 1.4.x and version 2.0
-      (the 2.0 version was a "beta" only release). This section describes the changes relative to both of these
-      releases. A migration utility is provided which updates your Java code and descriptors as needed for this
-      release. See <xref linkend="ugr.project_overview_migrating_from_ibm_uima"/> for instructions on how to
-      run the migration utility. </para>
-    
-     <note><para>Each Apache UIMA release includes RELEASE_NOTES and RELEASE_NOTES.html files that
-        describe the changes that have occurred in each release.
-        Please refer to those files for specific changes for each Apache UIMA release.</para></note>
-
-    <section id="ugr.project_overview_changes_from_2_0">
-    <title>Changes from IBM UIMA 2.0 to Apache UIMA 2.1</title>
-    
-    <para>This section describes what has changed between version 2.0 and version 2.1 of UIMA;
-      the following section describes the differences between version 1.4 and version 2.1.
-      </para>
-    
-      <section id="ugr.project_overview.migration_utility.java_package_name_changes">
-        <title>Java Package Name Changes</title>
-        <para>All of the UIMA Java package names have changed in Apache UIMA. They now start with
-          <literal>org.apache</literal> rather than <literal>com.ibm</literal>. There have been other
-          changes as well. The package name segment <literal>reference_impl</literal> has been shortened to
-          <literal>impl</literal>, and some segments have been reordered. For example
-          <literal>com.ibm.uima.reference_impl.analysis_engine</literal> has become
-          <literal>org.apache.uima.analysis_engine.impl</literal>. Tools are now consolidated under
-          <literal>org.apache.uima.tools</literal> and service adapters under
-          <literal>org.apache.uima.adapter</literal>. </para>
-        <para>The migration utility will replace all occurrences of IBM UIMA package names with their Apache UIMA
-          equivalents. It will not replace <emphasis>prefixes</emphasis> of package names, so if your code uses
-          a package called <literal>com.ibm.uima.myproject</literal> (although that is not recommended), it
-          will not be replaced.</para>
-      </section>
-      <section id="ugr.project_overview.migration_utility.xml_descriptor_changes">
-        <title>XML Descriptor Changes</title>
-        <para>The XML namespace in UIMA component descriptors has changed from
-          <literal>http://uima.watson.ibm.com/resourceSpecifier</literal> to
-          <literal>http://uima.apache.org/resourceSpecifier</literal>. The value of the
-          <literal>&lt;frameworkImplementation></literal> must now be
-          <literal>org.apache.uima.java</literal> or <literal>org.apache.uima.cpp</literal>. The
-          migration script will apply these replacements. </para>
-      </section>
-      <section id="ugr.project_overview.migration_utility.tcas_replaced_by_cas">
-        <title>TCAS replaced by CAS</title>
-        <para>In Apache UIMA the <literal>TCAS</literal> interface has been removed. All uses of it must now be
-          replaced by the <literal>CAS</literal> interface. (All methods that used to be defined on
-          <literal>TCAS</literal> were moved to <literal>CAS</literal> in v2.0.) The method
-          <literal>CAS.getTCAS()</literal> is replaced with <literal>CAS.getCurrentView()</literal> and
-          <literal>CAS.getTCAS(String)</literal> is replaced with <literal>CAS.getView(String)</literal>
-          . The following have also been removed and replaced with the equivalent "CAS" variants:
-          <literal>TCASException</literal>, <literal>TCASRuntimeException</literal>,
-          <literal>TCasPool</literal>, and <literal>CasCreationUtils.createTCas(...)</literal>. </para>
-        <para>The migration script will apply the necessary replacements.</para>
-      </section>
-      <section id="ugr.project_overview.migration_utility.jcas_interface">
-        <title>JCas Is Now an Interface</title>
-        <para>In previous versions, user code accessed the JCas <emphasis>class</emphasis> directly. In Apache
-          UIMA there is now an interface, <literal>org.apache.uima.jcas.JCas</literal>, which all JCas-based
-          user code must now use. Static methods that were previously on the JCas class (and called from JCas cover
-          classes generated by JCasGen) have been moved to the new
-          <literal>org.apache.uima.jcas.JCasRegistry</literal> class. The migration script will apply the
-          necessary replacements to your code, including any JCas cover classes that are part of your codebase.
-          </para>
-      </section>
-      <section id="ugr.project_overview.migration_utility.jar_files">
-        <title>JAR File names Have Changed</title>
-        <para>The UIMA JAR file names have changed slightly.  Underscores have been replaced with hyphens to 
-          be consistent with Apache naming conventions.  For example <literal>uima_core.jar</literal> is now 
-          <literal>uima-core.jar</literal>.  Also <literal>uima_jcas_builtin_types.jar</literal> has been 
-          renamed to <literal>uima-document-annotation.jar</literal>.  Finally, the <literal>jVinci.jar</literal> 
-          file is now in the <literal>lib</literal> directory rather than the <literal>lib/vinci</literal> 
-          directory as was previously the case.  The migration script will apply the necessary replacements,
-          for example to script files or Eclipse launch configurations. (See <xref
-          linkend="ugr.project_overview_running_the_migration_utility"/> for a list of file extensions that
-          the migration utility will process by default.)
-          </para>
-      </section>      
-    <section id="ugr.ovv.search_engine_repackaged">
-      <title>Semantic Search Engine Repackaged</title>
-      <para>The versions of the UIMA SDK prior to the move into Apache came with a semantic search engine. The Apache
-        version does not include this search engine. The search engine has been repackaged and is separately
-        available from <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>. The intent is to hook up (over
-        time) with other open source search engines, such as the Lucene search engine project in Apache.</para>
-    </section>
-  </section>
-    
-    
-  <section id="ugr.project_overview_changes_from_v1">
-    <title>Changes from UIMA Version 1.x</title>
-    <para>Version 2.x of UIMA provides new capabilities and refines several areas of the UIMA
-      architecture, as compared with version 1.</para>
-    
-    <section id="ugr.project_overview_new_capabilities">
-      <title>New Capabilities</title>
-      <formalpara id="ugr.project_overview_new_data_types">
-        <title>New Primitive data types</title>
-        <para>UIMA now supports Boolean (bit), Byte, Short (16 bit integers), Long (64 bit
-          integers), and Double (64 bit floating point) primitive types, and arrays of
-          these. These types can be used like all the other primitive types.</para>
-      </formalpara>
-      <formalpara id="ugr.ovv.simpler_aes_and_cases">
-        <title>Simpler Analysis Engines and CASes</title>
-        <para>Version 1.x made a distinction between Analysis Engines and Text Analysis
-          Engines. This distinction has been eliminated in Version 2 - new code should just
-          refer to Analysis Engines. Analysis Engines can operate on multiple kinds of
-          artifacts, including text.</para>
-      </formalpara>
-      <formalpara id="ugr.ovv.sofas_and_cas_views_simplified">
-        <title>Sofas and CAS Views simplified</title>
-        <para>The APIs for manipulating multiple subjects of analysis (Sofas) and their
-          corresponding CAS Views have been simplified.</para>
-      </formalpara>
-      <formalpara id="ugr.ovv.ae_support_multiple_new_cases">
-        <title>Analysis Component generalized to support multiple new CAS
-          outputs</title>
-        <para>Analysis Components, in general, can make use of new capabilities to return
-          multiple new CASes, in addition to returning the original CAS that is passed in.
-          This allows components to have Collection Reader-like capabilities, but be
-          placed anywhere in the flow. See <olink
-            targetdoc="&uima_docs_tutorial_guides;"/> <olink
-            targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cm"/>
-          .</para>
-      </formalpara>
-      <formalpara id="ugr.ovv.user_customized_fc">
-        <title>User-customized Flow Controllers</title>
-        <para>A new component, the Flow Controller, can be supplied by the user to implement
-          arbitrary flow control for CASes within an Aggregate. This is in addition to the two
-          built-in flow control choices of linear and language-capability flow. See <olink
-            targetdoc="&uima_docs_tutorial_guides;"/> <olink
-            targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc"/>
-          .</para>
-      </formalpara>
-    </section>
- 
-    <section id="ugr.ovv.other_changes">
-      <title>Other Changes</title>
-            
-      <formalpara>
-        <title>New additional Annotator API ImplBase</title>
-        <para>
-          As of version 2.1, UIMA has a new set of Annotator interfaces. Annotators should now 
-          extend CasAnnotator_ImplBase or JCasAnnotator_ImplBase instead of the v1.x 
-          TextAnnotator_ImplBase and JTextAnnotator_ImplBase.  The v1.x annotator 
-          interfaces are unchanged and are still supported for backwards compatibility.
-         </para>
-        </formalpara>
-      <para>      
-        The new Annotator interfaces support the changed approaches for ResultSpecifications
-        and the changed exception names (see below), and have all the methods that CAS Consumers
-      have, including CollectionProcessComplete and BatchProcessComplete.</para>
-  
-    <formalpara id="ugr.ovv.exceptions_rationalized">
-      <title>UIMA Exceptions rationalized</title>
-      
-      <para>In version 1 there were different exceptions for the methods of an
-        AnalysisEngine and for the corresponding methods of an Annotator; these were merged
-        in version 2.
-        
-        <itemizedlist spacing="compact">
-          <listitem><para>AnnotatorProcessException (v1) &rarr;
-            AnalysisEngineProcessException (v2)</para></listitem>
-          <listitem><para>AnnotatorInitializationException (v1) &rarr;
-            ResourceInitializationException (v2)</para></listitem>
-          <listitem><para>AnnotatorConfigurationException (v1) &rarr;
-            ResourceConfigurationException (v2)</para></listitem>
-          <listitem><para>AnnotatorContextException (v1) &rarr;
-            ResourceAccessException (v2)</para></listitem>
-        </itemizedlist> The previous exceptions are still available, but new code should
-        use the new exceptions.</para>
-        </formalpara>
-        <note><para>The signature for typeSystemInit changed the <quote>throws</quote> clause to throw AnalysisEngineProcessException.
-          For Annotators that extend the previous base, the previous definition of typeSystemInit will continue to 
-          work for backwards compatibility.
-       </para></note>
-
-    
-    <formalpara id="ugr.ovv.result_specification">
-      <title>Changes in Result Specifications</title>
-      <para>In version 1, the <literal>process(...)</literal> method took a second
-        argument, a ResultSpecification. Now it is set when changed and it's up to the
-        annotator to store it in a local field and make it available when needed.  
-        This approach lets the annotator receive a specific signal (a method call) when
-        the Result Specification changes. Previously, it would need to check on every call to
-        see if it changed. The default impl base classes provide set/getResultSpecification(...)
-        methods for this</para>
-    </formalpara>
-    
-    <formalpara id="ugr.ovv.one_capability_set">
-      <title>Only one Capability Set</title>
-      <para>In version one, you can define 
-        multiple capability sets. These were not supported well, and for version two, 
-        this is now simplified - you should only use one capability set. 
-        (For backwards compatibility, if you use more, 
-        this won't cause a problem for now).</para>
-    </formalpara>
-    
-    
-      <formalpara>
-        <title>TextAnalysisEngine deprecated; use AnalysisEngine instead</title>
-      <para>TextAnalysisEngine has been deprecated - it is now no different than
-        AnalysisEngine. Previous code that uses this should still continue to work,
-        however.</para></formalpara>
-      
-      <formalpara>
-        <title>Annotator Context deprecated; use UimaContext instead</title>
-        <para>The context for the Annotator is the same as the overall UIMA context. 
-        The impl base classes provide a getContext() method which returns now the 
-        UimaContext object.</para>
-      </formalpara>
-      
-      <formalpara>
-        <title>DocumentAnalyzer tool uses XMI formats</title>
-      <para>The DocumentAnalyzer tool saves outputs in the new XMI serialization format.
-        The AnnotationViewer and SemanticSearchGUI tools can read both the new XMI format
-        and the previous XCAS format.</para></formalpara>
-      
-      <formalpara>
-        <title>CAS Initializer deprecated</title>
-        <para>Example code that used CAS Initializers has been rewritten to not use this.</para> 
-      </formalpara>
-    </section>
-    
-    <section id="ugr.project_overview_backwards_compatibility">
-      <title>Backwards Compatibility</title>
-      <para>Other than the changes from IBM UIMA to Apache UIMA described above, most UIMA 1.x
-        applications should not require additional changes to upgrade to UIMA 2.x. However,
-        there are a few exceptions that UIMA 1.x users may need to be aware of:
-        <itemizedlist>
-          <listitem>
-            <para> There have been some changes to ResultSpecifications. We do not
-              guarantee 100% backwards compatibility for applications that made use of
-              them, although most cases should work. </para>
-          </listitem>
-          <listitem>
-            <para> For applications that deal with multiple subjects of analysis (Sofas),
-              the rules that determine whether a component is Multi-View or Single-View
-              have been made more consistent. A component is considered Multi-View if and
-              only if it declares at least one inputSofa or outputSofa in its descriptor.
-              This leads to the following incompatibilities in unusual cases:
-              <itemizedlist>
-                <listitem>
-                  <para> It is an error if an annotator that implements the TextAnnotator or
-                    JTextAnnotator interface also declares inputSofas or outputSofas in
-                    its descriptor. Such annotators must be Single-View. </para>
-                </listitem>
-                <listitem>
-                  <para> Annotators that implement GenericAnnotator but do not declare
-                    any inputSofas or outputSofas will now be passed the view of default
-                    Sofa instead of the Base CAS. </para>
-                </listitem>
-                <listitem>
-                  <para> As of version 2.7.0, all annotators will be passed the view of 
-                    the default Sofa. </para>
-                </listitem>
-              </itemizedlist> </para>
-          </listitem>
-        </itemizedlist> </para>
-      
-    </section>
-  </section>
-  </section>
-
-  <section id="ugr.project_overview_migrating_from_ibm_uima">
-    <title>Migrating from IBM UIMA to Apache UIMA</title>
-    <para>In Apache UIMA, several things have changed that require changes to user code and descriptors.
-      A migration utility is provided which will make the required updates to your files.  The most
-      significant change is that the Java package names for all of the UIMA classes and interfaces have changed 
-      from what they were in IBM UIMA; all of the package names now start with the prefix <literal>org.apache</literal>.</para>
-    
-    <section id="ugr.project_overview_running_the_migration_utility">
-      <title>Running the Migration Utility</title> 
-      <note>
-        <para>Before running the migration utility, be sure to back up your files, just in case you encounter any
-        problems, because the migration tool updates the files in place in the directories where it finds them.</para> 
-      </note>
-      <para> The migration utility is run by executing the script file
-        <literal>apache-uima/bin/ibmUimaToApacheUima.bat</literal> (Windows) or
-        <literal>apache-uima/bin/ibmUimaToApacheUima.sh</literal> (UNIX). You must pass one argument: the
-        directory containing the files that you want to be migrated. Subdirectories will be processed
-        recursively.</para>
-
-      <para>The script scans your files and applies the necessary updates, for example replacing the com.ibm
-        package names with the new org.apache package names. For more details on what has changed in the UIMA APIs and
-        what changes are performed by the migration script, see <xref linkend="ugr.project_overview_changes_from_2_0"/>.</para>
-      
-      <para>The script will only attempt to modify files with the extensions: java, xml, xmi, wsdd, properties,
-        launch, bat, cmd, sh, ksh, or csh; and files with no extension. Also, files with size greater than 1,000,000
-        bytes will be skipped. (If you want the script to modify files with other extensions, you can edit the script
-        file and change the <literal>-ext</literal> argument appropriately.) </para>
-      
-      <para>If the migration tool reports warnings, there may be a few additional steps to take.  The following two
-        sections explain some simple manual changes that you might need to make to your code.</para>
-
-      <section id="ugr.project_overview_running_the_migration_utility.jcas_for_document_annotation">
-        <title>JCas Cover Classes for DocumentAnnotation</title>
-        <para> If you have run JCasGen it is likely that you have the classes
-          <literal>com.ibm.uima.jcas.tcas.DocumentAnnotation</literal> and
-          <literal>com.ibm.uima.jcas.tcas.DocumentAnnotation_Type</literal> as part of your code. This
-          package name is no longer valid, and the migration utility does not move your files between directories so
-          it is unable to fix this. </para>
-        <para> If you have not made manual modifications to these classes, the best solution is usually to just delete
-          these two classes (and their containing package). There is a default version in the
-          <literal>uima-document-annotation.jar</literal> file that is included in Apache UIMA. If you
-          <emphasis>have</emphasis> made custom changes, then you should not delete the file but instead move it to
-          the correct package <literal>org.apache.uima.jcas.tcas</literal>. For more information about JCas
-          and DocumentAnnotation please see <olink targetdoc="&uima_docs_ref;"/>
-          <olink targetdoc="&uima_docs_ref;"
-            targetptr="ugr.ref.jcas.documentannotation_issues"/> </para>
-      </section>
-      <section id="ugr.project_overview_running_the_migration_utility.manual_migration_needed.getdocumentannotation">
-        <title>JCas.getDocumentAnnotation</title>
-        <para>The deprecated method <literal>JCas.getDocumentAnnotation</literal> has been removed. Its use
-          must be replaced with <literal>JCas.getDocumentAnnotationFs</literal>. The method
-          <literal>JCas.getDocumentAnnotationFs()</literal> returns type <literal>TOP</literal>, so your
-          code must cast this to type <literal>DocumentAnnotation</literal>. The reasons for this are described
-          in <olink targetdoc="&uima_docs_ref;"/>
-          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas.documentannotation_issues"/>.
-          </para>
-      </section>      
-      
-    </section>
-    
+      <title>Changes from UIMA Version 2</title>
+      <para>See the separate document Version 3 User's Guide.s</para>
+  </section> 
      
-    <section id="ugr.project_overview_rare_migration">
-      <title>Manual Migration</title>
-      <para>The following are rare cases where you may need to take additional steps to migrate your code.  You need only 
-        read this section if the migration tool reported a warning or if you are having trouble getting your code to 
-        compile or run after running the migration.  For most users, attention to these things will not
-        be required.</para>
-      
-      <section id="ugr.project_overview.manual_migration_needed.xiinclude">
-        <title>xi:include</title>
-        <para>The use of &lt;xi:include> in UIMA component descriptors has been discouraged for some time, and in
-          Apache UIMA support for it has been removed. If you have descriptors that use that, you must change them to
-          use UIMA's &lt;import> syntax instead. The proper syntax is described in <olink
-            targetdoc="&uima_docs_ref;"/> <olink
-            targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor.imports"/>.
-          </para>
-      </section>
-      <section id="ugr.project_overview.manual_migration_needed.duplicate_methods_cas_tcas">
-        <title>Duplicate Methods Taking CAS and TCAS as Arguments</title>
-        <para>Because <literal>TCAS</literal> has been replaced by <literal>CAS</literal>, if you had two
-          methods distinguished only by whether an argument type was <literal>TCAS</literal> or
-          <literal>CAS</literal>, the migration tool will cause these to have identical signatures, which will be
-          a compile error. If this happens, consider why the two variants were needed in the first place. Often, it may
-          work to simply delete one of the methods.</para>
-      </section>
-      <section id="ugr.project_overview.manual_migration_needed.undocumented_methods">
-        <title>Use of Undocumented Methods from the com.ibm.uima.util package</title>
-        <titleabbrev>Undocumented Methods</titleabbrev>
-        <para>Previous UIMA versions has some methods in the <literal>com.ibm.uima.util</literal> package that
-          were for internal use and were not documented in the Javadoc. (There are also many methods in that package
-          which are documented, and there is no issue with using these.) It is not recommended that you use any of the
-          undocumented methods. If you do, the migration script will not handle them correctly. These have now been
-          moved to <literal>org.apache.uima.internal.util</literal>, and you will have to manually update your
-          imports to point to this location.</para>
-      </section>
-      <section id="ugr.project_overview.manual_migration_needed.uima_package_names_in_user_code">
-        <title>Use of UIMA Package Names for User Code</title>
-        <titleabbrev>Package Names</titleabbrev>
-        <para>If you have placed your own classes in a package that has exactly the same name as one of the UIMA packages
-          (not recommended), this will cause problems when your run the migration script. Since the script replaces
-          UIMA package names, all of your imports that refer to your class will get replaced and your code will no
-          longer compile. If this happens, you can fix it by manually moving your code to the new Apache UIMA package
-          name (i.e., whatever name your imports got replaced with). However, we recommend instead that you do not
-          use Apache UIMA package names for your own code.</para>
-        <para>An even more rare case would be if you had a package name that started with a capital letter (poor Java
-          style) AND was prefixed by one of the UIMA package names, for example a package named
-          <literal>com.ibm.uima.MyPackage</literal>. This would be treated as a class name and replaced with
-          <literal>org.apache.uima.MyPackage</literal> wherever it occurs.</para>
-      </section>
-      <section id="ugr.project_overview.manual_migration_needed.exceptions_extend_uima_exceptions">
-        <title>CASException and CASRuntimeException now extend UIMA(Runtime)Exception</title>
-        <titleabbrev>Changes to CAS Exceptions</titleabbrev>
-        <para>
-          This change may affect user code to a small extent, as some of the APIs on 
-          <literal>CASException</literal> and <literal>CASRuntimeException</literal> no longer exist.
-          On the up side, all UIMA exceptions are now derived from the same base classes and behave
-          the same way.  The most significant change is that you can no longer check for the specific
-          type of exception the way you used to.  For example, if you had code like this:
+  <section id="ugr.project_overview_migrating_from_v2_to_v3">
+    <title>Migrating existing UIMA pipelines from Version 2 to Version 3</title>
+    <para>The format of JCas classes changed when going from version 2 to version 3. 
+          If you had JCas classes for user types, these need to be regenerated using the 
+          version 3 JCasGen tooling or Maven plugin.  Alternatively, these can be 
+          migrated without regenerating; the migration preserves any customization 
+          users may have added to the JCas classes.</para>
           
-          <programlisting>catch (CASRuntimeException e) {
-  if (e.getError() == CASRuntimeException.ILLEGAL_ARRAY_SIZE) {
-  // Do something in case this particular error is caught</programlisting>
-          
-          you will need to replace it with the following:
-          
-          <programlisting>catch (CASRuntimeException e) {
-  if (e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE)) {
-  // Do something in case this particular error is caught</programlisting>
-          
-          as the message keys are now strings.  This change is not handled by the migration script.
-        </para>
-      </section>
-    </section>
+    <para>The Version 3 User's Guide has a chapter detailing the migration, including
+      a description of the migration tool to aid in this process.</para>
   </section>
   
   <section id="ugr.project_overview_summary">
@@ -912,11 +534,6 @@ under the License.
       <para>Apache UIMA includes APIs and tools for creating analysis components. Examples of analysis components include
         tokenizers, summarizers, categorizers, parsers, named-entity detectors etc. Tutorial examples are
         provided with Apache UIMA; additional components are available from the community. </para>
-      
-      <para>Apache UIMA does not itself include a semantic search engine; instructions are included for 
-        incorporating the semantic search SDK from IBM's <ulink url="http://alphaworks.ibm.com/tech/uima">alphaWorks</ulink>
-        which can index the results of
-        analysis and for using this semantic index to perform more advanced search. </para>
     </section>
     <section id="ugr.ovv.summary.programming_language_support">
       <title>Programming Language Support</title>
@@ -938,21 +555,8 @@ under the License.
           targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aas"/> discuss this is more
         detail.</para>
     </section>
-    <section id="ugr.ovv.summary.general.semantic_search_components">
-      <title>Semantic Search Components</title>
-      <para> The Lucene search engine as of this writing (November, 2006) does not support searching with
-        annotations. The site <ulink url="http://www.alphaworks.ibm.com/tech/uima"/> provides a download of a
-        semantic search engine, a simple demo query tool, some documentation on the semantic search engine, and a
-        component that connects the results of UIMA analysis to the indexer so that the annotations as well as
-        key-words can be indexed. </para>
-      
-      <para>Previous versions of the UIMA SDK (prior to the Apache versions) are available from <ulink
-          url="http://www.alphaworks.ibm.com/tech/uima"> IBM's alphaWorks</ulink>. The source code for
-        previous versions of the main UIMA framework is available on <ulink
-          url="http://uima-framework.sourceforge.net/"> SourceForge</ulink>.</para>      
-    </section>
   </section>
-  
+      
   <section id="ugr.project_overview_summary_sdk_capabilities">
     <title>Summary of Apache UIMA Capabilities</title>
     <informaltable frame="all" rowsep="1" colsep="1">
@@ -1039,8 +643,9 @@ under the License.
           </row>
           <row>
             <entry>Saving and Restoring CAS contents</entry>
-            <entry>APIs in the core framework support saving and restoring the contents of a CAS to streams using an
-              XMI format. </entry>
+            <entry>APIs in the core framework support saving and restoring the contents of a CAS to streams 
+              in multiple formats, including XMI, binary, and compressed forms.  
+              These apis are collected into the CasIOUtils class.</entry>
           </row>
           <row>
             <entry>PEAR Packager for Eclipse</entry>
@@ -1081,6 +686,14 @@ under the License.
               viewer.</entry>
           </row>
           <row>
+            <entry>CAS Editor</entry>
+            <entry>Eclipse plug-in that lets you edit the contents of a CAS</entry>
+          </row>
+          <row>
+            <entry>UIMA Pipeline Eclipse Launcher</entry>
+            <entry>Eclipse plug-in that lets you configure Eclipse launchers for UIMA pipelines</entry>
+          </row>
+          <row>
             <entry namest="col1" nameend="col2" align="center" role="tableSubhead"> Example Analysis
               Components </entry>
           </row>
@@ -1109,15 +722,6 @@ under the License.
             <entry>File System Collection Reader</entry>
             <entry> Simple Collection Reader for pulling documents from the file system and initializing CASes.
               </entry>
-          </row>
-          <row>
-            <entry namest="col1" nameend="col2" align="center" role="tableSubhead"> Components available
-              from <ulink url="http://www.alphaworks.ibm.com/tech/uima"></ulink> </entry>
-          </row>
-          <row>
-            <entry>Semantic Search CAS Indexer</entry>
-            <entry>A CAS Consumer that uses the semantic search engine indexer to build an index from a stream of
-              CASes. Requires the semantic search engine (available from the same place). </entry>
           </row>
         </tbody>
       </tgroup>

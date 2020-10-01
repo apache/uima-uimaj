@@ -21,6 +21,7 @@ package org.apache.uima.taeconfigurator.wizards;
 
 import org.eclipse.jface.viewers.ISelection;
 
+
 /**
  * The "New" wizard page allows setting the container for the new file as well as the file name.
  * Will only accept file name without the extension OR with the extension that matches the expected
@@ -29,6 +30,11 @@ import org.eclipse.jface.viewers.ISelection;
 
 public class ResourceManagerConfigurationNewWizardPage extends AbstractNewWizardPage {
 
+  /**
+   * Instantiates a new resource manager configuration new wizard page.
+   *
+   * @param selection the selection
+   */
   public ResourceManagerConfigurationNewWizardPage(ISelection selection) {
     super(
             selection,

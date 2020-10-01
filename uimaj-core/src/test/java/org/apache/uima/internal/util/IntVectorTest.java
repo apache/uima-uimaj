@@ -21,9 +21,6 @@ package org.apache.uima.internal.util;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -33,6 +30,9 @@ import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 
 public class IntVectorTest extends TestCase {

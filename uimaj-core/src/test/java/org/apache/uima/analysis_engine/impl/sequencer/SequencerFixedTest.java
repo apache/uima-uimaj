@@ -21,17 +21,18 @@ package org.apache.uima.analysis_engine.impl.sequencer;
 
 import java.io.File;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.FileCompare;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 /*
  */
@@ -92,10 +93,10 @@ public class SequencerFixedTest extends TestCase {
       Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
               .getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
-
+      ((CASImpl)cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
-    } finally {
+    } finally {     
       // Destroy the CAS, releasing resources.
       if (ae != null) {
         ae.destroy();
@@ -136,7 +137,7 @@ public class SequencerFixedTest extends TestCase {
       Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
               .getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
-
+      ((CASImpl)cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {
@@ -180,6 +181,7 @@ public class SequencerFixedTest extends TestCase {
       Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
               .getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
+      ((CASImpl)cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {
@@ -223,6 +225,7 @@ public class SequencerFixedTest extends TestCase {
       Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
               .getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
+      ((CASImpl)cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {
@@ -266,6 +269,7 @@ public class SequencerFixedTest extends TestCase {
       Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
               .getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
+      ((CASImpl)cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {
@@ -309,6 +313,7 @@ public class SequencerFixedTest extends TestCase {
       Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
               .getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
+      ((CASImpl)cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {
@@ -352,6 +357,7 @@ public class SequencerFixedTest extends TestCase {
       Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
               .getFile("SequencerTest/SequencerFixedExpected.txt")));
       outputReferenceFile.delete();
+      ((CASImpl)cas).traceFSflush();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {

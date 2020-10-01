@@ -42,6 +42,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Level;
 
+
 /**
  * Reference implementation of the {@link CasProcessorDeployer} component responsible for launch and
  * termination of the fenced CasProcessor. It uses a plug-in {@link ProcessControllerAdapter} object
@@ -49,20 +50,35 @@ import org.apache.uima.util.Level;
  * 
  */
 public class SocketCasProcessorDeployer implements CasProcessorDeployer {
+  
+  /** The cpe factory. */
   private CPEFactory cpeFactory = null;
 
+  /** The service urls. */
   private URL[] serviceUrls = null; // changed to URL[] since there are multiple instances of
 
   // service -Adam
 
+  /** The controller. */
   private ProcessControllerAdapter controller = null;
 
   
+  /**
+   * Instantiates a new socket cas processor deployer.
+   *
+   * @param aController the a controller
+   * @param aCpeFactory the a cpe factory
+   */
   public SocketCasProcessorDeployer(ProcessControllerAdapter aController, CPEFactory aCpeFactory) {
     controller = aController;
     cpeFactory = aCpeFactory;
   }
 
+  /**
+   * Instantiates a new socket cas processor deployer.
+   *
+   * @param aController the a controller
+   */
   public SocketCasProcessorDeployer(ProcessControllerAdapter aController) {
     controller = aController;
   }
@@ -72,13 +88,12 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
    * number of processing threads defined in the CPE descriptor. There is one instance per
    * processing thread created here. The <i>aCasProcessorList</i> contains instantiated Cas
    * Processors. These are instantiated by the CPEFactory.
-   * 
+   *
    * @param aCasProcessorList - list containing instantiated Cas Processors
+   * @param aEngine the a engine
    * @param redeploy - true when redeploying failed Cas Processor
-   * @param aEngine -
-   * 
    * @return - ProcessingContainer containing pool of CasProcessors
-   * @throws ResourceConfigurationException -
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, CPMEngine aEngine,
           boolean redeploy) throws ResourceConfigurationException {
@@ -87,7 +102,13 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
 
   /**
    * Uses ProcessControllerAdapter instance to launch fenced CasProcessor.
+   *
+   * @param aCasProcessorList the a cas processor list
+   * @param redeploy the redeploy
+   * @return the processing container
+   * @throws ResourceConfigurationException the resource configuration exception
    */
+  @Override
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
           throws ResourceConfigurationException {
     String name = null;
@@ -204,7 +225,11 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
 
   /**
    * Uses ProcessControllerAdapter instance to launch fenced CasProcessor.
+   *
+   * @param aProcessingContainer the a processing container
+   * @throws ResourceConfigurationException the resource configuration exception
    */
+  @Override
   public void deployCasProcessor(ProcessingContainer aProcessingContainer)
           throws ResourceConfigurationException {
     try {
@@ -303,6 +328,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
    * 
    * @see org.apache.uima.collection.base_cpm.container.deployer.CasProcessorDeployer#undeploy()
    */
+  @Override
   public void undeploy(URL aURL) throws CasProcessorDeploymentException {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -327,6 +353,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
    * 
    * @see org.apache.uima.collection.base_cpm.container.deployer.CasProcessorDeployer#undeploy()
    */
+  @Override
   public void undeploy() throws CasProcessorDeploymentException {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {

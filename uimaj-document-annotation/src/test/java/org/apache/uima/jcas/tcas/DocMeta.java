@@ -16,14 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+   
+/* Apache UIMA v3 - First created by JCasGen Mon Oct 02 16:32:10 EDT 2017 */
 
-
-/* First created by JCasGen Mon Oct 02 16:39:47 EDT 2017 */
 package org.apache.uima.jcas.tcas;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
+
 
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
@@ -31,10 +37,17 @@ import org.apache.uima.jcas.cas.IntegerArray;
 
 
 /** 
- * Updated by JCasGen Mon Oct 02 16:39:47 EDT 2017
- * XML source: C:/au/svnCheckouts/trunk/uimaj-current/uimaj/uimaj-document-annotation/src/test/resources/ExampleCas/testTypeSystem_docmetadata.xml
+ * Updated by JCasGen Mon Oct 02 16:32:10 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-document-annotation/src/test/resources/ExampleCas/testTypeSystem_docmetadata.xml
  * @generated */
 public class DocMeta extends DocumentAnnotation {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.jcas.tcas.DocMeta";
+  
   /** @generated
    * @ordered 
    */
@@ -51,17 +64,45 @@ public class DocMeta extends DocumentAnnotation {
   @Override
   public              int getTypeIndexID() {return typeIndexID;}
  
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_feat = "feat";
+  public final static String _FeatName_feat2 = "feat2";
+  public final static String _FeatName_feat3 = "feat3";
+  public final static String _FeatName_arraystr = "arraystr";
+  public final static String _FeatName_arrayints = "arrayints";
+  public final static String _FeatName_arrayFs = "arrayFs";
+
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_feat = TypeSystemImpl.createCallSite(DocMeta.class, "feat");
+  private final static MethodHandle _FH_feat = _FC_feat.dynamicInvoker();
+  private final static CallSite _FC_feat2 = TypeSystemImpl.createCallSite(DocMeta.class, "feat2");
+  private final static MethodHandle _FH_feat2 = _FC_feat2.dynamicInvoker();
+  private final static CallSite _FC_feat3 = TypeSystemImpl.createCallSite(DocMeta.class, "feat3");
+  private final static MethodHandle _FH_feat3 = _FC_feat3.dynamicInvoker();
+  private final static CallSite _FC_arraystr = TypeSystemImpl.createCallSite(DocMeta.class, "arraystr");
+  private final static MethodHandle _FH_arraystr = _FC_arraystr.dynamicInvoker();
+  private final static CallSite _FC_arrayints = TypeSystemImpl.createCallSite(DocMeta.class, "arrayints");
+  private final static MethodHandle _FH_arrayints = _FC_arrayints.dynamicInvoker();
+  private final static CallSite _FC_arrayFs = TypeSystemImpl.createCallSite(DocMeta.class, "arrayFs");
+  private final static MethodHandle _FH_arrayFs = _FC_arrayFs.dynamicInvoker();
+
+   
   /** Never called.  Disable default constructor
    * @generated */
   protected DocMeta() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
-   * @param addr low level Feature Structure reference
+   * @param casImpl the CAS this Feature Structure belongs to
    * @param type the type of this Feature Structure 
    */
-  public DocMeta(int addr, TOP_Type type) {
-    super(addr, type);
+  public DocMeta(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
   
@@ -72,6 +113,7 @@ public class DocMeta extends DocumentAnnotation {
     super(jcas);
     readObject();   
   } 
+
 
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs
@@ -103,19 +145,16 @@ public class DocMeta extends DocumentAnnotation {
    * @generated
    * @return value of the feature 
    */
-  public String getFeat() {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_feat == null)
-      jcasType.jcas.throwFeatMissing("feat", "org.apache.uima.jcas.tcas.DocMeta");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((DocMeta_Type)jcasType).casFeatCode_feat);}
+  public String getFeat() { return _getStringValueNc(wrapGetIntCatchException(_FH_feat));}
     
   /** setter for feat - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setFeat(String v) {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_feat == null)
-      jcasType.jcas.throwFeatMissing("feat", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.ll_cas.ll_setStringValue(addr, ((DocMeta_Type)jcasType).casFeatCode_feat, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_feat), v);
+  }    
+    
    
     
   //*--------------*
@@ -125,19 +164,16 @@ public class DocMeta extends DocumentAnnotation {
    * @generated
    * @return value of the feature 
    */
-  public String getFeat2() {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_feat2 == null)
-      jcasType.jcas.throwFeatMissing("feat2", "org.apache.uima.jcas.tcas.DocMeta");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((DocMeta_Type)jcasType).casFeatCode_feat2);}
+  public String getFeat2() { return _getStringValueNc(wrapGetIntCatchException(_FH_feat2));}
     
   /** setter for feat2 - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setFeat2(String v) {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_feat2 == null)
-      jcasType.jcas.throwFeatMissing("feat2", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.ll_cas.ll_setStringValue(addr, ((DocMeta_Type)jcasType).casFeatCode_feat2, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_feat2), v);
+  }    
+    
    
     
   //*--------------*
@@ -147,19 +183,16 @@ public class DocMeta extends DocumentAnnotation {
    * @generated
    * @return value of the feature 
    */
-  public String getFeat3() {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_feat3 == null)
-      jcasType.jcas.throwFeatMissing("feat3", "org.apache.uima.jcas.tcas.DocMeta");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((DocMeta_Type)jcasType).casFeatCode_feat3);}
+  public String getFeat3() { return _getStringValueNc(wrapGetIntCatchException(_FH_feat3));}
     
   /** setter for feat3 - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setFeat3(String v) {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_feat3 == null)
-      jcasType.jcas.throwFeatMissing("feat3", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.ll_cas.ll_setStringValue(addr, ((DocMeta_Type)jcasType).casFeatCode_feat3, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_feat3), v);
+  }    
+    
    
     
   //*--------------*
@@ -169,19 +202,16 @@ public class DocMeta extends DocumentAnnotation {
    * @generated
    * @return value of the feature 
    */
-  public StringArray getArraystr() {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arraystr == null)
-      jcasType.jcas.throwFeatMissing("arraystr", "org.apache.uima.jcas.tcas.DocMeta");
-    return (StringArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arraystr)));}
+  public StringArray getArraystr() { return (StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_arraystr)));}
     
   /** setter for arraystr - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setArraystr(StringArray v) {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arraystr == null)
-      jcasType.jcas.throwFeatMissing("arraystr", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.ll_cas.ll_setRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arraystr, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_arraystr), v);
+  }    
+    
     
   /** indexed getter for arraystr - gets an indexed value - 
    * @generated
@@ -189,21 +219,16 @@ public class DocMeta extends DocumentAnnotation {
    * @return value of the element at index i 
    */
   public String getArraystr(int i) {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arraystr == null)
-      jcasType.jcas.throwFeatMissing("arraystr", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arraystr), i);
-    return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arraystr), i);}
+     return ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_arraystr)))).get(i);} 
 
   /** indexed setter for arraystr - sets an indexed value - 
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setArraystr(int i, String v) { 
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arraystr == null)
-      jcasType.jcas.throwFeatMissing("arraystr", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arraystr), i);
-    jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arraystr), i, v);}
+  public void setArraystr(int i, String v) {
+    ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_arraystr)))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -213,19 +238,16 @@ public class DocMeta extends DocumentAnnotation {
    * @generated
    * @return value of the feature 
    */
-  public IntegerArray getArrayints() {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arrayints == null)
-      jcasType.jcas.throwFeatMissing("arrayints", "org.apache.uima.jcas.tcas.DocMeta");
-    return (IntegerArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayints)));}
+  public IntegerArray getArrayints() { return (IntegerArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_arrayints)));}
     
   /** setter for arrayints - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setArrayints(IntegerArray v) {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arrayints == null)
-      jcasType.jcas.throwFeatMissing("arrayints", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.ll_cas.ll_setRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayints, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_arrayints), v);
+  }    
+    
     
   /** indexed getter for arrayints - gets an indexed value - 
    * @generated
@@ -233,21 +255,16 @@ public class DocMeta extends DocumentAnnotation {
    * @return value of the element at index i 
    */
   public int getArrayints(int i) {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arrayints == null)
-      jcasType.jcas.throwFeatMissing("arrayints", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayints), i);
-    return jcasType.ll_cas.ll_getIntArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayints), i);}
+     return ((IntegerArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_arrayints)))).get(i);} 
 
   /** indexed setter for arrayints - sets an indexed value - 
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setArrayints(int i, int v) { 
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arrayints == null)
-      jcasType.jcas.throwFeatMissing("arrayints", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayints), i);
-    jcasType.ll_cas.ll_setIntArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayints), i, v);}
+  public void setArrayints(int i, int v) {
+    ((IntegerArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_arrayints)))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -257,19 +274,16 @@ public class DocMeta extends DocumentAnnotation {
    * @generated
    * @return value of the feature 
    */
-  public FSArray getArrayFs() {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arrayFs == null)
-      jcasType.jcas.throwFeatMissing("arrayFs", "org.apache.uima.jcas.tcas.DocMeta");
-    return (FSArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayFs)));}
+  public FSArray getArrayFs() { return (FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_arrayFs)));}
     
   /** setter for arrayFs - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setArrayFs(FSArray v) {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arrayFs == null)
-      jcasType.jcas.throwFeatMissing("arrayFs", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.ll_cas.ll_setRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayFs, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_arrayFs), v);
+  }    
+    
     
   /** indexed getter for arrayFs - gets an indexed value - 
    * @generated
@@ -277,21 +291,16 @@ public class DocMeta extends DocumentAnnotation {
    * @return value of the element at index i 
    */
   public Annotation getArrayFs(int i) {
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arrayFs == null)
-      jcasType.jcas.throwFeatMissing("arrayFs", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayFs), i);
-    return (Annotation)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayFs), i)));}
+     return (Annotation)(((FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_arrayFs)))).get(i));} 
 
   /** indexed setter for arrayFs - sets an indexed value - 
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setArrayFs(int i, Annotation v) { 
-    if (DocMeta_Type.featOkTst && ((DocMeta_Type)jcasType).casFeat_arrayFs == null)
-      jcasType.jcas.throwFeatMissing("arrayFs", "org.apache.uima.jcas.tcas.DocMeta");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayFs), i);
-    jcasType.ll_cas.ll_setRefArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((DocMeta_Type)jcasType).casFeatCode_arrayFs), i, jcasType.ll_cas.ll_getFSRef(v));}
+  public void setArrayFs(int i, Annotation v) {
+    ((FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_arrayFs)))).set(i, v);
+  }  
   }
 
     

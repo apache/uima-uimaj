@@ -1,109 +1,159 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+
+
+   
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
 
 package org.apache.lang;
 
-import org.apache.uima.jcas.JCas;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.cas.TOP_Type;
 
-/* comment 7 of 14 */
+
+/** 
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * @generated */
 public class LanguagePair extends TOP {
-
-  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(LanguagePair.class);
-
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.lang.LanguagePair";
+  
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static int typeIndexID = JCasRegistry.register(LanguagePair.class);
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
+  /** @generated
+   * @return index of the type  
+   */
+  @Override
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_lang1 = "lang1";
+  public final static String _FeatName_lang2 = "lang2";
+  public final static String _FeatName_description = "description";
 
-  public int getTypeIndexID() {
-    return typeIndexID;
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_lang1 = TypeSystemImpl.createCallSite(LanguagePair.class, "lang1");
+  private final static MethodHandle _FH_lang1 = _FC_lang1.dynamicInvoker();
+  private final static CallSite _FC_lang2 = TypeSystemImpl.createCallSite(LanguagePair.class, "lang2");
+  private final static MethodHandle _FH_lang2 = _FC_lang2.dynamicInvoker();
+  private final static CallSite _FC_description = TypeSystemImpl.createCallSite(LanguagePair.class, "description");
+  private final static MethodHandle _FH_description = _FC_description.dynamicInvoker();
+
+   
+  /** Never called.  Disable default constructor
+   * @generated */
+  protected LanguagePair() {/* intentionally empty block */}
+    
+  /** Internal - constructor used by generator 
+   * @generated
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
+   */
+  public LanguagePair(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
+    readObject();
   }
-
-  // Never called. Disable default constructor
-  protected LanguagePair() {
-  }
-
- /* Internal - Constructor used by generator */
-  public LanguagePair(int addr, TOP_Type type) {
-    super(addr, type);
-  }
-
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
+   */
   public LanguagePair(JCas jcas) {
     super(jcas);
-  }
+    readObject();   
+  } 
 
-  /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   * 
-   * @generated modifiable
+
+  /** 
+   * <!-- begin-user-doc -->
+   * Write your own initialization here
+   * <!-- end-user-doc -->
+   *
+   * @generated modifiable 
    */
-  private void readObject() {
-  }
+  private void readObject() {/*default - does nothing empty block */}
+     
+ 
+    
+  //*--------------*
+  //* Feature: lang1
 
-  // *------------------*
-  // * Feature: lang1
-  /* getter for lang1 * */
-  public String getLang1() {
-    if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_lang1 == null)
-      this.jcasType.jcas.throwFeatMissing("lang1", "org.apache.lang.LanguagePair");
-    return jcasType.ll_cas
-            .ll_getStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_lang1);
-  }
-
-  /* setter for lang1 * */
+  /** getter for lang1 - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public String getLang1() { return _getStringValueNc(wrapGetIntCatchException(_FH_lang1));}
+    
+  /** setter for lang1 - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
   public void setLang1(String v) {
-    if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_lang1 == null)
-      this.jcasType.jcas.throwFeatMissing("lang1", "org.apache.lang.LanguagePair");
-    jcasType.ll_cas.ll_setStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_lang1, v);
-  }
+    _setStringValueNfc(wrapGetIntCatchException(_FH_lang1), v);
+  }    
+    
+   
+    
+  //*--------------*
+  //* Feature: lang2
 
-  // *------------------*
-  // * Feature: lang2
-  /* getter for lang2 * */
-  public String getLang2() {
-    if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_lang2 == null)
-      this.jcasType.jcas.throwFeatMissing("lang2", "org.apache.lang.LanguagePair");
-    return jcasType.ll_cas
-            .ll_getStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_lang2);
-  }
-
-  /* setter for lang2 * */
+  /** getter for lang2 - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public String getLang2() { return _getStringValueNc(wrapGetIntCatchException(_FH_lang2));}
+    
+  /** setter for lang2 - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
   public void setLang2(String v) {
-    if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_lang2 == null)
-      this.jcasType.jcas.throwFeatMissing("lang2", "org.apache.lang.LanguagePair");
-    jcasType.ll_cas.ll_setStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_lang2, v);
+    _setStringValueNfc(wrapGetIntCatchException(_FH_lang2), v);
+  }    
+    
+   
+    
+  //*--------------*
+  //* Feature: description
+
+  /** getter for description - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public String getDescription() { return _getStringValueNc(wrapGetIntCatchException(_FH_description));}
+    
+  /** setter for description - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setDescription(String v) {
+    _setStringValueNfc(wrapGetIntCatchException(_FH_description), v);
+  }    
+    
   }
 
-//  // *------------------*
-//  // * Feature: description
-//  /* getter for description * */
-//  public String getDescription() {
-//    if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_description == null)
-//      this.jcasType.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
-//    return jcasType.ll_cas.ll_getStringValue(addr,
-//            ((LanguagePair_Type) jcasType).casFeatCode_description);
-//  }
-//
-//  /* setter for description * */
-//  public void setDescription(String v) {
-//    if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_description == null)
-//      this.jcasType.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
-//    jcasType.ll_cas.ll_setStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_description,
-//            v);
-//  }
-}
+    

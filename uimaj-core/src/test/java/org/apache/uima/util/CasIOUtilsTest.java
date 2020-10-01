@@ -19,6 +19,7 @@
 package org.apache.uima.util;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,22 +29,26 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SerialFormat;
-import org.apache.uima.cas.impl.CASMgrSerializer;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.metadata.FsIndexDescription;
+import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.Assert;
+import org.junit.Test;
+
 import junit.framework.TestCase;
 
 public class CasIOUtilsTest extends TestCase{
@@ -219,11 +224,14 @@ public class CasIOUtilsTest extends TestCase{
     }
     
     List<String> fsTypes = new ArrayList<>();
-    FSIterator<FeatureStructure> fsi = cas.getIndexRepository()
-            .getAllIndexedFS(cas.getTypeSystem().getTopType());
+//    FSIterator<FeatureStructure> fsi = cas.getIndexRepository()
+//            .getAllIndexedFS(cas.getTypeSystem().getTopType());
+    Collection<TOP> s = cas.getIndexedFSs();
+    Iterator<TOP> fsi = s.iterator();
     int fsCount = 0;
     while (fsi.hasNext()) {
-      String typeName = fsi.next().getType().getName();
+      TOP fs = (TOP) fsi.next();
+      String typeName = fs.getType().getName();
       if (!fsTypes.contains(typeName)) {
         fsTypes.add(typeName);
       }
@@ -269,7 +277,54 @@ public class CasIOUtilsTest extends TestCase{
     Assert.fail("An exception should have been thrown for wrong format.");
   }
   
-  
+  public void testDocumentAnnotationIsNotResurrected() throws Exception {
+    String refererAnnoTypeName = "org.apache.uima.testing.Referer";
+    String customDocAnnoTypeName = "org.apache.uima.testing.CustomDocumentAnnotation";
+      
+    TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType(customDocAnnoTypeName, "", CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
+    TypeDescription refererType = tsd.addType(refererAnnoTypeName, "", CAS.TYPE_NAME_TOP);
+    refererType.addFeature("ref", "", CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null);
+    
+    // Initialize the default document annotation
+    // ... then immediately remove it from the indexes.
+    FeatureStructure da = cas.getDocumentAnnotation();
+
+    assertThat(cas.select(cas.getTypeSystem().getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION)).asList())
+        .extracting(fs -> fs.getType().getName())
+        .containsExactly(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
+    
+    // Add a feature structure that references the original document annotation before we remove
+    // it from the indexes
+    FeatureStructure referer = cas.createFS(cas.getTypeSystem().getType(refererAnnoTypeName));
+    referer.setFeatureValue(referer.getType().getFeatureByBaseName("ref"), da);
+    cas.addFsToIndexes(referer);
+    
+    cas.removeFsFromIndexes(da);
+    
+    // Now add a new document annotation of our custom type
+    FeatureStructure cda = cas.createFS(cas.getTypeSystem().getType(customDocAnnoTypeName));
+    cas.addFsToIndexes(cda);
+
+    assertThat(cas.select(cas.getTypeSystem().getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION)).asList())
+        .extracting(fs -> fs.getType().getName())
+        .containsExactly(customDocAnnoTypeName);
+    
+    // Serialize to a buffer
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    CasIOUtils.save(cas, bos, SerialFormat.SERIALIZED_TSI);
+    
+    // Deserialize from the buffer
+    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+    CasIOUtils.load(bis, cas);
+    
+    assertThat(cas.select(cas.getTypeSystem().getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION)).asList())
+        .extracting(fs -> fs.getType().getName())
+        .containsExactly(customDocAnnoTypeName);
+  }
+
   protected void tearDown() throws Exception {
     cas.release();
   }

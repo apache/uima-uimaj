@@ -21,8 +21,6 @@ package org.apache.uima.resource.metadata.impl;
 
 import java.io.File;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
@@ -31,6 +29,8 @@ import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 
 public class TypePriorities_implTest extends TestCase {
@@ -57,6 +57,7 @@ public class TypePriorities_implTest extends TestCase {
    */
   protected void tearDown() throws Exception {
     super.tearDown();
+    UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
   public void testBuildFromXmlElement() throws Exception {

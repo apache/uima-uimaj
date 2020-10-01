@@ -30,14 +30,25 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
+
+/**
+ * The Class CasProcessorRuntimeEnvParamImpl.
+ */
 public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl implements
         CasProcessorRuntimeEnvParam {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -6750487360818463790L;
 
+  /** The key. */
   private String key;
 
+  /** The value. */
   private String value;
 
+  /**
+   * Instantiates a new cas processor runtime env param impl.
+   */
   public CasProcessorRuntimeEnvParamImpl() {
   }
 
@@ -46,6 +57,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorRuntimeEnvParam#setEnvParamName(java.lang.String)
    */
+  @Override
   public void setEnvParamName(String aEnvParamName) throws CpeDescriptorException {
     key = aEnvParamName;
   }
@@ -55,6 +67,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorRuntimeEnvParam#getEnvParamName()
    */
+  @Override
   public String getEnvParamName() throws CpeDescriptorException {
     return key;
   }
@@ -64,6 +77,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorRuntimeEnvParam#setEnvParamValue(java.lang.String)
    */
+  @Override
   public void setEnvParamValue(String aEnvParamValue) throws CpeDescriptorException {
     value = aEnvParamValue;
   }
@@ -73,19 +87,22 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorRuntimeEnvParam#getEnvParamValue()
    */
+  @Override
   public String getEnvParamValue() throws CpeDescriptorException {
     return value;
   }
 
   /**
    * Overridden to read "key" and "value" attributes.
-   * @param aElement -
-   * @param aParser -
-   * @param aOptions -
-   * @throws InvalidXMLException -
+   *
+   * @param aElement the a element
+   * @param aParser the a parser
+   * @param aOptions the a options
+   * @throws InvalidXMLException the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     setKey(aElement.getAttribute("key"));
@@ -95,9 +112,11 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
 
   /**
    * Overridden to handle "key" and "value" attributes.
-   * @return -
+   *
+   * @return the XML attributes
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
+  @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
 
@@ -106,14 +125,21 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
     return attrs;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("env",
           new PropertyXmlInfo[0]);
 
   /**
+   * Gets the value.
+   *
    * @return the value
    */
   public String getValue() {
@@ -121,13 +147,17 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @param string -
+   * Sets the value.
+   *
+   * @param string the new value
    */
   public void setValue(String string) {
     value = string;
   }
 
   /**
+   * Gets the key.
+   *
    * @return the key
    */
   public String getKey() {
@@ -135,7 +165,9 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @param string -
+   * Sets the key.
+   *
+   * @param string the new key
    */
   public void setKey(String string) {
     key = string;

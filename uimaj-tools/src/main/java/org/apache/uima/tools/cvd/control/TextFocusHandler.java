@@ -24,10 +24,20 @@ import java.awt.event.FocusListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class TextFocusHandler.
+ */
 public class TextFocusHandler implements FocusListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new text focus handler.
+   *
+   * @param frame the frame
+   */
   public TextFocusHandler(MainFrame frame) {
     this.main = frame;
   }
@@ -37,6 +47,7 @@ public class TextFocusHandler implements FocusListener {
    * 
    * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
    */
+  @Override
   public void focusGained(FocusEvent e) {
     // Need to make the caret visible when gaining focus. Sometimes this happens automatically, but
     // not always. Not sure if there is a better way to do this.
@@ -48,6 +59,7 @@ public class TextFocusHandler implements FocusListener {
    * 
    * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
    */
+  @Override
   public void focusLost(FocusEvent e) {
     // Does nothing
   }

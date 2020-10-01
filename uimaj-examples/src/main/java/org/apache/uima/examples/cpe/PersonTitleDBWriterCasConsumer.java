@@ -39,6 +39,7 @@ import org.apache.uima.util.ProcessTrace;
 
 import example.PersonTitle;
 
+
 /**
  * A simple CAS consumer that creates a Derby (Cloudscape) database in the file system. You can
  * obtain this database from http://incubator.apache.org/derby/ *
@@ -75,26 +76,39 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
    */
   public static final String PARAM_OUTPUTDIR = "OutputDirectory";
 
+  /** The Constant MAX_URI_LENGTH. */
   public static final int MAX_URI_LENGTH = 80;
 
+  /** The Constant MAX_TITLE_LENGTH. */
   public static final int MAX_TITLE_LENGTH = 20;
 
+  /** The Constant DB_LOAD_BATCH_SIZE. */
   public static final int DB_LOAD_BATCH_SIZE = 50;
 
+  /** The batch counter. */
   private int batchCounter = DB_LOAD_BATCH_SIZE;
 
+  /** The m output dir. */
   private File mOutputDir;
 
+  /** The first call. */
   private boolean firstCall = true;
 
+  /** The first ever call. */
   private static boolean firstEverCall = true;
 
+  /** The stmt. */
   private PreparedStatement stmt;
 
+  /** The con. */
   private Connection con;
 
+  /** The start time. */
   private long startTime;
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.CasConsumer_ImplBase#initialize()
+   */
   public void initialize() throws ResourceInitializationException {
     startTime = System.currentTimeMillis();
     System.out
@@ -277,6 +291,9 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.CasConsumer_ImplBase#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
+   */
   public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
           IOException {
     firstCall = true;
@@ -312,6 +329,11 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
     }
   }
 
+  /**
+   * Delete dir.
+   *
+   * @param f the f
+   */
   private void deleteDir(File f) {
     if (f.isDirectory()) {
       String[] contents = f.list();
@@ -322,6 +344,13 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
     f.delete();
   }
 
+  /**
+   * Truncate.
+   *
+   * @param s the s
+   * @param length the length
+   * @return the string
+   */
   private String truncate(String s, int length) {
     if (s.length() <= length)
       return s;
