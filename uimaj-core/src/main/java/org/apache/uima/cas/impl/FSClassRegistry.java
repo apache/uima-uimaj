@@ -239,8 +239,9 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       return !jcasClass.getCanonicalName().equals(jcasClassName);
     }
     
-    boolean isPearOverride(ClassLoader cl) {
-      return jcasClass.getClassLoader().equals(cl);
+    boolean isPearOverride(TypeSystemImpl tsi) {
+      JCasClassInfo baseJcci = tsi.getJcci(jcasClass.getName());
+      return baseJcci == null || !jcasClass.getClassLoader().equals(baseJcci.jcasClass.getClassLoader());
     }
     
     TypeImpl getUimaType(TypeSystemImpl tsi) {
@@ -1326,7 +1327,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     
     // cannot iterate over type2jcci - that map only has types with found JCas classes
     
-    getGeneratorsForTypeAndSubtypes(tsi.topType, type2jcci, isPear, cl, r);
+    getGeneratorsForTypeAndSubtypes(tsi.topType, type2jcci, isPear, cl, r, tsi);
     
 //    for (Entry<String, JCasClassInfo> e : type2jcci.entrySet()) {
 //      TypeImpl ti = tsi.getType(Misc.javaClassName2UimaTypeName(e.getKey()));
@@ -1347,11 +1348,11 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   
   private static void getGeneratorsForTypeAndSubtypes(
       TypeImpl ti, 
-      Map<String, 
-      JCasClassInfo> t2jcci, 
+      Map<String, JCasClassInfo> t2jcci, 
       boolean isPear,
       ClassLoader cl,
-      FsGenerator3[] r) {
+      FsGenerator3[] r,
+      TypeSystemImpl tsi) {
     
     TypeImpl jti = ti;
     JCasClassInfo jcci = t2jcci.get(jti.getJCasClassName());
@@ -1362,13 +1363,13 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     
     // skip entering a generator in the result if
     //    in a pear setup, and this cl is not the cl that loaded the JCas class.
-    //    See method comment for why.
-    if (!isPear || jcci.isPearOverride(cl)) {
+    //    See method comment getGeneratorsForClassLoader(...) in for why.
+    if (!isPear || jcci.isPearOverride(tsi)) {
       r[ti.getCode()] = (FsGenerator3) jcci.generator;
     }      
     
     for (TypeImpl subtype : ti.getDirectSubtypes()) {
-      getGeneratorsForTypeAndSubtypes(subtype, t2jcci, isPear, cl, r);
+      getGeneratorsForTypeAndSubtypes(subtype, t2jcci, isPear, cl, r, tsi);
     }
 
   }
