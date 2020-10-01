@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/version_3_users_guide/backwards_compatibility/">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="uv3.backwards_compatibility">
+  <title>Backwards Compatibility</title>
+  <titleabbrev>Backwards Compatibility</titleabbrev>
+  
+  <para>Because users have made substantial investment in developing
+  applications using the UIMA framework, a goal of version 3 is to protect this investment, by enabling
+  Annotators and applications developed under previous versions to be able to be used in 
+  subsequent versions of the framework.</para>
+  
+  <para>To this end, version 3 is designed to be backwards compatible, 
+  except for needing:
+  <itemizedlist>
+    <listitem>
+     <para>possibly a recompilation (due to some rearrangements of many classes and interfaces)</para>
+    </listitem>
+    <listitem>
+      <para>a new set of User-defined JCas classes (if these were
+        previously being used). The creation of these Cas classes
+        can be done by regenerating them using JCasGen, or by 
+        using a migration tool that handles converting the existing JCas classes.
+        A later chapter covers how to upgrade the JCas classes.</para>
+    </listitem>
+  </itemizedlist>
+  There are some additional exceptions, described in the following sections.
+  </para>
+  
+  <section id="uv3.backwards_compatibility.jcas">  
+    <title>JCas and non-JCas APIs</title>
+
+    <para>The JCas class changes include no longer needing or using the <code>Xyz_Type</code>
+      sister classes for each main JCas class.  User code is unlikely to access these sister classes.
+      The JCas API method to access this sister class now throws a UnsupportedOperation exception.
+    </para>
+        
+    <para>The non-JCas Java cover classes for the built-in UIMA types remain, for backwards compatibility.
+      So, if you have code that casts a Feature Structure instance to AnnotationImpl (a now deprecated 
+      version 2 non-JCas Java cover class), that will continue to work.  
+    </para>
+    
+    <section id="uv3.backwards_compatibility.jcas.names">  
+    <title>Additional reserved names in the JCas generated classes</title>
+    <titleabbrev>JCas reserved names</titleabbrev>
+
+    <para>Names beginning with "_" (underscore) are being used by the new JCas implementation, so you should not
+      name things with this convention.  If you do, please insure your names are not colliding with the names
+      being used by the generated JCas files.
+    </para>
+    
+    </section>
+  </section>
+  
+  
+  <section id="uv3.backwards_compatibility.serialization">  
+	  <title>Serialization forms</title>
+	  
+	  <para>
+	  The backwards compatibility extends to the serialized forms, so that it should be
+	  possible to have a UIMA-AS services working with a client, where the client is a version 3 instance, but the
+	  server is still a version 2 (or vice versa).</para>
+	  
+	  <section id="uv3.backwards_compatibility.serialization.deltas">  
+	    <title>Delta CAS Version 2 Binary deserialization not supported</title>
+	    
+	    <para>The binary serialization forms, including Compressed Binary Form 4, build an
+	      internal model of the v2 CAS in order to be able to deserialize v2 generated
+	      versions.  For <emphasis role="strong">delta</emphasis> CAS, this model cannot be accurately built, because version 3
+	      excludes from the model all unreachable Feature Structures, so in most cases it
+	      won't match the version 2 layout.  
+	    </para>
+	    
+	    <para>Version 3 will throw an exception if delta CAS deserialization of a version 2
+	      binary delta CAS is attempted.
+	    </para>
+    </section>
+	  
+  </section>
+  
+  <section id="uv3.backwards_compatibility.low_level_apis">
+    <title>APIs for creating and modifying Feature Structures</title>
+    
+    <para>There are 3 sets of APIs for creating and modifying Feature Structures;
+      all are supported in V3.
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>Using the JCas classes</para>
+      </listitem>
+      <listitem>
+        <para>Using the normal CAS interface with Type and Feature objects</para>
+      </listitem>
+      <listitem>
+        <para>Using the low level CAS interface with int codes for Types and Features</para>
+      </listitem>
+    </itemizedlist>
+    </para>
+    
+    <para>Version 3 retains all 3 sets, to enable backward compatibility.</para>
+    <para>The low level CAS interface was originally provided to enable a extra-high-performance
+      (but without compile-time type safety checks) mode.  
+      In Version 3, this mode is actually somewhat slower than the others, and no longer has any advantages.      
+    </para>
+    <para>Using the low level CAS interface also sometimes blocks one of the new features of Version 3 - 
+    namely, automatic
+    garbage collection of unreachable Feature Structures.  This is because creating a Feature Structure using the
+    low level API creates the Java object for that Feature Structure, but returns an "int" handle to it.  
+    In order to be able to find the Feature Structure, given that int handle, an entry is made in an internal map.
+    This map holds a reference to this Feature Structure, which prevents it from being garbage collected (until of coursse,
+    the CAS is reset).
+    </para>
+    
+    <para>The normal CAS APIs allow writing Annotators where the type system is unknown at compile time; these 
+    are fully supported.</para>    
+    
+  </section>
+  
+  <section id="uv3.backwards_compatibility.preserve_v2_ids">
+    <title>Preserving V2 ids, with low level CAS Api accessibility</title>
+    <titleabbrev>Preserving V2 Ids</titleabbrev> 
+    
+    <para>
+      Some V2 applications make use of the Feature Structure address, using these as an integer identifier
+      and using the low level CAS APIs to access the Feature Structure, given this integer.  These applications 
+       also often use the stability of these ids across some serialization/deserializations.
+    </para>
+    
+    <para>
+      Normally in V3, deserialization of CASs having these IDs occurs without preserving the IDs, and without setting
+      up the low level CAS APIs to be able to access these using them.  If an existing application depends
+      on the low level access via the address, a special mode, called <code>V2IdRefs</code>, can be specified, which will support this.
+      It comes at a cost however, which is that all new Feature Structures created (or deserialized) will be added to
+      an internal table to enable the low level CAS getFSForRef(int) method to work.  As a result, these Feature Structures
+      are not eligible for garbage collection. 
+    </para>
+    
+    <para>This mode is set on individual CASs via a new API; a default value may optionally be specified.
+      Once set on a CAS, it remains until set to a different value;
+      CAS Reset does not affect the setting, nor does checking it into / out of a CAS Pool.  
+    </para>
+    
+    <para>When a new CAS is created, this mode is set according to two sources:
+      <itemizedlist>
+        <listitem><para>a <code>-Duima.default_v2_id_references</code> system property, read once when the 
+        UIMA framework classes are loaded.</para>
+        </listitem>
+        <listitem><para>A run-time value kept per thread, managed by an API on the LowLevelCAS interface.  The 
+          setting is inherited by any child threads the thread creates, and 
+          overrides the system property if used.</para></listitem>
+        <listitem><para>If neither of these are used, then the default is to not be in the sepcial v2-mode.</para></listitem>
+      </itemizedlist> 
+    </para>
+    
+    <para>The APIs for this are part of the LowLevelCAS.  The controlling APIs all return an instance
+      of AutoClosableNoException, which can be used to reset the setting to its previous value.
+      A recommended way of using these is with the Java <code>try with resources</code> construct: 
+    <programlisting>try (AutoClosableNoException w = llcas.ll_enableV2IdRefs) {
+  ... some operations
+} // automatically restores previous value 
+</programlisting>   
+    </para>
+    
+    <para>LowLevelCas instance APIs for enabling/disabling this mode on a particular CAS:</para>
+    <programlisting>// set the mode    
+AutoClosable ll_enableV2IdRefs()
+
+// same, but with explicit set or reset of the mode
+AutoClosableNoException ll_enableV2IdRefs(true/false)
+
+// return true if the mode is enabled
+boolean is_ll_enableV2IdRefs() 
+</programlisting>
+
+    <para>Static LowLevelCas APIs for setting the default value for this mode for new CASs on a particular thread:</para>
+    <programlisting>
+// set the default    
+AutoClosableNoException LowLeveCas.ll_defaultV2IdRefs()
+
+// same, but with explicit set or reset of the mode
+AutoClosableNoException LowLeveCas.ll_defaultV2IdRefs(true/false)
+
+// return true if the mode is enabled
+boolean LowLeveCas.is_ll_defaultV2IdRefs() 
+</programlisting>   
+    
+    <para>This mode modifies multiple things in the operation of UIMA V3.</para>
+    <itemizedlist>
+      <listitem><para>Newly created Feature structures
+          have IDs which match what UIMA V2 references (the "addresses")
+          would be.  For serialized forms (except Xmi), these IDs
+          match the (imputed) v2 IDs of the serialized form.
+        </para>
+        
+        <para>Newly created Feature Structures, including those created when deserializing,
+          are added to an internal map which maps the ID to the Feature Structure instance.
+          Feature Structures may be located by ID using the LowLevelCAS API 
+          <code>getFSForRef().</code>
+        </para>
+        
+        <para>
+          In order for this to work correctly, the mode must be set while the CAS is empty.
+          If the mode is attempted to be set on a non-empty CAS, an IllegalStateException
+          is thrown.  
+          <!-- Serialized forms like Xmi and XCAS have the ids 
+          included in the external form;
+           -->
+        </para>
+      </listitem>
+      <listitem>
+        <para>This mode modifies serialization (except for XCas, Xmi, and Compressed form 6, which in V2 are
+          implemented to just serialize reachable Feature Structures) to include non-reachable FSs.
+        </para>            
+      </listitem>
+      <listitem><para>Note: This does not affect the <code>select</code> framework results - unreachable Feature Structures
+        are not included.</para></listitem>
+    </itemizedlist>
+         
+  </section>
+  
+  <section id="uv3.backwards_compatibility.PEARs">
+    <title>PEAR support</title>   
+    
+    <para>Pears are supported in Version 3.  If they use JCas, their JCas classes need to be migrated.
+    </para>
+    
+    <para>When a PEAR contains a JCas class definition different from the surrounding non-PEAR context,
+    each Feature Structure instance within that PEAR has a lazily-created "dual" representation using
+    the PEAR's JCas class definition.  The UIMA framework things storing references to Feature Structures
+    are modified to store the non-PEAR version of the Feature Structure, but to return (when in 
+    a particular PEAR component in the pipeline) the dual version.  The intent is that this be 
+    "invisible" to the PEAR's annotators.  Both of these representations share the same 
+    underlying CAS data, so modifications to one are seen in the other.
+    </para>
+    
+    <para>If a user builds code that holds onto Feature Structure references, outside of 
+    annotators (e.g., as a shared External Resource), and sets and references these from
+    both outside and inside one (or more) PEARs, they should adopt a strategy of storing
+    the non-PEAR form.  To get the non-PEAR form from a Feature Structure, use the method
+    <code>myFeatureStructure._maybeGetBaseForPearFs()</code>.
+    </para>
+    
+    <blockquote><para>Similarly, if code running in an Annotator within a PEAR wants to
+    work with a Feature Structure extracted from non-UIMA managed data outside of annotators
+    (e.g., such as a shared External Resource) where the form stored is the non-PEAR form,
+    you can convert to the PEAR form using the method 
+    <code>myFeatureStructure.__maybeGetPearFs()</code>.  This method checks to see if
+    the processing context of the pipeline is currently within a PEAR, and if that PEAR has
+    a different definition for that JCas class, and if so, it returns that version of the
+    Feature Structure. 
+    </para></blockquote>
+    
+    <para>The new Java Object support does not support multiple, 
+      different JCas class definitions for the same 
+      UIMA Type, inside and outside of the PEAR context.  
+      If this is detected, a runtime exception is thrown.
+    </para>
+    
+    <para>The workaround for this is to manually merge any JCas class definitions for the same class.</para>
+  </section>
+  
+  <section id="uv3.backwards_compatibility.toString">
+    <title>toString()</title>   
+    
+    <para>
+      The formatting of various UIMA artifacts, including Feature Structures,
+      has changed somewhat, to be more informative.  This may impact 
+      situations such as testing, where the exact string representations
+      are being compared.
+    </para>
+    
+    <para>A special global Java property, -Duima.v2_pretty_print_format can be set to have the toString() operation
+      for Feature Sructures print in the V2 style.
+    </para>
+  </section>
+  
+  <section id="uv3.backwards_compatibility.logging">
+    <title>Logging configuration is somewhat different</title>   
+    
+    <para>The default logging configuration in v2 was to use Java Util Logging (the logger built into Java).
+    For v3, the default is to use SLF4J which, in turn, picks a back-end logger, depending on what it finds
+    in the class path.</para>
+    
+    <para>This change was done to permit easier integration of UIMA as a library running within other frameworks.
+    </para>
+    
+    <para>V3 UIMA logger includes the APIs like info(..), warn(..) etc., that are part of the 
+      SLF4j APIs.  In addition, these are augmented with the Java 8 style lambda arguments that
+      were introduced in log4j-2, for more concise and efficient log message computation.</para>
+      
+    <para>The new UIMA Logger APIs (e.g. logger.info(...), logger.warn(...)) 
+      use the SLF4j and other modern logger substitutable notation of "{}", as opposed
+      to the style adopted by the original Java logger, of "{nnn}".  All modern loggers have switched to
+      this. </para>  
+      
+    <para>The technique for (optionally) reporting the class and method (and sometimes, line number) 
+    was changed to conform to current logger conventions - whereby the loggers themselves obtain this
+    information from the call stack.  The V2 calls which pass in the sourceClass and sourceMethod information
+    have this information ignored, but replaced with what the loggers obtain from the stack track.
+    In some cases, where the callers in V2 were not actually passing in the correct class/method information,
+    this will result in a different log record.</para>
+    
+    <para>
+      For more details, please see the logging chapter.
+    </para>
+  </section>
+    
+  <section id="uv3.backwards_compatibility.typesystem_sharing">
+    <title>Type System sharing</title>   
+    
+    <para>Type System definitions are shared when they are equal.  After type systems 
+    have been built up from type definitions, at "commit" time, a check is made to see if an
+    identical type system already exists (same types and features).  
+    This is often the case when a UIMA application is
+    scaling up by adding multiple pipelines, all using the same type system.  
+    </para>
+    
+    <para>If an identical committed type system already exists, then the commit operation returns 
+    it, and the one just built is discarded.  Normally, this is not an issue.
+    However, some application code may save references to the type system object or to defined types and features.  
+    These references end up pointing to the discarded version, when the commit operation finds an already 
+    committed equal version.</para>
+    
+    <para>Application code may code around this by re-acquiring references to the type system object, and to any type and feature
+    objects, if the type system instance object returned from <code>commit</code> is not identical (==) to the
+    one being committed.
+    The type system commit APIs are changed to return the type system - either the one being committed, or an
+    already existing equal committed type system.  So when coding
+    <code>myTypesystem.commit();</code> if you later refer to <code>myTypesystem</code>, change this to
+    <code>myTypesystem = myTypesystem.commit();</code>, to keep the variable <code>myTypesystem</code> always
+    referring to to the committed type system.
+    </para>
+  </section>
+  
+  <!--  Not implemented
+  <section id="uv3.backwards_compatibility.deserializing_0_length">
+    <title>Deserializing 0 length items in a CAS</title>   
+    
+    <para>In V3, 0-length arrays and lists belonging to one CAS are deserialized into a shared Java object.  Since 
+      0-length arrays and lists are
+      immutable, this should normally not matter.  It could cause problems if the application somehow is
+      depending on object non-identity equality for these items.
+    </para>
+  </section>
+   -->
+   
+  <section id="uv3.backwards_compatibility.checking">
+    <title>Some checks moved to native Java</title>   
+    
+    <para>In the interest of performance, some duplicate checks, such as whether an array index is within bounds, 
+    have been removed from UIMA when they are already being checked by the underlying Java runtime.  
+    This has affected some of the internal APIs, such as the JCas's <code>checkArrayBounds</code>
+    which was removed because it was no longer being used.
+    </para>
+  </section>
+  
+  <section id="uv3.backwards_compatibility.class_hierarchy">
+    <title>Some class hierarchies have been modified</title>   
+    
+    <para>The various JCas Classes implementing the built-ins for arrays have some additional
+      interfaces added, grouping them into <code>CommonPrimitiveArray</code> or 
+      <code>CommonArray</code>.  These changes are internal, and should not affect users.
+    </para>
+  </section>
+  
+  <section id="uv3.backwards_compatibility.multiple_type_systems_with_common_jcas">
+    <title>Enabling multiple versions of type systems to work with a single common JCas class</title>
+    <titleabbrev>Multi-TypeSystems single JCas</titleabbrev>   
+    
+    <para>Some applications may use a JCas class definition, defining for type T features f1, f2, f3 (for example), in a mode
+      where under a single class loader (for example, in one Java application), multiple CASs are loaded and processed,
+      where each CAS might have other versions of the type system, defining for type T a subset of the features in the JCas. 
+    </para>
+    
+    <para>In order to make this scenario possible, v3 takes an extra step, right before type system commit time, of 
+      loading the JCas classes corresponding to the types, and then augmenting the type definitions with additional
+      features defined in the JCas but not in the type description.  After this is done, the type system is committed, 
+      and offsets are assigned to the JCas class that are constant, even when a subsequent type system is loaded
+      that defines more features (provided that no new features are introduced).</para>
+      
+    <para>This feature represents a trade-off between highly efficient, locked-down offsets for features, and 
+      some limited flexibility to handle a somewhat common use case where additional features exist in the JCas.
+      The JCas loading code always checks to insure compatibility between the offsets in the JCas classes, as first set up,
+      and any subsequent type system being used with that JCas.
+    </para> 
+    
+    <para>This accommodation doesn't handle many possible scenarios. Some of these include situations where a
+      supertype might subsequently add extra feature slots, or the features end up after merging to have a different
+      ordering.</para> 
+    
+    <para>For cases where this accommodation is insufficient, the workaround is to run separate UIMA applications, each
+      under its own class loader, for the incompatible situations.</para>
+      
+    <para>PEARs, because they are loaded lazily after the type system has been committed, do not support this kind of
+      augmentation of types from the Pear-specific JCas class definition.</para>  
+  </section>
+  </chapter>

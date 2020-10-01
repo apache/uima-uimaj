@@ -29,12 +29,22 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
+
+/**
+ * The Class CpeResourceManagerConfigurationImpl.
+ */
 public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl implements
         CpeResourceManagerConfiguration {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -8905321767282361433L;
 
+  /** The href. */
   private String href;
 
+  /**
+   * Instantiates a new cpe resource manager configuration impl.
+   */
   public CpeResourceManagerConfigurationImpl() {
   }
 
@@ -43,6 +53,7 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
    * 
    * @see org.apache.uima.collection.metadata.CpeResourceManagerConfiguration#set(java.lang.String)
    */
+  @Override
   public void set(String aPath) {
     setHref(aPath);
   }
@@ -52,16 +63,22 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
    * 
    * @see org.apache.uima.collection.metadata.CpeResourceManagerConfiguration#get()
    */
+  @Override
   public String get() {
     return getHref();
   }
 
   /**
    * Overridden to read "href" attributes.
-   * 
+   *
+   * @param aElement the a element
+   * @param aParser the a parser
+   * @param aOptions the a options
+   * @throws InvalidXMLException the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     setHref(aElement.getAttribute("href"));
@@ -72,28 +89,42 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
 
   /**
    * Overridden to handle "href" attributes.
-   * 
+   *
+   * @return the XML attributes
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
+  @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     attrs.addAttribute("", "href", "href", "CDATA", getHref());
     return attrs;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "resourceManagerConfiguration", new PropertyXmlInfo[0]);
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /**
+   * Gets the href.
+   *
+   * @return the href
+   */
   public String getHref() {
     return href;
   }
 
   /**
-   * @param string -
+   * Sets the href.
+   *
+   * @param string the new href
    */
   public void setHref(String string) {
     href = string;

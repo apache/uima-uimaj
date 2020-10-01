@@ -62,7 +62,7 @@ public interface Resource {
    *          parameters. Each class that implements this interface can decide what additional
    *          parameters it supports.
    * 
-   * @return true if and only if initialization completed successfully. Reutrns false if the given
+   * @return true if and only if initialization completed successfully. Returns false if the given
    *         <code>ResourceSpecifier</code> is not of an appropriate type for this Resource. If
    *         the <code>ResourceSpecifier</code> is of an appropriate type but is invalid or if
    *         some other failure occurs, an exception should be thrown.

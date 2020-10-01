@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>3.1.2-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -44,14 +44,15 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-cpe
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-cpe
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-cpe
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-cpe
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-cpe
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-cpe
     </url>
+    <tag>HEAD</tag>
   </scm>
   
   <properties>
@@ -84,6 +85,11 @@
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <scope>test</scope>
+    </dependency>
 	</dependencies>
 	<build>
 		<finalName>uima-cpe</finalName>
@@ -97,7 +103,7 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes>
+                <excludes combine.children="append">
                   <exclude>release.properties</exclude> <!-- release generated artifact -->
                   <exclude>checkpoint_synchPoint.xml*</exclude> <!-- test data -->
                   <exclude>checkpoint.dat*</exclude> <!-- test data -->

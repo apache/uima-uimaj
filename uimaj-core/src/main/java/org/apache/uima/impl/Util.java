@@ -18,10 +18,13 @@
  */
 package org.apache.uima.impl;
 
+import org.apache.uima.UimaContext;
+import org.apache.uima.UimaContextHolder;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.ComponentInfo;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.internal.util.function.Runnable_withException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.CasManager_impl;
 
@@ -85,11 +88,54 @@ public class Util {
     // This cas will be unlocked and its class loader restored when the
     //   next() method returns it
     // Insure the same view is passed for switching/restoring  https://issues.apache.org/jira/browse/UIMA-2211
-    // https://issues.apache.org/jira/browse/UIMA-6057
+    // putting back the switch of class loaders for Pears and other
+    //   possible structures.  Corresponds to v2 impl  7/2019
+    //   See https://issues.apache.org/jira/browse/UIMA-5030   
     boolean wasLocked = ci.isCasLocked();
     ci.switchClassLoader(resourceManager.getExtensionClassLoader(), wasLocked);    
     return r;
   }
   
+  /**
+   * Calls userCode and then restores the context holder
+   * @param userCode run this code within the current context
+   */
+  public static void preserveContextHolder(Runnable userCode) {
+    UimaContext prevContext = UimaContextHolder.getContext();
+    try {
+      userCode.run();
+    } finally {
+      UimaContextHolder.setContext(prevContext);
+    }
+  }
+
+  /**
+   * Calls userCode with specified context, then restores the context holder
+   * @param context to use while running the userCode
+   * @param userCode the code to run.
+   */
+  public static void withContextHolder(UimaContext context, Runnable userCode) {
+    UimaContext prevContext = UimaContextHolder.setContext(context);
+    try {
+      userCode.run();
+    } finally {
+      UimaContextHolder.setContext(prevContext);
+    }
+  }
+  
+  /**
+   * Calls userCode with specified context, then restores the context holder
+   * @param context to use while running the userCode
+   * @param userCode the code to run.
+   * @throws Exception -
+   */
+  public static void withContextHolderX(UimaContext context, Runnable_withException userCode) throws Exception {
+    UimaContext prevContext = UimaContextHolder.setContext(context);
+    try {
+      userCode.run();
+    } finally {
+      UimaContextHolder.setContext(prevContext);
+    }
+  }  
 
 }

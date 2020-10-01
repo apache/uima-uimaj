@@ -19,11 +19,11 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FloatArrayFS;
+
+import junit.framework.TestCase;
 
 public class FloatArrayFSTest extends TestCase {
 
@@ -40,7 +40,7 @@ public class FloatArrayFSTest extends TestCase {
 
 	public void setUp() {
 		try {
-			this.cas = CASInitializer.initCas(new CASTestSetup());
+			this.cas = CASInitializer.initCas(new CASTestSetup(), null);
 		} catch (Exception e) {
 			assertTrue(false);
 		}

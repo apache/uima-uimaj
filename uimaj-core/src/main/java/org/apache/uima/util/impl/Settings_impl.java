@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -63,7 +64,7 @@ public class Settings_impl implements Settings {
   // Thread-local map of properties being resolved +for detecting circular references.
   private ThreadLocal<HashMap<String, Integer>> tlResolving = new ThreadLocal<HashMap<String, Integer>>() {
     protected synchronized HashMap<String, Integer> initialValue() {
-      return new HashMap<String, Integer>();
+      return new HashMap<>();
     }
   };
 
@@ -74,7 +75,7 @@ public class Settings_impl implements Settings {
   private Pattern evalPattern = Pattern.compile("\\$\\{.*?\\}");
 
   public Settings_impl() {
-    map = new HashMap<String, String>();
+    map = new HashMap<>();
   }
 
   /**
@@ -99,7 +100,7 @@ public class Settings_impl implements Settings {
    */
   public void load(InputStream in) throws IOException {
     // Process each logical line (after blanks & comments removed and continuations extended)
-    rdr = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+    rdr = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
     String line;
     final String legalPunc = "./-~_";   // Acceptable punctuation characters
     while ((line = getLine()) != null) {
@@ -223,7 +224,7 @@ public class Settings_impl implements Settings {
     }
 
     // Add the name for the duration of the lookup
-    resolving.put(name, new Integer(resolving.size()));
+    resolving.put(name, resolving.size());
     try {
       return resolve(from, map.get(name));
     } finally {
@@ -321,7 +322,7 @@ public class Settings_impl implements Settings {
     }
     value = value.substring(1, value.length() - 1);
     if (value.length() == 0) { // If an empty string create a 0-length array
-      return new String[0];
+      return Constants.EMPTY_STRING_ARRAY;
     }
     // Split on commas but rejoin tokens if a comma is escaped
     String[] tokens = value.split(",");

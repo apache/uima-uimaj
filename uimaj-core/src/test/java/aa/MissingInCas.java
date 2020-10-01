@@ -17,66 +17,94 @@
  * under the License.
  */
 
+   
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
+
 package aa;
 
-import org.apache.uima.jcas.JCas;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.cas.TOP_Type;
 
-/**
- * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006 XML source:
- * C:/a/Eclipse/3.1/j4/jedii_jcas_tests/testTypes.xml
- * 
- * @generated
- */
+
+/** 
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * @generated */
 public class MissingInCas extends TOP {
-  /**
-   * @generated
-   * @ordered
+ 
+  /** @generated
+   * @ordered 
    */
-  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(MissingInCas.class);
-
-  /**
-   * @generated
-   * @ordered
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "aa.MissingInCas";
+  
+  /** @generated
+   * @ordered 
    */
+  @SuppressWarnings ("hiding")
+  public final static int typeIndexID = JCasRegistry.register(MissingInCas.class);
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
-
-  /** @generated */
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
-
-  /**
-   * Never called. Disable default constructor
-   * 
-   * @generated
+  /** @generated
+   * @return index of the type  
    */
-  protected MissingInCas() {
-  }
+  @Override
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
 
-  /**
-   * Internal - constructor used by generator
-   * 
+
+  /* Feature Adjusted Offsets */
+
+   
+  /** Never called.  Disable default constructor
+   * @generated */
+  protected MissingInCas() {/* intentionally empty block */}
+    
+  /** Internal - constructor used by generator 
    * @generated
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
    */
-  public MissingInCas(int addr, TOP_Type type) {
-    super(addr, type);
+  public MissingInCas(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
-
-  /** @generated */
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
+   */
   public MissingInCas(JCas jcas) {
     super(jcas);
-    readObject();
-  }
+    readObject();   
+  } 
 
-  /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   * 
-   * @generated modifiable
+
+  /** 
+   * <!-- begin-user-doc -->
+   * Write your own initialization here
+   * <!-- end-user-doc -->
+   *
+   * @generated modifiable 
    */
-  private void readObject() {
-  }
-
+  private void readObject() {/*default - does nothing empty block */}
+     
 }
+
+    

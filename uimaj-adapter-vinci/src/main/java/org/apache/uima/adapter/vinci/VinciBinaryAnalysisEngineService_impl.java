@@ -67,26 +67,33 @@ import org.apache.vinci.transport.document.AFrame;
  * 
  */
 public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter {
+  
+  /** The server. */
   private VinciServer _server = null;
 
+  /** The m AE. */
   private AnalysisEngine mAE = null;
 
+  /** The m cas pool. */
   private CasPool mCasPool = null;
 
+  /** The descriptor. */
   private Descriptor descriptor = null;
 
+  /** The debug. */
   // debug mode flag
   private boolean debug = false;
 
+  /** The service instance id. */
   private int serviceInstanceId = -1;
 
   /**
    * Instantiate Analysis Engine from a given descriptor - possibly in debug mode.
-   * 
+   *
    * @param serviceConfigPath descriptor location
-   * @param debug -
-   * @param instanceId -
-   * @throws Exception -
+   * @param debug the debug
+   * @param instanceId the instance id
+   * @throws Exception the exception
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath, boolean debug,
           String instanceId) throws Exception {
@@ -97,10 +104,10 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
 
   /**
    * Instantiate Analysis Engine from a given descriptor - possibly in debug mode.
-   * 
+   *
    * @param serviceConfigPath descriptor location
-   * @param debug -
-   * @throws Exception -
+   * @param debug the debug
+   * @throws Exception the exception
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath, boolean debug)
           throws Exception {
@@ -133,20 +140,19 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
 
   /**
    * Instantiate Analysis Engine from a given descriptor.
-   * 
+   *
    * @param serviceConfigPath descriptor location
-   * @throws Exception -
+   * @throws Exception the exception
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath) throws Exception {
     this(serviceConfigPath, false);
   }
 
   /**
-   * Extracts AE metadata
-   * 
+   * Extracts AE metadata.
+   *
    * @return Frame containing extracted meta data
-   * @exception when
-   *              there is a failure processing
+   * @throws Exception the exception
    */
   private Frame getMetaData() throws Exception {
     UIMAFramework.getLogger().log(Level.FINEST, "getMetaData()");
@@ -162,6 +168,11 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
     return response;
   }
 
+  /**
+   * Gets the descriptor.
+   *
+   * @return the descriptor
+   */
   public Descriptor getDescriptor() {
     return descriptor;
   }
@@ -170,13 +181,10 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * Analyzes a given document by a CasObjectProcessor. When completed this method returns a
    * VinciFrame containing XCAS translated into a set of Vinci subFrames. Each subframe containing
    * one annotation with all its attributes.
-   * 
-   * @param aRequestFrame
-   *          request frame
-   * 
+   *
+   * @param aRequestFrame          request frame
    * @return VinciFrame containing XCAS translated into a set of Vinci subframes.
-   * @exception Exception
-   *              if there is an error during processing
+   * @throws ServiceException the service exception
    */
   private Transportable analyze(AFrame aRequestFrame) throws ServiceException {
     CAS cas = null;
@@ -235,11 +243,12 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    * this method. Each request comes in as a VinciFrame and is expected to contain a valid
    * VINCI:COMMAND. Currently, two such operations are supported: 1) Annotate - triggers document
    * analysis 2) GetData - triggers return of the AE meta data ( descriptor)
-   * 
+   *
    * @param doc {@link org.apache.vinci.transport.Transportable} -
    *          a VinciFrame containing client request
    * @return {@link org.apache.vinci.transport.Transportable} - a VinciFrame containg result of
    *         performing the service
+   * @throws ServiceException the service exception
    */
 
   public Transportable eval(Transportable doc) throws ServiceException {
@@ -330,7 +339,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
   }
 
   /**
-   * Terminate this service
+   * Terminate this service.
    */
   public void stop() {
     try {
@@ -343,6 +352,11 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
     }
   }
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
   public static void main(String[] args) {
     try {
       // are we in debug mode?
@@ -378,6 +392,8 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
 
   /**
    * Redirects all logger output for this JVM to the given output stream.
+   *
+   * @param out the out
    */
   private static void redirectLoggerOutput(OutputStream out) {
     // get root logger handlers - root logger is parent of all loggers
@@ -395,22 +411,34 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
   }
 
   /**
-   * Class that handles service shutdowns (including Ctrl-C)
-   * 
+   * Class that handles service shutdowns (including Ctrl-C).
    */
   static class ShutdownHook extends Thread {
+    
+    /** The server. */
     VinciBinaryAnalysisEngineService_impl server;
 
+    /**
+     * Instantiates a new shutdown hook.
+     *
+     * @param instance the instance
+     */
     public ShutdownHook(VinciBinaryAnalysisEngineService_impl instance) {
       server = instance;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Thread#run()
+     */
     public void run() {
       server.stop();
     }
   }
 
   /**
+   * Make transportable.
+   *
+   * @return the transportable
    * @see org.apache.vinci.transport.TransportableFactory#makeTransportable()
    */
   public Transportable makeTransportable() {

@@ -22,18 +22,30 @@ package org.apache.uima.taeconfigurator.model;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
+
 /**
  * Instances of this class model the varients of getting and setting metadata.
  * 
  */
 public class DescriptorMetaData {
 
+  /** The editor. */
   private MultiPageEditor editor;
 
+  /**
+   * Instantiates a new descriptor meta data.
+   *
+   * @param editor the editor
+   */
   public DescriptorMetaData(MultiPageEditor editor) {
     this.editor = editor;
   }
 
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
   public String getName() {
     if (editor.isLocalProcessingDescriptor())
       return editor.getAeDescription().getMetaData().getName();
@@ -48,6 +60,11 @@ public class DescriptorMetaData {
     throw new InternalErrorCDE("invalid state");
   }
 
+  /**
+   * Sets the name.
+   *
+   * @param name the new name
+   */
   public void setName(String name) {
     if (editor.isLocalProcessingDescriptor())
       editor.getAeDescription().getMetaData().setName(name);
@@ -63,6 +80,11 @@ public class DescriptorMetaData {
       throw new InternalErrorCDE("invalid state");
   }
 
+  /**
+   * Gets the version.
+   *
+   * @return the version
+   */
   public String getVersion() {
     if (editor.isLocalProcessingDescriptor())
       return editor.getAeDescription().getMetaData().getVersion();
@@ -77,6 +99,11 @@ public class DescriptorMetaData {
     throw new InternalErrorCDE("invalid state");
   }
 
+  /**
+   * Sets the version.
+   *
+   * @param name the new version
+   */
   public void setVersion(String name) {
     if (editor.isLocalProcessingDescriptor())
       editor.getAeDescription().getMetaData().setVersion(name);
@@ -92,6 +119,11 @@ public class DescriptorMetaData {
       throw new InternalErrorCDE("invalid state");
   }
 
+  /**
+   * Gets the vendor.
+   *
+   * @return the vendor
+   */
   public String getVendor() {
     if (editor.isLocalProcessingDescriptor())
       return editor.getAeDescription().getMetaData().getVendor();
@@ -106,6 +138,11 @@ public class DescriptorMetaData {
     throw new InternalErrorCDE("invalid state");
   }
 
+  /**
+   * Sets the vendor.
+   *
+   * @param name the new vendor
+   */
   public void setVendor(String name) {
     if (editor.isLocalProcessingDescriptor())
       editor.getAeDescription().getMetaData().setVendor(name);
@@ -121,6 +158,11 @@ public class DescriptorMetaData {
       throw new InternalErrorCDE("invalid state");
   }
 
+  /**
+   * Gets the description.
+   *
+   * @return the description
+   */
   public String getDescription() {
     if (editor.isLocalProcessingDescriptor())
       return editor.getAeDescription().getMetaData().getDescription();
@@ -135,6 +177,11 @@ public class DescriptorMetaData {
     throw new InternalErrorCDE("invalid state");
   }
 
+  /**
+   * Sets the description.
+   *
+   * @param name the new description
+   */
   public void setDescription(String name) {
     if (editor.isAeDescriptor() || editor.isLocalProcessingDescriptor())
       editor.getAeDescription().getMetaData().setDescription(name);

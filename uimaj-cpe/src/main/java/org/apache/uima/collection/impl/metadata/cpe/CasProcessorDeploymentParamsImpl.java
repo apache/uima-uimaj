@@ -38,12 +38,22 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+
+/**
+ * The Class CasProcessorDeploymentParamsImpl.
+ */
 public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implements
         CasProcessorDeploymentParams {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 4871710283477856271L;
 
+  /** The params. */
   private ArrayList params = new ArrayList();
 
+  /**
+   * Instantiates a new cas processor deployment params impl.
+   */
   public CasProcessorDeploymentParamsImpl() {
   }
 
@@ -52,6 +62,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParams#add(org.apache.uima.collection.metadata.CasProcessorDeploymentParam)
    */
+  @Override
   public void add(CasProcessorDeploymentParam aParam) {
     params.add(aParam);
   }
@@ -61,6 +72,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParams#get(java.lang.String)
    */
+  @Override
   public CasProcessorDeploymentParam get(String aParamName) throws CpeDescriptorException {
     for (int i = 0; params != null && i < params.size(); i++) {
       if (aParamName.equals(((CasProcessorDeploymentParam) params.get(i)).getParameterName())) {
@@ -75,6 +87,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParams#getAll()
    */
+  @Override
   public CasProcessorDeploymentParam[] getAll() {
     CasProcessorDeploymentParam[] parameters = new CasProcessorDeploymentParamImpl[params.size()];
     params.toArray(parameters);
@@ -86,6 +99,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParams#remove(org.apache.uima.collection.metadata.CasProcessorDeploymentParam)
    */
+  @Override
   public void remove(CasProcessorDeploymentParam aParam) throws CpeDescriptorException {
     for (int i = 0; params != null && i < params.size(); i++) {
       if (aParam.equals(params.get(i))) {
@@ -96,10 +110,15 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
 
   /**
    * Overridden to read "name" and "value" attributes.
-   * 
+   *
+   * @param aElement the a element
+   * @param aParser the a parser
+   * @param aOptions the a options
+   * @throws InvalidXMLException the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     NodeList nodes = aElement.getChildNodes();
@@ -122,6 +141,10 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#toXML(org.xml.sax.ContentHandler, boolean)
+   */
+  @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
@@ -149,10 +172,15 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
     aContentHandler.endElement(inf.namespace, inf.elementTagName, inf.elementTagName);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("deploymentParameters",
           new PropertyXmlInfo[] { new PropertyXmlInfo("parameter"), });
 

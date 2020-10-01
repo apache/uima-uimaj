@@ -23,13 +23,25 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+
+/**
+ * The Class ColorParser.
+ */
 public class ColorParser {
+  
+  /** The color name map. */
   private HashMap colorNameMap;
 
+  /**
+   * Instantiates a new color parser.
+   */
   public ColorParser() {
     initializeColorNameMap();
   }
 
+  /**
+   * Initialize color name map.
+   */
   private void initializeColorNameMap() {
     colorNameMap = new HashMap();
     colorNameMap.put("#000000", "black");
@@ -89,11 +101,25 @@ public class ColorParser {
     colorNameMap.put("mediumpurple", "#9370db");
   }
 
+  /**
+   * Gets the color name map.
+   *
+   * @return the color name map
+   */
   // --------------------
   public HashMap getColorNameMap() {
     return colorNameMap;
   }
 
+  /**
+   * Parses the and assign colors.
+   *
+   * @param typeName the type name
+   * @param featureValue the feature value
+   * @param labelString the label string
+   * @param styleColor the style color
+   * @return the style map entry
+   */
   // --------------------
   public StyleMapEntry parseAndAssignColors(String typeName, String featureValue,
           String labelString, String styleColor) {
@@ -137,6 +163,12 @@ public class ColorParser {
     return sme;
   }
 
+  /**
+   * Parses the checked.
+   *
+   * @param token the token
+   * @param sme the sme
+   */
   // test for "checked:true" or false
   private void parseChecked(StringTokenizer token, StyleMapEntry sme) {
     if (token.hasMoreTokens()) {
@@ -147,7 +179,7 @@ public class ColorParser {
         if (tf.equals("true")) {
           checked = true;
         }
-        sme.setChecked(Boolean.valueOf(checked));
+        sme.setChecked(checked);
       }
     } else {
       sme.setChecked(Boolean.TRUE);// default to Checked
@@ -155,6 +187,12 @@ public class ColorParser {
 
   }
 
+  /**
+   * Parses the hidden.
+   *
+   * @param token the token
+   * @param sme the sme
+   */
   // test for "hidden:true" or false
   private void parseHidden(StringTokenizer token, StyleMapEntry sme) {
     if (token.hasMoreTokens()) {
@@ -165,7 +203,7 @@ public class ColorParser {
         if (tf.equals("true")) {
           checked = true;
         }
-        sme.setHidden(Boolean.valueOf(checked));
+        sme.setHidden(checked);
       }
     } else {
       sme.setHidden(Boolean.FALSE); // Default to not hidden

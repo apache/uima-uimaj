@@ -26,6 +26,7 @@ import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.PrimitiveArrayFS;
 import org.apache.uima.cas_data.ReferenceArrayFS;
 import org.apache.uima.internal.util.StringUtils;
+import org.apache.uima.util.impl.Constants;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -244,7 +245,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
     String[] strVals;
     val = val.trim();
     if ("".equals(val)) {
-      strVals = new String[0];
+      strVals = Constants.EMPTY_STRING_ARRAY;
     } else {
       strVals = val.split("\\s+");
     }
@@ -258,7 +259,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
   // Create a new array FS.
   private void readArray(String type, Attributes attrs) throws SAXParseException {
     String attrName, attrVal;
-    int[] indexed = new int[0];
+    int[] indexed = Constants.EMPTY_INT_ARRAY;
     int size = 0;
     String id = null;
     for (int i = 0; i < attrs.getLength(); i++) {

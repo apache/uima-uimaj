@@ -153,7 +153,7 @@ public class TypeSystemLocationPropertyPage extends PropertyPage {
   /**
    * Retrieves the type system or null if its not set.
    * 
-   * @param project
+   * @param project -
    * @return the type system location or null if its not set
    */
   public static IFile getTypeSystemLocation(IProject project) {

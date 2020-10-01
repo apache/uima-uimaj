@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.10.4 Release Notes</title>
+  <title>Apache UIMA v3.1.0 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.10.4 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v3.1.0 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -33,8 +33,8 @@
 <a href="#report.issues">How to Report Issues</a><br/>
 <a href="#list.issues">List of JIRA Issues Fixed in this Release</a><br/>
 </p>  
-   
-<h2><a id="what.is.uima">1. What is UIMA?</a></h2>
+        
+<h2><a id="what.is.uima">What is UIMA?</a></h2>
 
      <p>
   			Unstructured Information Management applications are
@@ -80,21 +80,29 @@
 			</p>
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
-<p>The major changes in this release include:</p>
 
-<ul> 
-  <li>The Eclipse plugin for the Component Descriptor editor was fixed to work with
-      the latest version of Eclipse.</li>
-  <li>Internationalized Exceptions more reliably find their message bundles.</li>
-  <li>An additional use case for running pipeline within pipelines is now supported.</li>
-  <li>An override was added to enable using External DTDs in XML descriptors.</li>
-  <li>The destroy cleanups around PEARs was improved.</li>
+<p>Version 3.1.1 is a minor update to 3.1.0.
+</p>
+
+<p>Specific changes in release 3.1.1 versus 3.1.0 include</p>
+<ul>
+  <li>Migrated to Git from SVN, updated poms to reflect this</li>
+  <li>Fixed a performance bug when working with 100's of CASs with the same type system</li>
 </ul>
-  
-<h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
+ 
+<h3>API changes</h3>
+
+ <p>None this release.
+ </p>
+ 
+<h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
-issues fixed in this release.  
-   
+issues affecting this release.    
+
+<p>Please use the mailing lists 
+( http://uima.apache.org/mail-lists.html ) 
+for feedback.</p> 
+ 
 <h2><a id="get.involved">How to Get Involved</a></h2>
 <p>
 The Apache UIMA project really needs and appreciates any contributions, 

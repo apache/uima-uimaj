@@ -23,13 +23,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.FileLanguageResourceSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 /**
  * Tests the FileLanguageResource_impl class.

@@ -27,6 +27,7 @@ import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
+import org.apache.uima.util.impl.Constants;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -47,7 +48,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   /**
    * Parameters contained within the group(s).
    */
-  private ConfigurationParameter[] mConfigurationParameters = new ConfigurationParameter[0];
+  private ConfigurationParameter[] mConfigurationParameters = Constants.EMPTY_CONFIG_PARM_ARRAY;
 
   /**
    * @see ConfigurationGroup#getNames()
@@ -140,7 +141,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
     }
     // treat names as a space-separated list
     StringTokenizer tokenizer = new StringTokenizer(names, " \t");
-    List<String> nameList = new ArrayList<String>();
+    List<String> nameList = new ArrayList<>();
     while (tokenizer.hasMoreTokens()) {
       nameList.add(tokenizer.nextToken());
     }

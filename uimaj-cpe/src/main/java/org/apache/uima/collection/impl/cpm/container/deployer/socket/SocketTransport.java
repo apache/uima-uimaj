@@ -28,14 +28,15 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
+
 /**
- * 
- * 
+ * The Interface SocketTransport.
  */
 public interface SocketTransport {
+  
   /**
-   * Returns transport identifier
-   * 
+   * Returns transport identifier.
+   *
    * @return - String uniquely identifying the transport.
    */
   public String getName();
@@ -55,26 +56,20 @@ public interface SocketTransport {
 
   /**
    * Invokes fenced CasProcessor.
-   * 
+   *
    * @param aSocket - Socket bound to fenced CasProcessor
    * @param aCas - CAS to be sent to the CasProcessor for analysis
-   * 
    * @return - CAS - CAS returned from the fenced CasProcessor
-   * 
-   * @throws
-   *           SocketTimeoutException - Socket timesout before receiving response from the fenced
-   *           CasProcessor
-   * @throws
-   *           SocketException - connection broken
-   * @throws AnalysisEngineProcessException -
-   * 
+   * @throws SocketTimeoutException the socket timeout exception
+   * @throws SocketException the socket exception
+   * @throws AnalysisEngineProcessException the analysis engine process exception
    */
   public CAS process(Socket aSocket, CAS aCas) throws SocketTimeoutException, SocketException,
           AnalysisEngineProcessException;
 
   /**
-   * Returns metadata associated with the fenced CasProcessor
-   * 
+   * Returns metadata associated with the fenced CasProcessor.
+   *
    * @param aSocket -
    *          socket to the fenced CasProcessor
    * @return - metadata

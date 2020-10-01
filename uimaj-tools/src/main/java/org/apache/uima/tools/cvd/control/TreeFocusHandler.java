@@ -26,15 +26,29 @@ import java.awt.event.FocusListener;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
+
+/**
+ * The Class TreeFocusHandler.
+ */
 public class TreeFocusHandler implements FocusListener {
 
+  /** The tree. */
   private JTree tree;
 
+  /**
+   * Instantiates a new tree focus handler.
+   *
+   * @param tree the tree
+   */
   public TreeFocusHandler(JTree tree) {
     super();
     this.tree = tree;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
+   */
+  @Override
   public void focusGained(FocusEvent arg0) {
     TreePath selPath = this.tree.getSelectionPath();
     if (selPath == null) {
@@ -43,6 +57,10 @@ public class TreeFocusHandler implements FocusListener {
     }
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
+   */
+  @Override
   public void focusLost(FocusEvent arg0) {
     // Do nothing.
   }

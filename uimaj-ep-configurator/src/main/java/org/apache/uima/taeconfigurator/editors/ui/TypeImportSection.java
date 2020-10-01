@@ -33,14 +33,24 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
+
 /**
+ * The Class TypeImportSection.
  */
 public class TypeImportSection extends ImportSection {
 
+  /** The saved CAS. */
   private CAS savedCAS;
 
+  /** The import was removed. */
   private boolean importWasRemoved;
 
+  /**
+   * Instantiates a new type import section.
+   *
+   * @param editor the editor
+   * @param parent the parent
+   */
   public TypeImportSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Imported Type Systems",
             "The following type systems are included as part of this one.");
@@ -50,6 +60,10 @@ public class TypeImportSection extends ImportSection {
   // * Code to support type import section
   // **************************************
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isAppropriate()
+   */
+  @Override
   protected boolean isAppropriate() {
     if (isAggregate()) {
       getSection().setText("Not Used");
@@ -61,16 +75,28 @@ public class TypeImportSection extends ImportSection {
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#getDescriptionFromImport(java.lang.String)
+   */
+  @Override
   protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
     TypeSystemDescription parsedImportItem = UIMAFramework.getXMLParser()
             .parseTypeSystemDescription(new XMLInputSource(source));
     return parsedImportItem.getDescription();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#getModelImportArray()
+   */
+  @Override
   protected Import[] getModelImportArray() {
     return getTypeSystemDescription().getImports();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#setModelImportArray(org.apache.uima.resource.metadata.Import[])
+   */
+  @Override
   protected void setModelImportArray(Import[] imports) {
     savedCAS = editor.getCurrentView();
     Import[] oldImports = getTypeSystemDescription().getImports();
@@ -78,10 +104,18 @@ public class TypeImportSection extends ImportSection {
     getTypeSystemDescription().setImports(imports);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#clearModelBaseValue()
+   */
+  @Override
   protected void clearModelBaseValue() {
     getTypeSystemDescription().setTypes(typeDescription0);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.ImportSection#isValidImport(java.lang.String, java.lang.String)
+   */
+  @Override
   protected boolean isValidImport(String title, String msg) {
     TypeSystemDescription savedTSD = getMergedTypeSystemDescription();
     TypeSystemDescription savedITSD = editor.getImportedTypeSystemDesription();
@@ -116,6 +150,7 @@ public class TypeImportSection extends ImportSection {
    * At this point, the basic type system description is updated. and validated. Validation has
    * updated the merged type system description, and updated the CAS.
    */
+  @Override
   protected void finishImportChangeAction() {
 
     // at this point, the tsd validation has updated the resolved version

@@ -30,6 +30,7 @@ import org.apache.uima.internal.util.CommandLineParser;
 import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.tools.images.Images;
 
+
 /**
  * The main class for the CAS Visual Debugger.
  * 
@@ -37,30 +38,52 @@ import org.apache.uima.tools.images.Images;
  */
 public class CVD {
 
+  /** The Constant MAN_PATH_PROPERTY. */
   public static final String MAN_PATH_PROPERTY = "uima.tools.cvd.manpath";
 
+  /** The Constant TEXT_FILE_PARAM. */
   private static final String TEXT_FILE_PARAM = "-text";
 
+  /** The Constant DESC_FILE_PARAM. */
   private static final String DESC_FILE_PARAM = "-desc";
 
+  /** The Constant EXECUTE_SWITCH. */
   private static final String EXECUTE_SWITCH = "-exec";
 
+  /** The Constant DATA_PATH_PARAM. */
   private static final String DATA_PATH_PARAM = "-datapath";
 
+  /** The Constant INI_FILE_PARAM. */
   private static final String INI_FILE_PARAM = "-ini";
 
+  /** The Constant LOOK_AND_FEEL_PARAM. */
   private static final String LOOK_AND_FEEL_PARAM = "-lookandfeel";
   
+  /** The Constant XMI_FILE_PARAM. */
   private static final String XMI_FILE_PARAM = "-xmi"; 
 
+  /**
+   * Instantiates a new cvd.
+   */
   private CVD() {
     super();
   }
 
+  /**
+   * Creates the main frame.
+   *
+   * @return the main frame
+   */
   public static MainFrame createMainFrame() {
     return createMainFrame(null);
   }
 
+  /**
+   * Creates the main frame.
+   *
+   * @param iniFile the ini file
+   * @return the main frame
+   */
   public static MainFrame createMainFrame(File iniFile) {
     final MainFrame frame = new MainFrame(iniFile);
     // Set icon.
@@ -71,6 +94,7 @@ public class CVD {
     try {
       javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
 
+        @Override
         public void run() {
           frame.pack();
           frame.setVisible(true);
@@ -85,6 +109,11 @@ public class CVD {
     return frame;
   }
 
+  /**
+   * Creates the cmd line parser.
+   *
+   * @return the command line parser
+   */
   private static final CommandLineParser createCmdLineParser() {
     CommandLineParser parser = new CommandLineParser();
     parser.addParameter(TEXT_FILE_PARAM, true);
@@ -97,6 +126,9 @@ public class CVD {
     return parser;
   }
 
+  /**
+   * Prints the usage.
+   */
   private static final void printUsage() {
     System.out
         .println("Usage: java org.apache.uima.cvd.CVD [-text <TextFile>] [-desc <XmlDescriptor>] [-datapath <DataPath>] [-exec]");
@@ -104,6 +136,12 @@ public class CVD {
     System.out.println("  -lookandfeel <LookAndFeelClassName>");
   }
 
+  /**
+   * Check cmd line syntax.
+   *
+   * @param clp the clp
+   * @return true, if successful
+   */
   private static final boolean checkCmdLineSyntax(CommandLineParser clp) {
     if (clp.getRestArgs().length > 0) {
       System.err.println("Error parsing CVD command line: unknown argument(s):");
@@ -126,6 +164,11 @@ public class CVD {
     return true;
   }
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
   public static void main(String[] args) {
     try {
       CommandLineParser clp = createCmdLineParser();

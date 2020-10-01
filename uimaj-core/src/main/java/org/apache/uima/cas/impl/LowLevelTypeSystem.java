@@ -165,7 +165,7 @@ public interface LowLevelTypeSystem {
   int ll_getTypeClass(int typeCode);
 
   /**
-   * Check if type is a string subtype.
+   * Check if type is a string subtype.  Returns false for plain string
    * 
    * @param type
    *          The type to be checked.

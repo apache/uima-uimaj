@@ -28,12 +28,23 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.Level;
 
+
+/**
+ * The Class SetLogConfigHandler.
+ */
 public class SetLogConfigHandler implements ActionListener {
 
+  /**
+   * Instantiates a new sets the log config handler.
+   */
   public SetLogConfigHandler() {
     super();
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent e) {
     JRadioButtonMenuItem item = (JRadioButtonMenuItem) e.getSource();
 

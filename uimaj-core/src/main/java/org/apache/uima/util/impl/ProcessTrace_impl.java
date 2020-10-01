@@ -43,12 +43,12 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * List of closed events.
    */
-  private List<ProcessTraceEvent> mEventList = new ArrayList<ProcessTraceEvent>();
+  private List<ProcessTraceEvent> mEventList = new ArrayList<>();
 
   /**
    * Stack of open events.
    */
-  private Stack<ProcessTraceEvent_impl> mOpenEvents = new Stack<ProcessTraceEvent_impl>();
+  private Stack<ProcessTraceEvent_impl> mOpenEvents = new Stack<>();
 
   /**
    * Timer class used to get timing information.
@@ -142,7 +142,7 @@ public class ProcessTrace_impl implements ProcessTrace {
 
       // look for matching event on mOpenEvents stack. If found, close it and
       // all its open sub-events. If not found, throw exception.
-      ArrayList<ProcessTraceEvent_impl> eventsToClose = new ArrayList<ProcessTraceEvent_impl>();
+      ArrayList<ProcessTraceEvent_impl> eventsToClose = new ArrayList<>();
       boolean foundEvent = false;
       while (!mOpenEvents.isEmpty()) {
         ProcessTraceEvent_impl evt = mOpenEvents.pop();
@@ -240,7 +240,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#getEventsByComponentName(String, boolean)
    */
   public List<ProcessTraceEvent> getEventsByComponentName(String aComponentName, boolean aRecurseAfterMatch) {
-    List<ProcessTraceEvent> result = new ArrayList<ProcessTraceEvent>();
+    List<ProcessTraceEvent> result = new ArrayList<>();
     for (ProcessTraceEvent event : getEvents()) {
       getEventsByComponentName(event, aComponentName, aRecurseAfterMatch, result);
     }
@@ -251,7 +251,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#getEventsByType(String, boolean)
    */
   public List<ProcessTraceEvent> getEventsByType(String aType, boolean aRecurseAfterMatch) {
-    List<ProcessTraceEvent> result = new ArrayList<ProcessTraceEvent>();
+    List<ProcessTraceEvent> result = new ArrayList<>();
     for (ProcessTraceEvent event : getEvents()) {
       getEventsByType(event, aType, aRecurseAfterMatch, result);
     }
@@ -419,7 +419,7 @@ public class ProcessTrace_impl implements ProcessTrace {
       } else {
         // no corresponding event - add srcEvt to list of events to be added
         if (eventsToAdd == null) {
-          eventsToAdd = new ArrayList<ProcessTraceEvent>();
+          eventsToAdd = new ArrayList<>();
         }
         eventsToAdd.add(srcEvt);
       }

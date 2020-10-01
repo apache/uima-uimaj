@@ -20,14 +20,18 @@
 package org.apache.uima.cas.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FSIndex;
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.internal.util.IntPointerIterator;
+import org.apache.uima.cas.admin.FSIndexComparator;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
@@ -49,7 +53,7 @@ public class FSBagIndexTest extends TestCase {
   File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
   
-  FSBagIndex bi;
+  FsIndex_bag<TOP> bi;
   
   
   protected void setUp() throws Exception {
@@ -63,8 +67,10 @@ public class FSBagIndexTest extends TestCase {
     bi = cbi();
   }
   
-  private FSBagIndex cbi() {
-    return new FSBagIndex(cas, ts.getType("uima.cas.TOP"), 16, FSIndex.BAG_INDEX);
+  private FsIndex_bag<TOP> cbi() {
+    FSIndexComparator comparatorForIndexSpecs = new FSIndexComparatorImpl();
+    comparatorForIndexSpecs.setType(ts.getTopType());
+    return new FsIndex_bag<>(cas, ts.getType("uima.cas.TOP"), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
   }
 
   protected void tearDown() throws Exception {
@@ -72,93 +78,42 @@ public class FSBagIndexTest extends TestCase {
   }
 
   public void testInsert() {
+    JCas jcas = cas.getJCas();
     // starts out as bit set;
-    int[] ns = new int[] {1,15, 33};
+    TOP[] ns = new TOP[] {new TOP(jcas), new TOP(jcas), new TOP(jcas)};
     tc(ns);
         
     bi = cbi();
-    ns = new int[] {1, 100000, 15, 4};
+    ns = new TOP[] {new TOP(jcas), new TOP(jcas), new TOP(jcas), new TOP(jcas)};
     tc(ns, 1);
    
     bi = cbi();
-    ns = new int[] {1, 100000, 15, 4};
+    ns = new TOP[] {new TOP(jcas), new TOP(jcas), new TOP(jcas), new TOP(jcas)};
     tc(ns, 1);
     
   }
   
-  private void tc(int[] ns) {
+  private void tc(TOP[] ns) {
     tc(ns, 0);
   }
   
-  private void tc(int[] ns, int sortEnd) {
+  private void tc(TOP[] ns, int sortEnd) {
     bi.flush();
-    for (int n : ns) {
+    for (TOP n : ns) {
       bi.insert(n);
     }
-    
-    if (sortEnd > 0) {
-      Arrays.sort(ns, 0, sortEnd);
-    }
-    
-    IntPointerIterator it = bi.getIntIterator();
-    for (int n : ns) {
+        
+    FSIterator<TOP> it = bi.iterator();
+    List<TOP> r = new ArrayList<>();
+    for (TOP n : ns) {
       assertTrue(it.isValid());
-      assertEquals(n, it.get());
-      it.inc();
+      r.add(it.get());
+      it.moveToNext();
     }
+    r.sort(FeatureStructureImplC::compare);
+    Arrays.sort(ns, FeatureStructureImplC::compare);
+    assertTrue(Arrays.equals(ns, r.toArray()));
     assertFalse(it.isValid());
   }
-
-//  public void testRemove() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testPointerIterator() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testGetVector() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testFlush() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testLl_iterator() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testContains() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testFind() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testSize() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testGetIntIterator() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testIterator() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testIteratorFeatureStructure() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testLl_iteratorBoolean() {
-//    fail("Not yet implemented");
-//  }
-//
-//  public void testLl_rootIterator() {
-//    fail("Not yet implemented");
-//  }
 
 }

@@ -23,50 +23,89 @@ import java.io.Serializable;
 
 import org.apache.uima.util.UimaTimer;
 
+
 /**
+ * The Class JavaTimer.
+ *
  * @deprecated replaced by {@link UimaTimer}
- * 
  */
 
 @Deprecated
 public class JavaTimer implements Timer, Serializable {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 5399135137398839124L;
 
+  /** The start. */
   private long start = 0;
 
+  /** The end. */
   private long end = 0;
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.impl.cpm.utils.Timer#start()
+   */
   // starts the time
+  @Override
   public void start() {
     start = System.currentTimeMillis();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.impl.cpm.utils.Timer#end()
+   */
   // ends the timer
+  @Override
   public void end() {
     end = System.currentTimeMillis();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.impl.cpm.utils.Timer#getResolution()
+   */
+  @Override
   public long getResolution() {
     return 10;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.impl.cpm.utils.Timer#getDuration()
+   */
   // returns duration (in ms) between start() and end() calls
+  @Override
   public long getDuration() {
     return (end - start);
   }
 
+  /**
+   * Gets the time.
+   *
+   * @return the time
+   */
   private synchronized long getTime() {
     return System.currentTimeMillis();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.impl.cpm.utils.Timer#getTimeInSecs()
+   */
+  @Override
   public synchronized long getTimeInSecs() {
     return (getTime() / 1000);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.impl.cpm.utils.Timer#getTimeInMillis()
+   */
+  @Override
   public synchronized long getTimeInMillis() {
     return getTime();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.impl.cpm.utils.Timer#getTimeInMicros()
+   */
+  @Override
   public synchronized long getTimeInMicros() {
     return System.currentTimeMillis() * 1000;
   }

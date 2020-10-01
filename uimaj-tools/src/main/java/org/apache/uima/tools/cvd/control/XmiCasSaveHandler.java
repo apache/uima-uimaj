@@ -28,20 +28,23 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
+
 
 /**
  * Save CAS to disk as XMI.
  */
 public class XmiCasSaveHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
   
+  /**
+   * Instantiates a new xmi cas save handler.
+   */
   // Default constructor
   @SuppressWarnings("unused")
   private XmiCasSaveHandler() {
@@ -49,6 +52,11 @@ public class XmiCasSaveHandler implements ActionListener {
     this.main = null;
   }
   
+  /**
+   * Instantiates a new xmi cas save handler.
+   *
+   * @param main the main
+   */
   public XmiCasSaveHandler(MainFrame main) {
     super();
     this.main = main;
@@ -57,6 +65,7 @@ public class XmiCasSaveHandler implements ActionListener {
   /* (non-Javadoc)
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
+  @Override
   public void actionPerformed(ActionEvent event) {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Save XMI CAS file");

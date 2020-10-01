@@ -50,39 +50,40 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
 
   FSFloatConstraintImpl() {
     this.codes = new IntVector();
-    this.values = new Vector<Float>();
+    this.values = new Vector<>();
   }
 
+  @Override
   public boolean match(float f) {
     final int max = this.codes.size();
     for (int i = 0; i < max; i++) {
       switch (this.codes.get(i)) {
         case LT: {
-          if (f >= (this.values.get(i)).floatValue()) {
+          if (f >= this.values.get(i)) {
             return false;
           }
           break;
         }
         case LEQ: {
-          if (f > (this.values.get(i)).floatValue()) {
+          if (f > this.values.get(i)) {
             return false;
           }
           break;
         }
         case EQ: {
-          if (f != (this.values.get(i)).floatValue()) {
+          if (f != this.values.get(i)) {
             return false;
           }
           break;
         }
         case GEQ: {
-          if (f < (this.values.get(i)).floatValue()) {
+          if (f < this.values.get(i)) {
             return false;
           }
           break;
         }
         case GT: {
-          if (f <= (this.values.get(i)).floatValue()) {
+          if (f <= this.values.get(i)) {
             return false;
           }
           break;
@@ -102,9 +103,10 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    * @param f
    *          Matched value must be equal to this.
    */
+  @Override
   public void eq(float f) {
     this.codes.add(EQ);
-    this.values.add(Float.valueOf(f));
+    this.values.add(f);
   }
 
   /**
@@ -113,9 +115,10 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    * @param f
    *          Matched value must be less than this.
    */
+  @Override
   public void lt(float f) {
     this.codes.add(LT);
-    this.values.add(Float.valueOf(f));
+    this.values.add(f);
   }
 
   /**
@@ -124,9 +127,10 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    * @param f
    *          Matched value must be less than or equal to this.
    */
+  @Override
   public void leq(float f) {
     this.codes.add(LEQ);
-    this.values.add(Float.valueOf(f));
+    this.values.add(f);
   }
 
   /**
@@ -135,9 +139,10 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    * @param f
    *          Matched value must be greater than this.
    */
+  @Override
   public void gt(float f) {
     this.codes.add(GT);
-    this.values.add(Float.valueOf(f));
+    this.values.add(f);
   }
 
   /**
@@ -146,11 +151,13 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    * @param f
    *          Matched value must be greater than or equal to this.
    */
+  @Override
   public void geq(float f) {
     this.codes.add(GEQ);
-    this.values.add(Float.valueOf(f));
+    this.values.add(f);
   }
 
+  @Override
   public String toString() {
     if (this.codes.size() == 1) {
       return toString(this.codes.get(0)) + " " + this.values.get(0).toString();

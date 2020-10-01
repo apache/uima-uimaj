@@ -20,10 +20,9 @@
 package org.apache.uima.cas.impl;
 
 /**
+ * UNUSED V3, backwards compat only
  * Interface to compare two feature structures, represented by their addresses.
  * 
- * 
- * @version $Revision: 1.1 $
  */
 public interface FSImplComparator {
 

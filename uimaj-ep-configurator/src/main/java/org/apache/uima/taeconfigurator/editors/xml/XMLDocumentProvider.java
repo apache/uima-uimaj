@@ -25,8 +25,16 @@ import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.DefaultPartitioner;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 
+
+/**
+ * The Class XMLDocumentProvider.
+ */
 public class XMLDocumentProvider extends FileDocumentProvider {
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.editors.text.StorageDocumentProvider#createDocument(java.lang.Object)
+   */
+  @Override
   protected IDocument createDocument(Object element) throws CoreException {
     IDocument document = super.createDocument(element);
     if (document != null) {

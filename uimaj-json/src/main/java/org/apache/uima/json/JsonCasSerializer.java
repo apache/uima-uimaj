@@ -20,21 +20,24 @@
 package org.apache.uima.json;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CommonArrayFS;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.ByteArrayFSImpl;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CasSerializerSupport;
 import org.apache.uima.cas.impl.CasSerializerSupport.CasDocSerializer;
 import org.apache.uima.cas.impl.CasSerializerSupport.CasSerializerSupportSerialize;
-import org.apache.uima.cas.impl.ListUtils;
+import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.MarkerImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -42,10 +45,28 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XmiSerializationSharedData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.XmlElementName;
+import org.apache.uima.internal.util.function.IntConsumer_withIOException;
 import org.apache.uima.internal.util.rb_trees.RedBlackTree;
+import org.apache.uima.jcas.cas.BooleanArray;
+import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.cas.EmptyList;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FloatArray;
+import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.LongArray;
+import org.apache.uima.jcas.cas.NonEmptyFSList;
+import org.apache.uima.jcas.cas.NonEmptyFloatList;
+import org.apache.uima.jcas.cas.NonEmptyIntegerList;
+import org.apache.uima.jcas.cas.NonEmptyStringList;
+import org.apache.uima.jcas.cas.ShortArray;
+import org.apache.uima.jcas.cas.Sofa;
+import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.json.impl.JsonContentHandlerJacksonWrapper;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ErrorHandler;
@@ -98,8 +119,6 @@ import com.fasterxml.jackson.core.io.SerializedString;
  * afterwards, multiple threads may use the configured instance, to call serialize.</p>
  */
 public class JsonCasSerializer {
-
-  private static final Integer[] EMPTY_INTEGER_ARRAY = new Integer[0];
 
   private static final SerializedString CONTEXT_NAME = new SerializedString("_context");
  
@@ -454,16 +473,14 @@ public class JsonCasSerializer {
     private final JsonContentHandlerJacksonWrapper jch;
 
     private final JsonGenerator jg;
-    
-    private final String typeSystemReference;
-       
-    private final Map<String, SerializedString> serializedStrings = new HashMap<String, SerializedString>();
+           
+    private final Map<String, SerializedString> serializedStrings = new HashMap<>();
     
     private final Map<String, XmlElementName> usedTypeName2XmlElementName;
     
     private final MapType2Subtypes mapType2Subtypes = new MapType2Subtypes();
     
-    private final IntVector parentTypesWithNoInstances = new IntVector();
+    private final List<TypeImpl> parentTypesWithNoInstances = new ArrayList<>();
    
     private int lastEncodedTypeCode;
     
@@ -472,8 +489,6 @@ public class JsonCasSerializer {
     private final boolean isOmitDefaultValues;
     
     private final boolean isWithContext;
-
-    private final boolean isWithExpandedTypeNames;
 
     private final boolean isWithSubtypes;
     
@@ -489,13 +504,11 @@ public class JsonCasSerializer {
     private JsonDocSerializer(ContentHandler ch, CASImpl cas, XmiSerializationSharedData sharedData, MarkerImpl marker) {
       cds = css.new CasDocSerializer(ch, cas, sharedData, marker, this, JsonCasSerializer.this.isDynamicEmbedding);
       this.isOmitDefaultValues = JsonCasSerializer.this.isOmit0Values;  
-      isWithExpandedTypeNames = JsonCasSerializer.this.isWithExpandedTypeNames; 
       isWithSubtypes = JsonCasSerializer.this.isWithSubtypes; 
-      typeSystemReference = JsonCasSerializer.this.typeSystemReference;
       jch = (JsonContentHandlerJacksonWrapper) ch;
       jg = jch.getJsonGenerator();
       isWithContext = JsonCasSerializer.this.isWithContext || isWithSubtypes || isWithExpandedTypeNames; 
-      usedTypeName2XmlElementName = new HashMap<String, XmlElementName>(cds.tsi.getNumberOfTypes());    
+      usedTypeName2XmlElementName = new HashMap<>(cds.tsi.getNumberOfTypes());
     }
     
     @Override
@@ -541,23 +554,21 @@ public class JsonCasSerializer {
       jg.writeFieldName(VIEWS_NAME);
       jg.writeStartObject();
       
-      final Integer[][] byViewByTypeFSs = sortByViewType(); 
+      final List<TOP>[] byViewByTypeFSs = sortByViewType(); 
       
       for (int viewNbr = 1; viewNbr <= byViewByTypeFSs.length; viewNbr++) {
         // viewNbr starts at 1
         lastEncodedTypeCode = -1;
-        final Integer[] fssInView = byViewByTypeFSs[viewNbr - 1];
-        final int sofaAddr = cds.getSofaAddr(viewNbr);
-        if (sofaAddr == 0 && fssInView.length == 0) {
+        final List<TOP> fssInView = byViewByTypeFSs[viewNbr - 1];
+        final Sofa sofa = cds.getSofa(viewNbr);
+        if (sofa == null && fssInView.size() == 0) {
           continue;  // skip non-existent initial view with no sofa and no elements                    
         }
         jch.writeNlJustBeforeNext();
-        String viewName = (0 == sofaAddr) ?  
-            CAS.NAME_DEFAULT_SOFA :
-            cds.cas.getStringValue(sofaAddr, TypeSystemImpl.sofaIdFeatCode);
+        String viewName = (null == sofa) ? CAS.NAME_DEFAULT_SOFA : sofa.getSofaID();
         jg.writeFieldName(viewName);  // view namne
         jg.writeStartObject();
-        for (Integer fs : fssInView) {
+        for (TOP fs : fssInView) {
           cds.encodeFS(fs);
         }
         if (lastEncodedTypeCode != -1) {
@@ -586,24 +597,27 @@ public class JsonCasSerializer {
     }
    
     // sort the by-view by-type set
-    //   previously Serialized 
-    private Integer[][] sortByViewType() {
-      final Integer[] [] r = new Integer[cds.indexedFSs.length] [];
+    //   previously Serialized
+    /**
+     * @return the List<TOP>[] returned by cds.indexedFSs, but with each view sorted by type
+     */
+    private List<TOP>[] sortByViewType() {
+      
+      @SuppressWarnings("unchecked")
+      final List<TOP>[] r = new List[cds.indexedFSs.length]; 
+      
       int i = 0;
-      for (final IntVector fss : cds.indexedFSs) {
-        final Integer[] viewFSs = r[i++] = (null == fss) ? EMPTY_INTEGER_ARRAY : new Integer[fss.size()];
-        for (int j = 0; j < viewFSs.length; j++) {
-          viewFSs[j]  = fss.get(j);
-        }
-        Arrays.sort(viewFSs, cds.sortFssByType);
+      for (final List<TOP> fss : cds.indexedFSs) {
+        r[i] = (fss == null) ? Collections.EMPTY_LIST : (List<TOP>) ((ArrayList<TOP>)fss).clone();
+        r[i++].sort(cds.sortFssByType);
       }
       return r;
     }
     
     @Override
-    protected void writeView(int sofaAddr, int[] members) throws IOException {
+    protected void writeView(Sofa sofa, Collection<TOP> members) throws IOException {
       jch.writeNlJustBeforeNext();
-      String sofaXmiId = (0 == sofaAddr) ? "0" : cds.getXmiId(sofaAddr);
+      String sofaXmiId = (null == sofa) ? "0" : cds.getXmiId(sofa);
       jg.writeArrayFieldStart(sofaXmiId);
       writeViewMembers(members);
       //check for out-of-typesystem members
@@ -616,7 +630,7 @@ public class JsonCasSerializer {
       jg.writeEndArray();
     }
     
-    private void writeViewForDeltas(SerializedString kind, int[] deltaMembers) throws IOException {
+    private void writeViewForDeltas(SerializedString kind, Collection<TOP> deltaMembers) throws IOException {
       jg.writeFieldName(kind);
       jg.writeStartArray();
       writeViewMembers(deltaMembers);   
@@ -624,9 +638,9 @@ public class JsonCasSerializer {
     }
     
     @Override
-    protected void writeView(int sofaAddr, int[] added, int[] deleted, int[] reindexed) throws IOException {
+    protected void writeView(Sofa sofa, Collection<TOP> added, Collection<TOP> deleted, Collection<TOP> reindexed) throws IOException {
       jch.writeNlJustBeforeNext();
-      jg.writeFieldName(cds.getXmiId(sofaAddr));
+      jg.writeFieldName(cds.getXmiId(sofa));
       jg.writeStartObject();
       writeViewForDeltas(ADDED_MEMBERS_NAME, added);
       writeViewForDeltas(DELETED_MEMBERS_NAME, deleted);
@@ -634,10 +648,10 @@ public class JsonCasSerializer {
       jg.writeEndObject();
     }
     
-    private void writeViewMembers(int[] members) throws IOException {
+    private void writeViewMembers(Collection<TOP> members) throws IOException {
       int nextBreak = CasSerializerSupport.PP_ELEMENTS;
       int i = 0;
-      for (int member : members) {
+      for (TOP member : members) {
         int xmiId = cds.getXmiIdAsInt(member);
         if (xmiId == 0) {
           continue;
@@ -722,7 +736,7 @@ public class JsonCasSerializer {
       
       for (TypeImpl ti : cds.getSortedUsedTypes()) {
         jch.writeNlJustBeforeNext();      
-        jg.writeFieldName(getSerializedTypeName(ti.getCode()));
+        jg.writeFieldName(getSerializedTypeName(ti));
         jg.writeStartObject();
         if (isWithExpandedTypeNames) {
           jg.writeFieldName(ID_NAME);  // form for using SerializedString
@@ -736,20 +750,20 @@ public class JsonCasSerializer {
       }
       
       // write out contexts for types in the supertype chain which have no instances
-      for (final int typeCode : parentTypesWithNoInstances.toArray()) {
+      for (final TypeImpl ti : parentTypesWithNoInstances) {
         jch.writeNlJustBeforeNext();      
-        jg.writeFieldName(getSerializedTypeName(typeCode));
+        jg.writeFieldName(getSerializedTypeName(ti));
         jg.writeStartObject();
-        XmlElementName xe = cds.typeCode2namespaceNames[typeCode];
+        XmlElementName xe = cds.typeCode2namespaceNames[ti.getCode()];
 
         if (isWithExpandedTypeNames) {
           jg.writeFieldName(ID_NAME);  // form for using SerializedString
           jg.writeString(xe.nsUri);
         }
  
-        addJsonFeatContext(typeCode);
+        addJsonFeatContext(ti);
         if (isWithSubtypes) {
-          addJsonSubtypes(typeCode);
+          addJsonSubtypes(ti);
         }
         jg.writeEndObject();  // end of one type
         
@@ -767,19 +781,15 @@ public class JsonCasSerializer {
      * @throws IOException 
      */
     private void addJsonFeatContext(TypeImpl type) throws IOException {
-      addJsonFeatContext(type.getCode());
-    }
-    
-    private void addJsonFeatContext(final int typeCode) throws IOException {
-      final int[] feats = cds.tsi.ll_getAppropriateFeatures(typeCode);
+      final FeatureImpl[] feats = type.getFeatureImpls();
       startedFeatureTypes = false;
    
-      for (int featCode : feats) {
-        final int fsClass = cds.classifyType(cds.tsi.range(featCode));
-        SerializedString featKind = featureTypeLabel(fsClass, featCode);
+      for (FeatureImpl feat : feats) {
+        final int fsClass = CasSerializerSupport.classifyType(feat.getRangeImpl());
+        SerializedString featKind = featureTypeLabel(fsClass);
         if (null != featKind) {
           maybeDoStartFeatureTypes();
-          jg.writeFieldName(getShortFeatureName(featCode)); 
+          jg.writeFieldName(getSerializedString(feat.getShortName())); 
           jg.writeString(featKind);
         }  
       }
@@ -797,27 +807,24 @@ public class JsonCasSerializer {
       }
     }
     
-    private SerializedString getShortFeatureName(int featCode) {
-      return getSerializedString(cds.tsi.ll_getFeatureForCode(featCode).getShortName());
+    private SerializedString getShortFeatureName(FeatureImpl feat) {
+      return getSerializedString(feat.getShortName());
     }
-        
+            
     /**
      * Add subtype information for used types limited to used subtypes
      * @throws IOException 
      */
     private void addJsonSubtypes(TypeImpl ti) throws IOException {
-      addJsonSubtypes(ti.getCode());
-    }
-    
-    private void addJsonSubtypes(int aTypeCode) throws IOException {
-      IntVector iv = mapType2Subtypes.get(aTypeCode);
+      IntVector iv = mapType2Subtypes.get(ti.getCode());
       if (null != iv && iv.size() > 0) {
         jch.writeNlJustBeforeNext();
         jg.writeFieldName(SUB_TYPES_NAME);
         jg.writeStartArray();
         
+        TypeSystemImpl tsi = ti.getTypeSystem();
         for (int typeCode : iv.toArray()) {
-          jg.writeString(getSerializedTypeName(typeCode));
+          jg.writeString(getSerializedTypeName(tsi.getTypeForCode(typeCode)));
         }
         jg.writeEndArray();
       }
@@ -840,8 +847,8 @@ public class JsonCasSerializer {
           // https://issues.apache.org/jira/browse/UIMA-5171
           // if parent not contained in tiArray 
           if (Arrays.binarySearch(tiArray, parent, CasSerializerSupport.COMPARATOR_SHORT_TYPENAME) < 0 ) {  
-            if (!parentTypesWithNoInstances.contains(parentCode)) {
-              parentTypesWithNoInstances.add(parentCode);
+            if (!parentTypesWithNoInstances.contains(parent)) {
+              parentTypesWithNoInstances.add(parent);
             }
           }
           boolean wasAdded = mapType2Subtypes.addSubtype(parentCode, subtypeCode);
@@ -853,14 +860,14 @@ public class JsonCasSerializer {
       }
     }
     
-    private SerializedString getSerializedTypeName(int typeCode) {
-      XmlElementName xe = cds.typeCode2namespaceNames[typeCode];
+    private SerializedString getSerializedTypeName(TypeImpl ti) {
+      XmlElementName xe = cds.typeCode2namespaceNames[ti.getCode()];
       if (null == xe) {
         // happens for supertypes which have no instantiations
-        String typeName = cds.tsi.ll_getTypeForCode(typeCode).getName();
+        String typeName = ti.getName();
         xe = uimaTypeName2XmiElementName(typeName);
         checkForNameCollision(xe);
-        cds.typeCode2namespaceNames[typeCode] = xe;
+        cds.typeCode2namespaceNames[ti.getCode()] = xe;
       }
       return getSerializedString(xe.qName);
     }
@@ -899,7 +906,7 @@ public class JsonCasSerializer {
     }
     
     @Override
-    protected boolean writeFsStart(int addr, int typeCode) throws IOException {
+    protected boolean writeFsStart(TOP fs, int typeCode) throws IOException {
       if (isEmbedded) {
         if (!isEmbeddedFromFsFeature) {
           jch.writeNlJustBeforeNext();  // if from feature, already did nl
@@ -913,7 +920,7 @@ public class JsonCasSerializer {
           startedReferencedFSs = true;
         }
         jch.writeNlJustBeforeNext();
-        jg.writeFieldName(cds.getXmiId(addr));
+        jg.writeFieldName(cds.getXmiId(fs));
         jg.writeStartObject();  // start of feat : value
       } else { // fs's as arrays under typeName
         if (typeCode != lastEncodedTypeCode) {
@@ -923,13 +930,13 @@ public class JsonCasSerializer {
           }
           lastEncodedTypeCode = typeCode;
           jch.writeNlJustBeforeNext();
-          jg.writeFieldName(getSerializedTypeName(typeCode));
+          jg.writeFieldName(getSerializedTypeName(fs._getTypeImpl()));
           jg.writeStartArray();
         }
         // if we're not going to write the actual FS here, 
         //   and are just going to write the ref, 
         //   skip the start object
-        if (!cds.isDynamicMultiRef || !cds.multiRefFSs.contains(addr)) {         
+        if (!cds.isDynamicMultiRef || !cds.multiRefFSs.contains(fs)) {         
           jch.writeNlJustBeforeNext();
           jg.writeStartObject();  // start of feat : value
         }
@@ -938,8 +945,8 @@ public class JsonCasSerializer {
     }
     
     @Override
-    protected void writeFsRef(int addr) throws Exception {
-       jg.writeNumber(cds.getXmiIdAsInt(addr));      
+    protected void writeFsRef(TOP fs) throws Exception {
+       jg.writeNumber(cds.getXmiIdAsInt(fs));      
     }    
 
 //    private void maybeWriteIdFeat(int addr) throws IOException {
@@ -949,128 +956,138 @@ public class JsonCasSerializer {
 //      }
 //    }
     
-    private void maybeWriteTypeFeat(int typeCode) throws IOException {
+    private void maybeWriteTypeFeat(TypeImpl ti) throws IOException {
       if (indexId || isEmbedded) {
         jg.writeFieldName(TYPE_NAME);
-        jg.writeString(getSerializedTypeName(typeCode));
+        jg.writeString(getSerializedTypeName(ti));
       }
     }
 
     @Override
-    protected void writeFs(int addr, int typeCode) throws IOException {
-      writeFsOrLists(addr, typeCode, false);
+    protected void writeFs(TOP fs, int typeCode) throws IOException {
+      writeFsOrLists(fs, fs._getTypeImpl(), false);
     }
     
     @Override
-    protected void writeListsAsIndividualFSs(int addr, int typeCode) throws IOException {
-      writeFsOrLists(addr, typeCode, true);
+    protected void writeListsAsIndividualFSs(TOP fs, int typeCode) throws IOException {
+      writeFsOrLists(fs, fs._getTypeImpl(), true);
     }
     
-    private void writeFsOrLists(int addr, int typeCode, boolean isListAsFSs) throws IOException {
-      final int[] feats = cds.tsi.ll_getAppropriateFeatures(typeCode);
+    private void writeFsOrLists(TOP fs, TypeImpl ti, boolean isListAsFSs) throws IOException {
+      final FeatureImpl[] feats = ti.getFeatureImpls();
       
 //      maybeWriteIdFeat(addr);
-      maybeWriteTypeFeat(typeCode);
+      maybeWriteTypeFeat(ti);
       
-      for (final int featCode : feats) {
+      for (final FeatureImpl feat : feats) {
 
         if (cds.isFiltering) {
           // skip features that aren't in the target type system
-          String fullFeatName = cds.tsi.ll_getFeatureForCode(featCode).getName();
-          if (cds.filterTypeSystem.getFeatureByFullName(fullFeatName) == null) {
+          String fullFeatName = feat.getName();
+          if (cds.filterTypeSystem_inner.getFeatureByFullName(fullFeatName) == null) {
             continue;
           }
         }
         
-        final int featAddr = addr + cds.cas.getFeatureOffset(featCode);
-        final int featValRaw = cds.cas.getHeapValue(featAddr);
-        final int featureClass = cds.classifyType(cds.tsi.range(featCode));
+//        final int featAddr = addr + cds.cas.getAdjustedFeatureOffset(featCode);
+//        final int featValRaw = cds.cas.getHeapValue(featAddr);
+        final int featureClass = CasSerializerSupport.classifyType(feat.getRangeImpl());
+        final SerializedString shortName = getSerializedString(feat.getShortName());
                 
         switch (featureClass) {
         
-        case LowLevelCAS.TYPE_CLASS_BYTE:
-        case LowLevelCAS.TYPE_CLASS_SHORT:  
-        case LowLevelCAS.TYPE_CLASS_INT:
-          if (featValRaw == 0 && isOmitDefaultValues) continue;
-          jg.writeFieldName(getShortFeatureName(featCode));
-          jg.writeNumber(featValRaw);
-          break;
+        case LowLevelCAS.TYPE_CLASS_BYTE:  writeNumeric(feat, fs._getByteValueNc (feat)); break;
+        case LowLevelCAS.TYPE_CLASS_SHORT: writeNumeric(feat, fs._getShortValueNc(feat)); break; 
+        case LowLevelCAS.TYPE_CLASS_INT:   writeNumeric(feat, fs._getIntValueNc  (feat)); break;  
+        case LowLevelCAS.TYPE_CLASS_LONG:  writeNumeric(feat, fs._getLongValueNc (feat)); break;  
 
-        case LowLevelCAS.TYPE_CLASS_FS:
-          if (featValRaw == 0/* && isOmitDefaultValues*/) continue;
-          writeFsOrRef(featValRaw, featCode); // writes nl before embedded fs
+        case LowLevelCAS.TYPE_CLASS_FS: {
+          TOP ref = fs._getFeatureValueNc(feat);
+          if (ref == null /* && isOmitDefaultValues*/) continue;
+          writeFsOrRef(ref, feat); // writes nl before embedded fs
           break;
-  
-        case LowLevelCAS.TYPE_CLASS_LONG:
-          final long longVal = cds.cas.ll_getLongValue(featValRaw);
-          if (longVal == 0L && isOmitDefaultValues) continue;
-          jg.writeFieldName(getShortFeatureName(featCode));
-          jg.writeNumber(longVal);
-          break;
+        }
           
         case LowLevelCAS.TYPE_CLASS_FLOAT:
-          final float floatVal = CASImpl.int2float(featValRaw);
+          final float floatVal = fs._getFloatValueNc(feat);
           if (floatVal == 0.F && isOmitDefaultValues) continue;
-          jg.writeFieldName(getShortFeatureName(featCode));
+          jg.writeFieldName(shortName);
           jg.writeNumber(floatVal);
           break;
           
         case LowLevelCAS.TYPE_CLASS_DOUBLE:
-          final double doubleVal = cds.cas.ll_getDoubleValue(addr, featCode);
+          final double doubleVal = fs._getDoubleValueNc(feat);
           if (doubleVal == 0L && isOmitDefaultValues) continue;
-          jg.writeFieldName(getShortFeatureName(featCode));
+          jg.writeFieldName(shortName);
           jg.writeNumber(doubleVal);
           break;
           
         case LowLevelCAS.TYPE_CLASS_BOOLEAN:
-          jg.writeFieldName(getShortFeatureName(featCode));
-          jg.writeBoolean(cds.cas.ll_getBooleanValue(addr, featCode));           
+          jg.writeFieldName(shortName);
+          jg.writeBoolean(fs._getBooleanValueNc(feat));           
           break; 
         
-        case LowLevelCAS.TYPE_CLASS_STRING:
-          if (featValRaw == 0 /*&& isOmitDefaultValues*/) continue; 
-          jg.writeFieldName(getShortFeatureName(featCode));
-          jg.writeString(cds.cas.getStringForCode(featValRaw));
+        case LowLevelCAS.TYPE_CLASS_STRING: {
+          String s = fs._getStringValueNc(feat);
+          if (s == null /*&& isOmitDefaultValues*/) continue; 
+          jg.writeFieldName(shortName);
+          jg.writeString(s);
           break; 
-            
-        // all other fields (arrays, lists, fsRefs) can be null and are omitted if so  
-        default: 
-          if (featValRaw != CASImpl.NULL /*|| !isOmitDefaultValues*/) {
-            
-            jg.writeFieldName(getShortFeatureName(featCode));
-
-            if (featureClass == LowLevelCAS.TYPE_CLASS_INTARRAY ||
-                featureClass == LowLevelCAS.TYPE_CLASS_FLOATARRAY ||
-                featureClass == LowLevelCAS.TYPE_CLASS_BOOLEANARRAY ||
-                featureClass == LowLevelCAS.TYPE_CLASS_BYTEARRAY ||
-                featureClass == LowLevelCAS.TYPE_CLASS_SHORTARRAY ||
-                featureClass == LowLevelCAS.TYPE_CLASS_LONGARRAY ||
-                featureClass == LowLevelCAS.TYPE_CLASS_DOUBLEARRAY ||
-                featureClass == LowLevelCAS.TYPE_CLASS_STRINGARRAY ||
-                featureClass == LowLevelCAS.TYPE_CLASS_FSARRAY) {
-              
-              if (isDynamicOrStaticMultiRef(featCode, featValRaw)) {
-                jg.writeNumber(cds.getXmiIdAsInt(featValRaw));
-              } else {
-                writeJsonArrayValues(featValRaw, featureClass);
-              }
-              
-            } else if (featureClass == CasSerializerSupport.TYPE_CLASS_INTLIST ||
-                       featureClass == CasSerializerSupport.TYPE_CLASS_FLOATLIST ||
-                       featureClass == CasSerializerSupport.TYPE_CLASS_STRINGLIST ||
-                       featureClass == CasSerializerSupport.TYPE_CLASS_FSLIST) {
-
-              if (isDynamicOrStaticMultiRef(featCode, featValRaw, isListAsFSs)) {
-                jg.writeNumber(cds.getXmiIdAsInt(featValRaw));
-              } else {
-                writeJsonListValues(featValRaw);
-              }              
-            } else {  // is error
-              throw new RuntimeException("Invalid State, featureClass was "+ featureClass);
-            }
-          }  // end of default case with non-null values
+        }
+        
+        case LowLevelCAS.TYPE_CLASS_INTARRAY: 
+        case LowLevelCAS.TYPE_CLASS_FLOATARRAY:
+        case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY:
+        case LowLevelCAS.TYPE_CLASS_BYTEARRAY:
+        case LowLevelCAS.TYPE_CLASS_SHORTARRAY:
+        case LowLevelCAS.TYPE_CLASS_LONGARRAY:
+        case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
+        case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
+        case LowLevelCAS.TYPE_CLASS_FSARRAY: 
+          writeArray(fs, feat, featureClass);
+          break;
+          
+        case CasSerializerSupport.TYPE_CLASS_INTLIST:
+        case CasSerializerSupport.TYPE_CLASS_FLOATLIST:
+        case CasSerializerSupport.TYPE_CLASS_STRINGLIST:
+        case CasSerializerSupport.TYPE_CLASS_FSLIST:
+          writeList(fs, feat, featureClass, isListAsFSs);
+          break;        
+        default: Misc.internalError(); 
         }  // end of switch
       } // end of loop over all features
+    }
+    
+    private void writeNumeric(FeatureImpl fi, long v) throws IOException {
+      if (v == 0 && isOmitDefaultValues) return;
+      jg.writeFieldName(getShortFeatureName(fi));
+      jg.writeNumber(v);
+    }
+    
+    private void writeArray(TOP fs, FeatureImpl fi, int featureClass) throws IOException {
+      assert(fs != null);      
+      TOP array = fs._getFeatureValueNc(fi);
+      if (array == null) return;
+      
+      jg.writeFieldName(getShortFeatureName(fi));
+      if (isDynamicOrStaticMultiRef(fi, array)) {
+        jg.writeNumber(cds.getXmiIdAsInt(array));
+      } else {
+        writeJsonArrayValues(array, featureClass);
+      }
+    }
+    
+    private void writeList(TOP fs, FeatureImpl fi, int featureClass, boolean isListAsFSs) throws IOException {
+      assert(fs != null); 
+      TOP list = fs._getFeatureValueNc(fi);
+      if (list == null) return;
+      
+      jg.writeFieldName(getShortFeatureName(fi));
+      if (isDynamicOrStaticMultiRef(fi, list, isListAsFSs)) {
+        jg.writeNumber(cds.getXmiIdAsInt(list));
+      } else {
+        writeJsonListValues(list);
+      }
     }
     
     /**
@@ -1083,20 +1100,20 @@ public class JsonCasSerializer {
      * @param addr
      * @throws IOException
      */
-    private void writeFsOrRef(int addr) throws IOException {
-      if (addr == 0 || !cds.isDynamicMultiRef || cds.multiRefFSs.contains(addr)) {
-        jg.writeNumber(cds.getXmiIdAsInt(addr));
+    private void writeFsOrRef(TOP fs) throws IOException {
+      if (fs == null || !cds.isDynamicMultiRef || cds.multiRefFSs.contains(fs)) {
+        jg.writeNumber(cds.getXmiIdAsInt(fs));
       } else {
         isEmbeddedFromFsFeature = false;
-        writeEmbeddedFs(addr);
+        writeEmbeddedFs(fs);
       }
     }
         
-    private void writeEmbeddedFs(int addr) throws IOException {
+    private void writeEmbeddedFs(TOP fs) throws IOException {
       boolean savedEmbedded = isEmbedded;
       try {
         isEmbedded = true;
-        cds.encodeFS(addr);
+        cds.encodeFS(fs);
       } catch (Exception e) {
         if (e instanceof IOException) {
           throw (IOException) e;
@@ -1107,19 +1124,19 @@ public class JsonCasSerializer {
       }  // embed 
     }
     
-    private void writeFsOrRef(int addr, int featCode) throws IOException {
-      if (addr == 0 || !cds.isDynamicMultiRef || cds.multiRefFSs.contains(addr)) {
-        jg.writeFieldName(getShortFeatureName(featCode));
-        jg.writeNumber(cds.getXmiIdAsInt(addr));
+    private void writeFsOrRef(TOP fs, FeatureImpl fi) throws IOException {
+      if (fs == null || !cds.isDynamicMultiRef || cds.multiRefFSs.contains(fs)) {
+        jg.writeFieldName(getShortFeatureName(fi));
+        jg.writeNumber(cds.getXmiIdAsInt(fs));
       } else {
         jch.writeNlJustBeforeNext();
-        jg.writeFieldName(getShortFeatureName(featCode));
+        jg.writeFieldName(getShortFeatureName(fi));
         isEmbeddedFromFsFeature = true;
         //  Use cases:  can write embed, which has embed, which has non-embed
         //     once hit non-embed, this flag would be turned off,
         //     But it's only tested at the beginning of writeEmbeddedFs, so subsequent fields reset this
         //     This flag only used to control new lines for embedded case
-        writeEmbeddedFs(addr);
+        writeEmbeddedFs(fs);
         isEmbeddedFromFsFeature = false; // restore default
       }
     }
@@ -1128,12 +1145,12 @@ public class JsonCasSerializer {
      * Write FSArrays
      */
     @Override
-    protected void writeArrays(int addr, int typeCode, int typeClass) throws IOException {
+    protected void writeArrays(TOP fs, int typeCode, int typeClass) throws IOException {
 //      maybeWriteIdFeat(addr);
-      maybeWriteTypeFeat(typeCode);
+      maybeWriteTypeFeat(fs._getTypeImpl());
 
       jg.writeFieldName(COLLECTION_NAME);            
-      writeJsonArrayValues(addr, typeClass);
+      writeJsonArrayValues(fs, typeClass);
     }
     
     @Override
@@ -1145,92 +1162,125 @@ public class JsonCasSerializer {
     // or null if the reference to the UIMA array is actually null
     // 0 length arrays are written as []
     //   Note: FSs can be embedded for FS Arrays
-    private void writeJsonArrayValues(int addr, int arrayType) throws IOException {
-      if (addr == CASImpl.NULL) {
+    private void writeJsonArrayValues(TOP array, int arrayType) throws IOException {
+      if (array == null) {
         jg.writeNull();
         return;
       }
       
-      cds.visited_not_yet_written.remove(addr);
-      final int array_size = cds.cas.ll_getArraySize(addr);
+      cds.visited_not_yet_written.remove(array);
+      CommonArrayFS ca = (CommonArrayFS) array;
+      final int array_size = ca.size();
 
       if (arrayType == LowLevelCAS.TYPE_CLASS_BYTEARRAY) {
         // special case for byte arrays: 
         // serialize using standard JACKSON/JSON binary serialization
         // (doing extra copy to avoid figuring out the impl details)
-        ByteArrayFS byteArrayFS = new ByteArrayFSImpl(addr, cds.cas);
-        int length = byteArrayFS.size();
-        byte[] byteArray = new byte[length];
-        byteArrayFS.copyToArray(0, byteArray, 0, length);
-      
-        jg.writeBinary(byteArray);
+        ByteArray ba = (ByteArray) array;      
+        jg.writeBinary(ba._getTheArray());
         
       } else {
         jg.writeStartArray();
-        int pos = cds.cas.getArrayStartAddress(addr);
+//        int pos = cds.cas.getArrayStartAddress(addr);
         
-        if (arrayType == LowLevelCAS.TYPE_CLASS_FSARRAY) {
-        
-          List<XmiArrayElement> ootsArrayElementsList = cds.sharedData == null ? null : 
-            cds.sharedData.getOutOfTypeSystemArrayElements(addr);
-          int ootsIndex = 0;
-  
-          for (int j = 0; j < array_size; j++) {  // j used to id the oots things
-            int heapValue = cds.cas.getHeapValue(pos++);
-  
-            if (heapValue == CASImpl.NULL) {
-              // this null array element might have been a reference to an 
-              // out-of-typesystem FS, which, when deserialized, was replaced with NULL,
-              // so check the ootsArrayElementsList
-              boolean found = false;
-              if (ootsArrayElementsList != null) {
-                
-                while (ootsIndex < ootsArrayElementsList.size()) {
-                  XmiArrayElement arel = ootsArrayElementsList.get(ootsIndex++);
-                  if (arel.index == j) {
-                    jg.writeNumber(Integer.parseInt(arel.xmiId));
-                    found = true;
-                    break;
-                  }                
-                }
-              }
-              if (!found) {
-                jg.writeNumber(0);
-              }
-              
-            // else, not null FS ref  
-            } else {
-              if (cds.isFiltering) { // return as null any references to types not in target TS
-                String typeName = cds.tsi.ll_getTypeForCode(cds.cas.getHeapValue(addr)).getName();
-                if (cds.filterTypeSystem.getType(typeName) == null) {
-                  heapValue = CASImpl.NULL;
-                }
-              }
-              writeFsOrRef(heapValue);  // allow embedding in array
-            }
-          } // end of loop over all refs in FS array
-          
-        } else {
-          for (int i = 0; i < array_size; i++) {
-            if (arrayType == LowLevelCAS.TYPE_CLASS_BOOLEANARRAY) {
-              jg.writeBoolean(cds.cas.ll_getBooleanArrayValue(addr, i));
-            } else if (arrayType == LowLevelCAS.TYPE_CLASS_STRINGARRAY) {
-              jg.writeString(cds.cas.ll_getStringArrayValue(addr, i));
-            } else if (arrayType == LowLevelCAS.TYPE_CLASS_SHORTARRAY) {
-              jg.writeNumber(cds.cas.ll_getShortArrayValue(addr, i));
-            } else if (arrayType == LowLevelCAS.TYPE_CLASS_INTARRAY) {
-              jg.writeNumber(cds.cas.ll_getIntArrayValue(addr, i));
-            } else if (arrayType == LowLevelCAS.TYPE_CLASS_LONGARRAY) {
-              jg.writeNumber(cds.cas.ll_getLongArrayValue(addr, i));
-            } else if (arrayType == LowLevelCAS.TYPE_CLASS_FLOATARRAY) {
-              jg.writeNumber(cds.cas.ll_getFloatArrayValue(addr, i));
-            } else {
-              jg.writeNumber(cds.cas.ll_getDoubleArrayValue(addr, i));
-            }
-          }
+        switch(arrayType) {
+        case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY: {
+          boolean[] a = ((BooleanArray)array)._getTheArray();
+          writeArrayElements(array_size, i -> jg.writeBoolean(a[i]));
+          break;
         }
+        case LowLevelCAS.TYPE_CLASS_BYTEARRAY: {
+          ByteArray ba = (ByteArray) array;      
+          jg.writeBinary(ba._getTheArray());
+          break;
+        }
+        case LowLevelCAS.TYPE_CLASS_SHORTARRAY: {
+          short[] a = ((ShortArray)array)._getTheArray();
+          writeArrayElements(array_size, i -> jg.writeNumber(a[i]));
+          break;
+        }
+        case LowLevelCAS.TYPE_CLASS_INTARRAY: {
+          int[] a = ((IntegerArray)array)._getTheArray();
+          writeArrayElements(array_size, i -> jg.writeNumber(a[i]));
+          break;
+        }
+        case LowLevelCAS.TYPE_CLASS_LONGARRAY: {
+          long[] a = ((LongArray)array)._getTheArray();
+          writeArrayElements(array_size, i -> jg.writeNumber(a[i]));
+          break;          
+        }
+        case LowLevelCAS.TYPE_CLASS_FLOATARRAY: {
+          float[] a = ((FloatArray)array)._getTheArray();
+          writeArrayElements(array_size, i -> jg.writeNumber(a[i]));
+          break;          
+        }
+        case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY: {
+          double[] a = ((DoubleArray)array)._getTheArray();
+          writeArrayElements(array_size, i -> jg.writeNumber(a[i]));
+          break;          
+        }
+        case LowLevelCAS.TYPE_CLASS_STRINGARRAY: {
+          String[] a = ((StringArray)array)._getTheArray();
+          writeArrayElements(array_size, i -> jg.writeString(a[i]));
+          break;          
+        }
+        case LowLevelCAS.TYPE_CLASS_FSARRAY: writeFSArray(array, array_size); break;
+        default: Misc.internalError();
+        } // end of switch
+        
         jg.writeEndArray();
       }
+    }
+    
+    private void writeArrayElements(final int size, IntConsumer_withIOException ic) throws IOException {
+      for (int i = 0; i < size; i++) {
+        ic.accept(i);
+      }
+    }
+    
+    private void writeFSArray(TOP array, int array_size) throws NumberFormatException, IOException {
+      FSArray fsArray = (FSArray) array;
+      
+      List<XmiArrayElement> ootsArrayElementsList = cds.sharedData == null 
+                                                      ? null 
+                                                      : cds.sharedData.getOutOfTypeSystemArrayElements(fsArray);
+      int ootsIndex = 0;
+      TOP[] fsItems = fsArray._getTheArray();
+      
+      for (int j = 0; j < array_size; j++) {  // j used to id the oots things
+        TOP fsItem = fsItems[j];  // int heapValue = cds.cas.getHeapValue(pos++);
+
+        if (fsItem == null) {
+          // this null array element might have been a reference to an 
+          // out-of-typesystem FS, which, when deserialized, was replaced with NULL,
+          // so check the ootsArrayElementsList
+          boolean found = false;
+          if (ootsArrayElementsList != null) {
+            
+            while (ootsIndex < ootsArrayElementsList.size()) {
+              XmiArrayElement arel = ootsArrayElementsList.get(ootsIndex++);
+              if (arel.index == j) {
+                jg.writeNumber(Integer.parseInt(arel.xmiId));
+                found = true;
+                break;
+              }                
+            }
+          }
+          if (!found) {
+            jg.writeNumber(0);
+          }
+          
+        // else, not null FS ref  
+        } else {
+          if (cds.isFiltering) { // return as null any references to types not in target TS
+            String typeName = fsItem._getTypeImpl().getName();
+            if (cds.filterTypeSystem_inner.getType(typeName) == null) {
+              fsItem = null;
+            }
+          }
+          writeFsOrRef(fsItem);  // allow embedding in array
+        }
+      } // end of loop over all refs in FS array
     }
     
     // a null ref is written as null
@@ -1242,47 +1292,48 @@ public class JsonCasSerializer {
      * @param curNode the address of the start of the list
      * @throws IOException
      */
-    private void writeJsonListValues(int curNode) throws IOException {
-      if (curNode == CASImpl.NULL) {
-        throw new RuntimeException("never happen");
+    private void writeJsonListValues(TOP curNode) throws IOException {
+      if (curNode == null) {
+        Misc.internalError();
       }
-      final ListUtils listUtils = cds.listUtils;
-      final int startNodeType = cds.cas.getHeapValue(curNode);
 
-      int headFeat = listUtils.getHeadFeatCode(startNodeType);
-      int tailFeat = listUtils.getTailFeatCode(startNodeType);
-      int neListType = listUtils.getNeListType(startNodeType);  // non-empty
       final PositiveIntSet visited = new PositiveIntSet_impl();
      
       jg.writeStartArray();
-      while (curNode != CASImpl.NULL) { 
+      FeatureStructure nextNode = null;
+      while (curNode != null) { 
 
         cds.visited_not_yet_written.remove(curNode);
-        final int curNodeType = cds.cas.getHeapValue(curNode);
-        if (curNodeType != neListType) { // if not "non-empty"
+        if (curNode instanceof EmptyList) { 
           break;  // would be the end element.  a 0 is also treated as an end element
         }
         
-        if (!visited.add(curNode)) {
+        if (!visited.add(curNode._id())) {
           break;  // loop detected, stop. no error report here, would be reported earlier during enqueue
         }
         
-        final int val = cds.cas.getHeapValue(curNode + cds.cas.getFeatureOffset(headFeat));
+//        final int val = cds.cas.getHeapValue(curNode + cds.cas.getAdjustedFeatureOffset(headFeat));
 
-        if (curNodeType == listUtils.neStringListType) {
-          jg.writeString(cds.cas.getStringForCode(val));
-        } else if (curNodeType == listUtils.neFloatListType) {
-          jg.writeNumber(CASImpl.int2float(val));
-        } else if (curNodeType == listUtils.neFsListType) {
-          writeFsOrRef(val);  // maybe embed
+        if (curNode instanceof NonEmptyStringList) {
+          NonEmptyStringList l = (NonEmptyStringList)curNode;
+          jg.writeString(l.getHead());
+          nextNode = l.getCommonTail();
+        } else if (curNode instanceof NonEmptyFloatList) {
+          NonEmptyFloatList l = (NonEmptyFloatList)curNode;
+          jg.writeNumber(l.getHead());
+          nextNode = l.getCommonTail();
+        } else if (curNode instanceof NonEmptyFSList) {
+          NonEmptyFSList l = (NonEmptyFSList)curNode;
+          writeFsOrRef(l);  // maybe embed
+          nextNode = l.getCommonTail();
         } else {  // for ints 
-          jg.writeNumber(val);
+          NonEmptyIntegerList l = (NonEmptyIntegerList)curNode;
+          jg.writeNumber(l.getHead());
+          nextNode = l.getCommonTail();
         }
-
-        curNode = cds.cas.getHeapValue(curNode + cds.cas.getFeatureOffset(tailFeat));
+        curNode = (TOP) nextNode;
       }
       jg.writeEndArray();
-    
     }
     
     /**
@@ -1294,7 +1345,7 @@ public class JsonCasSerializer {
      * @return _ref, _array, _byte_array, or null
      */
    
-    private SerializedString featureTypeLabel(int fsClass, int featCode) {
+    private SerializedString featureTypeLabel(int fsClass) {
       switch (fsClass) {
         case LowLevelCAS.TYPE_CLASS_FS: 
         case LowLevelCAS.TYPE_CLASS_FSARRAY: 
@@ -1368,16 +1419,16 @@ public class JsonCasSerializer {
       }
     }
     
-    private boolean isDynamicOrStaticMultiRef(int featCode, int addr) {
+    private boolean isDynamicOrStaticMultiRef(FeatureImpl fi, TOP fs) {
       return (!cds.isDynamicMultiRef) ? 
-                cds.isStaticMultiRef(featCode) : 
-                cds.multiRefFSs.contains(addr);
+                cds.isStaticMultiRef(fi) : 
+                cds.multiRefFSs.contains(fs);
     }
     
-    private boolean isDynamicOrStaticMultiRef(int featCode, int addr, boolean isListAsFSs) {
+    private boolean isDynamicOrStaticMultiRef(FeatureImpl fi, TOP fs, boolean isListAsFSs) {
       return (!cds.isDynamicMultiRef) ? 
-                (isListAsFSs || cds.isStaticMultiRef(featCode)) : 
-                cds.multiRefFSs.contains(addr);
+                (isListAsFSs || cds.isStaticMultiRef(fi)) : 
+                cds.multiRefFSs.contains(fs);
     }
 
   }
