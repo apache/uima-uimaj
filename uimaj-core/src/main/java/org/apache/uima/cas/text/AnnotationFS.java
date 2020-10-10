@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.text;
 
 import java.util.function.IntPredicate;
@@ -25,8 +24,6 @@ import org.apache.uima.cas.AnnotationBaseFS;
 
 /**
  * Interface for Annotation Feature Structures.
- * 
- * 
  */
 public interface AnnotationFS extends AnnotationBaseFS {
 
@@ -91,4 +88,116 @@ public interface AnnotationFS extends AnnotationBaseFS {
    * @param aPredicate the predicate used to identify  whitespace
    */
   void trim(IntPredicate aPredicate);
+  
+  /**
+   * @see AnnotationPredicates#covers(AnnotationFS, AnnotationFS)
+   */
+  default boolean covers(int aBegin, int aEnd)
+  {
+    return AnnotationPredicates.covers(this, aBegin, aEnd);
+  }
+  
+  /**
+   * @see AnnotationPredicates#covers(AnnotationFS, AnnotationFS)
+   */
+  default boolean covers(AnnotationFS aOther)
+  {
+    return AnnotationPredicates.covers(this, aOther);
+  }
+  
+  /**
+   * @see AnnotationPredicates#coveredBy(AnnotationFS, AnnotationFS)
+   */
+  default boolean coveredBy(int aBegin, int aEnd)
+  {
+    return AnnotationPredicates.coveredBy(this, aBegin, aEnd);
+  }
+  
+  /**
+   * @see AnnotationPredicates#coveredBy(AnnotationFS, AnnotationFS)
+   */
+  default boolean coveredBy(AnnotationFS aOther)
+  {
+    return AnnotationPredicates.coveredBy(this, aOther);
+  }
+  
+  /**
+   * @see AnnotationPredicates#overlaps(AnnotationFS, AnnotationFS)
+   */
+  default boolean overlaps(int aBegin, int aEnd)
+  {
+    return AnnotationPredicates.overlaps(this, aBegin, aEnd);
+  }
+
+  /**
+   * @see AnnotationPredicates#overlaps(AnnotationFS, AnnotationFS)
+   */
+  default boolean overlaps(AnnotationFS aOther)
+  {
+    return AnnotationPredicates.overlaps(this, aOther);
+  }
+
+  /**
+   * @see AnnotationPredicates#overlapsLeft(AnnotationFS, AnnotationFS)
+   */
+  default boolean overlapsLeft(int aBegin, int aEnd)
+  {
+    return AnnotationPredicates.overlapsLeft(this, aBegin, aEnd);
+  }
+
+  /**
+   * @see AnnotationPredicates#overlapsLeft(AnnotationFS, AnnotationFS)
+   */
+  default boolean overlapsLeft(AnnotationFS aOther)
+  {
+    return AnnotationPredicates.overlapsLeft(this, aOther);
+  }
+
+  /**
+   * @see AnnotationPredicates#overlapsRight(AnnotationFS, AnnotationFS)
+   */
+  default boolean overlapsRight(int aBegin, int aEnd)
+  {
+    return AnnotationPredicates.overlapsRight(this, aBegin, aEnd);
+  }
+
+  /**
+   * @see AnnotationPredicates#overlapsRight(AnnotationFS, AnnotationFS)
+   */
+  default boolean overlapsRight(AnnotationFS aOther)
+  {
+    return AnnotationPredicates.overlapsRight(this, aOther);
+  }
+
+  /**
+   * @see AnnotationPredicates#rightOf(AnnotationFS, AnnotationFS)
+   */
+  default boolean rightOf(int aBegin, int aEnd)
+  {
+    return AnnotationPredicates.rightOf(this, aBegin, aEnd);
+  }
+
+  /**
+   * @see AnnotationPredicates#rightOf(AnnotationFS, AnnotationFS)
+   */
+  default boolean rightOf(AnnotationFS aOther)
+  {
+    return AnnotationPredicates.rightOf(this, aOther);
+  }
+
+  /**
+   * @see AnnotationPredicates#leftOf(AnnotationFS, AnnotationFS)
+   */
+  default boolean leftOf(int aBegin, int aEnd)
+  {
+    return AnnotationPredicates.leftOf(this, aBegin, aEnd);
+  }
+
+  /**
+   * @see AnnotationPredicates#leftOf(AnnotationFS, AnnotationFS)
+   */
+  default boolean leftOf(AnnotationFS aOther)
+  {
+    return AnnotationPredicates.leftOf(this, aOther);
+  }
 }
