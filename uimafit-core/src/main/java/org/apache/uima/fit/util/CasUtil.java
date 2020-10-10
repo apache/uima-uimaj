@@ -157,10 +157,7 @@ public final class CasUtil {
    */
   public static Type getAnnotationType(CAS aCas, Class<?> aJCasClass) {
     final Type type = getType(aCas, aJCasClass);
-    if (!aCas.getTypeSystem().subsumes(aCas.getAnnotationType(), type)) {
-      throw new IllegalArgumentException("Type [" + aJCasClass.getName()
-              + "] is not an annotation type");
-    }
+    requireAnnotationType(aCas, type);
     return type;
   }
 
@@ -175,9 +172,7 @@ public final class CasUtil {
    */
   public static Type getAnnotationType(CAS aCas, String aTypeName) {
     Type type = getType(aCas, aTypeName);
-    if (!aCas.getTypeSystem().subsumes(aCas.getAnnotationType(), type)) {
-      throw new IllegalArgumentException("Type [" + aTypeName + "] is not an annotation type");
-    }
+    requireAnnotationType(aCas, type);
     return type;
   }
 
@@ -208,9 +203,7 @@ public final class CasUtil {
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static List<AnnotationFS> select(ArrayFS array, Type type) {
     final CAS cas = array.getCAS();
-    if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
-      throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
-    }
+    requireAnnotationType(cas, type);
     return (List) FSCollectionFactory.create(array, type);
   }
 
@@ -267,10 +260,8 @@ public final class CasUtil {
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static Collection<AnnotationFS> select(final CAS cas, final Type type) {
-    if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
-      throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
-    }
-    return (Collection) FSCollectionFactory.create(cas.getAnnotationIndex(type));
+    requireAnnotationType(cas, type);
+    return (Collection) cas.getAnnotationIndex(type).select().asList();
   }
   
   /**
@@ -909,7 +900,66 @@ public final class CasUtil {
 
     return unmodifiableMap(index);
   }
+  
+  /**
+   * Get a list of annotations of the given annotation type overlapping the given annotation. Does 
+   * not use subiterators and does not respect type prioritites.
+   * 
+   * @param aCas
+   *          a CAS.
+   * @param aType
+   *          a UIMA type.
+   * @param  aBoundaryAnnotation
+   *          the covering annotation.
+   * @return a list of overlapping annotations.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   */  
+  public static List<AnnotationFS> selectOverlapping(CAS aCas, Type aType,
+          AnnotationFS aBoundaryAnnotation) {
+    return selectOverlapping(aCas, aType, aBoundaryAnnotation.getBegin(),
+            aBoundaryAnnotation.getEnd());
+  }  
+  
+  /**
+   * Get a list of annotations of the given annotation type overlapping the given span. Does not use
+   * subiterators and does not respect type prioritites.
+   * 
+   * @param aCas
+   *          a CAS.
+   * @param aType
+   *          a UIMA type.
+   * @param aSelBegin
+   *          begin offset.
+   * @param aSelEnd
+   *          end offset.
+   * @return a list of overlapping annotations.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   */  
+  public static List<AnnotationFS> selectOverlapping(CAS aCas, Type aType, int aSelBegin,
+          int aSelEnd) {
+    requireAnnotationType(aCas, aType);
+    
+    List<AnnotationFS> annotations = new ArrayList<>();
+    for (AnnotationFS t : aCas.getAnnotationIndex(aType)) {
+      int begin = t.getBegin();
+      int end = t.getEnd();
 
+      // Annotation is fully right of selection (not overlapping)
+      if (aSelBegin != begin && begin >= aSelEnd) {
+        break;
+      }
+      
+      // not yet there
+      if (aSelBegin != begin && end <= aSelBegin) {
+        continue;
+      }
+      
+      annotations.add(t);
+    }
+
+    return annotations;
+  }
+  
   /**
    * This method exists simply as a convenience method for unit testing. It is not very efficient
    * and should not, in general be used outside the context of unit testing.
@@ -925,9 +975,8 @@ public final class CasUtil {
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static AnnotationFS selectByIndex(CAS cas, Type type, int index) {
-    if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
-      throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
-    }
+    requireAnnotationType(cas, type);
+
     // withSnapshotIterators() not needed here since we return only one result   
     FSIterator<AnnotationFS> i = cas.getAnnotationIndex(type).iterator();
     int n = index;
@@ -1042,9 +1091,7 @@ public final class CasUtil {
    */
   public static AnnotationFS selectSingleRelative(CAS cas, Type type, AnnotationFS aAnchor,
           int aPosition) {
-    if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
-      throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
-    }
+    requireAnnotationType(cas, type);
 
     // move to first previous annotation
     FSIterator<AnnotationFS> itr = cas.getAnnotationIndex(type).iterator();
@@ -1128,9 +1175,7 @@ public final class CasUtil {
    */
   public static List<AnnotationFS> selectPreceding(CAS cas, Type type, AnnotationFS annotation,
           int count) {
-    if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
-      throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
-    }
+    requireAnnotationType(cas, type);
 
     List<AnnotationFS> precedingAnnotations = new ArrayList<AnnotationFS>();
 
@@ -1186,9 +1231,7 @@ public final class CasUtil {
    */
   public static List<AnnotationFS> selectFollowing(CAS cas, Type type, AnnotationFS annotation,
           int count) {
-    if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
-      throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
-    }
+    requireAnnotationType(cas, type);
 
     // Seek annotation in index
     // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
@@ -1315,5 +1358,17 @@ public final class CasUtil {
       text.add(a.getCoveredText());
     }
     return text;
+  }
+
+  public static boolean isAnnotationType(CAS aCas, Type aType)
+  {
+    return aCas.getTypeSystem().subsumes(aCas.getAnnotationType(), aType);
+  }
+
+  public static void requireAnnotationType(CAS aCas, Type aType) {
+    if (!isAnnotationType(aCas, aType)) {
+      throw new IllegalArgumentException(
+              "Type [" + aType.getName() + "] is not an annotation type");
+    }
   }
 }
