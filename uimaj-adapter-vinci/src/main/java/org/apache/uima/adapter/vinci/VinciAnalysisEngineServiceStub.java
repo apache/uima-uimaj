@@ -49,7 +49,6 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.context.VinciContext;
 import org.apache.vinci.transport.document.AFrame;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class VinciAnalysisEngineServiceStub.
  */
@@ -175,7 +174,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * @see ResourceServiceStub#callGetMetaData()
    */
   @Override
-public ResourceMetaData callGetMetaData() throws ResourceServiceException {
+  public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     try {
       // create Vinci Frame
       VinciFrame queryFrame = new VinciFrame();
@@ -230,7 +229,7 @@ public ResourceMetaData callGetMetaData() throws ResourceServiceException {
    * @see AnalysisEngineServiceStub#callProcess(CAS)
    */
   @Override
-public void callProcess(CAS aCAS) throws ResourceServiceException {
+  public void callProcess(CAS aCAS) throws ResourceServiceException {
     doProcess(aCAS);
   }
 
@@ -286,7 +285,7 @@ public void callProcess(CAS aCAS) throws ResourceServiceException {
    * @see ResourceServiceStub#destroy()
    */
   @Override
-public void destroy() {
+  public void destroy() {
     mVinciClient.close();
   }
 
@@ -297,7 +296,7 @@ public void destroy() {
    * @see CasObjectProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   @Override
-public void callBatchProcessComplete() throws ResourceServiceException {
+  public void callBatchProcessComplete() throws ResourceServiceException {
     try {
       // create Vinci Frame ( Data Cargo)
       AFrame queryFrame = new AFrame();
@@ -317,7 +316,7 @@ public void callBatchProcessComplete() throws ResourceServiceException {
    * @see CasObjectProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   @Override
-public void callCollectionProcessComplete() throws ResourceServiceException {
+  public void callCollectionProcessComplete() throws ResourceServiceException {
     try {
       // create Vinci Frame ( Data Cargo)
       AFrame queryFrame = new AFrame();
@@ -404,6 +403,7 @@ public void callCollectionProcessComplete() throws ResourceServiceException {
       throw new ResourceServiceException(e);
     }
   }
+
   /**
    * Gets whether socket keepAlive is enabled, by consulting the
    * PerformanceTuningSettings.  (If no setting specified, defaults

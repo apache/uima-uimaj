@@ -225,9 +225,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    *         performing the service
    * @throws ServiceException the service exception
    */
-
   @Override
-public Transportable eval(Transportable doc) throws ServiceException {
+  public Transportable eval(Transportable doc) throws ServiceException {
     try {
       CASTransportable ct = (CASTransportable) doc;
       String op = ct.getCommand();
@@ -423,6 +422,7 @@ public Transportable eval(Transportable doc) throws ServiceException {
     /* (non-Javadoc)
      * @see java.lang.Thread#run()
      */
+    @Override
     public void run() {
       server.stop();
     }
