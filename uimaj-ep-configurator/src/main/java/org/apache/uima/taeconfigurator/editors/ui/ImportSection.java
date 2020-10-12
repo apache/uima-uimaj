@@ -369,10 +369,9 @@ public abstract class ImportSection extends AbstractSection {
   }
 
   /**
-   * 
    * @param xmlStartElement
    *          first element exported
-   * @param partTemplate
+   * @param partTemplate -
    */
   protected void exportImportablePart(String xmlStartElement, String partTemplate) {
     String xmlEndElement = xmlStartElement.replaceFirst("<", "</");

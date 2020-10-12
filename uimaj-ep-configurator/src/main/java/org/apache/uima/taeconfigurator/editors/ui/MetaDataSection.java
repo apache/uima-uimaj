@@ -48,6 +48,8 @@ public class MetaDataSection extends AbstractSection {
    * 
    * @param editor
    *          the referenced multipage editor
+   * @param parent 
+   *          -
    */
   public MetaDataSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Overall Identification Information",

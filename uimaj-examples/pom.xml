@@ -56,6 +56,7 @@
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
   
 	<dependencies>

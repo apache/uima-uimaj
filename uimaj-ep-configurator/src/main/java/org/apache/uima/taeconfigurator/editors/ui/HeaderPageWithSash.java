@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.taeconfigurator.editors.ui;
 
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
@@ -26,27 +25,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-/**
- */
 public class HeaderPageWithSash extends HeaderPage {
 
   protected Action haction;
 
   protected Action vaction;
 
-  /**
-   * @param formEditor
-   * @param id
-   * @param keyPageTitle
-   */
   public HeaderPageWithSash(MultiPageEditor formEditor, String id, String keyPageTitle) {
     super(formEditor, id, keyPageTitle);
   }
 
-  /**
-   * @param formEditor
-   * @param pageTitle
-   */
   public HeaderPageWithSash(MultiPageEditor formEditor, String pageTitle) {
     super(formEditor, pageTitle);
   }
@@ -55,7 +43,8 @@ public class HeaderPageWithSash extends HeaderPage {
     final ScrolledForm form = managedForm.getForm();
 
     haction = new Action("hor", Action.AS_RADIO_BUTTON) { //$NON-NLS-1$
-      public void run() {
+      @Override
+    public void run() {
         sashForm.setOrientation(SWT.HORIZONTAL);
         form.reflow(true);
       }
@@ -69,7 +58,8 @@ public class HeaderPageWithSash extends HeaderPage {
             .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
 
     vaction = new Action("ver", Action.AS_RADIO_BUTTON) { //$NON-NLS-1$
-      public void run() {
+      @Override
+    public void run() {
         sashForm.setOrientation(SWT.VERTICAL);
         form.reflow(true);
       }
@@ -85,5 +75,4 @@ public class HeaderPageWithSash extends HeaderPage {
     form.updateToolBar();
     maybeInitialize(managedForm);
   }
-
 }

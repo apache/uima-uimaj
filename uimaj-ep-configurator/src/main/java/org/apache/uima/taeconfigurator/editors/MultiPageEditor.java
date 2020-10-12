@@ -611,9 +611,9 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     }
   }
 
-  /***************************************************************************/
-  /*            Expose "protected" methods and methods from Super            */
-  /***************************************************************************/  
+  // *************************************************************************
+  //            Expose "protected" methods and methods from Super             
+  // *************************************************************************  
   
   public void initSuper(IEditorSite site, IEditorInput editorInput) throws PartInitException {
     super.init(site, editorInput);
@@ -751,9 +751,6 @@ public void addPagesForCurrentEditor() {
     }
   }
 
-  /**
-   * @param monitor
-   */
   public void jcasGen(IProgressMonitor monitor) {
     if (MultiPageEditorContributor.getAutoJCasGen()) {
       doJCasGenChkSrc(monitor);
@@ -1515,9 +1512,6 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
     return aeDescription;
   }
 
-  /**
-   * @throws ResourceInitializationException -
-   */
   public void setAeDescription(AnalysisEngineDescription aAnalysisEngineDescription)
           throws ResourceInitializationException {
     if (null == aAnalysisEngineDescription)
@@ -1925,7 +1919,7 @@ public void pageChangeForCurrentEditor(int newPageIndex) {
    * gets the Hash Map of resolved AE delegates Clones the description first because the getting
    * updates it in some cases
    * 
-   * @param aed
+   * @param aed analysis engine description
    * @return the Map of resolved AE delegates
    */
   public Map getDelegateAEdescriptions(AnalysisEngineDescription aed) {

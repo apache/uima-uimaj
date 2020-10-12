@@ -58,7 +58,7 @@ public class GeneralSection extends AbstractSection {
    * 
    * @param aEditor
    *          the referenced multipage editor
-   * @param parent
+   * @param parent -
    */
   public GeneralSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, "Implementation Details", null);

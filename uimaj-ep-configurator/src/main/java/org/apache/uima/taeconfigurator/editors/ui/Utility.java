@@ -55,6 +55,7 @@ public class Utility extends MessageDialog {
    *          with an error image MessageDialog.INFORMATION for a dialog with an information image
    *          MessageDialog.QUESTION for a dialog with a question image MessageDialog.WARNING for a
    *          dialog with a warning image
+   * @return -
    */
   public static int popOkCancel(String title, String message, int type) {
     return popMessage(title, message, type, OK_CANCEL);

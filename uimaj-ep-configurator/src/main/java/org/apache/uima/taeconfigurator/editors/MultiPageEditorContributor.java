@@ -71,8 +71,10 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   }
 
   /**
-   * Returns the action registed with the given text editor.
+   * Returns the action registered with the given text editor.
    * 
+   * @param editor the text editor.
+   * @param actionID the action ID.
    * @return IAction or null if editor is null.
    */
   protected IAction getAction(MultiPageEditorPart editor, String actionID) {
@@ -88,12 +90,15 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
    * (non-JavaDoc) Method declared in AbstractMultiPageEditorActionBarContributor.
    */
 
-  public void setActiveEditor(IEditorPart part) {
-    if (activeEditorPart == part)
-      return;
+  @Override
+public void setActiveEditor(IEditorPart part) {
+    if (activeEditorPart == part) {
+        return;
+    }
 
-    if (null == part)
-      return;
+    if (null == part) {
+        return;
+    }
     activeEditorPart = part;
 
     IActionBars actionBars = getActionBars();
@@ -128,7 +133,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
    * 
    * @see org.eclipse.ui.part.MultiPageEditorActionBarContributor#setActivePage(org.eclipse.ui.IEditorPart)
    */
-  public void setActivePage(IEditorPart part) {
+  @Override
+public void setActivePage(IEditorPart part) {
 
     IActionBars actionBars = getActionBars();
     if (actionBars != null) {
@@ -162,7 +168,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     autoJCasAction = new Action() {
       // The run action is simply to toggle the setting in the prefs page, and
       //   to update the checked status to correspond to that
-      public void run() {
+      @Override
+    public void run() {
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
         boolean bAutoJCasGen = !prefs.getBoolean(PreferencePage.P_JCAS); //$NON-NLS-1$
@@ -174,7 +181,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     limitJCasGenToProject = new Action () {
       // The run action is simply to toggle the setting in the prefs page, and
       //   to update the checked status to correspond to that
-      public void run() {
+      @Override
+    public void run() {
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
         boolean bJCasLimit = !prefs.getBoolean(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE); //$NON-NLS-1$
@@ -184,14 +192,16 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     };
 
     runJCasGenAction = new Action() {
-      public void run() {
+      @Override
+    public void run() {
         ((MultiPageEditor) activeEditorPart).doJCasGenChkSrc(null); // don't know how to get
         // progress monitor
       }
     };
 
     qualifiedTypesAction = new Action() {
-      public void run() {
+      @Override
+    public void run() {
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
         boolean bFullyQualifiedTypeNames = !prefs
@@ -225,7 +235,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     runJCasGenAction.setText("Run JCasGen");
   }
 
-  public void contributeToMenu(IMenuManager manager) {
+  @Override
+public void contributeToMenu(IMenuManager manager) {
 
     IMenuManager menu = new MenuManager("&UIMA"); //$NON-NLS-1$
     manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
@@ -281,8 +292,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
     Preferences prefs = plugin.getPluginPreferences();
     boolean isDefault = prefs.isDefault(key);
-    if (isDefault)
-      prefs.setDefault(key, defaultValue);
+    if (isDefault) {
+        prefs.setDefault(key, defaultValue);
+    }
     return prefs.getString(key);
   }
 
@@ -290,8 +302,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
     Preferences prefs = plugin.getPluginPreferences();
     boolean isDefault = prefs.isDefault(key);
-    if (isDefault)
-      prefs.setDefault(key, defaultValue);
+    if (isDefault) {
+        prefs.setDefault(key, defaultValue);
+    }
     return prefs.getBoolean(key);
   }
 
@@ -299,8 +312,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
     Preferences prefs = plugin.getPluginPreferences();
     boolean isDefault = prefs.isDefault(key);
-    if (isDefault)
-      prefs.setDefault(key, defaultValue);
+    if (isDefault) {
+        prefs.setDefault(key, defaultValue);
+    }
     return prefs.getInt(key);
   }
 

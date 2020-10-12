@@ -147,13 +147,15 @@ public void enable() {
   @Override
 public abstract void handleEvent(Event event);
 
-  /*************************************************************************************************
-   * methods shared with multiple param pages ****************************************
-   */
+  // *********************************************************************************
+  // methods shared with multiple param pages
+  // *********************************************************************************
 
   /**
    * Two modes: settingsDisplayMode - if true, shows groups one name at a time, and puts all
-   * &lt;common&gt; parms in other groups
+   * &lt;common&gt; parameters in other groups
+   * 
+   * @param usingGroups -
    */
   protected void clearAndRefillTree(boolean usingGroups) {
     cpd = getConfigurationParameterDeclarations();
@@ -533,12 +535,14 @@ public abstract void handleEvent(Event event);
   }
 
   /**
-   * Works between parameter tree and settings tree We don't use any relative index offsets.
+   * Works between parameter tree and settings tree. We don't use any relative index offsets.
    * Instead, we search for the item with the same parameter name.
    * 
-   * 
    * @param containingGroup
-   *          in parm section; if null = means all groups (common parms)
+   *            in parm section; if null = means all groups (common parms)
+   * @param sourceItemName
+   *            -
+   * @return -
    */
   protected TreeItem[] getSettingsParameter(TreeItem containingGroup, String sourceItemName) {
     if (null == settingsTree) {
