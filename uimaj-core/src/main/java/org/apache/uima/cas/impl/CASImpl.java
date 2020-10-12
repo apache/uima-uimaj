@@ -4729,7 +4729,7 @@ public JCasImpl getJCasImpl() {
   
   /**
    * iterate over all views in view order (by view number) 
-   * @param processViews
+   * @param processViews action to perform on the views.
    */
   public void forAllViews(Consumer<CASImpl> processViews) {
     final int numViews = this.getNumberOfViews();
