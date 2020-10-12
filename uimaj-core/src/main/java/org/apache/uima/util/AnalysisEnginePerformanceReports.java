@@ -35,7 +35,7 @@ public class AnalysisEnginePerformanceReports {
 
   private ProcessTrace mProcessTrace;
 
-  private Map<String, Integer> mAnnotatorAnalysisTimes = new HashMap<String, Integer>();
+  private Map<String, Integer> mAnnotatorAnalysisTimes = new HashMap<>();
 
   private int mAnalysisTime = 0;
 

@@ -98,7 +98,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
         FUNC_GETNEXT_KEY, FUNC_HASNEXT_KEY };
     errorConfig = new HashMap();
     logger = getLogger();
-    documentCount = (((Integer) getConfigParameterValue(DOCUMENT_COUNT)).intValue());
+    documentCount = ((Integer) getConfigParameterValue(DOCUMENT_COUNT));
     documentsCounted = 0;
     String errorFunction = (String) getConfigParameterValue(ERROR_FUNCTION);
     Integer errorCount = (Integer) getConfigParameterValue(ERROR_COUNT);
@@ -107,7 +107,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
       int errorCountName = 0;
       String errorExceptionName = "RuntimeException";
       if (errorCount != null) {
-        errorCountName = errorCount.intValue();
+        errorCountName = errorCount;
       }
       if (errorException != null) {
         errorExceptionName = errorException;

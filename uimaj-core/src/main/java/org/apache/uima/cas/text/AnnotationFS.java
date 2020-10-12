@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.text;
 
+import java.util.function.IntPredicate;
+
 import org.apache.uima.cas.AnnotationBaseFS;
 
 /**
@@ -46,6 +48,23 @@ public interface AnnotationFS extends AnnotationBaseFS {
   int getEnd();
 
   /**
+   * Set the start position of the annotation as character offset into the text. The smallest
+   * possible start position is <code>0</code>, the offset of the first character in the text.
+   * 
+   * @param begin The start position.
+   */
+  void setBegin(int begin);
+
+  /**
+   * Set the end position of the annotation as character offset into the text. The end position
+   * points at the first character after the annotation, such that
+   * <code>(getEnd()-getBegin()) == getCoveredText().length()</code>.
+   * 
+   * @param end The end position position.
+   */
+  void setEnd(int end);
+
+  /**
    * Get the text covered by an annotation as a string. If <code>docText</code> is your document
    * text and <code>annot</code> an annotation, then <code>
    * annot.getCoveredText().equals(docText.substring(annot.getBegin(), 
@@ -55,4 +74,21 @@ public interface AnnotationFS extends AnnotationBaseFS {
    */
   String getCoveredText();
 
+  /**
+   * Strips leading and trailing whitespace by increasing/decreasing the begin/end offsets. This 
+   * method is aware of Unicode codepoints. It expects that the begin/end offsets point to valid
+   * codepoints.
+   */
+  default void trim() {
+      trim(Character::isWhitespace);
+  }
+  
+  /**
+   * Strips leading and trailing characters matching the given predicate by increasing/decreasing 
+   * the begin/end offsets.
+   * 
+   * @see #trim()
+   * @param aPredicate the predicate used to identify  whitespace
+   */
+  void trim(IntPredicate aPredicate);
 }

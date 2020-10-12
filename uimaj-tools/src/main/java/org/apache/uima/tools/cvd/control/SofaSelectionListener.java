@@ -24,14 +24,36 @@ import java.awt.event.ItemListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The listener interface for receiving sofaSelection events.
+ * The class that is interested in processing a sofaSelection
+ * event implements this interface, and the object created
+ * with that class is registered with a component using the
+ * component's <code>addSofaSelectionListener</code> method. When
+ * the sofaSelection event occurs, that object's appropriate
+ * method is invoked.
+ *
+// * @see SofaSelectionEvent
+ */
 public class SofaSelectionListener implements ItemListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new sofa selection listener.
+   *
+   * @param frame the frame
+   */
   public SofaSelectionListener(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+   */
+  @Override
   public void itemStateChanged(ItemEvent e) {
     // a new sofa was selected. Switch to that view and update
     // display

@@ -29,6 +29,7 @@ import org.apache.axis.Version;
 import org.apache.axis.encoding.SerializerFactory;
 import org.apache.uima.adapter.soap.axis11.BinarySerializer_Axis11;
 
+
 /**
  * An Axis serializer factory that constructs instances of {@link BinarySerializer}.
  * 
@@ -36,18 +37,32 @@ import org.apache.uima.adapter.soap.axis11.BinarySerializer_Axis11;
  */
 public class BinarySerializerFactory implements SerializerFactory {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 2914831356701203129L;
 
+  /** The mechanisms. */
   private Vector mechanisms;
 
+  /**
+   * Instantiates a new binary serializer factory.
+   */
   public BinarySerializerFactory() {
     this(true);
   }
 
+  /**
+   * Instantiates a new binary serializer factory.
+   *
+   * @param aUseAttachments the a use attachments
+   */
   public BinarySerializerFactory(boolean aUseAttachments) {
     // TODO: attachments never used?
   }
 
+  /* (non-Javadoc)
+   * @see javax.xml.rpc.encoding.SerializerFactory#getSerializerAs(java.lang.String)
+   */
+  @Override
   public Serializer getSerializerAs(String mechanismType) {
     // There is a binary incompatibility between Axis v1.1 and
     // Axis v1.2 in the serializer/deserializer libraries.
@@ -62,6 +77,10 @@ public class BinarySerializerFactory implements SerializerFactory {
     }
   }
 
+  /* (non-Javadoc)
+   * @see javax.xml.rpc.encoding.SerializerFactory#getSupportedMechanismTypes()
+   */
+  @Override
   public Iterator getSupportedMechanismTypes() {
     if (mechanisms == null) {
       mechanisms = new Vector();

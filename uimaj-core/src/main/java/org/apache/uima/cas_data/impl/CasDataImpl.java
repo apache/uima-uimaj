@@ -37,7 +37,7 @@ public class CasDataImpl implements CasData {
    * Initializes FeatureStructure list
    */
   public CasDataImpl() {
-    fsList = new LinkedList<FeatureStructure>();
+    fsList = new LinkedList<>();
   }
 
   /**

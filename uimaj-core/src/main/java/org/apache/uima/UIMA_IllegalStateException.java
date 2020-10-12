@@ -81,6 +81,12 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    */
   public static final String CANNOT_SET_CAS_MANAGER = "cannot_set_cas_manager";
   
+  /** Cannot do feature accessing for JCas class {0}, because it is not associated with a committed UIMA Type, either because the type doesn''t exist, or hasn''t been committed.*/
+  public static final String JCAS_NO_TYPE = "JCAS_NO_TYPE";
+  
+  /** Loaded JCas Type {0} has feature {1} with two different type systems having different offsets; this is not supported. */
+  public static final String JCAS_INCOMPATIBLE_TYPE_SYSTEMS = "JCAS_INCOMPATIBLE_TYPE_SYSTEMS";
+
   /**
    * Creates a new exception with a null message.
    */
@@ -135,7 +141,7 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    */
   public UIMA_IllegalStateException(String aResourceBundleName, String aMessageKey,
           Object[] aArguments, Throwable aCause) {
-    super(aResourceBundleName, aMessageKey, aArguments, aCause);
+    super(aCause, aResourceBundleName, aMessageKey, aArguments);
   }
 
   /**
@@ -168,6 +174,6 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public UIMA_IllegalStateException(String aMessageKey, Object[] aArguments, Throwable aCause) {
-    super(aMessageKey, aArguments, aCause);
+    super(aCause, aMessageKey, aArguments);
   }
 }

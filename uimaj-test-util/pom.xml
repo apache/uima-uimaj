@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>3.1.2-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -44,14 +44,15 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/jvinci
+      scm:git:https://github.com/apache/uima-uimaj/jvinci
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/jvinci
+      scm:git:https://github.com/apache/uima-uimaj/jvinci
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/jvinci
+      https://github.com/apache/uima-uimaj/tree/master/jvinci
     </url>
+    <tag>HEAD</tag>
   </scm>
   
   <properties>
@@ -63,15 +64,12 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>compile</scope>  <!-- needed because dependency management has it as test -->
-		</dependency>
+			<scope>compile</scope>  <!-- is normally test scope, so need to be explicit -->
+		</dependency>	
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-    </dependency>
-		<dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
+      <version>1.6</version>
     </dependency>
 	</dependencies>
 </project>

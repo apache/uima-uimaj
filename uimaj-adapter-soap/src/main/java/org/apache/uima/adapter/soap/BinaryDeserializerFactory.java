@@ -27,6 +27,7 @@ import org.apache.axis.Version;
 import org.apache.axis.encoding.DeserializerFactory;
 import org.apache.uima.adapter.soap.axis11.BinaryDeserializer_Axis11;
 
+
 /**
  * An Axis deserializer factory that constructs instances of {@link BinaryDeserializer}.
  * 
@@ -34,10 +35,16 @@ import org.apache.uima.adapter.soap.axis11.BinaryDeserializer_Axis11;
  */
 public class BinaryDeserializerFactory implements DeserializerFactory {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 9029965561439924991L;
 
+  /** The mechanisms. */
   private Vector mechanisms;
 
+  /* (non-Javadoc)
+   * @see javax.xml.rpc.encoding.DeserializerFactory#getDeserializerAs(java.lang.String)
+   */
+  @Override
   public javax.xml.rpc.encoding.Deserializer getDeserializerAs(String mechanismType) {
     // There is a binary incompatibility between Axis v1.1 and
     // Axis v1.2 in the serializer/deserializer libraries.
@@ -52,6 +59,10 @@ public class BinaryDeserializerFactory implements DeserializerFactory {
     }
   }
 
+  /* (non-Javadoc)
+   * @see javax.xml.rpc.encoding.DeserializerFactory#getSupportedMechanismTypes()
+   */
+  @Override
   public Iterator getSupportedMechanismTypes() {
     if (mechanisms == null) {
       mechanisms = new Vector();

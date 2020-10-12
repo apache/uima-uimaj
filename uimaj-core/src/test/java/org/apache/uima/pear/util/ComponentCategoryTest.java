@@ -22,10 +22,10 @@ package org.apache.uima.pear.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.apache.uima.test.junit_extension.JUnitExtension;
+
 import org.junit.Assert;
 import junit.framework.TestCase;
-
-import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
  * The <code>ComponentCategoryTest</code> class provides JUnit test cases for the

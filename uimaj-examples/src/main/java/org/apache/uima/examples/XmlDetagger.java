@@ -20,7 +20,6 @@
 package org.apache.uima.examples;
 
 import java.io.InputStream;
-import java.util.Iterator;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -91,12 +90,15 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
 
     // Index the SourceDocumentInformation object, if there is one, in the new sofa.
     // This is needed by the SemanticSearchCasIndexer
-    Iterator iter = xmlCas.getAnnotationIndex(sourceDocInfoType).iterator();
-    if (iter.hasNext()) {
-      FeatureStructure sourceDocInfoFs = (FeatureStructure) iter.next();
-      plainTextView.getIndexRepository().addFS(sourceDocInfoFs);
-
+    FeatureStructure sourceDocInfoFs = xmlCas.select(sourceDocInfoType).singleOrNull();
+    if (null != sourceDocInfoFs) {
+      plainTextView.addFsToIndexes(sourceDocInfoFs);
     }
+//    Iterator iter = xmlCas.getAnnotationIndex(sourceDocInfoType).iterator();
+//    if (iter.hasNext()) {
+//      FeatureStructure sourceDocInfoFs = (FeatureStructure) iter.next();
+//      plainTextView.getIndexRepository().addFS(sourceDocInfoFs);
+//    }
 
   }
 

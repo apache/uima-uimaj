@@ -22,7 +22,7 @@ package org.apache.uima.cas.impl;
 import java.util.Arrays;
 
 /**
- * Encapsulate 16 bit storage for a CAS.HEAP_CELL_SIZE
+ * the v2 CAS short aux heap - used in modeling some binary (de)serialization
  */
 final class ShortHeap extends CommonAuxHeap {
 
@@ -36,18 +36,22 @@ final class ShortHeap extends CommonAuxHeap {
     super(heapBaseSize, heapMultLimit);
   }
 
+  @Override
   final void initMemory() {
     this.heap = new short[this.heapBaseSize];
   }
   
+  @Override
   final void initMemory(int size) {
     this.heap = new short[size];
   }
 
+  @Override
   final int getCapacity() {
     return this.heap.length;
   }
 
+  @Override
   void growHeapIfNeeded() {
     if (heap.length >= heapPos)
       return;
@@ -58,6 +62,7 @@ final class ShortHeap extends CommonAuxHeap {
     heap = new_array;
   }
 
+  @Override
   void resetToZeros() {
     Arrays.fill(this.heap, 0, this.heapPos, (short) NULL);
   }
@@ -78,6 +83,12 @@ final class ShortHeap extends CommonAuxHeap {
     return pos;
   }
 
+  int addShortArray(short[] val) {
+    int pos = reserve(val.length);
+    System.arraycopy(val, 0, heap, pos, val.length);
+    return pos;
+  }
+
   protected void reinit(short[] shortHeap) {
     int argLength = shortHeap.length;
     if (argLength > heap.length)
@@ -86,4 +97,11 @@ final class ShortHeap extends CommonAuxHeap {
     System.arraycopy(shortHeap, 0, heap, 0, argLength);
     this.heapPos = argLength;
   }
+  
+  public short[] toArray() {
+    short[] r = new short[heapPos];
+    System.arraycopy(heap, 0, r, 0, heapPos);
+    return r;
+  }
+
 }

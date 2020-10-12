@@ -27,19 +27,31 @@ import javax.swing.Action;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
 /**
  * Focus in annotation frame action handler.
  */
 public class FocusFSAction extends AbstractAction implements Action {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new focus FS action.
+   *
+   * @param frame the frame
+   */
   public FocusFSAction(MainFrame frame) {
     this.main = frame;
   }
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -8330075846211434833L;
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent arg0) {
     this.main.getFsTree().requestFocusInWindow();
   }

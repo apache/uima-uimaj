@@ -102,22 +102,28 @@ under the License.
            <entry><emphasis role="bold">Since Version</emphasis></entry>
          </row>
 
+
          <!-- ******************************************************************************* -->
          <row>
-           <entry><para>XML: enable doctype declarations</para></entry>
-           <entry><para><code>uima.xml.enable.doctype_decl</code> (default is false)</para>
-
-           <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-6064">UIMA-6064</ulink>
-           Normally, this is turned off to avoid exposure to malicious XML; see
-           <ulink url="https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Processing">
-             XML External Entity processing vulnerability</ulink>.
-           </para>
-           </entry>
+           <entry><para>Use built-in Java Logger as default back-end</para></entry>
            
-           <entry><para>2.10.4, 3.0.3</para></entry>
+           <entry><para><code>uima.use_jul_as_default_uima_logger</code></para>
+           
+                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-5381">UIMA-5381</ulink>.
+                  The standard UIMA logger uses an slf4j implementation, which, in turn hooks up to 
+                  a back end implementation based on what can be found in the class path (see slf4j documentation).
+                  If no backend implementation is found, the slf4j default is to use a NOP logger back end 
+                  which discards all logging.</para>
+                  
+                  <para>When this flag is specified, the behavior of the UIMA logger 
+                        is altered to use the built-in-to-Java logging implementation 
+                        as the back end for the UIMA logger.
+                  </para></entry>
+           <entry><para>3.0.0</para></entry>
          </row>
-           
+
          <!-- ******************************************************************************* -->
+         <!-- 
          <row>
            <entry><para>Allow duplicate addToIndexes for identical Feature Structures</para></entry>
            
@@ -130,8 +136,10 @@ under the License.
                         may be restored by this property.</para></entry>
            <entry><para>2.7.0</para></entry>
          </row>
+         -->
          
          <!-- ******************************************************************************* -->
+         <!-- 
          <row>
            <entry><para>adding Annotation to wrong View</para></entry>
            
@@ -145,7 +153,23 @@ under the License.
                         for backward compatibility.</para></entry>
            <entry><para>2.7.0</para></entry>
          </row>
+         -->
 
+         <!-- ******************************************************************************* -->
+         <row>
+           <entry><para>XML: enable doctype declarations</para></entry>
+           <entry><para><code>uima.xml.enable.doctype_decl</code> (default is false)</para>
+
+           <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-6064">UIMA-6064</ulink>
+           Normally, this is turned off to avoid exposure to malicious XML; see
+           <ulink url="https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Processing">
+             XML External Entity processing vulnerability</ulink>.
+           </para>
+           </entry>
+           
+           <entry><para>2.10.4, 3.1.0</para></entry>
+         </row>
+         
          <row>
            <entry spanname="fullwidth"><emphasis role="bold">Index protection properties</emphasis></entry>
          </row>         
@@ -219,11 +243,12 @@ under the License.
            <entry><para>2.7.0</para></entry>
          </row>
 
+
          <row>
            <entry spanname="fullwidth"><emphasis role="bold">Measurement / Tracing properties</emphasis></entry>
          </row>         
          <!-- ******************************************************************************* -->
-         
+      
          <row>
            <entry><para>Trace Feature Structure Creation/Updating</para></entry>
            
@@ -239,8 +264,9 @@ under the License.
             </entry>
             
             <entry><para>2.10.1</para></entry>
-         </row>
-         <!--   DISABLED FOR NOW 
+         </row>    
+         
+                    
          <row>
            <entry><para>Measure index flattening optimization</para></entry>
            
@@ -250,6 +276,7 @@ under the License.
                         This creates a short report to System.out when Java is shutdown.
                         The report has some statistics about the automatic management of 
                         flattened index creation and use.</para>
+          
            </entry>
                         
            <entry><para>2.8.0</para></entry>
@@ -259,7 +286,7 @@ under the License.
        </tbody>
      </tgroup>
    </informaltable>
-    
+   <para>Some additional global flags intended for helping v3 migration are documented in the V3 user's guide.</para> 
   </section>
   
 </chapter>

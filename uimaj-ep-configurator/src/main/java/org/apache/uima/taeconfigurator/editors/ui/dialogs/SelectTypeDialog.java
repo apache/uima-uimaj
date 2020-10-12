@@ -33,14 +33,36 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+
+/**
+ * The Class SelectTypeDialog.
+ */
 public class SelectTypeDialog extends AbstractDialog {
 
+  /** The type name UI. */
   private Text typeNameUI;
+  
+  /** The matching types UI. */
   private Table matchingTypesUI;
+  
+  /** The name spaces UI. */
   private Table nameSpacesUI;
+  
+  /** The type name. */
   public String typeName = "error-TypeName-never-set";
+  
+  /** The name space name. */
   public String nameSpaceName = "error-NameSpaceName-never-set";
+  
+  /** The types. */
   private TypesWithNameSpaces types;
+
+  /**
+   * Instantiates a new select type dialog.
+   *
+   * @param section the section
+   * @param types the types
+   */
 
   public SelectTypeDialog(AbstractSection section, TypesWithNameSpaces types) {
     super(section, "Select Type Name", "Select an Existing CAS Type name from the set of defined types");
@@ -84,6 +106,11 @@ public class SelectTypeDialog extends AbstractDialog {
     return mainArea;
   }
    
+  /**
+   * Display filtered types.
+   *
+   * @param aTypeName the a type name
+   */
   private void displayFilteredTypes(String aTypeName) {
     matchingTypesUI.setRedraw(false);
     matchingTypesUI.removeAll();
@@ -109,6 +136,11 @@ public class SelectTypeDialog extends AbstractDialog {
     matchingTypesUI.setRedraw(true);    
   }
 
+  /**
+   * Display name spaces for selected item.
+   *
+   * @param entry the entry
+   */
   private void displayNameSpacesForSelectedItem(Map.Entry entry) {
     Set nameSpaces = (Set)entry.getValue();
     nameSpacesUI.removeAll();

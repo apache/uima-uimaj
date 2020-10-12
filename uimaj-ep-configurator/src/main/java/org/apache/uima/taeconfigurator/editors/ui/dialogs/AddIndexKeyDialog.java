@@ -37,37 +37,62 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+
+/**
+ * The Class AddIndexKeyDialog.
+ */
 public class AddIndexKeyDialog extends AbstractDialog {
 
+  /** The Constant ASCENDING. */
   static private final String ASCENDING = "Ascending (Standard)";
 
+  /** The Constant DESCENDING. */
   static private final String DESCENDING = "Descending (Reverse)";
 
+  /** The Constant TYPE_PRIORITY. */
   static private final String TYPE_PRIORITY = "Type Priority";
 
+  /** The type priority. */
   public boolean typePriority;
 
+  /** The feature name. */
   public String featureName;
 
+  /** The direction. */
   public int direction;
 
+  /** The features. */
   private String[] features;
 
+  /** The existing key. */
   private FsIndexKeyDescription existingKey = null;
 
+  /** The already used keys. */
   private List alreadyUsedKeys;
 
+  /** The index kind. */
   private String indexKind; // bag, sorted, set
 
+  /** The feature UI. */
   private CCombo featureUI;
 
+  /** The kind UI. */
   // private Button browseButton;
   private CCombo kindUI;
 
+  /** The feature label. */
   private Label featureLabel;
 
   // private Composite tc;
 
+  /**
+   * Instantiates a new adds the index key dialog.
+   *
+   * @param aSection the a section
+   * @param typeName the type name
+   * @param indexKind the index kind
+   * @param alreadyUsedKeys the already used keys
+   */
   public AddIndexKeyDialog(AbstractSection aSection, String typeName, String indexKind,
           List alreadyUsedKeys) {
     super(aSection, "Add index key", "Add or edit an index key for a type");
@@ -76,6 +101,15 @@ public class AddIndexKeyDialog extends AbstractDialog {
     features = getSortableFeatureNames(typeName);
   }
 
+  /**
+   * Instantiates a new adds the index key dialog.
+   *
+   * @param aSection the a section
+   * @param typeName the type name
+   * @param indexKind the index kind
+   * @param alreadyUsedKeys the already used keys
+   * @param existingKey the existing key
+   */
   public AddIndexKeyDialog(AbstractSection aSection, String typeName, String indexKind,
           List alreadyUsedKeys, FsIndexKeyDescription existingKey) {
     this(aSection, typeName, indexKind, alreadyUsedKeys);
@@ -83,9 +117,9 @@ public class AddIndexKeyDialog extends AbstractDialog {
   }
 
   /**
-   * 
-   * @param taeDescription
-   * @param selectedType
+   * Gets the sortable feature names.
+   *
+   * @param selectedTypeName the selected type name
    * @return an array of features whose range is primitive
    */
   private String[] getSortableFeatureNames(String selectedTypeName) {
@@ -109,6 +143,10 @@ public class AddIndexKeyDialog extends AbstractDialog {
   // Kind: combo (up, down, or typePriority)
   // Feature: text with assist <browse>
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     // create composite
     Composite mainComposite = (Composite) super.createDialogArea(parent, existingKey);
@@ -149,6 +187,10 @@ public class AddIndexKeyDialog extends AbstractDialog {
     return mainComposite;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
+   */
+  @Override
   public void handleEvent(Event event) {
     if (event.widget == kindUI) {
       boolean makeFeatureVisible = "set".equals(indexKind)
@@ -159,11 +201,19 @@ public class AddIndexKeyDialog extends AbstractDialog {
     super.handleEvent(event);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
+  @Override
   public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(typePriority || !(null != featureName && "".equals(featureName)));
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
+  @Override
   public void copyValuesFromGUI() {
     if ("sorted".equals(indexKind) && TYPE_PRIORITY.equals(kindUI.getText())) {
       typePriority = true;
@@ -179,6 +229,10 @@ public class AddIndexKeyDialog extends AbstractDialog {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  @Override
   public boolean isValid() {
     return true;
   }

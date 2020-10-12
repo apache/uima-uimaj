@@ -21,6 +21,7 @@ package org.apache.uima;
 
 import java.util.Locale;
 
+import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.I18nx_impl;
 
 /**
@@ -50,7 +51,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
   private static final long serialVersionUID = 6387360855459370559L;
 
   private final I18nx_impl c;  // common code 
-  
+
   /**
    * Creates a new <code>InternationalizedRuntimeException</code> with a null message.
    */

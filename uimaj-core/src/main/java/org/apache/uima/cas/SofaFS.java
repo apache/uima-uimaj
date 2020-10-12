@@ -59,7 +59,7 @@ public interface SofaFS extends FeatureStructure {
    * @throws CASRuntimeException
    *           if the Sofa data has already been set
    */
-  void setRemoteSofaURI(String aURI) throws CASRuntimeException;
+  void setRemoteSofaURI(String aURI);
 
   /**
    * Set the Local Subject of Analysis to be a predefined ArrayFS. Once set, the Sofa data cannot be
@@ -68,8 +68,8 @@ public interface SofaFS extends FeatureStructure {
    * @throws CASRuntimeException
    *           if given FS is not an ArrayFS, or if the Sofa data has already been set
    */
+  
   void setLocalSofaData(FeatureStructure aFS) throws CASRuntimeException;
-
   /**
    * Set the Local Subject of Analysis to be a String. Once set, the Sofa data cannot be changed.
    * @param aString  The subject of analysis 
@@ -112,6 +112,13 @@ public interface SofaFS extends FeatureStructure {
   String getSofaURI();
 
   /**
+   * Get the Sofa Ref value. (same as getSofaRef())
+   * @return the Sofa Reference value
+   */
+
+  int getSofaNum();
+  
+  /**
    * Get the Sofa Ref value.
    * @return the Sofa Reference value
    */
@@ -126,5 +133,4 @@ public interface SofaFS extends FeatureStructure {
    * @return an InputStream for reading Sofa data. null returned if there is no Sofa data.
    */
   InputStream getSofaDataStream();
-
 }

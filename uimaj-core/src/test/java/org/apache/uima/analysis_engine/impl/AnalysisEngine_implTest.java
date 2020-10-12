@@ -26,17 +26,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.junit.Assert;
-
-import junit.framework.TestCase;
 
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAException;
@@ -91,6 +89,7 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.FileCompare;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Settings;
@@ -100,6 +99,8 @@ import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.xml.sax.ContentHandler;
+
+import junit.framework.TestCase;
 
 /**
  * Tests the TextAnalysisEngine_impl class.
@@ -128,7 +129,7 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // try to initialize with the wrong kind of specifier - should return false
       boolean result = ae1.initialize(new URISpecifier_impl(), null);
-      Assert.assertFalse(result);
+      assertFalse(result);
 
       // try to initialize with an empty TaeDescription - should throw exception
       Exception ex = null;
@@ -139,7 +140,7 @@ public class AnalysisEngine_implTest extends TestCase {
       } catch (ResourceInitializationException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertNotNull(ex);
 
       // initialize simple primitive TextAnalysisEngine
       ae1 = new PrimitiveAnalysisEngine_impl();
@@ -149,7 +150,7 @@ public class AnalysisEngine_implTest extends TestCase {
       primitiveDesc
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       result = ae1.initialize(primitiveDesc, null);
-      Assert.assertTrue(result);
+      assertTrue(result);
 
       // initialize again - should fail
       ex = null;
@@ -158,7 +159,7 @@ public class AnalysisEngine_implTest extends TestCase {
       } catch (UIMA_IllegalStateException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertNotNull(ex);
 
       // initialize simple aggregate TextAnalysisEngine (also pass TextAnalysisEngineProcessData as
       // parameter)
@@ -171,7 +172,7 @@ public class AnalysisEngine_implTest extends TestCase {
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       AggregateAnalysisEngine_impl ae2 = new AggregateAnalysisEngine_impl();
       result = ae2.initialize(aggDesc, null);
-      Assert.assertTrue(result);
+      assertTrue(result);
 
       // try some descriptors that are invalid due to config. param problems
       for (int i = 1; i <= 14; i++) {
@@ -195,33 +196,33 @@ public class AnalysisEngine_implTest extends TestCase {
               .getFlowControllerContainer();
       String strVal1 = (String) delegate1.getUimaContext().getConfigParameterValue("en",
               "StringParam");
-      Assert.assertEquals("override", strVal1);
+      assertEquals("override", strVal1);
       String strVal2 = (String) delegate2.getUimaContext().getConfigParameterValue("en",
               "StringParam");
-      Assert.assertEquals("en", strVal2);
+      assertEquals("en", strVal2);
       String strVal3 = (String) flowController.getUimaContext().getConfigParameterValue("en",
               "StringParam");
-      Assert.assertEquals("en", strVal3);
+      assertEquals("en", strVal3);
 
       Integer intVal1 = (Integer) delegate1.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
-      Assert.assertEquals(100, intVal1.intValue());
+      assertEquals(100, intVal1.intValue());
       Integer intVal2 = (Integer) delegate2.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
-      Assert.assertEquals(100, intVal2.intValue());
+      assertEquals(100, intVal2.intValue());
       Integer intVal3 = (Integer) flowController.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
-      Assert.assertEquals(100, intVal3.intValue());
+      assertEquals(100, intVal3.intValue());
 
       String[] strArrVal1 = (String[]) delegate1.getUimaContext().getConfigParameterValue("en",
               "StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal1));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal1));
       String[] strArrVal2 = (String[]) delegate2.getUimaContext().getConfigParameterValue("en",
               "StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal2));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal2));
       String[] strArrVal3 = (String[]) flowController.getUimaContext().getConfigParameterValue(
               "en", "StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal3));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal3));
 
       // anotherdescriptor with configuration parameter overrides (this time no groups)
       in = new XMLInputSource(JUnitExtension
@@ -238,28 +239,28 @@ public class AnalysisEngine_implTest extends TestCase {
       flowController = ((ASB_impl) ae._getASB()).getFlowControllerContainer();
 
       strVal1 = (String) delegate1.getUimaContext().getConfigParameterValue("StringParam");
-      Assert.assertEquals("override", strVal1);
+      assertEquals("override", strVal1);
       strVal2 = (String) delegate2.getUimaContext().getConfigParameterValue("StringParam");
-      Assert.assertEquals("myString", strVal2);
+      assertEquals("myString", strVal2);
       strVal3 = (String) flowController.getUimaContext().getConfigParameterValue("StringParam");
-      Assert.assertEquals("myString", strVal3);
+      assertEquals("myString", strVal3);
 
       intVal1 = (Integer) delegate1.getUimaContext().getConfigParameterValue("IntegerParam");
-      Assert.assertEquals(100, intVal1.intValue());
+      assertEquals(100, intVal1.intValue());
       intVal2 = (Integer) delegate2.getUimaContext().getConfigParameterValue("IntegerParam");
-      Assert.assertEquals(100, intVal2.intValue());
+      assertEquals(100, intVal2.intValue());
       intVal3 = (Integer) flowController.getUimaContext().getConfigParameterValue("IntegerParam");
-      Assert.assertEquals(100, intVal3.intValue());
+      assertEquals(100, intVal3.intValue());
 
       strArrVal1 = (String[]) delegate1.getUimaContext()
               .getConfigParameterValue("StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal1));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal1));
       strArrVal2 = (String[]) delegate2.getUimaContext()
               .getConfigParameterValue("StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal2));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal2));
       strArrVal3 = (String[]) flowController.getUimaContext().getConfigParameterValue(
               "StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal3));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal3));
 
       // try a descriptor that's invalid due to an unsatisfied resource dependency
       _testInvalidDescriptor(JUnitExtension
@@ -313,13 +314,13 @@ public class AnalysisEngine_implTest extends TestCase {
               "Annotator2");
       String commonParamA = (String) delegate1.getUimaContext().getConfigParameterValue("a",
               "CommonParam");
-      Assert.assertEquals("AggregateParam1a", commonParamA);
+      assertEquals("AggregateParam1a", commonParamA);
       String ann1_groupBParamBC = (String) delegate1.getUimaContext().getConfigParameterValue("b",
               "BCParam");
-      Assert.assertEquals("AggregateParam2b", ann1_groupBParamBC);
+      assertEquals("AggregateParam2b", ann1_groupBParamBC);
       String ann2_groupBParamBC = (String) delegate2.getUimaContext().getConfigParameterValue("b",
               "BCParam");
-      Assert.assertEquals("AggregateParam3b", ann2_groupBParamBC);
+      assertEquals("AggregateParam3b", ann2_groupBParamBC);
 
       ae.destroy();
 
@@ -337,20 +338,20 @@ public class AnalysisEngine_implTest extends TestCase {
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       ae1 = new PrimitiveAnalysisEngine_impl();
       ae1.initialize(desc, null);
-      String[] strArray = (String[]) ae1.getUimaContext().getConfigParameterValue("StringArrayParam");
-      Assert.assertNotNull(strArray);
-      Assert.assertEquals(5, strArray.length);
-      String[] strExpect = { "Prefix", "-", "Suffix", "->", "Prefix-Suffix" };
-      Assert.assertTrue(Arrays.equals(strExpect, strArray));
-      Integer[] intArray = (Integer[]) ae1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
-      Assert.assertNotNull(intArray);
-      Assert.assertEquals(4, intArray.length);
+      String[] arrayParam = (String[]) ae1.getUimaContext().getConfigParameterValue("StringArrayParam");
+      assertNotNull(arrayParam);
+      assertEquals(5, arrayParam.length);
+      String[] expect = { "Prefix", "-", "Suffix", "->", "Prefix-Suffix" };
+      assertTrue(Arrays.equals(expect, arrayParam));
+      Integer[] intArr = (Integer[]) ae1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
+      assertNotNull(intArr);
+      assertEquals(4, intArr.length);
       Integer[] intExpect = { 1, 22, 333, 4444 };
-      Assert.assertTrue(Arrays.equals(intExpect, intArray));
+      assertTrue(Arrays.equals(intExpect, intArr));
       Float[] floats = (Float[]) ae1.getUimaContext().getConfigParameterValue("FloatArrayParam");
-      Assert.assertTrue(floats != null && floats.length == 0);       // Should be an empty array
+      assertTrue(floats != null && floats.length == 0);       // Should be an empty array
       Integer intValue = (Integer) ae1.getUimaContext().getConfigParameterValue("IntegerParam");
-      Assert.assertEquals(43,  intValue.intValue());  // Will be 42 if external override not defined
+      assertEquals(43,  intValue.intValue());  // Will be 42 if external override not defined
       System.clearProperty("UimaExternalOverrides");
       if (prevDatapath == null) {
         System.clearProperty(RelativePathResolver.UIMA_DATAPATH_PROP);
@@ -366,11 +367,11 @@ public class AnalysisEngine_implTest extends TestCase {
       System.setProperty("UimaExternalOverrides", "missing file");  // Will fail if used
       in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateWithExternalOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
-      Map<String,Object> additionalParams = new HashMap<String,Object>();
+      Map<String,Object> additionalParams = new HashMap<>();
       Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
-      FileInputStream fis = new FileInputStream(new File(resDir,"testExternalOverride2.settings"));
-      extSettings.load(fis);
-      fis.close();
+      try (FileInputStream fis = new FileInputStream(new File(resDir,"testExternalOverride2.settings"))) {
+        extSettings.load(fis);
+      }
       additionalParams.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
       UIMAFramework.produceAnalysisEngine(desc, additionalParams);
       System.clearProperty("UimaExternalOverrides");
@@ -407,9 +408,9 @@ public class AnalysisEngine_implTest extends TestCase {
       // e.printStackTrace();
       ex = e;
     }
-    Assert.assertNotNull(ex);
-    Assert.assertNotNull(ex.getMessage());
-    Assert.assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
+    assertNotNull(ex);
+    assertNotNull(ex.getMessage());
+    assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
   }
 
   public void testParameterGroups() throws Exception {
@@ -427,12 +428,34 @@ public class AnalysisEngine_implTest extends TestCase {
     // For now parse should always work ... in a later release will fail unless special environment variable set
     boolean support240bug = true; // System.getenv("UIMA_Jira3123") != null;
     if (support240bug) {
-      Assert.assertNotNull(desc);
+      assertNotNull(desc);
     } else {
-      Assert.assertNotNull(ex);
+      fail();
     }
   }
 
+  // test for UIMA-6136    Commented out because it generates 2000 lines of output and takes about 5 seconds to run
+//  public void testLargeTS() throws Exception {
+//    TypeSystemDescription tsd = new TypeSystemDescription_impl();
+//
+//    for (int i = 0; i < 500; i++) {
+//        TypeDescription type = tsd.addType("Type_" + i, "", CAS.TYPE_NAME_ANNOTATION);
+//        for (int f = 0; f < 10; f++) {
+//            type.addFeature("Feature_" + f, "", CAS.TYPE_NAME_STRING);
+//        }
+//    }
+//    
+//    List<CAS> cas_s = new ArrayList<>();
+//    for (int i = 0; i < 2000; i++) {
+//        long start = System.currentTimeMillis();
+//        cas_s.add(CasCreationUtils.createCas(tsd, null, null));
+//        long duration = System.currentTimeMillis() - start;
+//        System.out.printf("%d - %d%n", i, duration);
+//    }
+//
+//  }
+  
+  
   public void testProcess() throws Exception {
     try {
       // test simple primitive TextAnalysisEngine (using TestAnnotator class)
@@ -726,59 +749,59 @@ public class AnalysisEngine_implTest extends TestCase {
       CAS cas = ae.newCAS();
       TypeSystem ts = cas.getTypeSystem();
       Type t1 = ts.getType("Type1");
-      Assert.assertEquals("Type1", t1.getName());
+      assertEquals("Type1", t1.getName());
       Feature f1 = t1.getFeatureByBaseName("Feature1");
       Feature f1a = ts.getFeatureByFullName("Type1:Feature1");
-      Assert.assertEquals(f1, f1a);
-      Assert.assertEquals("Feature1", f1.getShortName());
-      Assert.assertEquals(t1, f1.getDomain());
+      assertEquals(f1, f1a);
+      assertEquals("Feature1", f1.getShortName());
+      assertEquals(t1, f1.getDomain());
 
       Type t2 = ts.getType("Type2");
-      Assert.assertEquals("Type2", t2.getName());
+      assertEquals("Type2", t2.getName());
       Feature f2 = t2.getFeatureByBaseName("Feature2");
       Feature f2a = ts.getFeatureByFullName("Type2:Feature2");
-      Assert.assertEquals(f2, f2a);
-      Assert.assertEquals("Feature2", f2.getShortName());
-      Assert.assertEquals(t2, f2.getDomain());
+      assertEquals(f2, f2a);
+      assertEquals("Feature2", f2.getShortName());
+      assertEquals(t2, f2.getDomain());
 
       Type et = ts.getType("EnumType");
-      Assert.assertEquals("EnumType", et.getName());
-      Assert.assertEquals(et, f2.getRange());
+      assertEquals("EnumType", et.getName());
+      assertEquals(et, f2.getRange());
 
       // indexes
       FSIndexRepository irep = cas.getIndexRepository();
       FSIndex ind = irep.getIndex("Index1");
-      Assert.assertNotNull(ind);
-      Assert.assertEquals("Type1", ind.getType().getName());
-      Assert.assertEquals(FSIndex.SORTED_INDEX, ind.getIndexingStrategy());
+      assertNotNull(ind);
+      assertEquals("Type1", ind.getType().getName());
+      assertEquals(FSIndex.SORTED_INDEX, ind.getIndexingStrategy());
 
       FeatureStructure fs1 = cas.createFS(t1);
       fs1.setIntValue(f1, 0);
       FeatureStructure fs2 = cas.createFS(t1);
       fs2.setIntValue(f1, 1);
-      Assert.assertTrue(ind.compare(fs1, fs2) < 0);
+      assertTrue(ind.compare(fs1, fs2) < 0);
 
       FSIndex ind2 = irep.getIndex("Index2");
-      Assert.assertNotNull(ind2);
-      Assert.assertEquals("Type2", ind2.getType().getName());
-      Assert.assertEquals(FSIndex.SET_INDEX, ind2.getIndexingStrategy());
+      assertNotNull(ind2);
+      assertEquals("Type2", ind2.getType().getName());
+      assertEquals(FSIndex.SET_INDEX, ind2.getIndexingStrategy());
 
       FeatureStructure fs3 = cas.createFS(t2);
       fs3.setStringValue(f2, "One");
       FeatureStructure fs4 = cas.createFS(t2);
       fs4.setStringValue(f2, "Two");
-      Assert.assertTrue(ind2.compare(fs3, fs4) > 0);
+      assertTrue(ind2.compare(fs3, fs4) > 0);
 
       FSIndex ind3 = irep.getIndex("Index3");
-      Assert.assertNotNull(ind3);
-      Assert.assertEquals("uima.tcas.Annotation", ind3.getType().getName());
-      Assert.assertEquals(FSIndex.SORTED_INDEX, ind3.getIndexingStrategy());
+      assertNotNull(ind3);
+      assertEquals("uima.tcas.Annotation", ind3.getType().getName());
+      assertEquals(FSIndex.SORTED_INDEX, ind3.getIndexingStrategy());
 
       AnnotationFS fs5 = cas.createAnnotation(t1, 0, 0);
       AnnotationFS fs6 = cas.createAnnotation(t2, 0, 0);
       AnnotationFS fs7 = cas.createAnnotation(t1, 0, 0);
-      Assert.assertTrue(ind3.compare(fs5, fs6) < 0);
-      Assert.assertTrue(ind3.compare(fs6, fs7) > 0);
+      assertTrue(ind3.compare(fs5, fs6) < 0);
+      assertTrue(ind3.compare(fs6, fs7) > 0);
 
       // only way to check if allowed values is correct is to try to set an
       // invalid value?
@@ -788,7 +811,7 @@ public class AnalysisEngine_implTest extends TestCase {
       } catch (CASRuntimeException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertNotNull(ex);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -808,73 +831,73 @@ public class AnalysisEngine_implTest extends TestCase {
       // test results of merge
       // TypeSystem
       TypeSystemDescription typeSys = ae.getAnalysisEngineMetaData().getTypeSystem();
-      Assert.assertEquals(8, typeSys.getTypes().length);
+      assertEquals(8, typeSys.getTypes().length);
 
       TypeDescription type0 = typeSys.getType("NamedEntity");
-      Assert.assertNotNull(type0);
-      Assert.assertEquals("uima.tcas.Annotation", type0.getSupertypeName());
-      Assert.assertEquals(1, type0.getFeatures().length);
+      assertNotNull(type0);
+      assertEquals("uima.tcas.Annotation", type0.getSupertypeName());
+      assertEquals(1, type0.getFeatures().length);
 
       TypeDescription type1 = typeSys.getType("Person");
-      Assert.assertNotNull(type1);
-      Assert.assertEquals("NamedEntity", type1.getSupertypeName());
-      Assert.assertEquals(1, type1.getFeatures().length);
+      assertNotNull(type1);
+      assertEquals("NamedEntity", type1.getSupertypeName());
+      assertEquals(1, type1.getFeatures().length);
 
       TypeDescription type2 = typeSys.getType("Place");
-      Assert.assertNotNull(type2);
-      Assert.assertEquals("NamedEntity", type2.getSupertypeName());
-      Assert.assertEquals(3, type2.getFeatures().length);
+      assertNotNull(type2);
+      assertEquals("NamedEntity", type2.getSupertypeName());
+      assertEquals(3, type2.getFeatures().length);
 
       TypeDescription type3 = typeSys.getType("Org");
-      Assert.assertNotNull(type3);
-      Assert.assertEquals("uima.tcas.Annotation", type3.getSupertypeName());
-      Assert.assertEquals(0, type3.getFeatures().length);
+      assertNotNull(type3);
+      assertEquals("uima.tcas.Annotation", type3.getSupertypeName());
+      assertEquals(0, type3.getFeatures().length);
 
       TypeDescription type4 = typeSys.getType("DocumentStructure");
-      Assert.assertNotNull(type4);
-      Assert.assertEquals("uima.tcas.Annotation", type4.getSupertypeName());
-      Assert.assertEquals(0, type4.getFeatures().length);
+      assertNotNull(type4);
+      assertEquals("uima.tcas.Annotation", type4.getSupertypeName());
+      assertEquals(0, type4.getFeatures().length);
 
       TypeDescription type5 = typeSys.getType("Paragraph");
-      Assert.assertNotNull(type5);
-      Assert.assertEquals("DocumentStructure", type5.getSupertypeName());
-      Assert.assertEquals(0, type5.getFeatures().length);
+      assertNotNull(type5);
+      assertEquals("DocumentStructure", type5.getSupertypeName());
+      assertEquals(0, type5.getFeatures().length);
 
       TypeDescription type6 = typeSys.getType("Sentence");
-      Assert.assertNotNull(type6);
-      Assert.assertEquals("DocumentStructure", type6.getSupertypeName());
-      Assert.assertEquals(0, type6.getFeatures().length);
+      assertNotNull(type6);
+      assertEquals("DocumentStructure", type6.getSupertypeName());
+      assertEquals(0, type6.getFeatures().length);
 
       TypeDescription type7 = typeSys.getType("test.flowController.Test");
-      Assert.assertNotNull(type7);
-      Assert.assertEquals("uima.tcas.Annotation", type7.getSupertypeName());
-      Assert.assertEquals(1, type7.getFeatures().length);
+      assertNotNull(type7);
+      assertEquals("uima.tcas.Annotation", type7.getSupertypeName());
+      assertEquals(1, type7.getFeatures().length);
 
       // TypePriorities
       TypePriorities pri = ae.getAnalysisEngineMetaData().getTypePriorities();
-      Assert.assertNotNull(pri);
+      assertNotNull(pri);
       TypePriorityList[] priLists = pri.getPriorityLists();
-      Assert.assertEquals(3, priLists.length);
+      assertEquals(3, priLists.length);
       String[] list0 = priLists[0].getTypes();
       String[] list1 = priLists[1].getTypes();
       String[] list2 = priLists[2].getTypes();
       // order of the three lists is not defined
-      Assert.assertTrue((list0.length == 2 && list1.length == 2 && list2.length == 3)
+      assertTrue((list0.length == 2 && list1.length == 2 && list2.length == 3)
               || (list0.length == 2 && list1.length == 3 && list2.length == 2)
               || (list0.length == 3 && list1.length == 2 && list2.length == 2));
 
       // Indexes
       FsIndexDescription[] indexes = ae.getAnalysisEngineMetaData().getFsIndexes();
-      Assert.assertEquals(3, indexes.length);
+      assertEquals(3, indexes.length);
       // order of indexes is not defined
       String label0 = indexes[0].getLabel();
       String label1 = indexes[1].getLabel();
       String label2 = indexes[2].getLabel();
-      Assert.assertTrue(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
+      assertTrue(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
               || label2.equals("DocStructIndex"));
-      Assert.assertTrue(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
+      assertTrue(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
               || label2.equals("PlaceIndex"));
-      Assert.assertTrue(label0.equals("FlowControllerTestIndex")
+      assertTrue(label0.equals("FlowControllerTestIndex")
               || label1.equals("FlowControllerTestIndex")
               || label2.equals("FlowControllerTestIndex"));
 
@@ -1125,7 +1148,7 @@ public class AnalysisEngine_implTest extends TestCase {
       cas.reset();
       cas.setDocumentText("One\tTwo\nThree\tFour");
       iter = ae.processAndOutputNewCASes(cas);
-      Set<String> expectedOutputs = new HashSet<String>();
+      Set<String> expectedOutputs = new HashSet<>();
       expectedOutputs.add("One");
       expectedOutputs.add("Two\nThree");
       expectedOutputs.add("Four");
@@ -1146,7 +1169,7 @@ public class AnalysisEngine_implTest extends TestCase {
                               .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenter.xml")));
       
       ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
-      Map<String, Object> params = new HashMap<String, Object>();
+      Map<String, Object> params = new HashMap<>();
       AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
       AnalysisEngine ae2 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
       
@@ -1223,7 +1246,8 @@ public class AnalysisEngine_implTest extends TestCase {
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
-        } catch (AnalysisEngineProcessException e) {
+        } catch (Exception e) {
+        } finally {
           UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
         }
         //check that FlowController was notified twice, once for the 
@@ -1262,8 +1286,9 @@ public class AnalysisEngine_implTest extends TestCase {
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
-        } catch (AnalysisEngineProcessException e) {
-          UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+        } catch (Exception e) {
+        } finally {
+          UIMAFramework.getLogger().setLevel(Level.INFO); 
         }
         //check that FlowController was notified three times, once for the 
         //segment's flow and twice for the complete document's flow (once
@@ -1308,7 +1333,8 @@ public class AnalysisEngine_implTest extends TestCase {
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
-        } catch (AnalysisEngineProcessException e) {
+        } catch (Exception e) {
+        } finally {
           UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
         }
         //check that FlowController was notified three times, once for each level of granularity
@@ -1338,7 +1364,8 @@ public class AnalysisEngine_implTest extends TestCase {
         UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
         iter.next();
         fail(); // should not get here
-      } catch (AnalysisEngineProcessException e) {
+      } catch (Exception e) {
+      } finally {
         UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
       
@@ -1364,7 +1391,8 @@ public class AnalysisEngine_implTest extends TestCase {
           iter.next();
         }
         fail(); // should not get here
-      } catch (AnalysisEngineProcessException e) {
+      } catch (Exception e) {
+      } finally {
         UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
       assertEquals(1, FlowControllerForErrorTest.abortedDocuments.size());
@@ -1390,8 +1418,11 @@ public class AnalysisEngine_implTest extends TestCase {
       //next call should not have aborted, but FC should have been notified of the failiure,
       // and no CAS should come back
       UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
-      assertFalse(iter.hasNext());
-      UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+      try {
+        assertFalse(iter.hasNext());
+      } finally {
+        UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+      }
       assertEquals(0, FlowControllerForErrorTest.abortedDocuments.size());
       assertEquals(1, FlowControllerForErrorTest.failedAEs.size());
       assertTrue(FlowControllerForErrorTest.failedAEs.contains("Segmenter"));
@@ -1510,8 +1541,8 @@ public class AnalysisEngine_implTest extends TestCase {
         UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
         ae.process(cas);
         fail();
-      }
-      catch(AnalysisEngineProcessException e) {
+      } catch (Exception e) {
+      } finally {
         UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
       assertEquals(1, FlowControllerForErrorTest.abortedDocuments.size());
@@ -1533,8 +1564,11 @@ public class AnalysisEngine_implTest extends TestCase {
       cas.reset();
       cas.setDocumentText("ERROR");
       UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
-      ae.process(cas); //should not throw exception now
-      UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+      try {
+        ae.process(cas); //should not throw exception now
+      } finally {
+        UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+      }
       
       //document should not have aborted, but FC should have been notified of the failiure
       assertEquals(0, FlowControllerForErrorTest.abortedDocuments.size());
@@ -1544,6 +1578,59 @@ public class AnalysisEngine_implTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }    
+  }
+  
+  public void testThrottleLogging() throws Exception {
+  //This test uses an aggregate AE fails if the document text is set to "ERROR".
+    AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(
+                    new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForErrorTest.xml")));
+    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeDesc);
+    FlowControllerForErrorTest.reset();
+    CAS cas = ae.newCAS();
+    for (int i = 0; i < 2; i++) {
+      cas.setDocumentText("LOG");
+      try {
+        ae.process(cas);
+      }
+      catch(AnalysisEngineProcessException e) {
+        fail();
+      }
+      cas.reset();
+    }
+    System.err.println("should see 2 WARN loggings above");
+    
+    ae = UIMAFramework.produceAnalysisEngine(aeDesc, Collections.singletonMap(
+        AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING, 1));
+    FlowControllerForErrorTest.reset();
+    cas = ae.newCAS();
+    for (int i = 0; i < 2; i++) {
+      cas.setDocumentText("LOG");
+      try {
+        ae.process(cas);
+      }
+      catch(AnalysisEngineProcessException e) {
+        fail();
+      }
+      cas.reset();
+    }
+    System.err.println("should see 1 WARN logging above");
+    
+    ae = UIMAFramework.produceAnalysisEngine(aeDesc, Collections.singletonMap(
+        AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING, 0));
+    FlowControllerForErrorTest.reset();
+    cas = ae.newCAS();
+    for (int i = 0; i < 2; i++) {
+      cas.setDocumentText("LOG");
+      try {
+        ae.process(cas);
+      }
+      catch(AnalysisEngineProcessException e) {
+        fail();
+      }
+      cas.reset();
+    }
+    System.err.println("should see no logging above");
   }
   
   public void testMissingSuper() throws Exception {
@@ -1563,9 +1650,11 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testManyDelegates() throws Exception {
     // test with and without validation - UIMA-2453
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
-    manyDelegatesCommon();
-    
-    UIMAFramework.getXMLParser().enableSchemaValidation(false);
+    try {
+      manyDelegatesCommon();
+    } finally {
+      UIMAFramework.getXMLParser().enableSchemaValidation(false);
+    }
     manyDelegatesCommon();
   }
   private void manyDelegatesCommon() throws Exception {
@@ -1578,19 +1667,19 @@ public class AnalysisEngine_implTest extends TestCase {
 
     // Write out descriptor
     File cloneFile = new File(inFile.getParentFile(), "CopyOfAggregateWithManyDelegates.xml");
-    BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(cloneFile));
-    XMLSerializer xmlSerializer = new XMLSerializer(false);
-    xmlSerializer.setOutputStream(os);
-    // set the amount to a value which will show up if used
-    // indent should not be used because we're using a parser mode which preserves
-    // comments and ignorable white space.
-    // NOTE: Saxon appears to force the indent to be 3 - which is what the input file now uses.
-    xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-    ContentHandler contentHandler = xmlSerializer.getContentHandler();
-    contentHandler.startDocument();
-    desc.toXML(contentHandler, true);
-    contentHandler.endDocument();
-    os.close();
+    try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(cloneFile))) {
+      XMLSerializer xmlSerializer = new XMLSerializer(false);
+      xmlSerializer.setOutputStream(os);
+      // set the amount to a value which will show up if used
+      // indent should not be used because we're using a parser mode which preserves
+      // comments and ignorable white space.
+      // NOTE: Saxon appears to force the indent to be 3 - which is what the input file now uses.
+      xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+      ContentHandler contentHandler = xmlSerializer.getContentHandler();
+      contentHandler.startDocument();
+      desc.toXML(contentHandler, true);
+      contentHandler.endDocument();
+    }
     
     String inXml = FileCompare.file2String(inFile);
     String cloneXml = FileCompare.file2String(cloneFile);
@@ -1659,47 +1748,52 @@ public class AnalysisEngine_implTest extends TestCase {
     AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
             new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForMultipleAeTest.xml")));
     UIMAFramework.getLogger().setLevel(Level.CONFIG);
-    AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(desc);
-    ae1.newCAS();
-    
-    // Creating a 2nd duplicate engine failed in 2.8.1 if the 2nd of the 2 typesystems imported
-    // is also contained in the 1st (UIMA-5058)
     try {
-      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest.xml")));
-      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
+      AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(desc);
+      ae1.newCAS();
+      
+      // Creating a 2nd duplicate engine failed in 2.8.1 if the 2nd of the 2 typesystems imported
+      // is also contained in the 1st (UIMA-5058)
+      try {
+        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+                new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest.xml")));
+        UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+      } catch (Exception e) {
+        JUnitExtension.handleException(e);
+      }
+      
+      // Try creating one with at least one different type
+      try {
+        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+                new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest2.xml")));
+        UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+        fail();
+      } catch (Exception e) {
+        System.err.println("Expected exception: " + e);
+      }
+      
+      // Try creating one with different type-priorities
+      try {
+        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+                new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest3.xml")));
+        UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+        fail();
+      } catch (Exception e) {
+        System.err.println("Expected exception: " + e);
+      }
+      
+      // Try creating one with different indexes
+      try {
+        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+                new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest4.xml")));
+        UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+        fail();
+      } catch (Exception e) {
+        System.err.println("Expected exception: " + e);
+      }
+    } finally {
+      UIMAFramework.getLogger().setLevel(Level.INFO);    
     }
-    
-    // Try creating one with at least one different type
-    try {
-      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest2.xml")));
-      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
-      fail();
-    } catch (Exception e) {
-      System.err.println("Expected exception: " + e);
-    }
-    
-    // Try creating one with different type-priorities
-    try {
-      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest3.xml")));
-      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
-      fail();
-    } catch (Exception e) {
-      System.err.println("Expected exception: " + e);
-    }
-    
-    // Try creating one with different indexes
-    try {
-      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest4.xml")));
-      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
-      fail();
-    } catch (Exception e) {
-      System.err.println("Expected exception: " + e);
-    }
-  }
+  } 
+  
 }

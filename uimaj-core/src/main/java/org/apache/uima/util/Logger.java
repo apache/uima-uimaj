@@ -21,20 +21,42 @@ package org.apache.uima.util;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.function.Supplier;
 
+import org.apache.uima.UIMAException;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.resource.ResourceManager;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  * A <code>Logger</code> is a component used to log messages. This interface defines the standard
  * way for UIMA components to produce log output.
  * <p>
- * In the UIMA SDK, this interface is implemented using the Java 1.4 logger as a back end. If you
+ * In the UIMA SDK, this interface is implemented using the Java logger as a back end.
+ * <p>The back end may be changed to Apache Log4j 2  by specifying
+ * <code>-Dorg.apache.uima.logger.class=org.apache.uima.util.impl.Log4jLogger_impl</code>
+ * and including the log4j 2 JARs in the classpath.
+ * <p>  
+ * If you
  * want to configure the logger, for example to specify the location of the log file and the logging
- * level, you should use the standard Java 1.4 logger properties or the java.util.logging APIs. See
+ * level, you use whatever back end logger implementation specifies, or use that logger's APIs.
+ * should use the standard Java logger properties or the java.util.logging APIs. See
  * the section "Specifying the Logging Configuration" in the Annotator and Analysis Engine
  * Developer's Guide chapter of the UIMA documentation for more information.
+ * <p>
+ * Version 3 augments this API with methods to do UIMA-Resource-bundle-based internationalization, 
+ * separate from logging, so the String result can be used with various back end loggers.
+ * <p>
+ * Version 3 augments isLoggable to include the Marker.
+ *
+ *  
  */
-public interface Logger {
+public interface Logger extends org.slf4j.Logger {
+
+  // standard markers
+  static final Marker UIMA_MARKER_CONFIG = MarkerFactory.getMarker("org.apache.uima.config");
+  static final Marker UIMA_MARKER_FINEST = MarkerFactory.getMarker("org.apache.uima.finest");
 
   /**
    * Logs a message.
@@ -243,6 +265,14 @@ public void setOutputStream(OutputStream aStream);
    * @return boolean - true if the argument level is greater or equal to the specified level
    */
   public boolean isLoggable(Level level);
+  
+  /**
+   * Checks if this logger is enabled for this level and this marker
+   * @param level the level to test
+   * @param marker null or the marker to test
+   * @return true if the level is greater or equal to the specified level and the marker matches
+   */
+  public boolean isLoggable(Level level, Marker marker);
 
   /**
    * Sets the level of messages that will be logged by this logger. Note that if you call
@@ -268,5 +298,216 @@ public void setOutputStream(OutputStream aStream);
    *          message localization by this logger.
    */
   public void setResourceManager(ResourceManager resourceManager);
+
+  /**
+   * Get an internationalized message from a resource bundle by key name, substituting the parameters.
+   * This should be called via a Supplier to avoid computing this until needed
+   * @param resourceBundle -
+   * @param key -
+   * @param params -
+   * @return the internationalized message
+   */
+  public String rb(String resourceBundle, String key, Object... params);
+  
+  default String rb_ue(String key, Object... params) {
+    return rb(UIMAException.STANDARD_MESSAGE_CATALOG, key, params);
+  }
+  
+  /**
+   * This is true if the name of the logger corresponds to a class which implements
+   * AnalysisComponent_ImplBase, which includes basic Annotators, plus Cas Multipliers
+   * and CPP components.
+   * @return true if this logger is an Annotator logger.
+   */
+  public boolean isAnnotatorLogger();
+
+  /**
+   * @param limit the limit
+   * @return a copy of the logger with the throttling limit set, or the same logger if no change
+   */
+  default Logger getLimitedLogger(int limit) {
+    return this;
+  }
+  
+  /* added Supplier APIs */
+  
+  /**
+   * @param msgSupplier A function, which when called, produces the desired log message
+   */
+  void debug(Supplier<String> msgSupplier);
+
+  /**
+   * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
+   */
+  public void debug(Supplier<String> msgSupplier, Throwable throwable);
+  
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void debug(Marker marker, String message, Supplier<?>... paramSuppliers);
+
+  /**
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void debug(String message, Supplier<?>... paramSuppliers);
+
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param msgSupplier A function, which when called, produces the desired log message
+   */
+  public void debug(Marker marker, Supplier<String> msgSupplier);
+
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
+   */
+  public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwable);
+
+  /**
+   * @param msgSupplier A function, which when called, produces the desired log message
+   */
+  void error(Supplier<String> msgSupplier);
+
+  /**
+   * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
+   */
+  public void error(Supplier<String> msgSupplier, Throwable throwable);
+  
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void error(Marker marker, String message, Supplier<?>... paramSuppliers);
+
+  /**
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void error(String message, Supplier<?>... paramSuppliers);
+
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param msgSupplier A function, which when called, produces the desired log message
+   */
+  public void error(Marker marker, Supplier<String> msgSupplier);
+
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
+   */
+  public void error(Marker marker, Supplier<String> msgSupplier, Throwable throwable);
+
+  /**
+   * @param msgSupplier A function, which when called, produces the desired log message
+   */
+  void info(Supplier<String> msgSupplier);
+
+  /**
+   * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
+   */
+  public void info(Supplier<String> msgSupplier, Throwable throwable);
+  
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void info(Marker marker, String message, Supplier<?>... paramSuppliers);
+
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param msgSupplier A function, which when called, produces the desired log message
+   */
+  public void info(Marker marker, Supplier<String> msgSupplier);
+
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
+   */
+  public void info(Marker marker, Supplier<String> msgSupplier, Throwable throwable);
+
+  /**
+   * @param msgSupplier A function, which when called, produces the desired log message
+   */
+  void trace(Supplier<String> msgSupplier);
+
+  /**
+   * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
+   */
+  public void trace(Supplier<String> msgSupplier, Throwable throwable);
+  
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void trace(Marker marker, String message, Supplier<?>... paramSuppliers);
+
+  /**
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void trace(String message, Supplier<?>... paramSuppliers);
+
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param msgSupplier A function, which when called, produces the desired log message
+   */
+  public void trace(Marker marker, Supplier<String> msgSupplier);
+
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
+   */
+  public void trace(Marker marker, Supplier<String> msgSupplier, Throwable throwable);
+
+  /**
+   * @param msgSupplier A function, which when called, produces the desired log message
+   */
+  void warn(Supplier<String> msgSupplier);
+
+  /**
+   * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
+   */
+  public void warn(Supplier<String> msgSupplier, Throwable throwable);
+  
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void warn(Marker marker, String message, Supplier<?>... paramSuppliers);
+
+  /**
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void warn(String message, Supplier<?>... paramSuppliers);
+
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param msgSupplier A function, which when called, produces the desired log message
+   */
+  public void warn(Marker marker, Supplier<String> msgSupplier);
+
+  /**
+   * @param marker the marker data specific to this log statement
+   * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
+   */
+  public void warn(Marker marker, Supplier<String> msgSupplier, Throwable throwable);
 
 }

@@ -30,20 +30,33 @@ import org.apache.uima.tools.cvd.IndexTreeNode;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.cvd.TypeTreeNode;
 
+
 /**
  * Change the display of the FSTree if a type in an index is selected.
+ *
+// * @see IndexTreeSelectionEvent
  */
 public class IndexTreeSelectionListener implements TreeSelectionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new index tree selection listener.
+   *
+   * @param frame the frame
+   */
   public IndexTreeSelectionListener(MainFrame frame) {
     this.main = frame;
   }
 
   /**
+   * Value changed.
+   *
+   * @param arg0 the arg 0
    * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
    */
+  @Override
   public void valueChanged(TreeSelectionEvent arg0) {
     // System.out.println("Tree selection value changed");
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.main.getIndexTree()

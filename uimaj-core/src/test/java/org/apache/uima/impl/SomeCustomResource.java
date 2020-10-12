@@ -21,18 +21,18 @@ package org.apache.uima.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
 
+import org.junit.Assert;
+
 
 public class SomeCustomResource extends Resource_ImplBase {
   
-  public Map<String, String> paramMap = new HashMap<String, String>();
+  public Map<String, String> paramMap = new HashMap<>();
 
   /* (non-Javadoc)
    * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)

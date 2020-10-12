@@ -17,8 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  -->
- 
-<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+ <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <name>docmetadata</name>
     <description/>
     <version>1.0</version>

@@ -116,12 +116,6 @@ public class JCasClassLoaderTest {
             new File("target/test-classes/org/apache/uima/cas/test/Token.class"), 
             new File(cpPackageBase, "Token.class"));
     FileUtils.copyFile(
-            new File("target/test-classes/org/apache/uima/cas/test/Token_Type.class"), 
-            new File(cpPackageBase, "Token_Type.class"));
-    FileUtils.copyFile(
-            new File("target/test-classes/org/apache/uima/cas/test/Token_Type$1.class"), 
-            new File(cpPackageBase, "Token_Type$1.class"));
-    FileUtils.copyFile(
             new File("target/test-classes/org/apache/uima/cas/test/JCasClassLoaderTest$AddATokenAnnotator.class"), 
             new File(cpPackageBase, "JCasClassLoaderTest$AddATokenAnnotator.class"));
     FileUtils.copyFile(

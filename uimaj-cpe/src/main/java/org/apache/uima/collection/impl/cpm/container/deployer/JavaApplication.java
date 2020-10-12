@@ -19,7 +19,6 @@
 
 package org.apache.uima.collection.impl.cpm.container.deployer;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,6 +34,7 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.UriUtils;
 
+
 /**
  * Component responsible for configuring command line for java based CasProcessor. Each CasProcessor
  * is configured via CPE descriptor either statically (xml file) or dynamically by means of APIs. In
@@ -44,12 +44,13 @@ import org.apache.uima.util.UriUtils;
  * 
  */
 public class JavaApplication extends RunnableApplication {
+  
   /**
    * Creates an instance of component responsible for configuring java based CasProcessor.
-   * 
+   *
    * @param aCasProcessorConfiguration -
    *          configuration for CasProcessor
-   * @param aJaxbCasProcessorConfig -
+   * @param aJaxbCasProcessorConfig the a jaxb cas processor config
    * @throws ResourceConfigurationException passthru
    */
   public JavaApplication(CasProcessorConfiguration aCasProcessorConfiguration,
@@ -60,12 +61,13 @@ public class JavaApplication extends RunnableApplication {
   /**
    * Sets up command line used to launch Cas Processor in a separate process. Combines environment
    * variables setup in the CPE descriptor with a System environment variables.
-   * 
+   *
    * @param aCasProcessorConfiguration -
    *          access to Cas Processor configuration
-   * @param aCasProcessor -
+   * @param aCasProcessor the a cas processor
    * @throws ResourceConfigurationException passthru
    */
+  @Override
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
           CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
     super.addApplicationInfo(aCasProcessorConfiguration, aCasProcessor);
@@ -76,17 +78,16 @@ public class JavaApplication extends RunnableApplication {
 
   /**
    * Adds to command line any program arguments configured for this Cas Processor in the CPE
-   * descriptor
-   * 
+   * descriptor.
+   *
    * @param aCasProcessorConfiguration -
    *          Cas Processor configuration
    * @param argList -
    *          list of arguments set up in the CPE descriptor
    * @param aExecutable -
    *          executable program
-   * 
    * @return - complete command line ready for use
-   * @throws ResourceConfigurationException -
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   protected String[] addApplicationCmdLineArguments(
           CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable) 
@@ -187,8 +188,8 @@ public class JavaApplication extends RunnableApplication {
   }
 
   /**
-   * Returns executable section of the CPE Descriptor for
-   * 
+   * Returns executable section of the CPE Descriptor for.
+   *
    * @return executable section of the CPE Descriptor
    */
   public Execute getExecSpec() {

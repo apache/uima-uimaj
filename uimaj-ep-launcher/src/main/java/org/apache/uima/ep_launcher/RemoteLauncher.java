@@ -163,23 +163,17 @@ public class RemoteLauncher {
     }
     else if (InputFormat.CAS.equals(format)) {
       if (inputFile.getName().endsWith(".xmi")) {
-        FileInputStream inputStream = new FileInputStream(inputFile);
-        try {
+        try (FileInputStream inputStream = new FileInputStream(inputFile)) {
           XmiCasDeserializer.deserialize(inputStream, aCAS, true);
         } catch (SAXException e) {
           throw new IOException(e.getMessage());
-        } finally {
-          inputStream.close();
         }
       }
       else if (inputFile.getName().endsWith(".xcas")) {
-        FileInputStream inputStream = new FileInputStream(inputFile);
-        try {
+        try (FileInputStream inputStream = new FileInputStream(inputFile)) {
           XCASDeserializer.deserialize(inputStream, aCAS, true);
         } catch (SAXException e) {
           throw new IOException(e.getMessage());
-        } finally {
-          inputStream.close();
         }
       }
     }
@@ -224,10 +218,8 @@ public class RemoteLauncher {
       if (!outputFile.getParentFile().exists()) {
         outputFile.getParentFile().mkdirs();
       }
-      
-      FileOutputStream out = new FileOutputStream(outputFile);
-      
-      try {
+
+      try (FileOutputStream out = new FileOutputStream(outputFile)) {
         // write XMI
         XmiCasSerializer ser = new XmiCasSerializer(aCAS.getTypeSystem());
         XMLSerializer xmlSer = new XMLSerializer(out, false);
@@ -235,10 +227,6 @@ public class RemoteLauncher {
           ser.serialize(aCAS, xmlSer.getContentHandler());
         } catch (SAXException e) {
           throw new IOException(e.getMessage());
-        }
-      } finally {
-        if (out != null) {
-          out.close();
         }
       }
     }

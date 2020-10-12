@@ -20,11 +20,11 @@
   "_views" : {
     "_InitialView" : {
       "test:Token" : [
-        {"sofa" : 5 } ], 
+        {"sofa" : 1 } ], 
       "test22:Token" : [
-        {"sofa" : 5 }, 
-        {"sofa" : 5 } ], 
+        {"sofa" : 1 }, 
+        {"sofa" : 1 } ], 
       "test2:Token" : [
         { } ] } }, 
   "_referenced_fss" : {
-    "5" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" } } }
+    "1" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" } } }

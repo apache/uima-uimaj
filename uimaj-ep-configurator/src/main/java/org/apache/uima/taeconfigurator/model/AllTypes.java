@@ -26,23 +26,31 @@ import java.util.Map;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
+
 
 /**
  * Model part: Map of all defined types Key = string = typename, fully qualified Value = CAS
- * TypeSystem Type object
+ * TypeSystem Type object.
  */
 public class AllTypes extends AbstractModelPart {
 
+  /** The cached result. */
   private Map cachedResult;
 
+  /**
+   * Instantiates a new all types.
+   *
+   * @param pModelRoot the model root
+   */
   public AllTypes(MultiPageEditor pModelRoot) {
     super(pModelRoot);
     cachedResult = new HashMap(modelRoot.INITIAL_SIZE_TYPE_COLLECTIONS);
   }
 
   /**
+   * Gets the.
+   *
    * @return a map of Types, keyed by type name, including not only types defined in this TAE, but
    *         also supertypes of said types.
    */
@@ -54,6 +62,9 @@ public class AllTypes extends AbstractModelPart {
     return cachedResult;
   }
 
+  /**
+   * Update.
+   */
   // create a hash table of all types
   private void update() {
     cachedResult.clear();

@@ -25,22 +25,34 @@ import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.IManagedForm;
 
 
+
+/**
+ * The Class OverviewPage.
+ */
 public class OverviewPage extends HeaderPageWithSash {
 
+  /** The primitive section. */
   private PrimitiveSection primitiveSection;
   
+  /** The metadata section. */
   // should always exist
   private MetaDataSection metadataSection;  
 
+  /**
+   * Instantiates a new overview page.
+   *
+   * @param aEditor the a editor
+   */
   public OverviewPage(MultiPageEditor aEditor) {
     super(aEditor, "UID_OverviewPage", "Overview");
   }
 
   /**
    * Called by the 3.0 framework to fill in the contents
-   * 
-   * @param managedForm -
+   *
+   * @param managedForm the managed form
    */
+  @Override
   protected void createFormContent(IManagedForm managedForm) {
     final Form2Panel form = setup2ColumnLayout(managedForm, EQUAL_WIDTH);
     managedForm.getForm().setText("Overview");
@@ -61,10 +73,20 @@ public class OverviewPage extends HeaderPageWithSash {
     }
   }
 
+  /**
+   * Gets the primitive section.
+   *
+   * @return the primitive section
+   */
   public PrimitiveSection getPrimitiveSection() {
     return primitiveSection;
   }
 
+  /**
+   * Gets the meta data section.
+   *
+   * @return the meta data section
+   */
   public MetaDataSection getMetaDataSection() {
     return metadataSection;
   }

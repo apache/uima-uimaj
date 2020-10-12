@@ -40,25 +40,36 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.forms.IManagedForm;
 
+
+/**
+ * The Class GeneralSection.
+ */
 public class GeneralSection extends AbstractSection {
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
+   */
+  @Override
   public void enable() {
   }
 
+  /** The cpp button. */
   private Button cppButton;
 
+  /** The java button. */
   private Button javaButton;
 
+  /** The primitive button. */
   private Button primitiveButton;
 
+  /** The aggregate button. */
   private Button aggregateButton;
 
   /**
-   * Creates a section to edit general information like primitive or aggregate and C++ or Java
-   * 
-   * @param aEditor
-   *          the referenced multipage editor
-   * @param parent -
+   * Creates a section to edit general information like primitive or aggregate and C++ or Java.
+   *
+   * @param aEditor          the referenced multipage editor
+   * @param parent the parent
    */
   public GeneralSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, "Implementation Details", null);
@@ -69,6 +80,7 @@ public class GeneralSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
    */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
     ((GridData) this.getSection().getLayoutData()).grabExcessVerticalSpace = false;
@@ -99,6 +111,7 @@ public class GeneralSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
+  @Override
   public void refresh() {
     super.refresh();
     boolean isPrimitive = isPrimitive();
@@ -119,6 +132,7 @@ public class GeneralSection extends AbstractSection {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     if (event.widget == primitiveButton || event.widget == aggregateButton) {
       boolean isPrimitive = primitiveButton.getSelection();
@@ -216,6 +230,9 @@ public class GeneralSection extends AbstractSection {
     setFileDirty();
   }
 
+  /**
+   * Common resets.
+   */
   private void commonResets() {
     // clear the delegates
     getDelegateAnalysisEngineSpecifiersWithImports().clear();

@@ -79,11 +79,11 @@ public class CasInitializerFactory_impl implements ResourceFactory {
                   ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
                       className, aSpecifier.getSourceUrlString() });
         }
-      }
+      
       // if an exception occurs, log it but do not throw it... yet
-      catch (ClassNotFoundException e) {
+      } catch (ClassNotFoundException e) {
         throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-                new Object[] { className, aSpecifier.getSourceUrlString() }, e);
+            new Object[] { className, aSpecifier.getSourceUrlString() }, e);
       } catch (IllegalAccessException e) {
         throw new ResourceInitializationException(
                 ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className,

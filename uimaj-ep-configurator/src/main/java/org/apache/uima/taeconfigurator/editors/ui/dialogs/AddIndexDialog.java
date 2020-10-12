@@ -41,68 +41,101 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+
+/**
+ * The Class AddIndexDialog.
+ */
 public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
 
+  /** The Constant TYPE_PRIORITY. */
   private static final String TYPE_PRIORITY = "Type Priority";
 
+  /** The Constant STANDARD. */
   private static final String STANDARD = "Standard";
 
+  /** The Constant REVERSE. */
   private static final String REVERSE = "Reverse";
 
+  /** The index name UI. */
   private StyledText indexNameUI;
 
+  /** The index type UI. */
   private Text indexTypeUI;
 
+  /** The index kind UI. */
   private CCombo indexKindUI;
 
+  /** The table. */
   private Table table;
 
+  /** The add button. */
   private Button addButton;
 
+  /** The edit button. */
   private Button editButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /** The up button. */
   private Button upButton;
 
+  /** The down button. */
   private Button downButton;
 
+  /** The table container. */
   private Composite tableContainer;
 
+  /** The key table. */
   private Label keyTable;
 
+  /** The index name. */
   public String indexName;
 
+  /** The index type. */
   public String indexType;
 
+  /** The index kind. */
   public String indexKind;
 
+  /** The keys. */
   public FsIndexKeyDescription[] keys;
 
+  /** The original index name. */
   private String originalIndexName;
 
+  /** The index section. */
   private IndexSection indexSection;
 
+  /** The existing NDX. */
   private FsIndexDescription existingNDX;
 
+  /**
+   * Instantiates a new adds the index dialog.
+   *
+   * @param aSection the a section
+   */
   public AddIndexDialog(AbstractSection aSection) {
     super(aSection, "Add an index", "Add or Edit an index specification");
     indexSection = (IndexSection) aSection;
   }
 
   /**
-   * Constructor for Editing an existing XRD
-   * 
-   * @param aSection -
-   * @param aExistingNDX -
+   * Constructor for Editing an existing XRD.
+   *
+   * @param aSection the a section
+   * @param aExistingNDX the a existing NDX
    */
   public AddIndexDialog(AbstractSection aSection, FsIndexDescription aExistingNDX) {
     this(aSection);
     existingNDX = aExistingNDX;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
   @Override
-protected Control createDialogArea(Composite parent) {
+  protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingNDX);
     createWideLabel(mainArea, "The Index name must be globally unique.");
 
@@ -175,8 +208,11 @@ protected Control createDialogArea(Composite parent) {
     return mainArea;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#getTypeSystemInfoList()
+   */
   @Override
-public TypesWithNameSpaces getTypeSystemInfoList() {
+  public TypesWithNameSpaces getTypeSystemInfoList() {
     TypesWithNameSpaces result = super.getTypeSystemInfoList();
     String[] allTypes = getAllTypesAsSortedArray();
     for (int i = 0; i < allTypes.length; i++) {
@@ -185,6 +221,11 @@ public TypesWithNameSpaces getTypeSystemInfoList() {
     return result;
   }
 
+  /**
+   * Adds the key.
+   *
+   * @param key the key
+   */
   private void addKey(FsIndexKeyDescription key) {
     if (null == key) {
         return;
@@ -193,6 +234,12 @@ public TypesWithNameSpaces getTypeSystemInfoList() {
     updateKey(item, key);
   }
 
+  /**
+   * Update key.
+   *
+   * @param item the item
+   * @param key the key
+   */
   private void updateKey(TableItem item, FsIndexKeyDescription key) {
     if (null == key) {
         return;
@@ -207,8 +254,12 @@ public TypesWithNameSpaces getTypeSystemInfoList() {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
+   */
   @Override
-public void handleEvent(Event event) {
+  //   2019-7  never called
+  public void handleEvent(Event event) {
     if (event.widget == indexKindUI) {
       boolean showKeys = "sorted".equals(indexKindUI.getText())
               || "set".equals(indexKindUI.getText());
@@ -241,6 +292,12 @@ public void handleEvent(Event event) {
     super.handleEvent(event);
   }
 
+  /**
+   * Already defined.
+   *
+   * @param items the items
+   * @return the list
+   */
   public List alreadyDefined(TableItem[] items) {
     List result = new ArrayList();
     if (null == items) {
@@ -252,8 +309,11 @@ public void handleEvent(Event event) {
     return result;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
   @Override
-public void copyValuesFromGUI() {
+  public void copyValuesFromGUI() {
     indexName = indexNameUI.getText();
     indexKind = indexKindUI.getText();
     indexType = indexTypeUI.getText();
@@ -269,6 +329,12 @@ public void copyValuesFromGUI() {
     }
   }
 
+  /**
+   * Make key.
+   *
+   * @param item the item
+   * @return the fs index key description
+   */
   private FsIndexKeyDescription makeKey(TableItem item) {
     FsIndexKeyDescription key = UIMAFramework.getResourceSpecifierFactory()
             .createFsIndexKeyDescription();
@@ -282,11 +348,13 @@ public void copyValuesFromGUI() {
     return key;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
   @Override
-public boolean isValid() {
-    if (indexName.length() == 0 || indexType.length() == 0) {
-        return false;
-    }
+  public boolean isValid() {
+    if (indexName.length() == 0 || indexType.length() == 0)
+      return false;
     if (!indexName.equals(originalIndexName) && indexSection.isDuplicateIndexLabel(indexName)) {
       errorMessageUI
               .setText("The name on this index duplicates anexisting name.  Please specify a globally unique name.");
@@ -295,8 +363,11 @@ public boolean isValid() {
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
   @Override
-public void enableOK() {
+  public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(indexName.length() > 0);
     boolean keysUsed = "sorted".equals(indexKind) || "set".equals(indexKind);

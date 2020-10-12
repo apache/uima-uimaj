@@ -38,16 +38,26 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.util.Level;
 
+
 /**
  * Dialog showing standard UIMA splash screen and OK button. To be used for "About" menu item in
  * GUIs.
  * 
  */
 public class AboutDialog extends JDialog {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -3901327861122722078L;
 
+  /** The Constant ABOUT_TEXT. */
   private static final String ABOUT_TEXT;
   
+  /**
+   * Instantiates a new about dialog.
+   *
+   * @param aParentFrame the a parent frame
+   * @param aDialogTitle the a dialog title
+   */
   public AboutDialog(JFrame aParentFrame, String aDialogTitle) {
     super(aParentFrame, aDialogTitle);
 
@@ -74,6 +84,7 @@ public class AboutDialog extends JDialog {
     this.setModal(true);
     // event for the closeButton button
     closeButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent ae) {
         AboutDialog.this.setVisible(false);
       }

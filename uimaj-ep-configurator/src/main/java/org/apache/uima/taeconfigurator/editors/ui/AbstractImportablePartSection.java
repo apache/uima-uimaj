@@ -65,7 +65,7 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   // ********************************
   /**
    * returns null if no feature by this name.
-   * 
+   *
    * @param name the name
    * @param td the td
    * @return the feature from type description

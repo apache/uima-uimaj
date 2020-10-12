@@ -50,25 +50,25 @@ public class JsonMetaDataObjectTest extends TestCase {
     apple1 = new TestFruitObject();
     apple1.setAttributeValue("name", "Apple");
     apple1.setAttributeValue("color", "red");
-    apple1.setAttributeValue("avgWeightLbs", Float.valueOf(0.3F));
-    apple1.setAttributeValue("avgCostCents", Integer.valueOf(40));
-    apple1.setAttributeValue("citrus", Boolean.valueOf(false));
+    apple1.setAttributeValue("avgWeightLbs", 0.3F);
+    apple1.setAttributeValue("avgCostCents", 40);
+    apple1.setAttributeValue("citrus", Boolean.FALSE);
     apple1.setAttributeValue("commonUses", new String[] { "baking", "snack" });
     
     apple2 = new TestFruitObject();
     apple2.setAttributeValue("name", "Apple");
     apple2.setAttributeValue("color", "red");
-    apple2.setAttributeValue("avgWeightLbs", Float.valueOf(0.3F));
-    apple2.setAttributeValue("avgCostCents", Integer.valueOf(40));
-    apple2.setAttributeValue("citrus", Boolean.valueOf(false));
+    apple2.setAttributeValue("avgWeightLbs", 0.3F);
+    apple2.setAttributeValue("avgCostCents", 40);
+    apple2.setAttributeValue("citrus", Boolean.FALSE);
     apple2.setAttributeValue("commonUses", new String[] { "baking", "snack" });
 
     orange = new TestFruitObject();
     orange.setAttributeValue("name", "Orange");
     orange.setAttributeValue("color", "orange");
-    orange.setAttributeValue("avgWeightLbs", Float.valueOf(0.2F));
-    orange.setAttributeValue("avgCostCents", Integer.valueOf(50));
-    orange.setAttributeValue("citrus", Boolean.valueOf(true));
+    orange.setAttributeValue("avgWeightLbs", 0.2F);
+    orange.setAttributeValue("avgCostCents", 50);
+    orange.setAttributeValue("citrus", Boolean.TRUE);
     orange.setAttributeValue("commonUses", new String[] { "snack", "juice" });
 
     // create a fruit bag containing these three objects

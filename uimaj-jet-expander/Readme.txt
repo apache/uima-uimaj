@@ -26,12 +26,16 @@
  It is not part of the Maven build (at this time).
  
  To get it into your Eclipse workspace, use the SVN Repo view, and
- do an eclipse SVN checkout.
+ do an eclipse SVN checkout as uimaj-jet-expander
+ 
+ Or, if it is already checked out, do a
+  File -- import -- Projects from Folder or Archive  then select the uimaj-jet-expander folder
 
  It is set up with launchers for use within the Eclipse
  IDE.  There are 2 launchers - one creates Java code
  for uimaj-tools: jcasgen: JCasTypeTemplate.java, the other
- for uimaj-tools: jcasgen: JCas_TypeTemplate.java.
+ (and only for uima version 2: 
+   for uimaj-tools: jcasgen: JCas_TypeTemplate.java.)
 
  When the tool is run, the output is generated back
  into the original uimaj-tools jcasgen source as

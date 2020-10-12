@@ -19,6 +19,8 @@
 
 package org.apache.uima.jcas.test;
 
+import java.util.function.Consumer;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.admin.CASFactory;
@@ -32,7 +34,8 @@ import org.apache.uima.cas.impl.CASImpl;
  */
 public class CASInitializer {
 
-  public static CAS initCas(AnnotatorInitializer init) throws CASException {
+  public static CAS initCas(AnnotatorInitializer init,
+                            Consumer<TypeSystemMgr> moreTypes) throws CASException {
     // Create an initial CASMgr from the factory.
     CASMgr casMgr = CASFactory.createCAS();
     // Create a writable type system.
@@ -40,6 +43,9 @@ public class CASInitializer {
     // assert(tsa != null);
     // Create a CASMgr. Ensures existence of AnnotationFS type.
     init.initTypeSystem(tsa);
+    if (moreTypes != null) {
+      moreTypes.accept(tsa);
+    }
     // Commit the type system.
     ((CASImpl) casMgr).commitTypeSystem();
     // assert(tsa.isCommitted());
@@ -55,5 +61,6 @@ public class CASInitializer {
 
     return casMgr.getCAS().getCurrentView();
   }
+  
 
 }

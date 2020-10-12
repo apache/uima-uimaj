@@ -22,6 +22,8 @@ package org.apache.uima.cas;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.uima.cas.impl.TypeImpl;
+
 /**
  * The interface describing types in the type system.
  * 
@@ -39,9 +41,10 @@ import java.util.Vector;
  * A type name is then a non-empty sequence of identifiers separated by periods. See also <a
  * href="./Feature.html#names">Feature names</a>.
  * 
- * 
+ * <p>
+ * Implements Iterable over all the features defined for this type.
  */
-public interface Type {
+public interface Type extends Iterable<Feature> {
 
   /**
    * Get the <a href="#names">fully qualified name</a> of the type.
@@ -123,6 +126,19 @@ public interface Type {
   boolean isArray();
 
   /**
+   * Check if the type is a String subtype.
+   * Note: returns false if a plain string
+   * 
+   * @return <code>true</code> iff the type is a String subtype type; false for plain string
+   */
+  boolean isStringSubtype();
+
+  /**
+   * @return true if is a String or a StringSubtype
+   */
+  boolean isStringOrStringSubtype();
+  
+  /**
    * For array types, returns the component type of the array type. For all other types, it will
    * return <code>null</code>.
    * 
@@ -130,4 +146,11 @@ public interface Type {
    */
   Type getComponentType();
 
+  /**
+   * @param subtype - a UIMA Type
+   * @return true if this type subsumes (is equal or a supertype of) the subtype argument
+   */
+  default boolean subsumes(Type subtype) {
+    return ((TypeImpl)this).subsumes((TypeImpl) subtype);
+  }
 }

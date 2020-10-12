@@ -23,13 +23,17 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Plugin;
 
+// TODO: Auto-generated Javadoc
 /**
  * The main plugin class to be used in the desktop.
  */
 public class JgPlugin extends Plugin {
+  
+  /** The plugin. */
   // The shared instance.
   private static JgPlugin plugin;
 
+  /** The Constant JCASGEN_ID. */
   public static final String JCASGEN_ID = "org.apache.uima.jcas.jcasgenp"; //$NON-NLS-1$
 
   /**
@@ -42,21 +46,27 @@ public class JgPlugin extends Plugin {
   }
 
   /**
-   * @return the shared instance.
+   * Returns the shared instance.
+   *
+   * @return the default
    */
   public static JgPlugin getDefault() {
     return plugin;
   }
 
   /**
-   * @return the workspace instance.
+   * Returns the workspace instance.
+   *
+   * @return the workspace
    */
   public static IWorkspace getWorkspace() {
     return ResourcesPlugin.getWorkspace();
   }
 
   /**
-   * @return the unique identifier of this plugin.
+   * Convenience method which returns the unique identifier of this plugin.
+   *
+   * @return the unique identifier
    */
   public static String getUniqueIdentifier() {
     return JCASGEN_ID;
