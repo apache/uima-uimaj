@@ -68,10 +68,12 @@ pipeline {
             ' -U -Dmaven.test.failure.ignore=true clean verify'
         }
         
-        def mavenConsoleIssues = scanForIssues tool: mavenConsole()
-        def javaIssues = scanForIssues tool: java()
-        def javaDocIssues = scanForIssues tool: javaDoc()
-        publishIssues issues: [mavenConsoleIssues, javaIssues, javaDocIssues]
+        script {
+          def mavenConsoleIssues = scanForIssues tool: mavenConsole()
+          def javaIssues = scanForIssues tool: java()
+          def javaDocIssues = scanForIssues tool: javaDoc()
+          publishIssues issues: [mavenConsoleIssues, javaIssues, javaDocIssues]
+        }
       }
     }
     
@@ -88,10 +90,12 @@ pipeline {
             ' -U -Dmaven.test.failure.ignore=true clean deploy'
         }
         
-        def mavenConsoleIssues = scanForIssues tool: mavenConsole()
-        def javaIssues = scanForIssues tool: java()
-        def javaDocIssues = scanForIssues tool: javaDoc()
-        publishIssues issues: [mavenConsoleIssues, javaIssues, javaDocIssues]
+        script {
+          def mavenConsoleIssues = scanForIssues tool: mavenConsole()
+          def javaIssues = scanForIssues tool: java()
+          def javaDocIssues = scanForIssues tool: javaDoc()
+          publishIssues issues: [mavenConsoleIssues, javaIssues, javaDocIssues]
+        }
       }
     }
   }
