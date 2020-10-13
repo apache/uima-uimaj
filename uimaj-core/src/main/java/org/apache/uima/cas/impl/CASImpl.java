@@ -1583,9 +1583,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     Misc.setWithExpand(this.svd.sofa2indexMap, aSofaRef, indxRepos);
   }
 
-  /**
-   * @deprecated
-   */
   @Override
   @Deprecated
   public SofaFS createSofa(SofaID sofaID, String mimeType) {
@@ -1857,10 +1854,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.indexRepository;
   }
 
-  /**
-   * @deprecated
-   * @param fs -
-   */
   @Deprecated
   public void commitFS(FeatureStructure fs) {
     getIndexRepository().addFS(fs);
@@ -2478,9 +2471,6 @@ public JCasImpl getJCasImpl() {
      */
   }
 
-  /**
-   * @deprecated
-   */
   @Override
   @Deprecated
   public JCas getJCas(SofaID aSofaID) throws CASException {
@@ -4739,7 +4729,7 @@ public JCasImpl getJCasImpl() {
   
   /**
    * iterate over all views in view order (by view number) 
-   * @param processViews
+   * @param processViews action to perform on the views.
    */
   public void forAllViews(Consumer<CASImpl> processViews) {
     final int numViews = this.getNumberOfViews();
@@ -4850,7 +4840,7 @@ public JCasImpl getJCasImpl() {
    * form in Java 8 to do a similar thing with no restrictions on what the
    * body can contain.
    * 
-   * @param addbacks
+   * @param addbacks -
    */
   void addbackModifiedFSs (FSsTobeAddedback addbacks) {
     final List<FSsTobeAddedback> listOfAddbackInfos =  svd.fssTobeAddedback;

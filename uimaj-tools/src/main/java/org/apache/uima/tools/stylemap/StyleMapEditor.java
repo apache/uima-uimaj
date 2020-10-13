@@ -268,8 +268,9 @@ public class StyleMapEditor extends JDialog implements ActionListener {
           }
         }
 
-        if (buttonPress)
-          styleMapEditorDialog.setVisible(false);
+        if (buttonPress) {
+            styleMapEditorDialog.setVisible(false);
+        }
       }
     });
 
@@ -369,8 +370,9 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     // the corresponding Color objects as values.
 
     // If stylemap XML is null, auto-generate it from metadata capabilities:
-    if (aStyleMapXml == null)
-      aStyleMapXml = AnnotationViewGenerator.autoGenerateStyleMap(aAnalysisEngineMetaData);
+    if (aStyleMapXml == null) {
+        aStyleMapXml = AnnotationViewGenerator.autoGenerateStyleMap(aAnalysisEngineMetaData);
+    }
 
     return parseStyleList(aStyleMapXml);
   }
@@ -549,11 +551,13 @@ public class StyleMapEditor extends JDialog implements ActionListener {
 
         // Calculate adequate column widths:
         int typeNameWidth = fm.stringWidth(e.getAnnotationTypeName());
-        if (typeNameWidth > maxColumnWidths[StyleConstants.TYPE_NAME_COLUMN])
-          maxColumnWidths[StyleConstants.TYPE_NAME_COLUMN] = typeNameWidth;
+        if (typeNameWidth > maxColumnWidths[StyleConstants.TYPE_NAME_COLUMN]) {
+            maxColumnWidths[StyleConstants.TYPE_NAME_COLUMN] = typeNameWidth;
+        }
         int labelWidth = fm.stringWidth(e.getLabel().trim());
-        if (labelWidth > maxColumnWidths[StyleConstants.LABEL_COLUMN])
-          maxColumnWidths[StyleConstants.LABEL_COLUMN] = labelWidth;
+        if (labelWidth > maxColumnWidths[StyleConstants.LABEL_COLUMN]) {
+            maxColumnWidths[StyleConstants.LABEL_COLUMN] = labelWidth;
+        }
       }
 
       tableModel.set(data);
@@ -622,10 +626,12 @@ public class StyleMapEditor extends JDialog implements ActionListener {
         Color newColor = colorEditor.currentColor;
         StyleMapEntry entry = (StyleMapEntry) styleList.get(tbl.getSelectedRow());
         int column = tbl.getSelectedColumn();
-        if (column == StyleConstants.BG_COLUMN)
-          entry.setBackground(newColor);
-        else
-          entry.setForeground(newColor);
+        if (column == StyleConstants.BG_COLUMN) {
+            entry.setBackground(newColor);
+        }
+        else {
+            entry.setForeground(newColor);
+        }
 
         tbl.repaint();
       }
@@ -676,12 +682,16 @@ public class StyleMapEditor extends JDialog implements ActionListener {
           newStyle.append("<label>");
           String label = e.getLabel();
           if (label != null) {
-            if ((label != null) && !label.equals(""))
-              newStyle.append(label);
-            else
-              newStyle.append(e.getAnnotationTypeName());
-          } else
+            if ((label != null) && !label.equals("")) {
+                newStyle.append(label);
+            }
+            else {
+                newStyle.append(e.getAnnotationTypeName());
+            }
+          }
+        else {
             newStyle.append(e.getAnnotationTypeName());
+        }
 
           newStyle.append("</label>\n");
           newStyle.append("<style>");

@@ -128,8 +128,9 @@ public class SimpleRunCPE extends Thread {
     /**
      * Called when the initialization is completed.
      * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
+     * @see StatusCallbackListener#initializationComplete()
      */
+    @Override
     public void initializationComplete() {      
       System.out.println("CPM Initialization Complete");
       mInitCompleteTime = System.currentTimeMillis();
@@ -138,9 +139,10 @@ public class SimpleRunCPE extends Thread {
     /**
      * Called when the batchProcessing is completed.
      * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#batchProcessComplete()
+     * @see StatusCallbackListener#batchProcessComplete()
      * 
      */
+    @Override
     public void batchProcessComplete() {
       System.out.print("Completed " + entityCount + " documents");
       if (size > 0) {
@@ -154,8 +156,9 @@ public class SimpleRunCPE extends Thread {
     /**
      * Called when the collection processing is completed.
      * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
+     * @see StatusCallbackListener#collectionProcessComplete()
      */
+    @Override
     public void collectionProcessComplete() {
       long time = System.currentTimeMillis();
       System.out.print("Completed " + entityCount + " documents");
@@ -180,8 +183,9 @@ public class SimpleRunCPE extends Thread {
     /**
      * Called when the CPM is paused.
      * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#paused()
+     * @see StatusCallbackListener#paused()
      */
+    @Override
     public void paused() {
       System.out.println("Paused");
     }
@@ -189,8 +193,9 @@ public class SimpleRunCPE extends Thread {
     /**
      * Called when the CPM is resumed after a pause.
      * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#resumed()
+     * @see StatusCallbackListener#resumed()
      */
+    @Override
     public void resumed() {
       System.out.println("Resumed");
     }
@@ -198,8 +203,9 @@ public class SimpleRunCPE extends Thread {
     /**
      * Called when the CPM is stopped abruptly due to errors.
      * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#aborted()
+     * @see StatusCallbackListener#aborted()
      */
+    @Override
     public void aborted() {
       System.out.println("Aborted");
       // stop the JVM. Otherwise main thread will still be blocked waiting for
@@ -216,6 +222,7 @@ public class SimpleRunCPE extends Thread {
      * @param aStatus
      *          EntityProcessStatus that holds the status of all the events for aEntity
      */
+    @Override
     public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
       if (aStatus.isException()) {
         List exceptions = aStatus.getExceptions();

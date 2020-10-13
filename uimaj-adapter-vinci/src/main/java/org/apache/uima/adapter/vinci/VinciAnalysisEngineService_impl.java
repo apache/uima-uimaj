@@ -225,7 +225,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    *         performing the service
    * @throws ServiceException the service exception
    */
-
+  @Override
   public Transportable eval(Transportable doc) throws ServiceException {
     try {
       CASTransportable ct = (CASTransportable) doc;
@@ -422,6 +422,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
     /* (non-Javadoc)
      * @see java.lang.Thread#run()
      */
+    @Override
     public void run() {
       server.stop();
     }
@@ -433,8 +434,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * @return the transportable
    * @see org.apache.vinci.transport.TransportableFactory#makeTransportable()
    */
+  @Override
   public synchronized Transportable makeTransportable() {
     return new CASTransportable(mCasPool, new OutOfTypeSystemData(), null, false);
   }
-
 }

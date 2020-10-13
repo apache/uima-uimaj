@@ -77,15 +77,17 @@ public class LauncherPlugin extends Plugin {
   public Bundle[] getBundles(String bundleName, String version) {
     
     Bundle[] bundles = Platform.getBundles(bundleName, version);
-    if (bundles != null)
-      return bundles;
+    if (bundles != null) {
+        return bundles;
+    }
 
     // Accessing bundle which is not resolved
     PackageAdmin admin = (PackageAdmin) bundleContext.getService(
             bundleContext.getServiceReference(PackageAdmin.class.getName()));
     bundles = admin.getBundles(bundleName, version);
-    if (bundles != null && bundles.length > 0)
-      return bundles;
+    if (bundles != null && bundles.length > 0) {
+        return bundles;
+    }
     
     return null;
   }
@@ -98,9 +100,10 @@ public class LauncherPlugin extends Plugin {
    */
   public Bundle getBundle(String bundleName) {
     Bundle[] bundles = getBundles(bundleName, null);
-    if (bundles != null && bundles.length > 0)
-      // return fist bundle, if multiple
-      return bundles[0];
+    if (bundles != null && bundles.length > 0) {
+        // return fist bundle, if multiple
+          return bundles[0];
+    }
     
     return null;
   }

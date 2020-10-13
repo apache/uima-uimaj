@@ -33,14 +33,17 @@ import org.apache.uima.jcas.tcas.Annotation_Type;
  * 
  * @generated
  */
+@SuppressWarnings("javadoc")
 public class WordAnnot_Type extends Annotation_Type {
   /** @generated */
-  protected FSGenerator getFSGenerator() {
+  @Override
+protected FSGenerator getFSGenerator() {
     return fsGenerator;
   }
 
   /** @generated */
   private final FSGenerator fsGenerator = new FSGenerator() {
+    @Override
     public FeatureStructure createFS(int addr, CASImpl cas) {
       if (instanceOf_Type.useExistingInstance) {
         // Return eq fs instance if already created
@@ -51,8 +54,10 @@ public class WordAnnot_Type extends Annotation_Type {
           return fs;
         }
         return fs;
-      } else
+      }
+    else {
         return new WordAnnot(addr, instanceOf_Type);
+    }
     }
   };
 

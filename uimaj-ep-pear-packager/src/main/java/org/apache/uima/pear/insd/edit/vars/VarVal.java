@@ -21,11 +21,7 @@ package org.apache.uima.pear.insd.edit.vars;
 
 
 /**
- * 
- * Represents a table row in a two column table (of environment varibles).
- * 
- * 
- * 
+ * Represents a table row in a two column table (of environment variables).
  */
 public class VarVal {
 

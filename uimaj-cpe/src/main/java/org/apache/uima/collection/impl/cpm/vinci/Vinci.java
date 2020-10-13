@@ -49,7 +49,7 @@ public class Vinci {
    * A factory for creating AF objects.
    */
   public static class AFFactory implements TransportableFactory {
-    
+
     /* (non-Javadoc)
      * @see org.apache.vinci.transport.TransportableFactory#makeTransportable()
      */
@@ -142,8 +142,9 @@ public class Vinci {
    */
   public static String extractKEYSAsString(AFrame frame) {
     String keys = "";
-    if (frame == null)
-      return keys;
+    if (frame == null) {
+        return keys;
+    }
 
     String frameAsString = frame.toXML();
     if (frameAsString.indexOf("KEYS") > -1 && frameAsString.indexOf("</KEYS>") > -1) {

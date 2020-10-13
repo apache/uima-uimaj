@@ -755,7 +755,6 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return ((TypeImpl) t).getSuperType();
   }
 
-
 //  int ll_computeArrayParentFromComponentType(int componentType) {
 //    if (ll_isPrimitiveType(componentType) ||
 //    // note: not using top - until we can confirm this is set
@@ -881,11 +880,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   /**
    * Method checkTypeSyntax.
    * 
-   * @param typeName
+   * @param typeName - 
    */
-  private void checkTypeSyntax(String name) throws CASAdminException {
-    if (!TypeSystemUtils.isTypeName(name)) {
-      throw new CASAdminException(CASAdminException.BAD_TYPE_SYNTAX, name);
+  private void checkTypeSyntax(String typeName) throws CASAdminException {
+    if (!TypeSystemUtils.isTypeName(typeName)) {
+      throw new CASAdminException(CASAdminException.BAD_TYPE_SYNTAX, typeName);
     }
   }
   

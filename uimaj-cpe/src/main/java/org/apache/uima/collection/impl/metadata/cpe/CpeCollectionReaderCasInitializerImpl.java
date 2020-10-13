@@ -136,8 +136,9 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
       for (int i = 0; nvp != null && i < nvp.length; i++) {
         local.setParameterValue(nvp[i].getName(), nvp[i].getValue());
       }
-    } else
+    } else {
       local = configurationParameterSettings;
+    }
 
     return local;
 
@@ -169,7 +170,6 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
           new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
               new PropertyXmlInfo("parameterSettings", null),
               new PropertyXmlInfo("sofaNameMappings", null),
-
           });
 
   /**
@@ -191,5 +191,4 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
   public void setSofaNameMappings(CpeSofaMappings mappings) {
     sofaNameMappings = mappings;
   }
-
 }

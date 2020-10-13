@@ -1838,8 +1838,7 @@ public class ProcessingUnit extends Thread {
   /**
    * Returns the size of the CAS object. Currently only CASData is supported.
    * 
-   * @param aCas -
-   *          Cas to get the size for
+   * @param aCas CAS to get the size for
    * 
    * @return the size of the CAS object. Currently only CASData is supported.
    */

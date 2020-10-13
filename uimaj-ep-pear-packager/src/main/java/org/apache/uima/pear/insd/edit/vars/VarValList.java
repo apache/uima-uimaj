@@ -72,8 +72,10 @@ public class VarValList {
     if (!isDuplicate(tableRow)) {
       tableRows.add(tableRow);
       return true;
-    } else
-      return false;
+    }
+    else {
+        return false;
+    }
   }
 
   /**
@@ -86,11 +88,14 @@ public class VarValList {
     if (!isDuplicate(tableRow)) {
       tableRows.add(tableRows.size(), tableRow);
       Iterator iterator = changeListeners.iterator();
-      while (iterator.hasNext())
+      while (iterator.hasNext()) {
         ((IVarValListViewer) iterator.next()).addTableRow(tableRow);
+    }
       return true;
-    } else
-      return false;
+    }
+    else {
+        return false;
+    }
   }
 
   /**
@@ -105,8 +110,9 @@ public class VarValList {
     Iterator itr = tableRows.iterator();
     while (itr.hasNext()) {
       VarVal vv = (VarVal) itr.next();
-      if (vv.getVarName().equals(varName))
+      if (vv.getVarName().equals(varName)) {
         duplicate = true;
+    }
     }
     return duplicate;
   }
@@ -119,8 +125,9 @@ public class VarValList {
   public void removeTableRow(VarVal tableRow) {
     tableRows.remove(tableRow);
     Iterator iterator = changeListeners.iterator();
-    while (iterator.hasNext())
-      ((IVarValListViewer) iterator.next()).removeTableRow(tableRow);
+    while (iterator.hasNext()) {
+        ((IVarValListViewer) iterator.next()).removeTableRow(tableRow);
+    }
   }
 
   /**
@@ -130,8 +137,9 @@ public class VarValList {
    */
   public void tableRowChanged(VarVal tableRow) {
     Iterator iterator = changeListeners.iterator();
-    while (iterator.hasNext())
-      ((IVarValListViewer) iterator.next()).updateTableRow(tableRow);
+    while (iterator.hasNext()) {
+        ((IVarValListViewer) iterator.next()).updateTableRow(tableRow);
+    }
   }
 
   /**

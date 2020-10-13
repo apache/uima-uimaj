@@ -32,14 +32,17 @@ import org.apache.uima.jcas.JCasRegistry;
  * 
  * @generated
  */
+@SuppressWarnings("javadoc")
 public class TimeAnnot_Type extends DateTimeAnnot_Type {
   /** @generated */
-  protected FSGenerator getFSGenerator() {
+  @Override
+protected FSGenerator getFSGenerator() {
     return fsGenerator;
   }
 
   /** @generated */
   private final FSGenerator fsGenerator = new FSGenerator() {
+    @Override
     public FeatureStructure createFS(int addr, CASImpl cas) {
       if (instanceOf_Type.useExistingInstance) {
         // Return eq fs instance if already created
@@ -50,8 +53,10 @@ public class TimeAnnot_Type extends DateTimeAnnot_Type {
           return fs;
         }
         return fs;
-      } else
+      }
+    else {
         return new TimeAnnot(addr, instanceOf_Type);
+    }
     }
   };
 

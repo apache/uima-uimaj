@@ -97,10 +97,12 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
       int len = ((String) anObject).length();
       int i = 0;
       for (; i < len; i++) {
-        if (Character.isDigit(((String) anObject).charAt(i)))
+        if (Character.isDigit(((String) anObject).charAt(i))) {
           continue;
-        else
+        }
+        else {
           break; // non-digit char
+        }
       }
       if (i > 0) {
         convertedTime = Integer.parseInt(((String) anObject).substring(0, i));
@@ -203,11 +205,8 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("checkpoint",
           new PropertyXmlInfo[0]);
 
-  /**
-   *  METHODS CALLED BY THE PARSER *.
-   *
-   * @return the batch
-   */
+  // METHODS CALLED BY THE PARSER
+  
   /**
    * @return the batch size
    */
@@ -259,5 +258,4 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   public void setTime(String i) {
     time = i;
   }
-
 }

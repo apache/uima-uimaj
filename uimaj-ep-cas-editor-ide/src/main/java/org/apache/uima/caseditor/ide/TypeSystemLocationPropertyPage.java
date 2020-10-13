@@ -65,13 +65,16 @@ public class TypeSystemLocationPropertyPage extends PropertyPage {
     
     IProject project = getProject();
     
-    if (project != null)
+    if (project != null) {
         return project.getFile(DEFAULT_TYPE_SYSTEM_PATH).getFullPath().toString();
-    else
-      return "";
+    }
+    else {
+        return "";
+    }
   }
   
-  protected Control createContents(Composite parent) {
+  @Override
+protected Control createContents(Composite parent) {
     Composite composite = new Composite(parent, SWT.NONE);
     GridLayout layout = new GridLayout();
     layout.numColumns = 2;
@@ -95,7 +98,8 @@ public class TypeSystemLocationPropertyPage extends PropertyPage {
 
     typeSystemText.addModifyListener(new ModifyListener() {
       
-      public void modifyText(ModifyEvent event) {
+      @Override
+    public void modifyText(ModifyEvent event) {
         updateApplyButton();
       }
     });
@@ -111,7 +115,8 @@ public class TypeSystemLocationPropertyPage extends PropertyPage {
     Button browseButton = new Button(composite, SWT.PUSH);
     browseButton.setText("Browse ...");
     browseButton.addSelectionListener(new SelectionAdapter() {
-      public void widgetSelected(SelectionEvent e) {
+      @Override
+    public void widgetSelected(SelectionEvent e) {
         ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(getShell(),
                 new WorkbenchLabelProvider(), new WorkbenchContentProvider());
         dialog.setTitle("Select descriptor");
@@ -132,11 +137,13 @@ public class TypeSystemLocationPropertyPage extends PropertyPage {
     return composite;
   }
 
-  protected void performDefaults() {
+  @Override
+protected void performDefaults() {
     typeSystemText.setText(getDefaultTypeSystemLocation());
   }
   
-  public boolean performOk() {
+  @Override
+public boolean performOk() {
     
     // have check, so performOk is only done when ts file is a valid file string
     
@@ -174,8 +181,9 @@ public class TypeSystemLocationPropertyPage extends PropertyPage {
       
       if (typeSystemLocation.length() > 0) {
           IResource potentialTypeSystemResource = ResourcesPlugin.getWorkspace().getRoot().findMember(typeSystemLocation);
-          if (potentialTypeSystemResource instanceof IFile)
+          if (potentialTypeSystemResource instanceof IFile) {
             typeSystemFile = (IFile) potentialTypeSystemResource;
+        }
       }
       // Empty string means user does not want a type system to be set
       else {

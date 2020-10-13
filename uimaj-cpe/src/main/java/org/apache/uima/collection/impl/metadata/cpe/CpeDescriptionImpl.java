@@ -226,7 +226,7 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
    */
   @Override
   @Deprecated
-public void setInputQueueSize(int aSize) throws CpeDescriptorException {
+  public void setInputQueueSize(int aSize) throws CpeDescriptorException {
     if (casProcessors == null) {
       casProcessors = CpeDescriptorFactory.produceCasProcessors();
     }
@@ -253,7 +253,7 @@ public void setInputQueueSize(int aSize) throws CpeDescriptorException {
    */
   @Override
   @Deprecated
-public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
+  public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
     if (casProcessors == null) {
       casProcessors = CpeDescriptorFactory.produceCasProcessors();
     }
@@ -451,5 +451,4 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
               new PropertyXmlInfo("cpeResourceManagerConfiguration", null),
 
           });
-
 }

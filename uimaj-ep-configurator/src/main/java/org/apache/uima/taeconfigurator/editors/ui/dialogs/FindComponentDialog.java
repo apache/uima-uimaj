@@ -159,10 +159,12 @@ public class FindComponentDialog extends AbstractDialog {
   @Override
   protected void buttonPressed(int buttonId) {
     if (buttonId == IDialogConstants.OK_ID) { // start search
-      if (null != m_searchThread)
+      if (null != m_searchThread) {
         errorMessageUI.setText("Search already in progress");
-      else
+    }
+    else {
         copyValuesFromGUI();
+    }
     } else { // cancel in-progress search
       if (m_searchThread.isDone()) {
         m_matchingDelegateComponetDescriptors = m_searchThread

@@ -86,11 +86,14 @@ public class PearException extends Exception {
     Object[] o = getCustomStackTrace(getCause()).toArray();
     if (o != null) {
       IStatus[] sa = new IStatus[o.length];
-      for (int i = 0; i < o.length; i++)
+      for (int i = 0; i < o.length; i++) {
         sa[i] = (IStatus) o[i];
+    }
       return sa;
-    } else
-      return new IStatus[0];
+    }
+    else {
+        return new IStatus[0];
+    }
   }
 
   /**
@@ -111,8 +114,9 @@ public class PearException extends Exception {
       }
 
       Throwable aCause = e.getCause();
-      if (aCause != null)
+      if (aCause != null) {
         a.addAll(getCustomStackTrace(aCause));
+    }
     }
     return a;
   }

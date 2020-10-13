@@ -100,5 +100,4 @@ public abstract class AbstractDialogKeyVerify extends AbstractDialog implements 
   public boolean verifyKeyChecks(VerifyEvent event) {
     return true;
   }
-
 }

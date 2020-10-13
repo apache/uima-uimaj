@@ -227,8 +227,9 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
    * @param key the key
    */
   private void addKey(FsIndexKeyDescription key) {
-    if (null == key)
-      return;
+    if (null == key) {
+        return;
+    }
     TableItem item = new TableItem(table, SWT.NONE);
     updateKey(item, key);
   }
@@ -240,8 +241,9 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
    * @param key the key
    */
   private void updateKey(TableItem item, FsIndexKeyDescription key) {
-    if (null == key)
-      return;
+    if (null == key) {
+        return;
+    }
     if (key.isTypePriority()) {
       item.setText(0, S_);
       item.setText(1, TYPE_PRIORITY);
@@ -298,8 +300,9 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
    */
   public List alreadyDefined(TableItem[] items) {
     List result = new ArrayList();
-    if (null == items)
-      return result;
+    if (null == items) {
+        return result;
+    }
     for (int i = 0; i < items.length; i++) {
       result.add(items[i].getText(0));
     }
@@ -320,8 +323,10 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
       for (int i = 0; i < items.length; i++) {
         keys[i] = makeKey(items[i]);
       }
-    } else
-      keys = null;
+    }
+    else {
+        keys = null;
+    }
   }
 
   /**

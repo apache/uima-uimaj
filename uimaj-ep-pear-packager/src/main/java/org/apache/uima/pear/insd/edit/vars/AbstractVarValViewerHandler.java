@@ -29,7 +29,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
-
 /**
  * The Class AbstractVarValViewerHandler.
  */
@@ -187,8 +186,9 @@ abstract class AbstractVarValViewerHandler {
   public void close() {
     Shell shell = table.getShell();
 
-    if (shell != null && !shell.isDisposed())
-      shell.dispose();
+    if (shell != null && !shell.isDisposed()) {
+        shell.dispose();
+    }
   }
 
   /**
@@ -203,10 +203,12 @@ abstract class AbstractVarValViewerHandler {
      */
     @Override
     public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-      if (newInput != null)
+      if (newInput != null) {
         ((VarValList) newInput).addChangeListener(this);
-      if (oldInput != null)
+    }
+      if (oldInput != null) {
         ((VarValList) oldInput).removeChangeListener(this);
+    }
     }
 
     /* (non-Javadoc)

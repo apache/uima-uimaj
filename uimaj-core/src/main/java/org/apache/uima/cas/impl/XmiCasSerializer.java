@@ -682,7 +682,7 @@ public class XmiCasSerializer {
      * @param sb - where output goes
      * @param members string representations of the out of type system ids
      * @param isPastFirstElement -
-     * @return
+     * @return -
      */
     private StringBuilder writeViewMembers(StringBuilder sb, Collection<String> members, boolean isPastFirstElement) {
       if (members != null) {
@@ -747,8 +747,7 @@ public class XmiCasSerializer {
     /**
      * Writes a special instance of dummy type uima.cas.NULL, having xmi:id=0. This is needed to
      * represent nulls in multi-valued references, which aren't natively supported in Ecore.
-     * @throws SAXException 
-     * 
+     * @throws SAXException  -
      */
     void writeNullObject() throws SAXException {
       workAttrs.clear();
@@ -1070,12 +1069,11 @@ public class XmiCasSerializer {
     }
     
     /**
-     * Create a string to represent array values, embedded format
      * Not called for StringArray
-     * @param addr
-     * @param arrayType
-     * @return
-     * @throws SAXException
+     * @param fsIn -
+     * @param arrayType -
+     * @return -
+     * @throws SAXException -
      */
     private String arrayToString(TOP fsIn, int arrayType) throws SAXException {
       if (fsIn == null) {

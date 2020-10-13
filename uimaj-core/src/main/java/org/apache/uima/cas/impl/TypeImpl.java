@@ -369,7 +369,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * particular order.
    * 
    * @return The vector.
-   * @deprecated use getFeatures()
+   * @deprecated use {@link #getFeatures()}
    */
   @Override
   @Deprecated
@@ -463,7 +463,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   void setInheritanceFinal() {
     this.isInheritanceFinal = true;
   }
-  
+
   void setBuiltIn() {
     this.isBuiltIn = true;
   }

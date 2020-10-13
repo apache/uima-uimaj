@@ -214,8 +214,9 @@ public class FlowSection extends AbstractSection {
       FlowConstraints flowConstraints = getModelFlow();
       FlowNodes nodesModel = new FlowNodes(flowConstraints);
       String[] nodes = nodesModel.getFlow();
-      if (null == nodes)
+      if (null == nodes) {
         nodesModel.setFlow(nodes = stringArray0);
+    }
       // add them to the list
       for (int i = 0; i < nodes.length; i++) {
         TableItem item = new TableItem(flowList, SWT.NONE);
@@ -262,15 +263,18 @@ public class FlowSection extends AbstractSection {
       flowControllerKeyGUI.setToolTipText(
               "Use Source tab below to specify a key name " +
               "in the <flowController> element, or the imported <flowController>");
-    } else
-      keyName = fcd.getKey();
+    }
+    else {
+        keyName = fcd.getKey();
+    }
     flowControllerKeyGUI.setText(keyName);
     Import fcdImport = fcd.getImport();
     String fileName = null;
     if (null != fcdImport) {
       fileName = fcdImport.getLocation();
-      if (null == fileName || (0 == fileName.length()))
+      if (null == fileName || (0 == fileName.length())) {
         fileName = fcdImport.getName();
+    }
     }
     flowControllerGUI.setText(null == fileName ? 
             "Warning: no <import> in <flowController>" : fileName);
@@ -318,28 +322,34 @@ public class FlowSection extends AbstractSection {
   public void handleEvent(Event event) {
     if (event.widget == flowControllerChoice) {
       String flowTypeGUI = flowControllerChoice.getText();
-      if (null == flowTypeGUI || flowTypeGUI.equals(S_))
+      if (null == flowTypeGUI || flowTypeGUI.equals(S_)) {
         return;
+    }
 
       String prevFlowTypeGUI;
       FlowControllerDeclaration fcd = getFlowControllerDeclaration();
       FlowConstraints modelFlow = getModelFlow();
-      if (null != fcd)
+      if (null != fcd) {
         prevFlowTypeGUI = USER_DEFINED_FLOW;
-      else {
-        if (null == modelFlow)
-          prevFlowTypeGUI = "";
+    }
+    else {
+        if (null == modelFlow) {
+            prevFlowTypeGUI = "";
+        }
         else {
           String prevFlowType = modelFlow.getFlowConstraintsType();
-          if (CapabilityLanguageFlow.FLOW_CONSTRAINTS_TYPE.equals(prevFlowType))
+          if (CapabilityLanguageFlow.FLOW_CONSTRAINTS_TYPE.equals(prevFlowType)) {
             prevFlowTypeGUI = CAPABILITY_LANGUAGE_FLOW;
-          else
+        }
+        else {
             prevFlowTypeGUI = FIXED_FLOW;
+        }
         }
       }
 
-      if (prevFlowTypeGUI.equals(flowTypeGUI))
+      if (prevFlowTypeGUI.equals(flowTypeGUI)) {
         return;
+    }
 
       CapabilityLanguageFlow clf = null;
       FixedFlow ff = null;
@@ -373,7 +383,9 @@ public class FlowSection extends AbstractSection {
       // update both model and gui: swap nodes
       int selection = flowList.getSelectionIndex();
       if (selection == 0)
+     {
         return; // can't move up 0
+    }
       String temp = nodes[selection - 1];
       nodes[selection - 1] = nodes[selection];
       nodes[selection] = temp;
@@ -385,7 +397,9 @@ public class FlowSection extends AbstractSection {
       // update both model and gui: swap nodes
       int selection = flowList.getSelectionIndex();
       if (selection == flowList.getItemCount() - 1)
+     {
         return; // can't move down at end of list
+    }
       String temp = nodes[selection + 1];
       nodes[selection + 1] = nodes[selection];
       nodes[selection] = temp;
@@ -511,7 +525,6 @@ public class FlowSection extends AbstractSection {
 
   /**
    * Enables and disables section, enables and disables buttons after content.
-   * 
    */
   @Override
   public void enable() {
@@ -555,12 +568,14 @@ public class FlowSection extends AbstractSection {
    */
   public boolean containsNode(String node) {
     String[] nodes = new FlowNodes(getModelFlow()).getFlow();
-    if (null == nodes)
-      return false;
+    if (null == nodes) {
+        return false;
+    }
 
     for (int i = 0; i < nodes.length; i++) {
-      if (node.equals(nodes[i]))
+      if (node.equals(nodes[i])) {
         return true;
+      }
     }
     return false;
   }
@@ -623,8 +638,9 @@ public class FlowSection extends AbstractSection {
     FindComponentDialog dialog1 = new FindComponentDialog(this, "Find a Flow Controller",
             "Specify a name pattern and/or other constraints, and then push the Search button",
             flowControllerHeadersLC);
-    if (Window.CANCEL == dialog1.open())
-      return;
+    if (Window.CANCEL == dialog1.open()) {
+        return;
+    }
 
     List matchingDelegateComponentDescriptors = dialog1.getMatchingDelegateComponentDescriptors();
     List matchingDelegateComponentDescriptions = dialog1.getMatchingDelegateComponentDescriptions();
@@ -637,8 +653,9 @@ public class FlowSection extends AbstractSection {
 
     PickTaeForTypesDialog dialog2 = new PickTaeForTypesDialog(this, editor.getFile().getName(),
             matchingDelegateComponentDescriptors, matchingDelegateComponentDescriptions);
-    if (Window.CANCEL == dialog2.open())
-      return;
+    if (Window.CANCEL == dialog2.open()) {
+        return;
+    }
 
     String[] selectedDelegateComponentDescriptors = dialog2
             .getSelectedDelegateComponentDescriptors();

@@ -83,12 +83,14 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
   /**
    * Verify text.
    *
-   * @param event          the text change event.
-   *          <ul>
-   *          <li>event.start - the replace start offset</li>
-   *          <li>event.end - the replace end offset</li>
-   *          <li>event.text - the new text</li>
-   *          </ul>
+   * <ul>
+   * <li>event.start - the replace start offset</li>
+   * <li>event.end - the replace end offset</li>
+   * <li>event.text - the new text</li>
+   * </ul>
+   * 
+   * @param event
+   *          the text change event.
    */
   @Override
   public void verifyText(VerifyEvent event) {

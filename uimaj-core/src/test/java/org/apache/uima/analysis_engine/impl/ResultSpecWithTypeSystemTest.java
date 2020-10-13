@@ -230,8 +230,6 @@ public class ResultSpecWithTypeSystemTest extends TestCase {
   /**
    * Compose sets of { tof, lang, tof2, lang2, ...} into one object
    * Also handle langs:  {tof, aL{lang1, lang2), ...)
-   * @param tofls
-   * @return
    */
   TofLs[] aT(Object... tofls) {
     TofLs[] r = new TofLs[tofls.length / 2];

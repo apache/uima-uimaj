@@ -41,14 +41,14 @@ import org.apache.uima.util.Level;
  * <ul>
  * <li> Function tests with errorhandling of the methods defined in
  * {@link org.apache.uima.analysis_engine.annotator.BaseAnnotator} and
- * {@link org.apache.uima.analysis_engine.annotator.JTextAnnotator. </li>
+ * {@link JTextAnnotator}. </li>
  * <li> CPM function tests concerning errorhandling </li>
  * </ul>
  * <p>
  * The first section of tests analyse the behaviour of the different methods implemented with the
  * {@link JTextAnnotator} Interface while throwing predefined exceptions. Therefore special helper
  * classes located in the {@link org.apache.uima.collection.impl.cpm.utils} are used. For instance
- * {@link DecriptorMakeUtil} generates the customized descriptors which throw the predefined
+ * {@link DescriptorMakeUtil} generates the customized descriptors which throw the predefined
  * Exceptions. {@link FunctionErrorStore} is the class where all data about method calls and counts
  * are kept. That's just to point out some important once.
  * </p>
@@ -739,6 +739,7 @@ public class CpmAE_ErrorTest extends TestCase {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
+  @Override
   protected void tearDown() throws Exception {
     super.tearDown();
     FunctionErrorStore.resetCount();
@@ -827,7 +828,7 @@ public class CpmAE_ErrorTest extends TestCase {
   /**
    * a configuration method to setup a generell cpm without errors.
    * 
-   * @param document
+   * @param documentCount
    *          number of how many documents are been read.
    * 
    * @return Object[] with the cpe-Descriptor at index 0 and the integratedProcessor at index 1
@@ -914,6 +915,7 @@ public class CpmAE_ErrorTest extends TestCase {
     /**
      * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#aborted()
      */
+    @Override
     public void aborted() {
       super.aborted();
       System.out.println("abort was called.");
