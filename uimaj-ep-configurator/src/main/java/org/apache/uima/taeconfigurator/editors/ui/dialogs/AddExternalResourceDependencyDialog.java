@@ -62,8 +62,8 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
   /**
    * Constructor for Editing an existing XRD
    * 
-   * @param aSection
-   * @param aExistingXRD
+   * @param aSection -
+   * @param aExistingXRD -
    */
   public AddExternalResourceDependencyDialog(AbstractSection aSection,
           ExternalResourceDependency aExistingXRD) {
@@ -71,7 +71,8 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
     existingXRD = aExistingXRD;
   }
 
-  protected Control createDialogArea(Composite parent) {
+  @Override
+protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingXRD);
     createWideLabel(
             mainArea,
@@ -112,22 +113,27 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
     return mainArea;
   }
 
-  public void copyValuesFromGUI() {
+  @Override
+public void copyValuesFromGUI() {
     keyName = keyNameUI.getText();
     optional = optionalUI.getSelection();
     description = nullIf0lengthString(descriptionUI.getText());
     interfaceName = nullIf0lengthString(interfaceNameUI.getText());
   }
 
-  public boolean isValid() {
-    if (keyName.length() == 0)
-      return false;
-    if (!keyName.equals(originalKeyName) && rdSection.keyNameAlreadyDefined(keyName))
-      return false;
+  @Override
+public boolean isValid() {
+    if (keyName.length() == 0) {
+        return false;
+    }
+    if (!keyName.equals(originalKeyName) && rdSection.keyNameAlreadyDefined(keyName)) {
+        return false;
+    }
     return true;
   }
 
-  public void enableOK() {
+  @Override
+public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(keyName.length() > 0);
   }

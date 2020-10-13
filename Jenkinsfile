@@ -67,6 +67,13 @@ pipeline {
             params.extraMavenArguments +
             ' -U -Dmaven.test.failure.ignore=true clean verify'
         }
+        
+        script {
+          def mavenConsoleIssues = scanForIssues tool: mavenConsole()
+          def javaIssues = scanForIssues tool: java()
+          def javaDocIssues = scanForIssues tool: javaDoc()
+          publishIssues issues: [mavenConsoleIssues, javaIssues, javaDocIssues]
+        }
       }
     }
     
@@ -81,6 +88,13 @@ pipeline {
           sh script: 'mvn ' +
             params.extraMavenArguments +
             ' -U -Dmaven.test.failure.ignore=true clean deploy'
+        }
+        
+        script {
+          def mavenConsoleIssues = scanForIssues tool: mavenConsole()
+          def javaIssues = scanForIssues tool: java()
+          def javaDocIssues = scanForIssues tool: javaDoc()
+          publishIssues issues: [mavenConsoleIssues, javaIssues, javaDocIssues]
         }
       }
     }

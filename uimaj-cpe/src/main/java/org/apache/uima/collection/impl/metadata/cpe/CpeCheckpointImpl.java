@@ -47,6 +47,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#setFilePath(java.lang.String)
    */
+  @Override
   public void setFilePath(String aCheckpointFilePath) throws CpeDescriptorException {
     file = aCheckpointFilePath;
   }
@@ -56,6 +57,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#getFilePath()
    */
+  @Override
   public String getFilePath() {
     return file;
   }
@@ -65,6 +67,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#setFrequency(int, boolean)
    */
+  @Override
   public void setFrequency(int aFrequency, boolean aTimeBased) {
     time = String.valueOf(aFrequency) + "ms";
   }
@@ -76,10 +79,12 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
       int len = ((String) anObject).length();
       int i = 0;
       for (; i < len; i++) {
-        if (Character.isDigit(((String) anObject).charAt(i)))
+        if (Character.isDigit(((String) anObject).charAt(i))) {
           continue;
-        else
+        }
+        else {
           break; // non-digit char
+        }
       }
       if (i > 0) {
         convertedTime = Integer.parseInt(((String) anObject).substring(0, i));
@@ -94,6 +99,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#getFrequency()
    */
+  @Override
   public int getFrequency() {
     return convert2Number(time);
   }
@@ -103,6 +109,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#isTimeBased()
    */
+  @Override
   public boolean isTimeBased() {
     return true;
   }
@@ -112,6 +119,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#setBatchSize(int)
    */
+  @Override
   public void setBatchSize(int aBatchSize) {
     batch = aBatchSize;
   }
@@ -121,6 +129,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#getBatchSize()
    */
+  @Override
   public int getBatchSize() {
     return batch;
   }
@@ -131,6 +140,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     setFile(aElement.getAttribute("file"));
@@ -147,6 +157,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
+  @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     attrs.addAttribute("", "batch", "batch", "CDATA", String.valueOf(getBatch()));
@@ -159,6 +170,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
     return attrs;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
@@ -166,7 +178,8 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("checkpoint",
           new PropertyXmlInfo[0]);
 
-  /** METHODS CALLED BY THE PARSER * */
+  // METHODS CALLED BY THE PARSER
+  
   /**
    * @return the batch size
    */
@@ -188,23 +201,14 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
     return time;
   }
 
-  /**
-   * @param i
-   */
   public void setBatch(int i) {
     batch = i;
   }
 
-  /**
-   * @param string
-   */
   public void setFile(String string) {
     file = string;
   }
 
-  /**
-   * @param i
-   */
   public void setTime(String i) {
     time = i;
   }

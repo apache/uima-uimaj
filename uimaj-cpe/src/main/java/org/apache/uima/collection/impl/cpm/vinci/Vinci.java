@@ -39,6 +39,7 @@ public class Vinci {
   public static final String VNS_PORT = "VNS_PORT";
 
   public static class AFFactory implements TransportableFactory {
+    @Override
     public Transportable makeTransportable() {
       return new AFrame();
     }
@@ -88,9 +89,10 @@ public class Vinci {
    * 
    * @param conn the connection
    * @param requestFrame {@link org.apache.vinci.transport.VinciFrame}
-   *          containing result of thsi service operation
+   *          containing result of this service operation
    * 
    * @return {@link org.apache.vinci.transport.VinciFrame} VinciData frame.
+   * @throws Exception -
    */
   public static AFrame replyWithAnalysis(VinciClient conn, VinciFrame requestFrame)
           throws Exception {
@@ -114,8 +116,9 @@ public class Vinci {
 
   public static String extractKEYSAsString(AFrame frame) {
     String keys = "";
-    if (frame == null)
-      return keys;
+    if (frame == null) {
+        return keys;
+    }
 
     String frameAsString = frame.toXML();
     if (frameAsString.indexOf("KEYS") > -1 && frameAsString.indexOf("</KEYS>") > -1) {
@@ -156,8 +159,8 @@ public class Vinci {
   }
 
   /**
-   * Returns a content from a given VinciFrame.
-   * 
+   * @param aFrame -
+   * @return a content from a given VinciFrame.
    */
   public static String stripVinciFrame(VinciFrame aFrame) {
     String contentFrame = aFrame.toXML();

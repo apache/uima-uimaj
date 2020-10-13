@@ -40,9 +40,6 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
   /** The default text attribute if non is returned as data by the current token */
   protected TextAttribute fDefaultTextAttribute;
 
-  /**
-   * Constructor for NonRuleBasedDamagerRepairer.
-   */
   public NonRuleBasedDamagerRepairer(TextAttribute defaultTextAttribute) {
     Assert.isNotNull(defaultTextAttribute);
 
@@ -53,7 +50,7 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
    * @see IPresentationRepairer#setDocument(IDocument)
    */
   @Override
-public void setDocument(IDocument document) {
+  public void setDocument(IDocument document) {
     fDocument = document;
   }
 
@@ -87,7 +84,7 @@ public void setDocument(IDocument document) {
    * @see IPresentationDamager#getDamageRegion(ITypedRegion, DocumentEvent, boolean)
    */
   @Override
-public IRegion getDamageRegion(ITypedRegion partition, DocumentEvent event,
+  public IRegion getDamageRegion(ITypedRegion partition, DocumentEvent event,
           boolean documentPartitioningChanged) {
     if (!documentPartitioningChanged) {
       try {
@@ -120,7 +117,7 @@ public IRegion getDamageRegion(ITypedRegion partition, DocumentEvent event,
    * @see IPresentationRepairer#createPresentation(TextPresentation, ITypedRegion)
    */
   @Override
-public void createPresentation(TextPresentation presentation, ITypedRegion region) {
+  public void createPresentation(TextPresentation presentation, ITypedRegion region) {
     addRange(presentation, region.getOffset(), region.getLength(), fDefaultTextAttribute);
   }
 

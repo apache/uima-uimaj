@@ -98,11 +98,13 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
     }
   }
 
+  @Override
   public void addCollectionReader(CpeCollectionReader aCollectionReader)
           throws CpeDescriptorException {
     collectionReader = aCollectionReader;
   }
 
+  @Override
   public CpeCollectionReader addCollectionReader(String aCollectionReaderPath)
           throws CpeDescriptorException {
     if (collectionReader == null) {
@@ -116,6 +118,7 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   /**
    * @deprecated As of v2.0, CAS Initializers are deprecated.
    */
+  @Override
   @Deprecated
 public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDescriptorPath)
           throws CpeDescriptorException {
@@ -132,6 +135,7 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     return collectionReader.getCasInitializer();
   }
 
+  @Override
   public CpeCollectionReader[] getAllCollectionCollectionReaders() throws CpeDescriptorException {
     if (collectionReader == null) {
       return new CpeCollectionReader[0];
@@ -141,6 +145,7 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     return readers;
   }
 
+  @Override
   public void setAllCollectionCollectionReaders(CpeCollectionReader[] areaders)
           throws CpeDescriptorException {
     if (areaders == null || areaders.length == 0) {
@@ -151,12 +156,14 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     }
   }
 
+  @Override
   public void setResourceManagerConfiguration(String aResMgrConfPagth) {
     if (resourceMgrConfig != null) {
       resourceMgrConfig.set(aResMgrConfPagth);
     }
   }
 
+  @Override
   public void setCpeResourceManagerConfiguration(CpeResourceManagerConfiguration aResMgrConfPagth) {
     resourceMgrConfig = aResMgrConfPagth;
   }
@@ -165,17 +172,16 @@ public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDe
     return resourceMgrConfig;
   }
 
-  /**
-   * @deprecated
-   */
+  @Override
   @Deprecated
-public void setInputQueueSize(int aSize) throws CpeDescriptorException {
+  public void setInputQueueSize(int aSize) throws CpeDescriptorException {
     if (casProcessors == null) {
       casProcessors = CpeDescriptorFactory.produceCasProcessors();
     }
     casProcessors.setInputQueueSize(aSize);
   }
 
+  @Override
   public void setProcessingUnitThreadCount(int aSize) throws CpeDescriptorException {
     if (casProcessors == null) {
       casProcessors = CpeDescriptorFactory.produceCasProcessors();
@@ -183,25 +189,26 @@ public void setInputQueueSize(int aSize) throws CpeDescriptorException {
     casProcessors.setConcurrentPUCount(aSize);
   }
 
-  /**
-   * @deprecated
-   */
+  @Override
   @Deprecated
-public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
+  public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
     if (casProcessors == null) {
       casProcessors = CpeDescriptorFactory.produceCasProcessors();
     }
     casProcessors.setOutputQueueSize(aSize);
   }
 
+  @Override
   public void setCpeCasProcessors(CpeCasProcessors aCasProcessors) {
     casProcessors = aCasProcessors;
   }
 
+  @Override
   public CpeCasProcessors getCpeCasProcessors() throws CpeDescriptorException {
     return casProcessors;
   }
 
+  @Override
   public void addCasProcessor(CpeCasProcessor aCasProcessor) throws CpeDescriptorException {
     if (casProcessors == null) {
       casProcessors = CpeDescriptorFactory.produceCasProcessors();
@@ -209,6 +216,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
     casProcessors.addCpeCasProcessor(aCasProcessor);
   }
 
+  @Override
   public void addCasProcessor(int index, CpeCasProcessor aCasProcessor)
           throws CpeDescriptorException {
 
@@ -219,10 +227,12 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
 
   }
 
+  @Override
   public void setCpeConfiguration(CpeConfiguration aConfiguration) {
     cpeConfiguration = aConfiguration;
   }
 
+  @Override
   public CpeConfiguration getCpeConfiguration() throws CpeDescriptorException {
     return cpeConfiguration;
   }
@@ -235,6 +245,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
     return cpeConfiguration;
   }
 
+  @Override
   public void setCheckpoint(String aCheckpointFile, int aFrequency) {
     if (cpeConfiguration != null) {
       try {
@@ -246,6 +257,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
     }
   }
 
+  @Override
   public void setDeployment(String aDeployMode) {
     if (cpeConfiguration != null) {
       try {
@@ -256,6 +268,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
     }
   }
 
+  @Override
   public void setNumToProcess(long aEntityCount) {
     if (cpeConfiguration != null) {
       try {
@@ -266,6 +279,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
     }
   }
 
+  @Override
   public void setStartingEntityId(String aStartEntityId) {
     if (cpeConfiguration != null) {
       try {
@@ -276,6 +290,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
     }
   }
 
+  @Override
   public void setTimer(String aTimerClass) {
     if (cpeConfiguration != null) {
       try {
@@ -286,6 +301,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
     }
   }
 
+  @Override
   public CpeResourceManagerConfiguration getResourceManagerConfiguration() {
     return resourceMgrConfig;
   }
@@ -297,6 +313,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions,
    *      java.util.List)
    */
+  @Override
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
           ParsingOptions aOptions, List aKnownPropertyNames) throws InvalidXMLException {
     if (aElement.getNodeName().equals("resourceManagerConfiguration")) {
@@ -309,6 +326,7 @@ public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

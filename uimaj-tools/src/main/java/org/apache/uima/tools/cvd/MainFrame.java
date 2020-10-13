@@ -410,7 +410,7 @@ public class MainFrame extends JFrame {
 
   /**
    * Constructor for MainFrame.
-   * 
+   * @param iniFile -
    * @throws HeadlessException -
    */
   public MainFrame(File iniFile) {
@@ -1104,7 +1104,8 @@ public class MainFrame extends JFrame {
     this.showPerfReportItem = new JMenuItem("Performance report");
     this.showPerfReportItem.setEnabled(false);
     this.showPerfReportItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+    public void actionPerformed(ActionEvent e) {
         if (MainFrame.this.lastRunProcessTrace == null) {
           MainFrame.this.showError("No performance report to show.");
         } else {
@@ -1171,7 +1172,8 @@ public class MainFrame extends JFrame {
     JMenuItem logViewer = new JMenuItem("View Log File", KeyEvent.VK_L);
     logViewer.addActionListener(new ActionListener() {
 
-      public void actionPerformed(ActionEvent event) {
+      @Override
+    public void actionPerformed(ActionEvent event) {
         LogFileViewer viewer = new LogFileViewer("Log file: "
             + MainFrame.this.logFile.getAbsolutePath());
         viewer.addWindowListener(new CloseLogViewHandler(MainFrame.this));
@@ -2191,7 +2193,7 @@ public class MainFrame extends JFrame {
    * window is being closed. Calling <code>setExitOnClose(false)</code> prevents that. It is then
    * the caller's task to shut down the JVM.
    * 
-   * @param exitOnClose
+   * @param exitOnClose exit-on-close behavior
    */
   public void setExitOnClose(boolean exitOnClose) {
     this.exitOnClose = exitOnClose;

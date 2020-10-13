@@ -30,6 +30,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * 
  * @generated
  */
+@SuppressWarnings("javadoc")
 public class Meeting extends Annotation {
   /**
    * @generated
@@ -44,6 +45,7 @@ public class Meeting extends Annotation {
   public final static int type = typeIndexID;
 
   /** @generated */
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -96,8 +98,9 @@ public class Meeting extends Annotation {
    * @generated
    */
   public RoomNumber getRoom() {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_room == null)
-      this.jcasType.jcas.throwFeatMissing("room", "org.apache.uima.tutorial.Meeting");
+    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_room == null) {
+        this.jcasType.jcas.throwFeatMissing("room", "org.apache.uima.tutorial.Meeting");
+    }
     return (RoomNumber) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
             ((Meeting_Type) jcasType).casFeatCode_room)));
   }
@@ -108,8 +111,9 @@ public class Meeting extends Annotation {
    * @generated
    */
   public void setRoom(RoomNumber v) {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_room == null)
-      this.jcasType.jcas.throwFeatMissing("room", "org.apache.uima.tutorial.Meeting");
+    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_room == null) {
+        this.jcasType.jcas.throwFeatMissing("room", "org.apache.uima.tutorial.Meeting");
+    }
     jcasType.ll_cas.ll_setRefValue(addr, ((Meeting_Type) jcasType).casFeatCode_room,
             jcasType.ll_cas.ll_getFSRef(v));
   }
@@ -123,8 +127,9 @@ public class Meeting extends Annotation {
    * @generated
    */
   public DateAnnot getDate() {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_date == null)
-      this.jcasType.jcas.throwFeatMissing("date", "org.apache.uima.tutorial.Meeting");
+    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_date == null) {
+        this.jcasType.jcas.throwFeatMissing("date", "org.apache.uima.tutorial.Meeting");
+    }
     return (DateAnnot) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
             ((Meeting_Type) jcasType).casFeatCode_date)));
   }
@@ -135,8 +140,9 @@ public class Meeting extends Annotation {
    * @generated
    */
   public void setDate(DateAnnot v) {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_date == null)
-      this.jcasType.jcas.throwFeatMissing("date", "org.apache.uima.tutorial.Meeting");
+    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_date == null) {
+        this.jcasType.jcas.throwFeatMissing("date", "org.apache.uima.tutorial.Meeting");
+    }
     jcasType.ll_cas.ll_setRefValue(addr, ((Meeting_Type) jcasType).casFeatCode_date,
             jcasType.ll_cas.ll_getFSRef(v));
   }
@@ -150,8 +156,9 @@ public class Meeting extends Annotation {
    * @generated
    */
   public TimeAnnot getStartTime() {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_startTime == null)
-      this.jcasType.jcas.throwFeatMissing("startTime", "org.apache.uima.tutorial.Meeting");
+    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_startTime == null) {
+        this.jcasType.jcas.throwFeatMissing("startTime", "org.apache.uima.tutorial.Meeting");
+    }
     return (TimeAnnot) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
             ((Meeting_Type) jcasType).casFeatCode_startTime)));
   }
@@ -162,8 +169,9 @@ public class Meeting extends Annotation {
    * @generated
    */
   public void setStartTime(TimeAnnot v) {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_startTime == null)
-      this.jcasType.jcas.throwFeatMissing("startTime", "org.apache.uima.tutorial.Meeting");
+    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_startTime == null) {
+        this.jcasType.jcas.throwFeatMissing("startTime", "org.apache.uima.tutorial.Meeting");
+    }
     jcasType.ll_cas.ll_setRefValue(addr, ((Meeting_Type) jcasType).casFeatCode_startTime,
             jcasType.ll_cas.ll_getFSRef(v));
   }
@@ -177,8 +185,9 @@ public class Meeting extends Annotation {
    * @generated
    */
   public TimeAnnot getEndTime() {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_endTime == null)
-      this.jcasType.jcas.throwFeatMissing("endTime", "org.apache.uima.tutorial.Meeting");
+    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_endTime == null) {
+        this.jcasType.jcas.throwFeatMissing("endTime", "org.apache.uima.tutorial.Meeting");
+    }
     return (TimeAnnot) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
             ((Meeting_Type) jcasType).casFeatCode_endTime)));
   }
@@ -189,8 +198,9 @@ public class Meeting extends Annotation {
    * @generated
    */
   public void setEndTime(TimeAnnot v) {
-    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_endTime == null)
-      this.jcasType.jcas.throwFeatMissing("endTime", "org.apache.uima.tutorial.Meeting");
+    if (Meeting_Type.featOkTst && ((Meeting_Type) jcasType).casFeat_endTime == null) {
+        this.jcasType.jcas.throwFeatMissing("endTime", "org.apache.uima.tutorial.Meeting");
+    }
     jcasType.ll_cas.ll_setRefValue(addr, ((Meeting_Type) jcasType).casFeatCode_endTime,
             jcasType.ll_cas.ll_getFSRef(v));
   }
@@ -205,7 +215,8 @@ public class Meeting extends Annotation {
     setEndTime(endTime);
   }
 
-  public String toString() {
+  @Override
+public String toString() {
     return "Meeting in " + getRoom().getCoveredText() + " on " + getDate().getCoveredText() + ", "
             + getStartTime().getCoveredText() + " - " + getEndTime().getCoveredText();
   }

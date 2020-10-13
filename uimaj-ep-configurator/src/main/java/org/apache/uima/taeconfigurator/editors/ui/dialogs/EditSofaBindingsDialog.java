@@ -41,12 +41,6 @@ public class EditSofaBindingsDialog extends AbstractDialog {
 
   private Table table;
 
-  /**
-   * 
-   * @param aSection
-   * @param aAggrSofaName
-   * @param aAvailAndBoundSofas
-   */
   public EditSofaBindingsDialog(AbstractSection aSection, String aAggrSofaName,
           Map aAvailAndBoundSofas) {
     super(aSection, "Assign Components and their sofas to an Aggregate Sofa Name",

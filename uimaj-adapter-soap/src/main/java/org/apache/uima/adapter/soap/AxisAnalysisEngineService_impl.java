@@ -39,6 +39,7 @@ public class AxisAnalysisEngineService_impl {
 
   /**
    * Constructor, responsible for initializing the service.
+   * @throws AxisFault -
    */
   public AxisAnalysisEngineService_impl() throws AxisFault {
     mServiceImpl = (AnalysisEngineService_impl) AxisResourceServiceManager
@@ -49,6 +50,7 @@ public class AxisAnalysisEngineService_impl {
    * Gets metadata for this Resource service.
    * 
    * @return metadata
+   * @throws ResourceServiceException  -
    */
   public ResourceMetaData getMetaData() throws ResourceServiceException {
     try {
@@ -71,6 +73,7 @@ public class AxisAnalysisEngineService_impl {
    *          specifies which results the Analysis Engine should produce
    * 
    * @return the results of analysis
+   * @throws ResourceServiceException -
    */
   public ServiceDataCargo process(ServiceDataCargo aData, ResultSpecification aResultSpec)
           throws ResourceServiceException {

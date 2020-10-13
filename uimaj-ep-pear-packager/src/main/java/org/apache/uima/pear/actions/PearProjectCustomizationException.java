@@ -27,11 +27,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
 
-/**
- * 
- * 
- * 
- */
 public class PearProjectCustomizationException extends Exception {
 
   public static final String PLUGIN_ID = "org.apache.uima.pear";
@@ -42,24 +37,14 @@ public class PearProjectCustomizationException extends Exception {
     super();
   }
 
-  /**
-   * @param message
-   */
   public PearProjectCustomizationException(String message) {
     super(message);
   }
 
-  /**
-   * @param cause
-   */
   public PearProjectCustomizationException(Throwable cause) {
     super(cause);
   }
 
-  /**
-   * @param message
-   * @param cause
-   */
   public PearProjectCustomizationException(String message, Throwable cause) {
     super(message, cause);
   }
@@ -68,11 +53,14 @@ public class PearProjectCustomizationException extends Exception {
     Object[] o = getCustomStackTrace(getCause()).toArray();
     if (o != null) {
       IStatus[] sa = new IStatus[o.length];
-      for (int i = 0; i < o.length; i++)
+      for (int i = 0; i < o.length; i++) {
         sa[i] = (IStatus) o[i];
+    }
       return sa;
-    } else
-      return new IStatus[0];
+    }
+    else {
+        return new IStatus[0];
+    }
   }
 
   synchronized ArrayList getCustomStackTrace(Throwable e) {
@@ -87,8 +75,9 @@ public class PearProjectCustomizationException extends Exception {
       }
 
       Throwable aCause = e.getCause();
-      if (aCause != null)
+      if (aCause != null) {
         a.addAll(getCustomStackTrace(aCause));
+    }
     }
     return a;
   }
@@ -96,7 +85,7 @@ public class PearProjectCustomizationException extends Exception {
   /**
    * Opens an Error dialog for this exception
    * 
-   * @param shell
+   * @param shell -
    */
   public void openErrorDialog(Shell shell) {
     try {

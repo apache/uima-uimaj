@@ -217,7 +217,8 @@ public class StyleMapEditor extends JDialog implements ActionListener {
 
     // Style Edit OK Button event handle
     okButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
+      @Override
+    public void actionPerformed(ActionEvent evt) {
         Vector vn = new Vector();
         for (int row = 0; row < styleList.size(); row++) {
           StyleMapEntry e = (StyleMapEntry) styleList.get(row);
@@ -246,14 +247,16 @@ public class StyleMapEditor extends JDialog implements ActionListener {
           }
         }
 
-        if (buttonPress)
-          styleMapEditorDialog.setVisible(false);
+        if (buttonPress) {
+            styleMapEditorDialog.setVisible(false);
+        }
       }
     });
 
     // Style Edit Exit Button Event Handling
     cancelButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
+      @Override
+    public void actionPerformed(ActionEvent evt) {
         buttonPress = false;
         styleMapEditorDialog.setVisible(false);
       }
@@ -264,7 +267,8 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     pack();
   }
 
-  public Dimension getPreferredSize() {
+  @Override
+public Dimension getPreferredSize() {
     Dimension screenSize = getToolkit().getScreenSize();
     Dimension d = super.getPreferredSize();
     return new Dimension(screenSize.width, d.height);
@@ -273,6 +277,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
   }
 
   /**
+   * @param tae -
    * @deprecated use {@link #setAnalysisEngine(AnalysisEngineDescription)} instead.
    */
   @Deprecated
@@ -334,8 +339,9 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     // the corresponding Color objects as values.
 
     // If stylemap XML is null, auto-generate it from metadata capabilities:
-    if (aStyleMapXml == null)
-      aStyleMapXml = AnnotationViewGenerator.autoGenerateStyleMap(aAnalysisEngineMetaData);
+    if (aStyleMapXml == null) {
+        aStyleMapXml = AnnotationViewGenerator.autoGenerateStyleMap(aAnalysisEngineMetaData);
+    }
 
     return parseStyleList(aStyleMapXml);
   }
@@ -364,7 +370,8 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     return styleList;
   }
 
-  public void actionPerformed(ActionEvent evt) {
+  @Override
+public void actionPerformed(ActionEvent evt) {
     JComponent source = (JComponent) evt.getSource();
 
     if (source == moveRowUpButton) {
@@ -499,11 +506,13 @@ public class StyleMapEditor extends JDialog implements ActionListener {
 
         // Calculate adequate column widths:
         int typeNameWidth = fm.stringWidth(e.getAnnotationTypeName());
-        if (typeNameWidth > maxColumnWidths[StyleConstants.TYPE_NAME_COLUMN])
-          maxColumnWidths[StyleConstants.TYPE_NAME_COLUMN] = typeNameWidth;
+        if (typeNameWidth > maxColumnWidths[StyleConstants.TYPE_NAME_COLUMN]) {
+            maxColumnWidths[StyleConstants.TYPE_NAME_COLUMN] = typeNameWidth;
+        }
         int labelWidth = fm.stringWidth(e.getLabel().trim());
-        if (labelWidth > maxColumnWidths[StyleConstants.LABEL_COLUMN])
-          maxColumnWidths[StyleConstants.LABEL_COLUMN] = labelWidth;
+        if (labelWidth > maxColumnWidths[StyleConstants.LABEL_COLUMN]) {
+            maxColumnWidths[StyleConstants.LABEL_COLUMN] = labelWidth;
+        }
       }
 
       tableModel.set(data);
@@ -534,7 +543,8 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     final JButton button = new JButton("") {
       private static final long serialVersionUID = 3955120051470642157L;
 
-      public void setText(String s) {
+      @Override
+    public void setText(String s) {
         // Button never shows text -- only color.
       }
     };
@@ -560,15 +570,18 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     // colorChooser.setChooserPanels(preferredPanels);
 
     ActionListener okListener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+    public void actionPerformed(ActionEvent e) {
         colorEditor.currentColor = colorChooser.getColor();
         Color newColor = colorEditor.currentColor;
         StyleMapEntry entry = (StyleMapEntry) styleList.get(tbl.getSelectedRow());
         int column = tbl.getSelectedColumn();
-        if (column == StyleConstants.BG_COLUMN)
-          entry.setBackground(newColor);
-        else
-          entry.setForeground(newColor);
+        if (column == StyleConstants.BG_COLUMN) {
+            entry.setBackground(newColor);
+        }
+        else {
+            entry.setForeground(newColor);
+        }
 
         tbl.repaint();
       }
@@ -578,7 +591,8 @@ public class StyleMapEditor extends JDialog implements ActionListener {
 
     // Here's the code that brings up the dialog.
     button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+    public void actionPerformed(ActionEvent e) {
         button.setBackground(colorEditor.currentColor);
         colorChooser.setColor(colorEditor.currentColor);
         // Without the following line, the dialog comes up
@@ -618,12 +632,16 @@ public class StyleMapEditor extends JDialog implements ActionListener {
           newStyle.append("<label>");
           String label = e.getLabel();
           if (label != null) {
-            if ((label != null) && !label.equals(""))
-              newStyle.append(label);
-            else
-              newStyle.append(e.getAnnotationTypeName());
-          } else
+            if ((label != null) && !label.equals("")) {
+                newStyle.append(label);
+            }
+            else {
+                newStyle.append(e.getAnnotationTypeName());
+            }
+          }
+        else {
             newStyle.append(e.getAnnotationTypeName());
+        }
 
           newStyle.append("</label>\n");
           newStyle.append("<style>");

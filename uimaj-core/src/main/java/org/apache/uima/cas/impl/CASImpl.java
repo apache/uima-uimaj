@@ -818,11 +818,8 @@ public StringArrayFS createStringArrayFS(int length) {
     this.svd.sofa2indexMap.put(Integer.valueOf(aSofaRef), indxRepos);
   }
 
-  /**
-   * @deprecated
-   */
   @Override
-@Deprecated
+  @Deprecated
   public SofaFS createSofa(SofaID sofaID, String mimeType) {
     // extract absolute SofaName string from the ID
     SofaFS aSofa = createSofa(sofaID.getSofaID(), mimeType);
@@ -875,11 +872,8 @@ public StringArrayFS createStringArrayFS(int length) {
     this.svd.sofaNameSet.add(sofaName);
   }
 
-  /**
-   * @deprecated
-   */
   @Override
-@Deprecated
+  @Deprecated
   public SofaFS getSofa(SofaID sofaID) {
     // extract absolute SofaName string from the ID
     return getSofa(sofaID.getSofaID());
@@ -1104,22 +1098,18 @@ public StringArrayFS createStringArrayFS(int length) {
   }
 
   @Override
-public FSIndexRepositoryMgr getIndexRepositoryMgr() {
+  public FSIndexRepositoryMgr getIndexRepositoryMgr() {
     // assert(this.cas.getIndexRepository() != null);
     return this.indexRepository;
   }
 
-  /**
-   * @deprecated
-   * @param fs -
-   */
   @Deprecated
   public void commitFS(FeatureStructure fs) {
     getIndexRepository().addFS(fs);
   }
 
   @Override
-public FeaturePath createFeaturePath() {
+  public FeaturePath createFeaturePath() {
     return new FeaturePathImpl();
   }
 
@@ -1129,12 +1119,12 @@ public FeaturePath createFeaturePath() {
    * @see org.apache.uima.cas.admin.CASMgr#getTypeSystemMgr()
    */
   @Override
-public TypeSystemMgr getTypeSystemMgr() {
+  public TypeSystemMgr getTypeSystemMgr() {
     return this.svd.casMetadata.ts;
   }
 
   @Override
-public void reset() {
+  public void reset() {
     if (isCasLocked()) {
       throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
     }
@@ -1849,7 +1839,6 @@ public CAS getCAS() {
    * for Deserialization of Delta, when updating existing FSs,
    * If the heap addr is for the next FS, re-add the previous one to those indexes where it was removed,
    * and then maybe remove the new one (and remember which views to re-add to).
-   * @param heapAddr
    */
   private void maybeAddBackAndRemoveFs(int heapAddr, final BinDeserSupport bds) {
     if (bds.fsStartAddr == -1) {
@@ -2271,7 +2260,7 @@ public int ll_getArraySize(int arrayFsRef) {
    *                The index we want to set.
    * @param value
    *                The value we want to set.
-   * @exception ArrayIndexOutOfBoundsException
+   * @exception ArrayIndexOutOfBoundsException -
    */
   void setArrayValue(final int addr, final int index, final int value)
       throws ArrayIndexOutOfBoundsException {
@@ -3164,11 +3153,8 @@ public JCas getJCas(SofaFS aSofa) throws CASException {
      */
   }
 
-  /**
-   * @deprecated
-   */
   @Override
-@Deprecated
+  @Deprecated
   public JCas getJCas(SofaID aSofaID) throws CASException {
     SofaFS sofa = getSofa(aSofaID);
     // sofa guaranteed to be non-null by above method.
@@ -5433,7 +5419,7 @@ public Iterator<CAS> getViewIterator(String localViewNamePrefix) {
    * form in Java 8 to do a similar thing with no restrictions on what the
    * body can contain.
    * 
-   * @param addbacks
+   * @param addbacks -
    */
   void addbackModifiedFSs (FSsTobeAddedback addbacks) {
     final List<FSsTobeAddedback> listOfAddbackInfos =  svd.fssTobeAddedback;

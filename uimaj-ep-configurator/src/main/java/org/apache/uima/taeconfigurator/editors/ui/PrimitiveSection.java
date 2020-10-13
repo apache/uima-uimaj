@@ -66,6 +66,10 @@ public class PrimitiveSection extends AbstractSection {
   /**
    * Creates a section with a text field for the name of the annotator. Only enabled if annotator is
    * primitive Also has the operational parameters
+   * 
+   * @param editor
+   *          the referenced multipage editor
+   * @param parent -
    */
   public PrimitiveSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Runtime Information",

@@ -68,8 +68,8 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Constructor for Editing an existing Type DescriptionD
    * 
-   * @param aSection
-   * @param aExistingTd
+   * @param aSection -
+   * @param aExistingTd -
    */
   public AddTypeDialog(AbstractSection aSection, TypeDescription aExistingTd) {
     this(aSection);

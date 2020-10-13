@@ -77,12 +77,6 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
   private int typeFilter;
 
 
-  /**
-   * 
-   * @param aSection
-   * @param aTd
-   * @param aExistingFd
-   */
   public AddFeatureDialog(AbstractSection aSection, TypeDescription aTd,
           FeatureDescription aExistingFd) {
     super(aSection, "Add a Feature", "Use this panel to add or edit a feature");
@@ -91,7 +85,8 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     existingFd = aExistingFd;
   }
 
-  protected Control createDialogArea(Composite parent) {
+  @Override
+protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingFd);
     createWideLabel(mainArea, "The feature name must be unique within this type");
 
@@ -160,13 +155,16 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
   
   
 
-  public void handleEvent(Event event) {
+  @Override
+public void handleEvent(Event event) {
     super.handleEvent(event);
-    if (event.type == SWT.Modify && event.widget == featureRangeNameUI)
-      manageVisibleFields();
+    if (event.type == SWT.Modify && event.widget == featureRangeNameUI) {
+        manageVisibleFields();
+    }
   }
 
-  public TypesWithNameSpaces getTypeSystemInfoList() {
+  @Override
+public TypesWithNameSpaces getTypeSystemInfoList() {
     TypesWithNameSpaces result = super.getTypeSystemInfoList();
     Type[] allTypes = (Type[]) editor.allTypes.get().values().toArray(new Type[0]);
 /*    Arrays.sort(allTypes, new Comparator() {
@@ -188,12 +186,14 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
         result.add(type.getName());
       }
     }
-    if (typeFilter == ALL_TYPES)
-      allTypesList = result;
+    if (typeFilter == ALL_TYPES) {
+        allTypesList = result;
+    }
     return result;
   }
 
-  public void copyValuesFromGUI() {
+  @Override
+public void copyValuesFromGUI() {
     featureName = featureNameUI.getText();
     description = nullIf0lengthString(descriptionUI.getText());
     featureRangeName = featureRangeNameUI.getText();
@@ -209,20 +209,26 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     }
   }
 
-  public boolean verifyKeyChecks(VerifyEvent event) {
-    if (event.keyCode == SWT.CR || event.keyCode == SWT.TAB)
-      return true;
-    if (Character.isJavaIdentifierPart(event.character))
-      return true;
-    if (event.widget == featureRangeNameUI && event.character == '.')
-      return true;
+  @Override
+public boolean verifyKeyChecks(VerifyEvent event) {
+    if (event.keyCode == SWT.CR || event.keyCode == SWT.TAB) {
+        return true;
+    }
+    if (Character.isJavaIdentifierPart(event.character)) {
+        return true;
+    }
+    if (event.widget == featureRangeNameUI && event.character == '.') {
+        return true;
+    }
     return false;
   }
 
-  public boolean isValid() {
+  @Override
+public boolean isValid() {
 
-    if (featureName.length() == 0 || featureRangeName.length() == 0)
-      return false;
+    if (featureName.length() == 0 || featureRangeName.length() == 0) {
+        return false;
+    }
     if (!featureName.equals(originalFeatureName)) {
       String errMsg = typeSection.checkFeature(this, td, existingFd);
       if (null != errMsg) {
@@ -238,11 +244,13 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     return true;
   }
 
-  public void textModifyCallback(Event e) {
+  @Override
+public void textModifyCallback(Event e) {
     manageVisibleFields();
   }
 
-  public void enableOK() {
+  @Override
+public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(featureName.length() > 0 && featureRangeName.length() > 0);
   }

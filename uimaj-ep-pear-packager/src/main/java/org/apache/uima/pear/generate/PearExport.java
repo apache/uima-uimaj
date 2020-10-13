@@ -24,17 +24,13 @@ import java.io.File;
 import org.apache.uima.pear.PearException;
 
 /**
- * 
  * A util class for PEAR export operations
- * 
- * 
- * 
  */
 public class PearExport {
 
   /**
-   * @param targetFile
-   * @return true
+   * @param targetFile -
+   * @return true -
    * @throws PearException -
    */
   protected boolean ensureTargetFileIsValid(File targetFile) throws PearException {

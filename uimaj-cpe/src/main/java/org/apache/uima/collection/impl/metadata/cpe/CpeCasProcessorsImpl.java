@@ -66,6 +66,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#setOutputQueueSize(int)
    */
+  @Override
   public void setOutputQueueSize(int aOutputQueueSize) throws CpeDescriptorException {
     outputQueueSize = aOutputQueueSize;
   }
@@ -75,6 +76,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#getOutputQueueSize()
    */
+  @Override
   public int getOutputQueueSize() {
     return outputQueueSize;
   }
@@ -84,6 +86,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#setInputQueueSize(int)
    */
+  @Override
   public void setInputQueueSize(int aInputQueueSize) throws CpeDescriptorException {
     inputQueueSize = aInputQueueSize;
   }
@@ -93,6 +96,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#getInputQueueSize()
    */
+  @Override
   public int getInputQueueSize() {
     return inputQueueSize;
   }
@@ -102,6 +106,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#setConcurrentPUCount(int)
    */
+  @Override
   public void setConcurrentPUCount(int aConcurrentPUCount) throws CpeDescriptorException {
     processingUnitThreadCount = aConcurrentPUCount;
   }
@@ -111,6 +116,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#getConcurrentPUCount()
    */
+  @Override
   public int getConcurrentPUCount() {
     return processingUnitThreadCount;
   }
@@ -121,6 +127,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#addCpeCasProcessor(org.apache.uima.collection.metadata.CpeCasProcessor,
    *      int)
    */
+  @Override
   public void addCpeCasProcessor(CpeCasProcessor aCasProcessor, int aInsertPosition)
           throws CpeDescriptorException {
     casProcessors.add(aInsertPosition, aCasProcessor);
@@ -132,6 +139,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#addCpeCasProcessor(org.apache.uima.collection.metadata.CpeCasProcessor,
    *      int)
    */
+  @Override
   public void addCpeCasProcessor(CpeCasProcessor aCasProcessor) throws CpeDescriptorException {
     casProcessors.add(aCasProcessor);
   }
@@ -141,6 +149,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#getCpeCasProcessor(int)
    */
+  @Override
   public CpeCasProcessor getCpeCasProcessor(int aPosition) throws CpeDescriptorException {
     if (aPosition <= casProcessors.size()) {
       return (CpeCasProcessor) casProcessors.get(aPosition);
@@ -156,6 +165,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#getAllCpeCasProcessors()
    */
+  @Override
   public CpeCasProcessor[] getAllCpeCasProcessors() throws CpeDescriptorException {
     CpeCasProcessor[] processors = new CpeCasProcessor[casProcessors.size()];
     casProcessors.toArray(processors);
@@ -180,6 +190,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#removeCpeCasProcessor(int)
    */
+  @Override
   public void removeCpeCasProcessor(int aPosition) throws CpeDescriptorException {
     if (aPosition <= casProcessors.size()) {
       casProcessors.remove(aPosition);
@@ -193,6 +204,10 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
 
   /**
    * New API 01/06/2006
+   * @param aPosition -
+   * @param flag -
+   * @return -
+   * @throws CpeDescriptorException -
    */
   public CpeCasProcessor[] removeCpeCasProcessor(int aPosition, boolean flag)
           throws CpeDescriptorException {
@@ -212,6 +227,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#removeAllCpeCasProcessors()
    */
+  @Override
   public void removeAllCpeCasProcessors() throws CpeDescriptorException {
     casProcessors.clear();
   }
@@ -221,6 +237,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#setOutputQueueSize(int)
    */
+  @Override
   public void setPoolSize(int aPoolSize) throws CpeDescriptorException {
     casPoolSize = aPoolSize;
   }
@@ -248,6 +265,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#setOutputQueueSize(int)
    */
+  @Override
   public boolean getDropCasOnException() {
     return dropCasOnException;
   }
@@ -258,6 +276,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     try {
@@ -359,6 +378,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     }
   }
 
+  @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
@@ -391,6 +411,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
+  @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     if (isDropCasOnException() == true) {
@@ -412,6 +433,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     return attrs;
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
@@ -419,6 +441,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casProcessors",
           new PropertyXmlInfo[] { new PropertyXmlInfo("allCpeCasProcessors", null), });
 
+  @Override
   public int getCasPoolSize() {
     // Indirection needed to handle the exception. xsdbeans based implementation of this API
     // was throwing it, if there was a problem. With the current approach this exception never

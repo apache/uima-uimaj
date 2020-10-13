@@ -67,9 +67,6 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
 
   private PearFileResourceExportPage pearExportPage;
 
-  /**
-   * Constructor
-   */
   public GeneratePearWizard(IContainer container) {
     super();
     try {
@@ -89,7 +86,9 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
       IDialogSettings workbenchSettings = plugin.getDialogSettings();
       IDialogSettings section = workbenchSettings.getSection("PearFileExportWizard");//$NON-NLS-1$
       if (section == null)
+     {
         section = workbenchSettings.addNewSection("PearFileExportWizard");//$NON-NLS-1$
+    }
       setDialogSettings(section);
     } catch (Throwable e) {
       e.printStackTrace();
@@ -116,7 +115,8 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
    * 
    * @see org.eclipse.jface.wizard.IWizard#addPages()
    */
-  public void addPages() {
+  @Override
+public void addPages() {
     try {
       componentPage = new INSDComponentPage(currentContainer, insd, wizardData);
       addPage(componentPage);
@@ -141,7 +141,8 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
    * @see org.eclipse.jface.wizard.IWizard#performFinish()
    * 
    */
-  public boolean performFinish() {
+  @Override
+public boolean performFinish() {
     try {
       // currentContainer.refreshLocal(IResource.DEPTH_INFINITE,null);
       editInstallationDescriptor();
@@ -180,12 +181,14 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
     insd.clearFrameworkSpecs();
 
     String os = environmentPage.osCombo.getText();
-    if (os != null && os.trim().length() > 0)
-      insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
+    if (os != null && os.trim().length() > 0) {
+        insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
+    }
 
     String jdkVersion = environmentPage.jdkVersionCombo.getText();
-    if (jdkVersion != null && jdkVersion.trim().length() > 0)
-      insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, jdkVersion);
+    if (jdkVersion != null && jdkVersion.trim().length() > 0) {
+        insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, jdkVersion);
+    }
 
   }
 

@@ -26,11 +26,6 @@ import javax.swing.table.AbstractTableModel;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 
-/**
- * Insert comment for enclosing_type here.
- * 
- * 
- */
 public class FeatureTableModel extends AbstractTableModel {
 
   private static final long serialVersionUID = -6010925680514336742L;
@@ -43,9 +38,6 @@ public class FeatureTableModel extends AbstractTableModel {
     super();
   }
 
-  /**
-   * Constructor for FeatureTableModel.
-   */
   public FeatureTableModel(Type type) {
     super();
     this.type = type;
@@ -56,6 +48,7 @@ public class FeatureTableModel extends AbstractTableModel {
     fireTableDataChanged();
   }
 
+  @Override
   public String getColumnName(int i) {
     if (i < 0 || i >= columnHeaders.length) {
       return "";
@@ -66,6 +59,7 @@ public class FeatureTableModel extends AbstractTableModel {
   /**
    * @see javax.swing.table.TableModel#getRowCount()
    */
+  @Override
   public int getRowCount() {
     if (this.type == null) {
       return 0;
@@ -76,6 +70,7 @@ public class FeatureTableModel extends AbstractTableModel {
   /**
    * @see javax.swing.table.TableModel#getColumnCount()
    */
+  @Override
   public int getColumnCount() {
     return 3;
   }
@@ -83,6 +78,7 @@ public class FeatureTableModel extends AbstractTableModel {
   /**
    * @see javax.swing.table.TableModel#getValueAt(int, int)
    */
+  @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
     if (this.type == null) {
       return null;
@@ -107,5 +103,4 @@ public class FeatureTableModel extends AbstractTableModel {
       }
     }
   }
-
 }

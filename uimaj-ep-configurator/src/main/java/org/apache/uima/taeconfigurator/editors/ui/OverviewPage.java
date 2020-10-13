@@ -32,14 +32,14 @@ public class OverviewPage extends HeaderPageWithSash {
   // should always exist
   private MetaDataSection metadataSection;  
 
-  /**
-   */
   public OverviewPage(MultiPageEditor aEditor) {
     super(aEditor, "UID_OverviewPage", "Overview");
   }
 
   /**
    * Called by the 3.0 framework to fill in the contents
+   * 
+   * @param managedForm -
    */
   protected void createFormContent(IManagedForm managedForm) {
     final Form2Panel form = setup2ColumnLayout(managedForm, EQUAL_WIDTH);

@@ -56,6 +56,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
    * 
    * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#setDescriptorPath(java.lang.String)
    */
+  @Override
   public void setDescriptor(CpeComponentDescriptor aDescriptor) {
     descriptor = aDescriptor;
   }
@@ -65,6 +66,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
    * 
    * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#getDescriptorPath()
    */
+  @Override
   public CpeComponentDescriptor getDescriptor() {
     return descriptor;
   }
@@ -74,6 +76,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
    *
    * @return the configuration parameter settings
    */
+  @Override
   public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings() {
     return cfps;
   }
@@ -119,16 +122,14 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
       for (int i = 0; nvp != null && i < nvp.length; i++) {
         local.setParameterValue(nvp[i].getName(), nvp[i].getValue());
       }
-    } else
+    } else {
       local = configurationParameterSettings;
+    }
 
     return local;
 
   }
 
-  /**
-   * @param settings
-   */
   public void setParameterSettings(ConfigurationParameterSettings settings) {
     configurationParameterSettings = settings;
     if (configurationParameterSettings != null) {
@@ -137,6 +138,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
 
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
@@ -145,21 +147,18 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
           new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
               new PropertyXmlInfo("parameterSettings", null),
               new PropertyXmlInfo("sofaNameMappings", null),
-
           });
 
   /**
    * @return the sofa mappings
    */
+  @Override
   public CpeSofaMappings getSofaNameMappings() {
     return sofaNameMappings;
   }
 
-  /**
-   * @param mappings
-   */
+  @Override
   public void setSofaNameMappings(CpeSofaMappings mappings) {
     sofaNameMappings = mappings;
   }
-
 }

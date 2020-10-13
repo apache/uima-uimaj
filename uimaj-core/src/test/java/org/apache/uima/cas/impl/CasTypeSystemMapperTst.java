@@ -302,7 +302,6 @@ public class CasTypeSystemMapperTst extends TestCase {
 
   /**
    * Create a type system having all kinds of types
-   * @return
    */
   private TypeSystemImpl createTs(int types, int feats1, int feats2) {
     return (TypeSystemImpl) CASInitializer.initCas(new CASTestSetup(types, feats1, feats2)).getTypeSystem();
