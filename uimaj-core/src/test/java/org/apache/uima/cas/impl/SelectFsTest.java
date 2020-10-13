@@ -19,17 +19,20 @@
 
 package org.apache.uima.cas.impl;
 
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -226,7 +229,74 @@ public class SelectFsTest  {
 
     prec2 = jCas.select(Token.class).between(b, e).backwards().asList();
     assertEquals(Arrays.asList(d, c), prec2);
+  }
+  
+  @Test
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition() throws Exception
+  {
+    cas.reset();
+    AnnotationFS annotation = cas.createAnnotation(cas.getAnnotationType(), 0, 2);
+    cas.addFsToIndexes(annotation);
 
+    List<AnnotationFS> result = cas.select(Annotation.class)
+        .coveredBy(0, 1)
+        .includeAnnotationsWithEndBeyondBounds()
+        .collect(toList());
 
+    assertThat(result)
+        .as("Selection (0-1) including start position (0) but not end position (2)")
+        .containsExactly(annotation);
+  }
+  
+  @Test
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition2() {
+    cas.reset();
+    AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 0, 4);
+    AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 1, 3);
+    cas.addFsToIndexes(a1);
+    cas.addFsToIndexes(a2);
+
+    List<AnnotationFS> result = cas.select(Annotation.class)
+        .coveredBy(0, 2)
+        .includeAnnotationsWithEndBeyondBounds()
+        .collect(Collectors.toList());
+
+    assertThat(result).containsExactly(a1, a2);
+  }
+
+  @Test
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition3() {
+    cas.reset();
+    AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 0, 5);
+    AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 1, 4);
+    AnnotationFS a3 = cas.createAnnotation(cas.getAnnotationType(), 2, 6);
+    cas.addFsToIndexes(a1);
+    cas.addFsToIndexes(a2);
+    cas.addFsToIndexes(a3);
+
+    List<AnnotationFS> result = cas.select(Annotation.class)
+        .coveredBy(0, 3)
+        .includeAnnotationsWithEndBeyondBounds()
+        .collect(Collectors.toList());
+
+    assertThat(result).containsExactly(a1, a2, a3);
+  }
+
+  @Test
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition4() {
+    cas.reset();
+    AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 0, 4);
+    AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 1, 5);
+    AnnotationFS a3 = cas.createAnnotation(cas.getAnnotationType(), 2, 2);
+    cas.addFsToIndexes(a1);
+    cas.addFsToIndexes(a2);
+    cas.addFsToIndexes(a3);
+
+    List<AnnotationFS> result = cas.select(Annotation.class)
+        .coveredBy(0, 3)
+        .includeAnnotationsWithEndBeyondBounds()
+        .collect(Collectors.toList());
+
+    assertThat(result).containsExactly(a1, a2, a3);
   }
 }
