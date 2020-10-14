@@ -526,13 +526,13 @@ public class BinaryCasSerDes {
                              TypeSystemImpl ts) throws CASRuntimeException {
   
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
-    
+
     if (!h.isV3) {
       if (h.getSeqVersionNbr() < 2) {
-        isBeforeV3 = true; // adjusts binary type numbers 
+        isBeforeV3 = true; // adjusts binary type numbers
       }
     }
-    
+
     CASMgrSerializer embeddedCasMgrSerializer = maybeReadEmbeddedTSI(h, dis);
     
     if (!h.isForm6() || casLoadMode == CasLoadMode.REINIT)  {
@@ -1985,5 +1985,6 @@ public class BinaryCasSerDes {
     shortHeap = null;
     longHeap = null;
     stringHeap = null;
+    isBeforeV3 = false;
   }
 }
