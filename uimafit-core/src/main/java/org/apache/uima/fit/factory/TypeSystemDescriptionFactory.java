@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
 
+import org.apache.uima.fit.internal.ClassLoaderUtils;
 import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -39,11 +40,10 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ClassUtils;
 
 public final class TypeSystemDescriptionFactory {
   private static final Logger LOG = LoggerFactory.getLogger(TypeSystemDescriptionFactory.class);
-  
+
   private static final Object SCAN_LOCK = new Object();
 
   private static final Object CREATE_LOCK = new Object();
@@ -113,7 +113,7 @@ public final class TypeSystemDescriptionFactory {
    */
   public static TypeSystemDescription createTypeSystemDescription()
           throws ResourceInitializationException {
-    ClassLoader cl = ClassUtils.getDefaultClassLoader();
+    ClassLoader cl = ClassLoaderUtils.findClassloader();
     TypeSystemDescription tsd = typeDescriptorByClassloader.get(cl);
     if (tsd == null) {
       synchronized (CREATE_LOCK) {
@@ -149,7 +149,7 @@ public final class TypeSystemDescriptionFactory {
    */
   public static String[] scanTypeDescriptors() throws ResourceInitializationException {
     synchronized (SCAN_LOCK) {
-      ClassLoader cl = ClassUtils.getDefaultClassLoader();
+      ClassLoader cl = ClassLoaderUtils.findClassloader();
       String[] typeDescriptorLocations = typeDescriptorLocationsByClassloader.get(cl);
       if (typeDescriptorLocations == null) {
         typeDescriptorLocations = scanDescriptors(MetaDataType.TYPE_SYSTEM);

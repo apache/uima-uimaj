@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
 
+import org.apache.uima.fit.internal.ClassLoaderUtils;
 import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.jcas.cas.TOP;
@@ -40,11 +41,10 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ClassUtils;
 
 public final class TypePrioritiesFactory {
   private static final Logger LOG = LoggerFactory.getLogger(TypePrioritiesFactory.class);
-    
+
   private static final Object SCAN_LOCK = new Object();
 
   private static final Object CREATE_LOCK = new Object();
@@ -76,7 +76,7 @@ public final class TypePrioritiesFactory {
       if (!TOP.class.isAssignableFrom(prioritizedTypes[i])) {
         throw new IllegalArgumentException("[" + prioritizedTypes[i] + "] is not a JCas type");
       }
-      
+
       String typeName = prioritizedTypes[i].getName();
       if (typeName.startsWith(UIMA_BUILTIN_JCAS_PREFIX)) {
         typeName = "uima." + typeName.substring(UIMA_BUILTIN_JCAS_PREFIX.length());
@@ -114,7 +114,7 @@ public final class TypePrioritiesFactory {
    *           if the collected type priorities cannot be merged.
    */
   public static TypePriorities createTypePriorities() throws ResourceInitializationException {
-    ClassLoader cl = ClassUtils.getDefaultClassLoader();
+    ClassLoader cl = ClassLoaderUtils.findClassloader();
     TypePriorities aggTypePriorities = typePrioritiesByClassloader.get(cl);
     if (aggTypePriorities == null) {
       synchronized (CREATE_LOCK) {
@@ -153,7 +153,7 @@ public final class TypePrioritiesFactory {
    */
   public static String[] scanTypePrioritiesDescriptors() throws ResourceInitializationException {
     synchronized (SCAN_LOCK) {
-      ClassLoader cl = ClassUtils.getDefaultClassLoader();
+      ClassLoader cl = ClassLoaderUtils.findClassloader();
       String[] typePrioritesLocations = typePrioritesLocationsByClassloader.get(cl);
       if (typePrioritesLocations == null) {
         typePrioritesLocations = scanDescriptors(MetaDataType.TYPE_PRIORITIES);

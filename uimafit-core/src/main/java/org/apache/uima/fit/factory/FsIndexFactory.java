@@ -30,6 +30,7 @@ import java.util.WeakHashMap;
 
 import org.apache.uima.fit.descriptor.FsIndex;
 import org.apache.uima.fit.descriptor.FsIndexKey;
+import org.apache.uima.fit.internal.ClassLoaderUtils;
 import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexCollection;
@@ -44,13 +45,12 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ClassUtils;
 
 /**
  */
 public final class FsIndexFactory {
-  private static Logger LOG = LoggerFactory.getLogger(FsIndexFactory.class); 
-  
+  private static Logger LOG = LoggerFactory.getLogger(FsIndexFactory.class);
+
   /**
    * Comparator that orders FeatureStructures according to the standard order of their key features.
    * For integer and float values, this is the standard linear order, and for strings it is
@@ -262,7 +262,7 @@ public final class FsIndexFactory {
    *           if the index collection could not be assembled
    */
   public static FsIndexCollection createFsIndexCollection() throws ResourceInitializationException {
-    ClassLoader cl = ClassUtils.getDefaultClassLoader();
+    ClassLoader cl = ClassLoaderUtils.findClassloader();
     FsIndexCollection aggFsIdxCol = fsIndexCollectionsByClassloader.get(cl);
     if (aggFsIdxCol == null) {
       synchronized (CREATE_LOCK) {
@@ -301,7 +301,7 @@ public final class FsIndexFactory {
    */
   public static String[] scanIndexDescriptors() throws ResourceInitializationException {
     synchronized (SCAN_LOCK) {
-      ClassLoader cl = ClassUtils.getDefaultClassLoader();
+      ClassLoader cl = ClassLoaderUtils.findClassloader();
       String[] indexLocations = fsIndexLocationsByClassloader.get(cl);
       if (indexLocations == null) {
         indexLocations = scanDescriptors(MetaDataType.FS_INDEX);
