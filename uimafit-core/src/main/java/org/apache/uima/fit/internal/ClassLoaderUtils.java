@@ -27,8 +27,8 @@ import org.springframework.util.ClassUtils;
 /**
  * INTERNAL API - Helper functions to obtain a suitable classloader.
  */
-public final class ClassloaderUtils {
-  private ClassloaderUtils() {
+public final class ClassLoaderUtils {
+  private ClassLoaderUtils() {
     // No instances
   }
 
@@ -55,7 +55,7 @@ public final class ClassloaderUtils {
       return contextClassLoader;
     }
 
-    ClassLoader uimaFITClassLoader = ClassloaderUtils.class.getClassLoader();
+    ClassLoader uimaFITClassLoader = ClassLoaderUtils.class.getClassLoader();
     if (uimaFITClassLoader != null) {
       return uimaFITClassLoader;
     }

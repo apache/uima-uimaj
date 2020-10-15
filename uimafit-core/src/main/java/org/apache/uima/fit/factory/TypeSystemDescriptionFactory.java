@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
 
-import org.apache.uima.fit.internal.ClassloaderUtils;
+import org.apache.uima.fit.internal.ClassLoaderUtils;
 import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -113,7 +113,7 @@ public final class TypeSystemDescriptionFactory {
    */
   public static TypeSystemDescription createTypeSystemDescription()
           throws ResourceInitializationException {
-    ClassLoader cl = ClassloaderUtils.findClassloader();
+    ClassLoader cl = ClassLoaderUtils.findClassloader();
     TypeSystemDescription tsd = typeDescriptorByClassloader.get(cl);
     if (tsd == null) {
       synchronized (CREATE_LOCK) {
@@ -149,7 +149,7 @@ public final class TypeSystemDescriptionFactory {
    */
   public static String[] scanTypeDescriptors() throws ResourceInitializationException {
     synchronized (SCAN_LOCK) {
-      ClassLoader cl = ClassloaderUtils.findClassloader();
+      ClassLoader cl = ClassLoaderUtils.findClassloader();
       String[] typeDescriptorLocations = typeDescriptorLocationsByClassloader.get(cl);
       if (typeDescriptorLocations == null) {
         typeDescriptorLocations = scanDescriptors(MetaDataType.TYPE_SYSTEM);

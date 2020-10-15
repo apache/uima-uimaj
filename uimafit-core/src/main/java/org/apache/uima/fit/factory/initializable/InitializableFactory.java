@@ -19,7 +19,7 @@
 package org.apache.uima.fit.factory.initializable;
 
 import org.apache.uima.UimaContext;
-import org.apache.uima.fit.internal.ClassloaderUtils;
+import org.apache.uima.fit.internal.ClassLoaderUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
@@ -53,7 +53,7 @@ public final class InitializableFactory {
           throws ResourceInitializationException {
     Class<? extends T> cls;
     try {
-      ClassLoader cl = ClassloaderUtils.findClassloader(context);
+      ClassLoader cl = ClassLoaderUtils.findClassloader(context);
       cls = Class.forName(className, true, cl).asSubclass(superClass);
     } catch (Exception e) {
       throw new ResourceInitializationException(new IllegalStateException("classname = "
@@ -76,7 +76,7 @@ public final class InitializableFactory {
   public static <T> Class<? extends T> getClass(String className, Class<T> superClass)
           throws ResourceInitializationException {
     try {
-      ClassLoader cl = ClassloaderUtils.findClassloader();
+      ClassLoader cl = ClassLoaderUtils.findClassloader();
       return Class.forName(className, true, cl).asSubclass(superClass);
     } catch (Exception e) {
       throw new ResourceInitializationException(new IllegalStateException("classname = "

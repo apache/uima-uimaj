@@ -18,8 +18,6 @@
  */
 package org.apache.uima.fit.internal;
 
-import java.net.MalformedURLException;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
@@ -95,15 +93,11 @@ public class ResourceManagerFactory {
       short maj = UimaVersion.getMajorVersion();
       short min = UimaVersion.getMinorVersion();
       short rev = UimaVersion.getBuildRevision();
-      boolean uimaCoreIgnoresContextClassloader = (maj == 2 && (min < 10 || (min == 10 && rev < 3)))
-              || // version < 2.10.3
-              (maj == 3 && ((min == 0 && rev < 1))); // version < 3.0.1
+      boolean uimaCoreIgnoresContextClassloader = 
+              (maj == 2 && (min < 10 || (min == 10 && rev < 3))) || // version < 2.10.3
+              (maj == 3 && ((min == 0 && rev < 1)));                // version < 3.0.1
       if (uimaCoreIgnoresContextClassloader) {
-        try {
-          resMgr.setExtensionClassPath(ClassloaderUtils.findClassloader(), "", true);
-        } catch (MalformedURLException e) {
-          throw new ResourceInitializationException(e);
-        }
+        resMgr.setExtensionClassLoader(ClassLoaderUtils.findClassloader(), true);
       }
 
       return resMgr;
