@@ -102,7 +102,7 @@ public class ResourceManagerFactory {
                 (maj == 2 && (min < 10 || (min == 10 && rev < 3))) || // version < 2.10.3
                 (maj == 3 && ((min == 0 && rev < 1)));                // version < 3.0.1
         if (uimaCoreIgnoresContextClassloader) {
-          resMgr.setExtensionClassPath(ClassloaderUtils.findClassloader(), "", true);
+          resMgr.setExtensionClassPath(ClassLoaderUtils.findClassloader(), "", true);
         }
 
         return resMgr;

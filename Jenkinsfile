@@ -16,7 +16,10 @@
 // under the License.
   
 pipeline {
-  agent any
+  agent {
+    label '!Windows'
+  }
+
   tools { 
     maven 'Maven (latest)' 
     jdk 'JDK 1.8 (latest)' 

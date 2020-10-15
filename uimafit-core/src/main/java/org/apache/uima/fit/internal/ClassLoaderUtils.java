@@ -27,8 +27,8 @@ import org.springframework.util.ClassUtils;
 /**
  * INTERNAL API - Helper functions to obtain a suitable classloader.
  */
-public final class ClassloaderUtils {
-  private ClassloaderUtils() {
+public final class ClassLoaderUtils {
+  private ClassLoaderUtils() {
     // No instances
   }
 
@@ -55,7 +55,7 @@ public final class ClassloaderUtils {
       return contextClassLoader;
     }
 
-    ClassLoader uimaFITClassLoader = ClassloaderUtils.class.getClassLoader();
+    ClassLoader uimaFITClassLoader = ClassLoaderUtils.class.getClassLoader();
     if (uimaFITClassLoader != null) {
       return uimaFITClassLoader;
     }
@@ -67,7 +67,7 @@ public final class ClassloaderUtils {
    * Looks up a suitable classloader in the following order:
    * <ol>
    * <li>The extension classloader of the given {@link ResourceManager}</li>
-   * <li>{@see #findClassloader()}</li>
+   * <li>See {@link #findClassloader()}</li>
    * </ol>
    *
    * @return a classloader or {@code null} if no suitable classloader could be found.
@@ -86,7 +86,7 @@ public final class ClassloaderUtils {
    * <ol>
    * <li>The extension classloader of the {@link ResourceManager} associated with the given
    * {@link UimaContext} (if any)</li>
-   * <li>{@see #findClassloader(ResourceManager)}</li>
+   * <li>See {@link #findClassloader(ResourceManager)}</li>
    * </ol>
    *
    * @return a classloader or {@code null} if no suitable classloader could be found.
