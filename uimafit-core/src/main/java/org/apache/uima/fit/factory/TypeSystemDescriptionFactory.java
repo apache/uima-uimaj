@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.WeakHashMap;
 
 import org.apache.commons.logging.LogFactory;
+import org.apache.uima.fit.internal.ClassloaderUtils;
 import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -38,7 +39,6 @@ import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.springframework.util.ClassUtils;
 
 public final class TypeSystemDescriptionFactory {
   private static final Object SCAN_LOCK = new Object();
@@ -110,7 +110,7 @@ public final class TypeSystemDescriptionFactory {
    */
   public static TypeSystemDescription createTypeSystemDescription()
           throws ResourceInitializationException {
-    ClassLoader cl = ClassUtils.getDefaultClassLoader();
+    ClassLoader cl = ClassloaderUtils.findClassloader();
     TypeSystemDescription tsd = typeDescriptorByClassloader.get(cl);
     if (tsd == null) {
       synchronized (CREATE_LOCK) {
@@ -120,12 +120,12 @@ public final class TypeSystemDescriptionFactory {
             XMLInputSource xmlInputType1 = new XMLInputSource(location);
             tsdList.add(getXMLParser().parseTypeSystemDescription(xmlInputType1));
             LogFactory.getLog(TypeSystemDescription.class)
-                .debug("Detected type system at [" + location + "]");
+            .debug("Detected type system at [" + location + "]");
           } catch (IOException e) {
             throw new ResourceInitializationException(e);
           } catch (InvalidXMLException e) {
             LogFactory.getLog(TypeSystemDescription.class)
-                .warn("[" + location + "] is not a type file. Ignoring.", e);
+            .warn("[" + location + "] is not a type file. Ignoring.", e);
           }
         }
 
@@ -148,7 +148,7 @@ public final class TypeSystemDescriptionFactory {
    */
   public static String[] scanTypeDescriptors() throws ResourceInitializationException {
     synchronized (SCAN_LOCK) {
-      ClassLoader cl = ClassUtils.getDefaultClassLoader();
+      ClassLoader cl = ClassloaderUtils.findClassloader();
       String[] typeDescriptorLocations = typeDescriptorLocationsByClassloader.get(cl);
       if (typeDescriptorLocations == null) {
         typeDescriptorLocations = scanDescriptors(MetaDataType.TYPE_SYSTEM);
