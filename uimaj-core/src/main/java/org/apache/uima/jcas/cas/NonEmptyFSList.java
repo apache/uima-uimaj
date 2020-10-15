@@ -50,9 +50,9 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
   
 //  public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
 //  public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
-  private final static CallSite _FC_head = TypeSystemImpl.createCallSite(NonEmptyFSList.class, "head");
+  private final static CallSite _FC_head = TypeSystemImpl.createCallSiteForBuiltIn(NonEmptyFSList.class, "head");
   private final static MethodHandle _FH_head = _FC_head.dynamicInvoker();
-  private final static CallSite _FC_tail = TypeSystemImpl.createCallSite(NonEmptyFSList.class, "tail");
+  private final static CallSite _FC_tail = TypeSystemImpl.createCallSiteForBuiltIn(NonEmptyFSList.class, "tail");
   private final static MethodHandle _FH_tail = _FC_tail.dynamicInvoker();
   
   

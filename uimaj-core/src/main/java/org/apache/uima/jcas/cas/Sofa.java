@@ -61,12 +61,12 @@ public class Sofa extends TOP implements SofaFSImpl {
 //  public final static int _FI_sofaString = TypeSystemImpl.getAdjustedFeatureOffset("sofaString");
 //  public final static int _FI_sofaURI    = TypeSystemImpl.getAdjustedFeatureOffset("sofaURI");
 
-  private final static CallSite _FC_sofaNum = TypeSystemImpl.createCallSite(Sofa.class, "sofaNum");
-  private final static CallSite _FC_sofaID = TypeSystemImpl.createCallSite(Sofa.class, "sofaID");
-  private final static CallSite _FC_mimeType = TypeSystemImpl.createCallSite(Sofa.class, "mimeType");
-  private final static CallSite _FC_sofaArray = TypeSystemImpl.createCallSite(Sofa.class, "sofaArray");
-  private final static CallSite _FC_sofaString = TypeSystemImpl.createCallSite(Sofa.class, "sofaString");
-  private final static CallSite _FC_sofaURI = TypeSystemImpl.createCallSite(Sofa.class, "sofaURI");
+  private final static CallSite _FC_sofaNum = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class, "sofaNum");
+  private final static CallSite _FC_sofaID = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class, "sofaID");
+  private final static CallSite _FC_mimeType = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class, "mimeType");
+  private final static CallSite _FC_sofaArray = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class, "sofaArray");
+  private final static CallSite _FC_sofaString = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class, "sofaString");
+  private final static CallSite _FC_sofaURI = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class, "sofaURI");
 
   private final static MethodHandle _FH_sofaNum = _FC_sofaNum.dynamicInvoker();
   private final static MethodHandle _FH_sofaID = _FC_sofaID.dynamicInvoker();

@@ -51,9 +51,9 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
 
 //  public final static int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
 //  public final static int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
-  private final static CallSite _FC_head = TypeSystemImpl.createCallSite(NonEmptyIntegerList.class, "head");
+  private final static CallSite _FC_head = TypeSystemImpl.createCallSiteForBuiltIn(NonEmptyIntegerList.class, "head");
   private final static MethodHandle _FH_head = _FC_head.dynamicInvoker();
-  private final static CallSite _FC_tail = TypeSystemImpl.createCallSite(NonEmptyIntegerList.class, "tail");
+  private final static CallSite _FC_tail = TypeSystemImpl.createCallSiteForBuiltIn(NonEmptyIntegerList.class, "tail");
   private final static MethodHandle _FH_tail = _FC_tail.dynamicInvoker();
 
 

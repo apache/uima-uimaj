@@ -2957,6 +2957,49 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //    callSitesForType.add(new AbstractMap.SimpleEntry<String, MutableCallSite>(featName, callSite));
     return callSite;
   }
+  
+  /**
+   * Creates and returns a new MutableCallSite for a built-in type. This handles the special case
+   * where the {@link #staticTsi} is initialized as a result of a builtin type JCas cover class
+   * being loaded in which case the callsite in the cover class is set after the {@link #staticTsi}
+   * already has been committed and therefore won't automatically get its callsites updated during
+   * the commit. So we need to create a proper callsite already pointing to the correct feature
+   * offset here.
+   * 
+   * @param clazz the JCas class
+   * @param featName the short name of the feature
+   * @return the created callsite
+   */
+  public final static MutableCallSite createCallSiteForBuiltIn(Class<? extends TOP> clazz, String featName) {
+    // If the static TSI has not yet been initialized, we assume that the initialization of the 
+    // static TSI was not triggered by the given JCas cover class. So we return a default callsite
+    // and trust that it will be properly updated when the static TSI is committed.
+    if (staticTsi == null) {
+      return createCallSite(clazz, featName);
+    }
+
+    // If the given JCas cover class not registered yet, we also assume that the initialization of 
+    // the static TSI was not triggered by the given JCas cover class.
+    TypeImpl type;
+    try {
+      int typeId = clazz.getField("typeIndexID").getInt(null);
+      type = (typeId >= staticTsi.jcasRegisteredTypes.size()) ? null
+              : staticTsi.jcasRegisteredTypes.get(typeId);
+      if (type == null) {
+        return createCallSite(clazz, featName);
+      }
+    }
+    catch (Exception e) {
+      throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR, e);
+    }
+
+    // If the JCas class has already been registered and the static TSI is already there, we look
+    // up the proper feature offset in the static TSI
+    MutableCallSite callSite = new MutableCallSite(MethodType.methodType(int.class));
+    int adjustedOffset = type.getAdjOffset(featName);
+    callSite.setTarget(FSClassRegistry.getConstantIntMethodHandle(adjustedOffset));
+    return callSite;
+  }
 
   @Override
   public Iterator<Type> iterator() {

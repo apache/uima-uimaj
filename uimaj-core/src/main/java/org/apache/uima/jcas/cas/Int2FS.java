@@ -87,14 +87,14 @@ public class Int2FS <T extends TOP> extends TOP implements
 
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_fsArray = TypeSystemImpl.createCallSite(Int2FS.class, "fsArray");
+  private final static CallSite _FC_fsArray = TypeSystemImpl.createCallSiteForBuiltIn(Int2FS.class, "fsArray");
   private final static MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
 
   public final static String _FeatName_intArray = "intArray";
 
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_intArray = TypeSystemImpl.createCallSite(Int2FS.class, "intArray");
+  private final static CallSite _FC_intArray = TypeSystemImpl.createCallSiteForBuiltIn(Int2FS.class, "intArray");
   private final static MethodHandle _FH_intArray = _FC_intArray.dynamicInvoker();
    
   /** Never called.  Disable default constructor
