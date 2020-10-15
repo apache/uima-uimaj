@@ -31,6 +31,7 @@ import java.util.WeakHashMap;
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.descriptor.FsIndex;
 import org.apache.uima.fit.descriptor.FsIndexKey;
+import org.apache.uima.fit.internal.ClassloaderUtils;
 import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexCollection;
@@ -43,7 +44,6 @@ import org.apache.uima.resource.metadata.impl.FsIndexKeyDescription_impl;
 import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.springframework.util.ClassUtils;
 
 /**
  */
@@ -259,7 +259,7 @@ public final class FsIndexFactory {
    *           if the index collection could not be assembled
    */
   public static FsIndexCollection createFsIndexCollection() throws ResourceInitializationException {
-    ClassLoader cl = ClassUtils.getDefaultClassLoader();
+    ClassLoader cl = ClassloaderUtils.findClassloader();
     FsIndexCollection aggFsIdxCol = fsIndexCollectionsByClassloader.get(cl);
     if (aggFsIdxCol == null) {
       synchronized (CREATE_LOCK) {
@@ -275,7 +275,7 @@ public final class FsIndexFactory {
             throw new ResourceInitializationException(e);
           } catch (InvalidXMLException e) {
             LogFactory.getLog(FsIndexFactory.class)
-                    .warn("[" + location + "] is not a index descriptor file. Ignoring.", e);
+            .warn("[" + location + "] is not a index descriptor file. Ignoring.", e);
           }
         }
 
@@ -299,7 +299,7 @@ public final class FsIndexFactory {
    */
   public static String[] scanIndexDescriptors() throws ResourceInitializationException {
     synchronized (SCAN_LOCK) {
-      ClassLoader cl = ClassUtils.getDefaultClassLoader();
+      ClassLoader cl = ClassloaderUtils.findClassloader();
       String[] indexLocations = fsIndexLocationsByClassloader.get(cl);
       if (indexLocations == null) {
         indexLocations = scanDescriptors(MetaDataType.FS_INDEX);
