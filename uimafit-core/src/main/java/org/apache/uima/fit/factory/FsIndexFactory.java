@@ -31,7 +31,7 @@ import java.util.WeakHashMap;
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.descriptor.FsIndex;
 import org.apache.uima.fit.descriptor.FsIndexKey;
-import org.apache.uima.fit.internal.ClassloaderUtils;
+import org.apache.uima.fit.internal.ClassLoaderUtils;
 import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexCollection;
@@ -259,7 +259,7 @@ public final class FsIndexFactory {
    *           if the index collection could not be assembled
    */
   public static FsIndexCollection createFsIndexCollection() throws ResourceInitializationException {
-    ClassLoader cl = ClassloaderUtils.findClassloader();
+    ClassLoader cl = ClassLoaderUtils.findClassloader();
     FsIndexCollection aggFsIdxCol = fsIndexCollectionsByClassloader.get(cl);
     if (aggFsIdxCol == null) {
       synchronized (CREATE_LOCK) {
@@ -299,7 +299,7 @@ public final class FsIndexFactory {
    */
   public static String[] scanIndexDescriptors() throws ResourceInitializationException {
     synchronized (SCAN_LOCK) {
-      ClassLoader cl = ClassloaderUtils.findClassloader();
+      ClassLoader cl = ClassLoaderUtils.findClassloader();
       String[] indexLocations = fsIndexLocationsByClassloader.get(cl);
       if (indexLocations == null) {
         indexLocations = scanDescriptors(MetaDataType.FS_INDEX);

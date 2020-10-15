@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.WeakHashMap;
 
 import org.apache.commons.logging.LogFactory;
-import org.apache.uima.fit.internal.ClassloaderUtils;
+import org.apache.uima.fit.internal.ClassLoaderUtils;
 import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -105,7 +105,7 @@ public final class TypePrioritiesFactory {
    *           if the collected type priorities cannot be merged.
    */
   public static TypePriorities createTypePriorities() throws ResourceInitializationException {
-    ClassLoader cl = ClassloaderUtils.findClassloader();
+    ClassLoader cl = ClassLoaderUtils.findClassloader();
     TypePriorities aggTypePriorities = typePrioritiesByClassloader.get(cl);
     if (aggTypePriorities == null) {
       synchronized (CREATE_LOCK) {
@@ -146,7 +146,7 @@ public final class TypePrioritiesFactory {
    */
   public static String[] scanTypePrioritiesDescriptors() throws ResourceInitializationException {
     synchronized (SCAN_LOCK) {
-      ClassLoader cl = ClassloaderUtils.findClassloader();
+      ClassLoader cl = ClassLoaderUtils.findClassloader();
       String[] typePrioritesLocations = typePrioritesLocationsByClassloader.get(cl);
       if (typePrioritesLocations == null) {
         typePrioritesLocations = scanDescriptors(MetaDataType.TYPE_PRIORITIES);
