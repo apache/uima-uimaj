@@ -28,7 +28,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.examples.tutorial.type.RoomNumber;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.util.Level;
 
 /**
  * This class demonstrates annotating member variables with the @ConfigurationParameter annotation.
@@ -74,7 +73,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         RoomNumber annotation = new RoomNumber(aJCas, matcher.start(), matcher.end());
         annotation.setBuilding(mLocations[i]);
         annotation.addToIndexes();
-        getContext().getLogger().log(Level.FINEST, "Found: " + annotation);
+        getLogger().debug("Found: {}", annotation);
       }
     }
   }
