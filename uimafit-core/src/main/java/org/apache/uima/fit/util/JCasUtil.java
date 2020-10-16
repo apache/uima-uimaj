@@ -541,6 +541,45 @@ public final class JCasUtil {
   }
 
   /**
+   * Get a list of annotations of the given annotation type overlapping the given annotation. Does 
+   * not use subiterators and does not respect type prioritites.
+   * 
+   * @param aJCas
+   *          a CAS.
+   * @param aType
+   *          a UIMA type.
+   * @param  aBoundaryAnnotation
+   *          the covering annotation.
+   * @return a list of overlapping annotations.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   */  
+  public static <T extends Annotation> List<T> selectOverlapping(JCas aJCas, Class<T> aType,
+          AnnotationFS aBoundaryAnnotation) {
+    return cast(
+            CasUtil.selectOverlapping(aJCas.getCas(), getType(aJCas, aType), aBoundaryAnnotation));
+  }  
+  
+  /**
+   * Get a list of annotations of the given annotation type overlapping the given span. Does not use
+   * subiterators and does not respect type prioritites.
+   * 
+   * @param aJCas
+   *          a CAS.
+   * @param aType
+   *          a UIMA type.
+   * @param aBegin
+   *          begin offset.
+   * @param aEnd
+   *          end offset.
+   * @return a list of overlapping annotations.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   */  
+  public static <T extends Annotation> List<T> selectOverlapping(JCas aJCas, Class<T> aType,
+          int aBegin, int aEnd) {    
+    return cast(CasUtil.selectOverlapping(aJCas.getCas(), getType(aJCas, aType), aBegin, aEnd));
+  }
+  
+  /**
    * Check if the given annotation contains any annotation of the given type.
    * 
    * @param jCas

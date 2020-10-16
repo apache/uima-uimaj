@@ -28,10 +28,12 @@ import static org.apache.uima.fit.util.CasUtil.selectAll;
 import static org.apache.uima.fit.util.CasUtil.selectCovered;
 import static org.apache.uima.fit.util.CasUtil.selectCovering;
 import static org.apache.uima.fit.util.CasUtil.selectFS;
+import static org.apache.uima.fit.util.CasUtil.selectOverlapping;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.fit.util.AnnotationPredicates;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -106,6 +108,33 @@ public class CasUtilBenchmark {
 
     new Benchmark("CAS select ALL and iterate v3", template)
       .measure(() -> cas.select().forEach(v -> {}))
+      .run();
+  }
+  
+  @Test
+  public void benchmarkSelectOverlapping() {
+    Benchmark template = new Benchmark("TEMPLATE")
+        .initialize(n -> initRandomCas(cas, n))
+        .magnitude(10)
+        .magnitudeIncrement(count -> count * 10)
+        .incrementTimes(4);
+    
+    new Benchmark("CAS selectOverlapping", template)
+      .measure(() -> {
+        Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
+        Type tokenType = getType(cas, TYPE_NAME_TOKEN);
+        select(cas, sentenceType).forEach(s -> selectOverlapping(cas, tokenType, s).forEach(t -> {}));
+      })
+      .run();
+
+    new Benchmark("CAS selectOverlapping v3", template)
+      .measure(() -> {
+        Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
+        Type tokenType = getType(cas, TYPE_NAME_TOKEN);
+        cas.select(sentenceType).forEach(s -> cas.select(tokenType)
+            .filter(t -> AnnotationPredicates.overlaps((AnnotationFS) t, (AnnotationFS)s))
+            .forEach(t -> {}));
+      })
       .run();
   }
   
