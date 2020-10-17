@@ -36,6 +36,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.ProcessTrace;
 
+
 /**
  * An example of CAS Consumer. <br>
  * AnnotationPrinter prints to an output file all annotations in the CAS. <br>
@@ -52,10 +53,16 @@ import org.apache.uima.util.ProcessTrace;
  */
 
 public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObjectProcessor {
+  
+  /** The out file. */
   File outFile;
 
+  /** The file writer. */
   FileWriter fileWriter;
 
+  /**
+   * Instantiates a new annotation printer.
+   */
   public AnnotationPrinter() {
   }
 

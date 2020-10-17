@@ -24,6 +24,8 @@ public class JsonXmiCasSerializerTest extends JsonCasSerializerTest {
   /*********************************************************************
    *    This is a version of the Json tests that does XMI 
    *    serialization instead
+   *    
+   * It extends the other JsonCasSerializerTest but sets up some flags
    *********************************************************************/
   @Override 
   protected void setUp() throws Exception {

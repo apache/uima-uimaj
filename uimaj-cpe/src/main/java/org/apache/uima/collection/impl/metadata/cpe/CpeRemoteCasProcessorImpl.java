@@ -22,10 +22,19 @@ package org.apache.uima.collection.impl.metadata.cpe;
 import org.apache.uima.collection.metadata.CasProcessorDeploymentParams;
 import org.apache.uima.collection.metadata.CpeRemoteCasProcessor;
 
+
+/**
+ * The Class CpeRemoteCasProcessorImpl.
+ */
 public class CpeRemoteCasProcessorImpl extends CasProcessorCpeObject implements
         CpeRemoteCasProcessor {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -1290194910813284905L;
 
+  /**
+   * Instantiates a new cpe remote cas processor impl.
+   */
   public CpeRemoteCasProcessorImpl() {
     super();
     try {
@@ -37,6 +46,10 @@ public class CpeRemoteCasProcessorImpl extends CasProcessorCpeObject implements
   }
 
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.impl.metadata.cpe.CasProcessorCpeObject#addDefaults()
+   */
+  @Override
   protected void addDefaults() {
     try {
       if (super.getDeploymentParams() == null) {

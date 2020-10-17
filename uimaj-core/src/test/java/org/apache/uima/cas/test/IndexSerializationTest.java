@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
@@ -40,6 +38,8 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
+
+import junit.framework.TestCase;
 
 
 public class IndexSerializationTest extends TestCase {
@@ -153,6 +153,7 @@ public class IndexSerializationTest extends TestCase {
     tsa.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     // Commit the type system.
     ((CASImpl) casMgr).commitTypeSystem();
+    tsa = casMgr.getTypeSystemMgr();  // because of type system consolidation
     // assert(tsa.isCommitted());
     // // Create the CAS indexes.
     // tcas.initCASIndexes();
@@ -225,8 +226,8 @@ public class IndexSerializationTest extends TestCase {
     CASCompleteSerializer cs;
     cs = Serialization.serializeCASComplete(casMgr);
     // casMgr = CASFactory.createCAS();
-    CASMgr realCasMgr = CASFactory.createCAS();
-    ((CASImpl) realCasMgr).commitTypeSystem();
+    CASMgr realCasMgr = CASFactory.createCAS();  // creates base view, but no ts, so no ir
+    ((CASImpl) realCasMgr).commitTypeSystem();   // also makes index repo (which will be replaced), but doesn't init the built-in indexes
     Serialization.deserializeCASComplete(cs, realCasMgr);
     cas = ((CASImpl) realCasMgr).getCurrentView();
     casMgr = (CASMgr) cas;

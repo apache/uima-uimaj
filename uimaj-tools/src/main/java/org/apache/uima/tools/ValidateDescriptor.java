@@ -24,6 +24,7 @@ import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
+
 /**
  * Command-line utility for validating a descriptor. Supports CollectionReader, CasInitializer,
  * AnalysisEngine, and CasConsumer descriptors.
@@ -32,7 +33,7 @@ public class ValidateDescriptor {
 
   /**
    * Runs the ValidateDescriptor tool.
-   * 
+   *
    * @param args          takes one argument, the path to a descriptor file.
    * @throws Exception the exception
    */

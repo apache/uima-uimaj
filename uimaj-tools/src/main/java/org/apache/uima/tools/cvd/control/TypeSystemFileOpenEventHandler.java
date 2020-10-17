@@ -34,21 +34,32 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
+
 /**
  * Load a type system file.  Need to load type system before one can load XCAS.
  */
 public class TypeSystemFileOpenEventHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new type system file open event handler.
+   *
+   * @param frame the frame
+   */
   public TypeSystemFileOpenEventHandler(MainFrame frame) {
     super();
     this.main = frame;
   }
 
   /**
+   * Action performed.
+   *
+   * @param event the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
+  @Override
   public void actionPerformed(ActionEvent event) {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Open Type System File");

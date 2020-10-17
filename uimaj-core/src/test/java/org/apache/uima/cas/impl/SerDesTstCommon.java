@@ -30,6 +30,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import junit.framework.TestCase;
 
@@ -118,9 +121,11 @@ public abstract class SerDesTstCommon extends TestCase {
   private final Random randomseed = new Random();
   
   { long seed = randomseed.nextLong();
+    //  8798009300995058889L;
     // long seed = 1_449_257_605_347_913_923L;   // to set a specific seed
+//    seed = 2_505_546_892_701_000_347L;
     randomseed.setSeed(seed);  
-    System.out.format("SerDesTstCommon Initial RandomSeed: %,d%n", seed);
+    System.out.format("SerDesTstCommon Initial RandomSeed: %d%n", seed);
   }
   
   /**
@@ -184,7 +189,7 @@ public abstract class SerDesTstCommon extends TestCase {
       dir.mkdirs();
     }
     
-    System.out.println("debug out file name is " + fname);  
+//    System.out.println("debug out file name is " + fname);  
     
 
     return

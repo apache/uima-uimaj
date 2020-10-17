@@ -52,6 +52,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 
+
 /**
  * Create a new file resource in the provided container. If the container resource (a folder or a
  * project) is selected in the workspace when the wizard is opened, it will accept it as the target
@@ -73,15 +74,18 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
   // 4 = implname element name (implementationName or annotatorImplementationName
   // 5 = "<primitive>true</primitive>\n"
   
+  /** The Constant XMLNS_PART. */
   // for explanation of this strange code, see JDK bug 6447475   found by findbugs
   public final static String XMLNS_PART;
   static {XMLNS_PART = "xmlns=\"http://uima.apache.org/resourceSpecifier\"";}
 
+  /** The Constant COMMON_HEADER. */
   public final static String COMMON_HEADER;
   static {COMMON_HEADER = 
     "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" 
     + "<{2} " + XMLNS_PART + ">\n";}
 
+  /** The Constant COMMON_NDVV. */
   public final static String COMMON_NDVV;
   static {COMMON_NDVV = 
       "    <name>{0}</name>\n"    // 1 = name of component (e.g. type name, type priority name, ae descriptor name)
@@ -89,6 +93,7 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
     + "    <version>1.0</version>\n"
     + "    <vendor></vendor>\n";}
   
+  /** The Constant COMMON_FULL_DESCRIPTOR. */
   public final static String COMMON_FULL_DESCRIPTOR;
   static {COMMON_FULL_DESCRIPTOR =
       COMMON_HEADER 
@@ -115,6 +120,7 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
     + "</{2}>"
     ;}
   
+  /** The common partial descriptor. */
   public static String COMMON_PARTIAL_DESCRIPTOR;
   static {COMMON_PARTIAL_DESCRIPTOR =
       COMMON_HEADER 
@@ -122,12 +128,20 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
     + "{1}" 
     + "</{2}>\n";}
     
+  /** The page. */
   protected AbstractNewWizardPage page;
 
+  /** The selection. */
   protected ISelection selection;
 
+  /** The window title. */
   private String windowTitle;
 
+  /**
+   * Instantiates a new abstract new wizard.
+   *
+   * @param windowTitle the window title
+   */
   public AbstractNewWizard(String windowTitle) {
     super();
     setDialogSettings(TAEConfiguratorPlugin.getDefault().getDialogSettings());
@@ -144,11 +158,15 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
   /**
    * Called when 'Finish' button is pressed in the wizard. Create an operation and run it using
    * wizard as execution context.
+   *
+   * @return true, if successful
    */
+  @Override
   public boolean performFinish() {
     final String containerName = page.getContainerName();
     final String fileName = page.getFileName();
     IRunnableWithProgress op = new IRunnableWithProgress() {
+      @Override
       public void run(IProgressMonitor monitor) throws InvocationTargetException {
         try {
           doFinish(containerName, fileName, monitor);
@@ -171,8 +189,22 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
     return true;
   }
 
+  /**
+   * Gets the prototype descriptor.
+   *
+   * @param name the name
+   * @return the prototype descriptor
+   */
   public abstract String getPrototypeDescriptor(String name);
 
+  /**
+   * Do finish.
+   *
+   * @param containerName the container name
+   * @param fileName the file name
+   * @param monitor the monitor
+   * @throws CoreException the core exception
+   */
   void doFinish(String containerName, String fileName, IProgressMonitor monitor)
           throws CoreException {
     // create a sample file
@@ -224,6 +256,7 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
     monitor.worked(1);
     monitor.setTaskName("Starting editor for new descriptor...");
     getShell().getDisplay().asyncExec(new Runnable() {
+      @Override
       public void run() {
         IWorkbenchPage page1 = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         try {
@@ -235,11 +268,21 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
     monitor.worked(2);
   }
 
+  /**
+   * Throw core exception.
+   *
+   * @param message the message
+   * @throws CoreException the core exception
+   */
   private void throwCoreException(String message) throws CoreException {
     IStatus status = new Status(IStatus.ERROR, "DescEditor", IStatus.OK, message, null);
     throw new CoreException(status);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+   */
+  @Override
   public void init(IWorkbench workbench, IStructuredSelection pSelection) {
     selection = pSelection;
     setWindowTitle(windowTitle);

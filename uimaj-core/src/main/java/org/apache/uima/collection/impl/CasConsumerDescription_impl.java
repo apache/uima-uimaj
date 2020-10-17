@@ -87,7 +87,7 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
               new Object[] { getSourceUrlString() });
     }
     // try to load user class
-    // ust UIMA extension ClassLoader if available
+    // just UIMA extension ClassLoader if available
     Class<?> implClass;
     try {
       implClass = Class_TCCL.forName(getImplementationName(), aResourceManager);
@@ -102,7 +102,7 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
                   getImplementationName(), CasConsumer.class.getName(), getSourceUrlString() });
     }
     // try to create a CAS
-    List<ProcessingResourceMetaData> metadata = new ArrayList<ProcessingResourceMetaData>();
+    List<ProcessingResourceMetaData> metadata = new ArrayList<>();
     metadata.add(getCasConsumerMetaData());
     CasCreationUtils.createCas(metadata);
   }

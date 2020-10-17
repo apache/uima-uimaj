@@ -23,17 +23,33 @@ import org.apache.uima.taeconfigurator.editors.Form2Panel;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.ui.forms.IManagedForm;
 
+
+/**
+ * The Class AggregatePage.
+ */
 public class AggregatePage extends HeaderPageWithSash {
 
+  /** The flow section. */
   private FlowSection flowSection;
 
+  /** The aggregate section. */
   private AggregateSection aggregateSection;
 
+  /**
+   * Instantiates a new aggregate page.
+   *
+   * @param aEditor the a editor
+   */
   public AggregatePage(MultiPageEditor aEditor) {
     super(aEditor, "Aggregate Component Settings");
   }
 
-  /** Called by the framework to fill in the contents */
+  /**
+   *  Called by the framework to fill in the contents.
+   *
+   * @param managedForm the managed form
+   */
+  @Override
   protected void createFormContent(IManagedForm managedForm) {
 
     final Form2Panel form = setup2ColumnLayout(managedForm, !EQUAL_WIDTH);
@@ -44,10 +60,20 @@ public class AggregatePage extends HeaderPageWithSash {
     createToolBarActions(managedForm);
   }
 
+  /**
+   * Gets the flow section.
+   *
+   * @return the flow section
+   */
   public FlowSection getFlowSection() {
     return flowSection;
   }
 
+  /**
+   * Gets the aggregate section.
+   *
+   * @return the aggregate section
+   */
   public AggregateSection getAggregateSection() {
     return aggregateSection;
   }

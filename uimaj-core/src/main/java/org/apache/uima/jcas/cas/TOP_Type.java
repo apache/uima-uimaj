@@ -19,7 +19,6 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
@@ -29,18 +28,21 @@ import org.apache.uima.jcas.JCas;
 
 // *********************************
 // * Implementation of TOP_Type *
+// *   Not used, only present to avoid compile errors
+// *   for old v2 style _Type classes
 // *********************************
 /**
  * hold Cas type information, link to JCas instance. One instance per Type, per CAS
+ * @deprecated
  */
-
+@Deprecated
 public class TOP_Type {
 
 	/**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-	public final static int typeIndexID = TOP.typeIndexID;
+	public final static int typeIndexID = -1;
 
 	// public final static int type = typeIndexID;
 
@@ -175,18 +177,18 @@ public class TOP_Type {
 //		}
 	}
 
-	// ************ No Object support ********************
-	protected void checkType(int inst) {
-		if (!casImpl.getTypeSystemImpl().subsumes(casTypeCode, casImpl.getHeapValue(inst)))
-			invalidTypeArg(inst);
-	}
-
-	protected void invalidTypeArg(int inst) {
-		CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE,
-				new String[] { casType.getName(),
-						this.casImpl.getTypeSystemImpl().ll_getTypeForCode(casImpl.getHeapValue(inst)).getName() });
-		throw e;
-	}
+//	// ************ No Object support ********************
+//	protected void checkType(int inst) {
+//		if (!casImpl.getTypeSystemImpl().subsumes(casTypeCode, casImpl.getHeapValue(inst)))
+//			invalidTypeArg(inst);
+//	}
+//
+//	protected void invalidTypeArg(int inst) {
+//		CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE,
+//				new String[] { casType.getName(),
+//						this.casImpl.getTypeSystemImpl().ll_getTypeForCode(casImpl.getHeapValue(inst)).getName() });
+//		throw e;
+//	}
 
 	/**
 	 * add the corresponding FeatureStructure to all Cas indexes

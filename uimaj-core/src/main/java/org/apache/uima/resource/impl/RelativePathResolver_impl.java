@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.uima.resource.RelativePathResolver;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * Reference implementation of {@link RelativePathResolver}.
@@ -79,7 +80,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
     } catch (MalformedURLException e) {
       // initialize to empty path
       mDataPath = "";
-      mBaseUrls = new URL[0];
+      mBaseUrls = Constants.EMPTY_URL_ARRAY;
     }
     mClassLoader = aClassLoader;
   }
@@ -95,7 +96,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
    * @see org.apache.uima.resource.RelativePathResolver#setDataPath(java.lang.String)
    */
   public void setDataPath(String aPath) throws MalformedURLException {
-    List<URL> urls = new ArrayList<URL>();
+    List<URL> urls = new ArrayList<>();
 
     // tokenize based on path.separator system property
     String pathSepChar = System.getProperty("path.separator");
@@ -164,19 +165,10 @@ public class RelativePathResolver_impl implements RelativePathResolver {
    * Utility method that checks to see if a file exists at the specified URL.
    */
   protected boolean fileExistsAtUrl(URL aUrl) {
-    InputStream testStream = null;
-    try {
-      testStream = aUrl.openStream();
+    try (InputStream testStream = aUrl.openStream()) {
       return true;
     } catch (IOException e) {
       return false;
-    } finally {
-      if (testStream != null) {
-        try {
-          testStream.close();
-        } catch (IOException e) {
-        }
-      }
     }
   }
 

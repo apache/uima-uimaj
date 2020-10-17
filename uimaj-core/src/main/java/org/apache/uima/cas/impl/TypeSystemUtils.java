@@ -19,19 +19,17 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
 import java.util.StringTokenizer;
 
-import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 
 /**
- * Class comment for TypeSystemUtils.java goes here.
- * 
- * 
+ * Type Utilities - all static, so class is abstract to prevent creation
+ * Used by Feature Path
  */
 public abstract class TypeSystemUtils {
 
@@ -248,7 +246,7 @@ public abstract class TypeSystemUtils {
       return false;
     }
     final int len = s.length();
-    if (s == null || len == 0) {
+    if (len == 0) {
       return false;
     }
     int pos = 0;
@@ -321,8 +319,9 @@ public abstract class TypeSystemUtils {
   }
 
   /**
-   * Checks if a feature path is valid for a given type.
-   * 
+   * <p>Given a starting Type and a list of features representing a feature path, 
+   * checks if a feature path is valid for a given type.</p>
+
    * <p>
    * We distinguish three cases:
    * <ol>
@@ -330,10 +329,10 @@ public abstract class TypeSystemUtils {
    * <code>path</code> can ever be defined.</li>
    * <li><code>PathValid.ALWAYS</code>: if all intermediate objects are non-null, this
    * <code>path</code> will always be defined on any object of <code>type</code>. </li>
-   * <li><code>PathValid.POSSIBLE</code>: some objects of <code>type</code> will have<code>path</code> 
+   * <li><code>PathValid.POSSIBLE</code>: some objects of <code>type</code> will have <code>path</code> 
    * defined, while others may not.</li>
    * </ol>
-   * <b>Note:</b> we always assume that all references are not null.  A return value of ALWAYS
+   * <b>Note:</b> In computing validity, we always assume that all references are not null.  A return value of ALWAYS
    * can of course not guarantee that all intermediate objects will always exist; only that if they
    * exist, the path will be defined.
    * 
@@ -343,57 +342,76 @@ public abstract class TypeSystemUtils {
    * {@link PathValid#NEVER NEVER}.
    */
   public static final PathValid isPathValid(Type type, List<String> path) {
-    Stack<String> fStack = new Stack<String>();
-    // Note: addAll() adds elements to the stack in the wrong order.
-    for (int i = (path.size() - 1); i >= 0; i--) {
-      fStack.push(path.get(i));
-    }
-    return isPathValid(type, fStack, PathValid.ALWAYS);
+    return isPathValid((TypeImpl)type, new ArrayDeque<>(path), PathValid.ALWAYS);
   }
-
-  private static final PathValid isPathValid(Type type, Stack<String> path, 
-      PathValid status) {
+   
+  /**
+   * Recursively called on each successive path element.
+   * Pops a feature name off the path, and checks if it exists for the type.
+   *   -- if exists, gets its range type and iterates via recursion.
+   * Stops when the queue of feature names is empty.
+   * 
+   * @param type
+   * @param path
+   * @param status the returned value if the feature is found.
+   * @return
+   */
+  private static final PathValid isPathValid(TypeImpl type, Deque<String> path, PathValid status) {
     // If the path is empty, return the input status.
     if (path.isEmpty()) {
       return status;
     }
     // Pop the next feature name from the stack and check if it's defined for the current type.
-    String fName = path.pop();
-    Feature feat = type.getFeatureByBaseName(fName);
-    if (feat != null) {
+    String featName = path.pop();
+    FeatureImpl fi = type.getFeatureByBaseName(featName);
+    if (fi != null) {
       // If feature is defined, we can continue directly.
-      return isPathValid(feat.getRange(), path, status);
+      return isPathValid(fi.getRangeImpl(), path, status);
     }
     // If feature is not defined for type, check to see if there are any subtypes for which the
     // path is defined (possible).
-    List<Type> subtypes = new ArrayList<Type>();
-    getFeatureDefiningSubtypes(type, fName, subtypes);
-    for (int i = 0; i < subtypes.size(); i++) {
-      // Retrieve the feature value type
-      Type nextType = subtypes.get(i).getFeatureByBaseName(fName).getRange();
-      // Call isPathValid() on next type in chain.
-      PathValid newStatus = isPathValid(nextType, path, PathValid.POSSIBLE);
-      if (newStatus == PathValid.POSSIBLE) {
-        // If we found one, we can stop here and return.
-        return PathValid.POSSIBLE;
-      }
-    }
-    // No subtype was found for which the path was defined.
-    return PathValid.NEVER;
+
+    return isPathValidInSubtypes(type, featName, path);
+    
   }
-  
-  // Find subtypes that define the feature.  Add subtypes to list.
-  private static final void getFeatureDefiningSubtypes(Type type, String fName, List<Type> types) {
-    TypeSystem ts = ((TypeImpl) type).getTypeSystem();
-    List<?> subtypes = ts.getDirectSubtypes(type);
-    for (int i = 0; i < subtypes.size(); i++) {
-      Type subtype = (Type) subtypes.get(i);
-      if (subtype.getFeatureByBaseName(fName) != null) {
-        types.add((Type) subtypes.get(i));
-      } else {
-        getFeatureDefiningSubtypes(subtype, fName, types);
+   
+  /**
+   * Called when the Feature Name is not a valid feature of the current <code>type</code>.
+   * 
+   * It examines all the subtypes to see if it can find one for which the feature is valid.
+   * 
+   * If the feature name is found in any subtype (recursively) of the type
+   *   - given one subtype is found having the feature, 
+   *     continue the checking of subsequent features in the path - to see if there's some path where all the features are found.
+   *     -- if so, return PathValid.POSSIBLE.
+   *     -- if not, loop to try other subtypes.
+   *   - if no subtypes have all the features, return PathValid.NEVER. 
+   *     
+   *   The subtypes are descended when the feature name isn't a feature of a subtype, to see if a sub-sub-type
+   *     might define the feature.  
+   *   The subtypes for one type are iterated while they have no match at any depth for the feature name
+   *      
+   * @param type the type whose subtypes should be checked
+   * @param fName
+   * @param nextPath
+   * @return
+   */
+  private static final PathValid isPathValidInSubtypes(TypeImpl type, String fName, Deque<String> nextPath) {
+    for (TypeImpl subtype : type.getDirectSubtypes()) {
+      FeatureImpl fi = subtype.getFeatureByBaseName(fName); 
+      if (fi != null) {
+        if (PathValid.POSSIBLE == isPathValid(fi.getRangeImpl(), nextPath, PathValid.POSSIBLE)) { // check subsequent types.
+          return PathValid.POSSIBLE;
+        } else {
+          continue; // try another subtype
+        }
+      } else { // look in sub-sub-types for feature
+        if (PathValid.POSSIBLE == isPathValidInSubtypes(subtype, fName, nextPath)) {
+          return PathValid.POSSIBLE;
+        }
       }
-    }
+    }  // loop for all subtypes, looking for a POSSIBLE path
+    return PathValid.NEVER;
   }
 
   /**
@@ -406,8 +424,7 @@ public abstract class TypeSystemUtils {
    * @return An integer encoding the the type class. See above.
    */
   public static final int classifyType(Type type) {
-    LowLevelTypeSystem llts = ((TypeImpl) type).getTypeSystem().getLowLevelTypeSystem();
-    return llts.ll_getTypeClass(llts.ll_getCodeForType(type));
+    return TypeSystemImpl.getTypeClass((TypeImpl) type);
   }
 
 }

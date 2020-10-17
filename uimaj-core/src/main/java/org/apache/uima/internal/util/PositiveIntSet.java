@@ -18,7 +18,15 @@
  */
 package org.apache.uima.internal.util;
 
+import java.util.function.IntConsumer;
+
+/**
+ * An set of non-zero integers, ability to iterate over them (possibly in a sorted way),
+ * with O(1) operations for adding, removing, and testing for contains.   
+ */
 public interface PositiveIntSet {
+
+  static final boolean IS_TRACE_MODE_SWITCH = false;  // for debugging
 
   /**
    * remove all members of the set
@@ -110,4 +118,16 @@ public interface PositiveIntSet {
    * @return true if the position is between the first and last element inclusive.
    */
   boolean isValid(int position);
+  
+  /**
+   * Iterate over the positive int set in sort order, and run the consumer on each value
+   * @param v the consumer to run
+   */
+  
+  default void forAllInts(IntConsumer v) {
+    IntListIterator it = iterator();
+    while (it.hasNext()) {
+      v.accept(it.nextNvc());
+    }
+  }
 }

@@ -22,24 +22,51 @@ package org.apache.uima.cas;
 import org.apache.uima.cas.impl.LowLevelCAS;
 
 /**
- * Interface for a feature path. A feature path is a sequence of features. The
- * feature path can either be initialized using the addFeature() or the
- * initialize() method. To initialize and check the feature path for a desired
- * type call typeInit(). After these calls the feature path value can be
- * extracted using the provided getter methods. <br>
- * <br>
+ * <p>
+ * Interface for a feature path. A feature path is a sequence of features, specified as shortFeatureNames (strings).
+ * The feature path can either be initialized using the addFeature() or the initialize() method.
+ * </p> 
+ * 
+ * <p>
+ * A single feature path object can apply to many different types.  The method <code>typeInit()</code> is (optionally)
+ * used to bind a feature path object to a particular starting Type.  This binding remains until another 
+ * call to <code>typeInit()</code> is made. It is used to speed up application of the featurePath to an instance,
+ * but is not required - the application will dynamically lookup features along the path as needed.
+ * </p>
+ * 
+ * <p>
+ * If no typeInit call is made, or if the current binding is not correct for the Feature Structure, 
+ * then the mapping of the features in the feature path specification to actual
+ * features is recomputed during the the evaluation of the particular getter invocation.
+ * </p> 
+ * 
+ * <p>
+ * After these calls the feature path value can be applied to a particular Feature Structure and a value can be 
+ * extracted using the provided getter methods.</p>
+ * <p>
  * The feature path elements are separated by "/". So a valid feature path is
- * /my/feature/path. <br>
- * <br>
+ * /my/feature/path. </p>
+ * <p>
  * The feature path syntax also allows some built-in functions on the last
  * feature path element. Built-in functions are added with a ":" followed by the
  * function name. E.g. "/my/path:fsId()". The allowed built-in functions are:
+ * </p>
  * <ul>
  * <li>coveredText()</li>
  * <li>fsId()</li>
  * <li>typeName()</li>
  * </ul>
+ * <p>
  * Built-in functions are only evaluated if getValueAsString() is called.
+ * </p>
+ * 
+ * <p>
+ * All the intervening features except for the last must be features whose values are other Feature Structures.
+ * </p>
+ * 
+ * <p>Features whose range is an Array are not permitted, unless they occur at the end of the Feature Path. In that case,
+ * the value returned must be returned by one of the getValueAsString methods.
+ * </p>
  */
 public interface FeaturePath {
 
@@ -94,8 +121,9 @@ public interface FeaturePath {
    /**
     * Returns the feature path value as string for the given FeatureStructure.
     * 
-    * If the feature path contains a built-in function it is evaluated and the
-    * built-in function value is returned.
+    * If the feature path ends in a built-in function it is evaluated and the
+    * built-in function value is returned; this is the only method which evaluates
+    * built-in functions
     * 
     * If the feature path ends with an array the array is converted to a comma
     * separated string.
@@ -104,7 +132,7 @@ public interface FeaturePath {
     *           FeatureStructure to evaluate the feature path value
     * 
     * @return Returns the value of the feature path as String or null if the
-    *         feature path was not set
+    *         feature path was not set or some features along the path were null.
     */
    public String getValueAsString(FeatureStructure fs);
 
@@ -147,8 +175,21 @@ public interface FeaturePath {
     * 
     * @return Returns the type class of the feature path or null if the feature
     *         path is not set
+    * @deprecated use getTypeClass (spelling fix)
     */
+   @Deprecated
    public TypeClass getTypClass(FeatureStructure fs);
+
+   /**
+    * Returns the type class of the feature path.
+    * 
+    * @param fs
+    *           FeatureStructure to evaluate the feature path type class
+    * 
+    * @return Returns the type class of the feature path or null if the feature
+    *         path is not set
+    */
+   public TypeClass getTypeClass(FeatureStructure fs);
 
    /**
     * Returns the feature path as string.
@@ -255,4 +296,16 @@ public interface FeaturePath {
     *         feature path or null if the feature path was not set
     */
    public FeatureStructure getFSValue(FeatureStructure fs);
+
+//   /**
+//    * Returns the Java Object value of a JavaObject valued feature path.
+//    * 
+//    * @param fs
+//    *           FeatureStructure to evaluate the feature path value
+//    * 
+//    * @return Returns the Java Object value of a JavaObject valued feature path
+//    *         or null if the feature path was not set
+//    */
+//   public Object getJavaObjectValue(FeatureStructure fs);
+
 }

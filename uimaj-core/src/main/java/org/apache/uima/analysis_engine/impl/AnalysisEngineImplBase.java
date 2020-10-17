@@ -20,12 +20,13 @@
 package org.apache.uima.analysis_engine.impl;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineManagement;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -35,14 +36,19 @@ import org.apache.uima.analysis_engine.ResultNotSupportedException;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
+import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.Language;
+import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.internal.util.JmxMBeanAgent;
+import org.apache.uima.internal.util.function.Runnable_withException;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.CasDefinition;
 import org.apache.uima.resource.ConfigurableResource_ImplBase;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -58,6 +64,7 @@ import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTraceEvent_impl;
 import org.apache.uima.util.impl.ProcessTrace_impl;
+import org.slf4j.MDC;
 
 /**
  * Provides functionality common to Analysis Engine implementations.
@@ -93,23 +100,19 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see org.apache.uima.analysis_engine.AnalysisEngine#batchProcessComplete()
    */
   public void batchProcessComplete() throws AnalysisEngineProcessException {
-    // TODO Auto-generated method stub
-    
+ 
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_engine.AnalysisEngine#collectionProcessComplete()
    */
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
-    // TODO Auto-generated method stub
-    
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_engine.AnalysisEngine#processAndOutputNewCASes(org.apache.uima.cas.CAS)
    */
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -360,22 +363,12 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   public synchronized String[] getFeatureNamesForType(String aTypeName) {
     // build CAS and populate mFirstTypeSystem
-    CAS cas = getCasManager().getCas(this.getUimaContextAdmin().getQualifiedContextName());
-    TypeSystem ts = cas.getTypeSystem();
+    CASImpl cas = (CASImpl) getCasManager().getCas(this.getUimaContextAdmin().getQualifiedContextName());
+    TypeSystemImpl ts = cas.getTypeSystemImpl();
     getCasManager().releaseCas(cas);
 
-    Type t = ts.getType(aTypeName);
-    if (t != null) {
-      List<Feature> features = t.getFeatures();
-      String[] featNames = new String[features.size()];
-      for (int i = 0; i < features.size(); i++) {
-        Feature f = features.get(i);
-        featNames[i] = f.getShortName();
-      }
-      return featNames;
-    } else {
-      return null;
-    }
+    TypeImpl t = ts.getType(aTypeName);
+    return (t == null) ? null : t.getFeaturesAsStream().map(f -> f.getShortName()).toArray(size -> new String[size]);
   }
 
   /*
@@ -603,4 +596,77 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   protected String getMBeanNamePrefix() {
     return mMBeanNamePrefix;
   }
+  
+  private static final boolean isMDC;
+  static {
+    MDC.put("uima_test", "uima_test");
+    isMDC = null != MDC.get("uima_test");
+    MDC.remove("uima_test");
+  }
+  protected void callInitializeMethod(AnalysisComponent component, UimaContext context) throws ResourceInitializationException {
+//    component.initialize(context);
+    try {
+      withContexts(component, context, null, () -> component.initialize(context));
+    } catch (Exception e) {
+      throw (e instanceof ResourceInitializationException)
+              ? ((ResourceInitializationException)e) 
+              : new ResourceInitializationException(e);
+    }
+  }
+  
+  protected void callProcessMethod(AnalysisComponent component, AbstractCas cas) throws Exception {
+//    component.process(cas);
+//    getMBean().incrementCASesProcessed();
+    withContexts(component, 
+                getUimaContext(), 
+                cas,
+                 () -> {component.process(cas); 
+                        getMBean().incrementCASesProcessed();});
+  }
+  
+  private void withContexts(AnalysisComponent component, UimaContext context, AbstractCas cas, Runnable_withException r) throws Exception {
+    if (isMDC) {
+    UimaContext_ImplBase ucib = (UimaContext_ImplBase)context;
+    String prevCN = pushMDCstring(MDC_ANNOTATOR_CONTEXT_NAME, ucib.getQualifiedContextName());
+    String prevAN = pushMDCstring(MDC_ANNOTATOR_IMPL_NAME, component.getClass().getName());
+    String prevRID = pushMDCstring(MDC_ROOT_CONTEXT_ID, ((UimaContext_ImplBase)ucib.getRootContext())
+                                                     .getMdcId());
+    String prevCAS = null;
+    if (cas != null) {
+      CASImpl casImpl = (cas instanceof JCas) ? ((JCasImpl)cas).getCasImpl() : (CASImpl)cas;
+      prevCAS = pushMDCstring(MDC_CAS_ID, casImpl.getCasId());
+    }
+    try {
+      r.run();
+    } finally {
+      popMDCstring(MDC_ANNOTATOR_CONTEXT_NAME, prevCN);
+      popMDCstring(MDC_ANNOTATOR_IMPL_NAME, prevAN);
+      popMDCstring(MDC_ROOT_CONTEXT_ID, prevRID);
+      if (cas != null) {
+        popMDCstring(MDC_CAS_ID, prevCAS);
+      }
+    }
+    } else {
+      r.run();
+    }
+  }
+    
+  private String pushMDCstring(String key, String value) {
+    if (value == null) value = "";  // protect against failures if no value
+    String v = MDC.get(key);
+    if (value.equals(v)) return value;
+    MDC.put(key, (v == null) ? value : v + " : " + value);
+    return v;
+  }
+  
+  private void popMDCstring(String key, String prev) {
+    String v = MDC.get(key);
+    if (v.equals(prev)) return;
+    if (prev != null) {
+      MDC.put(key,  prev);
+    } else {
+      MDC.remove(key);
+    }
+  }
+
 }

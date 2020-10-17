@@ -64,14 +64,14 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
     Integer numInstances = (Integer) aResourceInitParams
             .get(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS);
     if (numInstances == null) {
-      numInstances = Integer.valueOf(1);
+      numInstances = 1;
     }
-    mCasPool = new CasPool(numInstances.intValue(), getAnalysisEngine());
+    mCasPool = new CasPool(numInstances, getAnalysisEngine());
 
     // also record timeout period to use for CAS pool
     Integer timeoutInteger = (Integer) aResourceInitParams.get(AnalysisEngine.PARAM_TIMEOUT_PERIOD);
     if (timeoutInteger != null) {
-      mTimeout = timeoutInteger.intValue();
+      mTimeout = timeoutInteger;
     } else {
       mTimeout = 0;
     }
@@ -87,10 +87,9 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, int aNumSimultaneousRequests,
           int aTimeout) throws ResourceInitializationException {
-    Map<String, Object> initParams = new HashMap<String, Object>();
-    initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
-            aNumSimultaneousRequests));
-    initParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(aTimeout));
+    Map<String, Object> initParams = new HashMap<>();
+    initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, aNumSimultaneousRequests);
+    initParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, aTimeout);
     this.initialize(aResourceSpecifier, initParams);
   }
 

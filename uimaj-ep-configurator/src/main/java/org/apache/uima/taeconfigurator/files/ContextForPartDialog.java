@@ -41,19 +41,37 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+
+/**
+ * The Class ContextForPartDialog.
+ */
 public class ContextForPartDialog extends /*LimitedResourceSelectionDialog*/ 
         ResourcePickerDialog /*implements
         ICheckStateListener*/ {
 
+  /** The context path GUI. */
   // private MultiPageEditor editor;
   private Text contextPathGUI;
 
+  /** The context path. */
   public String contextPath;
 
+  /** The initial path. */
   private String initialPath;
 
+  /** The tbe. */
   private XMLizable tbe;
 
+  /**
+   * Instantiates a new context for part dialog.
+   *
+   * @param parentShell the parent shell
+   * @param rootElement the root element
+   * @param thingBeingEdited the thing being edited
+   * @param aExcludeDescriptor the a exclude descriptor
+   * @param aEditor the a editor
+   * @param aInitialPath the a initial path
+   */
   public ContextForPartDialog(Shell parentShell, IAdaptable rootElement,
           XMLizable thingBeingEdited, IPath aExcludeDescriptor, MultiPageEditor aEditor,
           String aInitialPath) {
@@ -73,6 +91,10 @@ public class ContextForPartDialog extends /*LimitedResourceSelectionDialog*/
     */
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.ResourcePickerDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     parent = new Composite(parent, SWT.NONE);
     parent.setLayout(new GridLayout(1, true));
@@ -123,6 +145,7 @@ public class ContextForPartDialog extends /*LimitedResourceSelectionDialog*/
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     super.handleEvent(event);
     
@@ -134,6 +157,10 @@ public class ContextForPartDialog extends /*LimitedResourceSelectionDialog*/
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.Dialog#okPressed()
+   */
+  @Override
   protected void okPressed() {
     contextPath = contextPathGUI.getText();
     super.okPressed();
@@ -142,6 +169,7 @@ public class ContextForPartDialog extends /*LimitedResourceSelectionDialog*/
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
+  @Override
   public void enableOK() {
     super.enableOK();
     String path = contextPathGUI.getText();

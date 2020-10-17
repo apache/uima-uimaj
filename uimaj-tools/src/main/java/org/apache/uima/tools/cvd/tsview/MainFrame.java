@@ -48,6 +48,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
 
+
 /**
  * Insert comment for enclosing_type here.
  * 
@@ -55,10 +56,26 @@ import org.apache.uima.cas.admin.CASMgr;
  */
 public class MainFrame extends JFrame {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 5606886216212480040L;
 
+  /**
+   * The listener interface for receiving typeTreeSelection events.
+   * The class that is interested in processing a typeTreeSelection
+   * event implements this interface, and the object created
+   * with that class is registered with a component using the
+   * component's <code>addTypeTreeSelectionListener<code> method. When
+   * the typeTreeSelection event occurs, that object's appropriate
+   * method is invoked.
+   *
+   * @see TypeTreeSelectionEvent
+   */
   private class TypeTreeSelectionListener implements TreeSelectionListener {
+    
     /**
+     * Value changed.
+     *
+     * @param event the event
      * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
      */
     @Override
@@ -78,13 +95,17 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /** The ts. */
   TypeSystem ts = null;
 
+  /** The selected type. */
   // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7
   private org.apache.uima.cas.Type selectedType;
 
+  /** The feature table. */
   private JTable featureTable = null;
 
+  /** The type tree. */
   private JTree typeTree = null;
 
   /**
@@ -97,21 +118,41 @@ public class MainFrame extends JFrame {
     init();
   }
 
+  /**
+   * Constructor for MainFrame.
+   *
+   * @param gc the gc
+   */
   public MainFrame(GraphicsConfiguration gc) {
     super(gc);
     init();
   }
 
+  /**
+   * Constructor for MainFrame.
+   *
+   * @param title the title
+   * @throws HeadlessException -
+   */
   public MainFrame(String title) {
     super(title);
     init();
   }
 
+  /**
+   * Constructor for MainFrame.
+   *
+   * @param title the title
+   * @param gc the gc
+   */
   public MainFrame(String title, GraphicsConfiguration gc) {
     super(title, gc);
     init();
   }
 
+  /**
+   * Inits the.
+   */
   private void init() {
     // Set the title.
     this.setTitle("Type System Editor");
@@ -144,12 +185,20 @@ public class MainFrame extends JFrame {
     this.setJMenuBar(createMenuBar());
   }
 
+  /**
+   * Show annot feats.
+   */
   public void showAnnotFeats() {
     // Debug...
     this.selectedType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     updateFeatureTable();
   }
 
+  /**
+   * Creates the menu bar.
+   *
+   * @return the j menu bar
+   */
   private JMenuBar createMenuBar() {
     JMenuBar menuBar = new JMenuBar();
     JMenu optionsMenu = new JMenu("Options");
@@ -159,6 +208,9 @@ public class MainFrame extends JFrame {
     return menuBar;
   }
 
+  /**
+   * Update feature table.
+   */
   private void updateFeatureTable() {
     if (this.selectedType == null) {
       return;
@@ -166,6 +218,12 @@ public class MainFrame extends JFrame {
     ((FeatureTableModel) this.featureTable.getModel()).setType(this.selectedType);
   }
 
+  /**
+   * Creates the type tree.
+   *
+   * @param type the type
+   * @return the default mutable tree node
+   */
   private DefaultMutableTreeNode createTypeTree(org.apache.uima.cas.Type type) {
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(type);
     // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7
@@ -179,6 +237,9 @@ public class MainFrame extends JFrame {
     return node;
   }
 
+  /**
+   * Update type tree.
+   */
   private void updateTypeTree() {
     if (this.ts == null) {
       return;
@@ -206,6 +267,12 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Gets the tree model listeners.
+   *
+   * @param model the model
+   * @return the tree model listeners
+   */
   public static TreeModelListener[] getTreeModelListeners(DefaultTreeModel model) {
     EventListener[] eventListeners = model.getListeners(TreeModelListener.class);
     TreeModelListener[] modelListeners = new TreeModelListener[eventListeners.length];
@@ -215,11 +282,21 @@ public class MainFrame extends JFrame {
     return modelListeners;
   }
 
+  /**
+   * Sets the type system.
+   *
+   * @param ts the new type system
+   */
   public void setTypeSystem(TypeSystem ts) {
     this.ts = ts;
     updateTypeTree();
   }
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
   public static void main(String[] args) {
 
     try {

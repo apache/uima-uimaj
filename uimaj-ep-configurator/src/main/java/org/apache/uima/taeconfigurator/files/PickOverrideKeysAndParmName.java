@@ -44,26 +44,49 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 
+
+/**
+ * The Class PickOverrideKeysAndParmName.
+ */
 public class PickOverrideKeysAndParmName extends AbstractDialog {
 
   //private AddParameterDialog parameterDialog = null; // not currently used
 
+  /** The cp. */
   private ConfigurationParameter cp;
 
+  /** The adding. */
   private boolean adding;
 
+  /** The params UI. */
   private Table paramsUI;
 
+  /** The keys UI. */
   private Table keysUI;
 
+  /** The delegates. */
   private Map delegates;
   
+  /** The delegate key name. */
   //returned values
   public String delegateKeyName;
+  
+  /** The delegate parameter name. */
   public String delegateParameterName;
 
+  /** The cg. */
   private ConfigGroup cg;
 
+   /**
+    * Instantiates a new pick override keys and parm name.
+    *
+    * @param aSection the a section
+    * @param delegateMap the delegate map
+    * @param message the message
+    * @param aCp the a cp
+    * @param aCg the a cg
+    * @param aAdding the a adding
+    */
    /*
    * Shows 2 side-by-side windows.
    * 
@@ -86,6 +109,10 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
     adding = aAdding; // true if we're adding, not editing
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite)super.createDialogArea(parent);
     
@@ -114,6 +141,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     if (event.widget == keysUI && event.type == SWT.Selection) {
       fillParameterCandidates();
@@ -126,6 +154,9 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
     }
   }
 
+  /**
+   * Fill parameter candidates.
+   */
   private void fillParameterCandidates() {
     paramsUI.setRedraw(false);
     paramsUI.removeAll();
@@ -153,6 +184,12 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
   }
 
   
+  /**
+   * Adds the selected parms.
+   *
+   * @param delegateCpd the delegate cpd
+   * @param keyName the key name
+   */
   /*
    * Filter overridable parameters to exclude: 
    * - any that are not in the same set of groups
@@ -172,7 +209,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
     // Then build a list of all config params in the first group
     String[] groupNames = cg.getNameArray();
     ConfigurationGroup[] dcgs = delegateCpd.getConfigurationGroupDeclarations(groupNames[0]);
-    ArrayList<ConfigurationParameter> cps = new ArrayList<ConfigurationParameter>();
+    ArrayList<ConfigurationParameter> cps = new ArrayList<>();
     for (ConfigurationGroup dcg : dcgs) {
       cps.addAll(Arrays.asList(dcg.getConfigurationParameters()));
     }
@@ -180,7 +217,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
     // Then for each of the other groups keep only those parameters in that group
     // Quite inefficient as searches for each parameter in turn in the group, but .... !!
     for (int i = 1; i < groupNames.length; ++i) {
-      ArrayList<ConfigurationParameter> newCps = new ArrayList<ConfigurationParameter>();
+      ArrayList<ConfigurationParameter> newCps = new ArrayList<>();
       for (ConfigurationParameter cp : cps) {
         ConfigurationParameter sameCp = delegateCpd.getConfigurationParameter(groupNames[i], cp.getName());
         if (sameCp != null) {
@@ -196,6 +233,12 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
     addSelectedParms(cps.toArray(new ConfigurationParameter[cps.size()]), keyName);
   }
   
+  /**
+   * Adds the selected parms.
+   *
+   * @param parms the parms
+   * @param keyName the key name
+   */
   /*
    * Filter overridable parameters to exclude: 
    * - already overridden (can't override same parameter twice) 
@@ -232,6 +275,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
+  @Override
   public void copyValuesFromGUI() {
     delegateKeyName = keysUI.getSelection()[0].getText();
     delegateParameterName = paramsUI.getSelection()[0].getText();
@@ -240,6 +284,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
+  @Override
   public void enableOK() {
     okButton.setEnabled( (0 < keysUI.getSelectionCount()) && 
                          (0 < paramsUI.getSelectionCount()));   
@@ -248,6 +293,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
+  @Override
   public boolean isValid() {
     return true;
   }

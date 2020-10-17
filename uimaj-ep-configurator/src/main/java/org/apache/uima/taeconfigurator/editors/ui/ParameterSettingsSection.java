@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
+
 /**
  * display parameters on the settings page. If groups, show by groups (using Tree metaphor) Note:
  * The tree displayed here is an expanded version of the ParameterSection Tree. It differs in 3
@@ -39,6 +40,12 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class ParameterSettingsSection extends AbstractSectionParm {
 
+  /**
+   * Instantiates a new parameter settings section.
+   *
+   * @param editor the editor
+   * @param parent the parent
+   */
   public ParameterSettingsSection(MultiPageEditor editor, Composite parent) {
     super(
             editor,
@@ -53,6 +60,7 @@ public class ParameterSettingsSection extends AbstractSectionParm {
    * 
    * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
    */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
     Composite sectionClient = new2ColumnComposite(this.getSection());
@@ -72,6 +80,7 @@ public class ParameterSettingsSection extends AbstractSectionParm {
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
 
+  @Override
   public void refresh() {
     super.refresh();
 
@@ -91,6 +100,7 @@ public class ParameterSettingsSection extends AbstractSectionParm {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     if (event.type == SWT.MouseHover) {
       showDescriptionAsToolTip(event);
@@ -99,14 +109,19 @@ public class ParameterSettingsSection extends AbstractSectionParm {
     }
   }
 
+  /**
+   * Gets the tree.
+   *
+   * @return the tree
+   */
   public Tree getTree() {
     return tree;
   }
 
   /**
-   * called by the Values section
-   * 
-   * @return -
+   * called by the Values section.
+   *
+   * @return the selected param name
    */
   public String getSelectedParamName() {
     TreeItem[] items = tree.getSelection();
@@ -119,6 +134,11 @@ public class ParameterSettingsSection extends AbstractSectionParm {
     return null;
   }
 
+  /**
+   * Gets the selected param group name.
+   *
+   * @return the selected param group name
+   */
   public String getSelectedParamGroupName() {
     TreeItem[] items = tree.getSelection();
     if (items.length == 0)
@@ -134,6 +154,11 @@ public class ParameterSettingsSection extends AbstractSectionParm {
     return null;
   }
 
+  /**
+   * Gets the selected model parameter.
+   *
+   * @return the selected model parameter
+   */
   public ConfigurationParameter getSelectedModelParameter() {
     TreeItem[] items = tree.getSelection();
     if (items.length == 0)

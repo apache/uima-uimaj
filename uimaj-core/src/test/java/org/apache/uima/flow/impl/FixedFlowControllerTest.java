@@ -18,15 +18,12 @@
  */
 package org.apache.uima.flow.impl;
 
-import static java.lang.System.currentTimeMillis;
 import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
@@ -51,7 +47,6 @@ import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.impl.OperationalProperties_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.CasCreationUtils;
-import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +58,7 @@ public class FixedFlowControllerTest {
   
   @Before
   public void setUp() throws Exception {
-    analysisEngineMetaDataMap = new HashMap<String, AnalysisEngineMetaData>();
+    analysisEngineMetaDataMap = new HashMap<>();
     AnalysisEngineMetaData delegateMd = new AnalysisEngineMetaData_impl();
     delegateMd.setOperationalProperties(new OperationalProperties_impl());
     analysisEngineMetaDataMap.put("key1", delegateMd);
@@ -148,7 +143,7 @@ public class FixedFlowControllerTest {
     analysisEngineMetaDataMap.put("key4", delegateMd);    
     analysisEngineMetaDataMap.put("key5", delegateMd);    
     //then notify FC
-    List<String> newAeKeys = new ArrayList<String>();
+    List<String> newAeKeys = new ArrayList<>();
     newAeKeys.add("key4");
     newAeKeys.add("key5");
     fixedFlowController.addAnalysisEngines(newAeKeys);
@@ -198,7 +193,7 @@ public class FixedFlowControllerTest {
     
     //remove "key2"
     analysisEngineMetaDataMap.remove("key2");
-    List<String> removedKeys = new ArrayList<String>();
+    List<String> removedKeys = new ArrayList<>();
     removedKeys.add("key2");
     fixedFlowController.removeAnalysisEngines(removedKeys);
     

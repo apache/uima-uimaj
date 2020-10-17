@@ -21,13 +21,24 @@ package org.apache.uima.taeconfigurator.editors.xml;
 
 import org.eclipse.jface.text.rules.*;
 
+
+/**
+ * The Class XMLPartitionScanner.
+ */
 public class XMLPartitionScanner extends RuleBasedPartitionScanner {
+  
+  /** The Constant XML_DEFAULT. */
   public final static String XML_DEFAULT = "__xml_default";
 
+  /** The Constant XML_COMMENT. */
   public final static String XML_COMMENT = "__xml_comment";
 
+  /** The Constant XML_TAG. */
   public final static String XML_TAG = "__xml_tag";
 
+  /**
+   * Instantiates a new XML partition scanner.
+   */
   public XMLPartitionScanner() {
 
     IToken xmlComment = new Token(XML_COMMENT);

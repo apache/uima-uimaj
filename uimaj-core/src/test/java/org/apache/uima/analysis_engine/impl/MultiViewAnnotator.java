@@ -28,7 +28,6 @@ import org.apache.uima.analysis_engine.annotator.Annotator_ImplBase;
 import org.apache.uima.analysis_engine.annotator.GenericAnnotator;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 

@@ -27,14 +27,28 @@ import javax.swing.JRadioButtonMenuItem;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class SetLanguageHandler.
+ */
 public class SetLanguageHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new sets the language handler.
+   *
+   * @param frame the frame
+   */
   public SetLanguageHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent e) {
     JRadioButtonMenuItem item = (JRadioButtonMenuItem) e.getSource();
     this.main.setLanguage(item.getText());

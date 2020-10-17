@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>3.1.2-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
@@ -43,14 +43,15 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-tools
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-tools
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-tools
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-tools
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-tools
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-tools
     </url>
+    <tag>HEAD</tag>
   </scm>
   
   <properties>
@@ -76,7 +77,13 @@
 			<artifactId>uimaj-test-util</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
-		</dependency>    
+		</dependency>  
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <scope>test</scope>
+    </dependency>
+      
 	</dependencies>
 	<build>
 		<finalName>uima-tools</finalName>
@@ -95,7 +102,7 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes>
+                <excludes combine.children="append">
                   <exclude>release.properties</exclude> <!-- release generated artifact -->
                   <exclude>src/main/resources/org/apache/uima/tools/migration/*</exclude> <!-- data for migration code -->
                   <exclude>src/main/resources/org/apache/uima/tools/util/gui/about.txt</exclude>

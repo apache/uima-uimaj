@@ -32,6 +32,9 @@ import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -50,6 +53,7 @@ import org.apache.uima.pear.util.MessageRouter;
 import org.apache.uima.pear.util.StringUtil;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.util.FileUtils;
+import org.apache.uima.util.impl.Constants;
 import org.xml.sax.SAXException;
 
 /**
@@ -315,9 +319,9 @@ public class InstallationController {
 
   private String _mainPearFileLocation = null;
 
-  private Hashtable<String, String> _installationTable = new Hashtable<String, String>();
+  private Hashtable<String, String> _installationTable = new Hashtable<>();
 
-  private Hashtable<String, InstallationDescriptor> _installationInsDs = new Hashtable<String, InstallationDescriptor>();
+  private Hashtable<String, InstallationDescriptor> _installationInsDs = new Hashtable<>();
 
   private InstallationDescriptor _insdObject;
 
@@ -408,8 +412,8 @@ public class InstallationController {
    * @return The string array of network parameters in the JVM format.
    */
   public static String[] buildArrayOfNetworkParams(InstallationDescriptor insdObject) {
-    String[] paramsArray = new String[0];
-    List<String> paramsList = new ArrayList<String>();
+    String[] paramsArray = Constants.EMPTY_STRING_ARRAY;
+    List<String> paramsList = new ArrayList<>();
     StringBuffer itemBuffer = new StringBuffer();
     Set<String> pNames = insdObject.getMainComponentNetworkParamNames();
     // go through specified parameters and add them to the list
@@ -717,7 +721,7 @@ public class InstallationController {
           File targetDir, InstallationController controller, boolean cleanTarget)
           throws IOException {
     // get PEAR file size
-    long fileSize = FileUtil.getFileSize(pearFileLocation);
+    long fileSize = Files.size(Paths.get(pearFileLocation));
     // create root directory
     if (!targetDir.isDirectory() && !targetDir.mkdirs()) {
       //create localized error message
@@ -766,9 +770,15 @@ public class InstallationController {
                   + pearFileUrl.toExternalForm() + " to " + targetDir.getAbsolutePath());
         String pearFileName = (new File(pearFileUrl.getFile())).getName();
         pearFile = new File(targetDir, pearFileName);
-        if (!FileUtil.copyFile(pearFileUrl, pearFile))
+
+        try (InputStream pearIn = pearFileUrl.openStream()) {
+          Files.copy(pearIn, pearFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        catch (IOException e) {
           throw new IOException("cannot copy " + pearFileUrl + " to file "
-                  + pearFile.getAbsolutePath());
+                  + pearFile.getAbsolutePath(), e);
+        }
+
         removeLocalCopy = true;
       }
       if (controller != null) // write message to OUT msg queue
@@ -872,7 +882,7 @@ public class InstallationController {
     // get list of separately installed delegate components
     Enumeration<String> dlgIdList = installationTable.keys();
     // build Hashtable of delegate InsD objects
-    Hashtable<String, InstallationDescriptor> dlgInsdObjects = new Hashtable<String, InstallationDescriptor>();
+    Hashtable<String, InstallationDescriptor> dlgInsdObjects = new Hashtable<>();
     while (dlgIdList.hasMoreElements()) {
       // process next delegate component
       String dlgId = dlgIdList.nextElement();
@@ -1744,19 +1754,9 @@ public class InstallationController {
     PearSpecifier pearSpec = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
     pearSpec.setPearPath(mainComponentRootPath);
     File outputFile = new File(mainComponentRootPath, mainComponentId + PEAR_DESC_FILE_POSTFIX);
-    FileOutputStream fos = null;
 
-    try
-    {
-        fos = new FileOutputStream(outputFile);
-        pearSpec.toXML(fos);
-    }
-    finally
-    {
-        if (fos != null)
-        {
-            fos.close();
-        }
+    try (OutputStream fos = new FileOutputStream(outputFile)) {
+      pearSpec.toXML(fos);
     }
   }
 
@@ -1769,9 +1769,7 @@ public class InstallationController {
    */
   protected synchronized void generateSetEnvFile() throws IOException {
     File setEnvFile = new File(_mainComponentRoot, SET_ENV_FILE);
-    PrintWriter fWriter = null;
-    try {
-      fWriter = new PrintWriter(new FileWriter(setEnvFile));
+    try (PrintWriter fWriter = new PrintWriter(new FileWriter(setEnvFile))) {
       fWriter.println("### Add the following environment variables");
       fWriter.println("### to appropriate existing environment variables");
       fWriter.println("### to run the " + _mainComponentId + " component");
@@ -1792,16 +1790,8 @@ public class InstallationController {
         String varValue = envVarTable.getProperty(varName);
         // add env.var. setting
         if (varName.length() > 0 && varValue.length() > 0
-                && !varName.equalsIgnoreCase(CLASSPATH_VAR) && !varName.equalsIgnoreCase(PATH_VAR)) {
+              && !varName.equalsIgnoreCase(CLASSPATH_VAR) && !varName.equalsIgnoreCase(PATH_VAR)) {
           fWriter.println(varName + "=" + varValue);
-        }
-      }
-    } finally {
-      if (fWriter != null) {
-        try {
-          fWriter.close();
-        } catch (Exception e) {
-          // ignore close exception
         }
       }
     }
@@ -1819,18 +1809,8 @@ public class InstallationController {
     File packageConfigFile = new File(_mainComponentRoot, PACKAGE_CONFIG_FILE);
     if (packageConfigFile.exists()) {
       // loading existing pear config file
-      InputStream iStream = null;
-      try {
-        iStream = new FileInputStream(packageConfigFile);
+      try (InputStream iStream = new FileInputStream(packageConfigFile)) {
         packageConfig.load(iStream);
-      } finally {
-        if (iStream != null) {
-          try {
-            iStream.close();
-          } catch (Exception e) {
-            // ignore close exception
-          }
-        }
       }
     }
     // set local config params
@@ -1844,19 +1824,9 @@ public class InstallationController {
       packageConfig.setProperty(idRoot, _installationTable.get(id).replace('\\', '/'));
     }
     // save pear config file
-    OutputStream oStream = null;
-    try {
+    try (OutputStream oStream = new FileOutputStream(packageConfigFile)) {
       String header = _mainComponentId;
-      oStream = new FileOutputStream(packageConfigFile);
       packageConfig.store(oStream, header);
-    } finally {
-      if (oStream != null) {
-        try {
-          oStream.close();
-        } catch (Exception e) {
-          // ignore close exception
-        }
-      }
     }
   }
 

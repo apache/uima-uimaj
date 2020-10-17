@@ -32,6 +32,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
+
 /**
  * Pop-up event adapter for string valued features in the FS display.  Displays a pop-up for string
  * values that were shortened for display purposes.  Users can display long strings in a separate
@@ -44,13 +45,23 @@ public class StringFsPopupEventAdapter extends MouseAdapter {
    */
   private static class ShowStringHandler implements ActionListener {
 
+    /** The string. */
     private String string;
 
+    /**
+     * Instantiates a new show string handler.
+     *
+     * @param s the s
+     */
     private ShowStringHandler(String s) {
       super();
       this.string = s;
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
     public void actionPerformed(ActionEvent e) {
       // Show string in a new window.
       JFrame frame = new JFrame("Full string value");
@@ -64,18 +75,34 @@ public class StringFsPopupEventAdapter extends MouseAdapter {
 
   }
 
+  /**
+   * Instantiates a new string fs popup event adapter.
+   */
   public StringFsPopupEventAdapter() {
     super();
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.MouseAdapter#mousePressed(java.awt.event.MouseEvent)
+   */
+  @Override
   public void mousePressed(MouseEvent e) {
     showPopupMaybe(e);
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
+   */
+  @Override
   public void mouseReleased(MouseEvent e) {
     showPopupMaybe(e);
   }
 
+  /**
+   * Show popup maybe.
+   *
+   * @param e the e
+   */
   private void showPopupMaybe(MouseEvent e) {
     // Mouse event is pop-up trigger?
     if (e.isPopupTrigger()) {

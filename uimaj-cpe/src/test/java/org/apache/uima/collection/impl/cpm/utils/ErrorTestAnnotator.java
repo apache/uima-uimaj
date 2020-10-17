@@ -104,8 +104,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
           String functionName = aGroups[i];
           try {
             String exceptionName = (String) aContext.getConfigParameterValue(aGroups[i], EXCEPTION);
-            int errorCount = ((Integer) aContext.getConfigParameterValue(aGroups[i], ERROR_COUNT))
-                    .intValue();
+            int errorCount = (Integer) aContext.getConfigParameterValue(aGroups[i], ERROR_COUNT);
             // add the error object to the corresponding HashMap Entry
             addError(functionName, new FunctionErrorStore(exceptionName, errorCount, functionName));
           } catch (NullPointerException e) {
@@ -142,7 +141,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
           boolean defaultValue) throws AnnotatorContextException {
     Boolean v = (Boolean) context.getConfigParameterValue(param);
     if (v != null) {
-      return v.booleanValue();
+      return v;
     }
     return defaultValue;
   }

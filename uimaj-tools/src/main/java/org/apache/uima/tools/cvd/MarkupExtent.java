@@ -19,6 +19,7 @@
 
 package org.apache.uima.tools.cvd;
 
+
 /**
  * Represents an element in a list of markup extents. Knows about the length of the extent, as well
  * as the depth of markup. Depth of markup means, how many annotations cover this extent?
@@ -27,13 +28,23 @@ package org.apache.uima.tools.cvd;
  */
 public class MarkupExtent {
 
+  /** The start. */
   private int start;
 
+  /** The end. */
   private int end;
 
+  /** The markup depth. */
   private int markupDepth;
 
   
+  /**
+   * Instantiates a new markup extent.
+   *
+   * @param start the start
+   * @param end the end
+   * @param markupDepth the markup depth
+   */
   public MarkupExtent(int start, int end, int markupDepth) {
     super();
     this.start = start;
@@ -41,15 +52,27 @@ public class MarkupExtent {
     this.markupDepth = markupDepth;
   }
 
+  /**
+   * Gets the length.
+   *
+   * @return the length
+   */
   public int getLength() {
     return this.end - this.start;
   }
 
+  /**
+   * Gets the markup depth.
+   *
+   * @return the markup depth
+   */
   public int getMarkupDepth() {
     return this.markupDepth;
   }
 
   /**
+   * Gets the end.
+   *
    * @return int
    */
   public int getEnd() {
@@ -57,6 +80,8 @@ public class MarkupExtent {
   }
 
   /**
+   * Gets the start.
+   *
    * @return int
    */
   public int getStart() {
