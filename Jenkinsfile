@@ -19,8 +19,8 @@ pipeline {
   agent any
   
   tools { 
-    maven 'Maven (latest)' 
-    jdk 'JDK 11 (latest)' 
+    maven 'maven_latest' 
+    jdk 'jdk_11_latest' 
   }
 
   options {
