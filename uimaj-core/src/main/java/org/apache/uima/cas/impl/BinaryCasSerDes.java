@@ -526,13 +526,7 @@ public class BinaryCasSerDes {
                              TypeSystemImpl ts) throws CASRuntimeException {
   
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
-    
-    if (!h.isV3) {
-      if (h.getSeqVersionNbr() < 2) {
-        isBeforeV3 = true; // adjusts binary type numbers 
-      }
-    }
-    
+
     CASMgrSerializer embeddedCasMgrSerializer = maybeReadEmbeddedTSI(h, dis);
     
     if (!h.isForm6() || casLoadMode == CasLoadMode.REINIT)  {
@@ -559,8 +553,10 @@ public class BinaryCasSerDes {
       if (!delta) {
         baseCas.resetNoQuestions();
       }
-      
-      
+
+      // isBeforeV3 adjusts binary type numbers, and is reset with the CAS when !delta, so it must be set here.
+      isBeforeV3 = !h.isV3 && h.getSeqVersionNbr() < 2;
+
       if (h.isCompressed) {
         if (TRACE_DESER) {
           System.out.format("BinDeser version = %d%n", h.v);
@@ -1985,5 +1981,6 @@ public class BinaryCasSerDes {
     shortHeap = null;
     longHeap = null;
     stringHeap = null;
+    isBeforeV3 = false;
   }
 }
