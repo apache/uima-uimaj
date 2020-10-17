@@ -16,9 +16,7 @@
 // under the License.
   
 pipeline {
-  agent {
-    label '!Windows'
-  }
+  agent any
   
   tools { 
     maven 'Maven (latest)' 
@@ -48,7 +46,14 @@ pipeline {
     stage("Build info") {
       steps {
         echo '=== Environment variables ==='
-        sh 'printenv'
+        script {
+          if (isUnix()) {
+            sh 'printenv'
+          }
+          else {
+            bat 'set'
+          }
+        }
       }
     }
         
