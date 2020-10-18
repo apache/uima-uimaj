@@ -60,6 +60,16 @@
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
+      <artifactId>uimafit-junit</artifactId>
+      <version>2.5.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimafit-assertj</artifactId>
+      <version>2.5.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-legacy-support</artifactId>
       <version>2.5.1-SNAPSHOT</version>
     </dependency>
@@ -124,11 +134,13 @@
 
   <modules>
     <module>uimafit-core</module>
+    <module>uimafit-junit</module>
+    <module>uimafit-assertj</module>
     <module>uimafit-examples</module>
     <module>uimafit-spring</module>
     <module>uimafit-maven-plugin</module>
     <module>uimafit-legacy-support</module>
-    <module>uimafit-docbook</module>
+    <module>uimafit-doc</module>
     <module>uimafit-cpe</module>
     <module>uimafit-benchmark</module>
     <module>uimafit-parent</module>

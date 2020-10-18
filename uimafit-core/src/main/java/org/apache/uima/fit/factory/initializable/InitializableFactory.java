@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -19,11 +19,12 @@
 package org.apache.uima.fit.factory.initializable;
 
 import org.apache.uima.UimaContext;
+import org.apache.uima.fit.internal.ClassLoaderUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Please see {@link Initializable} for a description of how this class is intended to be used.
- * 
+ *
  * @see Initializable
  */
 public final class InitializableFactory {
@@ -35,7 +36,7 @@ public final class InitializableFactory {
    * Provides a way to create an instance of T. If the class specified by className implements
    * {@link Initializable}, then the UimaContext provided here will be passed to its initialize
    * method.
-   * 
+   *
    * @param <T>
    *          the interface type
    * @param context
@@ -50,7 +51,14 @@ public final class InitializableFactory {
    */
   public static <T> T create(UimaContext context, String className, Class<T> superClass)
           throws ResourceInitializationException {
-    Class<? extends T> cls = getClass(className, superClass);
+    Class<? extends T> cls;
+    try {
+      ClassLoader cl = ClassLoaderUtils.findClassloader(context);
+      cls = Class.forName(className, true, cl).asSubclass(superClass);
+    } catch (Exception e) {
+      throw new ResourceInitializationException(new IllegalStateException("classname = "
+              + className + " superClass = " + superClass.getName(), e));
+    }
     return create(context, cls);
   }
 
@@ -68,7 +76,8 @@ public final class InitializableFactory {
   public static <T> Class<? extends T> getClass(String className, Class<T> superClass)
           throws ResourceInitializationException {
     try {
-      return Class.forName(className).asSubclass(superClass);
+      ClassLoader cl = ClassLoaderUtils.findClassloader();
+      return Class.forName(className, true, cl).asSubclass(superClass);
     } catch (Exception e) {
       throw new ResourceInitializationException(new IllegalStateException("classname = "
               + className + " superClass = " + superClass.getName(), e));

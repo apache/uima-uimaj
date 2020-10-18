@@ -95,6 +95,9 @@ uimafit-core           - the main uimaFIT module
 uimafit-cpe            - support for the Collection Processing Engine (multi-threaded pipelines)
 uimafit-maven          - a Maven plugin to automatically enhance UIMA components with uimaFIT
                          metadata and to generate XML descriptors for uimaFIT-enabled components.
+uimafit-junit          - convenience code facilitating the implementation of UIMA/uimaFIT tests
+                         in JUnit tests
+uimafit-assertj        - adds assertions for UIMA/uimaFIT types via the AssertJ framework
 uimafit-legacy-support - allows uimaFIT 2.x.0 to use uimaFIT 1.4.x meta data like Java annotations
                          and META-INF/org.uimafit/types.txt files. Pipelines mixing uimaFIT 1.4.x
                          and 2.x components MUST be created using the 2.x factories, because the
