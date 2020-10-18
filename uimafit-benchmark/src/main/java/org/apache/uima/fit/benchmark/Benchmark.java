@@ -24,7 +24,7 @@ import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.LongSupplier;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class Benchmark {
     private IntConsumer initializer = t -> {};
