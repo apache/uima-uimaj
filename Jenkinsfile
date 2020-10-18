@@ -16,13 +16,11 @@
 // under the License.
   
 pipeline {
-  agent {
-    label '!Windows'
-  }
-
-  tools { 
-    maven 'Maven (latest)' 
-    jdk 'JDK 1.8 (latest)' 
+  agent any
+  
+  tools {
+    maven 'maven_latest' 
+    jdk 'jdk_1.8_latest' 
   }
 
   options {
@@ -48,7 +46,14 @@ pipeline {
     stage("Build info") {
       steps {
         echo '=== Environment variables ==='
-        sh 'printenv'
+        script {
+          if (isUnix()) {
+            sh 'printenv'
+          }
+          else {
+            bat 'set'
+          }
+        }
       }
     }
         
