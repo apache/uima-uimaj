@@ -437,7 +437,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         // skip over bounding annotation
         while (equalToBounds(it.getNvc())) {
           it.moveToNextNvc();
-          if (!it.isValid()) {
+          if (is_beyond_bounds_chk_sameBeginEnd()) {
             return;
           }
         }

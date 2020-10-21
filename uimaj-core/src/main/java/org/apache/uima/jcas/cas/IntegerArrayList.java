@@ -119,7 +119,7 @@ public class IntegerArrayList extends TOP implements
 
   /* Feature Adjusted Offsets */
 //  public final static int _FI_intArray = TypeSystemImpl.getAdjustedFeatureOffset("intArray");
-  private final static CallSite _FC_intArray = TypeSystemImpl.createCallSite(IntegerArrayList.class, "intArray");
+  private final static CallSite _FC_intArray = TypeSystemImpl.createCallSiteForBuiltIn(IntegerArrayList.class, "intArray");
   private final static MethodHandle _FH_intArray = _FC_intArray.dynamicInvoker();
 
    

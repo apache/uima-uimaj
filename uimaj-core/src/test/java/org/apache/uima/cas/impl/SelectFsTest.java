@@ -18,9 +18,10 @@
  */
 package org.apache.uima.cas.impl;
 
+import static java.lang.Integer.MAX_VALUE;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.apache.uima.cas.text.AnnotationPredicatesTest.TEST_CASES;
+import static org.apache.uima.cas.impl.SelectFsAssert.*;
 import static org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition.COLOCATED;
 import static org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition.COVERING;
@@ -30,23 +31,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.apache.uima.cas.impl.SelectFsAssert.*;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationPredicates;
-import org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition;
-import org.apache.uima.cas.text.AnnotationPredicatesTest.TestCase;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -54,7 +48,6 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
-import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -317,6 +310,22 @@ public class SelectFsTest {
 
     assertThat(result).containsExactly(a1, a2, a3);
   }
+  
+  /**
+   * @see <a href="https://issues.apache.org/jira/browse/UIMA-6282">UIMA-6282</a>
+   */
+  @Test
+  public void thatSelectAtDoesNotFindFollowingAnnotation()
+  {
+    cas.reset();
+    AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 21, MAX_VALUE);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    assertThat(cas.<Annotation>select(cas.getAnnotationType()).at(a1).asList().contains(a2)).isFalse();
+  }
+  
   
   @Test
   public void thatSelectAtWorksOnRandomData() throws Exception
