@@ -2959,6 +2959,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
   /**
+   * <b>INTERNAL API - DO NOT USE, MAY CHANGE WITHOUT NOTICE!</b>
+   * <p>
    * Creates and returns a new MutableCallSite for a built-in type. This handles the special case
    * where the {@link #staticTsi} is initialized as a result of a builtin type JCas cover class
    * being loaded in which case the callsite in the cover class is set after the {@link #staticTsi}
