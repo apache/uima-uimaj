@@ -94,7 +94,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
 
   /* Feature Adjusted Offsets */
 //  public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
-  private final static CallSite _FC_fsArray = TypeSystemImpl.createCallSite(FSHashSet.class, "fsArray");
+  private final static CallSite _FC_fsArray = TypeSystemImpl.createCallSiteForBuiltIn(FSHashSet.class, "fsArray");
   private final static MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
 
    
