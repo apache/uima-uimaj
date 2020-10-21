@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.impl;
 
+import static java.lang.Integer.MAX_VALUE;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -298,5 +300,20 @@ public class SelectFsTest  {
         .collect(Collectors.toList());
 
     assertThat(result).containsExactly(a1, a2, a3);
+  }
+  
+  /**
+   * @see <a href="https://issues.apache.org/jira/browse/UIMA-6282">UIMA-6282</a>
+   */
+  @Test
+  public void thatSelectAtDoesNotFindFollowingAnnotation()
+  {
+    cas.reset();
+    AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 21, MAX_VALUE);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    assertThat(cas.<Annotation>select(cas.getAnnotationType()).at(a1).asList().contains(a2)).isFalse();
   }
 }
