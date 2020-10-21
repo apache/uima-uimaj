@@ -646,7 +646,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * This method is called by an application to begin processing given Collection. It creates a new
    * thread, adds it to a ThreadGroup and starts it.
    * 
-   * @see org.apache.uima.collection.base_cpm.BaseCPM#process(org.apache.uima.collection.base_cpm.BaseCollectionReader)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#process()
    */
   @Override
   public void process() throws ResourceInitializationException {
