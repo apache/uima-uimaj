@@ -16,23 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.impl;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+import static org.apache.uima.cas.text.AnnotationPredicatesTest.TEST_CASES;
+import static org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition.COLOCATED;
+import static org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition.COVERED_BY;
+import static org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition.COVERING;
+import static org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition.LEFT_OF;
+import static org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition.RIGHT_OF;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.apache.uima.cas.impl.SelectFsAssert.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas.text.AnnotationPredicates;
+import org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition;
+import org.apache.uima.cas.text.AnnotationPredicatesTest.TestCase;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -40,13 +54,17 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import x.y.z.Sentence;
 import x.y.z.Token;
 
-public class SelectFsTest  {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class SelectFsTest {
 
   private static TypeSystemDescription typeSystemDescription;
   
@@ -298,5 +316,131 @@ public class SelectFsTest  {
         .collect(Collectors.toList());
 
     assertThat(result).containsExactly(a1, a2, a3);
+  }
+  
+  @Test
+  public void thatSelectAtWorksOnRandomData() throws Exception
+  {
+    assertSelectionIsEqualOnRandomData(
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
+            .filter(candidate -> AnnotationPredicates.colocated(candidate, context))
+            .collect(toList()),
+        (cas, type, context) -> cas.<Annotation>select(type)
+                .at(context)
+                .map(a -> (AnnotationFS) a)
+                .collect(toList()));
+  }
+
+  @Test
+  public void thatSelectCoveringWorksOnRandomData() throws Exception
+  {
+    assertSelectionIsEqualOnRandomData(
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
+            .filter(candidate -> AnnotationPredicates.covers(candidate, context))
+            .collect(toList()),
+        (cas, type, context) -> cas.<Annotation>select(type)
+                .covering(context)
+                .map(a -> (AnnotationFS) a)
+                .collect(toList()));
+  }
+
+  @Test
+  public void thatSelectCoveredByWorksOnRandomData() throws Exception
+  {
+    assertSelectionIsEqualOnRandomData(
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
+            .filter(candidate -> AnnotationPredicates.coveredBy(candidate, context))
+            .collect(toList()),
+        (cas, type, context) -> cas.<Annotation>select(type)
+                .coveredBy(context)
+                .map(a -> (AnnotationFS) a)
+                .collect(toList()));
+  }
+  
+  @Test
+  public void thatSelectCoveredByZeroSizeAtEndOfContextIsNotIncluded()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getCasType(Sentence.class), 0, 1);
+    Annotation a2 = cas.createAnnotation(cas.getCasType(Token.class), 1, 1);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.<Annotation>select(cas.getCasType(Token.class))
+        .coveredBy(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+//  @Test
+//  public void thatSingleCaseIAmCurrentlyDebugging()
+//  {
+//    Annotation a1 = cas.createAnnotation(cas.getCasType(Sentence.class), 13, 31);
+//    Annotation a2 = cas.createAnnotation(cas.getCasType(Token.class), 10, 31);
+//    
+//    asList(a1, a2).forEach(cas::addFsToIndexes);
+//    
+//    List<Annotation> selection = cas.<Annotation>select(cas.getCasType(Sentence.class))
+//        .covering(a2)
+//        .asList();
+//    
+//    assertThat(selection)
+//            .containsExactly(a1);
+//  }
+
+  @Test
+  public void thatSelectCoveringBeroSizeAtEndOfContextIsNotIncluded()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getCasType(Sentence.class), 6, 27);
+    Annotation a2 = cas.createAnnotation(cas.getCasType(Sentence.class), 11, 13);
+    Annotation a3 = cas.createAnnotation(cas.getCasType(Token.class), 13, 13);
+    
+    asList(a1, a2, a3).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.<Annotation>select(cas.getCasType(Sentence.class))
+        .covering(a3)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a1);
+  }
+
+  @Test
+  public void thatSelectFsBehaviorAlignsWithLeftOfPredicate() throws Exception {
+    // In order to find annotations that X is left of, we select the following annotations
+    assertSelectFS(LEFT_OF,
+            (cas, type, x, y) -> cas.select(type).following(x).asList().contains(y));
+  }
+
+  @Test
+  public void thatSelectFsBehaviorAlignsWithRightOfPredicate() throws Exception {
+    // In order to find annotations that X is right of, we select the preceding annotations
+    assertSelectFS(RIGHT_OF,
+            (cas, type, x, y) -> cas.select(type).preceding(x).asList().contains(y));
+  }
+
+  @Test
+  public void thatSelectFsBehaviorAlignsWithCoveredByPredicate() throws Exception {
+    // X covered by Y means that Y is covering X, so we need to select the covering annotations
+    // below.
+    assertSelectFS(COVERED_BY,
+            (cas, type, x, y) -> cas.select(type).covering(x).asList().contains(y));
+  }
+
+  @Test
+  public void thatSelectFsBehaviorAlignsWithCoveringPredicate() throws Exception {
+    // X covering Y means that Y is covered by Y, so we need to select the covered by annotations
+    // below.
+    assertSelectFS(COVERING,
+            (cas, type, x, y) -> cas.select(type).coveredBy(x).asList().contains(y));
+  }
+
+  @Test
+  public void thatSelectFsBehaviorAlignsWithColocatedPredicate() throws Exception {
+    // X covering Y means that Y is covered by Y, so we need to select the covered by annotations
+    // below.
+    assertSelectFS(COLOCATED,
+            (cas, type, x, y) -> cas.select(type).at(x).asList().contains(y));
   }
 }
