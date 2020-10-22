@@ -83,19 +83,31 @@ public class SelectFsAssert {
     Type type1 = randomCas.getTypeSystem().getType(type1Name);
     Type type2 = randomCas.getTypeSystem().getType(type2Name);
 
-    for (int i = 0; i < ITERATIONS; i++) {
-      System.out.printf("Iteration %d%n", i);
-
-      initRandomCas(randomCas, 3 * i, type1, type2);
-
-      for (Annotation context : randomCas.<Annotation>select(type1)) {
-        List<AnnotationFS> expected = aExpected.select(randomCas, type2, context);
-        List<AnnotationFS> actual = aActual.select(randomCas, type2, context);
-
-        assertThat(actual)
-            .as("Selected [%s] with context [%s]@[%d..%d]", type2Name, type1Name, context.getBegin(), context.getEnd())
-            .containsExactlyElementsOf(expected);
+    System.out.print("Iteration: ");
+    try {
+      for (int i = 0; i < ITERATIONS; i++) {
+        if (i % 10 == 0) {
+          System.out.print(i);
+        }
+        else {
+          System.out.print(".");
+        }
+  
+        initRandomCas(randomCas, 3 * i, type1, type2);
+  
+        for (Annotation context : randomCas.<Annotation>select(type1)) {
+          List<AnnotationFS> expected = aExpected.select(randomCas, type2, context);
+          List<AnnotationFS> actual = aActual.select(randomCas, type2, context);
+  
+          assertThat(actual)
+              .as("Selected [%s] with context [%s]@[%d..%d]", type2Name, type1Name, context.getBegin(), context.getEnd())
+              .containsExactlyElementsOf(expected);
+        }
       }
+      System.out.print(ITERATIONS);
+    }
+    finally {
+      System.out.println();
     }
   }
 

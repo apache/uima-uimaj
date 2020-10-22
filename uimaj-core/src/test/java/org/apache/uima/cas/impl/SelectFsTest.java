@@ -21,7 +21,8 @@ package org.apache.uima.cas.impl;
 import static java.lang.Integer.MAX_VALUE;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.apache.uima.cas.impl.SelectFsAssert.*;
+import static org.apache.uima.cas.impl.SelectFsAssert.assertSelectFS;
+import static org.apache.uima.cas.impl.SelectFsAssert.assertSelectionIsEqualOnRandomData;
 import static org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition.COLOCATED;
 import static org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicatesTest.RelativePosition.COVERING;
@@ -48,6 +49,7 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -72,10 +74,14 @@ public class SelectFsTest {
     cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);    
   }
   
+  @Before
+  public void setup()
+  {
+    cas.reset();
+  }
   
   @Test
   public void testSelect_asList() {
-    cas.reset();
     JCas jcas = cas.getJCas();
     
     Token p1 = new Token(jcas, 0, 1); 
@@ -121,7 +127,6 @@ public class SelectFsTest {
 
   @Test
   public void testPrecedingAndShifted() {
-    cas.reset();
     JCas jCas = cas.getJCas();
     Annotation a = new Annotation(jCas, 0, 1);
     Annotation b = new Annotation(jCas, 2, 3);
@@ -137,9 +142,9 @@ public class SelectFsTest {
     // Produces: java.lang.IllegalArgumentException: Strict requires BoundsUse.coveredBy
     assertEquals(Arrays.asList(a, b), jCas.select(Annotation.class).startAt(c).shifted(-2).limit(2).asList());
   }
+  
   @Test
   public void testBetween() {
-    cas.reset();
     JCas jCas = cas.getJCas();
     Token t1 = new Token(jCas, 45, 57);
     t1.addToIndexes();
@@ -159,7 +164,6 @@ public class SelectFsTest {
   
   @Test
   public void testBackwards() {
-    cas.reset();
     JCas jcas = cas.getJCas();
     cas.setDocumentText("t1 t2 t3 t4");
     
@@ -181,7 +185,6 @@ public class SelectFsTest {
   
   @Test
   public void testempty() {
-    cas.reset();
     JCas jcas = cas.getJCas();
     cas.setDocumentText("t1 t2 t3 t4");
     
@@ -245,7 +248,6 @@ public class SelectFsTest {
   @Test
   public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition() throws Exception
   {
-    cas.reset();
     AnnotationFS annotation = cas.createAnnotation(cas.getAnnotationType(), 0, 2);
     cas.addFsToIndexes(annotation);
 
@@ -261,7 +263,6 @@ public class SelectFsTest {
   
   @Test
   public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition2() {
-    cas.reset();
     AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 0, 4);
     AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 1, 3);
     cas.addFsToIndexes(a1);
@@ -277,7 +278,6 @@ public class SelectFsTest {
 
   @Test
   public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition3() {
-    cas.reset();
     AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 0, 5);
     AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 1, 4);
     AnnotationFS a3 = cas.createAnnotation(cas.getAnnotationType(), 2, 6);
@@ -295,7 +295,6 @@ public class SelectFsTest {
 
   @Test
   public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition4() {
-    cas.reset();
     AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 0, 4);
     AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 1, 5);
     AnnotationFS a3 = cas.createAnnotation(cas.getAnnotationType(), 2, 2);
@@ -317,7 +316,6 @@ public class SelectFsTest {
   @Test
   public void thatSelectAtDoesNotFindFollowingAnnotation()
   {
-    cas.reset();
     AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
     AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 21, MAX_VALUE);
     
@@ -399,22 +397,71 @@ public class SelectFsTest {
 //  }
 
   @Test
-  public void thatSelectCoveringBeroSizeAtEndOfContextIsNotIncluded()
+  public void thatSelectFollowingReturnsAdjacentAnnotation()
   {
-    Annotation a1 = cas.createAnnotation(cas.getCasType(Sentence.class), 6, 27);
-    Annotation a2 = cas.createAnnotation(cas.getCasType(Sentence.class), 11, 13);
-    Annotation a3 = cas.createAnnotation(cas.getCasType(Token.class), 13, 13);
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a2);
+  }
+
+  @Test
+  public void thatSelectFollowingSkipsAdjacentAnnotationAndReturnsNext()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    Annotation a3 = cas.createAnnotation(cas.getAnnotationType(), 30, 40);
     
     asList(a1, a2, a3).forEach(cas::addFsToIndexes);
     
-    List<Annotation> selection = cas.<Annotation>select(cas.getCasType(Sentence.class))
-        .covering(a3)
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1, 1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a3);
+  }
+  
+  @Test
+  public void thatSelectPrecedingReturnsAdjacentAnnotation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a2)
         .asList();
     
     assertThat(selection)
             .containsExactly(a1);
   }
 
+  @Test
+  public void thatSelectPrecedingSkipsAdjacentAnnotationAndReturnsNext()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    Annotation a3 = cas.createAnnotation(cas.getAnnotationType(), 30, 40);
+    
+    asList(a1, a2, a3).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a3, 1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a1);
+  }
+  
   @Test
   public void thatSelectFsBehaviorAlignsWithLeftOfPredicate() throws Exception {
     // In order to find annotations that X is left of, we select the following annotations
