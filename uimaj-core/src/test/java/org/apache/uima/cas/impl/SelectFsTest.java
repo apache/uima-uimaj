@@ -75,8 +75,7 @@ public class SelectFsTest {
   }
   
   @Before
-  public void setup()
-  {
+  public void setup() {
     cas.reset();
   }
   
@@ -324,7 +323,6 @@ public class SelectFsTest {
     assertThat(cas.<Annotation>select(cas.getAnnotationType()).at(a1).asList().contains(a2)).isFalse();
   }
   
-  
   @Test
   public void thatSelectAtWorksOnRandomData() throws Exception
   {
@@ -498,5 +496,5 @@ public class SelectFsTest {
     // below.
     assertSelectFS(COLOCATED,
             (cas, type, x, y) -> cas.select(type).at(x).asList().contains(y));
-  }
+  }  
 }
