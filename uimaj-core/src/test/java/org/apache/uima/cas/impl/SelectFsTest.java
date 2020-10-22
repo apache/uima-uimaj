@@ -42,6 +42,7 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -63,6 +64,10 @@ public class SelectFsTest  {
     cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);    
   }
   
+  @Before
+  public void setup() {
+    cas.reset();
+  }
   
   @Test
   public void testSelect_asList() {
@@ -315,5 +320,69 @@ public class SelectFsTest  {
     asList(a1, a2).forEach(cas::addFsToIndexes);
     
     assertThat(cas.<Annotation>select(cas.getAnnotationType()).at(a1).asList().contains(a2)).isFalse();
+  }
+  
+  @Test
+  public void thatSelectFollowingDoesNotFindOtherZeroWidthAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectFollowingDoesNotFindOtherAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+  
+  @Test
+  public void thatSelectPrecedingDoesNotFindOtherZeroWidthAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a2)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectPrecedingDoesNotFindOtherAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a2)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
   }
 }
