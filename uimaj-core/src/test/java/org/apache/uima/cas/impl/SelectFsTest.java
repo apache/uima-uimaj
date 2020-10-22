@@ -323,6 +323,72 @@ public class SelectFsTest {
     assertThat(cas.<Annotation>select(cas.getAnnotationType()).at(a1).asList().contains(a2)).isFalse();
   }
   
+  
+  @Test
+  public void thatSelectFollowingDoesNotFindOtherZeroWidthAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectFollowingDoesNotFindOtherAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+  
+  @Test
+  public void thatSelectPrecedingDoesNotFindOtherZeroWidthAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a2)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectPrecedingDoesNotFindOtherAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a2)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+  
+  
   @Test
   public void thatSelectAtWorksOnRandomData() throws Exception
   {
