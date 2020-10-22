@@ -41,6 +41,7 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -62,6 +63,10 @@ public class SelectFsTest  {
     cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);    
   }
   
+  @Before
+  public void setup() {
+    cas.reset();
+  }
   
   @Test
   public void testSelect_asList() {
