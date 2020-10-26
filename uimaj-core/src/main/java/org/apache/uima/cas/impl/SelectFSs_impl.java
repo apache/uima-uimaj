@@ -1252,8 +1252,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 //    }
     
     if (isFollowing) {
+      final int begin = ((Annotation)startingFs).getBegin();
       final int end = ((Annotation)startingFs).getEnd();
-      while (it.isValid() && ((Annotation)it.get()).getBegin() < end) {
+      while (it.isValid()) {
+        int aBegin = ((Annotation)it.get()).getBegin();
+        if (aBegin >= end && aBegin != begin) {
+          break;
+        }
         it.moveToNext();
       }
     } else if (isPreceding) {
