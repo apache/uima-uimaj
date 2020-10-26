@@ -1314,9 +1314,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(Annotation fs, int offset) {
-    if (fs.getBegin() < fs.getEnd()) {
-      fs = makePosAnnot(fs.getEnd(), fs.getEnd());
-    }
     return commonFollowing(fs, offset);
   }
 

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.impl;
 
 import static java.lang.Integer.MAX_VALUE;
@@ -384,5 +383,71 @@ public class SelectFsTest  {
     
     assertThat(selection)
             .isEmpty();
+  }
+
+  @Test
+  public void thatSelectFollowingReturnsAdjacentAnnotation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a2);
+  }
+
+  @Test
+  public void thatSelectFollowingSkipsAdjacentAnnotationAndReturnsNext()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    Annotation a3 = cas.createAnnotation(cas.getAnnotationType(), 30, 40);
+    
+    asList(a1, a2, a3).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1, 1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a3);
+  }
+  
+  @Test
+  public void thatSelectPrecedingReturnsAdjacentAnnotation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a2)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a1);
+  }
+
+  @Test
+  public void thatSelectPrecedingSkipsAdjacentAnnotationAndReturnsNext()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    Annotation a3 = cas.createAnnotation(cas.getAnnotationType(), 30, 40);
+    
+    asList(a1, a2, a3).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a3, 1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a1);
   }
 }
