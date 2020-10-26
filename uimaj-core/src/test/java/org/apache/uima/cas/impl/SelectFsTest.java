@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.impl;
 
 import static java.lang.Integer.MAX_VALUE;
@@ -42,6 +41,7 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -63,6 +63,10 @@ public class SelectFsTest  {
     cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);    
   }
   
+  @Before
+  public void setup() {
+    cas.reset();
+  }
   
   @Test
   public void testSelect_asList() {
@@ -315,5 +319,71 @@ public class SelectFsTest  {
     asList(a1, a2).forEach(cas::addFsToIndexes);
     
     assertThat(cas.<Annotation>select(cas.getAnnotationType()).at(a1).asList().contains(a2)).isFalse();
+  }
+  
+  @Test
+  public void thatSelectFollowingReturnsAdjacentAnnotation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a2);
+  }
+
+  @Test
+  public void thatSelectFollowingSkipsAdjacentAnnotationAndReturnsNext()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    Annotation a3 = cas.createAnnotation(cas.getAnnotationType(), 30, 40);
+    
+    asList(a1, a2, a3).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1, 1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a3);
+  }
+  
+  @Test
+  public void thatSelectPrecedingReturnsAdjacentAnnotation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a2)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a1);
+  }
+
+  @Test
+  public void thatSelectPrecedingSkipsAdjacentAnnotationAndReturnsNext()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    Annotation a3 = cas.createAnnotation(cas.getAnnotationType(), 30, 40);
+    
+    asList(a1, a2, a3).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a3, 1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a1);
   }
 }
