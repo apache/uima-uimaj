@@ -21,6 +21,7 @@
  */
 package org.apache.uima.fit.util;
 
+import static java.lang.Integer.MAX_VALUE;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
@@ -930,6 +931,34 @@ public class JCasUtilTest extends ComponentTestBase {
     assertEquals(Arrays.asList(c, d), following);
   }
 
+  @Test
+  public void thatSelectFollowingDoesNotFindZeroWidthAnnotationAtEnd()
+  {
+    Annotation a1 = new Annotation(jCas, 10, 20);
+    Annotation a2 = new Annotation(jCas, 20, 20);
+    
+    asList(a1, a2).forEach(a -> a.addToIndexes());
+    
+    List<Annotation> selection = selectFollowing(Annotation.class, a1, MAX_VALUE);
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectPrecedingDoesNotFindZeroWidthAnnotationAtStart()
+  {
+    Annotation a1 = new Annotation(jCas, 10, 20);
+    Annotation a2 = new Annotation(jCas, 10, 10);
+    
+    asList(a1, a2).forEach(a -> a.addToIndexes());
+    
+    List<Annotation> selection = selectPreceding(Annotation.class, a1, MAX_VALUE);
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+    
   @Test
   public void testExists() throws UIMAException {
     JCas jcas = CasCreationUtils.createCas(createTypeSystemDescription(), null, null).getJCas();
