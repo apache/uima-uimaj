@@ -1180,8 +1180,17 @@ public final class CasUtil {
     }
 
     // add annotations from the iterator into the result list
+    int refEnd = annotation.getEnd();
     List<AnnotationFS> followingAnnotations = new LinkedList<AnnotationFS>();
     for (int i = 0; i < count && itr.isValid(); i++, itr.moveToNext()) {
+      AnnotationFS fs = itr.get();
+      int begin = fs.getBegin();
+      int end = fs.getEnd();
+      if (begin == end && refEnd == begin) {
+        // Skip zero-width annotation at the end of the reference annotation. These are considered
+        // to be "coveredBy" instead of following
+        continue;
+      }
       followingAnnotations.add(itr.get());
     }
     return followingAnnotations;
