@@ -772,7 +772,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     if (boundsUse == BoundsUse.notBounded) {
       if (!isSortedIndex) {
         // set index or bag index
-        it = (LowLevelIterator<T>) idx.iterator();       
+        it = (LowLevelIterator<T>) idx.iterator();
       } else {
         // index is sorted but no bounds are being used.  Varieties:
         //   - AnnotationIndex:
@@ -781,7 +781,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         //     - typePriority / ignore typePriority
         //     - orderNotNecessary / orderNeeded
         //   - preceding: need to skip over annotations whose end is > positioning-begin
-
+        //   - following: need to skip over zero-width annotations at positioning-end
         it = isAnnotationIndex 
                ? (LowLevelIterator<T>) ai.iterator( ! isNonOverlapping, IS_NOT_STRICT, isUnordered, ! isTypePriority)
                : idx.iterator(isUnordered, ! isTypePriority);
@@ -790,6 +790,17 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
           it = new FilteredIterator<>(it, fs ->
               // true if ok, false to skip
               ((Annotation) fs).getEnd() <= ((Annotation) startingFs).getBegin());
+        }
+        
+        if (isFollowing) {
+          // filter the iterator to skip zero-width annotations at positioning-end because these
+          // are considered to be covered and not following
+          int startingFsEnd = ((Annotation) startingFs).getEnd();
+          it = new FilteredIterator<>(it, fs -> {
+            // true if ok, false to skip
+            int begin = ((Annotation) fs).getBegin();
+            return begin != ((Annotation) fs).getEnd() || begin != startingFsEnd;
+          });
         }
       }
     } else {
