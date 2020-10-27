@@ -390,9 +390,15 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @return the updated SelectFSs object
    */
   SelectFSs<T> following(Annotation annotation);
+  
   /**
-   * For AnnotationIndex, position to first Annotation whose begin &gt;= position;
-   * @param position start following this position
+   * Select {@link Annotation annotations} that follow the specified document
+   * position (i.e. character offset). This is equivalent to performing a 
+   * {@code following(new Annotation(jcas, 0, position)}, so all annotations starting at
+   * {@code position} or after are returned, including zero-width annotations.
+   * 
+   * @param position
+   *          start following this position
    * @return the updated SelectFSs object
    */
   SelectFSs<T> following(int position);
@@ -422,12 +428,15 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @return the updated SelectFSs object
    */
   SelectFSs<T> preceding(Annotation annotation);
+  
   /**
-   * For AnnotationIndex, set up a selection that will go from the beginning to  
-   * the first Annotation to the left of the specified position, 
-   * ending at the last Annotation whose end &lt;= position.
-   * Annotations whose end &gt; position are skipped.
-   * @param position the position to start before.
+   * Select {@link Annotation annotations} that precede the specified document
+   * position (i.e. character offset). This is equivalent to performing a 
+   * {@code preceding(new Annotation(jcas, position, Integer.MAX_VALUE)}, so all annotations 
+   * ending at {@code position} or before are returned, including zero-width annotations.
+   * 
+   * @param position
+   *          start following this position
    * @return the updated SelectFSs object
    */
   SelectFSs<T> preceding(int position);
