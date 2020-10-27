@@ -468,6 +468,22 @@ public class SelectFsTest {
   }
 
   @Test
+  public void thatSelectPrecedingDoesNotFindNonZeroWidthAnnotationEndingAtZeroWidthAnnotation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 20, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
   public void thatSelectFollowingReturnsAdjacentAnnotation()
   {
     Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
