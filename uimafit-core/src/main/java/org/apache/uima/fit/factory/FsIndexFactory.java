@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.descriptor.FsIndex;
 import org.apache.uima.fit.descriptor.FsIndexKey;
 import org.apache.uima.fit.internal.ClassLoaderUtils;
@@ -44,10 +43,14 @@ import org.apache.uima.resource.metadata.impl.FsIndexKeyDescription_impl;
 import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  */
 public final class FsIndexFactory {
+  private static Logger LOG = LoggerFactory.getLogger(FsIndexFactory.class);
+
   /**
    * Comparator that orders FeatureStructures according to the standard order of their key features.
    * For integer and float values, this is the standard linear order, and for strings it is
@@ -270,12 +273,11 @@ public final class FsIndexFactory {
             FsIndexCollection fsIdxCol = getXMLParser().parseFsIndexCollection(xmlInput);
             fsIdxCol.resolveImports();
             fsIndexList.addAll(asList(fsIdxCol.getFsIndexes()));
-            LogFactory.getLog(FsIndexFactory.class).debug("Detected index at [" + location + "]");
+            LOG.debug("Detected index at [{}]", location);
           } catch (IOException e) {
             throw new ResourceInitializationException(e);
           } catch (InvalidXMLException e) {
-            LogFactory.getLog(FsIndexFactory.class)
-            .warn("[" + location + "] is not a index descriptor file. Ignoring.", e);
+            LOG.warn("[{}] is not a index descriptor file. Ignoring.", location, e);
           }
         }
 
