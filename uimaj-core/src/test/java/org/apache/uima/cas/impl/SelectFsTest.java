@@ -23,7 +23,10 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.uima.cas.impl.SelectFsAssert.assertSelectFS;
 import static org.apache.uima.cas.impl.SelectFsAssert.assertSelectionIsEqualOnRandomData;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.*;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.NON_ZERO_WIDTH_WIDE_NARROW_TEST_CASES;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.UNAMBIGUOUS_NON_ZERO_WIDTH_TEST_CASES;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.UNAMBIGUOUS_ZERO_WIDTH_TEST_CASES;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.ZERO_WIDTH_WIDE_WIDE_TEST_CASES_2;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COLOCATED;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERING;
@@ -40,10 +43,9 @@ import java.util.List;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.AnnotationPredicates;
-import org.apache.uima.cas.text.AnnotationPredicates_WN;
-import org.apache.uima.cas.text.AnnotationPredicates_WW2;
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
+import org.apache.uima.cas.text.AnnotationPredicates;
+import org.apache.uima.cas.text.AnnotationPredicates_WW2;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -60,6 +62,7 @@ import org.junit.runners.MethodSorters;
 import x.y.z.Sentence;
 import x.y.z.Token;
 
+// Sorting only to keep the list in Eclipse ordered so it is easier spot if related tests fail
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SelectFsTest {
 
@@ -167,7 +170,8 @@ public class SelectFsTest {
   }
   
   @Test
-  public void testEmpty() {
+  public void thatIsEmptyWorks() {
+    cas.reset();
     JCas jcas = cas.getJCas();
     cas.setDocumentText("t1 t2 t3 t4");
     
@@ -527,6 +531,39 @@ public class SelectFsTest {
     
     assertThat(selection)
             .containsExactly(a1);
+  }
+  
+
+  @Test
+  public void thatSelectFollowingDoesNotFindZeroWidthAnnotationAtEnd()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 20);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectPrecedingDoesNotFindZeroWidthAnnotationAtStart()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
   }
   
   @Test
