@@ -332,7 +332,7 @@ public class SelectFsTest {
   }
 
   @Test
-  public void thatSelectPrecedingDoesNotFindOtherZeroWidthAnnotationAtStart()
+  public void thatSelectPrecedingDoesNotFindZeroWidthAnnotationAtStart()
   {
     Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
     Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
@@ -550,22 +550,6 @@ public class SelectFsTest {
             .isEmpty();
   }
 
-  @Test
-  public void thatSelectPrecedingDoesNotFindZeroWidthAnnotationAtStart()
-  {
-    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
-    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
-    
-    asList(a1, a2).forEach(cas::addFsToIndexes);
-    
-    List<Annotation> selection = cas.select(Annotation.class)
-        .preceding(a1)
-        .asList();
-    
-    assertThat(selection)
-            .isEmpty();
-  }
-  
   @Test
   public void thatSelectFsBehaviorAlignsWithLeftOfPredicate() throws Exception {
     // In order to find annotations that X is left of, we select the following annotations
