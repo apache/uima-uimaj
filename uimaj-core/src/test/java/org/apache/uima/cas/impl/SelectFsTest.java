@@ -28,11 +28,11 @@ import static org.apache.uima.cas.text.AnnotationPredicateTestData.ZERO_WIDTH_TE
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COLOCATED;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERING;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.LEFT_OF;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.RIGHT_OF;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
 import static org.apache.uima.cas.text.AnnotationPredicates.colocated;
 import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
-import static org.apache.uima.cas.text.AnnotationPredicates.covers;
+import static org.apache.uima.cas.text.AnnotationPredicates.covering;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -521,19 +521,19 @@ public class SelectFsTest {
   }
 
   @Test
-  public void thatSelectFsBehaviorAlignsWithLeftOfPredicate() throws Exception {
-    // In order to find annotations that X is left of, we select the following annotations
+  public void thatSelectFsBehaviorAlignsWithPrecedingPredicate() throws Exception {
+    // In order to find annotations that X is preceding, we select the following annotations
     assertSelectFS(
-        LEFT_OF,
+        PRECEDING,
         (cas, type, x, y) -> cas.select(type).following(x).asList().contains(y),
         defaultPredicatesTestCases);
   }
 
   @Test
-  public void thatSelectFsBehaviorAlignsWithRightOfPredicate() throws Exception {
-    // In order to find annotations that X is right of, we select the preceding annotations
+  public void thatSelectFsBehaviorAlignsWithFollowingPredicate() throws Exception {
+    // In order to find annotations that X is following, we select the preceding annotations
     assertSelectFS(
-        RIGHT_OF,
+        FOLLOWING,
         (cas, type, x, y) -> cas.select(type).preceding(x).asList().contains(y),
         defaultPredicatesTestCases);
   }
@@ -576,7 +576,7 @@ public class SelectFsTest {
   {
     assertSelectionIsEqualOnRandomData(
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> covers(candidate, context))
+            .filter(candidate -> covering(candidate, context))
             .collect(toList()),
         (cas, type, context) -> cas.<Annotation>select(type)
                 .covering(context)

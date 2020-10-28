@@ -30,12 +30,12 @@ import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosit
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.ENDING_WITH;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.LEFT_OF;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_LEFT;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_RIGHT;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.RIGHT_OF;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.STARTING_WITH;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_AT_BEGIN;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_AT_END;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.BEGINNING_WITH;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,9 +76,9 @@ public class AnnotationPredicatesTest {
     @Test
     public void thatCoveringWorks() throws Exception {
       asList(
-          AnnotationPredicates::covers,
-          toRelativePositionPredicate1(cas, AnnotationPredicates::covers),
-          toRelativePositionPredicate2(cas, AnnotationPredicates::covers))
+          AnnotationPredicates::covering,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::covering),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::covering))
       .forEach(predicate -> assertPosition(softly, COVERING, predicate, testCases));
       
     }
@@ -104,59 +104,59 @@ public class AnnotationPredicatesTest {
     }
 
     @Test
-    public void thatOverlapsLeftWorks() throws Exception {
+    public void thatOverlappingAtBeginWorks() throws Exception {
       asList(
-          AnnotationPredicates::overlapsLeft,
-          toRelativePositionPredicate1(cas, AnnotationPredicates::overlapsLeft),
-          toRelativePositionPredicate2(cas, AnnotationPredicates::overlapsLeft))
-      .forEach(predicate -> assertPosition(softly, OVERLAPPING_LEFT, predicate, testCases));
+          AnnotationPredicates::overlappingAtBegin,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::overlappingAtBegin),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::overlappingAtBegin))
+      .forEach(predicate -> assertPosition(softly, OVERLAPPING_AT_BEGIN, predicate, testCases));
     }
 
     @Test
-    public void thatOverlapsRightWorks() throws Exception {
+    public void thatOverlappingAtEndWorks() throws Exception {
       asList(
-          AnnotationPredicates::overlapsRight,
-          toRelativePositionPredicate1(cas, AnnotationPredicates::overlapsRight),
-          toRelativePositionPredicate2(cas, AnnotationPredicates::overlapsRight))
-      .forEach(predicate -> assertPosition(softly, OVERLAPPING_RIGHT, predicate, testCases));
+          AnnotationPredicates::overlappingAtEnd,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::overlappingAtEnd),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::overlappingAtEnd))
+      .forEach(predicate -> assertPosition(softly, OVERLAPPING_AT_END, predicate, testCases));
     }
 
     @Test
-    public void thatOverlapWorks() throws Exception {
+    public void thatOverlappingWorks() throws Exception {
       asList(
-          AnnotationPredicates::overlaps,
-          toRelativePositionPredicate1(cas, AnnotationPredicates::overlaps),
-          toRelativePositionPredicate1Inverse(cas, AnnotationPredicates::overlaps),
-          toRelativePositionPredicate2(cas, AnnotationPredicates::overlaps),
-          toRelativePositionPredicate2Inverse(cas, AnnotationPredicates::overlaps))
+          AnnotationPredicates::overlapping,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::overlapping),
+          toRelativePositionPredicate1Inverse(cas, AnnotationPredicates::overlapping),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::overlapping),
+          toRelativePositionPredicate2Inverse(cas, AnnotationPredicates::overlapping))
       .forEach(predicate -> assertPosition(softly, OVERLAPPING, predicate, testCases));
     }
 
     @Test
-    public void thatLeftOfWorks() throws Exception {
+    public void thatPrecedingWorks() throws Exception {
       asList(
-          AnnotationPredicates::leftOf,
-          toRelativePositionPredicate1(cas, AnnotationPredicates::leftOf),
-          toRelativePositionPredicate2(cas, AnnotationPredicates::leftOf))
-      .forEach(predicate -> assertPosition(softly, LEFT_OF, predicate, testCases));
+          AnnotationPredicates::preceding,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::preceding),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::preceding))
+      .forEach(predicate -> assertPosition(softly, PRECEDING, predicate, testCases));
     }
 
     @Test
-    public void thatRightOfWorks() throws Exception {
+    public void thatFollowingWorks() throws Exception {
       asList(
-          AnnotationPredicates::rightOf,
-          toRelativePositionPredicate1(cas, AnnotationPredicates::rightOf),
-          toRelativePositionPredicate2(cas, AnnotationPredicates::rightOf))
-      .forEach(predicate -> assertPosition(softly, RIGHT_OF, predicate, testCases));
+          AnnotationPredicates::following,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::following),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::following))
+      .forEach(predicate -> assertPosition(softly, FOLLOWING, predicate, testCases));
     }
 
     @Test
-    public void thatStartingWithWorks() throws Exception {
+    public void thatBeginningWithWorks() throws Exception {
       asList(
-          AnnotationPredicates::startingWith,
-          toRelativePositionPredicate1(cas, AnnotationPredicates::startingWith),
-          toRelativePositionPredicate2(cas, AnnotationPredicates::startingWith))
-      .forEach(predicate -> assertPosition(softly, STARTING_WITH, predicate, testCases));
+          AnnotationPredicates::beginningWith,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::beginningWith),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::beginningWith))
+      .forEach(predicate -> assertPosition(softly, BEGINNING_WITH, predicate, testCases));
     }
 
     @Test

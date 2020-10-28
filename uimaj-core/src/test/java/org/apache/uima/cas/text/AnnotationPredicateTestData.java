@@ -23,11 +23,11 @@ import static java.util.Arrays.asList;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COLOCATED;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.*;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.LEFT_OF;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_LEFT;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_RIGHT;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.RIGHT_OF;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_AT_BEGIN;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_AT_END;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
 
 import java.util.List;
 
@@ -37,13 +37,13 @@ public class AnnotationPredicateTestData {
   public static enum RelativePosition {
     COLOCATED,
     OVERLAPPING,
-    OVERLAPPING_LEFT,
-    OVERLAPPING_RIGHT,
+    OVERLAPPING_AT_BEGIN,
+    OVERLAPPING_AT_END,
     COVERING,
     COVERED_BY,
-    LEFT_OF,
-    RIGHT_OF,
-    STARTING_WITH,
+    PRECEDING,
+    FOLLOWING,
+    BEGINNING_WITH,
     ENDING_WITH
   }
   
@@ -55,22 +55,22 @@ public class AnnotationPredicateTestData {
   public static final List<TestCase> NON_ZERO_WIDTH_TEST_CASES = asList(
       new TestCase("1) Y begins and ends after X (### [---])", 
           p -> p.apply(BEGIN, END, END + 1, MAX_VALUE),
-          asList(LEFT_OF)),
+          asList(PRECEDING)),
       new TestCase("2) Y begins at X's end and ends after X (###[---])", 
           p -> p.apply(BEGIN, END, END, MAX_VALUE),
-          asList(LEFT_OF)),
+          asList(PRECEDING)),
       new TestCase("3) Y begins within and ends after X (##[#--])", 
           p -> p.apply(BEGIN, END, END - 1 , MAX_VALUE),
-          asList(OVERLAPPING, OVERLAPPING_LEFT)),
+          asList(OVERLAPPING, OVERLAPPING_AT_BEGIN)),
       new TestCase("4) Y begins and ends at X's boundries ([###])", 
           p -> p.apply(BEGIN, END, BEGIN, END),
-          asList(OVERLAPPING, COLOCATED, COVERED_BY, COVERING, STARTING_WITH, ENDING_WITH)),
+          asList(OVERLAPPING, COLOCATED, COVERED_BY, COVERING, BEGINNING_WITH, ENDING_WITH)),
       new TestCase("5) Y begins and ends within X (#[#]#)", 
           p -> p.apply(BEGIN, END, BEGIN + 1, END - 1),
           asList(OVERLAPPING, COVERING)),
       new TestCase("6) Y begins at and ends before X's boundries ([##]#)", 
           p -> p.apply(BEGIN, END, BEGIN, END - 1),
-          asList(OVERLAPPING, COVERING, STARTING_WITH)),
+          asList(OVERLAPPING, COVERING, BEGINNING_WITH)),
       new TestCase("7) Y begins after and ends at X's boundries (#[##])", 
           p -> p.apply(BEGIN, END, BEGIN + 1, END),
           asList(OVERLAPPING, COVERING, ENDING_WITH)),
@@ -79,36 +79,36 @@ public class AnnotationPredicateTestData {
           asList(OVERLAPPING, COVERED_BY)),
       new TestCase("9) X starts where Y begins and ends within Y ([##-])", 
           p -> p.apply(BEGIN, END, BEGIN, END + 1),
-          asList(OVERLAPPING, COVERED_BY, STARTING_WITH)),
+          asList(OVERLAPPING, COVERED_BY, BEGINNING_WITH)),
       new TestCase("10) X starts within Y and ends where Y ends ([-##])", 
           p -> p.apply(BEGIN, END, BEGIN - 1, END),
           asList(OVERLAPPING, COVERED_BY, ENDING_WITH)),
       new TestCase("11) Y begins before and ends within X ([--#]##)", 
           p -> p.apply(BEGIN, END, 0, BEGIN + 1),
-          asList(OVERLAPPING, OVERLAPPING_RIGHT)),
+          asList(OVERLAPPING, OVERLAPPING_AT_END)),
       new TestCase("12) Y begins before and ends where X begins ([---]###)", 
           p -> p.apply(BEGIN, END, 0, BEGIN),
-          asList(RIGHT_OF)),
+          asList(FOLLOWING)),
       new TestCase("13) Y begins and ends before X begins ([---] ###)", 
           p -> p.apply(BEGIN, END, 0, BEGIN - 1),
-          asList(RIGHT_OF)));
+          asList(FOLLOWING)));
 
   public static final List<TestCase> ZERO_WIDTH_TEST_CASES = asList(
       new TestCase("Z1) Zero-width X before Y start (# [---])", 
           p -> p.apply(Z_POS, Z_POS, Z_POS + 10, Z_POS + 20),
-          asList(LEFT_OF)),
+          asList(PRECEDING)),
       new TestCase("Z2) Zero-width Y after X's end (### |)", 
           p -> p.apply(BEGIN, END, END + 1, END + 1),
-          asList(LEFT_OF)),
+          asList(PRECEDING)),
       new TestCase("Z3) Zero-width X at Y's start (#---])", 
           p -> p.apply(Z_POS, Z_POS, Z_POS, Z_POS + 10),
-          asList(OVERLAPPING, COVERED_BY, STARTING_WITH)),
+          asList(OVERLAPPING, COVERED_BY, BEGINNING_WITH)),
       new TestCase("Z4) Zero-width X at Y's end ([---#)", 
           p -> p.apply(Z_POS, Z_POS, Z_POS-10, Z_POS),
           asList(OVERLAPPING, COVERED_BY, ENDING_WITH)),
       new TestCase("Z5) Zero-width Y where X begins (|###)", 
           p -> p.apply(BEGIN, END, BEGIN, BEGIN),
-          asList(OVERLAPPING, COVERING, STARTING_WITH)),
+          asList(OVERLAPPING, COVERING, BEGINNING_WITH)),
       new TestCase("Z6) Zero-width Y within X (#|#)", 
           p -> p.apply(BEGIN, END, BEGIN + 1, BEGIN + 1),
           asList(OVERLAPPING, COVERING)),
@@ -120,11 +120,11 @@ public class AnnotationPredicateTestData {
           asList(OVERLAPPING, COVERED_BY)),
       new TestCase("Z9) Zero-width X after Y's end ([---] #)", 
           p -> p.apply(Z_POS, Z_POS, Z_POS - 10, Z_POS - 5),
-          asList(RIGHT_OF)),
+          asList(FOLLOWING)),
       new TestCase("Z10) Zero-width Y before X begins (| ###)", 
           p -> p.apply(BEGIN, END, BEGIN - 1, BEGIN - 1),
-          asList(RIGHT_OF)),
+          asList(FOLLOWING)),
       new TestCase("Z11) Zero-width X matches zero-width Y start/end (#)", 
           p -> p.apply(Z_POS, Z_POS, Z_POS, Z_POS),
-          asList(OVERLAPPING, COVERED_BY, COVERING, COLOCATED, STARTING_WITH, ENDING_WITH)));
+          asList(OVERLAPPING, COVERED_BY, COVERING, COLOCATED, BEGINNING_WITH, ENDING_WITH)));
 }

@@ -41,11 +41,11 @@ public final class AnnotationPredicates {
     return aY.getBegin() <= aX.getBegin() && aX.getEnd() <= aY.getEnd();
   }
 
-  public static boolean covers(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+  public static boolean covering(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aXBegin <= aYBegin && aYEnd <= aXEnd;
   }
 
-  public static boolean covers(AnnotationFS aX, int aYBegin, int aYEnd) {
+  public static boolean covering(AnnotationFS aX, int aYBegin, int aYEnd) {
     return aX.getBegin() <= aYBegin && aYEnd <= aX.getEnd();
   }
 
@@ -59,7 +59,7 @@ public final class AnnotationPredicates {
    *          Y
    * @return whether X is covering Y.
    */
-  public static boolean covers(AnnotationFS aX, AnnotationFS aY) {
+  public static boolean covering(AnnotationFS aX, AnnotationFS aY) {
     return aX.getBegin() <= aY.getBegin() && aY.getEnd() <= aX.getEnd();
   }
 
@@ -84,11 +84,11 @@ public final class AnnotationPredicates {
     return aX.getBegin() == aY.getBegin() && aX.getEnd() == aY.getEnd();
   }
 
-  public static boolean overlaps(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+  public static boolean overlapping(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aYBegin == aXBegin || aYEnd == aXEnd || (aXBegin < aYEnd && aYBegin < aXEnd);
   }
 
-  public static boolean overlaps(AnnotationFS aX, int aYBegin, int aYEnd) {
+  public static boolean overlapping(AnnotationFS aX, int aYBegin, int aYEnd) {
     int xBegin = aX.getBegin();
     int xEnd = aX.getEnd();
     return aYBegin == xBegin || aYEnd == xEnd || (xBegin < aYEnd && aYBegin < xEnd);
@@ -105,7 +105,7 @@ public final class AnnotationPredicates {
    *          Y
    * @return whether X overlaps with Y in any way.
    */
-  public static boolean overlaps(AnnotationFS aX, AnnotationFS aY) {
+  public static boolean overlapping(AnnotationFS aX, AnnotationFS aY) {
     int xBegin = aX.getBegin();
     int xEnd = aX.getEnd();
     int yBegin = aY.getBegin();
@@ -113,11 +113,11 @@ public final class AnnotationPredicates {
     return yBegin == xBegin || yEnd == xEnd || (xBegin < yEnd && yBegin < xEnd);
   }
 
-  public static boolean overlapsLeft(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+  public static boolean overlappingAtBegin(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aXBegin < aYBegin && aYBegin < aXEnd && aXEnd < aYEnd;
   }
 
-  public static boolean overlapsLeft(AnnotationFS aX, int aYBegin, int aYEnd) {
+  public static boolean overlappingAtBegin(AnnotationFS aX, int aYBegin, int aYEnd) {
     int xEnd = aX.getEnd();
     return aYBegin < xEnd && xEnd < aYEnd && aX.getBegin() < aYBegin;
   }
@@ -131,17 +131,17 @@ public final class AnnotationPredicates {
    *          Y
    * @return whether X overlaps Y on the left.
    */
-  public static boolean overlapsLeft(AnnotationFS aX, AnnotationFS aY) {
+  public static boolean overlappingAtBegin(AnnotationFS aX, AnnotationFS aY) {
     int xEnd = aX.getEnd();
     int yBegin = aY.getBegin();
     return yBegin < xEnd && xEnd < aY.getEnd() && aX.getBegin() < yBegin;
   }
 
-  public static boolean overlapsRight(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+  public static boolean overlappingAtEnd(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aYBegin < aXBegin && aXBegin < aYEnd && aYEnd < aXEnd;
   }
 
-  public static boolean overlapsRight(AnnotationFS aX, int aYBegin, int aYEnd) {
+  public static boolean overlappingAtEnd(AnnotationFS aX, int aYBegin, int aYEnd) {
     int xBegin = aX.getBegin();
     return aYBegin < xBegin && xBegin < aYEnd && aYEnd < aX.getEnd();
   }
@@ -155,17 +155,17 @@ public final class AnnotationPredicates {
    *          Y
    * @return whether X overlaps Y on the right.
    */
-  public static boolean overlapsRight(AnnotationFS aX, AnnotationFS aY) {
+  public static boolean overlappingAtEnd(AnnotationFS aX, AnnotationFS aY) {
     int xBegin = aX.getBegin();
     int yEnd = aY.getEnd();
     return xBegin < yEnd && aY.getBegin() < xBegin && yEnd < aX.getEnd();
   }
 
-  public static boolean rightOf(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+  public static boolean following(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aXBegin >= aYEnd && !(aXBegin == aYEnd && (aYBegin == aYEnd || aXBegin == aXEnd));
   }
 
-  public static boolean rightOf(AnnotationFS aX, int aYBegin, int aYEnd) {
+  public static boolean following(AnnotationFS aX, int aYBegin, int aYEnd) {
     int xBegin = aX.getBegin();
     return xBegin >= aYEnd && !(xBegin == aYEnd && (aYBegin == aYEnd || xBegin == aX.getEnd()));
   }
@@ -179,17 +179,17 @@ public final class AnnotationPredicates {
    *          Y
    * @return whether X is right of Y.
    */
-  public static boolean rightOf(AnnotationFS aX, AnnotationFS aY) {
+  public static boolean following(AnnotationFS aX, AnnotationFS aY) {
     int xBegin = aX.getBegin();
     int yEnd = aY.getEnd();
     return xBegin >= yEnd && !(xBegin == yEnd && (aY.getBegin() == yEnd || xBegin == aX.getEnd()));
   }
 
-  public static boolean leftOf(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+  public static boolean preceding(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aYBegin >= aXEnd && !(aXEnd == aYBegin && (aYBegin == aYEnd || aXBegin == aXEnd));
   }
 
-  public static boolean leftOf(AnnotationFS aX, int aYBegin, int aYEnd) {
+  public static boolean preceding(AnnotationFS aX, int aYBegin, int aYEnd) {
     int xEnd = aX.getEnd();
 
     return aYBegin >= xEnd && !(xEnd == aYBegin && (aYBegin == aYEnd || aX.getBegin() == xEnd));
@@ -204,22 +204,22 @@ public final class AnnotationPredicates {
    *          Y
    * @return whether X left of Y.
    */
-  public static boolean leftOf(AnnotationFS aX, AnnotationFS aY) {
+  public static boolean preceding(AnnotationFS aX, AnnotationFS aY) {
     int xEnd = aX.getEnd();
     int yBegin = aY.getBegin();
 
     return yBegin >= xEnd && !(xEnd == yBegin && (yBegin == aY.getEnd() || aX.getBegin() == xEnd));
   }
   
-  public static boolean startingWith(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+  public static boolean beginningWith(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aXBegin == aYBegin;
   }
 
-  public static boolean startingWith(AnnotationFS aX, int aYBegin, int aYEnd) {
+  public static boolean beginningWith(AnnotationFS aX, int aYBegin, int aYEnd) {
     return aX.getBegin() == aYBegin;
   }
 
-  public static boolean startingWith(AnnotationFS aX, AnnotationFS aY) {
+  public static boolean beginningWith(AnnotationFS aX, AnnotationFS aY) {
     return aX.getBegin() == aY.getBegin();
   }
 
