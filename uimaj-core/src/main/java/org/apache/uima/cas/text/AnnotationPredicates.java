@@ -1,13 +1,35 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.uima.cas.text;
 
-public interface AnnotationPredicates {
+public final class AnnotationPredicates {
+  public static boolean coveredBy(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+    return aYBegin <= aXBegin && aXEnd <= aYEnd;
+  }
 
-  boolean coveredBy(int aXBegin, int aXEnd, int aYBegin, int aYEnd);
-
-  boolean coveredBy(AnnotationFS aX, int aYBegin, int aYEnd);
+  public static boolean coveredBy(AnnotationFS aX, int aYBegin, int aYEnd) {
+    return aYBegin <= aX.getBegin() && aX.getEnd() <= aYEnd;
+  }
 
   /**
-   * Y is starting before or at the same position as A and ends after or at the same position as X.
+   * Y is starting before or at the same position as A and ends after or at the
+   * same position as X.
    * 
    * @param aX
    *          X
@@ -15,14 +37,21 @@ public interface AnnotationPredicates {
    *          Y
    * @return whether X is covered by Y.
    */
-  boolean coveredBy(AnnotationFS aX, AnnotationFS aY);
+  public static boolean coveredBy(AnnotationFS aX, AnnotationFS aY) {
+    return aY.getBegin() <= aX.getBegin() && aX.getEnd() <= aY.getEnd();
+  }
 
-  boolean covers(int aXBegin, int aXEnd, int aYBegin, int aYEnd);
+  public static boolean covers(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+    return aXBegin <= aYBegin && aYEnd <= aXEnd;
+  }
 
-  boolean covers(AnnotationFS aX, int aYBegin, int aYEnd);
+  public static boolean covers(AnnotationFS aX, int aYBegin, int aYEnd) {
+    return aX.getBegin() <= aYBegin && aYEnd <= aX.getEnd();
+  }
 
   /**
-   * X is starting before or at the same position as Y and ends after or at the same position as Y.
+   * X is starting before or at the same position as Y and ends after or at the
+   * same position as Y.
    * 
    * @param aX
    *          X
@@ -30,11 +59,17 @@ public interface AnnotationPredicates {
    *          Y
    * @return whether X is covering Y.
    */
-  boolean covers(AnnotationFS aX, AnnotationFS aY);
+  public static boolean covers(AnnotationFS aX, AnnotationFS aY) {
+    return aX.getBegin() <= aY.getBegin() && aY.getEnd() <= aX.getEnd();
+  }
 
-  boolean colocated(int aXBegin, int aXEnd, int aYBegin, int aYEnd);
+  public static boolean colocated(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+    return aXBegin == aYBegin && aXEnd == aYEnd;
+  }
 
-  boolean colocated(AnnotationFS aX, int aYBegin, int aYEnd);
+  public static boolean colocated(AnnotationFS aX, int aYBegin, int aYEnd) {
+    return aX.getBegin() == aYBegin && aX.getEnd() == aYEnd;
+  }
 
   /**
    * X starts and ends at the same position as Y.
@@ -45,16 +80,24 @@ public interface AnnotationPredicates {
    *          Y
    * @return whether X is at the same location as Y.
    */
-  boolean colocated(AnnotationFS aX, AnnotationFS aY);
+  public static boolean colocated(AnnotationFS aX, AnnotationFS aY) {
+    return aX.getBegin() == aY.getBegin() && aX.getEnd() == aY.getEnd();
+  }
 
-  boolean overlaps(int aXBegin, int aXEnd, int aYBegin, int aYEnd);
+  public static boolean overlaps(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+    return aYBegin == aXBegin || aYEnd == aXEnd || (aXBegin < aYEnd && aYBegin < aXEnd);
+  }
 
-  boolean overlaps(AnnotationFS aX, int aYBegin, int aYEnd);
+  public static boolean overlaps(AnnotationFS aX, int aYBegin, int aYEnd) {
+    int xBegin = aX.getBegin();
+    int xEnd = aX.getEnd();
+    return aYBegin == xBegin || aYEnd == xEnd || (xBegin < aYEnd && aYBegin < xEnd);
+  }
 
   /**
-   * The intersection of the spans X and Y is non-empty. If either X or Y have a zero-width, then
-   * the intersection is considered to be non-empty if the begin of X is either within Y or the same
-   * as the begin of Y - and vice versa.
+   * The intersection of the spans X and Y is non-empty. If either X or Y have a
+   * zero-width, then the intersection is considered to be non-empty if the begin
+   * of X is either within Y or the same as the begin of Y - and vice versa.
    * 
    * @param aX
    *          X
@@ -62,11 +105,22 @@ public interface AnnotationPredicates {
    *          Y
    * @return whether X overlaps with Y in any way.
    */
-  boolean overlaps(AnnotationFS aX, AnnotationFS aY);
+  public static boolean overlaps(AnnotationFS aX, AnnotationFS aY) {
+    int xBegin = aX.getBegin();
+    int xEnd = aX.getEnd();
+    int yBegin = aY.getBegin();
+    int yEnd = aY.getEnd();
+    return yBegin == xBegin || yEnd == xEnd || (xBegin < yEnd && yBegin < xEnd);
+  }
 
-  boolean overlapsLeft(int aXBegin, int aXEnd, int aYBegin, int aYEnd);
+  public static boolean overlapsLeft(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+    return aXBegin < aYBegin && aYBegin < aXEnd && aXEnd < aYEnd;
+  }
 
-  boolean overlapsLeft(AnnotationFS aX, int aYBegin, int aYEnd);
+  public static boolean overlapsLeft(AnnotationFS aX, int aYBegin, int aYEnd) {
+    int xEnd = aX.getEnd();
+    return aYBegin < xEnd && xEnd < aYEnd && aX.getBegin() < aYBegin;
+  }
 
   /**
    * X is starting before or at the same position as Y and ends before Y ends.
@@ -77,11 +131,20 @@ public interface AnnotationPredicates {
    *          Y
    * @return whether X overlaps Y on the left.
    */
-  boolean overlapsLeft(AnnotationFS aX, AnnotationFS aY);
+  public static boolean overlapsLeft(AnnotationFS aX, AnnotationFS aY) {
+    int xEnd = aX.getEnd();
+    int yBegin = aY.getBegin();
+    return yBegin < xEnd && xEnd < aY.getEnd() && aX.getBegin() < yBegin;
+  }
 
-  boolean overlapsRight(int aXBegin, int aXEnd, int aYBegin, int aYEnd);
+  public static boolean overlapsRight(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+    return aYBegin < aXBegin && aXBegin < aYEnd && aYEnd < aXEnd;
+  }
 
-  boolean overlapsRight(AnnotationFS aX, int aYBegin, int aYEnd);
+  public static boolean overlapsRight(AnnotationFS aX, int aYBegin, int aYEnd) {
+    int xBegin = aX.getBegin();
+    return aYBegin < xBegin && xBegin < aYEnd && aYEnd < aX.getEnd();
+  }
 
   /**
    * X is starting after Y starts and ends after or at the same position as Y.
@@ -92,11 +155,20 @@ public interface AnnotationPredicates {
    *          Y
    * @return whether X overlaps Y on the right.
    */
-  boolean overlapsRight(AnnotationFS aX, AnnotationFS aY);
+  public static boolean overlapsRight(AnnotationFS aX, AnnotationFS aY) {
+    int xBegin = aX.getBegin();
+    int yEnd = aY.getEnd();
+    return xBegin < yEnd && aY.getBegin() < xBegin && yEnd < aX.getEnd();
+  }
 
-  boolean rightOf(int aXBegin, int aXEnd, int aYBegin, int aYEnd);
+  public static boolean rightOf(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+    return aXBegin >= aYEnd && !(aXBegin == aYEnd && (aYBegin == aYEnd || aXBegin == aXEnd));
+  }
 
-  boolean rightOf(AnnotationFS aX, int aYBegin, int aYEnd);
+  public static boolean rightOf(AnnotationFS aX, int aYBegin, int aYEnd) {
+    int xBegin = aX.getBegin();
+    return xBegin >= aYEnd && !(xBegin == aYEnd && (aYBegin == aYEnd || xBegin == aX.getEnd()));
+  }
 
   /**
    * X starts at or after the position that Y ends.
@@ -107,11 +179,21 @@ public interface AnnotationPredicates {
    *          Y
    * @return whether X is right of Y.
    */
-  boolean rightOf(AnnotationFS aX, AnnotationFS aY);
+  public static boolean rightOf(AnnotationFS aX, AnnotationFS aY) {
+    int xBegin = aX.getBegin();
+    int yEnd = aY.getEnd();
+    return xBegin >= yEnd && !(xBegin == yEnd && (aY.getBegin() == yEnd || xBegin == aX.getEnd()));
+  }
 
-  boolean leftOf(int aXBegin, int aXEnd, int aYBegin, int aYEnd);
+  public static boolean leftOf(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+    return aYBegin >= aXEnd && !(aXEnd == aYBegin && (aYBegin == aYEnd || aXBegin == aXEnd));
+  }
 
-  boolean leftOf(AnnotationFS aX, int aYBegin, int aYEnd);
+  public static boolean leftOf(AnnotationFS aX, int aYBegin, int aYEnd) {
+    int xEnd = aX.getEnd();
+
+    return aYBegin >= xEnd && !(xEnd == aYBegin && (aYBegin == aYEnd || aX.getBegin() == xEnd));
+  }
 
   /**
    * X ends before or at the position that Y starts.
@@ -122,6 +204,10 @@ public interface AnnotationPredicates {
    *          Y
    * @return whether X left of Y.
    */
-  boolean leftOf(AnnotationFS aX, AnnotationFS aY);
+  public static boolean leftOf(AnnotationFS aX, AnnotationFS aY) {
+    int xEnd = aX.getEnd();
+    int yBegin = aY.getBegin();
 
+    return yBegin >= xEnd && !(xEnd == yBegin && (yBegin == aY.getEnd() || aX.getBegin() == xEnd));
+  }
 }

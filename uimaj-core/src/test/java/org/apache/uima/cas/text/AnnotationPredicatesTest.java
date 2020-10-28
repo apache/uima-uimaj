@@ -24,10 +24,8 @@ import static org.apache.uima.cas.text.AnnotationPredicateAssert.toRelativePosit
 import static org.apache.uima.cas.text.AnnotationPredicateAssert.toRelativePositionPredicate1Inverse;
 import static org.apache.uima.cas.text.AnnotationPredicateAssert.toRelativePositionPredicate2;
 import static org.apache.uima.cas.text.AnnotationPredicateAssert.toRelativePositionPredicate2Inverse;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.NON_ZERO_WIDTH_WIDE_WIDE_TEST_CASES;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.UNAMBIGUOUS_NON_ZERO_WIDTH_TEST_CASES;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.UNAMBIGUOUS_ZERO_WIDTH_TEST_CASES;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.ZERO_WIDTH_WIDE_WIDE_TEST_CASES;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.NON_ZERO_WIDTH_TEST_CASES;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.ZERO_WIDTH_TEST_CASES;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COLOCATED;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERING;
@@ -52,15 +50,10 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class AnnotationPredicates_WWTest {
+public class AnnotationPredicatesTest {
     private static CAS cas;
-    private AnnotationPredicates_WW sut;
     private SoftAssertions softly;
-    private List<TestCase> testCases = union(
-        UNAMBIGUOUS_NON_ZERO_WIDTH_TEST_CASES, 
-        NON_ZERO_WIDTH_WIDE_WIDE_TEST_CASES, 
-        UNAMBIGUOUS_ZERO_WIDTH_TEST_CASES,
-        ZERO_WIDTH_WIDE_WIDE_TEST_CASES);
+    private List<TestCase> testCases = union(NON_ZERO_WIDTH_TEST_CASES, ZERO_WIDTH_TEST_CASES);
 
     @BeforeClass
     public static void setupClass() throws Exception {
@@ -71,7 +64,6 @@ public class AnnotationPredicates_WWTest {
     public void setup() throws Exception {
       cas.reset();
       softly = new SoftAssertions();
-      sut = new AnnotationPredicates_WW();
     }
     
     @After 
@@ -82,9 +74,9 @@ public class AnnotationPredicates_WWTest {
     @Test
     public void thatCoveringWorks() throws Exception {
       asList(
-          sut::covers,
-          toRelativePositionPredicate1(cas, sut::covers),
-          toRelativePositionPredicate2(cas, sut::covers))
+          AnnotationPredicates::covers,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::covers),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::covers))
       .forEach(predicate -> assertPosition(softly, COVERING, predicate, testCases));
       
     }
@@ -92,67 +84,67 @@ public class AnnotationPredicates_WWTest {
     @Test
     public void thatCoveredByWorks() throws Exception {
       asList(
-          sut::coveredBy,
-          toRelativePositionPredicate1(cas, sut::coveredBy),
-          toRelativePositionPredicate2(cas, sut::coveredBy))
+          AnnotationPredicates::coveredBy,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::coveredBy),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::coveredBy))
       .forEach(predicate -> assertPosition(softly, COVERED_BY, predicate, testCases));
     }
 
     @Test
     public void thatColocatedWorks() throws Exception {
       asList(
-          sut::colocated,
-          toRelativePositionPredicate1(cas, sut::colocated),
-          toRelativePositionPredicate1Inverse(cas, sut::colocated),
-          toRelativePositionPredicate2(cas, sut::colocated),
-        toRelativePositionPredicate2Inverse(cas, sut::colocated))
+          AnnotationPredicates::colocated,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::colocated),
+          toRelativePositionPredicate1Inverse(cas, AnnotationPredicates::colocated),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::colocated),
+        toRelativePositionPredicate2Inverse(cas, AnnotationPredicates::colocated))
       .forEach(predicate -> assertPosition(softly, COLOCATED, predicate, testCases));
     }
 
     @Test
     public void thatOverlapsLeftWorks() throws Exception {
       asList(
-          sut::overlapsLeft,
-          toRelativePositionPredicate1(cas, sut::overlapsLeft),
-          toRelativePositionPredicate2(cas, sut::overlapsLeft))
+          AnnotationPredicates::overlapsLeft,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::overlapsLeft),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::overlapsLeft))
       .forEach(predicate -> assertPosition(softly, OVERLAPPING_LEFT, predicate, testCases));
     }
 
     @Test
     public void thatOverlapsRightWorks() throws Exception {
       asList(
-          sut::overlapsRight,
-          toRelativePositionPredicate1(cas, sut::overlapsRight),
-          toRelativePositionPredicate2(cas, sut::overlapsRight))
+          AnnotationPredicates::overlapsRight,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::overlapsRight),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::overlapsRight))
       .forEach(predicate -> assertPosition(softly, OVERLAPPING_RIGHT, predicate, testCases));
     }
 
     @Test
     public void thatOverlapWorks() throws Exception {
       asList(
-          sut::overlaps,
-          toRelativePositionPredicate1(cas, sut::overlaps),
-          toRelativePositionPredicate1Inverse(cas, sut::overlaps),
-          toRelativePositionPredicate2(cas, sut::overlaps),
-          toRelativePositionPredicate2Inverse(cas, sut::overlaps))
+          AnnotationPredicates::overlaps,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::overlaps),
+          toRelativePositionPredicate1Inverse(cas, AnnotationPredicates::overlaps),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::overlaps),
+          toRelativePositionPredicate2Inverse(cas, AnnotationPredicates::overlaps))
       .forEach(predicate -> assertPosition(softly, OVERLAPPING, predicate, testCases));
     }
 
     @Test
     public void thatLeftOfWorks() throws Exception {
       asList(
-          sut::leftOf,
-          toRelativePositionPredicate1(cas, sut::leftOf),
-          toRelativePositionPredicate2(cas, sut::leftOf))
+          AnnotationPredicates::leftOf,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::leftOf),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::leftOf))
       .forEach(predicate -> assertPosition(softly, LEFT_OF, predicate, testCases));
     }
 
     @Test
     public void thatRightOfWorks() throws Exception {
       asList(
-          sut::rightOf,
-          toRelativePositionPredicate1(cas, sut::rightOf),
-          toRelativePositionPredicate2(cas, sut::rightOf))
+          AnnotationPredicates::rightOf,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::rightOf),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::rightOf))
       .forEach(predicate -> assertPosition(softly, RIGHT_OF, predicate, testCases));
     }
     

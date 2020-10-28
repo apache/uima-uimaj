@@ -23,29 +23,28 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.uima.cas.impl.SelectFsAssert.assertSelectFS;
 import static org.apache.uima.cas.impl.SelectFsAssert.assertSelectionIsEqualOnRandomData;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.NON_ZERO_WIDTH_WIDE_NARROW_TEST_CASES;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.UNAMBIGUOUS_NON_ZERO_WIDTH_TEST_CASES;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.UNAMBIGUOUS_ZERO_WIDTH_TEST_CASES;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.ZERO_WIDTH_WIDE_WIDE_TEST_CASES_2;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.NON_ZERO_WIDTH_TEST_CASES;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.ZERO_WIDTH_TEST_CASES;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COLOCATED;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.LEFT_OF;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.RIGHT_OF;
-import static org.apache.uima.cas.text.AnnotationPredicates_WNTest.union;
+import static org.apache.uima.cas.text.AnnotationPredicates.colocated;
+import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
+import static org.apache.uima.cas.text.AnnotationPredicates.covers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
-import org.apache.uima.cas.text.AnnotationPredicates;
-import org.apache.uima.cas.text.AnnotationPredicates_WW2;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -72,12 +71,7 @@ public class SelectFsTest {
 
   static File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem_token_sentence_no_features.xml"); 
   
-  private AnnotationPredicates defaultPredicates = new AnnotationPredicates_WW2();
-  private List<TestCase> defaultPredicatesTestCases = union(
-      UNAMBIGUOUS_NON_ZERO_WIDTH_TEST_CASES, 
-      NON_ZERO_WIDTH_WIDE_NARROW_TEST_CASES, 
-      UNAMBIGUOUS_ZERO_WIDTH_TEST_CASES,
-      ZERO_WIDTH_WIDE_WIDE_TEST_CASES_2);
+  private List<TestCase> defaultPredicatesTestCases = union(NON_ZERO_WIDTH_TEST_CASES, ZERO_WIDTH_TEST_CASES);
   
   @BeforeClass
   public static void setUpClass() throws Exception {
@@ -417,7 +411,7 @@ public class SelectFsTest {
   {
     assertSelectionIsEqualOnRandomData(
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> defaultPredicates.colocated(candidate, context))
+            .filter(candidate -> colocated(candidate, context))
             .collect(toList()),
         (cas, type, context) -> cas.<Annotation>select(type)
                 .at(context)
@@ -430,7 +424,7 @@ public class SelectFsTest {
   {
     assertSelectionIsEqualOnRandomData(
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> defaultPredicates.covers(candidate, context))
+            .filter(candidate -> covers(candidate, context))
             .collect(toList()),
         (cas, type, context) -> cas.<Annotation>select(type)
                 .covering(context)
@@ -443,7 +437,7 @@ public class SelectFsTest {
   {
     assertSelectionIsEqualOnRandomData(
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> defaultPredicates.coveredBy(candidate, context))
+            .filter(candidate -> coveredBy(candidate, context))
             .collect(toList()),
         (cas, type, context) -> cas.<Annotation>select(type)
                 .coveredBy(context)
@@ -613,4 +607,13 @@ public class SelectFsTest {
         (cas, type, x, y) -> cas.select(type).at(x).asList().contains(y),
         defaultPredicatesTestCases);
   }  
+
+  @SafeVarargs
+  public static <T> List<T> union(List<T>... aLists) {
+      List<T> all = new ArrayList<>();
+      for (List<T> list : aLists) {
+        all.addAll(list);
+      }
+      return all;
+  }
 }
