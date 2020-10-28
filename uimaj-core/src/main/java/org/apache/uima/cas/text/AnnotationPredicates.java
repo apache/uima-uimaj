@@ -210,4 +210,28 @@ public final class AnnotationPredicates {
 
     return yBegin >= xEnd && !(xEnd == yBegin && (yBegin == aY.getEnd() || aX.getBegin() == xEnd));
   }
+  
+  public static boolean startingWith(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+    return aXBegin == aYBegin;
+  }
+
+  public static boolean startingWith(AnnotationFS aX, int aYBegin, int aYEnd) {
+    return aX.getBegin() == aYBegin;
+  }
+
+  public static boolean startingWith(AnnotationFS aX, AnnotationFS aY) {
+    return aX.getBegin() == aY.getBegin();
+  }
+
+  public static boolean endingWith(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
+    return aXEnd == aYEnd;
+  }
+  public static boolean endingWith(AnnotationFS aX, int aYBegin, int aYEnd) {
+    return aX.getEnd() == aYEnd;
+  }
+
+  public static boolean endingWith(AnnotationFS aX, AnnotationFS aY) {
+    return aX.getEnd() == aY.getEnd();
+  }
+
 }

@@ -29,11 +29,13 @@ import static org.apache.uima.cas.text.AnnotationPredicateTestData.ZERO_WIDTH_TE
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COLOCATED;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERING;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.ENDING_WITH;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.LEFT_OF;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_LEFT;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_RIGHT;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.RIGHT_OF;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.STARTING_WITH;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,7 +149,25 @@ public class AnnotationPredicatesTest {
           toRelativePositionPredicate2(cas, AnnotationPredicates::rightOf))
       .forEach(predicate -> assertPosition(softly, RIGHT_OF, predicate, testCases));
     }
-    
+
+    @Test
+    public void thatStartingWithWorks() throws Exception {
+      asList(
+          AnnotationPredicates::startingWith,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::startingWith),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::startingWith))
+      .forEach(predicate -> assertPosition(softly, STARTING_WITH, predicate, testCases));
+    }
+
+    @Test
+    public void thatEndingWithWorks() throws Exception {
+      asList(
+          AnnotationPredicates::endingWith,
+          toRelativePositionPredicate1(cas, AnnotationPredicates::endingWith),
+          toRelativePositionPredicate2(cas, AnnotationPredicates::endingWith))
+      .forEach(predicate -> assertPosition(softly, ENDING_WITH, predicate, testCases));
+    }
+
     @SafeVarargs
     public static <T> List<T> union(List<T>... aLists) {
         List<T> all = new ArrayList<>();
