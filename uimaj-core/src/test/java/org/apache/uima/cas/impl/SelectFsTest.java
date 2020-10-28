@@ -28,8 +28,8 @@ import static org.apache.uima.cas.text.AnnotationPredicateTestData.ZERO_WIDTH_TE
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COLOCATED;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERING;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
 import static org.apache.uima.cas.text.AnnotationPredicates.colocated;
 import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
 import static org.apache.uima.cas.text.AnnotationPredicates.covering;
@@ -43,12 +43,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
-import org.apache.uima.cas.text.AnnotationPredicates;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -326,7 +324,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .isEmpty();
+        .isEmpty();
   }
 
   @Test
@@ -342,7 +340,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .isEmpty();
+        .isEmpty();
   }
 
   @Test
@@ -358,7 +356,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .isEmpty();
+        .isEmpty();
   }
 
   @Test
@@ -374,7 +372,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .isEmpty();
+        .isEmpty();
   }
   
   @Test
@@ -390,7 +388,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .isEmpty();
+        .isEmpty();
   }
 
   @Test
@@ -406,7 +404,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .isEmpty();
+        .isEmpty();
   }
   
   @Test
@@ -422,7 +420,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .containsExactly(a2);
+        .containsExactly(a2);
   }
 
   @Test
@@ -438,7 +436,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .isEmpty();
+        .isEmpty();
   }
 
   @Test
@@ -454,7 +452,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .containsExactly(a2);
+        .containsExactly(a2);
   }
 
   @Test
@@ -471,7 +469,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .containsExactly(a3);
+        .containsExactly(a3);
   }
   
   @Test
@@ -487,7 +485,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .containsExactly(a1);
+        .containsExactly(a1);
   }
 
   @Test
@@ -504,7 +502,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .containsExactly(a1);
+        .containsExactly(a1);
   }
   
 
@@ -521,7 +519,7 @@ public class SelectFsTest {
         .asList();
     
     assertThat(selection)
-            .isEmpty();
+        .isEmpty();
   }
 
   @Test
@@ -547,9 +545,9 @@ public class SelectFsTest {
             .filter(candidate -> preceding(candidate, context))
             .collect(toList()),
         (cas, type, context) -> cas.<Annotation>select(type)
-                .preceding(context)
-                .map(a -> (AnnotationFS) a)
-                .collect(toList()));
+            .preceding(context)
+            .map(a -> (AnnotationFS) a)
+            .collect(toList()));
   }
 
   @Test
@@ -575,9 +573,9 @@ public class SelectFsTest {
             .filter(candidate -> following(candidate, context))
             .collect(toList()),
         (cas, type, context) -> cas.<Annotation>select(type)
-                .following(context)
-                .map(a -> (AnnotationFS) a)
-                .collect(toList()));
+            .following(context)
+            .map(a -> (AnnotationFS) a)
+            .collect(toList()));
   }
 
   @Test
@@ -604,9 +602,9 @@ public class SelectFsTest {
             .filter(candidate -> coveredBy(candidate, context))
             .collect(toList()),
         (cas, type, context) -> cas.<Annotation>select(type)
-                .coveredBy(context)
-                .map(a -> (AnnotationFS) a)
-                .collect(toList()));
+            .coveredBy(context)
+            .map(a -> (AnnotationFS) a)
+            .collect(toList()));
   }
 
   @Test
@@ -623,7 +621,7 @@ public class SelectFsTest {
         (cas, type, x, y) -> cas.select(type).filter((a) -> 
                 covering(x, (Annotation) a)).collect(toList()).contains(y),
         defaultPredicatesTestCases);
-}
+  }
 
   @Test
   public void thatSelectFsBehaviorAlignsWithCoveringPredicateOnRandomData() throws Exception
@@ -633,9 +631,9 @@ public class SelectFsTest {
             .filter(candidate -> covering(candidate, context))
             .collect(toList()),
         (cas, type, context) -> cas.<Annotation>select(type)
-                .covering(context)
-                .map(a -> (AnnotationFS) a)
-                .collect(toList()));
+            .covering(context)
+            .map(a -> (AnnotationFS) a)
+            .collect(toList()));
   }
   
   @Test
@@ -662,9 +660,9 @@ public class SelectFsTest {
             .filter(candidate -> colocated(candidate, context))
             .collect(toList()),
         (cas, type, context) -> cas.<Annotation>select(type)
-                .at(context)
-                .map(a -> (AnnotationFS) a)
-                .collect(toList()));
+            .at(context)
+            .map(a -> (AnnotationFS) a)
+            .collect(toList()));
   }
 
   @SafeVarargs
