@@ -73,7 +73,7 @@ public class SelectFsAssert {
 
   public static void assertSelectionIsEqualOnRandomData(TypeByContextSelector aExpected, TypeByContextSelector aActual)
       throws Exception {
-    final int ITERATIONS = 70;
+    final int ITERATIONS = 30;
     final int TYPES = 5;
 
     TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory().createTypeSystemDescription();

@@ -405,46 +405,6 @@ public class SelectFsTest {
             .isEmpty();
   }
   
-  
-  @Test
-  public void thatSelectAtWorksOnRandomData() throws Exception
-  {
-    assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> colocated(candidate, context))
-            .collect(toList()),
-        (cas, type, context) -> cas.<Annotation>select(type)
-                .at(context)
-                .map(a -> (AnnotationFS) a)
-                .collect(toList()));
-  }
-
-  @Test
-  public void thatSelectCoveringByAlignsWithCoveringPredicateOnRandomData() throws Exception
-  {
-    assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> covers(candidate, context))
-            .collect(toList()),
-        (cas, type, context) -> cas.<Annotation>select(type)
-                .covering(context)
-                .map(a -> (AnnotationFS) a)
-                .collect(toList()));
-  }
-
-  @Test
-  public void thatSelectCoveredByAlignsWithCoveredByPredicateOnRandomData() throws Exception
-  {
-    assertSelectionIsEqualOnRandomData(
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> coveredBy(candidate, context))
-            .collect(toList()),
-        (cas, type, context) -> cas.<Annotation>select(type)
-                .coveredBy(context)
-                .map(a -> (AnnotationFS) a)
-                .collect(toList()));
-  }
-  
   @Test
   public void thatSelectCoveredByZeroSizeAtEndOfContextIsIncluded()
   {
@@ -587,6 +547,19 @@ public class SelectFsTest {
         (cas, type, x, y) -> cas.select(type).covering(x).asList().contains(y),
         defaultPredicatesTestCases);
   }
+  
+  @Test
+  public void thatSelectFsBehaviorAlignsWithCoveredByPredicateOnRandomData() throws Exception
+  {
+    assertSelectionIsEqualOnRandomData(
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
+            .filter(candidate -> coveredBy(candidate, context))
+            .collect(toList()),
+        (cas, type, context) -> cas.<Annotation>select(type)
+                .coveredBy(context)
+                .map(a -> (AnnotationFS) a)
+                .collect(toList()));
+  }
 
   @Test
   public void thatSelectFsBehaviorAlignsWithCoveringPredicate() throws Exception {
@@ -599,6 +572,19 @@ public class SelectFsTest {
   }
 
   @Test
+  public void thatSelectFsBehaviorAlignsWithCoveringPredicateOnRandomData() throws Exception
+  {
+    assertSelectionIsEqualOnRandomData(
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
+            .filter(candidate -> covers(candidate, context))
+            .collect(toList()),
+        (cas, type, context) -> cas.<Annotation>select(type)
+                .covering(context)
+                .map(a -> (AnnotationFS) a)
+                .collect(toList()));
+  }
+  
+  @Test
   public void thatSelectFsBehaviorAlignsWithColocatedPredicate() throws Exception {
     // X covering Y means that Y is covered by Y, so we need to select the covered by annotations
     // below.
@@ -607,6 +593,19 @@ public class SelectFsTest {
         (cas, type, x, y) -> cas.select(type).at(x).asList().contains(y),
         defaultPredicatesTestCases);
   }  
+
+  @Test
+  public void thatSelectFsBehaviorAlignsWithColocatedPredicateOnRandomData() throws Exception
+  {
+    assertSelectionIsEqualOnRandomData(
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
+            .filter(candidate -> colocated(candidate, context))
+            .collect(toList()),
+        (cas, type, context) -> cas.<Annotation>select(type)
+                .at(context)
+                .map(a -> (AnnotationFS) a)
+                .collect(toList()));
+  }
 
   @SafeVarargs
   public static <T> List<T> union(List<T>... aLists) {
