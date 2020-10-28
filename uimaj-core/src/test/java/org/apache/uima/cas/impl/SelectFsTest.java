@@ -537,7 +537,20 @@ public class SelectFsTest {
         (cas, type, x, y) -> cas.select(type).filter((a) -> 
                 preceding(x, (Annotation) a)).collect(toList()).contains(y),
         defaultPredicatesTestCases);
-}
+  }
+  
+  @Test
+  public void thatSelectFsBehaviorAlignsWithPrecedingPredicateOnRandomData() throws Exception
+  {
+    assertSelectionIsEqualOnRandomData(
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
+            .filter(candidate -> preceding(candidate, context))
+            .collect(toList()),
+        (cas, type, context) -> cas.<Annotation>select(type)
+                .preceding(context)
+                .map(a -> (AnnotationFS) a)
+                .collect(toList()));
+  }
 
   @Test
   public void thatSelectFsBehaviorAlignsWithFollowingPredicate() throws Exception {
@@ -552,7 +565,20 @@ public class SelectFsTest {
         (cas, type, x, y) -> cas.select(type).filter((a) -> 
                 following(x, (Annotation) a)).collect(toList()).contains(y),
         defaultPredicatesTestCases);
-}
+  }
+  
+  @Test
+  public void thatSelectFsBehaviorAlignsWithFollowingPredicateOnRandomData() throws Exception
+  {
+    assertSelectionIsEqualOnRandomData(
+        (cas, type, context) -> cas.getAnnotationIndex(type).select()
+            .filter(candidate -> following(candidate, context))
+            .collect(toList()),
+        (cas, type, context) -> cas.<Annotation>select(type)
+                .following(context)
+                .map(a -> (AnnotationFS) a)
+                .collect(toList()));
+  }
 
   @Test
   public void thatSelectFsBehaviorAlignsWithCoveredByPredicate() throws Exception {
