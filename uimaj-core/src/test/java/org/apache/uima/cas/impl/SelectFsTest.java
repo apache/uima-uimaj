@@ -33,6 +33,8 @@ import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosit
 import static org.apache.uima.cas.text.AnnotationPredicates.colocated;
 import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
 import static org.apache.uima.cas.text.AnnotationPredicates.covering;
+import static org.apache.uima.cas.text.AnnotationPredicates.following;
+import static org.apache.uima.cas.text.AnnotationPredicates.preceding;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -41,10 +43,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
+import org.apache.uima.cas.text.AnnotationPredicates;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -527,7 +531,13 @@ public class SelectFsTest {
         PRECEDING,
         (cas, type, x, y) -> cas.select(type).following(x).asList().contains(y),
         defaultPredicatesTestCases);
-  }
+
+    assertSelectFS(
+        PRECEDING,
+        (cas, type, x, y) -> cas.select(type).filter((a) -> 
+                preceding(x, (Annotation) a)).collect(toList()).contains(y),
+        defaultPredicatesTestCases);
+}
 
   @Test
   public void thatSelectFsBehaviorAlignsWithFollowingPredicate() throws Exception {
@@ -536,7 +546,13 @@ public class SelectFsTest {
         FOLLOWING,
         (cas, type, x, y) -> cas.select(type).preceding(x).asList().contains(y),
         defaultPredicatesTestCases);
-  }
+
+    assertSelectFS(
+        FOLLOWING,
+        (cas, type, x, y) -> cas.select(type).filter((a) -> 
+                following(x, (Annotation) a)).collect(toList()).contains(y),
+        defaultPredicatesTestCases);
+}
 
   @Test
   public void thatSelectFsBehaviorAlignsWithCoveredByPredicate() throws Exception {
@@ -545,6 +561,12 @@ public class SelectFsTest {
     assertSelectFS(
         COVERED_BY,
         (cas, type, x, y) -> cas.select(type).covering(x).asList().contains(y),
+        defaultPredicatesTestCases);
+    
+    assertSelectFS(
+        COVERED_BY,
+        (cas, type, x, y) -> cas.select(type).filter((a) -> 
+                coveredBy(x, (Annotation) a)).collect(toList()).contains(y),
         defaultPredicatesTestCases);
   }
   
@@ -569,7 +591,13 @@ public class SelectFsTest {
         COVERING,
         (cas, type, x, y) -> cas.select(type).coveredBy(x).asList().contains(y),
         defaultPredicatesTestCases);
-  }
+
+    assertSelectFS(
+        COVERING,
+        (cas, type, x, y) -> cas.select(type).filter((a) -> 
+                covering(x, (Annotation) a)).collect(toList()).contains(y),
+        defaultPredicatesTestCases);
+}
 
   @Test
   public void thatSelectFsBehaviorAlignsWithCoveringPredicateOnRandomData() throws Exception
@@ -591,6 +619,12 @@ public class SelectFsTest {
     assertSelectFS(
         COLOCATED,
         (cas, type, x, y) -> cas.select(type).at(x).asList().contains(y),
+        defaultPredicatesTestCases);
+    
+    assertSelectFS(
+        COLOCATED,
+        (cas, type, x, y) -> cas.select(type).filter((a) -> 
+                colocated(x, (Annotation) a)).collect(toList()).contains(y),
         defaultPredicatesTestCases);
   }  
 
