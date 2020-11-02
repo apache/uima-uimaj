@@ -624,18 +624,21 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     outputFileSelected = outputFileSelector.getSelected();
 
     File inputDir = new File(inputFileSelector.getSelected());
-    if (outputFileSelector.getSelected().length() > 0)
-      outputDirectory = new File(outputFileSelector.getSelected());
-    else
-      outputDirectory = null;
+    if (outputFileSelector.getSelected().length() > 0) {
+        outputDirectory = new File(outputFileSelector.getSelected());
+    }
+    else {
+        outputDirectory = null;
+    }
 
     // reset file pointers in case of typed-in text. JMP
     String tempFileDir = null;
     if ((analysisText != null) && (outputDirectory != null)) {
       tempFileDir = outputFileSelector.getSelected() + "/interactive_temp";
       inputDir = new File(tempFileDir);
-      if (!inputDir.exists())
+      if (!inputDir.exists()) {
         inputDir.mkdirs();
+    }
       outputFileSelected = outputFileSelector.getSelected() + "/interactive_out";
       prefsMed.setOutputDirForInteractiveMode(outputFileSelected, outputFileSelector.getSelected());
       outputDirectory = new File(outputFileSelected);
@@ -1146,10 +1149,12 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       displayFormatPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
       displayFormatPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-      if (generatedStyleMap)
+      if (generatedStyleMap) {
         javaViewerRB.setSelected(true);
-      else
+    }
+    else {
         javaViewerUCRB.setSelected(true);
+    }
 
       ButtonGroup displayFormatButtonGroup = new ButtonGroup();
       displayFormatButtonGroup.add(javaViewerRB);

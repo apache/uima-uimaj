@@ -625,7 +625,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * @deprecated 
    */
   @Deprecated
-public void process(BaseCollectionReader aCollectionReader)
+  public void process(BaseCollectionReader aCollectionReader)
           throws ResourceInitializationException {
     // Retrieve number of entities to process from the CPM configuration
     try {
@@ -642,14 +642,11 @@ public void process(BaseCollectionReader aCollectionReader)
     new Thread(this).start();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.base_cpm.BaseCPM#process()
-   */
-  /*
+  /**
    * This method is called by an application to begin processing given Collection. It creates a new
    * thread, adds it to a ThreadGroup and starts it.
    * 
-   * @see org.apache.uima.collection.base_cpm.BaseCPM#process(org.apache.uima.collection.base_cpm.BaseCollectionReader)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#process()
    */
   @Override
   public void process() throws ResourceInitializationException {
@@ -684,7 +681,7 @@ public void process(BaseCollectionReader aCollectionReader)
    * @deprecated 
    */
   @Deprecated
-public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
+  public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
           throws ResourceInitializationException {
     // Let the application define the size of Collection.
     num2Process = aBatchSize;
@@ -1021,11 +1018,12 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
       type = aEvent.getType();
     }
 
-    if (System.getProperty("DEBUG") != null)
+    if (System.getProperty("DEBUG") != null) {
       UIMAFramework.getLogger(this.getClass()).log(
               Level.FINEST,
               "" + pct + "% (" + duration + "ms) - " + aEvent.getComponentName() + " (" + type
                       + ")");
+    }
     Iterator it = aEvent.getSubEvents().iterator();
     while (it.hasNext()) {
       ProcessTraceEvent event = (ProcessTraceEvent) it.next();
@@ -1167,8 +1165,9 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
         HashMap aMap = container.getAllStats();
 
         if (aMap.keySet() != null) {
-          if (System.getProperty("SHOW_CUSTOM_STATS") != null)
+          if (System.getProperty("SHOW_CUSTOM_STATS") != null) {
             UIMAFramework.getLogger(this.getClass()).log(Level.FINEST, "Adding Custom Stats");
+          }
           Iterator it = aMap.keySet().iterator();
           while (it != null && it.hasNext()) {
 
@@ -1177,15 +1176,17 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
               Object o = aMap.get(key);
               if (o instanceof String) {
                 processTrace.addEvent(container.getName(), key, (String) o, 0, null);
-                if (System.getProperty("SHOW_CUSTOM_STATS") != null)
+                if (System.getProperty("SHOW_CUSTOM_STATS") != null) {
                   UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
                           "Custom String Stat-" + key + " Value=" + (String) o);
+                }
               } else if (o instanceof Integer) {
                 processTrace.addEvent(container.getName(), key, String.valueOf(((Integer) o)
                         .intValue()), 0, null);
-                if (System.getProperty("SHOW_CUSTOM_STATS") != null)
+                if (System.getProperty("SHOW_CUSTOM_STATS") != null) {
                   UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
                           "Custom Integer Stat-" + key + " Value=" + o);
+                } 
               } else {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                   UIMAFramework.getLogger(this.getClass()).log(

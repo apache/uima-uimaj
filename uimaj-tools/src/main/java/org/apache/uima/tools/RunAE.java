@@ -298,7 +298,6 @@ public class RunAE implements StatusCallbackListener {
   @Override
   public void aborted() {
     System.out.println("Processing Aborted");
-
   }
 
   /**

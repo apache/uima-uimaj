@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.taeconfigurator.editors.ui;
 
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
@@ -26,7 +25,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-
 
 /**
  * The Class HeaderPageWithSash.
@@ -101,5 +99,4 @@ public class HeaderPageWithSash extends HeaderPage {
     form.updateToolBar();
     maybeInitialize(managedForm);
   }
-
 }

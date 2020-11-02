@@ -16,20 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.impl;
 
+import static java.lang.Integer.MAX_VALUE;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -37,12 +41,17 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import x.y.z.Sentence;
 import x.y.z.Token;
 
+// Sorting only to keep the list in Eclipse ordered so it is easier spot if related tests fail
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SelectFsTest  {
 
   private static TypeSystemDescription typeSystemDescription;
@@ -58,6 +67,10 @@ public class SelectFsTest  {
     cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);    
   }
   
+  @Before
+  public void setup() {
+    cas.reset();
+  }
   
   @Test
   public void testSelect_asList() {
@@ -166,7 +179,7 @@ public class SelectFsTest  {
   }
   
   @Test
-  public void testempty() {
+  public void thatIsEmptyWorks() {
     cas.reset();
     JCas jcas = cas.getJCas();
     cas.setDocumentText("t1 t2 t3 t4");
@@ -226,7 +239,267 @@ public class SelectFsTest  {
 
     prec2 = jCas.select(Token.class).between(b, e).backwards().asList();
     assertEquals(Arrays.asList(d, c), prec2);
+  }
+  
+  @Test
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition() throws Exception
+  {
+    cas.reset();
+    AnnotationFS annotation = cas.createAnnotation(cas.getAnnotationType(), 0, 2);
+    cas.addFsToIndexes(annotation);
 
+    List<AnnotationFS> result = cas.select(Annotation.class)
+        .coveredBy(0, 1)
+        .includeAnnotationsWithEndBeyondBounds()
+        .collect(toList());
 
+    assertThat(result)
+        .as("Selection (0-1) including start position (0) but not end position (2)")
+        .containsExactly(annotation);
+  }
+  
+  @Test
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition2() {
+    cas.reset();
+    AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 0, 4);
+    AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 1, 3);
+    cas.addFsToIndexes(a1);
+    cas.addFsToIndexes(a2);
+
+    List<AnnotationFS> result = cas.select(Annotation.class)
+        .coveredBy(0, 2)
+        .includeAnnotationsWithEndBeyondBounds()
+        .collect(Collectors.toList());
+
+    assertThat(result).containsExactly(a1, a2);
+  }
+
+  @Test
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition3() {
+    cas.reset();
+    AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 0, 5);
+    AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 1, 4);
+    AnnotationFS a3 = cas.createAnnotation(cas.getAnnotationType(), 2, 6);
+    cas.addFsToIndexes(a1);
+    cas.addFsToIndexes(a2);
+    cas.addFsToIndexes(a3);
+
+    List<AnnotationFS> result = cas.select(Annotation.class)
+        .coveredBy(0, 3)
+        .includeAnnotationsWithEndBeyondBounds()
+        .collect(Collectors.toList());
+
+    assertThat(result).containsExactly(a1, a2, a3);
+  }
+
+  @Test
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition4() {
+    cas.reset();
+    AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 0, 4);
+    AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 1, 5);
+    AnnotationFS a3 = cas.createAnnotation(cas.getAnnotationType(), 2, 2);
+    cas.addFsToIndexes(a1);
+    cas.addFsToIndexes(a2);
+    cas.addFsToIndexes(a3);
+
+    List<AnnotationFS> result = cas.select(Annotation.class)
+        .coveredBy(0, 3)
+        .includeAnnotationsWithEndBeyondBounds()
+        .collect(Collectors.toList());
+
+    assertThat(result).containsExactly(a1, a2, a3);
+  }
+  
+  /**
+   * @see <a href="https://issues.apache.org/jira/browse/UIMA-6282">UIMA-6282</a>
+   */
+  @Test
+  public void thatSelectAtDoesNotFindFollowingAnnotation()
+  {
+    cas.reset();
+    AnnotationFS a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    AnnotationFS a2 = cas.createAnnotation(cas.getAnnotationType(), 21, MAX_VALUE);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    assertThat(cas.<Annotation>select(cas.getAnnotationType()).at(a1).asList().contains(a2)).isFalse();
+  }
+  
+  @Test
+  public void thatSelectFollowingDoesNotFindOtherZeroWidthAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectFollowingDoesNotFindOtherAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+  
+  @Test
+  public void thatSelectPrecedingDoesNotFindOtherZeroWidthAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a2)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectPrecedingDoesNotFindOtherAnnotationAtSameLocation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a2)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectFollowingDoesNotFindZeroWidthAnnotationAtEnd()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 20);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectPrecedingDoesNotFindZeroWidthAnnotationAtStart()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 10);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectPrecedingDoesNotFindNonZeroWidthAnnotationEndingAtZeroWidthAnnotation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 20, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a1)
+        .asList();
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
+  @Test
+  public void thatSelectFollowingReturnsAdjacentAnnotation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a2);
+  }
+
+  @Test
+  public void thatSelectFollowingSkipsAdjacentAnnotationAndReturnsNext()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    Annotation a3 = cas.createAnnotation(cas.getAnnotationType(), 30, 40);
+    
+    asList(a1, a2, a3).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .following(a1, 1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a3);
+  }
+  
+  @Test
+  public void thatSelectPrecedingReturnsAdjacentAnnotation()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    
+    asList(a1, a2).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a2)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a1);
+  }
+
+  @Test
+  public void thatSelectPrecedingSkipsAdjacentAnnotationAndReturnsNext()
+  {
+    Annotation a1 = cas.createAnnotation(cas.getAnnotationType(), 10, 20);
+    Annotation a2 = cas.createAnnotation(cas.getAnnotationType(), 20, 30);
+    Annotation a3 = cas.createAnnotation(cas.getAnnotationType(), 30, 40);
+    
+    asList(a1, a2, a3).forEach(cas::addFsToIndexes);
+    
+    List<Annotation> selection = cas.select(Annotation.class)
+        .preceding(a3, 1)
+        .asList();
+    
+    assertThat(selection)
+            .containsExactly(a1);
   }
 }

@@ -209,8 +209,9 @@ implements Listener, StandardStrings {
     getSection().setText(headerText);
     getSection().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     toolkit.createCompositeSeparator(getSection());
-    if (null != description)
-      getSection().setDescription(description);
+    if (null != description) {
+        getSection().setDescription(description);
+    }
     editor = aEditor;
   }
 
@@ -294,8 +295,9 @@ implements Listener, StandardStrings {
    */
   public Composite newNcolumnComposite(Composite parent, int cols) {
     Composite composite = toolkit.createComposite(parent);
-    if (parent instanceof ExpandableComposite)
-      ((ExpandableComposite) parent).setClient(composite);
+    if (parent instanceof ExpandableComposite) {
+        ((ExpandableComposite) parent).setClient(composite);
+    }
     GridLayout layout = new GridLayout(cols, !EQUAL_WIDTH);
     layout.marginHeight = 0;
     layout.marginWidth = 0;
@@ -324,10 +326,12 @@ implements Listener, StandardStrings {
    */
   public void enableBorders(Composite composite) {
     GridLayout g = (GridLayout) composite.getLayout();
-    if (g.marginHeight < 2)
-      g.marginHeight = 2;
-    if (g.marginWidth < 1)
-      g.marginWidth = 1;
+    if (g.marginHeight < 2) {
+        g.marginHeight = 2;
+    }
+    if (g.marginWidth < 1) {
+        g.marginWidth = 1;
+    }
   }
 
   // **************************************************
@@ -515,8 +519,9 @@ implements Listener, StandardStrings {
    */
   public Label newLabelWithTip(Composite parent, String text, String tip, int style) {
     Label t = toolkit.createLabel(parent, text, style);
-    if ((tip != null) && (tip.length()) > 0)
-      t.setToolTipText(tip);
+    if ((tip != null) && (tip.length()) > 0) {
+        t.setToolTipText(tip);
+    }
     return t;
   }
 
@@ -715,8 +720,9 @@ implements Listener, StandardStrings {
   protected Table newTable(Composite parent, int style, int minHeight, int flags) {
     Table table = toolkit.createTable(parent, style);
     GridData gd = new GridData(GridData.FILL_BOTH);
-    if (minHeight != NO_MIN_HEIGHT)
-      gd.heightHint = minHeight;
+    if (minHeight != NO_MIN_HEIGHT) {
+        gd.heightHint = minHeight;
+    }
     table.setLayoutData(gd);
 
     table.setLinesVisible(0 != (flags & LINES_VISIBLE));
@@ -750,8 +756,9 @@ implements Listener, StandardStrings {
   protected TreeItem getPreviousSelection(TreeItem[] items, TreeItem nextItem) {
     TreeItem prevItem = nextItem.getParentItem();
     for (int i = 0; i < items.length; i++) {
-      if (nextItem == items[i])
+      if (nextItem == items[i]) {
         return prevItem;
+    }
       prevItem = items[i];
     }
     return prevItem;
@@ -766,8 +773,9 @@ implements Listener, StandardStrings {
    */
   protected int getItemIndex(TreeItem[] items, TreeItem item) {
     for (int i = 0; i < items.length; i++) {
-      if (items[i] == item)
+      if (items[i] == item) {
         return i;
+    }
     }
     return -1;
   }
@@ -830,8 +838,9 @@ implements Listener, StandardStrings {
     Table parent = item.getParent();
     TableItem[] items = parent.getItems();
     for (int i = items.length - 1; i >= 0; i--) {
-      if (items[i] == item)
+      if (items[i] == item) {
         return i;
+    }
     }
     throw new InternalErrorCDE("invalid state"); //$NON-NLS-1$
   }
@@ -846,8 +855,9 @@ implements Listener, StandardStrings {
     TreeItem parent = item.getParentItem();
     TreeItem[] items = (null == parent) ? item.getParent().getItems() : parent.getItems();
     for (int i = items.length - 1; i >= 0; i--) {
-      if (items[i] == item)
+      if (items[i] == item) {
         return i;
+    }
     }
     throw new InternalErrorCDE("invalid state"); //$NON-NLS-1$
   }
@@ -872,10 +882,11 @@ implements Listener, StandardStrings {
    */
   protected void removeChildren(TreeItem item) {
     TreeItem[] items = item.getItems();
-    if (null != items)
-      for (int i = 0; i < items.length; i++) {
-        items[i].dispose();
-      }
+    if (null != items) {
+        for (int i = 0; i < items.length; i++) {
+            items[i].dispose();
+          }
+    }
   }
 
   // **********************************
@@ -1170,8 +1181,9 @@ implements Listener, StandardStrings {
    */
   public Capability[] getCapabilities() {
     Capability[] c = getAnalysisEngineMetaData().getCapabilities();
-    if (null == c)
-      return capabilityArray0;
+    if (null == c) {
+        return capabilityArray0;
+    }
     return c;
   }
 
@@ -1231,8 +1243,9 @@ implements Listener, StandardStrings {
     Iterator it = allTypes.keySet().iterator();
     while (it.hasNext()) {
       String item = (String) it.next();
-      if (!excluded.contains(item))
+      if (!excluded.contains(item)) {
         availableTypes.add(item);
+    }
     }
     return (String[]) availableTypes.toArray(stringArray0);
   }
@@ -1300,9 +1313,10 @@ implements Listener, StandardStrings {
    */
   public ExternalResourceBinding[] getExternalResourceBindings() {
     ExternalResourceBinding[] erb = getResourceManagerConfiguration().getExternalResourceBindings();
-    if (null == erb)
-      getResourceManagerConfiguration().setExternalResourceBindings(
-              erb = new ExternalResourceBinding[0]);
+    if (null == erb) {
+        getResourceManagerConfiguration().setExternalResourceBindings(
+                  erb = new ExternalResourceBinding[0]);
+    }
     return erb;
   }
 
@@ -1313,9 +1327,10 @@ implements Listener, StandardStrings {
    */
   public ExternalResourceDescription[] getExternalResources() {
     ExternalResourceDescription[] erd = getResourceManagerConfiguration().getExternalResources();
-    if (null == erd)
-      getResourceManagerConfiguration().setExternalResources(
-              erd = new ExternalResourceDescription[0]);
+    if (null == erd) {
+        getResourceManagerConfiguration().setExternalResources(
+                  erd = new ExternalResourceDescription[0]);
+    }
     return erd;
   }
 
@@ -1347,10 +1362,12 @@ implements Listener, StandardStrings {
    * @return the string
    */
   protected String setValueChanged(String newValue, String oldValue) {
-    if (null == newValue)
-      valueChanged = valueChanged || (null != oldValue);
-    else if (!newValue.equals(oldValue))
-      valueChanged = true;
+    if (null == newValue) {
+        valueChanged = valueChanged || (null != oldValue);
+    }
+    else if (!newValue.equals(oldValue)) {
+        valueChanged = true;
+    }
     return newValue;
   }
 
@@ -1362,8 +1379,9 @@ implements Listener, StandardStrings {
    * @return the int
    */
   protected int setValueChangedInt(int newValue, int oldValue) {
-    if (newValue != oldValue)
-      valueChanged = true;
+    if (newValue != oldValue) {
+        valueChanged = true;
+    }
     return newValue;
   }
 
@@ -1375,8 +1393,9 @@ implements Listener, StandardStrings {
    * @return true, if successful
    */
   protected boolean setValueChangedBoolean(boolean newValue, boolean oldValue) {
-    if (newValue != oldValue)
-      valueChanged = true;
+    if (newValue != oldValue) {
+        valueChanged = true;
+    }
     return newValue;
   }
 
@@ -1392,8 +1411,9 @@ implements Listener, StandardStrings {
       valueChanged |= null != oldValue;
     } else if (null == oldValue) {
       valueChanged = true;
-    } else if (newValue.booleanValue() != oldValue.booleanValue())
-      valueChanged = true;
+    } else if (newValue.booleanValue() != oldValue.booleanValue()) {
+        valueChanged = true;
+    }
     return newValue;
   }
 
@@ -1411,8 +1431,10 @@ implements Listener, StandardStrings {
     } else if (oldKeys != null && Arrays.equals(oldKeys, newKeys)) {
     } else if (Arrays.equals(newKeys, oldKeys)) // newKeys must be non-null here
     {
-    } else
-      valueChanged = true;
+    }
+    else {
+        valueChanged = true;
+    }
 
     return newKeys;
   }
@@ -1423,8 +1445,9 @@ implements Listener, StandardStrings {
    * @return true, if is valid ae
    */
   protected boolean isValidAe() {
-    if (editor.isValidAE(editor.getAeDescription()))
-      return true;
+    if (editor.isValidAE(editor.getAeDescription())) {
+        return true;
+    }
     return false;
   }
 
@@ -1464,7 +1487,9 @@ implements Listener, StandardStrings {
     if (Window.CANCEL == Utility.popMessage(msg, msgDetails
             + "\nDo you want to continue, or Abort the last action?", MessageDialog.QUESTION,
             new String[] { "Continue", "Abort" }))
-      return true; // for closing the window or hitting Undo
+     {
+        return true; // for closing the window or hitting Undo
+    }
     return false;
   }
 
@@ -1474,8 +1499,9 @@ implements Listener, StandardStrings {
    * @param section the section
    */
   public void markStale(IFormPart section) {
-    if (section != null)
-      ((AbstractFormPart) section).markStale();
+    if (section != null) {
+        ((AbstractFormPart) section).markStale();
+    }
   }
 
   /**
@@ -1485,8 +1511,9 @@ implements Listener, StandardStrings {
    * @param section the section
    */
   protected void markRestOfPageStale(IManagedForm mform, AbstractSection section) {
-    if (null == mform)
-      return;
+    if (null == mform) {
+        return;
+    }
     IFormPart[] parts = mform.getParts();
     for (int i = 0; i < parts.length; i++) {
       markStaleIfDifferent(section, parts[i]);
@@ -1500,8 +1527,9 @@ implements Listener, StandardStrings {
    * @param otherOne the other one
    */
   protected void markStaleIfDifferent(IFormPart thisOne, IFormPart otherOne) {
-    if (thisOne != otherOne)
-      markStale(otherOne);
+    if (thisOne != otherOne) {
+        markStale(otherOne);
+    }
   }
 
   /**
@@ -1511,8 +1539,9 @@ implements Listener, StandardStrings {
    * @return the string
    */
   protected String multiLineFix(String s) {
-    if (null == s)
-      return null;
+    if (null == s) {
+        return null;
+    }
     return s.replaceAll("\\r\\n", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
@@ -1527,8 +1556,9 @@ implements Listener, StandardStrings {
    */
 
   public String[] stringArrayAdd(String[] a, String s) {
-    if (a == null)
-      return new String[] { s };
+    if (a == null) {
+        return new String[] { s };
+    }
 
     String[] newA = new String[a.length + 1];
     System.arraycopy(a, 0, newA, 0, a.length);
@@ -1546,8 +1576,9 @@ implements Listener, StandardStrings {
   public String[] stringArrayRemove(String[] a, String s) {
     String[] result = new String[a.length - 1];
     for (int i = 0, j = 0; i < a.length; i++) {
-      if (!a[i].equals(s))
+      if (!a[i].equals(s)) {
         result[j++] = a[i];
+    }
     }
     return result;
   }
@@ -1560,8 +1591,9 @@ implements Listener, StandardStrings {
    * @return the type or feature[]
    */
   public TypeOrFeature[] typeOrFeatureArrayAdd(TypeOrFeature[] a, TypeOrFeature item) {
-    if (null == a)
-      return new TypeOrFeature[] { item };
+    if (null == a) {
+        return new TypeOrFeature[] { item };
+    }
 
     TypeOrFeature[] result = new TypeOrFeature[a.length + 1];
     System.arraycopy(a, 0, result, 0, a.length);
@@ -1579,8 +1611,9 @@ implements Listener, StandardStrings {
   public TypeOrFeature[] typeOrFeatureArrayRemove(TypeOrFeature[] a, TypeOrFeature item) {
     TypeOrFeature[] result = new TypeOrFeature[a.length - 1];
     for (int i = 0, j = 0; i < a.length; i++) {
-      if (a[i] != item)
+      if (a[i] != item) {
         result[j++] = a[i];
+    }
     }
     return result;
   }
@@ -1597,8 +1630,9 @@ implements Listener, StandardStrings {
     for (int i = 0, j = 0; i < a.length; i++) {
       if (!a[i].getName().equals(s)) {
         // debug
-        if (j == a.length - 1)
-          throw new InternalErrorCDE("feature or type not found: looking for " + s);
+        if (j == a.length - 1) {
+            throw new InternalErrorCDE("feature or type not found: looking for " + s);
+        }
         result[j++] = a[i];
       }
     }
@@ -1613,11 +1647,13 @@ implements Listener, StandardStrings {
    * @return the type or feature
    */
   public static TypeOrFeature getTypeOrFeature(TypeOrFeature[] a, String name) {
-    if (null == a)
-      return null;
+    if (null == a) {
+        return null;
+    }
     for (int i = 0; i < a.length; i++) {
-      if (a[i].getName().equals(name))
+      if (a[i].getName().equals(name)) {
         return a[i];
+    }
     }
     return null;
   }
@@ -1630,8 +1666,9 @@ implements Listener, StandardStrings {
    */
   // tool tips seem to require no blanks following /n on Windows.
   protected static String parseToFitInToolTips(String text) {
-    if (null == text)
-      return "";
+    if (null == text) {
+        return "";
+    }
     StringBuffer buffer = new StringBuffer();
     final int MAGIC_LENGTH = 65;
     StringTokenizer tokenizer = new StringTokenizer(text);
@@ -1660,9 +1697,12 @@ implements Listener, StandardStrings {
    */
   public String formatName(String name) {
     if (null == name)
-      return ""; //$NON-NLS-1$
-    if (MultiPageEditorContributor.getUseQualifiedTypes())
-      return name;
+     {
+        return ""; //$NON-NLS-1$
+    }
+    if (MultiPageEditorContributor.getUseQualifiedTypes()) {
+        return name;
+    }
     return getShortName(name);
   }
 
@@ -1674,10 +1714,13 @@ implements Listener, StandardStrings {
    */
   public static String getShortName(String name) {
     if (null == name)
-      return ""; //$NON-NLS-1$
+     {
+        return ""; //$NON-NLS-1$
+    }
     int i = name.lastIndexOf('.');
-    if (i < 0)
-      return name;
+    if (i < 0) {
+        return name;
+    }
     return name.substring(i + 1);
   }
 
@@ -1709,8 +1752,9 @@ implements Listener, StandardStrings {
    */
   public static String getNameSpace(String name) {
     int i = name.lastIndexOf('.');
-    if (i < 0)
-      return "";
+    if (i < 0) {
+        return "";
+    }
     return (name.substring(0, i));
   }
 
@@ -1724,18 +1768,22 @@ implements Listener, StandardStrings {
   public FeatureDescription getFeature(TypeDescription td, String featureName) {
     FeatureDescription[] features = td.getFeatures();
     String supertypeName;
-    if (null != features)
-      for (int i = 0; i < features.length; i++) {
-        if (featureName.equals(features[i].getName()))
-          return features[i];
-      }
-    if (null != (supertypeName = td.getSupertypeName()))
-      if (!CAS.TYPE_NAME_TOP.equals(supertypeName)) { 
-        TypeDescription supertype = getMergedTypeSystemDescription().getType(supertypeName);
-        if (null == supertype)
-          supertype = (TypeDescription) BuiltInTypes.typeDescriptions.get(supertypeName);
-        return getFeature(supertype, featureName);
-      }
+    if (null != features) {
+        for (int i = 0; i < features.length; i++) {
+            if (featureName.equals(features[i].getName())) {
+                return features[i];
+            }
+          }
+    }
+    if (null != (supertypeName = td.getSupertypeName())) {
+        if (!CAS.TYPE_NAME_TOP.equals(supertypeName)) { 
+            TypeDescription supertype = getMergedTypeSystemDescription().getType(supertypeName);
+            if (null == supertype) {
+                supertype = (TypeDescription) BuiltInTypes.typeDescriptions.get(supertypeName);
+            }
+            return getFeature(supertype, featureName);
+          }
+    }
     return null;
   }
 
@@ -1760,8 +1808,9 @@ implements Listener, StandardStrings {
    * @param text the text
    */
   public static void setToolTipText(Control w, String text) {
-    if (null != text)
-      w.setToolTipText(parseToFitInToolTips(text));
+    if (null != text) {
+        w.setToolTipText(parseToFitInToolTips(text));
+    }
   }
 
   /**
@@ -1788,8 +1837,9 @@ implements Listener, StandardStrings {
    */
   public static void swapTreeItems(TreeItem itemBelow, int newSelection) {
     TreeItem parent = itemBelow.getParentItem();
-    if (null == parent)
-      throw new InternalErrorCDE("invalid arg");
+    if (null == parent) {
+        throw new InternalErrorCDE("invalid arg");
+    }
     int i = getIndex(itemBelow);
     TreeItem itemAbove = parent.getItems()[i - 1];
     TreeItem newItemAbove = new TreeItem(parent, SWT.NONE, i - 1);
@@ -1811,8 +1861,9 @@ implements Listener, StandardStrings {
     int columnCount = target.getParent().getColumnCount();
     for (int i = 0; i < columnCount; i++) {
       String text = source.getText(i);
-      if (null != text)
+      if (null != text) {
         target.setText(i, text);
+    }
     }
     target.setData(source.getData());
   }
@@ -1865,8 +1916,9 @@ implements Listener, StandardStrings {
     int columnCount = target.getParent().getColumnCount();
     for (int i = 0; i < columnCount; i++) {
       String text = source.getText(i);
-      if (null != text)
+      if (null != text) {
         target.setText(i, text);
+    }
     }
     target.setData(source.getData());
   }
@@ -1904,9 +1956,10 @@ implements Listener, StandardStrings {
    * @return the capabilities
    */
   public static Capability[] getCapabilities(ResourceSpecifier rs) {
-    if (rs instanceof ResourceCreationSpecifier)
-      return ((ProcessingResourceMetaData) ((ResourceCreationSpecifier) rs).getMetaData())
-              .getCapabilities();
+    if (rs instanceof ResourceCreationSpecifier) {
+        return ((ProcessingResourceMetaData) ((ResourceCreationSpecifier) rs).getMetaData())
+                  .getCapabilities();
+    }
     return null;
   }
 
@@ -1939,13 +1992,16 @@ implements Listener, StandardStrings {
   private static void mergeSofaNames(Set set, String[] items, String componentKey) {
     if (null != items) {
       for (int i = 0; i < items.length; i++) {
-        if (null != componentKey)
-          set.add(componentKey + '/' + items[i]);
-        else
-          set.add(items[i]);
+        if (null != componentKey) {
+            set.add(componentKey + '/' + items[i]);
+        }
+        else {
+            set.add(items[i]);
+        }
       }
-    } else if (null != componentKey)
-      set.add(componentKey);
+    } else if (null != componentKey) {
+        set.add(componentKey);
+    }
   }
 
   /**
@@ -1958,8 +2014,9 @@ implements Listener, StandardStrings {
     // update the model
     AnalysisEngineMetaData md = getAnalysisEngineMetaData();
     Capability[] c = getCapabilities();
-    if (c == null)
-      md.setCapabilities(new Capability[] { newCset });
+    if (c == null) {
+        md.setCapabilities(new Capability[] { newCset });
+    }
     else {
       Capability[] newC = new Capability[c.length + 1];
       System.arraycopy(c, 0, newC, 0, c.length);
@@ -2046,8 +2103,9 @@ implements Listener, StandardStrings {
     String path = editor.getAbsolutePathFromImport(importItem);
     IPath iPath = new Path(path);
     IFile[] files = editor.getProject().getWorkspace().getRoot().findFilesForLocation(iPath);
-    if (null == files || files.length != 1)
-      return;
+    if (null == files || files.length != 1) {
+        return;
+    }
 
     String filePathName = files[0].getLocation().toOSString();
     XMLizable inputDescription;
@@ -2074,8 +2132,9 @@ implements Listener, StandardStrings {
           isJmsDescriptor(inputDescription)) {
         editor.openTextEditor(path);
       }
-      else
+    else {
         editor.open(path);
+    }
     }
   }
   
@@ -2117,8 +2176,9 @@ implements Listener, StandardStrings {
    * @return the string
    */
   public static String convertNull(String s) {
-    if (null == s)
-      return "";
+    if (null == s) {
+        return "";
+    }
     return s;
   }
 
@@ -2132,12 +2192,14 @@ implements Listener, StandardStrings {
   public Import createImport(String fileName, boolean isByName) {
     if (isByName) {
       return createByNameImport(fileName);
-    } else
-      try {
-        return createLocationImport(fileName);
-      } catch (MalformedURLException e1) {
-        throw new InternalErrorCDE("unhandled exception", e1);
-      }
+    }
+    else {
+        try {
+            return createLocationImport(fileName);
+          } catch (MalformedURLException e1) {
+            throw new InternalErrorCDE("unhandled exception", e1);
+          }
+    }
   }
 
   /**
@@ -2177,15 +2239,18 @@ implements Listener, StandardStrings {
    * @return the import
    */
   public Import createByNameImport(String fileName) {
-    if (fileName.endsWith(".xml"))
-      fileName = fileName.substring(0, fileName.length() - 4);
+    if (fileName.endsWith(".xml")) {
+        fileName = fileName.substring(0, fileName.length() - 4);
+    }
     fileName = fileName.replace('\\', '/');
     fileName = fileName.replace('/', '.');
     int i = fileName.indexOf(":");
-    if (i >= 0)
-      fileName = fileName.substring(i + 1);
-    if (fileName.charAt(0) == '.')
-      fileName = fileName.substring(1);
+    if (i >= 0) {
+        fileName = fileName.substring(i + 1);
+    }
+    if (fileName.charAt(0) == '.') {
+        fileName = fileName.substring(1);
+    }
     int partStart = 0;
 
     Import imp = UIMAFramework.getResourceSpecifierFactory().createImport();
@@ -2198,7 +2263,9 @@ implements Listener, StandardStrings {
       } catch (InvalidXMLException e) {
         partStart = fileName.indexOf('.', partStart) + 1;
         if (0 == partStart)
-          return imp; // not found -outer code will catch error later
+         {
+            return imp; // not found -outer code will catch error later
+        }
         continue;
       }
       return imp;
@@ -2253,8 +2320,9 @@ implements Listener, StandardStrings {
     // get existing set of delegates from model, with imports
     Set existingKeyNames = new HashSet(getDelegateAnalysisEngineSpecifiersWithImports().keySet());
     FlowControllerDeclaration fcd = getFlowControllerDeclaration();
-    if (null != fcd && null != fcd.getKey() && !"".equals(fcd.getKey()))
-      existingKeyNames.add(fcd.getKey());
+    if (null != fcd && null != fcd.getKey() && !"".equals(fcd.getKey())) {
+        existingKeyNames.add(fcd.getKey());
+    }
     String keyName = fileName;
     String keyNameLowerCase = keyName.toLowerCase();
     keyName = keyName.substring(0, keyNameLowerCase.indexOf(".xml"));
@@ -2338,9 +2406,13 @@ implements Listener, StandardStrings {
 
     // doing this check here is expensive, but gives the best error location information
     if (!editor.isValidAE(editor.getAeDescription()))
-      if (revertOrContinue("Continue or Abort",
-              "Because of errors in validating the resulting Analysis Engine:\n"))
-        return false; // want to revert
+     {
+        if (revertOrContinue("Continue or Abort",
+                  "Because of errors in validating the resulting Analysis Engine:\n"))
+         {
+            return false; // want to revert
+        }
+    }
 
     try {
       editor.setMergedTypeSystemDescription();
@@ -2381,8 +2453,9 @@ implements Listener, StandardStrings {
     editor.getIndexesPage().markStale();
     editor.getCapabilityPage().markStale();
     SectionPart s = editor.getParameterPage().getParameterDelegatesSection();
-    if (null != s)
-      s.markStale();
+    if (null != s) {
+        s.markStale();
+    }
     editor.getResourcesPage().markStale();
   }
 
@@ -2437,8 +2510,9 @@ implements Listener, StandardStrings {
    * @param enabled the enabled
    */
   protected static void enableCtrl(Control c, boolean enabled) {
-    if (null != c)
-      c.setEnabled(enabled);
+    if (null != c) {
+        c.setEnabled(enabled);
+    }
   }
 
   /**
@@ -2448,8 +2522,9 @@ implements Listener, StandardStrings {
    * @param selected the selected
    */
   protected static void setButtonSelection(Button c, boolean selected) {
-    if (null != c)
-      c.setSelection(selected);
+    if (null != c) {
+        c.setSelection(selected);
+    }
   }
 
   /**
@@ -2476,8 +2551,9 @@ implements Listener, StandardStrings {
    * @return the description for descriptor
    */
   protected String getDescriptionForDescriptor(String fileRef, ResourceSpecifier rs) {
-    if (null == fileRef || "".equals(fileRef) || null == rs)
-      return "";
+    if (null == fileRef || "".equals(fileRef) || null == rs) {
+        return "";
+    }
     String sDesc;
     long lCurrentTimeInMillis = System.currentTimeMillis();
     if (rs == lastResourceForDescription
@@ -2495,8 +2571,10 @@ implements Listener, StandardStrings {
           String description = resourceMetaData.getDescription();
           if (null != description && !description.equals("")) {
             sDesc += parseToFitInToolTips(description);
-          } else
+          }
+        else {
             sDesc += "(No Description)";
+        }
         }
       }
       lastResourceForDescription = rs;
@@ -2513,11 +2591,13 @@ implements Listener, StandardStrings {
    * @return the prints the writer
    */
   protected PrintWriter setupToPrintFile(String filePath) {
-    if (new File(filePath).exists())
-      if (Window.CANCEL == Utility.popOkCancel("File exists, OK to replace?", MessageFormat.format(
-              "The file ''{0}'' exists. Press OK if it can be replaced; otherwise press Cancel.",
-              new Object[] { filePath }), MessageDialog.WARNING))
-        return null;
+    if (new File(filePath).exists()) {
+        if (Window.CANCEL == Utility.popOkCancel("File exists, OK to replace?", MessageFormat.format(
+                  "The file ''{0}'' exists. Press OK if it can be replaced; otherwise press Cancel.",
+                  new Object[] { filePath }), MessageDialog.WARNING)) {
+            return null;
+        }
+    }
     FileOutputStream fos = null;
     try {
       fos = new FileOutputStream(filePath);
@@ -2535,9 +2615,10 @@ implements Listener, StandardStrings {
    */
   protected FsIndexCollection getFsIndexCollection() {
     FsIndexCollection fsic = getAnalysisEngineMetaData().getFsIndexCollection();
-    if (null == fsic)
-      getAnalysisEngineMetaData().setFsIndexCollection(
-              fsic = UIMAFramework.getResourceSpecifierFactory().createFsIndexCollection());
+    if (null == fsic) {
+        getAnalysisEngineMetaData().setFsIndexCollection(
+                  fsic = UIMAFramework.getResourceSpecifierFactory().createFsIndexCollection());
+    }
     return fsic;
   }
 
@@ -2548,14 +2629,18 @@ implements Listener, StandardStrings {
    * @return the string
    */
   public static String handleDefaultIndexKind(String indexKind) {
-    if (null == indexKind)
-      return "sorted";
+    if (null == indexKind) {
+        return "sorted";
+    }
     return indexKind;
   }
   
   /**
-   * set the selection one above this item, unless it's the top one already.
-   * Used when removing the item
+   * Set the selection one above this item, unless it's the top one already.
+   * Used when removing the item.
+   * 
+   * @param tt tree
+   * @param item context item
    */
   public static void setSelectionOneUp(Tree tt, TreeItem item) {
     int itemIndex = tt.indexOf(item);

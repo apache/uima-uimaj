@@ -17,9 +17,10 @@
   
 pipeline {
   agent any
+  
   tools { 
-    maven 'Maven (latest)' 
-    jdk 'JDK 11 (latest)' 
+    maven 'maven_latest' 
+    jdk 'jdk_11_latest' 
   }
 
   options {
@@ -45,7 +46,14 @@ pipeline {
     stage("Build info") {
       steps {
         echo '=== Environment variables ==='
-        sh 'printenv'
+        script {
+          if (isUnix()) {
+            sh 'printenv'
+          }
+          else {
+            bat 'set'
+          }
+        }
       }
     }
         
@@ -67,6 +75,13 @@ pipeline {
             params.extraMavenArguments +
             ' -U -Dmaven.test.failure.ignore=true clean verify'
         }
+        
+        script {
+          def mavenConsoleIssues = scanForIssues tool: mavenConsole()
+          def javaIssues = scanForIssues tool: java()
+          def javaDocIssues = scanForIssues tool: javaDoc()
+          publishIssues issues: [mavenConsoleIssues, javaIssues, javaDocIssues]
+        }
       }
     }
     
@@ -81,6 +96,13 @@ pipeline {
           sh script: 'mvn ' +
             params.extraMavenArguments +
             ' -U -Dmaven.test.failure.ignore=true clean deploy'
+        }
+        
+        script {
+          def mavenConsoleIssues = scanForIssues tool: mavenConsole()
+          def javaIssues = scanForIssues tool: java()
+          def javaDocIssues = scanForIssues tool: javaDoc()
+          publishIssues issues: [mavenConsoleIssues, javaIssues, javaDocIssues]
         }
       }
     }

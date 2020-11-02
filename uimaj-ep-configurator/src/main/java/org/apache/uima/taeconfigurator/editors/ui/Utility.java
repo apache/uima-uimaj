@@ -138,7 +138,9 @@ public class Utility extends MessageDialog {
     dialog.setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE); 
     int returnCode = dialog.open();
     if (returnCode == -1)
-      returnCode = Window.CANCEL; // Cancel code
+     {
+        returnCode = Window.CANCEL; // Cancel code
+    }
     return returnCode;
   }
 
@@ -165,13 +167,13 @@ public class Utility extends MessageDialog {
    * @param componentClass the component class
    * @return a copy of the array with == element(s) removed
    */
-
   public static Object[] removeElementFromArray(Object[] source, Object element,
           Class componentClass) {
     Object[] result = (Object[]) Array.newInstance(componentClass, source.length - 1);
     for (int i = 0, j = 0; i < source.length; i++) {
-      if (element != source[i])
+      if (element != source[i]) {
         result[j++] = source[i];
+    }
     }
     return result;
   }
@@ -184,15 +186,16 @@ public class Utility extends MessageDialog {
    * @param componentClass the component class
    * @return a copy of the array with equal element(s) removed
    */
-
   public static Object[] removeEqualElementFromArray(Object[] source, Object element,
           Class componentClass) {
     Object[] result = (Object[]) Array.newInstance(componentClass, source.length - 1);
     for (int i = 0, j = 0; i < source.length; i++) {
-      if (element == null && source[i] == null)
+      if (element == null && source[i] == null) {
         continue;
-      if (null != element && element.equals(source[i]))
+    }
+      if (null != element && element.equals(source[i])) {
         continue;
+    }
       result[j++] = source[i];
     }
     return result;
@@ -208,20 +211,24 @@ public class Utility extends MessageDialog {
    */
   public static Object[] removeElementsFromArray(Object[] source, Object element,
           Class componentClass) {
-    if (null == source)
-      return null;
+    if (null == source) {
+        return null;
+    }
     int count = 0;
     for (int i = 0; i < source.length; i++) {
-      if (!element.equals(source[i]))
+      if (!element.equals(source[i])) {
         count++;
     }
-    if (count == source.length)
-      return source;
+    }
+    if (count == source.length) {
+        return source;
+    }
 
     Object[] result = (Object[]) Array.newInstance(componentClass, count);
     for (int i = 0, j = 0; i < source.length; i++) {
-      if (!element.equals(source[i]))
+      if (!element.equals(source[i])) {
         result[j++] = source[i];
+    }
     }
     return result;
   }
@@ -237,20 +244,24 @@ public class Utility extends MessageDialog {
    */
   public static Object[] removeElementsFromArray(Object[] source, Object element,
           Class componentClass, Comparator comp) {
-    if (null == source)
-      return null;
+    if (null == source) {
+        return null;
+    }
     int count = 0;
     for (int i = 0; i < source.length; i++) {
-      if (0 != comp.compare(element, source[i]))
+      if (0 != comp.compare(element, source[i])) {
         count++;
     }
-    if (count == source.length)
-      return source;
+    }
+    if (count == source.length) {
+        return source;
+    }
 
     Object[] result = (Object[]) Array.newInstance(componentClass, count);
     for (int i = 0, j = 0; i < source.length; i++) {
-      if (0 != comp.compare(element, source[i]))
+      if (0 != comp.compare(element, source[i])) {
         result[j++] = source[i];
+    }
     }
     return result;
   }
@@ -279,15 +290,19 @@ public class Utility extends MessageDialog {
    * @return true, if successful
    */
   public static boolean arrayContains(Object[] array, Object element) {
-    if (null == element)
-      throw new InternalErrorCDE("null not allowed as an argument");
-    if (null == array)
-      return false;
+    if (null == element) {
+        throw new InternalErrorCDE("null not allowed as an argument");
+    }
+    if (null == array) {
+        return false;
+    }
     for (int i = 0; i < array.length; i++) {
-      if (null == array[i])
+      if (null == array[i]) {
         continue;
-      if (array[i].equals(element))
+    }
+      if (array[i].equals(element)) {
         return true;
+    }
     }
     return false;
   }

@@ -314,6 +314,7 @@ public interface JCas extends AbstractCas {
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
+   * 
    * @return 0-length instance of an IntegerArray
    */
   default IntegerArray emptyIntegerArray() {
@@ -360,6 +361,7 @@ public interface JCas extends AbstractCas {
   default FSArray getFSArray0L() {
     return this.getCas().emptyFSArray();
   }
+  
   /**
    * Retrieve a lazily-created constant from the cas which holds a 0-length instance. 
    * Since this can be a common value, we

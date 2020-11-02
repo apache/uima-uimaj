@@ -173,8 +173,9 @@ public abstract class HeaderPage extends FormPage {
     xtra.setLayoutData(new GridData(GridData.FILL_BOTH));
 
     Control c = form.getParent();
-    while (!(c instanceof ScrolledComposite))
-      c = c.getParent();
+    while (!(c instanceof ScrolledComposite)) {
+        c = c.getParent();
+    }
     ((GridData) xtra.getLayoutData()).widthHint = c.getSize().x;
     return xtra;
   }
@@ -212,8 +213,9 @@ public abstract class HeaderPage extends FormPage {
     xtra.setLayout(new GridLayout(1, false));
     xtra.setLayoutData(new GridData(GridData.FILL_BOTH));
     Control c = xtra.getParent();
-    while (!(c instanceof ScrolledComposite))
-      c = c.getParent();
+    while (!(c instanceof ScrolledComposite)) {
+        c = c.getParent();
+    }
     ((GridData) xtra.getLayoutData()).widthHint = c.getSize().x;
     ((GridData) xtra.getLayoutData()).heightHint = c.getSize().y;
     sashForm = new SashForm(xtra, SWT.HORIZONTAL);
@@ -232,6 +234,7 @@ public abstract class HeaderPage extends FormPage {
 
     rightPanel.addControlListener(new ControlAdapter() {
       @Override
+
       public void controlResized(ControlEvent e) {
         setSashFormWidths();
       }
@@ -260,11 +263,13 @@ public abstract class HeaderPage extends FormPage {
    * @return the form 2 panel
    */
   public Form2Panel setup2ColumnLayout(IManagedForm managedForm, boolean equalWidth) {
-    if (equalWidth)
-      return setup2ColumnLayout(managedForm, 50, 50);
-    else
-      // a hack - based on first column more likely being wider
-      return setup2ColumnLayout(managedForm, 60, 40);
+    if (equalWidth) {
+        return setup2ColumnLayout(managedForm, 50, 50);
+    }
+    else {
+        // a hack - based on first column more likely being wider
+          return setup2ColumnLayout(managedForm, 60, 40);
+    }
   }
 
   /**

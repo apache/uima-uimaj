@@ -106,8 +106,9 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
 	              try {
 	                DotCorpus dotCorpus = DotCorpusSerializer.parseDotCorpus(dotCorpusIn);
 	                
-	                if (dotCorpus.getTypeSystemFileName() != null)
-	                    typeSystemFile = project.getFile(dotCorpus.getTypeSystemFileName());
+	                if (dotCorpus.getTypeSystemFileName() != null) {
+                        typeSystemFile = project.getFile(dotCorpus.getTypeSystemFileName());
+                    }
 	              }
 	              finally {
 	                try {

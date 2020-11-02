@@ -66,8 +66,7 @@ import org.apache.uima.jcas.cas.TOP;
  * include the ability to specify, in addition, a type T2 which is a subtype of T; indexes obtained 
  * using this will have only instances of type T2 or its subtypes.
  * 
- * @param T the topmost type in this Index
- * 
+ * @param <T> the topmost type in this Index
  */
 public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
 

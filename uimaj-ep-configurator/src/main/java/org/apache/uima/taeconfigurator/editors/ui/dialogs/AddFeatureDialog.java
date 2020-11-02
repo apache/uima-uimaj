@@ -198,8 +198,9 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
   @Override
   public void handleEvent(Event event) {
     super.handleEvent(event);
-    if (event.type == SWT.Modify && event.widget == featureRangeNameUI)
-      manageVisibleFields();
+    if (event.type == SWT.Modify && event.widget == featureRangeNameUI) {
+        manageVisibleFields();
+    }
   }
 
   /* (non-Javadoc)
@@ -228,8 +229,9 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
         result.add(type.getName());
       }
     }
-    if (typeFilter == ALL_TYPES)
-      allTypesList = result;
+    if (typeFilter == ALL_TYPES) {
+        allTypesList = result;
+    }
     return result;
   }
 
@@ -272,9 +274,9 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
    */
   @Override
   public boolean isValid() {
-
-    if (featureName.length() == 0 || featureRangeName.length() == 0)
-      return false;
+    if (featureName.length() == 0 || featureRangeName.length() == 0) {
+        return false;
+    }
     if (!featureName.equals(originalFeatureName)) {
       String errMsg = typeSection.checkFeature(this, td, existingFd);
       if (null != errMsg) {

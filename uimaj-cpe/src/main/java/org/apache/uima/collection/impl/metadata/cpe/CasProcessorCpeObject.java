@@ -400,7 +400,7 @@ public String getDescriptor() {
    */
   @Override
   @Deprecated
-public void setSOFA(String aSoFa) throws CpeDescriptorException {
+  public void setSOFA(String aSoFa) throws CpeDescriptorException {
     // if (casProcessor != null )
     // {
     // casProcessor.setContentTag(aSoFa);
@@ -416,7 +416,7 @@ public void setSOFA(String aSoFa) throws CpeDescriptorException {
    */
   @Override
   @Deprecated
-public String getSOFA() {
+  public String getSOFA() {
 
     // if (casProcessor != null )
     // {
@@ -741,8 +741,9 @@ public String getSOFA() {
       for (int i = 0; nvp != null && i < nvp.length; i++) {
         local.setParameterValue(nvp[i].getName(), nvp[i].getValue());
       }
-    } else
+    } else {
       local = parameterSettings;
+    }
 
     return local;
 

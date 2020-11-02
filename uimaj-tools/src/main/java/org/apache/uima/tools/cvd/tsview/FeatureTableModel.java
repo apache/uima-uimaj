@@ -26,11 +26,8 @@ import javax.swing.table.AbstractTableModel;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 
-
 /**
  * Insert comment for enclosing_type here.
- * 
- * 
  */
 public class FeatureTableModel extends AbstractTableModel {
 
@@ -139,5 +136,4 @@ public class FeatureTableModel extends AbstractTableModel {
       }
     }
   }
-
 }

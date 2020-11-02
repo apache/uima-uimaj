@@ -34,7 +34,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
-
+import org.eclipse.ui.IWorkbenchWizard;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
@@ -174,12 +174,14 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
     insd.clearFrameworkSpecs();
 
     String os = environmentPage.osCombo.getText();
-    if (os != null && os.trim().length() > 0)
-      insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
+    if (os != null && os.trim().length() > 0) {
+        insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
+    }
 
     String jdkVersion = environmentPage.jdkVersionCombo.getText();
-    if (jdkVersion != null && jdkVersion.trim().length() > 0)
-      insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, jdkVersion);
+    if (jdkVersion != null && jdkVersion.trim().length() > 0) {
+        insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, jdkVersion);
+    }
 
   }
 

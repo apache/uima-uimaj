@@ -577,7 +577,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    */
   @Override
   @Deprecated
-public void setLastCas(Object aCasObject) {
+  public void setLastCas(Object aCasObject) {
     lastCas = aCasObject;
   }
 
@@ -589,7 +589,7 @@ public void setLastCas(Object aCasObject) {
    */
   @Override
   @Deprecated
-public Object getLastCas() {
+  public Object getLastCas() {
     return lastCas;
   }
 
@@ -1157,7 +1157,7 @@ public Object getLastCas() {
    */
   @Override
   @Deprecated
-public void start() {
+  public void start() {
     new Thread(this);
   }
 
@@ -1168,7 +1168,7 @@ public void start() {
    */
   @Override
   @Deprecated
-public void stop() {
+  public void stop() {
   }
 
   /**
@@ -1291,7 +1291,7 @@ public void stop() {
    */
   @Override
   @Deprecated
-public boolean isLocal() {
+  public boolean isLocal() {
     return isLocal;
   }
 
@@ -1303,7 +1303,7 @@ public boolean isLocal() {
    */
   @Override
   @Deprecated
-public boolean isRemote() {
+  public boolean isRemote() {
     return isRemote;
   }
 
@@ -1315,7 +1315,7 @@ public boolean isRemote() {
    */
   @Override
   @Deprecated
-public boolean isIntegrated() {
+  public boolean isIntegrated() {
     return isIntegrated;
   }
 

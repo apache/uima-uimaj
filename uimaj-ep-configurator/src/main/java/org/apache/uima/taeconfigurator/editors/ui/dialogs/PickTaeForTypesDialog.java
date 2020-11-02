@@ -88,7 +88,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
    * method is invoked.
    */
   public class DialogSelectionListener implements SelectionListener {
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
      */
@@ -97,19 +97,23 @@ public class PickTaeForTypesDialog extends AbstractDialog {
       if (e.widget == delegateComponentListGUI) {
         update();
       } else {
-        if (okButton != null)
-          enableOK();
+        if (okButton != null) {
+            enableOK();
+        }
       }
     }
+
 
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
      */
+
     @Override
     public void widgetDefaultSelected(SelectionEvent e) {
       // nothing to do in this case
     }
   }
+
 
   /**
    * Instantiates a new pick tae for types dialog.
@@ -128,6 +132,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     m_DelegateComponentDescriptors = delegateComponentDescriptors;
     m_delegateComponentDescriptions = delegateComponentDescriptions;
   }
+
 
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
@@ -242,8 +247,9 @@ public class PickTaeForTypesDialog extends AbstractDialog {
         }
       }
     }
-    if (okButton != null)
-      enableOK();
+    if (okButton != null) {
+        enableOK();
+    }
   }
 
   /* (non-Javadoc)

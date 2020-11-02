@@ -472,10 +472,12 @@ public class Ecore2UimaTypeSystem {
       EPackage epackage = aEcoreType.getEPackage();
       if (epackage != null) {
         String uimaNamespace = namespaceUri2UimaNamespace(epackage.getNsURI());
-        if (uimaNamespace != null)
-          return uimaNamespace + '.' + aEcoreType.getName();
-        else
-          return aEcoreType.getName();
+        if (uimaNamespace != null) {
+            return uimaNamespace + '.' + aEcoreType.getName();
+        }
+        else {
+            return aEcoreType.getName();
+        }
       } else {
         return aEcoreType.getName();
       }

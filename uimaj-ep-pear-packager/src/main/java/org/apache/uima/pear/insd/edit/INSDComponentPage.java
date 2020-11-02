@@ -134,10 +134,12 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
     String temp = "";
 
     temp = insd.getMainComponentId();
-    if (temp == null || temp.trim().length() == 0)
-      compID = currentContainer.getName();
-    else
-      compID = temp;
+    if (temp == null || temp.trim().length() == 0) {
+        compID = currentContainer.getName();
+    }
+    else {
+        compID = temp;
+    }
 
     temp = insd.getMainComponentDesc();
     compDescriptorPath = temp == null ? "" : removeMacros(temp);
@@ -238,8 +240,10 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
       setPageComplete(false);
       setErrorMessage(null);
-    } else
-      updateStatus(null);
+    }
+    else {
+        updateStatus(null);
+    }
 
   }
 
@@ -252,8 +256,10 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
       setPageComplete(false);
       setErrorMessage(null);
-    } else
-      updateStatus(null);
+    }
+    else {
+        updateStatus(null);
+    }
   }
 
   /**
@@ -296,15 +302,18 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
       if (filename != null && filename.trim().length() > 0) {
         filename = filename.trim();
         IFile iFile = currentContainer.getFile(new Path(filename));
-        if (!iFile.exists())
-          sb.append("\n  \"" + filename + "\" was not found in the current project!");
-        else if (filename.trim().indexOf(".xml") == -1)
-          sb.append("\n  \"" + filename + "\" is not an xml file!");
+        if (!iFile.exists()) {
+            sb.append("\n  \"" + filename + "\" was not found in the current project!");
+        }
+        else if (filename.trim().indexOf(".xml") == -1) {
+            sb.append("\n  \"" + filename + "\" is not an xml file!");
+        }
       }
     }
     String s = sb.toString();
-    if (s.length() > 0)
-      message = s;
+    if (s.length() > 0) {
+        message = s;
+    }
 
     return message;
   }
@@ -391,13 +400,11 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
   /* (non-Javadoc)
    * @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
    */
-  /*
-   * see @DialogPage.setVisible(boolean)
-   */
   @Override
   public void setVisible(boolean visible) {
     super.setVisible(visible);
-    if (visible)
-      compIDText.setFocus();
+    if (visible) {
+        compIDText.setFocus();
+    }
   }
 }

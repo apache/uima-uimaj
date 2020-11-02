@@ -19,7 +19,6 @@
 
 package org.apache.uima.taeconfigurator;
 
-
 /**
  * The Class InternalErrorCDE.
  */

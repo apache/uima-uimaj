@@ -100,10 +100,6 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     return (editor == null ? null : editor.getAction(actionID));
   }
 
-  /*
-   * (non-JavaDoc) Method declared in AbstractMultiPageEditorActionBarContributor.
-   */
-
   /* (non-Javadoc)
    * @see org.eclipse.ui.part.MultiPageEditorActionBarContributor#setActiveEditor(org.eclipse.ui.IEditorPart)
    */
@@ -112,8 +108,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     if (activeEditorPart == part)
       return;
 
-    if (null == part)
-      return;
+    if (null == part) {
+        return;
+    }
     activeEditorPart = part;
 
     IActionBars actionBars = getActionBars();
@@ -366,8 +363,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
     Preferences prefs = plugin.getPluginPreferences();
     boolean isDefault = prefs.isDefault(key);
-    if (isDefault)
-      prefs.setDefault(key, defaultValue);
+    if (isDefault) {
+        prefs.setDefault(key, defaultValue);
+    }
     return prefs.getString(key);
   }
 
@@ -382,8 +380,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
     Preferences prefs = plugin.getPluginPreferences();
     boolean isDefault = prefs.isDefault(key);
-    if (isDefault)
-      prefs.setDefault(key, defaultValue);
+    if (isDefault) {
+        prefs.setDefault(key, defaultValue);
+    }
     return prefs.getBoolean(key);
   }
 
@@ -398,8 +397,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
     Preferences prefs = plugin.getPluginPreferences();
     boolean isDefault = prefs.isDefault(key);
-    if (isDefault)
-      prefs.setDefault(key, defaultValue);
+    if (isDefault) {
+        prefs.setDefault(key, defaultValue);
+    }
     return prefs.getInt(key);
   }
 

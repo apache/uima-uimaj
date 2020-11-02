@@ -233,6 +233,7 @@
               <id>default-cli</id>
               <configuration>
                 <excludes combine.children="append">
+                  <exclude>.factorypath</exclude>
                   <exclude>src/main/run_configuration/*.launch</exclude>
                 </excludes>    
               </configuration>

@@ -192,8 +192,9 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   @Override
   public void stop(BundleContext context) throws Exception {
     try {
-      if (null != formColors)
+      if (null != formColors) {
         formColors.dispose();
+    }
 
     } finally {
       formColors = null;

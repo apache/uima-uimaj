@@ -268,7 +268,6 @@ public class VinciServer extends BaseServer {
    * @param shutdown_message
    *          Should be used to pass a message explaining the shutdown, or in the future it may also
    *          include authentication information for password-protected shutdown.
-   * @param shutdown_message -
    * @return -
    */
   public static Transportable createShutdownCommand(String shutdown_message) {

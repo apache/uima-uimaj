@@ -437,7 +437,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         // skip over bounding annotation
         while (equalToBounds(it.getNvc())) {
           it.moveToNextNvc();
-          if (!it.isValid()) {
+          if (is_beyond_bounds_chk_sameBeginEnd()) {
             return;
           }
         }
@@ -446,6 +446,33 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     
     case coveredBy:
       it.moveToNoReinit(boundingAnnot);
+      
+      if (!isStrict) {
+        // If the bounding annotation evaluates to being "greater" than any of the annotation in the
+        // index according to the index order, then the iterator comes back invalid. 
+        if (!it.isValid()) {
+            it.moveToLastNoReinit();
+        }
+        
+        // In any case, if not doing strict selection, we need to try seeking backwards because we
+        // may have skipped covered annotations which start within the selection range but do not
+        // end within it.
+        boolean wentBack = false;
+        while (it.isValid() && it.getNvc().getBegin() >= boundingAnnot.getBegin()) {
+          it.moveToPreviousNvc();
+          wentBack = true;
+        }
+        
+        if (wentBack) {
+          if (!it.isValid()) {
+            it.moveToFirstNoReinit();
+          }
+          else if (it.getNvc().getBegin() < boundingAnnot.getBegin()) {
+            it.moveToNextNvc();
+          }
+        }
+      }
+      
       //   if an annotation is present (found), position is on it, and if not,
       //   position is at the next annotation that is higher than (or invalid, if there is none)
       //     note that the next found position could be beyond the end.

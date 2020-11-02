@@ -35,14 +35,17 @@ import org.apache.uima.jcas.tcas.Annotation_Type;
  * 
  * @generated
  */
+@SuppressWarnings("javadoc")
 public class DateTimeAnnot_Type extends Annotation_Type {
   /** @generated */
-  protected FSGenerator getFSGenerator() {
+  @Override
+protected FSGenerator getFSGenerator() {
     return fsGenerator;
   }
 
   /** @generated */
   private final FSGenerator fsGenerator = new FSGenerator() {
+    @Override
     public FeatureStructure createFS(int addr, CASImpl cas) {
       if (instanceOf_Type.useExistingInstance) {
         // Return eq fs instance if already created
@@ -53,8 +56,10 @@ public class DateTimeAnnot_Type extends Annotation_Type {
           return fs;
         }
         return fs;
-      } else
+      }
+    else {
         return new DateTimeAnnot(addr, instanceOf_Type);
+    }
     }
   };
 
@@ -75,15 +80,17 @@ public class DateTimeAnnot_Type extends Annotation_Type {
 
   /** @generated */
   public String getShortDateString(int addr) {
-    if (featOkTst && casFeat_shortDateString == null)
-      this.jcas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
+    if (featOkTst && casFeat_shortDateString == null) {
+        this.jcas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
+    }
     return ll_cas.ll_getStringValue(addr, casFeatCode_shortDateString);
   }
 
   /** @generated */
   public void setShortDateString(int addr, String v) {
-    if (featOkTst && casFeat_shortDateString == null)
-      this.jcas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
+    if (featOkTst && casFeat_shortDateString == null) {
+        this.jcas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
+    }
     ll_cas.ll_setStringValue(addr, casFeatCode_shortDateString, v);
   }
 

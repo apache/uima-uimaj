@@ -41,11 +41,8 @@ import org.apache.uima.util.Level;
 
 public abstract class CollectionReader_ImplBase extends ConfigurableResource_ImplBase implements
         CollectionReader {
-  /**
-   * @deprecated
-   */
   @Deprecated
-private CasInitializer mCasInitializer;
+  private CasInitializer mCasInitializer;
 
   /**
    * current class

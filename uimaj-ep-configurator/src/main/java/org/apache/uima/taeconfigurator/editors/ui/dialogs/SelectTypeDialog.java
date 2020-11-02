@@ -56,13 +56,14 @@ public class SelectTypeDialog extends AbstractDialog {
   
   /** The types. */
   private TypesWithNameSpaces types;
-  
+
   /**
    * Instantiates a new select type dialog.
    *
    * @param section the section
    * @param types the types
    */
+
   public SelectTypeDialog(AbstractSection section, TypesWithNameSpaces types) {
     super(section, "Select Type Name", "Select an Existing CAS Type name from the set of defined types");
     this.types = types;
@@ -119,8 +120,9 @@ public class SelectTypeDialog extends AbstractDialog {
       Map.Entry entry = (Map.Entry) it.next();
       String candidateTypeName = ((String)entry.getKey()).toLowerCase();
       if (candidateTypeName.startsWith(aTypeName)) {
-        if (null == topEntry)
-          topEntry = entry;
+        if (null == topEntry) {
+            topEntry = entry;
+        }
         TableItem item = new TableItem(matchingTypesUI, SWT.NULL);
         item.setText((String) entry.getKey());
         item.setData(entry);

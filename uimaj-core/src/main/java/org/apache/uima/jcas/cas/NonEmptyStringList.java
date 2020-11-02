@@ -50,9 +50,9 @@ public class NonEmptyStringList extends StringList implements Iterable<String>, 
 
 //  public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
 //  public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
-  private final static CallSite _FC_head = TypeSystemImpl.createCallSite(NonEmptyStringList.class, "head");
+  private final static CallSite _FC_head = TypeSystemImpl.createCallSiteForBuiltIn(NonEmptyStringList.class, "head");
   private final static MethodHandle _FH_head = _FC_head.dynamicInvoker();
-  private final static CallSite _FC_tail = TypeSystemImpl.createCallSite(NonEmptyStringList.class, "tail");
+  private final static CallSite _FC_tail = TypeSystemImpl.createCallSiteForBuiltIn(NonEmptyStringList.class, "tail");
   private final static MethodHandle _FH_tail = _FC_tail.dynamicInvoker();
 
   
