@@ -28,6 +28,7 @@ import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
 import static org.apache.uima.cas.CAS.TYPE_NAME_FS_ARRAY;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.CasCreationUtils.mergeTypeSystems;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,6 +61,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -389,49 +391,93 @@ public class JCasClassLoaderTest {
   
   @Test
   public void thatFSArraySpliteratorReturnsProperJCasWrapper() throws Exception {
-      ClassLoader rootCl = getClass().getClassLoader();
+    ClassLoader rootCl = getClass().getClassLoader();
 
-      IsolatingClassloader clForCas = new IsolatingClassloader("CAS", rootCl)
-              .hiding("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*");
+    IsolatingClassloader clForCas = new IsolatingClassloader("CAS", rootCl)
+            .hiding("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*");
 
-      ClassLoader clForCreators = new IsolatingClassloader("Creators", rootCl)
-              .hiding("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*")
-              .redefining("^.*AddATokenAnnotatorNoJCas$")
-              .redefining("^.*AddTokenToArrayAnnotatorNoJCas$");
+    ClassLoader clForCreators = new IsolatingClassloader("Creators", rootCl)
+            .hiding("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*")
+            .redefining("^.*AddATokenAnnotatorNoJCas$")
+            .redefining("^.*AddTokenToArrayAnnotatorNoJCas$");
 
-      ClassLoader clForAccessors = new IsolatingClassloader("Accessors", rootCl)
-              .redefining("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*")
-              .redefining("^.*FetchTokenFromArrayViaSpliteratorAnnotator$");
+    ClassLoader clForAccessors = new IsolatingClassloader("Accessors", rootCl)
+            .redefining("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*")
+            .redefining("^.*FetchTokenFromArrayViaSpliteratorAnnotator$");
 
-      TypeSystemDescription tsd = mergeTypeSystems(
-              asList(loadTokensAndSentencesTS(), makeArrayTestTS()));
-      
-      JCas jcas = makeJCas(clForCas, tsd);
-      AnalysisEngine addATokenAnnotator = makeAnalysisEngine(AddATokenAnnotatorNoJCas.class,
-              clForCreators);
-      AnalysisEngine addTokenToArrayAnnotator = makeAnalysisEngine(AddTokenToArrayAnnotatorNoJCas.class,
-              clForCreators);
-      AnalysisEngine fetchTokenFromArrayViaSpliteratorAnnotator = makeAnalysisEngine(
-              FetchTokenFromArrayViaSpliteratorAnnotator.class, clForAccessors);
-      
-      jcas.setDocumentText("test");
-      
-      addATokenAnnotator.process(jcas);
-      addTokenToArrayAnnotator.process(jcas);
-      fetchTokenFromArrayViaSpliteratorAnnotator.process(jcas);
-      
-      try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
-        softly.assertThat(casTokenClassViaClassloader).isNull();
-        softly.assertThat(casTokenClassViaCas).isSameAs(Annotation.class);
-        softly.assertThat(addTokenAETokenClass).isNotNull();
-        softly.assertThat(casTokenClassViaClassloader)
-            .as("JCas and AddTokenAnnotator use different Token wrappers")
-            .isNotEqualTo(addTokenAETokenClass);
-        softly.assertThat(tokenClassFetchedFromArray.getName())
-            .as("Array spliterator returns proper Token wrapper")
-            .isEqualTo(TYPE_NAME_TOKEN);
-      }      
+    TypeSystemDescription tsd = mergeTypeSystems(
+            asList(loadTokensAndSentencesTS(), makeArrayTestTS()));
+
+    JCas jcas = makeJCas(clForCas, tsd);
+    AnalysisEngine addATokenAnnotator = makeAnalysisEngine(AddATokenAnnotatorNoJCas.class,
+            clForCreators);
+    AnalysisEngine addTokenToArrayAnnotator = makeAnalysisEngine(
+            AddTokenToArrayAnnotatorNoJCas.class, clForCreators);
+    AnalysisEngine fetchTokenFromArrayViaSpliteratorAnnotator = makeAnalysisEngine(
+            FetchTokenFromArrayViaSpliteratorAnnotator.class, clForAccessors);
+
+    jcas.setDocumentText("test");
+
+    addATokenAnnotator.process(jcas);
+    addTokenToArrayAnnotator.process(jcas);
+    fetchTokenFromArrayViaSpliteratorAnnotator.process(jcas);
+
+    try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
+      softly.assertThat(casTokenClassViaClassloader).isNull();
+      softly.assertThat(casTokenClassViaCas).isSameAs(Annotation.class);
+      softly.assertThat(addTokenAETokenClass).isNotNull();
+      softly.assertThat(casTokenClassViaClassloader)
+              .as("JCas and AddTokenAnnotator use different Token wrappers")
+              .isNotEqualTo(addTokenAETokenClass);
+      softly.assertThat(tokenClassFetchedFromArray.getName())
+              .as("FSArray spliterator returns proper Token wrapper").isEqualTo(TYPE_NAME_TOKEN);
     }
+  }
+
+  @Test
+  public void thatFSArrayToArrayReturnsProperJCasWrapper() throws Exception {
+    ClassLoader rootCl = getClass().getClassLoader();
+
+    IsolatingClassloader clForCas = new IsolatingClassloader("CAS", rootCl)
+            .hiding("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*");
+
+    ClassLoader clForCreators = new IsolatingClassloader("Creators", rootCl)
+            .hiding("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*")
+            .redefining("^.*AddATokenAnnotatorNoJCas$")
+            .redefining("^.*AddTokenToArrayAnnotatorNoJCas$");
+
+    ClassLoader clForAccessors = new IsolatingClassloader("Accessors", rootCl)
+            .redefining("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*")
+            .redefining("^.*FetchTokenFromArrayViaToArrayAnnotator$");
+
+    TypeSystemDescription tsd = mergeTypeSystems(
+            asList(loadTokensAndSentencesTS(), makeArrayTestTS()));
+
+    JCas jcas = makeJCas(clForCas, tsd);
+    AnalysisEngine addATokenAnnotator = makeAnalysisEngine(AddATokenAnnotatorNoJCas.class,
+            clForCreators);
+    AnalysisEngine addTokenToArrayAnnotator = makeAnalysisEngine(
+            AddTokenToArrayAnnotatorNoJCas.class, clForCreators);
+    AnalysisEngine fetchTokenFromArrayViaSpliteratorAnnotator = makeAnalysisEngine(
+            FetchTokenFromArrayViaToArrayAnnotator.class, clForAccessors);
+
+    jcas.setDocumentText("test");
+
+    addATokenAnnotator.process(jcas);
+    addTokenToArrayAnnotator.process(jcas);
+    fetchTokenFromArrayViaSpliteratorAnnotator.process(jcas);
+
+    try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
+      softly.assertThat(casTokenClassViaClassloader).isNull();
+      softly.assertThat(casTokenClassViaCas).isSameAs(Annotation.class);
+      softly.assertThat(addTokenAETokenClass).isNotNull();
+      softly.assertThat(casTokenClassViaClassloader)
+              .as("JCas and AddTokenAnnotator use different Token wrappers")
+              .isNotEqualTo(addTokenAETokenClass);
+      softly.assertThat(tokenClassFetchedFromArray.getName())
+              .as("FSArray toArray returns proper Token wrapper").isEqualTo(TYPE_NAME_TOKEN);
+    }
+  }
 
   public static Class<?> loadTokenClass(ClassLoader cl)
   {
@@ -446,7 +492,8 @@ public class JCasClassLoaderTest {
   public static void printTokenClassLoaderInfo(String context, ClassLoader cl) {
     Class<?> clazz = loadTokenClass(cl);
     if (clazz != null) {
-      System.out.printf("[%s] %s %d %n", context, clazz.getName(), clazz.hashCode());
+      System.out.printf("[%s] %s %d loaded by %s%n", context, clazz.getName(), clazz.hashCode(),
+              clazz.getClassLoader());
     } else {
       System.out.printf("[%s] %s NOT AVAILABLE %n", context, Token.class.getName());
     }
@@ -602,6 +649,21 @@ public class JCasClassLoaderTest {
       tokenClassFetchedFromArray = StreamSupport.stream(array.spliterator(), false)
               .findFirst()
               .get().getClass();
+    }
+  }
+
+  public static class FetchTokenFromArrayViaToArrayAnnotator extends JCasAnnotator_ImplBase {
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+      FeatureStructure arrayHost = aJCas.select(aJCas.getTypeSystem().getType(TYPE_NAME_ARRAY_HOST))
+              .single();
+      
+      FSArray array = (FSArray) arrayHost.getFeatureValue(
+              arrayHost.getType().getFeatureByBaseName(FEAT_NAME_ARRAY_HOST_VALUES));
+      
+      Class withEmptyTemplate = array.toArray(new TOP[0])[0].getClass();
+      tokenClassFetchedFromArray = array.toArray(new TOP[1])[0].getClass();
+      assertThat(tokenClassFetchedFromArray).isSameAs(withEmptyTemplate);
     }
   }
 

@@ -19,10 +19,13 @@
 
 package org.apache.uima.jcas.cas;
 
-import java.util.Arrays;
+import static java.util.Spliterator.ORDERED;
+
+import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -299,7 +302,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
   
   @Override
   public Spliterator<T> spliterator() {
-    return (Spliterator<T>) Arrays.spliterator(theArray);
+    return Spliterators.spliterator(iterator(), size(), ORDERED);
   }
   
   public Stream<T> stream() {
@@ -328,12 +331,17 @@ public final class FSArray<T extends FeatureStructure> extends TOP
     return false;
   }
 
+  @Override
   public <U extends TOP> U[] toArray(U[] a) {
     final int sz = size();
     if (a.length < sz) {
-      return (U[]) Arrays.copyOf(theArray, sz, a.getClass());
+      @SuppressWarnings("unchecked")
+      U[] copy = (U[]) Array.newInstance(a.getClass().getComponentType(), sz);
+      copyToArray(0, copy, 0, sz);
+      return copy;
     }
-    System.arraycopy(theArray, 0, a, 0, size());
+    
+    copyToArray(0, a, 0, size());
     return a;
   }
  
