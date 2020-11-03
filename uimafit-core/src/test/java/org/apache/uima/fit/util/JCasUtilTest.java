@@ -694,7 +694,21 @@ public class JCasUtilTest extends ComponentTestBase {
     assertThat(selection)
             .isEmpty();
   }
+
+  @Test
+  public void thatSelectPrecedingOnZeroWidthDoesNotFindAnnotationEndingAtSameLocation()
+  {
+    Annotation a1 = new Annotation(jCas, 10, 20);
+    Annotation a2 = new Annotation(jCas, 20, 20);
     
+    asList(a1, a2).forEach(a -> a.addToIndexes());
+    
+    List<Annotation> selection = selectPreceding(Annotation.class, a2, MAX_VALUE);
+    
+    assertThat(selection)
+            .isEmpty();
+  }
+
   @Test
   public void testExists() throws UIMAException {
     JCas jcas = CasCreationUtils.createCas(createTypeSystemDescription(), null, null).getJCas();
