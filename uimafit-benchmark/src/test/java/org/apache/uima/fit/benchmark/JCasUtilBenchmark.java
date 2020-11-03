@@ -19,6 +19,7 @@
 package org.apache.uima.fit.benchmark;
 
 import static org.apache.uima.fit.benchmark.CasInitializationUtils.initRandomCas;
+import static org.apache.uima.fit.util.JCasUtil.selectOverlapping;
 import static org.apache.uima.fit.util.JCasUtil.indexCovered;
 import static org.apache.uima.fit.util.JCasUtil.indexCovering;
 import static org.apache.uima.fit.util.JCasUtil.select;
@@ -29,6 +30,7 @@ import static org.apache.uima.fit.util.JCasUtil.selectCovering;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
+import org.apache.uima.fit.util.AnnotationPredicates;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.junit.Before;
@@ -59,8 +61,16 @@ public class JCasUtilBenchmark {
       .measure(() -> select(jcas, Token.class))
       .run();
 
+    new Benchmark("JCas select Token v3", template)
+      .measure(() -> jcas.select(Token.class))
+      .run();
+
     new Benchmark("JCas select Token and iterate", template)
       .measure(() -> select(jcas, Token.class).forEach(v -> {}))
+      .run();
+
+    new Benchmark("JCas select Token and iterate v3", template)
+      .measure(() -> jcas.select(Token.class).forEach(v -> {}))
       .run();
 
     new Benchmark("JCas select Sentence", template)
@@ -79,12 +89,59 @@ public class JCasUtilBenchmark {
       .measure(() -> select(jcas, TOP.class).forEach(v -> {}))
       .run();
     
+    new Benchmark("JCas select TOP and iterate v3", template)
+      .measure(() -> jcas.select(TOP.class).forEach(v -> {}))
+      .run();
+
     new Benchmark("JCas select ALL", template)
       .measure(() -> selectAll(jcas))
       .run();
     
     new Benchmark("JCas select ALL and iterate", template)
       .measure(() -> selectAll(jcas).forEach(v -> {}))
+      .run();
+    new Benchmark("JCas select ALL and iterate v3", template)
+      .measure(() -> jcas.select().forEach(v -> {}))
+      .run();
+  }
+  
+  @Test
+  public void benchmarkSelectOverlapping() {
+    Benchmark template = new Benchmark("TEMPLATE")
+      .initialize(n -> initRandomCas(jcas.getCas(), n))
+      .magnitude(10)
+      .magnitudeIncrement(count -> count * 10)
+      .incrementTimes(4);
+    
+    new Benchmark("CAS selectOverlapping", template)
+      .measure(() -> {
+        select(jcas, Sentence.class).forEach(s -> selectOverlapping(jcas, Token.class, s)
+            .forEach(t -> {}));
+      })
+      .run();
+
+    new Benchmark("CAS overlapping via index v3 (stream)", template)
+      .measure(() -> {
+        jcas.getAnnotationIndex(Sentence.class).forEach(s -> jcas.getAnnotationIndex(Token.class)
+            .stream()
+            .filter(t -> AnnotationPredicates.overlaps(t, s))
+            .forEach(t -> {}));
+      })
+      .run();
+
+    new Benchmark("CAS overlapping via index v3 (forEach)", template)
+      .measure(() -> {
+        jcas.getAnnotationIndex(Sentence.class).forEach(s -> jcas.getAnnotationIndex(Token.class)
+            .forEach(t -> AnnotationPredicates.overlaps(t, s)));
+      })
+      .run();
+
+    new Benchmark("CAS selectOverlapping v3", template)
+      .measure(() -> {
+        jcas.select(Sentence.class).forEach(s -> jcas.select(Token.class)
+            .filter(t -> AnnotationPredicates.overlaps(t, s))
+            .forEach(t -> {}));
+      })
       .run();
   }
   
@@ -99,6 +156,12 @@ public class JCasUtilBenchmark {
     new Benchmark("JCas selectCovered", template)
       .measure(() -> select(jcas, Sentence.class).forEach(s -> selectCovered(Token.class, s)))
       .run();
+
+    new Benchmark("JCas selectCovered v3", template)
+      .measure(() -> {
+          jcas.select(Sentence.class).forEach(s -> jcas.select(Token.class).coveredBy(s).forEach(t -> {}));
+      })
+    .run();
 
     new Benchmark("JCas indexCovered", template)
       .measure(() -> indexCovered(jcas, Sentence.class, Token.class).forEach((s, l) -> l.forEach(t -> {})))
@@ -116,6 +179,12 @@ public class JCasUtilBenchmark {
     new Benchmark("JCas selectCovering", template)
       .measure(() -> select(jcas, Token.class).forEach(t -> selectCovering(Sentence.class, t)))
       .run();
+
+    new Benchmark("JCas selectCovering v3", template)
+      .measure(() -> {
+          jcas.select(Token.class).forEach(t -> jcas.select(Sentence.class).covering(t).forEach(s -> {}));
+      })
+    .run();
 
     new Benchmark("JCas indexCovering", template)
       .measure(() -> indexCovering(jcas, Token.class, Sentence.class).forEach((t, l) -> l.forEach(s -> {})))
