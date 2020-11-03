@@ -447,7 +447,13 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     case coveredBy:
       it.moveToNoReinit(boundingAnnot);
       
-      if (!isStrict) {
+      // If the iterator is unambiguous, we must respect the index order. It really depends on the
+      // exact entry point into the index that the bounding annotation gives us which annotations
+      // will be returned and which are skipped. But if the iterator is unambiguous and if we also
+      // ignore the type priorities, then we need to seek backwards in the index as to not skip any
+      // potentially relevant annotations at the same position as the bounding annotation but 
+      // (randomly) appearing before the bounding annotation in the index.
+      if (!isUnambiguous && !isUseTypePriority) {
         // If the bounding annotation evaluates to being "greater" than any of the annotation in the
         // index according to the index order, then the iterator comes back invalid. 
         if (!it.isValid()) {
@@ -473,14 +479,14 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         }
       }
       
-      //   if an annotation is present (found), position is on it, and if not,
-      //   position is at the next annotation that is higher than (or invalid, if there is none)
-      //     note that the next found position could be beyond the end.
+      // If an annotation is present (found), position is on it, and if not,
+      // position is at the next annotation that is higher than (or invalid, if there
+      // is none). Note that the next found position could be beyond the end.
       if (it.isValid()) {
         // skip over bounding annotation
         while (equalToBounds(it.getNvc())) {
           it.moveToNextNvc();
-          if (! it.isValid()) {
+          if (!it.isValid()) {
             return;
           }
         }
@@ -568,7 +574,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         while (equalToBounds(it.getNvc())) {
           it.moveToNextNvc();
           moved = true;
-          if ( ! it.isValid()) {
+          if (!it.isValid()) {
             break;
           }
         }
@@ -577,7 +583,9 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
             adjustForStrictNvc_forward();
           }
         }
-        is_beyond_bounds_chk_coveredByNvc(); // is beyond end iff annot.begin > boundEnd
+        if (it.isValid()) {
+            is_beyond_bounds_chk_coveredByNvc(); // is beyond end iff annot.begin > boundEnd
+        }
         return;  
       } // else is invalid
       return;
@@ -1091,30 +1099,27 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   
     
   /**
-   * 
-   * @param forward
    * @return true if iterator still valid, false if not valid
    */
-  private boolean adjustForStrictNvc_forward() {    
-    if (isStrict) {
-      Annotation item = it.getNvc();
-      while (item.getEnd() > this.boundEnd) {
-        
-        it.moveToNextNvc();
-        if (!isValid()) {
-          return false;
-        }
-        item = it.getNvc();
-        if (item.getBegin() > this.boundEnd) { // not >= because could of 0 length annot at end
-          makeInvalid();
-          return false;
-        }
-        
-      }
-      return true;
-    } else {
+  private boolean adjustForStrictNvc_forward() {
+    if (!isStrict) {
       return true;
     }
+    
+    Annotation item = it.getNvc();
+    while (item.getEnd() > this.boundEnd || equalToBounds(item)) {
+      it.moveToNextNvc();
+      if (!isValid()) {
+        return false;
+      }
+      
+      item = it.getNvc();
+      if (item.getBegin() > this.boundEnd) { // not >= because could of 0 length annot at end
+        makeInvalid();
+        return false;
+      }
+    }
+    return true;
   }
   
   /**
