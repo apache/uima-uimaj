@@ -25,6 +25,7 @@ import static org.apache.uima.cas.impl.Subiterator.BoundsUse.notBounded;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.sameBeginEnd;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -301,6 +302,18 @@ public class AnnotationIteratorTest {
     assertCount("Subiterator select over annot with big bound, strict", 38,
         annotIndex.select().coveredBy((Annotation) bigBound)
             .includeAnnotationsWithEndBeyondBounds(false).fsIterator());
+    assertThat(annotIndex.select().coveredBy(bigBound).limit(7)
+            .includeAnnotationsWithEndBeyondBounds().asList())
+        .as("Subiterator select limit 7 over annot with big bound, strict")
+        .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd())
+        .containsExactly(
+            tuple(sentenceType, 10, 20),
+            tuple(tokenType, 10, 15),
+            tuple(tokenType, 11, 16),
+            tuple(sentenceType, 12, 31),
+            tuple(tokenType, 12, 17),
+            tuple(tokenType, 13, 18),
+            tuple(tokenType, 14, 19));
     assertCountLimit("Subiterator select limit 7 over annot with big bound, strict", 7,
         annotIndex.select().coveredBy(bigBound).limit(7)
             .includeAnnotationsWithEndBeyondBounds().fsIterator());
@@ -369,8 +382,21 @@ public class AnnotationIteratorTest {
             .includeAnnotationsWithEndBeyondBounds(true).fsIterator());
     
     AnnotationFS sent = cas.getAnnotationIndex(this.sentenceType).iterator().get();
+    assertThat(annotIndex.subiterator(sent, false, true)).toIterable()
+        .as("Subiterator over annot unambiguous strict")
+        .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd())
+        .containsExactly(
+            tuple(tokenType, 0, 5), 
+            tuple(tokenType, 5, 10));
     assertCount("Subiterator over annot unambiguous strict", 2, 
         annotIndex.subiterator(sent, false, true));
+    
+    assertThat(annotIndex.select().nonOverlapping().coveredBy(sent).asList())
+        .as("Subiterator select over annot unambiguous strict")
+        .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd())
+        .containsExactly(
+            tuple(tokenType, 0, 5), 
+            tuple(tokenType, 5, 10));
     assertCount("Subiterator select over annot unambiguous strict", 2, 
         annotIndex.select().nonOverlapping().coveredBy(sent).fsIterator());
     
