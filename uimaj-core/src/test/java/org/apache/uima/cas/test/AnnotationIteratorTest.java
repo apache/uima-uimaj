@@ -251,7 +251,6 @@ public class AnnotationIteratorTest {
     assertCount("Normal ambiguous select annot iterator", annotCount, annotIndex.select().fsIterator());
     assertEquals(annotCount, select(annotIndex).toArray().length);  // stream op
     assertEquals(annotCount, select(annotIndex).asArray(Annotation.class).length);  // select op
-    
     assertEquals(annotCount - 5, annotIndex.select().startAt(2).asArray(Annotation.class).length);
     
     Annotation[] tokensAndSentencesAndPhrases = annotIndex.select().asArray(Annotation.class);
@@ -443,19 +442,23 @@ public class AnnotationIteratorTest {
     
     /** covering **/
     annotIndex.select(sentenceType).covering(20, 30).forEachOrdered(f ->  
-        System.out.format("found fs start at %d end %d%n", Integer.valueOf(f.getBegin()), Integer.valueOf(f.getEnd())));
+        System.out.format("found fs start at %d end %d%n", f.getBegin(), f.getEnd()));
     
     annotIndex.select(sentenceType).covering(15, 19).forEachOrdered(f ->  
-        System.out.format("covering 15, 19:   %s:%d   %d -  %d%n", f.getType().getShortName(), Integer.valueOf(f._id()), Integer.valueOf(f.getBegin()), Integer.valueOf(f.getEnd())));
+        System.out.format("covering 15, 19:   %s:%d   %d -  %d%n", 
+            f.getType().getShortName(), f._id(), f.getBegin(), f.getEnd()));
 
     annotIndex.select(sentenceType).covering(37, 39).forEachOrdered(f ->  
-        System.out.format("covering sentences 37, 39:   %s:%d   %d -  %d%n", f.getType().getShortName(), Integer.valueOf(f._id()), Integer.valueOf(f.getBegin()), Integer.valueOf(f.getEnd())));
+        System.out.format("covering sentences 37, 39:   %s:%d   %d -  %d%n", 
+            f.getType().getShortName(), f._id(), f.getBegin(), f.getEnd()));
 
     annotIndex.select(phraseType).covering(15, 19).forEachOrdered(f ->  
-       System.out.format("covering phrases 15, 19:   %s:%d   %d -  %d%n", f.getType().getShortName(), Integer.valueOf(f._id()), Integer.valueOf(f.getBegin()), Integer.valueOf(f.getEnd())));
+       System.out.format("covering phrases 15, 19:   %s:%d   %d -  %d%n", 
+           f.getType().getShortName(), f._id(), f.getBegin(), f.getEnd()));
 
     annotIndex.select(phraseType).covering(37, 39).forEachOrdered(f ->  
-       System.out.format("covering phrases 37, 39:   %s:%d   %d -  %d%n", f.getType().getShortName(), Integer.valueOf(f._id()), Integer.valueOf(f.getBegin()), Integer.valueOf(f.getEnd())));
+       System.out.format("covering phrases 37, 39:   %s:%d   %d -  %d%n", 
+           f.getType().getShortName(), f._id(), f.getBegin(), f.getEnd()));
   }
   
   private String flatStateMsg(String s) {
@@ -508,26 +511,31 @@ public class AnnotationIteratorTest {
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       ++count;
     }
+    
     assertEquals(msg, expected, count);
   }
   
   // called by assertCount
   // called by asserCountLimit
   private int assertCountCmn(String msg, int expected, FSIterator<? extends Annotation> it) {
-    msg = flatStateMsg(msg);   // add with-flattened-index if isSave is false
+    // add with-flattened-index if isSave is false
+    msg = flatStateMsg(msg);
     int count = 0;
     callCount  ++;
+    
     int fssStart;
     if (isSave) {
       fssStarts.add(fssStart = fss.size());
     } else {
       fssStart = fssStarts.get(callCount);
     }
+    
     while (it.isValid()) {
       ++count;
       Annotation fs = it.next();
       if (showFSs) {
-        System.out.format("assertCountCmn: %2d " + msg + "   %10s  %d - %d%n", count, fs.getType().getName(), fs.getBegin(), fs.getEnd() );
+        System.out.format("assertCountCmn: %2d %s   %10s  %d - %d%n", count, msg, 
+            fs.getType().getName(), fs.getBegin(), fs.getEnd());
       }
       if (isSave) {
         fss.add(fs);
@@ -535,6 +543,7 @@ public class AnnotationIteratorTest {
         assertEquals(msg, fss.get(fssStart + count -1).hashCode(), fs.hashCode());
       }
     }
+    
     assertEquals(msg, expected, count);
     return fssStart;
   }
