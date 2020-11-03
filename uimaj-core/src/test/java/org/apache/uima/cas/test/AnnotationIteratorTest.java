@@ -102,9 +102,9 @@ public class AnnotationIteratorTest {
   @Before
   public void setUp() throws Exception {
     // make a cas with various types, fairly complex -- see CASTestSetup class
-    this.cas = CASInitializer.initCas(new CASTestSetup(), null);
-    assertTrue(this.cas != null);
-    this.ts = this.cas.getTypeSystem();
+    cas = CASInitializer.initCas(new CASTestSetup(), null);
+    assertTrue(cas != null);
+    this.ts = cas.getTypeSystem();
     assertTrue(this.ts != null);
 
     this.stringType = this.ts.getType(CAS.TYPE_NAME_STRING);
@@ -144,7 +144,7 @@ public class AnnotationIteratorTest {
 
   @After
   public void tearDown() {
-    this.cas = null;
+    cas = null;
     this.ts = null;
     this.tokenType = null;
     this.intType = null;
@@ -165,9 +165,9 @@ public class AnnotationIteratorTest {
 //  // explore which isValid calls can be eliminated
 //  public void testIsValid() {
 //    int annotCount = setupTheCas();
-//    FSIndexRepository ir = this.cas.getIndexRepository();
+//    FSIndexRepository ir = cas.getIndexRepository();
 //    
-//    FSIterator<AnnotationFS> it = this.cas.getAnnotationIndex().iterator();
+//    FSIterator<AnnotationFS> it = cas.getAnnotationIndex().iterator();
 //    it.moveToLast();
 //    int c = 0;
 //    while (it.hasPrevious()) {
@@ -181,7 +181,7 @@ public class AnnotationIteratorTest {
   @Test
   public void testIterator1() throws Exception {
     final int annotCount = setupTheCas();
-    FSIndexRepository indexRepository = this.cas.getIndexRepository();
+    FSIndexRepository indexRepository = cas.getIndexRepository();
 
     /***************************************************
      * iterate over them
@@ -200,11 +200,11 @@ public class AnnotationIteratorTest {
     fss.clear();
     isSave = true;
     
-    AnnotationFS a1 = this.cas.createAnnotation(this.tokenType, 1, 6);
+    AnnotationFS a1 = cas.createAnnotation(this.tokenType, 1, 6);
     a1.setStringValue(lemmaFeat, "lemma1");
     indexRepository.addFS(a1);
     
-    AnnotationFS a2 = this.cas.createAnnotation(this.tokenType, 1, 6);
+    AnnotationFS a2 = cas.createAnnotation(this.tokenType, 1, 6);
     a2.setStringValue(lemmaFeat, "lemma2");
     indexRepository.addFS(a2);
     
@@ -241,8 +241,8 @@ public class AnnotationIteratorTest {
     isSave = fss.size() == 0;   // on first call is 0, so save on first call
     
 //    int count;
-    AnnotationIndex<Annotation> annotIndex = this.cas.getAnnotationIndex();
-    AnnotationIndex<Annotation> sentIndex = this.cas.getAnnotationIndex(sentenceType);
+    AnnotationIndex<Annotation> annotIndex = cas.getAnnotationIndex();
+    AnnotationIndex<Annotation> sentIndex = cas.getAnnotationIndex(sentenceType);
     
 //    assertTrue((isSave) ? it instanceof FSIteratorWrapper : 
 //      FSIndexFlat.enabled ? it instanceof FSIndexFlat.FSIteratorFlat : it instanceof FSIteratorWrapper);   
@@ -294,7 +294,7 @@ public class AnnotationIteratorTest {
     assertCount("Unambigous select sentence iterator", 5, 
         sentIndex.select().nonOverlapping().fsIterator());
     
-    AnnotationFS bigBound = this.cas.createAnnotation(this.sentenceType, 10, 41);
+    AnnotationFS bigBound = cas.createAnnotation(this.sentenceType, 10, 41);
     // ambiguous, and strict
     assertCount("Subiterator over annot with big bound, strict", 38, 
         annotIndex.subiterator(bigBound, true, true));
@@ -368,14 +368,14 @@ public class AnnotationIteratorTest {
         select(annotIndex).nonOverlapping().coveredBy(bigBound)
             .includeAnnotationsWithEndBeyondBounds(true).fsIterator());
     
-    AnnotationFS sent = this.cas.getAnnotationIndex(this.sentenceType).iterator().get();
+    AnnotationFS sent = cas.getAnnotationIndex(this.sentenceType).iterator().get();
     assertCount("Subiterator over annot unambiguous strict", 2, 
         annotIndex.subiterator(sent, false, true));
     assertCount("Subiterator select over annot unambiguous strict", 2, 
         annotIndex.select().nonOverlapping().coveredBy(sent).fsIterator());
     
     // strict skips first item
-    bigBound = this.cas.createAnnotation(this.sentenceType,  11, 30);
+    bigBound = cas.createAnnotation(this.sentenceType,  11, 30);
     assertCount("Subiteratover over sent ambiguous strict", 4, 
         sentIndex.subiterator(bigBound, true, true));
     assertCount("Subiteratover over sent ambiguous", 9, 
@@ -558,7 +558,7 @@ public class AnnotationIteratorTest {
   public void testIncorrectIndexTypeException() {
     boolean caughtException = false;
     try {
-      this.cas.getAnnotationIndex(this.stringType);
+      cas.getAnnotationIndex(this.stringType);
     } catch (CASRuntimeException e) {
 //      e.printStackTrace();
       caughtException = true;
@@ -567,13 +567,13 @@ public class AnnotationIteratorTest {
     
     caughtException = false;
     try {
-    	this.cas.getAnnotationIndex(ts.getType(CASTestSetup.TOKEN_TYPE_TYPE));
+    	cas.getAnnotationIndex(ts.getType(CASTestSetup.TOKEN_TYPE_TYPE));
     } catch (CASRuntimeException e) {
     	caughtException = true;
     }
     assertTrue(caughtException);
     try {
-      this.cas.getAnnotationIndex(this.tokenType);
+      cas.getAnnotationIndex(this.tokenType);
     } catch (CASRuntimeException e) {
       assertTrue(false);
     }
@@ -592,7 +592,7 @@ public class AnnotationIteratorTest {
       //                        ------- sentence ---------
       //                                                  -------- sentence ---------
       //                                                                        -tk-
-      this.cas.setDocumentText("Sentence A with no value. Sentence B with value 377.");
+      cas.setDocumentText("Sentence A with no value. Sentence B with value 377.");
     } catch (CASRuntimeException e) {
       assertTrue(false);
     }   
@@ -759,7 +759,7 @@ public class AnnotationIteratorTest {
    
    
    try {
-     this.cas.setDocumentText(text);
+     cas.setDocumentText(text);
    } catch (CASRuntimeException e) {
      fail();
    }
@@ -767,13 +767,13 @@ public class AnnotationIteratorTest {
    /***************************************************
     * Create and index tokens and sentences 
     ***************************************************/
-   FSIndexRepository ir = this.cas.getIndexRepository();
+   FSIndexRepository ir = cas.getIndexRepository();
    int annotCount = 1; // Init with document annotation.
    // create token and sentence annotations
    AnnotationFS fs;
    for (int i = 0; i < text.length() - 5; i++) {
      ++annotCount;
-     ir.addFS(fs = this.cas.createAnnotation(this.tokenType, i, i + 5));
+     ir.addFS(fs = cas.createAnnotation(this.tokenType, i, i + 5));
      if (showFSs) {
        System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
      }
@@ -788,7 +788,7 @@ public class AnnotationIteratorTest {
    // non-overlapping:  0-10, 10-20, etc.
    for (int i = 0; i < text.length() - 10; i += 5) {
      ++annotCount;
-     ir.addFS(fs = this.cas.createAnnotation(this.sentenceType, i, i + 10));
+     ir.addFS(fs = cas.createAnnotation(this.sentenceType, i, i + 10));
      if (showFSs) {
        System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
      }
@@ -801,7 +801,7 @@ public class AnnotationIteratorTest {
    int beginAlt = 0, endAlt = 0;
    for (int i = 0; i < text.length() - 10; i += 5) {
      ++annotCount;
-     ir.addFS(fs = this.cas.createAnnotation(this.phraseType,  i + beginAlt, i + 5 + endAlt));
+     ir.addFS(fs = cas.createAnnotation(this.phraseType,  i + beginAlt, i + 5 + endAlt));
      beginAlt = (beginAlt == 1) ? -1 : beginAlt + 1; // sequence: start @ 0, then 1, -1, 0, 1, ...
      endAlt = (endAlt == -1) ? 1 : endAlt - 1; //sequence: start At 0, then -1, 1, 0, -1, ...
      if (showFSs) {
@@ -810,7 +810,7 @@ public class AnnotationIteratorTest {
    }
    
    ++annotCount;
-   ir.addFS(fs = this.cas.createAnnotation(this.sentenceType,  12, 31));
+   ir.addFS(fs = cas.createAnnotation(this.sentenceType,  12, 31));
    if (showFSs) {
      System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
    }
