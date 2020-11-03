@@ -96,6 +96,8 @@ public class SelectFsAssert {
       Type type1 = ti.next();
       Type type2 = ti.next();
       
+      long timeExpected = 0;
+      long timeActual = 0;
       for (int i = 0; i < aIterations; i++) {
         if (i % 10 == 0) {
           System.out.print(i);
@@ -107,8 +109,13 @@ public class SelectFsAssert {
         initRandomCas(randomCas, 3 * i, 0, types.values().toArray(new Type[types.size()]));
   
         for (Annotation context : randomCas.<Annotation>select(type1)) {
+          long t1 = System.currentTimeMillis();
           List<AnnotationFS> expected = aExpected.select(randomCas, type2, context);
+          timeExpected += System.currentTimeMillis() - t1;
+          
+          long t2 = System.currentTimeMillis();
           List<AnnotationFS> actual = aActual.select(randomCas, type2, context);
+          timeActual += System.currentTimeMillis() - t2;
   
           assertThat(actual)
               .as("Selected [%s] with context [%s]@[%d..%d]%n%s%n", type2.getShortName(), 
@@ -118,6 +125,7 @@ public class SelectFsAssert {
         }
       }
       System.out.print(aIterations);
+      System.out.printf(" (time 1: %4dms / time 2: %4dms)", timeExpected, timeActual);
     }
     finally {
       System.out.println();

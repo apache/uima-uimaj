@@ -540,6 +540,7 @@ public class SelectFsTest {
   @Test
   public void thatSelectFsBehaviorAlignsWithPrecedingPredicateOnRandomData() throws Exception
   {
+    System.out.print("Preceding -- ");
     assertSelectionIsEqualOnRandomData(30, 10,
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> preceding(candidate, context))
@@ -568,6 +569,7 @@ public class SelectFsTest {
   @Test
   public void thatSelectFsBehaviorAlignsWithFollowingPredicateOnRandomData() throws Exception
   {
+    System.out.print("Following -- ");
     assertSelectionIsEqualOnRandomData(30, 10,
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> following(candidate, context))
@@ -597,6 +599,7 @@ public class SelectFsTest {
   @Test
   public void thatSelectFsBehaviorAlignsWithCoveredByPredicateOnRandomData() throws Exception
   {
+    System.out.print("CoveredBy -- ");
     assertSelectionIsEqualOnRandomData(30, 10,
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> coveredBy(candidate, context))
@@ -626,6 +629,7 @@ public class SelectFsTest {
   @Test
   public void thatSelectFsBehaviorAlignsWithCoveringPredicateOnRandomData() throws Exception
   {
+    System.out.print("Covering  -- ");
     assertSelectionIsEqualOnRandomData(30, 10,
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> covering(candidate, context))
@@ -655,6 +659,7 @@ public class SelectFsTest {
   @Test
   public void thatSelectFsBehaviorAlignsWithColocatedPredicateOnRandomData() throws Exception
   {
+    System.out.print("Colocated -- ");
     assertSelectionIsEqualOnRandomData(30, 10,
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> colocated(candidate, context))
