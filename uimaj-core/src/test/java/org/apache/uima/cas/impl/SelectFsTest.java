@@ -540,7 +540,7 @@ public class SelectFsTest {
   @Test
   public void thatSelectFsBehaviorAlignsWithPrecedingPredicateOnRandomData() throws Exception
   {
-    assertSelectionIsEqualOnRandomData(
+    assertSelectionIsEqualOnRandomData(30, 10,
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> preceding(candidate, context))
             .collect(toList()),
@@ -568,7 +568,7 @@ public class SelectFsTest {
   @Test
   public void thatSelectFsBehaviorAlignsWithFollowingPredicateOnRandomData() throws Exception
   {
-    assertSelectionIsEqualOnRandomData(
+    assertSelectionIsEqualOnRandomData(30, 10,
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> following(candidate, context))
             .collect(toList()),
@@ -597,7 +597,7 @@ public class SelectFsTest {
   @Test
   public void thatSelectFsBehaviorAlignsWithCoveredByPredicateOnRandomData() throws Exception
   {
-    assertSelectionIsEqualOnRandomData(
+    assertSelectionIsEqualOnRandomData(30, 10,
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> coveredBy(candidate, context))
             .collect(toList()),
@@ -626,7 +626,7 @@ public class SelectFsTest {
   @Test
   public void thatSelectFsBehaviorAlignsWithCoveringPredicateOnRandomData() throws Exception
   {
-    assertSelectionIsEqualOnRandomData(
+    assertSelectionIsEqualOnRandomData(30, 10,
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> covering(candidate, context))
             .collect(toList()),
@@ -655,7 +655,7 @@ public class SelectFsTest {
   @Test
   public void thatSelectFsBehaviorAlignsWithColocatedPredicateOnRandomData() throws Exception
   {
-    assertSelectionIsEqualOnRandomData(
+    assertSelectionIsEqualOnRandomData(30, 10,
         (cas, type, context) -> cas.getAnnotationIndex(type).select()
             .filter(candidate -> colocated(candidate, context))
             .collect(toList()),
