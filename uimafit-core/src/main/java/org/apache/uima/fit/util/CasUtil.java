@@ -1166,14 +1166,14 @@ public final class CasUtil {
    *          a CAS.
    * @param type
    *          a UIMA type.
-   * @param annotation
+   * @param anchor
    *          anchor annotation
    * @param count
    *          number of annotations to collect
    * @return List of aType annotations preceding anchor annotation
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static List<AnnotationFS> selectPreceding(CAS cas, Type type, AnnotationFS annotation,
+  public static List<AnnotationFS> selectPreceding(CAS cas, Type type, AnnotationFS anchor,
           int count) {
     requireAnnotationType(cas, type);
 
@@ -1182,7 +1182,7 @@ public final class CasUtil {
     // Seek annotation in index
     // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
     FSIterator<AnnotationFS> itr = cas.getAnnotationIndex(type).iterator();
-    itr.moveTo(annotation);
+    itr.moveTo(anchor);
     
     // If the insertion point is beyond the index, move back to the last.
     if (!itr.isValid()) {
@@ -1191,20 +1191,30 @@ public final class CasUtil {
         return precedingAnnotations;
       }
     }
+    
+    int anchorBegin = anchor.getBegin();
+    int anchorEnd = anchor.getEnd();
 
     // No need to do additional seeks here (as done in selectCovered) because the current method
     // does not have to worry about type priorities - it never returns annotations that have
     // the same offset as the reference annotation.
     
     // make sure we're past the beginning of the reference annotation
-    while (itr.isValid() && itr.get().getEnd() > annotation.getBegin()) {
+    while (itr.isValid() && itr.get().getEnd() > anchorBegin) {
       itr.moveToPrevious();
     }
 
     // add annotations from the iterator into the result list
     for (int i = 0; i < count && itr.isValid(); itr.moveToPrevious()) {
       AnnotationFS cur = itr.get();
-      if (cur.getEnd() <= annotation.getBegin()) {
+
+      int curEnd = cur.getEnd();
+
+      if (
+              curEnd <= anchorBegin && 
+              (cur.getBegin() != curEnd || anchorBegin != curEnd) &&
+              (anchorBegin != anchorEnd || curEnd != anchorBegin)
+      ) {
         precedingAnnotations.add(itr.get());
         i++;
       }
@@ -1267,6 +1277,7 @@ public final class CasUtil {
       }
       followingAnnotations.add(itr.get());
     }
+    
     return followingAnnotations;
   }
 
