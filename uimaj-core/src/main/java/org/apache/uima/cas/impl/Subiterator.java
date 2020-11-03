@@ -456,13 +456,13 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       if (!isUnambiguous && !isUseTypePriority) {
         // If the bounding annotation evaluates to being "greater" than any of the annotation in the
         // index according to the index order, then the iterator comes back invalid. 
-        if (!it.isValid()) {
+        boolean wasValid = it.isValid();
+        if (!wasValid) {
             it.moveToLastNoReinit();
         }
         
-        // In any case, if not doing strict selection, we need to try seeking backwards because we
-        // may have skipped covered annotations which start within the selection range but do not
-        // end within it.
+        // We need to try seeking backwards because we may have skipped covered annotations which
+        // start within the selection range but do not end within it.
         boolean wentBack = false;
         while (it.isValid() && it.getNvc().getBegin() >= boundingAnnot.getBegin()) {
           it.moveToPreviousNvc();
@@ -476,6 +476,11 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
           else if (it.getNvc().getBegin() < boundingAnnot.getBegin()) {
             it.moveToNextNvc();
           }
+        }
+        else if (!wasValid) {
+          // No backwards seeking was performed and the iterator was initially invalid, so we 
+          // invalidate it again
+          makeInvalid();
         }
       }
       
