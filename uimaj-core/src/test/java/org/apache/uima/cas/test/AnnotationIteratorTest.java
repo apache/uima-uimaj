@@ -72,7 +72,7 @@ import org.junit.Test;
  */
 public class AnnotationIteratorTest {
   
-  private static final boolean showFSs = true;
+  private static final boolean showFSs = false;
 
   private CAS cas;
   
