@@ -63,6 +63,7 @@ public class Batch {
       sb.append(String.format("min: %4.0f ", stats.getMin()));
       sb.append(String.format("max: %4.0f ", stats.getMax()));
       sb.append(String.format("median: %4.0f ", stats.getPercentile(50)));
+      sb.append(String.format("cumulative: %6.0f ", stats.getSum()));
       sb.append(String.format("fail: %4d ", failures));
       sb.append("]");
       return sb.toString();
