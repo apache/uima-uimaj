@@ -18,6 +18,7 @@
  */
 package org.apache.uima.fit.benchmark;
 
+import static org.apache.uima.cas.text.AnnotationPredicates.overlapping;
 import static org.apache.uima.fit.benchmark.CasInitializationUtils.initRandomCas;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.util.CasUtil.getType;
@@ -33,7 +34,6 @@ import static org.apache.uima.fit.util.CasUtil.selectOverlapping;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.fit.util.AnnotationPredicates;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +41,7 @@ import org.junit.Test;
 public class CasUtilBenchmark {
   private CAS cas;
   
+  private static final long RANDOM_SEED = 12345l;
   private static final String TYPE_NAME_TOKEN = "org.apache.uima.fit.type.Token";
   private static final String TYPE_NAME_SENTENCE = "org.apache.uima.fit.type.Sentence";
   
@@ -57,7 +58,7 @@ public class CasUtilBenchmark {
   @Test
   public void benchmarkSelect() {
     Benchmark template = new Benchmark("TEMPLATE")
-      .initialize(n -> initRandomCas(cas, n))
+      .initialize(n -> initRandomCas(cas, n, RANDOM_SEED))
       .magnitude(10)
       .magnitudeIncrement(count -> count * 10)
       .incrementTimes(5);
@@ -114,7 +115,7 @@ public class CasUtilBenchmark {
   @Test
   public void benchmarkSelectOverlapping() {
     Benchmark template = new Benchmark("TEMPLATE")
-        .initialize(n -> initRandomCas(cas, n))
+        .initialize(n -> initRandomCas(cas, n, RANDOM_SEED))
         .magnitude(10)
         .magnitudeIncrement(count -> count * 10)
         .incrementTimes(4);
@@ -132,7 +133,7 @@ public class CasUtilBenchmark {
         Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
         Type tokenType = getType(cas, TYPE_NAME_TOKEN);
         cas.select(sentenceType).forEach(s -> cas.select(tokenType)
-            .filter(t -> AnnotationPredicates.overlaps((AnnotationFS) t, (AnnotationFS)s))
+            .filter(t -> overlapping((AnnotationFS) t, (AnnotationFS)s))
             .forEach(t -> {}));
       })
       .run();
@@ -141,7 +142,7 @@ public class CasUtilBenchmark {
   @Test
   public void benchmarkSelectCovered() {
     Benchmark template = new Benchmark("TEMPLATE")
-        .initialize(n -> initRandomCas(cas, n))
+        .initialize(n -> initRandomCas(cas, n, RANDOM_SEED))
         .magnitude(10)
         .magnitudeIncrement(count -> count * 10)
         .incrementTimes(4);
@@ -171,7 +172,7 @@ public class CasUtilBenchmark {
   @Test
   public void benchmarkSelectCovering() {
     Benchmark template = new Benchmark("TEMPLATE")
-      .initialize(n -> initRandomCas(cas, n))
+      .initialize(n -> initRandomCas(cas, n, RANDOM_SEED))
       .magnitude(10)
       .magnitudeIncrement(count -> count * 10)
       .incrementTimes(3);

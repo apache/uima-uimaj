@@ -18,176 +18,222 @@
  */
 package org.apache.uima.fit.benchmark;
 
-import static org.apache.uima.fit.benchmark.CasInitializationUtils.initRandomCas;
-import static org.apache.uima.fit.util.JCasUtil.selectOverlapping;
-import static org.apache.uima.fit.util.JCasUtil.indexCovered;
-import static org.apache.uima.fit.util.JCasUtil.indexCovering;
+import static org.apache.uima.cas.text.AnnotationPredicates.colocated;
+import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
+import static org.apache.uima.cas.text.AnnotationPredicates.covering;
+import static org.apache.uima.cas.text.AnnotationPredicates.overlapping;
 import static org.apache.uima.fit.util.JCasUtil.select;
-import static org.apache.uima.fit.util.JCasUtil.selectAll;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 import static org.apache.uima.fit.util.JCasUtil.selectCovering;
+import static org.apache.uima.fit.util.JCasUtil.selectOverlapping;
 
-import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
-import org.apache.uima.fit.util.AnnotationPredicates;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.cas.TOP;
-import org.junit.Before;
 import org.junit.Test;
 
 public class JCasUtilBenchmark {
-  private JCas jcas;
-  
-  @Before
-  public void setup() throws Exception {
-    if (jcas == null) {
-      jcas = JCasFactory.createJCas();
-    }
-    else {
-      jcas.reset();
-    }
-  }
-
   @Test
   public void benchmarkSelect() {
+    CachingRandomJCasProvider casProvider = new CachingRandomJCasProvider();
+
     Benchmark template = new Benchmark("TEMPLATE")
-      .initialize(n -> initRandomCas(jcas.getCas(), n))
-      .magnitude(10)
-      .magnitudeIncrement(count -> count * 10)
-      .incrementTimes(5);
+        .initialize(casProvider::prepare)
+        .repeat(1_000)
+        .magnitude(10)
+        .magnitudeIncrement(count -> count * 10)
+        .incrementTimes(5);
     
-    new Benchmark("JCas select Token", template)
-      .measure(() -> select(jcas, Token.class))
-      .run();
-
-    new Benchmark("JCas select Token v3", template)
-      .measure(() -> jcas.select(Token.class))
-      .run();
-
-    new Benchmark("JCas select Token and iterate", template)
-      .measure(() -> select(jcas, Token.class).forEach(v -> {}))
-      .run();
-
-    new Benchmark("JCas select Token and iterate v3", template)
-      .measure(() -> jcas.select(Token.class).forEach(v -> {}))
-      .run();
-
-    new Benchmark("JCas select Sentence", template)
-      .measure(() -> select(jcas, Sentence.class))
-      .run();
-
-    new Benchmark("JCas select Sentence and iterate", template)
-      .measure(() -> select(jcas, Sentence.class).forEach(v -> {}))
-      .run();
-    
-    new Benchmark("JCas select TOP", template)
-      .measure(() -> select(jcas, TOP.class))
-      .run();
-
-    new Benchmark("JCas select TOP and iterate", template)
-      .measure(() -> select(jcas, TOP.class).forEach(v -> {}))
-      .run();
-    
-    new Benchmark("JCas select TOP and iterate v3", template)
-      .measure(() -> jcas.select(TOP.class).forEach(v -> {}))
-      .run();
-
-    new Benchmark("JCas select ALL", template)
-      .measure(() -> selectAll(jcas))
-      .run();
-    
-    new Benchmark("JCas select ALL and iterate", template)
-      .measure(() -> selectAll(jcas).forEach(v -> {}))
-      .run();
-    new Benchmark("JCas select ALL and iterate v3", template)
-      .measure(() -> jcas.select().forEach(v -> {}))
-      .run();
+    new BenchmarkGroup("select")
+        .add(new Benchmark("WARM-UP", template)
+            .measure(() -> casProvider.get().select().forEach(t -> {})))
+        .add(new Benchmark("JCasUtil.selectAll(jcas).forEach(x -> {})", template)
+            .measure(() -> JCasUtil.selectAll(casProvider.get()).forEach(x -> {})))
+        .add(new Benchmark("jcas.select().forEach(x -> {})", template)
+            .measure(() -> casProvider.get().select().forEach(x -> {})))
+        .add(new Benchmark("JCasUtil.select(jcas, TOP.class).forEach(x -> {})", template)
+            .measure(() -> JCasUtil.select(casProvider.get(), TOP.class).forEach(x -> {})))
+        .add(new Benchmark("jcas.select(TOP.class).forEach(x -> {})", template)
+            .measure(() -> casProvider.get().select(TOP.class).forEach(x -> {})))
+        .add(new Benchmark("JCasUtil.select(jcas, Token.class).forEach(x -> {})", template)
+            .measure(() -> JCasUtil.select(casProvider.get(), Token.class).forEach(x -> {})))
+        .add(new Benchmark("jcas.select(Token.class).forEach(x -> {})", template)
+            .measure(() -> casProvider.get().select(Token.class).forEach(x -> {})))
+        .runAll();
   }
-  
+
   @Test
   public void benchmarkSelectOverlapping() {
-    Benchmark template = new Benchmark("TEMPLATE")
-      .initialize(n -> initRandomCas(jcas.getCas(), n))
-      .magnitude(10)
-      .magnitudeIncrement(count -> count * 10)
-      .incrementTimes(4);
+    CachingRandomJCasProvider casProvider = new CachingRandomJCasProvider();
     
-    new Benchmark("CAS selectOverlapping", template)
-      .measure(() -> {
-        select(jcas, Sentence.class).forEach(s -> selectOverlapping(jcas, Token.class, s)
-            .forEach(t -> {}));
-      })
-      .run();
-
-    new Benchmark("CAS overlapping via index v3 (stream)", template)
-      .measure(() -> {
-        jcas.getAnnotationIndex(Sentence.class).forEach(s -> jcas.getAnnotationIndex(Token.class)
-            .stream()
-            .filter(t -> AnnotationPredicates.overlaps(t, s))
-            .forEach(t -> {}));
-      })
-      .run();
-
-    new Benchmark("CAS overlapping via index v3 (forEach)", template)
-      .measure(() -> {
-        jcas.getAnnotationIndex(Sentence.class).forEach(s -> jcas.getAnnotationIndex(Token.class)
-            .forEach(t -> AnnotationPredicates.overlaps(t, s)));
-      })
-      .run();
-
-    new Benchmark("CAS selectOverlapping v3", template)
-      .measure(() -> {
-        jcas.select(Sentence.class).forEach(s -> jcas.select(Token.class)
-            .filter(t -> AnnotationPredicates.overlaps(t, s))
-            .forEach(t -> {}));
-      })
-      .run();
+    Benchmark template = new Benchmark("TEMPLATE")
+        .initialize(casProvider::prepare)
+        .repeat(25)
+        .magnitude(10)
+        .magnitudeIncrement(count -> count * 10)
+        .incrementTimes(3);
+    
+    new BenchmarkGroup("select overlapping")
+        .add(new Benchmark("WARM-UP", template)
+            .measure(() -> casProvider.get().select().forEach(t -> {})))
+        .add(new Benchmark("selectOverlapping(casProvider.get(), Token.class, s).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    selectOverlapping(Token.class, s).forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().select(Token.class).filter(t -> overlapping(t, s)).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().select(Token.class)
+                        .filter(t -> overlapping(t, s))
+                        .forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().getAnnotationIndex(Token.class).stream().filter(t -> overlapping(t, s)).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().getAnnotationIndex(Token.class).stream()
+                        .filter(t -> overlapping(t, s))
+                        .forEach(t -> {}));
+            }))
+        .runAll();
   }
   
   @Test
-  public void benchmarkSelectCovered() {
-    Benchmark template = new Benchmark("TEMPLATE")
-      .initialize(n -> initRandomCas(jcas.getCas(), n))
-      .magnitude(10)
-      .magnitudeIncrement(count -> count * 10)
-      .incrementTimes(4);
+  public void benchmarkSelectCoveredBy() {
+    CachingRandomJCasProvider casProvider = new CachingRandomJCasProvider();
     
-    new Benchmark("JCas selectCovered", template)
-      .measure(() -> select(jcas, Sentence.class).forEach(s -> selectCovered(Token.class, s)))
-      .run();
-
-    new Benchmark("JCas selectCovered v3", template)
-      .measure(() -> {
-          jcas.select(Sentence.class).forEach(s -> jcas.select(Token.class).coveredBy(s).forEach(t -> {}));
-      })
-    .run();
-
-    new Benchmark("JCas indexCovered", template)
-      .measure(() -> indexCovered(jcas, Sentence.class, Token.class).forEach((s, l) -> l.forEach(t -> {})))
-      .run();
+    Benchmark template = new Benchmark("TEMPLATE")
+        .initialize(casProvider::prepare)
+        .repeat(25)
+        .magnitude(10)
+        .magnitudeIncrement(count -> count * 10)
+        .incrementTimes(3);
+    
+    new BenchmarkGroup("select covered by")
+        .add(new Benchmark("WARM-UP", template)
+            .measure(() -> casProvider.get().select().forEach(t -> {})))
+        .add(new Benchmark("selectCovered(Token.class, s).forEach(t -> {})", template)
+            .measure(() -> {
+              select(casProvider.get(), Sentence.class).forEach(s -> 
+                    selectCovered(Token.class, s).forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().select(Token.class).coveredBy(s).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().select(Token.class).coveredBy(s).forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().getAnnotationIndex(Token.class).select().coveredBy(s).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().getAnnotationIndex(Token.class).select().coveredBy(s).forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().select(Token.class).filter(t -> coveredBy(t, s)).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().select(Token.class)
+                        .filter(t -> coveredBy(t, s))
+                        .forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().getAnnotationIndex(Token.class).stream().filter(t -> coveredBy(t, s)).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().getAnnotationIndex(Token.class).stream()
+                        .filter(t -> coveredBy(t, s))
+                        .forEach(t -> {}));
+            }))
+        .runAll();
   }
   
   @Test
   public void benchmarkSelectCovering() {
-    Benchmark template = new Benchmark("TEMPLATE")
-      .initialize(n -> initRandomCas(jcas.getCas(), n))
-      .magnitude(10)
-      .magnitudeIncrement(count -> count * 10)
-      .incrementTimes(3);
+    CachingRandomJCasProvider casProvider = new CachingRandomJCasProvider();
     
-    new Benchmark("JCas selectCovering", template)
-      .measure(() -> select(jcas, Token.class).forEach(t -> selectCovering(Sentence.class, t)))
-      .run();
-
-    new Benchmark("JCas selectCovering v3", template)
-      .measure(() -> {
-          jcas.select(Token.class).forEach(t -> jcas.select(Sentence.class).covering(t).forEach(s -> {}));
-      })
-    .run();
-
-    new Benchmark("JCas indexCovering", template)
-      .measure(() -> indexCovering(jcas, Token.class, Sentence.class).forEach((t, l) -> l.forEach(s -> {})))
-      .run();
+    Benchmark template = new Benchmark("TEMPLATE")
+        .initialize(casProvider::prepare)
+        .repeat(25)
+        .magnitude(10)
+        .magnitudeIncrement(count -> count * 10)
+        .incrementTimes(3);
+    
+    new BenchmarkGroup("select covering")
+        .add(new Benchmark("WARM-UP", template)
+            .measure(() -> casProvider.get().select().forEach(t -> {})))
+        .add(new Benchmark("selectCovering(Token.class, s).forEach(t -> {})", template)
+            .measure(() -> {
+              select(casProvider.get(), Sentence.class).forEach(s -> 
+                    selectCovering(Token.class, s).forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().select(Token.class).covering(s).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().select(Token.class).covering(s).forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().getAnnotationIndex(Token.class).select().covering(s).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().getAnnotationIndex(Token.class).select().covering(s).forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().select(Token.class).filter(t -> covering(t, s)).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().select(Token.class)
+                        .filter(t -> covering(t, s))
+                        .forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().getAnnotationIndex(Token.class).stream().filter(t -> covering(t, s)).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().getAnnotationIndex(Token.class).stream()
+                        .filter(t -> covering(t, s))
+                        .forEach(t -> {}));
+            }))
+        .runAll();  
+  }
+  
+  @Test
+  public void benchmarkSelectAt() {
+    CachingRandomJCasProvider casProvider = new CachingRandomJCasProvider();
+    
+    Benchmark template = new Benchmark("TEMPLATE")
+        .initialize(casProvider::prepare)
+        .repeat(25)
+        .magnitude(10)
+        .magnitudeIncrement(count -> count * 10)
+        .incrementTimes(3);
+    
+    new BenchmarkGroup("select at")
+        .add(new Benchmark("WARM-UP", template)
+            .measure(() -> casProvider.get().select().forEach(t -> {})))
+        .add(new Benchmark("JCasUtil.selectAt(casProvider.get(), Token.class, s.getBegin(), s.getEnd()).forEach(t -> {})", template)
+            .measure(() -> {
+              select(casProvider.get(), Sentence.class).forEach(s -> 
+                    JCasUtil.selectAt(casProvider.get(), Token.class, s.getBegin(), s.getEnd()).forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().select(Token.class).at(s.getBegin(), s.getEnd()).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().select(Token.class).at(s.getBegin(), s.getEnd()).forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().select(Token.class).at(s).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().select(Token.class).at(s).forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().select(Token.class).filter(t -> colocated(t, s)).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().select(Token.class)
+                        .filter(t -> colocated(t, s))
+                        .forEach(t -> {}));
+            }))
+        .add(new Benchmark("casProvider.get().getAnnotationIndex(Token.class).stream().filter(t -> colocated(t, s)).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s -> 
+                    casProvider.get().getAnnotationIndex(Token.class).stream()
+                        .filter(t -> colocated(t, s))
+                        .forEach(t -> {}));
+            }))
+        .runAll();  
   }
 }
