@@ -26,144 +26,149 @@ import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.LongSupplier;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class Benchmark {
-	private IntConsumer initializer = t -> {
-	};
-	private RunnableWithExceptions subject;
+  private IntConsumer initializer = t -> {
+  };
+  private RunnableWithExceptions subject;
 
-	private final String name;
-	private int baseRepeat = 20;
-	private int repeatIncrementTimes;
+  private final String name;
 
-	private int baseMagnitude = 1;
-	private int incrementTimes;
-	private IntFunction<Integer> magnitudeIncrement = t -> t;
-	private LongSupplier timer = () -> System.currentTimeMillis();
+  private boolean verbose = false;
 
-	private List<Batch> batches = new ArrayList<>();
+  private int baseRepeat = 20;
+  private int repeatIncrementTimes;
 
-	public Benchmark(String aName, Benchmark aTemplate) {
-		name = aName;
+  private int baseMagnitude = 1;
+  private int incrementTimes;
+  private IntFunction<Integer> magnitudeIncrement = t -> t;
+  private LongSupplier timer = () -> System.currentTimeMillis();
 
-		initializer = aTemplate.initializer;
-		subject = aTemplate.subject;
+  private List<Batch> batches = new ArrayList<>();
 
-		baseRepeat = aTemplate.baseRepeat;
-		repeatIncrementTimes = aTemplate.repeatIncrementTimes;
+  public Benchmark(String aName, Benchmark aTemplate) {
+    name = aName;
 
-		baseMagnitude = aTemplate.baseMagnitude;
-		incrementTimes = aTemplate.incrementTimes;
-		magnitudeIncrement = aTemplate.magnitudeIncrement;
-		timer = aTemplate.timer;
-	}
+    initializer = aTemplate.initializer;
+    subject = aTemplate.subject;
 
-	public Benchmark(String aName) {
-		name = aName;
-	}
+    baseRepeat = aTemplate.baseRepeat;
+    repeatIncrementTimes = aTemplate.repeatIncrementTimes;
 
-	public String getName() {
-		return name;
-	}
+    baseMagnitude = aTemplate.baseMagnitude;
+    incrementTimes = aTemplate.incrementTimes;
+    magnitudeIncrement = aTemplate.magnitudeIncrement;
+    timer = aTemplate.timer;
+  }
 
-	public Benchmark timer(LongSupplier aTimer) {
-		timer = aTimer;
-		return this;
-	}
+  public Benchmark(String aName) {
+    name = aName;
+  }
 
-	public Benchmark repeat(int aRepeat) {
-		baseRepeat = aRepeat;
-		return this;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public Benchmark magnitude(int aMagnitude) {
-		baseMagnitude = aMagnitude;
-		return this;
-	}
+  public Benchmark timer(LongSupplier aTimer) {
+    timer = aTimer;
+    return this;
+  }
 
-	public Benchmark magnitudeIncrement(IntFunction<Integer> aIncrement) {
-		magnitudeIncrement = aIncrement;
-		return this;
-	}
+  public Benchmark repeat(int aRepeat) {
+    baseRepeat = aRepeat;
+    return this;
+  }
 
-	public Benchmark incrementTimes(int aTimes) {
-		incrementTimes = aTimes;
-		return this;
-	}
+  public Benchmark magnitude(int aMagnitude) {
+    baseMagnitude = aMagnitude;
+    return this;
+  }
 
-	public Benchmark initialize(IntConsumer aPieceOfCode) {
-		initializer = aPieceOfCode;
-		return this;
-	}
+  public Benchmark magnitudeIncrement(IntFunction<Integer> aIncrement) {
+    magnitudeIncrement = aIncrement;
+    return this;
+  }
 
-	public Benchmark measure(RunnableWithExceptions aPieceOfCode) {
-		subject = aPieceOfCode;
-		return this;
-	}
+  public Benchmark incrementTimes(int aTimes) {
+    incrementTimes = aTimes;
+    return this;
+  }
 
-	private Batch runBatch(int aMagnitude) {
-		Batch batch = new Batch(aMagnitude);
+  public Benchmark initialize(IntConsumer aPieceOfCode) {
+    initializer = aPieceOfCode;
+    return this;
+  }
 
-		initializer.accept(aMagnitude);
-		for (int i = 0; i < baseRepeat; i++) {
+  public Benchmark measure(RunnableWithExceptions aPieceOfCode) {
+    subject = aPieceOfCode;
+    return this;
+  }
 
-			long startTime = timer.getAsLong();
-			try {
-				subject.run();
-				batch.addMeasurement(new Measurement(i, timer.getAsLong() - startTime));
-			} catch (Exception e) {
-				batch.addMeasurement(new Measurement(i, timer.getAsLong() - startTime, e));
-			}
-		}
+  private Batch runBatch(int aMagnitude) {
+    Batch batch = new Batch(aMagnitude);
 
-		return batch;
-	}
+    initializer.accept(aMagnitude);
+    for (int i = 0; i < baseRepeat; i++) {
 
-	public void run() {
-//		System.out.printf("%n%s%n", StringUtils.repeat("=", name.length()));
-		System.out.printf("%s: ", name);
-//		System.out.printf("%s%n", StringUtils.repeat("=", name.length()));
-
-		int magnitude = baseMagnitude;
-		int n = 0;
-
-		System.out.print("Running benchmark... ");
-		do {
-			if (magnitude > 0) {
-				System.out.printf("%d ", magnitude);
-			}
-			batches.add(runBatch(magnitude));
-			magnitude = magnitudeIncrement.apply(magnitude);
-			n++;
-		} while (n < incrementTimes);
-		System.out.printf("%n");
-
-//		for (Batch b : batches) {
-//			System.out.printf("%s%n", b);
-//		}
-	}
-
-	public List<Batch> getBatches() {
-		return batches;
-	}
-	
-    public long getMaxDuration() {
-      return getBatches().stream()
-          .flatMap(b -> b.getMeasurements().stream())
-          .max(comparing(Measurement::getDuration))
-          .get()
-          .getDuration();
+      long startTime = timer.getAsLong();
+      try {
+        subject.run();
+        batch.addMeasurement(new Measurement(i, timer.getAsLong() - startTime));
+      } catch (Exception e) {
+        batch.addMeasurement(new Measurement(i, timer.getAsLong() - startTime, e));
+      }
     }
 
-    public long getCumulativeDuration() {
-      return getBatches().stream()
-          .flatMap(b -> b.getMeasurements().stream())
-          .mapToLong(Measurement::getDuration).sum();
+    return batch;
+  }
+
+  public void run() {
+    if (verbose) {
+      System.out.printf("%n%s%n", StringUtils.repeat("=", name.length()));
+      System.out.printf("%s%n", name);
+      System.out.printf("%s%n", StringUtils.repeat("=", name.length()));
+    }
+    else {
+      System.out.printf("%s: ", name);
     }
 
-    public Measurement getSlowestMeasurement() {
-      return getBatches().stream()
-          .flatMap(b -> b.getMeasurements().stream())
-          .max(comparing(Measurement::getDuration))
-          .get();
+    int magnitude = baseMagnitude;
+    int n = 0;
+
+    System.out.print("Running benchmark... ");
+    do {
+      if (magnitude > 0) {
+        System.out.printf("%d ", magnitude);
+      }
+      batches.add(runBatch(magnitude));
+      magnitude = magnitudeIncrement.apply(magnitude);
+      n++;
+    } while (n < incrementTimes);
+    System.out.printf("%n");
+
+    if (verbose) {
+      for (Batch b : batches) {
+        System.out.printf("%s%n", b);
+      }
     }
   }
+
+  public List<Batch> getBatches() {
+    return batches;
+  }
+
+  public long getMaxDuration() {
+    return getBatches().stream().flatMap(b -> b.getMeasurements().stream()).max(comparing(Measurement::getDuration))
+        .get().getDuration();
+  }
+
+  public long getCumulativeDuration() {
+    return getBatches().stream().flatMap(b -> b.getMeasurements().stream()).mapToLong(Measurement::getDuration).sum();
+  }
+
+  public Measurement getSlowestMeasurement() {
+    return getBatches().stream().flatMap(b -> b.getMeasurements().stream()).max(comparing(Measurement::getDuration))
+        .get();
+  }
+}
