@@ -154,6 +154,21 @@ public class SelectBenchmark {
                         .filter(t -> coveredBy(t, s))
                         .forEach(t -> {}));
             }))
+        .add(new Benchmark("JCAS.select(Token.class).coveredBy(s.getBegin(), s.getEnd()).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s ->
+                        casProvider.get().select(Token.class).coveredBy(s.getBegin(), s.getEnd()).forEach(t -> {}));
+            }))
+        .add(new Benchmark("JCAS.getAnnotationIndex(Token.class).select().coveredBy(s.getBegin(), s.getEnd()).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s ->
+                        casProvider.get().getAnnotationIndex(Token.class).select().coveredBy(s.getBegin(), s.getEnd()).forEach(t -> {}));
+            }))
+        .add(new Benchmark("selectCovered(JCAS, Token.class, s.getBegin(), s.getEnd()).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s ->
+                        selectCovered(casProvider.get(), Token.class, s.getBegin(), s.getEnd()).forEach(t -> {}));
+            }))
         .runAll();
   }
   
