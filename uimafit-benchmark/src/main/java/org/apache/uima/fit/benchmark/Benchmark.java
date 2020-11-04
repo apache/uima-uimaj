@@ -20,6 +20,8 @@ package org.apache.uima.fit.benchmark;
 
 import static java.util.Comparator.comparing;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntConsumer;
@@ -29,6 +31,9 @@ import java.util.function.LongSupplier;
 import org.apache.commons.lang3.StringUtils;
 
 public class Benchmark {
+
+  private final static String CPU_TIME_NOT_SUPPORTED_MSG = "CPU time not support by current thread.";
+
   private IntConsumer initializer = t -> {
   };
   private RunnableWithExceptions subject;
@@ -44,6 +49,7 @@ public class Benchmark {
   private int incrementTimes;
   private IntFunction<Integer> magnitudeIncrement = t -> t;
   private LongSupplier timer = () -> System.currentTimeMillis();
+  private String timerUnit = "ms";
 
   private List<Batch> batches = new ArrayList<>();
 
@@ -60,6 +66,7 @@ public class Benchmark {
     incrementTimes = aTemplate.incrementTimes;
     magnitudeIncrement = aTemplate.magnitudeIncrement;
     timer = aTemplate.timer;
+    timerUnit = aTemplate.timerUnit;
   }
 
   public Benchmark(String aName) {
@@ -72,6 +79,11 @@ public class Benchmark {
 
   public Benchmark timer(LongSupplier aTimer) {
     timer = aTimer;
+    return this;
+  }
+
+  public Benchmark timerUnit(String timerUnit) {
+    this.timerUnit = timerUnit;
     return this;
   }
 
@@ -171,4 +183,36 @@ public class Benchmark {
     return getBatches().stream().flatMap(b -> b.getMeasurements().stream()).max(comparing(Measurement::getDuration))
         .get();
   }
+
+  public String getTimerUnit() {
+    return timerUnit;
+  }
+
+  /** Get CPU time in nanoseconds. */
+  public static long cpu( ) {
+    ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
+    if(bean.isCurrentThreadCpuTimeSupported( )) {
+      return bean.getCurrentThreadCpuTime( );
+    }
+    throw new UnsupportedOperationException(CPU_TIME_NOT_SUPPORTED_MSG);
+  }
+
+  /** Get user time in nanoseconds. */
+  public static long user( ) {
+    ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
+    if(bean.isCurrentThreadCpuTimeSupported( )) {
+      return bean.getCurrentThreadUserTime();
+    }
+    throw new UnsupportedOperationException(CPU_TIME_NOT_SUPPORTED_MSG);
+  }
+
+  /** Get static system time in nanoseconds. */
+  public static long system( ) {
+    ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
+    if(bean.isCurrentThreadCpuTimeSupported( )) {
+      return bean.getCurrentThreadCpuTime( ) - bean.getCurrentThreadUserTime( );
+    }
+    throw new UnsupportedOperationException(CPU_TIME_NOT_SUPPORTED_MSG);
+  }
+
 }

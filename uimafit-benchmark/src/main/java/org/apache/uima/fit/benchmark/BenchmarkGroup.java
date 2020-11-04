@@ -49,8 +49,8 @@ public class BenchmarkGroup {
         .sorted(comparing(Benchmark::getCumulativeDuration))
         .forEach(benchmark -> {
           Measurement slowest = benchmark.getSlowestMeasurement();
-          System.out.printf("%6dms / %4dms -- %s%n", benchmark.getCumulativeDuration(), slowest.getDuration(),
-              benchmark.getName());
+          System.out.printf("%6d%s / %4d%s -- %s%n", benchmark.getCumulativeDuration(), benchmark.getTimerUnit(),
+                  slowest.getDuration(), benchmark.getTimerUnit(), benchmark.getName());
         });
 
     System.out.printf(">>>>>>>>>>>>>>>>>>%n%n");

@@ -46,6 +46,8 @@ public class SelectBenchmark {
 
     Benchmark template = new Benchmark("TEMPLATE")
         .initialize(casProvider::prepare)
+        .timer(Benchmark::user)
+        .timerUnit("ns")
         .repeat(1_000)
         .magnitude(10)
         .magnitudeIncrement(count -> count * 10)
@@ -75,6 +77,8 @@ public class SelectBenchmark {
     
     Benchmark template = new Benchmark("TEMPLATE")
         .initialize(casProvider::prepare)
+        .timer(Benchmark::user)
+        .timerUnit("ns")
         .repeat(25)
         .magnitude(10)
         .magnitudeIncrement(count -> count * 10)
@@ -111,6 +115,8 @@ public class SelectBenchmark {
     
     Benchmark template = new Benchmark("TEMPLATE")
         .initialize(casProvider::prepare)
+        .timer(Benchmark::user)
+        .timerUnit("ns")
         .repeat(25)
         .magnitude(10)
         .magnitudeIncrement(count -> count * 10)
@@ -157,6 +163,8 @@ public class SelectBenchmark {
     
     Benchmark template = new Benchmark("TEMPLATE")
         .initialize(casProvider::prepare)
+        .timer(Benchmark::user)
+        .timerUnit("ns")
         .repeat(25)
         .magnitude(10)
         .magnitudeIncrement(count -> count * 10)
@@ -223,6 +231,8 @@ public class SelectBenchmark {
     
     Benchmark template = new Benchmark("TEMPLATE")
         .initialize(casProvider::prepare)
+        .timer(Benchmark::user)
+        .timerUnit("ns")
         .repeat(25)
         .magnitude(10)
         .magnitudeIncrement(count -> count * 10)
