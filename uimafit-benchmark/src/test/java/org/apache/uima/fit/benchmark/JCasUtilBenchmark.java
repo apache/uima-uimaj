@@ -19,18 +19,18 @@
 package org.apache.uima.fit.benchmark;
 
 import static org.apache.uima.fit.benchmark.CasInitializationUtils.initRandomCas;
-import static org.apache.uima.fit.util.JCasUtil.selectOverlapping;
 import static org.apache.uima.fit.util.JCasUtil.indexCovered;
 import static org.apache.uima.fit.util.JCasUtil.indexCovering;
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectAll;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 import static org.apache.uima.fit.util.JCasUtil.selectCovering;
+import static org.apache.uima.fit.util.JCasUtil.selectOverlapping;
 
+import org.apache.uima.cas.text.AnnotationPredicates;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
-import org.apache.uima.fit.util.AnnotationPredicates;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.junit.Before;
@@ -124,7 +124,7 @@ public class JCasUtilBenchmark {
       .measure(() -> {
         jcas.getAnnotationIndex(Sentence.class).forEach(s -> jcas.getAnnotationIndex(Token.class)
             .stream()
-            .filter(t -> AnnotationPredicates.overlaps(t, s))
+            .filter(t -> AnnotationPredicates.overlapping(t, s))
             .forEach(t -> {}));
       })
       .run();
@@ -132,14 +132,14 @@ public class JCasUtilBenchmark {
     new Benchmark("CAS overlapping via index v3 (forEach)", template)
       .measure(() -> {
         jcas.getAnnotationIndex(Sentence.class).forEach(s -> jcas.getAnnotationIndex(Token.class)
-            .forEach(t -> AnnotationPredicates.overlaps(t, s)));
+            .forEach(t -> AnnotationPredicates.overlapping(t, s)));
       })
       .run();
 
     new Benchmark("CAS selectOverlapping v3", template)
       .measure(() -> {
         jcas.select(Sentence.class).forEach(s -> jcas.select(Token.class)
-            .filter(t -> AnnotationPredicates.overlaps(t, s))
+            .filter(t -> AnnotationPredicates.overlapping(t, s))
             .forEach(t -> {}));
       })
       .run();

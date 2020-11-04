@@ -33,7 +33,7 @@ import static org.apache.uima.fit.util.CasUtil.selectOverlapping;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.fit.util.AnnotationPredicates;
+import org.apache.uima.cas.text.AnnotationPredicates;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -132,7 +132,7 @@ public class CasUtilBenchmark {
         Type sentenceType = getType(cas, TYPE_NAME_SENTENCE);
         Type tokenType = getType(cas, TYPE_NAME_TOKEN);
         cas.select(sentenceType).forEach(s -> cas.select(tokenType)
-            .filter(t -> AnnotationPredicates.overlaps((AnnotationFS) t, (AnnotationFS)s))
+            .filter(t -> AnnotationPredicates.overlapping((AnnotationFS) t, (AnnotationFS)s))
             .forEach(t -> {}));
       })
       .run();
