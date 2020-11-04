@@ -42,7 +42,6 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.Subiterator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
@@ -715,16 +714,15 @@ public final class CasUtil {
    */
   public static List<AnnotationFS> selectCovering(CAS cas, Type type, int begin, int end) {
 
-    TypeSystem ts = cas.getTypeSystem();
     List<AnnotationFS> list = new ArrayList<AnnotationFS>();
     
     // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
-    FSIterator<AnnotationFS> iter = cas.getAnnotationIndex().iterator();
+    FSIterator<AnnotationFS> iter = type == null ? cas.getAnnotationIndex().iterator()
+            : cas.getAnnotationIndex(type).iterator();
     
     while (iter.hasNext()) {
       AnnotationFS a = iter.next();
-      if ((a.getBegin() <= begin) && (a.getEnd() >= end)
-              && ((type == null) || (ts.subsumes(type, a.getType())))) {
+      if ((a.getBegin() <= begin) && (a.getEnd() >= end)) {
         list.add(a);
       }
     }
