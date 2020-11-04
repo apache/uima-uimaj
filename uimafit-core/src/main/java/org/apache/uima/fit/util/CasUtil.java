@@ -900,6 +900,23 @@ public final class CasUtil {
 
     return unmodifiableMap(index);
   }
+
+  /**
+   * Get a list of annotations of the given annotation type overlapping the given annotation. Does 
+   * not use subiterators and does not respect type prioritites.
+   * 
+   * @param aType
+   *          a UIMA type.
+   * @param  aBoundaryAnnotation
+   *          the covering annotation.
+   * @return a list of overlapping annotations.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   */  
+  public static List<AnnotationFS> selectOverlapping(Type aType,
+          AnnotationFS aBoundaryAnnotation) {
+    return selectOverlapping(aBoundaryAnnotation.getCAS(), aType, aBoundaryAnnotation.getBegin(),
+            aBoundaryAnnotation.getEnd());
+  }  
   
   /**
    * Get a list of annotations of the given annotation type overlapping the given annotation. Does 
