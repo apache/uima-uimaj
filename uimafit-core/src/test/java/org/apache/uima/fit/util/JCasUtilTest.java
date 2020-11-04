@@ -23,9 +23,7 @@ package org.apache.uima.fit.util;
 
 import static java.lang.Integer.MAX_VALUE;
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
-import static org.apache.uima.fit.util.AnnotationPredicates.overlaps;
 import static org.apache.uima.fit.util.JCasUtil.contains;
 import static org.apache.uima.fit.util.JCasUtil.exists;
 import static org.apache.uima.fit.util.JCasUtil.getAnnotationType;
@@ -87,6 +85,7 @@ import org.junit.Test;
  * Test cases for {@link JCasUtil}.
  */
 public class JCasUtilTest extends ComponentTestBase {
+  
   /**
    * Test Tokens (Stems + Lemmas) overlapping with each other.
    */
@@ -202,25 +201,12 @@ public class JCasUtilTest extends ComponentTestBase {
       assertOverlapBehavior(JCasUtilTest::selectOverlappingNaive);
   }
 
-  @Test 
-  public void thatSelectOverlappingNaiveV3Works() throws Exception
-  {
-      assertOverlapBehavior(JCasUtilTest::selectOverlappingNaiveV3);
-  }
-
-  @Test 
-  public void thatSelectOverlappingV3Works() throws Exception
-  {
-      assertOverlapBehavior(JCasUtilTest::selectOverlappingV3);
-  }
-
   private static void assertOverlapBehavior(TypeByOffsetSelector aSelector) throws Exception
   {
       JCas jcas = JCasFactory.createJCas();
       Token t = new Token(jcas, 10, 20);
       t.addToIndexes();
       
-
       try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
         softly.assertThat(aSelector.select(jcas, Token.class, t.getBegin() - 1, t.getBegin() - 1))
             .as("Zero-width selection before annotation begin (| ###)")
@@ -322,9 +308,7 @@ public class JCasUtilTest extends ComponentTestBase {
           Collection<Sentence> sentences = select(jcas, Sentence.class);
 
           long timeNaive = 0;
-          long timeNaiveV3 = 0;
           long timeOptimized = 0;
-          long timeOptimizedV3 = 0;
 
           for (Sentence s : sentences) {
               // The naive approach is assumed to be correct
@@ -333,31 +317,13 @@ public class JCasUtilTest extends ComponentTestBase {
                       s.getEnd());
               timeNaive += System.currentTimeMillis() - ti;
 
-              // Record time for the naive V3 approach
-              ti = System.currentTimeMillis();
-              List<Token> actualNaiveV3 = selectOverlappingNaiveV3(jcas, Token.class, s.getBegin(),
-                      s.getEnd());
-              timeNaiveV3 += System.currentTimeMillis() - ti;
-
               // Record time for the optimized approach
               ti = System.currentTimeMillis();
               List<Token> actual = selectOverlapping(jcas, Token.class, s.getBegin(), s.getEnd());
               timeOptimized += System.currentTimeMillis() - ti;
 
-              // Record time for the optimized v3 approach
-              ti = System.currentTimeMillis();
-              List<Token> actualV3 = selectOverlappingV3(jcas, Token.class, s.getBegin(),
-                      s.getEnd());
-              timeOptimizedV3 += System.currentTimeMillis() - ti;
-
               assertThat(actual)
                   .as("Selection           : [" + s.getBegin() + ".." + s.getEnd() + "]")
-                  .containsExactlyElementsOf(expected);
-              assertThat(actualNaiveV3)
-                  .as("Selection (naive V3): [" + s.getBegin() + ".." + s.getEnd() + "]")
-                  .containsExactlyElementsOf(expected);
-              assertThat(actualV3)
-                  .as("Selection (V3)      : [" + s.getBegin() + ".." + s.getEnd() + "]")
                   .containsExactlyElementsOf(expected);
           }
 
@@ -365,14 +331,6 @@ public class JCasUtilTest extends ComponentTestBase {
                   "%3d Optimized   : speed up x%3.2f [baseline:%4d current:%4d (diff:%4d)]%n",
                   i, (double) timeNaive / (double) timeOptimized, timeNaive, timeOptimized,
                   timeNaive - timeOptimized);
-          System.out.printf(
-                  "%3d Naive V3    : speed up x%3.2f [baseline:%4d current:%4d (diff:%4d)]%n",
-                  i, (double) timeNaive / (double) timeNaiveV3, timeNaive, timeNaiveV3,
-                  timeNaive - timeNaiveV3);
-          System.out.printf(
-                  "%3d Optimized V3: speed up x%3.2f [baseline:%4d current:%4d (diff:%4d)]%n",
-                  i, (double) timeNaive / (double) timeOptimizedV3, timeNaive, timeOptimizedV3,
-                  timeNaive - timeOptimizedV3);
           System.out.println();
       }
   }
@@ -413,38 +371,6 @@ public class JCasUtilTest extends ComponentTestBase {
               .collect(Collectors.toList());
   }
   
-  public static <T extends Annotation> List<T> selectOverlappingNaiveV3(JCas aCas, Class<T> aType,
-          int aSelBegin, int aSelEnd) {
-      return aCas.select(aType)
-              // Commented out because due to UIMA-6269, some annotations may be missed
-              // .coveredBy(0,  aSelEnd)
-              // .includeAnnotationsWithEndBeyondBounds()
-              .filter(ann -> naiveOverlappingCondition(ann, aSelBegin, aSelEnd))
-              .collect(Collectors.toList());
-  }
-
-  public static <T extends Annotation> List<T> selectOverlappingV3(JCas aCas, Class<T> aType,
-          int aSelBegin, int aSelEnd) {
-
-    return aCas.getAnnotationIndex(aType).select()
-            .filter(ann -> overlaps(ann, aSelBegin, aSelEnd))
-            .collect(toList());
-    
-    // These are alternative implementations, but just as the version above, they are also slow 
-    // compared to the implementation we use in CasUtil.selectOverlapping() right now.
-    // Also, they suffer from UIMA-6269, some annotations may be missed
-//      return aCas.getAnnotationIndex(aType).select()
-//            .coveredBy(0, aSelEnd)
-//            .includeAnnotationsWithEndBeyondBounds()
-//            .filter(ann -> isOverlapping(ann, aSelBegin, aSelEnd))
-//            .collect(Collectors.toList());
-
-//      return aCas.select(aType)
-//              .coveredBy(0,  aSelEnd)
-//              .includeAnnotationsWithEndBeyondBounds()
-//              .filter(ann -> isOverlapping(ann, aSelBegin, aSelEnd))
-//              .collect(Collectors.toList());
-  }
   /**
    * Test what happens if there is actually nothing overlapping with the Token.
    */
@@ -1193,7 +1119,7 @@ public class JCasUtilTest extends ComponentTestBase {
     assertEquals(b.getBegin(), tokenAt.getBegin());
     assertEquals(b.getEnd(), tokenAt.getEnd());
   }
-  
+
   @FunctionalInterface
   private static interface TypeByOffsetSelector {
     <T extends Annotation> List<T> select(JCas aCas, Class<T> aType,
