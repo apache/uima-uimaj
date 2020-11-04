@@ -18,7 +18,9 @@
  */
 package org.apache.uima.cas.impl;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -71,15 +73,12 @@ public class SelectFsAssert {
     }
   }
 
-  public static void assertSelectionIsEqualOnRandomData(TypeByContextSelector aExpected, TypeByContextSelector aActual)
-      throws Exception {
-    final int ITERATIONS = 30;
-    final int TYPES = 5;
-
-    TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory().createTypeSystemDescription();
+  public static void assertSelectionIsEqualOnRandomData(int aIterations, int aTypes, 
+      TypeByContextSelector aExpected, TypeByContextSelector aActual) throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     
     Map<String, Type> types = new LinkedHashMap<>();
-    for (int i = 0; i < TYPES; i++) {
+    for (int i = 0; i < aTypes; i++) {
       String typeName = "test.Type" + (i + 1);
       tsd.addType(typeName, "", CAS.TYPE_NAME_ANNOTATION);
       types.put(typeName, null);
@@ -97,7 +96,9 @@ public class SelectFsAssert {
       Type type1 = ti.next();
       Type type2 = ti.next();
       
-      for (int i = 0; i < ITERATIONS; i++) {
+      long timeExpected = 0;
+      long timeActual = 0;
+      for (int i = 0; i < aIterations; i++) {
         if (i % 10 == 0) {
           System.out.print(i);
         }
@@ -108,20 +109,44 @@ public class SelectFsAssert {
         initRandomCas(randomCas, 3 * i, 0, types.values().toArray(new Type[types.size()]));
   
         for (Annotation context : randomCas.<Annotation>select(type1)) {
+          long t1 = System.currentTimeMillis();
           List<AnnotationFS> expected = aExpected.select(randomCas, type2, context);
+          timeExpected += System.currentTimeMillis() - t1;
+          
+          long t2 = System.currentTimeMillis();
           List<AnnotationFS> actual = aActual.select(randomCas, type2, context);
+          timeActual += System.currentTimeMillis() - t2;
   
           assertThat(actual)
-              .as("Selected [%s] with context [%s]@[%d..%d]", type2.getShortName(), 
-                  type1.getShortName(), context.getBegin(), context.getEnd())
+              .as("Selected [%s] with context [%s]@[%d..%d]%n%s%n", type2.getShortName(), 
+                  type1.getShortName(), context.getBegin(), context.getEnd(), 
+                  casToString(randomCas))
               .containsExactlyElementsOf(expected);
         }
       }
-      System.out.print(ITERATIONS);
+      System.out.print(aIterations);
+      System.out.printf(" (time 1: %4dms / time 2: %4dms)", timeExpected, timeActual);
     }
     finally {
       System.out.println();
     }
+  }
+  
+  private static String casToString(CAS aCas) {
+    if (aCas.select().count() > 10) {
+      return "CAS contains more than 10 annotations - try tweaking the test parameters to reproduce"
+          + " the isssue with a smaller CAS.";
+    }
+    
+    StringBuilder sb = new StringBuilder();
+    aCas.select().forEach(fs -> {
+      if (fs instanceof AnnotationFS) {
+        AnnotationFS ann = (AnnotationFS) fs;
+        sb.append(format("%s@[%d-%d]%n", ann.getType().getShortName(), ann.getBegin(), 
+            ann.getEnd()));
+      }
+    });
+    return sb.toString();
   }
 
   private static void initRandomCas(CAS aCas, int aSize, int aMinimumWidth, Type... aTypes) {
