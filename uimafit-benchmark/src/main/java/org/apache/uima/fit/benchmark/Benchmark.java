@@ -189,7 +189,7 @@ public class Benchmark {
   }
 
   /** Get CPU time in nanoseconds. */
-  public static long cpu( ) {
+  public static long cpuTime( ) {
     ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
     if(bean.isCurrentThreadCpuTimeSupported( )) {
       return bean.getCurrentThreadCpuTime( );
@@ -198,7 +198,7 @@ public class Benchmark {
   }
 
   /** Get user time in nanoseconds. */
-  public static long user( ) {
+  public static long userTime( ) {
     ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
     if(bean.isCurrentThreadCpuTimeSupported( )) {
       return bean.getCurrentThreadUserTime();
@@ -207,7 +207,7 @@ public class Benchmark {
   }
 
   /** Get static system time in nanoseconds. */
-  public static long system( ) {
+  public static long systemTime( ) {
     ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
     if(bean.isCurrentThreadCpuTimeSupported( )) {
       return bean.getCurrentThreadCpuTime( ) - bean.getCurrentThreadUserTime( );
