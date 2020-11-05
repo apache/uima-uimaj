@@ -68,6 +68,8 @@ public class SelectBenchmark {
             .measure(() -> JCasUtil.select(casProvider.get(), Token.class).forEach(x -> {})))
         .add(new Benchmark("JCAS.select(Token.class).forEach(x -> {})", template)
             .measure(() -> casProvider.get().select(Token.class).forEach(x -> {})))
+        .add(new Benchmark("JCAS.getAnnotationIndex(Token.class).select().forEach(x -> {})", template)
+            .measure(() -> casProvider.get().getAnnotationIndex(Token.class).select().forEach(x -> {})))
         .runAll();
   }
 
@@ -285,6 +287,16 @@ public class SelectBenchmark {
                         .filter(t -> colocated(t, s))
                         .forEach(t -> {}));
             }))
-        .runAll();  
+        .add(new Benchmark("JCAS.getAnnotationIndex(Token.class).select().at(s).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s ->
+                        casProvider.get().getAnnotationIndex(Token.class).select().at(s).forEach(t -> {}));
+            }))
+        .add(new Benchmark("JCAS.getAnnotationIndex(Token.class).select().at(s.getBegin(), s.getEnd()).forEach(t -> {})", template)
+            .measure(() -> {
+                select(casProvider.get(), Sentence.class).forEach(s ->
+                        casProvider.get().getAnnotationIndex(Token.class).select().at(s.getBegin(), s.getEnd()).forEach(t -> {}));
+            }))
+        .runAll();
   }
 }
