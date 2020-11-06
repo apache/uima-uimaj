@@ -44,7 +44,7 @@ public class CachingRandomJCasProvider {
         throw new RuntimeException(e);
       }
 
-      initRandomCas(cachedJCas.getCas(), size, RANDOM_SEED);
+      initRandomCas(cachedJCas.getCas(), 10, size, 30, 1000, RANDOM_SEED);
       cache.put(size, cachedJCas);
     }
 
