@@ -138,7 +138,6 @@ import org.apache.uima.jcas.tcas.Annotation;
  *     iterators to match their current indexes.  
  *   This implementation maintains local data: the list form and the isEmpty flag.  These would
  *     also need recomputing for the above operations, if isIndexesHaveBeenUpdated() is true. 
- *   
  */
 public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> {
   
@@ -159,12 +158,15 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   
   private final LowLevelIterator<Annotation> it;
   
-  private final Annotation boundingAnnot;  // the bounding annotation need not be a subtype of T
+  /** the bounding annotation need not be a subtype of T */
+  private final Annotation boundingAnnot;
   
   private final Annotation coveringStartPos;
   
-  private final boolean isUnambiguous;  // true means need to skip until start is past prev end (going forward)
-  private final boolean isStrict;     // only true for coveredby; means skip things while iterating where the end is outside the bounds
+  /** true means need to skip until start is past prev end (going forward) */
+  private final boolean isUnambiguous;
+  /** only true for coveredby; means skip things while iterating where the end is outside the bounds */
+  private final boolean isStrict;
   /** true if bounds is one of sameBeginEnd, coveredBy, covering */
   private final boolean isBounded;
   /** for moveTo-leftmost, and bounds skipping if isSkipEquals */
@@ -425,7 +427,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       break;
       
     case sameBeginEnd:
-      it.moveToNoReinit(boundingAnnot);  
+      it.moveToNoReinit(boundingAnnot);
       if (it.isValid()) {
         // no need for mimic position if type priorities are in effect; moveTo will either
         //   find equal match and position to left most of the equal, including types, or
@@ -515,8 +517,6 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         
     maybeSetPrevEnd();  // used for unambiguous
   }
-  
-  
   
   /*
    * (non-Javadoc)
@@ -623,7 +623,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   }
     
   @Override  
-  public void moveToPreviousNvc() {    
+  public void moveToPreviousNvc() {
     // no isValid check because caller checked: "Nvc"
     if (isListForm) {
       --this.pos;
@@ -762,7 +762,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
 
   /**
    * Called by move to Last (only) and only for non-empty iterators, to move to a place just beyond the last spot, and then backup
-   * while the goBacwards is true
+   * while the goBackwards is true
    * 
    * Includes adjustForStrictOrCoveringAndBoundSkip going backwards
    * @param begin a position just past the last spot
@@ -1061,8 +1061,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       break;
       
     case covering:
-      // because this method is move to previous, 
-      //   the position cannot be on the bounds.
+      // because this method is move to previous, the position cannot be on the bounds.
       // handle skipping cases where the end is < boundEnd
       while (it.isValid() && it.getNvc().getEnd() < boundEnd) {
         maybeMoveToPrevBounded();
@@ -1078,7 +1077,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       default:  // same as no bounds case
     }    
   }
-            
+  
   /**
    * Special equalToBounds used only for having bounded iterators 
    * skip returning the bounding annotation
