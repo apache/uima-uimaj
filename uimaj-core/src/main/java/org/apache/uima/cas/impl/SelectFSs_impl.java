@@ -823,7 +823,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
           !isIncludeAnnotBeyondBounds,  // strict 
           boundsUse,
           isTypePriority,
-          isSkipSameBeginEndType);
+          isSkipSameBeginEndType,
+          false); // isStrictIncludesAnnotationsStartingAtEndPosition
     }
 
     return it;

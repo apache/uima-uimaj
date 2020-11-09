@@ -19,7 +19,10 @@
 package org.apache.uima.cas.impl;
 
 import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,6 +35,8 @@ import java.util.Random;
 import java.util.function.IntFunction;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
@@ -40,10 +45,11 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
+import org.junit.Ignore;
 
 public class SelectFsAssert {
-  private static final long RANDOM_SEED = System.nanoTime();
-//  private static final long RANDOM_SEED = 1123487858940988l;
+//  private static final long RANDOM_SEED = System.nanoTime();
+  private static final long RANDOM_SEED = 1174435820229231l;
   
   public static void assertSelectFS(RelativePosition aCondition, RelativeAnnotationPredicate aPredicate, 
       List<TestCase> aTestCases)
@@ -77,14 +83,14 @@ public class SelectFsAssert {
   }
 
   public static void assertSelectionIsEqualOnRandomData(String xRelToY, int aIterations, int aTypes, 
-      TypeByContextSelector aExpected, TypeByContextSelector aActual) throws Exception {
+      TypeByContextSelector aExpected, TypeByContextSelectorAsSelection aActual) throws Exception {
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     
     IntFunction<Integer> annotationsPerIteration = iteration -> iteration * 3;
     // Quick overrides for debugging
-//    annotationsPerIteration = iteration -> 10;
-//    aIterations = 1_000;
-//    aTypes = 4;
+    annotationsPerIteration = iteration -> 2;
+    aIterations = 1_000;
+    aTypes = 1;
 
     Random rnd = new Random(RANDOM_SEED);
     Map<String, Type> types = new LinkedHashMap<>();
@@ -108,12 +114,11 @@ public class SelectFsAssert {
     System.out.print("Iteration: ");
     try {
       Iterator<Type> ti = types.values().iterator();
-      Type type1 = ti.next();
-      Type type2 = ti.hasNext() ? ti.next() : type1;
+      Type typeY = ti.next();
+      Type typeX = ti.hasNext() ? ti.next() : typeY;
       Type[] typeList = types.values().toArray(new Type[types.size()]);
       
-      long timeExpected = 0;
-      long timeActual = 0;
+      Map<String, Long> timings = new LinkedHashMap<>();
       for (int i = 0; i < aIterations; i++) {
         randomCas.reset();
         
@@ -129,7 +134,7 @@ public class SelectFsAssert {
           
         initRandomCas(randomCas, annotationsPerIteration.apply(i), 0, typeList);
   
-        for (Annotation y : randomCas.<Annotation>select(type1)) {
+        for (Annotation y : randomCas.<Annotation>select(typeY)) {
           // Randomly use a non-indexed annotation for selection so we test both cases (using an
           // indexed or non-indexed annotation).
           if (rnd.nextInt() % 2 == 0) {
@@ -137,36 +142,85 @@ public class SelectFsAssert {
                 y.getEnd());
           }
           
-          long t1 = System.currentTimeMillis();
-          List<AnnotationFS> expected = aExpected.select(randomCas, type2, y);
-          timeExpected += System.currentTimeMillis() - t1;
+          long tExpected = System.currentTimeMillis();
+          List<Annotation> expected = aExpected.select(randomCas, typeX, y).stream().map(a -> (Annotation) a)
+              .collect(toList());
+          timings.compute("actual", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tExpected);
           
-          long t2 = System.currentTimeMillis();
-          List<AnnotationFS> actual = aActual.select(randomCas, type2, y);
-          timeActual += System.currentTimeMillis() - t2;
+          try {
+            {
+              long tList = System.currentTimeMillis();
+              List<Annotation> listActual = aActual.select(randomCas, typeX, y).asList();
+              timings.compute("asList", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tList);
+              assertThat(listActual)
+                  .as("Selecting X of type [%s] %s [%s]@[%d-%d] asList%n%s%n", typeX.getName(), xRelToY,
+                      y.getType().getShortName(), y.getBegin(), y.getEnd(),
+                      casToString(randomCas))
+                  .containsExactlyElementsOf(expected);
+            }
   
-//          try {
-            assertThat(actual)
-                .as("Selecting X of type [%s] %s [%s]@[%d-%d]%n%s%n", type2.getName(), xRelToY,
-                    y.getType().getShortName(), y.getBegin(), y.getEnd(),
-                    casToString(randomCas))
-                .containsExactlyElementsOf(expected);
-//          }
-//          catch (Throwable e) {
-//            // Set a breakpoint here to halt when an assert above fails. The select triggering the
-//            // assert is then re-executed below and you can look into its details. To allow
-//            // stopping and re-executing the test, you need to put the displayed random seed into
-//            // the static variable RANDOM_SEED at the beginning of the file. Don't forget to
-//            // Comment this out again and to re-set the RANDOM_SEED to timer-based when you are
-//            // done with debugging.
-//            System.out.printf("RANDOM SEED: %d%n", RANDOM_SEED);
-//            aActual.select(randomCas, type2, y);
-//            throw e;
-//          }
+            //          SELECT-ITERATORS: Leaving this for a latter improvement
+//            {
+//              long t = System.currentTimeMillis();
+//              FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
+//              Annotation initial = it.isValid() ? it.get() : null;
+//              List<Annotation> actual = new ArrayList<>();
+//              it.moveToFirst(); // <= This causes trouble
+//              assertThat(it.isValid() ? it.get() : null)
+//                  .as("Annotation pointed at by iterator initially should match annotation after calling moveToFirst:%n"+
+//                      "%s%n%s%n" +
+//                      "Selecting X of type [%s] %s [%s]@[%d-%d] iterator forward%n%s%n",
+//                      initial, it.isValid() ? it.get() : null, typeX.getName(), xRelToY,
+//                          y.getType().getShortName(), y.getBegin(), y.getEnd(), casToString(randomCas))
+//                  .isEqualTo(initial);
+//              while (it.isValid()) {
+//                actual.add(it.get());
+//                it.moveToNext();
+//              }
+//              timings.compute("iterator forward", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
+//              assertThat(actual)
+//                  .as("Selecting X of type [%s] %s [%s]@[%d-%d] iterator forward%n%s%n", typeX.getName(), xRelToY,
+//                      y.getType().getShortName(), y.getBegin(), y.getEnd(),
+//                      casToString(randomCas))
+//                  .containsExactlyElementsOf(expected);
+//            }
+
+  //          SELECT-ITERATORS: Leaving this for a latter improvement
+  //          {
+  //            long tBackwards = System.currentTimeMillis();
+  //            FSIterator<Annotation> itBackwards = aActual.select(randomCas, type2, y).fsIterator();
+  //            List<Annotation> backwardsActual = new ArrayList<>();
+  //            itBackwards.moveToLast();
+  //            while (itBackwards.isValid()) {
+  //              backwardsActual.add(0, itBackwards.get());
+  //              itBackwards.moveToPrevious();
+  //            }
+  //            timings.compute("iterator backwards", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tBackwards);
+  //            assertThat(backwardsActual)
+  //                .as("Selecting X of type [%s] %s [%s]@[%d-%d] iterator backwards%n%s%n", type2.getName(), xRelToY,
+  //                    y.getType().getShortName(), y.getBegin(), y.getEnd(),
+  //                    casToString(randomCas))
+  //                .containsExactlyElementsOf(expected);
+  //          }
+          }
+          catch (Throwable e) {
+            // Set a breakpoint here to halt when an assert above fails. The select triggering the
+            // assert is then re-executed below and you can look into its details. To allow
+            // stopping and re-executing the test, you need to put the displayed random seed into
+            // the static variable RANDOM_SEED at the beginning of the file. Don't forget to
+            // Comment this out again and to re-set the RANDOM_SEED to timer-based when you are
+            // done with debugging.
+            System.out.printf("RANDOM SEED: %d%n", RANDOM_SEED);
+            aActual.select(randomCas, typeX, y);
+            throw e;
+          }
         }
       }
+      
       System.out.print(aIterations);
-      System.out.printf(" (time 1: %4dms / time 2: %4dms)", timeExpected, timeActual);
+      System.out.print(timings.entrySet().stream()
+          .map(e -> format("%s: %4dms", e.getKey(), e.getValue()))
+          .collect(joining(" | ", " (", ")")));
     }
     finally {
       System.out.println();
@@ -220,5 +274,10 @@ public class SelectFsAssert {
   @FunctionalInterface
   public static interface TypeByContextSelector {
     List<AnnotationFS> select(CAS aCas, Type aType, Annotation aContext);
+  }
+
+  @FunctionalInterface
+  public static interface TypeByContextSelectorAsSelection {
+    SelectFSs<Annotation> select(CAS aCas, Type aType, Annotation aContext);
   }
 }

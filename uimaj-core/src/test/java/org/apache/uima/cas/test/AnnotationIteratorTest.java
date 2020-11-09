@@ -18,6 +18,8 @@
  */
 package org.apache.uima.cas.test;
 
+import static java.util.Arrays.asList;
+import static java.util.Comparator.comparing;
 import static org.apache.uima.cas.SelectFSs.select;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.coveredBy;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.covering;
@@ -54,6 +56,7 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.assertj.core.groups.Tuple;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,6 +78,7 @@ public class AnnotationIteratorTest {
   private static final boolean showFSs = false;
 
   private CAS cas;
+  private Annotation[] ann;
   
   private TypeSystem ts;
   private Type stringType;
@@ -182,6 +186,7 @@ public class AnnotationIteratorTest {
   @Test
   public void testIterator1() throws Exception {
     final int annotCount = setupTheCas();
+    
     FSIndexRepository indexRepository = cas.getIndexRepository();
 
     /***************************************************
@@ -250,8 +255,8 @@ public class AnnotationIteratorTest {
     assertCount("Normal ambiguous annot iterator", annotCount, annotIndex.iterator(true));
      // a normal "ambiguous" iterator
     assertCount("Normal ambiguous select annot iterator", annotCount, annotIndex.select().fsIterator());
-    assertEquals(annotCount, select(annotIndex).toArray().length);  // stream op
-    assertEquals(annotCount, select(annotIndex).asArray(Annotation.class).length);  // select op
+    assertEquals(annotCount, annotIndex.select().toArray().length);  // stream op
+    assertEquals(annotCount, annotIndex.select().asArray(Annotation.class).length);  // select op
     assertEquals(annotCount - 5, annotIndex.select().startAt(2).asArray(Annotation.class).length);
     
     Annotation[] tokensAndSentencesAndPhrases = annotIndex.select().asArray(Annotation.class);
@@ -265,11 +270,11 @@ public class AnnotationIteratorTest {
         fsa.select().fsIterator());
 
     assertCount("fslhead ambiguous select annot iterator", annotCount, 
-        fslhead.<Annotation>select().fsIterator());
+        fslhead.select().fsIterator());
     
     // backwards
     assertCount("Normal select backwards ambiguous annot iterator", annotCount,
-        select(annotIndex).backwards().fsIterator());
+        annotIndex.select().backwards().fsIterator());
     
     // because of document Annotation - spans the whole range
     assertCount("Unambiguous annot iterator", 1, 
@@ -297,11 +302,14 @@ public class AnnotationIteratorTest {
     
     AnnotationFS bigBound = cas.createAnnotation(this.sentenceType, 10, 41);
     // ambiguous, and strict
+    assertThat(annotIndex.subiterator(bigBound, true, true)).toIterable()
+        .hasSize(38);
     assertCount("Subiterator over annot with big bound, strict", 38, 
         annotIndex.subiterator(bigBound, true, true));
     assertCount("Subiterator select over annot with big bound, strict", 38,
         annotIndex.select().coveredBy((Annotation) bigBound)
             .includeAnnotationsWithEndBeyondBounds(false).fsIterator());
+    
     assertThat(annotIndex.select().coveredBy(bigBound).limit(7)
             .includeAnnotationsWithEndBeyondBounds().asList())
         .as("Subiterator select limit 7 over annot with big bound, strict")
@@ -361,24 +369,45 @@ public class AnnotationIteratorTest {
 //      System.out.format("debug %s:%d   b:%d e:%d%n", a.getType().getShortName(), a._id(), a.getBegin(), a.getEnd());
 //    }
 
+    assertThat(annotIndex.subiterator(bigBound, true, false)).toIterable()
+         .containsExactly(
+             ann[58], ann[11], ann[12],
+             ann[76], ann[13], ann[14], ann[15],
+             ann[59], ann[16],
+             ann[69], ann[17], ann[18], ann[19], ann[20],
+             ann[60], ann[21], ann[22],
+             ann[70], ann[23], ann[24],
+             ann[71], ann[25],
+             ann[61], ann[26], ann[27], ann[28], ann[29], ann[30],
+             ann[62], ann[31],
+             ann[72], ann[32], ann[33], ann[34], ann[35],
+             ann[63], ann[36], ann[37],
+             ann[73], ann[38], ann[39],
+             ann[74], ann[40], 
+             ann[64], ann[41], ann[42]);
+    assertThat(annotIndex.subiterator(bigBound, true, false)).toIterable()
+        .extracting(a -> asList(ann).indexOf(a), a -> a.getType(), a -> a.getBegin(), a -> a.getEnd())
+        .hasSize(46);
     assertCount("Subiterator over annot ambiguous not-strict", 46, 
         annotIndex.subiterator(bigBound, true, false));
+    // Using selectFS, we do not consider annotations that start at the end of the bounding 
+    // annotation to be included in the result, hence it is 45 here and not 46.
+    assertCount("Subiterator select over annot ambiguous not-strict", 45,
+        annotIndex.select().coveredBy(bigBound)
+            .includeAnnotationsWithEndBeyondBounds(true).fsIterator());
     
     // covered by implies endWithinBounds
     assertCount("Subiterator select over annot ambiguous strict", 38, 
-        select(annotIndex).coveredBy(bigBound).fsIterator());
+        annotIndex.select().coveredBy(bigBound).fsIterator());
     assertCount("Subiterator select over annot ambiguous strict", 38, 
         annotIndex.select().coveredBy(bigBound)
             .includeAnnotationsWithEndBeyondBounds(false).fsIterator());
-    assertCount("Subiterator select over annot ambiguous not-strict", 46,
-        select(annotIndex).coveredBy(bigBound)
-            .includeAnnotationsWithEndBeyondBounds(true).fsIterator());
     
     // unambiguous, not strict
     assertCount("Subiterator over annot, unambiguous, not-strict", 4,
         annotIndex.subiterator(bigBound, false, false));
     assertCount("Subiterator select over annot unambiguous not-strict", 4, 
-        select(annotIndex).nonOverlapping().coveredBy(bigBound)
+        annotIndex.select().nonOverlapping().coveredBy(bigBound)
             .includeAnnotationsWithEndBeyondBounds(true).fsIterator());
     
     AnnotationFS sent = cas.getAnnotationIndex(this.sentenceType).iterator().get();
@@ -457,9 +486,9 @@ public class AnnotationIteratorTest {
     annotIndex.select().coveredBy(3, 5).singleOrNull();
     
     assertCountLimit("Following", 2, 
-        select(annotIndex).following(2, 39).limit(2).fsIterator());
+        annotIndex.select().following(2, 39).limit(2).fsIterator());
     assertCountLimit("Following", 2,
-        select(annotIndex).following(2, 39).backwards().limit(2).fsIterator());
+        annotIndex.select().following(2, 39).backwards().limit(2).fsIterator());
     
     assertCount("select source array", 21, 
         fsa.select(sentenceType).fsIterator());
@@ -498,7 +527,7 @@ public class AnnotationIteratorTest {
     if (count > 0) {
       // test moveTo(fs) in middle, first, and last
       
-      AnnotationFS posFs = fss.get(fssStart + (count >> 1));
+      AnnotationFS middleFs = fss.get(fssStart + (count >> 1));
 //      //debug
 //      System.out.println(posFs.toString());
       // debug
@@ -506,38 +535,71 @@ public class AnnotationIteratorTest {
       it.next();
 
       // Move to middle
-      it.moveTo(posFs);
-      assertEquals(msg, it.get().hashCode(), posFs.hashCode());
+      it.moveTo(middleFs);
+      assertThat(it.get())
+          .as(msg + " - middle position can be found by iterator")
+          .usingComparator(comparing(Object::hashCode), "hashCode()")
+          .isEqualTo(middleFs);
       
       // Move to first
-      posFs = fss.get(fssStart);
-      it.moveTo(posFs);
-      assertEquals(msg, it.get().hashCode(), posFs.hashCode());
+      Annotation firstFs = fss.get(fssStart);
+      it.moveTo(firstFs);
+      assertThat(it.get())
+          .as(msg + " - first position can be found by iterator")
+          .usingComparator(comparing(Object::hashCode), "hashCode()")
+          .isEqualTo(firstFs);
+      
       it.moveToFirst();
-      assertEquals(msg, it.get().hashCode(), posFs.hashCode());
+      assertThat(it.get())
+          .as(msg + " - moveToFirst positions at last result element")
+          .usingComparator(comparing(Object::hashCode), "hashCode()")
+          .isEqualTo(firstFs);
       
       // Move to last
-      posFs = fss.get(fssStart + count - 1);
-      it.moveTo(posFs);
-      assertEquals(msg, it.get().hashCode(), posFs.hashCode());
+      Annotation lastFs = fss.get(fssStart + count - 1);
+      it.moveTo(lastFs);
+      assertThat(it.get())
+          .as(msg + " - last position can be found by iterator")
+          .usingComparator(comparing(Object::hashCode), "hashCode()")
+          .isEqualTo(lastFs);
+
       it.moveToLast();
-      assertEquals(msg, it.get().hashCode(), posFs.hashCode());
+      assertThat(it.get())
+          .as(msg + " - moveToLast positions at last result element")
+          .usingComparator(comparing(Object::hashCode), "hashCode()")
+          .isEqualTo(lastFs);
     } else {
       // count is 0
       it.moveToFirst();
       assertFalse(it.isValid());
+      
       it.moveToLast();
       assertFalse(it.isValid());
+      
       it.moveTo(cas.getDocumentAnnotation());
       assertFalse(it.isValid());
     }
     
-    // test movetoLast, moving backwards
+    
+    // Check that forwards step-by-step iteration yields same results as backwards step-by-step.
+    List<AnnotationFS> annotations1 = new ArrayList<>();
+    for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
+      annotations1.add(0, it.get());
+    }
+    
     count = 0;
+    List<AnnotationFS> annotations2 = new ArrayList<>();
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
+      annotations2.add(it.get());
       ++count;
     }
     
+    assertThat(annotations2)
+        .as("Found %d annotations forward but %d backwards", annotations1.size(), annotations2.size())
+        .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd())
+        .containsExactly(annotations1.stream().map(
+            a -> tuple(a.getType(), a.getBegin(), a.getEnd())).toArray(Tuple[]::new));
+
     assertEquals(msg, expected, count);
   }
   
@@ -766,7 +828,7 @@ public class AnnotationIteratorTest {
   }
   
   private int setupTheCas() {
-    
+    List<AnnotationFS> annotationList = new ArrayList<>();
     
 //  Tokens                +---+
 //                       +---+
@@ -795,11 +857,13 @@ public class AnnotationIteratorTest {
     ***************************************************/
    FSIndexRepository ir = cas.getIndexRepository();
    int annotCount = 1; // Init with document annotation.
+   annotationList.add(cas.getDocumentAnnotation());
    // create token and sentence annotations
    AnnotationFS fs;
    for (int i = 0; i < text.length() - 5; i++) {
      ++annotCount;
      ir.addFS(fs = cas.createAnnotation(this.tokenType, i, i + 5));
+     annotationList.add(fs);
      if (showFSs) {
        System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
      }
@@ -815,6 +879,7 @@ public class AnnotationIteratorTest {
    for (int i = 0; i < text.length() - 10; i += 5) {
      ++annotCount;
      ir.addFS(fs = cas.createAnnotation(this.sentenceType, i, i + 10));
+     annotationList.add(fs);
      if (showFSs) {
        System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
      }
@@ -828,6 +893,7 @@ public class AnnotationIteratorTest {
    for (int i = 0; i < text.length() - 10; i += 5) {
      ++annotCount;
      ir.addFS(fs = cas.createAnnotation(this.phraseType,  i + beginAlt, i + 5 + endAlt));
+     annotationList.add(fs);
      beginAlt = (beginAlt == 1) ? -1 : beginAlt + 1; // sequence: start @ 0, then 1, -1, 0, 1, ...
      endAlt = (endAlt == -1) ? 1 : endAlt - 1; //sequence: start At 0, then -1, 1, 0, -1, ...
      if (showFSs) {
@@ -837,9 +903,13 @@ public class AnnotationIteratorTest {
    
    ++annotCount;
    ir.addFS(fs = cas.createAnnotation(this.sentenceType,  12, 31));
+   annotationList.add(fs);
    if (showFSs) {
      System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
    }
+   
+   assertThat(annotationList.size()).isEqualTo(annotCount);
+   ann = annotationList.stream().toArray(Annotation[]::new);
    
    return annotCount;
  }

@@ -33,11 +33,11 @@ import java.util.Collection;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
@@ -47,6 +47,7 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -691,6 +692,35 @@ public class SelectFsTest {
         .isEmpty();
   }
   
+  @Test
+  public void thatSelectAtInitialPositionIsSameAsFirstPosition() throws Exception {
+    Annotation y = new Token(cas.getJCas(), 42, 71);
+    addToIndexes(
+        new Token(cas.getJCas(), 13, 34),
+        new Token(cas.getJCas(), 42, 71));
+    
+    FSIterator<Token> it = cas.select(Token.class).at(y).fsIterator();
+    assertThat(it.isValid()).isTrue();
+    Annotation initial = it.isValid() ? it.get() : null;
+    it.moveToFirst();
+    assertThat(it.isValid() ? it.get() : null).isSameAs(initial);
+  }
+
+  @Ignore("SELECT-ITERATORS: Leaving this for a latter improvement")
+  @Test
+  public void thatSelectFollowingInitialPositionIsSameAsFirstPosition() throws Exception {
+    Annotation y = new Token(cas.getJCas(), 13, 34);
+    addToIndexes(
+        new Token(cas.getJCas(), 13, 34),
+        new Token(cas.getJCas(), 42, 71));
+    
+    FSIterator<Token> it = cas.select(Token.class).following(y).fsIterator();
+    assertThat(it.isValid()).isTrue();
+    Annotation initial = it.isValid() ? it.get() : null;
+    it.moveToFirst();
+    assertThat(it.isValid() ? it.get() : null).isSameAs(initial);
+  }
+
   private static <T extends FeatureStructure> T addToIndexes(T fses) {
     asList(fses).forEach(fs -> fs.getCAS().addFsToIndexes(fs));
     return fses;
