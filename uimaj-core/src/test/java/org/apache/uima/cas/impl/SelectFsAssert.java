@@ -110,6 +110,7 @@ public class SelectFsAssert {
       Iterator<Type> ti = types.values().iterator();
       Type type1 = ti.next();
       Type type2 = ti.hasNext() ? ti.next() : type1;
+      Type[] typeList = types.values().toArray(new Type[types.size()]);
       
       long timeExpected = 0;
       long timeActual = 0;
@@ -126,9 +127,16 @@ public class SelectFsAssert {
           System.out.print(".");
         }
           
-        initRandomCas(randomCas, annotationsPerIteration.apply(i), 0, types.values().toArray(new Type[types.size()]));
+        initRandomCas(randomCas, annotationsPerIteration.apply(i), 0, typeList);
   
         for (Annotation y : randomCas.<Annotation>select(type1)) {
+          // Randomly use a non-indexed annotation for selection so we test both cases (using an
+          // indexed or non-indexed annotation).
+          if (rnd.nextInt() % 2 == 0) {
+            y = (Annotation) randomCas.createAnnotation(typeList[rnd.nextInt(typeList.length)], y.getBegin(),
+                y.getEnd());
+          }
+          
           long t1 = System.currentTimeMillis();
           List<AnnotationFS> expected = aExpected.select(randomCas, type2, y);
           timeExpected += System.currentTimeMillis() - t1;
