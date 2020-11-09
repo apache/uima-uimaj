@@ -20,8 +20,11 @@ package org.apache.uima.cas.impl;
 
 import static java.lang.Integer.MAX_VALUE;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
+import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
+import static org.apache.uima.cas.text.AnnotationPredicates.overlappingAtEnd;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
@@ -29,6 +32,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -224,6 +231,100 @@ public class SelectFsTest {
         .containsExactly(t[3], t[2]);
   }
   
+  @Test
+  public void thatCoveredByWithBeyondEndsDoesNotReturnOverlapAtStart() throws Exception
+  {
+    Annotation y;
+    addToIndexes(
+        new Annotation(cas.getJCas(), 64, 90),
+        y = new Annotation(cas.getJCas(), 68, 86),
+        new Annotation(cas.getJCas(), 95, 98));
+
+    assertThat(cas.select(Annotation.class)
+        .filter(x -> x != y && (coveredBy(x, y) || overlappingAtEnd(x, y)))
+        .collect(toList()))
+        .isEmpty();
+
+    assertThat(cas.select(Annotation.class).coveredBy(y)
+        .includeAnnotationsWithEndBeyondBounds().asList())
+        .isEmpty();    
+  }
+
+  @Test
+  public void thatCoveredByWithBeyondEndsDoesNotReturnAnnotationStartingAtEnd() throws Exception
+  {
+    Annotation y;
+    Annotation[] a = addToIndexes(
+        y = new Annotation(cas.getJCas(), 68, 79),
+        new Annotation(cas.getJCas(), 77, 78),
+        new Annotation(cas.getJCas(), 79, 103));
+
+    assertThat(cas.select(Annotation.class)
+        .filter(x -> x != y && (coveredBy(x, y) || overlappingAtEnd(x, y)))
+        .collect(toList()))
+        .containsExactly(a[1]);
+
+    assertThat(cas.select(Annotation.class).coveredBy(y)
+        .includeAnnotationsWithEndBeyondBounds().asList())
+        .containsExactly(a[1]);
+  }
+
+  @Test
+  public void thatCoveredByWithBeyondEndsDoesNotReturnAnnotationStartingAtEnd2() throws Exception
+  {
+    Annotation y;
+    addToIndexes(
+        y = new Annotation(cas.getJCas(), 68, 79),
+        new Annotation(cas.getJCas(), 79, 103));
+
+    assertThat(cas.select(Annotation.class)
+        .filter(x -> x != y && (coveredBy(x, y) || overlappingAtEnd(x, y)))
+        .collect(toList()))
+        .isEmpty();
+
+    assertThat(cas.select(Annotation.class).coveredBy(y)
+        .includeAnnotationsWithEndBeyondBounds().asList())
+        .isEmpty();
+  }
+
+  @Test
+  public void thatCoveredByWithBeyondEndsFindsAnnotationCoStartingAndExtendingBeyond() throws Exception
+  {
+    Annotation y;
+    Annotation[] a = addToIndexes(
+        new Annotation(cas.getJCas(), 44, 68),
+        y = new Annotation(cas.getJCas(), 44, 60));
+
+    assertThat(cas.select(Annotation.class)
+        .filter(x -> x != y && (coveredBy(x, y) || overlappingAtEnd(x, y)))
+        .collect(toList()))
+        .containsExactly(a[0]);
+
+    assertThat(cas.select(Annotation.class).coveredBy(y)
+        .includeAnnotationsWithEndBeyondBounds().asList())
+    .containsExactly(a[0]);
+  }
+
+  @Test
+  public void thatCoveredByWithBeyondEndsFindsZeroWidthAtEnd() throws Exception
+  {
+    Annotation y;
+    Annotation[] a = addToIndexes(
+        y = new Annotation(cas.getJCas(), 8, 33),
+        new Annotation(cas.getJCas(), 33, 60),
+        new Annotation(cas.getJCas(), 33, 33));
+
+    assertThat(cas.select(Annotation.class)
+        .filter(x -> x != y && (coveredBy(x, y) || overlappingAtEnd(x, y)))
+        .collect(toList()))
+        .containsExactly(a[2]);
+
+    assertThat(cas.select(Annotation.class).coveredBy(y)
+        .includeAnnotationsWithEndBeyondBounds()
+        .asList())
+        .containsExactly(a[2]);
+  }
+
   @Test
   public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition() throws Exception
   {
@@ -488,14 +589,116 @@ public class SelectFsTest {
         .containsExactly(a[0], a[7], a[4], a[6], a[5]);
   }
 
-  private static <T extends TOP> T addToIndexes(T fses) {
-    asList(fses).forEach(TOP::addToIndexes);
+  @Test
+  public void thatSelectAtFindsSupertype() throws Exception {
+    Annotation[] a = addToIndexes(
+        new Annotation(cas.getJCas(), 5, 10),
+        new Token(cas.getJCas(), 5, 10));
+
+    assertThat(cas.select(Annotation.class).at(a[1]).asList())
+        .containsExactly(a[0]);
+  }
+
+  @Test
+  public void thatSelectBetweenWorks() throws Exception {
+    Annotation[] a = addToIndexes(
+        new Sentence(cas.getJCas(), 47, 67),
+        new Sentence(cas.getJCas(), 55, 66),
+        new Token(cas.getJCas(), 24, 29),
+        new Token(cas.getJCas(), 66, 92));
+
+    assertThat(cas.select(Sentence.class).between(a[2], a[3]).asList())
+        .containsExactly((Sentence) a[1]);
+  }
+
+  @Test
+  public void thatSelectColocatedFindsOtherAnnotation() throws Exception {
+    Annotation x, y;
+    addToIndexes(
+        new Annotation(cas.getJCas(), 66, 84),
+        y = new Annotation(cas.getJCas(), 66, 70),
+        x = new Annotation(cas.getJCas(), 66, 70));
+
+    assertThat(cas.select(Annotation.class).at(y).asList())
+        .containsExactly(x);
+  }
+
+  @Test
+  public void thatSelectColocatedFindsSiblingType() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    tsd.addType("test.Type3", "", "test.Type1");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    
+    AnnotationFS x, y;
+    addToIndexes(
+        x = cas.createAnnotation(type2, 16, 42),
+        y = cas.createAnnotation(type3, 16, 42)
+        );
+
+    assertThat(cas.select(type2).at(y).asList())
+        .containsExactly((Annotation) x);
+  }
+
+  @Test
+  public void thatSelectColocatedFindsSiblingType2() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    tsd.addType("test.Type3", "", "test.Type1");
+    tsd.addType("test.Type4", "", "test.Type2");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+//    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    Type type4 = cas.getTypeSystem().getType("test.Type4");
+    
+    AnnotationFS x, y;
+    addToIndexes(
+        x = cas.createAnnotation(type2, 16, 42),
+        cas.createAnnotation(type4, 16, 41),
+        y = cas.createAnnotation(type3, 16, 42)
+        );
+
+    assertThat(cas.select(type2).at(y).asList())
+        .containsExactly((Annotation) x);
+  }
+  
+  @Test
+  public void thatSelectCoveringDoesNotFindItselfWhenSelectingSupertype() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    tsd.addType("test.Type3", "", "test.Type2");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    
+    AnnotationFS y;
+    addToIndexes(
+        y = cas.createAnnotation(type3, 4, 33));
+
+    assertThat(cas.select(type2).covering(y).asList())
+        .isEmpty();
+  }
+  
+  private static <T extends FeatureStructure> T addToIndexes(T fses) {
+    asList(fses).forEach(fs -> fs.getCAS().addFsToIndexes(fs));
     return fses;
   }
 
   @SafeVarargs
-  private static <T extends TOP> T[] addToIndexes(T... fses) {
-    asList(fses).forEach(TOP::addToIndexes);
+  private static <T extends FeatureStructure> T[] addToIndexes(T... fses) {
+    asList(fses).forEach(fs -> fs.getCAS().addFsToIndexes(fs));
     return fses;
   }
 }

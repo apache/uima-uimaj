@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.IntFunction;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
@@ -41,6 +42,9 @@ import org.apache.uima.util.CasCreationUtils;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 
 public class SelectFsAssert {
+  private static final long RANDOM_SEED = System.nanoTime();
+//  private static final long RANDOM_SEED = 1123487858940988l;
+  
   public static void assertSelectFS(RelativePosition aCondition, RelativeAnnotationPredicate aPredicate, 
       List<TestCase> aTestCases)
       throws Exception {
@@ -72,14 +76,26 @@ public class SelectFsAssert {
     }
   }
 
-  public static void assertSelectionIsEqualOnRandomData(int aIterations, int aTypes, 
+  public static void assertSelectionIsEqualOnRandomData(String xRelToY, int aIterations, int aTypes, 
       TypeByContextSelector aExpected, TypeByContextSelector aActual) throws Exception {
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     
+    IntFunction<Integer> annotationsPerIteration = iteration -> iteration * 3;
+    // Quick overrides for debugging
+//    annotationsPerIteration = iteration -> 10;
+//    aIterations = 1_000;
+//    aTypes = 4;
+
+    Random rnd = new Random(RANDOM_SEED);
     Map<String, Type> types = new LinkedHashMap<>();
     for (int i = 0; i < aTypes; i++) {
       String typeName = "test.Type" + (i + 1);
-      tsd.addType(typeName, "", CAS.TYPE_NAME_ANNOTATION);
+      if (rnd.nextInt() % 2 == 0 || types.size() == 0) {
+        tsd.addType(typeName, "", CAS.TYPE_NAME_ANNOTATION);
+      }
+      else {
+        tsd.addType(typeName, "", new ArrayList<>(types.keySet()).get(rnd.nextInt(types.size())));
+      }
       types.put(typeName, null);
     }
     
@@ -93,34 +109,52 @@ public class SelectFsAssert {
     try {
       Iterator<Type> ti = types.values().iterator();
       Type type1 = ti.next();
-      Type type2 = ti.next();
+      Type type2 = ti.hasNext() ? ti.next() : type1;
       
       long timeExpected = 0;
       long timeActual = 0;
       for (int i = 0; i < aIterations; i++) {
+        randomCas.reset();
+        
         if (i % 10 == 0) {
           System.out.print(i);
+          if (i > 0 && i % 100 == 0) {
+            System.out.println();
+          }
         }
         else {
           System.out.print(".");
         }
+          
+        initRandomCas(randomCas, annotationsPerIteration.apply(i), 0, types.values().toArray(new Type[types.size()]));
   
-        initRandomCas(randomCas, 3 * i, 0, types.values().toArray(new Type[types.size()]));
-  
-        for (Annotation context : randomCas.<Annotation>select(type1)) {
+        for (Annotation y : randomCas.<Annotation>select(type1)) {
           long t1 = System.currentTimeMillis();
-          List<AnnotationFS> expected = aExpected.select(randomCas, type2, context);
+          List<AnnotationFS> expected = aExpected.select(randomCas, type2, y);
           timeExpected += System.currentTimeMillis() - t1;
           
           long t2 = System.currentTimeMillis();
-          List<AnnotationFS> actual = aActual.select(randomCas, type2, context);
+          List<AnnotationFS> actual = aActual.select(randomCas, type2, y);
           timeActual += System.currentTimeMillis() - t2;
   
-          assertThat(actual)
-              .as("Selected [%s] with context [%s]@[%d..%d]%n%s%n", type2.getShortName(), 
-                  type1.getShortName(), context.getBegin(), context.getEnd(), 
-                  casToString(randomCas))
-              .containsExactlyElementsOf(expected);
+//          try {
+            assertThat(actual)
+                .as("Selecting X of type [%s] %s [%s]@[%d-%d]%n%s%n", type2.getName(), xRelToY,
+                    y.getType().getShortName(), y.getBegin(), y.getEnd(),
+                    casToString(randomCas))
+                .containsExactlyElementsOf(expected);
+//          }
+//          catch (Throwable e) {
+//            // Set a breakpoint here to halt when an assert above fails. The select triggering the
+//            // assert is then re-executed below and you can look into its details. To allow
+//            // stopping and re-executing the test, you need to put the displayed random seed into
+//            // the static variable RANDOM_SEED at the beginning of the file. Don't forget to
+//            // Comment this out again and to re-set the RANDOM_SEED to timer-based when you are
+//            // done with debugging.
+//            System.out.printf("RANDOM SEED: %d%n", RANDOM_SEED);
+//            aActual.select(randomCas, type2, y);
+//            throw e;
+//          }
         }
       }
       System.out.print(aIterations);
@@ -132,24 +166,25 @@ public class SelectFsAssert {
   }
   
   private static String casToString(CAS aCas) {
-    if (aCas.select().count() > 10) {
-      return "CAS contains more than 10 annotations - try tweaking the test parameters to reproduce"
-          + " the isssue with a smaller CAS.";
+    int MAX_ANNOTATIONS = 100;
+    if (aCas.select().count() > MAX_ANNOTATIONS) {
+      return "CAS contains more than " + MAX_ANNOTATIONS
+          + " annotations - try tweaking the test parameters to reproduce" + " the isssue with a smaller CAS.";
     }
     
     StringBuilder sb = new StringBuilder();
     aCas.select().forEach(fs -> {
       if (fs instanceof AnnotationFS) {
         AnnotationFS ann = (AnnotationFS) fs;
-        sb.append(format("%s@[%d-%d]%n", ann.getType().getShortName(), ann.getBegin(), 
-            ann.getEnd()));
+        sb.append(format("%s@[%d-%d] (parent type: %s)%n", ann.getType().getShortName(), ann.getBegin(), 
+            ann.getEnd(), ann.getCAS().getTypeSystem().getParent(ann.getType())));
       }
     });
     return sb.toString();
   }
 
   private static void initRandomCas(CAS aCas, int aSize, int aMinimumWidth, Type... aTypes) {
-    Random rnd = new Random();
+    Random rnd = new Random(RANDOM_SEED);
 
     List<Type> types = new ArrayList<>(asList(aTypes));
 

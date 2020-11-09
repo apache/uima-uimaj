@@ -114,12 +114,12 @@ public final class AnnotationPredicates {
   }
 
   public static boolean overlappingAtBegin(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
-    return aXBegin < aYBegin && aYBegin < aXEnd && aXEnd < aYEnd;
+    return aXBegin < aYBegin && aYBegin < aXEnd && aXEnd <= aYEnd;
   }
 
   public static boolean overlappingAtBegin(AnnotationFS aX, int aYBegin, int aYEnd) {
     int xEnd = aX.getEnd();
-    return aYBegin < xEnd && xEnd < aYEnd && aX.getBegin() < aYBegin;
+    return aYBegin < xEnd && xEnd <= aYEnd && aX.getBegin() < aYBegin;
   }
 
   /**
@@ -134,16 +134,16 @@ public final class AnnotationPredicates {
   public static boolean overlappingAtBegin(AnnotationFS aX, AnnotationFS aY) {
     int xEnd = aX.getEnd();
     int yBegin = aY.getBegin();
-    return yBegin < xEnd && xEnd < aY.getEnd() && aX.getBegin() < yBegin;
+    return yBegin < xEnd && xEnd <= aY.getEnd() && aX.getBegin() < yBegin;
   }
 
   public static boolean overlappingAtEnd(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
-    return aYBegin < aXBegin && aXBegin < aYEnd && aYEnd < aXEnd;
+    return aYBegin <= aXBegin && aXBegin < aYEnd && aYEnd < aXEnd;
   }
 
   public static boolean overlappingAtEnd(AnnotationFS aX, int aYBegin, int aYEnd) {
     int xBegin = aX.getBegin();
-    return aYBegin < xBegin && xBegin < aYEnd && aYEnd < aX.getEnd();
+    return aYBegin <= xBegin && xBegin < aYEnd && aYEnd < aX.getEnd();
   }
 
   /**
@@ -158,7 +158,7 @@ public final class AnnotationPredicates {
   public static boolean overlappingAtEnd(AnnotationFS aX, AnnotationFS aY) {
     int xBegin = aX.getBegin();
     int yEnd = aY.getEnd();
-    return xBegin < yEnd && aY.getBegin() < xBegin && yEnd < aX.getEnd();
+    return xBegin < yEnd && aY.getBegin() <= xBegin && yEnd < aX.getEnd();
   }
 
   public static boolean following(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
