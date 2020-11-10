@@ -32,21 +32,28 @@ import static org.apache.uima.cas.text.AnnotationPredicates.colocated;
 import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
 import static org.apache.uima.cas.text.AnnotationPredicates.covering;
 import static org.apache.uima.cas.text.AnnotationPredicates.following;
+import static org.apache.uima.cas.text.AnnotationPredicates.overlappingAtEnd;
 import static org.apache.uima.cas.text.AnnotationPredicates.preceding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
+//Sorting only to keep the list in Eclipse ordered so it is easier spot if related tests fail
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SelectFsPredicateAlignmentTest {
   private List<TestCase> defaultPredicatesTestCases = union(NON_ZERO_WIDTH_TEST_CASES, ZERO_WIDTH_TEST_CASES);
   
+  private static final int DEFAULT_ITERATIONS = 30;
+  private static final int DEFAULT_TYPE_COUNT = 10;
+  
   @Test
-  public void thatSelectFsBehaviorAlignsWithPrecedingPredicate() throws Exception {
+  public void thatSelectFollowingAlignsWithPrecedingPredicate() throws Exception {
     // In order to find annotations that X is preceding, we select the following annotations
     assertSelectFS(
         PRECEDING,
@@ -61,35 +68,31 @@ public class SelectFsPredicateAlignmentTest {
   }
   
   @Test
-  public void thatCasSelectFsBehaviorAlignsWithPrecedingPredicateOnRandomData() throws Exception
+  public void thatSelectPrecedingAlignsWithPrecedingPredicateOnCasRandomized() throws Exception
   {
     System.out.print("Preceding (CAS select by annotation)   -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> preceding(candidate, context))
+    assertSelectionIsEqualOnRandomData("preceding", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && preceding(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.<Annotation>select(type)
-            .preceding(context)
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .preceding(y));
   }
 
   @Test
-  public void thatIndexSelectFsBehaviorAlignsWithPrecedingPredicateOnRandomData() throws Exception
+  public void thatSelectPrecedingAlignsWithPrecedingPredicateOnIndexRandomized() throws Exception
   {
     System.out.print("Preceding (Index select by annotation) -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> preceding(candidate, context))
+    assertSelectionIsEqualOnRandomData("preceding", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && preceding(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .preceding(context)
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
+            .preceding(y));
   }
 
   @Test
-  public void thatSelectFsBethaviorAlignsWithFollowingPredicate() throws Exception {
+  public void thatSelectPrecedingAlignsWithFollowingPredicate() throws Exception {
     // In order to find annotations that X is following, we select the preceding annotations
     assertSelectFS(
         FOLLOWING,
@@ -104,35 +107,31 @@ public class SelectFsPredicateAlignmentTest {
   }
   
   @Test
-  public void thatCasSelectFsBehaviorAlignsWithFollowingPredicateOnRandomData() throws Exception
+  public void thatSelectFollowingAlignsWithFollowingPredicateOnCasRandomized() throws Exception
   {
     System.out.print("Following (CAS select by annotation)   -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> following(candidate, context))
+    assertSelectionIsEqualOnRandomData("following", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && following(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.<Annotation>select(type)
-            .following(context)
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .following(y));
   }
 
   @Test
-  public void thatIndexSelectFsBehaviorAlignsWithFollowingPredicateOnRandomData() throws Exception
+  public void thatSelectFollowingAlignsWithFollowingPredicateOnIndexRandomized() throws Exception
   {
     System.out.print("Following (Index select by annotation) -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> following(candidate, context))
+    assertSelectionIsEqualOnRandomData("following", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && following(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .following(context)
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
+            .following(y));
   }
 
   @Test
-  public void thatSelectFsBehaviorAlignsWithCoveredByPredicate() throws Exception {
+  public void thatSelectCoveringAlignsWithCoveredByPredicate() throws Exception {
     // X covered by Y means that Y is covering X, so we need to select the covering annotations
     // below.
     assertSelectFS(
@@ -153,55 +152,60 @@ public class SelectFsPredicateAlignmentTest {
   }
   
   @Test
-  public void thatCasSelectFsBehaviorAlignsWithCoveredByPredicateOnRandomData() throws Exception
+  public void thatSelectCoveredByAlignsWithCoveredByPredicateOnCasRandomized() throws Exception
   {
     System.out.print("CoveredBy (CAS select by annotation)   -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> coveredBy(candidate, context))
+    assertSelectionIsEqualOnRandomData("covered by", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
+            .filter(x -> x != y && coveredBy(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.<Annotation>select(type)
-            .coveredBy(context)
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .coveredBy(y));
 
     System.out.print("CoveredBy (CAS select by offsets)      -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> coveredBy(candidate, context))
+    assertSelectionIsEqualOnRandomData("covered by", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> coveredBy(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.<Annotation>select(type)
-            .coveredBy(context.getBegin(), context.getEnd())
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .coveredBy(y.getBegin(), y.getEnd()));
   }
 
   @Test
-  public void thatIndexSelectFsBehaviorAlignsWithCoveredByPredicateOnRandomData() throws Exception
+  public void thatSelectCoveredByAlignsWithCoveredByPredicateOnIndexRandomized() throws Exception
   {
     System.out.print("CoveredBy (Index select by annotation) -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> coveredBy(candidate, context))
+    assertSelectionIsEqualOnRandomData("covered by", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && coveredBy(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .coveredBy(context)
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
+            .coveredBy(y));
 
     System.out.print("CoveredBy (Index select by offsets)    -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> coveredBy(candidate, context))
+    assertSelectionIsEqualOnRandomData("covered by", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> coveredBy(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .coveredBy(context.getBegin(), context.getEnd())
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
+            .coveredBy(y.getBegin(), y.getEnd()));
   }
   
   @Test
-  public void thatSelectFsBehaviorAlignsWithCoveringPredicate() throws Exception {
+  public void thatSelectCoveredByAlignsWithCoveredByPredicateOnIndexRandomizedNonStrict() throws Exception
+  {
+    System.out.print("CoveredBy* (CAS select by annotation)  -- ");
+    assertSelectionIsEqualOnRandomData("covered by (non-strict)", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && (coveredBy(x, y) || overlappingAtEnd(x, y)))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .coveredBy(y)
+            .includeAnnotationsWithEndBeyondBounds());
+  }  
+
+  @Test
+  public void thatSelectCoveredByAlignsWithCoveringPredicate() throws Exception {
     // X covering Y means that Y is covered by Y, so we need to select the covered by annotations
     // below.
     assertSelectFS(
@@ -222,55 +226,47 @@ public class SelectFsPredicateAlignmentTest {
   }
 
   @Test
-  public void thatCasSelectFsBehaviorAlignsWithCoveringPredicateOnRandomData() throws Exception
+  public void thatSelectCoveringAlignsWithCoveringPredicateOnCasRandomized() throws Exception
   {
     System.out.print("Covering  (CAS select by annotation)   -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> covering(candidate, context))
+    assertSelectionIsEqualOnRandomData("covering", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && covering(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.<Annotation>select(type)
-            .covering(context)
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .covering(y));
     
     System.out.print("Covering  (CAS select by offsets)      -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> covering(candidate, context))
+    assertSelectionIsEqualOnRandomData("covering", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> covering(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.<Annotation>select(type)
-            .covering(context.getBegin(), context.getEnd())
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .covering(y.getBegin(), y.getEnd()));
   }
   
   @Test
-  public void thatIndexSelectFsBehaviorAlignsWithCoveringPredicateOnRandomData() throws Exception
+  public void thatSelectCoveringAlignsWithCoveringPredicateOnIndexRandomized() throws Exception
   {
     System.out.print("Covering  (Index select by annotation) -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> covering(candidate, context))
+    assertSelectionIsEqualOnRandomData("covering", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && covering(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .covering(context)
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
+            .covering(y));
     
     System.out.print("Covering  (Index select by offsets)    -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> covering(candidate, context))
+    assertSelectionIsEqualOnRandomData("covering", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> covering(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .covering(context.getBegin(), context.getEnd())
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
+            .covering(y.getBegin(), y.getEnd()));
   }
   
   @Test
-  public void thatSelectFsBehaviorAlignsWithColocatedPredicate() throws Exception {
+  public void thatSelectAtAlignsWithColocatedPredicate() throws Exception {
     // X covering Y means that Y is covered by Y, so we need to select the covered by annotations
     // below.
     assertSelectFS(
@@ -288,54 +284,46 @@ public class SelectFsPredicateAlignmentTest {
         (cas, type, x, y) -> cas.select(type).filter((a) -> 
                 colocated(x, (Annotation) a)).collect(toList()).contains(y),
         defaultPredicatesTestCases);
-  }  
-
-  @Test
-  public void thatCasSelectFsBehaviorAlignsWithColocatedPredicateOnRandomData() throws Exception
-  {
-    System.out.print("Colocated (CAS select by annotation)   -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> colocated(candidate, context))
-            .collect(toList()),
-        (cas, type, context) -> cas.<Annotation>select(type)
-            .at(context)
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
-
-    System.out.print("Colocated (CAS select by offsets)      -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> colocated(candidate, context))
-            .collect(toList()),
-        (cas, type, context) -> cas.<Annotation>select(type)
-            .at(context.getBegin(), context.getEnd())
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
   }
 
   @Test
-  public void thatIndexSelectFsBehaviorAlignsWithColocatedPredicateOnRandomData() throws Exception
+  public void thatSelectAtAlignsWithColocatedPredicatedOnCasRandomized() throws Exception
+  {
+    System.out.print("Colocated (CAS select by annotation)   -- ");
+    assertSelectionIsEqualOnRandomData("colocated at", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && colocated(x, y))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .at(y));
+
+    System.out.print("Colocated (CAS select by offsets)      -- ");
+    assertSelectionIsEqualOnRandomData("colocated at", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> colocated(x, y))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .at(y.getBegin(), y.getEnd()));
+  }
+
+  @Test
+  public void thatSelectAtAlignsWithColocatedPredicatedOnIndexRandomized() throws Exception
   {
     System.out.print("Colocated (Index select by annotation) -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> colocated(candidate, context))
+    assertSelectionIsEqualOnRandomData("colocated at", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && colocated(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .at(context)
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, context) -> cas.<Annotation>getAnnotationIndex(type).select()
+            .at(context));
 
     System.out.print("Colocated (Index select by offsets)    -- ");
-    assertSelectionIsEqualOnRandomData(30, 10,
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .filter(candidate -> colocated(candidate, context))
+    assertSelectionIsEqualOnRandomData("colocated at", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> colocated(x, y))
             .collect(toList()),
-        (cas, type, context) -> cas.getAnnotationIndex(type).select()
-            .at(context.getBegin(), context.getEnd())
-            .map(a -> (AnnotationFS) a)
-            .collect(toList()));
+        (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
+            .at(y.getBegin(), y.getEnd()));
   }
   
   @SafeVarargs

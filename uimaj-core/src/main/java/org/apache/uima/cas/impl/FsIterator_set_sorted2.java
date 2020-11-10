@@ -124,7 +124,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
   // Internal use
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
-    pos = ofsa.getOfsa().find((TOP) fs, comparatorMaybeNoTypeWithoutID); 
+    pos = ofsa.getOfsa().find((TOP) fs, comparatorMaybeNoTypeWithoutID);
 
     if (pos < 0) {
       pos = (-pos) -1;  // insertion point, one above
@@ -147,7 +147,8 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
       // went one before start, restore to start
       pos = savedPos;
     }
-    return;   
+    
+    return;
   }
 
 //  // Internal use
