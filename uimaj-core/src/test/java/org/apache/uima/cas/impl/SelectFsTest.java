@@ -28,8 +28,10 @@ import static org.apache.uima.cas.text.AnnotationPredicates.overlappingAtEnd;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -47,7 +49,6 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -207,20 +208,67 @@ public class SelectFsTest {
 
     Sentence s2 = new Sentence(jCas, 4, 5);
     
+    // Selects the preceding tokens in document order
     assertThat(jCas.select(Token.class).preceding(s2).asArray(Token.class))
         .containsExactly(t[0], t[1]);
 
+    // Selects the preceding tokens in document order
+    // NOTE: Because the selection order is actually reverse (from the starting annotation towards
+    // the beginning of the document), the shift operation shifts towards the beginning of the
+    // document, so the result is t[0] and not t[1]. t[1] could be expected if the user believes
+    // that the shift operator moves to the right in the result list which would be (t[0], t[1]) 
+    // if there had been no shift. 
+    // REC: I find this behavior of shift quite confusing....
+    assertThat(jCas.select(Token.class).preceding(s2).shifted(1).asList())
+        .containsExactly(t[0]);
+
+    // Selects the preceding tokens in reverse document order
     assertThat(jCas.select(Token.class).preceding(s2).backwards().asList())
         .containsExactly(t[1], t[0]);
     
     assertThat(jCas.select(Token.class).preceding(s2).backwards().shifted(1).asList())
         .containsExactly(t[0]);
 
+
     assertThat(jCas.select(Token.class).following(sentence).shifted(1).asList())
         .containsExactly(t[4]);
 
-    assertThat(jCas.select(Token.class).following(sentence).shifted(-1).asList())
+    // What according to the old test check that I commented out should happen is that instead of
+    // returning all annotations following the startFS is that the first annotation of the
+    // selection type that occurs *before* the startFS is also included in the result.
+    // This might look useful e.g. to select left/right windows of the startFS, but it is a 
+    // nightmare implementation-wise because the selection boundaries are no longer determined by
+    // the bounds of the startFS. It starts becoming sensitive to the index order.
+    //
+    // For an index-order-sensitive window-like selection, using startAt with shift and limit is
+    // the appropriate approach:
+    // 
+    // jCas.select(Token.class).startAt(s2).shifted(-1).limit(3)
+    // 
+    // What does happen right now is that the negative shift makes the underlying iterator invalid
+    // because it causes it to move outside its boundary (i.e. into the startFS).
+    assertThat(jCas.select(Token.class).following(s2).shifted(-1).asList())
+        .containsExactly();
+    // Old reference value
+    //  .containsExactly(t[2], t[3], t[4]);
+
+    // See comment above for select-following-with-negative-shift
+    assertThat(jCas.select(Token.class).preceding(s2).backwards().shifted(-1).asList())
+        .containsExactly();
+//      .containsExactly(t[0], t[1], t[2]);
+
+    assertThat(jCas.select(Token.class).startAt(s2).asList())
         .containsExactly(t[2], t[3], t[4]);
+
+
+    assertThat(jCas.select(Token.class).startAt(s2).backwards().asList())
+        .containsExactly(t[1], t[0]);
+
+    assertThat(jCas.select(Token.class).startAt(s2).shifted(-1).limit(3).asList())
+        .containsExactly(t[1], t[2], t[3]);
+
+    assertThat(jCas.select(Token.class).startAt(s2).shifted(-1).limit(3).backwards().asList())
+        .containsExactly(t[2], t[1], t[0]);
 
     assertThat(jCas.select(Token.class).between(t[1], t[4]).asList())
         .containsExactly(t[2], t[3]);
@@ -718,6 +766,25 @@ public class SelectFsTest {
     Annotation initial = it.isValid() ? it.get() : null;
     it.moveToFirst();
     assertThat(it.isValid() ? it.get() : null).isSameAs(initial);
+  }
+
+  @Test
+  public void thatSelectFollowingBackwardsIterationMatchesForward() throws Exception {
+    Annotation y = new Token(cas.getJCas(), 13, 17);
+    addToIndexes(
+        new Token(cas.getJCas(), 13, 17),
+        new Token(cas.getJCas(), 83, 96));
+    
+    List<Token> expected = cas.select(Token.class).following(y).asList();
+    List<Token> actual = new ArrayList<>();
+    FSIterator<Token> it = cas.select(Token.class).following(y).fsIterator();
+    it.moveToLast();
+    while (it.isValid()) {
+      actual.add(0, it.get());
+      it.moveToPrevious();
+    }
+    
+    assertThat(actual).isEqualTo(expected);
   }
 
   private static <T extends FeatureStructure> T addToIndexes(T fses) {

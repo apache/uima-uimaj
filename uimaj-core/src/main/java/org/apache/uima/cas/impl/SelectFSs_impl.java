@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Spliterator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -44,6 +45,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
@@ -54,6 +56,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSList;
@@ -95,6 +98,8 @@ import org.apache.uima.jcas.tcas.Annotation;
  */
 public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T> {
   
+  private static AtomicInteger negativeShiftAndFollowingPrecedingWarning = new AtomicInteger(0);
+
   private final static boolean IS_UNORDERED = true;
   private final static boolean IS_ORDERED = false;
   private final static boolean IS_UNAMBIGUOUS = false;
@@ -126,8 +131,11 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   private BoundsUse boundsUse = null; 
   
-  private TOP startingFs = null; // this is used for non-annotation positioning too
-  // Used for preceding since we tweak the end offset of the reference annotation
+  /** 
+   * This is used for non-annotation positioning too
+   * Used for preceding since we tweak the end offset of the reference annotation
+   */
+  private TOP startingFs = null;
   private boolean originalStartingFsHasZeroWidth = false;
   private AnnotationFS boundingFs = null;
   private boolean isEmptyBoundingFs = false;
@@ -572,6 +580,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         isFollowing || isPreceding;
     
     isUnordered = ! orderingNeeded;
+    
+    if ((isFollowing || isPreceding) && shift < 0) {
+      Misc.decreasingWithTrace(negativeShiftAndFollowingPrecedingWarning,
+          "Negative shift in combination with following/preceding "
+              + "is not supported (always returns empty result) and is likely a mistake. "
+              + "Consider using startAt instead.",
+          UIMAFramework.getLogger());
+    }
   }
   
   private void maybeValidateAltSource() {
@@ -771,18 +787,21 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
           it = new FilteredIterator<>(it, fs -> {
             // true if ok, false to skip
             int end = ((Annotation) fs).getEnd();
-            return end <= startingFsBegin && (!originalStartingFsHasZeroWidth || end != startingFsBegin);
+            return end <= startingFsBegin && 
+               !(originalStartingFsHasZeroWidth && end == startingFsBegin);
           });  
         }
         
         if (isFollowing) {
-          // filter the iterator to skip zero-width annotations at positioning-end because these
-          // are considered to be covered and not following
+          // Annotations are following the startFS if their begin is >= the end of the startFS
+          // except if they are zero-width FSes at the end of the startFS in which case they are
+          // considered to be covered and not following
           int startingFsEnd = ((Annotation) startingFs).getEnd();
           it = new FilteredIterator<>(it, fs -> {
             // true if ok, false to skip
             int begin = ((Annotation) fs).getBegin();
-            return begin != ((Annotation) fs).getEnd() || begin != startingFsEnd;
+            return (begin >= startingFsEnd) &&
+                !(begin == ((Annotation) fs).getEnd() && begin == startingFsEnd);
           });
         }
       }

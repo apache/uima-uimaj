@@ -150,9 +150,8 @@ public class SelectFsAssert {
             assertSelectionAsList(expected, randomCas, aActual, xRelToY, typeX, typeY, y, timings);
             assertSelectionAsForwardIteration(expected, randomCas, aActual, xRelToY, typeX, typeY,
                 y, timings);
-            // FIXME: Currently not working for all axes
-//            assertSelectionAsBackwardIteration(expected, randomCas, aActual, xRelToY, typeX, typeY,
-//                y, timings);
+            assertSelectionAsBackwardIteration(expected, randomCas, aActual, xRelToY, typeX, typeY,
+                y, timings);
           }
           catch (Throwable e) {
             // Set a breakpoint here to halt when an assert above fails. The select triggering the
