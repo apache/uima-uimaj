@@ -45,11 +45,10 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
-import org.junit.Ignore;
 
 public class SelectFsAssert {
-//  private static final long RANDOM_SEED = System.nanoTime();
-  private static final long RANDOM_SEED = 1174435820229231l;
+  private static final long RANDOM_SEED = System.nanoTime();
+//  private static final long RANDOM_SEED = 1174435820229231l;
   
   public static void assertSelectFS(RelativePosition aCondition, RelativeAnnotationPredicate aPredicate, 
       List<TestCase> aTestCases)
@@ -148,60 +147,12 @@ public class SelectFsAssert {
           timings.compute("actual", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tExpected);
           
           try {
-            {
-              long tList = System.currentTimeMillis();
-              List<Annotation> listActual = aActual.select(randomCas, typeX, y).asList();
-              timings.compute("asList", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tList);
-              assertThat(listActual)
-                  .as("Selecting X of type [%s] %s [%s]@[%d-%d] asList%n%s%n", typeX.getName(), xRelToY,
-                      y.getType().getShortName(), y.getBegin(), y.getEnd(),
-                      casToString(randomCas))
-                  .containsExactlyElementsOf(expected);
-            }
-  
-            //          SELECT-ITERATORS: Leaving this for a latter improvement
-//            {
-//              long t = System.currentTimeMillis();
-//              FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
-//              Annotation initial = it.isValid() ? it.get() : null;
-//              List<Annotation> actual = new ArrayList<>();
-//              it.moveToFirst(); // <= This causes trouble
-//              assertThat(it.isValid() ? it.get() : null)
-//                  .as("Annotation pointed at by iterator initially should match annotation after calling moveToFirst:%n"+
-//                      "%s%n%s%n" +
-//                      "Selecting X of type [%s] %s [%s]@[%d-%d] iterator forward%n%s%n",
-//                      initial, it.isValid() ? it.get() : null, typeX.getName(), xRelToY,
-//                          y.getType().getShortName(), y.getBegin(), y.getEnd(), casToString(randomCas))
-//                  .isEqualTo(initial);
-//              while (it.isValid()) {
-//                actual.add(it.get());
-//                it.moveToNext();
-//              }
-//              timings.compute("iterator forward", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
-//              assertThat(actual)
-//                  .as("Selecting X of type [%s] %s [%s]@[%d-%d] iterator forward%n%s%n", typeX.getName(), xRelToY,
-//                      y.getType().getShortName(), y.getBegin(), y.getEnd(),
-//                      casToString(randomCas))
-//                  .containsExactlyElementsOf(expected);
-//            }
-
-  //          SELECT-ITERATORS: Leaving this for a latter improvement
-  //          {
-  //            long tBackwards = System.currentTimeMillis();
-  //            FSIterator<Annotation> itBackwards = aActual.select(randomCas, type2, y).fsIterator();
-  //            List<Annotation> backwardsActual = new ArrayList<>();
-  //            itBackwards.moveToLast();
-  //            while (itBackwards.isValid()) {
-  //              backwardsActual.add(0, itBackwards.get());
-  //              itBackwards.moveToPrevious();
-  //            }
-  //            timings.compute("iterator backwards", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tBackwards);
-  //            assertThat(backwardsActual)
-  //                .as("Selecting X of type [%s] %s [%s]@[%d-%d] iterator backwards%n%s%n", type2.getName(), xRelToY,
-  //                    y.getType().getShortName(), y.getBegin(), y.getEnd(),
-  //                    casToString(randomCas))
-  //                .containsExactlyElementsOf(expected);
-  //          }
+            assertSelectionAsList(expected, randomCas, aActual, xRelToY, typeX, typeY, y, timings);
+            assertSelectionAsForwardIteration(expected, randomCas, aActual, xRelToY, typeX, typeY,
+                y, timings);
+            // FIXME: Currently not working for all axes
+//            assertSelectionAsBackwardIteration(expected, randomCas, aActual, xRelToY, typeX, typeY,
+//                y, timings);
           }
           catch (Throwable e) {
             // Set a breakpoint here to halt when an assert above fails. The select triggering the
@@ -227,6 +178,66 @@ public class SelectFsAssert {
     }
   }
   
+  private static void assertSelectionAsList(List<Annotation> expected, CAS randomCas,
+      TypeByContextSelectorAsSelection aActual,
+      String xRelToY, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
+    long tList = System.currentTimeMillis();
+    List<Annotation> listActual = aActual.select(randomCas, typeX, y).asList();
+    timings.compute("asList", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tList);
+    assertThat(listActual)
+        .as("Selecting X of type [%s] %s [%s]@[%d-%d] asList%n%s%n", typeX.getName(), xRelToY,
+            y.getType().getShortName(), y.getBegin(), y.getEnd(),
+            casToString(randomCas))
+        .containsExactlyElementsOf(expected);
+  }
+
+  private static void assertSelectionAsForwardIteration(List<Annotation> expected, CAS randomCas,
+      TypeByContextSelectorAsSelection aActual,
+      String xRelToY, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
+    long t = System.currentTimeMillis();
+    FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
+    Annotation initial = it.isValid() ? it.get() : null;
+    List<Annotation> actual = new ArrayList<>();
+    it.moveToFirst();
+    assertThat(it.isValid() ? it.get() : null)
+        .as("Annotation pointed at by iterator initially should match annotation after calling "
+            + "moveToFirst:%n%s%n%s%n" +
+            "Selecting X of type [%s] %s [%s]@[%d-%d] iterator forward%n%s%n",
+            initial, it.isValid() ? it.get() : null, typeX.getName(), xRelToY,
+            y.getType().getShortName(), y.getBegin(), y.getEnd(), casToString(randomCas))
+        .isEqualTo(initial);
+    while (it.isValid()) {
+      actual.add(it.get());
+      it.moveToNext();
+    }
+    timings.compute("iterator forward", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
+    assertThat(actual)
+        .as("Selecting X of type [%s] %s [%s]@[%d-%d] iterator forward%n%s%n", typeX.getName(),
+            xRelToY,
+            y.getType().getShortName(), y.getBegin(), y.getEnd(),
+            casToString(randomCas))
+        .containsExactlyElementsOf(expected);
+  }
+
+  private static void assertSelectionAsBackwardIteration(List<Annotation> expected, CAS randomCas,
+      TypeByContextSelectorAsSelection aActual,
+      String xRelToY, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
+    long t = System.currentTimeMillis();
+    FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
+    List<Annotation> actual = new ArrayList<>();
+    it.moveToLast(); // <= This causes trouble
+    while (it.isValid()) {
+      actual.add(0, it.get());
+      it.moveToPrevious();
+    }
+    timings.compute("iterator backwards", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
+    assertThat(actual)
+        .as("Selecting X of type [%s] %s [%s]@[%d-%d] iterator backwards%n%s%n", typeX.getName(), xRelToY,
+            y.getType().getShortName(), y.getBegin(), y.getEnd(),
+            casToString(randomCas))
+        .containsExactlyElementsOf(expected);
+  }
+
   private static String casToString(CAS aCas) {
     int MAX_ANNOTATIONS = 100;
     if (aCas.select().count() > MAX_ANNOTATIONS) {

@@ -706,7 +706,6 @@ public class SelectFsTest {
     assertThat(it.isValid() ? it.get() : null).isSameAs(initial);
   }
 
-  @Ignore("SELECT-ITERATORS: Leaving this for a latter improvement")
   @Test
   public void thatSelectFollowingInitialPositionIsSameAsFirstPosition() throws Exception {
     Annotation y = new Token(cas.getJCas(), 13, 34);

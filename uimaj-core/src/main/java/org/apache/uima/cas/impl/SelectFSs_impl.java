@@ -572,8 +572,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         isFollowing || isPreceding;
     
     isUnordered = ! orderingNeeded;
-    
-    
   }
   
   private void maybeValidateAltSource() {
@@ -617,83 +615,60 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     if (isFollowing && isBackwards) {
       isBackwards = false;
       return make_or_copy_snapshot(fsIterator1(), true);
-//      LowLevelIterator<T> baseIterator = fsIterator1();
-//      FSIterator<T> it;
-//      if (baseIterator instanceof FsIterator_subtypes_snapshot) {
-//        it = new FsIterator_backwards<>(baseIterator.copy()); // avoid making another array
-//      } else {
-//        T[] a = (T[]) asArray(baseIterator);
-//        it = new FsIterator_backwards<>(
-//                             new FsIterator_subtypes_snapshot<T>(
-//                                 a, 
-//                                 (LowLevelIndex<T>) index, 
-//                                 IS_ORDERED,
-//                                 baseIterator.getComparator()));
-//      }
-//      return (limit == -1)
-//          ? it
-//            // rewrap with limit - needs to be outer shell to get right invalid behavior
-//          : new FsIterator_limited<>(it, limit);          
     }
-    
+
     if (isPreceding) {
-      boolean bkwd = isBackwards;   // save isBackwards flag.  
-                                    
-      isBackwards = true;   // because need the iterator to move from the position to the front.
-      return make_or_copy_snapshot(fsIterator1(), bkwd);  // this iterator fails to skip annotations whose end is > positioning begin
-//      LowLevelIterator<T> baseIterator = fsIterator1();  // this iterator fails to skip annotations whose end is > positioning begin
-//      T[] a = (T[]) asArray(baseIterator);
-//      FSIterator<T> it = new FsIterator_subtypes_snapshot<T>(
-//                               a,
-//                               (LowLevelIndex<T>) index,
-//                               IS_ORDERED,
-//                               baseIterator.getComparator());
-//      if (!bkwd) {
-//        it = new FsIterator_backwards<>(it); // because array is backwards
-//      }
-//      return (limit == -1) 
-//          ? it
-//            // rewrap with limit - needs to be outer shell to get right invalid behavior
-//          : new FsIterator_limited<>(it, limit); 
+      // save isBackwards flag.
+      boolean bkwd = isBackwards;
+      // because need the iterator to move from the position to the front.
+      isBackwards = true;
+      // this iterator fails to skip annotations whose end is > positioning begin
+      return make_or_copy_snapshot(fsIterator1(), bkwd);
     }
-    
+
     // all others, including isFollowing but not backwards
     return fsIterator1();
   }
   
-  private FSIterator<T> make_or_copy_snapshot(LowLevelIterator<T> baseIterator, boolean bkwd) {
-    FSIterator<T> it;
-    T[] a = (T[]) asArray(baseIterator, FeatureStructure.class);  // array is in forward order because 
-                                          // it's produced by a backwards iterator, but then the array is reversed
-    it = new FsIterator_subtypes_snapshot<>(
-        a,
+  private LowLevelIterator<T> make_or_copy_snapshot(LowLevelIterator<T> baseIterator, boolean bkwd) {
+    LowLevelIterator<T> it;
+    // array is in forward order because it's produced by a backwards iterator, but then the array
+    // is reversed
+    T[] a = (T[]) asArray(baseIterator, FeatureStructure.class);
+
+    it = new FsIterator_subtypes_snapshot<>(a,
         (LowLevelIndex<T>) index,
         IS_ORDERED,
         baseIterator.getComparator());
-    
+
     if (!bkwd) {
       it = new FsIterator_backwards<>(it);
     }
 
     return (limit == -1)
         ? it
-          // rewrap with limit - needs to be outer shell to get right invalid behavior
+        // rewrap with limit - needs to be outer shell to get right invalid behavior
         : new FsIterator_limited<>(it, limit);
   }
   
   private LowLevelIterator<T> fsIterator1() {
     prepareTerminalOp();
-    LowLevelIterator<T> it = isAllViews 
-                      ? //new FsIterator_aggregation_common<T>(getPlainIteratorsForAllViews(), )
-                        createFsIterator_for_all_views()
-                      : plainFsIterator(index, view);
+    LowLevelIterator<T> it = new SelectFSIterator(() -> {
+      LowLevelIterator<T> baseIt = isAllViews
+          ? createFsIterator_for_all_views()
+          : plainFsIterator(index, view);
 
-    it = maybeWrapBackwards(it);                  
-    maybePosition(it);  // position needs to come after backwards because that sets the position
-    maybeShift(it);     // shift semantically needs to come after backwards
-    return (limit == -1) ? it : new FsIterator_limited<>(it, limit);    
+      baseIt = maybeWrapBackwards(baseIt);
+      // position needs to come after backwards because that sets the position
+      maybePosition(baseIt);
+      // shift semantically needs to come after backwards
+      maybeShift(baseIt);
+      return baseIt;
+    });
+
+    return (limit == -1) ? it : new FsIterator_limited<>(it, limit);
   }
-  
+    
   /**
    * for a selected index, return an iterator over all the views for that index
    * @return iterator over all views for that index, unordered
@@ -1647,5 +1622,106 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   public boolean isEmpty() {
     if (this.limit == 0) return true;
     return fsIterator().size() == 0;
+  }
+  
+  public final class SelectFSIterator implements LowLevelIterator<T> {
+
+    private Supplier<LowLevelIterator<T>> iteratorSupplier;
+    private LowLevelIterator<T> it;
+    
+    private SelectFSIterator(Supplier<LowLevelIterator<T>> aIteratorSupplier) {
+      iteratorSupplier = aIteratorSupplier;
+      
+      it = iteratorSupplier.get();
+    }
+    
+    @Override
+    public boolean isValid() {
+      return it.isValid();
+    }
+
+    @Override
+    public T getNvc() {
+      return it.getNvc();
+    }
+
+    @Override
+    public void moveToNextNvc() {
+      it.moveToNextNvc();
+    }
+
+    @Override
+    public void moveToPreviousNvc() {
+      it.moveToPreviousNvc();
+    }
+
+    @Override
+    public void moveToFirst() {
+      // There is quite a bit of logic in SelectFS that happens *after* the iterator has been 
+      // created using fsIterator1() that positions the iterator at the starting position required
+      // by the SelectFS settings. In order to avoid having to duplicate that repositioning code,
+      // we just make a new iterator here.
+      it = iteratorSupplier.get();
+    }
+
+    @Override
+    public void moveToLast() {
+      it.moveToLast();
+    }
+
+    @Override
+    public void moveTo(FeatureStructure aFs) {
+      it.moveTo(aFs);
+    }
+
+    @Override
+    public FSIterator<T> copy() {
+      return it.copy();
+    }
+
+    @Override
+    public int ll_indexSizeMaybeNotCurrent() {
+      return it.ll_indexSizeMaybeNotCurrent();
+    }
+
+    @Override
+    public LowLevelIndex<T> ll_getIndex() {
+      return it.ll_getIndex();
+    }
+
+    @Override
+    public int ll_maxAnnotSpan() {
+      return it.ll_maxAnnotSpan();
+    }
+
+    @Override
+    public boolean isIndexesHaveBeenUpdated() {
+      return it.isIndexesHaveBeenUpdated();
+    }
+
+    @Override
+    public boolean maybeReinitIterator() {
+      return it.maybeReinitIterator();
+    }
+
+    @Override
+    public void moveToFirstNoReinit() {
+      moveToFirst();
+    }
+
+    @Override
+    public void moveToLastNoReinit() {
+      it.moveToLastNoReinit();
+    }
+
+    @Override
+    public void moveToNoReinit(FeatureStructure aFs) {
+      it.moveToNoReinit(aFs);
+    }
+
+    @Override
+    public Comparator<TOP> getComparator() {
+      return it.getComparator();
+    }
   }
 }

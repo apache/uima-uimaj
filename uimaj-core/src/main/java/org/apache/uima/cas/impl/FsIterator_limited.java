@@ -19,15 +19,16 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
- * Wraps FSIterator<T>, limits results to n gets
+ * Wraps FSIterator<T>, limits results to n gets. Moving the iterator around does not count towards
+ * the limit.
  */
 class FsIterator_limited<T extends FeatureStructure>  
           implements LowLevelIterator<T> {
@@ -35,22 +36,26 @@ class FsIterator_limited<T extends FeatureStructure>
   final private LowLevelIterator<T> iterator; // not just for single-type iterators
   final private int limit;
   private int count = 0;
+  private boolean limitReached = false;
     
   FsIterator_limited(FSIterator<T> iterator, int limit) {
     this.iterator = (LowLevelIterator<T>) iterator;
     this.limit = limit;
+    this.limitReached = limit <= count;
   }
 
   private void maybeMakeInvalid() {
     if (count == limit) {
-      iterator.moveToFirstNoReinit();
-      iterator.moveToPrevious();
+        limitReached = true;
     }
   }
   
   @Override
   public T getNvc() {
     maybeMakeInvalid();
+    if (limitReached) {
+        throw new NoSuchElementException();
+    }
     T r = iterator.get();  // not getNvc because of above line
     count++;
     return r;
@@ -59,12 +64,18 @@ class FsIterator_limited<T extends FeatureStructure>
   @Override
   public void moveToNextNvc() {
     maybeMakeInvalid();
+    if (limitReached) {
+        return;
+    }
     iterator.moveToNext();   // not getNvc because of above line
   }
 
   @Override
   public void moveToPreviousNvc() {
     maybeMakeInvalid();
+    if (limitReached) {
+        return;
+    }
     iterator.moveToPrevious();  // not getNvc because of above line
   }
 
@@ -95,13 +106,16 @@ class FsIterator_limited<T extends FeatureStructure>
 
   @Override
   public FSIterator<T> copy() {
-    return new FsIterator_limited<>(iterator.copy(), limit);
+    FsIterator_limited<T> copy = new FsIterator_limited<>(iterator.copy(), limit);
+    copy.count = count;
+    copy.limitReached = limitReached;
+    return copy;
   }
 
   @Override
   public boolean isValid() {
     maybeMakeInvalid();
-    return iterator.isValid();
+    return !limitReached && iterator.isValid();
   }
 
   @Override

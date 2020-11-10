@@ -246,29 +246,25 @@ public class AnnotationIteratorTest {
     this.fss = afss;
     isSave = fss.size() == 0;   // on first call is 0, so save on first call
     
-//    int count;
+    JCas jcas = cas.getJCas();
     AnnotationIndex<Annotation> annotIndex = cas.getAnnotationIndex();
     AnnotationIndex<Annotation> sentIndex = cas.getAnnotationIndex(sentenceType);
-    
+
 //    assertTrue((isSave) ? it instanceof FSIteratorWrapper : 
 //      FSIndexFlat.enabled ? it instanceof FSIndexFlat.FSIteratorFlat : it instanceof FSIteratorWrapper);   
     assertCount("Normal ambiguous annot iterator", annotCount, annotIndex.iterator(true));
-     // a normal "ambiguous" iterator
-    assertCount("Normal ambiguous select annot iterator", annotCount, annotIndex.select().fsIterator());
+
+    assertCount("Normal ambiguous select annot iterator", annotCount, 
+        annotIndex.select().fsIterator());
     assertEquals(annotCount, annotIndex.select().toArray().length);  // stream op
     assertEquals(annotCount, annotIndex.select().asArray(Annotation.class).length);  // select op
     assertEquals(annotCount - 5, annotIndex.select().startAt(2).asArray(Annotation.class).length);
-    
-    Annotation[] tokensAndSentencesAndPhrases = annotIndex.select().asArray(Annotation.class);
-    
-    JCas jcas = cas.getJCas();
-    
-    FSArray<Annotation> fsa = FSArray.create(jcas, tokensAndSentencesAndPhrases);
-    NonEmptyFSList<Annotation> fslhead = (NonEmptyFSList<Annotation>) FSList.<Annotation, Annotation>create(jcas,  tokensAndSentencesAndPhrases);
-    
+        
+    FSArray<Annotation> fsa = FSArray.create(jcas, annotIndex.select().asArray(Annotation.class));
     assertCount("fsa ambiguous select annot iterator", annotCount, 
         fsa.select().fsIterator());
 
+    NonEmptyFSList<Annotation> fslhead = (NonEmptyFSList<Annotation>) FSList.<Annotation, Annotation>create(jcas,  annotIndex.select().asArray(Annotation.class));
     assertCount("fslhead ambiguous select annot iterator", annotCount, 
         fslhead.select().fsIterator());
     
