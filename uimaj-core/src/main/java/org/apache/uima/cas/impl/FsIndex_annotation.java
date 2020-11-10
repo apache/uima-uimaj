@@ -58,7 +58,8 @@ public class FsIndex_annotation <T extends AnnotationFS>
         strict,
         null, // no BoundsUse
         true, // type priority used
-        true // ignored
+        true, // ignored
+        true // isStrictIncludesAnnotationsStartingAtEndPosition
     );
   }
   
@@ -80,7 +81,8 @@ public class FsIndex_annotation <T extends AnnotationFS>
         strict,
         null, // no BoundsUse
         !ignoreType, // type priority used
-        true // ignored - only for coveredBy or covering
+        true, // ignored - only for coveredBy or covering,
+        true // isStrictIncludesAnnotationsStartingAtEndPosition
     );
   }
 
@@ -108,7 +110,8 @@ public class FsIndex_annotation <T extends AnnotationFS>
         strict,
         BoundsUse.coveredBy,  // isBounded 
         true,  // uses type priority
-        true  // skip returning results equal to annot
+        true,  // skip returning results equal to annot
+        true // isStrictIncludesAnnotationsStartingAtEndPosition
     );
   }
 

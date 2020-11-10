@@ -73,22 +73,6 @@
        This allows maven to find the snapshots when looking for the parent of
        this pom -->
   <repositories>
-    <repository>
-      <id>eclipsePlugins</id>
-      <name>Eclipse components</name>
-      <layout>default</layout>
-      <url>https://repo1.maven.org/eclipse</url>
-      
-      <releases>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </releases>
-      
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-
     <!-- modify central repository access:
          Turn on checksum checking-->
     <repository>
@@ -233,6 +217,7 @@
               <id>default-cli</id>
               <configuration>
                 <excludes combine.children="append">
+                  <exclude>.factorypath</exclude>
                   <exclude>src/main/run_configuration/*.launch</exclude>
                 </excludes>    
               </configuration>

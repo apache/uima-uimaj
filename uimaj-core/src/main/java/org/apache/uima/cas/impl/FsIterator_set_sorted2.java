@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Comparator;
 
 import org.apache.uima.cas.FeatureStructure;
@@ -29,7 +27,7 @@ import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
- * An interator for a single type for a set or sorted index
+ * An iterator for a single type for a set or sorted index
  * 
  * NOTE: This is the version used for set/sorted iterators
  *   It is built directly on top of a CopyOnWrite wrapper for OrderedFsSet_array
@@ -126,7 +124,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
   // Internal use
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
-    pos = ofsa.getOfsa().find((TOP) fs, comparatorMaybeNoTypeWithoutID); 
+    pos = ofsa.getOfsa().find((TOP) fs, comparatorMaybeNoTypeWithoutID);
 
     if (pos < 0) {
       pos = (-pos) -1;  // insertion point, one above
@@ -149,7 +147,8 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
       // went one before start, restore to start
       pos = savedPos;
     }
-    return;   
+    
+    return;
   }
 
 //  // Internal use

@@ -298,7 +298,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
 
     reportErrors();
   }
-    
+
   private static void loadBuiltins(TypeImpl ti, ClassLoader cl, Map<String, JCasClassInfo> type2jcci, ArrayList<MutableCallSite> callSites_toSync) {
     String typeName = ti.getName();
     
@@ -1251,7 +1251,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
                           fi.getName(),
                            staticOffsetInClass,
                            fi.getAdjustedOffset()),
-                       staticOffsetInClass != -1);  // throw unless static offset is -1, in that case, a runtime error will occur if it is usedd
+                       staticOffsetInClass != -1);  // throw unless static offset is -1, in that case, a runtime error will occur if it is used
           }  // end of offset changed
         }  // end of feature check
       } // end of for loop

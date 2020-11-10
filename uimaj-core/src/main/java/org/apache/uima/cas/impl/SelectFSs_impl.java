@@ -127,6 +127,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private BoundsUse boundsUse = null; 
   
   private TOP startingFs = null; // this is used for non-annotation positioning too
+  // Used for preceding since we tweak the end offset of the reference annotation
+  private boolean originalStartingFsHasZeroWidth = false;
   private AnnotationFS boundingFs = null;
   private boolean isEmptyBoundingFs = false;
   
@@ -772,7 +774,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     if (boundsUse == BoundsUse.notBounded) {
       if (!isSortedIndex) {
         // set index or bag index
-        it = (LowLevelIterator<T>) idx.iterator();       
+        it = (LowLevelIterator<T>) idx.iterator();
       } else {
         // index is sorted but no bounds are being used.  Varieties:
         //   - AnnotationIndex:
@@ -781,15 +783,32 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         //     - typePriority / ignore typePriority
         //     - orderNotNecessary / orderNeeded
         //   - preceding: need to skip over annotations whose end is > positioning-begin
-
+        //   - following: need to skip over zero-width annotations at positioning-end
         it = isAnnotationIndex 
                ? (LowLevelIterator<T>) ai.iterator( ! isNonOverlapping, IS_NOT_STRICT, isUnordered, ! isTypePriority)
                : idx.iterator(isUnordered, ! isTypePriority);
         if (isPreceding) {
           // filter the iterator to skip annotations whose end is > the position-begin
-          it = new FilteredIterator<>(it, fs ->
-              // true if ok, false to skip
-              ((Annotation) fs).getEnd() <= ((Annotation) startingFs).getBegin());
+          // and also if the reference annotation is a zero-width annotation, skip any 
+          // annotations that end at the zero-width annotation because those would rather be seen as
+          // covering the zero-width annotation
+          int startingFsBegin = ((Annotation) startingFs).getBegin();
+          it = new FilteredIterator<>(it, fs -> {
+            // true if ok, false to skip
+            int end = ((Annotation) fs).getEnd();
+            return end <= startingFsBegin && (!originalStartingFsHasZeroWidth || end != startingFsBegin);
+          });  
+        }
+        
+        if (isFollowing) {
+          // filter the iterator to skip zero-width annotations at positioning-end because these
+          // are considered to be covered and not following
+          int startingFsEnd = ((Annotation) startingFs).getEnd();
+          it = new FilteredIterator<>(it, fs -> {
+            // true if ok, false to skip
+            int begin = ((Annotation) fs).getBegin();
+            return begin != ((Annotation) fs).getEnd() || begin != startingFsEnd;
+          });
         }
       }
     } else {
@@ -804,7 +823,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
           !isIncludeAnnotBeyondBounds,  // strict 
           boundsUse,
           isTypePriority,
-          isSkipSameBeginEndType);
+          isSkipSameBeginEndType,
+          false); // isStrictIncludesAnnotationsStartingAtEndPosition
     }
 
     return it;
@@ -1252,8 +1272,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 //    }
     
     if (isFollowing) {
+      final int begin = ((Annotation)startingFs).getBegin();
       final int end = ((Annotation)startingFs).getEnd();
-      while (it.isValid() && ((Annotation)it.get()).getBegin() < end) {
+      while (it.isValid()) {
+        int aBegin = ((Annotation)it.get()).getBegin();
+        if (aBegin >= end && aBegin != begin) {
+          break;
+        }
         it.moveToNext();
       }
     } else if (isPreceding) {
@@ -1309,9 +1334,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(Annotation fs, int offset) {
-    if (fs.getBegin() < fs.getEnd()) {
-      fs = makePosAnnot(fs.getEnd(), fs.getEnd());
-    }
     return commonFollowing(fs, offset);
   }
 
@@ -1344,9 +1366,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> preceding(Annotation annotation, int offset) {
-    if (annotation.getEnd() < Integer.MAX_VALUE) {
-      annotation = makePosAnnot(annotation.getBegin(), Integer.MAX_VALUE);
-    }
     return commonPreceding(annotation, offset);
   }
 
@@ -1398,6 +1417,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
   private SelectFSs<T> commonPreceding(Annotation annotation, int offset) {
 //    validateSinglePosition(fs, offset);
+    this.originalStartingFsHasZeroWidth = annotation.getBegin() == annotation.getEnd();
+    
+    if (annotation.getEnd() < Integer.MAX_VALUE) {
+      annotation = makePosAnnot(annotation.getBegin(), Integer.MAX_VALUE);
+    }
+    
     this.startingFs = annotation;
     this.shift = offset;
     isPreceding = true;

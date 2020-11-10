@@ -127,11 +127,6 @@
       <scope>test</scope>
     </dependency>
                      -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <scope>test</scope>
-    </dependency>
     
 		<dependency>
 			<groupId>org.apache.uima</groupId>
@@ -241,6 +236,14 @@
               <id>default-cli</id>
               <configuration>
                 <excludes combine.children="append">
+                  <exclude>src/test/resources/uima-v2-serialized-cas/README</exclude>
+                  <exclude>src/test/resources/uima-v2-serialized-cas/*.xcas</exclude>
+                  <exclude>src/test/resources/uima-v2-serialized-cas/*.xmi</exclude>
+                  <exclude>src/test/resources/uima-v2-serialized-cas/*.bin*</exclude>
+                  <exclude>src/test/resources/uima-v3-serialized-cas/README</exclude>
+                  <exclude>src/test/resources/uima-v3-serialized-cas/*.xcas</exclude>
+                  <exclude>src/test/resources/uima-v3-serialized-cas/*.xmi</exclude>
+                  <exclude>src/test/resources/uima-v3-serialized-cas/*.bin*</exclude>
                   <exclude>src/test/resources/CASTests/*.txt</exclude> <!-- test data -->
                   <exclude>src/test/resources/data/moby.txt</exclude>
                   <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> <!-- test data -->
