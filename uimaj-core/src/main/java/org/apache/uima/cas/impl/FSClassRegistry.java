@@ -48,6 +48,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.UIMAClassLoader;
+import org.apache.uima.internal.util.WeakIdentityMap;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -165,8 +166,11 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    *         
    * Cache of FsGenerator[]s kept in TypeSystemImpl instance, since it depends on type codes.
    * Current FsGenerator[] kept in CASImpl shared view data, switched as needed for PEARs. 
+   * <p>
+   * <b>NOTE:</b> Access this map in a thread-safe way only via {@link #get_className_to_jcci} which
+   * synchronizes on the map object.
    */
-  private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_to_type2JCas = Collections.synchronizedMap(new IdentityHashMap<>());  // identity: key is classloader
+  private static final WeakIdentityMap<ClassLoader, Map<String, JCasClassInfo>> cl_to_type2JCas = WeakIdentityMap.newHashMap();  // identity: key is classloader
   
 //  private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_4pears_to_type2JCas = Collections.synchronizedMap(new IdentityHashMap<>()); // identity: key is classloader
 
@@ -287,7 +291,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     // Class loader used for builtins is the UIMA framework's class loader
     ArrayList<MutableCallSite> callSites_toSync = new ArrayList<>();
     ClassLoader cl = tsi.getClass().getClassLoader();
-    loadBuiltins(tsi.topType, cl, cl_to_type2JCas.computeIfAbsent(cl, x -> new HashMap<>()), callSites_toSync);
+    loadBuiltins(tsi.topType, cl, get_className_to_jcci(cl, false), callSites_toSync);
     
     MutableCallSite[] sync = callSites_toSync.toArray(new MutableCallSite[callSites_toSync.size()]);
     MutableCallSite.syncAll(sync);
@@ -1462,8 +1466,20 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   }
   
   static Map<String, JCasClassInfo> get_className_to_jcci(ClassLoader cl, boolean is_pear) {
-    final Map<ClassLoader, Map<String, JCasClassInfo>> cl2t2j = cl_to_type2JCas;   /*is_pear ? cl_4pears_to_type2JCas :*/
-    return cl2t2j.computeIfAbsent(cl, x -> new HashMap<>());
+    synchronized (cl_to_type2JCas) {
+      // This was used before switching from the normal synchronized map to the weak map
+      // and is part of a whole bunch of commented out code with special handling for the PEAR
+      // case. Not sure if this commented out code was kept for debugging or for historical 
+      // reasons - so let's keep this for the moment as a comment here.
+      // REC - 2020-10-17
+      // final Map<ClassLoader, Map<String, JCasClassInfo>> cl2t2j = cl_to_type2JCas; /*is_pear ? cl_4pears_to_type2JCas :*/
+      Map<String, JCasClassInfo> cl_to_jcci = cl_to_type2JCas.get(cl);
+      if (cl_to_jcci == null) {
+        cl_to_jcci = new HashMap<>();
+        cl_to_type2JCas.put(cl, cl_to_jcci);
+      }
+      return cl_to_jcci;
+    }
   }
   
   static Lookup getLookup(ClassLoader cl) {
