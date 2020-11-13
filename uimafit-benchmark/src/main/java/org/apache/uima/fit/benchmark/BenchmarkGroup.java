@@ -18,27 +18,43 @@
  */
 package org.apache.uima.fit.benchmark;
 
+import static java.lang.Math.round;
 import static java.util.Comparator.comparing;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationWords;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BenchmarkGroup {
   private final String name;
+  private final Benchmark template;
   private final List<Benchmark> benchmarks = new ArrayList<>();
 
-  public BenchmarkGroup(String aName) {
+  public BenchmarkGroup(String aName, Benchmark aTemplate) {
     name = aName;
+    template = aTemplate;
+  }
+
+  public BenchmarkGroup addIgnoringTemplate(Benchmark aBenchmark) {
+    benchmarks.add(aBenchmark);
+    return this;
   }
 
   public BenchmarkGroup add(Benchmark aBenchmark) {
+    if (template != null) {
+      aBenchmark.applyTemplate(template);
+    }
     benchmarks.add(aBenchmark);
     return this;
   }
 
   public void runAll() {
     System.out.printf(">>>>>>>>>>>>>>>>>>%n");
-    System.out.printf("GROUP: %s%n", name);
+    System.out.printf("GROUP: %s", name);
+    if (template != null) {
+      System.out.printf(" (%s)", template.getName());
+    }
+    System.out.printf("%n");
 
     for (Benchmark benchmark : benchmarks) {
       benchmark.run();
@@ -46,10 +62,12 @@ public class BenchmarkGroup {
 
     System.out.printf("%n%nSorted by execution time:%n");
     benchmarks.stream()
-        .sorted(comparing(Benchmark::getCumulativeDuration))
+        .filter(b -> !b.isIgnored())
+        .sorted(comparing(Benchmark::getAverageDuration))
         .forEach(benchmark -> {
-          Measurement slowest = benchmark.getSlowestMeasurement();
-          System.out.printf("%6dms / %4dms -- %s%n", benchmark.getCumulativeDuration(), slowest.getDuration(),
+          System.out.printf("AVG: %.3fms (%10s total) -- %s%n", 
+              benchmark.toMs(benchmark.getAverageDuration()),
+              formatDurationWords(round(benchmark.toMs(benchmark.getCumulativeDuration())), true, true), 
               benchmark.getName());
         });
 
