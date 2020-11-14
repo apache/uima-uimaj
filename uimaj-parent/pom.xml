@@ -32,10 +32,9 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>13</version>
+    <version>14-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-parent</artifactId>
   <packaging>pom</packaging>
   <version>3.1.2-SNAPSHOT</version>
@@ -90,7 +89,6 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-
     </repository>
     
     <!--
@@ -197,7 +195,6 @@
     </dependency>
   </dependencies>
 
-  
   <build>
     <pluginManagement>
       <plugins>
@@ -233,11 +230,10 @@
             <retryFailedDeploymentCount>10</retryFailedDeploymentCount> 
           </configuration> 
         </plugin>
-         
       </plugins>
     </pluginManagement>
-    
   </build>
+  
   <profiles>
     
     <profile>
@@ -321,7 +317,6 @@
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
             <configuration>
-
               <excludes combine.children="append">
                 <!-- Duplicates on classpath cause an exception in JaCoCo report -->
                 <exclude>**/org/apache/uima/examples/SourceDocumentInformation*</exclude>
@@ -360,88 +355,6 @@
       </build>
     </profile>
     
-    <!-- **********  Backwards compatibility report generation profile ************** -->
-    <profile>
-      <id>enforce-compatibility</id>
-      <activation>
-        <file>
-          <exists>marker-file-identifying-api-compatibility-check</exists>
-        </file>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.rat</groupId>
-              <artifactId>apache-rat-plugin</artifactId>
-              <executions>
-                <execution>
-                  <id>default-cli</id>
-                  <configuration>
-                    <consoleOutput>true</consoleOutput>
-                    <excludes combine.children="append">
-                      <exclude>**/api-change-report/**/*.*</exclude>
-                    </excludes>
-                  </configuration>
-                </execution>
-            </executions>
-            </plugin>
-          </plugins>
-        </pluginManagement> 
-        
-        <plugins>
-          <!-- https://siom79.github.io/japicmp/MavenPlugin.html -->
-          <plugin>              
-            <groupId>com.github.siom79.japicmp</groupId>
-            <artifactId>japicmp-maven-plugin</artifactId>
-            <version>0.13.0</version>
-            <configuration>
-              <oldVersion>
-                <dependency>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <version>${api_check_oldVersion}</version>
-                </dependency>
-              </oldVersion>
-              <parameter>
-                <onlyModified>true</onlyModified>
-                <!-- filter out classes with impl in their package or class name -->
-                <postAnalysisScript>${project.basedir}/../uimaj-parent/src/main/groovy/api-report.groovy</postAnalysisScript>                  
-              </parameter>
-            </configuration>
-            <executions>
-              <execution>
-                <phase>verify</phase>
-                <goals>
-                  <goal>cmp</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          
-          <!-- This copy is to have the api change report included in the source distribution -->
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-API-change-report</id>
-                <phase>install</phase>  <!-- must follow verify -->
-                <goals><goal>run</goal></goals>
-                <configuration>
-                  <target>
-                    <taskdef name="if" classname="net.sf.antcontrib.logic.IfTask" />
-                    <if>
-                      <available file="${project.build.directory}/japicmp/" />
-                      <then>
-                        <copy toDir="${basedir}/api-change-report">
-                          <fileset dir="${project.build.directory}/japicmp" />
-                        </copy>
-                      </then>
-                    </if>
-                  </target>
-                </configuration>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
