@@ -355,11 +355,6 @@
       </build>
     </profile>
     
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    
     <!-- ************** m2e  profile ************* -->
     <profile>
       <id>m2e</id>
