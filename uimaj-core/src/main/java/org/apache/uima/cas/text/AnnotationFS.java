@@ -92,17 +92,17 @@ public interface AnnotationFS extends AnnotationBaseFS {
   /**
    * @see AnnotationPredicates#covers(AnnotationFS, AnnotationFS)
    */
-  default boolean covers(int aBegin, int aEnd)
+  default boolean covering(int aBegin, int aEnd)
   {
-    return AnnotationPredicates.covers(this, aBegin, aEnd);
+    return AnnotationPredicates.covering(this, aBegin, aEnd);
   }
   
   /**
-   * @see AnnotationPredicates#covers(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#covering(AnnotationFS, AnnotationFS)
    */
-  default boolean covers(AnnotationFS aOther)
+  default boolean covering(AnnotationFS aOther)
   {
-    return AnnotationPredicates.covers(this, aOther);
+    return AnnotationPredicates.covering(this, aOther);
   }
   
   /**
@@ -122,82 +122,82 @@ public interface AnnotationFS extends AnnotationBaseFS {
   }
   
   /**
-   * @see AnnotationPredicates#overlaps(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#overlapping(AnnotationFS, AnnotationFS)
    */
-  default boolean overlaps(int aBegin, int aEnd)
+  default boolean overlapping(int aBegin, int aEnd)
   {
-    return AnnotationPredicates.overlaps(this, aBegin, aEnd);
+    return AnnotationPredicates.overlapping(this, aBegin, aEnd);
   }
 
   /**
-   * @see AnnotationPredicates#overlaps(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#overlapping(AnnotationFS, AnnotationFS)
    */
-  default boolean overlaps(AnnotationFS aOther)
+  default boolean overlapping(AnnotationFS aOther)
   {
-    return AnnotationPredicates.overlaps(this, aOther);
+    return AnnotationPredicates.overlapping(this, aOther);
   }
 
   /**
-   * @see AnnotationPredicates#overlapsLeft(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#overlappingAtBegin(AnnotationFS, AnnotationFS)
    */
-  default boolean overlapsLeft(int aBegin, int aEnd)
+  default boolean overlappingAtBegin(int aBegin, int aEnd)
   {
-    return AnnotationPredicates.overlapsLeft(this, aBegin, aEnd);
+    return AnnotationPredicates.overlappingAtBegin(this, aBegin, aEnd);
   }
 
   /**
-   * @see AnnotationPredicates#overlapsLeft(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#overlappingAtBegin(AnnotationFS, AnnotationFS)
    */
   default boolean overlapsLeft(AnnotationFS aOther)
   {
-    return AnnotationPredicates.overlapsLeft(this, aOther);
+    return AnnotationPredicates.overlappingAtBegin(this, aOther);
   }
 
   /**
-   * @see AnnotationPredicates#overlapsRight(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#overlappingAtEnd(AnnotationFS, AnnotationFS)
    */
-  default boolean overlapsRight(int aBegin, int aEnd)
+  default boolean overlappingAtEnd(int aBegin, int aEnd)
   {
-    return AnnotationPredicates.overlapsRight(this, aBegin, aEnd);
+    return AnnotationPredicates.overlappingAtEnd(this, aBegin, aEnd);
   }
 
   /**
-   * @see AnnotationPredicates#overlapsRight(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#overlappingAtEnd(AnnotationFS, AnnotationFS)
    */
-  default boolean overlapsRight(AnnotationFS aOther)
+  default boolean overlappingAtEnd(AnnotationFS aOther)
   {
-    return AnnotationPredicates.overlapsRight(this, aOther);
+    return AnnotationPredicates.overlappingAtEnd(this, aOther);
   }
 
   /**
-   * @see AnnotationPredicates#rightOf(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#following(AnnotationFS, AnnotationFS)
    */
   default boolean rightOf(int aBegin, int aEnd)
   {
-    return AnnotationPredicates.rightOf(this, aBegin, aEnd);
+    return AnnotationPredicates.following(this, aBegin, aEnd);
   }
 
   /**
-   * @see AnnotationPredicates#rightOf(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#following(AnnotationFS, AnnotationFS)
    */
   default boolean rightOf(AnnotationFS aOther)
   {
-    return AnnotationPredicates.rightOf(this, aOther);
+    return AnnotationPredicates.following(this, aOther);
   }
 
   /**
-   * @see AnnotationPredicates#leftOf(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#preceding(AnnotationFS, AnnotationFS)
    */
   default boolean leftOf(int aBegin, int aEnd)
   {
-    return AnnotationPredicates.leftOf(this, aBegin, aEnd);
+    return AnnotationPredicates.preceding(this, aBegin, aEnd);
   }
 
   /**
-   * @see AnnotationPredicates#leftOf(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#preceding(AnnotationFS, AnnotationFS)
    */
   default boolean leftOf(AnnotationFS aOther)
   {
-    return AnnotationPredicates.leftOf(this, aOther);
+    return AnnotationPredicates.preceding(this, aOther);
   }
 }
