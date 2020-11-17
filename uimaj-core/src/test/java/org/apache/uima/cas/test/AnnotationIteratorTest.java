@@ -318,7 +318,7 @@ public class AnnotationIteratorTest {
             tuple(tokenType, 12, 17),
             tuple(tokenType, 13, 18),
             tuple(tokenType, 14, 19));
-    assertCountLimit("Subiterator select limit 7 over annot with big bound, strict", 7,
+    assertCount("Subiterator select limit 7 over annot with big bound, strict", 7,
         annotIndex.select().coveredBy(bigBound).limit(7)
             .includeAnnotationsWithEndBeyondBounds().fsIterator());
     
@@ -481,9 +481,9 @@ public class AnnotationIteratorTest {
         
     annotIndex.select().coveredBy(3, 5).singleOrNull();
     
-    assertCountLimit("Following", 2, 
+    assertCount("Following", 2, 
         annotIndex.select().following(2, 39).limit(2).fsIterator());
-    assertCountLimit("Following", 2,
+    assertCount("Following", 2,
         annotIndex.select().following(2, 39).backwards().limit(2).fsIterator());
     
     assertCount("select source array", 21, 
@@ -630,12 +630,6 @@ public class AnnotationIteratorTest {
     
     assertEquals(msg, expected, count);
     return fssStart;
-  }
-  
-  private void assertCountLimit(String msg, int expected,  FSIterator<? extends Annotation> it) {
-    assertCountCmn(msg, expected, it);
-    it.moveToFirst();
-    assertFalse(it.isValid());
   }
   
   @Test

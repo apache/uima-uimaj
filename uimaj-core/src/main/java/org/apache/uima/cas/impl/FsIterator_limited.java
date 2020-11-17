@@ -25,19 +25,21 @@ import java.util.NoSuchElementException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Wraps FSIterator<T>, limits results to n gets. Moving the iterator around does not count towards
  * the limit.
  */
-class FsIterator_limited<T extends FeatureStructure>  
-          implements LowLevelIterator<T> {
-  
+class FsIterator_limited<T extends FeatureStructure>
+    implements LowLevelIterator<T> {
+
   final private LowLevelIterator<T> iterator; // not just for single-type iterators
   final private int limit;
+  
   private int count = 0;
   private boolean limitReached = false;
-    
+
   FsIterator_limited(FSIterator<T> iterator, int limit) {
     this.iterator = (LowLevelIterator<T>) iterator;
     this.limit = limit;
@@ -45,19 +47,18 @@ class FsIterator_limited<T extends FeatureStructure>
   }
 
   private void maybeMakeInvalid() {
-    if (count == limit) {
-        limitReached = true;
+    if (count < 0 || count == limit) {
+      limitReached = true;
     }
   }
-  
+
   @Override
   public T getNvc() {
     maybeMakeInvalid();
     if (limitReached) {
-        throw new NoSuchElementException();
+      throw new NoSuchElementException();
     }
-    T r = iterator.get();  // not getNvc because of above line
-    count++;
+    T r = iterator.get(); // not getNvc because of above line
     return r;
   }
 
@@ -65,44 +66,103 @@ class FsIterator_limited<T extends FeatureStructure>
   public void moveToNextNvc() {
     maybeMakeInvalid();
     if (limitReached) {
-        return;
+      return;
     }
-    iterator.moveToNext();   // not getNvc because of above line
+    iterator.moveToNext(); // not getNvc because of above line
+    count++;
   }
 
   @Override
   public void moveToPreviousNvc() {
+    count--;
     maybeMakeInvalid();
     if (limitReached) {
-        return;
+      return;
     }
-    iterator.moveToPrevious();  // not getNvc because of above line
+    iterator.moveToPrevious(); // not getNvc because of above line
   }
 
   @Override
   public void moveToFirstNoReinit() {
     iterator.moveToFirstNoReinit();
-    maybeMakeInvalid();
+    count = 0;
+    this.limitReached = limit <= count;
   }
 
   @Override
   public void moveToLastNoReinit() {
-    iterator.moveToLastNoReinit();
-    maybeMakeInvalid();
+    if (count >= 0 && limitReached && iterator.isValid()) {
+      iterator.moveToPrevious();
+      count--;
+    }
+    else {
+      moveToFirstNoReinit();
+    }
+    
+    while (count < limit - 1 && iterator.isValid()) {
+      iterator.moveToNextNvc();
+      if (!iterator.isValid()) {
+        iterator.moveToLastNoReinit();
+        break;
+      }
+      else {
+        count++;
+      }
+    }
+    this.limitReached = limit <= count;
   }
 
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
-    iterator.moveToNoReinit(fs);
+    if (!(fs instanceof Annotation)) {
+      throw new IllegalArgumentException(
+          "FsIterator_limited.moveToNoReinit() can only be used with annotations but was asked to "
+              + "move to a [" + fs.getType().getName() + "].");
+    }
+    
+    // We hard-code a very strict comparator here because we want to be able to find exactly the
+    // annotation specified by "fs".
+    Comparator<TOP> cmp = ll_getIndex().getCasImpl().indexRepository
+        .getAnnotationFsComparatorWithId();
+    
+    // If the iterator is not valid, then we make it valid by moving to the start
+    if (!isValid()) {
+      moveToFirstNoReinit();
+    }
+    
+    // Now we seek... we cannot make proper use of the binary search here because we do not know
+    // now many elements the binary search skips and whether we stay inside the limit. Hopefully,
+    // the limit is not too big so that it might actually be faster to seek instead of doing the
+    // binary search.
+    while (isValid()) {
+      T current = get();
+      
+      if (!(current instanceof Annotation)) {
+        throw new IllegalStateException(
+            "FsIterator_limited.moveToNoReinit() can only be used with annotations but encountered ["
+                + current.getType().getName() + "] during iteration.");
+      }
+      
+      int c = cmp.compare((TOP) current, (TOP) fs);
+      if (c < 0) {
+        moveToNext();
+      }
+      if (c > 0) {
+        moveToPrevious();
+      }
+      if (c == 0) {
+        break;
+      }
+    }
+
     maybeMakeInvalid();
   }
 
-//  @Override
-//  public void moveToExactNoReinit(FeatureStructure fs) {
-//    iterator.moveToExactNoReinit(fs);
-//    maybeMakeInvalid();
-//  }
-
+  // @Override
+  // public void moveToExactNoReinit(FeatureStructure fs) {
+  // iterator.moveToExactNoReinit(fs);
+  // maybeMakeInvalid();
+  // }
 
   @Override
   public FSIterator<T> copy() {
@@ -133,7 +193,9 @@ class FsIterator_limited<T extends FeatureStructure>
     return iterator.ll_getIndex();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated()
    */
   @Override

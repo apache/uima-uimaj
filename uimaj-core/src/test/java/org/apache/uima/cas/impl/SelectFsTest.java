@@ -37,6 +37,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
@@ -49,6 +50,7 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -769,6 +771,24 @@ public class SelectFsTest {
   }
 
   @Test
+  public void thatSelectBackwardsIterationMatchesForward() throws Exception {
+    addToIndexes(
+        new Sentence(cas.getJCas(), 15, 25),
+        new Token(cas.getJCas(), 14, 19),
+        new Token(cas.getJCas(), 13, 18),
+        new Token(cas.getJCas(), 12, 17),
+        new Sentence(cas.getJCas(), 12, 31),
+        new Token(cas.getJCas(), 11, 16),
+        new Token(cas.getJCas(), 10, 15),
+        new Sentence(cas.getJCas(), 10, 20));
+    
+    List<Annotation> expected = cas.select(Annotation.class).limit(7).asList();
+    List<Annotation> actual = toListBackwards(cas.select(Annotation.class).limit(7));
+    
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
   public void thatSelectFollowingBackwardsIterationMatchesForward() throws Exception {
     Annotation y = new Token(cas.getJCas(), 13, 17);
     addToIndexes(
@@ -776,15 +796,229 @@ public class SelectFsTest {
         new Token(cas.getJCas(), 83, 96));
     
     List<Token> expected = cas.select(Token.class).following(y).asList();
-    List<Token> actual = new ArrayList<>();
-    FSIterator<Token> it = cas.select(Token.class).following(y).fsIterator();
-    it.moveToLast();
-    while (it.isValid()) {
-      actual.add(0, it.get());
-      it.moveToPrevious();
-    }
+    List<Token> actual = toListBackwards(cas.select(Token.class).following(y));
+
+    assertThat(actual).isEqualTo(expected);
+  }
+  
+  @Test
+  public void thatSelectColocatedBackwardsIterationMatchesForward() throws Exception {
+    Annotation y = new Token(cas.getJCas(), 99, 123);
+    addToIndexes(
+        new Token(cas.getJCas(), 99, 123),
+        new Token(cas.getJCas(), 99, 102));
+    
+    List<Token> expected = cas.select(Token.class).at(y).asList();
+    List<Token> actual = toListBackwards(cas.select(Token.class).at(y));
     
     assertThat(actual).isEqualTo(expected);
+  }
+  
+  @Test
+  public void thatSelectColocatedIterationWithMoveTo() throws Exception {
+    Annotation y;
+    Token expected;
+    addToIndexes(
+        expected = new Token(cas.getJCas(), 99, 123),
+        y = new Token(cas.getJCas(), 99, 123));
+    
+    FSIterator<Token> it = cas.select(Token.class).at(y).fsIterator();
+    it.moveTo(y);
+    
+    assertThat(it.get()).isEqualTo(expected);
+  }
+  
+  @Test
+  public void thatSelectCoveringBackwardsIterationMatchesForwardWithCoEndingAnnotations()
+      throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type3", "", "test.Type2");
+    tsd.addType("test.Type4", "", "test.Type3");
+       
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    Type type4 = cas.getTypeSystem().getType("test.Type4");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    AnnotationFS y = cas.createAnnotation(type1, 77, 94);
+    addToIndexes(
+        expected[0] = cas.createAnnotation(type2, 65, 94),
+        expected[1] = cas.createAnnotation(type3, 75, 99),
+        cas.createAnnotation(type4, 71, 83));
+    
+    List<AnnotationFS> selection = toListBackwards(
+        cas.<Annotation>select(type2).covering(y));
+    
+    printIndexOrder(cas, asList(expected), selection);
+    
+    assertThat(selection)
+        .containsExactly(expected);
+  }
+
+  @Test
+  public void thatSelectCoveringBackwardsIterationMatchesForward2() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    tsd.addType("test.Type3", "", "test.Type2");
+       
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    AnnotationFS y = cas.createAnnotation(type2, 39, 42);
+    addToIndexes(
+        cas.createAnnotation(type2, 32, 35), 
+        expected[1] = cas.createAnnotation(type2, 39, 42), 
+        expected[0] = cas.createAnnotation(type3, 26, 45));
+    
+    List<AnnotationFS> selection = toListBackwards(
+        cas.<Annotation>select(type2).covering(y));
+    
+    printIndexOrder(cas, asList(expected), selection);
+    
+    assertThat(selection)
+        .containsExactly(expected);
+  }
+  
+  @Test
+  public void thatSelectCoveredBackwardsIterationMatchesForward() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+       
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    AnnotationFS y = cas.createAnnotation(type2, 71, 76);
+    addToIndexes(
+        expected[0] = cas.createAnnotation(type2, 71, 76),
+        cas.createAnnotation(type2, 76, 84),
+        expected[1] = cas.createAnnotation(type2, 76, 76));
+    
+    List<AnnotationFS> selection = toListBackwards(
+        cas.<Annotation>select(type2).coveredBy(y).includeAnnotationsWithEndBeyondBounds());
+    
+    printIndexOrder(cas, asList(expected), selection);
+    
+    assertThat(selection)
+        .containsExactly(expected);
+  }
+  
+  @Test
+  public void thatSelectFollowingBackwardsIterationMatchesForward2() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+       
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    Annotation y = (Annotation) cas.createAnnotation(type2, 4, 4);
+    addToIndexes(
+        cas.createAnnotation(type2, 4, 14),
+        expected[0] = cas.createAnnotation(type2, 66, 90),
+        expected[1] = cas.createAnnotation(type2, 97, 99));
+    
+    List<AnnotationFS> selection = toListBackwards(
+        cas.<Annotation>select(type2).following(y));
+    
+    printIndexOrder(cas, asList(expected), selection);
+    
+    assertThat(selection)
+        .containsExactly(expected);
+  }
+  
+  @Ignore("WIP")
+  @Test
+  public void thatSelectCoveredByIteratorWorks() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    tsd.addType("test.Type3", "", "test.Type2");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    Annotation y = (Annotation) cas.createAnnotation(type3, 42, 59);
+    addToIndexes(
+        expected[0] = cas.createAnnotation(type3, 42, 59),
+        cas.createAnnotation(type1, 37, 61),
+        cas.createAnnotation(type2, 33, 62),
+        cas.createAnnotation(type3, 83, 88),
+        cas.createAnnotation(type1, 95, 106),
+        cas.createAnnotation(type2, 23, 29),
+        cas.createAnnotation(type3, 25, 35),
+        cas.createAnnotation(type1, 95, 115),
+        cas.createAnnotation(type2, 31, 52),
+        cas.createAnnotation(type3, 65, 93),
+        cas.createAnnotation(type1, 58, 77),
+        cas.createAnnotation(type2, 26, 50),
+        cas.createAnnotation(type3, 77, 92),
+        cas.createAnnotation(type1, 69, 77),
+        expected[1] = cas.createAnnotation(type2, 42, 59));
+    
+    assertThat(cas.<Annotation>select(type2).coveredBy(y).asList())
+        .containsExactly((Annotation) expected[0], (Annotation) expected[1]);
+    
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type2).coveredBy(y).fsIterator();
+    assertThat(it.get())
+        .as("Initial iterator position")
+        .isSameAs(expected[0]);
+    
+    it.moveTo(expected[0]);
+    assertThat(it.get()).isSameAs(expected[0]);
+    
+    it.moveToNext();
+    assertThat(it.isValid()).isTrue();
+    assertThat(it.get()).isSameAs(expected[1]);
+    
+//    printIndexOrder(cas, asList(expected), selection);
+//    
+//    assertThat(selection)
+//        .containsExactly(expected);
+  }
+  
+  @SuppressWarnings("unchecked")
+  private static <T extends AnnotationFS, R extends AnnotationFS> List<R> toListBackwards(
+      SelectFSs<T> select) {
+    FSIterator<T> it = select.fsIterator();
+    List<R> selection = new ArrayList<>();
+    it.moveToLast();
+    while (it.isValid()) {
+      selection.add(0, (R) it.get());
+      it.moveToPrevious();
+    }
+    return selection;
+  }
+  
+  private static void printIndexOrder(CAS cas, List<AnnotationFS> expected,
+      List<AnnotationFS> selection) {
+    System.out.println("Annotations in index order:");
+    cas.select(Annotation.class)
+        .filter(ann -> ann.getType().getName().startsWith("test."))
+        .forEach(ann -> System.out.printf("%s [%d, %d] %s %n", ann.getType().getShortName(),
+            ann.getBegin(), ann.getEnd(),
+            expected.contains(ann) && selection.contains(ann) ? "TP"
+                : selection.contains(ann) ? "FP" : ""));
   }
 
   private static <T extends FeatureStructure> T addToIndexes(T fses) {

@@ -56,6 +56,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.cas.text.AnnotationPredicates;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.FSArray;
@@ -787,21 +788,22 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
           it = new FilteredIterator<>(it, fs -> {
             // true if ok, false to skip
             int end = ((Annotation) fs).getEnd();
-            return end <= startingFsBegin && 
-               !(originalStartingFsHasZeroWidth && end == startingFsBegin);
-          });  
+            return end <= startingFsBegin &&
+                !(originalStartingFsHasZeroWidth && end == startingFsBegin);
+          });
         }
         
         if (isFollowing) {
           // Annotations are following the startFS if their begin is >= the end of the startFS
           // except if they are zero-width FSes at the end of the startFS in which case they are
           // considered to be covered and not following
-          int startingFsEnd = ((Annotation) startingFs).getEnd();
+          int startingFSStart = ((Annotation) startingFs).getBegin();
+          int startingFSEnd = ((Annotation) startingFs).getEnd();
           it = new FilteredIterator<>(it, fs -> {
-            // true if ok, false to skip
-            int begin = ((Annotation) fs).getBegin();
-            return (begin >= startingFsEnd) &&
-                !(begin == ((Annotation) fs).getEnd() && begin == startingFsEnd);
+            AnnotationFS x = (Annotation) fs;
+            int xBegin = x.getBegin();
+            return xBegin >= startingFSEnd && !(xBegin == startingFSEnd
+                && (startingFSStart == startingFSEnd || xBegin == x.getEnd()));
           });
         }
       }
@@ -1643,7 +1645,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return fsIterator().size() == 0;
   }
   
-  public final class SelectFSIterator implements LowLevelIterator<T> {
+  private final class SelectFSIterator implements LowLevelIterator<T> {
 
     private Supplier<LowLevelIterator<T>> iteratorSupplier;
     private LowLevelIterator<T> it;
