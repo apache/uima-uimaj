@@ -264,13 +264,13 @@ public class SelectFsTest {
 
 
     assertThat(jCas.select(Token.class).startAt(s2).backwards().asList())
-        .containsExactly(t[1], t[0]);
+        .containsExactly(t[2], t[1], t[0]);
 
     assertThat(jCas.select(Token.class).startAt(s2).shifted(-1).limit(3).asList())
         .containsExactly(t[1], t[2], t[3]);
 
     assertThat(jCas.select(Token.class).startAt(s2).shifted(-1).limit(3).backwards().asList())
-        .containsExactly(t[2], t[1], t[0]);
+        .containsExactly(t[3], t[2], t[1]);
 
     assertThat(jCas.select(Token.class).between(t[1], t[4]).asList())
         .containsExactly(t[2], t[3]);
@@ -569,8 +569,65 @@ public class SelectFsTest {
     assertThat(cas.select(Annotation.class).preceding(a[2], 1).asList())
         .containsExactly(a[0]);
   }
-  
 
+  @Test
+  public void thatSelectPrecedingSeekWorks() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    Annotation y = (Annotation) cas.createAnnotation(type1, 61, 76);
+    addToIndexes(
+        expected[1] = cas.createAnnotation(type1, 40, 44),
+        expected[0] = cas.createAnnotation(type1, 38, 50),
+        cas.createAnnotation(type1, 61, 76));
+    
+    assertThat(cas.<Annotation>select(type1).preceding(y).asList())
+        .containsExactly((Annotation) expected[0], (Annotation) expected[1]);
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).preceding(y).fsIterator();
+    it.moveTo(expected[0]);
+    assertThat(it.isValid()).isTrue();
+  }
+   
+  @Test
+  public void thatSelectPrecedingSeekWorks2() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type3", "", "test.Type2");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    
+    AnnotationFS[] expected = new AnnotationFS[4];
+    AnnotationFS y;
+    addToIndexes(
+        expected[0] = cas.createAnnotation(type3, 37, 65),
+        expected[3] = cas.createAnnotation(type3, 64, 67),
+        expected[1] = cas.createAnnotation(type3, 58, 59),
+        expected[2] = cas.createAnnotation(type2, 58, 59),
+        y = cas.createAnnotation(type1, 76, 101));
+    
+//    assertThat(cas.<Annotation>select(type2).preceding((Annotation) y).asList())
+//        .containsExactly(
+//            asList(expected).stream().map(a -> (Annotation) a).toArray(Annotation[]::new));
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type2).preceding((Annotation) y).fsIterator();
+    System.out.println("---- moveTo");
+    it.moveTo(expected[1]);
+    assertThat(it.get()).isSameAs(expected[1]);
+  }
+  
   @Test
   public void thatSelectFollowingDoesNotFindZeroWidthAnnotationAtEnd()
   {
@@ -916,6 +973,33 @@ public class SelectFsTest {
   }
   
   @Test
+  public void thatSelectCoveredBackwardsIterationMatchesForward2() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+       
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    AnnotationFS y = cas.createAnnotation(type1, 5, 33);
+    addToIndexes(
+        cas.createAnnotation(type2, 8, 35),
+        expected[1] = cas.createAnnotation(type2, 9, 31),
+        expected[0] = cas.createAnnotation(type2, 5, 29));
+    
+    List<AnnotationFS> selection = toListBackwards(
+        cas.<Annotation>select(type2).coveredBy(y));
+    
+    printIndexOrder(cas, asList(expected), selection);
+    
+    assertThat(selection)
+        .containsExactly(expected);
+  }
+  
+  @Test
   public void thatSelectFollowingBackwardsIterationMatchesForward2() throws Exception {
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
@@ -942,9 +1026,105 @@ public class SelectFsTest {
         .containsExactly(expected);
   }
   
-  @Ignore("WIP")
   @Test
-  public void thatSelectCoveredByIteratorWorks() throws Exception {
+  public void thatSelectCoveredBySeekToInitialThenMoveToNextWorks() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    Annotation y = (Annotation) cas.createAnnotation(type2, 42, 59);
+    addToIndexes(
+        expected[0] = cas.createAnnotation(type2, 42, 59),
+        expected[1] = cas.createAnnotation(type1, 42, 59));
+    
+    assertThat(cas.<Annotation>select(type1).coveredBy(y).asList())
+        .containsExactly((Annotation) expected[0], (Annotation) expected[1]);
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).coveredBy(y).fsIterator();
+    assertThat(it.get()).isSameAs(expected[0]);
+    it.moveTo(y);
+    assertThat(it.get()).isSameAs(expected[0]);
+    
+    it.moveToNext();
+    assertThat(it.isValid()).isTrue();
+    assertThat(it.get()).isSameAs(expected[1]);
+    
+    FSIterator<Annotation> it2 = cas.<Annotation>select(type1).coveredBy(y).fsIterator();
+    assertThat(it2.get()).isSameAs(expected[0]);
+    it2.moveTo(it2.get());
+    assertThat(it2.get()).isSameAs(expected[0]);
+    
+    it2.moveToNext();
+    assertThat(it2.isValid()).isTrue();
+    assertThat(it2.get()).isSameAs(expected[1]);
+  }
+  
+  @Test
+  public void thatSelectCoveredBySeekNonStrictWorks() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    Annotation y = (Annotation) cas.createAnnotation(type2, 9, 35);
+    addToIndexes(
+        expected[1] = cas.createAnnotation(type2, 9, 12),
+        cas.createAnnotation(type1, 6, 26),
+        expected[0] = cas.createAnnotation(type2, 9, 35),
+        cas.createAnnotation(type1, 22, 31),
+        cas.createAnnotation(type2, 67, 74),
+        cas.createAnnotation(type1, 69, 80));
+    
+    assertThat(
+        cas.<Annotation>select(type2).coveredBy(y).includeAnnotationsWithEndBeyondBounds().asList())
+            .containsExactly((Annotation) expected[0], (Annotation) expected[1]);
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type2)
+        .includeAnnotationsWithEndBeyondBounds().coveredBy(y).fsIterator();
+    it.moveTo(expected[1]);
+    assertThat(it.get()).isSameAs(expected[1]);
+  }
+  
+  @Test
+  public void thatSelectColocatedSeekToInitialThenMoveToNextWorks() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    
+    AnnotationFS expected, y;
+    addToIndexes(
+        cas.createAnnotation(type1, 77, 104),
+        y = cas.createAnnotation(type2, 97, 126),
+        cas.createAnnotation(type1, 51, 79),
+        expected = cas.createAnnotation(type2, 97, 126),
+        cas.createAnnotation(type1, 93, 99),
+        cas.createAnnotation(type2, 89, 109));
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type2).at(y).fsIterator();
+    it.moveToFirst();
+    assertThat(it.get()).isSameAs(expected);
+    it.moveTo(expected);
+    assertThat(it.isValid());
+  }
+  
+  @Test
+  public void thatSelectCoveringSeekToInitialThenMoveToNextWorks() throws Exception {
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -957,29 +1137,28 @@ public class SelectFsTest {
     Type type3 = cas.getTypeSystem().getType("test.Type3");
     
     AnnotationFS[] expected = new AnnotationFS[2];
-    Annotation y = (Annotation) cas.createAnnotation(type3, 42, 59);
+    Annotation y = (Annotation) cas.createAnnotation(type2, 77, 83);
     addToIndexes(
-        expected[0] = cas.createAnnotation(type3, 42, 59),
-        cas.createAnnotation(type1, 37, 61),
-        cas.createAnnotation(type2, 33, 62),
-        cas.createAnnotation(type3, 83, 88),
-        cas.createAnnotation(type1, 95, 106),
-        cas.createAnnotation(type2, 23, 29),
-        cas.createAnnotation(type3, 25, 35),
-        cas.createAnnotation(type1, 95, 115),
-        cas.createAnnotation(type2, 31, 52),
-        cas.createAnnotation(type3, 65, 93),
-        cas.createAnnotation(type1, 58, 77),
-        cas.createAnnotation(type2, 26, 50),
-        cas.createAnnotation(type3, 77, 92),
-        cas.createAnnotation(type1, 69, 77),
-        expected[1] = cas.createAnnotation(type2, 42, 59));
+        cas.createAnnotation(type2, 72, 72),
+        cas.createAnnotation(type3, 25, 25),
+        cas.createAnnotation(type1, 80, 80),
+        cas.createAnnotation(type2, 36, 55),
+        cas.createAnnotation(type3, 38, 41),
+        cas.createAnnotation(type1, 53, 55),
+        cas.createAnnotation(type2, 69, 71),
+        cas.createAnnotation(type3, 44, 62),
+        cas.createAnnotation(type1, 82, 103),
+        cas.createAnnotation(type2, 29, 40),
+        expected[0] = cas.createAnnotation(type3, 77, 83),
+        cas.createAnnotation(type1, 85, 97),
+        expected[1] = cas.createAnnotation(type2, 77, 83),
+        cas.createAnnotation(type3, 36, 37),
+        cas.createAnnotation(type1, 37, 42));
     
-    assertThat(cas.<Annotation>select(type2).coveredBy(y).asList())
+    assertThat(cas.<Annotation>select(type2).covering(y).asList())
         .containsExactly((Annotation) expected[0], (Annotation) expected[1]);
     
-    
-    FSIterator<Annotation> it = cas.<Annotation>select(type2).coveredBy(y).fsIterator();
+    FSIterator<Annotation> it = cas.<Annotation>select(type2).covering(y).fsIterator();
     assertThat(it.get())
         .as("Initial iterator position")
         .isSameAs(expected[0]);
@@ -990,12 +1169,118 @@ public class SelectFsTest {
     it.moveToNext();
     assertThat(it.isValid()).isTrue();
     assertThat(it.get()).isSameAs(expected[1]);
-    
-//    printIndexOrder(cas, asList(expected), selection);
-//    
-//    assertThat(selection)
-//        .containsExactly(expected);
   }
+  
+  @Test
+  public void thatSelectCoveringSeekThenMoveToNextWorks() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    Annotation y = (Annotation) cas.createAnnotation(type1, 60, 82);
+    addToIndexes(
+        expected[0] = cas.createAnnotation(type2, 60, 82),
+        cas.createAnnotation(type1, 62, 91),
+        expected[1] = cas.createAnnotation(type1, 60, 82));
+    
+    assertThat(cas.<Annotation>select(type1).covering(y).asList())
+        .containsExactly((Annotation) expected[0], (Annotation) expected[1]);
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).covering(y).fsIterator();
+    System.out.println("---- moveTo");
+    it.moveTo(expected[0]);
+    assertThat(it.get()).isSameAs(expected[0]);
+    System.out.println("---- moveToNext");
+    it.moveToNext();
+    assertThat(it.isValid()).isTrue();
+  }
+  
+  @Test
+  public void thatSelectColocatedSeekWorks() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    
+    AnnotationFS expected, y;
+    addToIndexes(
+        y = cas.createAnnotation(type2, 52, 53),
+        cas.createAnnotation(type1, 92, 102),
+        expected = cas.createAnnotation(type2, 52, 53),
+        cas.createAnnotation(type2, 6, 19));
+    
+    assertThat(cas.<Annotation>select(type2).at(y).asList())
+        .containsExactly((Annotation) expected);
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).at(y).fsIterator();
+    System.out.println("---- moveTo");
+    it.moveTo(expected);
+    assertThat(it.isValid()).isTrue();
+  }
+  
+  @Test
+  public void thatSelectColocatedSeekWorks2() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    
+    AnnotationFS expected, y;
+    addToIndexes(
+        y = cas.createAnnotation(type2, 6, 31),
+        expected = cas.createAnnotation(type2, 6, 31));
+    
+    assertThat(cas.<Annotation>select(type2).at(y).asList())
+        .containsExactly((Annotation) expected);
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).at(y).fsIterator();
+    System.out.println("---- moveTo");
+    it.moveTo(expected);
+    assertThat(it.isValid()).isTrue();
+  }
+  
+  @Test
+  public void thatSelectColocatedSeekWorks3() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    
+    AnnotationFS expected, y;
+    addToIndexes(
+        y = cas.createAnnotation(type2, 18, 39),
+        expected = cas.createAnnotation(type2, 18, 39),
+        cas.createAnnotation(type2, 18, 43));
+    
+    assertThat(cas.<Annotation>select(type2).at(y).asList())
+        .containsExactly((Annotation) expected);
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).at(y).fsIterator();
+    System.out.println("---- moveToLast");
+    it.moveToLast();
+    assertThat(it.get()).isSameAs(expected);
+    System.out.println("---- moveTo");
+    it.moveTo(expected);
+    assertThat(it.isValid()).isTrue();
+  }  
   
   @SuppressWarnings("unchecked")
   private static <T extends AnnotationFS, R extends AnnotationFS> List<R> toListBackwards(

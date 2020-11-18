@@ -88,15 +88,16 @@ class FsIterator_backwards<T extends FeatureStructure>
   public void moveToNoReinit(FeatureStructure fs) {
     it.moveToNoReinit(fs);  // moves to left most of equal, or one greater
     LowLevelIndex<T> lli = ll_getIndex();
+    Comparator<TOP> comparatorMaybeNoTypeWithoutID = getComparator();
     if (isValid()) {
-      if (lli.compare(get(), fs) == 0) {
+      if (comparatorMaybeNoTypeWithoutID.compare((TOP) get(), (TOP)fs) == 0) {
         // move to right most
         while (true) {
           it.moveToNextNvc();
-          if (!isValid() || lli.compare(get(), fs) != 0) {
+          if (!isValid() || comparatorMaybeNoTypeWithoutID.compare((TOP) get(), (TOP) fs) != 0) {
             break;
           }
-        };
+        }
         if (isValid()) {
           it.moveToPreviousNvc();
         } else {

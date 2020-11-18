@@ -18,13 +18,14 @@
  */
 package org.apache.uima.cas.impl;
 
-import static java.lang.Math.min;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
+import static java.lang.System.identityHashCode;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
+import static org.apache.uima.cas.text.AnnotationPredicates.overlapping;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -41,14 +42,18 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas.text.AnnotationPredicates;
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
 import org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 
 public class SelectFsAssert {
+  private static boolean logAnnotationCreation = false;
+
   public static void assertSelectFS(RelativePosition aCondition, RelativeAnnotationPredicate aPredicate, 
       List<TestCase> aTestCases)
       throws Exception {
@@ -87,10 +92,11 @@ public class SelectFsAssert {
 
     // ============================================================================================
     // Quick overrides for debugging
-//    annotationsPerIteration = iteration -> 5;
+//    annotationsPerIteration = iteration -> 3;
 //    aIterations = 1000000;
-//    aTypes = 3;
-//    lockedSeed = 1547487011654502l;
+//    aTypes = 2;
+//    logAnnotationCreation = true;
+//    lockedSeed = 1685573423048865l;
     // ============================================================================================
     
     System.out.print("Iteration: ");
@@ -112,14 +118,25 @@ public class SelectFsAssert {
         
         TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
         Map<String, Type> types = new LinkedHashMap<>();
+        if (logAnnotationCreation) {
+          System.out.println();
+        }
         for (int ti = 0; ti < aTypes; ti++) {
           String typeName = "test.Type" + (ti + 1);
+          TypeDescription newType;
           if (rnd.nextInt() % 2 == 0 || types.size() == 0) {
-            tsd.addType(typeName, "", CAS.TYPE_NAME_ANNOTATION);
+            newType = tsd.addType(typeName, "", CAS.TYPE_NAME_ANNOTATION);
           }
           else {
-            tsd.addType(typeName, "", new ArrayList<>(types.keySet()).get(rnd.nextInt(types.size())));
+            newType = tsd.addType(typeName, "",
+                new ArrayList<>(types.keySet()).get(rnd.nextInt(types.size())));
           }
+          
+          if (logAnnotationCreation) {
+            System.out.printf("tsd.addType(\"%s\", \"\", \"%s\");%n", newType.getName(),
+                newType.getSupertypeName());
+          }
+          
           types.put(typeName, null);
         }
         
@@ -139,31 +156,54 @@ public class SelectFsAssert {
         initRandomCas(rnd, randomCas, annotationsPerIteration.apply(i), 0, typeList);
   
         for (Annotation y : randomCas.<Annotation>select(typeY)) {
-          // Randomly use a non-indexed annotation for selection so we test both cases (using an
-          // indexed or non-indexed annotation).
-          if (rnd.nextInt() % 2 == 0) {
+          switch (rnd.nextInt(3)) {
+          case 0:
+            // Randomly use a non-indexed annotation for selection so we test both cases (using an
+            // indexed or non-indexed annotation).
             y = (Annotation) randomCas.createAnnotation(typeList[rnd.nextInt(typeList.length)], y.getBegin(),
                 y.getEnd());
+            break;
+          case 1:
+            // Randomly use a completely new annotation
+            int begin = rnd.nextInt(100);
+            int end = begin + rnd.nextInt(30);
+            y = (Annotation) randomCas.createAnnotation(typeList[rnd.nextInt(typeList.length)],
+                begin, end);
+          default:
+            // Nothing to do
           }
           
           long tExpected = System.currentTimeMillis();
           List<Annotation> expected = aExpected.select(randomCas, typeX, y).stream().map(a -> (Annotation) a)
               .collect(toList());
-          timings.compute("actual", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tExpected);
+          timings.compute("filt. full scan", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tExpected);
 
+          List<Annotation> unambigousExpected = new ArrayList<>();
+          Annotation current = null;
+          for (Annotation e : expected) {
+            if (current == null || !overlapping(e, current)) {
+              unambigousExpected.add(e);
+              current = e;
+            }
+          }
+          
           sizeCounts.compute(expected.size(), (k, v) -> v == null ? 1 : v++);
           
           try {
             assertSelectionAsList(expected, randomCas, aActual, xRelToY, typeX, typeY, y, timings);
+            assertInitialPositionIsFirstPosition(expected, randomCas, aActual, xRelToY, typeX,
+                typeY, y, timings);
             assertSelectionAsForwardIteration(expected, randomCas, aActual, xRelToY, typeX, typeY,
                 y, timings);
             assertSelectionAsBackwardIteration(expected, randomCas, aActual, xRelToY, typeX, typeY,
                 y, timings);
-            // FIXME: WIP - the checks below still sometimes fail
-//            assertSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY, typeX,
-//                typeY, y, timings);
-//            assertSelectionAsRandomIteration(expected.subList(0, min(5, expected.size())), randomCas,
-//                (cas, type, context) -> aActual.select(cas, type, context).limit(5), 
+            assertSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY, typeX,
+                typeY, y, timings);
+//            assertSelectionAsRandomIteration(rnd, unambigousExpected, randomCas,
+//                (cas, type, context) -> aActual.select(cas, type, context).nonOverlapping(),
+//                xRelToY + " n/o", typeX, typeY, y, timings);
+//            assertSelectionAsRandomIteration(rnd, expected.subList(0, Math.min(5, expected.size())),
+//                randomCas, (cas, type, context) -> aActual.select(cas, type, context).limit(5),
 //                xRelToY, typeX, typeY, y, timings);
           }
           catch (Throwable e) {
@@ -193,44 +233,51 @@ public class SelectFsAssert {
   private static void assertSelectionAsList(List<Annotation> expected, CAS randomCas,
       TypeByContextSelectorAsSelection aActual,
       String xRelToY, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
-    long tList = System.currentTimeMillis();
+    long t = System.currentTimeMillis();
     List<Annotation> listActual = aActual.select(randomCas, typeX, y).asList();
-    timings.compute("asList", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tList);
+    timings.compute("asList", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
+
     assertThat(listActual)
-        .as("Selecting X of type [%s] %s [%s]@[%d-%d] asList%n%s%n", typeX.getName(), xRelToY,
-            y.getType().getShortName(), y.getBegin(), y.getEnd(),
+        .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] asList%n%s%n", typeX.getName(), xRelToY,
+            y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
             casToString(randomCas))
         .containsExactlyElementsOf(expected);
   }
-
-  private static void assertSelectionAsForwardIteration(List<Annotation> expected, CAS randomCas,
-      TypeByContextSelectorAsSelection aActual,
-      String xRelToY, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
-    long t = System.currentTimeMillis();
-    
+  
+  private static void assertInitialPositionIsFirstPosition(List<Annotation> expected, CAS randomCas,
+      TypeByContextSelectorAsSelection aActual, String xRelToY, Type typeX, Type typeY,
+      Annotation y, Map<String, Long> timings) {
     FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
     Annotation initial = it.isValid() ? it.get() : null;
-    List<Annotation> actual = new ArrayList<>();
     it.moveToFirst();
+    
     assertThat(it.isValid() ? it.get() : null)
         .as("Annotation pointed at by iterator initially should match annotation after calling "
             + "moveToFirst:%n%s%n%s%n" +
-            "Selecting X of type [%s] %s [%s]@[%d-%d] iterator forward%n%s%n",
+            "Selecting X of type [%s] %s [%s]@[%d-%d][%d] iterator forward%n%s%n",
             initial, it.isValid() ? it.get() : null, typeX.getName(), xRelToY,
-            y.getType().getShortName(), y.getBegin(), y.getEnd(), casToString(randomCas))
+            y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y), casToString(randomCas))
         .isEqualTo(initial);
+  }
+
+  private static void assertSelectionAsForwardIteration(List<Annotation> expected, CAS randomCas,
+      TypeByContextSelectorAsSelection aActual, String xRelToY, Type typeX, Type typeY,
+      Annotation y, Map<String, Long> timings) {
     
+    List<Annotation> actual = new ArrayList<>();
+    long t = System.currentTimeMillis();
+    FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
+    it.moveToFirst();
     while (it.isValid()) {
       actual.add(it.get());
       it.moveToNext();
     }
-    
-    timings.compute("iterator forward", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
+    timings.compute("it. >>", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
     
     assertThat(actual)
-        .as("Selecting X of type [%s] %s [%s]@[%d-%d] iterator forward%n%s%n", typeX.getName(),
+        .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] iterator forward%n%s%n", typeX.getName(),
             xRelToY,
-            y.getType().getShortName(), y.getBegin(), y.getEnd(),
+            y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
             casToString(randomCas))
         .containsExactlyElementsOf(expected);
   }
@@ -238,21 +285,20 @@ public class SelectFsAssert {
   private static void assertSelectionAsBackwardIteration(List<Annotation> expected, CAS randomCas,
       TypeByContextSelectorAsSelection aActual,
       String xRelToY, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
-    long t = System.currentTimeMillis();
     
-    FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
     List<Annotation> actual = new ArrayList<>();
+    long t = System.currentTimeMillis();
+    FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
     it.moveToLast();
     while (it.isValid()) {
       actual.add(0, it.get());
       it.moveToPrevious();
     }
-    
-    timings.compute("iterator backwards", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
+    timings.compute("it. <<", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
     
     assertThat(actual)
-        .as("Selecting X of type [%s] %s [%s]@[%d-%d] iterator backwards%n%s%n", typeX.getName(), xRelToY,
-            y.getType().getShortName(), y.getBegin(), y.getEnd(),
+        .as("Selecting X of type [%s] %s [%s]@[%d-%d][%s] iterator backwards%n%s%n", typeX.getName(), xRelToY,
+            y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
             casToString(randomCas))
         .containsExactlyElementsOf(expected);
   }
@@ -267,9 +313,15 @@ public class SelectFsAssert {
       return;
     }
     
-    List<String> history = new ArrayList<>();
+    StringBuilder expectedLog = new StringBuilder();
+    for (int i = 0; i < expected.size(); i++) {
+      Annotation ann = expected.get(i);
+      expectedLog.append(String.format("expected[%d] = %s@[%d-%d] [%d]%n", i, ann.getType().getShortName(), 
+          ann.getBegin(), ann.getEnd(), System.identityHashCode(ann)));
+    }
     
     int cursor = 0;
+    List<String> history = new ArrayList<>();
     while (history.size() < 2) {
       switch (rnd.nextInt(9)) {
       case 0: // Move to beginning
@@ -304,14 +356,24 @@ public class SelectFsAssert {
       case 9: // Move to specific FS
         cursor = rnd.nextInt(expected.size());
         it.moveTo(expected.get(cursor));
-        history.add(format("[%d][%d] Moved to FS #%d", history.size(), cursor, cursor));
+        history.add(format("[%d][%d] Moved to FS #%d [%d]", history.size(), cursor, cursor,
+            System.identityHashCode(expected.get(cursor))));
+        break;
       }
       
       assertThat(it.isValid())
-          .as("Validity mismatch. History:\n" + history.stream().collect(joining("\n")))
+          .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] random iteration%n%s%n" + 
+              "%s%nHistory:%n%s%n%nValidity mismatch.", typeX.getName(), xRelToY,
+              y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
+              casToString(randomCas), expectedLog,
+              history.stream().collect(joining("\n")))
           .isTrue();
       assertThat(it.get())
-          .as("Expectation mismatch. History:\n" + history.stream().collect(joining("\n")))
+          .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] random iteration%n%s%n" + 
+              "%s%nHistory:%n%s%n%nExpectation mismatch. ", typeX.getName(), xRelToY,
+              y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
+              casToString(randomCas), expectedLog,
+              history.stream().collect(joining("\n")))
           // We do not compare the exact annotation here because the moveTo operation moves to the
           // first annotation that matches the target annotation. If there are multiple annoations
           // with the same type/begin/end, then it moves to the first one of these, even if the
@@ -340,8 +402,8 @@ public class SelectFsAssert {
     aCas.select().forEach(fs -> {
       if (fs instanceof AnnotationFS) {
         AnnotationFS ann = (AnnotationFS) fs;
-        sb.append(format("%s@[%d-%d] (parent type: %s)%n", ann.getType().getShortName(), ann.getBegin(), 
-            ann.getEnd(), ann.getCAS().getTypeSystem().getParent(ann.getType())));
+        sb.append(format("%s@[%3d-%3d] [%d] (parent type: %s)%n", ann.getType().getShortName(), ann.getBegin(), 
+            ann.getEnd(), System.identityHashCode(ann), ann.getCAS().getTypeSystem().getParent(ann.getType())));
       }
     });
     return sb.toString();
@@ -357,12 +419,19 @@ public class SelectFsAssert {
     }
 
     // Randomly generate annotations
+    if (logAnnotationCreation ) {
+      System.out.println();
+    }
     for (int n = 0; n < aSize; n++) {
       for (Type t : types) {
         int begin = rnd.nextInt(100);
         int end = begin + rnd.nextInt(30) + aMinimumWidth;
-        System.out.printf("cas.createAnnotation(%s, %d, %d)%n", t.getShortName(), begin, end);
-        aCas.addFsToIndexes(aCas.createAnnotation(t, begin, end));
+        AnnotationFS ann = aCas.createAnnotation(t, begin, end);
+        if (logAnnotationCreation ) {
+          System.out.printf("cas.createAnnotation(%s, %d, %d)\t[%d]%n", t.getShortName().toLowerCase(),
+              begin, end, identityHashCode(ann));
+        }
+        aCas.addFsToIndexes(ann);
       }
     }
   }

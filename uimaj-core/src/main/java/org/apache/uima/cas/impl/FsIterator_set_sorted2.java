@@ -40,7 +40,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
   // if the underlying index was updated, this should iterate over that.
   protected CopyOnWriteOrderedFsSet_array ofsa;  // orderedFsSet_array;
   
-  private int pos;
+  protected int pos;
 
   protected final FsIndex_set_sorted<T> ll_index;
    
@@ -118,7 +118,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
   // Internal use
   @Override
   public void moveToLastNoReinit() {
-    pos = ofsa.a_nextFreeslot - 1;       
+    pos = ofsa.a_nextFreeslot - 1;
   }
   
   // Internal use
@@ -127,7 +127,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     pos = ofsa.getOfsa().find((TOP) fs, comparatorMaybeNoTypeWithoutID);
 
     if (pos < 0) {
-      pos = (-pos) -1;  // insertion point, one above
+      pos = (-pos) - 1;  // insertion point, one above
       return;
     }
     

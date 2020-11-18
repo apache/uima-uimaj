@@ -656,7 +656,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     it = new FsIterator_subtypes_snapshot<>(a,
         (LowLevelIndex<T>) index,
         IS_ORDERED,
-        baseIterator.getComparator());
+        isBackwards ? baseIterator.getComparator().reversed() : baseIterator.getComparator());
 
     if (!bkwd) {
       it = new FsIterator_backwards<>(it);
