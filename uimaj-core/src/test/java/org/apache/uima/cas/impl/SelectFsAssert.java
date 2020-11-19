@@ -18,6 +18,8 @@
  */
 package org.apache.uima.cas.impl;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.identityHashCode;
@@ -25,6 +27,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
 import static org.apache.uima.cas.text.AnnotationPredicates.overlapping;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,7 +45,6 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.AnnotationPredicates;
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
 import org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -85,19 +87,41 @@ public class SelectFsAssert {
     }
   }
 
-  public static void assertSelectionIsEqualOnRandomData(String xRelToY, int aIterations, int aTypes, 
-      TypeByContextSelector aExpected, TypeByContextSelectorAsSelection aActual) throws Exception {
-    long lockedSeed = -1;
+  public static void assertSelectionIsEqualOnRandomData(RelativePosition xRelToY,
+      String description, int aIterations, int aTypes, TypeByContextSelector aExpected,
+      TypeByContextSelectorAsSelection aActual)
+      throws Exception {
+    long lockedSeed = -1l;
     IntFunction<Integer> annotationsPerIteration = iteration -> iteration * 3;
 
     // ============================================================================================
     // Quick overrides for debugging
+    //
+    // 1) Normally you run tests with all of the lines below commented out
+    // 2) If you get a failure, you run the single failing test commenting in the
+    //    iterations, annotationsPerIteration and types overrides. Adjust them until you get
+    //    a setup that fails with a minimal number of types / annotations.
+    // 3) Note the RANDOM SEED logged to the console and put it into the lockedSeed variable here
+    //    and comment it in
+    //
+    // Most of the time, it should be possible to find scenario that fails with max 3 types and 3
+    // annotations - but it might take a very long time to find such a scenario using the random
+    // approach. So try higher numbers until you find something, then try lowering the number until 
+    // you are happy with the scenario size and then implement a unit test for the scenario. In the
+    // unit test, you can then try removing annotations and/or types while still having the scenario
+    // fail. Once you have a minimal setup, debug and fix it.
+    //
+    // The tests should be implemented in the SelectFsTest class.
+    // --------------------------------------------------------------------------------------------
+//    lockedSeed = 38393031956938l;
+//    aIterations = 100_000;
 //    annotationsPerIteration = iteration -> 3;
-//    aIterations = 1000000;
-//    aTypes = 2;
-//    logAnnotationCreation = true;
-//    lockedSeed = 1685573423048865l;
+//    aTypes = 3;
     // ============================================================================================
+
+    // Override settings when using a locked seed to be more debugging-friendly
+    aIterations = lockedSeed != -1l ? 1 : aIterations;
+    logAnnotationCreation = lockedSeed != -1;
     
     System.out.print("Iteration: ");
     try {
@@ -190,21 +214,32 @@ public class SelectFsAssert {
           sizeCounts.compute(expected.size(), (k, v) -> v == null ? 1 : v++);
           
           try {
-            assertSelectionAsList(expected, randomCas, aActual, xRelToY, typeX, typeY, y, timings);
-            assertInitialPositionIsFirstPosition(expected, randomCas, aActual, xRelToY, typeX,
-                typeY, y, timings);
-            assertSelectionAsForwardIteration(expected, randomCas, aActual, xRelToY, typeX, typeY,
+            assertSelectionAsList(expected, randomCas, aActual, xRelToY, description, typeX, typeY,
                 y, timings);
-            assertSelectionAsBackwardIteration(expected, randomCas, aActual, xRelToY, typeX, typeY,
-                y, timings);
-            assertSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY, typeX,
+            
+            assertInitialPositionIsFirstPosition(expected, randomCas, aActual, xRelToY, description,
+                typeX, typeY, y, timings);
+            
+            assertSelectionAsForwardIteration(expected, randomCas, aActual, xRelToY, description,
+                typeX, typeY, y, timings);
+            
+            assertSelectionAsBackwardIteration(expected, randomCas, aActual, xRelToY, description,
+                typeX, typeY, y, timings);
+
+            assertSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY, description, typeX,
                 typeY, y, timings);
+            
 //            assertSelectionAsRandomIteration(rnd, unambigousExpected, randomCas,
 //                (cas, type, context) -> aActual.select(cas, type, context).nonOverlapping(),
 //                xRelToY + " n/o", typeX, typeY, y, timings);
-//            assertSelectionAsRandomIteration(rnd, expected.subList(0, Math.min(5, expected.size())),
-//                randomCas, (cas, type, context) -> aActual.select(cas, type, context).limit(5),
-//                xRelToY, typeX, typeY, y, timings);
+            
+            int limit = rnd.nextInt(5);
+            List<Annotation> limitedExpected = xRelToY == PRECEDING 
+                ? expected.subList(max(0, expected.size() - limit), expected.size()) 
+                : expected.subList(0, min(limit, expected.size()));
+            assertSelectionAsRandomIteration(rnd, limitedExpected, randomCas,
+                (cas, type, context) -> aActual.select(cas, type, context).limit(limit), xRelToY,
+                description + " with limit(" + limit + ")", typeX, typeY, y, timings);
           }
           catch (Throwable e) {
             // Set a breakpoint here to halt when an assert above fails. The select triggering the
@@ -231,22 +266,22 @@ public class SelectFsAssert {
   }
   
   private static void assertSelectionAsList(List<Annotation> expected, CAS randomCas,
-      TypeByContextSelectorAsSelection aActual,
-      String xRelToY, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
+      TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, String description,
+      Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
     long t = System.currentTimeMillis();
     List<Annotation> listActual = aActual.select(randomCas, typeX, y).asList();
     timings.compute("asList", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
 
     assertThat(listActual)
-        .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] asList%n%s%n", typeX.getName(), xRelToY,
-            y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
-            casToString(randomCas))
+        .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%d] asList%n%s%n", typeX.getName(),
+            aXRelToY, description, y.getType().getShortName(), y.getBegin(), y.getEnd(),
+            identityHashCode(y), casToString(randomCas))
         .containsExactlyElementsOf(expected);
   }
   
   private static void assertInitialPositionIsFirstPosition(List<Annotation> expected, CAS randomCas,
-      TypeByContextSelectorAsSelection aActual, String xRelToY, Type typeX, Type typeY,
-      Annotation y, Map<String, Long> timings) {
+      TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, String description,
+      Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
     FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
     Annotation initial = it.isValid() ? it.get() : null;
     it.moveToFirst();
@@ -254,15 +289,15 @@ public class SelectFsAssert {
     assertThat(it.isValid() ? it.get() : null)
         .as("Annotation pointed at by iterator initially should match annotation after calling "
             + "moveToFirst:%n%s%n%s%n" +
-            "Selecting X of type [%s] %s [%s]@[%d-%d][%d] iterator forward%n%s%n",
-            initial, it.isValid() ? it.get() : null, typeX.getName(), xRelToY,
+            "Selecting X of type [%s] %s%s [%s]@[%d-%d][%d] iterator forward%n%s%n",
+            initial, it.isValid() ? it.get() : null, typeX.getName(), aXRelToY, description,
             y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y), casToString(randomCas))
         .isEqualTo(initial);
   }
 
   private static void assertSelectionAsForwardIteration(List<Annotation> expected, CAS randomCas,
-      TypeByContextSelectorAsSelection aActual, String xRelToY, Type typeX, Type typeY,
-      Annotation y, Map<String, Long> timings) {
+      TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, String description,
+      Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
     
     List<Annotation> actual = new ArrayList<>();
     long t = System.currentTimeMillis();
@@ -275,16 +310,15 @@ public class SelectFsAssert {
     timings.compute("it. >>", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
     
     assertThat(actual)
-        .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] iterator forward%n%s%n", typeX.getName(),
-            xRelToY,
-            y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
-            casToString(randomCas))
+        .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%d] iterator forward%n%s%n",
+            typeX.getName(), aXRelToY, description, y.getType().getShortName(), y.getBegin(),
+            y.getEnd(), identityHashCode(y), casToString(randomCas))
         .containsExactlyElementsOf(expected);
   }
 
   private static void assertSelectionAsBackwardIteration(List<Annotation> expected, CAS randomCas,
-      TypeByContextSelectorAsSelection aActual,
-      String xRelToY, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
+      TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, String description,
+      Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
     
     List<Annotation> actual = new ArrayList<>();
     long t = System.currentTimeMillis();
@@ -297,15 +331,15 @@ public class SelectFsAssert {
     timings.compute("it. <<", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
     
     assertThat(actual)
-        .as("Selecting X of type [%s] %s [%s]@[%d-%d][%s] iterator backwards%n%s%n", typeX.getName(), xRelToY,
-            y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
-            casToString(randomCas))
+        .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%s] iterator backwards%n%s%n",
+            typeX.getName(), aXRelToY, description, y.getType().getShortName(), y.getBegin(),
+            y.getEnd(), identityHashCode(y), casToString(randomCas))
         .containsExactlyElementsOf(expected);
   }
   
-  private static void assertSelectionAsRandomIteration(Random rnd, List<Annotation> expected, CAS randomCas,
-      TypeByContextSelectorAsSelection aActual,
-      String xRelToY, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
+  private static void assertSelectionAsRandomIteration(Random rnd, List<Annotation> expected,
+      CAS randomCas, TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, 
+      String description, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
     FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
 
     if (expected.size() == 0) {
@@ -362,15 +396,15 @@ public class SelectFsAssert {
       }
       
       assertThat(it.isValid())
-          .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] random iteration%n%s%n" + 
-              "%s%nHistory:%n%s%n%nValidity mismatch.", typeX.getName(), xRelToY,
+          .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%d] random iteration%n%s%n" + 
+              "%s%nHistory:%n%s%n%nValidity mismatch.", typeX.getName(), aXRelToY, description,
               y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
               casToString(randomCas), expectedLog,
               history.stream().collect(joining("\n")))
           .isTrue();
       assertThat(it.get())
-          .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] random iteration%n%s%n" + 
-              "%s%nHistory:%n%s%n%nExpectation mismatch. ", typeX.getName(), xRelToY,
+          .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%d] random iteration%n%s%n" + 
+              "%s%nHistory:%n%s%n%nExpectation mismatch. ", typeX.getName(), aXRelToY, description,
               y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
               casToString(randomCas), expectedLog,
               history.stream().collect(joining("\n")))

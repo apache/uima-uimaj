@@ -234,6 +234,11 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     this.isTypePriority = aTypePriority;
     return this;
   }
+  
+  // For testing
+  boolean usesTypePriority() {
+    return isTypePriority;
+  }
 
   /*********************************
    * boolean operations
@@ -656,7 +661,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     it = new FsIterator_subtypes_snapshot<>(a,
         (LowLevelIndex<T>) index,
         IS_ORDERED,
-        isBackwards ? baseIterator.getComparator().reversed() : baseIterator.getComparator());
+        baseIterator.getComparator());
 
     if (!bkwd) {
       it = new FsIterator_backwards<>(it);

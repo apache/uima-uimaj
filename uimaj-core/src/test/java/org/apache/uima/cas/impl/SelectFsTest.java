@@ -64,27 +64,33 @@ import x.y.z.Token;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(Parameterized.class)
 public class SelectFsTest {
+  private static enum Mode {
+    ANNOTATION_FIRST,
+    ANNOTATION_LAST;
+  }
+  
   @Parameters(name = "{0}")
   public static Collection<Object[]> prios() {
       return asList(new Object[][]{
         { 
-          "Annotation first", 
+          Mode.ANNOTATION_FIRST, 
           new String[] { TYPE_NAME_ANNOTATION, Sentence.class.getName(), Token.class.getName() } 
         },
         { 
-          "Annotation last", 
+          Mode.ANNOTATION_LAST, 
           new String[] { Token.class.getName(), Sentence.class.getName(), TYPE_NAME_ANNOTATION } 
         },
       });
   }
 
-  private static TypeSystemDescription typeSystemDescription;
-  
-  static private CASImpl cas;
+  private final Mode mode;
+  private final TypeSystemDescription typeSystemDescription;
+  private final CASImpl cas;
 
   static File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem_token_sentence_no_features.xml"); 
   
-  public SelectFsTest(String aName, String[] aPrioTypeNames) throws Exception {
+  public SelectFsTest(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    mode = aMode;
     typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));
     
@@ -122,6 +128,9 @@ public class SelectFsTest {
     
     assertThat(jcas.select(Token.class).preceding(c1).limit(2).asList())
         .containsExactly(p1, p2);
+
+    assertThat(jcas.select(Token.class).preceding(c1).limit(0).asList())
+        .isEmpty();
   }
 
   @Test
@@ -135,7 +144,10 @@ public class SelectFsTest {
     // Produces reverse order
     assertThat(cas.select(Annotation.class).preceding(a[2]).limit(2).asList())
         .containsExactly(a[0], a[1]);
-    
+
+    assertThat(cas.select(Annotation.class).preceding(a[2]).limit(0).asList())
+        .isEmpty();
+
     assertThat(cas.select(Annotation.class).startAt(a[2]).shifted(-2).limit(2).asList())
         .containsExactly(a[0], a[1]);
   }
@@ -262,12 +274,35 @@ public class SelectFsTest {
     assertThat(jCas.select(Token.class).startAt(s2).asList())
         .containsExactly(t[2], t[3], t[4]);
 
+    switch (mode) {
+    case ANNOTATION_FIRST:
+      assertThat(jCas.select(Token.class).typePriority().startAt(s2).backwards().asList())
+          .containsExactly(t[1], t[0]);
+      break;
+    case ANNOTATION_LAST:
+      assertThat(jCas.select(Token.class).typePriority().startAt(s2).backwards().asList())
+          .containsExactly(t[2], t[1], t[0]);
+      break;
+    }
 
     assertThat(jCas.select(Token.class).startAt(s2).backwards().asList())
         .containsExactly(t[2], t[1], t[0]);
 
     assertThat(jCas.select(Token.class).startAt(s2).shifted(-1).limit(3).asList())
         .containsExactly(t[1], t[2], t[3]);
+
+    switch (mode) {
+    case ANNOTATION_FIRST:
+      assertThat(jCas.select(Token.class).typePriority().startAt(s2).shifted(-1).limit(3)
+          .backwards().asList())
+              .containsExactly(t[2], t[1], t[0]);
+      break;
+    case ANNOTATION_LAST:
+      assertThat(jCas.select(Token.class).typePriority().startAt(s2).shifted(-1).limit(3)
+          .backwards().asList())
+              .containsExactly(t[3], t[2], t[1]);
+      break;
+    }    
 
     assertThat(jCas.select(Token.class).startAt(s2).shifted(-1).limit(3).backwards().asList())
         .containsExactly(t[3], t[2], t[1]);
@@ -618,16 +653,45 @@ public class SelectFsTest {
         expected[2] = cas.createAnnotation(type2, 58, 59),
         y = cas.createAnnotation(type1, 76, 101));
     
-//    assertThat(cas.<Annotation>select(type2).preceding((Annotation) y).asList())
-//        .containsExactly(
-//            asList(expected).stream().map(a -> (Annotation) a).toArray(Annotation[]::new));
+    assertThat(cas.<Annotation>select(type2).preceding((Annotation) y).asList())
+        .containsExactly(
+            asList(expected).stream().map(a -> (Annotation) a).toArray(Annotation[]::new));
     
     FSIterator<Annotation> it = cas.<Annotation>select(type2).preceding((Annotation) y).fsIterator();
-    System.out.println("---- moveTo");
     it.moveTo(expected[1]);
     assertThat(it.get()).isSameAs(expected[1]);
   }
   
+  @Test
+  public void thatSelectPrecedingSeekWithLimitWorks() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    AnnotationFS y;
+    addToIndexes(
+        expected[1] = cas.createAnnotation(type1, 61, 70),
+        y = cas.createAnnotation(type1, 88, 116),
+        expected[0] = cas.createAnnotation(type1, 46, 49));
+    
+    assertThat(cas.<Annotation>select(type1).preceding((Annotation) y).limit(5).asList())
+        .containsExactly(
+            asList(expected).stream().map(a -> (Annotation) a).toArray(Annotation[]::new));
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).preceding((Annotation) y).limit(5)
+        .fsIterator();
+    it.moveToNext();
+    assertThat(it.get()).isSameAs(expected[1]);
+    it.moveTo(expected[1]);
+    assertThat(it.isValid()).isTrue();
+    assertThat(it.get()).isSameAs(expected[1]);
+  }
+
   @Test
   public void thatSelectFollowingDoesNotFindZeroWidthAnnotationAtEnd()
   {
@@ -1097,6 +1161,44 @@ public class SelectFsTest {
   }
   
   @Test
+  public void thatSelectCoveredBySeekLimitedWorks() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    tsd.addType("test.Type3", "", "test.Type2");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    Annotation y = (Annotation) cas.createAnnotation(type1, 15, 31);
+    addToIndexes(
+        cas.createAnnotation(type1, 38, 43),
+        expected[0] = cas.createAnnotation(type3, 15, 31),
+        expected[1] = cas.createAnnotation(type2, 16, 21),
+        cas.createAnnotation(type1, 15, 39),
+        cas.createAnnotation(type3, 12, 18),
+        cas.createAnnotation(type2, 14, 35),
+        cas.createAnnotation(type1, 66, 85),
+        cas.createAnnotation(type3, 55, 66),
+        cas.createAnnotation(type2, 63, 80));
+    
+    assertThat(
+        cas.<Annotation>select(type2).coveredBy(y).limit(5).asList())
+            .containsExactly((Annotation) expected[0], (Annotation) expected[1]);
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type2).coveredBy(y).limit(5).fsIterator();
+    it.moveToNext();
+    assertThat(it.get()).isSameAs(expected[1]);
+    it.moveTo(expected[1]);
+    assertThat(it.isValid()).isTrue();
+    assertThat(it.get()).isSameAs(expected[1]);
+  }
+  
+  @Test
   public void thatSelectColocatedSeekToInitialThenMoveToNextWorks() throws Exception {
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
@@ -1169,6 +1271,34 @@ public class SelectFsTest {
     it.moveToNext();
     assertThat(it.isValid()).isTrue();
     assertThat(it.get()).isSameAs(expected[1]);
+  }
+  
+  @Test
+  public void thatSelectColocatedSeekWithLimitWorks() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    tsd.addType("test.Type3", "", "test.Type2");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    AnnotationFS y = cas.createAnnotation(type1, 45, 51);
+    addToIndexes(
+        expected[0] = cas.createAnnotation(type3, 45, 51),
+        expected[1] = cas.createAnnotation(type2, 45, 51));
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type2).at(y).limit(5).fsIterator();
+    it.moveToNext();
+    assertThat(it.get()).isSameAs(expected[1]);
+    // Move back to the first via moveTo
+    it.moveTo(expected[0]);
+    assertThat(it.isValid()).isTrue();
+    assertThat(it.get()).isSameAs(expected[0]);
   }
   
   @Test

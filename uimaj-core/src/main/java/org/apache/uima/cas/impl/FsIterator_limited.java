@@ -58,7 +58,7 @@ class FsIterator_limited<T extends FeatureStructure>
     if (limitReached) {
       throw new NoSuchElementException();
     }
-    T r = iterator.get(); // not getNvc because of above line
+    T r = iterator.get(); // not getNvc because of above maybeMakeInvalid
     return r;
   }
 
@@ -68,7 +68,7 @@ class FsIterator_limited<T extends FeatureStructure>
     if (limitReached) {
       return;
     }
-    iterator.moveToNext(); // not getNvc because of above line
+    iterator.moveToNext(); // not getNvc because of above maybeMakeInvalid
     count++;
   }
 
@@ -79,7 +79,7 @@ class FsIterator_limited<T extends FeatureStructure>
     if (limitReached) {
       return;
     }
-    iterator.moveToPrevious(); // not getNvc because of above line
+    iterator.moveToPrevious(); // not getNvc because of above maybeMakeInvalid
   }
 
   @Override
@@ -114,48 +114,59 @@ class FsIterator_limited<T extends FeatureStructure>
 
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
-    if (!(fs instanceof Annotation)) {
-      throw new IllegalArgumentException(
-          "FsIterator_limited.moveToNoReinit() can only be used with annotations but was asked to "
-              + "move to a [" + fs.getType().getName() + "].");
-    }
-    
-    // We hard-code a very strict comparator here because we want to be able to find exactly the
-    // annotation specified by "fs".
-    Comparator<TOP> cmp = ll_getIndex().getCasImpl().indexRepository
-        .getAnnotationFsComparatorWithId();
-    
     // If the iterator is not valid, then we make it valid by moving to the start
     if (!isValid()) {
       moveToFirstNoReinit();
     }
-    
+
     // Now we seek... we cannot make proper use of the binary search here because we do not know
     // now many elements the binary search skips and whether we stay inside the limit. Hopefully,
     // the limit is not too big so that it might actually be faster to seek instead of doing the
     // binary search.
+    Comparator<TOP> cmp = iterator.getComparator();
+    boolean skippedMatch = false;
+    boolean movedForward = false;
     while (isValid()) {
       T current = get();
       
-      if (!(current instanceof Annotation)) {
-        throw new IllegalStateException(
-            "FsIterator_limited.moveToNoReinit() can only be used with annotations but encountered ["
-                + current.getType().getName() + "] during iteration.");
+      int c = cmp.compare((TOP) current, (TOP) fs);
+
+      // We seek to the first match in index order. Because we move backwards, we need to skip over
+      // matches in order to do so and then potentially back-up at the end of the move process.
+      if (c == 0) {
+        if (movedForward) {
+          // We reached the first match by seeking forward, so we can stop here
+          break;
+        }
+        
+        moveToPreviousNvc();
+        skippedMatch = true;
+        continue;
       }
       
-      int c = cmp.compare((TOP) current, (TOP) fs);
-      if (c < 0) {
-        moveToNext();
-      }
-      if (c > 0) {
-        moveToPrevious();
-      }
-      if (c == 0) {
+      if (skippedMatch) {
         break;
+      }
+
+      if (c < 0) {
+        moveToNextNvc();
+        movedForward = true;
+        continue;
+      }
+      
+      if (c > 0) {
+        moveToPreviousNvc();
       }
     }
 
-    maybeMakeInvalid();
+    if (skippedMatch) {
+      if (!isValid()) {
+        moveToFirstNoReinit();
+      }
+      else {
+        moveToNextNvc();
+      }
+    }
   }
 
   // @Override

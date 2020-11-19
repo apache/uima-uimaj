@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.cas.test;
+package org.apache.uima.cas.impl;
 
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
@@ -48,7 +48,10 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.impl.Subiterator.BoundsUse;
+import org.apache.uima.cas.test.CASInitializer;
+import org.apache.uima.cas.test.CASTestSetup;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
@@ -255,22 +258,30 @@ public class AnnotationIteratorTest {
     assertCount("Normal ambiguous annot iterator", annotCount, annotIndex.iterator(true));
 
     assertCount("Normal ambiguous select annot iterator", annotCount, 
-        annotIndex.select().fsIterator());
+        annotIndex.select());
+    assertCount("Normal ambiguous select annot iterator (type priorities)", annotCount, 
+        annotIndex.select().typePriority());
     assertEquals(annotCount, annotIndex.select().toArray().length);  // stream op
     assertEquals(annotCount, annotIndex.select().asArray(Annotation.class).length);  // select op
     assertEquals(annotCount - 5, annotIndex.select().startAt(2).asArray(Annotation.class).length);
         
     FSArray<Annotation> fsa = FSArray.create(jcas, annotIndex.select().asArray(Annotation.class));
     assertCount("fsa ambiguous select annot iterator", annotCount, 
-        fsa.select().fsIterator());
+        fsa.select());
+    assertCount("fsa ambiguous select annot iterator (type priorities)", annotCount, 
+        fsa.select().typePriority());
 
     NonEmptyFSList<Annotation> fslhead = (NonEmptyFSList<Annotation>) FSList.<Annotation, Annotation>create(jcas,  annotIndex.select().asArray(Annotation.class));
     assertCount("fslhead ambiguous select annot iterator", annotCount, 
-        fslhead.select().fsIterator());
+        fslhead.select());
+    assertCount("fslhead ambiguous select annot iterator (type priorities)", annotCount, 
+        fslhead.select().typePriority());
     
     // backwards
     assertCount("Normal select backwards ambiguous annot iterator", annotCount,
-        annotIndex.select().backwards().fsIterator());
+        annotIndex.select().backwards());
+    assertCount("Normal select backwards ambiguous annot iterator (type priorities)", annotCount,
+        annotIndex.select().typePriority().backwards());
     
     // because of document Annotation - spans the whole range
     assertCount("Unambiguous annot iterator", 1, 
@@ -279,22 +290,28 @@ public class AnnotationIteratorTest {
     
     // because of document Annotation - spans the whole range
     assertCount("Unambiguous select annot iterator", 1, 
-        annotIndex.select().nonOverlapping().fsIterator());
+        annotIndex.select().nonOverlapping());
+    assertCount("Unambiguous select annot iterator (type priorities)", 1, 
+        annotIndex.select().typePriority().nonOverlapping());
     
     // because of document Annotation - spans the whole range
     assertCount("Unambiguous select backwards annot iterator", 1,
-        annotIndex.select().nonOverlapping().backwards(true).fsIterator());
+        annotIndex.select().nonOverlapping().backwards(true));
+    assertCount("Unambiguous select backwards annot iterator (type priorities)", 1,
+        annotIndex.select().typePriority().nonOverlapping().backwards(true));
     
     // false means create an unambiguous iterator
     assertCount("Unambigous sentence iterator", 5, 
         sentIndex.iterator(false));
     
     assertCount("Unambigous select sentence iterator", 5,
-        annotIndex.select(sentenceType).nonOverlapping(true).fsIterator());
+        annotIndex.select(sentenceType).nonOverlapping(true));
+    assertCount("Unambigous select sentence iterator (type priorities)", 5,
+        annotIndex.select(sentenceType).typePriority().nonOverlapping(true));
     assertCount("Unambigous select sentence iterator", 5, 
-        sentIndex.select().nonOverlapping().fsIterator());
-    assertCount("Unambigous select sentence iterator", 5, 
-        sentIndex.select().nonOverlapping().fsIterator());
+        sentIndex.select().nonOverlapping());
+    assertCount("Unambigous select sentence iterator (type priorities)", 5, 
+        sentIndex.select().typePriority().nonOverlapping());
     
     AnnotationFS bigBound = cas.createAnnotation(this.sentenceType, 10, 41);
     // ambiguous, and strict
@@ -304,7 +321,10 @@ public class AnnotationIteratorTest {
         annotIndex.subiterator(bigBound, true, true));
     assertCount("Subiterator select over annot with big bound, strict", 38,
         annotIndex.select().coveredBy((Annotation) bigBound)
-            .includeAnnotationsWithEndBeyondBounds(false).fsIterator());
+            .includeAnnotationsWithEndBeyondBounds(false));
+    assertCount("Subiterator select over annot with big bound, strict (type priorities)", 38,
+        annotIndex.select().typePriority().coveredBy((Annotation) bigBound)
+            .includeAnnotationsWithEndBeyondBounds(false));
     
     assertThat(annotIndex.select().coveredBy(bigBound).limit(7)
             .includeAnnotationsWithEndBeyondBounds().asList())
@@ -320,7 +340,10 @@ public class AnnotationIteratorTest {
             tuple(tokenType, 14, 19));
     assertCount("Subiterator select limit 7 over annot with big bound, strict", 7,
         annotIndex.select().coveredBy(bigBound).limit(7)
-            .includeAnnotationsWithEndBeyondBounds().fsIterator());
+            .includeAnnotationsWithEndBeyondBounds());
+    assertCount("Subiterator select limit 7 over annot with big bound, strict (type priorities)", 7,
+        annotIndex.select().typePriority().coveredBy(bigBound).limit(7)
+            .includeAnnotationsWithEndBeyondBounds());
     
     // uncomment these to check compile-time generic arguments OK
     // comment these out for running, because Token not a type
@@ -354,10 +377,16 @@ public class AnnotationIteratorTest {
         annotIndex.subiterator(bigBound, false, true));
     assertCount("Subiterator select over annot unambiguous strict", 3, 
         annotIndex.select().coveredBy((Annotation) bigBound)
-            .includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator());
+            .includeAnnotationsWithEndBeyondBounds(false).nonOverlapping());
+    assertCount("Subiterator select over annot unambiguous strict (type priorities)", 3, 
+        annotIndex.select().typePriority().coveredBy((Annotation) bigBound)
+            .includeAnnotationsWithEndBeyondBounds(false).nonOverlapping());
     assertCount("Subiterator select over annot unambiguous strict", 3, 
         annotIndex.select().backwards().coveredBy((Annotation) bigBound)
-            .includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator());
+            .includeAnnotationsWithEndBeyondBounds(false).nonOverlapping());
+    assertCount("Subiterator select over annot unambiguous strict (type priorities)", 3, 
+        annotIndex.select().backwards().coveredBy((Annotation) bigBound)
+            .includeAnnotationsWithEndBeyondBounds(false).nonOverlapping());
 
 //    it = annotIndex.subiterator(bigBound, true, false);
 //    while (it.hasNext()) {
@@ -390,21 +419,32 @@ public class AnnotationIteratorTest {
     // annotation to be included in the result, hence it is 45 here and not 46.
     assertCount("Subiterator select over annot ambiguous not-strict", 45,
         annotIndex.select().coveredBy(bigBound)
-            .includeAnnotationsWithEndBeyondBounds(true).fsIterator());
+            .includeAnnotationsWithEndBeyondBounds(true));
+    assertCount("Subiterator select over annot ambiguous not-strict (type priorities)", 45,
+        annotIndex.select().typePriority().coveredBy(bigBound)
+            .includeAnnotationsWithEndBeyondBounds(true));
     
     // covered by implies endWithinBounds
     assertCount("Subiterator select over annot ambiguous strict", 38, 
-        annotIndex.select().coveredBy(bigBound).fsIterator());
+        annotIndex.select().coveredBy(bigBound));
+    assertCount("Subiterator select over annot ambiguous strict (type priorities)", 38, 
+        annotIndex.select().typePriority().coveredBy(bigBound));
     assertCount("Subiterator select over annot ambiguous strict", 38, 
         annotIndex.select().coveredBy(bigBound)
-            .includeAnnotationsWithEndBeyondBounds(false).fsIterator());
+            .includeAnnotationsWithEndBeyondBounds(false));
+    assertCount("Subiterator select over annot ambiguous strict (type priorities)", 38, 
+        annotIndex.select().typePriority().coveredBy(bigBound)
+            .includeAnnotationsWithEndBeyondBounds(false));
     
     // unambiguous, not strict
     assertCount("Subiterator over annot, unambiguous, not-strict", 4,
         annotIndex.subiterator(bigBound, false, false));
     assertCount("Subiterator select over annot unambiguous not-strict", 4, 
         annotIndex.select().nonOverlapping().coveredBy(bigBound)
-            .includeAnnotationsWithEndBeyondBounds(true).fsIterator());
+            .includeAnnotationsWithEndBeyondBounds(true));
+    assertCount("Subiterator select over annot unambiguous not-strict (type priorities)", 4, 
+        annotIndex.select().typePriority().nonOverlapping().coveredBy(bigBound)
+            .includeAnnotationsWithEndBeyondBounds(true));
     
     AnnotationFS sent = cas.getAnnotationIndex(this.sentenceType).iterator().get();
     assertThat(annotIndex.subiterator(sent, false, true)).toIterable()
@@ -423,7 +463,9 @@ public class AnnotationIteratorTest {
             tuple(tokenType, 0, 5), 
             tuple(tokenType, 5, 10));
     assertCount("Subiterator select over annot unambiguous strict", 2, 
-        annotIndex.select().nonOverlapping().coveredBy(sent).fsIterator());
+        annotIndex.select().nonOverlapping().coveredBy(sent));
+    assertCount("Subiterator select over annot unambiguous strict (type priorities)", 2, 
+        annotIndex.select().typePriority().nonOverlapping().coveredBy(sent));
     
     // strict skips first item
     bigBound = cas.createAnnotation(this.sentenceType,  11, 30);
@@ -461,10 +503,14 @@ public class AnnotationIteratorTest {
     
     // because of document Annotation - spans the whole range
     assertCount("Unambiguous select annot iterator", 1, 
-        annotIndex.select().nonOverlapping().fsIterator());
+        annotIndex.select().nonOverlapping());
+    assertCount("Unambiguous select annot iterator (type priorities)", 1, 
+        annotIndex.select().typePriority().nonOverlapping());
     // because of document Annotation - spans the whole range
     assertCount("Unambiguous select backwards annot iterator", 1, 
-        annotIndex.select().nonOverlapping().backwards(true).fsIterator());
+        annotIndex.select().nonOverlapping().backwards(true));
+    assertCount("Unambiguous select backwards annot iterator (type priorities)", 1, 
+        annotIndex.select().typePriority().nonOverlapping().backwards(true));
     assertNotNull(annotIndex.select().nonOverlapping().single());
 
     assertThatExceptionOfType(CASRuntimeException.class)
@@ -481,15 +527,23 @@ public class AnnotationIteratorTest {
         
     annotIndex.select().coveredBy(3, 5).singleOrNull();
     
-    assertCount("Following", 2, 
-        annotIndex.select().following(2, 39).limit(2).fsIterator());
-    assertCount("Following", 2,
-        annotIndex.select().following(2, 39).backwards().limit(2).fsIterator());
+    assertCount("Following with limit", 2, 
+        annotIndex.select().following(2, 39).limit(2));
+    assertCount("Following with limit (type priorities)", 2, 
+        annotIndex.select().typePriority().following(2, 39).limit(2));
+    assertCount("Following backwards with limit", 2,
+        annotIndex.select().following(2, 39).backwards().limit(2));
+    assertCount("Following backwards with limit (type priorities)", 2,
+        annotIndex.select().typePriority().following(2, 39).backwards().limit(2));
     
     assertCount("select source array", 21, 
-        fsa.select(sentenceType).fsIterator());
+        fsa.select(sentenceType));
+    assertCount("select source array (type priorities)", 21, 
+        fsa.select(sentenceType).typePriority());
     assertCount("select source array", 21, 
-        fslhead.select(sentenceType).fsIterator());
+        fslhead.select(sentenceType));
+    assertCount("select source array (type priorities)", 21, 
+        fslhead.select(sentenceType).typePriority());
     
     /** covering **/
     annotIndex.select(sentenceType).covering(20, 30).forEachOrdered(f ->  
@@ -516,7 +570,16 @@ public class AnnotationIteratorTest {
     return s + (isSave ? "" : " with flattened index");
   }
 
-  private void assertCount(String msg, int expected,  FSIterator<? extends Annotation> it) {
+  private <T extends Annotation> void assertCount(String msg, int expected, SelectFSs<T> select) {
+    SelectFSs_impl<T> fssImpl = (SelectFSs_impl<T>) select;
+    assertCount(msg, expected, select.fsIterator(), fssImpl.usesTypePriority());
+  }
+
+  private void assertCount(String msg, int expected, FSIterator<? extends Annotation> it) {
+    assertCount(msg, expected, it, true);
+  }
+
+  private void assertCount(String msg, int expected,  FSIterator<? extends Annotation> it, boolean typePriorities) {
     int fssStart = assertCountCmn(msg, expected, it);
     msg = flatStateMsg(msg);
     int count = expected;
@@ -534,7 +597,10 @@ public class AnnotationIteratorTest {
       it.moveTo(middleFs);
       assertThat(it.get())
           .as(msg + " - middle position can be found by iterator")
-          .usingComparator(comparing(Object::hashCode), "hashCode()")
+          .usingComparator(
+              typePriorities ? comparing(Object::hashCode)
+                  : comparing(Annotation::getBegin).thenComparing(Annotation::getEnd),
+                  typePriorities ? "hashCode()" : "begin/end")
           .isEqualTo(middleFs);
       
       // Move to first
@@ -542,13 +608,19 @@ public class AnnotationIteratorTest {
       it.moveTo(firstFs);
       assertThat(it.get())
           .as(msg + " - first position can be found by iterator")
-          .usingComparator(comparing(Object::hashCode), "hashCode()")
+          .usingComparator(
+              typePriorities ? comparing(Object::hashCode)
+                  : comparing(Annotation::getBegin).thenComparing(Annotation::getEnd),
+                  typePriorities ? "hashCode()" : "begin/end")
           .isEqualTo(firstFs);
       
       it.moveToFirst();
       assertThat(it.get())
           .as(msg + " - moveToFirst positions at last result element")
-          .usingComparator(comparing(Object::hashCode), "hashCode()")
+          .usingComparator(
+              typePriorities ? comparing(Object::hashCode)
+                  : comparing(Annotation::getBegin).thenComparing(Annotation::getEnd),
+                  typePriorities ? "hashCode()" : "begin/end")
           .isEqualTo(firstFs);
       
       // Move to last
@@ -556,13 +628,19 @@ public class AnnotationIteratorTest {
       it.moveTo(lastFs);
       assertThat(it.get())
           .as(msg + " - last position can be found by iterator")
-          .usingComparator(comparing(Object::hashCode), "hashCode()")
+          .usingComparator(
+              typePriorities ? comparing(Object::hashCode)
+                  : comparing(Annotation::getBegin).thenComparing(Annotation::getEnd),
+                  typePriorities ? "hashCode()" : "begin/end")
           .isEqualTo(lastFs);
 
       it.moveToLast();
       assertThat(it.get())
           .as(msg + " - moveToLast positions at last result element")
-          .usingComparator(comparing(Object::hashCode), "hashCode()")
+          .usingComparator(
+              typePriorities ? comparing(Object::hashCode)
+                  : comparing(Annotation::getBegin).thenComparing(Annotation::getEnd),
+                  typePriorities ? "hashCode()" : "begin/end")
           .isEqualTo(lastFs);
     } else {
       // count is 0
