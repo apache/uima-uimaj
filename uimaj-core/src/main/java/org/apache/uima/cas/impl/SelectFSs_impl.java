@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.impl;
+
+import static org.apache.uima.cas.impl.Subiterator.BoundsUse.notBounded;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
-import org.apache.uima.cas.text.AnnotationPredicates;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.FSArray;
@@ -767,68 +767,104 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     final boolean isSortedIndex = idx.getIndexingStrategy() == FSIndex.SORTED_INDEX;
     final boolean isAnnotationIndex = idx instanceof AnnotationIndex;
     final FsIndex_annotation<Annotation> ai = isAnnotationIndex ? (FsIndex_annotation)idx: null;
-    LowLevelIterator<T> it;
-    if (boundsUse == BoundsUse.notBounded) {
+
+    if (
+        boundsUse == notBounded &&
+        // For ambiguous (overlapping) select, we can take a shortcut by using a FilteredIterator
+        // instead of having to use a Subiterator. However, for an unambiguous, we can no longer
+        // rely on the index iterator to handle the unambiguous mode all alone because the filtered
+        // annotator will skip results but is unable to update the previous bounds state in the
+        // index iterator.
+        (
+            (!isFollowing && !isPreceding) ||
+            (!isNonOverlapping && (isFollowing || isPreceding))
+        )
+    ) {
       if (!isSortedIndex) {
         // set index or bag index
-        it = (LowLevelIterator<T>) idx.iterator();
-      } else {
-        // index is sorted but no bounds are being used.  Varieties:
-        //   - AnnotationIndex:
-        //     - overlapping / non-overlapping  (ambiguous, unambiguous)
-        //   - any sorted index including AnnotationIndex:
-        //     - typePriority / ignore typePriority
-        //     - orderNotNecessary / orderNeeded
-        //   - preceding: need to skip over annotations whose end is > positioning-begin
-        //   - following: need to skip over zero-width annotations at positioning-end
-        it = isAnnotationIndex 
-               ? (LowLevelIterator<T>) ai.iterator( ! isNonOverlapping, IS_NOT_STRICT, isUnordered, ! isTypePriority)
-               : idx.iterator(isUnordered, ! isTypePriority);
-        if (isPreceding) {
-          // filter the iterator to skip annotations whose end is > the position-begin
-          // and also if the reference annotation is a zero-width annotation, skip any 
-          // annotations that end at the zero-width annotation because those would rather be seen as
-          // covering the zero-width annotation
-          int startingFsBegin = ((Annotation) startingFs).getBegin();
-          it = new FilteredIterator<>(it, fs -> {
-            // true if ok, false to skip
-            int end = ((Annotation) fs).getEnd();
-            return end <= startingFsBegin &&
-                !(originalStartingFsHasZeroWidth && end == startingFsBegin);
-          });
-        }
-        
-        if (isFollowing) {
-          // Annotations are following the startFS if their begin is >= the end of the startFS
-          // except if they are zero-width FSes at the end of the startFS in which case they are
-          // considered to be covered and not following
-          int startingFSStart = ((Annotation) startingFs).getBegin();
-          int startingFSEnd = ((Annotation) startingFs).getEnd();
-          it = new FilteredIterator<>(it, fs -> {
-            AnnotationFS x = (Annotation) fs;
-            int xBegin = x.getBegin();
-            return xBegin >= startingFSEnd && !(xBegin == startingFSEnd
-                && (startingFSStart == startingFSEnd || xBegin == x.getEnd()));
-          });
-        }
+        return (LowLevelIterator<T>) idx.iterator();
       }
-    } else {
-      if (isEmptyBoundingFs) {
-        return (LowLevelIterator<T>) LowLevelIterator.FS_ITERATOR_LOW_LEVEL_EMPTY;
+      
+      // index is sorted but no bounds are being used.  Varieties:
+      //   - AnnotationIndex:
+      //     - overlapping / non-overlapping  (ambiguous, unambiguous)
+      //   - any sorted index including AnnotationIndex:
+      //     - typePriority / ignore typePriority
+      //     - orderNotNecessary / orderNeeded
+      //   - preceding: need to skip over annotations whose end is > positioning-begin
+      //   - following: need to skip over zero-width annotations at positioning-end
+      LowLevelIterator<T> it = isAnnotationIndex 
+             ? (LowLevelIterator<T>) ai.iterator( ! isNonOverlapping, IS_NOT_STRICT, isUnordered, ! isTypePriority)
+             : idx.iterator(isUnordered, ! isTypePriority);
+
+      if (isPreceding) {
+        // filter the iterator to skip annotations whose end is > the position-begin
+        // and also if the reference annotation is a zero-width annotation, skip any
+        // annotations that end at the zero-width annotation because those would rather be seen as
+        // covering the zero-width annotation
+        int startingFsBegin = ((Annotation) startingFs).getBegin();
+        it = new FilteredIterator<>(it, fs -> {
+          // true if ok, false to skip
+          int end = ((Annotation) fs).getEnd();
+          return end <= startingFsBegin
+              && !(originalStartingFsHasZeroWidth && end == startingFsBegin);
+        });
       }
-      // bounds in use, index must be annotation index, is ordered
-      it = (LowLevelIterator<T>) new Subiterator<>(
-          (FSIterator<Annotation>) idx.iterator(isUnordered, !isTypePriority),
-          boundingFs,
-          !isNonOverlapping,  // ambiguous
-          !isIncludeAnnotBeyondBounds,  // strict 
-          boundsUse,
-          isTypePriority,
-          isSkipSameBeginEndType,
-          false); // isStrictIncludesAnnotationsStartingAtEndPosition
+
+      if (isFollowing) {
+        // Annotations are following the startFS if their begin is >= the end of the startFS
+        // except if they are zero-width FSes at the end of the startFS in which case they are
+        // considered to be covered and not following
+        int startingFSStart = ((Annotation) startingFs).getBegin();
+        int startingFSEnd = ((Annotation) startingFs).getEnd();
+        it = new FilteredIterator<>(it, fs -> {
+          AnnotationFS x = (Annotation) fs;
+          int xBegin = x.getBegin();
+          return xBegin >= startingFSEnd && !(xBegin == startingFSEnd
+              && (startingFSStart == startingFSEnd || xBegin == x.getEnd()));
+        });
+      }
+      
+      return it;
     }
 
-    return it;
+    if (isEmptyBoundingFs) {
+      return (LowLevelIterator<T>) LowLevelIterator.FS_ITERATOR_LOW_LEVEL_EMPTY;
+    }
+    
+    // bounds in use or non-overlapping, so index must be annotation index, is ordered
+    Annotation secondaryBoundingFs = null;
+    boolean isIncludeZeroWidthAtBegin = true;
+    boolean isIncludeZeroWidthAtEnd = true;
+    if (isPreceding) {
+      isIncludeAnnotBeyondBounds = false;
+      boundsUse = BoundsUse.coveredBy;
+      boundingFs = makePosAnnot(0, ((Annotation) startingFs).getBegin());
+      secondaryBoundingFs = (Annotation) startingFs;
+      isIncludeZeroWidthAtEnd = false;
+    }
+
+    if (isFollowing) {
+      isIncludeAnnotBeyondBounds = false;
+      boundsUse = BoundsUse.coveredBy;
+      boundingFs = makePosAnnot(((Annotation) startingFs).getEnd(), Integer.MAX_VALUE);
+      secondaryBoundingFs = (Annotation) startingFs;
+      isIncludeZeroWidthAtBegin = false;
+      isIncludeZeroWidthAtEnd = false;
+    }
+
+    return (LowLevelIterator<T>) new Subiterator<>(
+        (FSIterator<Annotation>) idx.iterator(isUnordered, !isTypePriority),
+        boundingFs,
+        secondaryBoundingFs,
+        !isNonOverlapping,  // ambiguous
+        !isIncludeAnnotBeyondBounds,  // strict 
+        boundsUse,
+        isTypePriority,
+        isSkipSameBeginEndType,
+        false, // isStrictIncludesAnnotationsStartingAtEndPosition
+        isIncludeZeroWidthAtBegin,
+        isIncludeZeroWidthAtEnd); 
   }
   
   private LowLevelIterator<T> maybeWrapBackwards(LowLevelIterator<T> it) {
@@ -1419,11 +1455,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private SelectFSs<T> commonPreceding(Annotation annotation, int offset) {
 //    validateSinglePosition(fs, offset);
     this.originalStartingFsHasZeroWidth = annotation.getBegin() == annotation.getEnd();
-    
-    if (annotation.getEnd() < Integer.MAX_VALUE) {
-      annotation = makePosAnnot(annotation.getBegin(), Integer.MAX_VALUE);
-    }
-    
     this.startingFs = annotation;
     this.shift = offset;
     isPreceding = true;

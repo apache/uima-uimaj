@@ -53,13 +53,16 @@ public class FsIndex_annotation <T extends AnnotationFS>
     // return non-constrained, non-strict, unambiguous iterator
     boolean strict = false;  // https://issues.apache.org/jira/browse/UIMA-5063
     return new Subiterator<>(iterator(),
-        null,
+        null, // no bounding fs
+        null, // no bounding fs
         ambiguous,
         strict,
         null, // no BoundsUse
         true, // type priority used
         true, // ignored
-        true // isStrictIncludesAnnotationsStartingAtEndPosition
+        true, // isStrictIncludesAnnotationsStartingAtEndPosition
+        true, // isIncludeZeroWidthAtBegin
+        true  // isIncludeZeroWidthAtEnd
     );
   }
   
@@ -77,12 +80,15 @@ public class FsIndex_annotation <T extends AnnotationFS>
     // return non-constrained, non-strict, unambiguous iterator
     return new Subiterator<>(iterator(orderNotNeeded, ignoreType),
         null,   // no bounding fs
+        null,   // no bounding fs
         ambiguous,
         strict,
         null, // no BoundsUse
         !ignoreType, // type priority used
         true, // ignored - only for coveredBy or covering,
-        true // isStrictIncludesAnnotationsStartingAtEndPosition
+        true, // isStrictIncludesAnnotationsStartingAtEndPosition
+        true, // isIncludeZeroWidthAtBegin
+        true  // isIncludeZeroWidthAtEnd
     );
   }
 
@@ -106,12 +112,15 @@ public class FsIndex_annotation <T extends AnnotationFS>
   public FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
     return new Subiterator<>(iterator(),
         (Annotation) annot,
+        null, // no secondary bounding fs
         ambiguous,
         strict,
         BoundsUse.coveredBy,  // isBounded 
         true,  // uses type priority
         true,  // skip returning results equal to annot
-        true // isStrictIncludesAnnotationsStartingAtEndPosition
+        true, // isStrictIncludesAnnotationsStartingAtEndPosition
+        true, // isIncludeZeroWidthAtBegin
+        true  // isIncludeZeroWidthAtEnd
     );
   }
 

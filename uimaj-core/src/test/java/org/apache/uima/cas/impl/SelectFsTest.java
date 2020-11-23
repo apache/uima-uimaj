@@ -318,6 +318,28 @@ public class SelectFsTest {
   }
   
   @Test
+  public void thatCoveredByWithNonOverlappingWorks() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", "uima.tcas.Annotation");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    AnnotationFS y = cas.createAnnotation(type1, 30, 57);
+    AnnotationFS expected;
+    addToIndexes(
+        cas.createAnnotation(type1, 41, 41),
+        expected = cas.createAnnotation(type1, 39, 41));
+
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).coveredBy(y).nonOverlapping()
+        .fsIterator();
+    it.moveToLast();
+    assertThat(it.get()).isSameAs(expected);
+  }
+  
+  @Test
   public void thatCoveredByWithBeyondEndsDoesNotReturnOverlapAtStart() throws Exception
   {
     Annotation y;
@@ -701,6 +723,255 @@ public class SelectFsTest {
     
     assertThat(cas.select(Annotation.class).following(a[1]).asList())
         .isEmpty();
+  }
+  
+  @Test
+  public void thatSelectFollowingSeekUnambiguousWorks() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    AnnotationFS[] expected = new AnnotationFS[2];
+    AnnotationFS y = cas.createAnnotation(type1, 13, 28);
+    addToIndexes(
+        cas.createAnnotation(type1, 13, 28),
+        expected[0] = cas.createAnnotation(type1, 29, 43),
+        expected[1] = cas.createAnnotation(type1, 95, 115));
+    
+    assertThat(cas.<Annotation>select(type1).following((Annotation) y).nonOverlapping().asList())
+        .containsExactly(
+            asList(expected).stream().map(a -> (Annotation) a).toArray(Annotation[]::new));
+  }
+  
+  @Test
+  public void thatSelectFollowingSeekUnambiguousWorks2a() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    AnnotationFS y;
+    addToIndexes(
+        y = cas.createAnnotation(type1, 95, 95),
+        cas.createAnnotation(type1, 43, 55),
+        cas.createAnnotation(type1, 15, 22));
+    
+    assertThat(cas.<Annotation>select(type1).following((Annotation) y).nonOverlapping().asList())
+        .isEmpty();
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).following((Annotation) y)
+        .nonOverlapping().fsIterator();
+    assertThat(it.isValid()).isFalse();
+  }
+  
+  @Test
+  public void thatSelectFollowingSeekUnambiguousWorks2b() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    AnnotationFS y = cas.createAnnotation(type1, 95, 95);
+    addToIndexes(
+        cas.createAnnotation(type1, 95, 95),
+        cas.createAnnotation(type1, 43, 55),
+        cas.createAnnotation(type1, 15, 22));
+    
+    assertThat(cas.<Annotation>select(type1).following((Annotation) y).nonOverlapping().asList())
+        .isEmpty();
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).following((Annotation) y)
+        .nonOverlapping().fsIterator();
+    assertThat(it.isValid()).isFalse();
+  }
+  
+  @Test
+  public void thatSelectFollowingSeekUnambiguousWorks3() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    AnnotationFS expected;
+    AnnotationFS y = cas.createAnnotation(type1, 55, 55);
+    addToIndexes(
+        expected = cas.createAnnotation(type1, 76, 82),
+        cas.createAnnotation(type1, 24, 49),
+        cas.createAnnotation(type1, 55, 55));
+    
+    assertThat(cas.<Annotation>select(type1).following((Annotation) y).nonOverlapping().asList())
+        .containsExactly((Annotation) expected);
+  }
+  
+  @Test
+  public void thatSelectFollowingSeekUnambiguousWorks4() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    // This one might require an explanation:
+    // The annotation [83, 83] is considered to be "covered by [83,111]" and not 
+    // "preceding [83,111]" (to avoid dilemmas in other places, this is the definition we adopted).
+    // Consequently, [83, 111] is also not following [83,83] but rather containing it. Thus, 
+    // [83, 111] is not part of the result set here because that would contradict the definition of
+    // AnnotationPredicates.following([83, 111], [83, 83]).
+    AnnotationFS y = cas.createAnnotation(type1, 83, 83);
+    addToIndexes(
+        cas.createAnnotation(type1, 83, 111),
+        cas.createAnnotation(type1, 83, 83),
+        cas.createAnnotation(type1, 43, 44));
+    
+    assertThat(cas.<Annotation>select(type1).following((Annotation) y).nonOverlapping().asList())
+        .isEmpty();
+    
+    assertThat(cas.<Annotation>select(type1).following(y.getBegin()).nonOverlapping().asList())
+        .isEmpty();
+  }
+  
+  @Test
+  public void thatSelectFollowingSeekUnambiguousWorks5() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    // This one might require an explanation:
+    // The annotation [85, 85] is considered to be "covered by [82,85]" and not 
+    // "following [82,85]" (to avoid dilemmas in other places, this is the definition we adopted).
+    // Thus, [85, 85] is not part of the result set here because that would contradict the 
+    // definition of AnnotationPredicates.following([82,85], [85, 85]).
+    AnnotationFS y = cas.createAnnotation(type1, 82, 85);
+    addToIndexes(
+        cas.createAnnotation(type1, 85, 85),
+        cas.createAnnotation(type1, 24, 28),
+        cas.createAnnotation(type1, 82, 85));
+    
+    assertThat(cas.<Annotation>select(type1).following((Annotation) y).nonOverlapping().asList())
+        .isEmpty();
+  }
+  
+  @Test
+  public void thatSelectPrecedingSeekUnambiguousWorks() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    AnnotationFS y;
+    addToIndexes(
+        cas.createAnnotation(type1, 96, 118),
+        y = cas.createAnnotation(type1, 88, 88),
+        cas.createAnnotation(type1, 81, 91));
+    
+    assertThat(cas.<Annotation>select(type1).preceding((Annotation) y).nonOverlapping().asList())
+        .isEmpty();
+  }
+  
+  @Test
+  public void thatSelectPrecedingSeekUnambiguousWorks2() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    AnnotationFS expected;
+    AnnotationFS y = cas.createAnnotation(type1, 60, 60);
+    addToIndexes(
+        cas.createAnnotation(type1, 31, 56),
+        cas.createAnnotation(type1, 60, 60),
+        expected = cas.createAnnotation(type1, 14, 41));
+    
+    assertThat(cas.<Annotation>select(type1).preceding((Annotation) y).nonOverlapping().asList())
+        .containsExactly((Annotation) expected);
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).preceding((Annotation) y)
+        .nonOverlapping().fsIterator();
+    it.moveToFirst();
+    assertThat(it.isValid()).isTrue();
+    assertThat(it.get()).isSameAs(expected);
+    it.moveToLast();
+    assertThat(it.isValid()).isTrue();
+    assertThat(it.get()).isSameAs(expected);
+  }
+  
+  @Test
+  public void thatSelectPrecedingSeekUnambiguousWorks3() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    AnnotationFS expected;
+    AnnotationFS y;
+    addToIndexes(
+        y = cas.createAnnotation(type1, 89, 103),
+        expected = cas.createAnnotation(type1, 42, 55),
+        cas.createAnnotation(type1, 89, 89));
+    
+    assertThat(cas.<Annotation>select(type1).preceding((Annotation) y).nonOverlapping().asList())
+        .containsExactly((Annotation) expected);
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).preceding((Annotation) y)
+        .nonOverlapping().fsIterator();
+    it.moveToLast();
+    assertThat(it.isValid()).isTrue();
+    assertThat(it.get()).isSameAs(expected);
+  }
+  
+  @Test
+  public void thatSelectPrecedingSeekUnambiguousWorks4() throws Exception
+  {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    
+    AnnotationFS expected;
+    AnnotationFS y = cas.createAnnotation(type1, 50, 50);
+    addToIndexes(
+        cas.createAnnotation(type1, 38, 50),
+        expected = cas.createAnnotation(type1, 4, 8),
+        cas.createAnnotation(type1, 83, 105));
+    
+    assertThat(cas.<Annotation>select(type1).preceding((Annotation) y).nonOverlapping().asList())
+        .containsExactly((Annotation) expected);
+    
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).preceding((Annotation) y)
+        .nonOverlapping().fsIterator();
+    it.moveToLast();
+    assertThat(it.isValid()).isTrue();
+    assertThat(it.get()).isSameAs(expected);
   }
   
   @Test
@@ -1161,6 +1432,86 @@ public class SelectFsTest {
   }
   
   @Test
+  public void thatSelectCoveredBySeekUnambiguousNonStrictWorks() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    tsd.addType("test.Type3", "", "test.Type2");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    
+    AnnotationFS expected, y;
+    addToIndexes(
+        expected = cas.createAnnotation(type3, 63, 90),
+        cas.createAnnotation(type1, 86, 90),
+        cas.createAnnotation(type2, 7, 36),
+        cas.createAnnotation(type3, 46, 48),
+        cas.createAnnotation(type1, 54, 80),
+        cas.createAnnotation(type2, 30, 35),
+        cas.createAnnotation(type3, 21, 37),
+        cas.createAnnotation(type1, 82, 109),
+        cas.createAnnotation(type2, 42, 45),
+        cas.createAnnotation(type3, 41, 50),
+        y = cas.createAnnotation(type1, 63, 76),
+        cas.createAnnotation(type2, 70, 97),
+        cas.createAnnotation(type3, 2, 26),
+        cas.createAnnotation(type1, 24, 49),
+        cas.createAnnotation(type2, 70, 94));
+
+    assertThat(cas.<Annotation>select(type1).coveredBy(y).nonOverlapping()
+            .includeAnnotationsWithEndBeyondBounds().asList())
+        .containsExactly((Annotation) expected);
+
+    FSIterator<Annotation> it = cas.<Annotation>select(type1).nonOverlapping()
+        .includeAnnotationsWithEndBeyondBounds().coveredBy(y).fsIterator();
+    it.moveToLast();
+    assertThat(it.get()).isSameAs(expected);
+  }
+  
+  @Test
+  public void thatSelectCoveredBySeekUnambiguousWorks() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type3", "", "test.Type2");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    
+    AnnotationFS expected;
+    AnnotationFS y = cas.createAnnotation(type1, 16, 29);
+    addToIndexes(
+        cas.createAnnotation(type2, 19, 19),
+        cas.createAnnotation(type1, 28, 48),
+        cas.createAnnotation(type3, 19, 32),
+        expected = cas.createAnnotation(type2, 18, 19),
+        cas.createAnnotation(type1, 63, 86),
+        cas.createAnnotation(type3, 65, 70),
+        cas.createAnnotation(type2, 25, 42),
+        cas.createAnnotation(type1, 16, 29),
+        cas.createAnnotation(type3, 26, 41));
+
+    assertThat(cas.<Annotation>select(type2).coveredBy(y).nonOverlapping().asList())
+        .containsExactly((Annotation) expected);
+
+    FSIterator<Annotation> it = cas.<Annotation>select(type2).coveredBy(y).nonOverlapping()
+        .fsIterator();
+    it.moveToFirst();
+    assertThat(it.isValid()).isTrue();
+    assertThat(it.get()).isSameAs(expected);
+    it.moveToLast();
+    assertThat(it.isValid()).isTrue();
+    assertThat(it.get()).isSameAs(expected);
+  }
+  
+  @Test
   public void thatSelectCoveredBySeekLimitedWorks() throws Exception {
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
@@ -1197,6 +1548,51 @@ public class SelectFsTest {
     assertThat(it.isValid()).isTrue();
     assertThat(it.get()).isSameAs(expected[1]);
   }
+  
+  @Test
+  public void thatSelectCoveredByUnambiguousSeekWorks() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", "test.Type1");
+    tsd.addType("test.Type3", "", "test.Type2");
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    
+    AnnotationFS[] expected = new AnnotationFS[3];
+    Annotation y = (Annotation) cas.createAnnotation(type2, 24, 49);
+    addToIndexes(
+        cas.createAnnotation(type3, 63, 90),
+        cas.createAnnotation(type1, 86, 90),
+        cas.createAnnotation(type2, 7, 36),
+        expected[2] = cas.createAnnotation(type3, 46, 48),
+        cas.createAnnotation(type1, 54, 80),
+        expected[0] = cas.createAnnotation(type2, 30, 35),
+        cas.createAnnotation(type3, 21, 37),
+        cas.createAnnotation(type1, 82, 109),
+        expected[1] = cas.createAnnotation(type2, 42, 45),
+        cas.createAnnotation(type3, 41, 50),
+        cas.createAnnotation(type1, 63, 76),
+        cas.createAnnotation(type2, 70, 97),
+        cas.createAnnotation(type3, 2, 26),
+        cas.createAnnotation(type1, 24, 49),
+        cas.createAnnotation(type2, 70, 94));
+    
+    assertThat(cas.<Annotation>select(type2).coveredBy(y).nonOverlapping().asList())
+        .containsExactly(
+            asList(expected).stream().map(a -> (Annotation) a).toArray(Annotation[]::new));
+
+    FSIterator<Annotation> it = cas.<Annotation>select(type2).coveredBy(y).nonOverlapping()
+        .fsIterator();
+    it.moveToFirst();
+    assertThat(it.get()).isSameAs(expected[0]);
+    it.moveToLast();
+    assertThat(it.get()).isSameAs(expected[2]);
+  }
+
   
   @Test
   public void thatSelectColocatedSeekToInitialThenMoveToNextWorks() throws Exception {

@@ -27,6 +27,8 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
 import static org.apache.uima.cas.text.AnnotationPredicates.overlapping;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -113,10 +115,10 @@ public class SelectFsAssert {
     //
     // The tests should be implemented in the SelectFsTest class.
     // --------------------------------------------------------------------------------------------
-//    lockedSeed = 38393031956938l;
+//    lockedSeed = 255314121677929l;
 //    aIterations = 100_000;
 //    annotationsPerIteration = iteration -> 3;
-//    aTypes = 3;
+//    aTypes = 1;
     // ============================================================================================
 
     // Override settings when using a locked seed to be more debugging-friendly
@@ -229,9 +231,11 @@ public class SelectFsAssert {
             assertSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY, description, typeX,
                 typeY, y, timings);
             
-//            assertSelectionAsRandomIteration(rnd, unambigousExpected, randomCas,
-//                (cas, type, context) -> aActual.select(cas, type, context).nonOverlapping(),
-//                xRelToY + " n/o", typeX, typeY, y, timings);
+            if (asList(COVERED_BY, FOLLOWING, PRECEDING).contains(xRelToY)) {
+              assertSelectionAsRandomIteration(rnd, unambigousExpected, randomCas,
+                  (cas, type, context) -> aActual.select(cas, type, context).nonOverlapping(),
+                  xRelToY, " non-overlapping", typeX, typeY, y, timings);
+            }
             
             int limit = rnd.nextInt(5);
             List<Annotation> limitedExpected = xRelToY == PRECEDING 
@@ -343,7 +347,12 @@ public class SelectFsAssert {
     FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
 
     if (expected.size() == 0) {
-      assertThat(it.isValid()).isFalse();
+      assertThat(it.isValid())
+          .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%d] random iteration%n%s%n" + 
+              "Expected is empty but iterator is not invalid.", typeX.getName(), aXRelToY, 
+              description, y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
+              casToString(randomCas))
+          .isFalse();
       return;
     }
     
