@@ -3037,9 +3037,13 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       fsStartIndexes.addItemId(fs, nextTgtId, isIncludedType);  // maps src heap to tgt seq
       
       if (isIncludedType) {
-        if (fs instanceof UimaSerializable) {
-          ((UimaSerializable)fs)._save_to_cas_data();
-        }
+        // Disabled the following additional call to _save_to_cas_data, since it would cause a bug. See
+        // [UIMA-6295] CAS transportable Java object not serialised or deserialised with compressed binary.
+        //
+        // if (fs instanceof UimaSerializable) {
+        //     ((UimaSerializable)fs)._save_to_cas_data();
+        // }
+
         // for features in type - 
         //    strings: accumulate those strings that are in the target, if optimizeStrings != null
         //      strings either in array, or in individual values
