@@ -57,6 +57,8 @@ import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
+import org.apache.uima.internal.util.PositiveIntSet;
+import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
@@ -364,6 +366,12 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      */    
     private final Obj2IntIdentityHashMap<TOP> fs2seq = new Obj2IntIdentityHashMap<>(TOP.class, TOP._singleton);
 //    private final Int2ObjHashMap<TOP, TOP> seq2fs = new Int2ObjHashMap<>(TOP.class);
+
+    /**
+     * Set of FSes on which UimaSerializable _save_to_cas_data has already been called.
+     */
+    private PositiveIntSet uimaSerializableSavedToCas;
+
     /**
      * 
      * @param cas -
@@ -491,13 +499,16 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         fs2seq.clear();
   //      seq2fs.clear();
         int seq = 1;  // origin 1
-        
+
+        uimaSerializableSavedToCas = new PositiveIntSet_impl(1024, 1, 1024);
+
         final List<TOP> localSortedFSs = csds.getSortedFSs();
         for (TOP fs : localSortedFSs) {
           fs2seq.put(fs, seq++);
   //        seq2fs.put(seq++, fs);
-          if (fs instanceof UimaSerializable) {
+          if (fs instanceof UimaSerializable && !uimaSerializableSavedToCas.contains(fs._id)) {
             ((UimaSerializable)fs)._save_to_cas_data();
+            uimaSerializableSavedToCas.add(fs._id);
           }
         }
         
@@ -518,8 +529,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         
           // also add in all modified strings
           for (FsChange fsChange : fssModified) {
-            if (fsChange.fs instanceof UimaSerializable) {
+            if (fsChange.fs instanceof UimaSerializable && !uimaSerializableSavedToCas.contains(fsChange.fs._id)) {
               ((UimaSerializable)fsChange.fs)._save_to_cas_data();
+              uimaSerializableSavedToCas.add(fsChange.fs._id);
             }
             extractStringsFromModifications(fsChange);
           }
