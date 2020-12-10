@@ -434,9 +434,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //      strChars_dos = dosZipSources[strChars_i];
       control_dos = dosZipSources[control_i];
       strSeg_dos = dosZipSources[strSeg_i];
-      
+      uimaSerializableSavedToCas = new PositiveIntSet_impl(1024, 1, 1024);
+
       this.prevFsByType = new TOP[ts.getTypeArraySize()];
       csds = getCsds(baseCas, isDelta);
+      csds.getSortedFSs().stream().map(FeatureStructureImplC::_id).forEach(uimaSerializableSavedToCas::add);
       assert null != csds;
     }
     
@@ -463,8 +465,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   //        sm.origAuxLongs = baseCas.getLongHeap().getSize() * 8;
   //        sm.totalTime = System.currentTimeMillis();
   //      }
-        
-        
+
         /************************
          * Write standard header
          ************************/
@@ -499,8 +500,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         fs2seq.clear();
   //      seq2fs.clear();
         int seq = 1;  // origin 1
-
-        uimaSerializableSavedToCas = new PositiveIntSet_impl(1024, 1, 1024);
 
         final List<TOP> localSortedFSs = csds.getSortedFSs();
         for (TOP fs : localSortedFSs) {
