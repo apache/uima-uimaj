@@ -438,6 +438,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
       this.prevFsByType = new TOP[ts.getTypeArraySize()];
       csds = getCsds(baseCas, isDelta);
+      // getCsds() internally already causes _save_to_cas_data() to be called (via AllFSs), so we  
+      // have to add all the FSes that are returned here to the uimaSerializableSavedToCas tracking
+      // set
       csds.getSortedFSs().stream().map(FeatureStructureImplC::_id).forEach(uimaSerializableSavedToCas::add);
       assert null != csds;
     }
