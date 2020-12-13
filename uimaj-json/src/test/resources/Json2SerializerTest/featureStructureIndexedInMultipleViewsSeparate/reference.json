@@ -1,0 +1,40 @@
+{
+  "%VIEWS" : {
+    "_InitialView" : [ "0", "1", "2" ],
+    "secondView" : [ "3", "4", "2" ]
+  },
+  "%FEATURE_STRUCTURES" : [ {
+    "%ID" : "2",
+    "%TYPE" : "uima.cas.TOP"
+  }, {
+    "%ID" : "0",
+    "%TYPE" : "uima.cas.Sofa",
+    "sofaNum" : 1,
+    "sofaID" : "_InitialView",
+    "mimeType" : "text",
+    "sofaString" : "First view"
+  }, {
+    "%ID" : "1",
+    "%TYPE" : "uima.tcas.DocumentAnnotation",
+    "%FLAGS" : [ "DocumentAnnotation" ],
+    "@sofa" : "0",
+    "begin" : 0,
+    "end" : 10,
+    "language" : "x-unspecified"
+  }, {
+    "%ID" : "3",
+    "%TYPE" : "uima.cas.Sofa",
+    "sofaNum" : 2,
+    "sofaID" : "secondView",
+    "mimeType" : "text",
+    "sofaString" : "Second view"
+  }, {
+    "%ID" : "4",
+    "%TYPE" : "uima.tcas.DocumentAnnotation",
+    "%FLAGS" : [ "DocumentAnnotation" ],
+    "@sofa" : "3",
+    "begin" : 0,
+    "end" : 11,
+    "language" : "x-unspecified"
+  } ]
+}

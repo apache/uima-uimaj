@@ -1,0 +1,23 @@
+[ {
+  "%ID" : "0",
+  "%TYPE" : "Sofa",
+  "sofaNum" : 1,
+  "sofaID" : "_InitialView",
+  "mimeType" : "text",
+  "sofaString" : "Hello world"
+}, {
+  "%ID" : "1",
+  "%TYPE" : "Annotation",
+  "%VIEWS" : [ "_InitialView" ],
+  "@sofa" : "0",
+  "begin" : 0,
+  "end" : 10
+}, {
+  "%ID" : "2",
+  "%TYPE" : "DocumentAnnotation",
+  "%VIEWS" : [ "_InitialView" ],
+  "@sofa" : "0",
+  "begin" : 0,
+  "end" : 11,
+  "language" : "en"
+} ]

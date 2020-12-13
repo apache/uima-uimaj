@@ -1,0 +1,21 @@
+{
+  "%TYPES" : {
+    "custom.Annotation" : {
+      "%SUPER_TYPE" : "uima.tcas.Annotation",
+      "value" : "uima.cas.String"
+    }
+  },
+  "%FEATURE_STRUCTURES" : [ {
+    "%ID" : "0",
+    "%TYPE" : "uima.cas.Sofa",
+    "sofaNum" : 1,
+    "sofaID" : "_InitialView"
+  }, {
+    "%ID" : "1",
+    "%TYPE" : "custom.Annotation",
+    "%VIEWS" : [ "_InitialView" ],
+    "@sofa" : "0",
+    "begin" : 0,
+    "end" : 10
+  } ]
+}
