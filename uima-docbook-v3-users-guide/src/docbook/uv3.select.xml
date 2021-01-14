@@ -447,8 +447,11 @@ startAt(begin, end, shifted) // same as above,
         <varlistentry>
           <term><emphasis role="strong">backwards</emphasis></term>
           <listitem>
-            <para>specifies a backwards order (from last to first position) for
-            subsequent operations
+            <para>specifies that the result is returned the opposite order than normal. It does not
+            matter at which point in the selection this method is invoked. So e.g. 
+            <code>...backwards().limit(5)</code> returns the same result as 
+            <code>...limit(5).backwards()</code>. Also, invoking this method twice does not
+            "un-reverse" the results.
             </para>
           </listitem>
         </varlistentry>
