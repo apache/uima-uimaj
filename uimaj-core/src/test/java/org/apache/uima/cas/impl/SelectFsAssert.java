@@ -34,6 +34,7 @@ import static org.apache.uima.cas.text.AnnotationPredicates.overlapping;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -115,9 +116,9 @@ public class SelectFsAssert {
     //
     // The tests should be implemented in the SelectFsTest class.
     // --------------------------------------------------------------------------------------------
-//    lockedSeed = 541442246796748l;
+//    lockedSeed = 712704645091606l;
 //    aIterations = 100_000;
-//    annotationsPerIteration = iteration -> 3;
+//    annotationsPerIteration = iteration -> 2;
 //    aTypes = 1;
     // ============================================================================================
 
@@ -204,15 +205,6 @@ public class SelectFsAssert {
               .collect(toList());
           timings.compute("filt. full scan", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tExpected);
 
-          List<Annotation> unambigousExpected = new ArrayList<>();
-          Annotation current = null;
-          for (Annotation e : expected) {
-            if (current == null || !overlapping(e, current)) {
-              unambigousExpected.add(e);
-              current = e;
-            }
-          }
-          
           sizeCounts.compute(expected.size(), (k, v) -> v == null ? 1 : v++);
           
           try {
@@ -230,20 +222,15 @@ public class SelectFsAssert {
 
             assertSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY,
                 description, typeX, typeY, y, timings);
+
+            assertBackwardsSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY,
+                description, typeX, typeY, y, timings);
             
-            if (asList(COVERED_BY, FOLLOWING, PRECEDING).contains(xRelToY)) {
-              assertSelectionAsRandomIteration(rnd, unambigousExpected, randomCas,
-                  (cas, type, context) -> aActual.select(cas, type, context).nonOverlapping(),
-                  xRelToY, " non-overlapping", typeX, typeY, y, timings);
-            }
+            assertNonOverlappingSelectionAsRandomIteration(rnd, expected, randomCas, aActual,
+                xRelToY, description, typeX, typeY, y, timings);
             
-            int limit = rnd.nextInt(5);
-            List<Annotation> limitedExpected = xRelToY == PRECEDING 
-                ? expected.subList(max(0, expected.size() - limit), expected.size()) 
-                : expected.subList(0, min(limit, expected.size()));
-            assertSelectionAsRandomIteration(rnd, limitedExpected, randomCas,
-                (cas, type, context) -> aActual.select(cas, type, context).limit(limit), xRelToY,
-                description + " with limit(" + limit + ")", typeX, typeY, y, timings);
+            assertLimitedSelectionAsRandomIteration(rnd, expected, randomCas, aActual,
+                xRelToY, description, typeX, typeY, y, timings);
           }
           catch (Throwable e) {
             // Set a breakpoint here to halt when an assert above fails. The select triggering the
@@ -341,6 +328,51 @@ public class SelectFsAssert {
         .containsExactlyElementsOf(expected);
   }
   
+  private static void assertLimitedSelectionAsRandomIteration(Random rnd, List<Annotation> expected,
+      CAS randomCas, TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, 
+      String description, Type typeX, Type typeY, Annotation y, Map<String, Long> timings)
+  {
+    int limit = rnd.nextInt(5);
+    List<Annotation> limitedExpected = aXRelToY == PRECEDING 
+        ? expected.subList(max(0, expected.size() - limit), expected.size()) 
+        : expected.subList(0, min(limit, expected.size()));
+    assertSelectionAsRandomIteration(rnd, limitedExpected, randomCas,
+        (cas, type, context) -> aActual.select(cas, type, context).limit(limit), aXRelToY,
+        description + " with limit(" + limit + ")", typeX, typeY, y, timings);
+  }
+  
+  private static void assertNonOverlappingSelectionAsRandomIteration(Random rnd, List<Annotation> expected,
+      CAS randomCas, TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, 
+      String description, Type typeX, Type typeY, Annotation y, Map<String, Long> timings)
+  {
+    if (asList(COVERED_BY, FOLLOWING, PRECEDING).contains(aXRelToY)) {
+      List<Annotation> unambigousExpected = new ArrayList<>();
+      Annotation current = null;
+      for (Annotation e : expected) {
+        if (current == null || !overlapping(e, current)) {
+          unambigousExpected.add(e);
+          current = e;
+        }
+      }
+      
+      assertSelectionAsRandomIteration(rnd, unambigousExpected, randomCas,
+          (cas, type, context) -> aActual.select(cas, type, context).nonOverlapping(),
+          aXRelToY, " non-overlapping", typeX, typeY, y, timings);
+    }
+  }
+  
+  private static void assertBackwardsSelectionAsRandomIteration(Random rnd, List<Annotation> expected,
+      CAS randomCas, TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, 
+      String description, Type typeX, Type typeY, Annotation y, Map<String, Long> timings)
+  {
+    List<Annotation> reverseExpected = new ArrayList<>(expected);
+    Collections.reverse(reverseExpected);
+    
+    assertSelectionAsRandomIteration(rnd, reverseExpected, randomCas,
+        (cas, type, context) -> aActual.select(cas, type, context).backwards(),
+        aXRelToY, " backwards", typeX, typeY, y, timings);
+  }
+
   private static void assertSelectionAsRandomIteration(Random rnd, List<Annotation> expected,
       CAS randomCas, TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, 
       String description, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {

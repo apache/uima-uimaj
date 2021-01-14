@@ -604,7 +604,19 @@ public class SelectFsTest {
     assertThat(cas.select(Annotation.class).following(a[0], 1).asList())
         .containsExactly(a[2]);
   }
-  
+
+  @Test
+  public void thatSelectFollowingBackwardsWorks()
+  {
+    Annotation x = new Annotation(cas.getJCas(), 5, 14);
+    Annotation[] a = addToIndexes(
+        new Annotation(cas.getJCas(), 24, 46),
+        new Annotation(cas.getJCas(), 76, 90));
+    
+    assertThat(cas.select(Annotation.class).following(x).backwards().asList())
+        .containsExactly(a[1], a[0]);
+  }
+
   @Test
   public void thatSelectPrecedingReturnsAdjacentAnnotation()
   {

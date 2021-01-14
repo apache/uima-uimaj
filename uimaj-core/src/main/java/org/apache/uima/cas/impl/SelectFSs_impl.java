@@ -635,7 +635,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   public FSIterator<T> fsIterator() {
     if (isFollowing && isBackwards) {
       isBackwards = false;
-      return make_or_copy_snapshot(fsIterator1(), true);
+      return make_or_copy_snapshot(fsIterator1(), false);
     }
 
     if (isPreceding) {
