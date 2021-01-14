@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import static java.lang.Integer.MAX_VALUE;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.coveredBy;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.covering;
+import static org.apache.uima.cas.impl.Subiterator.BoundsUse.notBounded;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.sameBeginEnd;
 import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
 import static org.apache.uima.cas.text.AnnotationPredicates.overlapping;
@@ -1279,9 +1280,13 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   private boolean adjustForStrictNvc_forward() {
     Annotation item = it.getNvc();
     
+    boolean originalBoundZeroWidth = originalBoundBegin == originalBoundEnd;
+    
     while (
+        // following/preceding and bounds is zero-width and item is zero-width
+        (boundsUse == notBounded && item.getBegin() == item.getEnd() && item.getBegin() == originalBoundBegin) ||
         // Bounds is zero-width at start
-        (!isIncludeZeroWidthAtBegin && originalBoundBegin == originalBoundEnd && item.getBegin() == originalBoundBegin) ||
+        (!isIncludeZeroWidthAtBegin && originalBoundZeroWidth && item.getBegin() == originalBoundBegin) ||
         // Item is zero-width at end
         (!isIncludeZeroWidthAtEnd && originalBoundEnd == item.getBegin() && item.getBegin() == item.getEnd())
     ) {
@@ -1324,7 +1329,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         // Item is zero-width at end
         (!isIncludeZeroWidthAtEnd && boundEnd == item.getBegin() && item.getBegin() == item.getEnd()) ||
         // Bounds is zero-width at end
-        (!isIncludeZeroWidthAtEnd && originalBoundBegin == originalBoundEnd && item.getEnd() == originalBoundBegin)
+        (!isIncludeZeroWidthAtEnd && originalBoundZeroWidth && item.getEnd() == originalBoundBegin)
     ) {
       it.moveToNextNvc();
       if (!isValid()) {

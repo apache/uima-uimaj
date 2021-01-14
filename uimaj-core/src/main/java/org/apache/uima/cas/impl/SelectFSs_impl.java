@@ -57,6 +57,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.cas.text.AnnotationPredicates;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.FSArray;
@@ -139,7 +140,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private TOP startingFs = null;
   private boolean originalStartingFsHasZeroWidth = false;
   private AnnotationFS boundingFs = null;
-  private boolean isEmptyBoundingFs = false;
+  private boolean noResult = false;
   
   
   /* **********************************************
@@ -477,15 +478,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     final boolean reverse = fs1.getEnd() > fs2.getBegin(); 
     int begin = (reverse ? fs2 : fs1).getEnd();
     int end   = (reverse ? fs1 : fs2).getBegin();
-    
+
     if (begin > end) {
-      isEmptyBoundingFs = true;
-    } else {
-      this.boundingFs = makePosAnnot(begin, end);
+        noResult = true;
+        return this;
     }
-    this.boundsUse = BoundsUse.coveredBy;
-//    this.isIncludeAnnotWithEndBeyondBounds = true; // default    
-    return this;
+
+    return coveredBy(begin, end);
   }
   
   /* (non-Javadoc)
@@ -780,6 +779,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
             (!isNonOverlapping && (isFollowing || isPreceding))
         )
     ) {
+      if (noResult) {
+        return (LowLevelIterator<T>) LowLevelIterator.FS_ITERATOR_LOW_LEVEL_EMPTY;
+      }
+      
       if (!isSortedIndex) {
         // set index or bag index
         return (LowLevelIterator<T>) idx.iterator();
@@ -802,12 +805,11 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         // and also if the reference annotation is a zero-width annotation, skip any
         // annotations that end at the zero-width annotation because those would rather be seen as
         // covering the zero-width annotation
-        int startingFsBegin = ((Annotation) startingFs).getBegin();
+        int startingFSStart = ((Annotation) startingFs).getBegin();
+        int startingFSEnd = ((Annotation) startingFs).getEnd();
         it = new FilteredIterator<>(it, fs -> {
-          // true if ok, false to skip
-          int end = ((Annotation) fs).getEnd();
-          return end <= startingFsBegin
-              && !(originalStartingFsHasZeroWidth && end == startingFsBegin);
+          return fs._id() != startingFs._id
+              && AnnotationPredicates.preceding((Annotation) fs, startingFSStart, startingFSEnd);
         });
       }
 
@@ -818,20 +820,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         int startingFSStart = ((Annotation) startingFs).getBegin();
         int startingFSEnd = ((Annotation) startingFs).getEnd();
         it = new FilteredIterator<>(it, fs -> {
-          AnnotationFS x = (Annotation) fs;
-          int xBegin = x.getBegin();
-          return xBegin >= startingFSEnd && !(xBegin == startingFSEnd
-              && (startingFSStart == startingFSEnd || xBegin == x.getEnd()));
+          return fs._id() != startingFs._id
+              && AnnotationPredicates.following((Annotation) fs, startingFSStart, startingFSEnd);
         });
       }
       
       return it;
     }
 
-    if (isEmptyBoundingFs) {
-      return (LowLevelIterator<T>) LowLevelIterator.FS_ITERATOR_LOW_LEVEL_EMPTY;
-    }
-    
     // bounds in use or non-overlapping, so index must be annotation index, is ordered
     Annotation secondaryBoundingFs = null;
     boolean isIncludeZeroWidthAtBegin = true;
@@ -841,7 +837,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       boundsUse = BoundsUse.coveredBy;
       boundingFs = makePosAnnot(0, ((Annotation) startingFs).getBegin());
       secondaryBoundingFs = (Annotation) startingFs;
-      isIncludeZeroWidthAtEnd = false;
+      isIncludeZeroWidthAtEnd = true;
     }
 
     if (isFollowing) {
@@ -849,8 +845,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       boundsUse = BoundsUse.coveredBy;
       boundingFs = makePosAnnot(((Annotation) startingFs).getEnd(), Integer.MAX_VALUE);
       secondaryBoundingFs = (Annotation) startingFs;
-      isIncludeZeroWidthAtBegin = false;
-      isIncludeZeroWidthAtEnd = false;
+      isIncludeZeroWidthAtEnd = true;
     }
 
     return (LowLevelIterator<T>) new Subiterator<>(
@@ -1285,44 +1280,50 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       return it;
     }
     
-    it.moveTo(startingFs);
-    
-    // next commented out because the underlying iterator already does this
-//    if (index != null && index instanceof AnnotationIndex && !isFollowing && !isPreceding) {
-//      if (!isTypePriority) {
-//        int begin = ((Annotation)startingFs).getBegin();
-//        int end = ((Annotation)startingFs).getEnd();
-//        Type type = startingFs.getType();
-//        Annotation fs = (Annotation) it.get();
-//        while (begin == fs.getBegin() && end == fs.getEnd() 
-////               && (!isPositionUsesType || type == fs.getType())
-//               ) {
-//          it.moveToPreviousNvc();
-//          if (!it.isValid()) {
-//            it.moveToFirst();
-//            return it;
-//          }
-//          fs = (Annotation) it.get();
-//        }
-//        it.moveToNext();
-//      }
-//    }
-    
     if (isFollowing) {
-      final int begin = ((Annotation)startingFs).getBegin();
-      final int end = ((Annotation)startingFs).getEnd();
-      while (it.isValid()) {
-        int aBegin = ((Annotation)it.get()).getBegin();
-        if (aBegin >= end && aBegin != begin) {
-          break;
-        }
-        it.moveToNext();
+      Annotation start = (Annotation) startingFs;
+      if (start.getBegin() == start.getEnd()) {
+        // We cannot moveTo(startingFS) because if startingFS has zero-width, then we would
+        // end up positioning the iterator after a non-zero-width annotation which would be
+        // considered to follow the startingFS.
+        // Example:
+        // [83,83] startingFS 
+        // [83,84] annotation that should be considered following the startingFS
+        // but [83,84] comes *AFTER* [83,83] in index iteration order!
+        it.moveTo(makePosAnnot(start.getBegin(), Integer.MAX_VALUE));
       }
-    } else if (isPreceding) {
-      final int begin = ((Annotation)startingFs).getBegin();
+      else {
+        it.moveTo(startingFs);
+        
+        final int begin = ((Annotation)startingFs).getBegin();
+        final int end = ((Annotation)startingFs).getEnd();
+        while (it.isValid()) {
+          int aBegin = ((Annotation)it.get()).getBegin();
+          if (aBegin >= end && aBegin != begin) {
+            break;
+          }
+          it.moveToNext();
+        }
+      }
+    } 
+    else if (isPreceding) {
+      Annotation start = (Annotation) startingFs;
+      
+      // A zero-width annotation will appear *after* a non-zero width annotation in the index, so
+      // if we simply seek to a non-zero-width startingFs, we might miss a zero-width annotation
+      // occurring at the beginning of startingFs. So instead, we seek to a zero-width position
+      // at the begin of the startingFs and leave the rest to the filtering iterator we use for
+      // preceding selection.
+      //it.moveTo(startingFs);
+      it.moveTo(makePosAnnot(start.getBegin(), start.getBegin()));
+      
+      final int begin = start.getBegin();
       while (it.isValid() && ((Annotation)it.get()).getEnd() > begin) {
         it.moveToPrevious();
       }
+    }
+    else {
+      it.moveTo(startingFs);
     }
     
     return it;

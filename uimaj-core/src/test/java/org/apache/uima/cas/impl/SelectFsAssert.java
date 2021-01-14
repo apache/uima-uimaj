@@ -115,7 +115,7 @@ public class SelectFsAssert {
     //
     // The tests should be implemented in the SelectFsTest class.
     // --------------------------------------------------------------------------------------------
-//    lockedSeed = 255314121677929l;
+//    lockedSeed = 541442246796748l;
 //    aIterations = 100_000;
 //    annotationsPerIteration = iteration -> 3;
 //    aTypes = 1;
@@ -228,8 +228,8 @@ public class SelectFsAssert {
             assertSelectionAsBackwardIteration(expected, randomCas, aActual, xRelToY, description,
                 typeX, typeY, y, timings);
 
-            assertSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY, description, typeX,
-                typeY, y, timings);
+            assertSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY,
+                description, typeX, typeY, y, timings);
             
             if (asList(COVERED_BY, FOLLOWING, PRECEDING).contains(xRelToY)) {
               assertSelectionAsRandomIteration(rnd, unambigousExpected, randomCas,

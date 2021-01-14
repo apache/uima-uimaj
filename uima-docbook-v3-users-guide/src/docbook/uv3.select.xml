@@ -363,7 +363,7 @@ FSIterator&lt;Token&gt; token_iterator =
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term><emphasis role="strong">mullOK</emphasis></term>
+          <term><emphasis role="strong">nullOK</emphasis></term>
           <listitem>
             <para>changes the behavior for the terminal_form actions <code>get(...) and single(...)</code>, which would otherwise
       throw an exception if a null result happened.
@@ -418,7 +418,7 @@ FSIterator&lt;Token&gt; token_iterator =
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term><emphasis role="">startAt</emphasis></term>
+          <term><emphasis role="strong">startAt</emphasis></term>
           <listitem>
             <para>position the starting point of any iteration.  
 			        <code>startAt(...)</code> can be used for general sorted indexes, and also has special
@@ -829,7 +829,7 @@ startAt(begin, end, shifted) // same as above,
             an exception is thrown unless <code>nullOK</code> is set.
             </para>
             <para>If any positioning arguments are specified, then this returns the item at that position unless 
-            there is no item at that position, in which case it throws an exception unless <code>mullOK</code> is set.
+            there is no item at that position, in which case it throws an exception unless <code>nullOK</code> is set.
             </para>
           </listitem>
         </varlistentry>
