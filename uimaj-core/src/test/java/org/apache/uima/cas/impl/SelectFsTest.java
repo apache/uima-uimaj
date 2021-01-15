@@ -1563,7 +1563,6 @@ public class SelectFsTest {
     assertThat(it.get()).isSameAs(expected[2]);
   }
 
-  
   @Test
   public void thatSelectColocatedSeekToInitialThenMoveToNextWorks() throws Exception {
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
