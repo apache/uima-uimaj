@@ -119,7 +119,7 @@ public class SelectFsAssert {
     //
     // The tests should be implemented in the SelectFsTest class.
     // --------------------------------------------------------------------------------------------
-//    lockedSeed = 763423322444111l;
+//    lockedSeed = 777428909350587l;
 //    aIterations = 100_000;
 //    annotationsPerIteration = iteration -> 2;
 //    aTypes = 1;
@@ -232,8 +232,8 @@ public class SelectFsAssert {
                 description, typeX, typeY, y, timings);
 
             // formatter:off
-            // Non-Overlapping | Limited | Backwards
-            // false           | false   | false
+            // Non-Overlapping | Limited | Backwards | Shifted
+            // false           | false   | false     | true
             // formatter:on
             assertShiftedSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY,
                 description, typeX, typeY, y, timings);
@@ -258,7 +258,14 @@ public class SelectFsAssert {
             // formatter:on
             assertLimitedBackwardsSelectionAsRandomIteration(rnd, expected, randomCas, aActual,
                 xRelToY, description, typeX, typeY, y, timings);
-            
+
+            // formatter:off
+            // Non-Overlapping | Limited | Backwards | Shifted
+            // false           | true    | true      | true
+            // formatter:on
+            assertShiftedLimitedBackwardsSelectionAsRandomIteration(rnd, expected, randomCas, aActual,
+                xRelToY, description, typeX, typeY, y, timings);
+
             // formatter:off
             // Non-Overlapping | Limited | Backwards
             // true            | false   | false
@@ -319,9 +326,9 @@ public class SelectFsAssert {
     timings.compute("asList", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
 
     assertThat(listActual)
-        .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%d] asList%n%s%n", typeX.getName(),
-            aXRelToY, description, y.getType().getShortName(), y.getBegin(), y.getEnd(),
-            identityHashCode(y), casToString(randomCas))
+        .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] %s asList%n%s%n", typeX.getName(),
+            aXRelToY, y.getType().getShortName(), y.getBegin(), y.getEnd(),
+            identityHashCode(y), description, casToString(randomCas))
         .containsExactlyElementsOf(expected);
   }
   
@@ -356,9 +363,9 @@ public class SelectFsAssert {
     timings.compute("it. >>", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
     
     assertThat(actual)
-        .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%d] iterator forward%n%s%n",
-            typeX.getName(), aXRelToY, description, y.getType().getShortName(), y.getBegin(),
-            y.getEnd(), identityHashCode(y), casToString(randomCas))
+        .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] %s iterator forward%n%s%n",
+            typeX.getName(), aXRelToY, y.getType().getShortName(), y.getBegin(),
+            y.getEnd(), identityHashCode(y), description, casToString(randomCas))
         .containsExactlyElementsOf(expected);
   }
 
@@ -377,9 +384,9 @@ public class SelectFsAssert {
     timings.compute("it. <<", (k, v) -> v == null ? 0l : v + currentTimeMillis() - t);
     
     assertThat(actual)
-        .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%s] iterator backwards%n%s%n",
-            typeX.getName(), aXRelToY, description, y.getType().getShortName(), y.getBegin(),
-            y.getEnd(), identityHashCode(y), casToString(randomCas))
+        .as("Selecting X of type [%s] %s [%s]@[%d-%d][%s] %s iterator backwards%n%s%n",
+            typeX.getName(), aXRelToY, y.getType().getShortName(), y.getBegin(),
+            y.getEnd(), identityHashCode(y), description, casToString(randomCas))
         .containsExactlyElementsOf(expected);
   }
   
@@ -400,6 +407,7 @@ public class SelectFsAssert {
       List<Annotation> expected, CAS randomCas, TypeByContextSelectorAsSelection aActual,
       RelativePosition aXRelToY, String description, Type typeX, Type typeY, Annotation y,
       Map<String, Long> timings) {
+    
     int limit = rnd.nextInt(5);
 
     // FIXME: Actually... I am pretty sure that all selection types should use the same 
@@ -419,7 +427,38 @@ public class SelectFsAssert {
         (cas, type, context) -> aActual.select(cas, type, context).limit(limit).backwards(),
         aXRelToY, description + " backwards with limit(" + limit + ")", typeX, typeY, y, timings);
   }
-  
+
+  private static void assertShiftedLimitedBackwardsSelectionAsRandomIteration(Random rnd,
+      List<Annotation> expected, CAS randomCas, TypeByContextSelectorAsSelection aActual,
+      RelativePosition aXRelToY, String description, Type typeX, Type typeY, Annotation y,
+      Map<String, Long> timings) {
+    
+    // Random shift in the range of [-2, 2]
+    int shift = rnd.nextInt(2) - rnd.nextInt(4);
+    int limit = rnd.nextInt(5);
+
+    // FIXME: Actually... I am pretty sure that all selection types should use the same 
+    //        precedence for limit/backwards...
+    List<Annotation> adjustedExpectation;
+    if (asList(FOLLOWING, PRECEDING).contains(aXRelToY)) {
+      // This works with FOLLOWING / PRECEDING
+      adjustedExpectation = shifted(expected, shift, aXRelToY);
+      adjustedExpectation = limit(adjustedExpectation, limit, aXRelToY);
+      adjustedExpectation = backwards(adjustedExpectation);
+    } else {
+      // This works with COVERED_BY, COVERING, COLOCATED
+      adjustedExpectation = backwards(expected);
+      adjustedExpectation = shifted(adjustedExpectation, shift, aXRelToY);
+      adjustedExpectation = limit(adjustedExpectation, limit, aXRelToY);
+    }
+
+    assertSelectionAsRandomIteration(rnd, adjustedExpectation, randomCas,
+        (cas, type, context) -> aActual.select(cas, type, context).shifted(shift).limit(limit)
+            .backwards(),
+        aXRelToY, description + " backwards with limit(" + limit + ") shifted(" + shift + ")",
+        typeX, typeY, y, timings);
+  }
+
   private static void assertLimitedNonOverlappingSelectionAsRandomIteration (Random rnd,
       List<Annotation> expected, CAS randomCas, TypeByContextSelectorAsSelection aActual,
       RelativePosition aXRelToY, String description, Type typeX, Type typeY, Annotation y,
@@ -513,17 +552,17 @@ public class SelectFsAssert {
   }
   
   private static void assertShiftedSelectionAsRandomIteration(Random rnd, List<Annotation> expected,
-      CAS randomCas, TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, 
-      String description, Type typeX, Type typeY, Annotation y, Map<String, Long> timings)
-  {
+      CAS randomCas, TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY,
+      String description, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
+
     // Random shift in the range of [-2, 2]
-    int shift = rnd.nextInt(2) - rnd.nextInt(4); 
-    
-    List<Annotation> adjustedExpectation = startAtShifted(expected, null, shift, aXRelToY);
+    int shift = rnd.nextInt(2) - rnd.nextInt(4);
+
+    List<Annotation> adjustedExpectation = shifted(expected, shift, aXRelToY);
     
     assertSelectionAsRandomIteration(rnd, adjustedExpectation, randomCas,
-        (cas, type, context) -> aActual.select(cas, type, context).shifted(shift),
-        aXRelToY, " shifted by " + shift, typeX, typeY, y, timings);
+        (cas, type, context) -> aActual.select(cas, type, context).shifted(shift), aXRelToY,
+        " shifted by " + shift, typeX, typeY, y, timings);
   }
   
   private static void assertSelectionAsRandomIteration(Random rnd, List<Annotation> expected,
@@ -532,12 +571,13 @@ public class SelectFsAssert {
     FSIterator<Annotation> it = aActual.select(randomCas, typeX, y).fsIterator();
 
     if (expected.size() == 0) {
-      assertThat(it.isValid())
-          .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%d] random iteration%n%s%n" + 
-              "Expected is empty but iterator is not invalid.", typeX.getName(), aXRelToY, 
-              description, y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
-              casToString(randomCas))
-          .isFalse();
+      assertThat(it.isValid()).as(
+          "Selecting X of type [%s] %s [%s]@[%d-%d][%d] %s random iteration%n%s%n"
+              + "Expected is empty but iterator is not invalid", // and points at [%s]@[%d-%d][%d].",
+          typeX.getName(), aXRelToY, y.getType().getShortName(), y.getBegin(), y.getEnd(),
+          identityHashCode(y), description, casToString(randomCas) /*,
+          it.get().getType().getShortName(), it.get().getBegin(), it.get().getEnd(),
+          identityHashCode(it.get())*/).isFalse();
       return;
     }
     
@@ -590,17 +630,17 @@ public class SelectFsAssert {
       }
       
       assertThat(it.isValid())
-          .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%d] random iteration%n%s%n" + 
-              "%s%nHistory:%n%s%n%nValidity mismatch.", typeX.getName(), aXRelToY, description,
+          .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] %s random iteration%n%s%n" + 
+              "%s%nHistory:%n%s%n%nValidity mismatch.", typeX.getName(), aXRelToY,
               y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
-              casToString(randomCas), expectedLog,
+              description, casToString(randomCas), expectedLog,
               history.stream().collect(joining("\n")))
           .isTrue();
       assertThat(it.get())
-          .as("Selecting X of type [%s] %s%s [%s]@[%d-%d][%d] random iteration%n%s%n" + 
-              "%s%nHistory:%n%s%n%nExpectation mismatch. ", typeX.getName(), aXRelToY, description,
+          .as("Selecting X of type [%s] %s [%s]@[%d-%d][%d] %s random iteration%n%s%n" + 
+              "%s%nHistory:%n%s%n%nExpectation mismatch. ", typeX.getName(), aXRelToY,
               y.getType().getShortName(), y.getBegin(), y.getEnd(), identityHashCode(y),
-              casToString(randomCas), expectedLog,
+              description, casToString(randomCas), expectedLog,
               history.stream().collect(joining("\n")))
           // We do not compare the exact annotation here because the moveTo operation moves to the
           // first annotation that matches the target annotation. If there are multiple annoations
@@ -673,9 +713,17 @@ public class SelectFsAssert {
     return Collections.binarySearch(expected, fs, comparing(AnnotationFS::getBegin)
         .thenComparing(AnnotationFS::getEnd, reverseOrder()));
   }
-  
+
+  private static List<Annotation> shifted(List<Annotation> expected, int shift,
+      RelativePosition aXRelToY) {
+    return startAtShifted(expected, null, shift, aXRelToY);
+  }
+
   private static List<Annotation> startAtShifted(List<Annotation> expected, Annotation startFs,
       int shift, RelativePosition aXRelToY) {
+    
+    // NOTE: for the moment, we do not use the startFs, so the insertionPoint seek and handling
+    // of the insertion point might be buggy!
     
     int start;
     int end;
