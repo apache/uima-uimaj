@@ -263,13 +263,13 @@ public class SelectFsTest {
     // What does happen right now is that the negative shift makes the underlying iterator invalid
     // because it causes it to move outside its boundary (i.e. into the startFS).
     assertThat(jCas.select(Token.class).following(s2).shifted(-1).asList())
-        .containsExactly();
+        .containsExactly(t[3], t[4]);
     // Old reference value
     //  .containsExactly(t[2], t[3], t[4]);
 
     // See comment above for select-following-with-negative-shift
     assertThat(jCas.select(Token.class).preceding(s2).backwards().shifted(-1).asList())
-        .containsExactly();
+        .containsExactly(t[1], t[0]);
 //      .containsExactly(t[0], t[1], t[2]);
 
     assertThat(jCas.select(Token.class).startAt(s2).asList())

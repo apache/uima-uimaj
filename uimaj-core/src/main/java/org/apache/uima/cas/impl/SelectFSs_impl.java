@@ -100,8 +100,6 @@ import org.apache.uima.jcas.tcas.Annotation;
  */
 public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T> {
   
-  private static AtomicInteger negativeShiftAndFollowingPrecedingWarning = new AtomicInteger(0);
-
   private final static boolean IS_UNORDERED = true;
   private final static boolean IS_ORDERED = false;
   private final static boolean IS_UNAMBIGUOUS = false;
@@ -138,7 +136,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * Used for preceding since we tweak the end offset of the reference annotation
    */
   private TOP startingFs = null;
-  private boolean originalStartingFsHasZeroWidth = false;
   private AnnotationFS boundingFs = null;
   private boolean noResult = false;
   
@@ -1460,7 +1457,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
   private SelectFSs<T> commonPreceding(Annotation annotation, int offset) {
 //    validateSinglePosition(fs, offset);
-    this.originalStartingFsHasZeroWidth = annotation.getBegin() == annotation.getEnd();
     this.startingFs = annotation;
     this.shift = offset;
     isPreceding = true;
