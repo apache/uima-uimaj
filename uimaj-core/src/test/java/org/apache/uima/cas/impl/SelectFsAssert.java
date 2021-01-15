@@ -24,6 +24,9 @@ import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.identityHashCode;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.reverseOrder;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
@@ -32,7 +35,6 @@ import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosit
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
 import static org.apache.uima.cas.text.AnnotationPredicates.overlapping;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -117,7 +119,7 @@ public class SelectFsAssert {
     //
     // The tests should be implemented in the SelectFsTest class.
     // --------------------------------------------------------------------------------------------
-//    lockedSeed = 755270999794436l;
+//    lockedSeed = 763423322444111l;
 //    aIterations = 100_000;
 //    annotationsPerIteration = iteration -> 2;
 //    aTypes = 1;
@@ -202,9 +204,10 @@ public class SelectFsAssert {
           }
           
           long tExpected = System.currentTimeMillis();
-          List<Annotation> expected = aExpected.select(randomCas, typeX, y).stream().map(a -> (Annotation) a)
-              .collect(toList());
-          timings.compute("filt. full scan", (k, v) -> v == null ? 0l : v + currentTimeMillis() - tExpected);
+          List<Annotation> expected = aExpected.select(randomCas, typeX, y).stream()
+              .map(a -> (Annotation) a).collect(toList());
+          timings.compute("filt. full scan",
+              (k, v) -> v == null ? 0l : v + currentTimeMillis() - tExpected);
 
           sizeCounts.compute(expected.size(), (k, v) -> v == null ? 1 : v++);
           
@@ -226,6 +229,13 @@ public class SelectFsAssert {
             // false           | false   | false
             // formatter:on
             assertSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY,
+                description, typeX, typeY, y, timings);
+
+            // formatter:off
+            // Non-Overlapping | Limited | Backwards
+            // false           | false   | false
+            // formatter:on
+            assertShiftedSelectionAsRandomIteration(rnd, expected, randomCas, aActual, xRelToY,
                 description, typeX, typeY, y, timings);
 
             // formatter:off
@@ -502,6 +512,20 @@ public class SelectFsAssert {
         aXRelToY, " backwards", typeX, typeY, y, timings);
   }
   
+  private static void assertShiftedSelectionAsRandomIteration(Random rnd, List<Annotation> expected,
+      CAS randomCas, TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, 
+      String description, Type typeX, Type typeY, Annotation y, Map<String, Long> timings)
+  {
+    // Random shift in the range of [-2, 2]
+    int shift = rnd.nextInt(2) - rnd.nextInt(4); 
+    
+    List<Annotation> adjustedExpectation = startAtShifted(expected, null, shift, aXRelToY);
+    
+    assertSelectionAsRandomIteration(rnd, adjustedExpectation, randomCas,
+        (cas, type, context) -> aActual.select(cas, type, context).shifted(shift),
+        aXRelToY, " shifted by " + shift, typeX, typeY, y, timings);
+  }
+  
   private static void assertSelectionAsRandomIteration(Random rnd, List<Annotation> expected,
       CAS randomCas, TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, 
       String description, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
@@ -644,6 +668,40 @@ public class SelectFsAssert {
     return asList(COVERED_BY, FOLLOWING, PRECEDING).contains(aXRelToY);
   }
 
+  private static int insertionPoint(List<Annotation> expected, Annotation fs)
+  {
+    return Collections.binarySearch(expected, fs, comparing(AnnotationFS::getBegin)
+        .thenComparing(AnnotationFS::getEnd, reverseOrder()));
+  }
+  
+  private static List<Annotation> startAtShifted(List<Annotation> expected, Annotation startFs,
+      int shift, RelativePosition aXRelToY) {
+    
+    int start;
+    int end;
+    if (aXRelToY == PRECEDING) {
+      // Shifting always shifts away from the reference FS - since with preceding the reference FS
+      // is at the end of the selection region, we need to shift from the end here.
+      start = 0;
+      end = startFs != null ? insertionPoint(expected, startFs) : expected.size();
+      end -= shift;
+    }
+    else {
+      start = startFs != null ? insertionPoint(expected, startFs) : 0;
+      start += shift;
+      end = expected.size();
+    }
+
+    start = min(max(0, start), expected.size());
+    end = min(max(0, end), expected.size());
+    
+    if (start > end) {
+      return emptyList();
+    }
+    
+    return new ArrayList<>(expected.subList(start, end));
+  }
+  
   private static List<Annotation> backwards(List<Annotation> expected) {
     List<Annotation> reverseExpected = new ArrayList<>(expected);
     Collections.reverse(reverseExpected);

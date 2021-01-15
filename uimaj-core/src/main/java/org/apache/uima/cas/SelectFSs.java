@@ -229,7 +229,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   
   /**
    * Starting Position specification - For Annotation Indexes, specifies which FS to start at.
-   * Sets no typepriorities.
+   * This method is incompatible with {@link #typePriority()} and turns type priorities off
+   * implicitly. Do not turn type priorities back on.
    * Positions to the leftmost (if there are multiple equal ones) Annotation 
    *   whose begin is &gt;= begin 
    * @param begin the begin bound

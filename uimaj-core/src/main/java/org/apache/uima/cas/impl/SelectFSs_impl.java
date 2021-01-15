@@ -585,13 +585,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         isFollowing || isPreceding;
     
     isUnordered = ! orderingNeeded;
-    
-    if ((isFollowing || isPreceding) && shift < 0) {
-      Misc.decreasingWithTrace(negativeShiftAndFollowingPrecedingWarning,
-          "Negative shift in combination with following/preceding "
-              + "is not supported (always returns empty result) and is likely a mistake. "
-              + "Consider using startAt instead.",
-          UIMAFramework.getLogger());
+
+    // If there is a boundary for the selection start and the shift would try to cross this
+    // boundary, it would result in an invalid iterator causing the selection operation to return
+    // an empty result. To avoid this potentially surprising behavior, reduce the shift to 0 in 
+    // such a case.
+    if ((isFollowing || isPreceding || boundsUse != BoundsUse.notBounded) && shift < 0) {
+      shift = 0;
     }
   }
   
@@ -687,7 +687,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       return baseIt;
     });
 
-    return (limit == -1) ? it : new FsIterator_limited<>(it, limit);
+    return maybeLimit(it);
   }
     
   /**
@@ -1341,7 +1341,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         }
       }
     }
+
     return it;
+  }
+  
+  private LowLevelIterator<T> maybeLimit(LowLevelIterator<T> it) {
+    return (limit == -1) ? it : new FsIterator_limited<>(it, limit);
   }
   
   /********************************************
