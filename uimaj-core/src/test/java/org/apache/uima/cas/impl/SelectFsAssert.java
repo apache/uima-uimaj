@@ -119,7 +119,7 @@ public class SelectFsAssert {
     //
     // The tests should be implemented in the SelectFsTest class.
     // --------------------------------------------------------------------------------------------
-//    lockedSeed = 777428909350587l;
+//    lockedSeed = 779033675811369l;
 //    aIterations = 100_000;
 //    annotationsPerIteration = iteration -> 2;
 //    aTypes = 1;
@@ -293,6 +293,13 @@ public class SelectFsAssert {
             // formatter:on
             assertLimitedBackwardsNonOverlappingSelectionAsRandomIteration(rnd, expected, randomCas,
                 aActual, xRelToY, description, typeX, typeY, y, timings);
+            
+            // formatter:off
+            // Non-Overlapping | Limited | Backwards | Shifted
+            // true            | true    | true      | true
+            // formatter:on
+            assertShiftedLimitedBackwardsNonOverlappingSelectionAsRandomIteration(rnd, expected,
+                randomCas, aActual, xRelToY, description, typeX, typeY, y, timings);
           }
           catch (Throwable e) {
             // Set a breakpoint here to halt when an assert above fails. The select triggering the
@@ -511,6 +518,43 @@ public class SelectFsAssert {
         typeY, y, timings);
   }
 
+  private static void assertShiftedLimitedBackwardsNonOverlappingSelectionAsRandomIteration(Random rnd,
+      List<Annotation> expected, CAS randomCas, TypeByContextSelectorAsSelection aActual,
+      RelativePosition aXRelToY, String description, Type typeX, Type typeY, Annotation y,
+      Map<String, Long> timings) {
+    if (!nonOverlappingSupported(aXRelToY)) {
+      return;
+    }
+    
+    // Random shift in the range of [-2, 2]
+    int shift = rnd.nextInt(2) - rnd.nextInt(4);
+    int limit = rnd.nextInt(5);
+
+    // FIXME: Actually... I am pretty sure that all selection types should use the same 
+    //        precedence for limit/backwards...
+    List<Annotation> adjustedExpectation;
+    if (asList(FOLLOWING, PRECEDING).contains(aXRelToY)) {
+      // This works with FOLLOWING / PRECEDING
+      adjustedExpectation = unambiguous(expected);
+      adjustedExpectation = shifted(adjustedExpectation, shift, aXRelToY);
+      adjustedExpectation = limit(adjustedExpectation, limit, aXRelToY);
+      adjustedExpectation = backwards(adjustedExpectation);
+    } else {
+      // This works with COVERED_BY, COVERING, COLOCATED
+      adjustedExpectation = unambiguous(expected);
+      adjustedExpectation = backwards(adjustedExpectation);
+      adjustedExpectation = shifted(adjustedExpectation, shift, aXRelToY);
+      adjustedExpectation = limit(adjustedExpectation, limit, aXRelToY);
+      return;
+    }
+
+    assertSelectionAsRandomIteration(rnd, adjustedExpectation, randomCas,
+        (cas, type, context) -> aActual.select(cas, type, context).nonOverlapping().shifted(shift)
+            .limit(limit).backwards(),
+        aXRelToY,
+        description + " non-overlapping backwards with limit(" + limit + ") shifted(" + shift + ")",
+        typeX, typeY, y, timings);
+  }
   private static void assertNonOverlappingSelectionAsRandomIteration(Random rnd,
       List<Annotation> expected, CAS randomCas, TypeByContextSelectorAsSelection aActual,
       RelativePosition aXRelToY, String description, Type typeX, Type typeY, Annotation y,
