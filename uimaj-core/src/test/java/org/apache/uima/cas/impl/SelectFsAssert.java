@@ -237,6 +237,9 @@ public class SelectFsAssert {
             
             assertLimitedBackwardsSelectionAsRandomIteration(rnd, expected, randomCas, aActual,
                 xRelToY, description, typeX, typeY, y, timings);
+            
+            assertLimitedBackwardsNonOverlappingSelectionAsRandomIteration(rnd, expected, randomCas, aActual,
+                xRelToY, description, typeX, typeY, y, timings);
           }
           catch (Throwable e) {
             // Set a breakpoint here to halt when an assert above fails. The select triggering the
@@ -370,6 +373,38 @@ public class SelectFsAssert {
         (cas, type, context) -> aActual.select(cas, type, context).limit(limit).backwards(),
         aXRelToY, description + " backwards with limit(" + limit + ")", typeX, typeY, y, timings);
   }
+  
+  private static void assertLimitedBackwardsNonOverlappingSelectionAsRandomIteration(Random rnd,
+      List<Annotation> expected, CAS randomCas, TypeByContextSelectorAsSelection aActual,
+      RelativePosition aXRelToY, String description, Type typeX, Type typeY, Annotation y,
+      Map<String, Long> timings) {
+    if (!asList(COVERED_BY, FOLLOWING, PRECEDING).contains(aXRelToY)) {
+      // Non-overlapping selection is only not supported for any other than the above selection
+      // types
+      return;
+    }
+    
+    int limit = rnd.nextInt(5);
+
+    List<Annotation> limitedExpected;
+    
+    // FIXME: Actually... I am pretty sure that all selection types should use the same 
+    //        precedence for limit/backwards...
+    if (asList(FOLLOWING, PRECEDING).contains(aXRelToY)) {
+      // This works with FOLLOWING / PRECEDING
+        limitedExpected = backwards(limit(unambiguous(expected), limit, aXRelToY));
+    }
+    else {
+      // This works with COVERED_BY, COVERING, COLOCATED
+      limitedExpected = limit(backwards(unambiguous(expected)), limit, aXRelToY);
+    }
+
+    assertSelectionAsRandomIteration(rnd, limitedExpected, randomCas,
+        (cas, type, context) -> aActual.select(cas, type, context).nonOverlapping().limit(limit)
+            .backwards(),
+        aXRelToY, description + " non-overlapping backwards with limit(" + limit + ")", typeX,
+        typeY, y, timings);
+  }
 
   private static void assertNonOverlappingSelectionAsRandomIteration(Random rnd, List<Annotation> expected,
       CAS randomCas, TypeByContextSelectorAsSelection aActual, RelativePosition aXRelToY, 
@@ -393,7 +428,7 @@ public class SelectFsAssert {
       String description, Type typeX, Type typeY, Annotation y, Map<String, Long> timings) {
     
     if (!asList(COVERED_BY, FOLLOWING, PRECEDING).contains(aXRelToY)) {
-      // Non-overlapping selection is only not supported for any other thatn the above selection
+      // Non-overlapping selection is only not supported for any other than the above selection
       // types
       return;
     }
