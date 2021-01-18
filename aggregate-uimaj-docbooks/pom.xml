@@ -82,11 +82,13 @@
   </build>
   
   <modules>
+    <!-- Legacy Docbook -->
     <module>../uima-docbook-overview-and-setup</module>
     <module>../uima-docbook-references</module>
     <module>../uima-docbook-tools</module>
     <module>../uima-docbook-tutorials-and-users-guides</module>
-    <module>../uima-docbook-v3-users-guide</module>
+    <!-- Converted to Asciidoc -->
+    <module>../uima-doc-v3-users-guide</module>
     <!--module>../../branches/mavenAlign/PearPackagingMavenPlugin</module>  not used - is old version of doc -->
   </modules>  
 </project>
