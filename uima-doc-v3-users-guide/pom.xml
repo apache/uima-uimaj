@@ -99,7 +99,7 @@
         </executions>
         <configuration>
           <sourceDocumentName>version_3_users_guide.adoc</sourceDocumentName>
-          <outputDirectory>${project.build.directory}/site/d-asciidoc</outputDirectory>
+          <outputDirectory>${project.build.directory}/site/d</outputDirectory>
           <attributes>
             <doctype>book</doctype>
             <toclevels>8</toclevels>
