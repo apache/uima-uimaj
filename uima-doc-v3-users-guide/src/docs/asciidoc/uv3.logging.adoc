@@ -1,0 +1,152 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_uv3.logging]]
+= Logging
+
+Logging has evolved; two major changes now supported by V3 are 
+
+* using a popular open-source standard logging facade, SLF4j,  that can at run time discover and hook to  a user specified logging framework.
+* Support for both old-style and new style substitutable parameter specification.
+
+For backwards compatibilit, V3 retains the existing V2 logging facade, so existing code will continue to work.
+The APIs have been augmented by the methods available in the SLF4j `Logger` API, plus the Java 8 enabled APIs from the Log4j implementation that support the `Supplier` Functional Interface. 
+
+The old APIs support messages using the standard Java Util Logging style of writing substitutable parameters using an integer, e.g., {0}, {1}, etc.
+The new APIs support messages using the modern substitutable parameters without an integer, e.g.
+{}.
+
+The implementation of this facade in V2 was the built-in-to-Java (java.util) logging framework.
+For V3, this is changed to be the SLF4j facade.
+This is an open source, standard facade which allows deferring until deployment time, the specific logging back end to use. 
+
+If, at initialization time, SLF4J gets configured to use a back end which is either the  built-in Java logger, or Log4j-2, then the UIMA logger implementation is switched to UIMA's implementation of those APIs (bypassing SLF4j, for efficiency).
+
+The SLF4j and other documentation (e.g., https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html for log4j-2) describe  how to connect various logging back ends to SLF4j, by  putting logging back-end implementations into the classpath at run time.
+For example,  to use the back end logger built into Java,  you would include the `slf4j-jdk14` Jar.
+This Jar is included in the UIMA binary distribution, so that out-of-the-box, logging is available and configured the same as it was for V2. 
+
+The Eclipse UIMA Runtime plugin bundle excludes the slf4j api Jar and back ends, but will  "hook up" the needed implementations from other bundles. 
+
+[[_uv3.logging.levels]]
+== Logging Levels
+
+There are 2 logging level schemes, and there is a mapping between them.
+Either of them may be used when using the UIMA logger.
+One of the schemes is the original UIMA v2 level set, which is the same  as the built-in-to-java logger levels.
+The other is the scheme adopted by SLF4J and many of its back ends. 
+
+Log statements are "filtered" according to the logging configuration, by Level, and sometimes by additional indicators, such as Markers.
+Levels work in a hierarchy.
+A given level of  filtering passes that level and all higher levels.
+Some levels have two names, due to the  way the different logger back-ends name things.
+Most levels are also used as method names on  the logger, to indicate logging for that level.
+For example, you could say `aLogger.log(Level.INFO, message)` but you can also say ``aLogger.info(message)``). The level ordering, highest to lowest,  and the associated method names are as follows: 
+
+* SEVERE or ERROR; error(...)
+* WARN or WARNING; warn(...)
+* INFO; info(...)
+* CONFIG; info(UIMA_MARKER_CONFIG, ...)
+* FINE or DEBUG; debug(...)
+* FINER or TRACE; trace(...)
+* FINEST; trace(UIMA_MARKER_FINEST, ...)
+
+The CONFIG and FINEST levels are merged with other levels, but distinguished by having ``Markers``.
+If the filtering is configured to pass CONFIG level, then it will pass  the higher levels (i.e., the INFO/WARN/ERROR or their alternative names WARNING/SEVERE) levels as well. 
+
+[[_uv3.logging.new_recorded_context_data]]
+== Context Data
+
+Context data is kept in SLF4j MDC maps; there is a separate map per thread.
+This information is set before calling Annotator's process or initialize methods.
+The following table lists the keys and the values recorded in the contexts; these can be retrieved by the logging layouts and included in log messages. 
+
+Because the keys for context data are global, the ones UIMA uses internally are prefixed with "uima_".
+
+[cols="1,1", frame="all"]
+|===
+
+|**Key Name**
+|**Description**
+
+|
+
+uima_annotator
+|
+
+the annotator implementation name.
+
+|
+
+uima_annotator_context_name
+|
+
+the fully qualified annotator context name within the pipeline.
+A top level (not contained within any aggregate) annotator will have a context of "/".
+
+|
+
+uima_root_context_id
+|
+
+A unique id representing the pipeline being run.
+This is unique within a class-loader for the UIMA-framework. 
+
+|
+
+uima_cas_id
+|
+
+A unique id representing the CAS being currently processed in the pipeline.
+This is unique within a class-loader for the UIMA-framework. 
+|===
+
+[[_uv3.logging.markers]]
+== Markers used in UIMA Java core logging
+
+[NOTE]
+====
+*Not (yet) implemented; for planning purposes only.*
+====
+
+[[_uv3.logging.defaults_configuration]]
+== Defaults and Configuration
+
+By default, UIMA is configured so that the UIMA logger is hooked up to the SLF4j facade, which may or may not have a logging back-end.
+If it doesn't, then any use of the UIMA logger will produce  one warning message stating that SLF4j has no back-end logger configured, and so no logging will be done. 
+
+When UIMA is run as an embedded library in other applications, slf4j will use those other application's logging frameworks.
+
+Each logging back-end has its own way of being configured;  please consult the proper back-end documentation for details.
+
+For backwards compatibility, the binary distribution of UIMA includes the slf4j back-end  which hooks to the standard built-in Java logging framework, so out-of-the-box, UIMA should be configured and log by default as V2 did.
+
+[[_uv3.logging.throttling_annotator_logging]]
+=== Throttling logging from Annotators
+
+Sometimes, in production, you may find annotators are logging excessively, and you wish to throttle  this.
+But you may not have access to logging settings to control this, perhaps because UIMA is running as a library component within another framework.
+For this special case, you can limit logging done by Annotators by passing an additional parameter to the UIMA Framework's  produceAnalysisEngine API, using the key name `AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING` and setting the value to an Integer object equal to the the limit.
+Using 0 will suppress all logging.
+Any positive number allows that many log records to be logged, per level.
+A limit of 10 would allow  10 Errors, 10 Warnings, etc.
+The limit is enforced separately, per logger instance.
+
+[NOTE]
+====
+This only works if the logger used by Annotators is obtained from the  Annotator base implementation class via the `getLogger()` method.
+====

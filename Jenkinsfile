@@ -89,7 +89,7 @@ pipeline {
     // merge request has been merged. On success, it deploys the generated artifacts to the
     // Maven repository server.
     stage("SNAPSHOT build") {
-      when { branch pattern: "master|master-v2", comparator: "REGEXP" }
+      when { branch pattern: "main|main-v2", comparator: "REGEXP" }
       
       steps {
         withMaven() {

@@ -15,5 +15,5 @@
 #   specific language governing permissions and limitations
 #   under the License.
 github:
-  description: "UIMA Java SDK, version 3 (in master), 2 (in master-v2)"
+  description: "UIMA Java SDK, version 3 (in main), 2 (in main-v2)"
   homepage: https://uima.apache.org

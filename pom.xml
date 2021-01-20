@@ -296,6 +296,7 @@
                   <exclude>PearPackagingMavenPlugin/**</exclude>
                   <exclude>jcasgen-maven-plugin/**</exclude>
                   <exclude>uima-docbook-*/**</exclude>
+                  <exclude>uima-doc-*/**</exclude>
                   <exclude>uimaj-adapter-*/**</exclude>
                   <exclude>uimaj-component-test-util/**</exclude>
                   <exclude>uimaj-core/**</exclude>
@@ -388,6 +389,5 @@
         <module>uimaj-json</module>
       </modules>
     </profile>
-  </profiles>    
-    
+  </profiles>
 </project>

@@ -19,89 +19,174 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
- * Wraps FSIterator<T>, limits results to n gets
+ * Wraps FSIterator<T>, limits results to n gets. Moving the iterator around does not count towards
+ * the limit.
  */
-class FsIterator_limited<T extends FeatureStructure>  
-          implements LowLevelIterator<T> {
-  
+class FsIterator_limited<T extends FeatureStructure>
+    implements LowLevelIterator<T> {
+
   final private LowLevelIterator<T> iterator; // not just for single-type iterators
   final private int limit;
+  
   private int count = 0;
-    
+  private boolean limitReached = false;
+
   FsIterator_limited(FSIterator<T> iterator, int limit) {
     this.iterator = (LowLevelIterator<T>) iterator;
     this.limit = limit;
+    this.limitReached = limit <= count;
   }
 
   private void maybeMakeInvalid() {
-    if (count == limit) {
-      iterator.moveToFirstNoReinit();
-      iterator.moveToPrevious();
+    if (count < 0 || count == limit) {
+      limitReached = true;
     }
   }
-  
+
   @Override
   public T getNvc() {
     maybeMakeInvalid();
-    T r = iterator.get();  // not getNvc because of above line
-    count++;
+    if (limitReached) {
+      throw new NoSuchElementException();
+    }
+    T r = iterator.get(); // not getNvc because of above maybeMakeInvalid
     return r;
   }
 
   @Override
   public void moveToNextNvc() {
     maybeMakeInvalid();
-    iterator.moveToNext();   // not getNvc because of above line
+    if (limitReached) {
+      return;
+    }
+    iterator.moveToNext(); // not getNvc because of above maybeMakeInvalid
+    count++;
   }
 
   @Override
   public void moveToPreviousNvc() {
+    count--;
     maybeMakeInvalid();
-    iterator.moveToPrevious();  // not getNvc because of above line
+    if (limitReached) {
+      return;
+    }
+    iterator.moveToPrevious(); // not getNvc because of above maybeMakeInvalid
   }
 
   @Override
   public void moveToFirstNoReinit() {
     iterator.moveToFirstNoReinit();
-    maybeMakeInvalid();
+    count = 0;
+    this.limitReached = limit <= count;
   }
 
   @Override
   public void moveToLastNoReinit() {
-    iterator.moveToLastNoReinit();
-    maybeMakeInvalid();
+    if (count >= 0 && limitReached && iterator.isValid()) {
+      iterator.moveToPrevious();
+      count--;
+    }
+    else {
+      moveToFirstNoReinit();
+    }
+    
+    while (count < limit - 1 && iterator.isValid()) {
+      iterator.moveToNextNvc();
+      if (!iterator.isValid()) {
+        iterator.moveToLastNoReinit();
+        break;
+      }
+      else {
+        count++;
+      }
+    }
+    this.limitReached = limit <= count;
   }
 
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
-    iterator.moveToNoReinit(fs);
-    maybeMakeInvalid();
+    // If the iterator is not valid, then we make it valid by moving to the start
+    if (!isValid()) {
+      moveToFirstNoReinit();
+    }
+
+    // Now we seek... we cannot make proper use of the binary search here because we do not know
+    // now many elements the binary search skips and whether we stay inside the limit. Hopefully,
+    // the limit is not too big so that it might actually be faster to seek instead of doing the
+    // binary search.
+    Comparator<TOP> cmp = iterator.getComparator();
+    boolean skippedMatch = false;
+    boolean movedForward = false;
+    while (isValid()) {
+      T current = get();
+      
+      int c = cmp.compare((TOP) current, (TOP) fs);
+
+      // We seek to the first match in index order. Because we move backwards, we need to skip over
+      // matches in order to do so and then potentially back-up at the end of the move process.
+      if (c == 0) {
+        if (movedForward) {
+          // We reached the first match by seeking forward, so we can stop here
+          break;
+        }
+        
+        moveToPreviousNvc();
+        skippedMatch = true;
+        continue;
+      }
+      
+      if (skippedMatch) {
+        break;
+      }
+
+      if (c < 0) {
+        moveToNextNvc();
+        movedForward = true;
+        continue;
+      }
+      
+      if (c > 0) {
+        moveToPreviousNvc();
+      }
+    }
+
+    if (skippedMatch) {
+      if (!isValid()) {
+        moveToFirstNoReinit();
+      }
+      else {
+        moveToNextNvc();
+      }
+    }
   }
 
-//  @Override
-//  public void moveToExactNoReinit(FeatureStructure fs) {
-//    iterator.moveToExactNoReinit(fs);
-//    maybeMakeInvalid();
-//  }
-
+  // @Override
+  // public void moveToExactNoReinit(FeatureStructure fs) {
+  // iterator.moveToExactNoReinit(fs);
+  // maybeMakeInvalid();
+  // }
 
   @Override
   public FSIterator<T> copy() {
-    return new FsIterator_limited<>(iterator.copy(), limit);
+    FsIterator_limited<T> copy = new FsIterator_limited<>(iterator.copy(), limit);
+    copy.count = count;
+    copy.limitReached = limitReached;
+    return copy;
   }
 
   @Override
   public boolean isValid() {
     maybeMakeInvalid();
-    return iterator.isValid();
+    return !limitReached && iterator.isValid();
   }
 
   @Override
@@ -119,7 +204,9 @@ class FsIterator_limited<T extends FeatureStructure>
     return iterator.ll_getIndex();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated()
    */
   @Override

@@ -26,16 +26,16 @@ import static org.apache.uima.cas.text.AnnotationPredicateAssert.toRelativePosit
 import static org.apache.uima.cas.text.AnnotationPredicateAssert.toRelativePositionPredicate2Inverse;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.NON_ZERO_WIDTH_TEST_CASES;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.ZERO_WIDTH_TEST_CASES;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.BEGINNING_WITH;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COLOCATED;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.ENDING_WITH;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_AT_BEGIN;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_AT_END;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.BEGINNING_WITH;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +80,11 @@ public class AnnotationPredicatesTest {
           toRelativePositionPredicate1(cas, AnnotationPredicates::covering),
           toRelativePositionPredicate2(cas, AnnotationPredicates::covering))
       .forEach(predicate -> assertPosition(softly, COVERING, predicate, testCases));
-      
+    }
+
+    @Test
+    public void thatAxiomaticCoveringWorks() throws Exception {
+      assertPosition(softly, COVERING, AxiomaticAnnotationPredicates::covering, testCases);
     }
 
     @Test
@@ -90,6 +94,11 @@ public class AnnotationPredicatesTest {
           toRelativePositionPredicate1(cas, AnnotationPredicates::coveredBy),
           toRelativePositionPredicate2(cas, AnnotationPredicates::coveredBy))
       .forEach(predicate -> assertPosition(softly, COVERED_BY, predicate, testCases));
+    }
+
+    @Test
+    public void thatAxiomaticCoveredByWorks() throws Exception {
+      assertPosition(softly, COVERED_BY, AxiomaticAnnotationPredicates::coveredBy, testCases);
     }
 
     @Test
@@ -104,6 +113,11 @@ public class AnnotationPredicatesTest {
     }
 
     @Test
+    public void thatAxiomaticColocatedWorks() throws Exception {
+      assertPosition(softly, COLOCATED, AxiomaticAnnotationPredicates::colocated, testCases);
+    }
+
+    @Test
     public void thatOverlappingAtBeginWorks() throws Exception {
       asList(
           AnnotationPredicates::overlappingAtBegin,
@@ -113,12 +127,24 @@ public class AnnotationPredicatesTest {
     }
 
     @Test
+    public void thatAxiomaticOverlappingAtBeginWorks() throws Exception {
+      assertPosition(softly, OVERLAPPING_AT_BEGIN,
+          AxiomaticAnnotationPredicates::overlappingAtBegin, testCases);
+    }
+
+    @Test
     public void thatOverlappingAtEndWorks() throws Exception {
       asList(
           AnnotationPredicates::overlappingAtEnd,
           toRelativePositionPredicate1(cas, AnnotationPredicates::overlappingAtEnd),
           toRelativePositionPredicate2(cas, AnnotationPredicates::overlappingAtEnd))
       .forEach(predicate -> assertPosition(softly, OVERLAPPING_AT_END, predicate, testCases));
+    }
+
+    @Test
+    public void thatAxiomaticOverlappingAtEndWorks() throws Exception {
+      assertPosition(softly, OVERLAPPING_AT_END,
+          AxiomaticAnnotationPredicates::overlappingAtEnd, testCases);
     }
 
     @Test
@@ -133,12 +159,22 @@ public class AnnotationPredicatesTest {
     }
 
     @Test
+    public void thatAxiomaticOverlappingWorks() throws Exception {
+      assertPosition(softly, OVERLAPPING, AxiomaticAnnotationPredicates::overlapping, testCases);
+    }
+
+    @Test
     public void thatPrecedingWorks() throws Exception {
       asList(
           AnnotationPredicates::preceding,
           toRelativePositionPredicate1(cas, AnnotationPredicates::preceding),
           toRelativePositionPredicate2(cas, AnnotationPredicates::preceding))
       .forEach(predicate -> assertPosition(softly, PRECEDING, predicate, testCases));
+    }
+
+    @Test
+    public void thatAxiomaticPrecedingWorks() throws Exception {
+      assertPosition(softly, PRECEDING, AxiomaticAnnotationPredicates::preceding, testCases);
     }
 
     @Test
@@ -151,6 +187,11 @@ public class AnnotationPredicatesTest {
     }
 
     @Test
+    public void thatAxiomaticFollowingWorks() throws Exception {
+      assertPosition(softly, FOLLOWING, AxiomaticAnnotationPredicates::following, testCases);
+    }
+
+    @Test
     public void thatBeginningWithWorks() throws Exception {
       asList(
           AnnotationPredicates::beginningWith,
@@ -160,12 +201,22 @@ public class AnnotationPredicatesTest {
     }
 
     @Test
+    public void thatAxiomaticBeginningWithWorks() throws Exception {
+      assertPosition(softly, BEGINNING_WITH, AxiomaticAnnotationPredicates::beginningWith, testCases);
+    }
+
+    @Test
     public void thatEndingWithWorks() throws Exception {
       asList(
           AnnotationPredicates::endingWith,
           toRelativePositionPredicate1(cas, AnnotationPredicates::endingWith),
           toRelativePositionPredicate2(cas, AnnotationPredicates::endingWith))
       .forEach(predicate -> assertPosition(softly, ENDING_WITH, predicate, testCases));
+    }
+
+    @Test
+    public void thatAxiomaticEndingWithWorks() throws Exception {
+      assertPosition(softly, ENDING_WITH, AxiomaticAnnotationPredicates::endingWith, testCases);
     }
 
     @SafeVarargs
