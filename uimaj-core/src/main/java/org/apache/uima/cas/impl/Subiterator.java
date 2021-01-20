@@ -22,7 +22,11 @@ package org.apache.uima.cas.impl;
 import static java.lang.Integer.MAX_VALUE;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.coveredBy;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.covering;
+import static org.apache.uima.cas.impl.Subiterator.BoundsUse.notBounded;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.sameBeginEnd;
+import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
+import static org.apache.uima.cas.text.AnnotationPredicates.overlapping;
+import static org.apache.uima.cas.text.AnnotationPredicates.overlappingAtEnd;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -165,6 +169,13 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   
   /** the bounding annotation need not be a subtype of T */
   private final Annotation boundingAnnot;
+  private final int boundBegin;
+  private final int boundEnd;
+  
+  private final Annotation originalBoundingAnnotation;
+  private final int originalBoundBegin;
+  private final int originalBoundEnd;
+  private final TypeImpl boundType;
   
   private final Annotation coveringStartPos;
   
@@ -185,6 +196,8 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   /** one of notBounded, sameBeginEnd, coveredBy, covering */
   private final BoundsUse boundsUse; 
   private final boolean isIncludesAnnotationsStartingAtEndPosition;
+  private final boolean isIncludeZeroWidthAtBegin;
+  private final boolean isIncludeZeroWidthAtEnd;
   
   /**
    * isEmpty is a potentially expensive calculation, involving potentially traversing all the iterators in a particular type hierarchy
@@ -195,7 +208,8 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   private boolean isEmpty;
   
-  private int prevEnd = 0;  // for unambiguous iterators
+  private int prevBegin = -1;  // for unambiguous iterators
+  private int prevEnd = -1;    // for unambiguous iterators
   
   /**
    * list form is recalculated at moveToFirst/last/fs, same as isEmpty
@@ -206,10 +220,6 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * startId is recalculated at moveToFirst/last/fs, same as isEmpty
    */
   private int startId;
-
-  private final int boundBegin;
-  private final int boundEnd;
-  private final TypeImpl boundType;
   
   /** null if ! isTypePriority */
   private final LinearTypeOrder lto; 
@@ -228,33 +238,72 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * A normal iterator is passed in, already positioned to where things should start.
    * 
    * A bounding FS is passed in (except for unbounded unambiguous iteration.
-   *             
-   * @param it the iterator to use, positioned to the correct starting place
-   * @param boundingAnnot null or the bounding annotation
-   * @param ambiguous false means to skip annotations whose begin lies between previously returned begin (inclusive) and end (exclusive)
-   * @param strict true means to skip annotations whose end is greater than the bounding end position (ignoring type priorities)
-   * @param boundsUse null if no bounds, boundingAnnot used for start position if non-null
-   * @param isUseTypePriority false to ignore type priorities, and just use begin/end and maybe type
-   * @param isSkipSameBeginEndType used only for coveredBy or covering case, 
-   *                     false means to only skip returning an FS if it has the same id() as the bounding fs
+   * 
+   * @param it
+   *          the iterator to use, positioned to the correct starting place
+   * @param boundingAnnot
+   *          null or the bounding annotation
+   * @param originalBoundingAnnotation
+   *          an original bounding annotation which will not be returned or not depending on the
+   *          conditions for the bounding annotation to be returned. This can be useful if the
+   *          original selection was converted to another selection type, e.g. when converting a
+   *          following-selection to a covered-by selection under the condition that the original
+   *          boundary of the following-selection (the start position) should be excluded. If set,
+   *          the bounding type is obtained from this annotation instead of the bounding annotation
+   * @param ambiguous
+   *          false means to skip annotations whose begin lies between previously returned begin
+   *          (inclusive) and end (exclusive)
+   * @param strict
+   *          true means to skip annotations whose end is greater than the bounding end position
+   *          (ignoring type priorities)
+   * @param boundsUse
+   *          null if no bounds, boundingAnnot used for start position if non-null
+   * @param isUseTypePriority
+   *          false to ignore type priorities, and just use begin/end and maybe type
+   * @param isSkipSameBeginEndType
+   *          used only for coveredBy or covering case, false means to only skip returning an FS if
+   *          it has the same id() as the bounding fs
+   * @param isIncludeZeroWidthAtBegin
+   *          for a covered-by selection to tell if a zero-width annotation at the start should
+   *          be included.
+   * @param isIncludeZeroWidthAtEnd
+   *          for a covered-by selection to tell if a zero-width annotation at the start should
+   *          be included.
    */
   Subiterator(
-      FSIterator<T> it, 
-      AnnotationFS boundingAnnot, 
+      FSIterator<T> it,
+      AnnotationFS boundingAnnot,
+      AnnotationFS originalBoundingAnnotation,
       boolean ambiguous, 
       boolean strict,    // omit FSs whose end > bounds, requires boundsUse == boundedby
       BoundsUse boundsUse, // null if no bounds; boundingAnnot used for start position if non-null
       boolean isUseTypePriority,
       boolean isSkipSameBeginEndType,  // useAnnotationEquals
-      boolean isStrictIncludesAnnotationsStartingAtEndPosition
+      boolean isNonStrictIncludesAnnotationsStartingAtEndPosition,
+      boolean isIncludeZeroWidthAtBegin,
+      boolean isIncludeZeroWidthAtEnd
       ) {
     
     this.it = (LowLevelIterator<Annotation>) it;
+    
     this.boundingAnnot = (Annotation) boundingAnnot;  // could be same begin/end, coveredby, or covering
+    this.originalBoundingAnnotation = (Annotation) ((originalBoundingAnnotation != null)
+        ? originalBoundingAnnotation
+        : boundingAnnot);
     this.isBounded = boundsUse != null && boundsUse != BoundsUse.notBounded;
     this.boundsUse = (boundsUse == null) ? BoundsUse.notBounded : boundsUse;
+    if (isBounded && (null == boundingAnnot || !(boundingAnnot instanceof Annotation))) {
+      Misc.internalError(new IllegalArgumentException("Bounded Subiterators require a bounding annotation"));
+    }
+    this.boundBegin = isBounded ? this.boundingAnnot.getBegin() : -1;
+    this.boundEnd = isBounded ? this.boundingAnnot.getEnd(): -1;
+    this.boundType = isBounded ? (TypeImpl) this.originalBoundingAnnotation.getType() : null;
+    this.originalBoundBegin = isBounded ? this.originalBoundingAnnotation.getBegin() : -1;
+    this.originalBoundEnd = isBounded ? this.originalBoundingAnnotation.getEnd() : -1;
 
-    this.isIncludesAnnotationsStartingAtEndPosition = isStrictIncludesAnnotationsStartingAtEndPosition;
+    this.isIncludesAnnotationsStartingAtEndPosition = isNonStrictIncludesAnnotationsStartingAtEndPosition;
+    this.isIncludeZeroWidthAtBegin = isIncludeZeroWidthAtBegin;
+    this.isIncludeZeroWidthAtEnd = isIncludeZeroWidthAtEnd;
     
     this.isUnambiguous = !ambiguous;
     if (this.isUnambiguous) {
@@ -276,13 +325,6 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     this.isStrict = strict;
     this.isSkipSameBeginEndType = isSkipSameBeginEndType;
  
-    if (isBounded && (null == boundingAnnot || !(boundingAnnot instanceof Annotation))) {
-      Misc.internalError(new IllegalArgumentException("Bounded Subiterators require a bounding annotation"));
-    }
-    this.boundBegin = isBounded ? boundingAnnot.getBegin() : -1;
-    this.boundEnd = isBounded ? boundingAnnot.getEnd(): -1;
-    this.boundType = isBounded ? (TypeImpl) boundingAnnot.getType() : null;
-
     
     FSIndexRepositoryImpl ir = this.it.ll_getIndex().getCasImpl().indexRepository;
 //    underlying_iterator_using_typepriorities =  ir.isAnnotationComparator_usesTypeOrder();
@@ -302,7 +344,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     this.jcas = (JCasImpl) ll_getIndex().getCasImpl().getJCas();
 
     isDoEqualsTest = (boundsUse == coveredBy || boundsUse == sameBeginEnd || boundsUse == covering)
-        && this.boundingAnnot._inSetSortedIndex();
+        && this.originalBoundingAnnotation._inSetSortedIndex();
 
     if (boundsUse == BoundsUse.covering) {
       // compute start position and isEmpty setting
@@ -332,23 +374,32 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     startId = isValid() ? getNvc()._id() : 0;    
   }
    
-  /** 
+  /**
    * copy constructor - no move to start
-   * @param it -
-   * @param boundingAnnot -
-   * @param ambiguous -
-   * @param strict -
-   * @param boundsUse -
-   * @param isUseTypePriority -
-   * @param isSkipSameBeginEndType -
-   * @param startId -
-   * @param isEmpty -
-   * @param converingStartPos -
-   * @param converingEndPos -
+   * 
+   * @param it
+   *          -
+   * @param boundingAnnot
+   *          -
+   * @param ambiguous
+   *          -
+   * @param strict
+   *          -
+   * @param boundsUse
+   *          -
+   * @param isUseTypePriority
+   *          -
+   * @param isSkipSameBeginEndType
+   *          -
+   * @param startId
+   *          -
+   * @param isEmpty
+   *          -
    */
   Subiterator(
       FSIterator<Annotation> it, 
       Annotation boundingAnnot, 
+      Annotation originalBoundingAnnotation,
       boolean ambiguous, 
       boolean strict,    // omit FSs whose end > bounds
       BoundsUse boundsUse, // null if boundingAnnot being used for starting position in unambiguous iterator
@@ -358,12 +409,17 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       boolean isEmpty,
       Annotation coveringStartPos,
       boolean isDoEqualsTest,
-      boolean isStrictIncludesAnnotationsStartingAtEndPosition
+      boolean isStrictIncludesAnnotationsStartingAtEndPosition,
+      boolean isIncludeZeroWidthAtBegin,
+      boolean isIncludeZeroWidthAtEnd
       ) {
     
     this.it = (LowLevelIterator<Annotation>) it;
     this.isIncludesAnnotationsStartingAtEndPosition = isStrictIncludesAnnotationsStartingAtEndPosition;
+    this.isIncludeZeroWidthAtBegin = isIncludeZeroWidthAtBegin;
+    this.isIncludeZeroWidthAtEnd = isIncludeZeroWidthAtEnd;
     this.boundingAnnot = boundingAnnot;  // could be same begin/end, coveredby, or covering
+    this.originalBoundingAnnotation = originalBoundingAnnotation;
     this.isBounded = boundsUse != null && boundsUse != BoundsUse.notBounded;
     this.boundsUse = (boundsUse == null) ? BoundsUse.notBounded : boundsUse;
     this.isUnambiguous = !ambiguous;
@@ -377,7 +433,9 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
 
     this.boundBegin = isBounded ? boundingAnnot.getBegin() : -1;
     this.boundEnd = isBounded ? boundingAnnot.getEnd(): -1;
-    this.boundType = isBounded ? (TypeImpl) boundingAnnot.getType() : null;
+    this.boundType = isBounded ? (TypeImpl) originalBoundingAnnotation.getType() : null;
+    this.originalBoundBegin = isBounded ? this.originalBoundingAnnotation.getBegin() : -1;
+    this.originalBoundEnd = isBounded ? this.originalBoundingAnnotation.getEnd() : -1;
 
     FSIndexRepositoryImpl ir = this.it.ll_getIndex().getCasImpl().indexRepository;
 //    underlying_iterator_using_typepriorities =  ir.isAnnotationComparator_usesTypeOrder();
@@ -407,101 +465,50 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    *   unambiguous iterator doing a moveTo(fs) operation
    *   unambiguous iterator doing a moveToLast() operation 
    */
-  
   private void convertToListForm() {
-    moveToStart();  // moves to the start annotation, including moving past equals for annot style, 
-                    // and accommodating strict
+    // moves to the start annotation, including moving past equals for annot style,
+    // and accommodating strict
+    moveToStart();
     this.list = new ArrayList<>();
     while (isValid()) {
       list.add(it.getNvc());
-      moveToNext();  // does all the adjustments, so list has only appropriate elements
+      // does all the adjustments, so list has only appropriate elements
+      moveToNextNvc();
     }
     this.pos = 0;
-    isListForm = true;  // do at end, so up to this point, iterator is not the list form style
-  }
-  
+    // do at end, so up to this point, iterator is not the list form style
+    isListForm = true;
+  }  
   
   /**
    * Move to the starting position of the sub iterator.
-   * isEmpty may not yet be set.
-   * Never list form when called.
-   * 
-   * Mimics regular iterators when moveToStart  moves the underlying iterator to a valid position 
-   *   in front of a bound which is limiting on the left (coveredBy, sameBeginEnd) 
    */
   private void moveToStart() {
+    // If the subiterator would be in list form here, we would have to call moveTo instead of
+    // moveTo_iterators. Also, we would get a stack overflow because toListForm actually calls this
+    // method and moveTo in turn may call toListForm.
+    assert !isListForm : "Must not be in list form at this point!";
     
+    prevBegin = -1;
+    prevEnd = -1;
+  
     switch (boundsUse) {
-    
     case notBounded:
       it.moveToFirstNoReinit();
+      maybeSetPrevBounds(); // used for unambiguous
       break;
-      
     case sameBeginEnd:
-      it.moveToNoReinit(boundingAnnot);
-
-      maybeAdjustForAmbiguityAndIgnoringTypePriorities_forward();
-      
-      if (it.isValid()) {
-        // no need for mimic position if type priorities are in effect; moveTo will either
-        //   find equal match and position to left most of the equal, including types, or
-        //   not find equal match and position to next greater one, which won't match next test
-        if (is_beyond_bounds_chk_sameBeginEnd()) { 
-          this.isEmpty = true;  // iterator was made invalid
-          return;
-        }
-        // skip over bounding annotation
-        while (equalToBounds(it.getNvc())) {
-          it.moveToNextNvc();
-          if (is_beyond_bounds_chk_sameBeginEnd()) {
-            return;
-          }
-        }
-      }
-      return; // skip setting prev end - not used for sameBeginEnd
-    
-    case coveredBy:
-      it.moveToNoReinit(boundingAnnot);
-      
-      maybeAdjustForAmbiguityAndIgnoringTypePriorities_forward();
-      
-      // If an annotation is present (found), position is on it, and if not,
-      // position is at the next annotation that is higher than (or invalid, if there
-      // is none). Note that the next found position could be beyond the end.
-      if (it.isValid()) {
-        // skip over bounding annotation
-        while (equalToBounds(it.getNvc())) {
-          it.moveToNextNvc();
-          if (!it.isValid()) {
-            return;
-          }
-        }
-        // adjust for strict
-        if (adjustForStrictNvc_forward()) {
-          if (is_beyond_bounds_chk_coveredByNvc()) {  // is beyond end iff annot.begin > boundEnd
-            return; // iterator became invalid 
-          }
-        }
-      }
+      moveTo_iterators(boundingAnnot, true);
       break;
-    
+    case coveredBy:
+      moveTo_iterators(boundingAnnot, true);
+      break;
     case covering:
-      it.moveToNoReinit(coveringStartPos); // sufficiently before the bounds
-      if (it.isValid()) {
-        adjustForCovering_forward(); 
-      }
-      is_beyond_bounds_chk_covering(); // make invalid if ran off end
-      return;  // skip setting prev end - not used for covering;
+      moveTo_iterators(coveringStartPos, true);
+      break;
     }
-        
-    maybeSetPrevEnd();  // used for unambiguous
   }
   
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.FSIterator#isValid()
-   */
   @Override
   public boolean isValid() {
     if (isListForm) {
@@ -514,11 +521,6 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     return it.isValid();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.FSIterator#getNvc()
-   */
   @Override
   public T getNvc() {
     if (isListForm) {
@@ -538,13 +540,12 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     }
       
     it.moveToNextNvc();
+    
     // maybe move past previous annotation
-    if (isUnambiguous) {               // skip until start > prev end
-      while (it.isValid() && (it.getNvc().getBegin() < this.prevEnd)) {
+    if (isUnambiguous) {
+      // Skip while the current annotation is still overlapping with the previous one
+      while (it.isValid() && overlapping(it.getNvc(), prevBegin, prevEnd)) {
         it.moveToNext();
-      }
-      if (it.isValid()) {
-        this.prevEnd = it.getNvc().getEnd();
       }
     }
 
@@ -570,6 +571,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         if (it.isValid()) {
             is_beyond_bounds_chk_coveredByNvc(); // is beyond end iff annot.begin > boundEnd
         }
+        maybeSetPrevBounds();  // used for unambiguous
         return;  
       } // else is invalid
       return;
@@ -581,24 +583,27 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       } else {
         is_beyond_bounds_chk_covering();  // does isvalid check
       }
+      maybeSetPrevBounds();  // used for unambiguous
       return;
       
     case sameBeginEnd:
       if (it.isValid()) {
         while (equalToBounds(it.getNvc())) {
           it.moveToNextNvc();
-          if ( ! it.isValid()) {
+          if (!it.isValid()) {
             break;
           }
         }
       }
       is_beyond_bounds_chk_sameBeginEnd();  // does isValid check
+      maybeSetPrevBounds();  // used for unambiguous
       return;
     
     case notBounded:
     default:
+      maybeSetPrevBounds();  // used for unambiguous
       return;
-    }   
+    }
   }
     
   @Override  
@@ -621,15 +626,10 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     // is ambiguous, not list form
     maybeMoveToPrevBounded();  // makes iterator invalid if moving before startId 
 
-    adjustForStrictOrCoveringAndBoundSkip_backwards(true);
+    adjustForStrictOrCoveringAndBoundSkip(true);
   }
   
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.FSIterator#moveToFirstNoReinit()
-   */
   @Override
   public void moveToFirstNoReinit() {
   
@@ -661,7 +661,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   @Override
   public void moveToLastNoReinit() {
-    
+
     if (isEmpty) {
       return;
     }
@@ -751,24 +751,25 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   private void moveToJustPastBoundsAndBackup(int begin, int end, Predicate<Annotation> continue_going_backwards) {
     it.moveToNoReinit(new Annotation(jcas, begin, end));
-    if (it.isValid()) {
-      Annotation a = it.getNvc();
-      while (continue_going_backwards.test(a)) {
-        if (a._id == startId) {
-          // the continue_going_backwards says the current position is too high, but
-          // we're at the start position, which is a contradiction
-          Misc.internalError();
-        } 
-        it.moveToPreviousNvc();
-        if (!it.isValid()) {
-          // this can't happen, unless the iterator is empty.
-          // and that condition was tested earlier
-          Misc.internalError();
-        }
-        a = it.getNvc();
-      }
-    } else {
+    
+    if (!it.isValid()) {
       it.moveToLastNoReinit();
+    }
+    
+    Annotation a = it.getNvc();
+    while (continue_going_backwards.test(a)) {
+      if (a._id == startId) {
+        // the continue_going_backwards says the current position is too high, but
+        // we're at the start position, which is a contradiction
+        Misc.internalError();
+      } 
+      it.moveToPreviousNvc();
+      if (!it.isValid()) {
+        // this can't happen, unless the iterator is empty.
+        // and that condition was tested earlier
+        Misc.internalError();
+      }
+      a = it.getNvc();
     }
   }
   
@@ -800,71 +801,84 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     };
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.FSIterator#moveToNoReinit(org.apache.uima.cas.FeatureStructure)
-   */
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
-    Annotation fsa = (Annotation) fs;
-    
     if (isEmpty) return;
     
-    if (isUnambiguous && !isListForm) {  // unambiguous must be in list form
+    // unambiguous must be in list form
+    if (isUnambiguous && !isListForm) {
       convertToListForm();
     }
     
-    // need to handle 4 cases of not-covered, covered-by, covering, and same
-    
     if (isListForm) {
-      // W A R N I N G - don't use it.xxx forms here, they don't work for list form
-      // Don't need strict, skip-over-boundary, or type priority adjustments, 
-      //   because these were done when the list form was created
-      //   Want to move to leftmost
-      pos = Collections.binarySearch(this.list, fsa, comparatorMaybeNoTypeWithoutId);
-//      int begin = fsa.getBegin();
-//      int end   = fsa.getEnd();
-//      Type type = fsa.getType();
-
-      // Go back until we find a FS that is really smaller
-
-      if (pos >= 0) {
-        moveToPrevious();
-      } else {
-        // no exact match
-        pos = (-pos) - 1;
-        
-        if (!isValid()) {
-          // means the position is one beyond the end - where the insert should be.
-          return;
-        }
-      }
-      
-      // next compare is without type if isUseTypePriority is false
-      while (isValid() && 0 == comparatorMaybeNoTypeWithoutId.compare((Annotation)getNvc(), fsa)) {
-        moveToPreviousNvc();
-      }
-        
-      if (isValid()) {
-        moveToNextNvc();  // backed up one too much          
-      } else {
-        moveToFirstNoReinit();
-      }          
-
+      moveTo_listForm(fs);
       return;
     } 
-    
     
     // not list form
     // is ambiguous (because if unambiguous, would have been converted to list), may be strict.
     // Always bounded (if unbounded, that's only when subiterator is being used to 
     // implement "unambiguous", and that mode requires the "list" form above.)
     // can be one of 3 bounds: coveredBy, covering, and sameBeginEnd.
+    //moveTo_iterators(fs);
+    moveTo_iterators_legacy(fs);
+  }
+  
+  private void moveTo_listForm(FeatureStructure fs) {
+    Annotation fsa = (Annotation) fs;
     
+    // W A R N I N G - don't use it.xxx forms here, they don't work for list form
+    // Don't need strict, skip-over-boundary, or type priority adjustments, 
+    //   because these were done when the list form was created
+    //   Want to move to leftmost
+    pos = Collections.binarySearch(this.list, fsa, comparatorMaybeNoTypeWithoutId);
+//    int begin = fsa.getBegin();
+//    int end   = fsa.getEnd();
+//    Type type = fsa.getType();
+
+    // Go back until we find a FS that is really smaller
+    if (pos >= 0) {
+      moveToPrevious();
+    } else {
+      // no exact match
+      pos = (-pos) - 1;
+      
+      if (!isValid()) {
+        // means the position is one beyond the end - where the insert should be.
+        return;
+      }
+    }
+    
+    // next compare is without type if isUseTypePriority is false
+    while (isValid() && 0 == comparatorMaybeNoTypeWithoutId.compare((Annotation)getNvc(), fsa)) {
+      moveToPreviousNvc();
+    }
+      
+    if (isValid()) {
+      moveToNextNvc();  // backed up one too much          
+    } else {
+      moveToFirstNoReinit();
+    }
+  }
+  
+  // This is LEGACY because actually it would seem reasonable to merge it with the other
+  // moveTo_iterators below. IMHO we shouldn't need two quite different implementations
+  // depending on whether we call this from moveToStart to moveTo
+  private void moveTo_iterators_legacy(FeatureStructure fs)
+  {
     it.moveToNoReinit(fs);  // may move before, within, or after bounds
     if (!it.isValid()) {
       return;
+    }
+    
+    // CASE: If the iterator is pointing on the bounds annotation, we must first skip this in
+    // forward direction to ensure we find a potentially matching FSes occurring in the indexes
+    // after the bounds annotation.
+    if (it.isValid() && equalToBounds(it.getNvc())) {
+      it.moveToNext();
+      if (!it.isValid()) {
+        it.moveToLastNoReinit();
+      }
     }
     
     Annotation a = it.getNvc();
@@ -875,9 +889,9 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     switch (boundsUse) {
     
     case covering:
-             // condition true if need to move forwards because current spot is invalid
+      // condition true if need to move forwards because current spot is invalid
       while ((begin <= this.boundBegin &&  // stop if go too far
-             a._id != boundingAnnot._id &&                                 // stop if hit bounding annot
+             a._id != originalBoundingAnnotation._id && // stop if hit bounding annot
              ((end = a.getEnd()) < this.boundEnd ||
               (end == this.boundEnd && 
                (lto != null && lto.lessThan(a._getTypeImpl(), this.boundType)))))) {
@@ -891,14 +905,8 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       return;
       
     case coveredBy:
-      // mimic move to first if before bounds
-      if (begin  < boundBegin ||
-          (begin == boundBegin &&
-           ( ! isStrict ||
-            ((end = a.getEnd()) > boundEnd ||
-             (end == boundEnd && lto != null && lto.lessThan(a._getTypeImpl(), boundType)))))) {
-        moveToFirstNoReinit();  // move to left most position
-      } else {
+        maybeAdjustForAmbiguityAndIgnoringTypePriorities_forward(true);
+        
         // skip over boundary
         while (equalToBounds(it.getNvc())) {
           it.moveToNext();
@@ -906,7 +914,6 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
             return;  // ran off the end
           }
         }
-      }
    
       // strict moving: condition true if need to move forwards because current spot is invalid
       if (isStrict) {
@@ -935,24 +942,112 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
             (end == boundEnd && lto != null && lto.lessThan(a._getTypeImpl(), boundType))))) {
         moveToFirstNoReinit();
       } else {
+        maybeAdjustForAmbiguityAndIgnoringTypePriorities_forward(true);
+        
         // skip over boundary
-        while (equalToBounds(it.getNvc())) {
+        // FIXME: can do without valid check because be valid at this point
+        while (it.isValid() && equalToBounds(it.getNvc())) {
           it.moveToNext();
-          if ( ! it.isValid()) {
+          if (!it.isValid()) {
             return;  // ran off the end
           }
         }
       }
       // check if beyond the bounds
-      is_beyond_bounds_chk_sameBeginEndNvc();
+      is_beyond_bounds_chk_sameBeginEnd();
+      // FIXME: can do with Nvc because must be valid at this point
+      //is_beyond_bounds_chk_sameBeginEndNvc();
       return;
       
     case notBounded:
-      default:  // for notBounded or sameBeginEnd, no need to skip some or check beyond end (was already done)
+    default:  // for notBounded or sameBeginEnd, no need to skip some or check beyond end (was already done)
         return;
     }
   }
   
+  /**
+   * Move the sub iterator to the given position.
+   * isEmpty may not yet be set.
+   * Never list form when called.
+   * 
+   * Mimics regular iterators when moveToStart  moves the underlying iterator to a valid position 
+   *   in front of a bound which is limiting on the left (coveredBy, sameBeginEnd) 
+   */
+  private void moveTo_iterators(FeatureStructure fs, boolean initialPositioning) {
+    it.moveToNoReinit(fs);
+    
+    // CASE: If the iterator is pointing on the bounds annotation, we must first skip this in
+    // forward direction to ensure we find a potentially matching FSes occurring in the indexes
+    // after the bounds annotation.
+    if (it.isValid() && equalToBounds(it.getNvc())) {
+      it.moveToNext();
+      if (!it.isValid()) {
+        it.moveToLastNoReinit();
+      }
+    }
+    
+    switch (boundsUse) {
+    case sameBeginEnd:
+      maybeAdjustForAmbiguityAndIgnoringTypePriorities_forward(!initialPositioning);
+      
+      if (it.isValid()) {
+        // no need for mimic position if type priorities are in effect; moveTo will either
+        //   find equal match and position to left most of the equal, including types, or
+        //   not find equal match and position to next greater one, which won't match next test
+        if (is_beyond_bounds_chk_sameBeginEnd()) { 
+          this.isEmpty = true;  // iterator was made invalid
+          return;
+        }
+        // skip over bounding annotation
+        while (equalToBounds(it.getNvc())) {
+          it.moveToNextNvc();
+          if (is_beyond_bounds_chk_sameBeginEnd()) {
+            return;
+          }
+        }
+      }
+      return; // skip setting prev end - not used for sameBeginEnd
+    
+    case coveredBy:
+      maybeAdjustForAmbiguityAndIgnoringTypePriorities_forward(!initialPositioning);
+      
+      // If an annotation is present (found), position is on it, and if not,
+      // position is at the next annotation that is higher than (or invalid, if there
+      // is none). Note that the next found position could be beyond the end.
+      if (it.isValid()) {
+        // skip over bounding annotation
+        while (equalToBounds(it.getNvc())) {
+          it.moveToNextNvc();
+          if (!it.isValid()) {
+            return;
+          }
+        }
+        // adjust for strict
+        if (adjustForStrictNvc_forward()) {
+          if (is_beyond_bounds_chk_coveredByNvc()) {  // is beyond end iff annot.begin > boundEnd
+            return; // iterator became invalid 
+          }
+        }
+      }
+      break;
+    
+    case covering:
+      if (it.isValid()) {
+        adjustForCovering_forward(); 
+      }
+      is_beyond_bounds_chk_covering(); // make invalid if ran off end
+      return;  // skip setting prev end - not used for covering;
+      
+    case notBounded:
+    default:
+      if (!it.isValid()) {
+        return;
+      }
+      break;
+    }
+        
+    maybeSetPrevBounds();  // used for unambiguous
+  }  
     
   /**
    * @return true if iterator was outside - beyond, and therefore, made invalid
@@ -1023,42 +1118,57 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     }
   }
   
-  private void maybeAdjustForAmbiguityAndIgnoringTypePriorities_forward() {
-    // If the iterator is unambiguous, we must respect the index order. It really depends on the
-    // exact entry point into the index that the bounding annotation gives us which annotations
-    // will be returned and which are skipped.
-    if (isUnambiguous) {
+  private void maybeAdjustForAmbiguityAndIgnoringTypePriorities_forward(boolean oneStepOnly) {
+    if (isUseTypePriority) {
       return;
     }
-    
+
     // But if the iterator is ambiguous and if we also ignore the type priorities, then we need to
     // seek backwards in the index as to not skip any potentially relevant annotations at the same
     // position as the bounding annotation but (randomly) appearing before the bounding annotation
     // in the index.
-    if (!isUseTypePriority) {
-      boolean wasValid = it.isValid();
+    boolean wasValid = it.isValid();
 
-      // CASE: Previously called "it.moveToNoReinit(boundingAnnot)" moved beyond end of the index
-      //
-      // If the bounding annotation evaluates to being "greater" than any of the annotation in the
-      // index according to the index order, then the iterator comes back invalid. 
-      if (!wasValid) {
-          it.moveToLastNoReinit();
-      }
-      
-      boolean wentBack = adjustForStrictOrCoveringAndBoundSkip_backwards(false);
-      
-      if (!wentBack && !wasValid) {
-        // No backwards seeking was performed and the iterator was initially invalid, so we 
-        // invalidate it again
-        makeInvalid();
-      }
+    // CASE: Previously called "it.moveToNoReinit(boundingAnnot)" moved beyond end of the index
+    //
+    // If the bounding annotation evaluates to being "greater" than any of the annotation in the
+    // index according to the index order, then the iterator comes back invalid. 
+    if (!wasValid) {
+        it.moveToLastNoReinit();
+    }
+    
+    boolean wentBack = adjustForStrictOrCoveringAndBoundSkip(oneStepOnly);
+    
+    if (!wentBack && !wasValid) {
+      // No backwards seeking was performed and the iterator was initially invalid, so we 
+      // invalidate it again
+      makeInvalid();
     }
   }
 
+  private boolean coveredByBounds(Annotation ann)
+  {
+    if (isStrict) {
+      return coveredBy(ann, boundBegin, boundEnd) 
+          || (isIncludesAnnotationsStartingAtEndPosition && ann.getBegin() == boundEnd);
+    }
+    else {
+      return (coveredBy(ann, boundBegin, boundEnd) || overlappingAtEnd(ann, boundBegin, boundEnd))
+          || (isIncludesAnnotationsStartingAtEndPosition && ann.getBegin() == boundEnd);
+    }
+  }
   
-  private boolean adjustForStrictOrCoveringAndBoundSkip_backwards(boolean oneStepOnly) {
+  /**
+   * Skip over annotations which are not valid for the given bounds use. This can be used in two
+   * cases.
+   * <ul>
+   * <li>Seeking backwards from the current to the first valid annotation relative to the beginning of the index.</li>
+   * <li>Seeking backwards from the current position to the first valid annotation relative to the current position.</li>
+   * </ul>
+   */
+  private boolean adjustForStrictOrCoveringAndBoundSkip(boolean oneStepOnly) {
     boolean wentBack = false;
+    boolean lastSeenWasEqualToBounds = false;
     switch(boundsUse) {
     case coveredBy:
       // We need to try seeking backwards because we may have skipped covered annotations which
@@ -1067,8 +1177,8 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
           it.isValid() && (
               equalToBounds(it.getNvc()) ||
               (oneStepOnly ? 
-                  isStrict && it.getNvc().getEnd() > boundEnd : 
-                  it.getNvc().getBegin() >= boundingAnnot.getBegin())
+                  !coveredByBounds(it.getNvc()) : 
+                  it.getNvc().getBegin() >= boundBegin)
         )
       ) {
         it.moveToPreviousNvc();
@@ -1079,7 +1189,14 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     case covering:
       // because this method is move to previous, the position cannot be on the bounds.
       // handle skipping cases where the end is < boundEnd
-      while (it.isValid() && it.getNvc().getEnd() < boundEnd) {
+      while (it.isValid() && (
+          equalToBounds(it.getNvc()) ||
+          (oneStepOnly ? 
+              it.getNvc().getBegin() <= boundBegin &&
+              (it.getNvc().getEnd() < boundEnd || 
+                (it.getNvc().getEnd() == boundEnd && lto != null && lto.lessThan(it.getNvc()._getTypeImpl(), boundType))) : 
+              it.getNvc().getEnd() < boundEnd))
+      ) {
         // FIXME: I can't really wrap my head around the logic of "maybeMoveToPrevBounded()"
         // Possibly this is buggy and should be changed to t.moveToPreviousNvc() - after all, we
         // do have the backing up logic below in case the iterator becomes invalid...
@@ -1091,7 +1208,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     case sameBeginEnd:
       while (
           it.isValid() && (
-              equalToBounds(it.getNvc()) || 
+              (lastSeenWasEqualToBounds = equalToBounds(it.getNvc())) || 
               (!oneStepOnly && (
                   it.getNvc().getBegin() > boundBegin || 
                   (it.getNvc().getBegin() == boundBegin && it.getNvc().getEnd() <= boundEnd)
@@ -1108,15 +1225,19 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     
     if (wentBack) {
       if (!it.isValid()) {
-        it.moveToFirstNoReinit();
+        if (!oneStepOnly || lastSeenWasEqualToBounds) {
+          it.moveToFirstNoReinit();
+        }
       }
       else { 
-        if (it.getNvc().getBegin() < boundingAnnot.getBegin()) {
+        if (!oneStepOnly && it.getNvc().getBegin() < boundingAnnot.getBegin()) {
           it.moveToNextNvc();
         }
         else if (
             boundsUse == BoundsUse.sameBeginEnd && 
-            it.getNvc().getBegin() == boundingAnnot.getBegin() &&
+            (oneStepOnly ? 
+                it.getNvc().getBegin() != boundingAnnot.getBegin() : 
+                it.getNvc().getBegin() == boundingAnnot.getBegin()) &&
             it.getNvc().getEnd() != boundingAnnot.getEnd()
         ) {
           it.moveToNextNvc();
@@ -1137,17 +1258,19 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * @return true if should be skipped
    */
   private boolean equalToBounds(Annotation fs) {
-    return isDoEqualsTest && fs._id == boundingAnnot._id ||
+    return isDoEqualsTest && fs._id == originalBoundingAnnotation._id ||
            (isSkipSameBeginEndType &&
             fs.getBegin() == boundBegin &&
             fs.getEnd() == boundEnd &&
             fs.getType() == boundType); 
   }
 
-  private void maybeSetPrevEnd() {
+  private void maybeSetPrevBounds() {
     if (isUnambiguous && it.isValid()) {
-      this.prevEnd = it.getNvc().getEnd();
-    }    
+      Annotation a = it.getNvc();
+      this.prevBegin = a.getBegin();
+      this.prevEnd = a.getEnd();
+    }
   }
   
     
@@ -1155,13 +1278,36 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * @return true if iterator still valid, false if not valid
    */
   private boolean adjustForStrictNvc_forward() {
+    Annotation item = it.getNvc();
+    
+    boolean originalBoundZeroWidth = originalBoundBegin == originalBoundEnd;
+    
+    while (
+        // following/preceding and bounds is zero-width and item is zero-width
+        (boundsUse == notBounded && item.getBegin() == item.getEnd() && item.getBegin() == originalBoundBegin) ||
+        // Bounds is zero-width at start
+        (!isIncludeZeroWidthAtBegin && originalBoundZeroWidth && item.getBegin() == originalBoundBegin) ||
+        // Item is zero-width at end
+        (!isIncludeZeroWidthAtEnd && originalBoundEnd == item.getBegin() && item.getBegin() == item.getEnd())
+    ) {
+      it.moveToNextNvc();
+      if (!isValid()) {
+        return false;
+      }
+
+      item = it.getNvc();
+    }
+    
     if (!isStrict) {
       if (isIncludesAnnotationsStartingAtEndPosition) {
         return true;
       }
       
-      Annotation item = it.getNvc();
-      while ((item.getBegin() == this.boundEnd && item.getBegin() < item.getEnd()) || equalToBounds(item)) {
+      while (
+          (item.getBegin() == this.boundEnd && item.getBegin() < item.getEnd()) || 
+          equalToBounds(item) ||
+          (isUnambiguous && overlapping(item, prevBegin, prevEnd))
+      ) {
         it.moveToNextNvc();
         if (!isValid()) {
           return false;
@@ -1176,8 +1322,15 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       return true;
     }
     
-    Annotation item = it.getNvc();
-    while (item.getEnd() > this.boundEnd || equalToBounds(item)) {
+    while (
+        item.getEnd() > this.boundEnd || 
+        equalToBounds(item) ||
+        (isUnambiguous && overlapping(item, prevBegin, prevEnd)) ||
+        // Item is zero-width at end
+        (!isIncludeZeroWidthAtEnd && boundEnd == item.getBegin() && item.getBegin() == item.getEnd()) ||
+        // Bounds is zero-width at end
+        (!isIncludeZeroWidthAtEnd && originalBoundZeroWidth && item.getEnd() == originalBoundBegin)
+    ) {
       it.moveToNextNvc();
       if (!isValid()) {
         return false;
@@ -1238,7 +1391,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     //   stop if begin gets too large (going forwards)
     // while test: is true if need to move to skip over a too-small "end"
     while (it.isValid() && (equalToBounds(a = it.getNvc()) ||
-           (begin = a.getBegin()) <= this.boundBegin &&
+           (a.getBegin()) <= this.boundBegin &&
            ( (end = a.getEnd()) < this.boundEnd || 
              (end == this.boundEnd && lto != null && lto.lessThan(a._getTypeImpl(), this.boundType))))) {
       it.moveToNextNvc();
@@ -1265,6 +1418,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     Subiterator<T> copy = new Subiterator<>(
         this.it.copy(),
         this.boundingAnnot,
+        this.originalBoundingAnnotation,
         !this.isUnambiguous,
         this.isStrict,
         this.boundsUse,
@@ -1275,7 +1429,10 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         this.isEmpty,
         this.coveringStartPos,
         this.isDoEqualsTest,
-        this.isIncludesAnnotationsStartingAtEndPosition);
+        this.isIncludesAnnotationsStartingAtEndPosition,
+        this.isIncludeZeroWidthAtBegin,
+        this.isIncludeZeroWidthAtEnd
+        );
     copy.list = this.list;  // non-final things
     copy.pos  = this.pos;
     copy.isListForm = this.isListForm;
@@ -1333,5 +1490,4 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   public Comparator<TOP> getComparator() {
     return comparatorMaybeNoTypeWithoutId;
   }
-
 }

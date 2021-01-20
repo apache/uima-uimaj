@@ -23,7 +23,7 @@ Because users have made substantial investment in developing applications using 
 To this end, version 3 is designed to be backwards compatible,  except for needing: 
 
 * possibly a recompilation (due to some rearrangements of many classes and interfaces)
-* a new set of User-defined JCas classes (if these were previously being used). The creation of these Cas classes can be done by regenerating them using JCasGen, or by  using a migration tool that handles converting the existing JCas classes. A later chapter covers how to upgrade the JCas classes.
+* a new set of User-defined JCas classes (if these were previously being used). The creation of these CAS classes can be done by regenerating them using JCasGen, or by  using a migration tool that handles converting the existing JCas classes. A later chapter covers how to upgrade the JCas classes.
 
 There are some additional exceptions, described in the following sections. 
 
@@ -74,7 +74,7 @@ In Version 3, this mode is actually somewhat slower than the others, and no long
 Using the low level CAS interface also sometimes blocks one of the new features of Version 3 -  namely, automatic garbage collection of unreachable Feature Structures.
 This is because creating a Feature Structure using the low level API creates the Java object for that Feature Structure, but returns an "int" handle to it.
 In order to be able to find the Feature Structure, given that int handle, an entry is made in an internal map.
-This map holds a reference to this Feature Structure, which prevents it from being garbage collected (until of coursse, the CAS is reset). 
+This map holds a reference to this Feature Structure, which prevents it from being garbage collected (until of course, the CAS is reset). 
 
 The normal CAS APIs allow writing Annotators where the type system is unknown at compile time; these  are fully supported.
 
@@ -87,7 +87,7 @@ These applications  also often use the stability of these ids across some serial
 
 Normally in V3, deserialization of CASs having these IDs occurs without preserving the IDs, and without setting up the low level CAS APIs to be able to access these using them.
 If an existing application depends on the low level access via the address, a special mode, called ``V2IdRefs``, can be specified, which will support this.
-It comes at a cost however, which is that all new Feature Structures created (or deserialized) will be added to an internal table to enable the low level CAS getFSForRef(int) method to work.
+It comes at a cost however, which is that all new Feature Structures created (or deserialized) will be added to an internal table to enable the low level CAS `getFSForRef(int)` method to work.
 As a result, these Feature Structures are not eligible for garbage collection. 
 
 This mode is set on individual CASs via a new API; a default value may optionally be specified.
@@ -100,7 +100,7 @@ When a new CAS is created, this mode is set according to two sources:
 * If neither of these are used, then the default is to not be in the sepcial v2-mode.
 
 The APIs for this are part of the LowLevelCAS.
-The controlling APIs all return an instance of AutoClosableNoException, which can be used to reset the setting to its previous value.
+The controlling APIs all return an instance of `AutoClosableNoException`, which can be used to reset the setting to its previous value.
 A recommended way of using these is with the Java `try with resources` construct: 
 [source]
 ----
@@ -147,7 +147,7 @@ Feature Structures may be located by ID using the LowLevelCAS API `getFSForRef()
 +
 In order for this to work correctly, the mode must be set while the CAS is empty.
 If the mode is attempted to be set on a non-empty CAS, an IllegalStateException is thrown. 
-* This mode modifies serialization (except for XCas, Xmi, and Compressed form 6, which in V2 are implemented to just serialize reachable Feature Structures) to include non-reachable FSs. 
+* This mode modifies serialization (except for XCas, XMI, and Compressed form 6, which in V2 are implemented to just serialize reachable Feature Structures) to include non-reachable FSs. 
 * Note: This does not affect the `select` framework results - unreachable Feature Structures are not included.
 
 
@@ -162,7 +162,7 @@ The UIMA framework things storing references to Feature Structures are modified 
 The intent is that this be  "invisible" to the PEAR's annotators.
 Both of these representations share the same  underlying CAS data, so modifications to one are seen in the other. 
 
-If a user builds code that holds onto Feature Structure references, outside of  annotators (e.g., as a shared External Resource), and sets and references these from both outside and inside one (or more) PEARs, they should adopt a strategy of storing the non-PEAR form.
+If a user builds code that holds onto Feature Structure references, outside of annotators (e.g., as a shared External Resource), and sets and references these from both outside and inside one (or more) PEARs, they should adopt a strategy of storing the non-PEAR form.
 To get the non-PEAR form from a Feature Structure, use the method ``myFeatureStructure._maybeGetBaseForPearFs()``. 
 
 Similarly, if code running in an Annotator within a PEAR wants to work with a Feature Structure extracted from non-UIMA managed data outside of annotators (e.g., such as a shared External Resource) where the form stored is the non-PEAR form, you can convert to the PEAR form using the method ``myFeatureStructure.__maybeGetPearFs()``.

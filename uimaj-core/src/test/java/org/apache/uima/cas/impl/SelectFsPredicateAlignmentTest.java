@@ -28,17 +28,13 @@ import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosit
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
-import static org.apache.uima.cas.text.AnnotationPredicates.colocated;
-import static org.apache.uima.cas.text.AnnotationPredicates.coveredBy;
-import static org.apache.uima.cas.text.AnnotationPredicates.covering;
-import static org.apache.uima.cas.text.AnnotationPredicates.following;
-import static org.apache.uima.cas.text.AnnotationPredicates.overlappingAtEnd;
-import static org.apache.uima.cas.text.AnnotationPredicates.preceding;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
+import org.apache.uima.cas.text.AnnotationPredicates;
+import org.apache.uima.cas.text.AxiomaticAnnotationPredicates;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -62,8 +58,18 @@ public class SelectFsPredicateAlignmentTest {
 
     assertSelectFS(
         PRECEDING,
-        (cas, type, x, y) -> cas.select(type).filter((a) -> 
-                preceding(x, (Annotation) a)).collect(toList()).contains(y),
+        (cas, type, x, y) -> cas.select(type)
+            .filter((a) -> AnnotationPredicates.preceding(x, (Annotation) a)).collect(toList())
+            .contains(y),
+        defaultPredicatesTestCases);
+    
+    assertSelectFS(
+        PRECEDING,
+        (cas, type, x, y) -> cas.select(type)
+            .filter((a) -> AxiomaticAnnotationPredicates.preceding(x.getBegin(), x.getEnd(),
+                ((Annotation) a).getBegin(), ((Annotation) a).getEnd()))
+            .collect(toList())
+            .contains(y),
         defaultPredicatesTestCases);
   }
   
@@ -71,9 +77,18 @@ public class SelectFsPredicateAlignmentTest {
   public void thatSelectPrecedingAlignsWithPrecedingPredicateOnCasRandomized() throws Exception
   {
     System.out.print("Preceding (CAS select by annotation)   -- ");
-    assertSelectionIsEqualOnRandomData("preceding", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(PRECEDING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> x != y && preceding(x, y))
+            .filter(x -> x != y && AnnotationPredicates.preceding(x, y))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .preceding(y));
+    
+    System.out.print("Preceding (CAS select by annotation) * -- ");
+    assertSelectionIsEqualOnRandomData(PRECEDING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && AxiomaticAnnotationPredicates.preceding(x.getBegin(), x.getEnd(),
+                y.getBegin(), y.getEnd()))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>select(type)
             .preceding(y));
@@ -83,9 +98,9 @@ public class SelectFsPredicateAlignmentTest {
   public void thatSelectPrecedingAlignsWithPrecedingPredicateOnIndexRandomized() throws Exception
   {
     System.out.print("Preceding (Index select by annotation) -- ");
-    assertSelectionIsEqualOnRandomData("preceding", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(PRECEDING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> x != y && preceding(x, y))
+            .filter(x -> x != y && AnnotationPredicates.preceding(x, y))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
             .preceding(y));
@@ -101,8 +116,19 @@ public class SelectFsPredicateAlignmentTest {
 
     assertSelectFS(
         FOLLOWING,
-        (cas, type, x, y) -> cas.select(type).filter((a) -> 
-                following(x, (Annotation) a)).collect(toList()).contains(y),
+        (cas, type, x, y) -> cas.select(type)
+            .filter((a) -> AnnotationPredicates.following(x, (Annotation) a))
+            .collect(toList())
+            .contains(y),
+        defaultPredicatesTestCases);
+
+    assertSelectFS(
+        FOLLOWING,
+        (cas, type, x, y) -> cas.select(type)
+            .filter((a) -> AxiomaticAnnotationPredicates.following(x.getBegin(), x.getEnd(), 
+                ((Annotation) a).getBegin(), ((Annotation) a).getEnd()))
+            .collect(toList())
+            .contains(y),
         defaultPredicatesTestCases);
   }
   
@@ -110,9 +136,18 @@ public class SelectFsPredicateAlignmentTest {
   public void thatSelectFollowingAlignsWithFollowingPredicateOnCasRandomized() throws Exception
   {
     System.out.print("Following (CAS select by annotation)   -- ");
-    assertSelectionIsEqualOnRandomData("following", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(FOLLOWING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> x != y && following(x, y))
+            .filter(x -> x != y && AnnotationPredicates.following(x, y))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .following(y));
+
+    System.out.print("Following (CAS select by annotation) * -- ");
+    assertSelectionIsEqualOnRandomData(FOLLOWING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && AxiomaticAnnotationPredicates.following(x.getBegin(), x.getEnd(),
+                y.getBegin(), y.getEnd()))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>select(type)
             .following(y));
@@ -122,9 +157,9 @@ public class SelectFsPredicateAlignmentTest {
   public void thatSelectFollowingAlignsWithFollowingPredicateOnIndexRandomized() throws Exception
   {
     System.out.print("Following (Index select by annotation) -- ");
-    assertSelectionIsEqualOnRandomData("following", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(FOLLOWING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> x != y && following(x, y))
+            .filter(x -> x != y && AnnotationPredicates.following(x, y))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
             .following(y));
@@ -146,8 +181,17 @@ public class SelectFsPredicateAlignmentTest {
     
     assertSelectFS(
         COVERED_BY,
-        (cas, type, x, y) -> cas.select(type).filter((a) -> 
-                coveredBy(x, (Annotation) a)).collect(toList()).contains(y),
+        (cas, type, x, y) -> cas.select(type)
+            .filter((a) -> AnnotationPredicates.coveredBy(x, (Annotation) a)).collect(toList())
+            .contains(y),
+        defaultPredicatesTestCases);
+
+    assertSelectFS(
+        COVERED_BY,
+        (cas, type, x, y) -> cas.select(type)
+            .filter((a) -> AxiomaticAnnotationPredicates.coveredBy(x.getBegin(), x.getEnd(), 
+                ((Annotation) a).getBegin(), ((Annotation) a).getEnd())).collect(toList())
+            .contains(y),
         defaultPredicatesTestCases);
   }
   
@@ -155,17 +199,35 @@ public class SelectFsPredicateAlignmentTest {
   public void thatSelectCoveredByAlignsWithCoveredByPredicateOnCasRandomized() throws Exception
   {
     System.out.print("CoveredBy (CAS select by annotation)   -- ");
-    assertSelectionIsEqualOnRandomData("covered by", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COVERED_BY, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
-            .filter(x -> x != y && coveredBy(x, y))
+            .filter(x -> x != y && AnnotationPredicates.coveredBy(x, y))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .coveredBy(y));
+
+    System.out.print("CoveredBy (CAS select by annotation) * -- ");
+    assertSelectionIsEqualOnRandomData(COVERED_BY, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
+            .filter(x -> x != y && AxiomaticAnnotationPredicates.coveredBy(x.getBegin(), x.getEnd(),
+                y.getBegin(), y.getEnd()))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>select(type)
             .coveredBy(y));
 
     System.out.print("CoveredBy (CAS select by offsets)      -- ");
-    assertSelectionIsEqualOnRandomData("covered by", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COVERED_BY, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> coveredBy(x, y))
+            .filter(x -> AnnotationPredicates.coveredBy(x, y))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .coveredBy(y.getBegin(), y.getEnd()));
+    
+    System.out.print("CoveredBy (CAS select by offsets)    * -- ");
+    assertSelectionIsEqualOnRandomData(COVERED_BY, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> AxiomaticAnnotationPredicates.coveredBy(x.getBegin(), x.getEnd(),
+                y.getBegin(), y.getEnd()))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>select(type)
             .coveredBy(y.getBegin(), y.getEnd()));
@@ -175,17 +237,17 @@ public class SelectFsPredicateAlignmentTest {
   public void thatSelectCoveredByAlignsWithCoveredByPredicateOnIndexRandomized() throws Exception
   {
     System.out.print("CoveredBy (Index select by annotation) -- ");
-    assertSelectionIsEqualOnRandomData("covered by", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COVERED_BY, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> x != y && coveredBy(x, y))
+            .filter(x -> x != y && AnnotationPredicates.coveredBy(x, y))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
             .coveredBy(y));
 
     System.out.print("CoveredBy (Index select by offsets)    -- ");
-    assertSelectionIsEqualOnRandomData("covered by", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COVERED_BY, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> coveredBy(x, y))
+            .filter(x -> AnnotationPredicates.coveredBy(x, y))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
             .coveredBy(y.getBegin(), y.getEnd()));
@@ -195,9 +257,22 @@ public class SelectFsPredicateAlignmentTest {
   public void thatSelectCoveredByAlignsWithCoveredByPredicateOnIndexRandomizedNonStrict() throws Exception
   {
     System.out.print("CoveredBy* (CAS select by annotation)  -- ");
-    assertSelectionIsEqualOnRandomData("covered by (non-strict)", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COVERED_BY, "(non-strict)", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> x != y && (coveredBy(x, y) || overlappingAtEnd(x, y)))
+            .filter(x -> x != y && (AnnotationPredicates.coveredBy(x, y)
+                || AnnotationPredicates.overlappingAtEnd(x, y)))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .coveredBy(y)
+            .includeAnnotationsWithEndBeyondBounds());
+    
+    System.out.print("CoveredBy* (CAS select by annotation)* -- ");
+    assertSelectionIsEqualOnRandomData(COVERED_BY, "(non-strict)", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && (AxiomaticAnnotationPredicates.coveredBy(x.getBegin(),
+                x.getEnd(), y.getBegin(), y.getEnd())
+                || AxiomaticAnnotationPredicates.overlappingAtEnd(x.getBegin(), x.getEnd(),
+                    y.getBegin(), y.getEnd())))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>select(type)
             .coveredBy(y)
@@ -210,18 +285,33 @@ public class SelectFsPredicateAlignmentTest {
     // below.
     assertSelectFS(
         COVERING,
-        (cas, type, x, y) -> cas.select(type).coveredBy(x).asList().contains(y),
+        (cas, type, x, y) -> cas.select(type).coveredBy(x)
+            .asList()
+            .contains(y),
         defaultPredicatesTestCases);
 
     assertSelectFS(
         COVERING,
-        (cas, type, x, y) -> cas.select(type).coveredBy(x.getBegin(), x.getEnd()).asList().contains(y),
+        (cas, type, x, y) -> cas.select(type).coveredBy(x.getBegin(), x.getEnd())
+            .asList()
+            .contains(y),
         defaultPredicatesTestCases);
     
     assertSelectFS(
         COVERING,
-        (cas, type, x, y) -> cas.select(type).filter((a) -> 
-                covering(x, (Annotation) a)).collect(toList()).contains(y),
+        (cas, type, x, y) -> cas.select(type)
+            .filter((a) -> AnnotationPredicates.covering(x, (Annotation) a))
+            .collect(toList())
+            .contains(y),
+        defaultPredicatesTestCases);
+
+    assertSelectFS(
+        COVERING,
+        (cas, type, x, y) -> cas.select(type)
+            .filter((a) -> AxiomaticAnnotationPredicates.covering(x.getBegin(), x.getEnd(), 
+                ((Annotation) a).getBegin(), ((Annotation) a).getEnd()))
+            .collect(toList())
+            .contains(y),
         defaultPredicatesTestCases);
   }
 
@@ -229,17 +319,35 @@ public class SelectFsPredicateAlignmentTest {
   public void thatSelectCoveringAlignsWithCoveringPredicateOnCasRandomized() throws Exception
   {
     System.out.print("Covering  (CAS select by annotation)   -- ");
-    assertSelectionIsEqualOnRandomData("covering", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COVERING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> x != y && covering(x, y))
+            .filter(x -> x != y && AnnotationPredicates.covering(x, y))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>select(type)
             .covering(y));
     
-    System.out.print("Covering  (CAS select by offsets)      -- ");
-    assertSelectionIsEqualOnRandomData("covering", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    System.out.print("Covering  (CAS select by annotation) * -- ");
+    assertSelectionIsEqualOnRandomData(COVERING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> covering(x, y))
+            .filter(x -> x != y && AxiomaticAnnotationPredicates.covering(x.getBegin(), x.getEnd(),
+                y.getBegin(), y.getEnd()))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .covering(y));
+
+    System.out.print("Covering  (CAS select by offsets)      -- ");
+    assertSelectionIsEqualOnRandomData(COVERING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> AnnotationPredicates.covering(x, y))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .covering(y.getBegin(), y.getEnd()));
+    
+    System.out.print("Covering  (CAS select by offsets)    * -- ");
+    assertSelectionIsEqualOnRandomData(COVERING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> AxiomaticAnnotationPredicates.covering(x.getBegin(), x.getEnd(),
+                y.getBegin(), y.getEnd()))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>select(type)
             .covering(y.getBegin(), y.getEnd()));
@@ -249,17 +357,17 @@ public class SelectFsPredicateAlignmentTest {
   public void thatSelectCoveringAlignsWithCoveringPredicateOnIndexRandomized() throws Exception
   {
     System.out.print("Covering  (Index select by annotation) -- ");
-    assertSelectionIsEqualOnRandomData("covering", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COVERING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> x != y && covering(x, y))
+            .filter(x -> x != y && AnnotationPredicates.covering(x, y))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
             .covering(y));
     
     System.out.print("Covering  (Index select by offsets)    -- ");
-    assertSelectionIsEqualOnRandomData("covering", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COVERING, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> covering(x, y))
+            .filter(x -> AnnotationPredicates.covering(x, y))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
             .covering(y.getBegin(), y.getEnd()));
@@ -281,8 +389,18 @@ public class SelectFsPredicateAlignmentTest {
 
     assertSelectFS(
         COLOCATED,
-        (cas, type, x, y) -> cas.select(type).filter((a) -> 
-                colocated(x, (Annotation) a)).collect(toList()).contains(y),
+        (cas, type, x, y) -> cas.select(type)
+            .filter((a) -> AnnotationPredicates.colocated(x, (Annotation) a)).collect(toList())
+            .contains(y),
+        defaultPredicatesTestCases);
+
+    assertSelectFS(
+        COLOCATED,
+        (cas, type, x, y) -> cas.select(type)
+            .filter((a) -> AxiomaticAnnotationPredicates.colocated(x.getBegin(), x.getEnd(), 
+                ((Annotation) a).getBegin(), ((Annotation) a).getEnd()))
+            .collect(toList())
+            .contains(y),
         defaultPredicatesTestCases);
   }
 
@@ -290,37 +408,55 @@ public class SelectFsPredicateAlignmentTest {
   public void thatSelectAtAlignsWithColocatedPredicatedOnCasRandomized() throws Exception
   {
     System.out.print("Colocated (CAS select by annotation)   -- ");
-    assertSelectionIsEqualOnRandomData("colocated at", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COLOCATED, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> x != y && colocated(x, y))
+            .filter(x -> x != y && AnnotationPredicates.colocated(x, y))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .at(y));
+
+    System.out.print("Colocated (CAS select by annotation) * -- ");
+    assertSelectionIsEqualOnRandomData(COLOCATED, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> x != y && AxiomaticAnnotationPredicates.colocated(x.getBegin(), x.getEnd(),
+                y.getBegin(), y.getEnd()))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>select(type)
             .at(y));
 
     System.out.print("Colocated (CAS select by offsets)      -- ");
-    assertSelectionIsEqualOnRandomData("colocated at", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COLOCATED, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> colocated(x, y))
+            .filter(x -> AnnotationPredicates.colocated(x, y))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>select(type)
             .at(y.getBegin(), y.getEnd()));
-  }
+
+    System.out.print("Colocated (CAS select by offsets)    * -- ");
+    assertSelectionIsEqualOnRandomData(COLOCATED, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+        (cas, type, y) -> cas.getAnnotationIndex(type).select()
+            .filter(x -> AxiomaticAnnotationPredicates.colocated(x.getBegin(), x.getEnd(),
+                y.getBegin(), y.getEnd()))
+            .collect(toList()),
+        (cas, type, y) -> cas.<Annotation>select(type)
+            .at(y.getBegin(), y.getEnd()));
+}
 
   @Test
   public void thatSelectAtAlignsWithColocatedPredicatedOnIndexRandomized() throws Exception
   {
     System.out.print("Colocated (Index select by annotation) -- ");
-    assertSelectionIsEqualOnRandomData("colocated at", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COLOCATED, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> x != y && colocated(x, y))
+            .filter(x -> x != y && AnnotationPredicates.colocated(x, y))
             .collect(toList()),
         (cas, type, context) -> cas.<Annotation>getAnnotationIndex(type).select()
             .at(context));
 
     System.out.print("Colocated (Index select by offsets)    -- ");
-    assertSelectionIsEqualOnRandomData("colocated at", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
+    assertSelectionIsEqualOnRandomData(COLOCATED, "", DEFAULT_ITERATIONS, DEFAULT_TYPE_COUNT,
         (cas, type, y) -> cas.getAnnotationIndex(type).select()
-            .filter(x -> colocated(x, y))
+            .filter(x -> AnnotationPredicates.colocated(x, y))
             .collect(toList()),
         (cas, type, y) -> cas.<Annotation>getAnnotationIndex(type).select()
             .at(y.getBegin(), y.getEnd()));
@@ -334,5 +470,4 @@ public class SelectFsPredicateAlignmentTest {
       }
       return all;
   }
-
 }

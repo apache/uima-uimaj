@@ -162,12 +162,11 @@ public final class AnnotationPredicates {
   }
 
   public static boolean following(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
-    return aXBegin >= aYEnd && !(aXBegin == aYEnd && (aYBegin == aYEnd || aXBegin == aXEnd));
+    return aXBegin >= aYEnd;
   }
 
   public static boolean following(AnnotationFS aX, int aYBegin, int aYEnd) {
-    int xBegin = aX.getBegin();
-    return xBegin >= aYEnd && !(xBegin == aYEnd && (aYBegin == aYEnd || xBegin == aX.getEnd()));
+    return aX.getBegin() >= aYEnd;
   }
 
   /**
@@ -180,19 +179,15 @@ public final class AnnotationPredicates {
    * @return whether X is right of Y.
    */
   public static boolean following(AnnotationFS aX, AnnotationFS aY) {
-    int xBegin = aX.getBegin();
-    int yEnd = aY.getEnd();
-    return xBegin >= yEnd && !(xBegin == yEnd && (aY.getBegin() == yEnd || xBegin == aX.getEnd()));
+    return aX.getBegin() >= aY.getEnd();
   }
 
   public static boolean preceding(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
-    return aYBegin >= aXEnd && !(aXEnd == aYBegin && (aYBegin == aYEnd || aXBegin == aXEnd));
+    return aYBegin >= aXEnd;
   }
 
   public static boolean preceding(AnnotationFS aX, int aYBegin, int aYEnd) {
-    int xEnd = aX.getEnd();
-
-    return aYBegin >= xEnd && !(xEnd == aYBegin && (aYBegin == aYEnd || aX.getBegin() == xEnd));
+    return aYBegin >= aX.getEnd();
   }
 
   /**
@@ -205,10 +200,7 @@ public final class AnnotationPredicates {
    * @return whether X left of Y.
    */
   public static boolean preceding(AnnotationFS aX, AnnotationFS aY) {
-    int xEnd = aX.getEnd();
-    int yBegin = aY.getBegin();
-
-    return yBegin >= xEnd && !(xEnd == yBegin && (yBegin == aY.getEnd() || aX.getBegin() == xEnd));
+    return aY.getBegin() >= aX.getEnd();
   }
   
   public static boolean beginningWith(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
@@ -233,5 +225,4 @@ public final class AnnotationPredicates {
   public static boolean endingWith(AnnotationFS aX, AnnotationFS aY) {
     return aX.getEnd() == aY.getEnd();
   }
-
 }

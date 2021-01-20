@@ -16,7 +16,7 @@
 // under the License.
 
 [[_uv3.select]]
-= The select framework for working with CAS data
+= SelectFS CAS data access
 
 The _select_ framework provides a concise way to work with Feature Structure data stored in the CAS.
 It is integrated with the Java 8 _stream_ framework, and provides additional capabilities supported by the underlying  UIMA framework, including the ability to move both forwards and backwards while iterating, moving to specific positions, and doing various kinds of specialized Annotation  selection such as working with Annotations spanned by another annotation (think of a Paragraph annotation, and the Sentences or Tokens within that). 
@@ -27,13 +27,13 @@ There are 3 main parts to this framework:
 * what to select, ordering 
 * what to do 
 
-
 .Select - the big picture
 image::images/version_3_users_guide/select/select_big_pic.png["Select composed of sources, what to select, and what to do"]
 
 These are described in code using a builder pattern to specify the many options and parameters.
 Some of the very common parameters are also available as positional arguments in some contexts.
 Most of the variations are defaulted so that in the common use cases, they may be omitted. 
+
 
 [[_uv3.select.builder_pattern]]
 == Select's use of the builder pattern
@@ -60,7 +60,7 @@ Some parameters are specified as positional parameters, for example, a UIMA Type
 
 Feature Structures are kept in the CAS, and may be accessed using UIMA Indexes.
 Note that not all Feature Structures in the CAS are in the UIMA indexes; only those that the  user had "added to the indexes" are.
-Feature Structures not in the indexes are not  included when using the CAS as the source for the select framework.
+Feature Structures not in the indexes are not included when using the CAS as the source for the select framework.
 
 Feature Structures may, additionally, be kept in `FSArrays`, `FSLists`, and many additional collection-style objects that implement `SelectViaCopyToArray` interface.
 This interface is implemented by the new semi-built-in types `FSArrayList`, `FSHashSet` and `FSLinkedHashSet`; user-defined JCas classes for user types may also choose to implement this.
@@ -101,6 +101,7 @@ Each of these sources has a new API method, `select(...)`, which initiates the s
 The select method can take an optional parameter, specifying the UIMA type to return.
 If supplied, the type must must be the type or subtype of the index  (if one is specified or implied); it serves to further restrict the types selected beyond whatever the  index (if specified) has as its top-most type.
 
+
 [[_uv3.select.sources.type]]
 === Use of Type in selection of sources
 
@@ -128,39 +129,32 @@ The best practice is to pass the JCas class representing the type you want, to t
 This enables the generic typing mechanism to be set to that type.
 In the example below, we use `Token` as the type, and `fsIterator()` just as an example of some terminal form action. 
 
-====
 [source]
 ----
 // Best practice, when possible
 // the generic type for Token is passed as an argument to select
 FSIterator<Token> token_it = cas.select(Token.class).fsIterator();
 ----
-====
 
 A compile-time generic type can be specified after the select, if the class argument form of `select`  is not used.
 In these two examples, the generic type is being specified at compile time, explicitly: 
 
-====
 [source]
 ----
 // ... myCas.select(myType).<Token>fsIterator() ...  
 // ... myIndexOversomeType.select().<Token>further-operators-of-select-etc
 ----
-====
 
 Java 8's type inference doesn't take the generic type past the first object in a build chain, so you can use these techniques to overcome that.
 In these examples, tkn_idx is a generically typed variable:
 
-====
 [source]
 ----
 FSIndex<Token> tkn_idx = ... ; // generically typed variable
 ----
-====
 
 We show a straight-forward syntax that doesn't work, followed by 3 alternatives that do work.
 
-====
 [source]
 ----
 // this next fails because the Token generic type from the 
@@ -168,11 +162,9 @@ We show a straight-forward syntax that doesn't work, followed by 3 alternatives 
 
 FSIterator<Token> token_iterator = tkn_idx.select().fsIterator();
 ----
-====
 
 You can overcome this in three ways:
 
-====
 [source]
 ----
 // pass in the type as an argument to select using the JCas cover type.  
@@ -191,7 +183,6 @@ FSIterator<Token> token_iterator =
 FSIterator<Token> token_iterator =
     tkn_idx.<Token>select().fsIterator();
 ----
-====
 
 Note: the static `select` method may be statically imported into code that uses it, to avoid repeatedly  qualifying this with its class, `SelectFSs`.
 
@@ -202,6 +193,7 @@ For example, an AnnotationIndex may be specialized to just ``Token``s (and their
 FSIterator<Token> token_iterator = 
     annotation_index.select(Token.class).fsIterator();
 ----
+
 
 [[_uv3.select.selection_and_ordering]]
 == Selection and Ordering
@@ -215,7 +207,7 @@ There are four sets of sub-selection and ordering specifications, grouped  by wh
 
 With some exceptions, configuration items to the left also apply to items on the right. 
 
-When the same configuration item is specified multiple times,  the last one specified is the one that is used.
+When the same configuration item is specified multiple times, the last one specified is the one that is used.
 
 .Selection and Ordering
 image::images/version_3_users_guide/select/select_selection_and_ordering.png[Selection and Ordering configuration]
@@ -230,8 +222,9 @@ These are named so the default (if you don't specify them) is generally what is 
 For example, normally, when working with bounded limits within Annotation Indexes, type priorities are ignored when computing the bound positions.
 Specifying typePriority() says to use type priorities.
 
-Additionally, the boolean configuration methods have an optional form where they take a boolean value;  true sets the property.
+Additionally, the boolean configuration methods have an optional form where they take a boolean value; true sets the property.
 So, for example typePriority(true) is equivalent to typePriority(), and typePriority(false) is equivalent to omitting this configuration.
+
 
 [[_uv3.select.any_source]]
 === Configuration for any source
@@ -239,8 +232,9 @@ So, for example typePriority(true) is equivalent to typePriority(), and typePrio
 *limit*::
 a limit to the number of Feature Structures that will be produced or iterated over. 
 
-*mullOK*::
+*nullOK*::
 changes the behavior for the terminal_form actions ``get(...) and single(...)``, which would otherwise throw an exception if a null result happened. 
+
 
 [[_uv3.select.any_index]]
 === Configuration for any index
@@ -253,6 +247,7 @@ When this is specified, it acts  as an aggregation of the underlying selections,
 The ordering among the views is arbitrary; the ordering within each view is the same as if this setting wasn't in force.
 Because of this implementation, the items in the selection may not be unique --  Feature Structures in the underlying selections that are in multiple views will appear multiple times. 
 
+
 [[_uv3.select.ordered_index]]
 === Configuration for sort-ordered indexes
 
@@ -263,7 +258,7 @@ relaxes any iteration by allowing it to proceed in an unordered manner.
 Specifying this may improve performance in some cases.
 When this is specified,  the current implementation skips the work of keeping multiple iterators for a type and all of its subtypes in the proper synchronization. 
 
-_startAt_::
+*startAt*::
 position the starting point of any iteration. `startAt(...)` can be used for general sorted indexes, and also has special formats only usable for Annotation Indexes. 
 +
 [source]
@@ -287,39 +282,89 @@ startAt(begin, end, shifted) // same as above,
                              // which can be positive or negative
 ----
 
+NOTE: The use of `startAt` in conjunction with `following` or `prededing` or any of the bounded sub-selection operators is *not* supported.
+
 *backwards*::
-specifies a backwards order (from last to first position) for subsequent operations 
+specifies that the result is returned the opposite order than normal. It does not
+matter at which point in the selection this method is invoked. So e.g. 
+`...backwards().limit(5)` returns the same result as `...limit(5).backwards()`. Also, invoking 
+this method twice does not "un-reverse" the results.
+
+
+[[_uv3.select.annot.follow_precede]]
+=== Following or Preceding
+
+For an Annotation Index, you can specify all Feature Structures following or preceding a position.
+The position can be specified either as an Annotation or by specifying an annotation begin index.
+Both of these can have an additional shift offset amount as a 2nd parameter.
+Note that the positioning arguments differ from the `startAt` specification,  which uses both begin and end values. 
+
+*following*::
+Position the iterator according to the argument,  and then move the iterator forwards until the Annotation at that position has its begin value >= to the positioning annotation's end value. 
++
+If the position is specified as an int, move the iterator forwards until the Annotation at that position has its begin value >= the specified int. 
+
+*preceding*::
+Position the iterator according to the argument,  and then move it backwards until the Annotation's (at that position) `end` value is <= to  the positioning Annotation's `begin` value. 
++
+If the position is specified as an int, treat this as the begin value.
++
+Once positioned, the actual iteration starts at the beginning and ends at the last position.
+
+The `preceding` iteration skips over annotations whose `end` values are >  the positioning annotation's begin value, or the positioning int's value.
+
+[NOTE]
+====
+When using following/preceding in combination with `limit`, `backwards`, `shifted` and `non-overlappin`, the order in which these operations are internally applied is as follows.
+
+. unambiguous - first, ambiguous annotations are skipped. The shift amount does not affect which which of the ambiguous annotations are skipped.
+. shifted - after removing the ambiguous annotations, items in the result set can be skipped in the  direction of the selection. A negative shift is implicitly capped to 0. E.g. consider you have `[10, 20] [20, 30]` and `select().preceding([30, 40])`, the result would be `[10, 20] [20, 30]` (in this order). Because the shift skips away from the reference point, the result of `select().preceding([30, 40]).shifted(1)` is  `[10, 20]` and not `[20, 30]`. 
+. limit - the limit is applied after shifting. Thus, the amount of shifting has no effect on the limit.
+. backwards - finally, the result set may be reversed.
+====
+
 
 [[_uv3.select.annot.subselect]]
 === Bounded sub-selection within an Annotation Index
 
 When selecting Annotations, frequently you may want to select only those which have a relation to a bounding Annotation.
-A commonly done selection is to select all Annotations  (of a particular type including its subtypes) within the span of another bounding Annotation,  for example, all `Tokens` within a ``Sentence``.
+A commonly done selection is to select all Annotations  (of a particular type including its subtypes) within the span of another bounding Annotation,  for example, all `Tokens` within a `Sentence`.
 
 There are four varieties of sub-selection within an annotation index.
 They all are based on a  bounding Annotation (except the `between` which is based on two bounding Annotations). 
 
 The bounding Annotations are specified using either a Annotation (or a subtype), or by specifying the begin and end offsets that would be for the bounding Annotation.
 
-Leaving aside `between` as a special case, the bounding Annotation's `begin` and `end` (and sometimes, its ``type``) is used to specify where an iteration would start, where it would end,  and possibly, which Annotations within those bounds would be filtered out.
+Leaving aside `between` as a special case, the bounding Annotation's `begin` and `end` (and sometimes, its `type`) is used to specify where an iteration would start, where it would end,  and possibly, which Annotations within those bounds would be filtered out.
 There are many variations possible; these are described in the next section.
 
 The returned Annotations exclude the one(s) which are `equal` to the bounding FS.
 There are several variations of how this `equal` test is done, discussed in the next section.
 
 *coveredBy*::
-iterates over Annotations within the bound 
+iterates over Annotations within the bound
 
 *covering*::
-iterates over Annotations that span the bound. 
+iterates over Annotations that span the bound.
 
 *at*::
-iterates over Annotations that have the same span (i.e., begin and end) as the bound. 
+iterates over Annotations that have the same span (i.e., begin and end) as the bound.
 
 *between*::
-uses two Annotations, and returns Annotations that are in between the two bounds, specified by Annotations.
-If the bounds are backwards, then they are automatically used in reverse order.
-The meaning of between is that an included Annotation's begin has to be >= the earlier bound's ``end``,  and the Annotation's end has to be <= the later bound's ``begin``. 
+uses two Annotations, and returns Annotations that are in between the two bounds, specified by Annotations. If the bounds are backwards, then they are automatically used in reverse order.
+The meaning of between is that an included Annotation's begin has to be >= the earlier bound's `end`,  and the Annotation's end has to be <= the later bound's `begin`. 
+
+[NOTE]
+====
+When using following/preceding in combination with `limit`, `backwards`, `shifted` and `non-overlappin`, the order in which these operations are internally applied is as follows.
+ 
+. unambiguous - first, ambiguous annotations are skipped. The shift amount does not affect which which of the ambiguous annotations are skipped.
+. backwards - if requested, reversal is applied before shift and limit.
+. shifted - after removing the ambiguous annotations, items in the result set can be skipped.
+the end of the. A negative shift is implicitly capped to 0.
+. limit - the limit is applied after shifting. Thus, the amount of shifting has no effect on the limit.
+====
+
 
 [[_uv3.select.annot.variations]]
 === Variations in Bounded sub-selection within an Annotation Index
@@ -349,8 +394,6 @@ While doing bounded iteration, if the Annotation being returned is identical (ha
 Other annotations, which might  have the same begin, end, and type values, are not skipped, but instead, included, by default.
 +
 When this configuration is specified, any Annotation which has the same begin, end, and type is also skipped. 
-+
-
 
 [NOTE]
 ====
@@ -362,6 +405,8 @@ If you do not want any of the indexed annotations to be skipped, you can achieve
 
 Because the bounding annotation will not be equal (have the same Feature Structure ID) as any  annotations in the index (because you haven't indexed it), it will never match any annotations found in the index while iterating. 
 ====
+
+
 [[_uv3.select.annot.subselect.defaults]]
 === Defaults for bounded selects
 
@@ -386,27 +431,6 @@ default: (only applies to `coveredBy` selections;  The default is to skip Annota
 default: only the single Annotation with the same _id() is skipped when using  a bounded iteration.
 Use this setting to expand the set of skipped Annotations to include all those equal to the  bound's begin, end and type. 
 
-[[_uv3.select.annot.follow_precede]]
-=== Following or Preceding
-
-For an Annotation Index, you can specify all Feature Structures following or preceding a position.
-The position can be specified either as an Annotation or by specifying an annotation begin index.
-Both of these can have an additional shift offset amount as a 2nd parameter.
-Note that the positioning arguments differ from the `startAt` specification,  which uses both begin and end values. 
-
-*following*::
-Position the iterator according to the argument,  and then move the iterator forwards until the Annotation at that position has its begin value >= to the positioning annotation's end value. 
-+
-If the position is specified as an int, move the iterator forwards until the Annotation at that position has its begin value >= the specified int. 
-
-*preceding*::
-Position the iterator according to the argument,  and then move it backwards until the Annotation's (at that position) `end` value is <= to  the positioning Annotation's ``begin``value. 
-+
-If the position is specified as an int, treat this as the begin value.
-+
-Once positioned, the actual iteration starts at the beginning and ends at the last position.
-
-The `preceding` iteration skips over annotations whose `end` values are >  the positioning annotation's begin value, or the positioning int's value.
 
 [[_uv3.select.terminal_form_actions]]
 == Terminal Form actions
@@ -463,7 +487,7 @@ Positioning using a Feature Structure, by contrast, only require that the index 
 If no argument is specified, then returns the first item.
 If there is no item, then an exception is thrown unless `nullOK` is set. 
 +
-If any positioning arguments are specified, then this returns the item at that position unless  there is no item at that position, in which case it throws an exception unless `mullOK` is set. 
+If any positioning arguments are specified, then this returns the item at that position unless there is no item at that position, in which case it throws an exception unless `nullOK` is set. 
 
 *single*::
 returns the item at the position, but throws exceptions  if there are more than one item in the selection, or if there are no items in the selection. 
@@ -484,7 +508,6 @@ The first occurrance of a stream method converts the select into a stream, using
 For example, here's a somewhat contrived example: you could do the following to collect the set of types appearing within some bounding annotation, when considered in nonOverlapping style: 
 +
 
-====
 [source]
 ----
 // items of MyType or subtypes 
@@ -494,10 +517,9 @@ Set<Type> foundTypes = myIndex.select(MyType.class)
    .map(fs -> fs.getType())
    .collect(Collectors.toCollection(TreeSet::new));
 ----
-====
+
 Or, to collect by category a set of frequency values: 
 
-====
 [source]
 ----
 Map<Category, Integer> freqByCategory = myIndex.select(MyType.class)
@@ -505,4 +527,3 @@ Map<Category, Integer> freqByCategory = myIndex.select(MyType.class)
      .groupingBy(MyType::getCategory,
                  Collectors.summingInt(MyType::getFreq)));
 ----
-====
