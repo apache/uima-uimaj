@@ -14,13 +14,14 @@
 // KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
+def MAVEN_VERSION = 'maven_latest' 
+def JDK_VERSION = 'jdk_11_latest' 
   
 pipeline {
-  agent any
-  
   tools { 
-    maven 'maven_latest' 
-    jdk 'jdk_11_latest' 
+    maven MAVEN_VERSION 
+    jdk JDK_VERSION 
   }
 
   options {
@@ -70,7 +71,7 @@ pipeline {
             ': ' + env.CHANGE_BRANCH + '</a> (' +  env.CHANGE_AUTHOR_DISPLAY_NAME + ')'
         }
 
-        withMaven() {
+        withMaven(maven: MAVEN_VERSION, jdk: JDK_VERSION) {
           sh script: 'mvn ' +
             params.extraMavenArguments +
             ' -U -Dmaven.test.failure.ignore=true clean verify'
@@ -92,7 +93,7 @@ pipeline {
       when { branch pattern: "main|main-v2", comparator: "REGEXP" }
       
       steps {
-        withMaven() {
+        withMaven(maven: MAVEN_VERSION, jdk: JDK_VERSION) {
           sh script: 'mvn ' +
             params.extraMavenArguments +
             ' -U -Dmaven.test.failure.ignore=true clean deploy'
