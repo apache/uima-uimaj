@@ -74,9 +74,18 @@ pipeline {
         }
 
         withMaven(maven: MAVEN_VERSION, jdk: JDK_VERSION) {
-          sh script: 'mvn ' +
-            params.extraMavenArguments +
-            ' -U -Dmaven.test.failure.ignore=true clean verify'
+          script {
+            def mavenCommand = 'mvn ' +
+                params.extraMavenArguments +
+                ' -U -Dmaven.test.failure.ignore=true clean verify';
+                
+            if (isUnix()) {
+              sh script: mavenCommand
+            }
+            else {
+              bat script: mavenCommand
+            }
+          }
         }
         
         script {
@@ -96,9 +105,18 @@ pipeline {
       
       steps {
         withMaven(maven: MAVEN_VERSION, jdk: JDK_VERSION) {
-          sh script: 'mvn ' +
-            params.extraMavenArguments +
-            ' -U -Dmaven.test.failure.ignore=true clean deploy'
+          script {
+            def mavenCommand = 'mvn ' +
+              params.extraMavenArguments +
+              ' -U -Dmaven.test.failure.ignore=true clean deploy'
+              
+            if (isUnix()) {
+              sh script: mavenCommand
+            }
+            else {
+              bat script: mavenCommand
+            }
+          }
         }
         
         script {
