@@ -67,7 +67,7 @@ public interface AnnotationFS extends AnnotationBaseFS {
    * annot.getCoveredText().equals(docText.substring(annot.getBegin(), 
    * annot.getEnd()))</code>.
    * 
-   * @return String
+   * @return the covered text.
    */
   String getCoveredText();
 
@@ -85,12 +85,12 @@ public interface AnnotationFS extends AnnotationBaseFS {
    * the begin/end offsets.
    * 
    * @see #trim()
-   * @param aPredicate the predicate used to identify  whitespace
+   * @param aPredicate the predicate used to identify whether a given codepoint is whitespace.
    */
   void trim(IntPredicate aPredicate);
   
   /**
-   * @see AnnotationPredicates#covers(AnnotationFS, AnnotationFS)
+   * @see AnnotationPredicates#covering(AnnotationFS, AnnotationFS)
    */
   default boolean covering(int aBegin, int aEnd)
   {
@@ -148,7 +148,7 @@ public interface AnnotationFS extends AnnotationBaseFS {
   /**
    * @see AnnotationPredicates#overlappingAtBegin(AnnotationFS, AnnotationFS)
    */
-  default boolean overlapsLeft(AnnotationFS aOther)
+  default boolean overlappingAtBegin(AnnotationFS aOther)
   {
     return AnnotationPredicates.overlappingAtBegin(this, aOther);
   }
@@ -172,7 +172,7 @@ public interface AnnotationFS extends AnnotationBaseFS {
   /**
    * @see AnnotationPredicates#following(AnnotationFS, AnnotationFS)
    */
-  default boolean rightOf(int aBegin, int aEnd)
+  default boolean following(int aBegin, int aEnd)
   {
     return AnnotationPredicates.following(this, aBegin, aEnd);
   }
@@ -180,7 +180,7 @@ public interface AnnotationFS extends AnnotationBaseFS {
   /**
    * @see AnnotationPredicates#following(AnnotationFS, AnnotationFS)
    */
-  default boolean rightOf(AnnotationFS aOther)
+  default boolean following(AnnotationFS aOther)
   {
     return AnnotationPredicates.following(this, aOther);
   }
@@ -188,7 +188,7 @@ public interface AnnotationFS extends AnnotationBaseFS {
   /**
    * @see AnnotationPredicates#preceding(AnnotationFS, AnnotationFS)
    */
-  default boolean leftOf(int aBegin, int aEnd)
+  default boolean preceding(int aBegin, int aEnd)
   {
     return AnnotationPredicates.preceding(this, aBegin, aEnd);
   }
@@ -196,7 +196,7 @@ public interface AnnotationFS extends AnnotationBaseFS {
   /**
    * @see AnnotationPredicates#preceding(AnnotationFS, AnnotationFS)
    */
-  default boolean leftOf(AnnotationFS aOther)
+  default boolean preceding(AnnotationFS aOther)
   {
     return AnnotationPredicates.preceding(this, aOther);
   }
