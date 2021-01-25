@@ -168,6 +168,27 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
   public static final String PARAM_MBEAN_NAME_PREFIX = "MBEAN_NAME_PREFIX";
   
   /**
+   * Sometimes Annotators may log excessively, causing problems in production settings.
+   * Although this could be controlled using logging configuration, sometimes when
+   * UIMA is embedded into other applications, you may not have easy access to modify those.
+   * <p>
+   * For this case, this key specifies that throttling should be applied to messages
+   * produced by annotators using loggers obtained by Annotator code using the getLogger() API.
+   * <p>
+   * The value specified should be an integer, and is the number of messages allowed before
+   * logging is suppressed.  This number is applied to each logging level, separately.
+   * To suppress all logging, use 0.  
+   */
+  public static final String PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING = 
+      "PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING";
+  
+  public static final String MDC_ANNOTATOR_IMPL_NAME = "uima_annotator";
+  public static final String MDC_ANNOTATOR_CONTEXT_NAME = "uima_annotator_context_name";
+  public static final String MDC_ROOT_CONTEXT_ID = "uima_root_context_id";
+  public static final String MDC_CAS_ID = "uima_cas_id";
+  
+  
+  /**
    * Initializes this <code>Resource</code> from a <code>ResourceSpecifier</code>. Applications
    * do not need to call this method. It is called automatically by the <code>ResourceFactory</code>
    * and cannot be called a second time.

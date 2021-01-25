@@ -27,14 +27,28 @@ import javax.swing.JOptionPane;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class SetDataPathHandler.
+ */
 public class SetDataPathHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new sets the data path handler.
+   *
+   * @param frame the frame
+   */
   public SetDataPathHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent arg0) {
     String result = (String) JOptionPane.showInputDialog(this.main, "Specify the data path",
         "Set data path", JOptionPane.PLAIN_MESSAGE, null, null, this.main.getDataPathName());

@@ -19,136 +19,49 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.tcas.Annotation;
 
-public class LLUnambiguousIteratorImpl implements LowLevelIterator {
+/**
+ * Implements a low level ambiguous or unambiguous iterator over some type T which 
+ * doesn't need to be a subtype of Annotation. 
+ *   - This iterator skips types which are not Annotation or a subtype of Annotation. 
+ *
+ * @param <T> the type this iterator is over (including subtypes)
+ */
+public class LLUnambiguousIteratorImpl<T extends FeatureStructure> extends FsIterator_subtypes_snapshot<T> {
 
-  private final int[] annots;
-
-  private int pos = 0;
-
-  private final int size;
-
-  // We only need those for copy.
-  private final LowLevelIterator theIterator;
-
-  private final LowLevelCAS theCas;
-
-  public LLUnambiguousIteratorImpl(LowLevelIterator it, LowLevelCAS cas) {
-    super();
-    this.theCas = cas;
-    this.theIterator = it;
-    this.annots = new int[it.ll_indexSize()];
-    final LowLevelTypeSystem ts = cas.ll_getTypeSystem();
-    final int annotType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_ANNOTATION);
-    final int startFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_BEGIN);
-    final int endFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_END);
-
+  public LLUnambiguousIteratorImpl(LowLevelIterator<T> it) {
+    super((T[]) createItemsArray(
+        (LowLevelIterator<FeatureStructure>) it), 
+        (LowLevelIndex<T>) it.ll_getIndex(), 
+        IS_ORDERED, 
+        it.getComparator());
+  }
+  
+  // this is static because can't have instance method call before super call in constructor
+  private static Annotation[] createItemsArray(LowLevelIterator<FeatureStructure> it) {
+    List<Annotation> items = new ArrayList<>();
     int lastSeenEnd = 0;
-    int curRef;
-    int curType;
     it.moveToFirst();
-    int i = 0;
     // Iterate over the input iterator.
     while (it.isValid()) {
-      // Get current ref and its type.
-      curRef = it.ll_get();
-      curType = cas.ll_getFSRefType(curRef);
-      if (ts.ll_subsumes(annotType, curType)) {
-        // Found an annotation.
-        if (i == 0 || (cas.ll_getIntValue(curRef, startFeat) >= lastSeenEnd)) {
-          // Either first annotation, or non-overlapping continuation.
-          this.annots[i] = curRef;
-          lastSeenEnd = cas.ll_getIntValue(curRef, endFeat);
-          ++i;
-        }
+      FeatureStructure fs = it.nextNvc();
+      if (!(fs instanceof Annotation)) {
+        continue;  // skip until get an annotation
       }
-      it.moveToNext();
-    }
-    // The current value of i is the size of the index view provided by
-    // this iterator.
-    this.size = i;
-  }
-
-  public void moveToFirst() {
-    this.pos = 0;
-  }
-
-  public void moveToLast() {
-    this.pos = this.size - 1;
-  }
-
-  public boolean isValid() {
-    return (this.pos >= 0) && (this.pos < this.size);
-  }
-
-  public int ll_get() throws NoSuchElementException {
-    if (!this.isValid()) {
-      throw new NoSuchElementException();
-    }
-    return this.annots[this.pos];
-  }
-
-  public void moveToNext() {
-    ++this.pos;
-  }
-
-  public void moveToPrevious() {
-    --this.pos;
-  }
-
-  public void moveTo(int fsRef) {
-    final int position = binarySearch(this.annots, fsRef, 0, this.size);
-    if (position >= 0) {
-      this.pos = position;
-    } else {
-      this.pos = -(position + 1);
-    }
-
-  }
-
-  public Object copy() {
-    LLUnambiguousIteratorImpl copy = new LLUnambiguousIteratorImpl(this.theIterator, this.theCas);
-    copy.pos = this.pos;
-    return copy;
-  }
-
-  public int ll_indexSize() {
-    return this.size;
-  }
-
-  public LowLevelIndex ll_getIndex() {
-    return this.theIterator.ll_getIndex();
-  }
-
-  // Do binary search on index.
-  private final int binarySearch(int[] array, int ele, int start, int end) {
-    --end; // Make end a legal value.
-    int i; // Current position
-    int comp; // Compare value
-    while (start <= end) {
-      i = (int)(((long)start + end) / 2);
-      comp = this.ll_getIndex().ll_compare(ele, array[i]);
-      if (comp == 0) {
-        return i;
-      }
-      if (start == end) {
-        if (comp < 0) {
-          return (-i) - 1;
-        }
-        // comp > 0
-        return (-i) - 2; // (-(i+1))-1
-      }
-      if (comp < 0) {
-        end = i - 1;
-      } else { // comp > 0
-        start = i + 1;
+      
+      Annotation annot = (Annotation) fs;
+      if (annot.getBegin() >= lastSeenEnd) {
+        items.add(annot);
+        lastSeenEnd = annot.getEnd();
       }
     }
-    // This means that the input span is empty.
-    return (-start) - 1;
+    
+    return items.toArray(new Annotation[items.size()]);    
   }
-
+   
 }

@@ -74,6 +74,7 @@ public class CasMultiplierExampleApplication {
 
       // pass the CAS to the AnalysisEngine and get back
       // a CasIterator for stepping over the output CASes that are produced.
+      
       CasIterator casIterator = ae.processAndOutputNewCASes(initialCas);
       while (casIterator.hasNext()) {
         CAS outCas = casIterator.next();

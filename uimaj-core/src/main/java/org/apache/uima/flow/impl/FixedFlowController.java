@@ -90,7 +90,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   //   switching this to a copy-on-write kind of final list.
   //      -- this has the added "benefit" (maybe eventually) of having better semantics for letting existing
   //         Flow objects continue to use the "old" settings, and only the new ones picking up the new ones.
-  final private List<String> mSequence = new CopyOnWriteArrayList<String>();  //UIMA-4013
+  final private List<String> mSequence = new CopyOnWriteArrayList<>();  //UIMA-4013
 
   private int mActionAfterCasMultiplier;
 
@@ -104,7 +104,7 @@ public synchronized void initialize(FlowControllerContext aContext) throws Resou
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
     if (flowConstraints instanceof FixedFlow) {
       String[] sequence = ((FixedFlow) flowConstraints).getFixedFlow();
-      ArrayList<String> keysToAdd = new ArrayList<String>(sequence.length);
+      ArrayList<String> keysToAdd = new ArrayList<>(sequence.length);
       for( String key : sequence ) {
     	  if( !aContext.getAnalysisEngineMetaDataMap().containsKey(key) )
             throw new ResourceInitializationException(ResourceInitializationException.FLOW_CONTROLLER_MISSING_DELEGATE,

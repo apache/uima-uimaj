@@ -40,12 +40,18 @@ import org.xml.sax.helpers.LocatorImpl;
  */
 public class XmlDeserializer_Axis11 extends DeserializerImpl {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 6687245569965318456L;
 
+  /** The m deser. */
   private SaxDeserializer_impl mDeser;
 
+  /** The m nesting. */
   private int mNesting;
 
+  /**
+   * Instantiates a new xml deserializer axis 11.
+   */
   public XmlDeserializer_Axis11() {
     try {
       mNesting = 0;
@@ -61,8 +67,15 @@ public class XmlDeserializer_Axis11 extends DeserializerImpl {
   }
 
   /**
+   * Characters.
+   *
+   * @param ch the ch
+   * @param start the start
+   * @param length the length
+   * @throws SAXException the SAX exception
    * @see org.xml.sax.ContentHandler#characters(char[], int, int)
    */
+  @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
     // System.out.println("AxisResourceServiceDeserializer::characters(" + new
     // String(ch,start,length) + ")");
@@ -70,9 +83,16 @@ public class XmlDeserializer_Axis11 extends DeserializerImpl {
   }
 
   /**
+   * On end element.
+   *
+   * @param arg0 the arg 0
+   * @param arg1 the arg 1
+   * @param arg2 the arg 2
+   * @throws SAXException the SAX exception
    * @see org.apache.axis.encoding.Deserializer#onEndElement(java.lang.String, java.lang.String,
    *      org.apache.axis.encoding.DeserializationContext)
    */
+  @Override
   public void onEndElement(String arg0, String arg1, DeserializationContext arg2)
           throws SAXException {
     // System.out.println("AxisResourceServiceDeserializer::onEndElement(" + arg0 + "," + arg1);
@@ -85,26 +105,33 @@ public class XmlDeserializer_Axis11 extends DeserializerImpl {
 
   /**
    * This method is invoked when an element start tag is encountered.
-   * 
-   * @param namespace
-   *          is the namespace of the element
-   * @param localName
-   *          is the name of the element
-   * @param prefix
-   *          is the element's prefix
-   * @param attributes
-   *          are the attributes on the element...used to get the type
-   * @param context
-   *          is the DeserializationContext
+   *
+   * @param namespace          is the namespace of the element
+   * @param localName          is the name of the element
+   * @param prefix          is the element's prefix
+   * @param attributes          are the attributes on the element...used to get the type
+   * @param context          is the DeserializationContext
+   * @return the SOAP handler
+   * @throws SAXException the SAX exception
    */
+  @Override
   public SOAPHandler onStartChild(String namespace, String localName, String prefix,
           Attributes attributes, DeserializationContext context) throws SAXException {
     return this;
   }
 
   /**
+   * On start element.
+   *
+   * @param arg0 the arg 0
+   * @param arg1 the arg 1
+   * @param arg2 the arg 2
+   * @param arg3 the arg 3
+   * @param arg4 the arg 4
+   * @throws SAXException the SAX exception
    * @see org.apache.axis.message.SOAPHandler#onStartChild(String, String, String, Attributes, DeserializationContext)
    */
+  @Override
   public void onStartElement(String arg0, String arg1, String arg2, Attributes arg3,
           DeserializationContext arg4) throws SAXException {
     // System.out.println("AxisResourceServiceDeserializer::onStartElement(" + arg0 + "," + arg1 +
@@ -119,8 +146,12 @@ public class XmlDeserializer_Axis11 extends DeserializerImpl {
   }
 
   /**
+   * Value complete.
+   *
+   * @throws SAXException the SAX exception
    * @see org.apache.axis.encoding.Deserializer#valueComplete()
    */
+  @Override
   public void valueComplete() throws SAXException {
     // System.out.println("AxisResourceServiceDeserializer::valueComplete");
     if (mNesting == 0) {

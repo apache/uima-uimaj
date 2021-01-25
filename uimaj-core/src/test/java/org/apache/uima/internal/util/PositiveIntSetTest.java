@@ -43,7 +43,7 @@ public class PositiveIntSetTest extends TestCase {
   }
   
   private R r = new R();
-  private Set<Integer> cs = new HashSet<Integer>();
+  private Set<Integer> cs = new HashSet<>();
   private PositiveIntSet s;
   private int gi;
   
@@ -85,9 +85,9 @@ public class PositiveIntSetTest extends TestCase {
     
     IntListIterator it = s.getOrderedIterator();
     assertTrue(it.hasNext());
-    assertEquals(128, it.next());
+    assertEquals(128, it.nextNvc());
     assertTrue(it.hasNext());
-    assertEquals(128128, it.next());
+    assertEquals(128128, it.nextNvc());
     assertFalse(it.hasNext());
 
     // test offset
@@ -309,7 +309,7 @@ public class PositiveIntSetTest extends TestCase {
    */
   private void runRandomTests() { 
     s = r.useInitParms ? new PositiveIntSet_impl(r.initSize, r.estMin, r.estMax) : new PositiveIntSet_impl();
-    cs = new HashSet<Integer>();
+    cs = new HashSet<>();
     dadd(r.firstValue);
     
     for (int i = 0; i < 10000; i++) {
@@ -352,7 +352,7 @@ public class PositiveIntSetTest extends TestCase {
     IntListIterator it2 = s.iterator();
     i = 0;
     while (it2.hasNext()) {
-      v1[i++] = it2.next();
+      v1[i++] = it2.nextNvc();
     }
     Arrays.sort(v1);
     assertTrue(Arrays.equals(v1, v2));    

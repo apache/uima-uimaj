@@ -24,18 +24,29 @@ import javax.swing.event.CaretListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
 /**
  * Caret change handler. Enable/disable cut/copy actions, depending on whether there's a non-empty
  * text selection.
  */
 public class CaretChangeHandler implements CaretListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new caret change handler.
+   *
+   * @param frame the frame
+   */
   public CaretChangeHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.event.CaretListener#caretUpdate(javax.swing.event.CaretEvent)
+   */
+  @Override
   public void caretUpdate(CaretEvent ce) {
     final int dot = ce.getDot();
     final int mark = ce.getMark();

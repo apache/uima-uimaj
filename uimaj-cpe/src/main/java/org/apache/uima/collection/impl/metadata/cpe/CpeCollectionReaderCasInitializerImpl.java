@@ -32,22 +32,34 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
+
 /**
+ * The Class CpeCollectionReaderCasInitializerImpl.
+ *
  * @deprecated As of v2.0, CAS Initializers are deprecated.
  */
 @Deprecated
 public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl implements
         CpeCollectionReaderCasInitializer {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -6284616239685904940L;
 
+  /** The descriptor. */
   private CpeComponentDescriptor descriptor;
 
+  /** The configuration parameter settings. */
   private ConfigurationParameterSettings configurationParameterSettings;
 
+  /** The cfps. */
   private CasProcessorConfigurationParameterSettings cfps;
 
+  /** The sofa name mappings. */
   private CpeSofaMappings sofaNameMappings;
 
+  /**
+   * Instantiates a new cpe collection reader cas initializer impl.
+   */
   public CpeCollectionReaderCasInitializerImpl() {
   }
 
@@ -110,6 +122,8 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
   }
 
   /**
+   * Gets the parameter settings.
+   *
    * @return the parameter settings
    */
   public ConfigurationParameterSettings getParameterSettings() {
@@ -130,6 +144,11 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
 
   }
 
+  /**
+   * Sets the parameter settings.
+   *
+   * @param settings the new parameter settings
+   */
   public void setParameterSettings(ConfigurationParameterSettings settings) {
     configurationParameterSettings = settings;
     if (configurationParameterSettings != null) {
@@ -138,11 +157,15 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
 
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casInitializer",
           new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
               new PropertyXmlInfo("parameterSettings", null),
@@ -150,6 +173,8 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
           });
 
   /**
+   * Gets the sofa name mappings.
+   *
    * @return the sofa mappings
    */
   @Override
@@ -157,6 +182,11 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
     return sofaNameMappings;
   }
 
+  /**
+   * Sets the sofa name mappings.
+   *
+   * @param mappings the new sofa name mappings
+   */
   @Override
   public void setSofaNameMappings(CpeSofaMappings mappings) {
     sofaNameMappings = mappings;

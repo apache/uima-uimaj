@@ -100,6 +100,7 @@ public class AnnotationImplException extends Exception {
   /**
    * @return The message of the exception. Useful for including the text in another exception.
    */
+  @Override
   public String getMessage() {
     if (this.resource == null) {
       try {
@@ -116,8 +117,9 @@ public class AnnotationImplException extends Exception {
   }
 
   /** @return The same as getMessage(), but prefixed with <code>"AnnotationImplException: "</code>. */
+  @Override
   public String toString() {
-    return "AnnotationImplException: " + this.getMessage();
+    return this.getClass().getSimpleName() + ": " + this.getMessage();
   }
 
   /**

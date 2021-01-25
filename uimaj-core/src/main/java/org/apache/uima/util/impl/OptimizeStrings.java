@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.uima.internal.util.IntVector;
+
 /**
  * Share common underlying char[] among strings: Optimize sets of strings for
  * efficient storage
@@ -70,7 +72,7 @@ public class OptimizeStrings {
   // not final static for testing
   private int splitSize = Integer.MAX_VALUE - 2;  // avoid boundary issues
   
-  private ArrayList<String> inStrings = new ArrayList<String>();
+  private ArrayList<String> inStrings = new ArrayList<>();
   
   /**
    * A two hop map from strings to offsets is used.
@@ -98,7 +100,7 @@ public class OptimizeStrings {
    */
   private int[] lastIndexInCommonStringsA;
   
-  private Map<String, String> returnedStrings = new HashMap<String, String>();
+  private Map<String, String> returnedStrings = new HashMap<>();
   
   private long              savedCharsExact   = 0;
   private long              savedCharsSubstr  = 0;
@@ -260,7 +262,7 @@ public class OptimizeStrings {
   public void optimize() {
     String[] sa = inStrings.toArray(new String[inStrings.size()]);
     optimizeI(sa); 
-    inStrings = new ArrayList<String>();  // release space
+    inStrings = new ArrayList<>();  // release space
   }
      
   private void optimizeI(String[] sortedStrings) {
@@ -283,8 +285,8 @@ public class OptimizeStrings {
     String previous = "";
     int previousOffset = 0;
     offsets = new int[ssLength];
-    List<Integer> lastIndexInCommonStrings = new ArrayList<Integer>();
-    List<String> commonStrings = new ArrayList<String>();
+    IntVector lastIndexInCommonStrings = new IntVector();
+    List<String> commonStrings = new ArrayList<>();
 
     for (int i = ssLength - 1; i >= 0; i--) {
       String s = sortedStrings[i];
@@ -311,17 +313,15 @@ public class OptimizeStrings {
     lastIndexInCommonStrings.add(0);   // the last index 
     
     // convert List<Integer> to int[]
-    lastIndexInCommonStringsA = new int[lastIndexInCommonStrings.size()];
-    for (int i = 0; i < lastIndexInCommonStrings.size(); i++) {
-      lastIndexInCommonStringsA[i] = lastIndexInCommonStrings.get(i);
-    }
+    lastIndexInCommonStrings.toArray();
+    lastIndexInCommonStringsA = lastIndexInCommonStrings.toArray();
     
     commonStringsA = commonStrings.toArray(new String[commonStrings.size()]);
     
 
     // prepare map from original string object to index in sorted arrays and offsets
     // index also used to find common string segment.
-    stringToIndexMap = new HashMap<String, Integer>(ssLength);
+    stringToIndexMap = new HashMap<>(ssLength);
     for (int i = ssLength - 1; i >= 0; i--) {
       stringToIndexMap.put(sortedStrings[i], i);
     }
@@ -383,7 +383,7 @@ public class OptimizeStrings {
       // see https://issues.apache.org/jira/browse/UIMA-2515
       // debug/test
 //      System.out.println("hit stack overflow");
-      Set<String> orderedSet = new TreeSet<String>();
+      Set<String> orderedSet = new TreeSet<>();
       for (String s : inStrings) {
         if (!orderedSet.add(s)) {
           savedCharsExact += s.length();

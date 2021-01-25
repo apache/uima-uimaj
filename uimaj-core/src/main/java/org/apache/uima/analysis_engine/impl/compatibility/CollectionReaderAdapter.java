@@ -82,7 +82,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
     // Primitive AnalysisEngine.
     AnalysisEngineDescription_impl desc = new AnalysisEngineDescription_impl();
 
-    Map<String, Object> paramsMap = new HashMap<String, Object>();
+    Map<String, Object> paramsMap = new HashMap<>();
     paramsMap.put(Resource.PARAM_UIMA_CONTEXT, aContext);
     mCollectionReader.initialize(desc, paramsMap);
     mUimaContext = aContext;

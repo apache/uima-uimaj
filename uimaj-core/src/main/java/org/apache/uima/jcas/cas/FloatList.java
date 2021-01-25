@@ -21,73 +21,93 @@ package org.apache.uima.jcas.cas;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.JCasRegistry;
 
-public class FloatList extends org.apache.uima.jcas.cas.TOP implements Iterable<Float> {
-
-	public final static int typeIndexID = JCasRegistry.register(FloatList.class);
-
-	public final static int type = typeIndexID;
-
-	public int getTypeIndexID() {
-		return typeIndexID;
-	}
+public abstract class FloatList extends TOP implements CommonList, Iterable<Float> {
 
 	// Never called.
 	protected FloatList() {// Disable default constructor
-	}
-
-	/* Internal - Constructor used by generator */
-	public FloatList(int addr, TOP_Type type) {
-		super(addr, type);
 	}
 
 	public FloatList(JCas jcas) {
 		super(jcas);
 	}
 
-	public float getNthElement(int i) {
-		if (this instanceof EmptyFloatList) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST, new String[] { "EmptyFloatList" });
-			throw casEx;
-		}
-		if (i < 0) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX, new String[] {Integer.toString(i)});
-			throw casEx;
-		}
-		int originali = i;
+  /**
+  * used by generator
+  * Make a new AnnotationBase
+  * @param c -
+  * @param t -
+  */
 
-		FloatList cg = this;
-		for (;; i--) {
-			if (cg instanceof EmptyFloatList) {
-				CASRuntimeException casEx = new CASRuntimeException(
-						CASRuntimeException.JCAS_GET_NTH_PAST_END, new String[] {Integer.toString(originali)});
-				throw casEx;
-			}
-			NonEmptyFloatList c = (NonEmptyFloatList) cg;
-			if (i == 0)
-				return c.getHead();
-			cg = c.getTail();
-		}
-	}
-	
-	 /**
-   * pushes item onto front of this list
-   * @param item the item to push onto the list
-   * @return the new list, with this item as the head value of the first element
+   public FloatList(TypeImpl t, CASImpl c) {
+     super(t, c);
+   }
+   
+  public float getNthElement(int i) {
+    return ((NonEmptyFloatList) getNonEmptyNthNode(i)).getHead();
+  }
+  
+  
+  @Override
+  public NonEmptyFloatList createNonEmptyNode() {
+    return new NonEmptyFloatList(this._casView.getJCasImpl());
+  }
+  
+  /**
+  * pushes item onto front of this list
+  * @param item the item to push onto the list
+  * @return the new list, with this item as the head value of the first element
+  */
+ public NonEmptyFloatList push(float item) {
+   return new NonEmptyFloatList(_casView.getJCasImpl(), item, this);
+ }
+
+  /* (non-Javadoc)
+   * @see java.lang.Iterable#iterator()
    */
-  public NonEmptyFloatList push(float item) {
-    return new NonEmptyFloatList(this.jcasType.jcas, item, this);
+  @Override
+  public Iterator<Float> iterator() {
+    return Collections.emptyIterator();  // overridden by NonEmptyXxList
   }
   
   @Override
-  public Iterator<Float> iterator() {
-    return Collections.emptyIterator(); // NonEmptyList overrides
+  public EmptyFloatList emptyList() {
+    return this._casView.emptyFloatList();
   }
-
+  
+  /**
+   * Create an FloatList from an existing array of Feature Structures
+   * @param jcas the JCas to use
+   * @param a the array of Floats to populate the list with
+   * @return an FloatList, with the elements from the array
+   */
+  public static FloatList create(JCas jcas, Float[] a) {
+    FloatList floatList = jcas.getCasImpl().emptyFloatList();   
+    for (int i = a.length - 1; i >= 0; i--) {
+      floatList = floatList.push(a[i]);
+    }   
+    return floatList;
+  }
+  
+  public Stream<Float> stream() {
+    return StreamSupport.stream(spliterator(), false);
+  }
+  
+  public boolean contains(float v) {
+    FloatList node = this;
+    while (node instanceof NonEmptyFloatList) {
+      NonEmptyFloatList n = (NonEmptyFloatList) node;
+      if (n.getHead() == v) {
+        return true;
+      }
+      node = n.getTail();
+    }
+    return false;
+  }
 }

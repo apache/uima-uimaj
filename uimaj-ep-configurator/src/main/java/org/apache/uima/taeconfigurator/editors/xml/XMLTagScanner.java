@@ -22,8 +22,17 @@ package org.apache.uima.taeconfigurator.editors.xml;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.rules.*;
 
+
+/**
+ * The Class XMLTagScanner.
+ */
 public class XMLTagScanner extends RuleBasedScanner {
 
+  /**
+   * Instantiates a new XML tag scanner.
+   *
+   * @param manager the manager
+   */
   public XMLTagScanner(ColorManager manager) {
     IToken string = new Token(new TextAttribute(manager.getColor(IXMLColorConstants.STRING)));
 
