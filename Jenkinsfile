@@ -19,6 +19,8 @@ def MAVEN_VERSION = 'maven_latest'
 def JDK_VERSION = 'jdk_11_latest' 
   
 pipeline {
+  agent any
+
   tools { 
     maven MAVEN_VERSION 
     jdk JDK_VERSION 
