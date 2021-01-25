@@ -24,8 +24,13 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 
 /**
- * Writable version of type system.
+ * <p>Writable version of type system.</p>
  * 
+ * <p>Public API for the UIMA Type System during pipe-line startup, while
+ * type system is being constructed from merge of type specifications of components.</p>
+ * 
+ * <p>For use by applications, not for use by annotator components (because they work with 
+ * merged type system).</p>
  * 
  */
 public interface TypeSystemMgr extends TypeSystem {
@@ -63,6 +68,11 @@ public interface TypeSystemMgr extends TypeSystem {
 
   /**
    * Add an feature to the type system.
+   * Note: A subtype may define a feature that is also defined by a supertype. 
+   *   If the supertype definition is already present, then the subtype definition is 
+   *   "merged":  using the merging criteria: ranges must match.
+   *      Different isMultipleReferencesAllowed settings are OK;
+   *      The supertype's setting takes precedence.
    * 
    * @param featureName
    *          The name of the new feature.
@@ -107,11 +117,40 @@ public interface TypeSystemMgr extends TypeSystem {
           boolean multipleReferencesAllowed) throws CASAdminException;
 
   /**
-   * Commit the type system. The type system will be locked and no longer writable. WARNING: Users
+   * Commit the type system, and load JCas Classes from the UIMA Framework's classloader. 
+   * The type system will be locked and no longer writable. 
+   * 
+   * WARNING: Users
    * should not call this, but instead call ((CASImpl) theAssociatedCAS).commitTypeSystem() in order
    * to set up the parts of the CAS that should be set up when the type system is committed.
+   * 
+   * WARNING: This API will use the UIMA Framework's class loader to find a load JCas classes.
+   * If you have JCas classes under some other class loader you wish to use (perhaps you are 
+   * setting a ResourceManager's extension classpath, which creates a class loader), use the
+   * commit which takes a class loader as an argument, and pass in the class loader where the
+   * JCas classes are.  
+   * 
+   * @return the committed type system.  Note that this may be the same object as "this" or a 
+   *         different (but equal) object.  Type systems are cached and recreating the exact same type system
+   *         repeatedly will return the original one.
    */
-  void commit();
+  TypeSystem commit();
+  
+  /**
+   * Commit the type system, and load JCas classes from the passed in classloader. 
+   * The type system will be locked and no longer writable. 
+   * 
+   * WARNING: Users
+   * should not call this, but instead call ((CASImpl) theAssociatedCAS).commitTypeSystem() in order
+   * to set up the parts of the CAS that should be set up when the type system is committed.
+   * 
+   * @param cl the JCas class loader
+   *  
+   * @return the committed type system.  Note that this may be the same object as "this" or a 
+   *         different (but equal) object.  Type systems are cached and recreating the exact same type system
+   *         repeatedly will return the original one.
+   */
+  TypeSystem commit(ClassLoader cl);
 
   /**
    * Check if this instance has been committed.

@@ -19,6 +19,7 @@
 
 package org.apache.uima.internal.util.rb_trees;
 
+import org.apache.uima.util.impl.Constants;
 
 /**
  * map&lt;int, int%gt; uses separate objects (IntRBTNode) as nodes  
@@ -211,7 +212,7 @@ public class IntRedBlackTree {
    */
   public int[] toArray(int offset) {
     if (this.root == null) {
-      return new int[0];
+      return Constants.EMPTY_INT_ARRAY;
     }
     return this.root.toArray(offset);
   }

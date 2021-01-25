@@ -36,46 +36,69 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+
+/**
+ * The Class AddTypeDialog.
+ */
 public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
 
+  /** The type name UI. */
   private StyledText typeNameUI;
 
+  /** The supertype name UI. */
   private Text supertypeNameUI;
 
+  /** The description UI. */
   private Text descriptionUI;
 
+  /** The type name. */
   public String typeName;
 
+  /** The original type name. */
   private String originalTypeName;
 
+  /** The supertype name. */
   public String supertypeName;
 
+  /** The description. */
   public String description;
 
+  /** The type section. */
   private TypeSection typeSection;
 
+  /** The existing td. */
   private TypeDescription existingTd = null;
 
+  /** The all types list. */
   private TypesWithNameSpaces allTypesList;
 
   // private boolean seenThisAlready = false;
 
+  /**
+   * Instantiates a new adds the type dialog.
+   *
+   * @param aSection the a section
+   */
   public AddTypeDialog(AbstractSection aSection) {
     super(aSection, "Add a Type", "Use this panel to specify a type.");
     typeSection = (TypeSection) aSection;
   }
 
   /**
-   * Constructor for Editing an existing Type DescriptionD
-   * 
-   * @param aSection -
-   * @param aExistingTd -
+   * Constructor for Editing an existing Type DescriptionD.
+   *
+   * @param aSection the a section
+   * @param aExistingTd the a existing td
    */
   public AddTypeDialog(AbstractSection aSection, TypeDescription aExistingTd) {
     this(aSection);
     existingTd = aExistingTd;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingTd);
     createWideLabel(mainArea,
@@ -113,11 +136,15 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     return mainArea;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#getTypeSystemInfoList()
+   */
   /*
    * Supplies the list of valid types
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#getTypeSystemInfoList()
    */
+  @Override
   public TypesWithNameSpaces getTypeSystemInfoList() {
     TypesWithNameSpaces result = super.getTypeSystemInfoList();
     boolean hasFeatures = false;
@@ -133,6 +160,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     }
     Type[] allTypes = (Type[]) editor.allTypes.get().values().toArray(new Type[0]);
     Arrays.sort(allTypes, new Comparator() {
+      @Override
       public int compare(Object o1, Object o2) {
         Type t1 = (Type) o1;
         Type t2 = (Type) o2;
@@ -152,12 +180,20 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     return result;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
+  @Override
   public void copyValuesFromGUI() {
     typeName = typeNameUI.getText();
     description = nullIf0lengthString(descriptionUI.getText());
     supertypeName = supertypeNameUI.getText();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  @Override
   public boolean isValid() {
     if (typeName.length() == 0)
       return false;
@@ -188,6 +224,10 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
+  @Override
   public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(typeName.length() > 0);

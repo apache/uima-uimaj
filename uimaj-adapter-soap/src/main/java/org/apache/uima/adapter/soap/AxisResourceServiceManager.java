@@ -34,6 +34,7 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 
+
 /**
  * Utility class for deploying Resources as Axis (SOAP) services. This class mantains a map between
  * Axis service names and the {@link ResourceService_impl} classes that provide the implementation
@@ -82,13 +83,11 @@ public class AxisResourceServiceManager {
    * {@link ResourceService_impl} object already exists for that service name, that object will be
    * returned. Otherwise, a new <code>ResourceService_impl</code> object will be created from the
    * information in the MessageContext.
-   * 
-   * @param aServiceImplClass
-   *          the class that will be instantiated when a new <code>ResourceService_impl</code> is
+   *
+   * @param aServiceImplClass          the class that will be instantiated when a new <code>ResourceService_impl</code> is
    *          to be created. This must be a subclass of ResourceService_impl.
-   * @return -
-   * @throws AxisFault
-   *           if the configuration information could not be read
+   * @return the service impl
+   * @throws AxisFault           if the configuration information could not be read
    */
   public static ResourceService_impl getServiceImpl(Class aServiceImplClass) throws AxisFault {
     try {
@@ -142,7 +141,7 @@ public class AxisResourceServiceManager {
       // create and initialize the service implementation
       serviceImpl = (ResourceService_impl) aServiceImplClass.newInstance();
       HashMap initParams = new HashMap();
-      initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(numInstances));
+      initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, numInstances);
       serviceImpl.initialize(resourceSpecifier, initParams);
 
       // disable logging for Analysis Engines if deployer so indicated

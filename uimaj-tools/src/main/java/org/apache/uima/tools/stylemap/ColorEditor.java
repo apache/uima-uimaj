@@ -29,11 +29,23 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 
+
+/**
+ * The Class ColorEditor.
+ */
 class ColorEditor extends DefaultCellEditor {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 4766162815461077066L;
 
+  /** The current color. */
   Color currentColor = null;
 
+  /**
+   * Instantiates a new color editor.
+   *
+   * @param button the button
+   */
   public ColorEditor(JButton button) {
     super(new JCheckBox());
     // Unfortunately, the constructor expects a check box,
@@ -42,20 +54,33 @@ class ColorEditor extends DefaultCellEditor {
 
     // Must do the following to ensure editing stops:
     button.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         fireEditingStopped();
       }
     });
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.AbstractCellEditor#fireEditingStopped()
+   */
+  @Override
   public void fireEditingStopped() {
     super.fireEditingStopped();
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.DefaultCellEditor#getCellEditorValue()
+   */
+  @Override
   public Object getCellEditorValue() {
     return currentColor;
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.DefaultCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+   */
+  @Override
   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
           int row, int column) {
     // ((JButton) editorComponent).setText(value.toString());

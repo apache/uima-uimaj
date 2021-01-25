@@ -31,6 +31,7 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.util.XMLInputSource;
 
+
 /**
  * Main Class that runs a Collection Processing Engine (CPE). This class reads a CPE Descriptor as a
  * command-line argument and instantiates the CPE. It also registers a callback listener with the
@@ -44,22 +45,17 @@ public class SimpleRunCPE extends Thread {
    */
   private CollectionProcessingEngine mCPE;
 
-  /**
-   * Start time of CPE initialization
-   */
+  /** Start time of CPE initialization. */
   private long mStartTime;
   
-  /**
-   * Start time of the processing
-   */
+  /** Start time of the processing. */
   private long mInitCompleteTime;
 
   /**
    * Constructor for the class.
-   * 
-   * @param args
-   *          command line arguments into the program - see class description
-   * @throws Exception -
+   *
+   * @param args          command line arguments into the program - see class description
+   * @throws Exception the exception
    */
   public SimpleRunCPE(String args[]) throws Exception {
     mStartTime = System.currentTimeMillis();
@@ -98,6 +94,9 @@ public class SimpleRunCPE extends Thread {
   }
 
   
+  /**
+   * Prints the usage message.
+   */
   private static void printUsageMessage() {
     System.out.println(" Arguments to the program are as follows : \n"
             + "args[0] : path to CPE descriptor file");
@@ -105,10 +104,9 @@ public class SimpleRunCPE extends Thread {
 
   /**
    * main class.
-   * 
-   * @param args
-   *          Command line arguments - see class description
-   * @throws Exception -
+   *
+   * @param args          Command line arguments - see class description
+   * @throws Exception the exception
    */
   public static void main(String[] args) throws Exception {
     new SimpleRunCPE(args);
@@ -120,8 +118,11 @@ public class SimpleRunCPE extends Thread {
    * 
    */
   class StatusCallbackListenerImpl implements StatusCallbackListener {
+    
+    /** The entity count. */
     int entityCount = 0;
 
+    /** The size. */
     long size = 0;
 
     /**

@@ -93,4 +93,3 @@ public class CasEditorPerspectiveFactory implements IPerspectiveFactory {
     leftBottom.addView(EditView.ID_2);
   }
 }
-

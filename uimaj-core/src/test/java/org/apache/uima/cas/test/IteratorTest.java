@@ -28,8 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
@@ -43,7 +41,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.FeatureStructureImpl;
+import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.LowLevelIndex;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.LowLevelIterator;
@@ -52,6 +50,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -59,6 +58,8 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+
+import junit.framework.TestCase;
 
 /**
  * Class comment for IteratorTest.java goes here.
@@ -97,26 +98,33 @@ public class IteratorTest extends TestCase {
   private Type subsentenceType;
   
   private FSIndex<FeatureStructure> bagIndex;
+  /** ss means snapshot */
   private FSIndex<FeatureStructure> ssBagIndex;
   
   private FSIndex<FeatureStructure> setIndex;
+  /** ss means snapshot */
   private FSIndex<FeatureStructure> ssSetIndex;
 
   private FSIndex<FeatureStructure> sortedIndex;
+  /** ss means snapshot */
   private FSIndex<FeatureStructure> ssSortedIndex;
   
   private FSIndex<?> jcasBagIndex;
+  /** ss means snapshot */
   private FSIndex<?> jcasSsBagIndex;
   
   private FSIndex<?> jcasSetIndex;
+  /** ss means snapshot */
   private FSIndex<?> jcasSsSetIndex;
 
   private FSIndex<?> jcasSortedIndex;
+  /** ss means snapshot */
   private FSIndex<?> jcasSsSortedIndex;
   
   private JCas jcas;
 
   private FSIndex<FeatureStructure> wordSetIndex;
+  /** ss means snapshot */
   private FSIndex<FeatureStructure> ssWordSetIndex;
 
   private Feature wordFeat;
@@ -234,6 +242,7 @@ public class IteratorTest extends TestCase {
   public void testEmptySnapshotIterator() {
     setupindexes();
     FSIterator<FeatureStructure> it = sortedIndex.iterator();
+    assertEquals(0, it.size());
     assertFalse(it.isValid());
     boolean ok = false;
     try {
@@ -244,6 +253,7 @@ public class IteratorTest extends TestCase {
     assertTrue(ok);
     
     it = ssSortedIndex.iterator();
+    assertEquals(0, it.size());    
     assertFalse(it.isValid());
     ok = false;
     try {
@@ -278,7 +288,9 @@ public class IteratorTest extends TestCase {
     FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex();
     FSIndex<AnnotationFS> ssIndex = index.withSnapshotIterators();
     FSIterator<AnnotationFS> it = index.iterator();
+    assertEquals(60, it.size());
     FSIterator<AnnotationFS> ssit = ssIndex.iterator();
+    assertEquals(60, it.size());
     it.moveTo(match);  // should move to left-most of the 10 with start=5 end=7
     ssit.moveTo(match);
     assertTrue(index.compare(match, it.get()) == 0);
@@ -303,6 +315,7 @@ public class IteratorTest extends TestCase {
     
     index = index.withSnapshotIterators();
     it = index.iterator();
+    assertEquals(1, it.size());
     it.moveTo(pastEnd);
     assertFalse(it.isValid());
 
@@ -330,10 +343,13 @@ public class IteratorTest extends TestCase {
       
       FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex(this.subsentenceType);
       FSIterator<AnnotationFS> it = index.iterator();
+      assertEquals((i == 0) ? 6 : 5, it.size());
       it.moveTo(testAnnot);
       for (int j = 0; j < 2; j++) {
         assertTrue(it.isValid());
         AnnotationFS fs = it.get();
+        this.cas.getIndexRepository().addFS(testAnnot);
+        this.cas.getIndexRepository().removeFS(testAnnot);
         assertEquals(1, fs.getBegin()); 
         assertEquals(2, fs.getEnd());
         it.moveToNext();
@@ -342,6 +358,7 @@ public class IteratorTest extends TestCase {
       
       index = index.withSnapshotIterators();
       it = index.iterator();
+      assertEquals((i == 0) ? 6 : 5, it.size());
       it.moveTo(testAnnot);
       for (int j = 0; j < 2; j++) {
         assertTrue(it.isValid());
@@ -357,19 +374,29 @@ public class IteratorTest extends TestCase {
   
 
   private void createFSs(int i) {
-    FeatureStructureImpl fsi;
+    FeatureStructureImplC fsi;
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
-        this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
+        this.cas.createAnnotation(this.sentenceType,   i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
-        fsi = (FeatureStructureImpl) this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      fsi = 
+        this.cas.createAnnotation(this.tokenType,      i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
-        this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+        this.cas.createAnnotation(this.tokenType,      i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
-        this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+        this.cas.createAnnotation(this.tokenType,      i * 2, (i * 2) + 1));
 //    //debug
 //    System.out.format("Token at %,d %n", fsi.getAddress());
+  }
+  
+  private void createFSsU() {
+    this.cas.getIndexRepository().removeAllIncludingSubtypes(TOP.class);
+    
+    for (int i = 0; i < 5; i++) {
+      this.cas.getIndexRepository().addFS(
+         this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
+    }  
   }
   
 //  private void debugls() {
@@ -381,11 +408,13 @@ public class IteratorTest extends TestCase {
 //  }
   
   private void setupFSs() {
+    this.cas.getIndexRepository().removeAllIncludingSubtypes(TOP.class);
+
     for (int i = 0; i < 10; i++) {
-      createFSs(i);   // 0 ... 9
+      createFSs(i);  // i = 0 .. 9, 5 annot per: annotation, sentence, token, token, token
     }
     for (int i = 19; i >= 10; i--) {
-      createFSs(i);   // 19 ... 10
+      createFSs(i);  // i = 19 .. 10 5 annot per: annotation, sentence, token, token, token
     }
   }
   
@@ -450,7 +479,7 @@ public class IteratorTest extends TestCase {
   }
   
   public void testIterator() {
-    setupFSs();
+    setupFSs();  
     
     setupindexes();
     
@@ -473,8 +502,7 @@ public class IteratorTest extends TestCase {
     
 //    debugls();  //debug
     
-    basicRemoveAdd(bagIndex, 20, 21);
-    basicRemoveAdd(ssBagIndex, 20, 21);
+    basicRemoveAdd(bagIndex);
     basicRemoveAdd(sortedIndex, 38, 39);
 //    debugls();  //debug
     basicRemoveAdd(ssSortedIndex, 38, 39);
@@ -484,20 +512,38 @@ public class IteratorTest extends TestCase {
    
     
     // /////////////////////////////////////////////////////////////////////////
-    // Test fast fail.
+    // Test fast fail. - uima v3 doesn't throw ConcurrentModificationException
 
-    fastFailTst(setIndex, true);
-    fastFailTst(ssSetIndex, false);
+//    fastFailTst(setIndex, true);
+//    fastFailTst(ssSetIndex, false);
+//    
+//    fastFailTst(bagIndex, true);
+//    fastFailTst(ssBagIndex, false);
+//   
+//    fastFailTst(sortedIndex, true);  
+//    fastFailTst(ssSortedIndex, false);
+
+    /**
+     * Test copy-on-write - 
+     *   insure that index mods are ignored in normal iteration
+     *   insure that index mods are picked up for moveTo, moveToFirst, moveToLast
+     */
+
     
-    fastFailTst(bagIndex, true);
-    fastFailTst(ssBagIndex, false);
+    createFSsU();
+    
+    cowTst(setIndex, true);
+    cowTst(ssSetIndex, false);
+    
+    cowTst(bagIndex, true);
+    cowTst(ssBagIndex, false);
    
-    fastFailTst(sortedIndex, true);  
-    fastFailTst(ssSortedIndex, false);
+    cowTst(sortedIndex, true);  
+    cowTst(ssSortedIndex, false);
     
 //    debugls();  //debug
     
-    
+    setupFSs();
 
     // Test find()
     setupWords();
@@ -509,24 +555,50 @@ public class IteratorTest extends TestCase {
     
 
     // moved IntArrayRBTtest for pointer iterators here
+    FSIndexRepository iri = cas.getIndexRepository();
+    FSIndex<FeatureStructure> setIndexOverTokens = iri.getIndex(CASTestSetup.ANNOT_SET_INDEX, tokenType);
+    int [] expected = new int[setIndexOverTokens.size()];
+    assertEquals(setIndexOverTokens.size(), 20);
+    int i = 0;
+    for (FeatureStructure fs : setIndexOverTokens) {
+      expected[i++] = fs._id();
+    }
+    
     LowLevelIndexRepository llir = this.cas.ll_getIndexRepository();
     LowLevelIndex setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
-    int[] expected = {17, 53, 89, 125, 161, 197, 233, 269, 305, 341, 701, 665, 629, 593, 557, 521, 485, 449, 413, 377};
+//    int[] expected = {17, 53, 89, 125, 161, 197, 233, 269, 305, 341, 701, 665, 629, 593, 557, 521, 485, 449, 413, 377};
+    setIndexIterchk(setIndexForType, expected);
+
+    FSIndex<FeatureStructure> setIndexOverSentences = iri.getIndex(CASTestSetup.ANNOT_SET_INDEX, sentenceType);
+    expected = new int[setIndexOverSentences.size()];
+    assertEquals(setIndexOverSentences.size(), 20);
+    i = 0;
+    for (FeatureStructure fs : setIndexOverSentences) {
+      expected[i++] = fs._id();
+    }
+
+    setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)sentenceType).getCode());
+//    expected = new int[] {12, 48, 84, 120, 156, 192, 228, 264, 300, 336, 696, 660, 624, 588, 552, 516, 480, 444, 408, 372};
     setIndexIterchk(setIndexForType, expected);
     
-    setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)sentenceType).getCode());
-    expected = new int[] {12, 48, 84, 120, 156, 192, 228, 264, 300, 336, 696, 660, 624, 588, 552, 516, 480, 444, 408, 372};
-    setIndexIterchk(setIndexForType, expected);
+    expected = new int[setIndex.size()];
+    assertEquals(setIndex.size(), 60);
+    i = 0;
+    for (FeatureStructure fs : setIndex) {
+      expected[i++] = fs._id();
+    }
+    
     
     setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX);
-    expected = new int[] {
-        1,   44,  80,  116, 152, 188, 224, 260, 296, 332,         692, 656, 620, 584, 548, 512, 476, 440, 404, 368, 
-        12,  48,  84,  120, 156, 192, 228, 264, 300, 336,         696, 660, 624, 588, 552, 516, 480, 444, 408, 372, 
-        17,  53,  89,  125, 161, 197, 233, 269, 305, 341,         701, 665, 629, 593, 557, 521, 485, 449, 413, 377};
+//    expected = new int[] {
+//        1,   44,  80,  116, 152, 188, 224, 260, 296, 332,         692, 656, 620, 584, 548, 512, 476, 440, 404, 368, 
+//        12,  48,  84,  120, 156, 192, 228, 264, 300, 336,         696, 660, 624, 588, 552, 516, 480, 444, 408, 372, 
+//        17,  53,  89,  125, 161, 197, 233, 269, 305, 341,         701, 665, 629, 593, 557, 521, 485, 449, 413, 377};
     setIndexIterchk(setIndexForType, expected);
     
     setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
     LowLevelIterator it = setIndexForType.ll_iterator();
+    assertEquals(20, it.size());
     assertTrue(it.isValid());
     it.moveToPrevious();
     assertFalse(it.isValid());
@@ -542,6 +614,7 @@ public class IteratorTest extends TestCase {
   
   private void setIndexIterchk(LowLevelIndex idx, int[] expected) {
     LowLevelIterator it = idx.ll_iterator();
+    assertEquals(expected.length, it.size());
     int[] r = new int[70];
     int i = 0;
     while (it.isValid()) {
@@ -572,7 +645,7 @@ public class IteratorTest extends TestCase {
           // types must be different
           assertFalse(a.getType().getName().equals(b.getType().getName()));
         }
-        if (a.hashCode() == b.hashCode()) {
+        if (a._id() == b._id()) {
           System.err.format("set Iterator: should not have 2 identical elements%n%s%n", it);
           assertTrue(false);
         }
@@ -585,11 +658,11 @@ public class IteratorTest extends TestCase {
 //       sb.append(String.format("%d %d debug: n=%d, type=%s, start=%d, end-%d%n",
 //           threadNumber,
 //           ii++,
-//           a.hashCode(),
+//           a._id(),
 //           a.getType().getName(),
 //           a.getBegin(),
 //           a.getEnd()));
-      v.add(it.get().hashCode());
+      v.add(it.get()._id());
       it.moveToNext();
     }
     // System.out.println("Number of annotations: " + v.size());
@@ -610,7 +683,7 @@ public class IteratorTest extends TestCase {
       // System.out.println(
       // a.getType().getName() + " - " + a.getStart() + " - " +
       // a.getEnd());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       it.moveToPrevious();
       --current;
     }
@@ -628,13 +701,13 @@ public class IteratorTest extends TestCase {
     while (current < (v.size() - 1)) {
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current + 1));
+      assertTrue(it.get()._id() == v.get(current + 1));
       it.moveToPrevious();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       ++current;
     }
 
@@ -642,13 +715,21 @@ public class IteratorTest extends TestCase {
     Iterator<FeatureStructure> javaIt = setIndex.iterator();
     current = 0;
     while (javaIt.hasNext()) {
-      assertEquals(javaIt.next().hashCode(), v.get(current++));
+      assertEquals(javaIt.next()._id(), v.get(current++));
     }
   }
   
   private void findTst(FSIndex index, FSIndex jcasIndex) {
     findTestCas(index);
     findTestJCas(jcasIndex);
+  }
+  
+  // called for bag indexes - can't know the begin/end for these - they're hash sets
+  private void basicRemoveAdd(FSIndex<FeatureStructure> index) { 
+    FSIterator<FeatureStructure> it = index.iterator();
+    it.moveToLast();
+    Annotation a = (Annotation) it.get();
+    basicRemoveAdd(index, a.getBegin(), a.getEnd() );
   }
   
   private void basicRemoveAdd(FSIndex<FeatureStructure> index, int begin, int end) {
@@ -663,6 +744,62 @@ public class IteratorTest extends TestCase {
     assertEquals(tokenType, a.getType());
     assertEquals(begin, a.getBegin());
     assertEquals(end, a.getEnd());
+  }
+  
+
+  /**
+   * 
+   * @param index - the index to manipulate
+   * @param isCow - false for "snapshot" indexes - these don't do cow (copy on write) things
+   */
+  private void cowTst(FSIndex<FeatureStructure> index, boolean isCow) {
+    LowLevelIterator<FeatureStructure> it = (LowLevelIterator)index.iterator();
+    it.moveToLast();
+    it.moveToFirst();
+    // moved to first, 2.7.0, because new bag iterator is more forgiving re concurrentmodexception
+    FeatureStructure a = it.get();
+    
+    cas.removeFsFromIndexes(a);
+    it.next();  
+    it.previous();
+    assertTrue(it.get() == a);  // gets the removed one
+    it.moveToFirst();  // resets cow, does nothing for snapshot
+    assertTrue(isCow ? (it.get() != a)
+                     : (it.get() == a));
+        
+    cas.addFsToIndexes(a);
+    it.moveToLast();
+    a = it.get();
+    
+    cas.removeFsFromIndexes(a);
+    it.previous();
+    it.next();
+    assertTrue(0 == index.compare(it.get(), a));
+    it.moveToLast();
+    assertTrue(isCow ? (it.get() != a)
+                     : (it.get() == a));
+
+    cas.addFsToIndexes(a);  // index mod causes cow to copy, and index wr_cow to be set to null
+    it.moveToFirst();  // moveToFirst -> maybeReinitIterator (if cow is copy), new cow, index wr_cow refs it
+        
+    it.moveToNext();
+    
+    a = it.get();
+    
+    cas.removeFsFromIndexes(a); // resets wr_cow to null for assoc. index, because it now ref-ng copy
+    it.previous();
+    it.isValid();
+    it.next();
+    assertTrue(it.get() == a);  // gets the removed one
+    it.moveTo(a);  // causes COW reset, a is not present (has been removed)
+//    if (isCow && index == setIndex || index == bagIndex) {
+//      assertFalse(it.isValid());  // moveTo on set with no match gives invalid iterator  
+//    } else {      
+      assertTrue(isCow 
+                  ? (it.isMoveToSupported() ? it.get() != a : true)
+                   : (it.get() == a));
+//    }
+    cas.addFsToIndexes(a);  // add it back for subsequent tests
   }
   
   private void fastFailTst(FSIndex<FeatureStructure> index, boolean isShouldFail) {
@@ -681,12 +818,14 @@ public class IteratorTest extends TestCase {
   
   private void expectCCE(FeatureStructure a, FSIterator it, boolean isShouldFail) {
     boolean ok = false;
+    isShouldFail = false; // after fix
     try {
       it.moveToNext();
+      it.get();  // for set/sorted, the get does the actual "move" operation
     } catch (ConcurrentModificationException e) {
       ok = true;
     }
-    assertTrue(isShouldFail ? ok : !ok);
+     assertTrue(isShouldFail ? ok : !ok);
     
     it.moveTo(a);  // should reset concurrent mod, 
     ok = true;
@@ -719,6 +858,7 @@ public class IteratorTest extends TestCase {
   
   private void tstWord(FSIndex<FeatureStructure> index) {
     FSIterator<FeatureStructure> it = index.iterator();
+    assertEquals(20, it.size());  // test size
     it.moveToLast();
 
     FeatureStructure fs = this.cas.createFS(wType);
@@ -737,6 +877,9 @@ public class IteratorTest extends TestCase {
   
   private void findTestCas(FSIndex<FeatureStructure> index) {
     AnnotationFS annot = (AnnotationFS) index.iterator().get();  // first element
+//    if (null == index.find(annot)) {
+//      System.out.println("debug");
+//    }
     assertNotNull(index.find(annot));
     assertNull(index.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
   }
@@ -775,7 +918,7 @@ public class IteratorTest extends TestCase {
         assertTrue(sortedIndex.compare(b, a) <= 0);
       }
       b = a;
-      int hc = a.hashCode();
+      int hc = a._id();
       v.add(hc);
 //      if ((hc % 2) == 1) {
         Thread.yield();
@@ -785,7 +928,7 @@ public class IteratorTest extends TestCase {
     assertTrue(sortedIndex.size() == v.size());
 
     // Test moveTo()
-    List<AnnotationFS> list = new ArrayList<AnnotationFS>();
+    List<AnnotationFS> list = new ArrayList<>();
     FSIterator<AnnotationFS> it2 = this.cas.getAnnotationIndex().iterator();
     for (it2.moveToFirst(); it2.isValid(); it2.moveToNext()) {
       list.add(it2.get());
@@ -808,7 +951,7 @@ public class IteratorTest extends TestCase {
     // System.out.println(it.get());
     // for (int i = v.size() - 1; i >= 0; i--) {
     // assertTrue(it.isValid());
-    // assertTrue(it.get().hashCode() == v.get(i));
+    // assertTrue(it.get()._id() == v.get(i));
     // it.moveToPrevious();
     // }
 
@@ -823,13 +966,13 @@ public class IteratorTest extends TestCase {
     while (current < (v.size() - 1)) {
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current + 1));
+      assertTrue(it.get()._id() == v.get(current + 1));
       it.moveToPrevious();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       ++current;
     }
 
@@ -837,7 +980,7 @@ public class IteratorTest extends TestCase {
     Iterator<FeatureStructure> javaIt = sortedIndex.iterator();
     current = 0;
     while (javaIt.hasNext()) {
-      assertEquals(javaIt.next().hashCode(), v.get(current++));
+      assertEquals(javaIt.next()._id(), v.get(current++));
     }
   
   }
@@ -866,7 +1009,7 @@ public class IteratorTest extends TestCase {
 //        assertTrue(bagIndex.compare(b, a) <= 0);
 //      }
       b = a;
-      v.add(a.hashCode());
+      v.add(a._id());
       it.moveToNext();
     }
     assertTrue(bagIndex.size() == v.size());
@@ -878,7 +1021,7 @@ public class IteratorTest extends TestCase {
 //        System.out.println("debug");
 //      }
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(i));
+      assertTrue(it.get()._id() == v.get(i));
       it.moveToPrevious();
     }
 
@@ -893,16 +1036,16 @@ public class IteratorTest extends TestCase {
     while (current < (v.size() - 1)) {
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current + 1));
+      assertTrue(it.get()._id() == v.get(current + 1));
 //      if (current == 19) {
 //        System.out.println("debug");
 //      }
       it.moveToPrevious();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       ++current;
     }
 
@@ -910,7 +1053,7 @@ public class IteratorTest extends TestCase {
     Iterator<FeatureStructure> javaIt = bagIndex.iterator();
     current = 0;
     while (javaIt.hasNext()) {
-      assertEquals(javaIt.next().hashCode(), v.get(current++));
+      assertEquals(javaIt.next()._id(), v.get(current++));
     }
 
     // Test iterator copy.
@@ -969,7 +1112,7 @@ public class IteratorTest extends TestCase {
 
     FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
         CASTestSetup.ANNOT_SET_INDEX, this.tokenType);
-    FSIterator<FeatureStructure> setIt = setIndex.iterator();
+    FSIterator<FeatureStructure> set_iterator = setIndex.iterator();
     
     FSIndex<AnnotationFS> sortedIndex = this.cas.getAnnotationIndex(this.tokenType);
     FSIterator<AnnotationFS> sortedIt = sortedIndex.iterator();
@@ -984,9 +1127,9 @@ public class IteratorTest extends TestCase {
     
     // For each index, check that the FSs are actually in the index.
     for (int i = 0; i < fsArray.length; i++) {
-      setIt.moveTo(fsArray[i]);
-      assertTrue(setIt.isValid());
-      assertTrue(setIt.get().equals(fsArray[(i < 90) ? i : 90]));
+      set_iterator.moveTo(fsArray[i]);
+      assertTrue(set_iterator.isValid());
+      assertTrue(set_iterator.get().equals(fsArray[(i < 90) ? i : 90]));
 
       bagIt.moveTo(fsArray[i]);
       assertTrue(bagIt.isValid());
@@ -1014,17 +1157,26 @@ public class IteratorTest extends TestCase {
     for (int i = 0; i < fsArray.length; i++) {
       ir.removeFS(fsArray[i]);
       ir.removeFS(fsArray[i]);  // a 2nd remove should be a no-op https://issues.apache.org/jira/browse/UIMA-2934
-      setIt.moveTo(fsArray[i]);
-      if (setIt.isValid()) {
+      
+      // due to copy on write, need a new instance of set_iterator
+      set_iterator = setIndex.iterator();
+      set_iterator.moveTo(fsArray[i]);
+      if (set_iterator.isValid()) {
         int oldRef = this.cas.ll_getFSRef(fsArray[i]);
-        int newRef = this.cas.ll_getFSRef(setIt.get());
+        int newRef = this.cas.ll_getFSRef(set_iterator.get());
         assertTrue(oldRef != newRef);
-        assertTrue(!setIt.get().equals(fsArray[i]));
+        assertTrue(!set_iterator.get().equals(fsArray[i]));
       }
+      
+   // due to copy on write, need a new instance of set_iterator
+      bagIt = bagIndex.iterator();
+//      assertFalse(bagIt.hasNext());  // invalid test: removing one item from a bag index doesn't remove the "last" element.
+      assertEquals(99, bagIndex.size());
       bagIt.moveTo(fsArray[i]);
-      if (bagIt.isValid()) {
-        assertTrue(!bagIt.get().equals(fsArray[i]));
-      }
+      assertFalse(bagIt.isValid());
+      
+      // due to copy on write, need a new instance of set_iterator
+      sortedIt = sortedIndex.iterator();      
       sortedIt.moveTo(fsArray[i]);
       if (sortedIt.isValid()) {
         assertTrue(!sortedIt.get().equals(fsArray[i]));
@@ -1036,10 +1188,19 @@ public class IteratorTest extends TestCase {
       ir.removeFS(fsArray[i]);
     }
     // All iterators should be invalidated when being reset.
+    
+    // due to copy on write, need a new instance of set_iterator
+    bagIt = bagIndex.iterator();
     bagIt.moveToFirst();
     assertFalse(bagIt.isValid());
-    setIt.moveToFirst();
-    assertFalse(setIt.isValid());
+    
+    // due to copy on write, need a new instance of set_iterator
+    set_iterator = setIndex.iterator();
+    set_iterator.moveToFirst();
+    assertFalse(set_iterator.isValid());
+
+    // due to copy on write, need a new instance of set_iterator
+    sortedIt = sortedIndex.iterator();      
     sortedIt.moveToFirst();
     assertFalse(sortedIt.isValid());
   }
@@ -1091,13 +1252,39 @@ public class IteratorTest extends TestCase {
     verifyMoveToFirst(subbagIt, true);
     verifyMoveToFirst(subsortedIt, true);
     
+    // copy on write should prevent any change
+    assertEquals(182, ((LowLevelIterator<FeatureStructure>)setIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(200, ((LowLevelIterator<FeatureStructure>)bagIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(200, ((LowLevelIterator<AnnotationFS>)sortedIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(91,  ((LowLevelIterator<FeatureStructure>)subsetIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(100, ((LowLevelIterator<FeatureStructure>)subbagIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(100, ((LowLevelIterator<AnnotationFS>)subsortedIt).ll_indexSizeMaybeNotCurrent());
+
     ir.removeAllIncludingSubtypes(sentenceType);
-    verifyConcurrantModificationDetected(setIt);
-    verifyConcurrantModificationDetected(bagIt);
-    verifyConcurrantModificationDetected(sortedIt);
-    verifyConcurrantModificationDetected(subsetIt);
-    verifyConcurrantModificationDetected(subbagIt);
-    verifyConcurrantModificationDetected(subsortedIt);
+
+    assertEquals(182, ((LowLevelIterator<FeatureStructure>)setIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(200, ((LowLevelIterator<FeatureStructure>)bagIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(200, ((LowLevelIterator<AnnotationFS>)sortedIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(91,  ((LowLevelIterator<FeatureStructure>)subsetIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(100, ((LowLevelIterator<FeatureStructure>)subbagIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(100, ((LowLevelIterator<AnnotationFS>)subsortedIt).ll_indexSizeMaybeNotCurrent());
+    
+    // skip - no concurrent mod
+//    verifyConcurrantModificationDetected(setIt);  
+//    verifyConcurrantModificationDetected(bagIt);
+//    verifyConcurrantModificationDetected(sortedIt);
+//    verifyConcurrantModificationDetected(subsetIt);
+//    verifyConcurrantModificationDetected(subbagIt);
+//    verifyConcurrantModificationDetected(subsortedIt);
+
+    // due to copy on write, need to get new iterators
+    setIt = setIndex.iterator();
+    bagIt = bagIndex.iterator();
+    sortedIt = sortedIndex.iterator();
+
+    subsetIt = subsetIndex.iterator();
+    subbagIt = subbagIndex.iterator();
+    subsortedIt = subsortedIndex.iterator();
 
     verifyMoveToFirst(setIt, false);
     verifyMoveToFirst(bagIt, false);
@@ -1113,6 +1300,15 @@ public class IteratorTest extends TestCase {
       ir.addFS(fs);
     }
 
+    // due to copy on write, need to get new iterators
+    setIt = setIndex.iterator();
+    bagIt = bagIndex.iterator();
+    sortedIt = sortedIndex.iterator();
+
+    subsetIt = subsetIndex.iterator();
+    subbagIt = subbagIndex.iterator();
+    subsortedIt = subsortedIndex.iterator();
+
     verifyMoveToFirst(setIt, true);
     verifyMoveToFirst(bagIt, true);
     verifyMoveToFirst(sortedIt, true);
@@ -1121,6 +1317,15 @@ public class IteratorTest extends TestCase {
     verifyMoveToFirst(subsortedIt, true);
 
     ir.removeAllExcludingSubtypes(this.sentenceType);
+    
+    // due to copy on write, need to get new iterators
+    setIt = setIndex.iterator();
+    bagIt = bagIndex.iterator();
+    sortedIt = sortedIndex.iterator();
+
+    subsetIt = subsetIndex.iterator();
+    subbagIt = subbagIndex.iterator();
+    subsortedIt = subsortedIndex.iterator();
     
     verifyHaveSubset(setIt, 91, subsentenceType);
     verifyHaveSubset(bagIt, 100, subsentenceType);
@@ -1134,6 +1339,15 @@ public class IteratorTest extends TestCase {
     }
     
     ir.removeAllExcludingSubtypes(subsentenceType);
+
+    // due to copy on write, need to get new iterators
+    setIt = setIndex.iterator();
+    bagIt = bagIndex.iterator();
+    sortedIt = sortedIndex.iterator();
+
+    subsetIt = subsetIndex.iterator();
+    subbagIt = subbagIndex.iterator();
+    subsortedIt = subsortedIndex.iterator();
 
     verifyHaveSubset(setIt, 91, sentenceType);
     verifyHaveSubset(bagIt, 100, sentenceType);
@@ -1151,10 +1365,16 @@ public class IteratorTest extends TestCase {
     } catch (Exception e) {
       caught = true;
     }
+    
+    assertFalse(caught); // because of copy-on-write
+    
+//    if (it.isValid()) {
+//      it.isValid(); // debug
+//      assertTrue(caught);  // v3: it becomes invalid
+//    }
 //    if (caught != true) {
 //      System.out.println("Debug");
 //    }
-    assertTrue(caught);
   }
   
   

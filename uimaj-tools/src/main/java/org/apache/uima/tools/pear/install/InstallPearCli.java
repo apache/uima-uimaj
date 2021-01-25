@@ -26,6 +26,10 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.pear.tools.PackageInstallerException;
 
+
+/**
+ * The Class InstallPearCli.
+ */
 public class InstallPearCli {
 
   /**
@@ -72,6 +76,13 @@ public class InstallPearCli {
     installPear(installDir, pathToPear, doVerification);
   }
 
+  /**
+   * Install pear.
+   *
+   * @param installDir the install dir
+   * @param pearFile the pear file
+   * @param doVerification the do verification
+   */
   private static void installPear(File installDir, File pearFile, boolean doVerification) {
 
     try {
@@ -111,6 +122,10 @@ public class InstallPearCli {
       System.out.println("Error retrieving installed PEAR settings");
     }
   }
+  
+  /**
+   * Prints the usage and exit.
+   */
   private static void printUsageAndExit() {
     System.out
             .println("Usage: installPearCli pathToPearFile [directoryToInstallInto] [options]\n\n"

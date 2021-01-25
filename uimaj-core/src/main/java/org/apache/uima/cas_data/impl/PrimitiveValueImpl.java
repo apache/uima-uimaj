@@ -33,11 +33,11 @@ public class PrimitiveValueImpl implements PrimitiveValue {
   }
 
   public PrimitiveValueImpl(int aValue) {
-    aValueObject = Integer.valueOf(aValue);
+    aValueObject = aValue;
   }
 
   public PrimitiveValueImpl(float aValue) {
-    aValueObject = Float.valueOf(aValue);
+    aValueObject = aValue;
   }
 
   public String toString() {
@@ -49,7 +49,7 @@ public class PrimitiveValueImpl implements PrimitiveValue {
 
   public int toInt() {
     if (aValueObject instanceof Integer)
-      return ((Integer) aValueObject).intValue();
+      return (Integer) aValueObject;
     else if (aValueObject instanceof String) {
       try {
         return Integer.parseInt((String) aValueObject);
@@ -64,7 +64,7 @@ public class PrimitiveValueImpl implements PrimitiveValue {
 
   public float toFloat() {
     if (aValueObject instanceof Float)
-      return ((Float) aValueObject).floatValue();
+      return (Float) aValueObject;
     else if (aValueObject instanceof String) {
       try {
         return Float.parseFloat((String) aValueObject);

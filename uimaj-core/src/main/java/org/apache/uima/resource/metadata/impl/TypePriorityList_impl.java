@@ -33,7 +33,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
 
   static final long serialVersionUID = 4700170375564691096L;
 
-  private List<String> mTypeNames = new ArrayList<String>();
+  private List<String> mTypeNames = new ArrayList<>();
 
   /**
    * @see TypePriorityList#getTypes()

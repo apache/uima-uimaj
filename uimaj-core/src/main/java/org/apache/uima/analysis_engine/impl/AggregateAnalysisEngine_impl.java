@@ -147,7 +147,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // resolve component AnalysisEngine and FlowController specifiers
       // UIMA-5274  Set & restore the UimaContextHolder so that AEs created on this thread can use the Settings
-      UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());
+      UimaContext prevContext = setContextHolder();
       try {
         // next call only done for side effect of resolving imports
         mDescription.getDelegateAnalysisEngineSpecifiers(getResourceManager());
@@ -175,9 +175,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // (First copy it so we can modify it and send the parameters on to
       // out delegate analysis engines.)
       if (aAdditionalParams == null) {
-        aAdditionalParams = new HashMap<String, Object>();
+        aAdditionalParams = new HashMap<>();
       } else {
-        aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
+        aAdditionalParams = new HashMap<>(aAdditionalParams);
       }
 
       // put configuration parameter settings into the aAdditionalParams map to be
@@ -236,7 +236,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @return all capabilities of all components of this aggregate
    */
   private Capability[] getAllComponentCapabilities() {
-    ArrayList<Capability> capabilityList = new ArrayList<Capability>();
+    ArrayList<Capability> capabilityList = new ArrayList<>();
     Iterator<ProcessingResourceMetaData> iter = _getComponentMetaData().values().iterator();
     while (iter.hasNext()) {
     	ProcessingResourceMetaData md = iter.next();
@@ -324,7 +324,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // at the end in arbitrary order.  If there's no standard flow type
       // (a custom FlowController must be in use), the entire order is arbitrary.
       String[] orderedNodes = null;
-      Map<String, AnalysisEngine> components = new HashMap<String, AnalysisEngine>(this._getASB().getComponentAnalysisEngines());
+      Map<String, AnalysisEngine> components = new HashMap<>(this._getASB().getComponentAnalysisEngines());
       FlowConstraints flow = getAnalysisEngineMetaData().getFlowConstraints();
       if (flow != null) {
         if (flow instanceof FixedFlow) {
@@ -403,7 +403,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   protected void initASB(AnalysisEngineDescription aAnalysisEngineDescription, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // add this analysis engine's name to the parameters sent to the ASB
-    Map<String, Object> asbParams = new HashMap<String, Object>(aAdditionalParams);
+    Map<String, Object> asbParams = new HashMap<>(aAdditionalParams);
     asbParams.put(ASB.PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME, this.getMetaData().getName());  // not used 9/2013 scan
     asbParams.put(Resource.PARAM_RESOURCE_MANAGER, getResourceManager());
 
@@ -455,9 +455,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     // priorities but NOT its own types.)
 
     // first, create Collections of TypeSystems, TypePriorities, and Index Descriptions
-    List<TypeSystemDescription> typeSystems = new ArrayList<TypeSystemDescription>();
-    List<TypePriorities> typePriorities = new ArrayList<TypePriorities>();
-    List<FsIndexCollection> fsIndexCollections = new ArrayList<FsIndexCollection>();
+    List<TypeSystemDescription> typeSystems = new ArrayList<>();
+    List<TypePriorities> typePriorities = new ArrayList<>();
+    List<FsIndexCollection> fsIndexCollections = new ArrayList<>();
 
     TypePriorities thisAEsTypePriorities = getAnalysisEngineMetaData().getTypePriorities();
     if (thisAEsTypePriorities != null) {

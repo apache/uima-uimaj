@@ -26,14 +26,28 @@ import java.awt.event.ActionListener;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.util.gui.AboutDialog;
 
+
+/**
+ * The Class AboutUimaHandler.
+ */
 public class AboutUimaHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new about uima handler.
+   *
+   * @param frame the frame
+   */
   public AboutUimaHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent e) {
     AboutDialog dialog = new AboutDialog(this.main, "About UIMA");
     dialog.setVisible(true);

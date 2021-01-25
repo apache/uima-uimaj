@@ -90,7 +90,7 @@ public class CharArraySpanMap {
     this.charArray = new char[initialArraySize];
     this.map = new ArrayList[initialMapSize];
     for (int i = 0; i < initialMapSize; i++) {
-      this.map[i] = new ArrayList<Entry>();
+      this.map[i] = new ArrayList<>();
     }
     this.pos = 0;
   }

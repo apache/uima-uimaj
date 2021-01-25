@@ -14,13 +14,16 @@
 // KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
+def MAVEN_VERSION = 'maven_latest' 
+def JDK_VERSION = 'jdk_11_latest' 
   
 pipeline {
   agent any
-  
+
   tools { 
-    maven 'maven_latest' 
-    jdk 'jdk_11_latest' 
+    maven MAVEN_VERSION 
+    jdk JDK_VERSION 
   }
 
   options {
@@ -70,10 +73,19 @@ pipeline {
             ': ' + env.CHANGE_BRANCH + '</a> (' +  env.CHANGE_AUTHOR_DISPLAY_NAME + ')'
         }
 
-        withMaven() {
-          sh script: 'mvn ' +
-            params.extraMavenArguments +
-            ' -U -Dmaven.test.failure.ignore=true clean verify'
+        withMaven(maven: MAVEN_VERSION, jdk: JDK_VERSION) {
+          script {
+            def mavenCommand = 'mvn ' +
+                params.extraMavenArguments +
+                ' -U -Dmaven.test.failure.ignore=true clean verify';
+                
+            if (isUnix()) {
+              sh script: mavenCommand
+            }
+            else {
+              bat script: mavenCommand
+            }
+          }
         }
         
         script {
@@ -92,10 +104,19 @@ pipeline {
       when { branch pattern: "main|main-v2", comparator: "REGEXP" }
       
       steps {
-        withMaven() {
-          sh script: 'mvn ' +
-            params.extraMavenArguments +
-            ' -U -Dmaven.test.failure.ignore=true clean deploy'
+        withMaven(maven: MAVEN_VERSION, jdk: JDK_VERSION) {
+          script {
+            def mavenCommand = 'mvn ' +
+              params.extraMavenArguments +
+              ' -U -Dmaven.test.failure.ignore=true clean deploy'
+              
+            if (isUnix()) {
+              sh script: mavenCommand
+            }
+            else {
+              bat script: mavenCommand
+            }
+          }
         }
         
         script {

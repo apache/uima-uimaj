@@ -26,17 +26,34 @@ import java.io.File;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class LoadRecentTextFileEventHandler.
+ */
 public class LoadRecentTextFileEventHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
+  
+  /** The file name. */
   private final String fileName;
 
+  /**
+   * Instantiates a new load recent text file event handler.
+   *
+   * @param frame the frame
+   * @param fileName the file name
+   */
   public LoadRecentTextFileEventHandler(MainFrame frame, String fileName) {
     super();
     this.main = frame;
     this.fileName = fileName;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent e) {
     this.main.loadTextFile(new File(this.fileName));
   }

@@ -39,6 +39,7 @@ public class FSBooleanConstraintImpl implements FSBooleanConstraint {
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSBooleanConstraint#eq(boolean)
    */
+  @Override
   public void eq(boolean cond) {
     this.condition = cond;
   }
@@ -46,10 +47,12 @@ public class FSBooleanConstraintImpl implements FSBooleanConstraint {
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSBooleanConstraint#match(boolean)
    */
+  @Override
   public boolean match(boolean cond) {
     return (this.condition == cond);
   }
 
+  @Override
   public String toString() {
     // need to escape quotes and backslashes
     StringBuffer buf = new StringBuffer();

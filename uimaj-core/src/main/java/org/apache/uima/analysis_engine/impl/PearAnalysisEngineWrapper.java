@@ -55,6 +55,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.XMLInputSource;
 
@@ -86,17 +87,17 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    // incoming Resource Manager, and a second map.
    // The second map (allows for multiple Pears in a pipeline)
    // maps (for the given incoming Resource Manager), using a key
-   // consisting of the the PEARs "class path" and "data path", the 
+   // consisting of the PEARs "class path" and "data path", the 
    // Resource Manager for that combination.
 
-   // note: all accesses to this are synchronized
+   // note: all accesses to this are synchronized on this object itself
    static final private Map<ResourceManager, Map<StringPair, ResourceManager>> cachedResourceManagers =
-     new WeakHashMap<ResourceManager, Map<StringPair, ResourceManager>>(4);
+       new WeakHashMap<>(4);
 
    private AnalysisEngine ae = null;
 
    private Map<StringPair, ResourceManager> createRMmap(StringPair sp, ResourceManager rm) {
-      Map<StringPair, ResourceManager> result = new HashMap<StringPair, ResourceManager>(4);
+      Map<StringPair, ResourceManager> result = new HashMap<>(4);
       result.put(sp, rm);
       UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG,
             this.getClass().getName(), "createRMmap", LOG_RESOURCE_BUNDLE,
@@ -300,8 +301,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       // modified, and the aAdditionalParameters original object
       // is re-used by the ASB_impl - a caller of this method,
       // for other delegates.
-      Map<String, Object> clonedAdditionalParameters = (aAdditionalParams == null) ? 
-          new HashMap<String, Object>() : new HashMap<String, Object>(aAdditionalParams);
+      Map<String, Object> clonedAdditionalParameters = (aAdditionalParams == null) ?
+          new HashMap<>() : new HashMap<>(aAdditionalParams);
       // clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
       clonedAdditionalParameters.remove(Resource.PARAM_RESOURCE_MANAGER);
       this.ae = UIMAFramework.produceAnalysisEngine(specifier, innerRM, clonedAdditionalParameters);
@@ -369,20 +370,23 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
   public CasIterator processAndOutputNewCASes(CAS aCAS)
          throws AnalysisEngineProcessException {
 
+    Logger logger = UIMAFramework.getLogger(this.getClass()); 
+    if (logger.isLoggable(Level.FINE)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE,
             this.getClass().getName(), "processAndOutputNewCASes",
             LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_begin__FINE",
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
-
-      CasIterator result = this.ae.processAndOutputNewCASes(aCAS);
-
+    }
+    
+    CasIterator result = this.ae.processAndOutputNewCASes(aCAS);
+    if (logger.isLoggable(Level.FINE)) {    
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE,
             this.getClass().getName(), "processAndOutputNewCASes",
             LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_end__FINE",
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
-
-      return result;
-   }
+    }
+    return result;
+  }
 
    /**
     * @see org.apache.uima.resource.Resource#destroy()
@@ -668,10 +672,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       }
    }
 
-  /**
-   * @return the cachedResourceManagers
-   */
-  static public Map<ResourceManager, Map<StringPair, ResourceManager>> getCachedResourceManagers() {
+  public static Map<ResourceManager, Map<StringPair, ResourceManager>> getCachedResourceManagers() {
     return cachedResourceManagers;
   }
 }

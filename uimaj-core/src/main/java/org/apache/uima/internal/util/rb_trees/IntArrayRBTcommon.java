@@ -32,6 +32,17 @@ import org.apache.uima.internal.util.StringUtils;
 public class IntArrayRBTcommon {
 
   static final boolean debug = false;
+  /**
+   * klrp:  Key, Left, Right, Parent
+   * 
+   * Each "node" has a node address.  
+   *   The Left, Right, and Parent are in terms of the the node address.
+   *   The key is arbitrary, but kept in sorted order.
+   *   
+   * A global, "root" has the node address of the root node.
+   * The range of possible nodes is 0 to Integer.MAX_VALUE, but 0 is reserved as NIL
+   *   
+  */
   protected int[] klrp;
   // the next 3 are for the rare cases where the number of entries
   // in this instance exceeds 512 * 1024 * 1024 - 1
@@ -770,12 +781,12 @@ public class IntArrayRBTcommon {
       System.out.println("Tree is empty.");
       return;
     }
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     printKeys(this.root, 0, buf);
     System.out.println(buf);
   }
 
-  protected final void printKeys(int node, int offset, StringBuffer buf) {
+  protected final void printKeys(int node, int offset, StringBuilder buf) {
     if (node == NIL) {
       // StringUtils.printSpaces(offset, buf);
       // buf.append("NIL\n");

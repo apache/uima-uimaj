@@ -37,6 +37,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.PrettyPrinter;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter.FixedSpaceIndenter;
 
@@ -351,7 +352,12 @@ public class JsonContentHandlerJacksonWrapper implements ContentHandler  {
   
   public void withNl() {
     if (isFormattedOutput) {
-      uimaPrettyPrinter.indentObjectsWith(DefaultPrettyPrinter.Lf2SpacesIndenter.instance);
+      // upgrade from Lf2SpacesIndenter - removed in v 2.7
+      
+      uimaPrettyPrinter.indentObjectsWith(
+//          DefaultPrettyPrinter.Lf2SpacesIndenter.instance
+            DefaultIndenter.SYSTEM_LINEFEED_INSTANCE
+          );
     }
   }
   

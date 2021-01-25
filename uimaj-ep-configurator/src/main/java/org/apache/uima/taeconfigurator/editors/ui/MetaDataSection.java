@@ -27,35 +27,50 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 
+
+/**
+ * The Class MetaDataSection.
+ */
 public class MetaDataSection extends AbstractSection {
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
+   */
+  @Override
   public void enable() {
   }
 
+  /** The name text. */
   private Text nameText;
 
+  /** The description text. */
   private Text descriptionText;
 
+  /** The version text. */
   private Text versionText;
 
+  /** The vendor text. */
   private Text vendorText;
 
+  /** The dmd. */
   private DescriptorMetaData dmd = null;
 
   /**
    * Creates a section to enter meta data. Including a text field for name, description, version and
    * vendor.
-   * 
-   * @param editor
-   *          the referenced multipage editor
-   * @param parent 
-   *          -
+   *
+   * @param editor          the referenced multipage editor
+   * @param parent the parent
    */
   public MetaDataSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Overall Identification Information",
             "This section specifies the basic identification information for this descriptor");
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+   */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
     Composite sectionClient = new2ColumnComposite(this.getSection());
@@ -76,6 +91,7 @@ public class MetaDataSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
+  @Override
   public void refresh() {
     if (null == dmd)
       dmd = new DescriptorMetaData(editor);
@@ -101,6 +117,7 @@ public class MetaDataSection extends AbstractSection {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     valueChanged = false;
 

@@ -22,16 +22,27 @@ package org.apache.uima.collection.impl.metadata.cpe;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
 import org.apache.uima.collection.metadata.CpeTimer;
 
+
 /**
  * This class provides an API to plug in custom timers.
  * 
  */
 public class CpeTimerImpl implements CpeTimer {
+  
+  /**
+   * Instantiates a new cpe timer impl.
+   */
   private CpeTimerImpl() {
   }
 
+  /** The timer. */
   private String timer;
 
+  /**
+   * Instantiates a new cpe timer impl.
+   *
+   * @param aTimerClass the a timer class
+   */
   public CpeTimerImpl(String aTimerClass) {
     timer = aTimerClass;
   }
@@ -41,6 +52,7 @@ public class CpeTimerImpl implements CpeTimer {
    * 
    * @see org.apache.uima.collection.metadata.CpeTimer#set(java.lang.String)
    */
+  @Override
   public void set(String aTimerClass) throws CpeDescriptorException {
     timer = aTimerClass;
   }
@@ -50,6 +62,7 @@ public class CpeTimerImpl implements CpeTimer {
    * 
    * @see org.apache.uima.collection.metadata.CpeTimer#get()
    */
+  @Override
   public String get() {
     return timer;
   }

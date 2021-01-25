@@ -47,12 +47,7 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
    */
   private static CasEditorIdePlugin sPlugin;
 
-  /**
-   * Resource bundle.
-   */
-  private ResourceBundle mResourceBundle;
-  
-  /**
+	/**
    * The constructor.
    */
   public CasEditorIdePlugin() {
@@ -155,7 +150,10 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
     super.stop(context);
 
     sPlugin = null;
-    mResourceBundle = null;
+	  /**
+	   * Resource bundle.
+	   */
+	  ResourceBundle mResourceBundle = null;
   }
 
   /**

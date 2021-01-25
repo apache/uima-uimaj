@@ -53,8 +53,8 @@ public class SymbolTable {
    *          larger code points.
    */
   public SymbolTable(int start) {
-    this.symbol2intMap = new HashMap<String, Integer>();
-    this.int2symbolMap = new ArrayList<String>();
+    this.symbol2intMap = new HashMap<>();
+    this.int2symbolMap = new ArrayList<>();
     this.start = start;
   }
 
@@ -128,7 +128,7 @@ public class SymbolTable {
    */
   public int set(String symbol) {
     if (this.symbol2intMap.containsKey(symbol)) {
-      return this.symbol2intMap.get(symbol).intValue();
+      return this.symbol2intMap.get(symbol);
     }
     int rel;
     int abs;
@@ -137,7 +137,7 @@ public class SymbolTable {
       abs = this.symbol2intMap.size();
       rel = abs2rel(abs);
       // System.out.println("Adding symbol " + symbol + " at pos: " + i);
-      this.symbol2intMap.put(symbol, Integer.valueOf(rel));
+      this.symbol2intMap.put(symbol, rel);
       int2symbolMap.add(symbol);
     }
     return rel;

@@ -24,3 +24,9 @@ commercially by FasterXML.com.
 A list of contributors may be found from CREDITS file, which is included
 in some artifacts (usually source distributions); but is always available
 from the source code management (SCM) system project uses.
+
+## org.apache.uima.internal.util.WeakIdentityMap
+
+The class org.apache.uima.internal.util.WeakIdentityMap<K, V> was copied from
+the Apache Lucene project which in turn derived it from the Apache CXF project 
+and is Apache License 2.0.

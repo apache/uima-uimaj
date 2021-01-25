@@ -19,15 +19,26 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
-import org.apache.uima.cas.StringArrayFS;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CommonArrayFS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.StringArrayFSImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for StringArray */
-public final class StringArray extends TOP implements Iterable<String>, StringArrayFS {
+public final class StringArray extends TOP implements Iterable<String>, CommonPrimitiveArray<String>, StringArrayFSImpl {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = CAS.TYPE_NAME_STRING_ARRAY;
+
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -46,13 +57,11 @@ public final class StringArray extends TOP implements Iterable<String>, StringAr
     return typeIndexID;
   }
 
+  private final String[] theArray;
   // never called. Here to disable default constructor
+  @SuppressWarnings("unused")
   private StringArray() {
-  }
-
- /* Internal - Constructor used by generator */
-  public StringArray(int addr, TOP_Type type) {
-    super(addr, type);
+    theArray = null;
   }
 
   /**
@@ -61,73 +70,103 @@ public final class StringArray extends TOP implements Iterable<String>, StringAr
    * @param length The number of elements in the new array
    */
   public StringArray(JCas jcas, int length) {
-    this(
-    /* addr */jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length,
-            true),
-    /* type */jcas.getType(typeIndexID));
+    super(jcas);
+    theArray = new String[length];
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+      _casView.traceFSCreate(this);
+    }
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2Size_arrays(length);
+    }    
+  }
+
+  /**
+   * used by generator
+   * Make a new StringArray of given size
+   * @param c -
+   * @param t -
+   * @param length the length of the array in bytes
+   */
+  public StringArray(TypeImpl t, CASImpl c, int length) {
+    super(t, c);  
+    theArray = new String[length];
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+      _casView.traceFSCreate(this);
+    }
+    if (_casView.isId2Fs()) {
+      _casView.adjustLastFsV2Size_arrays(length);
+    }    
   }
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#get(int)
    */
   public String get(int i) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    return jcasType.ll_cas.ll_getStringArrayValue(addr, i);
+    return theArray[i];
   }
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#set(int, String)
    */
   public void set(int i, String v) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    jcasType.ll_cas.ll_setStringArrayValue(addr, i, v);
+    theArray[i] = v;
+    _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#copyFromArray(String[], int, int, int)
    */
-  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
-    for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setStringArrayValue(addr, i + destOffset, src[i + srcOffset]);
-    }
+  public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
+    System.arraycopy(src, srcPos, theArray, destPos, length);
+    _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#copyToArray(int, String[], int, int)
    */
-  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
-    for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = jcasType.ll_cas.ll_getStringArrayValue(addr, i + srcOffset);
-    }
+  public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
+    System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#toArray()
    */
   public String[] toArray() {
-    final int size = size();
-    String[] outArray = new String[size];
-    copyToArray(0, outArray, 0, size);
-    return outArray;
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
   public int size() {
-    return jcasType.casImpl.ll_getArraySize(addr);
+    return theArray.length;
   }
 
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
+  // internal use
+  public String[] _getTheArray() {
+    return theArray;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
+   */
+  @Override
+  public void copyValuesFrom(CommonArrayFS v) {
+    StringArray bv = (StringArray) v;
+    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    _casView.maybeLogArrayUpdates(this, 0, size());
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int, java.lang.String)
+   */
+  @Override
+  public void setArrayValueFromString(int i, String v) {
+    set(i, v);    
   }
 
   @Override
   public Iterator<String> iterator() {
     return new Iterator<String>() {
+
       int i = 0;
       
       @Override
@@ -137,17 +176,35 @@ public final class StringArray extends TOP implements Iterable<String>, StringAr
 
       @Override
       public String next() {
-        if (!hasNext()) { 
+        if (!hasNext()) {
           throw new NoSuchElementException();
         }
         return get(i++);
-      }
-
-      @Override
-      public void remove() {
-        throw new UnsupportedOperationException();        
-      }
-      
+      }      
     };
   }
+
+  /**
+   * @param jcas Which CAS to create the array in
+   * @param a the source for the array's initial values
+   * @return a newly created and populated array
+   */
+  public static StringArray create(JCas jcas, String[] a) {
+    StringArray stringArray = new StringArray(jcas, a.length);
+    stringArray.copyFromArray(a, 0, 0, a.length);
+    return stringArray;
+  }
+  
+  /**
+   * @param v the compare object
+   * @return true if v is equal to one (or more) of the array elements
+   */
+  public boolean contains(String v) {
+    return Misc.contains(theArray, v);
+  }
+
+  public Stream<String> stream() {
+    return Arrays.stream(theArray);
+  }
+
 }

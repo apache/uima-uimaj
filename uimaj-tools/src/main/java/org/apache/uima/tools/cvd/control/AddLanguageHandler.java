@@ -27,14 +27,28 @@ import javax.swing.JOptionPane;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class AddLanguageHandler.
+ */
 public class AddLanguageHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new adds the language handler.
+   *
+   * @param frame the frame
+   */
   public AddLanguageHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent arg0) {
     String input = JOptionPane.showInputDialog(this.main, "Add new language");
     if (input != null && input.length() > 0) {

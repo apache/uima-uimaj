@@ -1,0 +1,43 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_uv3.annotation_relation_predicates]]
+= Annotation relation predicates
+
+When working with annotations, it is often necessary to express how two annotations related
+to each other. This happens for example when using the Select framework to say "select all
+annotations of type T that follow a given annotation X". So there are a number of possible
+relationships which two annotations can have with each other such as "following", "preceding",
+"being colocated", "being covered by", "covering", etc. This chapter provides specification of 
+these relationships which are also available as a set of predicate functions. The Select framework
+is also consistent with these definitions. In order to query the CAS for annotations that exist
+in a certain relationship to each other, it is possible to e.g. stream an entire annotation index
+or CAS and filtering the annotations using the provided predicate functions. However, using the
+corresponding selector functions of the Select framework is generally much faster than filtering
+using the predicates as Select knows more efficient way of finding the starting point for a
+particular query in the annotation index and also knows when a search can be aborted without
+having to scan an entire index and also without missing any matches. The predicates are 
+implemented as static functions in the `org.apache.uima.cas.text.AnnotationPredicates`
+class.
+
+.Annotation relation types
+image::images/version_3_users_guide/annotation_predicates/annotation-relations-table.png[Matrix showing possible annotation relations and the cases where they apply.]
+
+As shown below, all of the relations can be expressed in terms of the "covered by" relation.
+
+.Annotation relation types
+image::images/version_3_users_guide/annotation_predicates/annotation-relations-definition.png[Definition of the relations.]

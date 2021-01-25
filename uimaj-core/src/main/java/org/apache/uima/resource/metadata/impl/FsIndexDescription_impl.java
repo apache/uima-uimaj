@@ -30,6 +30,8 @@ import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIndexDescription {
 
   static final long serialVersionUID = 8939000196947456114L;
+  
+  static final FsIndexKeyDescription[] EMPTY_FS_INDEX_KEY_DESCRIPTION_ARRAY = new FsIndexKeyDescription[0];
 
   private String mLabel;
 
@@ -37,7 +39,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
 
   private String mKind;
 
-  private FsIndexKeyDescription[] mKeys = new FsIndexKeyDescription[0];
+  private FsIndexKeyDescription[] mKeys = EMPTY_FS_INDEX_KEY_DESCRIPTION_ARRAY;
 
   /* Doesn't override a super method */
   protected String getXMLElementTagName() {
