@@ -17,6 +17,32 @@
   
 @Library('uima-build-jenkins-shared-library') _
 
+<<<<<<< HEAD
 defaultPipeline {
   extraMavenArguments = '-Pjacoco,spotbugs,pmd'
+=======
+        withMaven() {
+          sh script: 'mvn ' +
+            params.extraMavenArguments +
+            ' -U -Dmaven.test.failure.ignore=true clean verify'
+        }
+      }
+    }
+    
+    // Perform a SNAPSHOT build of a main branch. This stage is typically executed after a
+    // merge request has been merged. On success, it deploys the generated artifacts to the
+    // Maven repository server.
+    stage("SNAPSHOT build") {
+      when { branch pattern: "main|main-v2", comparator: "REGEXP" }
+      
+      steps {
+        withMaven() {
+          sh script: 'mvn ' +
+            params.extraMavenArguments +
+            ' -U -Dmaven.test.failure.ignore=true clean deploy'
+        }
+      }
+    }
+  }
+>>>>>>> main
 }
