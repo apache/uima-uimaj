@@ -18,5 +18,7 @@
 @Library('uima-build-jenkins-shared-library') _
 
 defaultPipeline {
+  // The Eclipse libraries that our plugins depend unfortunately on required Java 11
+  jdk = 'jdk_11_latest'
   extraMavenArguments = '-Pjacoco,spotbugs,pmd'
 }
