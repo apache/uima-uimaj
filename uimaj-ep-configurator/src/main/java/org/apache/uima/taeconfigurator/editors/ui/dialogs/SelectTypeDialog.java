@@ -41,10 +41,7 @@ public class SelectTypeDialog extends AbstractDialog {
   public String typeName = "error-TypeName-never-set";
   public String nameSpaceName = "error-NameSpaceName-never-set";
   private TypesWithNameSpaces types;
-  /**
-   * @param section
-   * @param types
-   */
+
   public SelectTypeDialog(AbstractSection section, TypesWithNameSpaces types) {
     super(section, "Select Type Name", "Select an Existing CAS Type name from the set of defined types");
     this.types = types;
@@ -60,6 +57,7 @@ public class SelectTypeDialog extends AbstractDialog {
    * Create a list output area labeled: NameSpaces:
    * Bottom gets normal OK / Cancel buttons
    */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite)super.createDialogArea(parent);
     createWideLabel(mainArea, "Type Name:");
@@ -95,8 +93,9 @@ public class SelectTypeDialog extends AbstractDialog {
       Map.Entry entry = (Map.Entry) it.next();
       String candidateTypeName = ((String)entry.getKey()).toLowerCase();
       if (candidateTypeName.startsWith(aTypeName)) {
-        if (null == topEntry)
-          topEntry = entry;
+        if (null == topEntry) {
+            topEntry = entry;
+        }
         TableItem item = new TableItem(matchingTypesUI, SWT.NULL);
         item.setText((String) entry.getKey());
         item.setData(entry);
@@ -127,6 +126,7 @@ public class SelectTypeDialog extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     if (event.widget == typeNameUI && event.type == SWT.Modify) {
       typeName = typeNameUI.getText(); 
@@ -143,6 +143,7 @@ public class SelectTypeDialog extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
+  @Override
   public void copyValuesFromGUI() {
     if (0 < matchingTypesUI.getSelectionCount()) {
       typeName = matchingTypesUI.getSelection()[0].getText();
@@ -155,6 +156,7 @@ public class SelectTypeDialog extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
+  @Override
   public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled( (0 < nameSpacesUI.getSelectionCount()) &&
@@ -164,6 +166,7 @@ public class SelectTypeDialog extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
+  @Override
   public boolean isValid() {
     return true;
   }

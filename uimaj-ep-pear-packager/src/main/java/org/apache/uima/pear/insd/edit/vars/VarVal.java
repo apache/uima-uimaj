@@ -20,11 +20,7 @@
 package org.apache.uima.pear.insd.edit.vars;
 
 /**
- * 
- * Represents a table row in a two column table (of environment varibles).
- * 
- * 
- * 
+ * Represents a table row in a two column table (of environment variables).
  */
 public class VarVal {
 
@@ -40,13 +36,6 @@ public class VarVal {
 
   private String varValue = "";
 
-  /**
-   * 
-   * Create a VarVal instance
-   * 
-   * @param varName
-   * @param varValue
-   */
   public VarVal(String varName, String varValue) {
     super();
     this.varName = varName;
@@ -54,17 +43,13 @@ public class VarVal {
   }
 
   /**
-   * Return field names
-   * 
-   * @return String[] An arry of column field names
+   * @return an array of column field names
    */
   public static String[] getFieldNames() {
     return fieldNames;
   }
 
   /**
-   * Returns the variable name
-   * 
    * @return the variable name
    */
   public String getVarName() {
@@ -72,8 +57,6 @@ public class VarVal {
   }
 
   /**
-   * Returns the variable value
-   * 
    * @return the variable value
    */
   public String getVarValue() {

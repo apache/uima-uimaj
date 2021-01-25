@@ -42,21 +42,21 @@ public class JgPlugin extends Plugin {
   }
 
   /**
-   * Returns the shared instance.
+   * @return the shared instance.
    */
   public static JgPlugin getDefault() {
     return plugin;
   }
 
   /**
-   * Returns the workspace instance.
+   * @return the workspace instance.
    */
   public static IWorkspace getWorkspace() {
     return ResourcesPlugin.getWorkspace();
   }
 
   /**
-   * Convenience method which returns the unique identifier of this plugin.
+   * @return the unique identifier of this plugin.
    */
   public static String getUniqueIdentifier() {
     return JCASGEN_ID;

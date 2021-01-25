@@ -98,13 +98,15 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       }
       if (vnsHost == null) {
         vnsHost = System.getProperty("VNS_HOST");
-        if (vnsHost == null)
-          vnsHost = Constants.DEFAULT_VNS_HOST;
+        if (vnsHost == null) {
+            vnsHost = Constants.DEFAULT_VNS_HOST;
+        }
       }
       if (vnsPort == null) {
         vnsPort = System.getProperty("VNS_PORT");
-        if (vnsPort == null)
-          vnsPort = "9000";
+        if (vnsPort == null) {
+            vnsPort = "9000";
+        }
       }
       vctx.setVNSHost(vnsHost);
       vctx.setVNSPort(Integer.parseInt(vnsPort));
@@ -145,7 +147,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * @see ResourceServiceStub#callGetMetaData()
    * @return -
    */
-  public ResourceMetaData callGetMetaData() throws ResourceServiceException {
+  @Override
+public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     try {
       // create Vinci Frame
       VinciFrame queryFrame = new VinciFrame();
@@ -197,11 +200,13 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * @param aCAS theCAS
    * @throws ResourceServiceException the resource service exception
    */
-  public void callProcess(CAS aCAS) throws ResourceServiceException {
+  @Override
+public void callProcess(CAS aCAS) throws ResourceServiceException {
     doProcess(aCAS);
   }
 
   /**
+   * @param aCAS -
    * @see CasObjectProcessor#processCas(CAS)
    * @throws ResourceServiceException -
    */
@@ -221,6 +226,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       query.setCommand("Annotate");
 
       mVinciClient.sendAndReceive(query, new TransportableFactory() {
+        @Override
         public Transportable makeTransportable() {
           // query.ignoreResponse = true; // TESTING
           return query;
@@ -243,14 +249,16 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   /**
    * @see ResourceServiceStub#destroy()
    */
-  public void destroy() {
+  @Override
+public void destroy() {
     mVinciClient.close();
   }
 
   /**
    * @see CasObjectProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
-  public void callBatchProcessComplete() throws ResourceServiceException {
+  @Override
+public void callBatchProcessComplete() throws ResourceServiceException {
     try {
       // create Vinci Frame ( Data Cargo)
       AFrame queryFrame = new AFrame();
@@ -266,7 +274,8 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   /**
    * @see CasObjectProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
-  public void callCollectionProcessComplete() throws ResourceServiceException {
+  @Override
+public void callCollectionProcessComplete() throws ResourceServiceException {
     try {
       // create Vinci Frame ( Data Cargo)
       AFrame queryFrame = new AFrame();

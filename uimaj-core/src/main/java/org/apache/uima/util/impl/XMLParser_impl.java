@@ -84,26 +84,24 @@ public class XMLParser_impl implements XMLParser {
   private static final Class<XMLParser_impl> CLASS_NAME = XMLParser_impl.class;
 
   /**
-   * @return The URL to the Resource Specifier XML Schema file
+   * The URL to the Resource Specifier XML Schema file
    */
-  
   private static final URL SCHEMA_URL;
-  static
-  {
+  
+  static {
     URL schemaURL = XMLParser_impl.class.getResource(RESOURCE_SPECIFIER_SCHEMA_NAME);
     if (schemaURL == null) {
-      UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(),
-              "getSchemaURL", LOG_RESOURCE_BUNDLE,
-              "UIMA_resource_specifier_schema_not_found__WARNING");
-    }
-      else {
-        String urlString = schemaURL.toString().replaceAll(" ", "%20");
+      UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "getSchemaURL",
+          LOG_RESOURCE_BUNDLE, "UIMA_resource_specifier_schema_not_found__WARNING");
+    } else {
+      String urlString = schemaURL.toString().replaceAll(" ", "%20");
       try {
         schemaURL = new URL(urlString);
-        } catch (MalformedURLException e) { }
+      } catch (MalformedURLException e) {
       }
-    SCHEMA_URL = schemaURL;
     }
+    SCHEMA_URL = schemaURL;
+  }
 
   
   /**
@@ -623,20 +621,14 @@ public class XMLParser_impl implements XMLParser {
     }
   }
 
-  /**
-   * @deprecated
-   */
   @Deprecated
-public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput)
+  public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput)
           throws InvalidXMLException {
     return parseCasInitializerDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
 
-  /**
-   * @deprecated
-   */
   @Deprecated
-public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput,
+  public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);

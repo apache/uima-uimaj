@@ -62,8 +62,7 @@ package org.apache.uima.cas;
  * Indexes have a top-most type, either the top of the type hierarchy, or some subtype of that.
  * The top-most type in an index is represented by the generic T.
  * 
- * @param T the topmost type in this Index
- * 
+ * @param <T> the topmost type in this Index
  */
 public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
 

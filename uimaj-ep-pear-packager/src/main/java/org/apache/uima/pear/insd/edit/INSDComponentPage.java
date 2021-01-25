@@ -73,9 +73,6 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
   Hashtable wizardData;
 
-  /**
-   * Constructor
-   */
   public INSDComponentPage(IContainer currentContainer, InstallationDescriptor insd,
           Hashtable wizardData) {
     super("wizardPage");
@@ -119,10 +116,12 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
     String temp = "";
 
     temp = insd.getMainComponentId();
-    if (temp == null || temp.trim().length() == 0)
-      compID = currentContainer.getName();
-    else
-      compID = temp;
+    if (temp == null || temp.trim().length() == 0) {
+        compID = currentContainer.getName();
+    }
+    else {
+        compID = temp;
+    }
 
     temp = insd.getMainComponentDesc();
     compDescriptorPath = temp == null ? "" : removeMacros(temp);
@@ -137,7 +136,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
     text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     text.setText(strText);
     text.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
+      @Override
+    public void modifyText(ModifyEvent e) {
         dialogChanged();
       }
     });
@@ -148,7 +148,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
   /**
    * See IDialogPage#createControl(Composite)
    */
-  public void createControl(Composite parent) {
+  @Override
+public void createControl(Composite parent) {
 
     try {
 
@@ -210,8 +211,10 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
       setPageComplete(false);
       setErrorMessage(null);
-    } else
-      updateStatus(null);
+    }
+    else {
+        updateStatus(null);
+    }
 
   }
 
@@ -221,8 +224,10 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
       setPageComplete(false);
       setErrorMessage(null);
-    } else
-      updateStatus(null);
+    }
+    else {
+        updateStatus(null);
+    }
   }
 
   void saveWizardData() {
@@ -252,15 +257,18 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
       if (filename != null && filename.trim().length() > 0) {
         filename = filename.trim();
         IFile iFile = currentContainer.getFile(new Path(filename));
-        if (!iFile.exists())
-          sb.append("\n  \"" + filename + "\" was not found in the current project!");
-        else if (filename.trim().indexOf(".xml") == -1)
-          sb.append("\n  \"" + filename + "\" is not an xml file!");
+        if (!iFile.exists()) {
+            sb.append("\n  \"" + filename + "\" was not found in the current project!");
+        }
+        else if (filename.trim().indexOf(".xml") == -1) {
+            sb.append("\n  \"" + filename + "\" is not an xml file!");
+        }
       }
     }
     String s = sb.toString();
-    if (s.length() > 0)
-      message = s;
+    if (s.length() > 0) {
+        message = s;
+    }
 
     return message;
   }
@@ -282,6 +290,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
    * @param defaultButton
    *          <code>true</code> if the button is to be the default button, and <code>false</code>
    *          otherwise
+   * @param text -
+   * @return -
    */
   protected Button addButton(Composite parent, String label, boolean defaultButton, final Text text) {
 
@@ -298,7 +308,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
     button.setFont(parent.getFont());
 
     SelectionListener listener = new SelectionAdapter() {
-      public void widgetSelected(SelectionEvent e) {
+      @Override
+    public void widgetSelected(SelectionEvent e) {
 
         ResourceSelectionDialog dialog = new ResourceSelectionDialog(getShell(), currentContainer,
                 "Selection Dialog");
@@ -328,6 +339,7 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
    * @param initialSelection
    *          <code>true</code> if the button is to be the default button, and <code>false</code>
    *          otherwise
+   * @return -
    */
   protected Button addRadioButton(Composite parent, String label, boolean initialSelection) {
 
@@ -337,7 +349,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
     button.setSelection(initialSelection);
 
     SelectionListener listener = new SelectionAdapter() {
-      public void widgetSelected(SelectionEvent e) {
+      @Override
+    public void widgetSelected(SelectionEvent e) {
         dialogChanged();
       }
     };
@@ -348,9 +361,11 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
   /*
    * see @DialogPage.setVisible(boolean)
    */
-  public void setVisible(boolean visible) {
+  @Override
+public void setVisible(boolean visible) {
     super.setVisible(visible);
-    if (visible)
-      compIDText.setFocus();
+    if (visible) {
+        compIDText.setFocus();
+    }
   }
 }

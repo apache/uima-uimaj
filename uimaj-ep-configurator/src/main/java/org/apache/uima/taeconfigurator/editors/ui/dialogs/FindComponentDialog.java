@@ -55,19 +55,13 @@ public class FindComponentDialog extends AbstractDialog {
 
   private String[] componentHeaders;
 
-  /**
-   * 
-   * @param aSection
-   * @param title
-   * @param header
-   * @param componentHeaders
-   */
   public FindComponentDialog(AbstractSection aSection, String title, String header,
           String[] componentHeaders) {
     super(aSection, title, header);
     this.componentHeaders = componentHeaders;
   }
 
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent);
 
@@ -106,6 +100,7 @@ public class FindComponentDialog extends AbstractDialog {
     return composite;
   }
 
+  @Override
   protected void createButtonsForButtonBar(Composite parent) {
     // create OK and Cancel buttons by default
     createButton(parent, IDialogConstants.OK_ID, "Search", true);
@@ -126,12 +121,15 @@ public class FindComponentDialog extends AbstractDialog {
 
   // also called by Search Monitoring Thread when
   // it notices the search thread is finished
+  @Override
   protected void buttonPressed(int buttonId) {
     if (buttonId == IDialogConstants.OK_ID) { // start search
-      if (null != m_searchThread)
+      if (null != m_searchThread) {
         errorMessageUI.setText("Search already in progress");
-      else
+    }
+    else {
         copyValuesFromGUI();
+    }
     } else { // cancel in-progress search
       if (m_searchThread.isDone()) {
         m_matchingDelegateComponetDescriptors = m_searchThread
@@ -191,6 +189,7 @@ public class FindComponentDialog extends AbstractDialog {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
+  @Override
   public void copyValuesFromGUI() {
     String fileNameSearch = convertToRegexSearchPattern(searchByNameText.getText());
     String inputTypeSearch = convertToRegexSearchPattern(inputTypeText.getText());
@@ -211,6 +210,7 @@ public class FindComponentDialog extends AbstractDialog {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
+  @Override
   public boolean isValid() {
     return true;
   }
@@ -220,6 +220,7 @@ public class FindComponentDialog extends AbstractDialog {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
+  @Override
   public void enableOK() {
   }
 

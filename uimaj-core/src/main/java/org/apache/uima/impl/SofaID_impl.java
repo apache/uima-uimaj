@@ -24,8 +24,6 @@ import org.apache.uima.cas.SofaID;
 
 /**
  * Implementation of {@link SofaID}.
- * 
- * @deprecated
  */
 @Deprecated
 public class SofaID_impl implements SofaID {

@@ -132,6 +132,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * Instantiate Analysis Engine service from a given descriptor.
    * 
    * @param serviceConfigPath descriptor location
+   * @throws Exception -
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath) throws Exception {
     this(serviceConfigPath, false);
@@ -141,8 +142,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * Extracts AE metadata
    * 
    * @return Frame containing extracted meta data
-   * @exception when
-   *              there is a failure processing
+   * @throws Exception when there is a failure processing
    */
   private Frame getMetaData() throws Exception {
     UIMAFramework.getLogger().log(Level.FINEST, "VinciAnalysisEngineService.getMetaData()");
@@ -216,7 +216,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    *         performing the service
    */
 
-  public Transportable eval(Transportable doc) throws ServiceException {
+  @Override
+public Transportable eval(Transportable doc) throws ServiceException {
     try {
       CASTransportable ct = (CASTransportable) doc;
       String op = ct.getCommand();
@@ -396,6 +397,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
       server = instance;
     }
 
+    @Override
     public void run() {
       server.stop();
     }
@@ -404,7 +406,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
   /**
    * @see org.apache.vinci.transport.TransportableFactory#makeTransportable()
    */
-  public synchronized Transportable makeTransportable() {
+  @Override
+public synchronized Transportable makeTransportable() {
     return new CASTransportable(mCasPool, new OutOfTypeSystemData(), null, false);
   }
 

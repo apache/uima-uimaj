@@ -33,9 +33,6 @@ public class ShowTypesystemHandler implements ActionListener {
   
   private final MainFrame main;
 
-  /**
-   * @param frame
-   */
   public ShowTypesystemHandler(MainFrame frame) {
     this.main = frame;
   }
@@ -43,6 +40,7 @@ public class ShowTypesystemHandler implements ActionListener {
   /**
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
+  @Override
   public void actionPerformed(ActionEvent event) {
     if (this.main.getCas() == null) {
       return;

@@ -46,6 +46,7 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
@@ -250,6 +251,7 @@ public interface JCas extends AbstractCas {
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
+   * 
    * @return 0-length instance of an IntegerArray
    */
   public abstract IntegerArray getIntegerArray0L();
@@ -260,6 +262,7 @@ public interface JCas extends AbstractCas {
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a FloatArray
+   */
   public abstract FloatArray getFloatArray0L();
 
   /**
@@ -267,6 +270,7 @@ public interface JCas extends AbstractCas {
    * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
+   * 
    * @return 0-length instance of a FSArray
    */
   public abstract FSArray getFSArray0L();

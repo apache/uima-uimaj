@@ -35,14 +35,17 @@ import org.apache.uima.jcas.tcas.Annotation_Type;
  * 
  * @generated
  */
+@SuppressWarnings("javadoc")
 public class UimaAcronym_Type extends Annotation_Type {
   /** @generated */
-  protected FSGenerator getFSGenerator() {
+  @Override
+protected FSGenerator getFSGenerator() {
     return fsGenerator;
   }
 
   /** @generated */
   private final FSGenerator fsGenerator = new FSGenerator() {
+    @Override
     public FeatureStructure createFS(int addr, CASImpl cas) {
       if (instanceOf_Type.useExistingInstance) {
         // Return eq fs instance if already created
@@ -53,8 +56,10 @@ public class UimaAcronym_Type extends Annotation_Type {
           return fs;
         }
         return fs;
-      } else
+      }
+    else {
         return new UimaAcronym(addr, instanceOf_Type);
+    }
     }
   };
 
@@ -75,15 +80,17 @@ public class UimaAcronym_Type extends Annotation_Type {
 
   /** @generated */
   public String getExpandedForm(int addr) {
-    if (featOkTst && casFeat_expandedForm == null)
-      this.jcas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
+    if (featOkTst && casFeat_expandedForm == null) {
+        this.jcas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
+    }
     return ll_cas.ll_getStringValue(addr, casFeatCode_expandedForm);
   }
 
   /** @generated */
   public void setExpandedForm(int addr, String v) {
-    if (featOkTst && casFeat_expandedForm == null)
-      this.jcas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
+    if (featOkTst && casFeat_expandedForm == null) {
+        this.jcas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
+    }
     ll_cas.ll_setStringValue(addr, casFeatCode_expandedForm, v);
   }
 

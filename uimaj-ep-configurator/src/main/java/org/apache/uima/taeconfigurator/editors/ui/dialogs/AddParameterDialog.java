@@ -81,8 +81,8 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Constructor for Editing an existing parameter
    * 
-   * @param aSection
-   * @param aExistingCP
+   * @param aSection -
+   * @param aExistingCP -
    */
   public AddParameterDialog(AbstractSection aSection, ConfigurationParameter aExistingCP) {
     this(aSection);
@@ -92,8 +92,8 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Constructor for Adding a new parameter to a group (may be the not-in-any one)
    * 
-   * @param aSection
-   * @param cg
+   * @param aSection -
+   * @param cg -
    */
   public AddParameterDialog(AbstractSection aSection, ConfigGroup cg) {
     this(aSection);

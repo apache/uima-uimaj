@@ -327,6 +327,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#getCasProcessors()
    */
+  @Override
   public CasProcessor[] getCasProcessors() {
     CasProcessor[] casProcs = cpEngine.getCasProcessors();
     return casProcs == null ? new CasProcessor[0] : casProcs;
@@ -338,6 +339,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#addCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor)
    */
+  @Override
   public void addCasProcessor(CasProcessor aCasProcessor) throws ResourceConfigurationException {
     cpEngine.addCasProcessor(aCasProcessor);
   }
@@ -349,6 +351,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * @see org.apache.uima.collection.base_cpm.BaseCPM#addCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor,
    *      int)
    */
+  @Override
   public void addCasProcessor(CasProcessor aCasProcessor, int aIndex)
           throws ResourceConfigurationException {
     cpEngine.addCasProcessor(aCasProcessor, aIndex);
@@ -359,6 +362,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#removeCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor)
    */
+  @Override
   public void removeCasProcessor(CasProcessor aCasProcessor) {
     cpEngine.removeCasProcessor(0);
   }
@@ -368,6 +372,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#disableCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor)
    */
+  @Override
   public void disableCasProcessor(String aCasProcessorName) {
 
     cpEngine.disableCasProcessor(aCasProcessorName);
@@ -387,6 +392,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#isSerialProcessingRequired()
    */
+  @Override
   public boolean isSerialProcessingRequired() {
     return false;
   }
@@ -396,6 +402,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#setSerialProcessingRequired(boolean)
    */
+  @Override
   public void setSerialProcessingRequired(boolean aRequired) {
   }
 
@@ -404,6 +411,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#isPauseOnException()
    */
+  @Override
   public boolean isPauseOnException() {
     return cpEngine.isPauseOnException();
   }
@@ -413,6 +421,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#setPauseOnException(boolean)
    */
+  @Override
   public void setPauseOnException(boolean aPause) {
     cpEngine.setPauseOnException(aPause);
   }
@@ -423,6 +432,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#addStatusCallbackListener(org.apache.uima.collection.base_cpm.BaseStatusCallbackListener)
    */
+  @Override
   public void addStatusCallbackListener(BaseStatusCallbackListener aListener) {
     cpEngine.addStatusCallbackListener(aListener);
   }
@@ -432,6 +442,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#removeStatusCallbackListener(org.apache.uima.collection.base_cpm.BaseStatusCallbackListener)
    */
+  @Override
   public void removeStatusCallbackListener(BaseStatusCallbackListener aListener) {
     cpEngine.removeStatusCallbackListener(aListener);
   }
@@ -443,6 +454,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see java.lang.Runnable#run()
    */
+  @Override
   public void run() {
     long start, end;
     // name this thread
@@ -559,8 +571,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * This method is called by an applications to begin CPM processing with a given Collection. It
    * just creates a new thread and starts it.
    * 
-   * @see org.apache.uima.collection.base_cpm.BaseCPM#process()
-   * @deprecated
+   * @deprecated {@link BaseCPM#process()}
    * @param aCollectionReader -
    * @throws ResourceInitializationException -
    */
@@ -588,6 +599,7 @@ public void process(BaseCollectionReader aCollectionReader)
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#process(org.apache.uima.collection.base_cpm.BaseCollectionReader)
    */
+  @Override
   public void process() throws ResourceInitializationException {
     // Retrieve number of entities to process from the CPM configuration
     try {
@@ -614,8 +626,7 @@ public void process(BaseCollectionReader aCollectionReader)
    * This method is called by an applications to begin CPM processing with a given Collection. It
    * just creates a new thread and starts it.
    * 
-   * @see org.apache.uima.collection.base_cpm.BaseCPM#process()
-   * @deprecated
+   * @deprecated {@link BaseCPM#process()}
    * @param aCollectionReader -
    * @param aBatchSize -
    * @throws ResourceInitializationException -
@@ -641,6 +652,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * @param aCollectionReader
    *          the collection reader
    */
+  @Override
   public void setCollectionReader(BaseCollectionReader aCollectionReader) {
     collectionReader = aCollectionReader;
     if (cpeFactory.isDefault()) {
@@ -653,6 +665,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * 
    * @return the collection reader
    */
+  @Override
   public BaseCollectionReader getCollectionReader() {
     try {
       if (this.collectionReader == null) {
@@ -670,6 +683,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#isProcessing()
    */
+  @Override
   public boolean isProcessing() {
     return cpEngine.isRunning();
   }
@@ -679,6 +693,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#pause()
    */
+  @Override
   public void pause() {
     cpEngine.pauseIt();
     if (checkpoint != null) {
@@ -692,6 +707,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#isPaused()
    */
+  @Override
   public boolean isPaused() {
     return cpEngine.isPaused();
   }
@@ -701,6 +717,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#resume(boolean)
    */
+  @Override
   public void resume(boolean aRetryFailed) {
     resume();
   }
@@ -710,6 +727,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#resume()
    */
+  @Override
   public void resume() {
     cpEngine.resumeIt();
     if (checkpoint != null) {
@@ -749,6 +767,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#stop()
    */
+  @Override
   public void stop() {
     if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
@@ -916,11 +935,12 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
       type = aEvent.getType();
     }
 
-    if (System.getProperty("DEBUG") != null)
+    if (System.getProperty("DEBUG") != null) {
       UIMAFramework.getLogger(this.getClass()).log(
               Level.FINEST,
               "" + pct + "% (" + duration + "ms) - " + aEvent.getComponentName() + " (" + type
                       + ")");
+    }
     Iterator it = aEvent.getSubEvents().iterator();
     while (it.hasNext()) {
       ProcessTraceEvent event = (ProcessTraceEvent) it.next();
@@ -932,6 +952,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * Returns PerformanceReport for the CPM. This report contains a snapshot of the CPM state.
    * 
    */
+  @Override
   public ProcessTrace getPerformanceReport() {
     Map perfReport = cpEngine.getStats();
     Progress[] colReaderProgress = (Progress[]) perfReport.get("COLLECTION_READER_PROGRESS");
@@ -1060,8 +1081,9 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
         HashMap aMap = container.getAllStats();
 
         if (aMap.keySet() != null) {
-          if (System.getProperty("SHOW_CUSTOM_STATS") != null)
+          if (System.getProperty("SHOW_CUSTOM_STATS") != null) {
             UIMAFramework.getLogger(this.getClass()).log(Level.FINEST, "Adding Custom Stats");
+          }
           Iterator it = aMap.keySet().iterator();
           while (it != null && it.hasNext()) {
 
@@ -1070,15 +1092,17 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
               Object o = aMap.get(key);
               if (o instanceof String) {
                 processTrace.addEvent(container.getName(), key, (String) o, 0, null);
-                if (System.getProperty("SHOW_CUSTOM_STATS") != null)
+                if (System.getProperty("SHOW_CUSTOM_STATS") != null) {
                   UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
                           "Custom String Stat-" + key + " Value=" + (String) o);
+                }
               } else if (o instanceof Integer) {
                 processTrace.addEvent(container.getName(), key, String.valueOf(((Integer) o)
                         .intValue()), 0, null);
-                if (System.getProperty("SHOW_CUSTOM_STATS") != null)
+                if (System.getProperty("SHOW_CUSTOM_STATS") != null) {
                   UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
                           "Custom Integer Stat-" + key + " Value=" + ((Integer) o).intValue());
+                }
               } else {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                   UIMAFramework.getLogger(this.getClass()).log(
@@ -1107,11 +1131,6 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
     return processTrace;
   }
 
-  /**
-   * @param processors
-   * @param procTr
-   * @param processTrace
-   */
   private void createDefaultProcessTrace(CasProcessor[] aProcessors, ProcessTrace srcProcTr,
           ProcessTrace aProcessTrace) {
     for (int i = 0; aProcessors != null && i < aProcessors.length; i++) {
@@ -1133,6 +1152,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
   /**
    * Returns current CPE progress. How many entities processed and bytes processed.
    */
+  @Override
   public Progress[] getProgress() {
     return cpEngine.getProgress();
   }

@@ -477,7 +477,8 @@ public class ProcessingUnit extends Thread {
    * configured Work Queue. Once the CAS arrives, it is removed from the queue and sent through the
    * analysis pipeline.
    */
-  public void run() {
+  @Override
+public void run() {
     if (!cpm.isRunning()) {
 
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
@@ -1782,6 +1783,7 @@ public class ProcessingUnit extends Thread {
   }
 
   /**
+   * @param aStatus -
    * @return true if the CASProcessor status is available for processing
    */
   protected boolean isProcessorReady(int aStatus) {
@@ -1795,8 +1797,7 @@ public class ProcessingUnit extends Thread {
   /**
    * Returns the size of the CAS object. Currently only CASData is supported.
    * 
-   * @param aCas -
-   *          Cas to get the size for
+   * @param aCas CAS to get the size for
    * 
    * @return the size of the CAS object. Currently only CASData is supported.
    */

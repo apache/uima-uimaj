@@ -63,9 +63,11 @@ public abstract class AbstractDialogKeyVerify extends AbstractDialog implements 
   // overridden in methods needing other key checks
   /**
    * Default verify key checks
+   * 
+   * @param event -
+   * @return -
    */
   public boolean verifyKeyChecks(VerifyEvent event) {
     return true;
   }
-
 }

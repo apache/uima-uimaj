@@ -41,13 +41,6 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
 
   private List typeList;
 
-
-  /**
-   * 
-   * @param aSection
-   * @param allowableTypeNameHash
-   * @param typesInList
-   */
   public AddTypeToPriorityListDialog(AbstractSection aSection, Set allowableTypeNameHash,
           String[] typesInList) {
     super(aSection, "Add Types to Priority List", "Select one or more types and press OK");
@@ -76,7 +69,8 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
     return availableTypeNames;
   }
 
-  protected Control createDialogArea(Composite parent) {
+  @Override
+protected Control createDialogArea(Composite parent) {
     // create composite
     Composite composite = (Composite) super.createDialogArea(parent);
 
@@ -96,6 +90,7 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
     return (String[]) m_selectedTypeNames.clone();
   }
 
+  @Override
   public void copyValuesFromGUI() {
     m_selectedTypeNames = new String[typeList.getSelectionCount()];
     for (int i = 0, j = 0; i < m_availableTypeNames.length; i++) {
@@ -105,6 +100,7 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
     }
   }
 
+  @Override
   public boolean isValid() {
     return true;
   }
@@ -114,6 +110,7 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
+  @Override
   public void enableOK() {
     okButton.setEnabled(true);
   }

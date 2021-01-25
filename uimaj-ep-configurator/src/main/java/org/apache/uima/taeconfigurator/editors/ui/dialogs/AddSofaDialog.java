@@ -61,14 +61,6 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     capability = c;
   }
 
-  /**
-   * Constructor for Editing an existing Sofa Name
-   * 
-   * @param aSection
-   * @param c
-   * @param aExistingSofa
-   * @param aIsInput
-   */
   public AddSofaDialog(AbstractSection aSection, Capability c, String aExistingSofa,
           boolean aIsInput) {
     this(aSection, c);
@@ -76,6 +68,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     existingIsInput = aIsInput;
   }
 
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingSofa);
     createWideLabel(mainArea, "Sofa names must be unique within a Capability Set, and are"
@@ -127,6 +120,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     return mainArea;
   }
 
+  @Override
   public void copyValuesFromGUI() {
     sofaName = sofaNameUI.getText();
     isInput = inputButton.getSelection();
@@ -136,9 +130,11 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
    * Duplicate validity check: Duplicates are OK for sofas belonging to other capability sets,
    * provided they have the same Input or Output setting.
    */
+  @Override
   public boolean isValid() {
-    if (sofaName.length() == 0)
-      return false;
+    if (sofaName.length() == 0) {
+        return false;
+    }
     if (!sofaName.equals(originalSofa) || // true for adding new sofa, or sofa name changed on edit
             isInput != existingIsInput) { // true if input / output switched for editing
       // sofa, not changed name
@@ -157,6 +153,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     return true;
   }
 
+  @Override
   public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(sofaName.length() > 0);
@@ -168,44 +165,53 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     // check for dis-allowed duplicates in other capability sets
     for (int i = 0; i < cSets.length; i++) {
       Capability ci = cSets[i];
-      if (ci == capability)
+      if (ci == capability) {
         continue;
+    }
       // "reverse" i and o - if input validate name not exist as output in other sets, etc.
       String[] sofaNames = isInput ? ci.getOutputSofas() : ci.getInputSofas();
-      if (null != sofaNames)
+      if (null != sofaNames) {
         for (int j = 0; j < sofaNames.length; j++) {
-          if (sofaName.equals(sofaNames[j]))
+          if (sofaName.equals(sofaNames[j])) {
             return "This name exists as an " + (isInput ? "output" : "input")
                     + " in some capability set.  Please choose another name, or "
                     + "switch the input/output specification to the opposite setting.";
         }
+        }
+    }
     }
     // check for duplicates in this capability
     if (!sofaName.equals(originalSofa)) { // means adding new sofa or changing name of existing one
       if (checkDuplSofaName1(sofaName, capability.getInputSofas())
-              || checkDuplSofaName1(sofaName, capability.getOutputSofas()))
+              || checkDuplSofaName1(sofaName, capability.getOutputSofas())) {
         return "This name already in use; please choose a different name.";
+    }
     }
     return null;
   }
 
   private boolean checkDuplSofaName1(String name, String[] names) {
-    if (null == names)
-      return false;
+    if (null == names) {
+        return false;
+    }
     for (int i = 0; i < names.length; i++) {
-      if (name.equals(names[i]))
+      if (name.equals(names[i])) {
         return true;
+    }
     }
     return false;
   }
 
+  @Override
   public boolean verifyKeyChecks(VerifyEvent event) {
-    if (event.keyCode == SWT.CR || event.keyCode == SWT.TAB)
-      return true;
+    if (event.keyCode == SWT.CR || event.keyCode == SWT.TAB) {
+        return true;
+    }
     if (Character.isJavaIdentifierPart(event.character) ||
         event.character == '*' ||
-        event.character == '.')
-      return true;
+        event.character == '.') {
+        return true;
+    }
     return false;
   }
 

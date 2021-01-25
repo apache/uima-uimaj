@@ -29,10 +29,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
-/**
- * 
- * 
- */
 abstract class AbstractVarValViewerHandler {
 
   public Table table;
@@ -78,6 +74,9 @@ abstract class AbstractVarValViewerHandler {
 
   /**
    * Create a new shell, add the widgets, open the shell
+   * 
+   * @param composite -
+   * @param numColumns -
    */
   protected void addChildControls(Composite composite, int numColumns) {
 
@@ -101,6 +100,8 @@ abstract class AbstractVarValViewerHandler {
 
   /**
    * Create the Table
+   * 
+   * @param parent -
    */
   protected void createTable(Composite parent) {
     int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION
@@ -144,8 +145,9 @@ abstract class AbstractVarValViewerHandler {
   public void close() {
     Shell shell = table.getShell();
 
-    if (shell != null && !shell.isDisposed())
-      shell.dispose();
+    if (shell != null && !shell.isDisposed()) {
+        shell.dispose();
+    }
   }
 
   /**
@@ -155,18 +157,23 @@ abstract class AbstractVarValViewerHandler {
    */
   class ExampleContentProvider implements IStructuredContentProvider, IVarValListViewer {
 
+    @Override
     public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-      if (newInput != null)
+      if (newInput != null) {
         ((VarValList) newInput).addChangeListener(this);
-      if (oldInput != null)
+    }
+      if (oldInput != null) {
         ((VarValList) oldInput).removeChangeListener(this);
     }
+    }
 
+    @Override
     public void dispose() {
       tableRowList.removeChangeListener(this);
     }
 
     // Return the tableRows as an array of Objects
+    @Override
     public Object[] getElements(Object parent) {
       return tableRowList.getTableRows().toArray();
     }
@@ -176,6 +183,7 @@ abstract class AbstractVarValViewerHandler {
      * 
      * @see IVarValListViewer#addTableRow(VarVal)
      */
+    @Override
     public void addTableRow(VarVal tableRow) {
       tableViewer.add(tableRow);
     }
@@ -185,6 +193,7 @@ abstract class AbstractVarValViewerHandler {
      * 
      * @see IVarValListViewer#removeTableRow(VarVal)
      */
+    @Override
     public void removeTableRow(VarVal tableRow) {
       tableViewer.remove(tableRow);
     }
@@ -194,6 +203,7 @@ abstract class AbstractVarValViewerHandler {
      * 
      * @see IVarValListViewer#updateTableRow(VarVal)
      */
+    @Override
     public void updateTableRow(VarVal tableRow) {
       tableViewer.update(tableRow, null);
     }
@@ -217,7 +227,8 @@ abstract class AbstractVarValViewerHandler {
     add.addSelectionListener(new SelectionAdapter() {
 
       // Add a tableRow to the VarValList and refresh the view
-      public void widgetSelected(SelectionEvent e) {
+      @Override
+    public void widgetSelected(SelectionEvent e) {
         if (!tableRowList.addTableRow()) {
           MessageDialog.openWarning(new Shell(), "Duplicate Variable",
                   "The variable 'New_Variable' already exists");
@@ -235,7 +246,8 @@ abstract class AbstractVarValViewerHandler {
     delete.addSelectionListener(new SelectionAdapter() {
 
       // Remove the selection and refresh the view
-      public void widgetSelected(SelectionEvent e) {
+      @Override
+    public void widgetSelected(SelectionEvent e) {
         VarVal tableRow = (VarVal) ((IStructuredSelection) tableViewer.getSelection())
                 .getFirstElement();
         if (tableRow != null) {
@@ -263,21 +275,21 @@ abstract class AbstractVarValViewerHandler {
   }
 
   /**
-   * Return the VarValList
+   * @return the VarValList
    */
   public VarValList getTableRowList() {
     return tableRowList;
   }
 
   /**
-   * Return the parent composite
+   * @return the parent composite
    */
   public Control getControl() {
     return table.getParent();
   }
 
   /**
-   * Return the 'close' Button
+   * @return the 'close' Button
    */
   public Button getCloseButton() {
     return closeButton;

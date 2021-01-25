@@ -34,7 +34,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
-
+import org.eclipse.ui.IWorkbenchWizard;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
@@ -99,7 +99,8 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
    * 
    * @see org.eclipse.jface.wizard.IWizard#addPages()
    */
-  public void addPages() {
+  @Override
+public void addPages() {
     try {
       componentPage = new INSDComponentPage(currentProject, insd, wizardData);
       addPage(componentPage);
@@ -122,7 +123,8 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
    * @see org.eclipse.jface.wizard.IWizard#performFinish()
    * 
    */
-  public boolean performFinish() {
+  @Override
+public boolean performFinish() {
     try {
       editInstallationDescriptor();
     } catch (Throwable e) {
@@ -154,12 +156,14 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
     insd.clearFrameworkSpecs();
 
     String os = environmentPage.osCombo.getText();
-    if (os != null && os.trim().length() > 0)
-      insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
+    if (os != null && os.trim().length() > 0) {
+        insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
+    }
 
     String jdkVersion = environmentPage.jdkVersionCombo.getText();
-    if (jdkVersion != null && jdkVersion.trim().length() > 0)
-      insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, jdkVersion);
+    if (jdkVersion != null && jdkVersion.trim().length() > 0) {
+        insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, jdkVersion);
+    }
 
   }
 
@@ -185,7 +189,9 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
   }
 
   /**
-   * See IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+   * @param workbench -
+   * @param selection -
+   * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
    */
   public void init(IWorkbench workbench, IStructuredSelection selection) {
     // this.workbench = workbench;

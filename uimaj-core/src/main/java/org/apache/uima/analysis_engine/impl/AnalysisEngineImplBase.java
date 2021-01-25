@@ -302,9 +302,6 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     process(aJCas.getCas(), aResultSpec, aTrace);
   }
 
-  /**
-   * @deprecated
-   */
   @Deprecated
   public void process(org.apache.uima.analysis_engine.AnalysisProcessData aProcessData,
           ResultSpecification aResultSpec) throws ResultNotSupportedException,

@@ -318,10 +318,6 @@ public class Ecore2UimaTypeSystem {
     return type;
   }
 
-  /**
-   * @param attr -
-   * @return -
-   */
   private static FeatureDescription eStructuralFeature2UimaFeature(
           EStructuralFeature aStructuralFeature, Map aOptions) throws URISyntaxException {
     FeatureDescription feat = uimaFactory.createFeatureDescription();
@@ -418,10 +414,12 @@ public class Ecore2UimaTypeSystem {
       EPackage epackage = aEcoreType.getEPackage();
       if (epackage != null) {
         String uimaNamespace = namespaceUri2UimaNamespace(epackage.getNsURI());
-        if (uimaNamespace != null)
-          return uimaNamespace + '.' + aEcoreType.getName();
-        else
-          return aEcoreType.getName();
+        if (uimaNamespace != null) {
+            return uimaNamespace + '.' + aEcoreType.getName();
+        }
+        else {
+            return aEcoreType.getName();
+        }
       } else {
         return aEcoreType.getName();
       }
@@ -491,6 +489,8 @@ public class Ecore2UimaTypeSystem {
   /**
    * Main program. Takes two arguments: the filename of an input .ecore file and the filename of the
    * UIMA TypeSystem file to generate.
+   * @param args command line arguments.
+   * @throws Exception -
    */
   public static void main(String[] args) throws Exception {
     if (args.length != 2) {

@@ -130,21 +130,22 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   }
   
   /**
-   * Returns the shared instance.
+   * @return the shared instance.
    */
   public static TAEConfiguratorPlugin getDefault() {
     return plugin;
   }
   
   /**
-   * Returns the workspace instance.
+   * @return the workspace instance.
    */
   public static IWorkspace getWorkspace() {
     return ResourcesPlugin.getWorkspace();
   }
 
   /**
-   * Returns the string from the plugin's resource bundle, or 'key' if not found.
+   * @param key -
+   * @return the string from the plugin's resource bundle, or 'key' if not found.
    */
   public static String getResourceString(String key) {
     ResourceBundle bundle = TAEConfiguratorPlugin.getDefault().getResourceBundle();
@@ -158,14 +159,15 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   /**
    * This method is called when the plug-in is stopped.
    *
-   * @param context
+   * @param context -
    * @throws Exception -
    */
   @Override
   public void stop(BundleContext context) throws Exception {
     try {
-      if (null != formColors)
+      if (null != formColors) {
         formColors.dispose();
+    }
 
     } finally {
       formColors = null;
@@ -176,7 +178,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   /**
    * On first call, gets a formColors instance; on subsequent calls, returns that instance.
    * 
-   * @param display
+   * @param display -
    * @return  a formColors instance
    */
   public FormColors getFormColors(Display display) {
@@ -189,7 +191,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   }
 
   /**
-   * Returns the plugin's resource bundle,
+   * @return the plugin's resource bundle,
    */
   public ResourceBundle getResourceBundle() {
     return resourceBundle;

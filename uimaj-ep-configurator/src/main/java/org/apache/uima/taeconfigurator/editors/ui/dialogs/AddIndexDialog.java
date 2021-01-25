@@ -93,15 +93,16 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
   /**
    * Constructor for Editing an existing XRD
    * 
-   * @param aSection
-   * @param aExistingNDX
+   * @param aSection -
+   * @param aExistingNDX -
    */
   public AddIndexDialog(AbstractSection aSection, FsIndexDescription aExistingNDX) {
     this(aSection);
     existingNDX = aExistingNDX;
   }
 
-  protected Control createDialogArea(Composite parent) {
+  @Override
+protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingNDX);
     createWideLabel(mainArea, "The Index name must be globally unique.");
 
@@ -174,7 +175,8 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     return mainArea;
   }
 
-  public TypesWithNameSpaces getTypeSystemInfoList() {
+  @Override
+public TypesWithNameSpaces getTypeSystemInfoList() {
     TypesWithNameSpaces result = super.getTypeSystemInfoList();
     String[] allTypes = getAllTypesAsSortedArray();
     for (int i = 0; i < allTypes.length; i++) {
@@ -184,15 +186,17 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
   }
 
   private void addKey(FsIndexKeyDescription key) {
-    if (null == key)
-      return;
+    if (null == key) {
+        return;
+    }
     TableItem item = new TableItem(table, SWT.NONE);
     updateKey(item, key);
   }
 
   private void updateKey(TableItem item, FsIndexKeyDescription key) {
-    if (null == key)
-      return;
+    if (null == key) {
+        return;
+    }
     if (key.isTypePriority()) {
       item.setText(0, S_);
       item.setText(1, TYPE_PRIORITY);
@@ -203,7 +207,8 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     }
   }
 
-  public void handleEvent(Event event) {
+  @Override
+public void handleEvent(Event event) {
     if (event.widget == indexKindUI) {
       boolean showKeys = "sorted".equals(indexKindUI.getText())
               || "set".equals(indexKindUI.getText());
@@ -238,15 +243,17 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
 
   public List alreadyDefined(TableItem[] items) {
     List result = new ArrayList();
-    if (null == items)
-      return result;
+    if (null == items) {
+        return result;
+    }
     for (int i = 0; i < items.length; i++) {
       result.add(items[i].getText(0));
     }
     return result;
   }
 
-  public void copyValuesFromGUI() {
+  @Override
+public void copyValuesFromGUI() {
     indexName = indexNameUI.getText();
     indexKind = indexKindUI.getText();
     indexType = indexTypeUI.getText();
@@ -256,8 +263,10 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
       for (int i = 0; i < items.length; i++) {
         keys[i] = makeKey(items[i]);
       }
-    } else
-      keys = null;
+    }
+    else {
+        keys = null;
+    }
   }
 
   private FsIndexKeyDescription makeKey(TableItem item) {
@@ -273,9 +282,11 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     return key;
   }
 
-  public boolean isValid() {
-    if (indexName.length() == 0 || indexType.length() == 0)
-      return false;
+  @Override
+public boolean isValid() {
+    if (indexName.length() == 0 || indexType.length() == 0) {
+        return false;
+    }
     if (!indexName.equals(originalIndexName) && indexSection.isDuplicateIndexLabel(indexName)) {
       errorMessageUI
               .setText("The name on this index duplicates anexisting name.  Please specify a globally unique name.");
@@ -284,7 +295,8 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     return true;
   }
 
-  public void enableOK() {
+  @Override
+public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(indexName.length() > 0);
     boolean keysUsed = "sorted".equals(indexKind) || "set".equals(indexKind);

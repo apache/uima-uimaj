@@ -404,10 +404,6 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     }
   }
 
-  /**
-   * @deprecated
-   * @return -
-   */
   @Deprecated
   protected AnalysisProcessData_impl createAnalysisProcessData() {
     try {

@@ -415,12 +415,10 @@ public class BaseClient {
    * case where return result is known to be VinciFrame (eliminates the need for casting in the
    * typical usage case).
    * 
-   * @return A VinciFrame representing the service result.
-   * 
    * @pre query != null
    * @pre getHost() != null
    * @param query -
-   * @return -
+   * @return A VinciFrame representing the service result.
    * @throws IOException -
    * @throws ServiceException -
    */

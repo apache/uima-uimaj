@@ -20,7 +20,6 @@
 package org.apache.uima.taeconfigurator.editors.ui;
 
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
-import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.Form2Panel;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.swt.SWT;
@@ -37,7 +36,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -120,8 +118,9 @@ public abstract class HeaderPage extends FormPage {
     xtra.setLayoutData(new GridData(GridData.FILL_BOTH));
 
     Control c = form.getParent();
-    while (!(c instanceof ScrolledComposite))
-      c = c.getParent();
+    while (!(c instanceof ScrolledComposite)) {
+        c = c.getParent();
+    }
     ((GridData) xtra.getLayoutData()).widthHint = c.getSize().x;
     return xtra;
   }
@@ -144,8 +143,9 @@ public abstract class HeaderPage extends FormPage {
     xtra.setLayout(new GridLayout(1, false));
     xtra.setLayoutData(new GridData(GridData.FILL_BOTH));
     Control c = xtra.getParent();
-    while (!(c instanceof ScrolledComposite))
-      c = c.getParent();
+    while (!(c instanceof ScrolledComposite)) {
+        c = c.getParent();
+    }
     ((GridData) xtra.getLayoutData()).widthHint = c.getSize().x;
     ((GridData) xtra.getLayoutData()).heightHint = c.getSize().y;
     sashForm = new SashForm(xtra, SWT.HORIZONTAL);
@@ -163,7 +163,8 @@ public abstract class HeaderPage extends FormPage {
     rightPanelPercent = (float) w2 / (float) (w1 + w2);
 
     rightPanel.addControlListener(new ControlAdapter() {
-      public void controlResized(ControlEvent e) {
+      @Override
+    public void controlResized(ControlEvent e) {
         setSashFormWidths();
       }
     });
@@ -180,18 +181,14 @@ public abstract class HeaderPage extends FormPage {
     rightPanelWidth = (int) (((float) ws[1] / (float) (ws[0] + ws[1])) * sashFormWidth);
   }
 
-  /**
-   * Sash impl
-   * 
-   * @param managedForm
-   * @param equalWidth
-   */
   public Form2Panel setup2ColumnLayout(IManagedForm managedForm, boolean equalWidth) {
-    if (equalWidth)
-      return setup2ColumnLayout(managedForm, 50, 50);
-    else
-      // a hack - based on first column more likely being wider
-      return setup2ColumnLayout(managedForm, 60, 40);
+    if (equalWidth) {
+        return setup2ColumnLayout(managedForm, 50, 50);
+    }
+    else {
+        // a hack - based on first column more likely being wider
+          return setup2ColumnLayout(managedForm, 60, 40);
+    }
   }
 
   public Form2Panel setup2ColumnLayoutNotSash(IManagedForm managedForm, boolean equalWidth) {
@@ -214,7 +211,8 @@ public abstract class HeaderPage extends FormPage {
     // event (learned this by debugging)
 
     sform.addListener(SWT.Resize, new Listener() {
-      public void handleEvent(Event event) {
+      @Override
+    public void handleEvent(Event event) {
         float col1CurrentWidth = leftPanel.getSize().x;
         float col2CurrentWidth = rightPanel.getSize().x;
         final int minLeftPanelWidth = 250; // in pels

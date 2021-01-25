@@ -196,6 +196,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @param aMetadata       component capabilities
    */
+  @Override
   public void setMetadata(ProcessingResourceMetaData aMetadata) {
     metadata = aMetadata;
     Capability[] capabilities = metadata.getCapabilities();
@@ -238,6 +239,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * @param aDeployer -
    *          object responsible for deploying/launching CasProcessor
    */
+  @Override
   public void setCasProcessorDeployer(CasProcessorDeployer aDeployer) {
     casPDeployer = aDeployer;
   }
@@ -247,6 +249,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @return - CasProcessorDeployer - deployer object
    */
+  @Override
   public CasProcessorDeployer getDeployer() {
     return casPDeployer;
   }
@@ -308,6 +311,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    *          an arrar of Cas'es that could not be processed by this CasProcessor
    * 
    */
+  @Override
   public void logAbortedCases(Object[] abortedCasList) {
     if (!initialized) {
       initialized = true;
@@ -359,6 +363,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @return - bytes processed
    */
+  @Override
   public long getBytesIn() {
     return bytesIn;
   }
@@ -368,6 +373,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @param aBytesIn - number of ingested bytes
    */
+  @Override
   public void addBytesIn(long aBytesIn) {
     bytesIn += aBytesIn;
   }
@@ -378,6 +384,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @return - bytes processed
    */
+  @Override
   public long getBytesOut() {
     return bytesOut;
   }
@@ -386,6 +393,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * Aggregate total bytes processed by this CasProcessor
    * 
    */
+  @Override
   public void addBytesOut(long aBytesOut) {
     bytesOut += aBytesOut;
   }
@@ -395,6 +403,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @param aCount - restart count
    */
+  @Override
   public void incrementRestartCount(int aCount) {
     restartCount += aCount;
   }
@@ -404,6 +413,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @return number of restarts
    */
+  @Override
   public int getRestartCount() {
     return restartCount;
   }
@@ -414,6 +424,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @param aCount - failure count
    */
+  @Override
   public void incrementRetryCount(int aCount) {
     retryCount += aCount;
   }
@@ -423,6 +434,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @return - retry count
    */
+  @Override
   public int getRetryCount() {
     return retryCount;
   }
@@ -432,6 +444,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @param aCount - number of aborts while processing Cas'es
    */
+  @Override
   public void incrementAbortCount(int aCount) {
     abortCount += aCount;
   }
@@ -441,6 +454,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @return - number of failed attempts to analyze CAS'es
    */
+  @Override
   public int getAbortCount() {
     return abortCount;
   }
@@ -453,6 +467,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * @param aCount -
    *          number of filtered Cas'es
    */
+  @Override
   public void incrementFilteredCount(int aCount) {
     filteredCount += aCount;
   }
@@ -462,6 +477,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @return # of filtered Cas'es
    */
+  @Override
   public int getFilteredCount() {
     return filteredCount;
   }
@@ -472,6 +488,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @return Number of entities yet to be processed
    */
+  @Override
   public synchronized long getRemaining() {
     return remaining;
   }
@@ -482,6 +499,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * @param aRemainingCount -
    *          number of entities to process
    */
+  @Override
   public synchronized void setRemaining(long aRemainingCount) {
     remaining = aRemainingCount;
   }
@@ -491,6 +509,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @param aEntityId - id of the entity
    */
+  @Override
   public void setLastProcessedEntityId(String aEntityId) {
     processedEntityIds.push(aEntityId);
   }
@@ -500,6 +519,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @return - id of entity
    */
+  @Override
   public String getLastProcessedEntityId() {
     if (processedEntityIds.isEmpty()) {
       return "";
@@ -508,22 +528,20 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   }
 
   /**
-   * Copies the last Cas Processed
-   * 
-   * @deprecated
+   * Copies the last CAS Processed
    */
+  @Override
   @Deprecated
-public void setLastCas(Object aCasObject) {
+  public void setLastCas(Object aCasObject) {
     lastCas = aCasObject;
   }
 
   /**
-   * Returns the last Cas processed
-   * 
-   * @deprecated
+   * Returns the last CAS processed
    */
+  @Override
   @Deprecated
-public Object getLastCas() {
+  public Object getLastCas() {
     return lastCas;
   }
 
@@ -536,6 +554,7 @@ public Object getLastCas() {
    * 
    * @param aProcessedCount - number of entities processed before CPE stopped
    */
+  @Override
   public void setProcessed(long aProcessedCount) {
     processed = aProcessedCount;
   }
@@ -545,6 +564,7 @@ public Object getLastCas() {
    * 
    * @return - processed - number of entities processed
    */
+  @Override
   public long getProcessed() {
     return processed;
 
@@ -558,6 +578,7 @@ public Object getLastCas() {
     errorCounter = 0;
   }
 
+  @Override
   public void resetRestartCount() {
     // System.out.println("resetRestartCount() was called");
     restartCount = 0;
@@ -569,6 +590,7 @@ public Object getLastCas() {
    * @param aTime -
    *          total time in process()
    */
+  @Override
   public void incrementTotalTime(long aTime) {
     totalTime += aTime;
   }
@@ -578,6 +600,7 @@ public Object getLastCas() {
    * 
    * @return - number of millis spent in process()
    */
+  @Override
   public long getTotalTime() {
     return totalTime;
   }
@@ -589,6 +612,7 @@ public Object getLastCas() {
    * 
    * @return - true if the CPE should stop processing, false otherwise
    */
+  @Override
   public boolean abortCPMOnError() {
     String action = casProcessorCPEConfiguration.getActionOnError();
     if (action == null) {
@@ -631,6 +655,7 @@ public Object getLastCas() {
    *              disregard error, skip bad Cas'es and continue with the next Cas bundle
    * 
    */
+  @Override
   public synchronized void incrementCasProcessorErrors(Throwable aThrowable) throws Exception {
     errorCounter++;
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -833,6 +858,7 @@ public Object getLastCas() {
    * @see org.apache.uima.collection.base_cpm.container.ProcessingContainer#isEndOfBatch(org.apache.uima.collection.base_cpm.CasProcessor,
    *      int)
    */
+  @Override
   public synchronized boolean isEndOfBatch(CasProcessor aCasProcessor, int aProcessedSize)
           throws ResourceProcessException, IOException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -914,6 +940,7 @@ public Object getLastCas() {
    * @param aCasList -
    *          bundle containing instances of CAS
    */
+  @Override
   public boolean processCas(Object[] aCasList) {
 
     if (aCasList == null) {
@@ -1068,29 +1095,27 @@ public Object getLastCas() {
    * 
    * @return {@link CasProcessorConfiguration} instance
    */
+  @Override
   public CasProcessorConfiguration getCasProcessorConfiguration() {
     return casProcessorCPEConfiguration;
   }
 
-  /**
-   * @deprecated
-   */
+  @Override
   @Deprecated
-public void start() {
+  public void start() {
     new Thread(this);
   }
 
-  /**
-   * @deprecated
-   */
+  @Override
   @Deprecated
-public void stop() {
+  public void stop() {
   }
 
   /**
    * Returns available instance of the CasProcessor from the instance pool. It will wait
    * indefinitely until an instance is available.
    */
+  @Override
   public CasProcessor getCasProcessor() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(Level.FINEST, Thread.currentThread().getName());
@@ -1167,6 +1192,7 @@ public void stop() {
    * @param aCasProcessor -
    *          an instance of CasProcessor to return back to the pool
    */
+  @Override
   public synchronized void releaseCasProcessor(CasProcessor aCasProcessor) {
     try {
       casProcessorPool.checkIn(aCasProcessor);
@@ -1178,6 +1204,7 @@ public void stop() {
   /**
    * Returns the current status of the CasProcessor
    */
+  @Override
   public int getStatus() {
     return casProcessorStatus;
   }
@@ -1188,31 +1215,26 @@ public void stop() {
    * @param aStatus -
    *          new status
    */
+  @Override
   public void setStatus(int aStatus) {
     casProcessorStatus = aStatus;
   }
 
-  /**
-   * @deprecated
-   */
+  @Override
   @Deprecated
-public boolean isLocal() {
+  public boolean isLocal() {
     return isLocal;
   }
 
-  /**
-   * @deprecated
-   */
+  @Override
   @Deprecated
-public boolean isRemote() {
+  public boolean isRemote() {
     return isRemote;
   }
 
-  /**
-   * @deprecated
-   */
+  @Override
   @Deprecated
-public boolean isIntegrated() {
+  public boolean isIntegrated() {
     return isIntegrated;
   }
 
@@ -1237,6 +1259,7 @@ public boolean isIntegrated() {
    * 
    * @return true if CasProcessor can be disabled
    */
+  @Override
   public boolean isAbortable() {
     // First vefrify action string
     String anAction = "";
@@ -1287,6 +1310,7 @@ public boolean isIntegrated() {
   }
 
   
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
     try {
@@ -1315,6 +1339,7 @@ public boolean isIntegrated() {
    * logic and does appropriate cleanup before shutdown.
    * 
    */
+  @Override
   public void destroy() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
@@ -1372,6 +1397,7 @@ public boolean isIntegrated() {
    * 
    * @see java.lang.Runnable#run()
    */
+  @Override
   public void run() {
   }
 
@@ -1380,6 +1406,7 @@ public boolean isIntegrated() {
    * 
    * @see org.apache.uima.resource.ConfigurableResource#getConfigParameterValue(java.lang.String)
    */
+  @Override
   public Object getConfigParameterValue(String aParamName) {
     return configParams.getParameterValue(aParamName);
   }
@@ -1390,6 +1417,7 @@ public boolean isIntegrated() {
    * @see org.apache.uima.resource.ConfigurableResource#getConfigParameterValue(java.lang.String,
    *      java.lang.String)
    */
+  @Override
   public Object getConfigParameterValue(String aGroupName, String aParamName) {
     return configParams.getParameterValue(aGroupName, aParamName);
   }
@@ -1400,6 +1428,7 @@ public boolean isIntegrated() {
    * @see org.apache.uima.resource.ConfigurableResource#setConfigParameterValue(java.lang.String,
    *      java.lang.Object)
    */
+  @Override
   public void setConfigParameterValue(String aParamName, Object aValue) {
     configParams.setParameterValue(aParamName, aValue);
   }
@@ -1410,6 +1439,7 @@ public boolean isIntegrated() {
    * @see org.apache.uima.resource.ConfigurableResource#setConfigParameterValue(java.lang.String,
    *      java.lang.String, java.lang.Object)
    */
+  @Override
   public void setConfigParameterValue(String aGroupName, String aParamName, Object aValue) {
     configParams.setParameterValue(aGroupName, aParamName, aValue);
   }
@@ -1419,6 +1449,7 @@ public boolean isIntegrated() {
    * 
    * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
    */
+  @Override
   public void reconfigure() throws ResourceConfigurationException {
     // no op
 
@@ -1427,6 +1458,7 @@ public boolean isIntegrated() {
   /**
    * Returns the name of this container. It is the name of the Cas Processor.
    */
+  @Override
   public String getName() {
     if (processorName == null) {
       if (metadata != null
@@ -1445,6 +1477,7 @@ public boolean isIntegrated() {
    * 
    * @see org.apache.uima.resource.Resource#getMetaData()
    */
+  @Override
   public ResourceMetaData getMetaData() {
     return metadata;
   }
@@ -1452,6 +1485,7 @@ public boolean isIntegrated() {
   /**
    * Increment a value of a given stat
    */
+  @Override
   public void incrementStat(String aStatName, Integer aStat) {
     synchronized (statMap) {
       if (statMap.containsKey(aStatName)) {
@@ -1469,6 +1503,7 @@ public boolean isIntegrated() {
   /**
    * Add an arbitrary object and bind it to a given name
    */
+  @Override
   public void addStat(String aStatName, Object aStat) {
     synchronized (statMap) {
       if (statMap.containsKey(aStatName)) {
@@ -1481,6 +1516,7 @@ public boolean isIntegrated() {
   /**
    * Return an abject identified with a given name
    */
+  @Override
   public Object getStat(String aStatName) {
     synchronized (statMap) {
       if (statMap.containsKey(aStatName)) {
@@ -1495,6 +1531,7 @@ public boolean isIntegrated() {
    * 
    * @return a map of all stats aggregated during the CPM run
    */
+  @Override
   public HashMap getAllStats() {
     synchronized (statMap) {
       return (HashMap) statMap.clone();
@@ -1507,6 +1544,7 @@ public boolean isIntegrated() {
    * be allowed to return a new CasProcessor. All other methods are accessible and will function
    * fine.
    */
+  @Override
   public void pause() {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1519,6 +1557,7 @@ public boolean isIntegrated() {
     }
   }
 
+  @Override
   public void resume() {
     synchronized (lockForIsPaused) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1531,21 +1570,25 @@ public boolean isIntegrated() {
     }
   }
 
+  @Override
   public boolean isPaused() {
     synchronized (lockForIsPaused) {
       return this.isPaused;
     }
   }
 
+  @Override
   public ServiceProxyPool getPool() {
     return casProcessorPool;
   }
 
   
+  @Override
   public void setSingleFencedService(boolean aSingleFencedInstance) {
     singleFencedInstance = aSingleFencedInstance;
   }
 
+  @Override
   public boolean isSingleFencedService() {
     return singleFencedInstance;
   }
