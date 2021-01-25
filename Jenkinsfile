@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
   
-@Library('uima-build-jenkins-shared-library')
+@Library('uima-build-jenkins-shared-library') _
 
 defaultPipeline {
   extraMavenArguments = '-Pjacoco,spotbugs,pmd'
