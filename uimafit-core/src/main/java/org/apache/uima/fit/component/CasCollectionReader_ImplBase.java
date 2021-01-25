@@ -25,7 +25,6 @@ import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
 import org.apache.uima.fit.descriptor.OperationalProperties;
-import org.apache.uima.fit.internal.ExtendedLogger;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
@@ -34,16 +33,6 @@ import org.apache.uima.resource.ResourceInitializationException;
  */
 @OperationalProperties(outputsNewCases = true)
 public abstract class CasCollectionReader_ImplBase extends CollectionReader_ImplBase {
-  private ExtendedLogger logger;
-
-  @Override
-  public ExtendedLogger getLogger() {
-    if (logger == null) {
-      logger = new ExtendedLogger(getUimaContext());
-    }
-    return logger;
-  }
-
   @Override
   // This method should not be overwritten. Overwrite initialize(UimaContext) instead.
   public final void initialize() throws ResourceInitializationException {
@@ -65,6 +54,7 @@ public abstract class CasCollectionReader_ImplBase extends CollectionReader_Impl
     // Nothing by default
   }
 
+  @Override
   public void close() throws IOException {
     // Nothing by default
   }

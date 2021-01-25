@@ -20,7 +20,7 @@
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDependencies;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -41,7 +41,7 @@ import org.junit.Test;
 public class ExternalResourceConfiguratorTest extends ComponentTestBase {
   @Test
   public void testAnalyze() throws Exception {
-    ExternalResourceDependency[] deps = createExternalResourceDependencies(ParameterizedAE2.class);
+    ExternalResourceDependency[] deps = createResourceDependencies(ParameterizedAE2.class);
 
     verify(deps);
   }

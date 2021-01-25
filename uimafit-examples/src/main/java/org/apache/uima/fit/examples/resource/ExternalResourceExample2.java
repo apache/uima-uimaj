@@ -21,7 +21,7 @@ package org.apache.uima.fit.examples.resource;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResourceUsingUrl;
 
 import java.io.File;
 
@@ -46,6 +46,7 @@ public class ExternalResourceExample2 {
   public static final class SharedModel implements SharedResourceObject {
     private String uri;
 
+    @Override
     public void load(DataResource aData) throws ResourceInitializationException {
       uri = aData.getUri().toString();
     }
@@ -85,8 +86,8 @@ public class ExternalResourceExample2 {
 
     // Bind external resource to the aggregate
     AnalysisEngineDescription aaed = createEngineDescription(aed1, aed2);
-    bindResource(aaed, Annotator.RES_MODEL, SharedModel.class, new File("somemodel.bin").toURI()
-            .toURL().toString());
+    bindResourceUsingUrl(aaed, Annotator.RES_MODEL, SharedModel.class,
+            new File("somemodel.bin").toURI().toURL().toString());
 
     // Check the external resource was injected
     AnalysisEngine ae = createEngine(aaed);
