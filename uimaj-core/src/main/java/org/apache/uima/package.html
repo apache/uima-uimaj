@@ -19,8 +19,27 @@
 	 ***************************************************************
    -->
 <html>
-<body>The main package for the Unstructured Information Management Middleware 
-Architecture.  The {@link org.apache.uima.UIMAFramework} class provides the primary 
-interface point for applications.
+<body>
+Apache UIMA
+<p>This package contains:</p>
+<ul>
+<li>The {@link org.apache.uima.UIMAFramework} class provides the primary interface point for applications.</li>
+<li>Most of the error / exception indirection classes (to allow IDEs to do auto-complete looking for messages).</li>
+</ul>
+<h2>Internationalized Exceptions and Messages</h2>
+<p>Internationalization is handled by the static methods in I18nUtil. &nbsp;These are called by the Internationalized Exceptions, but may be also used for non-exception message localization.</p>
+<p>Exception messages are collected into classes. &nbsp;These classes may be organized further into hierarchies, but the top of these extend one of the following 3 classes:</p>
+<ul>
+<li>Exception - for checked exceptions</li>
+<li>RuntimeException - for unchecked exceptions</li>
+<li>SaxException - for exceptions thrown during Sax related callbacks requiring SaxExceptions be thrown</li>
+</ul>
+<p>Common code for getting a localized message from arguments and message key and resource bundle are put in the interface I18nExceptionI as default methods. Using default methods allows shared methods to be used with different superclass chains.</p>
+<p>The individual classes:</p>
+<ul>
+<li>hold static public MSG_NAME = "prop-file-key-name" values, allow IDE search via completion, allows renaming via Eclipse refactorization</li>
+<li>Classes collect messages for some sub-section of the code</li>
+<li>Super class structure can supply common resource bundles</li>
+</ul>
 </body>
 </html>

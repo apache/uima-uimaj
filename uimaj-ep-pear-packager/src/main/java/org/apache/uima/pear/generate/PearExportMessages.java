@@ -23,19 +23,21 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+
 /**
- * 
- * Utility class which helps managing messages
- * 
- * 
- * 
+ * Utility class which helps managing messages.
  */
 public class PearExportMessages {
 
+  /** The Constant RESOURCE_BUNDLE. */
   private static final String RESOURCE_BUNDLE = "org.apache.uima.pear.generate.messages";//$NON-NLS-1$
 
+  /** The bundle. */
   private static ResourceBundle bundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
+  /**
+   * Instantiates a new pear export messages.
+   */
   private PearExportMessages() {
     // prevent instantiation of class
   }

@@ -27,19 +27,32 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.impl.UIMAFramework_impl;
 import org.apache.uima.impl.UimaVersion;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.images.Images;
 
+
+/**
+ * The Class AboutHandler.
+ */
 public class AboutHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new about handler.
+   *
+   * @param frame the frame
+   */
   public AboutHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent e) {
     String javaVersion = System.getProperty("java.version");
     String javaVendor = System.getProperty("java.vendor");

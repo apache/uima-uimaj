@@ -529,14 +529,14 @@ ae.destroy();</programlisting></para>
        <table frame="all" id="ugr.tug.tbl.serialization_capabilities">
           <title>Serialization Capabilities</title>
           <tgroup cols="8" rowsep="1" colsep="1">
-            <colspec colname="c1"/>
-            <colspec colname="c2"/>
-            <colspec colname="c3"/>
-            <colspec colname="c4"/>
-            <colspec colname="c5"/>
-            <colspec colname="c6"/>
-            <colspec colname="c7"/>
-            <colspec colname="c8"/>
+            <colspec colname="c1" colwidth="6*"/>
+            <colspec colname="c2" colwidth="5*"/>
+            <colspec colname="c3" colwidth="5*"/>
+            <colspec colname="c4" colwidth="5*"/>
+            <colspec colname="c5" colwidth="5*"/>
+            <colspec colname="c6" colwidth="5*"/>
+            <colspec colname="c7" colwidth="5*"/>
+            <colspec colname="c8" colwidth="5*"/>
             <thead>
               <row>
                 <entry align="center"></entry>
@@ -561,7 +561,7 @@ ae.destroy();</programlisting></para>
                 <entry>-</entry>
               </row>
               <row>
-                <entry>Lists/Arrays inline formatting?</entry>
+                <entry>Lists/Arrays inline formating?</entry>
                 <entry>-</entry>
                 <entry>Yes</entry>
                 <entry>Yes</entry>
@@ -571,7 +571,7 @@ ae.destroy();</programlisting></para>
                 <entry>-</entry>
               </row>
               <row>
-                <entry>Formatted?</entry>
+                <entry>Formated?</entry>
                 <entry>-</entry>
                 <entry>Yes</entry>
                 <entry>Yes</entry>
@@ -621,7 +621,7 @@ ae.destroy();</programlisting></para>
                 <entry>send all</entry>
               </row>
               <row>
-                <entry>NameSpace/Schemas?</entry>
+                <entry>Name Space / Schemas?</entry>
                 <entry>-</entry>
                 <entry>Yes</entry>
                 <entry>-</entry>
@@ -728,7 +728,11 @@ ae.destroy();</programlisting></para>
       See the Javadocs for that class for details.</para>
       
       <para>Several of the APIs use or return instances of <code>SerialFormat</code>, which is an enum specifying the various
-      forms of serialization.</para>  
+      forms of serialization.</para>
+      
+      <para>Serialization often makes use of temporary extra data structures, anchored from the CAS being serialized.
+        These are read/write, and because of this, most serializations are synchronized to prevent multiple
+        serializations of the same CAS from happening in parallel.</para>  
     </section>
   </section>
   
@@ -958,11 +962,8 @@ consumerParamSettings.setParameterValue(
   <section id="ugr.tug.application.integrating_text_analysis_and_search">
     <title>Integrating Text Analysis and Search</title>
     
-    <para>The UIMA SDK on IBM's alphaWorks <ulink url="http://www.alphaworks.ibm.com/tech/uima"/> includes a
-      semantic search engine that you can use to build a search index that includes the results of the analysis done by
-      your AE. This combination of AEs with a search engine capable of indexing both words and annotations over spans
-      of text enables what UIMA refers to as <emphasis>semantic search</emphasis>. Over time we expect to provide
-      additional information on integrating other open source search engines.</para>
+    <para>A combination of AEs with a search engine capable of indexing both words and annotations over spans
+      of text enables what UIMA refers to as <emphasis>semantic search</emphasis>.</para>
     
     <para>Semantic search is a search where the semantic intent of the query is specified using one or more entity or
       relation specifiers. For example, one could specify that they are looking for a person (named)
@@ -974,12 +975,9 @@ consumerParamSettings.setParameterValue(
       
       <para>To build a semantic search index using the UIMA SDK, you run a Collection Processing Engine that includes
         your AE along with a CAS Consumer which takes the tokens and annotatitions, together with sentence
-        boundaries, and feeds them to a semantic searcher's index term input. The alphaWorks semantic search
-        component includes a CAS Consumer called the <emphasis>Semantic Search CAS Indexer</emphasis> that does
-        this; this component is available from the alphaWorks site. Your AE must include an annotator that produces
+        boundaries, and feeds them to a semantic searcher's index term input. Your AE must include an annotator that produces
         Tokens and Sentence annotations, along with any <quote>semantic</quote> annotations, because the
-        Indexer requires this. The Semantic Search CAS Indexer's descriptor is located here:
-        <literal>examples/descriptors/cas_consumer/SemanticSearchCasIndexer.xml</literal> .</para>
+        Indexer requires this.</para>
       
       <section id="ugr.tug.application.search.configuring_indexer">
         <title>Configuring the Semantic Search CAS Indexer</title>
@@ -1053,12 +1051,9 @@ consumerParamSettings.setParameterValue(
         <para>The second item in this example specifies that the annotation type
           <literal>org.apache.uima.examples.tokenizer.Sentence</literal> should be indexed with the
           <quote>Breaking</quote> style. This means that each span of text annotated by a Sentence will be
-          considered a single sentence, which can affect that search engine's algorithm for matching queries. The
-          semantic search engine available from alphaWorks always requires tokens and sentences in order to index a
-          document.</para> <note>
-        <para>Requirements for Term and Breaking rules: The Semantic Search indexer from alphaWorks requires that
-          the items to be indexed as words be designated using the Term rule. </para></note>
-        
+          considered a single sentence, which can affect that search engine's algorithm for matching queries. 
+        </para>
+          
         <para>The remaining items all use the <quote>Annotation</quote> style. This indicates that each
           annotation of the specified types will be stored in the index as a searchable span, with a name equal to the
           annotation name (without the namespace).</para>
@@ -1091,9 +1086,7 @@ consumerParamSettings.setParameterValue(
             </listitem>
           </itemizedlist></para>
         
-        <para>More information on the syntax of these kinds of queries, called XML Fragments, can be found in
-          documentation for the semantic search engine component on <ulink
-            url="http://www.alphaworks.ibm.com/tech/uima"/>. For more information on the Index Build
+        <para>For more information on the Index Build
           Specification format, see the UIMA Javadocs for class
           <literal>org.apache.uima.search.IndexBuildSpecification</literal>. Accessing the Javadocs is
           described in <olink targetdoc="&uima_docs_ref;"/> 
@@ -1196,76 +1189,9 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         
       </section>
     </section>
-    <section id="ugr.tug.application.search.query_tool">
-      <title>Semantic Search Query Tool</title>
-      
-      <para>The Semantic Search component from UIMA on alphaWorks contains a simple tool for running queries
-        against a semantic search index. After building an index as described in the previous section, you can launch
-        this tool by running the shell script: semanticSearch, found in the <literal>/bin</literal> subdirectory
-        of the Semantic Search UIMA install, at the command prompt. If you are using Eclipse, and have installed the
-        UIMA examples, there will be a Run configuration you can use to conveniently launch this, called
-        <literal>UIMA Semantic Search</literal>. This will display the following screen:
-        
-        
-        <screenshot>
-    <mediaobject>
-      <imageobject>
-        <imagedata width="5.7in" format="JPG" fileref="&imgroot;image002.jpg"/>
-      </imageobject>
-      <textobject><phrase>Screenshot of the Semantic Search tool set up to run 
-        semantic queries against a semantic search index</phrase></textobject>
-    </mediaobject>
-  </screenshot></para>
-      
-      <para>Configure the fields on this screen as follows:
-        
-        <itemizedlist spacing="compact">
-          <listitem>
-            <para>Set the <quote>Index Directory</quote> to the directory where you built your index. This is the
-              same value that you supplied for the <quote>Index Dir</quote> parameter of the Semantic Search CAS
-              Indexer in the CPE Configurator.</para>
-          </listitem>
-          
-          <listitem>
-            <para>Set the <quote>XMI/XCAS Directory</quote> to the directory where you stored the results of your
-              analysis. This is the same value that you supplied for the <quote>Output Directory</quote>
-              parameter of XMI Writer CAS Consumer in the CPE Configurator.</para>
-          </listitem>
-          
-          <listitem>
-            <para>Optionally, set the <quote>Original Documents Directory</quote> to the directory containing
-              the original plain text documents that were analyzed and indexed. This is only needed for the "View
-              Original Document" button.</para>
-          </listitem>
-          
-          <listitem>
-            <para> Set the <quote>Type System Descriptor</quote> to the location of the descriptor that describes
-              your type system. For this example, this will be 
-              <literal>%UIMA_HOME%/examples/descriptors/tutorial/ex4/TutorialTypeSystem.xml</literal>
-            </para>
-          </listitem>
-        </itemizedlist></para>
-      
-      <para>Now, in the <quote>XML Fragments</quote> field, you can type in single words or XML queries where the XML
-        tags correspond to the labels in the index build specification file (e.g.
-        <literal>&lt;Meeting&gt;UIMA&lt;/Meeting&gt;</literal>). XML Fragments are described in the
-        documentation for the semantic search engine component on <ulink
-          url="http://www.alphaworks.ibm.com/tech/uima"/>.</para>
-      
-      <para>After you enter a query and click the <quote>Search</quote> button, a list of hits will appear. Select
-        one of the documents and click <quote>View Analysis</quote> to view the document in the UIMA Annotation
-        Viewer.</para>
-      
-      <para>The source code for the Semantic Search query program is in
-        <literal>examples/src/com/ibm/apache-uima/search/examples/SemanticSearchGUI.java</literal> . A simple
-        command-line query program is also provided in
-        <literal>examples/src/com/ibm/apache-uima/search/examples/SemanticSearch.java</literal> . Using these
-        as a model, you can build a query interface from your own application. For details on the Semantic Search
-        Engine query language and interface, see the documentation for the semantic search engine component on
-          <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>.</para>
-    </section>
   </section>
-  
+
+   
   <section id="ugr.tug.application.remote_services">
     <title>Working with Remote Services</title>
     
@@ -2079,10 +2005,6 @@ Exception: Connection refused: connect</programlisting>
 	      performanceTuningSettings.setProperty(
 	            UIMAFramework.CAS_INITIAL_HEAP_SIZE, 
 	            "1000000");
-	      // Disable JCas cache.
-	      performanceTuningSettings.setProperty(
-	            UIMAFramework.JCAS_CACHE_ENABLED, 
-	            "false");
 	      // Create a wrapper properties object that can
 	      // be passed to the framework.
 	      Properties additionalParams = new Properties();
@@ -2103,26 +2025,15 @@ Exception: Connection refused: connect</programlisting>
 	  <para>
 		  The following options are supported:
 		  <itemizedlist>
+        <!-- not used in v3
 		    <listitem>
-		      <para><literal>UIMAFramework.JCAS_CACHE_ENABLED</literal>: allows you to disable
-				  the JCas cache (true/false).  The JCas cache is an internal datastructure that caches any JCas 
-				  object created
-				  by the CAS.  This may result in better performance for applications that make extensive use of
-				  the JCas, but also incurs a steep memory overhead.  If you're processing large documents and have
-				  memory issues, you should disable this option.  In general, just try running a few experiments to
-				  see what setting works better for your application.  The JCas cache is enabled by default.  
-				  </para>
-		    </listitem>
-		    <listitem>
-				  <para><literal>UIMAFramework.CAS_INITIAL_HEAP_SIZE</literal>: set the initial CAS heap size in
-				  number of cells (integer valued).  The CAS uses 32bit integer cells, so four times the initial 
-				  size is the
-				  approximate minimum size of the CAS in bytes.  This is another space/time trade-off as growing
-				  the CAS heap is relatively expensive.  On the other hand, setting the initial size too high is
-				  wasting memory.  Unless you know you are processing very small or very large documents, you should
-				  probably leave this option unchanged.
+				  <para><literal>UIMAFramework.CAS_INITIAL_HEAP_SIZE</literal>:  
+            This is only used to help initialize the sizes of some internal tables.
+            You can leave it unspecified; but if you know the approximate number of feature structures
+            a pipeline will have, you can specify it.
 				  </para>
 		   </listitem>
+        -->
 		    <listitem>
 				  <para><literal>UIMAFramework.PROCESS_TRACE_ENABLED</literal>: enable the process trace mechanism
 				  (true/false).  When enabled, UIMA tracks the time spent in individual components of an aggregate 

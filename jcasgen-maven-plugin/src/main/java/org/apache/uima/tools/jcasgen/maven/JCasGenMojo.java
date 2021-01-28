@@ -196,7 +196,7 @@ public class JCasGenMojo extends AbstractMojo {
     } finally {
       IOUtil.close(typeSystemOs);
     }
-
+    
     // skip JCasGen if there are no changes in the type system file or the files it
     // references hasDelta resolves the imports!
     if (!contextDelta && !this.hasDelta(typeSystem, classpath)) {

@@ -38,6 +38,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import org.apache.uima.tools.cvd.CVD;
 import org.apache.uima.tools.cvd.MainFrame;
 
+
 /**
  * Show the CVD manual in a Swing html widget.  Unfortunately, the html we currently produce from
  * our docbook source is too advanced for the the simple html widget, and is virtually unreadable.
@@ -45,14 +46,27 @@ import org.apache.uima.tools.cvd.MainFrame;
  */
 public class ManualHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new manual handler.
+   *
+   * @param frame the frame
+   */
   public ManualHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /**
+   * The Class Hyperactive.
+   */
   private class Hyperactive implements HyperlinkListener {
 
+    /* (non-Javadoc)
+     * @see javax.swing.event.HyperlinkListener#hyperlinkUpdate(javax.swing.event.HyperlinkEvent)
+     */
+    @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
       if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
         JEditorPane pane = (JEditorPane) e.getSource();
@@ -71,6 +85,10 @@ public class ManualHandler implements ActionListener {
     }
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent event) {
     try {
       String manFileName = "tools.html";

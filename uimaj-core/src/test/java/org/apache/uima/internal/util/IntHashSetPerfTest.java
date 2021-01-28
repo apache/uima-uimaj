@@ -21,9 +21,9 @@ package org.apache.uima.internal.util;
 
 import java.util.Random;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.internal.util.rb_trees.IntArrayRBT;
+
+import junit.framework.TestCase;
 
 public class IntHashSetPerfTest extends TestCase {
   /**
@@ -43,7 +43,7 @@ public class IntHashSetPerfTest extends TestCase {
   IntArrayRBT m1;
   IntBitSet m3;
   
-  final int[] keys10000 = new int[111111];
+  final int[] keys10000 = new int[511111];
   int k10ki = 0;
   
   
@@ -53,10 +53,10 @@ public class IntHashSetPerfTest extends TestCase {
     m2 = new IntHashSet(16);
     m3 = new IntBitSet(16);
      
-    for (int i = 0; i < 111111; i++) {
-      int k = r.nextInt(100000);
-      while (k == 0) { k = r.nextInt(100000);}
-      keys10000[i] = k;
+    for (int i = 0; i < keys10000.length; i++) {
+      int k = r.nextInt(511110);
+     
+      keys10000[i] = k + 1;
     }
 
     System.out.format("%n%n W A R M U P %n%n");
@@ -72,14 +72,21 @@ public class IntHashSetPerfTest extends TestCase {
     System.out.format("%n%n Time 100000 %n%n");
     timelp(100000);
     
+    System.out.format("%n%n Time 500000 %n%n");
+    timelp(500000);
+
+    
     System.out.println(dmv);
   }
   private void time2(int n) {
-    float f1 = time(m1, n);
+//    float f1 = time(m1, n);
     float f2 = time(m2, n);
     float f3 = time(m3, n);
-    System.out.format(" ratio RBT/hash = %.3f   RTB/bitset = %.3f  hash/bitset = %.3f%n", 
-        f1/f2,  f1/f3, f2/f3);   
+    System.out.format(" ratio "
+//        + "RBT/hash = %.3f   RTB/bitset = %.3f  "
+        + "hash/bitset = %.3f%n", 
+//        f1/f2,  f1/f3, 
+        f2/f3);   
   }
   
   private void timelp(int n) {

@@ -33,6 +33,7 @@ import org.xml.sax.SAXException;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
+
 /**
  * 
  * Handles the PEAR installation descriptor (install.xml)
@@ -42,17 +43,16 @@ import org.apache.uima.pear.tools.InstallationDescriptorHandler;
  */
 public class PearInstallationDescriptor {
 
+  /** The Constant INSTALLATION_DESCRIPTOR_PATH. */
   public static final String INSTALLATION_DESCRIPTOR_PATH = "metadata/install.xml";
 
   /**
-   * @param currentContainer
-   *          An IProject with the UIMA nature
-   * @param insd
-   *          The installation descriptor object
-   * @throws CoreException
-   *           if there is problem accessing the corresponding resource
-   * @throws IOException
-   *           if there is problem writing to the corresponding resource
+   * Save installation descriptor.
+   *
+   * @param currentContainer          An IProject with the UIMA nature
+   * @param insd          The installation descriptor object
+   * @throws CoreException           if there is problem accessing the corresponding resource
+   * @throws IOException           if there is problem writing to the corresponding resource
    */
   public static void saveInstallationDescriptor(IContainer currentContainer,
           InstallationDescriptor insd) throws CoreException, IOException {
@@ -119,10 +119,9 @@ public class PearInstallationDescriptor {
   }
 
   /**
-   * adds the $main_root/ macro as a prefix to the given string
-   * 
-   * @param s
-   *          a String representing a relative path to the project root
+   * adds the $main_root/ macro as a prefix to the given string.
+   *
+   * @param s          a String representing a relative path to the project root
    * @return The String with the macro
    */
   public static String addMacro(String s) {

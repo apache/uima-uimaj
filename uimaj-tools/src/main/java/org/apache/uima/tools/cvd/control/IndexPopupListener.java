@@ -32,25 +32,54 @@ import org.apache.uima.tools.cvd.IndexTreeNode;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.cvd.TypeTreeNode;
 
+
+/**
+ * The listener interface for receiving indexPopup events.
+ * The class that is interested in processing a indexPopup
+ * event implements this interface, and the object created
+ * with that class is registered with a component using the
+ * component's <code>addIndexPopupListener</code> method. When
+ * the indexPopup event occurs, that object's appropriate
+ * method is invoked.
+ *
+// * @see IndexPopupEvent
+ */
 public class IndexPopupListener extends MouseAdapter {
 
   
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new index popup listener.
+   *
+   * @param frame the frame
+   */
   public IndexPopupListener(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.MouseAdapter#mousePressed(java.awt.event.MouseEvent)
+   */
   @Override
   public void mousePressed(MouseEvent e) {
     maybeShowPopup(e);
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
+   */
   @Override
   public void mouseReleased(MouseEvent e) {
     maybeShowPopup(e);
   }
 
+  /**
+   * Maybe show popup.
+   *
+   * @param e the e
+   */
   private void maybeShowPopup(MouseEvent e) {
     if (e.isPopupTrigger()) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.main.getIndexTree()

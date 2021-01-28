@@ -41,6 +41,7 @@ import javax.swing.text.DefaultEditorKit;
 
 import org.apache.uima.util.FileUtils;
 
+
 /**
  * Simple file viewer for viewing log files.
  * 
@@ -48,19 +49,23 @@ import org.apache.uima.util.FileUtils;
  */
 public class LogFileViewer extends JFrame {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 3599235286749804258L;
 
+	/** The log file. */
 	private File logFile;
 
+	/** The scroll pane. */
 	private JScrollPane scrollPane;
 
+	/** The text area. */
 	private JTextArea textArea;
 
 	/**
 	 * Instantiates a new log file viewer.
 	 *
 	 * @throws java.awt.HeadlessException the java.awt. headless exception
-   */
+	 */
 	public LogFileViewer() {
 		super();
 	}
@@ -69,7 +74,7 @@ public class LogFileViewer extends JFrame {
 	 * Instantiates a new log file viewer.
 	 *
 	 * @param arg0 the arg 0
-   */
+	 */
 	public LogFileViewer(GraphicsConfiguration arg0) {
 		super(arg0);
 	}
@@ -79,7 +84,7 @@ public class LogFileViewer extends JFrame {
 	 *
 	 * @param arg0 the arg 0
 	 * @throws java.awt.HeadlessException the java.awt. headless exception
-   */
+	 */
 	public LogFileViewer(String arg0) {
 		super(arg0);
 	}
@@ -89,11 +94,17 @@ public class LogFileViewer extends JFrame {
 	 *
 	 * @param arg0 the arg 0
 	 * @param arg1 the arg 1
-   */
+	 */
 	public LogFileViewer(String arg0, GraphicsConfiguration arg1) {
 		super(arg0, arg1);
 	}
 
+	/**
+	 * Inits the.
+	 *
+	 * @param file the file
+	 * @param d the d
+	 */
 	public void init(File file, Dimension d) {
 		createMenus();
 		this.logFile = file;
@@ -115,6 +126,9 @@ public class LogFileViewer extends JFrame {
 		this.setVisible(true);
 	}
 
+	/**
+	 * Creates the menus.
+	 */
 	private void createMenus() {
 		JMenuBar menuBar = new JMenuBar();
 		this.setJMenuBar(menuBar);
@@ -122,20 +136,27 @@ public class LogFileViewer extends JFrame {
 		menuBar.add(fileMenu);
 		JMenuItem reload = new JMenuItem("Reload Log File");
 		reload.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
+			@Override
+      public void actionPerformed(ActionEvent event) {
 				loadFile();
 			}
 		});
 		fileMenu.add(reload);
 		JMenuItem exit = new JMenuItem("Close Window");
 		exit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
+			@Override
+      public void actionPerformed(ActionEvent event) {
 				LogFileViewer.this.dispose();
 			}
 		});
 		fileMenu.add(exit);
 	}
 
+	/**
+	 * Load file.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean loadFile() {
 		if (!this.logFile.exists()) {
 			JOptionPane.showMessageDialog(this, "The log file \"" + this.logFile.getAbsolutePath()
@@ -154,6 +175,11 @@ public class LogFileViewer extends JFrame {
 		return true;
 	}
 
+	/**
+	 * Handle exception.
+	 *
+	 * @param e the e
+	 */
 	protected void handleException(Exception e) {
 		boolean hasAsserts = false;
 		// assert(hasAsserts = true);

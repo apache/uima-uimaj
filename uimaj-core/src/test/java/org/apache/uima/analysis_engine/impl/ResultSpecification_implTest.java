@@ -28,9 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TypeOrFeature;
@@ -42,6 +39,9 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.impl.Capability_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 
 public class ResultSpecification_implTest extends TestCase {
@@ -117,7 +117,7 @@ public class ResultSpecification_implTest extends TestCase {
       capabilities = new Capability[] { cap1, cap2, cap3 };
 
       // make languages array
-      languages = new Vector<String[]>(3);
+      languages = new Vector<>(3);
       languages.add(0, languages1);
       languages.add(1, languages2);
       languages.add(2, languages3);

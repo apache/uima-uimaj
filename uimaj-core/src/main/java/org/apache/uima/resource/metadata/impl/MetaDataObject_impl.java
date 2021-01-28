@@ -167,11 +167,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   // holds "filtered" set of Java Bean Info
   private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> 
       class2attrsMap =
-          new ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]>();
+      new ConcurrentHashMapWithProducer<>();
   // holds the unfiltered set of Java Bean Info
   private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> 
       class2attrsMapUnfiltered =
-          new ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]>();
+      new ConcurrentHashMapWithProducer<>();
 
   /**
    * methods used for serializing
@@ -231,7 +231,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *   cleared at the end (in finally clause) to prevent memory leaks
    *   Inherited by some custom impls, e.g. TypeOrFeature_impl
   */
-  public static final ThreadLocal<SerialContext> serialContext = new ThreadLocal<SerialContext>();
+  public static final ThreadLocal<SerialContext> serialContext = new ThreadLocal<>();
   
   public static SerialContext getSerialContext(ContentHandler ch) {
     SerialContext sc = serialContext.get();
@@ -308,8 +308,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     } catch (IntrospectionException e) {
       throw new UIMARuntimeException(e);
     }
-    ArrayList<MetaDataAttr> resultList = new ArrayList<MetaDataAttr>(pds.length);
-    ArrayList<MetaDataAttr> resultListUnfiltered = new ArrayList<MetaDataAttr>(pds.length);
+    ArrayList<MetaDataAttr> resultList = new ArrayList<>(pds.length);
+    ArrayList<MetaDataAttr> resultListUnfiltered = new ArrayList<>(pds.length);
     for (PropertyDescriptor pd : pds) {
       String propName = pd.getName();
       Class<?> propClass = pd.getPropertyType();
@@ -356,7 +356,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
     try {
       PropertyDescriptor[] props = getPropertyDescriptors();
-      List<NameClassPair> resultList = new ArrayList<NameClassPair>(props.length);
+      List<NameClassPair> resultList = new ArrayList<>(props.length);
       for (int i = 0; i < props.length; i++) {
         // only list properties with read and write methods,
         // and don't include the SourceUrl property, which is for
@@ -1218,7 +1218,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
 
     // get child elements, each of which represents a property
-    List<String> foundProperties = new ArrayList<String>();
+    List<String> foundProperties = new ArrayList<>();
     NodeList childNodes = aElement.getChildNodes();
     for (int i = 0; i < childNodes.getLength(); i++) {
       Node curNode = childNodes.item(i);

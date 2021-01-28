@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
@@ -43,6 +41,8 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 public class FeaturePathTest extends TestCase {
 
@@ -107,7 +107,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(Float.valueOf(1.12f), featurePath.getFloatValue(cas
+      assertEquals(1.12f, featurePath.getFloatValue(cas
             .getDocumentAnnotation()));
       assertEquals("1.12", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
@@ -127,7 +127,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(Double.valueOf(100.5), featurePath.getDoubleValue(cas
+      assertEquals(100.5, featurePath.getDoubleValue(cas
             .getDocumentAnnotation()));
       assertEquals("100.5", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
@@ -254,10 +254,9 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(null, featurePath.getTypClass(cas.getDocumentAnnotation()));
-      assertEquals(null, featurePath.getType(cas.getDocumentAnnotation()));
-      assertEquals(null, featurePath.getValueAsString(cas
-            .getDocumentAnnotation()));
+      assertEquals(null, featurePath.getTypClass    (cas.getDocumentAnnotation()));
+      assertEquals(null, featurePath.getType         (cas.getDocumentAnnotation()));
+      assertEquals(null, featurePath.getValueAsString(cas.getDocumentAnnotation()));
       assertEquals(null, featurePath.getFSValue(cas.getDocumentAnnotation()));
 
       // test reference feature path (slow lookup - path not always valid)
@@ -309,8 +308,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize("");
       assertEquals("", featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(cas.getDocumentAnnotation().toString(), featurePath
-            .getValueAsString(cas.getDocumentAnnotation()));
+      assertEquals(cas.getDocumentAnnotation().toString(), featurePath.getValueAsString(cas.getDocumentAnnotation()));
 
       // test "/" featurePath
       featurePath = new FeaturePathImpl();
@@ -354,12 +352,14 @@ public class FeaturePathTest extends TestCase {
             cas.getDocumentAnnotation());
 
       // test fsId()
+      String docAnnotId = Integer.toString(cas.getDocumentAnnotation()._id()); 
+      
       String path = "/refFeature:fsId()";
       FeaturePath featurePath = new FeaturePathImpl();
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals("8", featurePath.getValueAsString(cas
+      assertEquals(docAnnotId, featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
 
       // test fsId()
@@ -368,7 +368,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals("8", featurePath.getValueAsString(cas
+      assertEquals(docAnnotId, featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
 
       // test coveredText()
@@ -417,6 +417,7 @@ public class FeaturePathTest extends TestCase {
             .getValueAsString(cas.getDocumentAnnotation()));
 
       // test coveredText() on root
+      LowLevelCAS llc = cas.getLowLevelCAS();
       path = "/:coveredText()";
       featurePath = new FeaturePathImpl();
       featurePath.initialize(path);
@@ -424,8 +425,10 @@ public class FeaturePathTest extends TestCase {
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
       assertEquals(cas.getDocumentText(), featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(cas.getDocumentText(), featurePath.ll_getValueAsString(cas.getLowLevelCAS().ll_getFSRef(
-            cas.getDocumentAnnotation()), cas.getLowLevelCAS()));
+      assertEquals(cas.getDocumentText(), 
+                   featurePath.ll_getValueAsString(
+                       llc.ll_getFSRef(cas.getDocumentAnnotation()), 
+                       llc));
       assertEquals(cas.getDocumentAnnotation().getType(), featurePath.getType(cas.getDocumentAnnotation()));
       assertEquals(TypeClass.TYPE_CLASS_FS, featurePath.getTypClass(cas.getDocumentAnnotation()));
 
@@ -435,7 +438,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals("8", featurePath.getValueAsString(cas
+      assertEquals(docAnnotId, featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
 
    }
@@ -673,7 +676,8 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("/refFeature2/stringFeature", featurePath.getFeaturePath());
       assertTrue(featurePath.size() == 2);
-      assertTrue(featurePath.getFeature(1) == null);
+      // test case change: new impl sets features as paths are traversed; 
+      assertTrue(featurePath.getFeature(1) == stringFeat);
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
       assertEquals("MyExample", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));

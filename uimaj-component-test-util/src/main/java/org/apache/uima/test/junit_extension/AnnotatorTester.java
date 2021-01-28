@@ -25,8 +25,6 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.junit.Assert;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -46,17 +44,23 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.Assert;
+
 
 /**
  * AnnotatorTester is the helper class to test annotators.
  */
 public class AnnotatorTester {
+   
+   /** The desc file. */
    // annotator descriptor
    private File descFile;
 
+   /** The ae. */
    // analysis engine instance
    private AnalysisEngine ae;
 
+   /** The mgr. */
    // Resource Manager
    private ResourceManager mgr;
 
@@ -130,15 +134,11 @@ public class AnnotatorTester {
    }
 
    /**
-    * change the parameter name for the given analysis engine
-    * 
-    * @param groupName
-    *           group name, if no group is available, pass null
-    * @param paramName
-    *           parameter name
-    * @param paramValue
-    *           parameter value
-    * 
+    * change the parameter name for the given analysis engine.
+    *
+    * @param groupName           group name, if no group is available, pass null
+    * @param paramName           parameter name
+    * @param paramValue           parameter value
     * @throws ResourceConfigurationException passthru
     */
    public void changeParameterSetting(String groupName, String paramName,
@@ -153,17 +153,12 @@ public class AnnotatorTester {
    }
 
    /**
-    * change the parameter name for the given delegate analysis engine key
-    * 
-    * @param delegeteKey
-    *           analysis engine key
-    * @param groupName
-    *           group name
-    * @param paramName
-    *           parameter name
-    * @param paramValue
-    *           parameter value
-    * 
+    * change the parameter name for the given delegate analysis engine key.
+    *
+    * @param delegeteKey           analysis engine key
+    * @param groupName           group name
+    * @param paramName           parameter name
+    * @param paramValue           parameter value
     * @throws InvalidXMLException passthru
     * @throws ResourceInitializationException passthru
     * @throws IOException passthru
@@ -201,11 +196,10 @@ public class AnnotatorTester {
    }
 
    /**
-    * does configuration parameter test
-    * 
-    * @param configDescFilePath -
-    * @return AnalysisEngine 
-    * 
+    * does configuration parameter test.
+    *
+    * @param configDescFilePath the config desc file path
+    * @return AnalysisEngine
     * @throws Exception passthru
     */
    public static AnalysisEngine doConfigurationTest(String configDescFilePath)
@@ -349,13 +343,12 @@ public class AnnotatorTester {
    }
 
    /**
-    * create a CAS object from the given XCAS and typesystem files
-    * 
+    * create a CAS object from the given XCAS and typesystem files.
+    *
     * @param tsFile -
     *           a typesystem file
     * @param xcasFile -
     *           a xcas file
-    * 
     * @return CAS - CAS object created from the given input data
     * @throws Exception passthru
     */

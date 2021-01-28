@@ -30,9 +30,24 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
+
+/**
+ * The Class Utility.
+ */
 // MessageDialog extended only to enable resize
 public class Utility extends MessageDialog {
 
+  /**
+   * Instantiates a new utility.
+   *
+   * @param parentShell the parent shell
+   * @param dialogTitle the dialog title
+   * @param dialogTitleImage the dialog title image
+   * @param dialogMessage the dialog message
+   * @param dialogImageType the dialog image type
+   * @param dialogButtonLabels the dialog button labels
+   * @param defaultIndex the default index
+   */
   public Utility(Shell parentShell, String dialogTitle, Image dialogTitleImage,
           String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
     super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType,
@@ -40,35 +55,33 @@ public class Utility extends MessageDialog {
     // TODO Auto-generated constructor stub
   }
 
+  /** The Constant OK_CANCEL. */
   final private static String[] OK_CANCEL = { "OK", "Cancel" };
 
+  /** The Constant OKstring. */
   final private static String[] OKstring = { "OK" };
 
   /**
-   * Pops up a warning message with an "OK" and "Cancel" button
-   * 
-   * @param title
-   *          of the warning
-   * @param message -
-   * @param type
-   *          one of MessageDialog.NONE for a dialog with no image MessageDialog.ERROR for a dialog
+   * Pops up a warning message with an "OK" and "Cancel" button.
+   *
+   * @param title          of the warning
+   * @param message the message
+   * @param type          one of MessageDialog.NONE for a dialog with no image MessageDialog.ERROR for a dialog
    *          with an error image MessageDialog.INFORMATION for a dialog with an information image
    *          MessageDialog.QUESTION for a dialog with a question image MessageDialog.WARNING for a
    *          dialog with a warning image
-   * @return -
+   * @return the int
    */
   public static int popOkCancel(String title, String message, int type) {
     return popMessage(title, message, type, OK_CANCEL);
   }
 
   /**
-   * Pops up a warning message with an "OK" button
-   * 
-   * @param title
-   *          of the warning
-   * @param message -
-   * @param type
-   *          one of MessageDialog.NONE for a dialog with no image MessageDialog.ERROR for a dialog
+   * Pops up a warning message with an "OK" button.
+   *
+   * @param title          of the warning
+   * @param message the message
+   * @param type          one of MessageDialog.NONE for a dialog with no image MessageDialog.ERROR for a dialog
    *          with an error image MessageDialog.INFORMATION for a dialog with an information image
    *          MessageDialog.QUESTION for a dialog with a question image MessageDialog.WARNING for a
    *          dialog with a warning image
@@ -78,10 +91,27 @@ public class Utility extends MessageDialog {
     popMessage(title, message, type, OKstring);
   }
   
+  /**
+   * Pop message.
+   *
+   * @param w the w
+   * @param title the title
+   * @param message the message
+   * @param type the type
+   */
   public static void popMessage(Widget w, String title, String message, int type) {
     popMessage(w, title, message, type, OKstring);
   }
 
+  /**
+   * Pop message.
+   *
+   * @param title the title
+   * @param message the message
+   * @param type the type
+   * @param buttons the buttons
+   * @return the int
+   */
   public static int popMessage(String title, String message, int type, String[] buttons) {
     return popMessage(new Shell(), title,message, type, buttons);
 //    Utility dialog = new Utility(new Shell(), title, null, message, type, buttons, 0);
@@ -93,6 +123,16 @@ public class Utility extends MessageDialog {
 //    return returnCode;
   }
 
+  /**
+   * Pop message.
+   *
+   * @param parent the parent
+   * @param title the title
+   * @param message the message
+   * @param type the type
+   * @param buttons the buttons
+   * @return the int
+   */
   public static int popMessage(Shell parent, String title, String message, int type, String[] buttons) {
     Utility dialog = new Utility(parent, title, null, message, type, buttons, 0);
     dialog.setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE); 
@@ -104,16 +144,27 @@ public class Utility extends MessageDialog {
     return returnCode;
   }
 
+  /**
+   * Pop message.
+   *
+   * @param w the w
+   * @param title the title
+   * @param message the message
+   * @param type the type
+   * @param buttons the buttons
+   * @return the int
+   */
   // https://issues.apache.org/jira/browse/UIMA-2114
   public static int popMessage(Widget w, String title, String message, int type, String[] buttons) {
     return popMessage(w.getDisplay().getActiveShell(), title, message, type, buttons);
   }
+  
   /**
-   * remove element(s) (must be present) using == test
-   * 
-   * @param source -
-   * @param element -
-   * @param componentClass -
+   * remove element(s) (must be present) using == test.
+   *
+   * @param source the source
+   * @param element the element
+   * @param componentClass the component class
    * @return a copy of the array with == element(s) removed
    */
   public static Object[] removeElementFromArray(Object[] source, Object element,
@@ -128,11 +179,11 @@ public class Utility extends MessageDialog {
   }
 
   /**
-   * remove element(s) (must be present) using equals test
-   * 
-   * @param source -
-   * @param element -
-   * @param componentClass -
+   * remove element(s) (must be present) using equals test.
+   *
+   * @param source the source
+   * @param element the element
+   * @param componentClass the component class
    * @return a copy of the array with equal element(s) removed
    */
   public static Object[] removeEqualElementFromArray(Object[] source, Object element,
@@ -150,6 +201,14 @@ public class Utility extends MessageDialog {
     return result;
   }
 
+  /**
+   * Removes the elements from array.
+   *
+   * @param source the source
+   * @param element the element
+   * @param componentClass the component class
+   * @return the object[]
+   */
   public static Object[] removeElementsFromArray(Object[] source, Object element,
           Class componentClass) {
     if (null == source) {
@@ -174,6 +233,15 @@ public class Utility extends MessageDialog {
     return result;
   }
 
+  /**
+   * Removes the elements from array.
+   *
+   * @param source the source
+   * @param element the element
+   * @param componentClass the component class
+   * @param comp the comp
+   * @return the object[]
+   */
   public static Object[] removeElementsFromArray(Object[] source, Object element,
           Class componentClass, Comparator comp) {
     if (null == source) {
@@ -198,6 +266,14 @@ public class Utility extends MessageDialog {
     return result;
   }
 
+  /**
+   * Adds the element to array.
+   *
+   * @param source the source
+   * @param element the element
+   * @param componentClass the component class
+   * @return the object[]
+   */
   public static Object[] addElementToArray(Object[] source, Object element, Class componentClass) {
     final int newLength = (null == source) ? 1 : source.length + 1;
     Object[] result = (Object[]) Array.newInstance(componentClass, newLength);
@@ -206,6 +282,13 @@ public class Utility extends MessageDialog {
     return result;
   }
 
+  /**
+   * Array contains.
+   *
+   * @param array the array
+   * @param element the element
+   * @return true, if successful
+   */
   public static boolean arrayContains(Object[] array, Object element) {
     if (null == element) {
         throw new InternalErrorCDE("null not allowed as an argument");

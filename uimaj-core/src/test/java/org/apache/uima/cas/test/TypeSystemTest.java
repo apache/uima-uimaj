@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
@@ -50,6 +48,8 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.xml.sax.SAXException;
+
+import junit.framework.TestCase;
 
 /**
  * Class comment for TypeSystemTest.java goes here.
@@ -73,7 +73,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("TestWithADash-", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -81,7 +81,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("test.with.a.slash/", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -92,7 +92,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("test.empty.identifier.", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -100,7 +100,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType(".test.empty.identifier", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -108,7 +108,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("test.empty..identifier", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -118,7 +118,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("test._leading.Underscore", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -126,7 +126,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("test_embedded.Under__Score", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertFalse(exc);
@@ -199,8 +199,8 @@ public class TypeSystemTest extends TestCase {
       }
       assertTrue(feat != null);
 
-      // Check that a feature of the same name can not be created on a
-      // supertype.
+      // Check that a feature of the same name can be created on a
+      // supertype if it has the same range
       Feature feat2 = null;
       try {
         feat2 = tsm.addFeature(featName, annot1, annot);
@@ -208,7 +208,7 @@ public class TypeSystemTest extends TestCase {
         e.printStackTrace();
         assertTrue(false);
       }
-      assertTrue(feat2 == null);
+      assertTrue(feat2 != null);
       // Check that a feature of the same name can not be created on a
       // subtype.
       /*
@@ -224,7 +224,7 @@ public class TypeSystemTest extends TestCase {
         feat2 = tsm.addFeature(featName, annot2, annot2);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getError() == CASAdminException.DUPLICATE_FEATURE);
+        assertTrue(e.getMessageKey().equals(CASAdminException.DUPLICATE_FEATURE));
       }
       assertTrue(exc);
       // Check that a feature of the same name _can_ be created on a
@@ -245,7 +245,7 @@ public class TypeSystemTest extends TestCase {
         tsm.addFeature("testFeature", top, intT);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
+        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_FEATURE_FINAL));
       }
       assertTrue(exc);
       exc = false;
@@ -253,7 +253,7 @@ public class TypeSystemTest extends TestCase {
         tsm.addFeature("testFeature", intT, intT);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
+        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_FEATURE_FINAL));
       }
       assertTrue(exc);
       exc = false;
@@ -261,7 +261,7 @@ public class TypeSystemTest extends TestCase {
         tsm.addType("newType", intT);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
+        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_INH_FINAL));
       }
       assertTrue(exc);
       exc = false;
@@ -269,7 +269,7 @@ public class TypeSystemTest extends TestCase {
         tsm.addType("newType", tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY));
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
+        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_INH_FINAL));
       }
       assertTrue(exc);
     }
@@ -303,7 +303,7 @@ public class TypeSystemTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
     } catch (Exception e) {
       e.printStackTrace();
@@ -317,14 +317,14 @@ public class TypeSystemTest extends TestCase {
   }
 
   public void testSuperTypeBuiltIn() {
-    CAS cas = CASInitializer.initCas(new SetupTest());
+    CAS cas = CASInitializer.initCas(new SetupTest(), null);
     TypeSystem ts = cas.getTypeSystem();
     Type stringArray = ts.getType("uima.cas.StringArray");
     assertEquals("uima.cas.ArrayBase", ts.getParent(stringArray).getName());
   }
   
   public void testNameChecking() {
-    CAS tcas = CASInitializer.initCas(new SetupTest());
+    CAS tcas = CASInitializer.initCas(new SetupTest(), null);
     assertTrue(tcas != null);
   }
 
@@ -369,7 +369,7 @@ public class TypeSystemTest extends TestCase {
   public void testGetTypeIterator() {
     Iterator<Type> it = this.ts.getTypeIterator();
     // Put the type names in a vector and do some spot checks.
-    ArrayList<String> v = new ArrayList<String>();
+    List<String> v = new ArrayList<>();
     while (it.hasNext()) {
       v.add(it.next().getName());
     }
@@ -383,7 +383,7 @@ public class TypeSystemTest extends TestCase {
   public void testGetFeatures() {
     Iterator<Feature> it = this.ts.getFeatures();
     // Put feature names in vector and test for some known features.
-    List<String> v = new ArrayList<String>();
+    List<String> v = new ArrayList<>();
     while (it.hasNext()) {
       v.add(it.next().getName());
     }
@@ -429,6 +429,10 @@ public class TypeSystemTest extends TestCase {
     assertTrue(this.ts.subsumes(annotType, tokenType));
     assertTrue(!this.ts.subsumes(tokenType, annotType));
     assertTrue(!this.ts.subsumes(tokenType, top));
+
+    Type stringType = this.ts.getType(CAS.TYPE_NAME_STRING);
+    Type substringType = this.ts.getType(CASTestSetup.GROUP_1);
+    assertTrue(this.ts.subsumes(stringType, substringType));
   }
 
   /**
@@ -552,6 +556,46 @@ public class TypeSystemTest extends TestCase {
       assertTrue(false);
     }
   }
+  
+  public void testSerializeParameterizedArrayTypeSystem() {
+    
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    try {
+      TypeSystem2Xml.typeSystem2Xml(ts, os);
+    } catch (SAXException e) {
+      assertTrue(false);
+    } catch (IOException e) {
+      assertTrue(false);
+    }
+    try {
+      os.close();
+    } catch (IOException e) {
+      assertTrue(false);
+    }
+    InputStream is = new ByteArrayInputStream(os.toByteArray());
+//    System.out.println(os.toString());
+    XMLInputSource xis = new XMLInputSource(is, new File("."));
+    Object descriptor = null;
+    try {
+      descriptor = UIMAFramework.getXMLParser().parse(xis);
+    } catch (InvalidXMLException e) {
+      assertTrue(false);
+    }
+    // instantiate CAS to get type system. Also build style
+    // map file if there is none.
+    TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
+    try {
+      tsDesc.resolveImports();
+    } catch (InvalidXMLException e) {
+      assertTrue(false);
+    }
+    try {
+      CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[] {});
+    } catch (ResourceInitializationException e) {
+      assertTrue(false);
+    }
+  }
+  
 
   public static void main(String[] args) {
     junit.textui.TestRunner.run(TypeSystemTest.class);

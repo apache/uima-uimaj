@@ -32,14 +32,23 @@ import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.custom.StyleRange;
 
+
+/**
+ * The Class NonRuleBasedDamagerRepairer.
+ */
 public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPresentationRepairer {
 
-  /** The document this object works on */
+  /**  The document this object works on. */
   protected IDocument fDocument;
 
-  /** The default text attribute if non is returned as data by the current token */
+  /**  The default text attribute if non is returned as data by the current token. */
   protected TextAttribute fDefaultTextAttribute;
 
+  /**
+   * Constructor for NonRuleBasedDamagerRepairer.
+   *
+   * @param defaultTextAttribute the default text attribute
+   */
   public NonRuleBasedDamagerRepairer(TextAttribute defaultTextAttribute) {
     Assert.isNotNull(defaultTextAttribute);
 
@@ -47,6 +56,9 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
   }
 
   /**
+   * Sets the document.
+   *
+   * @param document the new document
    * @see IPresentationRepairer#setDocument(IDocument)
    */
   @Override
@@ -81,6 +93,12 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
   }
 
   /**
+   * Gets the damage region.
+   *
+   * @param partition the partition
+   * @param event the event
+   * @param documentPartitioningChanged the document partitioning changed
+   * @return the damage region
    * @see IPresentationDamager#getDamageRegion(ITypedRegion, DocumentEvent, boolean)
    */
   @Override
@@ -114,6 +132,10 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
   }
 
   /**
+   * Creates the presentation.
+   *
+   * @param presentation the presentation
+   * @param region the region
    * @see IPresentationRepairer#createPresentation(TextPresentation, ITypedRegion)
    */
   @Override

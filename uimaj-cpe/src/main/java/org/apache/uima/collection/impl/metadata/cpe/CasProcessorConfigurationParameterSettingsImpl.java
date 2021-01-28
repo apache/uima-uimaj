@@ -25,16 +25,31 @@ import org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSet
 import org.apache.uima.collection.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 
+
+/**
+ * The Class CasProcessorConfigurationParameterSettingsImpl.
+ */
 public class CasProcessorConfigurationParameterSettingsImpl implements
         CasProcessorConfigurationParameterSettings {
+  
+  /** The params. */
   private NameValuePair[] params = new NameValuePair[0];
 
+  /** The param list. */
   private ArrayList paramList = new ArrayList(0);
 
+  /**
+   * Instantiates a new cas processor configuration parameter settings impl.
+   */
   protected CasProcessorConfigurationParameterSettingsImpl() {
 
   }
 
+  /**
+   * Instantiates a new cas processor configuration parameter settings impl.
+   *
+   * @param aCps the a cps
+   */
   protected CasProcessorConfigurationParameterSettingsImpl(ConfigurationParameterSettings aCps) {
     int size = 0;
     if (aCps != null) {
@@ -53,12 +68,19 @@ public class CasProcessorConfigurationParameterSettingsImpl implements
    * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParams#getAll()
    */
 
+  @Override
   public NameValuePair[] getParameterSettings() {
     NameValuePair[] nvp = new NameValuePairImpl[paramList.size()];
     paramList.toArray(nvp);
     return nvp;
   }
 
+  /**
+   * Gets the param value object.
+   *
+   * @param aParamName the a param name
+   * @return the param value object
+   */
   private NameValuePair getParamValueObject(String aParamName) {
     for (int i = 0; params != null && i < params.length; i++) {
       if (aParamName.equals(((NameValuePair) paramList.get(i)).getName())) {
@@ -74,6 +96,7 @@ public class CasProcessorConfigurationParameterSettingsImpl implements
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings#getParameterValue(java.lang.String)
    */
+  @Override
   public Object getParameterValue(String aParamName) {
     NameValuePair valueObject = getParamValueObject(aParamName);
     if (valueObject != null) {
@@ -88,6 +111,7 @@ public class CasProcessorConfigurationParameterSettingsImpl implements
    * @see org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings#setParameterValue(java.lang.String,
    *      java.lang.Object)
    */
+  @Override
   public void setParameterValue(String aParamName, Object aValue) {
     NameValuePair valueObject = getParamValueObject(aParamName);
     if (valueObject != null) {

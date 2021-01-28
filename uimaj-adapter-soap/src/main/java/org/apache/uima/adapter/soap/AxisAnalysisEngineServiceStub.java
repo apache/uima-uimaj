@@ -34,14 +34,13 @@ import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.uima.analysis_engine.AnalysisEngineServiceStub;
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.service.impl.AnalysisEngineService_impl;
 import org.apache.uima.analysis_engine.service.impl.ServiceDataCargo;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.ResourceServiceStub;
-import org.apache.uima.resource.metadata.ResourceMetaData;
+
 
 /**
  * Proxy to an {@link AnalysisEngineService_impl} that makes use of Axis SOAP to communicate with the
@@ -52,9 +51,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub implements
         AnalysisEngineServiceStub {
 
-  /**
-   * Whether attachments should be used to send binary-serialized data
-   */
+  /** Whether attachments should be used to send binary-serialized data. */
   private boolean mUseAttachments;
 
   /**
@@ -93,8 +90,13 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
   }
 
   /**
+   * Call process.
+   *
+   * @param aCAS the a CAS
+   * @throws ResourceServiceException the resource service exception
    * @see AnalysisEngineServiceStub#callProcess(CAS)
    */
+  @Override
   public void callProcess(CAS aCAS) throws ResourceServiceException {
     final QName operationQName = new QName("http://uima.apache.org/analysis_engine", "process");
     final QName resultSpecTypeQName = new QName("http://uima.apache.org/analysis_engine",
@@ -169,16 +171,27 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
   }
 
   /**
+   * Destroy.
+   *
    * @see ResourceServiceStub#destroy()
    */
+  @Override
   public void destroy() {
     // no resources to clean up
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.AnalysisEngineServiceStub#callBatchProcessComplete()
+   */
+  @Override
   public void callBatchProcessComplete() throws ResourceServiceException {
     // currently not implemented for SOAP services
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.AnalysisEngineServiceStub#callCollectionProcessComplete()
+   */
+  @Override
   public void callCollectionProcessComplete() throws ResourceServiceException {
     // currently not implemented for SOAP services
   }

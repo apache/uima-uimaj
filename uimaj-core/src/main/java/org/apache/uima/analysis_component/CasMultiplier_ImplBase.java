@@ -86,8 +86,8 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
 
   /**
    * Informs this annotator that the CAS TypeSystem has changed. The Analysis Engine calls this
-   * method immediately following the call to {@link #initialize(org.apache.uima.UimaContext)}, and will call
-   * it again whenever the CAS TypeSystem changes.
+   * from PrimitiveAnalysisEngine_impl which-calls CasMultiplier_ImplBase.process which-calls checkTypeSystemChange
+   * and will call it again whenever the CAS TypeSystem changes.
    * <p>
    * In this method, the Annotator should use the {@link TypeSystem} to resolve the names of Type
    * and Features to the actual {@link org.apache.uima.cas.Type} and

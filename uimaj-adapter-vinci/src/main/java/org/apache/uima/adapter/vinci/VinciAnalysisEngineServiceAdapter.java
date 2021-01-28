@@ -27,6 +27,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 
+// TODO: Auto-generated Javadoc
 /**
  * Reference implementation of {@link AnalysisEngineServiceAdapter} for Vinci.
  * 
@@ -35,6 +36,12 @@ import org.apache.uima.resource.URISpecifier;
 public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdapter {
 
   /**
+   * Initialize.
+   *
+   * @param aSpecifier the a specifier
+   * @param aAdditionalParams the a additional params
+   * @return true, if successful
+   * @throws ResourceInitializationException the resource initialization exception
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)

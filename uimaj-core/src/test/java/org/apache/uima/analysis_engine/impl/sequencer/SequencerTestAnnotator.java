@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -101,7 +102,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
             if (fp.canWrite()) {
                // write result specification to the output file
                OutputStreamWriter writer = new OutputStreamWriter(
-                     new FileOutputStream(fp, true), "UTF-8");
+                     new FileOutputStream(fp, true), StandardCharsets.UTF_8);
                writer.write("\nResultSpec for annotator " + this.name + ":\n");
                TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
                // sort by name to ensure consistent output for testing purposes

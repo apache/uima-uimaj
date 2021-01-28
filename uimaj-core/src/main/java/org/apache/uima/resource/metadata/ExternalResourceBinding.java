@@ -40,7 +40,7 @@ public interface ExternalResourceBinding extends MetaDataObject {
    * Within an aggregate, a slash-separated name is used to identify which component the binding
    * applies to. For example, if an Aggregate AE contains an annotator with key
    * <code>annotator1</code> which declares a resource dependency <code>myResource</code>, that
-   * Aggregate AE could binding that resource dependency by using the key
+   * Aggregate AE could bind that resource dependency by using the key
    * <code>annotator1/myResource</code>.
    * 
    * @return the key for this resource binding.
@@ -55,7 +55,7 @@ public interface ExternalResourceBinding extends MetaDataObject {
    * Within an aggregate, a slash-separated name is used to identify which component the binding
    * applies to. For example, if an Aggregate AE contains an annotator with key
    * <code>annotator1</code> which declares a resource dependency <code>myResource</code>, that
-   * Aggregate AE could binding that resource dependency by using the key
+   * Aggregate AE could bind that resource dependency by using the key
    * <code>annotator1/myResource</code>.
    * 
    * @param aKey
