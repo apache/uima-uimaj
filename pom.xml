@@ -235,7 +235,7 @@
             <goals>
               <goal>javadoc</goal>
             </goals>
-            <configuration> 
+            <configuration>
               <groups>
                 <group>
                   <title>Packages</title>
@@ -259,12 +259,12 @@
               <doctitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</doctitle>
               <windowtitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</windowtitle>
               <additionalDependencies>
-							  <additionalDependency>
-							    <groupId>com.fasterxml.jackson.core</groupId>
-						      <artifactId>jackson-core</artifactId>
-						      <version>${jackson.version}</version>
-							  </additionalDependency>
-							</additionalDependencies>
+                <additionalDependency>
+                  <groupId>com.fasterxml.jackson.core</groupId>
+                  <artifactId>jackson-core</artifactId>
+                  <version>${jackson.version}</version>
+                </additionalDependency>
+              </additionalDependencies>
             </configuration>
           </execution>
         </executions>
