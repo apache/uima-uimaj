@@ -189,7 +189,8 @@
               <goal>javadoc</goal>
             </goals>
             <configuration>
-              <source>7</source> 
+              <source>${maven.compiler.source}</source> 
+              <javadocVersion>${maven.compiler.target}</javadocVersion>
               <groups>
                 <group>
                   <title>Packages</title>
@@ -213,12 +214,17 @@
               <doctitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</doctitle>
               <windowtitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</windowtitle>
               <additionalDependencies>
-							  <additionalDependency>
-							    <groupId>com.fasterxml.jackson.core</groupId>
-						      <artifactId>jackson-core</artifactId>
-						      <version>2.4.2</version>
-							  </additionalDependency>
-							</additionalDependencies>
+                <additionalDependency>
+                  <groupId>com.fasterxml.jackson.core</groupId>
+                  <artifactId>jackson-core</artifactId>
+                  <version>2.4.2</version>
+                </additionalDependency>
+                <additionalDependency>
+                  <groupId>log4j</groupId>
+                  <artifactId>log4j</artifactId>
+                  <version>1.2.8</version>
+                </additionalDependency>
+              </additionalDependencies>
             </configuration>
           </execution>
         </executions>
@@ -234,7 +240,7 @@
               <phase>verify</phase>
               <!-- default configuration -->
               <configuration>
-                <excludes>
+                <excludes combine.children="append">
                   <exclude>release.properties</exclude> <!-- generated file -->
                   <exclude>README*</exclude>
                   <exclude>RELEASE_NOTES*</exclude>
