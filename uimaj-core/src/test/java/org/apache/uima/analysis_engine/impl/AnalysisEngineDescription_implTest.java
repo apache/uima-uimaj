@@ -69,6 +69,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.ExternalResourceBinding;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
+import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.OperationalProperties;
@@ -95,6 +96,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
 import org.assertj.core.api.InstanceOfAssertFactories;
+import org.assertj.core.util.introspection.FieldUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -440,12 +442,13 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void testDelegateImports() throws Exception {
     // create aggregate TAE description and add delegate AE import
-    AnalysisEngineDescription testAgg = new AnalysisEngineDescription_impl();
-    Map<String, MetaDataObject> delegateMap = testAgg
-        .getDelegateAnalysisEngineSpecifiersWithImports();
     Import_impl delegateImport = new Import_impl();
     delegateImport.setLocation(
         getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
+
+    AnalysisEngineDescription testAgg = new AnalysisEngineDescription_impl();
+    Map<String, MetaDataObject> delegateMap = testAgg
+        .getDelegateAnalysisEngineSpecifiersWithImports();
     delegateMap.put("key", delegateImport);
 
     assertThat(testAgg.getDelegateAnalysisEngineSpecifiers().values()) //
@@ -470,6 +473,46 @@ public class AnalysisEngineDescription_implTest {
         .as("verify that imports are still resolved") //
         .hasSize(1) //
         .allMatch(d -> d instanceof AnalysisEngineDescription);
+  }
+
+  @Test
+  public void thatCloneDoesNotResolveDelegateImports() throws Exception {
+    // create aggregate TAE description and add delegate AE import
+    Import_impl delegateImport = new Import_impl();
+    delegateImport.setLocation(
+        getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
+
+    AnalysisEngineDescription testAgg = new AnalysisEngineDescription_impl();
+    Map<String, MetaDataObject> delegateMap = testAgg
+        .getDelegateAnalysisEngineSpecifiersWithImports();
+    delegateMap.put("key", delegateImport);
+
+    assertThat(testAgg) //
+        .as("Delegate import in original has not been resolved") //
+        .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
+        .isEmpty();
+
+    AnalysisEngineDescription clonedAgg = (AnalysisEngineDescription) testAgg.clone();
+
+    assertThat(testAgg) //
+        .as("Delegate import in original has still not been resolved") //
+        .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
+        .isEmpty();
+
+    assertThat(testAgg.getDelegateAnalysisEngineSpecifiersWithImports().values()) //
+        .as("import is still there in original") //
+        .hasSize(1) //
+        .allMatch(d -> d instanceof Import);
+
+    assertThat(clonedAgg) //
+        .as("Delegate import in clone has not been resolved") //
+        .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
+        .isEmpty();
+
+    assertThat(clonedAgg.getDelegateAnalysisEngineSpecifiersWithImports().values()) //
+        .as("import is still there in clone") //
+        .hasSize(1) //
+        .allMatch(d -> d instanceof Import);
   }
 
   @Test
@@ -581,7 +624,7 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void testNoDelegatesToResolve() throws Exception {
     ResourceSpecifierFactory f = UIMAFramework.getResourceSpecifierFactory();
-    
+
     AnalysisEngineDescription outer = f.createAnalysisEngineDescription();
     AnalysisEngineDescription inner = f.createAnalysisEngineDescription();
     outer.getDelegateAnalysisEngineSpecifiersWithImports().put("inner", inner);
