@@ -16,13 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.resource.metadata.impl;
+
+import static java.lang.System.identityHashCode;
+import static java.util.Arrays.asList;
+import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
+import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
+import static org.apache.uima.test.junit_extension.JUnitExtension.getFile;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.net.URL;
-
-import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -32,163 +39,162 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.test.junit_extension.PrintExceptionsWhenRunFromCommandLineRule;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.util.XMLParser;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestRule;
 
+public class TypeSystemDescription_implTest {
+  public @Rule TestRule exceptingHandlingRule = new PrintExceptionsWhenRunFromCommandLineRule();
 
-public class TypeSystemDescription_implTest extends TestCase {
+  private XMLParser xmlParser;
 
-  /**
-   * Constructor for TypeSystemDescription_implTest.
-   * 
-   * @param arg0
-   */
-  public TypeSystemDescription_implTest(String arg0) {
-    super(arg0);
+  @Before
+  public void setUp() throws Exception {
+    xmlParser = UIMAFramework.getXMLParser();
+    xmlParser.enableSchemaValidation(true);
   }
 
-  /*
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
-    UIMAFramework.getXMLParser().enableSchemaValidation(true);
+  @After
+  public void tearDown() throws Exception {
+    // Note that the XML parser is a singleton in the framework, so we have to set this back to the
+    // default.
+    xmlParser.enableSchemaValidation(false);
   }
 
-  /*
-   * @see TestCase#tearDown()
-   */
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void testBuildFromXmlElement() throws Exception {
-    try {
-      File descriptor = JUnitExtension.getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
-      TypeSystemDescription ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-              new XMLInputSource(descriptor));
+    File descriptor = getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
+    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
 
-      assertEquals("TestTypeSystem", ts.getName());
-      assertEquals("This is a test.", ts.getDescription());
-      assertEquals("The Apache Software Foundation", ts.getVendor());
-      assertEquals("0.1", ts.getVersion());
-      Import[] imports = ts.getImports();
-      assertEquals(3, imports.length);
-      assertEquals("org.apache.uima.resource.metadata.impl.TypeSystemImportedByName", imports[0]
-              .getName());
-      assertNull(imports[0].getLocation());
-      assertNull(imports[1].getName());
-      assertEquals("TypeSystemImportedByLocation.xml", imports[1].getLocation());
+    assertThat(ts.getName()).isEqualTo("TestTypeSystem");
+    assertThat(ts.getDescription()).isEqualTo("This is a test.");
+    assertThat(ts.getVendor()).isEqualTo("The Apache Software Foundation");
+    assertThat(ts.getVersion()).isEqualTo("0.1");
 
-      TypeDescription[] types = ts.getTypes();
-      assertEquals(6, types.length);
-      TypeDescription paragraphType = types[4];
-      assertEquals("Paragraph", paragraphType.getName());
-      assertEquals("A paragraph.", paragraphType.getDescription());
-      assertEquals("DocumentStructure", paragraphType.getSupertypeName());
-      FeatureDescription[] features = paragraphType.getFeatures();
-      assertEquals(2, features.length);
-      assertEquals("sentences", features[0].getName());
-      assertEquals("Direct references to sentences in this paragraph", features[0].getDescription());
-      assertEquals("uima.cas.FSArray", features[0].getRangeTypeName());
-      assertEquals("Sentence", features[0].getElementType());
-      assertFalse(features[0].getMultipleReferencesAllowed().booleanValue());
+    assertThat(ts.getImports()).extracting(Import::getName, Import::getLocation).containsExactly(
+        tuple("org.apache.uima.resource.metadata.impl.TypeSystemImportedByName", null),
+        tuple(null, "TypeSystemImportedByLocation.xml"),
+        tuple("TypeSystemImportedFromDataPath", null));
 
-      // ts.toXML(System.out);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    assertThat(ts.getTypes()).extracting(TypeDescription::getName, TypeDescription::getDescription,
+        TypeDescription::getSupertypeName)
+        .containsExactly(tuple("NamedEntity", "Anything that has a name.", "uima.tcas.Annotation"),
+            tuple("Person", "A person.", "NamedEntity"), tuple("Place", "A place.", "NamedEntity"),
+            tuple("DocumentStructure",
+                "Identifies document structure, such as sentence or paragraph.",
+                "uima.tcas.Annotation"),
+            tuple("Paragraph", "A paragraph.", "DocumentStructure"),
+            tuple("Sentence", "A sentence.", "DocumentStructure"));
+
+    assertThat(ts.getTypes()[4].getFeatures())
+        .extracting(FeatureDescription::getName, FeatureDescription::getDescription,
+            FeatureDescription::getRangeTypeName, FeatureDescription::getElementType,
+            FeatureDescription::getMultipleReferencesAllowed)
+        .containsExactly(
+            tuple("sentences", "Direct references to sentences in this paragraph",
+                "uima.cas.FSArray", "Sentence", false),
+            tuple("testMultiRefAllowedFeature", "A test feature that allows multiple references.",
+                "uima.cas.FSArray", null, true));
   }
 
+  @Test
   public void testResolveImports() throws Exception {
-    try {
-      File descriptor = JUnitExtension.getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
-      TypeSystemDescription ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-              new XMLInputSource(descriptor));
+    File descriptor = getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
+    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
 
-      TypeDescription[] types = ts.getTypes();
-      assertEquals(6, types.length);
+    assertThat(ts.getTypes()).as("Type count before resolving the descriptor").hasSize(6);
 
-      // resolving imports without setting data path should fail
-      InvalidXMLException ex = null;
-      try {
-        ts.resolveImports();
-      } catch (InvalidXMLException e) {
-        ex = e;
-      }
-      assertNotNull(ex);
-      assertEquals(6, ts.getTypes().length); // should be no side effects when exception is thrown
+    assertThatThrownBy(() -> ts.resolveImports()).isInstanceOf(InvalidXMLException.class);
+    assertThat(ts.getTypes()).as(
+        "Type count after resolving failed should be same as before / no side effect on exception")
+        .hasSize(6);
 
-      // set data path correctly and it should work
-      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-      resMgr.setDataPath(JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir")
-              .getAbsolutePath());
-      ts.resolveImports(resMgr);
+    // set data path correctly and it should work
+    ResourceManager resMgr = newDefaultResourceManager();
+    resMgr.setDataPath(
+        JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir").getAbsolutePath());
+    ts.resolveImports(resMgr);
 
-      types = ts.getTypes();
-      assertEquals(13, types.length);
-      
-      // test that circular imports don't crash
-      descriptor = JUnitExtension.getFile("TypeSystemDescriptionImplTest/Circular1.xml");
-      ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(new XMLInputSource(descriptor));
-      ts.resolveImports();
-      assertEquals(2, ts.getTypes().length);
-
-      // calling resolveImports when there are none should do nothing
-      descriptor = JUnitExtension
-              .getFile("TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml");
-      ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(new XMLInputSource(descriptor));
-      assertEquals(2, ts.getTypes().length);
-      ts.resolveImports();
-      assertEquals(2, ts.getTypes().length);
-
-      // test import from programatically created TypeSystemDescription
-      TypeSystemDescription typeSystemDescription = UIMAFramework.getResourceSpecifierFactory()
-              .createTypeSystemDescription();
-      Import[] imports = new Import[1];
-      imports[0] = new Import_impl();
-      URL url = JUnitExtension.getFile("TypeSystemDescriptionImplTest").toURL();
-      ((Import_impl) imports[0]).setSourceUrl(url);
-      imports[0].setLocation("TypeSystemImportedByLocation.xml");
-      typeSystemDescription.setImports(imports);
-      TypeSystemDescription typeSystemWithResolvedImports = (TypeSystemDescription) typeSystemDescription
-              .clone();
-      typeSystemWithResolvedImports.resolveImports(resMgr);
-      assertTrue(typeSystemWithResolvedImports.getTypes().length > 0);      
-    
-      //test that importing the same descriptor twice (using the same ResourceManager) caches
-      //the result of the first import and does not create new objects
-      TypeSystemDescription typeSystemDescription2 = UIMAFramework.getResourceSpecifierFactory()
-      .createTypeSystemDescription();
-        Import[] imports2 = new Import[1];
-      imports2[0] = new Import_impl();
-      ((Import_impl) imports2[0]).setSourceUrl(url);
-      imports2[0].setLocation("TypeSystemImportedByLocation.xml");
-      typeSystemDescription2.setImports(imports2);
-      TypeSystemDescription typeSystemWithResolvedImports2 = (TypeSystemDescription) typeSystemDescription2
-              .clone();
-      typeSystemWithResolvedImports2.resolveImports(resMgr);
-      for (int i = 0 ; i < typeSystemWithResolvedImports.getTypes().length; i++) {
-        assertTrue(typeSystemWithResolvedImports.getTypes()[i] == typeSystemWithResolvedImports2.getTypes()[i]);
-      }
-
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }        
+    assertThat(ts.getTypes()).as("Type count after resolving the descriptor").hasSize(13);
   }
 
+  @Test
+  public void thatCircularImportsDoNotCrash() throws Exception {
+    // test that circular imports don't crash
+    File descriptor = getFile("TypeSystemDescriptionImplTest/Circular1.xml");
+    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
+    ts.resolveImports();
+    assertEquals(2, ts.getTypes().length);
+  }
+
+  @Test
+  public void thatResolveImportsDoesNothingWhenThereAreNoImports() throws Exception {
+    // calling resolveImports when there are none should do nothing
+    File descriptor = getFile("TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml");
+
+    TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
+
+    assertThat(ts.getTypes()).hasSize(2);
+
+    ts.resolveImports();
+
+    assertThat(ts.getTypes()).hasSize(2);
+  }
+
+  @Test
+  public void thatImportFromProgrammaticallyCreatedTypeSystemDescriptionWorks() throws Exception {
+    ResourceManager resMgr = newDefaultResourceManager();
+    URL url = getFile("TypeSystemDescriptionImplTest").toURL();
+
+    // test import from programatically created TypeSystemDescription
+    Import_impl[] imports = { new Import_impl() };
+    imports[0].setSourceUrl(url);
+    imports[0].setLocation("TypeSystemImportedByLocation.xml");
+
+    TypeSystemDescription typeSystemDescription = getResourceSpecifierFactory()
+        .createTypeSystemDescription();
+    typeSystemDescription.setImports(imports);
+    TypeSystemDescription typeSystemWithResolvedImports = (TypeSystemDescription) typeSystemDescription
+        .clone();
+    typeSystemWithResolvedImports.resolveImports(resMgr);
+
+    assertThat(typeSystemWithResolvedImports.getTypes()).isNotEmpty();
+
+    // test that importing the same descriptor twice (using the same ResourceManager) caches
+    // the result of the first import and does not create new objects
+    TypeSystemDescription typeSystemDescription2 = getResourceSpecifierFactory()
+        .createTypeSystemDescription();
+
+    Import_impl[] imports2 = { new Import_impl() };
+    imports2[0].setSourceUrl(url);
+    imports2[0].setLocation("TypeSystemImportedByLocation.xml");
+
+    typeSystemDescription2.setImports(imports2);
+    TypeSystemDescription typeSystemWithResolvedImports2 = (TypeSystemDescription) typeSystemDescription2
+        .clone();
+    typeSystemWithResolvedImports2.resolveImports(resMgr);
+
+    assertThat(typeSystemWithResolvedImports.getTypes())
+        .as("Resolved imports in second type system are the same as in the first (cached)")
+        .usingElementComparator((a, b) -> identityHashCode(a) - identityHashCode(b))
+        .containsExactlyElementsOf(asList(typeSystemWithResolvedImports2.getTypes()));
+  }
+
+  @Test
   public void testInvalidTypeSystem() throws Exception {
-    File file = JUnitExtension.getFile("TypeSystemDescriptionImplTest/InvalidTypeSystem1.xml");
-    TypeSystemDescription tsDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-            new XMLInputSource(file));
-    try {
-      CasCreationUtils.createCas(tsDesc, null, null);
-      // the above line should throw an exception
-      fail();
-    } catch (ResourceInitializationException e) {
-      assertNotNull(e.getMessage());
-      assertFalse(e.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
-    }
+    File file = getFile("TypeSystemDescriptionImplTest/InvalidTypeSystem1.xml");
+
+    TypeSystemDescription tsDesc = xmlParser.parseTypeSystemDescription(new XMLInputSource(file));
+
+    assertThatThrownBy(() -> CasCreationUtils.createCas(tsDesc, null, null))
+        .isInstanceOf(ResourceInitializationException.class)
+        .hasMessageContaining("uima.cas.String");
   }
 }
