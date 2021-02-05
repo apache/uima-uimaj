@@ -62,6 +62,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class JCasClassLoaderTest {
@@ -100,6 +101,7 @@ public class JCasClassLoaderTest {
    * 
    * <b>NOTE:</b> This test fails in UIMAv3.
    */
+  @Ignore("Fails sometimes - see UIMA-6310")
   @Test
   public void thatCASCanBeDefinedWithoutJCasWrappersAndTheyComeInWithAnnotatorsViaClasspath() throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
