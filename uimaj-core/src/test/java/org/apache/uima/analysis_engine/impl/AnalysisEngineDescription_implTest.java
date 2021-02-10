@@ -18,7 +18,9 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
+import static org.apache.uima.UIMAFramework.newConfigurationManager;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
+import static org.apache.uima.analysis_engine.impl.metadata.MetaDataObjectAssert.assertFieldAsEqualButNotSameValue;
 import static org.apache.uima.resource.ResourceInitializationException.UNDEFINED_KEY_IN_FLOW;
 import static org.apache.uima.test.junit_extension.JUnitExtension.getFile;
 import static org.apache.uima.util.CasCreationUtils.createCas;
@@ -69,6 +71,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.ExternalResourceBinding;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
+import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.OperationalProperties;
@@ -303,8 +306,8 @@ public class AnalysisEngineDescription_implTest {
 
   @Test
   public void testMulticoreInitialize() throws Exception {
-    ResourceManager resourceManager = UIMAFramework.newDefaultResourceManager();
-    ConfigurationManager configManager = UIMAFramework.newConfigurationManager();
+    ResourceManager resourceManager = newDefaultResourceManager();
+    ConfigurationManager configManager = newConfigurationManager();
     Logger logger = UIMAFramework.getLogger(this.getClass());
     logger.setResourceManager(resourceManager);
 
@@ -313,13 +316,14 @@ public class AnalysisEngineDescription_implTest {
     final Map<String, Object> p = new HashMap<String, Object>();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE, 200);
     p.put(Resource.PARAM_CONFIG_MANAGER, configManager);
-    p.put(Resource.PARAM_RESOURCE_MANAGER, UIMAFramework.newDefaultResourceManager());
+    p.put(Resource.PARAM_RESOURCE_MANAGER, newDefaultResourceManager());
     p.put(Resource.PARAM_UIMA_CONTEXT, uimaContext);
     int numberOfThreads = Math.min(50, Utilities.numberOfCores * 5);
     final AnalysisEngine[] aes = new AnalysisEngine[numberOfThreads];
     System.out.format("test multicore initialize with %d threads%n", numberOfThreads);
 
     MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
+      @Override
       public void call(int i, int r, StringBuilder sb) throws Exception {
         Random random = new Random();
         for (int j = 0; j < 2; j++) {
@@ -337,6 +341,7 @@ public class AnalysisEngineDescription_implTest {
     assertThat(aes[0]).isNotEqualTo(aes[1]);
 
     run2isb = new MultiThreadUtils.Run2isb() {
+      @Override
       public void call(int i, int r, StringBuilder sb) throws Exception {
         Random random = new Random();
         for (int j = 0; j < 2; j++) {
@@ -440,12 +445,13 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void testDelegateImports() throws Exception {
     // create aggregate TAE description and add delegate AE import
-    AnalysisEngineDescription testAgg = new AnalysisEngineDescription_impl();
-    Map<String, MetaDataObject> delegateMap = testAgg
-        .getDelegateAnalysisEngineSpecifiersWithImports();
     Import_impl delegateImport = new Import_impl();
     delegateImport.setLocation(
         getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
+
+    AnalysisEngineDescription testAgg = new AnalysisEngineDescription_impl();
+    Map<String, MetaDataObject> delegateMap = testAgg
+        .getDelegateAnalysisEngineSpecifiersWithImports();
     delegateMap.put("key", delegateImport);
 
     assertThat(testAgg.getDelegateAnalysisEngineSpecifiers().values()) //
@@ -470,6 +476,75 @@ public class AnalysisEngineDescription_implTest {
         .as("verify that imports are still resolved") //
         .hasSize(1) //
         .allMatch(d -> d instanceof AnalysisEngineDescription);
+  }
+
+  @Test
+  public void thatCloneDoesNotResolveDelegateImports() throws Exception {
+    // create aggregate TAE description and add delegate AE import
+    Import_impl delegateImport = new Import_impl();
+    delegateImport.setLocation(
+        getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
+
+    AnalysisEngineDescription testAgg = new AnalysisEngineDescription_impl();
+    Map<String, MetaDataObject> delegateMap = testAgg
+        .getDelegateAnalysisEngineSpecifiersWithImports();
+    delegateMap.put("key", delegateImport);
+
+    assertThat(testAgg) //
+        .as("Delegate import in original has not been resolved") //
+        .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
+        .isEmpty();
+
+    AnalysisEngineDescription clonedAgg = (AnalysisEngineDescription) testAgg.clone();
+
+    assertThat(testAgg) //
+        .as("Delegate import in original has still not been resolved") //
+        .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
+        .isEmpty();
+
+    assertThat(testAgg.getDelegateAnalysisEngineSpecifiersWithImports().values()) //
+        .as("import is still there in original") //
+        .hasSize(1) //
+        .allMatch(d -> d instanceof Import);
+
+    assertThat(clonedAgg) //
+        .as("Delegate import in clone has not been resolved") //
+        .extracting("mDelegateAnalysisEngineSpecifiers", as(InstanceOfAssertFactories.MAP))
+        .isEmpty();
+
+    assertThat(clonedAgg.getDelegateAnalysisEngineSpecifiersWithImports().values()) //
+        .as("import is still there in clone") //
+        .hasSize(1) //
+        .allMatch(d -> d instanceof Import);
+  }
+
+  @Test
+  public void thatHiddenStateIsCloned() throws Exception {
+    // create aggregate TAE description and add delegate AE import
+    Import_impl delegateImport = new Import_impl();
+    delegateImport.setLocation(
+        getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
+
+    AnalysisEngineDescription testAgg = new AnalysisEngineDescription_impl();
+    Map<String, MetaDataObject> delegateMap = testAgg
+        .getDelegateAnalysisEngineSpecifiersWithImports();
+    delegateMap.put("key", delegateImport);
+    
+    AnalysisEngineDescription clonedTestAgg = (AnalysisEngineDescription) testAgg.clone();
+
+    // These two are actually exposed as attributes - we just check for good measure
+    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg,
+            "mSofaMappings");
+    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg,
+            "mFlowControllerDeclaration");
+    
+    // These are hidden state not exposed as meta data attributes
+    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg,
+            "mProcessedImports");
+    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg,
+            "mDelegateAnalysisEngineSpecifiers");
+    assertFieldAsEqualButNotSameValue(testAgg, clonedTestAgg,
+            "mDelegateAnalysisEngineSpecifiersWithImports");
   }
 
   @Test
@@ -581,7 +656,7 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void testNoDelegatesToResolve() throws Exception {
     ResourceSpecifierFactory f = UIMAFramework.getResourceSpecifierFactory();
-    
+
     AnalysisEngineDescription outer = f.createAnalysisEngineDescription();
     AnalysisEngineDescription inner = f.createAnalysisEngineDescription();
     outer.getDelegateAnalysisEngineSpecifiersWithImports().put("inner", inner);
@@ -589,7 +664,7 @@ public class AnalysisEngineDescription_implTest {
     String outerXml = toXmlString(outer);
 
     // Resolving the imports removes the inner AE description
-    outer.resolveImports(UIMAFramework.newDefaultResourceManager());
+    outer.resolveImports(newDefaultResourceManager());
 
     String outerXml2 = toXmlString(outer);
 
