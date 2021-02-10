@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>typeSystemAllKinds</name>
+    <description>For testing JCasGen, and automatic Java Cover Class generation from type system.</description>
+    <version>1.0</version>
+    <vendor/>
+  <types>
+    <typeDescription>
+      <name>pkg.sample.name.All</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>a_boolean</name>
+          <description/>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>a_byte</name>
+          <description/>
+          <rangeTypeName>uima.cas.Byte</rangeTypeName>
+        </featureDescription>     
+        <featureDescription>
+          <name>a_short</name>
+          <description/>
+          <rangeTypeName>uima.cas.Short</rangeTypeName>
+        </featureDescription>     
+        <featureDescription>
+          <name>a_integer</name>
+          <description/>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>     
+        <featureDescription>
+          <name>a_float</name>
+          <description/>
+          <rangeTypeName>uima.cas.Float</rangeTypeName>
+        </featureDescription>     
+        <featureDescription>
+          <name>a_long</name>
+          <description/>
+          <rangeTypeName>uima.cas.Long</rangeTypeName>
+        </featureDescription>     
+        <featureDescription>
+          <name>a_double</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>     
+        <featureDescription>
+          <name>a_string</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>     
+        <featureDescription>
+          <name>aa_boolean</name>
+          <description/>
+          <rangeTypeName>uima.cas.BooleanArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aa_byte</name>
+          <description/>
+          <rangeTypeName>uima.cas.ByteArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aa_short</name>
+          <description/>
+          <rangeTypeName>uima.cas.ShortArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aa_integer</name>
+          <description/>
+          <rangeTypeName>uima.cas.IntegerArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aa_float</name>
+          <description/>
+          <rangeTypeName>uima.cas.FloatArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aa_long</name>
+          <description/>
+          <rangeTypeName>uima.cas.LongArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aa_double</name>
+          <description/>
+          <rangeTypeName>uima.cas.DoubleArray</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>a_annotation</name>
+          <description/>
+          <rangeTypeName>uima.tcas.Annotation</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  <typeDescription>
+      <name>pkg.sample2.name.Substring</name>
+      <description/>
+      <supertypeName>uima.cas.String</supertypeName>
+      <allowedValues>
+        <value>
+          <string>av1</string>
+          <description/>
+        </value>
+        <value>
+          <string>av2</string>
+          <description/>
+        </value>
+      </allowedValues>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

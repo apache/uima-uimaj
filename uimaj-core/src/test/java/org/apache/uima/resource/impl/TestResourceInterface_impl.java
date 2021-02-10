@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.apache.uima.resource.DataResource;
@@ -46,7 +47,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
     try {
       // try to get an input stream and read from the file
       InputStream inStr = aData.getInputStream();
-      BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr, "utf-8"));
+      BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr, StandardCharsets.UTF_8));
       mString = bufRdr.readLine();
       inStr.close();
     } catch (IOException e) {

@@ -34,10 +34,7 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.CasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.annotator.AnnotatorConfigurationException;
-import org.apache.uima.analysis_engine.annotator.AnnotatorContext;
 import org.apache.uima.analysis_engine.annotator.AnnotatorInitializationException;
-import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
-import org.apache.uima.analysis_engine.annotator.TextAnnotator;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSTypeConstraint;
@@ -98,7 +95,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
    * Performs any startup tasks required by this annotator. This implementation reads the
    * configuration parmaeters and compiles the regular expressions.
    * 
-   * @see TextAnnotator#initialize(AnnotatorContext)
+   * @see CasAnnotator_ImplBase#initialize(UimaContext)
    */
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
@@ -119,8 +116,8 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
       // where the indexes of the two lists corespond so that the patterns
       // at patternArray[i] correspond to the annotation type at
       // mTypeNames[i].
-      mTypeNames = new ArrayList();
-      ArrayList patternArray = new ArrayList();
+      mTypeNames = new ArrayList<>();
+      ArrayList<String[]> patternArray = new ArrayList<>();
       if (patternStrings != null) {
         if (typeNames == null || typeNames.length != patternStrings.length) {
           // throw exception - error message in external message digest
@@ -138,7 +135,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
       InputStream in = getContext().getResourceAsStream("PatternFile");
       if (in != null) {
         try {
-          ArrayList patternsForCurrentType = new ArrayList();
+          ArrayList<String> patternsForCurrentType = new ArrayList<>();
           boolean foundFirstType = false;
           // get buffered reader
           BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -217,7 +214,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
    * Acquires references to CAS Type and Feature objects that are later used during the
    * {@link #process(CAS)} method.
    * 
-   * @see TextAnnotator#typeSystemInit(TypeSystem)
+   * @see CasAnnotator_ImplBase#typeSystemInit(TypeSystem)
    */
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
     // get references to annotation types we will create
@@ -286,7 +283,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
                 // match found; extract locations of start and end of match
                 // (or of entire containing annotation, if that option is on)
                 int annotStart, annotEnd;
-                if (mAnnotateEntireContainingAnnotation.booleanValue()) {
+                if (mAnnotateEntireContainingAnnotation) {
                   annotStart = startPos;
                   annotEnd = endPos;
                 } else {
@@ -333,7 +330,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
       return new int[] { 0, aCAS.getDocumentText().length() };
     } else {
       // get iterator over all annotations in the CAS
-      FSIterator iterator = aCAS.getAnnotationIndex().iterator();
+      FSIterator<AnnotationFS> iterator = aCAS.getAnnotationIndex().iterator();
 
       // filter the iterator so that only instances of Types in the
       // mContainingAnnotationTypes array are returned
@@ -344,7 +341,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
       iterator = aCAS.createFilteredIterator(iterator, constraint);
 
       // iterate over annotations and add them to an ArrayList
-      List annotationList = new ArrayList();
+      List<AnnotationFS> annotationList = new ArrayList<>();
       while (iterator.isValid()) {
         annotationList.add(iterator.get());
         iterator.moveToNext();
@@ -371,7 +368,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
   /**
    * The names of the CAS types that this annotator produces from the patterns in {@link #mPatterns}.
    */
-  private ArrayList mTypeNames;
+  private ArrayList<String> mTypeNames;
 
   /**
    * The names of the CAS types within which this annotator will search for new annotations. This

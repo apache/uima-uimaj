@@ -47,11 +47,15 @@ class EmbeddedConstraint extends PathConstraint implements FSMatchConstraint {
     // compile(((FeatureStructureImpl) fs).getCAS().getTypeSystem());
     final int max = this.featNames.size();
     for (int i = 0; i < max; i++) {
+      if (fs == null) {
+        // for now it will throw null pointer exception on next line.
+        // This is the same behavior as V2
+      }
       Feature feat = fs.getType().getFeatureByBaseName(this.featNames.get(i));
       if (feat == null) {
         return false;
       }
-      fs = fs.getFeatureValue(feat);
+      fs = fs.getFeatureValue(feat); // could be null
     }
     return this.cons.match(fs);
   }

@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
@@ -138,10 +139,15 @@ public class CasToInlineXmlTest extends TestCase {
     int s = result.indexOf("<Document>");
     result = result.substring(s);
     result = canonicalizeNl(result);
+    
+    // Java 9 xml formatter formats the text with a new line and indentations
     String expected = "<Document>\n" +
         IND+"<uima.tcas.DocumentAnnotation sofa=\"Sofa\" begin=\"0\" end=\"17\" language=\"x-unspecified\">\n" +
         IND+IND+"<org.apache.uima.testTypeSystem_arrays.OfStrings sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Strings=\"[0s,1s,2s]\"/>\n"  +
-        IND+IND+"<org.apache.uima.testTypeSystem_arrays.OfShorts sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Shorts=\"[0,1,2]\"/>1 2 3 4 5 6 7 8 9</uima.tcas.DocumentAnnotation>\n" +
+        IND+IND+"<org.apache.uima.testTypeSystem_arrays.OfShorts sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Shorts=\"[0,1,2]\"/>"
+        		+ (Misc.isJava9ea() ? "\n        " : "") + 
+        		"1 2 3 4 5 6 7 8 9"
+        		+ (Misc.isJava9ea() ? "\n    " : "") + "</uima.tcas.DocumentAnnotation>\n" +
         "</Document>";
     for (int i = 0; i < result.length(); i++ ) {
       if (result.charAt(i) != expected.charAt(i)) {

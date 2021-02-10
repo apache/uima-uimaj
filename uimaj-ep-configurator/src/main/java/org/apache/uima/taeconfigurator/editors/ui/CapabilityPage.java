@@ -24,17 +24,30 @@ import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.IManagedForm;
 
+
+/**
+ * The Class CapabilityPage.
+ */
 public class CapabilityPage extends HeaderPageWithSash {
 
+  /** The sofa map section. */
   private SofaMapSection sofaMapSection;
 
+  /**
+   * Instantiates a new capability page.
+   *
+   * @param aEditor the a editor
+   */
   public CapabilityPage(MultiPageEditor aEditor) {
     super(aEditor, "Capabilities");
   }
 
   /**
-   * Called by the framework to fill in the contents
+   * Called by the framework to fill in the contents.
+   *
+   * @param managedForm the managed form
    */
+  @Override
   protected void createFormContent(IManagedForm managedForm) {
     final Form2Panel form2Panel = setup2ColumnLayout(managedForm, editor.isAggregate() ? 50 : 90,
             editor.isAggregate() ? 50 : 10);
@@ -48,6 +61,11 @@ public class CapabilityPage extends HeaderPageWithSash {
     managedForm.getForm().reflow(true);
   }
 
+  /**
+   * Gets the sofa map section.
+   *
+   * @return the sofa map section
+   */
   public SofaMapSection getSofaMapSection() {
     return sofaMapSection;
   }

@@ -27,8 +27,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SerialFormat;
@@ -41,6 +39,8 @@ import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
+
+import junit.framework.TestCase;
 
 /**
  * Test case for XMI serialization, in particular, invalid XML 1.0 characters. Other aspects of XMI

@@ -31,9 +31,11 @@ package org.apache.uima.examples.cpe;
  *               which uses the current XMI format for XML externalizations of the CAS
  *******************************************************************************************               
  */
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -48,6 +50,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
+
 
 /**
  * A simple CAS consumer that generates XCAS (XML representation of the CAS) files in the
@@ -67,10 +70,15 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
    */
   public static final String PARAM_OUTPUTDIR = "OutputDirectory";
 
+  /** The m output dir. */
   private File mOutputDir;
 
+  /** The m doc num. */
   private int mDocNum;
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.CasConsumer_ImplBase#initialize()
+   */
   public void initialize() throws ResourceInitializationException {
     mDocNum = 0;
     mOutputDir = new File((String) getConfigParameterValue(PARAM_OUTPUTDIR));
@@ -130,31 +138,19 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
   }
 
   /**
-   * Serialize a CAS to a file in XCAS format
-   * 
-   * @param aCas
-   *          CAS to serialize
-   * @param name
-   *          output file
-   * 
-   * @throws IOException
-   *           if an I/O failure occurs
-   * @throws SAXException
-   *           if an error occurs generating the XML text
+   * Serialize a CAS to a file in XCAS format.
+   *
+   * @param aCas          CAS to serialize
+   * @param name          output file
+   * @throws IOException           if an I/O failure occurs
+   * @throws SAXException           if an error occurs generating the XML text
    */
   private void writeXCas(CAS aCas, File name) throws IOException, SAXException {
-    FileOutputStream out = null;
 
-    try {
-      out = new FileOutputStream(name);
+    try (OutputStream out = new FileOutputStream(name)) {
       XCASSerializer ser = new XCASSerializer(aCas.getTypeSystem());
       XMLSerializer xmlSer = new XMLSerializer(out, false);
       ser.serialize(aCas, xmlSer.getContentHandler());
-    } finally {
-      if (out != null) {
-        out.close();
-      }
     }
   }
-
 }

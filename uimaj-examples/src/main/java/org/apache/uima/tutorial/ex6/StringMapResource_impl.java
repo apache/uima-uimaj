@@ -41,10 +41,8 @@ public class StringMapResource_impl implements StringMapResource, SharedResource
    * @see org.apache.uima.resource.SharedResourceObject#load(DataResource)
    */
   public void load(DataResource aData) throws ResourceInitializationException {
-    InputStream inStr = null;
-    try {
+    try (InputStream inStr = aData.getInputStream()) {
       // open input stream to data
-      inStr = aData.getInputStream();
       // read each line
       BufferedReader reader = new BufferedReader(new InputStreamReader(inStr));
       String line;
@@ -58,15 +56,7 @@ public class StringMapResource_impl implements StringMapResource, SharedResource
       }
     } catch (IOException e) {
       throw new ResourceInitializationException(e);
-    } finally {
-      if (inStr != null) {
-        try {
-          inStr.close();
-        } catch (IOException e) {
-        }
-      }
     }
-
   }
 
   /**

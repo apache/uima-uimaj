@@ -417,13 +417,9 @@ public class ServiceRegistry {
   
     DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 
-
-    FileReader readme = new FileReader(fname);
     Document doc;
-    try {
+    try (FileReader readme = new FileReader(fname)) {
       doc = docBuilder.parse(new InputSource(readme));
-    } finally {
-      readme.close();
     }
 
     Element root = doc.getDocumentElement();

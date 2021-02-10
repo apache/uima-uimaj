@@ -43,4 +43,9 @@
          version="${parsedVersion.osgiVersion}"
          unpack="false"/>
 
+   <requires>
+      <import plugin="org.slf4j.api"/>
+      <import plugin="org.eclipse.m2e.maven.runtime.slf4j.simple"/>
+   </requires>
+     
 </feature>

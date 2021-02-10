@@ -23,23 +23,21 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 
+
 /**
- * 
- * 
- * 
- * 
+ * The Class ConsumerCasUtils.
  */
 public class ConsumerCasUtils {
+  
   /**
-   * Returns an int value of a given Feature Structure
-   * 
+   * Returns an int value of a given Feature Structure.
+   *
    * @param aCasView -
    *          CAS instance to retrieve data from
    * @param aTypeS -
    *          Feature Type
    * @param aFeatS -
    *          Feature Structure
-   * 
    * @return - feature value as int
    */
   public static int getIntFeatValue(CAS aCasView, String aTypeS, String aFeatS) {
@@ -54,15 +52,14 @@ public class ConsumerCasUtils {
   }
 
   /**
-   * Returns a string value of a given Feature Structure
-   * 
+   * Returns a string value of a given Feature Structure.
+   *
    * @param aCasView -
    *          CAS view to retrieve data from
    * @param aTypeS -
    *          Feature Type
    * @param aFeatS -
    *          Feature Structure
-   * 
    * @return feature value as string
    */
   public static String getStringFeatValue(CAS aCasView, String aTypeS, String aFeatS) {
@@ -79,13 +76,12 @@ public class ConsumerCasUtils {
   }
 
   /**
-   * Returns a Feature Structure of a given type
-   * 
+   * Returns a Feature Structure of a given type.
+   *
    * @param aCasView -
    *          CAS instance to retrieve data from
    * @param aTypeS -
    *          Feature Type
-   * 
    * @return the first Feature Structure of a given type
    */
   public static FeatureStructure getTcasFS(CAS aCasView, String aTypeS) {

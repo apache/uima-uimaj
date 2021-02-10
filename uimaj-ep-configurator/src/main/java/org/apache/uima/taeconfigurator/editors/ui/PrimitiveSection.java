@@ -42,40 +42,53 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.forms.IManagedForm;
 
+
 /**
- * This class is misnamed - refers really to Runtime Information
- * 
+ * This class is misnamed - refers really to Runtime Information.
  */
 public class PrimitiveSection extends AbstractSection {
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
+   */
+  @Override
   public void enable() {
   }
 
+  /** The impl name label. */
   private Label implNameLabel;
 
+  /** The impl name. */
   private Text implName;
 
+  /** The find button. */
   private Button findButton;
 
+  /** The multiple deployment allowed. */
   private Button multipleDeploymentAllowed;
 
+  /** The modifies cas. */
   private Button modifiesCas;
 
+  /** The outputs new CA ses. */
   private Button outputsNewCASes;
 
   /**
    * Creates a section with a text field for the name of the annotator. Only enabled if annotator is
    * primitive Also has the operational parameters
-   * 
-   * @param editor
-   *          the referenced multipage editor
-   * @param parent -
+   *
+   * @param editor the editor
+   * @param parent the parent
    */
   public PrimitiveSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Runtime Information",
             "This section describes information about how to run this component");
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+   */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
 
@@ -116,6 +129,7 @@ public class PrimitiveSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
+  @Override
   public void refresh() {
     super.refresh();
 
@@ -160,6 +174,7 @@ public class PrimitiveSection extends AbstractSection {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     valueChanged = false;
     OperationalProperties ops = getOperationalProperties();
@@ -214,8 +229,9 @@ public class PrimitiveSection extends AbstractSection {
   }
 
   /**
-   * @param enabled
-   *          indicator for the section to be enabled.
+   * Sets the enabled.
+   *
+   * @param enabled          indicator for the section to be enabled.
    */
   public void setEnabled(boolean enabled) {
     implNameLabel.setEnabled(enabled);

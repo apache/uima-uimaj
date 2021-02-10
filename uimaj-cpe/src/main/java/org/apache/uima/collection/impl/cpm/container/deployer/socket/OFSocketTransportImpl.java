@@ -33,13 +33,16 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Level;
 
+
 /**
- * 
- * 
+ * The Class OFSocketTransportImpl.
  */
 public class OFSocketTransportImpl implements SocketTransport {
 
   
+  /**
+   * Instantiates a new OF socket transport impl.
+   */
   public OFSocketTransportImpl() {
     super();
 
@@ -50,6 +53,7 @@ public class OFSocketTransportImpl implements SocketTransport {
    * 
    * @see org.apache.uima.collection.impl.cpm.container.deployer.socket.SocketTransport#getName()
    */
+  @Override
   public String getName() {
 
     return null;
@@ -61,6 +65,7 @@ public class OFSocketTransportImpl implements SocketTransport {
    * @see org.apache.uima.collection.impl.cpm.container.deployer.socket.SocketTransport#connect(java.net.URL,
    *      long)
    */
+  @Override
   public Socket connect(URL aURI, long aTimeout) throws SocketException {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -81,6 +86,7 @@ public class OFSocketTransportImpl implements SocketTransport {
    * @see org.apache.uima.collection.impl.cpm.container.deployer.socket.SocketTransport#invoke(java.net.Socket,
    *      org.apache.uima.cas.CAS)
    */
+  @Override
   public CAS process(Socket aSocket, CAS aCas) throws SocketTimeoutException, SocketException {
     DataOutputStream os = null;
 
@@ -143,6 +149,7 @@ public class OFSocketTransportImpl implements SocketTransport {
    * 
    * @see org.apache.uima.collection.impl.cpm.container.deployer.socket.SocketTransport#getProcessingResourceMetaData()
    */
+  @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData(Socket aSocket)
           throws SocketException {
 

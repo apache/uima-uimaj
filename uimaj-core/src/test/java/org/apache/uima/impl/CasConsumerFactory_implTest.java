@@ -20,12 +20,12 @@ package org.apache.uima.impl;
 
 import java.util.Collections;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.impl.CasConsumerDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
+
+import junit.framework.TestCase;
 
 
 public class CasConsumerFactory_implTest extends TestCase {

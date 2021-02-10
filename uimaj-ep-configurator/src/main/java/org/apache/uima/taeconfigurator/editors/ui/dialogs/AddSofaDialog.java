@@ -33,34 +33,62 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.CapabilitySection;
 
+
+/**
+ * The Class AddSofaDialog.
+ */
 public class AddSofaDialog extends AbstractDialogKeyVerify {
 
+  /** The sofa name UI. */
   private StyledText sofaNameUI;
 
+  /** The capability section. */
   private CapabilitySection capabilitySection;
 
+  /** The capability. */
   private Capability capability;
 
+  /** The existing sofa. */
   private String existingSofa;
 
+  /** The existing is input. */
   private boolean existingIsInput;
 
+  /** The original sofa. */
   private String originalSofa;
 
+  /** The sofa name. */
   public String sofaName;
 
+  /** The is input. */
   public boolean isInput;
 
+  /** The input button. */
   private Button inputButton;
 
+  /** The output button. */
   private Button outputButton;
 
+  /**
+   * Instantiates a new adds the sofa dialog.
+   *
+   * @param aSection the a section
+   * @param c the c
+   */
   public AddSofaDialog(AbstractSection aSection, Capability c) {
     super(aSection, "Add a Sofa", "Use this panel to specify a Sofa Name.");
     capabilitySection = (CapabilitySection) aSection;
     capability = c;
   }
 
+  /**
+   * Constructor for Editing an existing Sofa Name.
+   *
+   * @param aSection the a section
+   * @param c the c
+   * @param aExistingSofa the a existing sofa
+   * @param aIsInput the a is input
+   */
   public AddSofaDialog(AbstractSection aSection, Capability c, String aExistingSofa,
           boolean aIsInput) {
     this(aSection, c);
@@ -68,6 +96,9 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     existingIsInput = aIsInput;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
   @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingSofa);
@@ -120,6 +151,9 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     return mainArea;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
   @Override
   public void copyValuesFromGUI() {
     sofaName = sofaNameUI.getText();
@@ -129,6 +163,8 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
   /**
    * Duplicate validity check: Duplicates are OK for sofas belonging to other capability sets,
    * provided they have the same Input or Output setting.
+   *
+   * @return true, if is valid
    */
   @Override
   public boolean isValid() {
@@ -153,12 +189,20 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
   @Override
   public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(sofaName.length() > 0);
   }
 
+  /**
+   * Check dupl sofa name.
+   *
+   * @return the string
+   */
   private String checkDuplSofaName() {
 
     Capability[] cSets = capabilitySection.getCapabilities();
@@ -190,6 +234,13 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     return null;
   }
 
+  /**
+   * Check dupl sofa name 1.
+   *
+   * @param name the name
+   * @param names the names
+   * @return true, if successful
+   */
   private boolean checkDuplSofaName1(String name, String[] names) {
     if (null == names) {
         return false;
@@ -202,6 +253,9 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     return false;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogKeyVerify#verifyKeyChecks(org.eclipse.swt.events.VerifyEvent)
+   */
   @Override
   public boolean verifyKeyChecks(VerifyEvent event) {
     if (event.keyCode == SWT.CR || event.keyCode == SWT.TAB) {

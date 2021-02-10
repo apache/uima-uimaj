@@ -26,19 +26,31 @@ import javax.swing.AbstractAction;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
 /**
  * Text pop-up action (for keyboard accessibility).
  */
 public class TextContextMenuAction extends AbstractAction {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new text context menu action.
+   *
+   * @param frame the frame
+   */
   public TextContextMenuAction(MainFrame frame) {
     this.main = frame;
   }
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -5518456467913617514L;
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent arg0) {
     Point caretPos = this.main.getTextArea().getCaret().getMagicCaretPosition();
     if (caretPos == null) {

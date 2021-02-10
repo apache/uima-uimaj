@@ -33,6 +33,7 @@ import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+
 /**
  * The main plugin class to be used in the desktop.
  */
@@ -56,52 +57,72 @@ import org.osgi.framework.BundleContext;
 
 public class TAEConfiguratorPlugin extends AbstractUIPlugin {
 
+  /** The plugin. */
   // The shared instance.
   private static TAEConfiguratorPlugin plugin;
 
+  /** The resource bundle. */
   // Resource bundle.
   private ResourceBundle resourceBundle;
   
 
 
+  /** The form colors. */
   private static FormColors formColors;
 
+  /** The image registry. */
   private static ImageRegistry imageRegistry = new ImageRegistry();
 
+  /** The Constant IMAGE_ANNOTATOR. */
   public final static String IMAGE_ANNOTATOR = "annotator.gif";
 
+  /** The Constant IMAGE_BIG_AE. */
   public final static String IMAGE_BIG_AE = "big_ae.gif";
 
+  /** The Constant IMAGE_BIG_T_S. */
   public final static String IMAGE_BIG_T_S = "big_t_s.gif";
 
+  /** The Constant IMAGE_BLANK. */
   public final static String IMAGE_BLANK = "blank.gif";
 
+  /** The Constant IMAGE_COMMON. */
   public final static String IMAGE_COMMON = "common.gif";
 
+  /** The Constant IMAGE_EDITOR. */
   public final static String IMAGE_EDITOR = "editor.gif";
 
+  /** The Constant IMAGE_FORM_BANNER. */
   public final static String IMAGE_FORM_BANNER = "form_banner.gif";
 
+  /** The Constant IMAGE_GELB. */
   public final static String IMAGE_GELB = "gelb.gif";
 
+  /** The Constant IMAGE_GROUP. */
   public final static String IMAGE_GROUP = "group.gif";
 
+  /** The Constant IMAGE_PARAMETER. */
   public final static String IMAGE_PARAMETER = "parameter.gif";
 
+  /** The Constant IMAGE_T_S. */
   public final static String IMAGE_T_S = "t_s.gif";
 
+  /** The Constant IMAGE_TH_HORIZONTAL. */
   public final static String IMAGE_TH_HORIZONTAL = "th_horizontal.gif";
 
+  /** The Constant IMAGE_TH_VERTICAL. */
   public final static String IMAGE_TH_VERTICAL = "th_vertical.gif";
 
+  /** The Constant IMAGE_MREFOK. */
   public final static String IMAGE_MREFOK = "arrows.gif";
 
+  /** The Constant IMAGE_NOMREF. */
   public final static String IMAGE_NOMREF = "one_arrow.gif";
 
+  /** The plugin id. */
   public static String pluginId ;
 
   /**
-   * The constructor, version 3
+   * The constructor, version 3.
    */
   public TAEConfiguratorPlugin() {
     super();
@@ -130,22 +151,28 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   }
   
   /**
-   * @return the shared instance.
+   * Returns the shared instance.
+   *
+   * @return the default
    */
   public static TAEConfiguratorPlugin getDefault() {
     return plugin;
   }
   
   /**
-   * @return the workspace instance.
+   * Returns the workspace instance.
+   *
+   * @return the workspace
    */
   public static IWorkspace getWorkspace() {
     return ResourcesPlugin.getWorkspace();
   }
 
   /**
-   * @param key -
-   * @return the string from the plugin's resource bundle, or 'key' if not found.
+   * Returns the string from the plugin's resource bundle, or 'key' if not found.
+   *
+   * @param key the key
+   * @return the resource string
    */
   public static String getResourceString(String key) {
     ResourceBundle bundle = TAEConfiguratorPlugin.getDefault().getResourceBundle();
@@ -159,7 +186,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   /**
    * This method is called when the plug-in is stopped.
    *
-   * @param context -
+   * @param context the context
    * @throws Exception -
    */
   @Override
@@ -177,8 +204,8 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
 
   /**
    * On first call, gets a formColors instance; on subsequent calls, returns that instance.
-   * 
-   * @param display -
+   *
+   * @param display the display
    * @return  a formColors instance
    */
   public FormColors getFormColors(Display display) {
@@ -191,16 +218,30 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   }
 
   /**
-   * @return the plugin's resource bundle,
+   * Returns the plugin's resource bundle,.
+   *
+   * @return the resource bundle
    */
   public ResourceBundle getResourceBundle() {
     return resourceBundle;
   }
 
+  /**
+   * Gets the image.
+   *
+   * @param imageFile the image file
+   * @return the image
+   */
   public static Image getImage(String imageFile) {
     return imageRegistry.get(imageFile);
   }
 
+  /**
+   * Gets the image descriptor.
+   *
+   * @param imageFile the image file
+   * @return the image descriptor
+   */
   public ImageDescriptor getImageDescriptor(String imageFile) {
     URL url = getBundle().getEntry("icons/" + imageFile);    
     return ImageDescriptor.createFromURL(url);

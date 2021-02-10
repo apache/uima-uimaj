@@ -44,32 +44,50 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.IManagedForm;
 
+
 /**
  * Declaration of primitive external resource dependencies A 4 col table: bound/unbound, keys, opt
- * flag, and interface name
+ * flag, and interface name.
  */
 
 public class ResourceDependencySection extends AbstractSection {
 
+  /** The Constant KEY_COL. */
   public final static int KEY_COL = 2;
 
+  /** The Constant OPT_COL. */
   public final static int OPT_COL = 1;
 
+  /** The Constant BOUND. */
   private final static String BOUND = "Bound";
 
+  /** The table. */
   public Table table; // accessed by inner class
 
+  /** The add button. */
   private Button addButton;
 
+  /** The edit button. */
   private Button editButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /**
+   * Instantiates a new resource dependency section.
+   *
+   * @param editor the editor
+   * @param parent the parent
+   */
   public ResourceDependencySection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Resource Dependencies",
             "Primitives declare what resources they need. A primitive can only bind to one external resource.");
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+   */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
 
@@ -99,6 +117,10 @@ public class ResourceDependencySection extends AbstractSection {
     toolkit.paintBordersFor(sectionClient);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
+   */
+  @Override
   public void refresh() {
     super.refresh();
     table.getParent().setRedraw(false);
@@ -119,6 +141,13 @@ public class ResourceDependencySection extends AbstractSection {
     table.getParent().setRedraw(true);
   }
 
+  /**
+   * Adds the delegate to GUI.
+   *
+   * @param keys the keys
+   * @param newKey the new key
+   * @param o the o
+   */
   private void addDelegateToGUI(String keys, String newKey, ResourceSpecifier o) {
     if (o instanceof AnalysisEngineDescription) {
       AnalysisEngineDescription aeDescription = (AnalysisEngineDescription) o;
@@ -140,6 +169,12 @@ public class ResourceDependencySection extends AbstractSection {
     }
   }
 
+  /**
+   * Adds the primitive to GUI.
+   *
+   * @param keys the keys
+   * @param aeDescription the ae description
+   */
   private void addPrimitiveToGUI(String keys, ResourceCreationSpecifier aeDescription) {
     ExternalResourceDependency[] xrd = aeDescription.getExternalResourceDependencies();
     if (null != xrd) {
@@ -149,6 +184,13 @@ public class ResourceDependencySection extends AbstractSection {
     }
   }
 
+  /**
+   * Update xrd to GUI.
+   *
+   * @param item the item
+   * @param xrd the xrd
+   * @param keys the keys
+   */
   private void updateXrdToGUI(TableItem item, ExternalResourceDependency xrd, String keys) {
     String key = keys + xrd.getKey();
     item.setText(0, isBound(key) ? BOUND : "");
@@ -158,6 +200,12 @@ public class ResourceDependencySection extends AbstractSection {
     item.setData(xrd);
   }
 
+  /**
+   * Checks if is bound.
+   *
+   * @param key the key
+   * @return true, if is bound
+   */
   private boolean isBound(String key) {
     ResourceManagerConfiguration rmc = editor.getResolvedExternalResourcesAndBindings();
     if (null == rmc) { // happens if there is no such xml element in the descriptor
@@ -172,6 +220,12 @@ public class ResourceDependencySection extends AbstractSection {
     return false;
   }
 
+  /**
+   * Propagate key change.
+   *
+   * @param newKey the new key
+   * @param oldKey the old key
+   */
   private void propagateKeyChange(String newKey, String oldKey) {
     ExternalResourceBinding[] xrb = getExternalResourceBindings();
     if (null != xrb)
@@ -185,10 +239,10 @@ public class ResourceDependencySection extends AbstractSection {
   }
 
   /**
-   * 
-   * @param keys
-   *          either "" or key/key/
-   * @param xrd
+   * Adds the xrd to GUI.
+   *
+   * @param keys          either "" or key/key/
+   * @param xrd the xrd
    */
   private void addXrdToGUI(String keys, ExternalResourceDependency xrd) {
     TableItem item = new TableItem(table, SWT.NONE);
@@ -200,6 +254,7 @@ public class ResourceDependencySection extends AbstractSection {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     if (event.widget == addButton) {
       handleAdd();
@@ -220,6 +275,12 @@ public class ResourceDependencySection extends AbstractSection {
     enable();
   }
 
+  /**
+   * Gets the XR dependency from table item.
+   *
+   * @param item the item
+   * @return the XR dependency from table item
+   */
   public ExternalResourceDependency getXRDependencyFromTableItem(TableItem item) {
     return (ExternalResourceDependency) item.getData();
   }
@@ -227,6 +288,11 @@ public class ResourceDependencySection extends AbstractSection {
   // *****************************************************
   // * When hovering over an item in the table, show the
   // * description
+  /**
+   * Handle table hover help.
+   *
+   * @param event the event
+   */
   // *****************************************************
   private void handleTableHoverHelp(Event event) {
     TableItem item = table.getItem(new Point(event.x, event.y));
@@ -238,6 +304,9 @@ public class ResourceDependencySection extends AbstractSection {
     }
   }
 
+  /**
+   * Handle edit.
+   */
   private void handleEdit() {
     TableItem item = table.getSelection()[0];
     ExternalResourceDependency xrd = getXRDependencyFromTableItem(item);
@@ -249,16 +318,25 @@ public class ResourceDependencySection extends AbstractSection {
     updateXrdToGUI(item, xrd, "");
   }
 
+  /**
+   * Finish action.
+   */
   private void finishAction() {
     packChangingColumns();
     setFileDirty();
   }
 
+  /**
+   * Pack changing columns.
+   */
   private void packChangingColumns() {
     table.getColumn(KEY_COL).pack();
     table.getColumn(3).pack();
   }
 
+  /**
+   * Handle remove.
+   */
   private void handleRemove() {
     TableItem item = table.getSelection()[0];
     editor.getAeDescription().setExternalResourceDependencies(
@@ -272,8 +350,7 @@ public class ResourceDependencySection extends AbstractSection {
   }
 
   /**
-   * add a external resource dependency to the model
-   * 
+   * add a external resource dependency to the model.
    */
   private void handleAdd() {
     AddExternalResourceDependencyDialog dialog = new AddExternalResourceDependencyDialog(this);
@@ -285,6 +362,12 @@ public class ResourceDependencySection extends AbstractSection {
     addXrdToGUI("", xrd);
   }
 
+  /**
+   * Alter existing external resource dependency.
+   *
+   * @param xrd the xrd
+   * @param dialog the dialog
+   */
   private void alterExistingExternalResourceDependency(ExternalResourceDependency xrd,
           AddExternalResourceDependencyDialog dialog) {
     valueChanged = false;
@@ -302,6 +385,12 @@ public class ResourceDependencySection extends AbstractSection {
       finishAction();
   }
 
+  /**
+   * Adds the new external resource dependency.
+   *
+   * @param dialog the dialog
+   * @return the external resource dependency
+   */
   private ExternalResourceDependency addNewExternalResourceDependency(
           AddExternalResourceDependencyDialog dialog) {
     ExternalResourceDependency[] xrds = getExternalResourceDependencies();
@@ -326,6 +415,7 @@ public class ResourceDependencySection extends AbstractSection {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
    */
+  @Override
   public void enable() {
     packTable(table);
     if (isPrimitive()) {
@@ -335,6 +425,12 @@ public class ResourceDependencySection extends AbstractSection {
     }
   }
 
+  /**
+   * Key name already defined.
+   *
+   * @param key the key
+   * @return true, if successful
+   */
   public boolean keyNameAlreadyDefined(String key) {
     ExternalResourceDependency[] xrds = getExternalResourceDependencies();
     if (null != xrds) {
@@ -355,6 +451,11 @@ public class ResourceDependencySection extends AbstractSection {
     return false;
   }
 
+  /**
+   * Gets the table.
+   *
+   * @return the table
+   */
   public Table getTable() {
     return table;
   }

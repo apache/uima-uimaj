@@ -31,16 +31,31 @@ import org.eclipse.swt.widgets.TableItem;
 
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+
+/**
+ * The Class EditSofaBindingsDialog.
+ */
 public class EditSofaBindingsDialog extends AbstractDialog {
 
+  /** The selected sofa names. */
   public String[] selectedSofaNames; // this is the selection indexes into next
 
+  /** The avail and bound sofas. */
   private Map availAndBoundSofas;
 
+  /** The aggr sofa name. */
   private String aggrSofaName;
 
+  /** The table. */
   private Table table;
 
+  /**
+   * Instantiates a new edits the sofa bindings dialog.
+   *
+   * @param aSection the a section
+   * @param aAggrSofaName the a aggr sofa name
+   * @param aAvailAndBoundSofas the a avail and bound sofas
+   */
   public EditSofaBindingsDialog(AbstractSection aSection, String aAggrSofaName,
           Map aAvailAndBoundSofas) {
     super(aSection, "Assign Components and their sofas to an Aggregate Sofa Name",
@@ -49,6 +64,10 @@ public class EditSofaBindingsDialog extends AbstractDialog {
     aggrSofaName = aAggrSofaName;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     // create composite
     //   
@@ -79,6 +98,10 @@ public class EditSofaBindingsDialog extends AbstractDialog {
     return composite;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
+  @Override
   public void copyValuesFromGUI() {
     selectedSofaNames = new String[table.getSelectionCount()];
     for (int i = 0, j = 0; i < table.getItemCount(); i++) {
@@ -88,6 +111,10 @@ public class EditSofaBindingsDialog extends AbstractDialog {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  @Override
   public boolean isValid() {
     // TODO Auto-generated method stub
     return true;
@@ -98,6 +125,7 @@ public class EditSofaBindingsDialog extends AbstractDialog {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
+  @Override
   public void enableOK() {
     okButton.setEnabled(true);
   }

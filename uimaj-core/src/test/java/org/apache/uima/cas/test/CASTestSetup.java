@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
@@ -32,10 +30,14 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 
+import junit.framework.TestCase;
+
 public class CASTestSetup  implements AnnotatorInitializer {
 
   // Type system constants.
   public static final String TOKEN_TYPE = "Token";
+  
+  public static final String PHRASE_TYPE = "Phrase";
 
   public static final String TOKEN_TYPE_FEAT = "type";
 
@@ -72,9 +74,12 @@ public class CASTestSetup  implements AnnotatorInitializer {
           + SENT_LEN_FEAT;
 
   public static final String TOKEN_FLOAT_FEAT = "tokenFloatFeat";
+  public static final String TOKEN_DOUBLE_FEAT = "tokenDoubleFeat";
+  public static final String TOKEN_LONG_FEAT = "tokenLongFeat";
 
-  public static final String TOKEN_FLOAT_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-          + TOKEN_FLOAT_FEAT;
+  public static final String TOKEN_FLOAT_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_FLOAT_FEAT;
+  public static final String TOKEN_DOUBLE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_DOUBLE_FEAT;
+  public static final String TOKEN_LONG_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_LONG_FEAT;
 
   public static final String LEMMA_LIST_FEAT = "lemmaList";
 
@@ -102,7 +107,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
 
   // Index name constants.
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
-  
+
   public static final String ANNOT_SET_INDEX_NO_TYPEORDER = "Annotation Set Index No Type Order";
 
   public static final String ANNOT_BAG_INDEX = "Annotation Bag Index";
@@ -122,21 +127,29 @@ public class CASTestSetup  implements AnnotatorInitializer {
   
   /* Types:
    * TOP
-   *   Token  TOKEN_TYPE
-   *     Word
-   *     Separator
-   *     EndOfSentence
+   *   token_type_type 
+   *     Word_type
+   *     Sep_type
+   *     EOS_type
    *   ArrayFSwithSubtype
    *   Annotation
-   *     Sentence
-   *   
+   *     Sentence [SEN_LEN_FEAT(int)
+   *       Phrase (subtype of sentence)
+   *     Token  TOKEN_TYPE [TOKEN_TYPE_FEAT(TOKEN_TYPE_TYPE), TOKEN_FLOAT_FEAT, LEMMA_FEAT(string), LEMMA_LIST_FEAT[stringArray]
+   *   String
+   *     Group1
+   *     Group2
+   *   Lang_pair [LANG1(Group1), LANG2(Group2), DESCR_FEAT(string)  
    */
   public void initTypeSystem(TypeSystemMgr tsm) {
     // Add new types and features.
+    Type stringType = tsm.getType(CAS.TYPE_NAME_STRING);
+
     Type topType = tsm.getTopType();
     Type annotType = tsm.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
-    tsm.addType(SENT_TYPE, annotType);
+    Type sentenceType = tsm.addType(SENT_TYPE, annotType);
+    tsm.addType(PHRASE_TYPE, sentenceType);
     Type tokenType = tsm.addType(TOKEN_TYPE, annotType);
     Type tokenTypeType = tsm.addType(TOKEN_TYPE_TYPE, topType);
     tsm.addType(WORD_TYPE, tokenTypeType);
@@ -147,13 +160,15 @@ public class CASTestSetup  implements AnnotatorInitializer {
     tsm.addType(EOS_TYPE, tokenTypeType);
     tsm.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     tsm.addFeature(TOKEN_FLOAT_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_FLOAT));
+    tsm.addFeature(TOKEN_DOUBLE_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_DOUBLE));
+    tsm.addFeature(TOKEN_LONG_FEAT, tokenType,  tsm.getType(CAS.TYPE_NAME_LONG));
     // Add a type that inherits from IntArray.
     // tsm.addType(INT_ARRAY_SUB, tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY));
     // tsm.addFeature(
     // INT_SUB_NAME,
     // tsm.getType(INT_ARRAY_SUB),
     // tsm.getType(CAS.TYPE_NAME_STRING));
-    tsm.addFeature(LEMMA_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_STRING));
+    tsm.addFeature(LEMMA_FEAT, tokenType, stringType);
     tsm.addFeature(SENT_LEN_FEAT, tsm.getType(SENT_TYPE), tsm.getType(CAS.TYPE_NAME_INTEGER));
     tsm.addFeature(LEMMA_LIST_FEAT, tsm.getType(TOKEN_TYPE), tsm
             .getType(CAS.TYPE_NAME_STRING_ARRAY));
@@ -162,13 +177,12 @@ public class CASTestSetup  implements AnnotatorInitializer {
     Type langPair = tsm.addType(LANG_PAIR, topType);
     tsm.addFeature(LANG1, langPair, group1);
     tsm.addFeature(LANG2, langPair, group2);
-    Type stringType = tsm.getType(CAS.TYPE_NAME_STRING);
     tsm.addFeature(DESCR_FEAT, langPair, stringType);
     boolean exc = false;
     try {
       tsm.addType("some.new.Name", group1);
     } catch (CASAdminException e) {
-      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
+      TestCase.assertTrue(e.getMessageKey() == CASAdminException.TYPE_IS_INH_FINAL);
       exc = true;
     }
     TestCase.assertTrue(exc);
@@ -176,10 +190,13 @@ public class CASTestSetup  implements AnnotatorInitializer {
     try {
       tsm.addFeature("some.new.Name", group1, stringType);
     } catch (CASAdminException e) {
-      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
+      TestCase.assertTrue(e.getMessageKey() == CASAdminException.TYPE_IS_FEATURE_FINAL);
       exc = true;
     }
     TestCase.assertTrue(exc);
+    // add IntegerArray[] type before commit for testArrayTypes in TypeSystemTest
+    Type intArrayType = tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
+    Type arrayOfIntArray = tsm.getArrayType(intArrayType);
   }
 
   private FSIndexComparator makeComp(FSIndexRepositoryMgr irm, TypeSystem ts) {
@@ -192,7 +209,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
             FSIndexComparator.REVERSE_STANDARD_COMPARE);
     return comp;
   }
-  
+
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     FSIndexComparator compNoTypeOrder = makeComp(irm, ts);
     FSIndexComparator comp = makeComp(irm, ts);
@@ -203,13 +220,9 @@ public class CASTestSetup  implements AnnotatorInitializer {
     } catch (CASException e) {
       TestCase.assertTrue(false);
     }
-    
-    
     irm.createIndex(comp, ANNOT_BAG_INDEX, FSIndex.BAG_INDEX);
     irm.createIndex(comp, ANNOT_SET_INDEX, FSIndex.SET_INDEX);
     irm.createIndex(comp, ANNOT_SORT_INDEX, FSIndex.SORTED_INDEX);
     irm.createIndex(compNoTypeOrder, ANNOT_SET_INDEX_NO_TYPEORDER, FSIndex.SET_INDEX);
-    
-
   }
 }

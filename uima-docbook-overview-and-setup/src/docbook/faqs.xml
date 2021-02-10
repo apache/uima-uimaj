@@ -72,28 +72,15 @@ under the License.
             machines for greater scale, flexibility and recoverability).</para>
             
           <para>The UIMA project has several significant subprojects, including UIMA-AS (for flexibly
-          scaling out UIMA pipelines over clusters of machines), UIMA-DUCC (for managing clusters of 
+          scaling out UIMA pipelines over clusters of machines), uimaFIT (for a way of using UIMA without the xml descriptors; also provides 
+          many convenience methods), UIMA-DUCC (for managing clusters of 
           machines running scaled-out UIMA "jobs" in a "fair" way), RUTA (Eclipse-based tooling and \
           a runtime framework for development of rule-based
           Annotators), Addons (where you can find many extensions), and uimaFIT supplying a Java centric
           set of friendlier interfaces and avoiding XML.</para>
         </listitem>
-      </varlistentry>
-     
-      <varlistentry id="ugr.faqs.include_semantic_search">
-        <term><emphasis role="bold">
-          Does UIMA include a semantic search engine?
-        </emphasis></term>
-        <listitem><para>
-          The Apache UIMA project does not itself include a semantic search engine.  
-          It can interface with the semantic search engine
-            component (available from <ulink
-              url="http://www.alphaworks.ibm.com/tech/uima"/> for indexing and querying over
-            the results of analysis. Over time, we expect that additional search engines will
-            add support for semantic searching.
-          </para>
-        </listitem>
-      </varlistentry>
+      </varlistentry> 
+      
       <varlistentry id="ugr.faqs.what_is_an_annotation">
         
         <term><emphasis role="bold">What is an Annotation?</emphasis></term>
@@ -149,6 +136,7 @@ under the License.
             corresponds, etc.). For each version there is a separate instance of the results
             indices.</para></listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.only_annotations">
         <term><emphasis role="bold">Does the CAS only contain Annotations?</emphasis></term>
         <listitem><para>No. The CAS contains the artifact being analyzed plus the analysis
@@ -161,6 +149,7 @@ under the License.
           <para>The CAS may have multiple representations of the artifact being analyzed, each one
             represented in the CAS as a particular Subject of Analysis. or <link linkend="ugr.faqs.what_is_a_sofa">Sofa</link></para></listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.just_xml">
         <term><emphasis role="bold">Is the CAS just XML?</emphasis></term>
         <listitem><para>No, in fact there are many possible representations of the CAS. If all
@@ -168,9 +157,11 @@ under the License.
           data object is used. If a CAS must be sent to an analysis engine on a remote machine, it
           can be done via an XML or a binary serialization of the CAS. </para>
           
-          <para>The UIMA framework provides serialization and de-serialization methods
-            for a particular XML representation of the CAS named the XMI.</para></listitem>
+          <para>The UIMA framework provides multiple serialization and de-serialization methods
+            in various formats, including XML.  See the Javadocs for the CasIOUtils class.
+            </para></listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.what_is_a_type_system">
         <term><emphasis role="bold">What is a Type System?</emphasis></term>
         <listitem><para>Think of a type system as a schema or class model for the <link linkend="ugr.faqs.what_is_the_cas">CAS</link>. It defines
@@ -182,6 +173,7 @@ under the License.
             types (these can restrict the value of properties to other types) and
             single-inheritance hierarchy of types.</para></listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.what_is_a_sofa">
         <term><emphasis role="bold">What is a Sofa?</emphasis></term>
         <listitem><para>Sofa stands for &ldquo;Subject of Analysis&quot;. A <link linkend="ugr.faqs.what_is_the_cas">CAS</link> is
@@ -195,7 +187,6 @@ under the License.
           multi-modal analysis, where for example, one view of a video stream may be the video
           frames and the other the close-captions.</para></listitem>
       </varlistentry>
-
       
       <varlistentry id="ugr.faqs.annotator_versus_ae">
         <term><emphasis role="bold">What's the difference between an Annotator and an Analysis
@@ -215,12 +206,14 @@ under the License.
             interacts with. An Annotator is a user-written class that implements the one of
             the supported Annotator interfaces.</para></listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.web_services">
         <term><emphasis role="bold">Are UIMA analysis engines web services?</emphasis></term>
         <listitem><para>They can be deployed as such. Deploying an analysis engine as a web
           service is one of the deployment options supported by the UIMA framework.</para>
         </listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.stateless_aes">
         <term><emphasis role="bold">Do Analysis Engines have to be
           &quot;stateless&quot;?</emphasis></term>
@@ -240,6 +233,7 @@ under the License.
             documents that would prevent their engine from working as advertised if
             operated in a parallelized environment.</para></listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.uddi">
         <term><emphasis role="bold">Is engine meta-data compatible with web services and
           UDDI?</emphasis></term>
@@ -249,22 +243,29 @@ under the License.
           development tooling. In principle, UIMA component descriptors are compatible
           with web services and UDDI. However, the UIMA framework currently uses its own XML
           representation for component metadata. It would not be difficult to convert
-          between UIMA&apos;s XML representation and the WSDL and UDDI standards.</para>
+          between UIMA&apos;s XML representation and other standard representations.</para>
         </listitem>
       </varlistentry>
-
       
       <varlistentry id="ugr.faqs.scaling">
         <term><emphasis role="bold">How do you scale a UIMA application?</emphasis></term>
-        <listitem><para>The UIMA framework allows components such as <link linkend="ugr.faqs.annotator_versus_ae">analysis engines</link> and
+        <listitem><para>The UIMA framework allows components such as 
+          <link linkend="ugr.faqs.annotator_versus_ae">analysis engines</link> and
           CAS Consumers to be easily deployed as services or in other containers and managed
           by systems middleware designed to scale. UIMA applications tend to naturally
           scale-out across documents allowing many documents to be analyzed in
           parallel.</para>
-          <para>A component in the UIMA framework called the CPM (Collection Processing
-            Manager) has a host of features and configuration settings for scaling an
-            application to increase its throughput and recoverability.</para></listitem>
+          <para>The UIMA-AS project has extensive capabilities to flexibly scale a UIMA
+            pipeline across multiple machines.  The UIMA-DUCC project supports a 
+            unified management of large clusters of machines running multiple "jobs" 
+            each consisting of a pipeline with data sources and sinks.</para>
+          <para>Within the core UIMA framework, there is a component called the CPM (Collection Processing
+            Manager) which has features and configuration settings for scaling an
+            application to increase its throughput and recoverability; 
+            the CPM was the earlier version of scaleout technology, and has been 
+            superceded by the UIMA-AS effort (although it is still supported).</para></listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.embedding">
         <term><emphasis role="bold">What does it mean to embed UIMA in systems middleware?</emphasis></term>
         <listitem><para>An example of an embedding would be the deployment of a UIMA analysis
@@ -275,6 +276,7 @@ under the License.
           <link linkend="ugr.faqs.annotator_versus_ae">analysis engines</link> could be deployed on other application servers as well.</para>
         </listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.cpm_versus_cpe">
         <term><emphasis role="bold">How is the CPM different from a CPE?</emphasis></term>
         <listitem><para>These name complimentary aspects of collection processing. The CPM
@@ -296,6 +298,8 @@ under the License.
             index, database etc). The CPM is the execution engine for a CPE.</para>
         </listitem>
       </varlistentry>
+      
+      <!-- 
       <varlistentry id="ugr.faqs.semantic_search">
         <term><emphasis role="bold">What is Semantic Search and what is its relationship to
           UIMA?</emphasis></term>
@@ -319,8 +323,11 @@ under the License.
           documentation demonstrates how UIMA applications can be built using semantic
           search. It provides details about the XML Fragment Query language. This is the
           particular query language used by the semantic search engine that comes with the
-          SDK.</para></listitem>
+          SDK.</para>
+          </listitem>
       </varlistentry>
+       
+      
       <varlistentry id="ugr.faqs.xml_fragment_not_xml">
         <term><emphasis role="bold">Is an XML Fragment Query valid XML?</emphasis></term>
         <listitem><para>Not necessarily. The XML Fragment Query syntax is used to formulate
@@ -333,6 +340,8 @@ under the License.
           For example, it admits notations in the query to indicate whether a keyword or an
           annotation is optional or required to match a document.</para></listitem>
       </varlistentry>
+      -->
+      
       <varlistentry id="ugr.faqs.modalities_other_than_text">
         <term><emphasis role="bold">Does UIMA support modalities other than text?</emphasis></term>
         <listitem><para>The UIMA architecture supports the development, discovery,
@@ -349,6 +358,7 @@ under the License.
             closed-captions text. UIMA&apos;s multiple Sofa feature is included and
             described in this release of the SDK.</para></listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.compare">
         <term><emphasis role="bold">How does UIMA compare to other similar work?</emphasis></term>
         <listitem><para>A number of different frameworks for NLP have preceded UIMA. Two of
@@ -370,49 +380,32 @@ under the License.
             discovery and composition. (Please note that not all of these features are
             available in this release of the SDK.)</para></listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.open_source">
         <term><emphasis role="bold">Is UIMA Open Source?</emphasis></term>
         <listitem><para>Yes. As of version 2, UIMA development has moved to Apache and is being
           developed within the Apache open source processes. It is licensed under the Apache
-          version 2 license. Previous versions are available on the IBM alphaWorks site (
-            <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>) and the source
-          code for previous version of the UIMA framework is available on SourceForge (
-            <ulink url="http://uima-framework.sourceforge.net/"/>).</para>
+          version 2 license. 
+            </para>
         </listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.levels_required">
         <term><emphasis role="bold">What Java level and OS are required for the UIMA SDK?</emphasis></term>
-        <listitem><para>As of release 2.10.4, the UIMA SDK requires Java 1.8. Releases from 2.6.0 to 2.10.3 require Java 1.6 or later. Releases from 2.2.1 to
-        2.5.0 require Java 1.5 level (or later).  Releases prior to 2.2.1
-          require as a minimum the Java 1.4 level; they will not run on 1.3 (or earlier levels). 
-          We routinely test releases with the most modern Javas (e.g. Java 8) as well. 
+        <listitem><para>As of release 3.0.0, the UIMA SDK requires Java 1.8.
           It has been tested on mainly on Windows and Linux platforms, with some
           testing on the MacOSX. Other
           platforms and JDK implementations will likely work, but have
           not been as significantly tested.</para></listitem>
       </varlistentry>
+      
       <varlistentry id="ugr.faqs.building_apps_on_top_of_uima">
         <term><emphasis role="bold">Can I build my UIM application on top of UIMA?</emphasis></term>
         <listitem><para>Yes. Apache UIMA is licensed under the Apache version 2 license,
           enabling you to build and distribute applications which include the framework.
           </para></listitem>
       </varlistentry>
-      <varlistentry id="ugr.faqs.commercial_products">
-        <term><emphasis role="bold">Do any commercial products support the UIMA framework or include
-          it as part of their product?</emphasis></term>
-        <listitem><para>Yes. IBM's WebSphere Information Integration Omnifind Edition
-          product (<ulink
-            url="http://www.ibm.com/developerworks/db2/zones/db2ii"/> or <ulink
-            url="http://www-306.ibm.com/software/data/integration/db2ii/editions_womnifind.html"/>
-          ) has UIMA <quote>inside</quote> and supports adding UIMA annotators to the
-          processing pipeline. We are actively seeking other product embeddings. </para>
-        </listitem>
-      </varlistentry>
-      <!--
-      <varlistentry>
-      <term><emphasis role="bold"></emphasis></term>
-      <listitem><para></para></listitem>
-      </varlistentry>
-      -->
+      
+
  </variablelist>
 </chapter>

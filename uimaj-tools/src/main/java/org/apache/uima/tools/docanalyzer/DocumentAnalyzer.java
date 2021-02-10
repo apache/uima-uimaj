@@ -99,6 +99,7 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
+
 /**
  * A simple GUI for the RunTextAnalysis application library. Note that currently this will only run
  * under Windows since it relies on Windows-specific commands for invoking a web browser to view the
@@ -108,8 +109,11 @@ import org.apache.uima.util.XMLInputSource;
  * 
  */
 public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, ActionListener {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 8795969283257780425L;
 
+  /** The Constant HELP_MESSAGE. */
   private static final String HELP_MESSAGE = "Instructions for using UIMA Document Analyzer:\n\n"
           + "* In the \"Input Directory\" field, either type or use the browse\n"
           + "button to select a directory containing the documents that you want\n"
@@ -134,84 +138,122 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
           + "be displayed.  Select the view format (Java Viewer is recommended),\n"
           + "and double-click on a document to view it.\n\n";
 
+  /** The input file selector. */
   private FileSelector inputFileSelector;
   
+  /** The input file format combo box. */
   private JComboBox inputFileFormatComboBox;
   
+  /** The lenient checkbox. */
   private JCheckBox lenientCheckbox;
 
+  /** The output file selector. */
   protected FileSelector outputFileSelector; // JMP
 
+  /** The xml file selector. */
   protected FileSelector xmlFileSelector; // JMP
 
+  /** The output file selected. */
   protected String outputFileSelected = null; // JMP
 
+  /** The run parameters field. */
   private JTextField runParametersField;
 
+  /** The language combo box. */
   private JComboBox languageComboBox;
 
+  /** The encoding combo box. */
   private JComboBox encodingComboBox;
 
+  /** The progress monitor. */
   private ProgressMonitor progressMonitor;
 
+  /** The current type system. */
   protected TypeSystem currentTypeSystem; // JMP
 
+  /** The current tae output types. */
   protected String[] currentTaeOutputTypes; // JMP
 
+  /** The user style map file. */
   private File userStyleMapFile;
 
+  /** The use generated style map. */
   protected boolean useGeneratedStyleMap = false; // JMP
 
+  /** The collection reader. */
   private FileSystemCollectionReader collectionReader;
 
+  /** The m CPM. */
   private CollectionProcessingManager mCPM;
 
+  /** The interactive temp FN. */
   protected String interactiveTempFN = "__DAtemp__.txt"; // JMP
 
+  /** The about dialog. */
   private JDialog aboutDialog;
 
+  /** The num docs. */
   private int numDocs;
 
+  /** The num docs processed. */
   private int numDocsProcessed = 0;
 
   /** Directory in which this program will write its output files. */
   private File outputDirectory;
 
+  /** The run button. */
   private JButton runButton;
 
+  /** The inter button. */
   private JButton interButton;
 
+  /** The interactive. */
   protected boolean interactive = false; // JMP
 
+  /** The java viewer RB. */
   private final JRadioButton javaViewerRB = new JRadioButton("Java Viewer");
 
+  /** The java viewer UCRB. */
   private final JRadioButton javaViewerUCRB = new JRadioButton(
           "<html><font color=maroon>JV user colors</font></html>");
 
+  /** The html RB. */
   private final JRadioButton htmlRB = new JRadioButton("HTML");
 
+  /** The xml RB. */
   protected final JRadioButton xmlRB = new JRadioButton("XML"); // JMP
 
+  /** The analyze input dialog. */
   private JDialog analyzeInputDialog = null;
 
+  /** The java viewer R bis selected. */
   protected boolean javaViewerRBisSelected = false; // JMP
 
+  /** The java viewer UCR bis selected. */
   protected boolean javaViewerUCRBisSelected = false; // JMP
 
+  /** The prefs med. */
   protected PrefsMediator prefsMed; // JMP
 
+  /** The stats string. */
   protected String statsString; // JMP
 
+  /** The tae desc file. */
   protected File taeDescFile; // JMP
 
+  /** The tae desc file name. */
   protected String taeDescFileName; // JMP
 
+  /** The ae specifier file. */
   private File aeSpecifierFile;
 
+  /** The cas. */
   protected CAS cas; // JMP
 
+  /** The progress timer. */
   private Timer progressTimer;
 
+  /** The using xml detagger. */
   private boolean usingXmlDetagger;
   
   /**
@@ -221,6 +263,13 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     this(null, false, false);
   }
 
+  /**
+   * Instantiates a new document analyzer.
+   *
+   * @param outputFileSelected the output file selected
+   * @param interactiveDA the interactive DA
+   * @param jvucrbis the jvucrbis
+   */
   public DocumentAnalyzer(String outputFileSelected, boolean interactiveDA, boolean jvucrbis) {
     super("Document Analyzer");
     prefsMed = new PrefsMediator();
@@ -344,7 +393,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     inputFileFormatComboBox.setSelectedItem(prefsMed.getInputFileFormat());
     inputFileFormatComboBox.addActionListener(new ActionListener() {      
       @Override
-    public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent e) {
         String inputFileFormat = (String) inputFileFormatComboBox.getSelectedItem();
         lenientCheckbox.setEnabled(
             "xcas".equalsIgnoreCase(inputFileFormat) ||
@@ -426,7 +475,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // Event Handlling of "Exit" Menu Item
     exitMenuItem.addActionListener(new ActionListener() {
       @Override
-    public void actionPerformed(ActionEvent evt) {
+      public void actionPerformed(ActionEvent evt) {
         savePreferences();
         System.exit(0);
       }
@@ -435,7 +484,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // Event Handlling of "About" Menu Item
     aboutMenuItem.addActionListener(new ActionListener() {
       @Override
-    public void actionPerformed(ActionEvent evt) {
+      public void actionPerformed(ActionEvent evt) {
         aboutDialog.setVisible(true);
       }
     });
@@ -443,7 +492,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // Event Handlling of "Help" Menu Item
     helpMenuItem.addActionListener(new ActionListener() {
       @Override
-    public void actionPerformed(ActionEvent evt) {
+      public void actionPerformed(ActionEvent evt) {
         JOptionPane.showMessageDialog(DocumentAnalyzer.this, HELP_MESSAGE,
                 "Document Analyzer Help", JOptionPane.PLAIN_MESSAGE);
       }
@@ -486,7 +535,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // Event Handling of run Button
     runButton.addActionListener(new ActionListener() {
       @Override
-    public void actionPerformed(ActionEvent ee) {
+      public void actionPerformed(ActionEvent ee) {
         interactive = false;
         savePreferences();
         analyzeDocuments(null); // JMP added arg
@@ -496,10 +545,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // Event Handling of interactive Button
     interButton.addActionListener(new ActionListener() {
       @Override
-    public void actionPerformed(ActionEvent ee) {
-        if (outputFileSelector.getSelected().length() == 0) {
-            displayError("Need to specify an output directory for temporary results.");
-        }
+      public void actionPerformed(ActionEvent ee) {
+        if (outputFileSelector.getSelected().length() == 0)
+          displayError("Need to specify an output directory for temporary results.");
         else {
           interactive = true;
           savePreferences();
@@ -519,7 +567,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     progressTimer = new Timer(100, new ActionListener() {
       @Override
-    public void actionPerformed(ActionEvent ee) {
+      public void actionPerformed(ActionEvent ee) {
         checkProgressMonitor();
       }
     });
@@ -546,9 +594,12 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
   // View button clicked
   @Override
-public void actionPerformed(ActionEvent e) {
+  public void actionPerformed(ActionEvent e) {
     savePreferences();
     try {
       aeSpecifierFile = new File(xmlFileSelector.getSelected());
@@ -695,6 +746,9 @@ public void actionPerformed(ActionEvent e) {
     }
   }
 
+  /**
+   * Check progress monitor.
+   */
   private void checkProgressMonitor() {
     // if user has clicked cancel, abort
     if (progressMonitor.isCanceled()) {
@@ -713,10 +767,10 @@ public void actionPerformed(ActionEvent e) {
    *      org.apache.uima.collection.EntityProcessStatus)
    */
   @Override
-public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
+  public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
     // if an error occurred, display error
     if (aStatus.isException()) {
-      displayError((Throwable) aStatus.getExceptions().get(0));
+      displayError(aStatus.getExceptions().get(0));
       // CPM will stop itself on error, we don't need to call
       // mCPM.stop(). In fact it causes a hang to do so, since
       // this code is callback code is executing within a CPM thread.
@@ -729,10 +783,12 @@ public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
   }
 
   /**
+   * Aborted.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#aborted()
    */
   @Override
-public void aborted() {
+  public void aborted() {
     // close progress monitor
     if (progressMonitor != null) {
       progressMonitor.close();
@@ -745,17 +801,21 @@ public void aborted() {
   }
 
   /**
+   * Batch process complete.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#batchProcessComplete()
    */
   @Override
-public void batchProcessComplete() {
+  public void batchProcessComplete() {
   }
 
   /**
+   * Collection process complete.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#collectionProcessComplete()
    */
   @Override
-public void collectionProcessComplete() {
+  public void collectionProcessComplete() {
     // invoke ProcessingCompleteRunnable in Swing event handler thread
     // SwingUtilities.invokeLater(new ProcessingCompleteRunnable());
     // hide progress bar dialog if it is visible
@@ -777,24 +837,30 @@ public void collectionProcessComplete() {
   }
 
   /**
+   * Initialization complete.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#initializationComplete()
    */
   @Override
-public void initializationComplete() {
+  public void initializationComplete() {
   }
 
   /**
+   * Paused.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#paused()
    */
   @Override
-public void paused() {
+  public void paused() {
   }
 
   /**
+   * Resumed.
+   *
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#resumed()
    */
   @Override
-public void resumed() {
+  public void resumed() {
   }
 
   /**
@@ -812,6 +878,11 @@ public void resumed() {
     show_analysis(aOutputDir);
   }
 
+  /**
+   * Show analysis results.
+   *
+   * @param aOutputDir the a output dir
+   */
   // this call is used when you click the "View" button
   public void showAnalysisResults(File aOutputDir) {
 
@@ -845,9 +916,9 @@ public void resumed() {
   /**
    * Creates a CAS from an descriptor. Supports both local AE descriptors and remote service
    * specifiers. In the latter case the service is contacted to obtain its type system.
-   * 
-   * @param aDescriptorFile -
-   * @return the new CAS
+   *
+   * @param aDescriptorFile the a descriptor file
+   * @return the cas
    * @throws ResourceInitializationException -
    * @throws InvalidXMLException -
    * @throws IOException -
@@ -864,6 +935,12 @@ public void resumed() {
     }
   }
 
+  /**
+   * Read stylemap file.
+   *
+   * @param smapFile the smap file
+   * @return the string
+   */
   protected String readStylemapFile(File smapFile) // JMP
   {
     String styleMapXml = "";
@@ -880,6 +957,11 @@ public void resumed() {
     return styleMapXml;
   }
 
+  /**
+   * Show analysis.
+   *
+   * @param outputDir the output dir
+   */
   private void show_analysis(File outputDir) {
     File styleMapFile = getStyleMapFile();
     // added the following to prevent NPE when "View" button is used
@@ -1010,11 +1092,14 @@ public void resumed() {
   }
 
   /**
-   * Class for dialog in which user types in text to be analyzed, and sets browser parameters
+   * Class for dialog in which user types in text to be analyzed, and sets browser parameters.
    */
   class TextAreaViewer extends JPanel {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -7503162930412929062L;
 
+    /** The text pane. */
     private JTextPane textPane = new JTextPane();
 
     /**
@@ -1134,6 +1219,9 @@ public void resumed() {
 
     }
 
+    /**
+     * Analyze text area.
+     */
     public void analyzeTextArea() {
       String text = textPane.getText();
       analyzeDocuments(text);
@@ -1141,6 +1229,18 @@ public void resumed() {
 
   }
 
+  /**
+   * Run processing thread.
+   *
+   * @param inputDir the input dir
+   * @param inputFileFormat the input file format
+   * @param lenient the lenient
+   * @param outputDir the output dir
+   * @param aeSpecifierFile the ae specifier file
+   * @param xmlTag the xml tag
+   * @param language the language
+   * @param encoding the encoding
+   */
   public void runProcessingThread(File inputDir, String inputFileFormat, Boolean lenient, File outputDir, File aeSpecifierFile,
           String xmlTag, String language, String encoding) {
     try {
@@ -1275,7 +1375,7 @@ public void resumed() {
 
       // save AE output types for later use in configuring viewer
       if (aeSpecifier instanceof AnalysisEngineDescription) {
-        ArrayList<String> outputTypeList = new ArrayList<String>();
+        ArrayList<String> outputTypeList = new ArrayList<>();
         Capability[] capabilities = ((AnalysisEngineDescription) aeSpecifier)
                 .getAnalysisEngineMetaData().getCapabilities();
         for (int i = 0; i < capabilities.length; i++) {
@@ -1332,23 +1432,47 @@ public void resumed() {
     }
   }
 
+  /**
+   * The Class ProcessingThread.
+   */
   class ProcessingThread extends Thread {
+    
+    /** The input dir. */
     File inputDir;
 
+    /** The input file format. */
     String inputFileFormat;
     
+    /** The output dir. */
     File outputDir;
 
+    /** The tae specifier file. */
     File taeSpecifierFile;
 
+    /** The xml tag. */
     String xmlTag;
 
+    /** The language. */
     String language;
 
+    /** The encoding. */
     String encoding;
     
+    /** The lenient. */
     Boolean lenient;
 
+    /**
+     * Instantiates a new processing thread.
+     *
+     * @param inputDir the input dir
+     * @param inputFileFormat the input file format
+     * @param lenient the lenient
+     * @param outputDir the output dir
+     * @param taeSpecifierFile the tae specifier file
+     * @param xmlTag the xml tag
+     * @param language the language
+     * @param encoding the encoding
+     */
     ProcessingThread(File inputDir, String inputFileFormat, Boolean lenient, File outputDir, File taeSpecifierFile, String xmlTag,
             String language, String encoding) {
       this.inputDir = inputDir;
@@ -1361,6 +1485,9 @@ public void resumed() {
       this.lenient = lenient;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Thread#run()
+     */
     @Override
     public void run() {
       // Code moved outside class to make accessible by programs that call
@@ -1370,6 +1497,8 @@ public void resumed() {
   }
 
   /**
+   * Gets the style map file.
+   *
    * @return Returns the styleMapFile.
    */
   public File getStyleMapFile() {
@@ -1380,8 +1509,9 @@ public void resumed() {
   }
 
   /**
-   * @param styleMapFile
-   *          The styleMapFile to set.
+   * Sets the style map file.
+   *
+   * @param styleMapFile          The styleMapFile to set.
    */
   public void setStyleMapFile(File styleMapFile) {
     this.userStyleMapFile = styleMapFile;

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,104 +16,137 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.tutorial;
+
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 
-/**
- * Updated by JCasGen Mon Nov 29 15:02:37 EST 2004 XML source: C:/Program
- * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- * 
- * @generated
- */
-@SuppressWarnings("javadoc")
+
+/** 
+ * Updated by JCasGen Sun Oct 08 19:34:17 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * @generated */
 public class RoomNumber extends Annotation {
-  /**
-   * @generated
-   * @ordered
+
+  /** @generated
+   * @ordered 
    */
-  public final static int typeIndexID = JCasRegistry.register(RoomNumber.class);
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.tutorial.RoomNumber";
+  
+    /**
+     * The Constant typeIndexID.
+     *
+     * @generated 
+     * @ordered 
+     */
+    public static final int typeIndexID = JCasRegistry.register(RoomNumber.class);
 
-  /**
-   * @generated
-   * @ordered
-   */
-  public final static int type = typeIndexID;
+    /**
+     * The Constant type.
+     *
+     * @generated 
+     * @ordered 
+     */
+    public static final int type = typeIndexID;
 
-  /** @generated */
-  @Override
-public int getTypeIndexID() {
-    return typeIndexID;
-  }
+    /**
+     * Gets the type index ID.
+     *
+     * @return the type index ID
+     * @generated 
+     */
+    public int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_building = "building";
 
-  /**
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_building = TypeSystemImpl.createCallSite(RoomNumber.class, "building");
+  private final static MethodHandle _FH_building = _FC_building.dynamicInvoker();
+
+    /**
    * Never called. Disable default constructor
-   * 
+   *
    * @generated
    */
-  protected RoomNumber() {
-  }
-
-  /**
-   * Internal - constructor used by generator
-   * 
-   * @generated
-   */
-  public RoomNumber(int addr, TOP_Type type) {
-    super(addr, type);
+    protected  RoomNumber() {/* intentionally empty block */}
+    
+    /**
+     * Internal - constructor used by generator.
+     *
+     * @param type the type
+     * @param casImpl the cas impl
+     * @generated 
+     */
+    public  RoomNumber(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
-
-  /** @generated */
-  public RoomNumber(JCas jcas) {
+  
+    /**
+     * Instantiates a new room number.
+     *
+     * @param jcas the jcas
+     * @generated 
+     */
+    public  RoomNumber(JCas jcas) {
     super(jcas);
-    readObject();
-  }
+    readObject();   
+  } 
 
-  public RoomNumber(JCas jcas, int begin, int end) {
-    super(jcas);
-    setBegin(begin);
-    setEnd(end);
-    readObject();
-  }
 
-  /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   * 
-   * @generated modifiable
-   */
-  private void readObject() {
-  }
-
-  // *--------------*
-  // * Feature: building
-
-  /**
-   * getter for building - gets Building containing this room
-   * 
-   * @generated
-   */
-  public String getBuilding() {
-    if (RoomNumber_Type.featOkTst && ((RoomNumber_Type) jcasType).casFeat_building == null) {
-        this.jcasType.jcas.throwFeatMissing("building", "org.apache.uima.tutorial.RoomNumber");
+    /**
+     * Instantiates a new room number.
+     *
+     * @param jcas the jcas
+     * @param begin the begin
+     * @param end the end
+     */
+    public  RoomNumber(JCas jcas, int begin, int end) {
+        super(jcas);
+        setBegin(begin);
+        setEnd(end);
+        readObject();
     }
-    return jcasType.ll_cas.ll_getStringValue(addr,
-            ((RoomNumber_Type) jcasType).casFeatCode_building);
-  }
 
-  /**
-   * setter for building - sets Building containing this room
-   * 
-   * @generated
+  /** 
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->*
+   * @generated modifiable 
    */
-  public void setBuilding(String v) {
-    if (RoomNumber_Type.featOkTst && ((RoomNumber_Type) jcasType).casFeat_building == null) {
-        this.jcasType.jcas.throwFeatMissing("building", "org.apache.uima.tutorial.RoomNumber");
+    private void readObject() {
     }
-    jcasType.ll_cas.ll_setStringValue(addr, ((RoomNumber_Type) jcasType).casFeatCode_building, v);
+
+    // *--------------*
+    // * Feature: building
+    /**
+     * getter for building - gets Building containing this room.
+     *
+     * @return the building
+     * @generated 
+     */
+    public String getBuilding() { return _getStringValueNc(wrapGetIntCatchException(_FH_building));}
+    
+    /**
+     * setter for building - sets Building containing this room.
+     *
+     * @param v the new building
+     * @generated 
+     */
+    public void setBuilding(String v) {
+    _setStringValueNfc(wrapGetIntCatchException(_FH_building), v);
+  }    
+    
   }
-}

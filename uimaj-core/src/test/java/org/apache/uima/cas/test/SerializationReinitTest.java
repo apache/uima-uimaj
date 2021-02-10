@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
@@ -57,6 +55,7 @@ import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.internal.util.TextStringTokenizer;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -65,6 +64,8 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 /**
  * Test for binary serialization and deserialization (no compression)
@@ -289,7 +290,7 @@ public class SerializationReinitTest extends TestCase {
     try {
       cas.reset();
     } catch (CASAdminException e) {
-      assertTrue(e.getError() == CASAdminException.FLUSH_DISABLED);
+      assertTrue(e.getMessageKey() == CASAdminException.FLUSH_DISABLED);
       exc = true;
     }
     assertTrue(exc);
@@ -444,7 +445,7 @@ public class SerializationReinitTest extends TestCase {
     String line;
 //    BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer(10000);
-    List<String> docs = new ArrayList<String>();
+    List<String> docs = new ArrayList<>();
     Matcher m = nlPattern.matcher(moby);
     while (m.find()) {
       line = m.group();
@@ -545,7 +546,7 @@ public class SerializationReinitTest extends TestCase {
   int ll_shortarrayfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theShortArrayFeature);
   int ll_longfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theLongFeature);
   
-  for (int cycle=0; cycle<10; cycle+=2) {
+  for (int cycle = 0; cycle < 10; cycle +=2 ) {
     FeatureStructure newFS1 = cas.createFS(theTypeType); 
     newFS1.setIntValue(startFeature, cycle);
     newFS1.setIntValue(endFeature, cycle+1);
@@ -568,10 +569,13 @@ public class SerializationReinitTest extends TestCase {
     newFS2.setIntValue(startFeature, cycle+1);
     newFS2.setIntValue(endFeature, cycle+2);
     ir.addFS(newFS2);
+    CASImpl ci = (CASImpl) cas;
+    ci.setId2FSsMaybeUnconditionally(newFS2, newBA2, newSA2);
     // set string using lowlevel string create API
     final int llfs2 = ll_cas.ll_getFSRef(newFS2);
     final int llba2 = ll_cas.ll_getFSRef(newBA2);
     final int llsa2 = ll_cas.ll_getFSRef(newSA2);
+    
     ll_cas.ll_setCharBufferValue(llfs2, ll_strfeatcode,
             testString.toCharArray(), 0, testString.length());
     ll_cas.ll_setByteValue(llfs2, ll_bytefeatcode, (byte)(cycle+1));
@@ -591,7 +595,7 @@ public class SerializationReinitTest extends TestCase {
 
     FSIndex<AnnotationFS> idx = cas.getAnnotationIndex(theTypeType);
     FSIterator<AnnotationFS> iter = idx.iterator();
-    for (int tc=0; tc<cycle+1; tc++) {
+    for (int tc = 0; tc < cycle + 1; tc++) {
       FeatureStructure testFS = iter.get();
       iter.moveToNext();
       assertTrue(tc == testFS.getIntValue(startFeature));
@@ -770,6 +774,9 @@ public class SerializationReinitTest extends TestCase {
       Serialization.deserializeCAS(cas2, fis);
       CasComparer.assertEquals(cas1, cas2);
  
+//      dumpDocAnnot(cas1);
+//      dumpDocAnnot(cas2);
+
       //=======================================================================
       //create Marker, add/modify fs and serialize in delta xmi format.
       Marker marker = cas2.createMarker();
@@ -786,7 +793,9 @@ public class SerializationReinitTest extends TestCase {
       
       // set document text of View1
       CAS cas2view1 = cas2.getView("View1");
+//      dumpDocAnnot(cas2);
       cas2view1.setDocumentText("This is the View1 document.");
+//      dumpDocAnnot(cas2);
       //create an annotation in View1
       AnnotationFS cas2view1Annot = cas2view1.createAnnotation(cas2.getAnnotationType(), 1, 5);
       cas2view1.getIndexRepository().addFS(cas2view1Annot);
@@ -858,7 +867,14 @@ public class SerializationReinitTest extends TestCase {
       //======================================================================
       //deserialize delta binary into cas1
       ByteArrayInputStream fisDelta = new ByteArrayInputStream(fosDelta.toByteArray());
+      CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = false;
+      
+//      dumpDocAnnot(cas1);
+//      dumpDocAnnot(cas2);
+
       Serialization.deserializeCAS(cas1, fisDelta);
+//      dumpDocAnnot(cas1);
+//      CasComparer.assertEquals(cas1,  cas2);
       
       //======================================================================
       //serialize complete cas and deserialize into cas3 and compare with cas1.
@@ -866,6 +882,7 @@ public class SerializationReinitTest extends TestCase {
       Serialization.serializeCAS(cas2, fosFull);
       ByteArrayInputStream fisFull = new ByteArrayInputStream(fosFull.toByteArray());
       Serialization.deserializeCAS(cas3, fisFull);
+      CasComparer.assertEquals(cas2,  cas3);
       CasComparer.assertEquals(cas1, cas3); 
       //System.out.println("CAS1 " + serialize(cas1, new XmiSerializationSharedData()));
       //System.out.println("CAS2 " + serialize(cas2, new XmiSerializationSharedData()));
@@ -1033,4 +1050,15 @@ public class SerializationReinitTest extends TestCase {
 //    // System.out.println("Time taken over all: " + new TimeSpan(overallTime));
 //
 //  }
+  void dumpDocAnnot(CAS cas) {
+    CASImpl c = (CASImpl) cas;
+    c.forAllViews(view -> {
+      Annotation a = view.getDocumentAnnotationNoCreate();
+      System.out.format(
+          "docA for view %s : %s%n",
+          view.getViewName(),
+          ((a == null) ? "null" : a));
+      });
+    System.out.println("");
+  }
 }

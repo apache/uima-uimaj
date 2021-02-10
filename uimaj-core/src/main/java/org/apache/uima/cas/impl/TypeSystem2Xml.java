@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,8 +45,7 @@ import org.xml.sax.SAXException;
  */
 public class TypeSystem2Xml {
   /**
-   * Converts a TypeSystem object to XML.
-   * Built-in types and Array types (e.g. Annotation[]) are not included.
+   * Converts a TypeSystem object to XML.  Built-in types and array types are not included.
    * 
    * @param aTypeSystem
    *          the TypeSystem to convert
@@ -79,10 +79,10 @@ public class TypeSystem2Xml {
     ResourceSpecifierFactory factory = UIMAFramework.getResourceSpecifierFactory();
     TypeSystemDescription tsDesc = factory.createTypeSystemDescription();
 
-    List<TypeDescription> typeDescs = new ArrayList<TypeDescription>();
+    List<TypeDescription> typeDescs = new ArrayList<>();
     Iterator<Type> typeIterator = aTypeSystem.getTypeIterator();
     while (typeIterator.hasNext()) {
-      Type type = typeIterator.next();
+      TypeImpl type = (TypeImpl) typeIterator.next();
 
       Type superType = aTypeSystem.getParent(type);
       if ((type.getName().startsWith("uima.cas") && type.isFeatureFinal()) || type.isArray()) {
@@ -93,8 +93,8 @@ public class TypeSystem2Xml {
       typeDesc.setName(type.getName());
       typeDesc.setSupertypeName(superType.getName());
       LowLevelTypeSystem llts = aTypeSystem.getLowLevelTypeSystem();
-      List<FeatureDescription> featDescs = new ArrayList<FeatureDescription>();
-      Iterator<Feature> featIterator = type.getFeatures().iterator();
+      List<FeatureDescription> featDescs = new ArrayList<>();
+      Iterator<FeatureImpl> featIterator = Arrays.asList(type.getFeatureImpls()).iterator();
       while (featIterator.hasNext()) {
         Feature feat = featIterator.next();
         if (!feat.getDomain().equals(type)) {
@@ -158,9 +158,9 @@ public class TypeSystem2Xml {
       typeDesc.setFeatures(featDescArr);
 
       // check for string subtypes
-      if (type instanceof StringTypeImpl) {
-	LowLevelTypeSystem lts = aTypeSystem.getLowLevelTypeSystem();
-	final int typeCode = lts.ll_getCodeForType(type);
+      if (type instanceof TypeImpl_string) {
+        LowLevelTypeSystem lts = aTypeSystem.getLowLevelTypeSystem();
+        final int typeCode = lts.ll_getCodeForType(type);
         String[] strings = lts.ll_getStringSet(typeCode);
         AllowedValue[] allowedVals = new AllowedValue[strings.length];
         for (int i = 0; i < strings.length; i++) {
