@@ -18,6 +18,8 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
+import static org.apache.uima.internal.util.MetaDataObjectUtils.cloneMap;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -146,6 +148,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getFrameworkImplementation()
    */
+  @Override
   public String getFrameworkImplementation() {
     return mFrameworkImplementation;
   }
@@ -153,6 +156,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#setFrameworkImplementation(java.lang.String)
    */
+  @Override
   public void setFrameworkImplementation(String aFrameworkImplementation) {
     mFrameworkImplementation = aFrameworkImplementation;
   }
@@ -160,6 +164,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#isPrimitive()
    */
+  @Override
   public boolean isPrimitive() {
     return mPrimitive;
   }
@@ -167,6 +172,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#setPrimitive(boolean)
    */
+  @Override
   public void setPrimitive(boolean aPrimitive) {
     mPrimitive = aPrimitive;
   }
@@ -174,6 +180,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getAnnotatorImplementationName()
    */
+  @Override
   public String getAnnotatorImplementationName() {
     return getImplementationName();
   }
@@ -181,6 +188,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#setAnnotatorImplementationName(String)
    */
+  @Override
   public void setAnnotatorImplementationName(String aImplementationName) {
     setImplementationName(aImplementationName);
   }
@@ -188,6 +196,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()
    */
+  @Override
   public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiers() throws InvalidXMLException {
     resolveDelegateAnalysisEngineImports(UIMAFramework.newDefaultResourceManager(), false);
     return Collections.unmodifiableMap(mDelegateAnalysisEngineSpecifiers);
@@ -196,6 +205,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()
    */
+  @Override
   public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiers(ResourceManager aResourceManager)
           throws InvalidXMLException {
     resolveDelegateAnalysisEngineImports(aResourceManager, false);
@@ -205,6 +215,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiersWithImports()
    */
+  @Override
   public Map<String, MetaDataObject> getDelegateAnalysisEngineSpecifiersWithImports() {
     return mDelegateAnalysisEngineSpecifiersWithImports;
   }
@@ -214,6 +225,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getFlowControllerDeclaration()
    */
+  @Override
   public FlowControllerDeclaration getFlowControllerDeclaration() {
     return mFlowControllerDeclaration;
   }
@@ -223,10 +235,12 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#setFlowController(org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration)
    */
+  @Override
   public void setFlowControllerDeclaration(FlowControllerDeclaration aFlowControllerDeclaration) {
     mFlowControllerDeclaration = aFlowControllerDeclaration;
   }
 
+  @Override
   public Map<String, ResourceSpecifier> getAllComponentSpecifiers(ResourceManager aResourceManager) throws InvalidXMLException {
     if (aResourceManager == null) {
       aResourceManager = UIMAFramework.newDefaultResourceManager();
@@ -243,6 +257,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getAnalysisEngineMetaData()
    */
+  @Override
   public AnalysisEngineMetaData getAnalysisEngineMetaData() {
     return (AnalysisEngineMetaData) getMetaData();
   }
@@ -252,6 +267,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getSofaMappings()
    */
+  @Override
   public SofaMapping[] getSofaMappings() {
     return mSofaMappings;
   }
@@ -261,6 +277,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#setSofaMappings(org.apache.uima.analysis_engine.metadata.SofaMapping[])
    */
+  @Override
   public void setSofaMappings(SofaMapping[] aSofaMappings) {
     mSofaMappings = aSofaMappings;
   }
@@ -270,6 +287,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#doFullValidation()
    */
+  @Override
   public void doFullValidation() throws ResourceInitializationException {
     // attempt to instantiate AE in "verification mode"
     Map<String, Object> m = new HashMap<>();
@@ -284,6 +302,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
+  @Override
   public void doFullValidation(ResourceManager aResourceManager)
           throws ResourceInitializationException {
     // attempt to instantiate AE in "verification mode"
@@ -308,6 +327,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @throws ResourceConfigurationException
    *           if the configuration parameter settings in <code>aDesc</code> are invalid
    */
+  @Override
   public void validate(ResourceManager aResourceManager) throws ResourceInitializationException, ResourceConfigurationException {
     // do validation common to all descriptor types (e.g. config parameters)
     super.validate(aResourceManager);
@@ -353,6 +373,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @throws ResourceInitializationException
    *           if there is an invalid parameter override declaration
    */
+  @Override
   protected void checkForInvalidParameterOverrides(ConfigurationParameter[] aParams,
           String aGroupName, ResourceManager aResourceManager) throws ResourceInitializationException {
     //make sure delegate analysis engine specifiers are resolved using the correct resource manager
@@ -433,6 +454,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @throws ResourceInitializationException
    *           if there's a problem resolving imports
    */
+  @Override
   public ResourceSpecifier getComponentSpecifier(String key) throws ResourceInitializationException {
     ResourceSpecifier componentSpecifier;
     if (getFlowControllerDeclaration() != null
@@ -458,8 +480,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @throws ResourceInitializationException -
    */
   protected void validateSofaMappings() throws ResourceInitializationException {
-    if (this.isPrimitive())
+    if (this.isPrimitive()) {
       return;
+    }
     String aggName = this.getAnalysisEngineMetaData().getName();
     // build an actual Map (key: componentKey@/@componentSofa) from the sofa mappings
     // along the way check that all component keys and component sofa names exist
@@ -660,6 +683,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see MetaDataObject#listAttributes()
    * @deprecated never called anymore - getAdditionalAttributes called instead
    */
+  @Override
   @Deprecated
   public List<NameClassPair> listAttributes() {
     List<NameClassPair> result = super.listAttributes();
@@ -674,6 +698,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#toXML(java.io.OutputStream,
    *      boolean)
    */
+  @Override
   public void toXML(OutputStream aOutputStream, boolean aPreserveDelegateAnalysisEngineImports)
           throws SAXException, IOException {
     if (aPreserveDelegateAnalysisEngineImports) {
@@ -693,6 +718,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#toXML(java.io.Writer, boolean)
    */
+  @Override
   public void toXML(Writer aWriter, boolean aPreserveDelegateAnalysisEngineImports)
           throws SAXException, IOException {
     if (aPreserveDelegateAnalysisEngineImports) {
@@ -713,6 +739,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#toXML(org.xml.sax.ContentHandler,
    *      boolean, boolean)
    */
+  @Override
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute,
           boolean aPreserveDelegateAnalysisEngineImports) throws SAXException {
     if (aPreserveDelegateAnalysisEngineImports) {
@@ -732,6 +759,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#resolveImports(org.apache.uima.resource.ResourceManager)
    */
+  @Override
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
     resolveImports(new HashSet<>(), aResourceManager);
   }
@@ -742,6 +770,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#resolveImports(java.util.Collection,
    *      org.apache.uima.resource.ResourceManager)
    */
+  @Override
   public void resolveImports(Collection<String> aAlreadyImportedDelegateAeUrls,
           ResourceManager aResourceManager) throws InvalidXMLException {
     // add our own URL, if known, to the collection of already imported URLs
@@ -880,6 +909,24 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     }
   }
 
+  @Override
+  public Object clone() {
+    AnalysisEngineDescription_impl clonedDescription = (AnalysisEngineDescription_impl) super.clone();
+    
+    // Deeply clone fields which are internal state and not exposed as MetaDataObjects
+    // to avoid having an unexpected hidden linked state between the clones
+    clonedDescription.mDelegateAnalysisEngineSpecifiers = cloneMap(
+            clonedDescription.mDelegateAnalysisEngineSpecifiers);
+
+    clonedDescription.mDelegateAnalysisEngineSpecifiersWithImports = cloneMap(
+            clonedDescription.mDelegateAnalysisEngineSpecifiersWithImports);
+
+    clonedDescription.mProcessedImports = cloneMap(
+            clonedDescription.mProcessedImports);
+
+    return clonedDescription;
+  }
+  
   /**
    * Overridden to handle XML export of the DelegateAnalysisEngineSpecifiers attribute. This
    * attribute has a value of type <code>Map</code>, which is not handled by the default XML
@@ -953,6 +1000,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     }
   }
 
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
