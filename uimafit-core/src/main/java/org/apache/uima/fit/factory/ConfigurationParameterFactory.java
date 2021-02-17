@@ -42,6 +42,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
+import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.springframework.beans.SimpleTypeConverter;
 import org.springframework.beans.TypeMismatchException;
 
@@ -548,8 +549,23 @@ public final class ConfigurationParameterFactory {
         settings.put(p.getName(), p.getValue());
       }
     } else if (spec instanceof PearSpecifier) {
-      for (Parameter p : ((PearSpecifier) spec).getParameters()) {
-        settings.put(p.getName(), p.getValue());
+      PearSpecifier pearSpec = ((PearSpecifier) spec);
+      // Legacy parameters that only support string values.
+      Parameter[] parameters = pearSpec.getParameters();
+
+      if (parameters != null) {
+        for (Parameter parameter : parameters) {
+          settings.put(parameter.getName(), parameter.getValue());
+        }
+      }      
+
+      // Parameters supporting arbitrary objects as values
+      NameValuePair[] pearParameters = pearSpec.getPearParameters();
+
+      if (pearParameters != null) {
+        for (NameValuePair pearParameter : pearParameters) {
+          settings.put(pearParameter.getName(), pearParameter.getValue());
+        }
       }
     } else if (spec instanceof ResourceCreationSpecifier) {
       for (NameValuePair p : ((ResourceCreationSpecifier) spec).getMetaData()
@@ -609,23 +625,36 @@ public final class ConfigurationParameterFactory {
     } else if (aSpec instanceof PearSpecifier) {
       PearSpecifier spec = (PearSpecifier) aSpec;
 
-      // If the parameter is already there, update it
       boolean found = false;
-      for (Parameter p : spec.getParameters()) {
+      
+      // Check modern parameters and if the parameter is present there, update it
+      NameValuePair[] parameters = spec.getPearParameters();
+      for (NameValuePair p : parameters) {
         if (p.getName().equals(name)) {
-          p.setValue((String) value);
+          p.setValue(value);
           found = true;
+        }
+      }
+      
+      // Check legacy parameters and if the parameter is present there, update it
+      Parameter[] legacyParameters = spec.getParameters();
+      if (legacyParameters != null) {
+        for (Parameter p : legacyParameters) {
+          if (p.getName().equals(name)) {
+            p.setValue((String) value);
+            found = true;
+          }
         }
       }
 
       // If the parameter is not there, add it
       if (!found) {
-        Parameter[] params = new Parameter[spec.getParameters().length + 1];
-        System.arraycopy(spec.getParameters(), 0, params, 0, spec.getParameters().length);
-        params[params.length - 1] = new Parameter_impl();
+        NameValuePair[] params = new NameValuePair[parameters.length + 1];
+        System.arraycopy(parameters, 0, params, 0, parameters.length);
+        params[params.length - 1] = new NameValuePair_impl();
         params[params.length - 1].setName(name);
-        params[params.length - 1].setValue((String) value);
-        spec.setParameters(params);
+        params[params.length - 1].setValue(value);
+        spec.setPearParameters(params);
       }
     } else if (aSpec instanceof ResourceCreationSpecifier) {
       ResourceMetaData md = ((ResourceCreationSpecifier) aSpec).getMetaData();
