@@ -147,7 +147,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     
-    <japicmp.postAnalysisScript>${project.basedir}/../uimaj-parent/src/main/groovy/api-report.groovy</japicmp.postAnalysisScript>
     <api_check_oldVersion>3.1.1</api_check_oldVersion>
   </properties>
   
