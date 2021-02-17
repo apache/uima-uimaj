@@ -858,7 +858,7 @@ public class JCasUtilTest extends ComponentTestBase {
   }
 
   @Test
-  public void thatSelectFollowingDoesNotFindZeroWidthAnnotationAtEnd()
+  public void thatSelectFollowingDoesFindZeroWidthAnnotationAtEnd()
   {
     Annotation a1 = new Annotation(jCas, 10, 20);
     Annotation a2 = new Annotation(jCas, 20, 20);
@@ -868,11 +868,11 @@ public class JCasUtilTest extends ComponentTestBase {
     List<Annotation> selection = selectFollowing(Annotation.class, a1, MAX_VALUE);
     
     assertThat(selection)
-            .isEmpty();
+            .containsExactly(a2);
   }
 
   @Test
-  public void thatSelectPrecedingDoesNotFindZeroWidthAnnotationAtStart()
+  public void thatSelectPrecedingDoesFindZeroWidthAnnotationAtStart()
   {
     Annotation a1 = new Annotation(jCas, 10, 20);
     Annotation a2 = new Annotation(jCas, 10, 10);
@@ -882,11 +882,11 @@ public class JCasUtilTest extends ComponentTestBase {
     List<Annotation> selection = selectPreceding(Annotation.class, a1, MAX_VALUE);
     
     assertThat(selection)
-            .isEmpty();
+            .containsExactly(a2);
   }
 
   @Test
-  public void thatSelectPrecedingOnZeroWidthDoesNotFindAnnotationEndingAtSameLocation()
+  public void thatSelectPrecedingOnZeroWidthDoesFindAnnotationEndingAtSameLocation()
   {
     Annotation a1 = new Annotation(jCas, 10, 20);
     Annotation a2 = new Annotation(jCas, 20, 20);
@@ -896,7 +896,7 @@ public class JCasUtilTest extends ComponentTestBase {
     List<Annotation> selection = selectPreceding(Annotation.class, a2, MAX_VALUE);
     
     assertThat(selection)
-            .isEmpty();
+            .containsExactly(a1);
   }
 
   @Test
