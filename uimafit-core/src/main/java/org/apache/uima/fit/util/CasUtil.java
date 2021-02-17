@@ -1233,10 +1233,11 @@ public final class CasUtil {
       int curEnd = cur.getEnd();
 
       if (
-              curEnd <= anchorBegin ||
-              (cur.getBegin() == curEnd && curEnd == anchorBegin)
+              (curEnd <= anchorBegin
+              || (cur.getBegin() == curEnd && curEnd == anchorBegin))
+              && cur != anchor
       ) {
-        precedingAnnotations.add(itr.get());
+        precedingAnnotations.add(cur);
         i++;
       }
     }
@@ -1253,25 +1254,24 @@ public final class CasUtil {
    *          a CAS.
    * @param type
    *          a UIMA type.
-   * @param annotation
+   * @param anchor
    *          anchor annotation
    * @param count
    *          number of annotations to collect
    * @return List of aType annotations following anchor annotation
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static List<AnnotationFS> selectFollowing(CAS cas, Type type, AnnotationFS annotation,
+  public static List<AnnotationFS> selectFollowing(CAS cas, Type type, AnnotationFS anchor,
           int count) {
     requireAnnotationType(cas, type);
 
     // Seek annotation in index
     // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
     FSIterator<AnnotationFS> itr = cas.getAnnotationIndex(type).iterator();
-    itr.moveTo(annotation);
+    itr.moveTo(anchor);
     
-    int anchorBegin = annotation.getBegin();
-    int anchorEnd = annotation.getBegin();
-
+    int anchorBegin = anchor.getBegin();
+    int anchorEnd = anchor.getEnd();
 
     // When seeking forward, there is no need to check if the insertion point is beyond the
     // index. If it was, there would be nothing beyond it that could be found and returned.
@@ -1283,13 +1283,13 @@ public final class CasUtil {
     // does not have to worry about type priorities - it never returns annotations that have
     // the same offset as the reference annotation.
 
-    if (annotation.getBegin() == annotation.getEnd()) {
+    if (anchorBegin == anchorEnd) {
       // zero-width annotations appear *after* larger annotations with the same start position in
       // the index but the larger annotations are considered to be *following* the zero-width, so we
       // have to look to the left for larger annotations...
       if (itr.isValid()) {
         itr.moveToPrevious();
-        while (itr.isValid() && itr.getNvc().getBegin() == annotation.getBegin()) {
+        while (itr.isValid() && itr.getNvc().getBegin() == anchorBegin) {
           itr.moveToPrevious();
         }
         
@@ -1306,16 +1306,16 @@ public final class CasUtil {
     }
     
     // make sure we're past the end of the reference annotation
-    while (itr.isValid() && itr.get().getBegin() < annotation.getEnd()) {
+    while (itr.isValid() && itr.get().getBegin() < anchorEnd) {
       itr.moveToNext();
     }
 
     // add annotations from the iterator into the result list
     List<AnnotationFS> followingAnnotations = new ArrayList<AnnotationFS>();
     for (int i = 0; i < count && itr.isValid(); itr.moveToNext()) {
-      AnnotationFS a = itr.get();
-      if (a.getBegin() >= annotation.getEnd()) {
-        followingAnnotations.add(itr.get());
+      AnnotationFS cur = itr.get();
+      if (cur != anchor && cur.getBegin() >= anchorEnd) {
+        followingAnnotations.add(cur);
         i ++;
       }
     }
