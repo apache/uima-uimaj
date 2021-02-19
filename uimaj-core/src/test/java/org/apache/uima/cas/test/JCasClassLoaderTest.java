@@ -57,11 +57,11 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.impl.AnnotationImpl;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.TypeDescription;
@@ -159,7 +159,7 @@ public class JCasClassLoaderTest {
     
     try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
       softly.assertThat(casTokenClassViaClassloader).isNull();
-      softly.assertThat(casTokenClassViaCas).isSameAs(AnnotationImpl.class);
+      softly.assertThat(casTokenClassViaCas).isSameAs(Annotation.class);
       softly.assertThat(addTokenAETokenClass).isNotNull();
       softly.assertThat(fetchTokenAETokenClass).isNotNull();
       softly.assertThat(addTokenAETokenClass)
@@ -221,7 +221,7 @@ public class JCasClassLoaderTest {
     
     try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
       softly.assertThat(casTokenClassViaClassloader).isNull();
-      softly.assertThat(casTokenClassViaCas).isSameAs(AnnotationImpl.class);
+      softly.assertThat(casTokenClassViaCas).isSameAs(Annotation.class);
       softly.assertThat(addTokenAETokenClass).isNotNull();
       softly.assertThat(fetchTokenAETokenClass).isNotNull();
       softly.assertThat(addTokenAETokenClass)
@@ -249,7 +249,7 @@ public class JCasClassLoaderTest {
    * The expectation here is that at the moment when the JCas is passed to the analysis engines,
    * {@link PrimitiveAnalysisEngine_impl#callAnalysisComponentProcess(CAS) it is reconfigured} using
    * {@link CASImpl#switchClassLoaderLockCasCL(ClassLoader)} to use the classloader defined in the
-   * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the anlysis
+   * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the analysis
    * engines should use its own version of the JCas wrappers to access the CAS. In particular, they
    * should not use the global JCas wrappers which were known to the JCas when it was first
    * initialized.
@@ -282,7 +282,9 @@ public class JCasClassLoaderTest {
 
     try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
       softly.assertThat(casTokenClassViaClassloader).isNotNull();
-      softly.assertThat(casTokenClassViaCas).isSameAs(Token.class);
+      softly.assertThat(casTokenClassViaCas)
+          .as("System-level Token wrapper loader and Token wrapper in the CAS are the same")
+          .isSameAs(Token.class);
       softly.assertThat(addTokenAETokenClass).isNotNull();
       softly.assertThat(fetchTokenAETokenClass).isNotNull();
       softly.assertThat(casTokenClassViaClassloader)
@@ -355,7 +357,7 @@ public class JCasClassLoaderTest {
     
     try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
       softly.assertThat(casTokenClassViaClassloader).isNull();
-      softly.assertThat(casTokenClassViaCas).isSameAs(AnnotationImpl.class);
+      softly.assertThat(casTokenClassViaCas).isSameAs(Annotation.class);
       softly.assertThat(addTokenAETokenClass).isNotNull();
       softly.assertThat(fetchTokenAETokenClass).isNotNull();
       softly.assertThat(casTokenClassViaClassloader)
@@ -411,7 +413,7 @@ public class JCasClassLoaderTest {
 
     try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
       softly.assertThat(casTokenClassViaClassloader).isNull();
-      softly.assertThat(casTokenClassViaCas).isSameAs(AnnotationImpl.class);
+      softly.assertThat(casTokenClassViaCas).isSameAs(Annotation.class);
       softly.assertThat(addTokenAETokenClass).isNotNull();
       softly.assertThat(casTokenClassViaClassloader)
               .as("JCas and AddTokenAnnotator use different Token wrappers")
@@ -456,7 +458,7 @@ public class JCasClassLoaderTest {
 
     try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
       softly.assertThat(casTokenClassViaClassloader).isNull();
-      softly.assertThat(casTokenClassViaCas).isSameAs(AnnotationImpl.class);
+      softly.assertThat(casTokenClassViaCas).isSameAs(Annotation.class);
       softly.assertThat(addTokenAETokenClass).isNotNull();
       softly.assertThat(casTokenClassViaClassloader)
               .as("JCas and AddTokenAnnotator use different Token wrappers")
@@ -579,10 +581,15 @@ public class JCasClassLoaderTest {
         CASImpl cas = (CASImpl) createCas(tsd, null, null, null, resMgr);
         cas.setJCasClassLoader(cl);
 
+        // Unless we call getJCas here, the following createAnnotation() call may actually not
+        // create the expected JCas wrappers because the CAS FS generators are still set up for
+        // CAS mode only (i.e. creating AnnotationImpl for all annoations).
+        JCas jcas = cas.getJCas();
+        
         casTokenClassViaCas = cas
                 .createAnnotation(cas.getTypeSystem().getType(TYPE_NAME_TOKEN), 0, 0).getClass();
         
-        return cas.getJCas();
+        return jcas;
       }
       catch (Exception e) {
         throw new RuntimeException(e);
