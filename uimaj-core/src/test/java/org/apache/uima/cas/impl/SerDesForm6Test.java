@@ -18,14 +18,14 @@
  */
 package org.apache.uima.cas.impl;
 
-import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.EqTwoTypes;
-import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.OneType;
-import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.OneTypeSubsetFeatures;
-import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.TwoTypes;
-import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.TwoTypesNoFeatures;
-import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.TwoTypesSubsetFeatures;
-import static org.apache.uima.cas.impl.SerDesTest6.Types.Akof1;
-import static org.apache.uima.cas.impl.SerDesTest6.Types.Akof2;
+import static org.apache.uima.cas.impl.SerDesForm6Test.TypeSystems.EqTwoTypes;
+import static org.apache.uima.cas.impl.SerDesForm6Test.TypeSystems.OneType;
+import static org.apache.uima.cas.impl.SerDesForm6Test.TypeSystems.OneTypeSubsetFeatures;
+import static org.apache.uima.cas.impl.SerDesForm6Test.TypeSystems.TwoTypes;
+import static org.apache.uima.cas.impl.SerDesForm6Test.TypeSystems.TwoTypesNoFeatures;
+import static org.apache.uima.cas.impl.SerDesForm6Test.TypeSystems.TwoTypesSubsetFeatures;
+import static org.apache.uima.cas.impl.SerDesForm6Test.Types.Akof1;
+import static org.apache.uima.cas.impl.SerDesForm6Test.Types.Akof2;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -70,15 +70,11 @@ import junit.framework.TestCase;
 
 /**
  * Serializer and Deserializer testing
- * 
- * 
  */
-public class SerDesTest6 extends SerDesTstCommon {
+public class SerDesForm6Test extends SerDesTstCommon {
 
   /**
    * TwoType, EqTwoTypes, TwoTypesSubsetFeatures, TwoTypesNoFeatures have Akof1 and Akof2
-   *   
-   *
    */
   enum TypeSystems {
     TwoTypes,    // two types, Akof1 Akof2, with all features, one type system

@@ -47,7 +47,7 @@ import org.apache.uima.util.XMLInputSource;
 
 import junit.framework.TestCase;
 
-public class OrderedFsSet_array_test extends TestCase {
+public class OrderedFsSet_array_Test extends TestCase {
 
   static File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
   static int SZ = 23;

@@ -36,7 +36,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 // tests without initializing JCas
-public class SelectFsTestNoJCas  {
+public class SelectFsNoJCasTest  {
 
   private static TypeSystemDescription typeSystemDescription;
   

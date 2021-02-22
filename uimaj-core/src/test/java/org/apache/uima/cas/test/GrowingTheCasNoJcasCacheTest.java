@@ -44,7 +44,7 @@ import junit.framework.TestCase;
  * Class comment for IteratorTest.java goes here.
  * 
  */
-public class GrowingTheCasTestNoJcasCache extends TestCase {
+public class GrowingTheCasNoJcasCacheTest extends TestCase {
   
   private final static int REPETITIONS = 1;
 
@@ -52,7 +52,7 @@ public class GrowingTheCasTestNoJcasCache extends TestCase {
 
   private JCas smallHeapCas = null;
 
-  public GrowingTheCasTestNoJcasCache(String arg0) {
+  public GrowingTheCasNoJcasCacheTest(String arg0) {
     super(arg0);
   }
 
@@ -172,7 +172,7 @@ public class GrowingTheCasTestNoJcasCache extends TestCase {
   }
 
   public static void main(String[] args) {
-    junit.textui.TestRunner.run(GrowingTheCasTestNoJcasCache.class);
+    junit.textui.TestRunner.run(GrowingTheCasNoJcasCacheTest.class);
   }
 
 }

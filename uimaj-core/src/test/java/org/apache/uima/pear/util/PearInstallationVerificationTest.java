@@ -41,7 +41,7 @@ import org.junit.rules.TemporaryFolder;
 /**
  * Test the pear installation verification
  */
-public class TestPearInstallationVerification {
+public class PearInstallationVerificationTest {
 
   // Temporary working directory, used to install the pear package
   public @Rule TemporaryFolder temp = new TemporaryFolder();

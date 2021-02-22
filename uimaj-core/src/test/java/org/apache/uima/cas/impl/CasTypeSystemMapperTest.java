@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  *   Verify appropriate mapping is there.
  */
 
-public class CasTypeSystemMapperTst extends TestCase {
+public class CasTypeSystemMapperTest extends TestCase {
   
   private static TypeSystemImpl tsi = (TypeSystemImpl) CASFactory.createTypeSystem();  // just to get the built-ins
   private static int t0 = tsi.getNumberOfTypes();
