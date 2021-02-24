@@ -70,7 +70,7 @@ import junit.framework.TestCase;
  *    
  * 
  */
-public class IteratorTestSorted extends TestCase {
+public class IteratorSortedTest extends TestCase {
   static final int REPETITIONS = // 100_000_000; 1000 secs = 17 min
                                   100_000;  // 1 second + startup time ~ .8 sec
 //                                    1000000;
@@ -126,7 +126,7 @@ public class IteratorTestSorted extends TestCase {
   }
   
  
-  public IteratorTestSorted(String arg) {
+  public IteratorSortedTest(String arg) {
     super(arg);
   }
   

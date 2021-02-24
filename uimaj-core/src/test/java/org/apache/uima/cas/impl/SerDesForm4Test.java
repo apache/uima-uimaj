@@ -73,7 +73,7 @@ import junit.framework.TestCase;
  * Has main method for creating resources to use in testing
  *   will update resources in SerDes4.  If you do this by mistake, just revert those resources.
  */
-public class SerDesTest4 extends SerDesTstCommon {
+public class SerDesForm4Test extends SerDesTstCommon {
 
   // FIXME need to understand why includeUid is false, seems to be disabling some testing Nov 2016
   private static final boolean includeUid = false;
@@ -263,7 +263,7 @@ public class SerDesTest4 extends SerDesTstCommon {
     }
   }
 
-  public SerDesTest4() {
+  public SerDesForm4Test() {
   }
 
   public void setUp() {

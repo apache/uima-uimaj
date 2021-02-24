@@ -27,7 +27,7 @@ import org.apache.uima.internal.util.IntListIterator;
 
 import junit.framework.TestCase;
 
-public class IntArrayRBTtest extends TestCase {
+public class IntArrayRBTTest extends TestCase {
   private final static int NIL = 0;
   static final Random rand = new Random();    
   static {  

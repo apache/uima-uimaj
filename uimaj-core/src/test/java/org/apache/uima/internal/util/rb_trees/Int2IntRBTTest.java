@@ -29,7 +29,7 @@ import org.apache.uima.internal.util.IntListIterator;
 
 import junit.framework.TestCase;
 
-public class Int2IntRBTtest extends TestCase {
+public class Int2IntRBTTest extends TestCase {
   
   public void testexpand() {
     Int2IntRBT ia = new Int2IntRBT();

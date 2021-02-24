@@ -1478,7 +1478,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     private void addModifiedStrings() {
 //      System.out.println("Enter addModifiedStrings");
       for (FsChange changedFs : modifiedFSs) {
-        final TOP fs = (TOP) changedFs.fs;
+        final TOP fs = changedFs.fs;
         final TypeImpl srcType = fs._getTypeImpl();
         if (isTypeMapping && null == typeMapper.mapTypeSrc2Tgt(srcType)) {
           continue; // skip this fs - it's not in target type system
@@ -2064,8 +2064,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         break;
       
       case Slot_HeapRef: {
-        FSArray fsa = (FSArray)fs;
-        int prev = getPrevIntValue(TypeSystemConstants.fsArrayTypeCode, 0);
+        FSArray fsa = (FSArray) fs;
+        TypeImpl_array arrayType = (TypeImpl_array) fsa._getTypeImpl();
+        int prev = getPrevIntValue(arrayType.getCode(), 0);
         for (int i = 0; i < length; i++) {
           final int v = readDiff(Slot_HeapRef, prev);
           prev = v;
@@ -2884,7 +2885,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         }
       }
     }
-    TypeImpl topType = (TypeImpl) cas1.getTypeSystemImpl().getTopType();
+    TypeImpl topType = cas1.getTypeSystemImpl().getTopType();
 
     // write (id's only, for index info) and/or enqueue indexed FSs, either all, or (for delta writes) the added/deleted/reindexed ones
     cas1.forAllViews(view -> {
@@ -3413,7 +3414,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * @return 0 or the mapped src id
    */
   private int getTgtSeqFromSrcFS(TOP fs) {
-    if (null == fs) return 0;
+    if (null == fs) {
+      return 0;
+    }
     if (isTypeMapping) {
       if (typeMapper.mapTypeSrc2Tgt(fs._getTypeImpl()) == null) {
         return 0;

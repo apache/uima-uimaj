@@ -32,7 +32,7 @@ import junit.framework.TestCase;
 /**
  * UIMA Logging Test
  */
-public class TestLog4jLogger_impl extends TestCase {
+public class Log4jLogger_implTest extends TestCase {
 
    @Override
   public void setUp() throws Exception {
@@ -210,7 +210,7 @@ public class TestLog4jLogger_impl extends TestCase {
          nbrcalls[0] ++;
          StackTraceElement ste = event.getSource();
          System.out.printf("[%s:%s] %s%n", ste.getFileName(), ste.getLineNumber(), event.getMessage().getFormattedMessage());
-         assertEquals(TestLog4jLogger_impl.this.getClass().getName() , ste.getClassName());
+         assertEquals(Log4jLogger_implTest.this.getClass().getName() , ste.getClassName());
          return Result.DENY;
        }
      };
@@ -321,7 +321,7 @@ public class TestLog4jLogger_impl extends TestCase {
          nbrcalls[0] ++;
          StackTraceElement ste = event.getSource();
          System.out.printf("[%s:%s] %s%n", ste.getFileName(), ste.getLineNumber(), event.getMessage().getFormattedMessage());
-         assertEquals(TestLog4jLogger_impl.this.getClass().getSimpleName()+".java", ste.getFileName());
+         assertEquals(Log4jLogger_implTest.this.getClass().getSimpleName()+".java", ste.getFileName());
          return Result.DENY;
        }
     }; 
