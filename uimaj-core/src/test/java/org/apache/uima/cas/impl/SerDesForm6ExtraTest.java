@@ -50,6 +50,25 @@ public class SerDesForm6ExtraTest {
 
   @Test
   public void thatArraySubtypesCanBeDeserialized() throws Exception {
+
+    CAS cas = prepCasWithNegativeDeltaReference();
+    
+    // Now finally test whether form 6 serialization can handle the Element[] type and the negative
+    // delta reference
+    byte[] form6Data;
+    try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+      CasIOUtils.save(cas, bos, COMPRESSED_FILTERED_TSI);
+      form6Data = bos.toByteArray();
+    }
+    
+    try (ByteArrayInputStream bis = new ByteArrayInputStream(form6Data)) {
+      TypeSystem ts = cas.getTypeSystem();
+      Serialization.deserializeCAS(cas, bis, ts, null);
+    }
+  }
+
+  private CAS prepCasWithNegativeDeltaReference() throws Exception
+  {
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType(TYPE_NAME_ELEMENT, NO_DESCRIPTION, TYPE_NAME_ANNOTATION);
     TypeDescription arrayHolderTypeDesc = tsd.addType(TYPE_NAME_ARRAY_HOLDER, NO_DESCRIPTION,
@@ -61,7 +80,6 @@ public class SerDesForm6ExtraTest {
     CAS cas = createCas(tsd, null, null);
     cas.setDocumentText("This is a test.");
 
-    TypeSystem ts = cas.getTypeSystem();
     Type elementType = cas.getTypeSystem().getType(TYPE_NAME_ELEMENT);
     Type holderType = cas.getTypeSystem().getType(TYPE_NAME_ARRAY_HOLDER);
 
@@ -99,23 +117,12 @@ public class SerDesForm6ExtraTest {
     // While deserializing the XMI, the specific array subtype "Element[]" should be created
     try (ByteArrayInputStream bis = new ByteArrayInputStream(xmiData)) {
       CasIOUtils.load(bis, cas);
-    }
+    }    
     
     Type elementArrayType = cas.getTypeSystem().getArrayType(elementType);
     assertThat(elementArrayType).isNotNull();
     // END: Setup Element[] type
     
-    
-    // Now finally test whether form 6 serialization can handle the Element[] type and the negative
-    // delta reference
-    byte[] form6Data;
-    try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-      CasIOUtils.save(cas, bos, COMPRESSED_FILTERED_TSI);
-      form6Data = bos.toByteArray();
-    }
-    
-    try (ByteArrayInputStream bis = new ByteArrayInputStream(form6Data)) {
-      Serialization.deserializeCAS(cas, bis, ts, null);
-    }
+    return cas;
   }
 }
