@@ -178,7 +178,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     case org.apache.uima.util.Level.INFO_INT:
       return logger.isInfoEnabled();
     case org.apache.uima.util.Level.CONFIG_INT:
-      return logger.isInfoEnabled(UIMA_MARKER_CONFIG);
+      return logger.isDebugEnabled(UIMA_MARKER_CONFIG);
     case org.apache.uima.util.Level.FINE_INT:
       return logger.isDebugEnabled();
     case org.apache.uima.util.Level.FINER_INT:
