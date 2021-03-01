@@ -100,6 +100,7 @@
                 <excludes combine.children="append">
                   <exclude>checkpoint_synchPoint.xml*</exclude> <!-- test data -->
                   <exclude>checkpoint.dat*</exclude> <!-- test data -->
+                  <exclude>src/test/resources/pearTests/pearForCPMtest.pear</exclude> <!-- binary -->
                 </excludes>
               </configuration>
             </execution>
