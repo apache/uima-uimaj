@@ -76,13 +76,11 @@
 	            <execution>
 	              <id>default-cli</id>
 	              <configuration>
-	                <excludes>
-	                  <exclude>release.properties</exclude> <!-- generated file -->
-	                  <exclude>src/test/resources/CasSerialization/expected/json/*.txt</exclude>                  
-                    <exclude>src/test/resources/CasSerialization/expected/xmi/*.xml</exclude>                  
+	                <excludes combine.children="append">
+	                  <exclude>src/test/resources/CasSerialization/expected/json/*.txt</exclude>
+                    <exclude>src/test/resources/CasSerialization/expected/xmi/*.xml</exclude>
 	                  <exclude>src/test/resources/CASTests/json/expected/*.json</exclude>
 	                  <exclude>src/test/java/org/apache/uima/test/*.java</exclude>
-	                  <exclude>marker-file-identifying-*</exclude>              
 	               </excludes>
 	              </configuration>
 	            </execution>

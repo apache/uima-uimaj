@@ -97,12 +97,10 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes>
-                  <exclude>release.properties</exclude> <!-- release generated artifact -->
+                <excludes combine.children="append">
                   <exclude>checkpoint_synchPoint.xml*</exclude> <!-- test data -->
                   <exclude>checkpoint.dat*</exclude> <!-- test data -->
-                  <exclude>marker-file-identifying-*</exclude>
-                </excludes>              
+                </excludes>
               </configuration>
             </execution>
           </executions>

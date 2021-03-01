@@ -241,14 +241,8 @@
               <!-- default configuration -->
               <configuration>
                 <excludes combine.children="append">
-                  <exclude>release.properties</exclude> <!-- generated file -->
-                  <exclude>README*</exclude>
-                  <exclude>RELEASE_NOTES*</exclude>
-                  <exclude>issuesFixed/**</exclude> <!-- generated file -->
                   <exclude>src/main/resources/docbook-shared/titlepage/*.xsl</exclude>
-                  <exclude>marker-file-identifying-*</exclude> <!-- empty file -->
-                  <exclude>DEPENDENCIES</exclude>  <!-- generated file -->
-                  <exclude>.idea/**</exclude>
+                  <exclude>src/main/readme/NOTICE-without-jackson</exclude>
                   
                   <!--  workaround https://issues.apache.org/jira/browse/RAT-97 -->
                   <exclude>aggregate-uimaj*/**</exclude>
@@ -270,7 +264,6 @@
                   <exclude>uimaj-bootstrap/**</exclude>
                   <exclude>uimaj-internal-tools/**</exclude>
                   <exclude>uimaj-json/**</exclude>
-                  <exclude>src/main/readme/NOTICE-without-jackson</exclude>
                </excludes>
               </configuration>
             </execution>
