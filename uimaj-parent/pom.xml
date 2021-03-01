@@ -195,24 +195,40 @@
   </dependencies>
 
   <build>
-    <pluginManagement>
-      <plugins>
+    <plugins>
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <executions>
             <execution>
               <id>default-cli</id>
+              <goals><goal>check</goal></goals>
+              <phase>verify</phase>
+              <!-- default configuration -->
               <configuration>
                 <excludes combine.children="append">
                   <exclude>.factorypath</exclude>
-                  <exclude>src/main/run_configuration/*.launch</exclude>
-                </excludes>    
+                  <exclude>.idea/**</exclude>
+                  <!-- Eclipse launch files - no need for a license -->
+                  <exclude>**/run_configuration/*.launch</exclude>
+                  <!-- Maven profile trigger files -->
+                  <exclude>marker-file-identifying-*</exclude>
+                  <!-- Generated files -->
+                  <exclude>release.properties</exclude>
+                  <exclude>issuesFixed/**</exclude>
+                  <exclude>DEPENDENCIES</exclude>
+                  <!-- Simple documentation files not requiring an explicit licenese -->
+                  <exclude>README*</exclude>
+                  <exclude>RELEASE_NOTES*</exclude>
+               </excludes>
               </configuration>
             </execution>
           </executions>
-        </plugin>   
-        
+      </plugin>
+    </plugins>
+  
+    <pluginManagement>
+      <plugins>
         <!-- https://issues.apache.org/jira/browse/UIMA-5367 -->
         <plugin> 
           <groupId>org.apache.maven.plugins</groupId> 
