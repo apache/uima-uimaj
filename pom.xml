@@ -230,15 +230,30 @@
         </executions>
       </plugin>
     
-      <plugin>
+      <plugin> 
+        <artifactId>maven-assembly-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>uima-distr</id>
+                <configuration>
+                  <descriptors>
+                    <descriptor>${assemblyBinDescriptor}</descriptor>
+                  </descriptors>
+                </configuration>              
+              </execution>
+            </executions>
+          </plugin>
+       </plugins>
+  
+    <pluginManagement>
+      <plugins>
+        <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <executions>
             <execution>
               <id>default-cli</id>
-              <goals><goal>check</goal></goals>
-              <phase>verify</phase>
-              <!-- default configuration -->
+                <!-- default configuration -->
               <configuration>
                 <excludes combine.children="append">
                   <exclude>src/main/resources/docbook-shared/titlepage/*.xsl</exclude>
@@ -268,23 +283,9 @@
               </configuration>
             </execution>
           </executions>
-      </plugin>
-    
-      <plugin> 
-        <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>uima-distr</id>
-                <configuration>
-                  <descriptors>
-                    <descriptor>${assemblyBinDescriptor}</descriptor>
-                  </descriptors>
-                </configuration>              
-              </execution>
-            </executions>
-          </plugin>
-         
-     </plugins>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <profiles>
