@@ -270,26 +270,33 @@
         </executions>
       </plugin>
     
-      <plugin>
+      <plugin> 
+        <artifactId>maven-assembly-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>uima-distr</id>
+                <configuration>
+                  <descriptors>
+                    <descriptor>${assemblyBinDescriptor}</descriptor>
+                  </descriptors>
+                </configuration>              
+              </execution>
+            </executions>
+          </plugin>
+       </plugins>
+  
+    <pluginManagement>
+      <plugins>
+        <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <executions>
             <execution>
               <id>default-cli</id>
-              <goals><goal>check</goal></goals>
-              <phase>verify</phase>
-              <!-- default configuration -->
+                <!-- default configuration -->
               <configuration>
                 <excludes combine.children="append">
-                  <exclude>release.properties</exclude> <!-- generated file -->
-                  <exclude>README*</exclude>
-                  <exclude>RELEASE_NOTES*</exclude>
-                  <exclude>issuesFixed/**</exclude> <!-- generated file -->
-                  <exclude>src/main/resources/docbook-shared/titlepage/*.xsl</exclude>
-                  <exclude>marker-file-identifying-*</exclude> <!-- empty file -->
-                  <exclude>DEPENDENCIES</exclude>  <!-- generated file -->
-                  <exclude>.idea/**</exclude>
-                  
+                  <exclude>src/main/bin_distr_license_notices/NOTICE-without-jackson</exclude>
                   <!--  workaround https://issues.apache.org/jira/browse/RAT-97 -->
                   <exclude>aggregate-uimaj*/**</exclude>
                   <exclude>jVinci/**</exclude>
@@ -312,28 +319,13 @@
                   <exclude>uimaj-internal-tools/**</exclude>
                   <exclude>uimaj-json/**</exclude>
                   <exclude>uimaj-v3migration-jcas/**</exclude>
-                  <exclude>src/main/bin_distr_license_notices/NOTICE-without-jackson</exclude>
-               </excludes>
+                </excludes>
               </configuration>
             </execution>
           </executions>
-      </plugin>
-    
-      <plugin> 
-        <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>uima-distr</id>
-                <configuration>
-                  <descriptors>
-                    <descriptor>${assemblyBinDescriptor}</descriptor>
-                  </descriptors>
-                </configuration>              
-              </execution>
-            </executions>
-          </plugin>
-         
-     </plugins>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <profiles>
