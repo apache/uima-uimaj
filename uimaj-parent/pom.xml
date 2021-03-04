@@ -174,4 +174,31 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-cli</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>verify</phase>
+              <!-- default configuration -->
+            <configuration>
+              <excludes combine.children="append">
+                <!-- Eclipse launch files - no need for a license -->
+                <exclude>**/run_configuration/*.launch</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+  
 </project>
