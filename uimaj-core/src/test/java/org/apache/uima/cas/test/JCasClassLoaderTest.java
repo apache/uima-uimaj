@@ -70,7 +70,6 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class JCasClassLoaderTest {
@@ -120,7 +119,6 @@ public class JCasClassLoaderTest {
    * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the anlysis
    * engines should use its own version of the JCas wrappers to access the CAS.
    */
-  @Ignore("Fails sometimes - see UIMA-6310")
   @Test
   public void thatCASCanBeDefinedWithoutJCasWrappersAndTheyComeInWithAnnotatorsViaClasspath() throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
