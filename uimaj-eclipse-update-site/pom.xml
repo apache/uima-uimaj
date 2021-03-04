@@ -214,17 +214,12 @@
 	                          <arg value="${eclipseUpdateSubSite}" />
 	                        </exec> 
 	                        
-	                        <!-- abandon safety for now
-	                        <echo>switching this checkout to ...dev... for safety</echo>
-	                        <exec executable="svn">
-	                          <arg value="switch" />
-	                          <arg value="- -force" />  remove space between 2 dashes if uncommented
-	                          <arg value="- -accept" />  remove space between 2 dashes if uncommented
-	                          <arg value="mine-full" />
-	                          <arg value="${distsvnroot}repos/dist/dev/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
-	                          <arg value="${eclipseUpdateSubSite}" />
-	                        </exec> 
-	                         -->
+                        <echo>Saving original content and artifacts for the site</echo>
+                        <copy todir="${project.build.directory}/saved" failonerror="true">
+                          <fileset dir="${eclipseUpdateSubSite}"
+                            includes="content.jar,artifacts.jar" />
+                        </copy>
+        
 	                      </then>
 	                      <else>
 	                        <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
