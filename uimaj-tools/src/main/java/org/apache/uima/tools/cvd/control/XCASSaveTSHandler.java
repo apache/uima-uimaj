@@ -34,17 +34,31 @@ import org.apache.uima.cas.impl.TypeSystem2Xml;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.xml.sax.SAXException;
 
+
+/**
+ * The Class XCASSaveTSHandler.
+ */
 public class XCASSaveTSHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new XCAS save TS handler.
+   *
+   * @param frame the frame
+   */
   public XCASSaveTSHandler(MainFrame frame) {
     this.main = frame;
   }
 
   /**
+   * Action performed.
+   *
+   * @param event the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
+  @Override
   public void actionPerformed(ActionEvent event) {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Save type system file");

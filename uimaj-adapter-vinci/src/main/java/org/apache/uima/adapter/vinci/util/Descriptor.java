@@ -30,6 +30,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Instance of this class handles parsing of the xml descriptor files. It also retrieves values of
  * the named attributes of the named elements.
@@ -39,20 +40,28 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class Descriptor extends DefaultHandler {
 
+  /** The service name. */
   private String serviceName = "";
 
+  /** The instance count. */
   private int instanceCount = 0;
 
+  /** The resource specifier path. */
   private String resourceSpecifierPath = "";
 
+  /** The filter string. */
   private String filterString = "";
 
+  /** The naming service host. */
   private String namingServiceHost = "localhost";
 
+  /** The server socket timeout. */
   private int serverSocketTimeout = 300000; // 5 minute timeout on the service socket
   
+  /** The thread pool min size. */
   private int threadPoolMinSize = 1;
   
+  /** The thread pool max size. */
   private int threadPoolMaxSize = 20;
 
   /**
@@ -68,6 +77,12 @@ public class Descriptor extends DefaultHandler {
     }
   }
 
+  /**
+   * Parses the.
+   *
+   * @param configFile the config file
+   * @return the document
+   */
   private Document parse(String configFile) {
     Document doc = null;
     try {
@@ -92,6 +107,13 @@ public class Descriptor extends DefaultHandler {
     return doc;
   }
 
+  /**
+   * Gets the attribute.
+   *
+   * @param attrName the attr name
+   * @param attribs the attribs
+   * @return the attribute
+   */
   private String getAttribute(String attrName, Attributes attribs) {
     String attributeValue = null;
 
@@ -106,6 +128,13 @@ public class Descriptor extends DefaultHandler {
     return attributeValue;
   }
 
+  /**
+   * Gets the name.
+   *
+   * @param s1 the s 1
+   * @param s2 the s 2
+   * @return the name
+   */
   private String getName(String s1, String s2) {
     if (s1 == null || "".equals(s1))
       return s2;
@@ -113,6 +142,9 @@ public class Descriptor extends DefaultHandler {
       return s1;
   }
 
+  /* (non-Javadoc)
+   * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+   */
   public void startElement(String uri, String localName, String qName, Attributes attribs) {
     String elementName = getName(localName, qName);
     // if next element is complex, push a new instance on the stack
@@ -161,18 +193,38 @@ public class Descriptor extends DefaultHandler {
     // if none of the above, it is an unexpected element. we ignore these for now
   }
 
+  /**
+   * Gets the thread pool max size.
+   *
+   * @return the thread pool max size
+   */
   public int getThreadPoolMaxSize() {
     return threadPoolMaxSize;
   }
 
+  /**
+   * Sets the thread pool max size.
+   *
+   * @param threadPoolMaxSize the new thread pool max size
+   */
   public void setThreadPoolMaxSize(int threadPoolMaxSize) {
     this.threadPoolMaxSize = threadPoolMaxSize;
   }
 
+  /**
+   * Gets the thread pool min size.
+   *
+   * @return the thread pool min size
+   */
   public int getThreadPoolMinSize() {
     return threadPoolMinSize;
   }
 
+  /**
+   * Sets the thread pool min size.
+   *
+   * @param threadPoolMinSize the new thread pool min size
+   */
   public void setThreadPoolMinSize(int threadPoolMinSize) {
     this.threadPoolMinSize = threadPoolMinSize;
   }
@@ -253,18 +305,38 @@ public class Descriptor extends DefaultHandler {
     this.filterString = filterString;
   }
 
+  /**
+   * Gets the naming service host.
+   *
+   * @return the naming service host
+   */
   public String getNamingServiceHost() {
     return namingServiceHost;
   }
 
+  /**
+   * Sets the naming service host.
+   *
+   * @param namingServiceHost the new naming service host
+   */
   public void setNamingServiceHost(String namingServiceHost) {
     this.namingServiceHost = namingServiceHost;
   }
 
+  /**
+   * Gets the server socket timeout.
+   *
+   * @return the server socket timeout
+   */
   public int getServerSocketTimeout() {
     return serverSocketTimeout;
   }
 
+  /**
+   * Sets the server socket timeout.
+   *
+   * @param serverSocketTimeout the new server socket timeout
+   */
   public void setServerSocketTimeout(int serverSocketTimeout) {
     this.serverSocketTimeout = serverSocketTimeout;
   }

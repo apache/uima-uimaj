@@ -17,91 +17,116 @@
  * under the License.
  */
 
+   
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
+
 package aa;
 
-import org.apache.uima.jcas.JCas;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.cas.TOP_Type;
 
-/**
- * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006 XML source:
- * C:/a/Eclipse/3.1/j4/jedii_jcas_tests/testTypes.xml
- * 
- * @generated
- */
+
+/** 
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * @generated */
 public class AbstractType extends TOP {
-  /**
-   * @generated
-   * @ordered
+ 
+  /** @generated
+   * @ordered 
    */
-  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(AbstractType.class);
-
-  /**
-   * @generated
-   * @ordered
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "aa.AbstractType";
+  
+  /** @generated
+   * @ordered 
    */
+  @SuppressWarnings ("hiding")
+  public final static int typeIndexID = JCasRegistry.register(AbstractType.class);
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
-
-  /** @generated */
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
-
-  /**
-   * Never called. Disable default constructor
-   * 
-   * @generated
+  /** @generated
+   * @return index of the type  
    */
-  protected AbstractType() {
-  }
+  @Override
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_abstractInt = "abstractInt";
 
-  /**
-   * Internal - constructor used by generator
-   * 
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_abstractInt = TypeSystemImpl.createCallSite(AbstractType.class, "abstractInt");
+  private final static MethodHandle _FH_abstractInt = _FC_abstractInt.dynamicInvoker();
+
+   
+  /** Never called.  Disable default constructor
+   * @generated */
+  protected AbstractType() {/* intentionally empty block */}
+    
+  /** Internal - constructor used by generator 
    * @generated
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
    */
-  public AbstractType(int addr, TOP_Type type) {
-    super(addr, type);
+  public AbstractType(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
-
-  /** @generated */
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
+   */
   public AbstractType(JCas jcas) {
     super(jcas);
-    readObject();
-  }
+    readObject();   
+  } 
 
-  /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   * 
-   * @generated modifiable
+
+  /** 
+   * <!-- begin-user-doc -->
+   * Write your own initialization here
+   * <!-- end-user-doc -->
+   *
+   * @generated modifiable 
    */
-  private void readObject() {
-  }
+  private void readObject() {/*default - does nothing empty block */}
+     
+ 
+    
+  //*--------------*
+  //* Feature: abstractInt
 
-  // *--------------*
-  // * Feature: abstractInt
-
-  /**
-   * getter for abstractInt - gets
-   * 
+  /** getter for abstractInt - gets 
    * @generated
+   * @return value of the feature 
    */
-  public int getAbstractInt() {
-    if (AbstractType_Type.featOkTst && ((AbstractType_Type) jcasType).casFeat_abstractInt == null)
-      this.jcasType.jcas.throwFeatMissing("abstractInt", "aa.AbstractType");
-    return jcasType.ll_cas.ll_getIntValue(addr,
-            ((AbstractType_Type) jcasType).casFeatCode_abstractInt);
-  }
-
-  /**
-   * setter for abstractInt - sets
-   * 
+  public int getAbstractInt() { return _getIntValueNc(wrapGetIntCatchException(_FH_abstractInt));}
+    
+  /** setter for abstractInt - sets  
    * @generated
+   * @param v value to set into the feature 
    */
   public void setAbstractInt(int v) {
-    if (AbstractType_Type.featOkTst && ((AbstractType_Type) jcasType).casFeat_abstractInt == null)
-      this.jcasType.jcas.throwFeatMissing("abstractInt", "aa.AbstractType");
-    jcasType.ll_cas.ll_setIntValue(addr, ((AbstractType_Type) jcasType).casFeatCode_abstractInt, v);
+    _setIntValueNfc(wrapGetIntCatchException(_FH_abstractInt), v);
+  }    
+    
   }
-}
+
+    

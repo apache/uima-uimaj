@@ -40,43 +40,73 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
+
 /**
- * Common part of most pages
+ * Common part of most pages.
  */
 public abstract class HeaderPage extends FormPage {
 
+  /** The Constant EQUAL_WIDTH. */
   final public static boolean EQUAL_WIDTH = true;
 
+  /** The sash form. */
   protected SashForm sashForm;
 
+  /** The editor. */
   protected MultiPageEditor editor;
 
+  /** The toolkit. */
   protected FormToolkit toolkit;
 
+  /** The left panel. */
   protected Composite leftPanel;
 
+  /** The right panel. */
   protected Composite rightPanel;
 
+  /** The sash form width. */
   protected int sashFormWidth;
 
+  /** The left panel percent. */
   protected float leftPanelPercent;
 
+  /** The right panel percent. */
   protected float rightPanelPercent;
 
+  /** The left panel width. */
   protected int leftPanelWidth;
 
+  /** The right panel width. */
   protected int rightPanelWidth;
 
+  /**
+   * Instantiates a new header page.
+   *
+   * @param formEditor the form editor
+   * @param id the id
+   * @param keyPageTitle the key page title
+   */
   public HeaderPage(MultiPageEditor formEditor, String id, String keyPageTitle) {
     super(formEditor, id, keyPageTitle);
     editor = formEditor;
     toolkit = editor.getToolkit();
   }
 
+  /**
+   * Instantiates a new header page.
+   *
+   * @param formEditor the form editor
+   * @param pageTitle the page title
+   */
   public HeaderPage(MultiPageEditor formEditor, String pageTitle) {
     this(formEditor, "UID_" + pageTitle, pageTitle);
   }
 
+  /**
+   * Maybe initialize.
+   *
+   * @param managedForm the managed form
+   */
   protected void maybeInitialize(IManagedForm managedForm) {
 //    if (TAEConfiguratorPlugin.is30version)
 //      ((ManagedForm) managedForm).initialize();
@@ -86,10 +116,22 @@ public abstract class HeaderPage extends FormPage {
    * General methods to create sub areas on pages
    */
 
+  /**
+   * New composite.
+   *
+   * @param parent the parent
+   * @return the composite
+   */
   public Composite newComposite(Composite parent) {
     return newnColumnSection(parent, 1);
   }
 
+  /**
+   * New centered 2 span composite.
+   *
+   * @param parent the parent
+   * @return the composite
+   */
   // this composite spans col 1 & 2, out of a 4 column (0, 1, 2, 3) grid layout
   public Composite newCentered2SpanComposite(Composite parent) {
     spacer(parent); // skip over col 0
@@ -98,6 +140,13 @@ public abstract class HeaderPage extends FormPage {
     return composite;
   }
 
+  /**
+   * Newn column section.
+   *
+   * @param parent the parent
+   * @param cols the cols
+   * @return the composite
+   */
   public Composite newnColumnSection(Composite parent, int cols) {
     Composite section = toolkit.createComposite(parent, SWT.NONE);
     GridLayout layout = new GridLayout();
@@ -109,6 +158,12 @@ public abstract class HeaderPage extends FormPage {
     return section;
   }
 
+  /**
+   * Setup 1 column layout.
+   *
+   * @param managedForm the managed form
+   * @return the composite
+   */
   public Composite setup1ColumnLayout(IManagedForm managedForm) {
     final ScrolledForm sform = managedForm.getForm();
     final Composite form = sform.getBody();
@@ -125,6 +180,13 @@ public abstract class HeaderPage extends FormPage {
     return xtra;
   }
 
+  /**
+   * Setup 2 column grid.
+   *
+   * @param managedForm the managed form
+   * @param equalWidth the equal width
+   * @return the composite
+   */
   // this method creates no new composites.
   public Composite setup2ColumnGrid(IManagedForm managedForm, boolean equalWidth) {
     final ScrolledForm sform = managedForm.getForm();
@@ -135,6 +197,14 @@ public abstract class HeaderPage extends FormPage {
     return form;
   }
 
+  /**
+   * Setup 2 column layout.
+   *
+   * @param managedForm the managed form
+   * @param w1 the w 1
+   * @param w2 the w 2
+   * @return the form 2 panel
+   */
   public Form2Panel setup2ColumnLayout(IManagedForm managedForm, int w1, int w2) {
     final ScrolledForm sform = managedForm.getForm();
     final Composite form = sform.getBody();
@@ -164,7 +234,8 @@ public abstract class HeaderPage extends FormPage {
 
     rightPanel.addControlListener(new ControlAdapter() {
       @Override
-    public void controlResized(ControlEvent e) {
+
+      public void controlResized(ControlEvent e) {
         setSashFormWidths();
       }
     });
@@ -172,6 +243,9 @@ public abstract class HeaderPage extends FormPage {
     return new Form2Panel(form, leftPanel, rightPanel);
   }
 
+  /**
+   * Sets the sash form widths.
+   */
   void setSashFormWidths() {
 
     sashFormWidth = sashForm.getSize().x;
@@ -181,6 +255,13 @@ public abstract class HeaderPage extends FormPage {
     rightPanelWidth = (int) (((float) ws[1] / (float) (ws[0] + ws[1])) * sashFormWidth);
   }
 
+  /**
+   * Sash impl.
+   *
+   * @param managedForm the managed form
+   * @param equalWidth the equal width
+   * @return the form 2 panel
+   */
   public Form2Panel setup2ColumnLayout(IManagedForm managedForm, boolean equalWidth) {
     if (equalWidth) {
         return setup2ColumnLayout(managedForm, 50, 50);
@@ -191,6 +272,13 @@ public abstract class HeaderPage extends FormPage {
     }
   }
 
+  /**
+   * Setup 2 column layout not sash.
+   *
+   * @param managedForm the managed form
+   * @param equalWidth the equal width
+   * @return the form 2 panel
+   */
   public Form2Panel setup2ColumnLayoutNotSash(IManagedForm managedForm, boolean equalWidth) {
     final ScrolledForm sform = managedForm.getForm();
     final Composite form = sform.getBody();
@@ -212,7 +300,7 @@ public abstract class HeaderPage extends FormPage {
 
     sform.addListener(SWT.Resize, new Listener() {
       @Override
-    public void handleEvent(Event event) {
+      public void handleEvent(Event event) {
         float col1CurrentWidth = leftPanel.getSize().x;
         float col2CurrentWidth = rightPanel.getSize().x;
         final int minLeftPanelWidth = 250; // in pels
@@ -225,6 +313,13 @@ public abstract class HeaderPage extends FormPage {
     return new Form2Panel(form, leftPanel, rightPanel);
   }
 
+  /**
+   * Setup 2 column layout on 4 grid.
+   *
+   * @param managedForm the managed form
+   * @param equalWidth the equal width
+   * @return the form 2 panel
+   */
   public Form2Panel setup2ColumnLayoutOn4Grid(IManagedForm managedForm, boolean equalWidth) {
     Form2Panel f = setup2ColumnLayoutNotSash(managedForm, equalWidth);
     ((GridLayout) f.form.getLayout()).numColumns = 4;
@@ -233,10 +328,18 @@ public abstract class HeaderPage extends FormPage {
     return f;
   }
 
+  /**
+   * Spacer.
+   *
+   * @param container the container
+   */
   protected void spacer(Composite container) {
     toolkit.createLabel(container, " ");
   }
 
+  /**
+   * Mark stale.
+   */
   public void markStale() {
     if (getManagedForm() != null) {
       IFormPart[] parts = getManagedForm().getParts();
@@ -250,46 +353,101 @@ public abstract class HeaderPage extends FormPage {
   // * Model Access
   // **************************************************
 
+  /**
+   * Checks if is primitive.
+   *
+   * @return true, if is primitive
+   */
   protected boolean isPrimitive() {
     return editor.getAeDescription().isPrimitive();
   }
 
+  /**
+   * Checks if is ae descriptor.
+   *
+   * @return true, if is ae descriptor
+   */
   protected boolean isAeDescriptor() {
     return editor.isAeDescriptor();
   }
 
+  /**
+   * Checks if is type system descriptor.
+   *
+   * @return true, if is type system descriptor
+   */
   public boolean isTypeSystemDescriptor() {
     return editor.isTypeSystemDescriptor();
   }
 
+  /**
+   * Checks if is index descriptor.
+   *
+   * @return true, if is index descriptor
+   */
   public boolean isIndexDescriptor() {
     return editor.isFsIndexCollection();
   }
 
+  /**
+   * Checks if is type priority descriptor.
+   *
+   * @return true, if is type priority descriptor
+   */
   public boolean isTypePriorityDescriptor() {
     return editor.isTypePriorityDescriptor();
   }
 
+  /**
+   * Checks if is ext res and bindings descriptor.
+   *
+   * @return true, if is ext res and bindings descriptor
+   */
   public boolean isExtResAndBindingsDescriptor() {
     return editor.isExtResAndBindingsDescriptor();
   }
 
+  /**
+   * Checks if is collection reader descriptor.
+   *
+   * @return true, if is collection reader descriptor
+   */
   public boolean isCollectionReaderDescriptor() {
     return editor.isCollectionReaderDescriptor();
   }
 
+  /**
+   * Checks if is cas initializer descriptor.
+   *
+   * @return true, if is cas initializer descriptor
+   */
   public boolean isCasInitializerDescriptor() {
     return editor.isCasInitializerDescriptor();
   }
 
+  /**
+   * Checks if is cas consumer descriptor.
+   *
+   * @return true, if is cas consumer descriptor
+   */
   public boolean isCasConsumerDescriptor() {
     return editor.isCasConsumerDescriptor();
   }
 
+  /**
+   * Checks if is local processing descriptor.
+   *
+   * @return true, if is local processing descriptor
+   */
   public boolean isLocalProcessingDescriptor() {
     return editor.isLocalProcessingDescriptor();
   }
 
+  /**
+   * Gets the analysis engine meta data.
+   *
+   * @return the analysis engine meta data
+   */
   protected AnalysisEngineMetaData getAnalysisEngineMetaData() {
     return editor.getAeDescription().getAnalysisEngineMetaData();
   }

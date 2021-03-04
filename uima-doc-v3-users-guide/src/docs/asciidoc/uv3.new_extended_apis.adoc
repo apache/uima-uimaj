@@ -1,0 +1,215 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_uv3.new_extended_apis]]
+= New and Extended APIs
+
+
+[[_uv3.new_extended_apis.index_and_iterator_improvements]]
+== UIMA FSIndex and FSIterators improvements
+
+The FSIndex interface implements Collection, so you can now write `for (MyType item : myIndex)` to iterate over an index.
+
+Because it implements Collection, the FSIndex interface includes a `stream()` method, so you can now write ``myIndex.stream().any-stream-operations``, which will use the items in the index as the source of the stream.
+
+The FSIterator interface now implements the Java ListIterator Interface, and supports the methods there except for add, nextIndex, previousIndex, and set; the remove() method's meaning is changed to remove the item from all of the UIMA indexes. 
+
+The iterators over indexes no longer throw concurrent modification exceptions if the index is modified while it is being iterated over.
+Instead, the iterators use a lazily-created copy-on-write approach that, when some portion of the index is updated, prior to the update, copies the original state of that portion, and continues to iterate over that.
+While this is helpful if you are explicitly modifying the indexes in a loop, it  can be especially helpful when modifying Feature Structures as you iterate, because the UIMA support for detecting and avoiding possible index corruption if you modify some feature being used by  some index as a key, is automatically (under the covers) temporarily removing the Feature Structure from indexes,  doing the modification, and then adding it back. 
+
+Similarly to version 2, iterator methods `moveToFirst, moveToLast, and moveTo(a_positioning_Feature_Structure)` "reset" the iterator to be able to "see" the current state of the indexes.
+This corresponds to resetting the concurrent modification detection sensing in version 2, when these methods are used. 
+
+Note that the phrase _Concurrent Modification_ is being used here in a single threading to the indexes.
+UIMA does not support multi-threaded write access to the CAS; it does support multi-threaded read access to a set of CAS Views, concurrent with one thread having write access (to different views). 
+
+The `remove()` API for iterators is now implemented for FSIterators.
+Its meaning is slightly different from the normal Java meaning - it doesn't remove the item from the collection being iterated over; rather it removes the Feature Structure returned by `get()` from all indexes in the view. 
+
+The FSIterator methods that normally check for iterator validity have versions which skip that check.
+This may be a performance optimization in cases where you can guarantee the iterator is valid, for example if you have a loop which is checking `hasNext()` and following it with a ``next()``,  which is only executed if the `hasNext()` was true.
+The non-checking versions are suffixed with Nvc (stands for No Validity Check).
+
+The FSIndex API has a new method, ``subType(type-spec)``, which returns an FSIndex for the same index, but specialized to elements which are a subtype of the original index.
+The type-spec can be either a  JCas class, e.g. ``MyToken.class``, or a UIMA type instance.
+
+[[_uv3.new_extended_apis.select]]
+== New Select API
+
+A versatile new Select framework for accessing and acting on Feature Structures  selected from the CAS or from Indexes or from other collection objects is documented in a separate chapter.
+This API is integrated with Java 8's Stream facility. 
+
+[[_uv3.new_extended_apis.custom_java_objects]]
+== New custom Java objects in the CAS framework
+
+There is a new framework that supports allowing you to add your own custom Java objects as objects transportable in the CAS.
+A following chapter describes this facility, and some new semi-built-in types that make use of it. 
+
+[[_uv3.new_extended_apis.lists_and_arrays]]
+== Built-in lists and arrays
+
+The built-in FSArray JCas class is now parameterized with the type of its elements.
+
+UIMA Array and List types implement Iterable, so you can use them like this: ``for (MyType item : myArray) ...``.
+
+UIMA Arrays and Lists support `contains(element)` and ``isEmpty()``.
+
+UIMA Array and List types support a `stream()` method returning a Stream or a type-specialized sub interface of Stream for primitives  (IntStream, LongStream, DoubleStream)  over the objects in the collection.
+Omitted are stream types where boxing would occur - Arrays of Byte, Short, Float, Boolean.
+
+The `iterator()` methods for `IntegerList
+      IntegerArrayList, IntegerArray, 
+      DoubleArray,` and `LongArray` return an `OfInt / OfDouble / OfLong` instances.
+These are subtypes of `Iterator` with an additional methods nextInt / nextLong / nextDouble which avoid the boxing of the normal iterator. 
+
+The new `select` framework supports stream operations; see the "select" chapter for details. 
+
+A new set of methods on UIMA built-in lists, ``createNonEmptyNode() and emptyList()``,  creates a non-empty node of the type, or retrieves a (shared) empty node of the type.
+These methods are not static, and create or get the instance in the same CAS as the object instance.
+These methods are callable on both the empty and non-empty node instances, or on their shared super interface, for example, on NonEmptyFloatList, EmptyFloatList, and FloatList (the common super interface). 
+
+A new set of static methods on UIMA built-in lists and arrays, `create(jcas, array_source)` take a Java array of items, and creates a corresponding UIMA built-in list or array populated with items from the array_source. 
+
+For UIMA Lists and Arrays, the CAS and JCas has emptyXXXList/Array methods, which return a shared instance of the immutable empty object.
+The Cas and JCas have generic emptyArray/List, taking an argument JCas class identifying the type,  e.g.
+FloatArray.class, StringList.class, etc. 
+
+For lists, there are some new common APIs for all list kinds. 
+
+* `push(item)` pushes the item onto an existing list node, creates a new non-empty node, setting its head to `item` and its tail to the existing list node. This allows easy construction of a list in backwards order. 
+* `pushNode()` creates and links in a new node in front of this node. 
+* `insertNode()` creates and links in a new node following this node. 
+* `createNonEmptyNode()` creates a node of the  same type, in the same CAS, without linking it. 
+* `getCommonTail()` gets the tail of the node 
+* `setTail()` sets the tail of the node 
+* `walkList()` walks the list applying a consumer to each item 
+* `getLength()` walks the list to compute its length 
+* `emptyList` returns a shared instance of the empty list of the same type, in the same CAS 
+
+
+[[_uv3.new_extended_apis.reorganized.lists_and_arrays]]
+=== Built-in lists and arrays have common super classes / interfaces
+
+Some methods common to multiple implements were moved to the super classes, some classes were made abstract (to prevent them from being instantiated, which would be an error). For arrays, a new method common to all arrays, `copyValuesFrom()` copies values from arrays of the same type. 
+
+[[_uv3.new_extended_apis.collections]]
+== Many UIMA objects implement Stream or Collection
+
+In Java 8, classes which implement Collection can be converted to streams using the `xxx.sream()` method.
+To better integrate with Java 8, the following UIMA classes and interfaces now implement Stream or Collection: 
+
+* FSIndex (implements Collection)
+* all of the built-in Arrays, e.g. FloatArray implement Stream, the Integer/long/double arrays implement the non-boxing version
+* all of the built-in Lists implement Stream, the IntegerList implements the non boxing version
+
+
+[[_uv3.new_extended_apis.reorganized]]
+== Reorganized APIs
+
+Some APIs were reorganized.
+Some of the reorganizations include altering the super class and implements hierarchies, making some classes abstract, making use of Java 8's new `default` mechanisms to supply default implementations in interfaces,  and moving methods to more common places.
+Users of the non-internal UIMA APIs should not be affected by these reorganizations. 
+
+As an example, version 2 had two different Java objects representing particular Feature Structures, such as "Annotation".  One was used (``org.apache.uima.jcas.tcas.Annotation``) if the JCas was enabled;  the other (``org.apache.uima.cas.impl.AnnotationImpl``)otherwise.
+In version 3, there's only one implementation; the other (AnnotationImpl) is converted to an interface.
+Annotation now "implements AnnotationImpl.
+
+[[_uv3.new_extended_apis.class]]
+== Use of JCas Class to specify a UIMA type
+
+Several APIs require a UIMA type to be specified.
+For instance, the API to remove all Feature Structures of a particular type requires the type to be specified.
+Instead of a UIMA Type object, if there is a JCas cover class for that type, you can pass that as well, as (for example) ``Annotation.class``. 
+
+[[_uv3.new_extended_apis.jcasgen]]
+== JCasGen changes
+
+JCasgen is modified to generate the v3 style of JCas cover classes.
+It no longer generates the the xxx_Type.java classes, as these are  not used by UIMA Version 3.
+
+[[_uv3.new_extended_apis.jcas_static_fields]]
+=== JCas additional static fields
+
+Static final string fields are declared for each JCas cover class and for each feature that is part of that UIMA type.
+The fields look like this example, taken from the Sofa class: 
+[source]
+----
+public final static String _TypeName = "org.apache.uima.jcas.cas.Sofa";
+public final static String _FeatName_sofaNum    = "sofaNum";
+public final static String _FeatName_sofaID     = "sofaID";
+public final static String _FeatName_mimeType   = "mimeType";
+public final static String _FeatName_sofaArray  = "sofaArray";
+public final static String _FeatName_sofaString = "sofaString";
+public final static String _FeatName_sofaURI    = "sofaURI";
+----
+Each string has a generated name corresponding to the name of the type or the feature, and a string value constant which of the type or feature name.
+These can be useful in Java Annotations. 
+
+[[_uv3.new_extended_apis.generics]]
+== Generics added
+
+Version 3 adds generic typing to several structures, and makes use of this to enable users to unclutter their code by taking advantage of Java's type inferencing, in many cases. 
+
+Generic types are added to: 
+
+* _FSIndex_ <T extends FeatureStructure> the type the index is over.
+* _FSArray_ <T extends FeatureStructure> the type the FSArray holds.
+* _FSList_ <T extends TOP> the type the FSList holds.
+* _SelectFSs_ <T extends FeatureStructure> the type the select is producing.
+
+
+[[_uv3.new_extended_apis.other]]
+== Other changes
+
+The convenience methods in the JCas have been duplicated in the CAS, e.g. ``getAllIndexFS``.
+
+New methods `getIndexedFSs(myUimaType)` and `getIndexedFSs(MyJCas.class)` return  unmodifiable, unordered Collections of all indexed Feature Structures of the specified type and its subtypes in  this CAS's view.
+This collection can be used in a Java extended-for loop construction. `getIndexedFSs()` is the same but is for all Feature Structures, regardless of type.
+These are methods on the CAS, JCas, FSIndexRepository interfaces, and return the Feature Structures of the specified type (including subtypes).
+
+The TypeSystemMgr Interface has a variation of the `commit` method, which has a parameter  that specifies the class loader to be used when loading JCas class.
+This should be used whenever there are user-specified JCas classes associated with the type system.
+If not specified, it defaults to the class loader used to load the UIMA framework. 
+
+The utility class `org.apache.uima.util.FileUtils` has a new method ``writeToFile(path, string)``, which efficiently writes a string using UTF-8 encoding to ``path``. 
+
+The StringArray class has a new `contains(a_string)` method.
+
+The CAS `protectIndexes` method returns an instance of AutoClosableNoException which is  a subtype where the close method doesn't throw an exception.
+This allows writing the try-with-resources form without a catch block for Exception.
+
+Sometimes Annotators may log excessively, causing problems in production settings.
+Although this could be controlled using logging configuration, sometimes when UIMA is embedded into other applications, you may not have easy access to modify those. 
+
+For this case, the produceAnalysisEngine's "additionalParameters" map supports a new key,   AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING.
+This key specifies that throttling should be applied to messages produced by annotators using loggers obtained by Annotator code using the getLogger() API. 
+
+The value specified must be an Integer, and is the number of messages allowed before logging is suppressed.
+This number is applied to each logging level, separately.
+To suppress all logging, use 0. 
+
+The Type interface has new methods ``subsumes(another_type), isStringOrStringSubtype()``,  and `isStringSubtype().`
+
+The FlowController_ImplBase supports a getLogger() API, which is shorthand for getContext().getLogger().
+
+Many error messages were changed or added, causing changes to localization classes.
+For coding efficiency, some of the structure of the internal error reporting calls was changed to make use of Java's variable number of arguments syntax.
+
+The UIMA Logger implementation has been extended with both the SLF4J logger APIs and the  Log4j APIs which support Java 8's `Supplier` Functional Interfaces.
+
+The TypeSystem and Type object implementations implement `Iterable` and will iterate over all the defined types, or, for a type, all the defined Features for that type.

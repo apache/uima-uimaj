@@ -348,21 +348,12 @@ public class VNS extends VinciServableAdapter {
   public void loadWorkspaces(String wFile) {
     Debug.p("Loading workspaces file : " + wFile);
 
-    FileReader F = null;
-    try {
-      F = new FileReader(wFile);
+    try (FileReader F = new FileReader(wFile)) {
       WS.load(F);
-      F.close();
     } catch (Exception e) {
       Debug.reportException(e);
       Debug.p("WARNING: failed to load workspace.");
-    } finally {
-      try {
-        F.close();
-      } catch (Exception e) {
-      }
     }
-
   }
 
   public void loadCounters(String cFile) {
@@ -1253,8 +1244,8 @@ public class VNS extends VinciServableAdapter {
     synchronized (hits) {
       Integer I = (Integer) hits.get(type);
       if (I == null)
-        I = new Integer(0);
-      I = new Integer(I.intValue() + 1);
+        I = 0;
+      I = I + 1;
 
       hits.put(type, I);
       totalhits++;

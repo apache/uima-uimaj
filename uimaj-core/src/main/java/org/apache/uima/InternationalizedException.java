@@ -48,7 +48,7 @@ public class InternationalizedException extends Exception {
    private static final long serialVersionUID = 2306587442280738385L;
 
    private final I18nx_impl c;  // common code 
-   
+
    /**
     * Creates a new <code>InternationalizedException</code> with a null
     * message.
@@ -117,7 +117,7 @@ public class InternationalizedException extends Exception {
     * message.
     */
    public String getResourceBundleName() {
-      return c.getResourceBundleName();
+     return c.getResourceBundleName();
    }
 
    /**
@@ -129,7 +129,7 @@ public class InternationalizedException extends Exception {
     *         this exception has no message.
     */
    public String getMessageKey() {
-      return c.getMessageKey();
+     return c.getMessageKey();
    }
 
    /**
@@ -150,7 +150,7 @@ public class InternationalizedException extends Exception {
     * @return the English detail message for this exception.
     */
    public String getMessage() {
-      return c.getMessage();
+     return c.getMessage();
    }
 
    /**
@@ -160,7 +160,7 @@ public class InternationalizedException extends Exception {
     * @return this exception's detail message, localized for the default Locale.
     */
    public String getLocalizedMessage() {
-      return c.getLocalizedMessage();
+     return c.getLocalizedMessage();
    }
 
    /**
@@ -174,7 +174,7 @@ public class InternationalizedException extends Exception {
    public String getLocalizedMessage(Locale aLocale) {
      return c.getLocalizedMessage(aLocale);
    }
-   
+
    /**
     * Gets the cause of this Exception.
     * 
@@ -182,7 +182,7 @@ public class InternationalizedException extends Exception {
     *         if there is no such cause.
     */
    public Throwable getCause() {
-      return c.getCause();
+     return c.getCause();
    }
 
    /**
@@ -198,7 +198,7 @@ public class InternationalizedException extends Exception {
    }
 
    public synchronized Throwable initCause(Throwable cause) {
-      c.setCause(cause);
+     c.setCause(cause);
       return this;
    }
 
@@ -221,4 +221,5 @@ public class InternationalizedException extends Exception {
    public void setResourceBundle(Locale aLocale) {
      c.setResourceBundle(aLocale);
    }
+
 }

@@ -71,8 +71,8 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
     String lastUsedEncodingsString = store.getString(
             CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS);
     
-    List<String> lastUsedEncodings = new ArrayList<String>(Arrays.asList(lastUsedEncodingsString.split(
-            CasEditorIdePreferenceConstants.STRING_DELIMITER)));
+    List<String> lastUsedEncodings = new ArrayList<>(Arrays.asList(lastUsedEncodingsString.split(
+        CasEditorIdePreferenceConstants.STRING_DELIMITER)));
     
     int usedEncodingIndex = lastUsedEncodings.indexOf(usedEncoding);
     

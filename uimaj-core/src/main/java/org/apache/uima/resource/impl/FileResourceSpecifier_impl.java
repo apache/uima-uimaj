@@ -19,12 +19,10 @@
 
 package org.apache.uima.resource.impl;
 
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.FileResourceSpecifier;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
-import org.apache.uima.util.Level;
 
 /**
  * Reference implementation of {@link org.apache.uima.resource.FileResourceSpecifier}.

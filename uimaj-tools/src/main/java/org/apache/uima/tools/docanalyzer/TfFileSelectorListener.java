@@ -21,14 +21,23 @@ package org.apache.uima.tools.docanalyzer;
 
 import javax.swing.JComponent;
 
+
 /**
  * * This class tells the Mediator to check the length of the 3 text fields and adjust whether the 3
  * buttons are enabeld or not.
  * 
+// * @see TfFileSelectorEvent
  */
 public class TfFileSelectorListener implements FileSelectorListener {
+  
+  /** The med. */
   private PrefsMediator med;
 
+  /**
+   * Instantiates a new tf file selector listener.
+   *
+   * @param med the med
+   */
   public TfFileSelectorListener(PrefsMediator med) {
     this.med = med;
   }
@@ -38,6 +47,7 @@ public class TfFileSelectorListener implements FileSelectorListener {
    * 
    * @see FileSelectorListener#fileSelected(javax.swing.JComponent, java.lang.String)
    */
+  @Override
   public boolean fileSelected(JComponent source, String fileString) {
     med.fieldFocusLost();
     return true;

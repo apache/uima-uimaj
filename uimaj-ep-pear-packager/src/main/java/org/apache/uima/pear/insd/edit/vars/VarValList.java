@@ -24,23 +24,29 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
+
 /**
- * Represents a list of environment variable to be displayed in a table
+ * Represents a list of environment variable to be displayed in a table.
  */
 public class VarValList {
 
+  /** The table rows. */
   public Vector tableRows = new Vector(10);
 
+  /** The change listeners. */
   private Set changeListeners = new HashSet();
 
   /**
-   * Constructor
+   * Constructor.
    */
   public VarValList() {
     super();
     this.initData();
   }
 
+  /**
+   * Inits the data.
+   */
   /*
    * Initialize the table data.
    */
@@ -48,16 +54,19 @@ public class VarValList {
   }
 
   /**
-   * @return a vector of VarVal objects
+   * Returns a vector of VarVal objects.
+   *
+   * @return the table rows
    */
   public Vector getTableRows() {
     return tableRows;
   }
 
   /**
-   * Adds a new table Row
-   * @param tableRow -
-   * @return -
+   * Adds a new table Row.
+   *
+   * @param tableRow the table row
+   * @return true, if successful
    */
   public boolean addTableRow(VarVal tableRow) {
     if (!isDuplicate(tableRow)) {
@@ -70,8 +79,9 @@ public class VarValList {
   }
 
   /**
-   * Adds a sample tableRow to the table
-   * @return -
+   * Adds a sample tableRow to the table.
+   *
+   * @return true, if successful
    */
   public boolean addTableRow() {
     VarVal tableRow = new VarVal("New_Variable", "Value");
@@ -88,6 +98,12 @@ public class VarValList {
     }
   }
 
+  /**
+   * Checks if is duplicate.
+   *
+   * @param tableRow the table row
+   * @return true, if is duplicate
+   */
   private boolean isDuplicate(VarVal tableRow) {
     boolean duplicate = false;
     String varName = tableRow.getVarName();
@@ -101,6 +117,11 @@ public class VarValList {
     return duplicate;
   }
 
+  /**
+   * Removes the table row.
+   *
+   * @param tableRow the table row
+   */
   public void removeTableRow(VarVal tableRow) {
     tableRows.remove(tableRow);
     Iterator iterator = changeListeners.iterator();
@@ -110,9 +131,9 @@ public class VarValList {
   }
 
   /**
-   * Notify listeners by calling their updateTableRow() method
-   * 
-   * @param tableRow -
+   * Notify listeners by calling their updateTableRow() method.
+   *
+   * @param tableRow the table row
    */
   public void tableRowChanged(VarVal tableRow) {
     Iterator iterator = changeListeners.iterator();
@@ -122,19 +143,18 @@ public class VarValList {
   }
 
   /**
-   * Removes a Change Listener
-   * 
-   * @param viewer
-   *          A change listener
+   * Removes a Change Listener.
+   *
+   * @param viewer          A Chnage listener
    */
   public void removeChangeListener(IVarValListViewer viewer) {
     changeListeners.remove(viewer);
   }
 
   /**
-   * Adds a change listener
-   * 
-   * @param viewer -
+   * Adds a change listener.
+   *
+   * @param viewer the viewer
    */
   public void addChangeListener(IVarValListViewer viewer) {
     changeListeners.add(viewer);

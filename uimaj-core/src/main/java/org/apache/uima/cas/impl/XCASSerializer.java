@@ -21,21 +21,38 @@ package org.apache.uima.cas.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.Map.Entry;
 
 import javax.xml.transform.OutputKeys;
 
 import org.apache.uima.UimaContext;
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.internal.util.IntStack;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Pair;
 import org.apache.uima.internal.util.StringUtils;
-import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
+import org.apache.uima.jcas.cas.BooleanArray;
+import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FloatArray;
+import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.LongArray;
+import org.apache.uima.jcas.cas.ShortArray;
+import org.apache.uima.jcas.cas.Sofa;
+import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -44,9 +61,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * XCAS serializer. Create a serializer from a type system, then encode individual CASes by writing
- * to a SAX content handler. This class is thread safe.
- * 
- * 
+ * to a SAX content handler. This class is thread safe. * 
  */
 public class XCASSerializer {
 
@@ -71,8 +86,8 @@ public class XCASSerializer {
     // The CAS we're serializing.
     private CASImpl cas;
 
-    // Any FS reference we've touched goes in here.
-    private IntRedBlackTree queued;
+    /** Any FS reference we've touched goes in here. value is index repo (first one?), or MULTIPLY_INDEXED */
+    final private Map<TOP, Integer> queued = new IdentityHashMap<>();
 
     private static final int NOT_INDEXED = -1;
 
@@ -80,26 +95,30 @@ public class XCASSerializer {
 
     private static final int INVALID_INDEX = -3;
 
-    // Any FS indexed in more than one IR goes in here
-    private IntRedBlackTree duplicates;
+    
+    /** Any FS indexed in more than one IR goes in here, the value is the associated duplicate key,
+     * Key is used to index into dupVectors */
+    final private Map<TOP, Integer> duplicates = new IdentityHashMap<>();
 
-    // Number of FS indexed in more than one IR
+    /** A key identifying a particular FS indexed in multiple indexes.
+     *  Starts a 0, incr by 1 for each new FS discovered to be indexed in more than one IR */
     int numDuplicates;
 
-    // Vector of IntVectors for duplicates
-    Vector<IntVector> dupVectors;
+    /** list of IntVectors holding lists of repo numbers.
+     * Indexed by the key above, for fss that are in multiple index repos */
+    final List<IntVector> dupVectors = new ArrayList<>();
 
-    // All FSs that are in an index somewhere.
-    private IntVector indexedFSs;
 
-    // Specific IndexRepository for indexed FSs
-    private IntVector indexReps;
+    // next 2 are a pair; the first is a fs, the 2nd is the index repo its indexed in
+    /** list of FSs that are in an index somewhere.  */
+    final private List<TOP> indexedFSs = new ArrayList<>();
 
-    // The current queue for FSs to write out.
-    private IntStack queue;
+    /** Specific IndexRepository for indexed FSs */
+    final private IntVector indexReps = new IntVector();
 
-    // SofaFS type
-    private int sofaTypeCode;
+    
+    /** The current queue for FSs to write out. */
+    final private Deque<TOP> queue = new ArrayDeque<>();
 
     private final AttributesImpl emptyAttrs = new AttributesImpl();
 
@@ -119,40 +138,32 @@ public class XCASSerializer {
       super();
       this.ch = ch;
       this.cas = cas;
-      this.queued = new IntRedBlackTree();
-      this.duplicates = new IntRedBlackTree();
       this.numDuplicates = 0;
-      this.dupVectors = new Vector<IntVector>();
-      this.queue = new IntStack();
-      this.indexedFSs = new IntVector();
-      this.indexReps = new IntVector();
-      this.sofaTypeCode = cas.ll_getTypeSystem().ll_getCodeForType(
-              cas.getTypeSystem().getType(CAS.TYPE_NAME_SOFA));
     }
 
     /**
      * Add an address to the queue.
      * 
-     * @param addr
+     * @param fs_id
      *          The address.
      * @return <code>false</code> iff we've seen this address before.
      */
-    private boolean enqueue(int addr) {
-      if (KEY_ONLY_MATCH == isQueued(addr, INVALID_INDEX)) {
+    private boolean enqueue(TOP fs) {
+      if (KEY_ONLY_MATCH == isQueued(fs, INVALID_INDEX)) {
         return false;
       }
-      int heapVal = cas.getHeapValue(addr);
+      int typeCode = fs._getTypeCode();
       // at this point we don't know if this FS is indexed
-      queued.put(addr, NOT_INDEXED);
-      queue.push(addr);
-      final int typeClass = classifyType(heapVal);
+      queued.put(fs, NOT_INDEXED);
+      queue.push(fs);
+      final int typeClass = classifyType(fs._getTypeImpl());
       if (typeClass == LowLevelCAS.TYPE_CLASS_FS) {
         if (mOutOfTypeSystemData != null) {
-          enqueueOutOfTypeSystemFeatures(addr);
+          enqueueOutOfTypeSystemFeatures(fs);
         }
-        enqueueFeatures(addr, heapVal);
+        enqueueFeatures(fs, typeCode);
       } else if (typeClass == LowLevelCAS.TYPE_CLASS_FSARRAY) {
-        enqueueFSArray(addr);
+        enqueueFSArray((FSArray) fs);
       }
       return true;
     }
@@ -160,78 +171,65 @@ public class XCASSerializer {
     /**
      * Same as enqueue, but for indexed FSs.
      * 
-     * @param addr
+     * @param fs_id
      *          The address to enqueue.
      */
-    private void enqueueIndexed(int addr, int indexRep) {
-      int status = isQueued(addr, indexRep);
+    private void enqueueIndexed(TOP fs, int indexRep) {
+      int status = isQueued(fs, indexRep);
       switch (status) {
         case KEY_NOT_FOUND: // most common case, key not found
-          queued.put(addr, indexRep);
-          indexedFSs.add(addr);
+          queued.put(fs, indexRep);
+          indexedFSs.add(fs);
           indexReps.add(indexRep);
           break;
 
         case KEY_AND_VALUE_MATCH: // next most common, FS already queued
           break;
         case KEY_ONLY_MATCH: // key is there, indexRep not
-          int prevIndex = queued.get(addr);
+          int prevIndex = queued.get(fs);
           if (NOT_INDEXED == prevIndex) {
-            // this addr added from a previously found reference
-            queued.put(addr, indexRep); // set with given index
+            // this fs_id added from a previously found reference
+            queued.put(fs, indexRep); // set with given index
             break;
           }
           if (MULTIPLY_INDEXED == prevIndex) {
-            // this addr already indexed more than once
-            int thisDup = duplicates.get(addr);
+            // this fs already indexed more than once
+            int thisDup = duplicates.get(fs);
             dupVectors.get(thisDup).add(indexRep);
             break;
           }
-          // duplicate index detected!
-          duplicates.put(addr, numDuplicates);
+          // first time we notice this FS is indexed in multiple indexes
+          duplicates.put(fs, numDuplicates);
           dupVectors.add(new IntVector());
           dupVectors.get(numDuplicates).add(prevIndex);
           dupVectors.get(numDuplicates).add(indexRep);
           numDuplicates++;
-          queued.put(addr, MULTIPLY_INDEXED); // mark this addr as multiply indexed
+          queued.put(fs, MULTIPLY_INDEXED); // mark this fs_id as multiply indexed
           break;
       }
       return;
     }
 
-    /**
-     * Bad name; check if we've seen this (address, value) before.
-     * 
-     * @param addr
-     *          The address.
-     * @param value
-     *          The index repository
-     * @return KEY_AND_VALUE_MATCH iff we've seen (address, value) before. KEY_NOT_FOUND iff the
-     *         address has not been seen before. KEY_ONLY_MATCH iff the address has been seen before
-     *         with a different value.
-     */
     private static final int KEY_AND_VALUE_MATCH = 1;
 
     private static final int KEY_ONLY_MATCH = -1;
 
     private static final int KEY_NOT_FOUND = 0;
 
-    private int isQueued(int addr, int value) {
-      return containsKeyValuePair(this.queued, addr, value);
-    }
-
-    // returns
-    // KEY_AND_VALUE_MATCH = 1;
-    // KEY_ONLY_MATCH = -1;
-    // KEY_NOT_FOUND = 0;
-    private final int containsKeyValuePair(IntRedBlackTree rbt, int key, int value) {
-      if (rbt.containsKey(key)) {
-        if (rbt.get(key) == value) {
-          return KEY_AND_VALUE_MATCH;
-        }
-        return KEY_ONLY_MATCH;
-      }
-      return KEY_NOT_FOUND;
+    /**
+     * Bad name; check if we've seen this (address, value) before.
+     * 
+     * @param fs 
+     *          The Feature Structure.
+     * @param value
+     *          The index repository
+     * @return KEY_AND_VALUE_MATCH iff we've seen (address, value) before. KEY_NOT_FOUND iff the
+     *         address has not been seen before. KEY_ONLY_MATCH iff the address has been seen before
+     *         with a different value.
+     */
+    private int isQueued(TOP fs, int value) {
+      Integer v = this.queued.get(fs);
+      return (null == v) ? KEY_NOT_FOUND : (value == v) ? KEY_AND_VALUE_MATCH : KEY_ONLY_MATCH;
     }
 
     /*
@@ -249,7 +247,7 @@ public class XCASSerializer {
       enqueueFeaturesOfIndexed();
       if (outOfTypeSystemData != null) {
         // Queues out of type system data.
-        int nextId = cas.getHeap().getCellsUsed();
+        int nextId = cas.getLastUsedFsId() + 1;
         Iterator<FSData> it = outOfTypeSystemData.fsList.iterator();
         while (it.hasNext()) {
           FSData fs = it.next();
@@ -353,39 +351,53 @@ public class XCASSerializer {
      * Push the indexed FSs onto the queue.
      */
     private void enqueueIndexed() {
-      FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) cas.getBaseCAS().getBaseIndexRepository();
-      int[] fsarray = ir.getIndexedFSs();
-      for (int k = 0; k < fsarray.length; k++) {
-        enqueueIndexed(fsarray[k], 0);
+      Collection<Sofa> sofaCollection = cas.getBaseIndexRepositoryImpl().<Sofa>getIndexedFSs(Sofa.class);
+      int sofaCount = sofaCollection.size();
+      if (sofaCount > 0) {
+        Sofa[] allSofas = sofaCollection.toArray(new Sofa[sofaCount]);
+        
+        // XCAS requires sofas in order of id
+        Arrays.sort(allSofas, (fs1, fs2) -> Integer.compare(fs1._id, fs2._id) );
+        enqueueArray(allSofas, 0);
       }
 
       // Get indexes for each SofaFS in the CAS
-      int numViews = cas.getBaseSofaCount();
-      for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
-        FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
-                .getSofaIndexRepository(sofaNum);
-        if (loopIR != null) {
-          fsarray = loopIR.getIndexedFSs();
-          for (int k = 0; k < fsarray.length; k++) {
-            enqueueIndexed(fsarray[k], sofaNum);
+      for (int sofaNum = 1, numViews = cas.getViewCount(); sofaNum <= numViews; sofaNum++) {
+        FSIndexRepositoryImpl viewIR = (FSIndexRepositoryImpl) cas.getBaseCAS().getSofaIndexRepository(sofaNum);
+        if (viewIR != null) {
+          Collection<TOP> fssInView = viewIR.getIndexedFSs();
+          if (! fssInView.isEmpty()) {
+            enqueueCollection(fssInView, sofaNum);
           }
         }
+      }
+    }
+    
+    private void enqueueArray(TOP[] fss, int sofaNum) {
+      for (TOP fs : fss) {   // enqueues the fss for one view (incl view 0 - the base view
+        enqueueIndexed(fs, sofaNum);
+      }
+    }
+    
+    private void enqueueCollection(Collection<TOP> fss, int sofaNum) {
+      for (TOP fs : fss) {
+        enqueueIndexed(fs, sofaNum);
       }
     }
 
     private void enqueueFeaturesOfIndexed() {
       final int max = indexedFSs.size();
       for (int i = 0; i < max; i++) {
-        int addr = indexedFSs.get(i);
-        int heapVal = cas.getHeapValue(addr);
-        final int typeClass = classifyType(heapVal);
+        TOP fs = indexedFSs.get(i);
+        int typeCode = fs._getTypeCode();
+        final int typeClass = classifyType(fs._getTypeImpl());
         if (typeClass == LowLevelCAS.TYPE_CLASS_FS) {
           if (mOutOfTypeSystemData != null) {
-            enqueueOutOfTypeSystemFeatures(addr);
+            enqueueOutOfTypeSystemFeatures(fs);
           }
-          enqueueFeatures(addr, heapVal);
+          enqueueFeatures(fs, typeCode);
         } else if (typeClass == LowLevelCAS.TYPE_CLASS_FSARRAY) {
-          enqueueFSArray(addr);
+          enqueueFSArray((FSArray) fs);
         }
       }
     }
@@ -395,31 +407,30 @@ public class XCASSerializer {
      * 
      */
     private void encodeQueued() throws IOException, SAXException {
-      int addr;
-      while (!queue.empty()) {
-        addr = queue.pop();
-        encodeFS(addr, null);
+      for (TOP item : queue) {
+        encodeFS(item, null);
       }
     }
 
     /**
      * Encode an individual FS.
      * 
-     * @param addr
+     * @param fs_id
      *          The address to be encoded.
      * @param isIndexed
      *          If the FS is indexed or not.
      * @throws IOException passthru
      * @throws SAXException passthru
      */
-    private void encodeFS(int addr, IntVector indexRep) throws IOException, SAXException {
+    private void encodeFS(TOP fs, IntVector indexRep) throws IOException, SAXException {
       ++fsCount;
+        
       workAttrs.clear();
       // Create an element with the type name as tag.
-      // xmlStack.pushElementNode(getTypeName(addr));
+      // xmlStack.pushElementNode(getTypeName(fs_id));
       // Add indexed info.
 
-      // if (sofaTypeCode == cas.getHeapValue(addr) &&
+      // if (sofaTypeCode == cas.getHeapValue(fs_id) &&
       // cas.isBackwardCompatibleCas()) {
       // // Don't encode sofaFS if old style application
       // return;
@@ -443,87 +454,70 @@ public class XCASSerializer {
       // have to do a complete traversal of the heap to find out which FSs
       // is
       // actually referenced.
-      // xmlStack.addAttribute(ID_ATTR_NAME, Integer.toString(addr));
-      addAttribute(workAttrs, ID_ATTR_NAME, Integer.toString(addr));
-      final int typeClass = classifyType(cas.getHeapValue(addr));
+      // xmlStack.addAttribute(ID_ATTR_NAME, Integer.toString(fs_id));
+      addAttribute(workAttrs, ID_ATTR_NAME, Integer.toString(fs._id));
+      final int typeClass = classifyType(fs._getTypeImpl());
       // Call special code according to the type of the FS (special
       // treatment
       // for arrays).
+      String[] data = null;
+      String typeName =  getTypeName(fs);
       switch (typeClass) {
         case LowLevelCAS.TYPE_CLASS_FS: {
-          String typeName = getTypeName(addr);
-          encodeFeatures(addr, workAttrs);
+          encodeFeatures(fs, workAttrs);
           if (mOutOfTypeSystemData != null) {
-            encodeOutOfTypeSystemFeatures(addr, workAttrs); // APL
+            encodeOutOfTypeSystemFeatures(fs, workAttrs); // APL
           }
           String xcasElementName = getXCasElementName(typeName);
           startElement(xcasElementName, workAttrs, 0);
           // xmlStack.commitNode();
           endElement(xcasElementName);
-          break;
+          return;
         }
         case LowLevelCAS.TYPE_CLASS_INTARRAY: {
-          IntArrayFSImpl fs = new IntArrayFSImpl(addr, cas);
-          String[] data = fs.toStringArray();
-          encodePrimitiveTypeArrayFS(data, getTypeName(addr), workAttrs);
-          // encodeIntArray(addr, workAttrs);
+          data = ((IntegerArray)fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_FLOATARRAY: {
-          FloatArrayFSImpl fs = new FloatArrayFSImpl(addr, cas);
-          String[] data = fs.toStringArray();
-          encodePrimitiveTypeArrayFS(data, getTypeName(addr), workAttrs);
-          // encodeFloatArray(addr, workAttrs);
+          data = ((FloatArray)fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_STRINGARRAY: {
-          StringArrayFSImpl fs = new StringArrayFSImpl(addr, cas);
-          String[] data = fs.toArray();
-          encodePrimitiveTypeArrayFS(data, getTypeName(addr), workAttrs);
-          // encodeStringArray(addr, workAttrs);
+          data = ((StringArray)fs).toArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_FSARRAY: {
-          encodeFSArray(addr, workAttrs);
-          break;
+          encodeFSArray((FSArray) fs, workAttrs);
+          return;
         }
         case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY: {
-          BooleanArrayFSImpl fs = new BooleanArrayFSImpl(addr, cas);
-          String[] data = fs.toStringArray();
-          encodePrimitiveTypeArrayFS(data, getTypeName(addr), workAttrs);
+          data = ((BooleanArray)fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_BYTEARRAY: {
-          ByteArrayFSImpl fs = new ByteArrayFSImpl(addr, cas);
-          String[] data = fs.toStringArray();
-          encodePrimitiveTypeArrayFS(data, getTypeName(addr), workAttrs);
+          data = ((ByteArray)fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_SHORTARRAY: {
-          ShortArrayFSImpl fs = new ShortArrayFSImpl(addr, cas);
-          String[] data = fs.toStringArray();
-          encodePrimitiveTypeArrayFS(data, getTypeName(addr), workAttrs);
+          data = ((ShortArray)fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_LONGARRAY: {
-          LongArrayFSImpl fs = new LongArrayFSImpl(addr, cas);
-          String[] data = fs.toStringArray();
-          encodePrimitiveTypeArrayFS(data, getTypeName(addr), workAttrs);
+          data = ((LongArray)fs).toStringArray();
           break;
         }
         case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY: {
-          DoubleArrayFSImpl fs = new DoubleArrayFSImpl(addr, cas);
-          String[] data = fs.toStringArray();
-          encodePrimitiveTypeArrayFS(data, getTypeName(addr), workAttrs);
+          data = ((DoubleArray)fs).toStringArray();
           break;
         }
         default: {
           // Internal error.
-          System.err.println("Error classifying FS type.");
+          throw new RuntimeException("Internal error: classifying FS type.");
         }
-      }
+      } // end of switch
+      // common code for most of the cases
+      encodePrimitiveTypeArrayFS(data, typeName, workAttrs);
       // xmlStack.popNode();
-
     }
 
     private void encodePrimitiveTypeArrayFS(String[] data, String typeName, AttributesImpl attrs)
@@ -540,23 +534,26 @@ public class XCASSerializer {
       endElement(typeName);
     }
 
-    private void encodeFSArray(int addr, AttributesImpl attrs) throws SAXException {
-      final String typeName = getTypeName(addr);
-      final int size = cas.ll_getArraySize(addr);
-      int pos = cas.getArrayStartAddress(addr);
+    private void encodeFSArray(FSArray fs, AttributesImpl attrs) throws SAXException {
+      String typeName = fs._getTypeImpl().getName();
+      final int size = fs.size();
+//      int pos = cas.getArrayStartAddress(fs_id);
       // xmlStack.addAttribute(ARRAY_SIZE_ATTR, Integer.toString(size));
       // xmlStack.commitNode();
       addAttribute(attrs, ARRAY_SIZE_ATTR, Integer.toString(size));
+      if (typeName.endsWith(TypeSystemImpl.ARRAY_TYPE_SUFFIX)) {
+        typeName = CASImpl.TYPE_NAME_FS_ARRAY;
+      }
       startElement(typeName, attrs, size);
       for (int i = 0; i < size; i++) {
         String val = null;
         // xmlStack.pushTextNode(ARRAY_ELEMENT_TAG);
         // xmlStack.commitNode();
-        int heapVal = cas.getHeapValue(pos);
-        if (heapVal == CASImpl.NULL && mOutOfTypeSystemData != null) {
-          // This array element may have been a reference to an OOTS
-          // FS.
-          List<ArrayElement> ootsElems = mOutOfTypeSystemData.arrayElements.get(Integer.valueOf(addr));
+        TOP element = (TOP)fs.get(i);
+        if (null == element && mOutOfTypeSystemData != null) {
+          // This array element may have been a reference to an OOTS FS.
+          
+          List<ArrayElement> ootsElems = mOutOfTypeSystemData.arrayElements.get(fs);
           if (ootsElems != null) {
             Iterator<ArrayElement> iter = ootsElems.iterator();
             // TODO: iteration could be slow for large arrays
@@ -569,8 +566,8 @@ public class XCASSerializer {
               }
             }
           }
-        } else if (heapVal != CASImpl.NULL) {
-          val = Integer.toString(heapVal);
+        } else if (null != element) {
+          val = Integer.toString(element._id);
         }
 
         if (val != null) {
@@ -581,77 +578,52 @@ public class XCASSerializer {
         }
         // xmlStack.popNode();
         endElement(ARRAY_ELEMENT_TAG);
-        ++pos;
       }
 
       endElement(typeName);
     }
 
-    private void enqueueFSArray(int addr) {
-      final int size = cas.ll_getArraySize(addr);
-      int pos = cas.getArrayStartAddress(addr);
-      int val;
-      for (int i = 0; i < size; i++) {
-        val = cas.getHeapValue(pos);
-        if (val != CASImpl.NULL) {
-          enqueue(val);
+    private void enqueueFSArray(FSArray fs) {
+      TOP[] theArray = fs._getTheArray();
+      for (TOP element : theArray) {
+        if (element != null) {
+          enqueue(element);
         }
-        ++pos;
       }
     }
 
     /*
      * Encode features of a regular (non-array) FS.
      */
-    private void encodeFeatures(int addr, AttributesImpl attrs) {
-      int heapValue = cas.getHeapValue(addr);
-      int[] feats = ts.ll_getAppropriateFeatures(heapValue);
-      int featAddr, featVal;
-      String featName, attrValue;
-//      boolean nameMapping = false;
-//      if (sofaTypeCode == heapValue) {
-//        // set flag for SofaID mapping
-//        nameMapping = true;
-//      }
-
-      for (int i = 0; i < feats.length; i++) {
-        featAddr = addr + cas.getFeatureOffset(feats[i]);
-        featVal = cas.getHeapValue(featAddr);
-        featName = featureNames[feats[i]];
-        if (!cas.ll_isRefType(ts.range(feats[i]))) {
-          attrValue = cas.getFeatureValueAsString(addr, feats[i]);
-//          if (nameMapping && featName.equals(CAS.FEATURE_BASE_NAME_SOFAID) && uimaContext != null) {
-//            // map absolute SofaID to that expected by Component
-//            attrValue = uimaContext.mapSofaIDToComponentSofaName(attrValue);
-//          }
+    private void encodeFeatures(TOP fs, AttributesImpl attrs) {
+      TypeImpl ti = fs._getTypeImpl();
+      
+      for (FeatureImpl fi : ti.getFeatureImpls()) {
+        String attrValue;
+        if (fi.getRangeImpl().isRefType) {
+          TOP v = fs.getFeatureValue(fi);
+          attrValue = (null == v) ? null : Integer.toString(v._id);
         } else {
-          if (featVal == CASImpl.NULL) {
-            attrValue = null;
-          } else {
-            attrValue = Integer.toString(featVal);
-          }
+          attrValue = fs.getFeatureValueAsString(fi);
         }
-
-        if (attrValue != null && featName != null) {
-          addAttribute(attrs, featName, attrValue);
+        if (attrValue != null) {
+          addAttribute(attrs, featureNames[fi.getCode()], attrValue);
         }
       }
     }
 
-    private void enqueueFeatures(int addr, int heapValue) {
-      int[] feats = ts.ll_getAppropriateFeatures(heapValue);
-      int featAddr, featVal;
-
-      for (int i = 0; i < feats.length; i++) {
-        featAddr = addr + cas.getFeatureOffset(feats[i]);
-        featVal = cas.getHeapValue(featAddr);
-        if (cas.ll_isRefType(ts.range(feats[i]))) {
-          if (featVal == CASImpl.NULL) {
-            // break;
-          } else {
-            enqueue(featVal);
+    private void enqueueFeatures(TOP fs, int heapValue) {
+      TypeImpl ti = fs._getTypeImpl();
+      
+      if (fs instanceof UimaSerializable) {
+        ((UimaSerializable)fs)._save_to_cas_data();
+      }
+      for (FeatureImpl fi : ti.getFeatureImpls()) {
+        if (fi.getRangeImpl().isRefType) {
+          TOP v = fs.getFeatureValue(fi);
+          if (null != v) {
+            enqueue(v);
           }
-
         }
       }
     }
@@ -659,18 +631,19 @@ public class XCASSerializer {
     /*
      * Encode Out-Of-TypeSystem Features.
      */
-    private void encodeOutOfTypeSystemFeatures(int addr, AttributesImpl attrs) {
-      List<String[]> attrList = mOutOfTypeSystemData.extraFeatureValues.get(Integer.valueOf(addr));
+    private void encodeOutOfTypeSystemFeatures(TOP fs, AttributesImpl attrs) {
+      List<Pair<String, Object>> attrList = mOutOfTypeSystemData.extraFeatureValues.get(fs);
       if (attrList != null) {
-        for (String[] attr : attrList) {
+        for (Pair<String, Object> p : attrList) {
+          String sv = (p.u instanceof String) ? (String) p.u : "";
           // remap ID if necessary
-          if (attr[0].startsWith("_ref_")) {
-            if (attr[1].startsWith("a")) { // reference to OOTS FS
+          if (p.t.startsWith(REF_PREFIX)) {
+            if (sv.startsWith("a")) { // reference to OOTS FS
               // - remap
-              attr[1] = mOutOfTypeSystemData.idMap.get(attr[1]);
+              p.u = sv = mOutOfTypeSystemData.idMap.get(sv);
             }
           }
-          addAttribute(attrs, attr[0], attr[1]);
+          addAttribute(attrs, p.t, sv);
         }
       }
     }
@@ -678,31 +651,38 @@ public class XCASSerializer {
     /*
      * Encode Out-Of-TypeSystem Features.
      */
-    private void enqueueOutOfTypeSystemFeatures(int addr) {
-      List<String[]> attrList = mOutOfTypeSystemData.extraFeatureValues.get(Integer.valueOf(addr));
+    private void enqueueOutOfTypeSystemFeatures(TOP fs) {
+      List<Pair<String, Object>> attrList = mOutOfTypeSystemData.extraFeatureValues.get(fs);
       if (attrList != null) {
-        Iterator<String[]> it = attrList.iterator();
+        Iterator<Pair<String, Object>> it = attrList.iterator();
         while (it.hasNext()) {
-          String[] attr = it.next();
+          Pair<String, Object> p = it.next();
+          String sv = (p.u instanceof String) ? (String) p.u : "";
           // remap ID if necessary
-          if (attr[0].startsWith("_ref_")) {
+          if (p.t.startsWith(REF_PREFIX)) {
             // references whose ID starts with the character 'a' are references to out of type
             // system FS. All other references should be to in-typesystem FS, which we need to
             // enqueue.
-            if (!attr[1].startsWith("a")) {
-              enqueue(Integer.parseInt(attr[1]));
+            if (p.u instanceof TOP) {
+              enqueue((TOP) p.u);
+//              enqueue(cas.getFsFromId_checked(Integer.parseInt(attr[1])));
             }
           }
         }
       }
     }
 
-    private final String getTypeName(int addr) {
-      return ts.ll_getTypeForCode(cas.getHeapValue(addr)).getName();
+    private final String getTypeName(TOP fs) {
+      return fs.getType().getName();
     }
 
-    private final int classifyType(int type) {
-      return cas.ll_getTypeClass(type);
+    /**
+     * classify the type, without distinguishng list types 
+     * @param ti the type
+     * @return the classification
+     */
+    private final int classifyType(TypeImpl ti) {
+      return TypeSystemImpl.getTypeClass(ti);
     }
 
     /*
@@ -710,15 +690,16 @@ public class XCASSerializer {
      */
     private void enqueueOutOfTypeSystemData(OutOfTypeSystemData aData) {
       for (FSData fs : aData.fsList) {
-        for (Map.Entry<String, String> entry : fs.featVals.entrySet()) {
+        for (Entry<String, Object> entry : fs.featVals.entrySet()) {
           String attrName = entry.getKey();
-          if (attrName.startsWith("_ref_")) {
-            String attrVal = entry.getValue();
+          if (attrName.startsWith(REF_PREFIX)) {
+            Object attrVal = entry.getValue();
             // references whose ID starts with the character 'a' are references to out of type
             // system FS. All other references should be to in-typesystem FS, which we need to
             // enqueue.
-            if (!attrVal.startsWith("a")) {
-              enqueue(Integer.parseInt(attrVal));
+            if (attrVal instanceof TOP /*String && !((String)attrVal).startsWith("a")*/) {
+              enqueue((TOP)attrVal);
+//              enqueue(cas.getFsFromId_checked(Integer.parseInt(attrVal)));
             }
           }
         }
@@ -737,11 +718,11 @@ public class XCASSerializer {
         addAttribute(workAttrs, ID_ATTR_NAME, fs.id);
 
         // Add other attributes (remap OOTS refs)
-        for (Map.Entry<String, String> entry : fs.featVals.entrySet()) {
+        for (Entry<String, Object> entry : fs.featVals.entrySet()) {
           String attrName = entry.getKey();
-          String attrVal = entry.getValue();
-          if (attrName.startsWith("_ref_")) {
-            if (attrVal.startsWith("a")) {
+          Object attrVal = entry.getValue();
+          if (attrName.startsWith(REF_PREFIX)) {
+            if (attrVal instanceof String && ((String)attrVal).startsWith("a")) {
               // "a" prefix indicates a reference from one OOTS FS
               // to another OOTS FS;
               // we need to remap those IDs to the actual IDs used
@@ -749,7 +730,9 @@ public class XCASSerializer {
               attrVal = mOutOfTypeSystemData.idMap.get(attrVal);
             }
           }
-          addAttribute(workAttrs, attrName, attrVal);
+          addAttribute(workAttrs, attrName, (attrVal instanceof TOP) 
+                                              ? Integer.toString(((TOP)attrVal)._id) 
+                                              : (String)attrVal);
         }
         // send events
         String xcasElementName = getXCasElementName(fs.type);
@@ -805,8 +788,6 @@ public class XCASSerializer {
   
   private TypeSystemImpl ts;
 
-  private UimaContext uimaContext;
-
   // Create own cache of feature names because of _ref_ prefixes.
   private String[] featureNames;
 
@@ -820,7 +801,6 @@ public class XCASSerializer {
     super();
     // System.out.println("Creating serializer for type system.");
     this.ts = (TypeSystemImpl) ts;
-    this.uimaContext = uimaContext;
     // Create feature name cache.
     final int featArraySize = this.ts.getNumberOfFeatures() + 1;
     this.featureNames = new String[featArraySize];

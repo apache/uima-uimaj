@@ -1,11 +1,19 @@
 
 
-/* First created by JCasGen Sat Nov 01 07:38:59 EDT 2014 */
+   
+/* Apache UIMA v3 - First created by JCasGen Tue Mar 08 10:58:47 EST 2016 */
+
 package org.apache.uima.test;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
+
 
 import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.FSArray;
@@ -13,8 +21,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sat Nov 01 07:38:59 EDT 2014
- * XML source: C:/au/svnCheckouts/trunk/uimaj/uimaj-json/src/test/resources/CasSerialization/desc/refTypes.xml
+ * Updated by JCasGen Tue Mar 08 10:58:47 EST 2016
+ * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-json/src/test/resources/CasSerialization/desc/refTypes.xml
  * @generated */
 public class RefTypes extends Annotation {
   /** @generated
@@ -33,17 +41,31 @@ public class RefTypes extends Annotation {
   @Override
   public              int getTypeIndexID() {return typeIndexID;}
  
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_aFS = TypeSystemImpl.createCallSite(RefTypes.class, "aFS");
+  private final static MethodHandle _FH_aFS = _FC_aFS.dynamicInvoker();
+  private final static CallSite _FC_aListFs = TypeSystemImpl.createCallSite(RefTypes.class, "aListFs");
+  private final static MethodHandle _FH_aListFs = _FC_aListFs.dynamicInvoker();
+  private final static CallSite _FC_aArrayFS = TypeSystemImpl.createCallSite(RefTypes.class, "aArrayFS");
+  private final static MethodHandle _FH_aArrayFS = _FC_aArrayFS.dynamicInvoker();
+
+   
   /** Never called.  Disable default constructor
    * @generated */
   protected RefTypes() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
-   * @param addr low level Feature Structure reference
+   * @param casImpl the CAS this Feature Structure belongs to
    * @param type the type of this Feature Structure 
    */
-  public RefTypes(int addr, TOP_Type type) {
-    super(addr, type);
+  public RefTypes(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
   
@@ -54,18 +76,6 @@ public class RefTypes extends Annotation {
     super(jcas);
     readObject();   
   } 
-
-  /** @generated
-   * @param jcas JCas to which this Feature Structure belongs
-   * @param begin offset to the begin spot in the SofA
-   * @param end offset to the end spot in the SofA 
-  */  
-  public RefTypes(JCas jcas, int begin, int end) {
-    super(jcas);
-    setBegin(begin);
-    setEnd(end);
-    readObject();
-  }   
 
   /** 
    * <!-- begin-user-doc -->
@@ -85,19 +95,16 @@ public class RefTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public Annotation getAFS() {
-    if (RefTypes_Type.featOkTst && ((RefTypes_Type)jcasType).casFeat_aFS == null)
-      jcasType.jcas.throwFeatMissing("aFS", "org.apache.uima.test.RefTypes");
-    return (Annotation)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((RefTypes_Type)jcasType).casFeatCode_aFS)));}
+  public Annotation getAFS() { return (Annotation)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aFS)));}
     
   /** setter for aFS - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAFS(Annotation v) {
-    if (RefTypes_Type.featOkTst && ((RefTypes_Type)jcasType).casFeat_aFS == null)
-      jcasType.jcas.throwFeatMissing("aFS", "org.apache.uima.test.RefTypes");
-    jcasType.ll_cas.ll_setRefValue(addr, ((RefTypes_Type)jcasType).casFeatCode_aFS, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aFS), v);
+  }    
+    
    
     
   //*--------------*
@@ -107,21 +114,16 @@ public class RefTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public FSList getAListFs() {
-    if (RefTypes_Type.featOkTst && ((RefTypes_Type)jcasType).casFeat_aListFs == null)
-      jcasType.jcas.throwFeatMissing("aListFs", "org.apache.uima.test.RefTypes");
-    return (FSList)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((RefTypes_Type)jcasType).casFeatCode_aListFs)));}
+  public FSList getAListFs() { return (FSList)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aListFs)));}
     
   /** setter for aListFs - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAListFs(FSList v) {
-    if (RefTypes_Type.featOkTst && ((RefTypes_Type)jcasType).casFeat_aListFs == null)
-      jcasType.jcas.throwFeatMissing("aListFs", "org.apache.uima.test.RefTypes");
-    jcasType.ll_cas.ll_setRefValue(addr, ((RefTypes_Type)jcasType).casFeatCode_aListFs, jcasType.ll_cas.ll_getFSRef(v));}    
-   
-    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aListFs), v);
+  }    
+       
   //*--------------*
   //* Feature: aArrayFS
 
@@ -129,19 +131,16 @@ public class RefTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public FSArray getAArrayFS() {
-    if (RefTypes_Type.featOkTst && ((RefTypes_Type)jcasType).casFeat_aArrayFS == null)
-      jcasType.jcas.throwFeatMissing("aArrayFS", "org.apache.uima.test.RefTypes");
-    return (FSArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((RefTypes_Type)jcasType).casFeatCode_aArrayFS)));}
+  public FSArray getAArrayFS() { return (FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayFS)));}
     
   /** setter for aArrayFS - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAArrayFS(FSArray v) {
-    if (RefTypes_Type.featOkTst && ((RefTypes_Type)jcasType).casFeat_aArrayFS == null)
-      jcasType.jcas.throwFeatMissing("aArrayFS", "org.apache.uima.test.RefTypes");
-    jcasType.ll_cas.ll_setRefValue(addr, ((RefTypes_Type)jcasType).casFeatCode_aArrayFS, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aArrayFS), v);
+  }    
+    
     
   /** indexed getter for aArrayFS - gets an indexed value - 
    * @generated
@@ -149,21 +148,16 @@ public class RefTypes extends Annotation {
    * @return value of the element at index i 
    */
   public Annotation getAArrayFS(int i) {
-    if (RefTypes_Type.featOkTst && ((RefTypes_Type)jcasType).casFeat_aArrayFS == null)
-      jcasType.jcas.throwFeatMissing("aArrayFS", "org.apache.uima.test.RefTypes");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((RefTypes_Type)jcasType).casFeatCode_aArrayFS), i);
-    return (Annotation)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((RefTypes_Type)jcasType).casFeatCode_aArrayFS), i)));}
+     return (Annotation)(((FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayFS)))).get(i));} 
 
   /** indexed setter for aArrayFS - sets an indexed value - 
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setAArrayFS(int i, Annotation v) { 
-    if (RefTypes_Type.featOkTst && ((RefTypes_Type)jcasType).casFeat_aArrayFS == null)
-      jcasType.jcas.throwFeatMissing("aArrayFS", "org.apache.uima.test.RefTypes");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((RefTypes_Type)jcasType).casFeatCode_aArrayFS), i);
-    jcasType.ll_cas.ll_setRefArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((RefTypes_Type)jcasType).casFeatCode_aArrayFS), i, jcasType.ll_cas.ll_getFSRef(v));}
+  public void setAArrayFS(int i, Annotation v) {
+    ((FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayFS)))).set(i, v);
+  }  
   }
 
     

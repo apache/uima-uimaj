@@ -25,6 +25,7 @@ import java.util.TreeMap;
 
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.cas_data.FeatureValue;
+import org.apache.uima.util.impl.Constants;
 
 
 public class FeatureStructureImpl implements FeatureStructure {
@@ -37,10 +38,10 @@ public class FeatureStructureImpl implements FeatureStructure {
 
   private String mId = null;
 
-  private int[] mIndexed = new int[0];
+  private int[] mIndexed = Constants.EMPTY_INT_ARRAY;
 
   public FeatureStructureImpl() {
-    mFeatureMap = new TreeMap<String, FeatureValue>();
+    mFeatureMap = new TreeMap<>();
   }
 
   public String getType() {
@@ -134,7 +135,7 @@ public class FeatureStructureImpl implements FeatureStructure {
    */
   public void setIndexed(int[] aIndexed) {
     if (aIndexed == null)
-      mIndexed = new int[0];
+      mIndexed = Constants.EMPTY_INT_ARRAY;
     else
       mIndexed = aIndexed;
   }

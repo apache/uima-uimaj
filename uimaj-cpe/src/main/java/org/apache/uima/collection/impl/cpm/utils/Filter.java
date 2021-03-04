@@ -27,29 +27,33 @@ import java.util.StringTokenizer;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
 
+
 /**
- * Parses the filter expression associated with a Cas Processor in the cpe descriptor
- * 
- * 
+ * Parses the filter expression associated with a Cas Processor in the cpe descriptor.
  */
 public class Filter {
+  
+  /** The stack. */
   Stack stack = new Stack();
 
+  /** The expression list. */
   LinkedList expressionList = new LinkedList();
 
+  /** The is and filter. */
   protected boolean isAndFilter = false;
 
+  /** The is or filter. */
   protected boolean isOrFilter = true; // default filter is OR as it is least restrictive
 
+  /** The filter initialized. */
   protected boolean filterInitialized = false;
 
   /**
-   * Parses filter expression
-   * 
+   * Parses filter expression.
+   *
    * @param expression -
    *          filter expression to parse
    * @return - list of filters
-   * 
    * @throws ParseException -
    */
   public LinkedList parse(String expression) throws ParseException {
@@ -79,11 +83,10 @@ public class Filter {
   }
 
   /**
-   * Parses tokens
-   * 
+   * Parses tokens.
+   *
    * @param aTokenizer -
    *          tokenized filter expression
-   * 
    * @throws ParseException -
    */
   private void parseTokens(StringTokenizer aTokenizer) throws ParseException {
@@ -124,8 +127,9 @@ public class Filter {
   }
 
   /**
-   * Builds filter expression from values from the stack
-   * 
+   * Builds filter expression from values from the stack.
+   *
+   * @param anOp the an op
    * @throws ParseException -
    */
   private void evaluate(String anOp) throws ParseException {
@@ -159,66 +163,117 @@ public class Filter {
   }
 
   /**
-   * Operand
+   * Operand.
    */
   public class Operand {
+    
+    /** The operand. */
     private String operand;
 
+    /**
+     * Instantiates a new operand.
+     *
+     * @param aOp the a op
+     */
     public Operand(String aOp) {
       operand = aOp;
     }
 
+    /**
+     * Gets the operand.
+     *
+     * @return the operand
+     */
     public String getOperand() {
       return operand;
     }
   }
 
   /**
-   * Left part of filter expression
+   * Left part of filter expression.
    */
   public class LeftPart {
+    
+    /** The left part. */
     private String leftPart;
 
+    /**
+     * Instantiates a new left part.
+     *
+     * @param aLPart the a L part
+     */
     public LeftPart(String aLPart) {
       leftPart = aLPart;
     }
 
+    /**
+     * Gets the.
+     *
+     * @return the string
+     */
     public String get() {
       return leftPart;
     }
   }
 
   /**
-   * Right part of the filter expression
+   * Right part of the filter expression.
    */
   public class RightPart {
+    
+    /** The right part. */
     private String rightPart;
 
+    /**
+     * Instantiates a new right part.
+     *
+     * @param aRPart the a R part
+     */
     public RightPart(String aRPart) {
       rightPart = aRPart;
     }
 
+    /**
+     * Gets the.
+     *
+     * @return the string
+     */
     public String get() {
       return rightPart;
     }
   }
 
   /**
-   * Object containing single filter
+   * Object containing single filter.
    */
   public class Expression {
+    
+    /** The l P. */
     private LeftPart lP;
 
+    /** The r P. */
     private RightPart rP;
 
+    /** The op. */
     private Operand op;
 
+    /** The filter. */
     private Filter filter = null;
 
+    /**
+     * Instantiates a new expression.
+     *
+     * @param aFilter the a filter
+     */
     public Expression(Filter aFilter) {
       filter = aFilter;
     }
 
+    /**
+     * Sets the is or filter.
+     *
+     * @throws ParseException the parse exception
+     */
     protected void setIsOrFilter() throws ParseException {
       // Already defined as AND filter. Currently filtering is either AND or OR. No mixing is
       // supported
@@ -231,6 +286,11 @@ public class Filter {
       filter.filterInitialized = true;
     }
 
+    /**
+     * Sets the is and filter.
+     *
+     * @throws ParseException the parse exception
+     */
     protected void setIsAndFilter() throws ParseException {
       // Already defined as OR filter. Currently filtering is either AND or OR. No mixing is
       // supported
@@ -243,26 +303,56 @@ public class Filter {
       filter.isOrFilter = false; // turnoff default
     }
 
+    /**
+     * Checks if is or filter.
+     *
+     * @return true, if is or filter
+     */
     public boolean isOrFilter() {
       return filter.isOrFilter;
     }
 
+    /**
+     * Checks if is and filter.
+     *
+     * @return true, if is and filter
+     */
     public boolean isAndFilter() {
       return filter.isAndFilter;
     }
 
+    /**
+     * Sets the left part.
+     *
+     * @param aLP the new left part
+     */
     public void setLeftPart(LeftPart aLP) {
       lP = aLP;
     }
 
+    /**
+     * Sets the right part.
+     *
+     * @param aRP the new right part
+     */
     public void setRightPart(RightPart aRP) {
       rP = aRP;
     }
 
+    /**
+     * Sets the operand.
+     *
+     * @param aOP the new operand
+     */
     public void setOperand(Operand aOP) {
       op = aOP;
     }
 
+    /**
+     * Checks for left part.
+     *
+     * @return true, if successful
+     */
     public boolean hasLeftPart() {
       if (lP != null) {
         return true;
@@ -270,6 +360,11 @@ public class Filter {
       return false;
     }
 
+    /**
+     * Checks for right part.
+     *
+     * @return true, if successful
+     */
     public boolean hasRightPart() {
       if (rP != null) {
         return true;
@@ -277,6 +372,11 @@ public class Filter {
       return false;
     }
 
+    /**
+     * Checks for operand.
+     *
+     * @return true, if successful
+     */
     public boolean hasOperand() {
       if (op != null) {
         return true;
@@ -284,19 +384,39 @@ public class Filter {
       return false;
     }
 
+    /**
+     * Gets the left part.
+     *
+     * @return the left part
+     */
     public LeftPart getLeftPart() {
       return lP;
     }
 
+    /**
+     * Gets the right part.
+     *
+     * @return the right part
+     */
     public RightPart getRightPart() {
       return rP;
     }
 
+    /**
+     * Gets the operand.
+     *
+     * @return the operand
+     */
     public Operand getOperand() {
       return op;
     }
   }
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
   public static void main(String[] args) {
     Filter filter = new Filter();
     try {

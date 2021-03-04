@@ -38,27 +38,56 @@ import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+
+/**
+ * The Class SearchThread.
+ */
 public class SearchThread implements Runnable /* extends Thread */{
+  
+  /** The m file name search. */
   private Pattern m_fileNameSearch; 
+  
+  /** The m input type search. */
   private Pattern m_inputTypeSearch;
+  
+  /** The m output type search. */
   private Pattern m_outputTypeSearch;
   
+  /** The m project to search. */
   private String  m_projectToSearch;
 
+  /** The m dialog. */
   FindComponentDialog m_dialog;
 
+  /** The m aggregate section. */
   private AbstractSection m_aggregateSection;
 
+  /** The m matching delegate component descriptors. */
   private List m_matchingDelegateComponentDescriptors;
 
+  /** The m matching delegate component descriptions. */
   private List m_matchingDelegateComponentDescriptions;
 
+  /** The m n which status msg. */
   int m_nWhichStatusMsg;
 
+  /** The m status msg. */
   String m_statusMsg;
 
+  /** The m component headers. */
   private String[] m_componentHeaders;
 
+  /**
+   * Instantiates a new search thread.
+   *
+   * @param dialog the dialog
+   * @param aggregateSection the aggregate section
+   * @param fileNameSearch the file name search
+   * @param inputTypeSearch the input type search
+   * @param outputTypeSearch the output type search
+   * @param projectToSearch the project to search
+   * @param componentHeaders the component headers
+   */
   public SearchThread(FindComponentDialog dialog, AbstractSection aggregateSection,
           String fileNameSearch, String inputTypeSearch, String outputTypeSearch,
           String projectToSearch, String[] componentHeaders) {
@@ -72,22 +101,41 @@ public class SearchThread implements Runnable /* extends Thread */{
     m_componentHeaders = componentHeaders;
   }
 
+  /** The m b die now. */
   private boolean m_bDieNow = false;
 
+  /** The m b done. */
   private boolean m_bDone = false;
 
+  /**
+   * Sets the die now.
+   */
   public void setDieNow() {
     m_bDieNow = true;
   }
 
+  /**
+   * Gets the die now.
+   *
+   * @return the die now
+   */
   public boolean getDieNow() {
     return m_bDieNow;
   }
 
+  /**
+   * Checks if is done.
+   *
+   * @return true, if is done
+   */
   public boolean isDone() {
     return m_bDone;
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Runnable#run()
+   */
+  @Override
   public void run() {
     m_matchingDelegateComponentDescriptors = new ArrayList();
     m_matchingDelegateComponentDescriptions = new ArrayList();
@@ -99,6 +147,11 @@ public class SearchThread implements Runnable /* extends Thread */{
     m_bDone = true;
   }
 
+  /**
+   * Test one resource.
+   *
+   * @param resource the resource
+   */
   private void testOneResource(IResource resource) {
     switch (resource.getType()) {
       case IResource.FILE:
@@ -134,6 +187,12 @@ public class SearchThread implements Runnable /* extends Thread */{
   }
 
   // populates the Vector of matchingAnalysisEngineDescriptors and
+  /**
+   * Gets the delegate components by input output types.
+   *
+   * @param projectToSearch the project to search
+   * @return the delegate components by input output types
+   */
   // matchingAnalysisEngineDescriptions
   private void getDelegateComponentsByInputOutputTypes(String projectToSearch) {
 
@@ -170,6 +229,12 @@ public class SearchThread implements Runnable /* extends Thread */{
   }
 
   // populates the Vector of matchingAnalysisEngineDescriptors and
+  /**
+   * Gets the delegate components by IO types beginning at.
+   *
+   * @param beginFolder the begin folder
+   * @return the delegate components by IO types beginning at
+   */
   // matchingAnalysisEngineDescriptions
   private void getDelegateComponentsByIOTypesBeginningAt(IFolder beginFolder) {
 
@@ -186,6 +251,14 @@ public class SearchThread implements Runnable /* extends Thread */{
     }
   }
 
+  /**
+   * Delegate component matches capability reqs.
+   *
+   * @param rs the rs
+   * @param inputTypeSearch the input type search
+   * @param outputTypeSearch the output type search
+   * @return true, if successful
+   */
   private boolean delegateComponentMatchesCapabilityReqs(ResourceCreationSpecifier rs,
           Pattern inputTypeSearch, Pattern outputTypeSearch) {
 
@@ -203,10 +276,20 @@ public class SearchThread implements Runnable /* extends Thread */{
     return inputSatisfied && outputSatisfied;
   }
 
+  /** The Constant INPUT. */
   private static final boolean INPUT = true;
 
+  /** The Constant OUTPUT. */
   private static final boolean OUTPUT = false;
 
+  /**
+   * Match capabilities to.
+   *
+   * @param capabilities the capabilities
+   * @param search the search
+   * @param isInput the is input
+   * @return true, if successful
+   */
   private boolean matchCapabilitiesTo(Capability[] capabilities, Pattern search, boolean isInput) {
     if (null == search)
       return true;
@@ -224,14 +307,30 @@ public class SearchThread implements Runnable /* extends Thread */{
     return false;
   }
 
+  /**
+   * Gets the matching delegate component descriptors.
+   *
+   * @return the matching delegate component descriptors
+   */
   public List getMatchingDelegateComponentDescriptors() {
     return m_matchingDelegateComponentDescriptors;
   }
 
+  /**
+   * Gets the matching delegate component descriptions.
+   *
+   * @return the matching delegate component descriptions
+   */
   public List getMatchingDelegateComponentDescriptions() {
     return m_matchingDelegateComponentDescriptions;
   }
 
+  /**
+   * Sets the status msg.
+   *
+   * @param nWhich the n which
+   * @param msg the msg
+   */
   private void setStatusMsg(int nWhich, String msg) {
     m_nWhichStatusMsg = nWhich;
     m_statusMsg = msg;
@@ -240,6 +339,7 @@ public class SearchThread implements Runnable /* extends Thread */{
       return;
     Display display = m_dialog.getStatusLabel1().getDisplay();
     display.syncExec(new Runnable() {
+      @Override
       public void run() {
         if (m_nWhichStatusMsg == 1) {
           m_dialog.getStatusLabel1().setText(m_statusMsg);
@@ -251,6 +351,12 @@ public class SearchThread implements Runnable /* extends Thread */{
 
   }
 
+  /**
+   * Gets the brief display version.
+   *
+   * @param filePathName the file path name
+   * @return the brief display version
+   */
   private String getBriefDisplayVersion(String filePathName) {
     if (filePathName == null) {
       return null;

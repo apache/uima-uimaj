@@ -88,6 +88,7 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
+
 /**
  * Responsible for creating and initializing processing threads. This instance manages the lifecycle
  * of the CPE components. It exposes API for plugging in components programmatically instead of
@@ -101,17 +102,24 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * 
  */
 public class CPMEngine extends Thread {
+  
+  /** The Constant MAX_WAIT_ON_QUEUE. */
   private static final int MAX_WAIT_ON_QUEUE = 400;
 
+  /** The Constant CAS_PROCESSED_MSG. */
   private static final int CAS_PROCESSED_MSG = 1000;
 
+  /** The Constant SINGLE_THREADED_MODE. */
   private static final String SINGLE_THREADED_MODE = "single-threaded";
 
+  /** The cas pool. */
   public CPECasPool casPool;
 
+  /** The lock for pause. */
   // Used internally for synchronization
   public final Object lockForPause = new Object();  
 
+  /** The collection reader. */
   // CollectionReader to be used by this CPM
   private BaseCollectionReader collectionReader = null;
 
@@ -119,141 +127,189 @@ public class CPMEngine extends Thread {
   // Accesses to this flag (read and write) must
   //   be done while holding the "lockForPause" lock
   //   via synch
+  /** The pause. */
   //  @GuardedBy(lockForPause)
   protected boolean pause = false;
 
   // Flag indicating if this CPM is running or not
+  /** The is running. */
   // Marked volatile because it is set and read on different threads without synchronization 
   protected volatile boolean isRunning = false;
 
   // Flag indicating if this CPM has been stopped
+  /** The stopped. */
   // Marked volatile because it is set and read on different threads without synchronization
   protected volatile boolean stopped = false;
 
   // Flag indicating if this CPM has been killed
+  /** The killed. */
   // Marked volatile because it is set and read on different threads without synchronization
   protected volatile boolean killed = false;
 
+  /** The pause on exception. */
   // Flag indicating if this CPM should be paused on exception
   private boolean pauseOnException = false;
 
+  /** The annotator list. */
   // List of all annotators
   private LinkedList annotatorList = new LinkedList();
 
+  /** The annotator deploy list. */
   private LinkedList annotatorDeployList = new LinkedList();
 
+  /** The consumer list. */
   // List of CasConsumers
   private LinkedList consumerList = new LinkedList();
 
+  /** The consumer deploy list. */
   private LinkedList consumerDeployList = new LinkedList();
 
+  /** The num to process. */
   // Number of entities this CPM must process.
   private long numToProcess = -1;
 
+  /** The pool size. */
   private int poolSize = 0;
 
+  /** The proc tr. */
   // ProcessTrace aggregating CPMs performance stats
   private ProcessTrace procTr = null;
 
   // private EntityProcessStatusImpl enProcSt = null;
   // used to during recovery stage after CPM failure or forced shutdown
   // private ProcessTrace restoredProcTr = null;
+  /** The stats. */
   // Map for storing runtime statistics. used for reporting
   private Map stats = new HashMap();
 
+  /** The status cb L. */
   // List of all callback listeners
   private ArrayList statusCbL = new ArrayList();
 
+  /** The reader fetch size. */
   // Number of entities to fetch for every getNext()
   private int readerFetchSize = 1;
 
   // Size of the work queue. This queue is shared among processing units with deployed annotators.
+  /** The input queue size. */
   // The ArtifactProducer deposits entities into this queue, while ProcessingUnits dequeue them.
   private int inputQueueSize = 1;
 
+  /** The output queue size. */
   // Size of the output queue. This queue is shared with deployed casconsumers.
   private int outputQueueSize = 1;
 
+  /** The concurrent thread count. */
   // Number of concurrent processing units (pipelines)
   private int concurrentThreadCount = 1;
 
+  /** The analysis engines. */
   private Hashtable analysisEngines = new Hashtable();
 
+  /** The consumers. */
   private Hashtable consumers = new Hashtable();
 
+  /** The casprocessor list. */
   private CasProcessor[] casprocessorList;
 
   // Component responsible for asynchronous read from the CollectionReader. It places Cas'es into
+  /** The producer. */
   // work Queue
   private ArtifactProducer producer = null;
 
+  /** The cpe factory. */
   // Factory responsible for instantiating CPE components from CPE descriptor
   private CPEFactory cpeFactory = null;
 
+  /** The processing units. */
   // An array holding instances of components responsible for analysis
   protected ProcessingUnit[] processingUnits = null;
 
   // Instantiate a Processing Unit containing CasConsumers. There may be many Analysis Processing
   // Units
+  /** The cas consumer PU. */
   // but there is one CasConsumer Processing Unit ( at least for now).
   private ProcessingUnit casConsumerPU = null;
 
+  /** The output queue. */
   // Queue where result of analysis goes to be consumed by Consumers
   protected BoundedWorkQueue outputQueue = null;
 
+  /** The work queue. */
   // Queue were Cas'es meant for analysis are deposited by ArtifactProducer
   protected BoundedWorkQueue workQueue = null;
 
+  /** The checkpoint data. */
   private CheckpointData checkpointData = null;
 
+  /** The mixed cas processor type support. */
   private boolean mixedCasProcessorTypeSupport = false;
 
+  /** The m performance tuning settings. */
   private Properties mPerformanceTuningSettings = UIMAFramework
           .getDefaultPerformanceTuningProperties();
 
+  /** The dbg ctrl thread. */
   private DebugControlThread dbgCtrlThread = null;
 
+  /** The pca. */
   private ProcessControllerAdapter pca = null;
 
+  /** The active processing units. */
   private int activeProcessingUnits = 1;
 
+  /** The hard kill. */
   private boolean hardKill = false;
 
+  /** The skipped docs. */
   private Hashtable skippedDocs = new Hashtable();
 
+  /** The defined capabilities. */
   private Capability[] definedCapabilities = null;
 
+  /** The needs T cas. */
   private boolean needsTCas = true;
 
+  /** The cr fetch time. */
   private long crFetchTime = 0;
 
+  /** The reader state. */
   private int readerState = 0;
 
+  /** The drop cas on exception policy. */
   private boolean dropCasOnExceptionPolicy = false;
 
+  /** The single threaded CPE. */
   private boolean singleThreadedCPE = false;
 
+  /** The non threaded processing unit. */
   private NonThreadedProcessingUnit nonThreadedProcessingUnit = null;
 
+  /** The non threaded cas consumer processing unit. */
   private NonThreadedProcessingUnit nonThreadedCasConsumerProcessingUnit = null;
 
+  /** The initial cp list. */
   private LinkedList initial_cp_list = new LinkedList(); // this list is used to hold Cas
 
   // Processors
 
+  /** The cas processors deployed. */
   // It contains both AEs and CCs.
   private boolean casProcessorsDeployed = false;
 
+  /** The consumer thread started. */
   private boolean consumerThreadStarted = false;
 
+  /** The reader thread started. */
   private boolean readerThreadStarted = false;
 
+  /** The processing threads state. */
   private int[] processingThreadsState = null;
 
   /**
    * Initializes Collection Processing Engine. Assigns this thread and all processing threads
    * created by this component to a common Thread Group.
-   * 
+   *
    * @param aThreadGroup -
    *          contains all CPM related threads
    * @param aCpeFactory -
@@ -262,7 +318,7 @@ public class CPMEngine extends Thread {
    *          instance of the ProcessTrace where the CPM accumulates stats
    * @param aCheckpointData -
    *          checkpoint object facillitating restart from the last known point
-   * @throws Exception -
+   * @throws Exception the exception
    */
   public CPMEngine(CPMThreadGroup aThreadGroup, CPEFactory aCpeFactory, ProcessTrace aProcTr,
           CheckpointData aCheckpointData) throws Exception {
@@ -303,17 +359,19 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * @return a list of Processing Containers for Analysis Engines. Each CasProcessor is managed by
+   * Returns a list of Processing Containers for Analysis Engines. Each CasProcessor is managed by
    * its own container.
-   * 
+   *
+   * @return the processing containers
    */
   public LinkedList getProcessingContainers() {
     return annotatorList;
   }
 
   /**
-   * @return a list of All Processing Containers. Each CasProcessor is managed by its own container.
-   * 
+   * Returns a list of All Processing Containers. Each CasProcessor is managed by its own container.
+   *
+   * @return the all processing containers
    */
   public LinkedList getAllProcessingContainers() {
     LinkedList all = new LinkedList();
@@ -323,8 +381,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Returns number of processing threads
-   * 
+   * Returns number of processing threads.
+   *
    * @return - number of processing threads
    * @throws ResourceConfigurationException -
    */
@@ -333,8 +391,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Plugs in a map where the engine stores perfomance info at runtime
-   * 
+   * Plugs in a map where the engine stores perfomance info at runtime.
+   *
    * @param aMap -
    *          map for runtime stats and totals
    */
@@ -343,8 +401,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Returns CPE stats
-   * 
+   * Returns CPE stats.
+   *
    * @return Map containing CPE stats
    */
   public Map getStats() {
@@ -352,8 +410,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Sets a global flag to indicate to the CPM that it should pause whenever exception occurs
-   * 
+   * Sets a global flag to indicate to the CPM that it should pause whenever exception occurs.
+   *
    * @param aPause -
    *          true if pause is requested on exception, false otherwise
    */
@@ -362,8 +420,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Returns if the CPM should pause when exception occurs
-   * 
+   * Returns if the CPM should pause when exception occurs.
+   *
    * @return - true if the CPM pauses when exception occurs, false otherwise
    */
   public boolean isPauseOnException() {
@@ -405,6 +463,11 @@ public class CPMEngine extends Thread {
     poolSize = aPoolSize;
   }
 
+  /**
+   * Gets the pool size.
+   *
+   * @return the pool size
+   */
   public int getPoolSize() {
     return poolSize;
   }
@@ -419,6 +482,11 @@ public class CPMEngine extends Thread {
     concurrentThreadCount = aConcurrentThreadSize;
   }
 
+  /**
+   * Adds the status callback listener.
+   *
+   * @param aListener the a listener
+   */
   /*
    * (non-Javadoc)
    * 
@@ -431,8 +499,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Returns a list of ALL callback listeners currently registered with the CPM
-   * 
+   * Returns a list of ALL callback listeners currently registered with the CPM.
+   *
    * @return -
    */
   public ArrayList getCallbackListeners() {
@@ -440,8 +508,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Unregisters given listener from the CPM
-   * 
+   * Unregisters given listener from the CPM.
+   *
    * @param aListener -
    *          instance of {@link BaseStatusCallbackListener} to unregister
    */
@@ -450,8 +518,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Returns true if this engine has been killed
-   * 
+   * Returns true if this engine has been killed.
+   *
    * @return true if this engine has been killed
    */
   public boolean isKilled() {
@@ -591,6 +659,11 @@ public class CPMEngine extends Thread {
     return hardKill;
   }
 
+  /**
+   * Asynch stop.
+   *
+   * @deprecated 
+   */
   @Deprecated
   public void asynchStop() {
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
@@ -834,17 +907,14 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Returns index to a CasProcessor with a given name in a given List
-   * 
-   * 
+   * Returns index to a CasProcessor with a given name in a given List.
+   *
    * @param aDeployList -
    *          List of CasConsumers to be searched
    * @param aName -
    *          name of the CasConsumer we want to find
-   * 
    * @return 0 - if a CasConsumer is not found in a list, else returns a position in the list where
    *         the CasConsumer can found
-   * 
    */
   private int getIndexInList(List aDeployList, String aName) {
     for (int i = 0; i < aDeployList.size(); i++) {
@@ -860,10 +930,10 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Find the position in the list of the Cas Processor with a given name
-   * 
-   * @param aName -
-   * @param aList -
+   * Find the position in the list of the Cas Processor with a given name.
+   *
+   * @param aName the a name
+   * @param aList the a list
    * @return the position in the list of the Cas Processor with a given name
    */
   private int getPositionInListIfExists(String aName, List aList) {
@@ -1130,13 +1200,11 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * 
    * Adds a CASProcessor to the processing pipeline. If a CasProcessor already exists and its
    * status=DISABLED this method will re-enable the CasProcesser.
-   * 
-   * @param aCasProcessor
-   *          CASProcessor to be added to the processing pipeline
-   * @throws ResourceConfigurationException -         
+   *
+   * @param aCasProcessor          CASProcessor to be added to the processing pipeline
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   public void addCasProcessor(CasProcessor aCasProcessor) throws ResourceConfigurationException {
 
@@ -1163,14 +1231,12 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * 
-   * Adds a CASProcessor to the processing pipeline at a given place in the processing pipeline
-   * 
-   * @param aCasProcessor
-   *          CASProcessor to be added to the processing pipeline
+   * Adds a CASProcessor to the processing pipeline at a given place in the processing pipeline.
+   *
+   * @param aCasProcessor          CASProcessor to be added to the processing pipeline
    * @param aIndex -
    *          insertion point for a given CasProcessor
-   * @throws ResourceConfigurationException -
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   public void addCasProcessor(CasProcessor aCasProcessor, int aIndex)
           throws ResourceConfigurationException {
@@ -1178,9 +1244,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * 
-   * Removes a CASProcessor from the processing pipeline
-   * 
+   * Removes a CASProcessor from the processing pipeline.
+   *
    * @param aCasProcessorIndex -
    *          CasProcessor position in processing pipeline
    */
@@ -1192,11 +1257,9 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * 
-   * Disable a CASProcessor in the processing pipeline
-   * 
-   * @param aCasProcessorIndex
-   *          CASProcessor to be added to the processing pipeline
+   * Disable a CASProcessor in the processing pipeline.
+   *
+   * @param aCasProcessorIndex          CASProcessor to be added to the processing pipeline
    */
   public void disableCasProcessor(int aCasProcessorIndex) {
     if (aCasProcessorIndex < 0 || aCasProcessorIndex > annotatorList.size()) {
@@ -1214,11 +1277,9 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * 
-   * Disable a CASProcessor in the processing pipeline
-   * 
-   * @param aCasProcessorName
-   *          CASProcessor to be added to the processing pipeline
+   * Disable a CASProcessor in the processing pipeline.
+   *
+   * @param aCasProcessorName          CASProcessor to be added to the processing pipeline
    */
   public void disableCasProcessor(String aCasProcessorName) {
     for (int i = 0; i < annotatorList.size(); i++) {
@@ -1235,11 +1296,9 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * 
-   * Disable a CASProcessor in the processing pipeline
-   * 
-   * @param aCasProcessorName
-   *          CASProcessor to be added to the processing pipeline
+   * Disable a CASProcessor in the processing pipeline.
+   *
+   * @param aCasProcessorName          CASProcessor to be added to the processing pipeline
    */
   public void enableCasProcessor(String aCasProcessorName) {
     for (int i = 0; i < annotatorList.size(); i++) {
@@ -1256,7 +1315,9 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * @return all CASProcesors in the processing pipeline
+   * Returns all CASProcesors in the processing pipeline.
+   *
+   * @return the cas processors
    */
   public CasProcessor[] getCasProcessors() {
     if (casprocessorList != null) {
@@ -1314,8 +1375,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Deploys all Cas Consumers
-   * 
+   * Deploys all Cas Consumers.
+   *
    * @throws AbortCPMException -
    */
   private void deployConsumers() throws AbortCPMException {
@@ -1351,10 +1412,10 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Deploys CasProcessor and associates it with a {@link ProcessingContainer}
-   * 
-   * @param aProcessingContainer -
-   * @throws Exception -
+   * Deploys CasProcessor and associates it with a {@link ProcessingContainer}.
+   *
+   * @param aProcessingContainer the a processing container
+   * @throws Exception the exception
    */
   public void redeployAnalysisEngine(ProcessingContainer aProcessingContainer) throws Exception {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1467,7 +1528,8 @@ public class CPMEngine extends Thread {
   /**
    * Starts CASProcessor containers one a time. During this phase the container deploys a TAE as
    * local,remote, or integrated CasProcessor.
-   * @throws AbortCPMException -
+   *
+   * @throws AbortCPMException the abort CPM exception
    */
   public void deployCasProcessors() throws AbortCPMException {
     try {
@@ -1488,8 +1550,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Restores named events from the checkpoint
-   * 
+   * Restores named events from the checkpoint.
+   *
    * @param component -
    *          component name to restore named event for
    * @param aEvType -
@@ -1514,8 +1576,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Copy given component events
-   * 
+   * Copy given component events.
+   *
    * @param aEvType -
    *          event type
    * @param aList -
@@ -1537,15 +1599,18 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * @return a global flag indicating if this Thread is in processing state
-   * 
+   * Returns a global flag indicating if this Thread is in processing state.
+   *
+   * @return true, if is running
    */
   public boolean isRunning() {
     return isRunning;
   }
 
   /**
-   * @return a global flag indicating if this Thread is in pause state
+   * Returns a global flag indicating if this Thread is in pause state.
+   *
+   * @return true, if is paused
    */
   public boolean isPaused() {
     synchronized (lockForPause) {
@@ -1554,7 +1619,7 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Pauses this thread
+   * Pauses this thread.
    */
   public void pauseIt() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1568,7 +1633,7 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Resumes this thread
+   * Resumes this thread.
    */
   public void resumeIt() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1589,10 +1654,9 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Sets CollectionReader to use during processing
-   * 
-   * @param aCollectionReader
-   *          aCollectionReader
+   * Sets CollectionReader to use during processing.
+   *
+   * @param aCollectionReader          aCollectionReader
    */
   public void setCollectionReader(BaseCollectionReader aCollectionReader) {
     collectionReader = aCollectionReader;
@@ -1600,8 +1664,8 @@ public class CPMEngine extends Thread {
       if (collectionReader.getProcessingResourceMetaData().getConfigurationParameterSettings()
               .getParameterValue("fetchSize") != null) {
         try {
-          readerFetchSize = ((Integer) collectionReader.getProcessingResourceMetaData()
-                  .getConfigurationParameterSettings().getParameterValue("fetchSize")).intValue();
+          readerFetchSize = (Integer) collectionReader.getProcessingResourceMetaData()
+              .getConfigurationParameterSettings().getParameterValue("fetchSize");
         } catch (NumberFormatException nfe) {
           readerFetchSize = 1; // restore default
         }
@@ -1624,8 +1688,9 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Defines the size of the batch
-   * @param aNumToProcess -
+   * Defines the size of the batch.
+   *
+   * @param aNumToProcess the new num to process
    */
 
   public void setNumToProcess(long aNumToProcess) {
@@ -1633,24 +1698,29 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * @return Id of the last document processed
+   * Returns Id of the last document processed.
+   *
+   * @return the last processed doc id
    */
   public String getLastProcessedDocId() {
     return producer.getLastDocId();
   }
 
+  /**
+   * Gets the last doc repository.
+   *
+   * @return the last doc repository
+   */
   public String getLastDocRepository() {
     return "";
   }
 
   /**
-   * Instantiate custom Processing Pipeline
-   * 
+   * Instantiate custom Processing Pipeline.
+   *
    * @param aClassName -
    *          name of a class that extends ProcessingUnit
-   * 
    * @return - an instance of the ProcessingUnit
-   * 
    * @throws Exception -
    */
   private ProcessingUnit producePU(String aClassName) throws Exception {
@@ -1660,6 +1730,9 @@ public class CPMEngine extends Thread {
     return pu;
   }
 
+  /**
+   * Start debug control thread.
+   */
   private void startDebugControlThread() {
     String dbgCtrlFile = System.getProperty("DEBUG_CONTROL");
     dbgCtrlThread = new DebugControlThread(this, dbgCtrlFile, 1000);
@@ -1667,12 +1740,11 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Instantiate custom Output Queue
-   * 
+   * Instantiate custom Output Queue.
+   *
    * @param aQueueSize -
    *          max size of the queue
    * @return - new instance of the output queue
-   * 
    * @throws Exception -
    */
   private BoundedWorkQueue createOutputQueue(int aQueueSize) throws Exception {
@@ -1684,7 +1756,7 @@ public class CPMEngine extends Thread {
         Class[] args = new Class[] { int.class, String.class, CPMEngine.class };
         Class cpClass = Class.forName(outputQueueClass);
         Constructor constructor = cpClass.getConstructor(args);
-        Object[] oArgs = new Object[] { Integer.valueOf(aQueueSize), "Sequenced Output Queue", this };
+        Object[] oArgs = new Object[] {aQueueSize, "Sequenced Output Queue", this };
         outputQueue = (BoundedWorkQueue) constructor.newInstance(oArgs);
       }
     } else {
@@ -1695,8 +1767,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Notify listeners of a given exception
-   * 
+   * Notify listeners of a given exception.
+   *
    * @param e -
    *          en exception to be sent to listeners
    */
@@ -1852,8 +1924,8 @@ public class CPMEngine extends Thread {
       readerFetchSize = 1;
       if (collectionReader.getProcessingResourceMetaData().getConfigurationParameterSettings()
               .getParameterValue("fetchSize") != null) {
-        readerFetchSize = ((Integer) collectionReader.getProcessingResourceMetaData()
-                .getConfigurationParameterSettings().getParameterValue("fetchSize")).intValue();
+        readerFetchSize = (Integer) collectionReader.getProcessingResourceMetaData()
+            .getConfigurationParameterSettings().getParameterValue("fetchSize");
       }
       if (System.getProperty("DEBUG_CONTROL") != null) {
         startDebugControlThread();
@@ -2572,8 +2644,7 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Place EOF Token onto a work queue to force thread exit
-   * 
+   * Place EOF Token onto a work queue to force thread exit.
    */
   private void forcePUShutdown() {
     try {
@@ -2712,7 +2783,8 @@ public class CPMEngine extends Thread {
 
   /**
    * Registers Type Systems of all components with the CasManager.
-   * 
+   *
+   * @throws Exception the exception
    */
   private void registerTypeSystemsWithCasManager() throws Exception {
     CasManager manager= this.cpeFactory.getResourceManager().getCasManager();
@@ -2802,7 +2874,9 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Call typeSystemInit method on each component
+   * Call typeSystemInit method on each component.
+   *
+   * @throws ResourceInitializationException the resource initialization exception
    */
   private void callTypeSystemInit() throws ResourceInitializationException {
 
@@ -2853,10 +2927,10 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Stops All Cas Processors and optionally changes the status according to kill flag
-   * 
+   * Stops All Cas Processors and optionally changes the status according to kill flag.
+   *
    * @param kill - true if CPE has been stopped before completing normally
-   * @throws CasProcessorDeploymentException -
+   * @throws CasProcessorDeploymentException the cas processor deployment exception
    */
 
   public void stopCasProcessors(boolean kill) throws CasProcessorDeploymentException {
@@ -2915,7 +2989,9 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * @return collectionReader progress.
+   * Returns collectionReader progress.
+   *
+   * @return the progress
    */
   public Progress[] getProgress() {
     if (collectionReader == null) {
@@ -2924,6 +3000,12 @@ public class CPMEngine extends Thread {
     return collectionReader.getProgress();
   }
 
+  /**
+   * Gets the stat for container.
+   *
+   * @param aContainer the a container
+   * @return the stat for container
+   */
   private HashMap getStatForContainer(ProcessingContainer aContainer) {
     HashMap cpStatMap = null;
     if (stats != null && (cpStatMap = (HashMap) stats.get(aContainer.getName())) != null) {
@@ -2932,6 +3014,13 @@ public class CPMEngine extends Thread {
     return null;
   }
 
+  /**
+   * Save stat.
+   *
+   * @param aStatLabel the a stat label
+   * @param aStatValue the a stat value
+   * @param aContainer the a container
+   */
   private void saveStat(String aStatLabel, String aStatValue, ProcessingContainer aContainer) {
 
     HashMap cpStatMap = getStatForContainer(aContainer);
@@ -2942,7 +3031,10 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Check if the CASProcessor status is available for processing
+   * Check if the CASProcessor status is available for processing.
+   *
+   * @param aStatus the a status
+   * @return true, if is processor ready
    */
   private boolean isProcessorReady(int aStatus) {
     if (aStatus == Constants.CAS_PROCESSOR_READY || aStatus == Constants.CAS_PROCESSOR_RUNNING) {
@@ -2952,6 +3044,11 @@ public class CPMEngine extends Thread {
     return false;
   }
 
+  /**
+   * Invalidate CA ses.
+   *
+   * @param aCASList the a CAS list
+   */
   public void invalidateCASes(CAS[] aCASList) {
     if (producer != null) {
       producer.invalidate(aCASList);
@@ -3006,6 +3103,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
+   * Gets the performance tuning settings.
+   *
    * @return Returns the PerformanceTuningSettings.
    */
   public Properties getPerformanceTuningSettings() {
@@ -3013,13 +3112,20 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * 
-   * @param aPca -
+   * Sets the process controller adapter.
+   *
+   * @param aPca the new process controller adapter
    */
   public void setProcessControllerAdapter(ProcessControllerAdapter aPca) {
     pca = aPca;
   }
 
+  /**
+   * Gets the cpe config.
+   *
+   * @return the cpe config
+   * @throws Exception the exception
+   */
   /*
    * Return CPE Configuration params. Limit access to classes in the same package
    */
@@ -3031,6 +3137,8 @@ public class CPMEngine extends Thread {
    * Called from the ProcessingUnits when they shutdown due to having received the EOFToken. When
    * all ProcessingUnits have shut down, we put an EOFToken on the output queue so that The CAS
    * Consumers will also shut down. -Adam
+   *
+   * @param unit the unit
    */
   synchronized void processingUnitShutdown(ProcessingUnit unit) {
     activeProcessingUnits--;
@@ -3053,10 +3161,22 @@ public class CPMEngine extends Thread {
 
   }
 
+  /**
+   * Drop cas on exception.
+   *
+   * @return true, if successful
+   */
   public boolean dropCasOnException() {
     return dropCasOnExceptionPolicy;
   }
 
+  /**
+   * Gets the cas with SOFA.
+   *
+   * @param entity the entity
+   * @param pTrTemp the tr temp
+   * @return the cas with SOFA
+   */
   private Object getCasWithSOFA(Object entity, ProcessTrace pTrTemp) {
     CAS[] casList = new CAS[1];
     // CasObject based CollectionReader does not support returning more than one CAS at a time. So
@@ -3174,8 +3294,9 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * 
-   * @return true if needsTCas 
+   * Needs view.
+   *
+   * @return true if needsTCas
    */
   private boolean needsView() {
     if (definedCapabilities == null) {
@@ -3203,8 +3324,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Initialize the CPE
-   * 
+   * Initialize the CPE.
+   *
    * @throws Exception -
    */
   private void bootstrapCPE() throws Exception {
@@ -3217,8 +3338,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Setup single threaded pipeline
-   * 
+   * Setup single threaded pipeline.
+   *
    * @throws Exception -
    */
   private void setupProcessingPipeline() throws Exception {
@@ -3241,8 +3362,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Setup Cas Consumer pipeline as single threaded
-   * 
+   * Setup Cas Consumer pipeline as single threaded.
+   *
    * @throws Exception -
    */
   private void setupConsumerPipeline() throws Exception {
@@ -3278,8 +3399,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Determines if a given CAS should be skipped
-   * 
+   * Determines if a given CAS should be skipped.
+   *
    * @param entity -
    *          container for CAS
    * @return true if a given CAS should be skipped
@@ -3400,11 +3521,10 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Determines if the CPM processed all documents
-   * 
+   * Determines if the CPM processed all documents.
+   *
    * @param entityCount -
    *          number of documents processed so far
-   * 
    * @return true if all documents processed, false otherwise
    */
   private boolean endOfProcessingReached(long entityCount) {
@@ -3420,8 +3540,8 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Handle given exception
-   * 
+   * Handle given exception.
+   *
    * @param t -
    *          exception to handle
    * @param entity -
@@ -3439,15 +3559,24 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * 
-   * @param aMsgType
-   * @param entity
-   * @param aPTrace
+   * Notify listeners.
+   *
+   * @param aMsgType the a msg type
+   * @param entity the entity
+   * @param aPTrace the a P trace
    */
   private void notifyListeners(int aMsgType, Object[] entity, ProcessTrace aPTrace) {
     notifyListeners(aMsgType, entity, aPTrace, null);
   }
 
+  /**
+   * Notify listeners.
+   *
+   * @param aMsgType the a msg type
+   * @param entity the entity
+   * @param aPTrace the a P trace
+   * @param t the t
+   */
   private void notifyListeners(int aMsgType, Object[] entity, ProcessTrace aPTrace, Throwable t) {
     // Add Callback Listeners
     for (int j = 0; j < statusCbL.size(); j++) {
@@ -3499,6 +3628,12 @@ public class CPMEngine extends Thread {
     }
   }  
   
+  /**
+   * Gets the process trace.
+   *
+   * @return the process trace
+   * @throws Exception the exception
+   */
   private ProcessTrace getProcessTrace() throws Exception {
     ProcessTrace pT = null;
     UimaTimer uTimer = getTimer();
@@ -3531,6 +3666,9 @@ public class CPMEngine extends Thread {
     this.nonThreadedCasConsumerProcessingUnit.cleanup();
   }
   
+  /**
+   * Wait for cpm to resume if paused.
+   */
   private void waitForCpmToResumeIfPaused() {
     synchronized (lockForPause) {
       // Pause this thread if CPM has been paused

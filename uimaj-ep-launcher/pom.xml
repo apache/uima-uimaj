@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>
+    <version>3.2.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-launcher
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-ep-launcher
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-launcher
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-ep-launcher
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-launcher
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-ep-launcher
     </url>
     <tag>HEAD</tag>
   </scm>
@@ -79,6 +79,16 @@
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-compilertools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bitbucket.mstrobel</groupId>
+          <artifactId>procyon-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     
     <!-- next dependency is commented out due to Maven 2.0.7 throwing NPE 
@@ -279,7 +289,6 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>3.3.0</version>  <!-- override 2.3.7 - getting unresolved refs to some dependencies, fixed by 3.0.1 -->
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>

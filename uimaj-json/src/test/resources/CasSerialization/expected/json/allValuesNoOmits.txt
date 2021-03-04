@@ -8,7 +8,7 @@
       "EmptyIntegerList" : {"_id" : "uima.cas.EmptyIntegerList" }, 
       "EmptyStringList" : {"_id" : "uima.cas.EmptyStringList" }, 
       "NonEmptyFSList" : {"_id" : "uima.cas.NonEmptyFSList", 
-        "_feature_types" : {"head" : "_ref",  "tail" : "_ref" } }, 
+        "_feature_types" : {"tail" : "_ref",  "head" : "_ref" } }, 
       "NonEmptyStringList" : {"_id" : "uima.cas.NonEmptyStringList", 
         "_feature_types" : {"tail" : "_array" } }, 
       "ShortArray" : {"_id" : "uima.cas.ShortArray" }, 
@@ -36,7 +36,8 @@
   "_views" : {
     "_InitialView" : {
       "AllTypes" : [
-        {"sofa" : 29,  "begin" : 0,  "end" : 0,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aInteger" : 0,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"", 
-          "aFS" : {"_type" : "AllTypes",  "sofa" : 29,  "begin" : 0,  "end" : 0,  "aBoolean" : false,  "aByte" : 0,  "aShort" : 0,  "aInteger" : 0,  "aLong" : 0,  "aFloat" : 0.0,  "aDouble" : 0.0 },  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : [false ],  "aArrayMrByte" : "AAA=",  "aArrayByte" : "D+4=",  "aArrayShort" : [ ],  "aArrayMrShort" : [ ],  "aArrayString" : [null ],  "aArrayMrString" : [null ],  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] } ] } }, 
+        {"sofa" : 1,  "begin" : 0,  "end" : 0,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aInteger" : 0,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"", 
+          "aFS" : {"_type" : "AllTypes",  "sofa" : 1,  "begin" : 0,  "end" : 0,  "aBoolean" : false,  "aByte" : 0,  "aShort" : 0,  "aInteger" : 0,  "aLong" : 0,  "aFloat" : 0.0,  "aDouble" : 0.0 },  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : [false ],  "aArrayMrByte" : "AAA=",  "aArrayByte" : "D+4=",  "aArrayShort" : [ ],  "aArrayMrShort" : [ ],  "aArrayString" : [null ],  "aArrayMrString" : [null ],  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [
+            {"_type" : "NonEmptyFSList",  "tail" : [ ] } ] } ] } }, 
   "_referenced_fss" : {
-    "29" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" } } }
+    "1" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" } } }

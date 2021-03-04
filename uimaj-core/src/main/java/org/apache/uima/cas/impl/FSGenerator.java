@@ -21,7 +21,14 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.FeatureStructure;
 
-
+/**
+ * For backwards compatibility with Version 2 - unused in v3
+ * V3 has a functional interface equivalent, called FsGenerator3, 
+ * with a V3 style signature for createFS
+ * @param <T> - 
+ * @deprecated unused in v3, only present to avoid compile errors in unused v2 classes
+ */
+@Deprecated
 public interface FSGenerator<T extends FeatureStructure> {
 
   T createFS(int addr, CASImpl cas);

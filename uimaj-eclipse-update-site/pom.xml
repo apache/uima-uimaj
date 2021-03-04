@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.5-SNAPSHOT</version>  <!-- change to non-snapshot version after release of uimaj-parent -->
+    <version>3.0.1</version>
     <relativePath />
   </parent>
 
   <artifactId>uimaj-eclipse-update-site</artifactId>
-  <version>2.10.5-SNAPSHOT</version>
+  <version>3.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
@@ -37,14 +37,15 @@
 
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-eclipse-update-site
+      scm:git:https://github.com/apache/uima-uimaj/uimaj-eclipse-update-site
     </connection>
     <developerConnection>
       scm:git:https://github.com/apache/uima-uimaj/
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-eclipse-update-site
+      https://github.com/apache/uima-uimaj/tree/master/uimaj-eclipse-update-site
     </url>
+    <tag>uimaj-eclipse-update-site-3.1.1</tag>
   </scm>
 
   <properties>
@@ -53,7 +54,7 @@
 
     <eclipseUpdateSiteComponent>uimaj</eclipseUpdateSiteComponent>
 
-    <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
+    <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site-v3/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
     
     <dropPrevVersions>false</dropPrevVersions>
 
@@ -209,7 +210,7 @@
 	                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
 	                        <exec executable="svn" failonerror="true">
 	                          <arg value="checkout" />
-	                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
+	                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site-v3/${eclipseUpdateSiteComponent}" />
 	                          <arg value="${eclipseUpdateSubSite}" />
 	                        </exec> 
 	                        
@@ -315,32 +316,6 @@
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>ant-contrib</groupId>
-            <artifactId>ant-contrib</artifactId>
-            <version>1.0b3</version>
-            <scope>runtime</scope>
-            <exclusions>
-              <exclusion>
-                <artifactId>ant</artifactId>
-                <groupId>ant</groupId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-apache-regexp</artifactId>
-            <version>1.9.2</version>
-            <scope>compile</scope>
-          </dependency>
-          <dependency>
-            <groupId>jakarta-regexp</groupId>
-            <artifactId>jakarta-regexp</artifactId>
-            <version>1.4</version>
-            <scope>compile</scope>
-          </dependency>
-        </dependencies>
       </plugin>
 
    </plugins>

@@ -74,7 +74,7 @@ public class CasConsumerFactory_impl implements ResourceFactory {
                   ResourceInitializationException.CLASS_NOT_FOUND, new Object[] { className,
                       aSpecifier.getSourceUrlString() }, e);
         }
-
+        
         // check to see if this is a subclass of Cas[Data]Consumer and of aResourceClass
         if (!CasConsumer.class.isAssignableFrom(implClass)
                 && !CasDataConsumer.class.isAssignableFrom(implClass)) {

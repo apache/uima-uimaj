@@ -28,19 +28,31 @@ import javax.swing.undo.UndoableEdit;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
 /**
  * Undo manager for text area.
  */
 public class UndoMgr extends UndoManager implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new undo mgr.
+   *
+   * @param frame the frame
+   */
   public UndoMgr(MainFrame frame) {
     this.main = frame;
   }
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 7677701629555379146L;
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent arg0) {
     undo();
     if (!canUndo()) {
@@ -48,11 +60,19 @@ public class UndoMgr extends UndoManager implements ActionListener {
     }
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.undo.UndoManager#addEdit(javax.swing.undo.UndoableEdit)
+   */
+  @Override
   public synchronized boolean addEdit(UndoableEdit arg0) {
     this.main.setUndoEnabled(true);
     return super.addEdit(arg0);
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.undo.UndoManager#discardAllEdits()
+   */
+  @Override
   public synchronized void discardAllEdits() {
     super.discardAllEdits();
     this.main.setUndoEnabled(false);
