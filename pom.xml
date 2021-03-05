@@ -61,7 +61,7 @@
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <jiraVersion>2.10.4SDK</jiraVersion>   <!-- set this to get the right issues fixed report -->
+    <jiraVersion>2.11.0SDK</jiraVersion>   <!-- set this to get the right issues fixed report -->
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName> 
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
@@ -161,13 +161,12 @@
     </dependency>    
   </dependencies>
 
-  
   <modules>
     <module>uimaj-parent</module>
     <module>aggregate-uimaj</module>
   </modules>
   
-  <build>    
+  <build>
     <plugins>
 
       <!-- This java doc config is for building the ones distributed with the bin packaging, and also 
@@ -207,7 +206,7 @@
                 ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasDeserializer.java
                 ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasSerializer.java
                 ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiSerializationSharedData.java
-                ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/Serialization.java                
+                ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/Serialization.java
                 ${basedir}/uimaj-cpe/src/main/java/org/apache/uima/collection/impl/metadata/cpe/CpeDescriptorFactory.java
                 ${basedir}/uimaj-cpe/src/main/java/org/apache/uima/collection/impl/cpm/engine/CPMChunkTimeoutException.java
               </additionalparam>
@@ -239,7 +238,7 @@
                   <descriptors>
                     <descriptor>${assemblyBinDescriptor}</descriptor>
                   </descriptors>
-                </configuration>              
+                </configuration>
               </execution>
             </executions>
           </plugin>
@@ -305,24 +304,24 @@
                   <fixVersionIds>${jiraVersion}</fixVersionIds>
                 </configuration>
               </execution>
-            </executions>  
+            </executions>
           </plugin>
-        </plugins>     
+        </plugins>
       </build>
     </profile>
     
     <profile>
       <id>json-support</id>
       <activation>
-        <file><exists>pom.xml</exists></file>  <!-- active by default, turn off via command line -P!json-support  -->
+        <!-- active by default, turn off via command line -P!json-support -->
+        <file><exists>pom.xml</exists></file>
       </activation>
       <properties>
-        <assemblyBinDescriptor>src/main/assembly/bin.xml</assemblyBinDescriptor>  
+        <assemblyBinDescriptor>src/main/assembly/bin.xml</assemblyBinDescriptor>
       </properties>
       <modules>
         <module>uimaj-json</module>
       </modules>
     </profile>
-  </profiles>    
-    
+  </profiles>
 </project>
