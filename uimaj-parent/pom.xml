@@ -40,7 +40,7 @@
   <packaging>pom</packaging>
   <version>2.10.5-SNAPSHOT</version>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
-  <description>The common parent pom for the uimaj SDK</description>
+  <description>The common parent pom for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
 
   <!-- Special inheritance note
@@ -96,7 +96,6 @@
       - The Eclipse Plugin modules use version ranges for their dependencies. These could resolve to
       - SNAPSHOT versions if we have a SNAPSHOT repo declaration here. Thus, this repo should only
       - be enabled when really needed.
-    -->
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
@@ -108,6 +107,7 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    -->
   </repositories>
   
   <pluginRepositories>
@@ -135,14 +135,7 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <!-- 
-     BACKWARD_COMPATIBLE_IMPLEMENTER - patch version (=.=.+)
-     BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
-     NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
-     -->
-    <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
-    <compat.previous.version>2.10.3</compat.previous.version>
-    <api_check_oldVersion>2.10.3</api_check_oldVersion>
+    <api_check_oldVersion>2.10.4</api_check_oldVersion>
 
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
@@ -199,6 +192,4 @@
       </plugin>
     </plugins>
   </build>
-  
-  
 </project>
