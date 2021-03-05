@@ -119,8 +119,6 @@ public class JCasClassLoaderTest {
    * {@link CASImpl#switchClassLoaderLockCasCL(ClassLoader)} to use the classloader defined in the
    * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the anlysis
    * engines should use its own version of the JCas wrappers to access the CAS.
-   * 
-   * <b>NOTE:</b> This test fails in UIMAv3.
    */
   @Test
   public void thatCASCanBeDefinedWithoutJCasWrappersAndTheyComeInWithAnnotatorsViaClasspath() throws Exception {
@@ -187,8 +185,6 @@ public class JCasClassLoaderTest {
    * {@link CASImpl#switchClassLoaderLockCasCL(ClassLoader)} to use the classloader defined in the
    * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the anlysis
    * engines should use its own version of the JCas wrappers to access the CAS.
-   * 
-   * <b>NOTE:</b> This test fails in UIMAv3.
    */
   @Test
   public void thatCASCanBeDefinedWithoutJCasWrappersAndTheyComeInWithAnnotatorsViaClassloader() throws Exception {
@@ -248,12 +244,10 @@ public class JCasClassLoaderTest {
    * The expectation here is that at the moment when the JCas is passed to the analysis engines,
    * {@link PrimitiveAnalysisEngine_impl#callAnalysisComponentProcess(CAS) it is reconfigured} using
    * {@link CASImpl#switchClassLoaderLockCasCL(ClassLoader)} to use the classloader defined in the
-   * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the anlysis
+   * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the analysis
    * engines should use its own version of the JCas wrappers to access the CAS. In particular, they
    * should not use the global JCas wrappers which were known to the JCas when it was first
    * initialized.
-   * 
-   * <b>NOTE:</b> This test fails in UIMAv3.
    */
   @Test
   public void thatAnnotatorsCanLocallyUseDifferentJCasWrappers() throws Exception {
@@ -283,7 +277,9 @@ public class JCasClassLoaderTest {
 
     try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
       softly.assertThat(casTokenClassViaClassloader).isNotNull();
-      softly.assertThat(casTokenClassViaCas).isSameAs(Token.class);
+      softly.assertThat(casTokenClassViaCas)
+          .as("System-level Token wrapper loader and Token wrapper in the CAS are the same")
+          .isSameAs(Token.class);
       softly.assertThat(addTokenAETokenClass).isNotNull();
       softly.assertThat(fetchTokenAETokenClass).isNotNull();
       softly.assertThat(casTokenClassViaClassloader)
@@ -323,18 +319,6 @@ public class JCasClassLoaderTest {
    * {@link ResourceManager} of the engines to load the JCas wrapper classes. Since the JCas wrappers
    * are loaded through the same classloader by both engines, it they should have the same type in
    * both annotators.
-   * 
-   * <b>NOTE:<b> On UIMAv2, this test currently fails because in {@link FetchTheTokenAnnotator},
-   * the we get a plain {@link Annotation} from the JCas instead of a {@link Token}:
-   * <pre>{@code 
-   * Caused by: java.lang.ClassCastException: org.apache.uima.jcas.tcas.Annotation cannot be cast to org.apache.uima.cas.test.Token
-   *   at java.util.Iterator.forEachRemaining(Iterator.java:116)
-   *   at org.apache.uima.cas.test.JCasClassLoaderTest$FetchTheTokenAnnotator.process(JCasClassLoaderTest.java:233)
-   *   at org.apache.uima.analysis_component.JCasAnnotator_ImplBase.process(JCasAnnotator_ImplBase.java:48)
-   *   at org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl.callAnalysisComponentProcess(PrimitiveAnalysisEngine_impl.java:411)
-   *   ... 28 more
-   * }</pre>
-   * However, on UIMAv3, we do not get an exception.
    */
   @Test
   public void thatTypeSystemCanComeFromItsOwnClassLoader() throws Exception {
