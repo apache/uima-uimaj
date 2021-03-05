@@ -36,7 +36,7 @@
   <artifactId>uimaj</artifactId>
   <packaging>pom</packaging>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
-  <description>The top project for the uimaj SDK</description>
+  <description>The top project for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
 
   <!-- Special inheritance note
@@ -62,7 +62,7 @@
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <jiraVersion>3.1.1SDK</jiraVersion>   
+    <jiraVersion>3.2.0SDK</jiraVersion>   
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName> 
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
@@ -272,18 +272,18 @@
     
       <plugin> 
         <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>uima-distr</id>
-                <configuration>
-                  <descriptors>
-                    <descriptor>${assemblyBinDescriptor}</descriptor>
-                  </descriptors>
-                </configuration>              
-              </execution>
-            </executions>
-          </plugin>
-       </plugins>
+        <executions>
+          <execution>
+            <id>uima-distr</id>
+            <configuration>
+              <descriptors>
+                <descriptor>${assemblyBinDescriptor}</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+   </plugins>
   
     <pluginManagement>
       <plugins>
@@ -373,7 +373,8 @@
     <profile>
       <id>json-support</id>
       <activation>
-        <file><exists>pom.xml</exists></file>  <!-- active by default, turn off via command line -P!json-support  -->
+        <!-- active by default, turn off via command line -P!json-support  -->
+        <file><exists>pom.xml</exists></file>
       </activation>
       <properties>
         <assemblyBinDescriptor>src/main/assembly/bin.xml</assemblyBinDescriptor>  

@@ -217,19 +217,6 @@
         </executions>
       </plugin>
     </plugins>
-  
-    <pluginManagement>
-      <plugins>
-        <!-- https://issues.apache.org/jira/browse/UIMA-5367 -->
-        <plugin> 
-          <groupId>org.apache.maven.plugins</groupId> 
-          <artifactId>maven-deploy-plugin</artifactId>
-          <configuration> 
-            <retryFailedDeploymentCount>10</retryFailedDeploymentCount> 
-          </configuration> 
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
   
   <profiles>
@@ -262,7 +249,7 @@
       </activation>
       <build>
         <pluginManagement>
-          <plugins>         
+          <plugins>
             <!-- This plugin's configuration is used to store Eclipse m2e settings 
                 only. It has no influence on the Maven build itself. -->
             <plugin>

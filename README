@@ -47,7 +47,8 @@ Supported Platforms
 
 Apache UIMA v3.0.0 and later requires Java version 8; it has been tested with Java 11 and Java 8.
 
-Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later.
+Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 11 or later
+(Java 8 may work but is no longer supported by recent Eclipse versions).
 
 Running the migration tool on class files requires running with a Java JDK, not a Java JRE.
 
