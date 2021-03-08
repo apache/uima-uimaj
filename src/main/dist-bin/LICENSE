@@ -203,9 +203,9 @@
 
 =======================================================================   
 
-SPRING FRAMEWORK 4.3.26.RELEASE SUBCOMPONENTS:
+SPRING FRAMEWORK 4.3.30.RELEASE SUBCOMPONENTS:
 
-Spring Framework 4.3.26.RELEASE includes a number of subcomponents
+Spring Framework 4.3.30.RELEASE includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -261,6 +261,13 @@ which is included above.
 Per the LICENSE file in the Objenesis ZIP distribution downloaded from
 http://objenesis.org/download.html, Objenesis 2.6 is licensed under the
 Apache License, version 2.0, the text of which is included above.
+
+Per the NOTICE file in the Objenesis ZIP distribution downloaded from
+http://objenesis.org/download.html and corresponding to section 4d of the
+Apache License, Version 2.0, in this case for Objenesis:
+
+Objenesis
+Copyright 2006-2017 Joe Walnes, Henri Tremblay, Leonardo Mesquita
 
 
 ===============================================================================
