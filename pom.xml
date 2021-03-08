@@ -214,17 +214,14 @@
   </modules>
   
   <build>
-
     <plugins>
-
-      <!-- This java doc config is for building the ones distributed with the bin packaging, and also 
-           posted on our website.  It is not a complete javadoc - it only has user-level API info.
+      <!-- This JavaDoc config is for building the ones distributed with the bin packaging, and also 
+           posted on our website.  It is not a complete JavaDoc - it only has user-level API info.
         
-           There is another javadoc config in the parent POM that builds all the java docs - intended
+           There is another JavaDoc config in the parent POM that builds all the java docs - intended
            for use by developers (currently not used) 
            
-           There is also a javadoc config for each individual maven Jar artifact -->
-      
+           There is also a JavaDoc config for each individual Maven Jar artifact -->
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
         <executions>
