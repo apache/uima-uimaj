@@ -13,8 +13,7 @@ For pull requests, there is a [check list](PULL_REQUEST_TEMPLATE.md) with criter
 
 ## Preparing a Pull Request (PR)
 
-In order to contribute to the uimaFIT project, you need to create a **pull request**. This section
-briefly guides you through the best way of doing this:
+In order to contribute to the uimaFIT project, you need to create a **pull request**. This section briefly guides you through the best way of doing this:
 
 * Before creating a pull request, create an issue in the issue tracker of the project to which
   you wish to contribute

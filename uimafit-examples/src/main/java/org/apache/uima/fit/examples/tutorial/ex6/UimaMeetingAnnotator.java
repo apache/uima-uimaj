@@ -19,7 +19,7 @@
 package org.apache.uima.fit.examples.tutorial.ex6;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createSharedResourceDescription;
 import static org.apache.uima.fit.util.JCasUtil.select;
 
 import java.io.File;
@@ -111,9 +111,9 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
     File outputDirectory = new File("target/examples/tutorial/ex6/");
     outputDirectory.mkdirs();
 
-    ExternalResourceDescription resource = createExternalResourceDescription(
-            StringMapResource_impl.class,
-            "file:org/apache/uima/fit/examples/tutorial/ex6/uimaAcronyms.txt");
+    ExternalResourceDescription resource = createSharedResourceDescription(
+            "file:org/apache/uima/fit/examples/tutorial/ex6/uimaAcronyms.txt",
+            StringMapResource_impl.class);
 
     AggregateBuilder builder = new AggregateBuilder();
     builder.add(createEngineDescription(UimaAcronymAnnotator.class,

@@ -20,6 +20,91 @@
 
 This section provides helpful information on incompatible changes between versions.
 
+== Version 3.0.x to 3.1.x
+
+.Changes to ExternalResourceFactory
+The renaming of methods in the `ExternalResourceFactory` had unfortunately introduced another name
+clash between unrelated methods. To fix this clash, the following methods have been renamed from 
+`bindResource` to `bindResourceOnce`:
+
+* `void bindResource(ResourceCreationSpecifier aDesc, String aBindTo, ExternalResourceDescription aRes)` 
+  was *removed* and replaced by
+  `void bindResourceOnce(ResourceCreationSpecifier aDesc, String aBindTo, ExternalResourceDescription aRes)`
+* `void bindResource(ExternalResourceDescription aRes, String aBindTo, ExternalResourceDescription aNestedRes)`
+  was deprecated and replaced by
+  `void bindResourceOnce(ExternalResourceDescription aRes, String aBindTo, ExternalResourceDescription aNestedRes)`
+* `void bindResource(ResourceManagerConfiguration aResMgrCfg, String aBindTo, ExternalResourceDescription aRes)`
+  was deprecated and replaced by
+  `void bindResourceOnce(ResourceManagerConfiguration aResMgrCfg, String aBindTo, ExternalResourceDescription aRes)`
+* `void bindResource(ResourceCreationSpecifier aDesc, String aBindTo, String aRes)`
+  was *removed* and replaced by
+  `void bindResourceOnceWithoutNested(ResourceCreationSpecifier aDesc, String aBindTo, String aRes)`
+* `void bindResource(ResourceManagerConfiguration aResMgrCfg, String aBindTo, String aRes)`
+  was deprecated and replaced by
+  `void bindResourceOnceWithoutNested(ResourceManagerConfiguration aResMgrCfg, String aBindTo, String aRes)`
+* `void bindResource(ResourceSpecifier aDesc, String aKey, String aUrl)`
+  was deprecated and replaced by
+  `void bindResourceUsingUrl(ResourceSpecifier aDesc, String aKey, String aUrl)`
+
+== Version 2.x to 3.x
+
+.Legacy support module removed
+The legacy support in uimaFIT 2.x was present allow being compatible with the pre-Apache uimaFIT 
+versions which were based on UIMA 2.x. Since uimaFIT 3.x is not  compatible with UIMA 2.x anyway,
+the legacy module was removed now.
+
+.Using List instead of Collection
+The `CasUtil`, `JCasUtil` and `FSCollectionFactory` classes were adjusted to return results using `List`
+instead of the more general `Collection`. Often, lists are already used internally and then again
+wrapped into new lists in client code. This API change avoids this in the future.
+
+.Throwing specific exceptions instead of UIMAException
+Several uimaFIT methods were throwing the generic `UIMAException`. These have been adjusted to
+declare throwing several of the sub-types of `UIMAException` to be better able to handle specific
+causes of errors in client code.
+
+.CasUtil.selectSingle signature changed
+Signature of `CasUtil.selectSingle` has been changed to return `AnnotationFS`. The original signature
+is available as `selectSingleFS`
+
+.Removal of deprecated methods
+Various methods that were deprecated in uimaFIT 2.4.0 or earlier have been removed in this release.
+For details, please refer to the `api-change-report.html` file included in the release.
+
+.Changes to ExternalResourceFactory
+Most methods in the `ExternalResourceFactory` have seen changes to their names and signature to avoid
+problematic ambiguities as well as to be shorter. In general, the `External` component of the method
+names was either removed or replaced. So most methods called `createExternalResourceDescription`
+are now called `createResourceDescription`. However, some have also been given a more specific name
+and/or a slightly different order of parameters. For example, this method
+
+[source,java]
+----
+public static ExternalResourceDescription createExternalResourceDescription(
+  Class<? extends SharedResourceObject> aInterface, String aUrl, Object... aParams)
+----
+
+was changed to
+
+
+[source,java]
+----
+public static ExternalResourceDescription createSharedResourceDescription(
+  String aUrl, Class< extends SharedResourceObject> aInterface, Object... aParams)
+----
+
+.Changes to logging
+UIMA v3 has is using SLF4J. As a consequence, the `ExtendedLogger` which uimaFIT had returned on
+calls to `getLogger()` has been removed and instead the regular UIMA v3 logger class is returned
+which offers methods quite compatible with what `ExtendedLogger` offered before. However, it is
+recommended that you go through all your logging calls and replace calls which use string
+concatenation to construct the logging message with corresponding calls using placeholders. For
+example, replace `getLogger().error("Cannot access " + filename, exception);` with 
+`getLogger().error("Cannot access {}", filename, exception);`.
+
+.Version requirements
+Depends on UIMA 3.0.2, Spring Framework 4.3.22 and Java 8.
+
 == Version 2.3.0 to 2.4.0
 
 .Version requirements
@@ -118,72 +203,3 @@ As an alternative, `CasIOUtil` has been introduced providing several convenience
 .JCasFactory
 Methods only loading JCas data have been removed from ``JCasFactory``.
 The new methods in `CasIOUtil` can be used instead.
-
-== Legacy support module
-
-The compatibility layer should allow you to migrate to uimaFIT without breaking anything.
-You should then be able to gradually change the codebase to be compatible with uimaFIT .
-As far as my tests go, uimaFIT 1.x and can coexist peacefully on the classpath (and indeed both need to be on the classpath in order to use the legacy support module).
-
-To enable the legacy support, make sure that you have a dependency on uimaFIT 1.x and then just add a dependency on the legacy module:
-
-[source]
-----
-<dependency>
-  <groupId>org.uimafit</groupId>
-  <artifactId>uimafit</artifactId>
-  <version>1.4.0</version>
-</dependency>
-<dependency>
-  <groupId>org.apache.uima</groupId>
-  <artifactId>uimafit-legacy-support</artifactId>
-  <version></version>
-</dependency>
-----
-
-uimaFIT automatically detects the presence of the legacy module and uses it - no additional configuration is necessary.
-
-The following bash script may help to partially automatize the source code migration process.
-Please observe that it does not cover all of the necessary changes!
-
-[NOTE]
-====
-The script recursively changes all files under the current working directory! Make sure you are in the right directory before running it! _Use the script at your own 
-      risk!_
-====
-
-[source,bash]
-----
-#!/bin/sh
-
-############################################
-# MAKE SURE TO BACKUP YOUR FILES FIRST!
-# SCRIPT RECURSIVELY CHANGES ALL JAVA FILES!
-# USE AT YOUR OWN RISK!
-############################################
-
-# Change of package names
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/org.uimafit/org.apache.uima.fit/g'
-
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/org.uimafit.component.xwriter.CASDumpWriter/\
-org.apache.uima.fit.component.CasDumpWriter/g'
-
-# AnalysisEngineFactory
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/createAggregate/createEngine/g'
-
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/createPrimitive/createEngine/g'
-
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/createAnalysisEngine/createEngine/g'
-
-# Readers
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/createDescription/createReaderDescription/g'
-
-find . -name '*.java' -print | 
-xargs perl -p -i -e 's/createCollectionReader/createReader/g'
-----

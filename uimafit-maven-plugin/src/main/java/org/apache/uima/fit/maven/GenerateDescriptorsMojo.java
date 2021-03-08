@@ -23,9 +23,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Modifier;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -67,6 +70,12 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
    */
   @Parameter(defaultValue = "${project.build.directory}/classes", required = true)
   private File outputDirectory;
+
+  /**
+   * Do not add the output directory as a resource to the build.
+   */
+  @Parameter(defaultValue = "true", required = true)
+  private boolean addOutputDirectoryAsResourceDirectory;
 
   /**
    * Skip generation of META-INF/org.apache.uima.fit/components.txt
@@ -193,6 +202,27 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
       } catch (IOException e) {
         handleError("Cannot write components manifest to [" + path + "]"
                 + ExceptionUtils.getRootCauseMessage(e), e);
+      }
+    }
+
+    if (addOutputDirectoryAsResourceDirectory && countGenerated > 0) {
+      Path absoluteDescriptorOutputPath = outputDirectory.toPath().toAbsolutePath();
+      Path absoluteBuildOutputDirectory = Paths.get(project.getBuild().getOutputDirectory())
+              .toAbsolutePath();
+      Path absoluteBuildTestOutputDirectory = Paths.get(project.getBuild().getTestOutputDirectory())
+              .toAbsolutePath();
+
+      // Add the output folder as a new resource folder if any descriptors were generated and only
+      // if the descriptors were generated directly into the build output folder. The latter can
+      // be the case if the mojo is executed in a late build phase where the resources plugin
+      // doesn't run anymore.
+      if (!absoluteBuildOutputDirectory.equals(absoluteDescriptorOutputPath)
+              && !absoluteBuildTestOutputDirectory.equals(absoluteDescriptorOutputPath)) {
+        Resource resource = new Resource();
+        resource.setDirectory(outputDirectory.getPath());
+        resource.setFiltering(false);
+        resource.addInclude("**/*.xml");
+        project.addResource(resource);
       }
     }
   }

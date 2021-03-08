@@ -40,7 +40,7 @@ public class FSUtilBenchmark {
 	@Test
   public void benchmarkSetFeature() {
     Benchmark template = new Benchmark("TEMPLATE")
-      .timer(System::nanoTime)
+      .timer(System::nanoTime, t -> t / 1000)
       .repeat(1_000_000);
 
     new Benchmark("set feature string JCas", template)
