@@ -32,7 +32,7 @@
   <url>${uimaWebsiteUrl}</url>
   <inceptionYear>2012</inceptionYear>
   <properties>
-    <spring.version>4.3.26.RELEASE</spring.version>
+    <spring.version>4.3.30.RELEASE</spring.version>
     <uima.version>2.10.4</uima.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
