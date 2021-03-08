@@ -1099,7 +1099,7 @@ public final class CasUtil {
       throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
     }
 
-    List<AnnotationFS> precedingAnnotations = new LinkedList<AnnotationFS>();
+    List<AnnotationFS> precedingAnnotations = new ArrayList<AnnotationFS>();
 
     // Seek annotation in index
     // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
@@ -1115,11 +1115,18 @@ public final class CasUtil {
     }
     
     int anchorBegin = anchor.getBegin();
-    int anchorEnd = anchor.getEnd();
 
-    // No need to do additional seeks here (as done in selectCovered) because the current method
-    // does not have to worry about type priorities - it never returns annotations that have
-    // the same offset as the reference annotation.
+    // Zero-width annotations are in the index *after* the wider annotations starting at the same
+    // location, but we would consider a zero-width annotation at the beginning of a larger
+    // reference annotation to be preceding the larger one. So we need to seek right
+    // for any relevant zero-with annotations.
+    while (itr.isValid() && itr.get().getBegin() == anchorBegin) {
+      itr.moveToNext();
+      if (!itr.isValid()) {
+        itr.moveToLast();
+        break;
+      }
+    }
     
     // make sure we're past the beginning of the reference annotation
     while (itr.isValid() && itr.get().getEnd() > anchorBegin) {
@@ -1133,11 +1140,11 @@ public final class CasUtil {
       int curEnd = cur.getEnd();
 
       if (
-              curEnd <= anchorBegin && 
-              (cur.getBegin() != curEnd || anchorBegin != curEnd) &&
-              (anchorBegin != anchorEnd || curEnd != anchorBegin)
+              (curEnd <= anchorBegin
+              || (cur.getBegin() == curEnd && curEnd == anchorBegin))
+              && cur != anchor
       ) {
-        precedingAnnotations.add(itr.get());
+        precedingAnnotations.add(cur);
         i++;
       }
     }
@@ -1154,14 +1161,14 @@ public final class CasUtil {
    *          a CAS.
    * @param type
    *          a UIMA type.
-   * @param annotation
+   * @param anchor
    *          anchor annotation
    * @param count
    *          number of annotations to collect
    * @return List of aType annotations following anchor annotation
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static List<AnnotationFS> selectFollowing(CAS cas, Type type, AnnotationFS annotation,
+  public static List<AnnotationFS> selectFollowing(CAS cas, Type type, AnnotationFS anchor,
           int count) {
     if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
       throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
@@ -1170,7 +1177,10 @@ public final class CasUtil {
     // Seek annotation in index
     // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
     FSIterator<AnnotationFS> itr = cas.getAnnotationIndex(type).iterator();
-    itr.moveTo(annotation);
+    itr.moveTo(anchor);
+    
+    int anchorBegin = anchor.getBegin();
+    int anchorEnd = anchor.getEnd();
 
     // When seeking forward, there is no need to check if the insertion point is beyond the
     // index. If it was, there would be nothing beyond it that could be found and returned.
@@ -1182,24 +1192,41 @@ public final class CasUtil {
     // does not have to worry about type priorities - it never returns annotations that have
     // the same offset as the reference annotation.
 
+    if (anchorBegin == anchorEnd) {
+      // zero-width annotations appear *after* larger annotations with the same start position in
+      // the index but the larger annotations are considered to be *following* the zero-width, so we
+      // have to look to the left for larger annotations...
+      if (itr.isValid()) {
+        itr.moveToPrevious();
+        while (itr.isValid() && itr.get().getBegin() == anchorBegin) {
+          itr.moveToPrevious();
+        }
+        
+        if (!itr.isValid()) {
+          itr.moveToFirst();
+        }
+        else {
+          itr.moveToNext();
+        }
+      }
+      else {
+        itr.moveToFirst();
+      }
+    }
+    
     // make sure we're past the end of the reference annotation
-    while (itr.isValid() && itr.get().getBegin() < annotation.getEnd()) {
+    while (itr.isValid() && itr.get().getBegin() < anchorEnd) {
       itr.moveToNext();
     }
 
     // add annotations from the iterator into the result list
-    int refEnd = annotation.getEnd();
-    List<AnnotationFS> followingAnnotations = new LinkedList<AnnotationFS>();
-    for (int i = 0; i < count && itr.isValid(); i++, itr.moveToNext()) {
-      AnnotationFS fs = itr.get();
-      int begin = fs.getBegin();
-      int end = fs.getEnd();
-      if (begin == end && refEnd == begin) {
-        // Skip zero-width annotation at the end of the reference annotation. These are considered
-        // to be "coveredBy" instead of following
-        continue;
+    List<AnnotationFS> followingAnnotations = new ArrayList<AnnotationFS>();
+    for (int i = 0; i < count && itr.isValid(); itr.moveToNext()) {
+      AnnotationFS cur = itr.get();
+      if (cur != anchor && cur.getBegin() >= anchorEnd) {
+        followingAnnotations.add(cur);
+        i ++;
       }
-      followingAnnotations.add(itr.get());
     }
     
     return followingAnnotations;
