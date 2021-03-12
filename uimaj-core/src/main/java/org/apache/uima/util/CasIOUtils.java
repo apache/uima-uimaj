@@ -449,8 +449,14 @@ public class CasIOUtils {
         case XMI:
           XmiCasSerializer.serialize(aCas, docOS);
           break;
+        case XMI_PRETTY:
+          XmiCasSerializer.serialize(aCas, null, docOS, true, null, null, false);
+          break;
         case XMI_1_1:
           XmiCasSerializer.serialize(aCas, null, docOS, false, null, null, true);
+          break;
+        case XMI_1_1_PRETTY:
+          XmiCasSerializer.serialize(aCas, null, docOS, true, null, null, true);
           break;
         case XCAS:
           XCASSerializer.serialize(aCas, docOS, true); // true = formatted output

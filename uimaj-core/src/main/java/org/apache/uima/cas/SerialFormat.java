@@ -107,6 +107,15 @@ public enum SerialFormat {
    */
   XMI_1_1("xmi"),
   
+  /**
+   * XML-serialized CAS, using xml version 1.1 - pretty-printed
+   */
+  XMI_PRETTY("xmi"),
+  
+  /**
+   * XML-serialized CAS, using xml version 1.1 - pretty-printed
+   */
+  XMI_1_1_PRETTY("xmi"),
   ;
   
   private String defaultFileExtension;
