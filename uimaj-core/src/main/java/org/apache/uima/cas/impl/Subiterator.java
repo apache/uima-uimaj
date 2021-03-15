@@ -803,7 +803,9 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
 
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
-    if (isEmpty) return;
+    if (isEmpty) {
+        return;
+    }
     
     // unambiguous must be in list form
     if (isUnambiguous && !isListForm) {
@@ -820,7 +822,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     // Always bounded (if unbounded, that's only when subiterator is being used to 
     // implement "unambiguous", and that mode requires the "list" form above.)
     // can be one of 3 bounds: coveredBy, covering, and sameBeginEnd.
-    //moveTo_iterators(fs);
+    //moveTo_iterators(fs, false);
     moveTo_iterators_legacy(fs);
   }
   
@@ -869,6 +871,26 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     it.moveToNoReinit(fs);  // may move before, within, or after bounds
     if (!it.isValid()) {
       return;
+    }
+    
+    // Check if the move went outside the bounds
+    switch (boundsUse) {
+      case covering:
+        if (is_beyond_bounds_chk_coveringNvc()) {
+          return;
+        }
+      case coveredBy:
+        if (is_beyond_bounds_chk_coveredByNvc()) {
+          return;
+        }
+      case sameBeginEnd:
+        if (is_beyond_bounds_chk_sameBeginEnd()) {
+          return;
+        }
+      case notBounded:
+      default:
+        // No check necessary
+        break;
     }
     
     // CASE: If the iterator is pointing on the bounds annotation, we must first skip this in
@@ -1068,7 +1090,10 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         (isUseTypePriority && a._getTypeImpl() != boundType)) {
       makeInvalid();
       return true;
-    } else return false;
+    }
+    else {
+        return false;
+    }
    
   }
   
