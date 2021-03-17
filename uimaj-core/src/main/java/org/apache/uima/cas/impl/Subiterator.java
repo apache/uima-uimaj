@@ -879,14 +879,17 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         if (is_beyond_bounds_chk_coveringNvc()) {
           return;
         }
+        break;
       case coveredBy:
         if (is_beyond_bounds_chk_coveredByNvc()) {
           return;
         }
+        break;
       case sameBeginEnd:
         if (is_beyond_bounds_chk_sameBeginEnd()) {
           return;
         }
+        break;
       case notBounded:
       default:
         // No check necessary
