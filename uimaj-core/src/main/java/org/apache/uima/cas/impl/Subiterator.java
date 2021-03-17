@@ -873,38 +873,40 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   private void moveTo_iterators(FeatureStructure fs, boolean initialPositioning) {
     it.moveToNoReinit(fs);
     
-    // Check if the move went outside the bounds
-    if (!initialPositioning) {
-      switch (boundsUse) {
-        case covering:
-          if (is_beyond_bounds_chk_coveringNvc()) {
-            return;
-          }
-          break;
-        case coveredBy:
-          if (is_beyond_bounds_chk_coveredByNvc()) {
-            return;
-          }
-          break;
-        case sameBeginEnd:
-          if (is_beyond_bounds_chk_sameBeginEnd()) {
-            return;
-          }
-          break;
-        case notBounded:
-        default:
-          // No check necessary
-          break;
-      }
-    }
-    
     // CASE: If the iterator is pointing on the bounds annotation, we must first skip this in
     // forward direction to ensure we find a potentially matching FSes occurring in the indexes
     // after the bounds annotation.
-    if (it.isValid() && equalToBounds(it.getNvc())) {
-      it.moveToNext();
-      if (!it.isValid()) {
-        it.moveToLastNoReinit();
+    if (it.isValid()) {
+      // Check if the move went outside the bounds
+      if (!initialPositioning) {
+        switch (boundsUse) {
+          case covering:
+            if (is_beyond_bounds_chk_coveringNvc()) {
+              return;
+            }
+            break;
+          case coveredBy:
+            if (is_beyond_bounds_chk_coveredByNvc()) {
+              return;
+            }
+            break;
+          case sameBeginEnd:
+            if (is_beyond_bounds_chk_sameBeginEnd()) {
+              return;
+            }
+            break;
+          case notBounded:
+          default:
+            // No check necessary
+            break;
+        }
+      }      
+      
+      if (equalToBounds(it.getNvc())) {
+        it.moveToNext();
+        if (!it.isValid()) {
+          it.moveToLastNoReinit();
+        }
       }
     }
     
