@@ -158,8 +158,8 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     
-    <eclipseP2RepoId>org.eclipse.p2.oxygen</eclipseP2RepoId>
-    <eclipseP2RepoUrl>http://download.eclipse.org/releases/oxygen/</eclipseP2RepoUrl>
+    <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
+    <eclipseP2RepoUrl>http://download.eclipse.org/releases/2018-12/</eclipseP2RepoUrl>
 
     <api_check_oldVersion>3.1.1</api_check_oldVersion>
   </properties>
@@ -203,7 +203,7 @@
             <!-- 
               The p2 resolver appears to have trouble with the "icu-data" classifier
              -->
-            <groupId>org.eclipse</groupId>
+            <groupId>${eclipseP2RepoId}</groupId>
             <artifactId>com.ibm.icu</artifactId>
           </exclusion>
           <exclusion>
@@ -211,7 +211,7 @@
               The p2 resolver appears to have trouble with this one and tries to download it with 
               "tools" as the classifier.
              -->
-            <groupId>org.eclipse</groupId>
+            <groupId>${eclipseP2RepoId}</groupId>
             <artifactId>org.eclipse.jdt.debug</artifactId>
           </exclusion>
         </exclusions>
