@@ -196,28 +196,6 @@
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
-        <artifactId>org.eclipse.jdt.launching</artifactId>
-        <version>[3.0.0, 4.0.0)</version>
-        <exclusions>
-          <exclusion>
-            <!-- 
-              The p2 resolver appears to have trouble with the "icu-data" classifier
-             -->
-            <groupId>${eclipseP2RepoId}</groupId>
-            <artifactId>com.ibm.icu</artifactId>
-          </exclusion>
-          <exclusion>
-            <!-- 
-              The p2 resolver appears to have trouble with this one and tries to download it with 
-              "tools" as the classifier.
-             -->
-            <groupId>${eclipseP2RepoId}</groupId>
-            <artifactId>org.eclipse.jdt.debug</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.jdt.debug</artifactId>
         <exclusions>
           <exclusion>
