@@ -120,25 +120,22 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.swt</groupId>
-      <artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
       <version>[3.2.0,5.0.0)</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  
   <build>
-
     <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->
     <finalName>org.apache.uima.pear_${parsedVersion.osgiVersion}</finalName>
-
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-            <_nouses>true</_nouses>
             <Export-Package>
               org.apache.uima.pear,
               org.apache.uima.pear.actions,
@@ -147,37 +144,6 @@
               org.apache.uima.pear.insd.edit.vars,
               org.apache.uima.pear.nature
             </Export-Package>
-
-            <!-- handle split packages in Eclipse.
-              We do this by using Require-Bundle, and excluding from the Import-Package those
-              split packages covered by those bundles - this is required by OSGi.
-
-              There are 4 packages in org.eclipse.jface.* that are "split" between bundles
-              org.eclipse.jface.text and org.eclipse.text.
-              Packages:
-              org.eclipse.jface.text
-              org.eclipse.jface.text.link
-              org.eclipse.jface.text.source
-              org.eclipse.jface.text.templates
-              org.eclipse.ui.texteditor is split between
-              org.eclipse.ui.editors and org.eclipse.ui.workbench.texteditor.
-              Packages:
-              org.eclipse.ui.texteditor
-              There are 5 packages in org.eclipse.ui.* that are split between
-              org.eclipse.ui.ide and org.eclipse.ui.workbench.
-              The Notes say not to require org.eclipse.ui.workbench, but instead just require
-              org.eclipse.ui (which imports and reexports org.eclipse.ui.workbench packages).
-              Packages:
-              org.eclipse.ui
-              org.eclipse.ui.actions
-              org.eclipse.ui.dialogs
-              org.eclipse.ui.model
-              org.eclipse.ui.part
-              org.eclipse.core.runtime has combined apis (that were split in later
-              point releases of 3.x)
-            -->
-            <!-- NOTE: ANY CONTINUATION LINES for Require-Bundle MUST START IN Col1 else manifest is 
-              potentially wrong -->
             <Require-Bundle>
               org.eclipse.jface.text,
               org.eclipse.text,
@@ -195,10 +161,8 @@
               !org.eclipse.ui.model,
               *
             </Import-Package>
-
             <Bundle-Activator>org.apache.uima.pear.PearPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.pear;singleton:=true</Bundle-SymbolicName>
-
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
           </instructions>
         </configuration>

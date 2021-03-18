@@ -96,31 +96,19 @@ UIMA data structures to the Eclipse Debug displays</description>
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-            <_nouses>true</_nouses>
             <Export-Package>
               org.apache.uima.ep_debug
             </Export-Package>
-
             <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.debug;singleton:=true</Bundle-SymbolicName>
-
-            <!-- handle split packages in Eclipse.
-              We do this by using Require-Bundle, and excluding from the Import-Package those
-              split packages covered by those bundles - this is required by OSGi.
-
-              org.eclipse.core.runtime has combined apis (that were split in later
-              point releases of 3.x)
-            -->
-            <!-- NOTE: ANY CONTINUATION LINES for Require-Bundle MUST START IN Col1 else manifest is 
-              potentially wrong -->
-            <Require-Bundle>org.eclipse.core.runtime</Require-Bundle>
+            <Require-Bundle>
+              org.eclipse.core.runtime
+            </Require-Bundle>
             <Import-Package>
               !org.eclipse.core.runtime,
               *,
               org.eclipse.ui.plugin
             </Import-Package>
-
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
           </instructions>
         </configuration>
