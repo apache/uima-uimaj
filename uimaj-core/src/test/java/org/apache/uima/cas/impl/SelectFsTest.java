@@ -51,7 +51,6 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -1776,6 +1775,33 @@ public class SelectFsTest {
     it.moveTo(expected);
     assertThat(it.isValid()).isTrue();
   }  
+  
+  @Test
+  public void thatSeekingIteratorToOutOfIndexPositionOnRightIsInvalid() throws Exception {
+    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type2", "", CAS.TYPE_NAME_ANNOTATION);
+    tsd.addType("test.Type3", "", CAS.TYPE_NAME_ANNOTATION);
+    
+    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    
+    Type type1 = cas.getTypeSystem().getType("test.Type1");
+    Type type2 = cas.getTypeSystem().getType("test.Type2");
+    Type type3 = cas.getTypeSystem().getType("test.Type3");
+    
+    AnnotationFS window, seekPoint;
+    addToIndexes(
+            window = cas.createAnnotation(type1, 0, 10),
+            cas.createAnnotation(type2, 5, 6),
+            seekPoint = cas.createAnnotation(type3, 8, 9),
+            cas.createAnnotation(type2, 15, 16));
+    
+    FSIterator<AnnotationFS> it = cas.getAnnotationIndex(type2).select().coveredBy(window).fsIterator();
+    
+    it.moveTo(seekPoint);
+    
+    assertThat(it.isValid()).isFalse();
+  }
   
   @SuppressWarnings("unchecked")
   private static <T extends AnnotationFS, R extends AnnotationFS> List<R> toListBackwards(
