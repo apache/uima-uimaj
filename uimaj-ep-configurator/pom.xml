@@ -17,7 +17,9 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -28,20 +30,20 @@
   </parent>
 
   <artifactId>uimaj-ep-configurator</artifactId>
-  <packaging>jar</packaging>  
+  <packaging>jar</packaging>
   <name>Apache UIMA Eclipse: ${project.artifactId}: Descriptor Editor</name>
   <description>A frame-based editor for most of the UIMA XML 
     descriptors</description>
   <url>${uimaWebsiteUrl}</url>
 
   <!-- Special inheritance note
-       even though the <scm> element that follows is exactly the 
-       same as those in super poms, it cannot be inherited because 
-       there is some special code that incorrectly computes the 
-       connection elements from the chain of parent poms, if this is omitted. 
-       
-       Keeping this a bit factored allows cutting/pasting the <scm>
-       element, and just changing the following two properties -->  
+    even though the <scm> element that follows is exactly the
+    same as those in super poms, it cannot be inherited because
+    there is some special code that incorrectly computes the
+    connection elements from the chain of parent poms, if this is omitted.
+
+    Keeping this a bit factored allows cutting/pasting the <scm>
+    element, and just changing the following two properties -->
   <scm>
     <connection>
       scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-configurator
@@ -54,43 +56,24 @@
     </url>
     <tag>HEAD</tag>
   </scm>
-  
+
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
-  
+
   <dependencies>
     <!-- UIMA dependencies -->
-    <!-- depending on the ep-runtime doesn't work without manual intervention because
-         eclipse:eclipse on the ep-runtime doesn't mark the embedded things as "exported".
-         It doesn't matter which scope - compile or provided - is used, both fail
-
-         Other posts indicate that plugins should have explicit dependencies, anyway.
-         And, it lets these plugins work when the library plugin is "open" in the same workspace.
-      -->
-    <!--dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-runtime</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-      <scope>compile</scope>
-    </dependency-->
-
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-tools</artifactId>
       <version>${project.parent.version}</version>
-      <!-- must be provided to get pax:eclipse to work, but
-           must be compile to get eclipse:eclipse to include
-           them as Referenced Libraries -->
-      <scope>compile</scope>
       <exclusions>
         <exclusion>
           <groupId>org.apache.uima</groupId>
@@ -107,341 +90,35 @@
     </dependency>
 
     <!-- Eclipse dependencies -->
-
-    <!-- most of these are commented out as of 2/2008
-         They're not needed because the dependency mechanism
-         includes the transitive closure
-
-         Not sure what's the best practice here, so leaving these
-         in as comments
-      -->
-
-    <!-- core -->
-    <!--dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.runtime</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>
-    </dependency-->
-
-
-    <!--dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.resources</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>
-    </dependency-->
-
-    <!-- ui -->
-        <!-- next one causes NPE with maven 2.0.7.
-      Might be related to https://jira.codehaus.org/browse/MNG-3086
-      Workaround - change version from 3.2.0 to 3.2.1  as of 2/2008 is OK-->
-    <!--dependency>
-      <groupId>org.eclipse.ui</groupId>
-      <artifactId>org.eclipse.ui</artifactId>
-      <version>3.2.1</version>
-      <scope>provided</scope>
-    </dependency-->
-
-    <!--dependency>
-      <groupId>org.eclipse.ui</groupId>
-      <artifactId>org.eclipse.ui.editors</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>
-    </dependency-->
-
-    <!--dependency>
-      <groupId>org.eclipse.ui</groupId>
-      <artifactId>org.eclipse.ui.forms</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>
-    </dependency-->
-
-    <!--dependency>
-      <groupId>org.eclipse.ui</groupId>
-      <artifactId>org.eclipse.ui.ide</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>
-    </dependency-->
-
-    <!--dependency>
-      <groupId>org.eclipse.ui</groupId>
-      <artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>
-    </dependency-->
-
-    <!-- jdt -->
-    <!--dependency>
-      <groupId>org.eclipse.jdt</groupId>
-      <artifactId>org.eclipse.jdt.core</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>
-    </dependency-->
-
-    <!-- added in Feb 2008 rework -->
-    <!--dependency>
-      <groupId>org.eclipse.jdt</groupId>
-      <artifactId>org.eclipse.jdt.launching</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>
-    </dependency-->
-
-
-    <!--  
-     
     <dependency>
-      <groupId>org.eclipse.jdt</groupId>
-      <artifactId>org.eclipse.jdt.ui</artifactId>
-      <version>[3.20.0,4.0.0)</version>
-      <exclusions>
-        <! - -  
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.ui</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.jface</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.jface.text</artifactId>
-        </exclusion>
-        
-        - - >
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.ui.workbench</artifactId>
-        </exclusion>
-        
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.search</artifactId>
-        </exclusion>
-        
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.debug.ui</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.compare</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.team</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.swt.gtk.linux.aarch64</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.swt.gtk.linux.arm</artifactId>
-        </exclusion>
-      </exclusions>
- 
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.platform</groupId>
-      <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
-      <version>[3.113.0, 4.0.0)</version>
-      
-      <exclusions>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.swt</artifactId>
-        </exclusion>
-      </exclusions>
-      
-    </dependency>
-    -->
-    <!-- misc -->
-    <!--dependency>
-      <groupId>org.eclipse.jface</groupId>
-      <artifactId>org.eclipse.jface.text</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>
-    </dependency-->
-
-    <!--dependency>
-      <groupId>org.eclipse.pde</groupId>
-      <artifactId>org.eclipse.pde.ui</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>
-    </dependency
-
-    
-     -->
-    <dependency>
-      <groupId>org.eclipse.platform</groupId>
+      <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.ui</artifactId>
       <version>[3.108.1, 4.0.0)</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.swt</artifactId>
-        </exclusion>
-        <!-- https://issues.apache.org/jira/browse/UIMA-6267 -->
-        <exclusion>
-          <groupId>com.sun.jna</groupId>
-          <artifactId>com.sun.jna</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.sun.jna</groupId>
-          <artifactId>com.sun.jna.platform</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
-     
     <dependency>
-      <groupId>org.eclipse.swt</groupId>
-      <artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
-      <version>[3.2.0,5.0.0)</version>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jface</artifactId>
+      <version>[3.13.0, 4.0.0)</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.eclipse.platform</groupId>
-      <artifactId>org.eclipse.jface</artifactId>
-      <version>[3.16.0, 4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.eclipse.jdt</groupId>
+      <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.jdt.ui</artifactId>
       <version>[3.12.0,4.0.0)</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.search</artifactId>
-        </exclusion> 
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.debug.ui</artifactId>
-        </exclusion>               
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.compare</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.team</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.team.ui</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.jface</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.swt</artifactId>
-        </exclusion>
-        <!-- https://issues.apache.org/jira/browse/UIMA-6267 -->
-        <exclusion>
-          <groupId>com.sun.jna</groupId>
-          <artifactId>com.sun.jna</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.sun.jna</groupId>
-          <artifactId>com.sun.jna.platform</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!-- These next dependencies are just to lock down the
-         transitive dependencies of the above.
-         This was done because on Sept 7 2010 somebody uploaded
-         corrupted versions of these to maven central. -->
-         
-             
-    <!--       
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.runtime</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>      
-    </dependency>         
-     <dependency>
-      <groupId>org.eclipse.equinox</groupId>
-      <artifactId>org.eclipse.equinox.registry</artifactId>
-      <version>[3.2.1,4.0.0)</version>
-      <scope>provided</scope>      
     </dependency>
     <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.jobs</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>      
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.contenttype</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>      
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.equinox</groupId>
-      <artifactId>org.eclipse.equinox.preferences</artifactId>
-      <version>3.2.1</version>
-      <scope>provided</scope>      
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.osgi</groupId>
-      <artifactId>org.eclipse.osgi</artifactId>
-      <version>3.2.1</version>
-      <scope>provided</scope>      
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.filesystem</artifactId>
-      <version>1.0.0</version>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
+      <version>[3.2.0,5.0.0)</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.equinox</groupId>
-      <artifactId>org.eclipse.equinox.common</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>      
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.resources</artifactId>
-      <version>3.2.1</version>
-      <scope>provided</scope>      
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.ant</groupId>
-      <artifactId>org.eclipse.ant.core</artifactId>
-      <version>3.1.100</version>
-      <scope>provided</scope>      
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.expressions</artifactId>
-      <version>3.2.1</version>
-      <scope>provided</scope>      
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.variables</artifactId>
-      <version>3.1.100</version>
-      <scope>provided</scope>      
-    </dependency>    
-  -->
   </dependencies>
 
   <build>
-
-    <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->  
+    <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->
     <finalName>org.apache.uima.desceditor_${parsedVersion.osgiVersion}</finalName>
     <plugins>
       <plugin>
