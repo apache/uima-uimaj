@@ -42,7 +42,6 @@
   <repositories>
     <!--
       - For UIMA/uimaFIT SNAPSHOTs
-    -->
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
@@ -51,11 +50,11 @@
         <enabled>false</enabled>
       </releases>
     </repository>
+    -->
   </repositories>
   <pluginRepositories>
     <!--
       - For UIMA/uimaFIT SNAPSHOTs
-      -->
     <pluginRepository>
       <id>apache.snapshots.plugins</id>
       <name>Apache Snapshot Repository - Maven plugins</name>
@@ -70,6 +69,7 @@
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </pluginRepository>
+      -->
   </pluginRepositories>
 
   <dependencies>
