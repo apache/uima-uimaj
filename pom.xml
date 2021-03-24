@@ -167,7 +167,8 @@
     <module>aggregate-uimaj</module>
   </modules>
   
-  <build>    
+  <build>
+
     <plugins>
 
       <!-- This java doc config is for building the ones distributed with the bin packaging, and also 
@@ -323,6 +324,5 @@
         <module>uimaj-json</module>
       </modules>
     </profile>
-  </profiles>    
-    
+  </profiles>
 </project>

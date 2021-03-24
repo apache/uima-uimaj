@@ -32,7 +32,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>14-SNAPSHOT</version>
+    <version>14</version>
   </parent>
 
   <groupId>org.apache.uima</groupId>
@@ -108,6 +108,12 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    
+    <repository>
+      <id>${eclipseP2RepoId}</id>
+      <url>${eclipseP2RepoUrl}</url>
+      <layout>p2</layout>
+    </repository>
   </repositories>
   
   <pluginRepositories>
@@ -130,19 +136,17 @@
       </snapshots>
     </pluginRepository>
     -->
+    <pluginRepository>
+      <id>artifactory.openntf.org</id>
+      <name>artifactory.openntf.org</name>
+      <url>https://artifactory.openntf.org/openntf</url>
+    </pluginRepository>
   </pluginRepositories>
   
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <!-- 
-     BACKWARD_COMPATIBLE_IMPLEMENTER - patch version (=.=.+)
-     BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
-     NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
-     -->
-    <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
-    <compat.previous.version>2.10.3</compat.previous.version>
-    <api_check_oldVersion>2.10.3</api_check_oldVersion>
+    <api_check_oldVersion>2.10.4</api_check_oldVersion>
 
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
@@ -152,8 +156,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
+    
+    <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
+    <eclipseP2RepoUrl>http://download.eclipse.org/releases/2018-12/</eclipseP2RepoUrl>
   </properties>
-
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -172,11 +179,39 @@
         <artifactId>xmlunit</artifactId>
         <version>1.6</version>
       </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jdt.debug</artifactId>
+        <exclusions>
+          <exclusion>
+            <!-- 
+              The p2 resolver appears to have trouble with the "icu-data" classifier
+             -->
+            <groupId>${eclipseP2RepoId}</groupId>
+            <artifactId>com.ibm.icu</artifactId>
+          </exclusion>
+          <exclusion>
+            <!-- 
+              The p2 resolver appears to have trouble with this one and tries to download it with 
+              "tools" as the classifier.
+             -->
+            <groupId>${eclipseP2RepoId}</groupId>
+            <artifactId>org.eclipse.jdt.debug</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.openntf.maven</groupId>
+        <artifactId>p2-layout-resolver</artifactId>
+        <version>1.2.0</version>
+        <extensions>true</extensions>
+      </plugin>
+    
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
