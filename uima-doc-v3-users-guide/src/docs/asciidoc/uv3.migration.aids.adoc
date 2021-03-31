@@ -58,16 +58,17 @@ Existing type systems, if found, are reused.
 Besides saving storage, this can sometimes improve locality of reference, and therefore, performance.
 Setting this property disables this consolidation.
 
-Disable strict type source checking
+Enable strict type source checking
 |
 
-`uima.disable_strict_type_source_check`
+`uima.enable_strict_type_source_check`
 
-Default: the type system a type belongs to must be exactly the type system instance of the CAS it is created in or added to.
+Default: checking whether the type actually belongs to the index/CAS is performed but only logs a warning, no exception.
 
 When creating a new feature structure or when adding or removing a feature structure to/from an index, it is checked that the
 type system the type belongs to is exactly the same instance as the type system of the CAS it is created in or the index it
-is added to. Due to the type system consolidation feature, this should always be the case. Setting this property disables the check.
+is added to. Due to the type system consolidation feature, this should always be the case. Setting this property causes an
+exception to be thrown - otherwise a warning is logged.
 
 |
 

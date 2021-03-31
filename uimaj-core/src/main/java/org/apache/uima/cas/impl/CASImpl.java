@@ -19,6 +19,9 @@
 
 package org.apache.uima.cas.impl;
 
+import static java.lang.String.format;
+import static java.lang.System.identityHashCode;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
@@ -1435,11 +1438,22 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //    return (T) createFsFromGenerator(svd.generators, ti);
   }
   
+  private static final AtomicInteger strictTypeSourceCheckMessageCount = new AtomicInteger(0);
+  
   private void assertTypeBelongsToCasTypesystem(TypeImpl ti) {
-    if (!TypeSystemImpl.IS_DISABLE_STRICT_TYPE_SOURCE_CHECK && tsi_local != null && ti.getTypeSystem() != tsi_local) {
-      throw new IllegalArgumentException("Cannot create feature structure of type [" + ti.getName()
-              + "](" + ti.getCode() + ") from type system [" + ti.getTypeSystem()
-              + "] in CAS with typesystem [" + tsi_local + "]");
+    if (tsi_local != null && ti.getTypeSystem() != tsi_local) {
+      String message = String.format(
+              "Creating a feature structure of type [%s](%d) from type system [%s] in CAS with "
+              + "different type system [%s] is not supported.",
+              ti.getName(), ti.getCode(), format("<%,d>", identityHashCode(ti.getTypeSystem())), 
+              format("<%,d>", identityHashCode(tsi_local)));
+    
+      if (TypeSystemImpl.IS_ENABLE_STRICT_TYPE_SOURCE_CHECK) {
+        throw new IllegalArgumentException(message);
+      }
+      else {
+        Misc.decreasingWithTrace(strictTypeSourceCheckMessageCount, message, UIMAFramework.getLogger());
+      }
     }
   }
   

@@ -19,12 +19,17 @@
 
 package org.apache.uima.cas.impl;
 
+import static java.lang.String.format;
+import static java.lang.System.identityHashCode;
+
 import java.lang.ref.WeakReference;
 import java.util.AbstractCollection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.WeakHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FSComparators;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
@@ -34,6 +39,7 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.Level;
 
 /**
  * The common (among all index kinds - set, sorted, bag) info for an index over
@@ -586,11 +592,23 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
   @Override
   public abstract int compare(FeatureStructure o1, FeatureStructure o2);
   
+  private static final AtomicInteger strictTypeSourceCheckMessageCount = new AtomicInteger(0);
+  
   protected final void assertFsTypeMatchesIndexType(FeatureStructure fs, String operation) {
-    if (!TypeSystemImpl.IS_DISABLE_STRICT_TYPE_SOURCE_CHECK && ((TOP)fs)._getTypeImpl() != this.type) {
-      throw new IllegalArgumentException(
-          String.format("Wrong type %s passed to %s of index over type %s", 
-            ((TOP)fs)._getTypeImpl().getName(), operation, this.type.getName()));
+    TypeImpl fsType = ((TOP)fs)._getTypeImpl();
+    if (fsType != this.type) {
+      String message = String.format(
+              "%s operation using a feature structure of type [%s](%d) from type system [%s] on index using "
+              + "different type system [%s] is not supported.", operation,
+              fsType.getName(), fsType.getCode(), format("<%,d>", identityHashCode(fsType.getTypeSystem())), 
+              format("<%,d>", identityHashCode(this.type.getTypeSystem())));
+    
+      if (TypeSystemImpl.IS_ENABLE_STRICT_TYPE_SOURCE_CHECK) {
+        throw new IllegalArgumentException(message);
+      }
+      else {
+        Misc.decreasingWithTrace(strictTypeSourceCheckMessageCount, message, UIMAFramework.getLogger());
+      }
     }
   }
 

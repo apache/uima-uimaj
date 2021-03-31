@@ -144,13 +144,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public static final String DISABLE_TYPESYSTEM_CONSOLIDATION = "uima.disable_typesystem_consolidation";
 
   /**
-   * Define this JVM property to disable strictly checking the source of a type with respect to its
+   * Define this JVM property to enable strictly checking the source of a type with respect to its
    * type system. Normally (i.e. when typesystem consolidation is enabled), types that are semantically
    * equivalent should come from the same type system instances. There could be bugs (in client or framework
    * code) or legacy code which simply ignores this requirement and still works. Therefore, this property
    * allow to restore the old non-strict-checking behavior.
    */
-  public static final String DISABLE_STRICT_TYPE_SOURCE_CHECK = "uima.disable_strict_type_source_check";
+  public static final String ENABLE_STRICT_TYPE_SOURCE_CHECK = "uima.enable_strict_type_source_check";
 
   /**
    * public for test case
@@ -158,8 +158,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public static final boolean IS_DISABLE_TYPESYSTEM_CONSOLIDATION = // true || // debug
       Misc.getNoValueSystemProperty(DISABLE_TYPESYSTEM_CONSOLIDATION);
 
-  public static final boolean IS_DISABLE_STRICT_TYPE_SOURCE_CHECK = // true || // debug
-          Misc.getNoValueSystemProperty(DISABLE_STRICT_TYPE_SOURCE_CHECK);
+  public static final boolean IS_ENABLE_STRICT_TYPE_SOURCE_CHECK = // true || // debug
+          Misc.getNoValueSystemProperty(ENABLE_STRICT_TYPE_SOURCE_CHECK);
 
 //  private final static String DECOMPILE_JCAS = "uima.decompile.jcas";
 //  private final static boolean IS_DECOMPILE_JCAS = Misc.getNoValueSystemProperty(DECOMPILE_JCAS);
