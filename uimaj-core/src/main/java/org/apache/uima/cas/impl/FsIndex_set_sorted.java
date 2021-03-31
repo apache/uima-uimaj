@@ -89,7 +89,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
    */
   @Override
   void insert(T fs) {
-    
+    assertFsTypeMatchesIndexType(fs, "insert");
     // past the initial load, or item is not > previous largest item to be added 
     maybeCopy();
     if (isAnnotIdx) {
@@ -206,11 +206,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
    */
   @Override
   public boolean deleteFS(T fs) {
-    if (((TOP)fs)._getTypeImpl() != this.type) {
-      throw new IllegalArgumentException(
-          String.format("Wrong type %s passed to deleteFS of index over type %s", 
-            ((TOP)fs)._getTypeImpl().getName(), this.type.getName()));
-    }
+    assertFsTypeMatchesIndexType(fs, "deleteFS");
 //    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     maybeCopy();
     return this.indexedFSs.remove(fs);

@@ -144,11 +144,23 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public static final String DISABLE_TYPESYSTEM_CONSOLIDATION = "uima.disable_typesystem_consolidation";
 
   /**
+   * Define this JVM property to disable strictly checking the source of a type with respect to its
+   * type system. Normally (i.e. when typesystem consolidation is enabled), types that are semantically
+   * equivalent should come from the same type system instances. There could be bugs (in client or framework
+   * code) or legacy code which simply ignores this requirement and still works. Therefore, this property
+   * allow to restore the old non-strict-checking behavior.
+   */
+  public static final String DISABLE_STRICT_TYPE_SOURCE_CHECK = "uima.disable_strict_type_source_check";
+
+  /**
    * public for test case
    */
   public static final boolean IS_DISABLE_TYPESYSTEM_CONSOLIDATION = // true || // debug
       Misc.getNoValueSystemProperty(DISABLE_TYPESYSTEM_CONSOLIDATION);
-   
+
+  public static final boolean IS_DISABLE_STRICT_TYPE_SOURCE_CHECK = // true || // debug
+          Misc.getNoValueSystemProperty(DISABLE_STRICT_TYPE_SOURCE_CHECK);
+
 //  private final static String DECOMPILE_JCAS = "uima.decompile.jcas";
 //  private final static boolean IS_DECOMPILE_JCAS = Misc.getNoValueSystemProperty(DECOMPILE_JCAS);
 //  private final static Set<String> decompiled = (IS_DECOMPILE_JCAS) ? new HashSet<String>(256) : null;
@@ -1383,72 +1395,72 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // because it will call the type system iterator
   //    this.casMetadata.setupFeaturesAndCreatableTypes();
 
-      if (!IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
-        WeakReference<TypeSystemImpl> prevWr = committedTypeSystems.get(this);
-        if (null != prevWr) {
-          TypeSystemImpl prev = prevWr.get();
-          if (null != prev) {            
-            // the following is a no-op if the generators already set up for this class loader
-            prev.getGeneratorsForClassLoader(cl, false);  // false - is not pear
-            
-            if (IS_TRACE_JCAS_EXPAND) {
-              System.out.format("debug type system impl commit: consolidated a type system with a previous one, %d%n", prev.hashCode());
-              System.out.println(Misc.getCallers(1, 50).toString());
-            }
 
-            return prev;
-          }
-        }      
-      }
-      
-      topType.computeDepthFirstCode(1); // fixes up ordering, supers before subs. also sets hasRef.
-      
-      computeFeatureOffsets(topType, 0);
-                 
-//      if (IS_DECOMPILE_JCAS) {  
-//        synchronized(GLOBAL_TYPESYS_LOCK) {
-//          for(Type t : getAllTypes()) {
-//            decompile(t);
-//          }
-//        }
-//      }
-
-      type2jcci = FSClassRegistry.get_className_to_jcci(cl, false);  // is not pear
-      lookup = FSClassRegistry.getLookup(cl);
-      cl_for_commit = cl;
-
-      computeAdjustedFeatureOffsets(topType);  // must preceed the FSClassRegistry JCas stuff below
-      
-      // Load all the available JCas classes (if not already loaded).
-      // Has to follow above, because information computed above is used when
-      // loading and checking JCas classes
-      
-      
-      // not done here, done in caller (CASImpl commitTypeSystem), 
-      // when it gets the generators for the class loader for this type system for the first time.
-//      fsClassRegistry = new FSClassRegistry(this, true);
-//      FSClassRegistry.loadAtTypeSystemCommitTime(this, true, cl);
-      
-      this.locked = true;
-      
-      if (!IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
-        committedTypeSystems.put(this, new WeakReference<>(this));
+      TypeSystemImpl maybeConsolidatedTypesystem;
+      if (IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
+        maybeConsolidatedTypesystem = finalizeCommit(cl);
+      } else {
+        maybeConsolidatedTypesystem = committedTypeSystems
+                .computeIfAbsent(this, _key -> new WeakReference<>(finalizeCommit(cl))).get();
       }
 
-      // this call is here for the case where a commit happens, but no subsequent
-      //   new CAS or switch classloader call is done.  For example, a "reinit" in an existing CAS
+      // This call is here for the case where a commit happens, but no subsequent new CAS or switch 
+      // classloader call is done.  For example, a "reinit" in an existing CAS
       // This call internally calls the code to load JCas classes for this class loader.
-      getGeneratorsForClassLoader(cl, false);  // false - is not pear    
-//      FSClassRegistry.loadJCasForTSandClassLoader(this, true, cl);
-      
+      //      FSClassRegistry.loadJCasForTSandClassLoader(this, true, cl);
+      // the following is a no-op if the generators already set up for this class loader
+      maybeConsolidatedTypesystem.getGeneratorsForClassLoader(cl, false); // false - is not pear
+
       if (IS_TRACE_JCAS_EXPAND) {
-        System.out.format("debug type system impl commited new type system and loaded JCas %d%n", this.hashCode());
-        System.out.println(Misc.getCallers(1, 50).toString());
+        if (this == maybeConsolidatedTypesystem) {
+          System.out.format("debug type system impl commited new type system and loaded JCas %d%n",
+                  this.hashCode());
+          System.out.println(Misc.getCallers(1, 50).toString());
+        } else {
+          System.out.format(
+                  "debug type system impl commit: consolidated a type system with a previous one, %d%n",
+                  maybeConsolidatedTypesystem.hashCode());
+          System.out.println(Misc.getCallers(1, 50).toString());
+        }
       }
 
-      return this;
+      return maybeConsolidatedTypesystem;
     } // of sync block 
   }  
+  
+  private TypeSystemImpl finalizeCommit(ClassLoader cl) {
+    topType.computeDepthFirstCode(1); // fixes up ordering, supers before subs. also sets hasRef.
+    
+    computeFeatureOffsets(topType, 0);
+               
+//    if (IS_DECOMPILE_JCAS) {  
+//      synchronized(GLOBAL_TYPESYS_LOCK) {
+//        for(Type t : getAllTypes()) {
+//          decompile(t);
+//        }
+//      }
+//    }
+
+    type2jcci = FSClassRegistry.get_className_to_jcci(cl, false);  // is not pear
+    lookup = FSClassRegistry.getLookup(cl);
+    cl_for_commit = cl;
+
+    computeAdjustedFeatureOffsets(topType);  // must preceed the FSClassRegistry JCas stuff below
+    
+    // Load all the available JCas classes (if not already loaded).
+    // Has to follow above, because information computed above is used when
+    // loading and checking JCas classes
+    
+    
+    // not done here, done in caller (CASImpl commitTypeSystem), 
+    // when it gets the generators for the class loader for this type system for the first time.
+//    fsClassRegistry = new FSClassRegistry(this, true);
+//    FSClassRegistry.loadAtTypeSystemCommitTime(this, true, cl);
+    
+    this.locked = true;
+        
+    return this;
+  }
   
   /**
    * This is the actual offset for the feature, in either the int or ref array
@@ -2646,8 +2658,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     Class<? extends TOP> cls = JCasRegistry.getClassForIndex(typeindex);
     if (cls != null) {
       String className = cls.getName();
-//      System.err.format("Missing UIMA type, JCas Class name: %s, index: %d, jcasRegisteredTypes size: %d%n", className, typeindex, jcasRegisteredTypes.size());
-//      dumpTypeSystem();
+      System.err.format(
+              "Missing UIMA type, JCas Class name: %s, index: %d, jcasRegisteredTypes size: %d%n",
+              className, typeindex, jcasRegisteredTypes.size());
+      dumpTypeSystem();
       throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, className);
     } else {
       throw new CASRuntimeException(CASRuntimeException.JCAS_UNKNOWN_TYPE_NOT_IN_CAS);

@@ -586,7 +586,13 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
   @Override
   public abstract int compare(FeatureStructure o1, FeatureStructure o2);
   
-  
+  protected final void assertFsTypeMatchesIndexType(FeatureStructure fs, String operation) {
+    if (!TypeSystemImpl.IS_DISABLE_STRICT_TYPE_SOURCE_CHECK && ((TOP)fs)._getTypeImpl() != this.type) {
+      throw new IllegalArgumentException(
+          String.format("Wrong type %s passed to %s of index over type %s", 
+            ((TOP)fs)._getTypeImpl().getName(), operation, this.type.getName()));
+    }
+  }
 
   /// **
   // * Common part of iterator creation

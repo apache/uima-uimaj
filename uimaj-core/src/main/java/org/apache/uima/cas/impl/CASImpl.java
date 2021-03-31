@@ -1409,6 +1409,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
                      // must happen before the annotation is created, for compressed form 6 serialization order
                      // to insure sofa precedes the ref of it
     }
+    
+    assertTypeBelongsToCasTypesystem(ti);
 
     FsGenerator3 g = svd.generators[ti.getCode()];  // get generator or null
     
@@ -1433,6 +1435,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //    return (T) createFsFromGenerator(svd.generators, ti);
   }
   
+  private void assertTypeBelongsToCasTypesystem(TypeImpl ti) {
+    if (!TypeSystemImpl.IS_DISABLE_STRICT_TYPE_SOURCE_CHECK && tsi_local != null && ti.getTypeSystem() != tsi_local) {
+      throw new IllegalArgumentException("Cannot create feature structure of type [" + ti.getName()
+              + "](" + ti.getCode() + ") from type system [" + ti.getTypeSystem()
+              + "] in CAS with typesystem [" + tsi_local + "]");
+    }
+  }
+  
   /**
    * Called during construction of FS.
    * For normal FS "new" operators, if in PEAR context, make the base version
@@ -1451,6 +1461,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     TOP baseFs;
     try {
       suspendPearContext();
+      assertTypeBelongsToCasTypesystem(ti);
       svd.reuseId = fs._id;
       baseFs = createFsFromGenerator(svd.baseGenerators, ti);
     } finally {
@@ -5633,6 +5644,8 @@ public BooleanArray emptyBooleanArray() {
       case Slot_Short:
       case Slot_Int: return Integer.toString(iv);
       case Slot_Float: return Float.toString(int2float(iv));
+      default:
+        // Ignore
       }
     }
     if (v instanceof Long) {
