@@ -85,6 +85,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 
   @Override
   public final void insert(T fs) {
+    assertFsTypeMatchesIndexType(fs, "insert");
     maybeCopy();
     index.add((TOP) fs);
   }
@@ -180,6 +181,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public boolean deleteFS(T fs) {
+    assertFsTypeMatchesIndexType(fs, "deleteFS");
     maybeCopy();
     return this.index.remove(fs);
   }
