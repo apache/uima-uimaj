@@ -19,6 +19,9 @@
 
 package org.apache.uima.cas.impl;
 
+import static java.lang.String.format;
+import static java.lang.System.identityHashCode;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
@@ -1409,6 +1412,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
                      // must happen before the annotation is created, for compressed form 6 serialization order
                      // to insure sofa precedes the ref of it
     }
+    
+    assertTypeBelongsToCasTypesystem(ti);
 
     FsGenerator3 g = svd.generators[ti.getCode()];  // get generator or null
     
@@ -1433,6 +1438,25 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //    return (T) createFsFromGenerator(svd.generators, ti);
   }
   
+  private static final AtomicInteger strictTypeSourceCheckMessageCount = new AtomicInteger(0);
+  
+  private void assertTypeBelongsToCasTypesystem(TypeImpl ti) {
+    if (tsi_local != null && ti.getTypeSystem() != tsi_local) {
+      String message = String.format(
+              "Creating a feature structure of type [%s](%d) from type system [%s] in CAS with "
+              + "different type system [%s] is not supported.",
+              ti.getName(), ti.getCode(), format("<%,d>", identityHashCode(ti.getTypeSystem())), 
+              format("<%,d>", identityHashCode(tsi_local)));
+    
+      if (TypeSystemImpl.IS_ENABLE_STRICT_TYPE_SOURCE_CHECK) {
+        throw new IllegalArgumentException(message);
+      }
+      else {
+        Misc.decreasingWithTrace(strictTypeSourceCheckMessageCount, message, UIMAFramework.getLogger());
+      }
+    }
+  }
+  
   /**
    * Called during construction of FS.
    * For normal FS "new" operators, if in PEAR context, make the base version
@@ -1451,6 +1475,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     TOP baseFs;
     try {
       suspendPearContext();
+      assertTypeBelongsToCasTypesystem(ti);
       svd.reuseId = fs._id;
       baseFs = createFsFromGenerator(svd.baseGenerators, ti);
     } finally {
@@ -5633,6 +5658,8 @@ public BooleanArray emptyBooleanArray() {
       case Slot_Short:
       case Slot_Int: return Integer.toString(iv);
       case Slot_Float: return Float.toString(int2float(iv));
+      default:
+        // Ignore
       }
     }
     if (v instanceof Long) {
