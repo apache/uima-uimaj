@@ -24,7 +24,7 @@ You can add the Apache UIMA Java SDK to your project easily in most build tools 
 [Maven Central][MAVEN-CENTRAL]. For example if you use Maven, you can add the following dependency
 to your project:
 
-```
+```xml
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-core</artifactId>
@@ -35,7 +35,7 @@ to your project:
 Next, we give a few brief examples of how to use the Apache UIMA Java SDK and the Apache uimaFIT library.
 Apache uimaFIT is a separate dependency that you can add:
 
-```
+```xml
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimafit-core</artifactId>
@@ -49,11 +49,7 @@ The type system defines the type of information that we want to attach to the un
 
 To illustrate the information UIMA internally maintains about the annotation schema, we write the generated schema as XML to screen.
 
-```
-import org.apache.uima.cas.CAS;
-import org.apache.uima.UIMAFramework;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
-
+```java
 String TYPE_NAME_ENTITY = "my.Entity";
 String TYPE_NAME_TOKEN = "my.Token";
 String FEAT_NAME_CATEGORY = "category";
@@ -71,11 +67,7 @@ Now we create a Common Analysis Structure (CAS) object into which we store the t
 
 Again, to illustrate the information that UIMA internally stores in the CAS object, we write an XML representation of the object to screen.
 
-```
-import org.apache.uima.fit.factory.CasFactory;
-import org.apache.uima.util.CasIOUtils;
-import org.apache.uima.cas.SerialFormat;
-
+```java
 var cas = CasFactory.createCas(tsd);
 cas.setDocumentText("Welcome to Apache UIMA.");
 cas.setDocumentLanguage("en");
@@ -90,9 +82,7 @@ Now, we create an annotation of the type `my.Entity` to identify the mention of 
 Finally, we iterate over all annotations in the CAS and print them to screen. This includes the default `DocumentAnnotation` that is always created by UIMA as
 well as the `my.Entity` annotation that we created ourselves.
 
-```
-import org.apache.uima.jcas.tcas.Annotation;
-
+```java
 var entityType = cas.getTypeSystem().getType(TYPE_NAME_ENTITY);
 var entity = cas.createAnnotation(entityType, 11, 22);
 cas.addFsToIndexes(entity);
@@ -106,14 +96,7 @@ for (var anno : cas.<Annotation>select(entityType)) {
 
 In order to organize different types of analysis into steps, we usually package them into individual analysis engines. We illustrate now how such components can be built and how they can be put executed as an analysis pipeline.
 
-```
-import org.apache.uima.fit.component.CasAnnotator_ImplBase;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.pipeline.SimplePipeline;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import java.text.BreakIterator;
-import java.lang.Character;
-
+```java
 class TokenAnnotator extends CasAnnotator_ImplBase {
   public void process(CAS cas) throws AnalysisEngineProcessException {
     var tokenType = cas.getTypeSystem().getType(TYPE_NAME_TOKEN);
@@ -186,6 +169,15 @@ You could find additional ones e.g. by:
 * following the [GitHub dependency graph](https://github.com/apache/uima-uimaj/network/dependents?package_id=UGFja2FnZS0xNzk4MzkxNTI%3D)
 * searching [Google Scholar for UIMA](https://scholar.google.com/scholar?hl=en&q=uima)
 
+#### Interoperability
+
+The Apache UIMA Java SDK can be used with any programming language based on the Java Virtual Machine
+including Java, Groovy, Scala, and many other languages.
+
+Interoperability with Python can for example be achieved via the third-party 
+[DKPro Cassis][DKPRO-CASSIS] library which can be used to read, manipulate and write CAS data in the
+XMI format.
+
 #### Further reading
 
 The Apache UIMA Java SDK is a Java-based implementation of the [UIMA specification][OASIS-UIMA].
@@ -193,3 +185,4 @@ The Apache UIMA Java SDK is a Java-based implementation of the [UIMA specificati
 [UIMA]: https://uima.apache.org
 [OASIS-UIMA]: https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=uima
 [MAVEN-CENTRAL]: https://search.maven.org/search?q=org.apache.uima
+[DKPRO-CASSIS]: https://github.com/dkpro/dkpro-cassis
