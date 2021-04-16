@@ -15,9 +15,9 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-
-
- getCoveredAnnotations() contains code adapted from the UIMA Subiterator class.
+ *
+ *
+ * getCoveredAnnotations() contains code adapted from the UIMA Subiterator class.
  */
 package org.apache.uima.fit.util;
 
@@ -37,6 +37,7 @@ import static org.apache.uima.fit.util.JCasUtil.selectBetween;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 import static org.apache.uima.fit.util.JCasUtil.selectCovering;
 import static org.apache.uima.fit.util.JCasUtil.selectFollowing;
+import static org.apache.uima.fit.util.JCasUtil.selectOverlapping;
 import static org.apache.uima.fit.util.JCasUtil.selectPreceding;
 import static org.apache.uima.fit.util.JCasUtil.selectSingle;
 import static org.apache.uima.fit.util.JCasUtil.selectSingleAt;
@@ -57,12 +58,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.ComponentTestBase;
+import org.apache.uima.fit.factory.CasFactory;
+import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.type.AnalyzedText;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
@@ -73,13 +78,14 @@ import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.CasCreationUtils;
+import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.Test;
 
 /**
  * Test cases for {@link JCasUtil}.
- * 
  */
 public class JCasUtilTest extends ComponentTestBase {
+  
   /**
    * Test Tokens (Stems + Lemmas) overlapping with each other.
    */
@@ -141,7 +147,7 @@ public class JCasUtilTest extends ComponentTestBase {
       
       // Prepare the index
       long timeIndexed = System.currentTimeMillis();
-      Map<Sentence, Collection<Token>> index = indexCovered(jcas, Sentence.class, Token.class);
+      Map<Sentence, List<Token>> index = indexCovered(jcas, Sentence.class, Token.class);
       timeIndexed = System.currentTimeMillis() - timeIndexed;
       
       // -- The order of entries in the index is NOT defined!
@@ -183,6 +189,188 @@ public class JCasUtilTest extends ComponentTestBase {
     }
   }
 
+  @Test 
+  public void thatSelectOverlappingWorks() throws Exception
+  {
+      assertOverlapBehavior(JCasUtil::selectOverlapping);
+  }
+
+  @Test 
+  public void thatSelectOverlappingNaiveWorks() throws Exception
+  {
+      assertOverlapBehavior(JCasUtilTest::selectOverlappingNaive);
+  }
+
+  private static void assertOverlapBehavior(TypeByOffsetSelector aSelector) throws Exception
+  {
+      JCas jcas = JCasFactory.createJCas();
+      Token t = new Token(jcas, 10, 20);
+      t.addToIndexes();
+      
+      try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getBegin() - 1, t.getBegin() - 1))
+            .as("Zero-width selection before annotation begin (| ###)")
+            .isEmpty();
+      
+        softly.assertThat(aSelector.select(jcas, Token.class, 0, t.getBegin() - 1))
+            .as("Selection begins and ends before annotation begin ([---] ###)")
+            .isEmpty();
+      
+        softly.assertThat(aSelector.select(jcas, Token.class, 0, t.getBegin()))
+            .as("Selection begins before and ends at annotation begin ([---]###)")
+            .isEmpty();
+
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getBegin(), t.getBegin()))
+            .as("Zero-width selection at annotation begin (|###)")
+            .containsExactly(t);
+
+        softly.assertThat(aSelector.select(jcas, Token.class, 0, t.getBegin() + 1))
+            .as("Selection begins before and ends within annotation ([--#]##)")
+            .containsExactly(t);
+      
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getBegin() + 1, t.getEnd() - 1))
+            .as("Selection begins and ends within annotation  (#[#]#)")
+            .containsExactly(t);
+
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getBegin() + 1, t.getEnd()))
+            .as("Selection begins after and ends at annotation boundries (#[##])")
+            .containsExactly(t);
+
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getBegin(), t.getEnd()))
+            .as("Selection begins and ends at annotation boundries ([###])")
+            .containsExactly(t);
+      
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getBegin()+1, t.getBegin()+1))
+            .as("Zero-width selection within annotation (#|#)")
+            .containsExactly(t);
+
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getBegin(), t.getEnd() - 1))
+            .as("Selection begins at and ends before annotation boundries ([##]#)")
+            .containsExactly(t);
+
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getEnd() - 1 , Integer.MAX_VALUE))
+            .as("Selection begins before and ends within annotation (##[#--])")
+            .containsExactly(t);
+
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getEnd(), Integer.MAX_VALUE))
+            .as("Selection begins at annotation end and ends after annotation (###[---])")
+            .isEmpty();
+
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getEnd(), t.getEnd()))
+            .as("Zero-width selection at annotation end (###|)")
+            .isEmpty();
+
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getEnd() + 1, Integer.MAX_VALUE))
+            .as("Selection begins and ends after annotation (### [---])")
+            .isEmpty();
+      
+        softly.assertThat(aSelector.select(jcas, Token.class, t.getEnd() + 1, t.getEnd() + 1))
+            .as("Zero-width selection after annotation end (### |)")
+            .isEmpty();
+      
+        jcas.reset();
+        Token zero = new Token(jcas, 10, 10);
+        zero.addToIndexes();
+  
+        softly.assertThat(aSelector.select(jcas, Token.class, 20, 30))
+            .as("Zero-width annotation before selection start (# [---])")
+            .isEmpty();
+  
+        softly.assertThat(aSelector.select(jcas, Token.class, 10, 20))
+            .as("Zero-width annotation at selection start (#---])")
+            .containsExactly(zero);
+        
+        softly.assertThat(aSelector.select(jcas, Token.class, 0, 10))
+            .as("Zero-width annotation at selection end ([---#)")
+            .isEmpty();
+  
+        softly.assertThat(aSelector.select(jcas, Token.class, 10, 10))
+            .as("Zero-width annotation matches zero-width selection start/end (#)")
+            .containsExactly(zero);
+        
+        softly.assertThat(aSelector.select(jcas, Token.class, 0, 5))
+            .as("Zero-width annotation after selection end ([---] #)")
+            .isEmpty();
+      }
+  }
+
+  @Test
+  public void thatSelectOverlappingWorksOnRandomData() throws Exception
+  {
+      final int ITERATIONS = 10;
+
+      CAS cas = CasFactory.createCas();
+      
+      for (int i = 0; i < ITERATIONS; i++) {
+          initRandomCas(cas, 3 * i);
+
+          JCas jcas = cas.getJCas();
+          Collection<Sentence> sentences = select(jcas, Sentence.class);
+
+          long timeNaive = 0;
+          long timeOptimized = 0;
+
+          for (Sentence s : sentences) {
+              // The naive approach is assumed to be correct
+              long ti = System.currentTimeMillis();
+              List<Token> expected = selectOverlappingNaive(jcas, Token.class, s.getBegin(),
+                      s.getEnd());
+              timeNaive += System.currentTimeMillis() - ti;
+
+              // Record time for the optimized approach
+              ti = System.currentTimeMillis();
+              List<Token> actual = selectOverlapping(jcas, Token.class, s.getBegin(), s.getEnd());
+              timeOptimized += System.currentTimeMillis() - ti;
+
+              assertThat(actual)
+                  .as("Selection           : [" + s.getBegin() + ".." + s.getEnd() + "]")
+                  .containsExactlyElementsOf(expected);
+          }
+
+          System.out.printf(
+                  "%3d Optimized   : speed up x%3.2f [baseline:%4d current:%4d (diff:%4d)]%n",
+                  i, (double) timeNaive / (double) timeOptimized, timeNaive, timeOptimized,
+                  timeNaive - timeOptimized);
+          System.out.println();
+      }
+  }
+  
+  private static boolean naiveOverlappingCondition(AnnotationFS ann, int aSelBegin, int aSelEnd)
+  {
+    int begin = ann.getBegin();
+    int end = ann.getEnd();
+    
+    // Selection exactly matches annotation (even if empty)
+    if (begin == aSelBegin && end == aSelEnd) {
+      return true;
+    }
+    
+    boolean zeroWidthSelection = aSelBegin == aSelEnd;
+    return !(
+      // NOT Zero-width selection at end of annotation
+      (zeroWidthSelection && aSelBegin == end) ||
+      // NOT Zero-width annotation at end of selection
+      (begin == end && begin == aSelEnd)) 
+    && (
+      // Zero-width selection at beginning of annotation
+      (zeroWidthSelection && aSelBegin == begin) ||
+      // Annotation left-overlapping on selection
+      (aSelBegin <= begin && begin < aSelEnd) ||
+      // Annotation right overlapping on selection
+      (aSelBegin < end && end <= aSelEnd) ||
+      // Annotation fully containing selection
+      (begin <= aSelBegin && aSelEnd <= end) ||
+      // Selection fully containing annotation
+      (aSelBegin <= begin && end <= aSelEnd));
+  }
+
+  public static <T extends Annotation> List<T> selectOverlappingNaive(JCas aCas, Class<T> aType,
+          int aSelBegin, int aSelEnd) {
+      return select(aCas, aType).stream()
+              .filter(ann -> naiveOverlappingCondition(ann, aSelBegin, aSelEnd))
+              .collect(Collectors.toList());
+  }
+  
   /**
    * Test what happens if there is actually nothing overlapping with the Token.
    */
@@ -817,7 +1005,7 @@ public class JCasUtilTest extends ComponentTestBase {
     List<Sentence> sentences = new ArrayList<Sentence>(select(jCas, Sentence.class));
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
 
-    Map<Token, Collection<Sentence>> index = indexCovering(jCas, Token.class, Sentence.class);
+    Map<Token, List<Sentence>> index = indexCovering(jCas, Token.class, Sentence.class);
 
     // Check covering annotations are found
     assertEquals(asList(sentences.get(0)), index.get(tokens.get(0)));
@@ -840,7 +1028,7 @@ public class JCasUtilTest extends ComponentTestBase {
     // Check if the reference annotation itself is returned
     Token extra = new Token(jCas, tokens.get(3).getBegin(), tokens.get(3).getEnd());
     extra.addToIndexes();
-    Map<Token, Collection<Token>> index2 = indexCovering(jCas, Token.class, Token.class);
+    Map<Token, List<Token>> index2 = indexCovering(jCas, Token.class, Token.class);
     assertEquals(0, index2.get(0).size());
     assertEquals(1, index2.get(extra).size());
     assertEquals(tokens.get(3), index2.get(extra).iterator().next());
@@ -854,7 +1042,7 @@ public class JCasUtilTest extends ComponentTestBase {
     List<Sentence> sentences = new ArrayList<Sentence>(select(jCas, Sentence.class));
     List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
     
-    Map<Sentence, Collection<Token>> index = indexCovered(jCas, Sentence.class, Token.class);
+    Map<Sentence, List<Token>> index = indexCovered(jCas, Sentence.class, Token.class);
     
     // Check covered annotations are found
     assertEquals(tokens.subList(0, 6), index.get(sentences.get(0)));
@@ -863,7 +1051,7 @@ public class JCasUtilTest extends ComponentTestBase {
     // Check if the reference annotation itself is returned
     Token extra = new Token(jCas, tokens.get(3).getBegin(), tokens.get(3).getEnd());
     extra.addToIndexes();
-    Map<Token, Collection<Token>> index2 = indexCovered(jCas, Token.class, Token.class);
+    Map<Token, List<Token>> index2 = indexCovered(jCas, Token.class, Token.class);
     assertEquals(0, index2.get(0).size());
     assertEquals(1, index2.get(extra).size());
     assertEquals(tokens.get(3), index2.get(extra).iterator().next());
@@ -930,5 +1118,11 @@ public class JCasUtilTest extends ComponentTestBase {
   
     assertEquals(b.getBegin(), tokenAt.getBegin());
     assertEquals(b.getEnd(), tokenAt.getEnd());
+  }
+
+  @FunctionalInterface
+  private static interface TypeByOffsetSelector {
+    <T extends Annotation> List<T> select(JCas aCas, Class<T> aType,
+            int aBegin, int aEnd);
   }
 }

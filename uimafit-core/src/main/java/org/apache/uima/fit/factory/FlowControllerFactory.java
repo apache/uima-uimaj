@@ -21,8 +21,8 @@ package org.apache.uima.fit.factory;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.ensureParametersComeInPairs;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParameters;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResourceOnce;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDependencies;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -65,7 +65,7 @@ public final class FlowControllerFactory {
     // Extract ExternalResourceDescriptions from configurationData
     // <ParamterName, ExternalResourceDescription> will be stored in this map
     Map<String, ExternalResourceDescription> externalResources = ExternalResourceFactory
-            .extractExternalResourceParameters(configurationData);
+            .extractResourceParameters(configurationData);
 
     // Create description normally
     ConfigurationData cdata = createConfigurationData(configurationData);
@@ -125,12 +125,12 @@ public final class FlowControllerFactory {
     ResourceMetaDataFactory.configureResourceMetaData(meta, flowControllerClass);
 
     // Extract external resource dependencies
-    desc.setExternalResourceDependencies(createExternalResourceDependencies(flowControllerClass));
+    desc.setExternalResourceDependencies(createResourceDependencies(flowControllerClass));
 
     // Bind External Resources
     if (externalResources != null) {
       for (Entry<String, ExternalResourceDescription> e : externalResources.entrySet()) {
-        bindExternalResource(desc, e.getKey(), e.getValue());
+        bindResourceOnce(desc, e.getKey(), e.getValue());
       }
     }
 

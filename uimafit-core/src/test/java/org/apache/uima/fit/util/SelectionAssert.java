@@ -34,6 +34,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.util.AnnotationPredicateTestData.RelativePosition;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
@@ -42,7 +43,7 @@ public class SelectionAssert {
   public static void assertSelection(RelativePosition aCondition, RelativeAnnotationPredicate aPredicate, 
       List<TestCase> aTestCases)
       throws Exception {
-    CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
+    CAS cas = CasCreationUtils.createCas();
     Type type = cas.getAnnotationType();
 
     try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
@@ -50,15 +51,15 @@ public class SelectionAssert {
         cas.reset();
 
         // Create annotations
-        AnnotationFS x = cas.createAnnotation(type, 0, 0);
-        AnnotationFS y = cas.createAnnotation(type, 0, 0);
+        Annotation x = (Annotation) cas.createAnnotation(type, 0, 0);
+        Annotation y = (Annotation) cas.createAnnotation(type, 0, 0);
 
         // Position the annotations according to the test data
         testCase.getTest().apply((beginA, endA, beginB, endB) -> {
-          FSUtil.setFeature(x, CAS.FEATURE_BASE_NAME_BEGIN, beginA);
-          FSUtil.setFeature(x, CAS.FEATURE_BASE_NAME_END, endA);
-          FSUtil.setFeature(y, CAS.FEATURE_BASE_NAME_BEGIN, beginB);
-          FSUtil.setFeature(y, CAS.FEATURE_BASE_NAME_END, endB);
+          x.setBegin(beginA);
+          x.setEnd(endA);
+          y.setBegin(beginB);
+          y.setEnd(endB);
           cas.addFsToIndexes(x);
           cas.addFsToIndexes(y);
           return true;
@@ -106,7 +107,7 @@ public class SelectionAssert {
   
         initRandomCas(randomCas, 3 * i, 0, types.values().toArray(new Type[types.size()]));
   
-        for (AnnotationFS context : randomCas.getAnnotationIndex(type1)) {
+        for (Annotation context : randomCas.<Annotation>select(type1)) {
           List<AnnotationFS> expected = aExpected.select(randomCas, type2, context);
           List<AnnotationFS> actual = aActual.select(randomCas, type2, context);
   
@@ -146,12 +147,12 @@ public class SelectionAssert {
 
   @FunctionalInterface
   public static interface RelativeAnnotationPredicate {
-    boolean apply(CAS cas, Type type, AnnotationFS x, AnnotationFS y);
+    boolean apply(CAS cas, Type type, Annotation x, Annotation y);
   }
 
   @FunctionalInterface
   public static interface TypeByContextSelector {
-    List<AnnotationFS> select(CAS aCas, Type aType, AnnotationFS aContext);
+    List<AnnotationFS> select(CAS aCas, Type aType, Annotation aContext);
   }
   
   @FunctionalInterface
