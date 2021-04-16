@@ -236,6 +236,13 @@
         <groupId>com.github.siom79.japicmp</groupId>
         <artifactId>japicmp-maven-plugin</artifactId>
         <version>0.15.3</version>
+        <configuration>
+          <parameter>
+            <ignoreMissingClassesByRegularExpressions>
+              <ignoreMissingClassesByRegularExpression>org\.apache\.logging\.log4j\..*</ignoreMissingClassesByRegularExpression>
+            </ignoreMissingClassesByRegularExpressions>
+          </parameter>
+        </configuration>
         <dependencies>
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
