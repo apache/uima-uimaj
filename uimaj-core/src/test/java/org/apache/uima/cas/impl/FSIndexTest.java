@@ -20,9 +20,8 @@ package org.apache.uima.cas.impl;
 
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -31,7 +30,6 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -72,14 +70,23 @@ public class FSIndexTest {
 
     Type myTypeFromCas2 = getType(cas2, myTypeName);
 
-    List<String> capturedOutput = captureOutput(() -> {
-      AnnotationFS brokenFs = cas1.createAnnotation(myTypeFromCas2, 0, 0);
-      cas1.addFsToIndexes(brokenFs);
-      return null;
-    });
+    if (TypeSystemImpl.IS_ENABLE_STRICT_TYPE_SOURCE_CHECK) {
+      assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> {
+        AnnotationFS brokenFs = cas1.createAnnotation(myTypeFromCas2, 0, 0);
+        cas1.addFsToIndexes(brokenFs);
+      }).withMessageContaining("in CAS with different type system");
+    }
+    else {
+      List<String> capturedOutput = captureOutput(() -> {
+        AnnotationFS brokenFs = cas1.createAnnotation(myTypeFromCas2, 0, 0);
+        cas1.addFsToIndexes(brokenFs);
+        return null;
+      });
 
-    assertThat(capturedOutput.get(0)).contains("in CAS with different type system");
-    assertThat(capturedOutput.get(1)).contains("on index using different type system");
+      assertThat(capturedOutput.get(0)).contains("in CAS with different type system");
+      assertThat(capturedOutput.get(1)).contains("on index using different type system");
+    }
   }
 
   private List<String> captureOutput(Callable<Void> code) throws Exception {
