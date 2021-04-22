@@ -267,6 +267,7 @@ public class BinaryCasSerDes {
     if (null != casMgrSerializer) {
   
       TypeSystemImpl ts = casMgrSerializer.getTypeSystem();
+      baseCas.svd.clear();  // does all clearing except index repositories which will be wiped out   
       baseCas.installTypeSystemInAllViews(ts);
       baseCas.commitTypeSystem();
   

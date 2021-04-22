@@ -23,6 +23,7 @@ import static org.apache.uima.cas.impl.Serialization.serializeCASComplete;
 import static org.apache.uima.cas.impl.Serialization.serializeWithCompression;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.CasIOUtils.load;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -39,6 +40,7 @@ import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CasCompare;
+import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.jcas.JCas;
@@ -160,10 +162,14 @@ public class CompleteSerializationTest {
   
   @Test
   public void thatReplacingTypeSystemInCasWorks() throws Exception {
+    String initialViewText = "First view text";
+    String secondViewId = "secondView";
+    String secondViewText = "Second view text";
+    
     // Construct a CAS with two views
     CAS cas = CasCreationUtils.createCas();
-    cas.setDocumentText("First view text");
-    cas.createView("secondView").setDocumentText("Second view text");
+    cas.setDocumentText(initialViewText);
+    cas.createView(secondViewId).setDocumentText(secondViewText);
 
     // Save the CAS data to a buffer
     TypeSystem originalTypeSystem = cas.getTypeSystem();
@@ -182,5 +188,14 @@ public class CompleteSerializationTest {
     // Write the CAS data from the buffer back into the CAS - this throws an exception if the
     // FSIndexRepositories are not properly reset (cf. UIMA-6352)
     load(new ByteArrayInputStream(buffer.toByteArray()), cas, originalTypeSystem);
+    
+    CAS secondView = cas.getView(secondViewId);
+    assertThat(cas.getDocumentText()).isEqualTo(initialViewText);
+    assertThat(secondView).isNotNull();
+    assertThat(secondView.getDocumentText()).isEqualTo(secondViewText);
+    assertThat(((FSIndexRepositoryImpl) cas.getIndexRepository()).getTypeSystemImpl()) //
+            .as("Index repositories in both views use the same type system instance") //
+            .isSameAs(
+                    ((FSIndexRepositoryImpl) secondView.getIndexRepository()).getTypeSystemImpl());
   }
 }
