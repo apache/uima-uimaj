@@ -267,6 +267,7 @@ public class BinaryCasSerDes {
     if (null != casMgrSerializer) {
   
       TypeSystemImpl ts = casMgrSerializer.getTypeSystem();
+      baseCas.svd.clear();  // does all clearing except index repositories which will be wiped out   
       baseCas.installTypeSystemInAllViews(ts);
       baseCas.commitTypeSystem();
   
@@ -297,32 +298,7 @@ public class BinaryCasSerDes {
    * @param casCompSer -
    */
   public void reinit(CASCompleteSerializer casCompSer) {
-    TypeSystemImpl ts = casCompSer.getCASMgrSerializer().getTypeSystem();
-    
-    /*
-     * Special clearing:
-     *   Skips the resetNoQuestions operation of flushing the indexes, 
-     *   since these will be reinitialized with potentially new definitions.
-     *   
-     *   Clears additional data related to having the
-     *   - type system potentially change
-     *   - the features belonging to indexes change
-     */
-    baseCas.svd.clear();  // does all clearing except index repositories which will be wiped out   
-    baseCas.installTypeSystemInAllViews(ts);  // the commit (next) re-installs it if it changes
-    baseCas.commitTypeSystem();
-
-    // reset index repositories -- wipes out Sofa index
-    casCompSer.getCASMgrSerializer().getIndexRepository(baseCas);  // sets the argument's index repository
-    baseCas.indexRepository.commit();
-
-    // get handle to existing initial View
-    CASImpl initialView = (CASImpl) baseCas.getInitialView();
-
-    // freshen the initial view
-    initialView.refreshView(baseCas, null);  // sets jcas to null for the view, too
-    baseCas.svd.setViewForSofaNbr(1, initialView);
-    baseCas.svd.viewCount = 1;
+    setupCasFromCasMgrSerializer(casCompSer.getCASMgrSerializer());
 
     // deserialize heap
     CASSerializer casSer = casCompSer.getCASSerializer();
