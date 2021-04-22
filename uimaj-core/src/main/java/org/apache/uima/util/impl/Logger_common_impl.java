@@ -426,7 +426,7 @@ public abstract class Logger_common_impl implements Logger {
       return null;
     else
       return mResourceManager.getExtensionClassLoader();
-  }
+    }
  
   /*
    * (non-Javadoc)
@@ -502,7 +502,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   public void debug(String arg0, Object arg1, Object arg2) {
     if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) {
-      log2(null, fqcnCmn, Level.DEBUG, arg0, new Object[] {arg1}, null);
+      log2(null, fqcnCmn, Level.DEBUG, arg0, new Object[] {arg1, arg2}, null);
     }
   }
 
@@ -643,7 +643,7 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
   @Override
   public void error(String arg0, Object arg1, Object arg2) {
     if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) {
-      log2(null, fqcnCmn, Level.ERROR, arg0, new Object[] {arg1}, null);
+      log2(null, fqcnCmn, Level.ERROR, arg0, new Object[] {arg1, arg2}, null);
     }
   }
 
@@ -786,7 +786,7 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
   @Override
   public void info(String arg0, Object arg1, Object arg2) {
     if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
-      log2(null, fqcnCmn, Level.INFO, arg0, new Object[] { arg1 }, null);
+      log2(null, fqcnCmn, Level.INFO, arg0, new Object[] { arg1, arg2 }, null);
     }
   }
 
@@ -936,7 +936,7 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
   @Override
   public void trace(String arg0, Object arg1, Object arg2) {
     if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
-      log2(null, fqcnCmn, Level.TRACE, arg0, new Object[] { arg1 }, null);
+      log2(null, fqcnCmn, Level.TRACE, arg0, new Object[] { arg1, arg2 }, null);
     }
   }
 
@@ -1086,7 +1086,7 @@ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwab
   @Override
   public void warn(String arg0, Object arg1, Object arg2) {
     if (isLoggable(Level.WARNING) && isNotLimited(Level.WARNING)) {
-      log2(null, fqcnCmn, Level.WARNING, arg0, new Object[] { arg1 }, null);
+      log2(null, fqcnCmn, Level.WARNING, arg0, new Object[] { arg1, arg2 }, null);
     }
   }
 
