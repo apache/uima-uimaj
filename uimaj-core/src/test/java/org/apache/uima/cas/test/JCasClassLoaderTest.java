@@ -34,7 +34,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -142,10 +141,8 @@ public class JCasClassLoaderTest {
             new File(cpPackageBase, "JCasClassLoaderTest$FetchTheTokenAnnotator.class"));
     
     JCas jcas = makeJCas(clForCas);
-    AnalysisEngine addATokenAnnotator = makeAnalysisEngine(AddATokenAnnotator.class,
-            cpBase.toURI().toURL());
-    AnalysisEngine fetchTheTokenAnnotator = makeAnalysisEngine(FetchTheTokenAnnotator.class,
-            cpBase.toURI().toURL());
+    AnalysisEngine addATokenAnnotator = makeAnalysisEngine(AddATokenAnnotator.class, cpBase);
+    AnalysisEngine fetchTheTokenAnnotator = makeAnalysisEngine(FetchTheTokenAnnotator.class, cpBase);
     
     jcas.setDocumentText("test");
     
@@ -535,7 +532,7 @@ public class JCasClassLoaderTest {
    * so it using the given classpath to load its JCas wrappers.
    */
   private AnalysisEngine makeAnalysisEngine(Class<? extends Annotator_ImplBase> aeClass,
-          URL... classPath) throws ResourceInitializationException, MalformedURLException {
+          File... classPath) throws ResourceInitializationException, MalformedURLException {
     String cp = Stream.of(classPath).map(Object::toString).collect(joining(File.pathSeparator));
     ResourceManager resMgr = newDefaultResourceManager();
     resMgr.setExtensionClassPath(cp, false);
