@@ -26,7 +26,7 @@
     <version>14</version>
   </parent>
   <artifactId>uimafit-parent</artifactId>
-  <version>3.2.0</version>
+  <version>3.2.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Apache UIMA uimaFIT - Parent</name>
   <url>${uimaWebsiteUrl}</url>
@@ -383,6 +383,9 @@
   </build>
 
   <scm>
-    <tag>uimafit-3.2.0</tag>
+    <tag>HEAD</tag>
+    <connection>scm:git:git://github.com/apache/uima-uimafit</connection>
+    <developerConnection>scm:git:git@github.com:apache/uima-uimafit.git</developerConnection>
+    <url>https://github.com/apache/uima-uimafit</url>
   </scm>
 </project>
