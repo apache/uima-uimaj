@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -36,15 +36,15 @@
   
   <scm>
     <connection>
-      scm:git:https://github.com/apache/uima-uimaj/uimaj-bootstrap
+      scm:git:https://github.com/apache/uima-uimaj/
     </connection>
     <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/uimaj-bootstrap
+      scm:git:https://github.com/apache/uima-uimaj/
     </developerConnection>
     <url>
-      https://github.com/apache/uima-uimaj/tree/master/uimaj-bootstrap
+      https://github.com/apache/uima-uimaj/
     </url>
-    <tag>HEAD</tag>
+    <tag>uimaj-3.2.0</tag>
   </scm>
   
   <properties>

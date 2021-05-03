@@ -29,14 +29,14 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <relativePath>uimaj-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>uimaj</artifactId>
   <packaging>pom</packaging>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
-  <description>The top project for the uimaj SDK</description>
+  <description>The top project for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
 
   <!-- Special inheritance note
@@ -57,12 +57,12 @@
     <url>
       https://github.com/apache/uima-uimaj/
     </url>
-    <tag>HEAD</tag>
+    <tag>uimaj-3.2.0</tag>
   </scm>
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <jiraVersion>3.1.1SDK</jiraVersion>   
+    <jiraVersion>3.2.0SDK</jiraVersion>   
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName> 
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
@@ -214,17 +214,14 @@
   </modules>
   
   <build>
-
     <plugins>
-
-      <!-- This java doc config is for building the ones distributed with the bin packaging, and also 
-           posted on our website.  It is not a complete javadoc - it only has user-level API info.
+      <!-- This JavaDoc config is for building the ones distributed with the bin packaging, and also 
+           posted on our website.  It is not a complete JavaDoc - it only has user-level API info.
         
-           There is another javadoc config in the parent POM that builds all the java docs - intended
+           There is another JavaDoc config in the parent POM that builds all the java docs - intended
            for use by developers (currently not used) 
            
-           There is also a javadoc config for each individual maven Jar artifact -->
-      
+           There is also a JavaDoc config for each individual Maven Jar artifact -->
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
         <executions>
@@ -272,18 +269,18 @@
     
       <plugin> 
         <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>uima-distr</id>
-                <configuration>
-                  <descriptors>
-                    <descriptor>${assemblyBinDescriptor}</descriptor>
-                  </descriptors>
-                </configuration>              
-              </execution>
-            </executions>
-          </plugin>
-       </plugins>
+        <executions>
+          <execution>
+            <id>uima-distr</id>
+            <configuration>
+              <descriptors>
+                <descriptor>${assemblyBinDescriptor}</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+   </plugins>
   
     <pluginManagement>
       <plugins>
@@ -373,7 +370,8 @@
     <profile>
       <id>json-support</id>
       <activation>
-        <file><exists>pom.xml</exists></file>  <!-- active by default, turn off via command line -P!json-support  -->
+        <!-- active by default, turn off via command line -P!json-support  -->
+        <file><exists>pom.xml</exists></file>
       </activation>
       <properties>
         <assemblyBinDescriptor>src/main/assembly/bin.xml</assemblyBinDescriptor>  

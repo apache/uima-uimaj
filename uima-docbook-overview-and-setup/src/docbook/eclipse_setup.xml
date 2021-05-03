@@ -50,7 +50,7 @@ under the License.
       <listitem><para>importing the example UIMA code into an Eclipse project. </para>
         </listitem></itemizedlist></para>
   
-  <para>The UIMA Eclipse plugins are designed to be used with Eclipse version 3.3 or
+  <para>The UIMA Eclipse plugins are designed to be used with Eclipse version 4.10 (2018-12) or
     later.
   </para>
   
