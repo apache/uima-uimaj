@@ -26,23 +26,22 @@
     <version>14</version>
   </parent>
   <artifactId>uimafit-parent</artifactId>
-  <version>3.2.0-SNAPSHOT</version>
+  <version>3.2.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Apache UIMA uimaFIT - Parent</name>
   <url>${uimaWebsiteUrl}</url>
   <inceptionYear>2012</inceptionYear>
   <properties>
     <spring.version>4.3.30.RELEASE</spring.version>
-    <uima.version>3.2.0-SNAPSHOT</uima.version>
+    <uima.version>3.2.0</uima.version>
     <slf4j.version>1.7.26</slf4j.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <api_check_oldVersion>3.0.0</api_check_oldVersion>
+    <api_check_oldVersion>3.1.0</api_check_oldVersion>
   </properties>
   <repositories>
     <!--
       - For UIMA/uimaFIT SNAPSHOTs
-    -->
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
@@ -51,11 +50,11 @@
         <enabled>false</enabled>
       </releases>
     </repository>
+    -->
   </repositories>
   <pluginRepositories>
     <!--
       - For UIMA/uimaFIT SNAPSHOTs
-    -->
     <pluginRepository>
       <id>apache.snapshots.plugins</id>
       <name>Apache Snapshot Repository - Maven plugins</name>
@@ -70,6 +69,7 @@
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </pluginRepository>
+      -->
   </pluginRepositories>
 
   <dependencies>
@@ -155,16 +155,6 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
         <version>${spring.version}</version>
-        <!--
-          - This is excluded in the assembly and not here to avoid unwanted side-effects
-          - on users' projects.
-          <exclusions>
-          <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-aop</artifactId>
-          </exclusion>
-          </exclusions>
-        -->
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -311,7 +301,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>3.8.1</version>
           <configuration>
             <source>${maven.compiler.source}</source>
             <target>${maven.compiler.target}</target>
@@ -364,42 +354,6 @@
                     <ignore />
                   </action>
                 </pluginExecution>
-                <!-- *********************************************** -->
-                <!-- The Maven Dev Connector for Eclipse m2e is no   -->
-                <!-- longer maintained. We copy the relevant part    --> 
-                <!-- of the lifecycle mapping for the                -->
-                <!-- maven-plugin-plugin here.                       -->
-                <!--                                                 -->
-                <!-- See https://github.com/ifedorenko/com.ifedorenko.m2e.mavendev/blob/master/com.ifedorenko.m2e.mavendev/lifecycle-mapping-metadata.xml -->
-                <!-- *********************************************** -->
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-plugin-plugin</artifactId>
-                    <versionRange>[3.5.2,)</versionRange>
-                    <goals>
-                      <goal>descriptor</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute>
-                      <runOnIncremental>false</runOnIncremental>
-                    </execute>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-plugin-plugin</artifactId>
-                    <versionRange>[3.5.2,)</versionRange>
-                    <goals>
-                      <goal>helpmojo</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
@@ -427,4 +381,11 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <scm>
+    <tag>HEAD</tag>
+    <connection>scm:git:git://github.com/apache/uima-uimafit</connection>
+    <developerConnection>scm:git:git@github.com:apache/uima-uimafit.git</developerConnection>
+    <url>https://github.com/apache/uima-uimafit</url>
+  </scm>
 </project>
