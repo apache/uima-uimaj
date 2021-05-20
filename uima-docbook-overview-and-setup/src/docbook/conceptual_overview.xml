@@ -89,7 +89,7 @@ under the License.
       often domain specific. 
       Many different component analytics may solve different parts of the overall analysis task. 
       These component analytics must interoperate and must be easily combined to facilitate 
-      the developed of UIM applications.</para>
+      the development of UIM applications.</para>
     
     <para>The result of analysis are used to populate structured forms so that conventional 
       data processing and search technologies 
