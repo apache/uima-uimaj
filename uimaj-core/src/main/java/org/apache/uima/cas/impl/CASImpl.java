@@ -1483,6 +1483,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       svd.reuseId = 0;
     }
     svd.id2base.put(baseFs);
+    svd.id2tramp.put(baseFs._id, (TOP) fs);
     pearBaseFs = baseFs;
     return true;
   }
