@@ -19,89 +19,59 @@
 package org.apache.uima.cas.test;
 
 import static org.apache.uima.UIMAFramework.getXMLParser;
-import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.util.CasCreationUtils.createCas;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-
+import java.net.URL;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.test.JCasClassLoaderTest.IsolatingClassloader;
-import org.apache.uima.cas.test.JCasClassLoaderTest.JCasCreator;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class FSCreatedInPearContextTest {
 
   @Test
-  public void thatAnnotationIsCreatedOnce() throws Exception, IOException {
+  public void thatOneTrampolineIsUsedWhenClassLoaderIsSwitched() throws Exception, IOException {
 
     ClassLoader rootCl = getClass().getClassLoader();
 
-    IsolatingClassloader clForCas = new IsolatingClassloader("CAS", rootCl);
-
-    ClassLoader clForToken = new IsolatingClassloader("Token", rootCl)
+    IsolatingClassloader clForToken = new IsolatingClassloader("Token", rootCl)
             .redefining("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*");
-    
-    TypeSystemDescription tsd = loadTokensAndSentencesTS();
-    
-    JCas jcas = makeJCas(clForCas, tsd);
-    jcas.setDocumentText("Test");
 
-    CASImpl casImpl = jcas.getCasImpl();
-    casImpl.switchClassLoader(clForToken, false);
-    
-    Annotation mockedPearToken = createToken(jcas, clForToken);
-    
-    Annotation indexedToken = jcas.getAnnotationIndex(Token.class).iterator().next();
+    CASImpl casImpl = (CASImpl) createCas(loadTokensAndSentencesTS(), null, null, null);
+    casImpl.switchClassLoaderLockCasCL(new UIMAClassLoader(new URL[0], clForToken));
+    casImpl.setDocumentText("Test");
 
-    Assert.assertTrue("Token identical", mockedPearToken == indexedToken);
-  }
-
-  private Annotation createToken(JCas jcas, ClassLoader clForToken) throws Exception {
-    Class<?> tokenClass = clForToken.loadClass(Token.class.getName());
-    Constructor<?> constructor = tokenClass.getConstructor(JCas.class);
-    Annotation token = (Annotation) constructor.newInstance(jcas);
+    Type tokenType = casImpl.getTypeSystem().getType(Token.class.getName());
+    Annotation token = casImpl.createAnnotation(tokenType, 0, 1);
     token.addToIndexes();
-    return token;
+    assertThat(token.getClass().getClassLoader())
+            .as("Trampoline returned by createAnnotation after classloader switch")
+            .isSameAs(clForToken);
+
+    assertThat(casImpl.select(Token.type).asList()) //
+            .as("Same trampoline returned by [select(Token.type)] after classloader switch")
+            .usingElementComparator((a, b) -> a == b ? 0 : 1) //
+            .containsExactly(token)
+            .allMatch(t -> t.getClass().getClassLoader() == clForToken);
+
+    casImpl.restoreClassLoaderUnlockCas();
+    assertThat(casImpl.select(Token.type).asList()) //
+            .as("After switching back out of the the classloader context, we get the base FS")
+            .usingElementComparator((a, b) -> a._id() == b._id() ? 0 : 1) //
+            .containsExactly(token)
+            .allMatch(t -> t.getClass().getClassLoader() == rootCl);
   }
 
   private TypeSystemDescription loadTokensAndSentencesTS() throws InvalidXMLException, IOException {
     return getXMLParser().parseTypeSystemDescription(new XMLInputSource(
             new File("src/test/resources/CASTests/desc/TokensAndSentencesTS.xml")));
   }
-
-  private JCas makeJCas(IsolatingClassloader cl, TypeSystemDescription tsd)
-          throws Exception {
-    cl.redefining("^.*JCasCreatorImpl$");
-    Class<?> jcasCreatorClass = cl.loadClass(SimpleJCasCreatorImpl.class.getName());
-    JCasCreator creator = (JCasCreator) jcasCreatorClass.newInstance();
-    return creator.createJCas(cl, tsd);
-  }
-  
-  public static class SimpleJCasCreatorImpl implements JCasCreator {
-
-    @Override
-    public JCas createJCas(ClassLoader cl, TypeSystemDescription tsd)
-    {
-      try {
-        ResourceManager resMgr = newDefaultResourceManager();
-        resMgr.setExtensionClassLoader(cl, false);
-        CASImpl cas = (CASImpl) createCas(tsd, null, null, null, resMgr);
-        cas.setJCasClassLoader(cl);
-        return cas.getJCas();
-      }
-      catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
-  
 }
