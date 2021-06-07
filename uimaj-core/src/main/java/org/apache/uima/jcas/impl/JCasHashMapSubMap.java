@@ -344,21 +344,22 @@ class JCasHashMapSubMap implements Iterable<TOP> {
       
      // may recursively invoke this method, may throw exception
       m = creatorFromKey.apply(key);
-      
+     
   //    System.out.println("debug waiting to reacquire lock after creator." + Thread.currentThread().getName());
 //      lockit();
   //    System.out.println("debug after reacquire lock after creator." + Thread.currentThread().getName());
       
       if (localTable == table) {
-        
-        assert table[saved_reserved_index] == reserve;
+        // UIMA-6367 we maybe already set it in constructor
+        assert table[saved_reserved_index] == reserve || table[saved_reserved_index] == m;
         table[saved_reserved_index] = m;
 //        debugcheck(saved_reserved_index);
         
       } else {
         resetProbeInfo(probeInfo);
         TOP r = find(table, key, hash, probeInfo);
-        assert isReserve(r);
+        // UIMA-6367 we maybe already set it in constructor
+        assert isReserve(r) || r == m;
 //        assert r == null;
 //        assert r._id() == key;
         table[probeInfo[PROBE_ADDR_INDEX]] = m;  // set real value

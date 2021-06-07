@@ -889,6 +889,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       if (null == newClassLoader) { // is null if no cl set
         return;
       }
+      
+      if (!(newClassLoader instanceof UIMAClassLoader)) {
+        UIMAFramework.getLogger()
+                .debug("Calling switchClassLoader with a classloader of type [{}] that is not "
+                        + "a UIMAClassLoader may cause JCas wrappers to be loaded from the wrong "
+                        + "classloader.",
+                        newClassLoader.getClass().getName());
+      }
+      
       if (newClassLoader != jcasClassLoader) {
         if (null != previousJCasClassLoader) {
           /** Multiply nested classloaders not supported.  Original base loader: {0}, current nested loader: {1}, trying to switch to loader: {2}.*/
@@ -1483,6 +1492,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       svd.reuseId = 0;
     }
     svd.id2base.put(baseFs);
+    svd.id2tramp.put(baseFs._id, (TOP) fs);
     pearBaseFs = baseFs;
     return true;
   }
@@ -5216,6 +5226,7 @@ public FloatArray emptyFloatArray() {
     return emptyFSArray(null);
   }
   
+  @Override
   public <T extends FeatureStructure> FSArray<T> emptyFSArray(Type type) {
     return svd.emptyFSArrayMap.computeIfAbsent(type, t -> (t == null) 
         ? new FSArray(this.getJCas(), 0)
