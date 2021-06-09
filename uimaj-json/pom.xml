@@ -29,12 +29,6 @@
   <name>Apache UIMA Base: ${project.artifactId}: JSON</name>
   <description>JSON support for UIMA SDK</description>
   
-  <scm>
-    <connection>scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-json</connection>
-    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-json</developerConnection>
-    <url>https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-json</url>
-  </scm>
-  
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
   </properties>

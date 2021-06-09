@@ -39,26 +39,12 @@
   <description>The top project for the uimaj SDK</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <!-- Special inheritance note
-       even though the <scm> element that follows is exactly the
-       same as those in super poms, it cannot be inherited because
-       there is some special code that computes the connection elements
-       from the chain of parent poms, if this is omitted.
-
-       Keeping this a bit factored allows cutting/pasting the <scm>
-       element, and just changing the following two properties -->
   <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/
-    </url>
+    <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
+    <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
+    <url>https://github.com/apache/uima-uimaj/</url>
   </scm>
-
+  
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <jiraVersion>2.11.0SDK</jiraVersion>   <!-- set this to get the right issues fixed report -->

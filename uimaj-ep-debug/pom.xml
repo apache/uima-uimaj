@@ -37,27 +37,6 @@
 UIMA data structures to the Eclipse Debug displays</description>
   <url>${uimaWebsiteUrl}</url>
 
-  <!-- Special inheritance note
-    even though the <scm> element that follows is exactly the
-    same as those in super poms, it cannot be inherited because
-    there is some special code that incorrectly computes the
-    connection elements from the chain of parent poms, if this is omitted.
-
-    Keeping this a bit factored allows cutting/pasting the <scm>
-    element, and just changing the following two properties -->
-  <scm>
-    <connection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-debug
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-debug
-    </developerConnection>
-    <url>
-      https://github.com/apache/uima-uimaj/tree/master-v2/uimaj-ep-debug
-    </url>
-    <tag>HEAD</tag>
-  </scm>
-
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
   </properties>
