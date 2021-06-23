@@ -99,7 +99,6 @@ public class CasIOUtilsTest {
     testXMI(true);
   }
 
-    @Test
     public void testXMI(boolean leniently) throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.xmi");
     casFile.getParentFile().mkdirs();
@@ -136,7 +135,6 @@ public class CasIOUtilsTest {
     testXCAS(true);
   }
 
-    @Test
     public void testXCAS(boolean leniently) throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.xcas");
     casFile.getParentFile().mkdirs();
