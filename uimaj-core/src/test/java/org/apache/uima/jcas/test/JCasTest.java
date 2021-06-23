@@ -69,6 +69,7 @@ import org.apache.uima.util.CasCreationUtils;
 
 import aa.ConcreteType;
 import aa.Root;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -317,17 +318,17 @@ public class JCasTest {
       r1.setPlainFloat(1247.3F);
       r1.setArrayFloat(new FloatArray(jcas, 3));
       r1.setArrayFloat(2, 321.4F);
-      assertEquals(1247.3F, r1.getPlainFloat());
-      assertEquals(321.4F, r1.getArrayFloat(2));
-      
+      Assertions.assertThat(r1.getPlainFloat()).isEqualTo(1247.3F);
+  	  Assertions.assertThat(r1.getArrayFloat(2)).isEqualTo(321.4F);
+
       // double values
       r1 = new Root(jcas);
       r1.setPlainDouble(2247.3D);
       r1.setArrayDouble(new DoubleArray(jcas, 3));
       r1.setArrayDouble(2, 421.4D);
-      assertEquals(2247.3D, r1.getPlainDouble());
-      assertEquals(421.4D, r1.getArrayDouble(2));
-      
+  	  Assertions.assertThat(r1.getPlainDouble()).isEqualTo(2247.3D);
+	  Assertions.assertThat(r1.getArrayDouble(2)).isEqualTo(421.4D);
+
 			// null values
 			r2.setArrayString(0, null);
 			r2.setArrayRef(0, null);
@@ -978,7 +979,7 @@ public class JCasTest {
     double[] expectedDoa = {15d, 22d};
     i = 0;
     for (double v : doa) {
-      assertEquals(expectedDoa[i++], v);
+    	Assertions.assertThat(expectedDoa[i++]).isEqualTo(v);
     }
     
   }  

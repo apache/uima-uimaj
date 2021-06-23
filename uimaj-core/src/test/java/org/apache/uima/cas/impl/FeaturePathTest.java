@@ -42,6 +42,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,8 +112,8 @@ public class FeaturePathTest {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(1.12f, (float) featurePath.getFloatValue(cas
-            .getDocumentAnnotation()));
+      Assertions.assertThat(featurePath.getFloatValue(cas
+              .getDocumentAnnotation())).isEqualTo(1.12f);
       assertEquals("1.12", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
       assertEquals(TypeClass.TYPE_CLASS_FLOAT, featurePath.getTypClass(cas
@@ -131,8 +132,8 @@ public class FeaturePathTest {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(100.5, (double) featurePath.getDoubleValue(cas
-            .getDocumentAnnotation()));
+      Assertions.assertThat(featurePath.getDoubleValue(cas
+              .getDocumentAnnotation())).isEqualTo(100.5);
       assertEquals("100.5", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
       assertEquals(TypeClass.TYPE_CLASS_DOUBLE, featurePath.getTypClass(cas

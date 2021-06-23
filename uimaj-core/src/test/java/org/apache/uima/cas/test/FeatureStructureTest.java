@@ -39,6 +39,7 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -239,9 +240,9 @@ public class FeatureStructureTest {
     TOP ttfv = cas.createFS(tokenTypeType);
     token.setFeatureValue(tokenTypeFeat, ttfv);
     token.setFloatValue(tokenFloatFeat, 1.1f);
-    assertEquals(1.1f, token.getFloatValue(tokenFloatFeat));
+    Assertions.assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(1.1f);
     token.setDoubleValue(tokenDoubleFeat, 1.7d);
-    assertEquals(1.7d, token.getDoubleValue(tokenDoubleFeat));
+    Assertions.assertThat(token.getDoubleValue(tokenDoubleFeat)).isEqualTo(1.7d);
     token.setBegin(3);
     token.setEnd(5);
     
@@ -273,7 +274,7 @@ public class FeatureStructureTest {
     assertEquals(fs.getBegin(), 3);
     assertEquals(fs.getEnd(), 5);
     assertEquals(sofa, fs.getSofa());
-    assertEquals(1.1f, token.getFloatValue(tokenFloatFeat));
+    Assertions.assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(1.1f);
     assertEquals(ttfv, token.getFeatureValue(tokenTypeFeat));
     assertTrue(fsa.get(0) == token);
     assertTrue(fsl.getHead() == token);
@@ -298,7 +299,7 @@ public class FeatureStructureTest {
     assertEquals(token.getBegin(), 0);
     assertEquals(token.getEnd(), 0);
     assertEquals(sofa, token.getSofa());
-    assertEquals(0.0f, token.getFloatValue(tokenFloatFeat));
+    Assertions.assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(0.0f);
     assertEquals(null, token.getFeatureValue(tokenTypeFeat));
     assertTrue(fsa.get(0) == token);
     assertTrue(fsl.getHead() == token);
@@ -430,7 +431,7 @@ public class FeatureStructureTest {
 		// low level
 		int ffc = ((FeatureImpl)tokenFloatFeat).getCode();
 		llcas.ll_setIntValue(token._id(), ffc, CASImpl.float2int(123.456f));
-		assertEquals(token.getFloatValue(tokenFloatFeat), 123.456f);
+		Assertions.assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(123.456f);
 		assertEquals(llcas.ll_getIntValue(token._id(), ffc), CASImpl.float2int(123.456f));
 	}
 	
@@ -488,10 +489,10 @@ public class FeatureStructureTest {
     
     double g = 23;
     token.setDoubleValue(this.tokenDoubleFeat, g);
-    assertEquals(g, token.getDoubleValue(this.tokenDoubleFeat));
+    Assertions.assertThat(token.getDoubleValue(this.tokenDoubleFeat)).isEqualTo(g);
     
     llcas.ll_setIntValue(token._id(), ffc, h);
-    assertEquals(f, token.getDoubleValue(this.tokenDoubleFeat));
+    Assertions.assertThat(token.getDoubleValue(this.tokenDoubleFeat)).isEqualTo(f);
   }
 
     @Test
