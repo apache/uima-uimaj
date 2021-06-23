@@ -110,8 +110,8 @@ import static org.junit.Assert.*;
  * 
  */
 public class AnalysisEngine_implTest {
-    @Before
-    public void setup() throws Exception {
+    @Test
+    public void testInitialize() throws Exception {
     try {
       PrimitiveAnalysisEngine_impl ae1 = new PrimitiveAnalysisEngine_impl();
 
