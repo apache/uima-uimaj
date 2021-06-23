@@ -53,10 +53,6 @@ public class AnnotationTreeTest {
 
   private static final String sampleTsFileName = "sample.ts";
 
-  public AnnotationTreeTest(String desc) {
-    super(desc);
-  }
-
     @Test
     public void testTree() throws Exception {
 

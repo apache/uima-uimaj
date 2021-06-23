@@ -55,10 +55,6 @@ public class GrowingTheCasNoJcasCacheTest {
 
   private JCas smallHeapCas = null;
 
-  public GrowingTheCasNoJcasCacheTest(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
@@ -176,9 +172,4 @@ public class GrowingTheCasNoJcasCacheTest {
     smallHeapCas = null;  // some junit runners hold onto instances of test classes after the test finishes
 
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(GrowingTheCasNoJcasCacheTest.class);
-  }
-
 }

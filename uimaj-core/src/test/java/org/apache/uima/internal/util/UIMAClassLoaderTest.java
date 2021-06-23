@@ -40,18 +40,6 @@ public class UIMAClassLoaderTest {
 
   private String testClassPath;
 
-  /**
-   * Constructor for UIMAClassLoaderTest
-   * 
-   * @param arg0
-   */
-  public UIMAClassLoaderTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     

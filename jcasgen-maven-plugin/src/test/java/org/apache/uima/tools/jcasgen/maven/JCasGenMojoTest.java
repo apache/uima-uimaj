@@ -32,6 +32,7 @@ import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
+import org.junit.Test;
 
 public class JCasGenMojoTest extends AbstractMojoTestCase {
 

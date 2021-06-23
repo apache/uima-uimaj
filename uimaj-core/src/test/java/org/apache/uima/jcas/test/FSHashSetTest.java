@@ -49,10 +49,6 @@ public class FSHashSetTest {
 
 	public EndOfSentence endOfSentenceInstance;
 
-	public FSHashSetTest(String arg0) {
-		super(arg0);
-	}
-
     @Before
     public void setUp() throws Exception {
 		this.cas = CASInitializer.initCas(new CASTestSetup(),

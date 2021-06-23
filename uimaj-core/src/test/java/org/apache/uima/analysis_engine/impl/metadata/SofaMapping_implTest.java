@@ -46,9 +46,8 @@ public class SofaMapping_implTest {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-    @Before
-    public void setUp() throws Exception {
-    super.setUp();
+  @Before
+  public void setUp() throws Exception {
     sm1 = new SofaMapping_impl();
     sm1.setAggregateSofaName("aggSofa");
     sm1.setComponentKey("myAnnotator");

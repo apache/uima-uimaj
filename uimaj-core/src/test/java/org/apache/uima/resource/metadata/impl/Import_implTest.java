@@ -42,22 +42,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class Import_implTest {
-
-  /**
-   * Constructor for Import_implTest.
-   * 
-   * @param arg0
-   */
-  public Import_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /*
-   * @see TestCase#setUp()
-   */
-  /*
-   * @see TestCase#tearDown()
-   */
     @Test
     public void testBuildFromXmlElement() throws Exception {
     try {

@@ -291,21 +291,8 @@ public class TypeSystemTest {
 
   private TypeSystem ts;
 
-  /**
-   * Constructor for TypeSystemTest.
-   * 
-   * @param arg0
-   */
-  public TypeSystemTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
@@ -615,10 +602,4 @@ public class TypeSystemTest {
       assertTrue(false);
     }
   }
-  
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(TypeSystemTest.class);
-  }
-
 }

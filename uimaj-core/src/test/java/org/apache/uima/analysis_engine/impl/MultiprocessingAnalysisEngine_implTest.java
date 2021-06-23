@@ -67,22 +67,9 @@ public class MultiprocessingAnalysisEngine_implTest {
 
   public volatile TypeSystem mLastTypeSystem;
 
-  /**
-   * Constructor for MultiprocessingAnalysisEngine_implTest.
-   * 
-   * @param arg0
-   */
-  public MultiprocessingAnalysisEngine_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
       mSimpleDesc = new AnalysisEngineDescription_impl();
       mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mSimpleDesc.setPrimitive(true);

@@ -82,23 +82,9 @@ public class TaeDescription_implTest {
 
   private AnalysisEngineDescription aggregateDesc;
   
-  /**
-   * Constructor for TaeDescription_implTest.
-   * 
-   * @param arg0
-   */
-  public TaeDescription_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
-
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Fake", "A Fake Type", "Annotation");
       FeatureDescription feature1 = type1.addFeature("TestFeature", "For Testing Only",

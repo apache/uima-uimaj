@@ -37,31 +37,13 @@ import static org.junit.Assert.*;
 
 
 public class FsIndexCollection_implTest {
-
-  /**
-   * Constructor for TypeSystemDescription_implTest.
-   * 
-   * @param arg0
-   */
-  public FsIndexCollection_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /*
-   * @see TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
   }
 
-  /*
-   * @see TestCase#tearDown()
-   */
     @After
     public void tearDown() throws Exception {
-    super.tearDown();
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 

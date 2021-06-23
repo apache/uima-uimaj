@@ -111,7 +111,7 @@ public class FeaturePathTest {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(1.12f, featurePath.getFloatValue(cas
+      assertEquals(1.12f, (float) featurePath.getFloatValue(cas
             .getDocumentAnnotation()));
       assertEquals("1.12", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
@@ -131,7 +131,7 @@ public class FeaturePathTest {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(100.5, featurePath.getDoubleValue(cas
+      assertEquals(100.5, (double) featurePath.getDoubleValue(cas
             .getDocumentAnnotation()));
       assertEquals("100.5", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));

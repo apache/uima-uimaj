@@ -95,18 +95,9 @@ public class SofaTest {
   private Feature otherFeat;
 
 //  private Feature annotSofaFeat;
-
-  public SofaTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
       this.casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(this.casMgr, (TypeSystemDescription) null);
       // Create a writable type system.
@@ -748,9 +739,4 @@ public class SofaTest {
     cas.setCurrentComponentInfo(childCtxt.getComponentInfo());
     checkViewsExist(jcas.getViewIterator("SourceDocument"), jviewE1, jviewE2);
   }
-  
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SofaTest.class);
-  }
-
 }

@@ -67,20 +67,6 @@ public class UimaContext_implTest {
   
   private UimaContext mContext5;
 
-  /**
-   * Constructor for UimaContext_implTest.
-   * 
-   * @param arg0
-   */
-  public UimaContext_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
@@ -117,7 +103,6 @@ public class UimaContext_implTest {
       AnalysisEngineDescription taeDesc3 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in3);
       AnalysisEngine ae3 = UIMAFramework.produceAnalysisEngine(taeDesc3, rm, null);
       mContext4 = ae3.getUimaContext();
-      super.setUp();
 
       // create a UimaContext for a CAS Multiplier
       XMLInputSource in4 = new XMLInputSource(JUnitExtension
@@ -125,8 +110,6 @@ public class UimaContext_implTest {
       AnalysisEngineDescription taeDesc4 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in4);
       AnalysisEngine ae4 = UIMAFramework.produceAnalysisEngine(taeDesc4);
       mContext5 = ae4.getUimaContext();
-      super.setUp();
-      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -137,7 +120,6 @@ public class UimaContext_implTest {
    */
     @After
     public void tearDown() throws Exception {
-    super.tearDown();
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 

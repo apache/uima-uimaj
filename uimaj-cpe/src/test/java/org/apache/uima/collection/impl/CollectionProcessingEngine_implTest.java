@@ -48,20 +48,6 @@ public class CollectionProcessingEngine_implTest {
       "CollectionProcessingEngineImplTest").getPath()
       + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
-  /**
-         * Constructor for CollectionProcessingEngine_implTest.
-         * 
-         * @param arg0
-         */
-  public CollectionProcessingEngine_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /*
-         * (non-Javadoc)
-         * 
-         * @see junit.framework.TestCase#setUp()
-         */
     @Before
     public void setUp() throws Exception {
     File referenceFile = JUnitExtension

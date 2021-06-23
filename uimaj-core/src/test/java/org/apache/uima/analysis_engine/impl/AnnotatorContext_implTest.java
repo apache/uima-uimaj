@@ -63,22 +63,12 @@ public class AnnotatorContext_implTest {
 
   private AnnotatorContext mAC5;
 
-  /**
-   * Constructor for AnnotatorContext_implTest.
-   * 
-   * @param arg0
-   */
-  public AnnotatorContext_implTest(String arg0) {
-    super(arg0);
-  }
-
   /*
    * @see TestCase#setUp()
    */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
       // create primitive analysis engine with configuration groups
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));

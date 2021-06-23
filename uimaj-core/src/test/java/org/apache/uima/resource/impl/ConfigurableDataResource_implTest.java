@@ -41,18 +41,6 @@ import static org.junit.Assert.*;
  */
 public class ConfigurableDataResource_implTest {
 
-  /**
-   * Constructor for DataResource_implTest.
-   * 
-   * @param arg0
-   */
-  public ConfigurableDataResource_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
     @Test
     public void testInitialize() throws Exception {
     try {

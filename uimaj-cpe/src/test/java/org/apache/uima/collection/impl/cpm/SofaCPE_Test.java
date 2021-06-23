@@ -53,10 +53,6 @@ public class SofaCPE_Test {
 
   Throwable firstFailure;
 
-  public SofaCPE_Test(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
@@ -104,14 +100,6 @@ public class SofaCPE_Test {
       throw firstFailure;
   }
 
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SofaCPE_Test.class);
-  }
-
-  /**
-   * Callback Listener.
-   * 
-   */
   class StatusCallbackListenerImpl1 implements StatusCallbackListener {
 
     int entityCount = 0;
@@ -122,30 +110,14 @@ public class SofaCPE_Test {
 
     volatile boolean finished = false;
 
-    /**
-     * Called when the initialization is completed.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
-     */
     public void initializationComplete() {
       if (debug)
         System.out.println(" Collection Processsing managers initialization " + "is complete ");
     }
 
-    /**
-     * Called when the batchProcessing is completed.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#batchProcessComplete()
-     * 
-     */
     public synchronized void batchProcessComplete() {
     }
 
-    /**
-     * Called when the collection processing is completed.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
-     */
     public synchronized void collectionProcessComplete() {
       if (debug)
         System.out.println(" Completed " + entityCount + " documents  ; " + size / 1000 + " kB");
@@ -156,46 +128,21 @@ public class SofaCPE_Test {
       notifyAll();
     }
 
-    /**
-     * Called when the CPM is paused.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#paused()
-     */
     public synchronized void paused() {
       if (debug)
         System.out.println("Paused");
     }
 
-    /**
-     * Called when the CPM is resumed after a pause.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#resumed()
-     */
     public synchronized void resumed() {
       if (debug)
         System.out.println("Resumed");
     }
 
-    /**
-     * Called when the CPM is stopped abruptly due to errors.
-     * 
-     * @see org.apache.uima.collection.processing.StatusCallbackListener#aborted()
-     */
     public void aborted() {
       if (debug)
         System.out.println("Stopped");
       fail();
     }
-
-    /**
-     * Called when the processing of a Document is completed. <br>
-     * The process status can be looked at and corresponding actions taken.
-     * 
-     * @param aCas
-     *          CAS corresponding to the completed processing
-     * @param aStatus
-     *          EntityProcessStatus that holds the status of all the events for aEntity
-     */
 
     public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
       // if there is an error, record and we will fail on CPE completion

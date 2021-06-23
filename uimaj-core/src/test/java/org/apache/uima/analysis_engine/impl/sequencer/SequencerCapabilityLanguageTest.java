@@ -44,20 +44,8 @@ public class SequencerCapabilityLanguageTest {
 
   private File testBaseDir = null;
 
-  /**
-   * Constructor for SequencerTest
-   * 
-   * @param arg0
-   */
-  public SequencerCapabilityLanguageTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-    @Before
-    public void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 

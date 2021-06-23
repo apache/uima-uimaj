@@ -35,16 +35,6 @@ import static org.junit.Assert.*;
  * 
  */
 public class LoggingTest {
-
-  /**
-   * Constructor for SequencerTest
-   * 
-   * @param arg0
-   */
-  public LoggingTest(String arg0) {
-    super(arg0);
-  }
-
     @Test
     public void testDefaultLoggerCreation() throws Exception {
     try {

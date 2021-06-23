@@ -61,10 +61,6 @@ public class GrowingTheCasTest {
 
   private JCas jcas;
 
-  public GrowingTheCasTest(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
@@ -371,9 +367,4 @@ public class GrowingTheCasTest {
 //    System.gc();
 //    System.out.format("Size of 0 heaps: %,d after 2 gcs%n", r.totalMemory() - r.freeMemory());   
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(GrowingTheCasTest.class);
-  }
-
 }

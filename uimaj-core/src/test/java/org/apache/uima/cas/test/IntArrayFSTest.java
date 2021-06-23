@@ -32,15 +32,6 @@ public class IntArrayFSTest {
 
   private CAS cas;
 
-  /**
-   * Constructor for ArrayFSTest.
-   * 
-   * @param arg0
-   */
-  public IntArrayFSTest(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() {
     try {
@@ -53,10 +44,6 @@ public class IntArrayFSTest {
     @After
     public void tearDown() {
     this.cas = null;
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(IntArrayFSTest.class);
   }
 
     @Test

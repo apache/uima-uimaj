@@ -30,11 +30,6 @@ import static org.junit.Assert.*;
  * 
  */
 public class LevelTest {
-
-  public LevelTest(String arg0) {
-    super(arg0);
-  }
-
     @Test
     public void testLevelOff() throws Exception {
     Level level = Level.OFF;

@@ -155,25 +155,15 @@ public class SerializationReinitTest {
 
   private TypeSystemDescription typeSystem;
 
-
-  public SerializationReinitTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-    @Before
-    public void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     
-    /**
+    /*
      * sets up two type systems:
      *   One defined via API calls, and set into the global var cas = casMgr
      *   One defined by parsing ExampleCas/testTypeSystem and setting
      *     typeSystem and indexes
      */
-    
-    super.setUp();
     casMgr = initCAS();
     cas = (CASImpl)casMgr;
 
@@ -939,9 +929,6 @@ public class SerializationReinitTest {
 	AnnotationFS person = cas.createAnnotation(personType, begin, end);
 	cas.addFsToIndexes(person);
 	return person;
-  }
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SerializationReinitTest.class);
   }
 
   /**

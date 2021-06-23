@@ -53,10 +53,6 @@ public class SubiteratorTest {
 
   private AnalysisEngine ae = null;
 
-  public SubiteratorTest(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
@@ -134,9 +130,4 @@ public class SubiteratorTest {
     FSIterator<Token> it = tokenIndex.iterator(false);
     it.moveTo(token);
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SubiteratorTest.class);
-  }
-
 }

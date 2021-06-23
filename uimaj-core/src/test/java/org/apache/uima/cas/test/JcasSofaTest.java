@@ -81,17 +81,9 @@ public class JcasSofaTest {
 
   private JCas jcas;
 
-  public JcasSofaTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
       casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
       // Create a writable type system.
@@ -555,9 +547,4 @@ public class JcasSofaTest {
       JUnitExtension.handleException(e);      
     }      
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(JcasSofaTest.class);
-  }
-
 }

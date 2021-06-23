@@ -37,22 +37,8 @@ import static org.junit.Assert.*;
 
 
 public class TypePriorities_implTest {
-
-  /**
-   * Constructor for TypeSystemDescription_implTest.
-   * 
-   * @param arg0
-   */
-  public TypePriorities_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /*
-   * @see TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
   }
 
@@ -61,7 +47,6 @@ public class TypePriorities_implTest {
    */
     @After
     public void tearDown() throws Exception {
-    super.tearDown();
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 

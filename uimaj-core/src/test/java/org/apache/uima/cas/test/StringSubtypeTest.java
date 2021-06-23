@@ -70,13 +70,8 @@ public class StringSubtypeTest {
 
   }
 
-  public StringSubtypeTest(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     File specifierFile = JUnitExtension.getFile(specifier);
     XMLInputSource in = new XMLInputSource(specifierFile);
     ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
@@ -86,7 +81,6 @@ public class StringSubtypeTest {
 
     @After
     public void tearDown() throws Exception {
-    super.tearDown();
     this.ae.destroy();
     this.jcas = null;
   }

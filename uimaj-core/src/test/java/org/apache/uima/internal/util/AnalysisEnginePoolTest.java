@@ -50,22 +50,9 @@ public class AnalysisEnginePoolTest {
 
   private TypeSystem mLastTypeSystem;
 
-  /**
-   * Constructor for MultithreadableAnalysisEngine_implTest.
-   * 
-   * @param arg0
-   */
-  public AnalysisEnginePoolTest(String arg0) throws java.io.FileNotFoundException {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
       mSimpleDesc = new AnalysisEngineDescription_impl();
       mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mSimpleDesc.setPrimitive(true);
@@ -205,12 +192,6 @@ public class AnalysisEnginePoolTest {
     }
   }
 
-  /**
-   * Auxilliary method used by testProcess()
-   * 
-   * @param aTaeDesc
-   *          description of TextAnalysisEngine to test
-   */
   protected void _testProcess(AnalysisEnginePool aPool, int i)
           throws UIMAException {
     AnalysisEngine tae = aPool.getAnalysisEngine(0);

@@ -37,16 +37,6 @@ import static org.junit.Assert.*;
 
 
 public class ConfigurationParameterDeclarations_implTest {
-
-  /**
-   * Constructor for ConfigurationParameterDeclarations_implTest.
-   * 
-   * @param arg0
-   */
-  public ConfigurationParameterDeclarations_implTest(String arg0) {
-    super(arg0);
-  }
-
     @Test
     public void testBuildFromXmlElement() throws Exception {
     // parse XML

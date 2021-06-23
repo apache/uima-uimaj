@@ -40,23 +40,9 @@ import static org.junit.Assert.*;
  */
 public class FileLanguageResource_implTest {
 
-  /**
-   * Constructor for FileLanguageResource_implTest.
-   * 
-   * @param arg0
-   */
-  public FileLanguageResource_implTest(String arg0) throws IOException {
-    super(arg0);
-  }
-
-  /*
-   * @see TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
-
       FileLanguageResourceSpecifier spec = new FileLanguageResourceSpecifier_impl();
       File baseDir = JUnitExtension.getFile("ResourceTest");     
       spec.setFileUrlPrefix(new File(baseDir, "FileLanguageResource_implTest_data_").toURL().toString());

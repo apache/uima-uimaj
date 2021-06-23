@@ -39,15 +39,6 @@ public class ArrayFSTest {
 
   private TypeSystem ts;
 
-  /**
-   * Constructor for ArrayFSTest.
-   * 
-   * @param arg0
-   */
-  public ArrayFSTest(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() {
     try {
@@ -62,10 +53,6 @@ public class ArrayFSTest {
     public void tearDown() {
     this.cas = null;
     this.ts = null;
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(ArrayFSTest.class);
   }
 
     @Test

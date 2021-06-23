@@ -69,16 +69,6 @@ import static org.junit.Assert.*;
  * 
  */
 public class XCasToCasDataSaxHandlerTest {
-
-  /**
-   * Constructor for XCasToCasDataSaxHandlerTest.
-   * 
-   * @param arg0
-   */
-  public XCasToCasDataSaxHandlerTest(String arg0) {
-    super(arg0);
-  }
-
     @Test
     public void testParse() throws Exception {
     try {

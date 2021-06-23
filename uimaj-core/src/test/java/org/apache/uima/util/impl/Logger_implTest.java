@@ -32,10 +32,6 @@ import static org.junit.Assert.*;
  * 
  */
 public class Logger_implTest {
-  public Logger_implTest(String arg0) {
-    super(arg0);
-  }
-
     @Test
     public void testLogWrapperCreation() throws Exception {
     org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();

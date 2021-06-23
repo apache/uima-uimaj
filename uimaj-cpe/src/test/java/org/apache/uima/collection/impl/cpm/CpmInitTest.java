@@ -37,12 +37,8 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 public class CpmInitTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
-  /**
-   * @see junit.framework.TestCase#tearDown()
-   */
     @After
     public void tearDown() throws Exception {
-    super.tearDown();
     FunctionErrorStore.resetCount();
   }
 

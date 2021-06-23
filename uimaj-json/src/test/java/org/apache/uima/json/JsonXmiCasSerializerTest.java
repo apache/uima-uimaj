@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.json;
 
+import org.junit.Before;
 
 public class JsonXmiCasSerializerTest extends JsonCasSerializerTest {
   /*********************************************************************
@@ -34,5 +34,4 @@ public class JsonXmiCasSerializerTest extends JsonCasSerializerTest {
     jcs = new JsonCasSerializer();
     doJson = false;
   }
-    
 }

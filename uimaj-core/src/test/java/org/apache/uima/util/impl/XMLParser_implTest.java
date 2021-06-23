@@ -51,21 +51,8 @@ public class XMLParser_implTest {
 
   private XMLParser mXmlParser;
 
-  /**
-   * Constructor for XMLParser_implTest.
-   * 
-   * @param arg0
-   */
-  public XMLParser_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /*
-   * @see TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     mXmlParser = UIMAFramework.getXMLParser();
 
     // Enable schema validation. Note that this will enable schema validation
@@ -80,7 +67,6 @@ public class XMLParser_implTest {
    */
     @After
     public void tearDown() throws Exception {
-    super.tearDown();
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 

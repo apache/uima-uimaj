@@ -104,15 +104,6 @@ public class XmiCasDeserializerTest {
 
   private TypeSystemDescription typeSystem;
 
-  /**
-   * Constructor for XmiCasDeserializerTest.
-   * 
-   * @param arg0
-   */
-  public XmiCasDeserializerTest(String arg0) throws IOException {
-    super(arg0);
-  }
-
     @Before
     public void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
@@ -2255,9 +2246,6 @@ public class XmiCasDeserializerTest {
   }  
 
   /** for debug
-   * 
-   * @param s - string to dump
-   * @param name - file name part
    */
   private static void dumpStr2File(String s, String namepart) throws FileNotFoundException {
  

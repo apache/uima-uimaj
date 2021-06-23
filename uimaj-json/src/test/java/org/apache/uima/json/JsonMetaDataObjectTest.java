@@ -49,7 +49,6 @@ public class JsonMetaDataObjectTest {
 
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     // create two identical apples and an orange
     apple1 = new TestFruitObject();
     apple1.setAttributeValue("name", "Apple");

@@ -29,16 +29,6 @@ import static org.junit.Assert.*;
  * 
  */
 public class UimacppDeserializationTest {
-
-  /**
-   * Constructor for UimacppDeserializationTest.
-   * 
-   * @param arg0
-   */
-  public UimacppDeserializationTest(String arg0) {
-    super(arg0);
-  }
-
   // Test case does not work: need serialized TAF form
   // keep a null test here to avoid having suite complain there are no tests here
     @Test
@@ -92,8 +82,4 @@ public class UimacppDeserializationTest {
    * String text = null; // try { // text = cas.getDocumentText(); // } catch (CASException e) { //
    * assertTrue(false); // } // assertTrue(text != null); }
    */
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(UimacppDeserializationTest.class);
-  }
-
 }

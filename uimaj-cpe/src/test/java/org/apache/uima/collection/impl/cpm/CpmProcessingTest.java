@@ -54,13 +54,8 @@ public class CpmProcessingTest {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-  /**
-   * @throws Exception -
-   * @see junit.framework.TestCase#tearDown()
-   */
     @After
     public void tearDown() throws Exception {
-    super.tearDown();
     FunctionErrorStore.resetCount();
   }
 

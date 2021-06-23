@@ -134,15 +134,6 @@ public class IteratorTest {
 
   private Type wType;
 
-  /**
-   * Constructor for FilteredIteratorTest.
-   * 
-   * @param arg0
-   */
-  public IteratorTest(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() throws CASException {
     // try {
@@ -1401,10 +1392,6 @@ public class IteratorTest {
       exc = true;
     }
     assertTrue(exc);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(IteratorTest.class);
   }
 
   private void fsBeginEndEqual(AnnotationFS fs1, AnnotationFS fs2) {

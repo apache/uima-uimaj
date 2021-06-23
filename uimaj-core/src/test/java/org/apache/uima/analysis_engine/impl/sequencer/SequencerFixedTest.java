@@ -46,20 +46,8 @@ import static org.junit.Assert.*;
 public class SequencerFixedTest {
   private File testBaseDir;
 
-  /**
-   * Constructor for SequencerTest
-   * 
-   * @param arg0
-   */
-  public SequencerFixedTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-    @Before
-    public void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     // get test base path
     this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }

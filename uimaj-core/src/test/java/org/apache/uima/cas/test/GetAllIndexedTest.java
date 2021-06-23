@@ -87,16 +87,8 @@ public class GetAllIndexedTest {
 
 //  private Type sentenceType;
 
-  public GetAllIndexedTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile.exists());
     
@@ -229,9 +221,4 @@ public class GetAllIndexedTest {
     Iterator<TOP> tokenIter2 = this.cas.getIndexedFSs(tokenType).iterator();
     assertFalse( tokenIter2.hasNext());
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(GetAllIndexedTest.class);
-  }
-
 }

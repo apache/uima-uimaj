@@ -73,7 +73,6 @@ public class CasInitializerDescription_implTest {
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
 
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Fake", "<b>Fake</b> Type", "Annotation");

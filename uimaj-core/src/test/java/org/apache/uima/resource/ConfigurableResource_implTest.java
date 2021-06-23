@@ -43,15 +43,6 @@ import static org.junit.Assert.*;
 
 public class ConfigurableResource_implTest {
 
-  /**
-   * Constructor for ConfigurableResource_implTest.
-   * 
-   * @param arg0
-   */
-  public ConfigurableResource_implTest(String arg0) {
-    super(arg0);
-  }
-
     @Test
     public void testReconfigure() throws Exception {
     try {

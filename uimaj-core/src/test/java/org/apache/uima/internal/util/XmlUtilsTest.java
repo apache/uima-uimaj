@@ -28,13 +28,6 @@ import static org.junit.Assert.*;
  * Test XML utilities.
  */
 public class XmlUtilsTest {
-
-  /**
-   */
-  public XmlUtilsTest(String arg0) {
-    super(arg0);
-  }
-
     @Test
     public void testXMLChars() {
     // Create a string with chars from all the valid ranges.

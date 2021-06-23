@@ -39,22 +39,9 @@ import static org.junit.Assert.*;
  * 
  */
 public class ResourceServiceAdapter_implTest {
-  /**
-   * Constructor for ResourceServiceAdapter_implTest.
-   * 
-   * @param arg0
-   */
-  public ResourceServiceAdapter_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
       mServiceStub = new TestResourceServiceStub();
       mAdapter = new ResourceServiceAdapter() {
         public boolean initialize(ResourceSpecifier p1, Map p2) {

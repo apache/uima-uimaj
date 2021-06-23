@@ -114,18 +114,10 @@ public class NewPrimitiveTypesTest {
 
   private Feature doubleArrayFeature;
 
-  public NewPrimitiveTypesTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
 //      long startTime = System.nanoTime();
-      super.setUp();
       casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
       // Create a writable type system.
@@ -672,9 +664,4 @@ public class NewPrimitiveTypesTest {
   // EcorePackage ecore = EcorePackage.eINSTANCE;
   // EPackage.Registry.INSTANCE.put(ecore.getNsURI(), ecore);
   // }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(NewPrimitiveTypesTest.class);
-  }
-
 }

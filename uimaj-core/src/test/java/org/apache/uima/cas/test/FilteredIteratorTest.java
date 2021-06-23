@@ -79,15 +79,6 @@ public class FilteredIteratorTest {
 
   private Type annotationType;
 
-  /**
-   * Constructor for FilteredIteratorTest.
-   * 
-   * @param arg0
-   */
-  public FilteredIteratorTest(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() {
     try {

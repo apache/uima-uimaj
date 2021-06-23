@@ -47,15 +47,6 @@ public class IntegerArrayListTest {
 
 	public EndOfSentence endOfSentenceInstance;
 
-	/**
-   * Constructor for CASTest.
-   * 
-   * @param arg0
-   */
-	public IntegerArrayListTest(String arg0) {
-		super(arg0);
-	}
-
     @Before
     public void setUp() throws Exception {
 		this.cas = CASInitializer.initCas(new CASTestSetup(),

@@ -91,16 +91,8 @@ public class TypeOrderTest {
 
   private Type sentenceType;
 
-  public TypeOrderTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
-    super.setUp();
 //    this.casMgr = initCAS();
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile.exists());
@@ -238,9 +230,4 @@ public class TypeOrderTest {
     //System.out.println(outputFile.getAbsolutePath());
     Assert.assertTrue("Comparing ref " + refFile.getAbsolutePath() + " and output " + outputFile.getAbsolutePath(), FileCompare.compare(refFile, outputFile));
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(TypeOrderTest.class);
-  }
-
 }

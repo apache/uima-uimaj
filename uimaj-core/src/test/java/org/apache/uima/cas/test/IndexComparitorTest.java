@@ -135,14 +135,9 @@ public class IndexComparitorTest {
   private FSIndex<FeatureStructure> bagType1Sub1TypeOrder;
 
 
-  public IndexComparitorTest(String arg0) {
-    super(arg0);
-  }
-
   /**
    * class which sets up
    */
-
   private class SetupForIndexCompareTesting implements AnnotatorInitializer {
 
     /**
@@ -582,9 +577,4 @@ public class IndexComparitorTest {
     }
     assertTrue(CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX ? ok : !ok);
   }
-  
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(IndexComparitorTest.class);
-  }
-
 }

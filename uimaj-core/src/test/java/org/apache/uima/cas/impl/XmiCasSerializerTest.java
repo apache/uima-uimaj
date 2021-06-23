@@ -66,18 +66,6 @@ public class XmiCasSerializerTest {
 
   private File outputFile = null;
 
-  /**
-   * @param arg0
-   */
-  public XmiCasSerializerTest(String arg0) {
-    super(arg0);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");

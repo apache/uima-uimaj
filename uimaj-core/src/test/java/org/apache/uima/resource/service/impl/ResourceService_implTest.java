@@ -37,22 +37,9 @@ import static org.junit.Assert.*;
  * 
  */
 public class ResourceService_implTest {
-  /**
-   * Constructor for ResourceService_implTest.
-   * 
-   * @param arg0
-   */
-  public ResourceService_implTest(String arg0) throws java.io.FileNotFoundException {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
       // create resource specifier and a pool containing 2 instances
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);

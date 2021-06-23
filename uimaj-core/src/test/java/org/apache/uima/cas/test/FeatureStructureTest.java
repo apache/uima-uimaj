@@ -100,15 +100,6 @@ public class FeatureStructureTest {
 
 	private Feature hdFeature;
 
-	/**
-   * Constructor for FeatureStructureTest.
-   * 
-   * @param arg0
-   */
-	public FeatureStructureTest(String arg0) {
-		super(arg0);
-	}
-
     @Before
     public void setUp() {
 		try {
@@ -649,9 +640,4 @@ public class FeatureStructureTest {
 		System.out.println("toString for fslist, tail is prev, prev's head: new token, head is same as rpev's head");
 		System.out.println(newList.toString());
 	}
-
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(FeatureStructureTest.class);
-	}
-
 }

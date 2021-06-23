@@ -49,10 +49,6 @@ public class JSR47Logger_implTest {
     logLevels.put("ALL", Level.ALL);
   }
 
-  public JSR47Logger_implTest(String arg0) {
-    super(arg0);
-  }
-
     @Test
     public void testLogWrapperCreation() throws Exception {
     

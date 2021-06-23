@@ -91,15 +91,6 @@ public class JCasTest {
 
 	public EndOfSentence endOfSentenceInstance;
 
-	/**
-   * Constructor for CASTest.
-   * 
-   * @param arg0
-   */
-	public JCasTest(String arg0) {
-		super(arg0);
-	}
-
     @Before
     public void setUp() throws Exception {
 		try {
@@ -984,7 +975,7 @@ public class JCasTest {
     DoubleArray doa = new DoubleArray(jcas, 2);
     doa.set(0, (double)15);
     doa.set(1, (double)22);
-    Double[] expectedDoa = {15d, 22d};
+    double[] expectedDoa = {15d, 22d};
     i = 0;
     for (double v : doa) {
       assertEquals(expectedDoa[i++], v);
@@ -1110,7 +1101,4 @@ public class JCasTest {
    * void testGetIndexRepository() { // } // // public void testFs2listIterator() { // } //
    * 
    */
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(JCasTest.class);
-	}
 }

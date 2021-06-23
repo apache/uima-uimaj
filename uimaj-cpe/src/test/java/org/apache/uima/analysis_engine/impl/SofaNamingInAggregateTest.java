@@ -58,13 +58,9 @@ public class SofaNamingInAggregateTest {
 
   PrimitiveAnalysisEngine_impl delegateAE2;
 
-  /*
-   * @see TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
       UIMAFramework.getXMLParser().enableSchemaValidation(true);
       // create aggregate analysis engine with sofa name mappings
       XMLInputSource in1 = new XMLInputSource(JUnitExtension

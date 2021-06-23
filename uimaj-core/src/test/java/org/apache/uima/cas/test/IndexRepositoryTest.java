@@ -58,7 +58,6 @@ public class IndexRepositoryTest {
    */
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     this.cas = CASInitializer.initCas(new CASTestSetup(), null);
     this.typeSystem = this.cas.getTypeSystem();
     this.indexRep = this.cas.getIndexRepository();

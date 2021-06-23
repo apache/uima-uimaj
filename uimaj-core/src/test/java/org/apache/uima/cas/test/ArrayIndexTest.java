@@ -44,7 +44,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ArrayIndexTest extends TestCase implements TextAnnotator {
+public class ArrayIndexTest implements TextAnnotator {
 
   private static final String idxId = "ArrayIndex";
 
@@ -52,7 +52,6 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     // Start up TAE
     XMLInputSource input = new XMLInputSource(JUnitExtension
             .getFile("CASTests/desc/ArrayIndexTest.xml"));
@@ -92,7 +91,6 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
     @After
     public void tearDown() throws Exception {
-    super.tearDown();
     this.ae.destroy();
   }
 
@@ -118,9 +116,4 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
   public void destroy() {
     // do nothing
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(ArrayIndexTest.class);
-  }
-
 }

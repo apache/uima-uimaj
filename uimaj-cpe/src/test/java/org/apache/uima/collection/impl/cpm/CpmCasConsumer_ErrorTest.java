@@ -332,12 +332,8 @@ public class CpmCasConsumer_ErrorTest {
             exceptionSequence), FunctionErrorStore.getCount());
   }
 
-  /**
-   * @see junit.framework.TestCase#tearDown()
-   */
     @After
     public void tearDown() throws Exception {
-    super.tearDown();
     FunctionErrorStore.resetCount();
   }
 

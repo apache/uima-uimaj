@@ -39,22 +39,9 @@ import static org.junit.Assert.*;
  * 
  */
 public class ResourcePoolTest {
-  /**
-   * Constructor for ResourcePool_implTest.
-   * 
-   * @param arg0
-   */
-  public ResourcePoolTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
       // create resource specifier and a pool containing 3 instances
       mDesc = new AnalysisEngineDescription_impl();
       mDesc.setPrimitive(true);

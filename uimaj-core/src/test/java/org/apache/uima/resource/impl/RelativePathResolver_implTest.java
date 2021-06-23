@@ -32,15 +32,6 @@ import static org.junit.Assert.*;
 
 
 public class RelativePathResolver_implTest {
-  /**
-   * Constructor for RelativePathResolver_implTest.
-   * 
-   * @param arg0
-   */
-  public RelativePathResolver_implTest(String arg0) {
-    super(arg0);
-  }
-
     @Test
     public void testSetDataPath() throws Exception {
     try {

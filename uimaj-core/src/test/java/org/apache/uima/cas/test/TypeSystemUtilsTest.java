@@ -51,10 +51,6 @@ public class TypeSystemUtilsTest {
 
   private CAS cas;
 
-  public TypeSystemUtilsTest(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() {
 
@@ -122,9 +118,4 @@ public class TypeSystemUtilsTest {
     public void tearDown() {
     this.cas = null;
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(TypeSystemUtilsTest.class);
-  }
-
 }

@@ -60,15 +60,6 @@ import static org.junit.Assert.*;
 
 public class CasCreationUtilsTest {
 
-  /**
-   * Constructor for CasCreationUtilsTest.
-   * 
-   * @param arg0
-   */
-  public CasCreationUtilsTest(String arg0) {
-    super(arg0);
-  }
-
   // this test is a skeleton
   // it is currently disabled - it doesn't actually check anything
   // using debug one can see that no errors are thrown if the allowed values for subtypes of string differ when merging

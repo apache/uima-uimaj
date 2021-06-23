@@ -48,9 +48,6 @@ import org.apache.uima.util.XMLInputSource;
 public class CpeImportTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
@@ -58,13 +55,8 @@ public class CpeImportTest {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-  /**
-   * @throws Exception -
-   * @see junit.framework.TestCase#tearDown()
-   */
-    @After
+  @After
     public void tearDown() throws Exception {
-    super.tearDown();
     FunctionErrorStore.resetCount();
   }
 

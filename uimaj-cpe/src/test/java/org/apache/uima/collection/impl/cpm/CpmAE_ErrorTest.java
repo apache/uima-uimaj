@@ -754,14 +754,9 @@ public class CpmAE_ErrorTest {
             20, FunctionErrorStore.getAnnotatorProcessCount());
   }
 
-  /**
-   * @see junit.framework.TestCase#tearDown()
-   */
     @After
     public void tearDown() throws Exception {
-    super.tearDown();
     FunctionErrorStore.resetCount();
-//    System.gc();
   }
 
   /**

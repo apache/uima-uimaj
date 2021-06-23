@@ -665,20 +665,13 @@ public class CpmCollectionReader_ErrorTest {
    // // that's it.
    // }
 
-   /**
-    * @see junit.framework.TestCase#tearDown()
-    */
     @After
     public void tearDown() throws Exception {
-      super.tearDown();
       FunctionErrorStore.resetCount();
 //      System.gc();
 //      System.gc();
    }
 
-   /**
-    * @param listener
-    */
    private void checkForOutOfMemoryError(
          CollectionReaderStatusCallbackListener listener) {
       assertEquals("The indication failed, that an error was thrown.", true,

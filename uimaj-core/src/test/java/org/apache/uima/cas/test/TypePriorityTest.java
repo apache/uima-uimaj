@@ -65,16 +65,8 @@ public class TypePriorityTest {
 
   private TypeSystem ts;
 
-  public TypePriorityTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     casMgr = initCAS();
     cas = casMgr.getCAS().getCurrentView();
     irm = casMgr.getIndexRepositoryMgr();
@@ -283,9 +275,4 @@ public class TypePriorityTest {
       assertTrue(false);
     }
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(TypePriorityTest.class);
-  }
-
 }

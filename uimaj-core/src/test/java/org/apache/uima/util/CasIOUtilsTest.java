@@ -54,7 +54,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class CasIOUtilsTest extends TestCase{
+public class CasIOUtilsTest {
 
   private static final int SIMPLE_CAS_DEFAULT_INDEX_SIZE = 7;
   private static final int SIMPLE_CAS_DEFAULT_INDEX_SIZE_LENIENT = 5;
@@ -64,10 +64,6 @@ public class CasIOUtilsTest extends TestCase{
   private CAS cas;
   private CAS cas2;
 
-  public CasIOUtilsTest(String arg0) {
-    super(arg0);
-  }
-  
     @Before
     public void setUp() throws Exception {
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");

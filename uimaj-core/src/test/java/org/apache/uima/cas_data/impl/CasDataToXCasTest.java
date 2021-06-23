@@ -35,15 +35,6 @@ import static org.junit.Assert.*;
 
 public class CasDataToXCasTest {
 
-  /**
-   * Constructor for CasDataToXCasTest.
-   * 
-   * @param arg0
-   */
-  public CasDataToXCasTest(String arg0) {
-    super(arg0);
-  }
-
   /*
    * Test for void generateXCas(CasData)
    */

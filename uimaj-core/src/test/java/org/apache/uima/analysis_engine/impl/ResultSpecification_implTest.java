@@ -59,18 +59,6 @@ public class ResultSpecification_implTest {
 
   private TypeOrFeature t1, t2, f1;
   
-  /**
-   * Constructor for ResultSpecification_implTest.
-   * 
-   * @param arg0
-   */
-  public ResultSpecification_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {

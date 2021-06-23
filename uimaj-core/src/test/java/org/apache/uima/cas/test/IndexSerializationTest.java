@@ -91,16 +91,8 @@ public class IndexSerializationTest {
 
   private Feature endFeature;
 
-  public IndexSerializationTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     casMgr = initCAS();
     cas = (CASImpl)casMgr;
 
@@ -259,9 +251,4 @@ public class IndexSerializationTest {
     assertTrue(index.size() == setSize);
 
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(IndexSerializationTest.class);
-  }
-
 }

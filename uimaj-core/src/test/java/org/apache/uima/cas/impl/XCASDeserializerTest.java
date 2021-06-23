@@ -66,15 +66,6 @@ public class XCASDeserializerTest {
 
   private FsIndexDescription[] indexes;
 
-  /**
-   * Constructor for XCASDeserializerTest.
-   * 
-   * @param arg0
-   */
-  public XCASDeserializerTest(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");

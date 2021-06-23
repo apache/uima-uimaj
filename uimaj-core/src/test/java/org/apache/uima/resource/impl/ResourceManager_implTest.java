@@ -62,22 +62,9 @@ public class ResourceManager_implTest {
 
   private ResourceManager_impl mManager;
 
-  /**
-   * Constructor for ResourceManager_implTest.
-   * 
-   * @param arg0
-   */
-  public ResourceManager_implTest(String arg0) throws IOException {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     try {
-      super.setUp();
       mManager = new ResourceManager_impl();
       mManager.setDataPath(TEST_DATAPATH_WITH_SPACES);
 
