@@ -97,16 +97,8 @@ public class SerializationNoMDTest {
 
   private Feature endFeature;
 
-  public SerializationNoMDTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
-    super.setUp();
     casMgr = initCAS();
     cas = (CASImpl)casMgr;
 
@@ -462,9 +454,4 @@ public class SerializationNoMDTest {
     // System.out.println("Time taken over all: " + new TimeSpan(overallTime));
 
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SerializationNoMDTest.class);
-  }
-
 }

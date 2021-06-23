@@ -110,20 +110,8 @@ import static org.junit.Assert.*;
  * 
  */
 public class AnalysisEngine_implTest {
-  /**
-   * Constructor for TextAnalysisEngine_implTest.
-   * 
-   * @param arg0
-   */
-  public AnalysisEngine_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
-    @Test
-    public void testInitialize() throws Exception {
+    @Before
+    public void setup() throws Exception {
     try {
       PrimitiveAnalysisEngine_impl ae1 = new PrimitiveAnalysisEngine_impl();
 
@@ -584,12 +572,6 @@ public class AnalysisEngine_implTest {
     _testProcessInner(ae, tcas, resultSpec, expectedLastResultSpec);
   }
   
-  /**
-   * Auxiliary method used by testProcess()
-   * 
-   * @param aTaeDesc
-   *          description of TextAnalysisEngine to test
-   */
   protected void _testProcessInner(AnalysisEngine ae, CAS tcas, ResultSpecification resultSpec,
       ResultSpecification expectedLastResultSpec) throws UIMAException {
     // create and initialize TextAnalysisEngine

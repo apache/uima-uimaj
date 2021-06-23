@@ -54,11 +54,6 @@ public class PearAnalysisEngineWrapperTest {
 
   private PackageBrowser installedPearPackage;
 
-  public PearAnalysisEngineWrapperTest(String arg0) {
-
-    super(arg0);
-  }
-
     @Before
     public void setUp() throws Exception {
 

@@ -42,15 +42,6 @@ public class CASTest {
 
   private TypeSystem ts;
 
-  /**
-   * Constructor for CASTest.
-   * 
-   * @param arg0
-   */
-  public CASTest(String arg0) {
-    super(arg0);
-  }
-
     @Before
     public void setUp() {
     try {

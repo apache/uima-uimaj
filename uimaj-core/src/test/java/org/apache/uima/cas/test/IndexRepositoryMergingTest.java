@@ -89,7 +89,7 @@ public class IndexRepositoryMergingTest {
       tob.add(new String[] { "annotSubtype", CAS.TYPE_NAME_ANNOTATION  });  // is !equal AnnotationIndex
       comp.addKey(tob.getOrder(), FSIndexComparator.STANDARD_COMPARE);
     } catch (CASException e) {
-      TestCase.assertTrue(false);
+      assertTrue(false);
     }
     ir.createIndex(comp, "Annot Index");  // should not be the same as the built-in one due to different type order
     ir.createIndex(comp, "Annot Index2");  // should not be the same as the built-in one due to different type order

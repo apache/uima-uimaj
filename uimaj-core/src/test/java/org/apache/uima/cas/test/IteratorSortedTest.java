@@ -124,10 +124,6 @@ public class IteratorSortedTest {
   }
   
  
-  public IteratorSortedTest(String arg) {
-    super(arg);
-  }
-  
     @Test
     public void testIterator() {
     

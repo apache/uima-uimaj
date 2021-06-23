@@ -39,15 +39,6 @@ import org.apache.uima.resource.URISpecifier;
 public class VinciAnalysisEngineServiceAdapterTest {
 
   /**
-   * Constructor for VinciAnalysisEngineServiceAdapterTest.
-   *
-   * @param arg0 the arg 0
-   */
-  public VinciAnalysisEngineServiceAdapterTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
    * Test initialize.
    *
    * @throws ResourceInitializationException the resource initialization exception

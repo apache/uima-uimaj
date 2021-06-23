@@ -32,16 +32,6 @@ import static org.junit.Assert.*;
 
 
 public class ProcessTrace_implTest {
-
-  /**
-   * Constructor for ProcessTrace_implTest.
-   * 
-   * @param arg0
-   */
-  public ProcessTrace_implTest(String arg0) {
-    super(arg0);
-  }
-
   /*
    * @see TestCase#setUp()
    */

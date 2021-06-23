@@ -60,9 +60,6 @@ public class PearCasPoolTest {
   private PackageBrowser installedPear;
 
 
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
     @Before
     public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
@@ -74,13 +71,8 @@ public class PearCasPoolTest {
     pearInstallDir.mkdirs();
   }
 
-  /**
-   * @throws Exception -
-   * @see junit.framework.TestCase#tearDown()
-   */
     @After
     public void tearDown() throws Exception {
-    super.tearDown();
     FunctionErrorStore.resetCount();
   }
 
