@@ -20,10 +20,8 @@
 package org.apache.uima.collection.impl.cpm;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionProcessingEngine;
@@ -34,6 +32,7 @@ import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test aimes to check if the cpm implements the ProcessingUnitThreadCount in the correct
@@ -47,14 +46,14 @@ public class CpmProcessingTest {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
@@ -102,7 +101,7 @@ public class CpmProcessingTest {
    * 
    * @throws Exception -
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCasConsumerProcessingSingleThreadMultipleDocuments() throws Exception {
     // process 100 documents and a single thread
     int documentCount = 100;
@@ -140,7 +139,7 @@ public class CpmProcessingTest {
    * 
    * @throws Exception -
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCasConsumerProcessingMultipleThreadsSingleDocument() throws Exception {
     // process only a single document and multiple threads
     int documentCount = 1;
@@ -178,7 +177,7 @@ public class CpmProcessingTest {
    * 
    * @throws Exception -
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCasConsumerProcessingMultipleThreadsMultipleDocuments() throws Exception {
     // process 100 documents and multiple threads
     int documentCount = 100;

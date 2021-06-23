@@ -23,9 +23,9 @@ import java.util.Enumeration;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import org.apache.uima.cas.BooleanArrayFS;
@@ -90,7 +90,7 @@ public class CasAnnotationViewerTest {
 
   private Feature doubleArrayFeature;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     viewer = new CasAnnotationViewer();
 

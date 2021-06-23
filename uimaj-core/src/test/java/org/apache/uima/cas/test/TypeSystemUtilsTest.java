@@ -38,9 +38,10 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 /**
@@ -51,7 +52,7 @@ public class TypeSystemUtilsTest {
 
   private CAS cas;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/pathValidationTS.xml");
@@ -114,7 +115,7 @@ public class TypeSystemUtilsTest {
     assertTrue(TypeSystemUtils.isPathValid(t1, path) == PathValid.ALWAYS);
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     this.cas = null;
   }

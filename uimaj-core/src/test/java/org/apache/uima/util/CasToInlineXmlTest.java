@@ -39,9 +39,10 @@ import org.apache.uima.testTypeSystem_arrays.OfStrings;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 
@@ -105,7 +106,7 @@ public class CasToInlineXmlTest {
     // Assert.assertEquals(formattedXml, unformattedXml);
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCasToInlineXml() throws Exception {
     // Jira https://issues.apache.org/jira/browse/UIMA-2406
     

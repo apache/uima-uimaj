@@ -65,9 +65,9 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -155,7 +155,7 @@ public class SerializationReinitTest {
 
   private TypeSystemDescription typeSystem;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     
     /*
@@ -198,7 +198,7 @@ public class SerializationReinitTest {
                 .getFsIndexes();
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     casMgr = null;
     cas = null;
@@ -278,7 +278,7 @@ public class SerializationReinitTest {
     return (CASMgr) aCas.getCAS().getCurrentView();
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testReset() {
     cas.reset();
     casMgr.enableReset(false);

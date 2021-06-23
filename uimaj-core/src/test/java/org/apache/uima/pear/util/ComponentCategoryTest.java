@@ -25,10 +25,9 @@ import java.io.FileNotFoundException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * The <code>ComponentCategoryTest</code> class provides JUnit test cases for the
@@ -57,7 +56,7 @@ public class ComponentCategoryTest {
   /**
    * Runs test case for Analysis Engine descriptor.
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAeDescriptor() throws Exception {
     File aeDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + AE_DESC_NAME);
     if (!aeDescFile.isFile())
@@ -69,7 +68,7 @@ public class ComponentCategoryTest {
   /**
    * Runs test case for CAS Consumer descriptor.
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCcDescriptor() throws Exception {
     File ccDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CC_DESC_NAME);
     if (!ccDescFile.isFile())
@@ -81,7 +80,7 @@ public class ComponentCategoryTest {
   /**
    * Runs test case for CAS Initializer descriptor.
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCiDescriptor() throws Exception {
     File ciDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CI_DESC_NAME);
     if (!ciDescFile.isFile())
@@ -93,7 +92,7 @@ public class ComponentCategoryTest {
   /**
    * Runs test case for Collection Reader descriptor.
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCrDescriptor() throws Exception {
     File crDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CR_DESC_NAME);
     if (!crDescFile.isFile())

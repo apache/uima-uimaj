@@ -25,9 +25,9 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 import org.apache.uima.internal.util.XMLUtils;
 import org.xml.sax.ContentHandler;
@@ -101,7 +101,7 @@ public class XMLSerializerTest {
     assertTrue(eh);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testXml11Error() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);

@@ -62,15 +62,14 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 public class CasInitializerDescription_implTest {
   CasInitializerDescription_impl mTestDesc;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
 
@@ -206,7 +205,7 @@ public class CasInitializerDescription_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSerialization() throws Exception {
     try {
       // serialize objects to byte array

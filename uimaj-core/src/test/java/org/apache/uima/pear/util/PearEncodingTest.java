@@ -24,10 +24,9 @@ import java.io.File;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Pear encoding tests
@@ -35,7 +34,7 @@ import static org.junit.Assert.*;
  */
 public class PearEncodingTest {
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testUTF8NoSignature() throws Exception {
     // get XML file
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF8_no_signature.xml");
@@ -48,7 +47,7 @@ public class PearEncodingTest {
     Assert.assertTrue(encoding.equals("UTF-8"));
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testUTF8WithSignature() throws Exception {
 	// cancel this test for Sun's Java 1.3.x or 1.4.x - it does not support BOM
     String javaVendor = System.getProperty("java.vendor");
@@ -84,7 +83,7 @@ public class PearEncodingTest {
     Assert.assertTrue(encoding.equals("UTF-16LE"));
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testUTF16WithSignature() throws Exception {
     // cancel this test for Sun's Java 1.3.x or 1.4.x - it does not support BOM
     String javaVendor = System.getProperty("java.vendor");

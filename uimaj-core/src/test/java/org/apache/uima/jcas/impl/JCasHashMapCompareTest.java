@@ -28,9 +28,9 @@ import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.Utilities;
 import org.apache.uima.jcas.cas.TOP;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**

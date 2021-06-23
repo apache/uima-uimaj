@@ -23,10 +23,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -39,6 +37,7 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * The <code>PearMergerTest</code> class provides JUnit test cases for the jedii_pear_merger
@@ -64,7 +63,7 @@ public class PearMergerTest {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     
     // create temporary working directory
@@ -79,7 +78,7 @@ public class PearMergerTest {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     if (_tempWorkingDir != null) {
       FileUtil.deleteDirectory(_tempWorkingDir);

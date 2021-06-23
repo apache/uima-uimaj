@@ -24,9 +24,10 @@ import org.apache.uima.cas.test.CASTestSetup;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 public class Id2FSTest {
@@ -35,7 +36,7 @@ public class Id2FSTest {
   JCas jcas;
   TypeSystem ts;
 
-    @Before
+    @BeforeEach
     public void setUp() {
     try {
       this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);

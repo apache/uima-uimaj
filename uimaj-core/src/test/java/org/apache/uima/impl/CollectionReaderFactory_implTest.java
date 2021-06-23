@@ -25,9 +25,9 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.impl.CollectionReaderDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 
@@ -35,7 +35,7 @@ public class CollectionReaderFactory_implTest {
  
   private CollectionReaderFactory_impl ccFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     ccFactory = new CollectionReaderFactory_impl();
   }

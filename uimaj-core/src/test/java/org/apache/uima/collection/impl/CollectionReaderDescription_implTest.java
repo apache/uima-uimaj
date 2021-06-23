@@ -62,15 +62,14 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CollectionReaderDescription_implTest {
   CollectionReaderDescription_impl mTestDesc;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();

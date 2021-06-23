@@ -22,9 +22,10 @@ import java.util.Random;
 
 import org.apache.uima.util.IntEntry;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 public class Int2ObjHashMapTest {
@@ -37,7 +38,7 @@ public class Int2ObjHashMapTest {
 
   Int2ObjHashMap<Integer, Integer> ihm;
   
-    @Before
+    @BeforeEach
     public void setUp() {
     ihm = new Int2ObjHashMap<>(Integer.class);
   }
@@ -67,7 +68,7 @@ public class Int2ObjHashMapTest {
     
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testRebalance() {
     // 100 elements, require 256 table (128 * .66 = 85)
     for (int i = 1; i < 101; i++) {
@@ -99,7 +100,7 @@ public class Int2ObjHashMapTest {
     
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testRandom() {
     int countAdd = 0;
     int dupsA = 0;

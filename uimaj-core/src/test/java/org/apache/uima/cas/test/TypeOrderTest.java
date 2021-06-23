@@ -49,9 +49,10 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 
@@ -91,7 +92,7 @@ public class TypeOrderTest {
 
   private Type sentenceType;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 //    this.casMgr = initCAS();
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
@@ -122,7 +123,7 @@ public class TypeOrderTest {
     assertTrue(this.annotationType != null);
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
 //    this.casMgr = null;
     this.cas = null;

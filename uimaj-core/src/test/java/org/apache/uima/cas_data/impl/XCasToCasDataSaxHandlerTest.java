@@ -53,15 +53,16 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 /**
@@ -101,7 +102,7 @@ public class XCasToCasDataSaxHandlerTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testConversions() throws Exception {
     try {
       // complex CAS obtained by deserialization

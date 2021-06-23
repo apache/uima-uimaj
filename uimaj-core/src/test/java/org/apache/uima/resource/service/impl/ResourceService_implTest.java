@@ -27,17 +27,16 @@ import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the ResourceService_impl class.
  * 
  */
 public class ResourceService_implTest {
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       // create resource specifier and a pool containing 2 instances

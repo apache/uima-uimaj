@@ -22,10 +22,9 @@ package org.apache.uima.util.impl;
 import org.apache.uima.util.Level;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * UIMA Logging interface implementation test without using an logging toolkit
@@ -53,7 +52,7 @@ public class Logger_implTest {
     Assert.assertNotSame(classLogger, classLogger1);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMessageLeveling() throws Exception {
     // create logger
     

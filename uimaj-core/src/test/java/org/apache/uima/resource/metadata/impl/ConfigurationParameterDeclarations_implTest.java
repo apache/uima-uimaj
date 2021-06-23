@@ -30,10 +30,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.w3c.dom.Document;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 public class ConfigurationParameterDeclarations_implTest {

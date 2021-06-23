@@ -38,9 +38,9 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -55,7 +55,7 @@ public class GrowingTheCasNoJcasCacheTest {
 
   private JCas smallHeapCas = null;
 
-    @Before
+    @BeforeEach
     public void setUp() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
@@ -102,7 +102,7 @@ public class GrowingTheCasNoJcasCacheTest {
 
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     if (this.ae != null) {
       this.ae.destroy();

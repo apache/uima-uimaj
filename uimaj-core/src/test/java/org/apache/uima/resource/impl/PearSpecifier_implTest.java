@@ -25,17 +25,15 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -46,7 +44,7 @@ public class PearSpecifier_implTest {
   /*
    * pearSpecifier creation test
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testProducePearResource() throws Exception {
     PearSpecifier specifier = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
     specifier.setPearPath("/home/user/uimaApp/installedPears/testpear");

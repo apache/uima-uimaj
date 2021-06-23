@@ -19,9 +19,8 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
@@ -33,6 +32,7 @@ import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.collection.metadata.CpeLocalCasProcessor;
 import org.apache.uima.collection.metadata.CpeRemoteCasProcessor;
 import org.apache.uima.collection.metadata.CpeTimer;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * this TestCase is testing the cpm API concerning the setting of CasProcessors
@@ -58,7 +58,7 @@ public class CpeCasProcessorAPI_Test {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     // Creates the Cpe Descriptor
     cpe = CpeDescriptorFactory.produceDescriptor();
@@ -134,7 +134,7 @@ public class CpeCasProcessorAPI_Test {
    * 
    * @throws Exception -
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAddRemoteCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 
@@ -175,7 +175,7 @@ public class CpeCasProcessorAPI_Test {
    * 
    * @throws Exception -
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAddLocalCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
 

@@ -18,7 +18,7 @@
  */
 package org.apache.uima.json;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public class JsonXmiCasSerializerTest extends JsonCasSerializerTest {
   /*********************************************************************
@@ -28,7 +28,7 @@ public class JsonXmiCasSerializerTest extends JsonCasSerializerTest {
    * It extends the other JsonCasSerializerTest but sets up some flags
    *********************************************************************/
   @Override 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     super.setUp();
     jcs = new JsonCasSerializer();

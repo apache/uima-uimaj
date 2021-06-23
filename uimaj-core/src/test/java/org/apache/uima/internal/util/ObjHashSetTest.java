@@ -21,9 +21,9 @@ package org.apache.uima.internal.util;
 
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 
@@ -33,7 +33,7 @@ public class ObjHashSetTest {
   
   Random random;
   
-    @Before
+    @BeforeEach
     public void setUp() {
     ihs = new ObjHashSet<>(Integer.class, Integer.MIN_VALUE);
   }

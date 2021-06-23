@@ -25,10 +25,9 @@ import java.util.logging.Logger;
 import org.apache.uima.util.Level;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * UIMA Logging Test
@@ -49,7 +48,7 @@ public class JSR47Logger_implTest {
     logLevels.put("ALL", Level.ALL);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLogWrapperCreation() throws Exception {
     
     // Set the root logger's level to INFO ... may not be the default
@@ -72,7 +71,7 @@ public class JSR47Logger_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testIsLoggable() throws Exception {
     // create logger
     org.apache.uima.util.Logger uimaLogger = JSR47Logger_impl.getInstance();
@@ -176,7 +175,7 @@ public class JSR47Logger_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMessageLogMethods() throws Exception {
     // create Logger
     final org.apache.uima.util.Logger logger = JSR47Logger_impl.getInstance();

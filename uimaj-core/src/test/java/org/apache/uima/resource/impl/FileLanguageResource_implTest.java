@@ -20,7 +20,6 @@
 package org.apache.uima.resource.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 
 import org.apache.uima.resource.DataResource;
@@ -29,10 +28,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the FileLanguageResource_impl class.
@@ -40,7 +38,7 @@ import static org.junit.Assert.*;
  */
 public class FileLanguageResource_implTest {
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       FileLanguageResourceSpecifier spec = new FileLanguageResourceSpecifier_impl();

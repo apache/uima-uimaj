@@ -44,9 +44,10 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 
@@ -68,7 +69,7 @@ public class CasPoolTest {
   private AnalysisEngine analysisEngine;
   private CasManager casManager;
   
-    @Before
+    @BeforeEach
     public void setUp() {
     try {
       analysisEngine = UIMAFramework.produceAnalysisEngine(aed);
@@ -104,7 +105,7 @@ public class CasPoolTest {
         
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMultiThread() throws Exception {
     final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);   

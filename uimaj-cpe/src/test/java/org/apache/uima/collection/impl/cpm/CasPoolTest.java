@@ -20,10 +20,8 @@
 package org.apache.uima.collection.impl.cpm;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -37,6 +35,7 @@ import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test insures that a common type system is shared in the CPM cas pool.
@@ -48,7 +47,7 @@ public class CasPoolTest {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
@@ -58,7 +57,7 @@ public class CasPoolTest {
   /**
    * @throws Exception -
    */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }

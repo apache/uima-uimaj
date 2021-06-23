@@ -20,7 +20,6 @@ package org.apache.uima.cas.impl;
 
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
-import static org.apache.uima.cas.SelectFSs.select;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.coveredBy;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.covering;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.notBounded;
@@ -48,7 +47,6 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.cas.test.CASTestSetup;
@@ -60,9 +58,9 @@ import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.assertj.core.groups.Tuple;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Setup:  all kinds of types, primitives and non-primitives
@@ -107,7 +105,7 @@ public class AnnotationIteratorTest {
   private int callCount = -1;
   private Type[] types = new Type[3];
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     // make a cas with various types, fairly complex -- see CASTestSetup class
     cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -150,7 +148,7 @@ public class AnnotationIteratorTest {
     types[2] = tokenType;
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     cas = null;
     this.ts = null;
@@ -186,7 +184,7 @@ public class AnnotationIteratorTest {
 //  }
   
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testIterator1() throws Exception {
     final int annotCount = setupTheCas();
     

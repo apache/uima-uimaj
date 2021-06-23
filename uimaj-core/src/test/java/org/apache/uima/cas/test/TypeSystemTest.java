@@ -47,11 +47,11 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+import org.junit.jupiter.api.BeforeEach;
 import org.xml.sax.SAXException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -291,7 +291,7 @@ public class TypeSystemTest {
 
   private TypeSystem ts;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -302,7 +302,7 @@ public class TypeSystemTest {
     }
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     this.cas = null;
     this.ts = null;
@@ -316,7 +316,7 @@ public class TypeSystemTest {
     assertEquals("uima.cas.ArrayBase", ts.getParent(stringArray).getName());
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testNameChecking() {
     CAS tcas = CASInitializer.initCas(new SetupTest(), null);
     assertTrue(tcas != null);
@@ -363,7 +363,7 @@ public class TypeSystemTest {
     assertTrue(start == start2);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetTypeIterator() {
     Iterator<Type> it = this.ts.getTypeIterator();
     // Put the type names in a vector and do some spot checks.
@@ -419,7 +419,7 @@ public class TypeSystemTest {
   /*
    * Test for boolean subsumes(Type, Type)
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSubsumes() {
     Type top = this.ts.getTopType();
     Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);

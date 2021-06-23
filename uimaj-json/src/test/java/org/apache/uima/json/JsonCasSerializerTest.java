@@ -26,9 +26,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -60,6 +59,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.jupiter.api.BeforeEach;
 import org.xml.sax.SAXException;
 
 public class JsonCasSerializerTest {
@@ -102,7 +102,7 @@ public class JsonCasSerializerTest {
   private FeatureStructure fsa3;
   private FSArray fsaa;    // a feature structure array
  
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     jcs = new JsonCasSerializer();
     jcs.setOmit0Values(true);
@@ -253,7 +253,7 @@ public class JsonCasSerializerTest {
     
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAllValues() throws Exception {
     setupTypeSystem("allTypes.xml");
     setAllValues(0);
@@ -268,7 +268,7 @@ public class JsonCasSerializerTest {
     
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMultipleViews() throws Exception {
     setupTypeSystem("allTypes.xml");
     setAllValues(1);
@@ -279,7 +279,7 @@ public class JsonCasSerializerTest {
     serializeAndCompare("multipleViews.txt");
         
   }
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDynamicLists() throws Exception {
     setupTypeSystem("allTypes.xml");
     

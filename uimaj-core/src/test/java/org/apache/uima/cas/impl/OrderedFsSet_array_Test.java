@@ -20,34 +20,24 @@
 package org.apache.uima.cas.impl;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Random;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.cas.FSIndex;
-import org.apache.uima.cas.FSIndexRepository;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.admin.FSIndexComparator;
-import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.OrderedFsSet_array;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 public class OrderedFsSet_array_Test {
@@ -73,7 +63,7 @@ public class OrderedFsSet_array_Test {
   
   private OrderedFsSet_array<TOP> a;   
   
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     
     TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(

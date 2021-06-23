@@ -34,9 +34,9 @@ import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -65,7 +65,7 @@ public class TypePriorityTest {
 
   private TypeSystem ts;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     casMgr = initCAS();
     cas = casMgr.getCAS().getCurrentView();
@@ -73,7 +73,7 @@ public class TypePriorityTest {
     ts = cas.getTypeSystem();
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     casMgr = null;
     cas = null;
@@ -188,7 +188,7 @@ public class TypePriorityTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testN1() throws Exception {
     LinearTypeOrderBuilder order = irm.createTypeSortOrder();
     order = irm.createTypeSortOrder();

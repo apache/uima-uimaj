@@ -40,9 +40,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 
@@ -66,7 +66,7 @@ public class AnnotatorContext_implTest {
   /*
    * @see TestCase#setUp()
    */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       // create primitive analysis engine with configuration groups

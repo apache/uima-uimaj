@@ -35,10 +35,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 public class ConfigurableResource_implTest {
@@ -221,7 +220,7 @@ public class ConfigurableResource_implTest {
   /*
    * Test for Object getConfigParameterValue(String)
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetConfigParameterValueString() throws Exception {
     try {
       XMLInputSource in = new XMLInputSource(JUnitExtension

@@ -31,10 +31,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Assert;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SofaMapping_implTest {
   SofaMapping_impl sm1;
@@ -46,7 +45,7 @@ public class SofaMapping_implTest {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     sm1 = new SofaMapping_impl();
     sm1.setAggregateSofaName("aggSofa");

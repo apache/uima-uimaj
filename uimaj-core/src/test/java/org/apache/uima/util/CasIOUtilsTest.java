@@ -39,7 +39,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SerialFormat;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
@@ -47,12 +46,10 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public class CasIOUtilsTest {
 
@@ -64,7 +61,7 @@ public class CasIOUtilsTest {
   private CAS cas;
   private CAS cas2;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
     FsIndexDescription[] indexes = UIMAFramework.getXMLParser()
@@ -281,7 +278,7 @@ public class CasIOUtilsTest {
     Assert.fail("An exception should have been thrown for wrong input.");
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testWrongFormat() throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.wrong");
     try {
@@ -342,7 +339,7 @@ public class CasIOUtilsTest {
         .containsExactly(customDocAnnoTypeName);
   }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     cas.release();
   }

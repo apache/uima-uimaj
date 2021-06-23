@@ -40,9 +40,9 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -101,7 +101,7 @@ public class FeatureStructureTest {
 
 	private Feature hdFeature;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 		try {
 			this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
@@ -162,7 +162,7 @@ public class FeatureStructureTest {
 		assertTrue(this.hdFeature != null);
 	}
 
-    @After
+    @AfterEach
     public void tearDown() {
 		this.cas = null;
 
@@ -220,7 +220,7 @@ public class FeatureStructureTest {
 	 * The goal is to match what V2 did for low level cas access
 	 * The area this is testing is the use of the LL int operations to change the type of an existing feature structure.
 	 */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLLsetType() {
 	  LowLevelCAS llc = cas.getLowLevelCAS();
     FSArray fsa = new FSArray(ts.getType(CAS.TYPE_NAME_FS_ARRAY), cas, 3);
@@ -306,7 +306,7 @@ public class FeatureStructureTest {
 
 	}
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetArrayValuedFeature() {
 		FeatureStructure testFS = this.cas.createFS(this.arrayFsWithSubtypeType);
 		assertTrue(testFS.getFeatureValue(this.arrayFsWithSubtypeTypeFeat) == null);
@@ -465,7 +465,7 @@ public class FeatureStructureTest {
     assertEquals(f, token.getLongValue(this.tokenLongFeat));
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetDoubleValue() {
 //    AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
     LowLevelCAS llcas = cas.getLowLevelCAS();
@@ -495,7 +495,7 @@ public class FeatureStructureTest {
     Assertions.assertThat(token.getDoubleValue(this.tokenDoubleFeat)).isEqualTo(f);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetIntValue() {
 //		AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
 //  AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
@@ -621,12 +621,12 @@ public class FeatureStructureTest {
     assertEquals(1, llc.ll_getIntValue(addr, lemmaFeatCode));
 	}
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testEquals() {
 		// ???
 	}
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testToString() {
 		FeatureStructure listFS = this.cas.createFS(this.neListType);
 		listFS.setFeatureValue(this.tlFeature, listFS);

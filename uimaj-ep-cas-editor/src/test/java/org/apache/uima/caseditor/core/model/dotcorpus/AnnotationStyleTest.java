@@ -22,10 +22,9 @@ package org.apache.uima.caseditor.core.model.dotcorpus;
 import java.awt.Color;
 
 import org.apache.uima.caseditor.editor.AnnotationStyle;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit test for the {@link AnnotationStyle} class.
@@ -42,12 +41,12 @@ public class AnnotationStyleTest {
     AnnotationStyle b = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
             255, 255, 0), 0);
 
-    assertEquals(a, b);
+    assertThat(a).isEqualTo(b);
 
     AnnotationStyle c = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
         255, 255, 0), 0, "config");
 
-    assertNotEquals(a, c);
+    assertThat(a).isNotEqualTo(c);
   }
 
   /**
@@ -62,6 +61,6 @@ public class AnnotationStyleTest {
     AnnotationStyle b = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
             255, 255, 0), 0);
 
-    assertEquals(a.hashCode(), b.hashCode());
+    assertThat(a.hashCode()).isEqualTo(b.hashCode());
   }
 }

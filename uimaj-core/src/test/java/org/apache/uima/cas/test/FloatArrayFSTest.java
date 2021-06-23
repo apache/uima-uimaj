@@ -23,16 +23,16 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FloatArrayFS;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 public class FloatArrayFSTest {
 
 	private CAS cas;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 		try {
 			this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -41,7 +41,7 @@ public class FloatArrayFSTest {
 		}
 	}
 
-    @After
+    @AfterEach
     public void tearDown() {
 		this.cas = null;
 	}

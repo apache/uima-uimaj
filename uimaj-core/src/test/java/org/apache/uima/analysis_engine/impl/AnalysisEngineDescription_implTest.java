@@ -91,26 +91,21 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.test.junit_extension.PrintExceptionsWhenRunFromCommandLineRule;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
 import org.assertj.core.api.InstanceOfAssertFactories;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 /**
  * Test the AnalysisEngineDescription_impl class.
  */
 public class AnalysisEngineDescription_implTest {
-
-  public @Rule TestRule exceptingHandlingRule = new PrintExceptionsWhenRunFromCommandLineRule();
 
   // Text encoding to use for the various byte/character conversions happening in this test case.
   // Public because also used by other test cases.
@@ -123,7 +118,7 @@ public class AnalysisEngineDescription_implTest {
   private AnalysisEngineDescription primitiveDesc;
   private AnalysisEngineDescription aggregateDesc;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     xmlParser = UIMAFramework.getXMLParser();
     xmlParser.enableSchemaValidation(true);
@@ -295,7 +290,7 @@ public class AnalysisEngineDescription_implTest {
     md.setFlowConstraints(fixedFlow);
   }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     // Note that the XML parser is a singleton in the framework, so we have to set this back to the
     // default.
@@ -433,7 +428,7 @@ public class AnalysisEngineDescription_implTest {
     assertThat(newPrimitiveDesc).isEqualTo(primitiveDesc);
   }
 
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatAggregateDescriptionCanBeSerialized() throws Exception {
     byte[] aggregateDescBytes = SerializationUtils.serialize(aggregateDesc);
     AnalysisEngineDescription newAggregateDesc = (AnalysisEngineDescription) SerializationUtils
@@ -477,7 +472,7 @@ public class AnalysisEngineDescription_implTest {
         .allMatch(d -> d instanceof AnalysisEngineDescription);
   }
 
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatCloneDoesNotResolveDelegateImports() throws Exception {
     // create aggregate TAE description and add delegate AE import
     Import_impl delegateImport = new Import_impl();

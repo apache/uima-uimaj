@@ -22,10 +22,9 @@ package org.apache.uima.analysis_engine.impl;
 import java.util.HashMap;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -33,9 +32,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.annotator.AnnotatorContext;
 import org.apache.uima.analysis_engine.asb.impl.ASB_impl;
 import org.apache.uima.analysis_engine.asb.impl.FlowControllerContainer;
-import org.apache.uima.analysis_engine.impl.AggregateAnalysisEngine_impl;
-import org.apache.uima.analysis_engine.impl.AnnotatorContext_impl;
-import org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl;
 import org.apache.uima.analysis_engine.metadata.impl.SofaMapping_impl;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SofaID;
@@ -58,7 +54,7 @@ public class SofaNamingInAggregateTest {
 
   PrimitiveAnalysisEngine_impl delegateAE2;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       UIMAFramework.getXMLParser().enableSchemaValidation(true);
@@ -98,7 +94,7 @@ public class SofaNamingInAggregateTest {
   /**
    * Do full validation of descriptor; this checks validity of Sofa Mappings.
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testFullValidation() throws Exception {
     try {
       aeDescriptor.doFullValidation();

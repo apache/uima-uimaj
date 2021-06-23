@@ -33,10 +33,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * The PearInstallerTest tests the PEAR installation and checks some
@@ -51,7 +50,7 @@ public class PearInstallerTest {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     
     // create temporary working directory
@@ -66,7 +65,7 @@ public class PearInstallerTest {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     if (this.tempInstallDir != null) {
       FileUtil.deleteDirectory(this.tempInstallDir);

@@ -36,9 +36,10 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -79,7 +80,7 @@ public class FilteredIteratorTest {
 
   private Type annotationType;
 
-    @Before
+    @BeforeEach
     public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -120,7 +121,7 @@ public class FilteredIteratorTest {
     assertTrue(annotationType != null);
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     this.cas = null;
     this.ts = null;
@@ -140,7 +141,7 @@ public class FilteredIteratorTest {
     this.annotationType = null;
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testIterator1() {
 
     try {
@@ -298,7 +299,7 @@ public class FilteredIteratorTest {
    * it.moveToNext(); } }
    */
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testIterator2() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");
@@ -458,7 +459,7 @@ public class FilteredIteratorTest {
 
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testIterator2b() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");

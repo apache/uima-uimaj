@@ -27,10 +27,11 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.IntegerArrayList;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.BeforeEach;
 import x.y.z.EndOfSentence;
 
 /**
@@ -47,7 +48,7 @@ public class IntegerArrayListTest {
 
 	public EndOfSentence endOfSentenceInstance;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 		this.cas = CASInitializer.initCas(new CASTestSetup(),
 		    null

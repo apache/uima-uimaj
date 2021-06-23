@@ -34,9 +34,9 @@ import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -108,7 +108,7 @@ public class CasTypeSystemMapperTest {
 //    }
 //  }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCasTypeSystemMapperFull() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts2 = createTs(3, 0x1ffff, 0x1ffff); // become == type systems
@@ -117,7 +117,7 @@ public class CasTypeSystemMapperTest {
     assertTrue(m.isEqual());
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMissingType1() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t2 = t2t;
@@ -145,7 +145,7 @@ public class CasTypeSystemMapperTest {
     assertFalse(m.isEqual());
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMissingType3() throws ResourceInitializationException {
     ts1 = createTs(1, 0x1ffff, 0x1ffff);
     ts2 = createTs(3, 0x1ffff, 0x1ffff); 
@@ -171,7 +171,7 @@ public class CasTypeSystemMapperTest {
     assertFalse(m.isEqual());
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMissingType5() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeImpl ts1t1 = t1t;
@@ -220,7 +220,7 @@ public class CasTypeSystemMapperTest {
    } 
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMissingFeature0r() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
@@ -280,7 +280,7 @@ public class CasTypeSystemMapperTest {
     }
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMissingAllFeat1() throws ResourceInitializationException {
     int mf = 0x1ffff;
     ts1 = createTs(3, 0x1ffff, 0x1ffff);

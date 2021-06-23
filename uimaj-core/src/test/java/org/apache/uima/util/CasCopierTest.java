@@ -43,9 +43,10 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 
@@ -54,7 +55,7 @@ public class CasCopierTest {
 
   private FsIndexDescription[] indexes;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");

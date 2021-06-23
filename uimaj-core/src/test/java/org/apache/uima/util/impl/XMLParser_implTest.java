@@ -42,16 +42,16 @@ import org.apache.uima.util.XMLParser;
 import org.xml.sax.XMLReader;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 public class XMLParser_implTest {
 
   private XMLParser mXmlParser;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     mXmlParser = UIMAFramework.getXMLParser();
 
@@ -65,7 +65,7 @@ public class XMLParser_implTest {
   /*
    * @see TestCase#tearDown()
    */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }

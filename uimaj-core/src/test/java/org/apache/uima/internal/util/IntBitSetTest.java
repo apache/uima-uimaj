@@ -23,9 +23,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 
@@ -34,13 +35,13 @@ public class IntBitSetTest {
   IntBitSet ibs;
   IntBitSet ibs1k;
   
-    @Before
+    @BeforeEach
     public void setUp() {
     ibs = new IntBitSet();
     ibs1k = new IntBitSet(63, 1000);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testBasic() {
     
     ibs.add(15);
@@ -122,7 +123,7 @@ public class IntBitSetTest {
     assertTrue(Arrays.equals(ints.toArray(), new Object[]{1, 10}));
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testRemove() {
     ibs.add(15);
     ibs.add(188);
@@ -140,7 +141,7 @@ public class IntBitSetTest {
     
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testContains() {
     ibs = new IntBitSet(63, 1000);
     

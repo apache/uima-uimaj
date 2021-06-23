@@ -25,17 +25,16 @@ import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 public class ProcessTrace_implTest {
   /*
    * @see TestCase#setUp()
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testStartAndEndEvent() {
     ProcessTrace pt = new ProcessTrace_impl();
     // should be nothing on event list
@@ -87,7 +86,7 @@ public class ProcessTrace_implTest {
     Assert.assertEquals(3, evt1.getSubEvents().size());
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAddEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // should be nothing on event list
@@ -158,7 +157,7 @@ public class ProcessTrace_implTest {
   /*
    * Test for List getEventsByType(String, boolean)
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetEventsByType() {
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
@@ -192,7 +191,7 @@ public class ProcessTrace_implTest {
   /*
    * Test for ProcessTraceEvent getEvent(String, String)
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // create some events
@@ -216,7 +215,7 @@ public class ProcessTrace_implTest {
     Assert.assertNull(evt);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAggregate() {
     // create two ProcessTrace objects
     ProcessTrace_impl pt1 = new ProcessTrace_impl();

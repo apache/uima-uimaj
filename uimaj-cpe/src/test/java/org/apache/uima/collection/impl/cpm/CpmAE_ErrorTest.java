@@ -19,9 +19,9 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
@@ -172,7 +172,7 @@ public class CpmAE_ErrorTest {
    * 
    * @throws Exception -
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testProcessWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents to process
     int exceptionSequence = 3; // the sequence in which errors are produced
@@ -250,7 +250,7 @@ public class CpmAE_ErrorTest {
    * 
    * @throws Exception -
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testInitializeWithOutOfMemoryException() throws Exception {
     int documentCount = 20; // number of document to process
     int exceptionSequence = 1; // the sequence in which errors are produced
@@ -453,7 +453,7 @@ public class CpmAE_ErrorTest {
    * 
    * @throws Exception -
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAeErrorRateThresholdTerminateDefault() throws Exception {
     int documentCount = 1000; // number of documents to process
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -672,7 +672,7 @@ public class CpmAE_ErrorTest {
     assertEquals("There are not as much exceptions as expected! ", 6, FunctionErrorStore.getCount());
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAeErrorRateActionOnMaxRestarts() throws Exception {
     int exceptionSequence = 1;
     int documentCount = 10; // number of documents processed
@@ -717,7 +717,7 @@ public class CpmAE_ErrorTest {
    * 
    * @throws Exception -
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testNumToProcess() throws Exception {
     int exceptionSequence = 25;
     int documentCount = 50; // number of documents processed
@@ -754,7 +754,7 @@ public class CpmAE_ErrorTest {
             20, FunctionErrorStore.getAnnotatorProcessCount());
   }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }

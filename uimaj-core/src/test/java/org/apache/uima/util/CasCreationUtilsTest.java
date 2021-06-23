@@ -53,9 +53,9 @@ import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 public class CasCreationUtilsTest {
@@ -82,7 +82,7 @@ public class CasCreationUtilsTest {
     }    
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMergeTypeSystems() throws Exception {
     try {
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
@@ -190,7 +190,7 @@ public class CasCreationUtilsTest {
     return mergedTS;
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMergeTypeSystemsWithDifferentSupertypes() throws Exception {
     try {
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
@@ -280,7 +280,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMergeDelegateAnalysisEngineTypeSystems() throws Exception {
     try {
       File descFile = JUnitExtension
@@ -347,7 +347,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMergeDelegateAnalysisEngineTypePriorities() throws Exception {
     try {
       File descFile = JUnitExtension
@@ -373,7 +373,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMergeDelegateAnalysisEngineFsIndexCollections() throws Exception {
     try {
       File descFile = JUnitExtension
@@ -402,7 +402,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetupTypeSystem() throws Exception {
     try {
       // test that duplicate feature names on supertype and subtype works
@@ -431,7 +431,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCreateCasCollectionPropertiesResourceManager() throws Exception {
     try {
       // parse an AE descriptor
@@ -473,7 +473,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCreateCasCollection() throws Exception {
     try {
       // create two Type System description objects
@@ -552,7 +552,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCreateCasTypeSystemDescription() throws Exception {
     try {
       //parse type system description
@@ -573,7 +573,7 @@ public class CasCreationUtilsTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMergeDelegateAnalysisEngineMetaData() throws Exception {
     try {
       File descFile = JUnitExtension

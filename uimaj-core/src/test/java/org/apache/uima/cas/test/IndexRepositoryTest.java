@@ -35,9 +35,10 @@ import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 
@@ -56,21 +57,21 @@ public class IndexRepositoryTest {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     this.cas = CASInitializer.initCas(new CASTestSetup(), null);
     this.typeSystem = this.cas.getTypeSystem();
     this.indexRep = this.cas.getIndexRepository();
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     cas = null;
     typeSystem = null;
     indexRep = null;
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMissingSofaRef() throws Exception {
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 4);
@@ -116,7 +117,7 @@ public class IndexRepositoryTest {
     assertFalse(iter.hasNext());
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetIndex() throws Exception {
     Feature beginFeat = this.typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
     // create an instance of an annotation type
@@ -182,7 +183,7 @@ public class IndexRepositoryTest {
   
   public static int NBR_ITEMS = 40000;
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testRemovalSpeed() throws Exception {
     // create an instance of an annotation type
     Feature beginFeat = this.typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");

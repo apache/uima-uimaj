@@ -38,9 +38,10 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 
@@ -87,7 +88,7 @@ public class GetAllIndexedTest {
 
 //  private Type sentenceType;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile.exists());
@@ -121,7 +122,7 @@ public class GetAllIndexedTest {
     assertTrue(this.annotationBaseType != null);
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     this.cas = null;
 //    this.tokenType = null;

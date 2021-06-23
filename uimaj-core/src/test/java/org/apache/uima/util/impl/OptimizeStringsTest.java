@@ -19,11 +19,9 @@
 
 package org.apache.uima.util.impl;
 
-import java.lang.reflect.Field;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 public class OptimizeStringsTest {
@@ -127,7 +125,7 @@ public static int getStringOffset(String s) {
     checkOffset(abcde, 0);   
   }
  
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSort2() {
     OptimizeStrings os = new OptimizeStrings(true, 7);
     
@@ -154,7 +152,7 @@ public static int getStringOffset(String s) {
     checkOffset(abcde, 0);   
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSort3() {
     OptimizeStrings os = new OptimizeStrings(true);
     

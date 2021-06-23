@@ -23,9 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
@@ -43,6 +42,7 @@ import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.collection.metadata.CpeLocalCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * reading an example Descriptor from FileSystem and adding other CasProcessors via API
@@ -59,7 +59,7 @@ public class CpeDescriptorSerialization_Test {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     // get test base path setting
     this.testBaseDir = JUnitExtension.getFile("CpmTests/CpeAPITest");

@@ -54,9 +54,9 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 
@@ -66,7 +66,7 @@ public class XCASDeserializerTest {
 
   private FsIndexDescription[] indexes;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
@@ -124,7 +124,7 @@ public class XCASDeserializerTest {
     doTestDeserializeAndReserialize(true);
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDeserializeAndReserializeV2Ids() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
       doTestDeserializeAndReserialize(false);

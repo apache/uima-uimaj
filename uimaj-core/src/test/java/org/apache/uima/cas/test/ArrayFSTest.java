@@ -28,9 +28,10 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 public class ArrayFSTest {
@@ -39,7 +40,7 @@ public class ArrayFSTest {
 
   private TypeSystem ts;
 
-    @Before
+    @BeforeEach
     public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -49,7 +50,7 @@ public class ArrayFSTest {
     }
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     this.cas = null;
     this.ts = null;

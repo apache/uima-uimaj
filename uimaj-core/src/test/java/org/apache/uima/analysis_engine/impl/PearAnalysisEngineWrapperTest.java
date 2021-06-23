@@ -34,10 +34,9 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.Assert;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 public class PearAnalysisEngineWrapperTest {
 
@@ -54,7 +53,7 @@ public class PearAnalysisEngineWrapperTest {
 
   private PackageBrowser installedPearPackage;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
     this.pearAnalysisEngineWrapper = new PearAnalysisEngineWrapper();
@@ -64,7 +63,7 @@ public class PearAnalysisEngineWrapperTest {
     this.installedPearPackage = this.installPearPackage();
   }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     this.removeInstallationDirectory();
   }

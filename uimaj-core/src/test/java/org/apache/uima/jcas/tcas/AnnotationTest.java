@@ -23,14 +23,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AnnotationTest
 {
   private CAS cas;
     
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
       cas = CasCreationUtils.createCas();
   }
@@ -47,7 +47,7 @@ public class AnnotationTest
         .containsExactly(2, 2, "");
   }
 
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatSpanIsTrimmedToEmptySpanStartingAtOriginalStart() {
     cas.setDocumentText("    ");
       
@@ -59,7 +59,7 @@ public class AnnotationTest
         .containsExactly(2, 2, "");
   }
 
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatLeadingAndTrailingWhitespaceIsRemoved() {
     cas.setDocumentText(" ab ");
 
@@ -71,7 +71,7 @@ public class AnnotationTest
         .containsExactly(1, 3, "ab");
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void thatInnerWhitespaceIsRemoved1()
     {
       cas.setDocumentText(" a b ");
@@ -84,7 +84,7 @@ public class AnnotationTest
           .containsExactly(1, 2, "a");
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void thatInnerWhitespaceIsRemoved2()
     {
       cas.setDocumentText(" a b ");
@@ -97,7 +97,7 @@ public class AnnotationTest
           .containsExactly(3, 4, "b");
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSingleCharacter()
     {
       cas.setDocumentText(".");
@@ -110,7 +110,7 @@ public class AnnotationTest
           .containsExactly(0, 1, ".");
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLeadingWhitespace()
     {
       cas.setDocumentText(" \t\n\r.");
@@ -123,7 +123,7 @@ public class AnnotationTest
           .containsExactly(4, 5, ".");
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLeadingWhitespaceWithSurrogates()
     {
       cas.setDocumentText(" \t\n\r😀");
@@ -136,7 +136,7 @@ public class AnnotationTest
           .containsExactly(4, 6, "😀");
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testTrailingWhitespace()
     {
       cas.setDocumentText(". \n\r\t");
@@ -149,7 +149,7 @@ public class AnnotationTest
           .containsExactly(0, 1, ".");
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testTrailingWhitespaceWithSurrogates()
     {
       cas.setDocumentText("😀 \n\r\t");
@@ -162,7 +162,7 @@ public class AnnotationTest
           .containsExactly(0, 2, "😀");
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLeadingTrailingWhitespace()
     {
       cas.setDocumentText(" \t\n\r. \n\r\t");
@@ -175,7 +175,7 @@ public class AnnotationTest
           .containsExactly(4, 5);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLeadingTrailingWhitespaceWithSurrogatesAndCustomPredicate()
     {
       // 𝪀 (U+1DA80) is the SIGNWRITING LOCATION-FLOORPLANE SPACE. It is not recognized by
@@ -190,7 +190,7 @@ public class AnnotationTest
           .containsExactly(6, 7, ".");
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testBlankString()
     {
       cas.setDocumentText("   ");

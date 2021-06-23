@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FSIndex;
@@ -59,7 +59,7 @@ public class FSBagIndexTest {
   FsIndex_bag<TOP> bi;
   
   
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));

@@ -40,9 +40,10 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -57,7 +58,7 @@ public class PearRuntimeTest {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
     // create temporary working directory
@@ -72,7 +73,7 @@ public class PearRuntimeTest {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     if (this.tempInstallDir != null) {
       FileUtil.deleteDirectory(this.tempInstallDir);
@@ -103,7 +104,7 @@ public class PearRuntimeTest {
     CAS cas = runDesc(desc);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testPearRuntime() throws Exception {
 
     CAS cas = this.runPearRuntimeTestcase(new String[]{"pearTests/DateTime.pear", "pearTests/RoomNumber.pear"});
@@ -121,7 +122,7 @@ public class PearRuntimeTest {
 
   
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testPearRuntimeDocAnnot() throws Exception {
 
     CAS cas = this.runPearRuntimeTestcase(new String[]{"pearTests/analysisEngine.pear", "pearTests/analysisEngine2.pear"});

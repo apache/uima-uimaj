@@ -21,10 +21,7 @@ package org.apache.uima.collection.impl.cpm;
 
 import java.io.File;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -34,6 +31,8 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SofaMixedCPE_Test {
 
@@ -53,7 +52,7 @@ public class SofaMixedCPE_Test {
 
   Throwable firstFailure;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
     cpeSpecifierFile = JUnitExtension.getFile("CpeSofaTest/SofaMixedCPE.xml");
@@ -69,7 +68,7 @@ public class SofaMixedCPE_Test {
     firstFailure = null;
   }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     cpeDesc = null;
     cpe = null;

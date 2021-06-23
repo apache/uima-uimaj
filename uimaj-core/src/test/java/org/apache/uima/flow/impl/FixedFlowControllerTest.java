@@ -48,15 +48,15 @@ import org.apache.uima.resource.metadata.impl.OperationalProperties_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FixedFlowControllerTest {
 
   private Map<String, AnalysisEngineMetaData> analysisEngineMetaDataMap;
   private FixedFlowController fixedFlowController;
   
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     analysisEngineMetaDataMap = new HashMap<>();
     AnalysisEngineMetaData delegateMd = new AnalysisEngineMetaData_impl();

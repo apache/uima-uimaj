@@ -44,7 +44,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConcurrentBinarySerializationTest
 {

@@ -27,10 +27,12 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSArrayList;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.Test;
 import x.y.z.EndOfSentence;
 import x.y.z.Token;
 
@@ -48,7 +50,7 @@ public class FSArrayListTest {
 
 	public EndOfSentence endOfSentenceInstance;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 		this.cas = CASInitializer.initCas(new CASTestSetup(),
 		    null  // FsArrayList type setup in CASTestSetup's initTypeSystem

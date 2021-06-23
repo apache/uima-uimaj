@@ -65,11 +65,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 
@@ -81,7 +82,7 @@ public class JcasSofaTest {
 
   private JCas jcas;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       casMgr = CASFactory.createCAS();
@@ -108,7 +109,7 @@ public class JcasSofaTest {
     }
   }
   
-    @After
+    @AfterEach
     public void tearDown() {
     casMgr = null;
     jcas = null;
@@ -322,7 +323,7 @@ public class JcasSofaTest {
   /*
    * Test stream access to Sofa Data.
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSofaDataStream() throws Exception {
     try {
 
@@ -506,7 +507,7 @@ public class JcasSofaTest {
     }
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testIndexTwice() throws Exception {
     try {
       CAS newCas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
@@ -529,7 +530,7 @@ public class JcasSofaTest {
     }    
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetSofa() throws Exception {
     try {
       File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");

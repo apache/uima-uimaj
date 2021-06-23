@@ -20,7 +20,6 @@
 package org.apache.uima.resource.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
@@ -39,9 +38,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 
@@ -62,7 +61,7 @@ public class ResourceManager_implTest {
 
   private ResourceManager_impl mManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       mManager = new ResourceManager_impl();
@@ -146,12 +145,12 @@ public class ResourceManager_implTest {
     }
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     mManager = null;
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetDataPath() throws Exception {
     try {
       String path = "c:\\this\\path\\is;for\\windows";
@@ -215,7 +214,7 @@ public class ResourceManager_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testResolveAndValidateDependencies() throws Exception {
     try {
       // dependencies 1-4 are for the resource bindings created in setUp()

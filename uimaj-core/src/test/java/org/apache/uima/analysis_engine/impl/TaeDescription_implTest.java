@@ -67,10 +67,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test the TaeDescription_impl class.
@@ -82,7 +81,7 @@ public class TaeDescription_implTest {
 
   private AnalysisEngineDescription aggregateDesc;
   
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
@@ -236,13 +235,13 @@ public class TaeDescription_implTest {
     }
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     primitiveDesc = null;
     aggregateDesc = null;
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testXMLization() throws Exception {
     try {
       // write objects to XML

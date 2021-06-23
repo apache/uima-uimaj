@@ -33,8 +33,8 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -101,27 +101,27 @@ public class CustomSerializationTest {
         assertEquals(expected, annotations.get(0).getFeatures().asKeyValueMap());
     }
 
-    @Test
-    @Ignore
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void saveFixtureToXmiFile() throws CASException, ResourceInitializationException,
             IOException, InvalidXMLException {
         EnrichedEntity test = fixture();
         toXmiFile(test.getJCas(), "output/custom-serialization-fixture.xmi");
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void verifyCustomSerializationForXmi() throws CASException, ResourceInitializationException,
             IOException, InvalidXMLException {
         verifyFeatureMapDeserialization(SerialFormat.XMI);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void verifyCustomSerializationForCompressedBinary4() throws CASException,
             ResourceInitializationException, IOException, InvalidXMLException {
         verifyFeatureMapDeserialization(SerialFormat.COMPRESSED);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void verifyCustomSerializationForCompressedFilteredEmbeddedTSAndIndexBinary4() throws CASException,
             ResourceInitializationException, IOException, InvalidXMLException {
         verifyFeatureMapDeserialization(SerialFormat.COMPRESSED_TSI);
@@ -133,13 +133,13 @@ public class CustomSerializationTest {
         verifyFeatureMapDeserialization(SerialFormat.COMPRESSED_FILTERED);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void verifyCustomSerializationForCompressedFilteredEmbeddedTSBinary6() throws CASException,
             ResourceInitializationException, IOException, InvalidXMLException {
         verifyFeatureMapDeserialization(SerialFormat.COMPRESSED_FILTERED_TS);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void verifyCustomSerializationForCompressedFilteredEmbeddedTSAndIndexBinary6() throws CASException,
             ResourceInitializationException, IOException, InvalidXMLException {
         verifyFeatureMapDeserialization(SerialFormat.COMPRESSED_FILTERED_TSI);

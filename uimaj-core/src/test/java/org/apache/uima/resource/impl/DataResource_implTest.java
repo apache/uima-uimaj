@@ -31,10 +31,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the DataResource_impl class.
@@ -77,7 +76,7 @@ public class DataResource_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetInputStream() throws Exception {
     try {
       // write a File (APL: changed to use preexisting file - 6/28/04)

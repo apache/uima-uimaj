@@ -25,9 +25,9 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -142,7 +142,7 @@ public class ResultSpecWithTypeSystemTest {
 
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testFeatInheritanceL() {
     check(tofT1allFeat, X, K.Contains, f1, X);
     check(tofT1allFeat, EN, K.NotContain, f1, X);

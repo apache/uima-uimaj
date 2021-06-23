@@ -39,9 +39,10 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 
@@ -91,7 +92,7 @@ public class IndexSerializationTest {
 
   private Feature endFeature;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     casMgr = initCAS();
     cas = (CASImpl)casMgr;
@@ -110,7 +111,7 @@ public class IndexSerializationTest {
     assertTrue(annotationType != null);
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     casMgr = null;
     cas = null;

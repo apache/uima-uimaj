@@ -22,7 +22,6 @@ package org.apache.uima.jcas.test;
 import java.util.Iterator;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSHashSet;
@@ -30,9 +29,9 @@ import org.apache.uima.jcas.cas.FSLinkedHashSet;
 import org.apache.uima.jcas.cas.Int2FS;
 import org.apache.uima.util.IntEntry;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 import x.y.z.EndOfSentence;
 import x.y.z.Token;
@@ -49,7 +48,7 @@ public class FSHashSetTest {
 
 	public EndOfSentence endOfSentenceInstance;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 		this.cas = CASInitializer.initCas(new CASTestSetup(),
 		    null

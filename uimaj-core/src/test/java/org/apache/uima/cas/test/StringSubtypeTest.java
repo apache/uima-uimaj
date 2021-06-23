@@ -37,9 +37,10 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 public class StringSubtypeTest {
@@ -70,7 +71,7 @@ public class StringSubtypeTest {
 
   }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     File specifierFile = JUnitExtension.getFile(specifier);
     XMLInputSource in = new XMLInputSource(specifierFile);
@@ -79,13 +80,13 @@ public class StringSubtypeTest {
     this.jcas = this.ae.newJCas();
   }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     this.ae.destroy();
     this.jcas = null;
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testJcas() {
     StringSubtypeAnnotation annot = new StringSubtypeAnnotation(this.jcas);
     annot.setStringSetFeature(definedValue1);
@@ -100,7 +101,7 @@ public class StringSubtypeTest {
     assertTrue(exCaught);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLowLevelCas() {
     LowLevelCAS cas = this.jcas.getLowLevelCas();
     LowLevelTypeSystem ts = cas.ll_getTypeSystem();

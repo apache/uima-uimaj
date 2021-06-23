@@ -27,9 +27,10 @@ import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.text.AnnotationIndex;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 /**
@@ -42,7 +43,7 @@ public class CASTest {
 
   private TypeSystem ts;
 
-    @Before
+    @BeforeEach
     public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -52,13 +53,13 @@ public class CASTest {
     }
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     this.cas = null;
     this.ts = null;
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetTypeSystem() {
     assertTrue(this.cas.getTypeSystem() != null);
   }

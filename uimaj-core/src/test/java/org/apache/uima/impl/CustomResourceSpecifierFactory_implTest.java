@@ -25,9 +25,10 @@ import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.Resource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 
@@ -35,7 +36,7 @@ public class CustomResourceSpecifierFactory_implTest {
  
   private CustomResourceFactory_impl crFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     crFactory = new CustomResourceFactory_impl();
   }

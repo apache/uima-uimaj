@@ -22,19 +22,15 @@ package org.apache.uima.collection.impl.cpm;
 import java.io.File;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionProcessingEngine;
-import org.apache.uima.collection.impl.cpm.utils.DescriptorMakeUtil;
 import org.apache.uima.collection.impl.cpm.utils.FunctionErrorStore;
 import org.apache.uima.collection.impl.cpm.utils.TestStatusCallbackListener;
-import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeDescription;
-import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
@@ -48,14 +44,14 @@ import org.apache.uima.util.XMLInputSource;
 public class CpeImportTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-  @After
+  @AfterEach
     public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
@@ -94,7 +90,7 @@ public class CpeImportTest {
   /**
    * Test a CPE descriptor using import by name and requiring data patht o be set
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testImportsWithDataPath() throws Exception {
     CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
             new XMLInputSource(JUnitExtension.getFile("CollectionProcessingEngineImplTest/CpeImportDataPathTest.xml")));

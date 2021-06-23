@@ -23,9 +23,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
@@ -43,6 +43,7 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test insures that Pear compoents run in a cas pool switch classloaders properly
@@ -60,7 +61,7 @@ public class PearCasPoolTest {
   private PackageBrowser installedPear;
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
@@ -71,7 +72,7 @@ public class PearCasPoolTest {
     pearInstallDir.mkdirs();
   }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }

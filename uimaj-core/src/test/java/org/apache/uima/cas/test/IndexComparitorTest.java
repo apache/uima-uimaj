@@ -38,9 +38,9 @@ import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -243,7 +243,7 @@ public class IndexComparitorTest {
     }
   }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       this.cas = CASInitializer.initCas(new SetupForIndexCompareTesting(), ts -> reinitTypes(ts));
@@ -323,7 +323,7 @@ public class IndexComparitorTest {
     type1Sub2Ignored = tsm.refreshFeature(type1Sub2Ignored);
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     fss = null;
     this.cas = null;

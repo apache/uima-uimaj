@@ -40,9 +40,9 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -66,7 +66,7 @@ public class XmiCasSerializerTest {
 
   private File outputFile = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     // Temp output file, deleted on exit.
@@ -112,7 +112,7 @@ public class XmiCasSerializerTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testInvalidCharsInFeatureValue() throws Exception {
     CAS cas = CasCreationUtils.createCas(this.typeSystemDesc, null, null);
     char badChar = 0x1A;
@@ -149,7 +149,7 @@ public class XmiCasSerializerTest {
    * 
    * @see junit.framework.TestCase#tearDown()
    */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     if ((this.outputFile != null) && this.outputFile.exists()) {
       this.outputFile.delete();

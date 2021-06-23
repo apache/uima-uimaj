@@ -68,9 +68,9 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 
@@ -114,7 +114,7 @@ public class NewPrimitiveTypesTest {
 
   private Feature doubleArrayFeature;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
 //      long startTime = System.nanoTime();
@@ -221,7 +221,7 @@ public class NewPrimitiveTypesTest {
     doubleArrayFeature = tsa.refreshFeature(doubleArrayFeature);
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     casMgr = null;
     cas = null;
@@ -253,7 +253,7 @@ public class NewPrimitiveTypesTest {
     validateFSData(cas);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testBlobSerialization() throws Exception {
 
     // create FS
@@ -293,7 +293,7 @@ public class NewPrimitiveTypesTest {
     validateFSData(cas);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testXCASSerialization() throws Exception {
 
     // create FS
@@ -581,7 +581,7 @@ public class NewPrimitiveTypesTest {
     return fs;
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testNewPrimitiveTypeKeys() throws Exception {
     // Create FS with features set in reverse order
     for (int i=0; i<5; i++) {

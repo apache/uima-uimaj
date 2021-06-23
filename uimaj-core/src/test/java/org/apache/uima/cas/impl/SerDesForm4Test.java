@@ -18,25 +18,14 @@
  */
 package org.apache.uima.cas.impl;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
@@ -64,10 +53,9 @@ import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.impl.SerializationMeasures;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Serializer and Deserializer testing
@@ -269,7 +257,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
   public SerDesForm4Test() {
   }
 
-    @Before
+    @BeforeEach
     public void setUp() {
 //    long seed = 1_449_257_605_347_913_923L;
     // long seed = 949_754_466_380_345_024L;
@@ -292,7 +280,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
     }
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     this.cas = null;
     this.ts = null;
@@ -306,7 +294,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * stream, deserialize into new cas, compare
    */
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAllKinds() {
     loadCas(lfs);
     // uncomment this to test toString()
@@ -317,7 +305,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
     verify("AllKinds");   
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAllKindsV2() {
     try (AutoCloseableNoException a = cas.ll_enableV2IdRefs();
          AutoCloseableNoException b = deserCas.ll_enableV2IdRefs()) {
@@ -341,7 +329,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * 
    * 
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDelta() {
     lfs.clear();
     loadCas(lfs);
@@ -352,7 +340,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
     verifyDelta(marker, "Delta");
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDeltaWithRefsBelow() {
     lfs.clear();
     loadCas(lfs);
@@ -394,7 +382,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * Driver for random values pick among random and "interesting" edge case
    * values
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDeltaWithAllMods() throws IOException {
     boolean prev = isKeep;
     isKeep = true;
@@ -523,7 +511,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDeltaWithIndexMods() {
     lfs.clear();
     loadCas(lfs);
@@ -544,7 +532,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
     verifyDelta(marker, "DeltaWithIndexMods");
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testArrayAux() {
     ArrayList<FeatureStructure> fsl = new ArrayList<>();
     /**
@@ -590,7 +578,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
     assertEquals(la1.get(2), 123);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testWithOtherSerializer() throws IOException {
     doPlain = true;
     testDeltaWithMods();
@@ -611,7 +599,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    *   layout because they're not findable during scanning, and therefore, delta mods won't be correct.
    * @throws IOException
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testWithPrevGenerated() throws IOException {
     isKeep = true;    // forces all akof fss to be indexed 
     usePrevData = true;

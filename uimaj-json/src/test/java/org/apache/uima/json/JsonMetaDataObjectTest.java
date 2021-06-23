@@ -25,9 +25,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
@@ -47,7 +47,7 @@ public class JsonMetaDataObjectTest {
   private TestFruitBagObject fruitBag;
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     // create two identical apples and an orange
     apple1 = new TestFruitObject();

@@ -43,9 +43,9 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 public class FeaturePathTest {
@@ -343,7 +343,7 @@ public class FeaturePathTest {
    /*
     * Tests the supported built-in functions for the feature path
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testBuiltInFeaturePathFunctions() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
@@ -659,7 +659,7 @@ public class FeaturePathTest {
    /*
     * Tests the addFeature() API together with initialize()
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testInitializeWithAddAPI() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension

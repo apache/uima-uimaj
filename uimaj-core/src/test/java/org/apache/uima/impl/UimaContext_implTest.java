@@ -44,9 +44,10 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 
@@ -67,7 +68,7 @@ public class UimaContext_implTest {
   
   private UimaContext mContext5;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       // configure ResourceManager to allow test components to locate their resources
@@ -118,7 +119,7 @@ public class UimaContext_implTest {
   /*
    * @see TestCase#tearDown()
    */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
@@ -289,7 +290,7 @@ public class UimaContext_implTest {
     Assert.assertEquals("GrouplessParam2", names[1]);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetConfigParameterNamesString() {
     String[] names = mContext2.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
@@ -356,7 +357,7 @@ public class UimaContext_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetResourceURLString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -411,7 +412,7 @@ public class UimaContext_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetResourceURIString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -465,7 +466,7 @@ public class UimaContext_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetResourceFilePathString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -520,7 +521,7 @@ public class UimaContext_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetResourceAsStreamString() throws Exception {
     try {
       // standard data resource (should succeed)
@@ -696,7 +697,7 @@ public class UimaContext_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetResourceURLStringStringArray() throws Exception {
     try {
       // standard data resource
@@ -810,7 +811,7 @@ public class UimaContext_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetResourceFilePathStringStringArray() throws Exception {
     try {
       // standard data resource
@@ -879,7 +880,7 @@ public class UimaContext_implTest {
     }
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetEmptyCas() throws Exception {
     try {
       CAS emptyCas = mContext5.getEmptyCas(CAS.class);

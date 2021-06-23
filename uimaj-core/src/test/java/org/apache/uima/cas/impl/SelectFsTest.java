@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -49,9 +50,12 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized;
@@ -62,34 +66,30 @@ import x.y.z.Token;
 
 // Sorting only to keep the list in Eclipse ordered so it is easier spot if related tests fail
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@RunWith(Parameterized.class)
 public class SelectFsTest {
   private static enum Mode {
     ANNOTATION_FIRST,
     ANNOTATION_LAST;
   }
   
-  @Parameters(name = "{0}")
-  public static Collection<Object[]> prios() {
-      return asList(new Object[][]{
-        { 
-          Mode.ANNOTATION_FIRST, 
+  public static Stream<Arguments> prios() {
+      return Stream.of(Arguments.of(
+          Mode.ANNOTATION_FIRST,
           new String[] { TYPE_NAME_ANNOTATION, Sentence.class.getName(), Token.class.getName() } 
-        },
-        { 
+              ),
+              Arguments.of(
           Mode.ANNOTATION_LAST, 
           new String[] { Token.class.getName(), Sentence.class.getName(), TYPE_NAME_ANNOTATION } 
-        },
-      });
+              ));
   }
 
-  private final Mode mode;
-  private final TypeSystemDescription typeSystemDescription;
-  private final CASImpl cas;
+  private Mode mode;
+  private TypeSystemDescription typeSystemDescription;
+  private CASImpl cas;
 
   static File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem_token_sentence_no_features.xml"); 
   
-  public SelectFsTest(Mode aMode, String[] aPrioTypeNames) throws Exception {
+  public void setup(Mode aMode, String[] aPrioTypeNames) throws Exception {
     mode = aMode;
     typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));
@@ -101,13 +101,11 @@ public class SelectFsTest {
     cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, prios, null);
   }
 
-  @Before
-  public void setup() {
-    cas.reset();
-  }
-  
-    @Test
-    public void testSelect_asList() {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+    public void testSelect_asList(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
+
     JCas jcas = cas.getJCas();
     
     Token p1 = new Token(jcas, 0, 1); 
@@ -133,8 +131,10 @@ public class SelectFsTest {
         .isEmpty();
   }
 
-    @Test
-    public void testPrecedingAndShifted() {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+    public void testPrecedingAndShifted(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 0, 1),
         new Annotation(cas.getJCas(), 2, 3),
@@ -151,9 +151,11 @@ public class SelectFsTest {
     assertThat(cas.select(Annotation.class).startAt(a[2]).shifted(-2).limit(2).asList())
         .containsExactly(a[0], a[1]);
   }
-  
-    @Test
-    public void testBetween() {
+
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+    public void testBetween(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     JCas jCas = cas.getJCas();
     
     Token t1 = new Token(jCas, 45, 57);
@@ -170,9 +172,11 @@ public class SelectFsTest {
     assertThat(jCas.select(Sentence.class).between(t1, t2).asList())
         .containsExactly(s1);
   }
-  
-    @Test
-    public void testBackwards() {
+
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+    public void testBackwards(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     cas.setDocumentText("t1 t2 t3 t4");
     
     addToIndexes(
@@ -185,9 +189,11 @@ public class SelectFsTest {
     assertThat(cas.select(Token.class).backwards().get(0).getCoveredText())
         .isEqualTo("t4");
   }
-  
-  @Test
-  public void thatIsEmptyWorks() {
+
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatIsEmptyWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     new Token(cas.getJCas(), 0, 2).addToIndexes();
     
     assertThat(cas.select(Token.class).isEmpty())
@@ -198,9 +204,11 @@ public class SelectFsTest {
     assertThat(cas.select(Token.class).isEmpty())
         .isTrue();
   }
-  
-    @Test
-    public void testSelectFollowingPrecedingDifferentTypes() {
+
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+    public void testSelectFollowingPrecedingDifferentTypes(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     
     JCas jCas = cas.getJCas();
     jCas.setDocumentText("A B C D E");
@@ -316,10 +324,12 @@ public class SelectFsTest {
     assertThat(jCas.select(Token.class).between(t[1], t[4]).backwards().asList())
         .containsExactly(t[3], t[2]);
   }
-  
-  @Test
-  public void thatCoveredByWithNonOverlappingWorks() throws Exception
-  {
+
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByWithNonOverlappingWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
+
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", "uima.tcas.Annotation");
     
@@ -338,10 +348,12 @@ public class SelectFsTest {
     it.moveToLast();
     assertThat(it.get()).isSameAs(expected);
   }
-  
-  @Test
-  public void thatCoveredByWithBeyondEndsDoesNotReturnOverlapAtStart() throws Exception
-  {
+
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByWithBeyondEndsDoesNotReturnOverlapAtStart(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
+
     Annotation y;
     addToIndexes(
         new Annotation(cas.getJCas(), 64, 90),
@@ -358,9 +370,11 @@ public class SelectFsTest {
         .isEmpty();    
   }
 
-  @Test
-  public void thatCoveredByWithBeyondEndsDoesNotReturnAnnotationStartingAtEnd() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByWithBeyondEndsDoesNotReturnAnnotationStartingAtEnd(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
+
     Annotation y;
     Annotation[] a = addToIndexes(
         y = new Annotation(cas.getJCas(), 68, 79),
@@ -377,9 +391,11 @@ public class SelectFsTest {
         .containsExactly(a[1]);
   }
 
-  @Test
-  public void thatCoveredByWithBeyondEndsDoesNotReturnAnnotationStartingAtEnd2() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByWithBeyondEndsDoesNotReturnAnnotationStartingAtEnd2(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
+
     Annotation y;
     addToIndexes(
         y = new Annotation(cas.getJCas(), 68, 79),
@@ -395,9 +411,11 @@ public class SelectFsTest {
         .isEmpty();
   }
 
-  @Test
-  public void thatCoveredByWithBeyondEndsFindsAnnotationCoStartingAndExtendingBeyond() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByWithBeyondEndsFindsAnnotationCoStartingAndExtendingBeyond(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
+
     Annotation y;
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 44, 68),
@@ -413,9 +431,12 @@ public class SelectFsTest {
     .containsExactly(a[0]);
   }
 
-  @Test
-  public void thatCoveredByWithBeyondEndsFindsZeroWidthAtEnd() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByWithBeyondEndsFindsZeroWidthAtEnd(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
+
+
     Annotation y;
     Annotation[] a = addToIndexes(
         y = new Annotation(cas.getJCas(), 8, 33),
@@ -433,9 +454,12 @@ public class SelectFsTest {
         .containsExactly(a[2]);
   }
 
-  @Test
-  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
+
+
     Annotation a = addToIndexes(new Annotation(cas.getJCas(), 0, 2));
 
     assertThat(cas.select(Annotation.class).coveredBy(0, 1)
@@ -444,8 +468,10 @@ public class SelectFsTest {
         .containsExactly(a);
   }
   
-  @Test
-  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition2() {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition2(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 0, 4),
         new Annotation(cas.getJCas(), 1, 3));
@@ -455,8 +481,10 @@ public class SelectFsTest {
         .containsExactly(a);
   }
 
-  @Test
-  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition3() {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition3(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 0, 5),
         new Annotation(cas.getJCas(), 1, 4),
@@ -467,8 +495,10 @@ public class SelectFsTest {
         .containsExactly(a);
   }
 
-  @Test
-  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition4() {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByWithBeyondEndsCanSelectAnnotationsStartingAtSelectPosition4(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 0, 4),
         new Annotation(cas.getJCas(), 1, 5),
@@ -482,9 +512,10 @@ public class SelectFsTest {
   /**
    * @see <a href="https://issues.apache.org/jira/browse/UIMA-6282">UIMA-6282</a>
    */
-  @Test
-  public void thatSelectAtDoesNotFindFollowingAnnotation()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectAtDoesNotFindFollowingAnnotation(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 20),
         new Annotation(cas.getJCas(), 21, MAX_VALUE));
@@ -493,9 +524,10 @@ public class SelectFsTest {
         .isFalse();
   }
   
-  @Test
-  public void thatSelectFollowingDoesFindOtherZeroWidthAnnotationAtEnd()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingDoesFindOtherZeroWidthAnnotationAtEnd(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 20),
         new Annotation(cas.getJCas(), 20, 20));
@@ -504,9 +536,10 @@ public class SelectFsTest {
         .containsExactly(a[1]);
   }
 
-  @Test
-  public void thatSelectPrecedingDoesFindZeroWidthAnnotationAtStart()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectPrecedingDoesFindZeroWidthAnnotationAtStart(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 20),
         new Annotation(cas.getJCas(), 10, 10));
@@ -515,9 +548,10 @@ public class SelectFsTest {
         .containsExactly(a[1]);
   }
 
-  @Test
-  public void thatSelectFollowingDoesFindOtherZeroWidthAnnotationAtSameLocation()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingDoesFindOtherZeroWidthAnnotationAtSameLocation(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 10),
         new Annotation(cas.getJCas(), 10, 10));
@@ -526,9 +560,10 @@ public class SelectFsTest {
         .containsExactly(a[1]);
   }
 
-  @Test
-  public void thatSelectFollowingDoesNotFindOtherAnnotationAtSameLocation()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingDoesNotFindOtherAnnotationAtSameLocation(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 20),
         new Annotation(cas.getJCas(), 10, 20));
@@ -537,9 +572,10 @@ public class SelectFsTest {
         .isEmpty();
   }
   
-  @Test
-  public void thatSelectPrecedingDoesFindOtherZeroWidthAnnotationAtSameLocation()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectPrecedingDoesFindOtherZeroWidthAnnotationAtSameLocation(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 10),
         new Annotation(cas.getJCas(), 10, 10));
@@ -548,9 +584,10 @@ public class SelectFsTest {
         .containsExactly(a[0]);
   }
 
-  @Test
-  public void thatSelectPrecedingDoesNotFindOtherAnnotationAtSameLocation()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectPrecedingDoesNotFindOtherAnnotationAtSameLocation(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 20),
         new Annotation(cas.getJCas(), 10, 20));
@@ -559,9 +596,10 @@ public class SelectFsTest {
         .isEmpty();
   }
   
-  @Test
-  public void thatSelectCoveredByZeroSizeAtEndOfContextIsIncluded()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveredByZeroSizeAtEndOfContextIsIncluded(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Sentence(cas.getJCas(), 0, 1),
         new Token(cas.getJCas(), 1, 1));
@@ -570,9 +608,10 @@ public class SelectFsTest {
         .containsExactly((Token) a[1]);
   }
 
-  @Test
-  public void thatSelectPrecedingDoesFindNonZeroWidthAnnotationEndingAtZeroWidthAnnotation()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectPrecedingDoesFindNonZeroWidthAnnotationEndingAtZeroWidthAnnotation(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 20, 20),
         new Annotation(cas.getJCas(), 10, 20));
@@ -581,9 +620,10 @@ public class SelectFsTest {
         .containsExactly(a[1]);
   }
 
-  @Test
-  public void thatSelectFollowingReturnsAdjacentAnnotation()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingReturnsAdjacentAnnotation(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 20),
         new Annotation(cas.getJCas(), 20, 30));
@@ -592,9 +632,10 @@ public class SelectFsTest {
         .containsExactly(a[1]);
   }
 
-  @Test
-  public void thatSelectFollowingSkipsAdjacentAnnotationAndReturnsNext()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingSkipsAdjacentAnnotationAndReturnsNext(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 20),
         new Annotation(cas.getJCas(), 20, 30),
@@ -604,9 +645,10 @@ public class SelectFsTest {
         .containsExactly(a[2]);
   }
 
-  @Test
-  public void thatSelectFollowingBackwardsWorks()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingBackwardsWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation x = new Annotation(cas.getJCas(), 5, 14);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 24, 46),
@@ -616,9 +658,10 @@ public class SelectFsTest {
         .containsExactly(a[1], a[0]);
   }
 
-  @Test
-  public void thatSelectPrecedingReturnsAdjacentAnnotation()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectPrecedingReturnsAdjacentAnnotation(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 20),
         new Annotation(cas.getJCas(), 20, 30));
@@ -627,9 +670,10 @@ public class SelectFsTest {
         .containsExactly(a[0]);
   }
 
-  @Test
-  public void thatSelectPrecedingSkipsAdjacentAnnotationAndReturnsNext()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectPrecedingSkipsAdjacentAnnotationAndReturnsNext(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 20),
         new Annotation(cas.getJCas(), 20, 30),
@@ -639,9 +683,12 @@ public class SelectFsTest {
         .containsExactly(a[0]);
   }
 
-  @Test
-  public void thatSelectPrecedingSeekWorks() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectPrecedingSeekWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
+
+
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     
@@ -664,9 +711,12 @@ public class SelectFsTest {
     assertThat(it.isValid()).isTrue();
   }
    
-  @Test
-  public void thatSelectPrecedingSeekWorks2() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectPrecedingSeekWorks2(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
+
+
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", CAS.TYPE_NAME_ANNOTATION);
@@ -696,9 +746,11 @@ public class SelectFsTest {
     assertThat(it.get()).isSameAs(expected[1]);
   }
   
-  @Test
-  public void thatSelectPrecedingSeekWithLimitWorks() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectPrecedingSeekWithLimitWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
+
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     
@@ -726,9 +778,10 @@ public class SelectFsTest {
     assertThat(it.get()).isSameAs(expected[1]);
   }
 
-  @Test
-  public void thatSelectFollowingDoesNotFindZeroWidthAnnotationAtEnd()
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingDoesNotFindZeroWidthAnnotationAtEnd(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 10, 20),
         new Annotation(cas.getJCas(), 20, 20));
@@ -737,9 +790,10 @@ public class SelectFsTest {
         .isEmpty();
   }
   
-  @Test
-  public void thatSelectFollowingSeekUnambiguousWorks() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingSeekUnambiguousWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     
@@ -759,9 +813,10 @@ public class SelectFsTest {
             asList(expected).stream().map(a -> (Annotation) a).toArray(Annotation[]::new));
   }
   
-  @Test
-  public void thatSelectFollowingSeekUnambiguousWorks2a() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingSeekUnambiguousWorks2a(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     
@@ -783,9 +838,10 @@ public class SelectFsTest {
     assertThat(it.isValid()).isFalse();
   }
   
-  @Test
-  public void thatSelectFollowingSeekUnambiguousWorks2b() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingSeekUnambiguousWorks2b(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     
@@ -804,9 +860,10 @@ public class SelectFsTest {
         .containsExactly((Annotation) expected);
   }
   
-  @Test
-  public void thatSelectFollowingSeekUnambiguousWorks3() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingSeekUnambiguousWorks3(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     
@@ -825,9 +882,10 @@ public class SelectFsTest {
         .containsExactly(expected);
   }
   
-  @Test
-  public void thatSelectFollowingSeekAmbiguousWorks4() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingSeekAmbiguousWorks4(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     
@@ -849,9 +907,10 @@ public class SelectFsTest {
         .containsExactly(stream(expected).map(a -> (Annotation) a).toArray(Annotation[]::new));
   }
 
-  @Test
-  public void thatSelectFollowingSeekUnambiguousWorks4() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingSeekUnambiguousWorks4(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     
@@ -873,9 +932,10 @@ public class SelectFsTest {
         .containsExactly((Annotation) expected);
   }
   
-  @Test
-  public void thatSelectFollowingSeekUnambiguousWorks5() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingSeekUnambiguousWorks5(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     
@@ -894,9 +954,10 @@ public class SelectFsTest {
         .containsExactly((Annotation) expected);
   }
   
-  @Test
-  public void thatSelectPrecedingSeekUnambiguousWorks() throws Exception
-  {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectPrecedingSeekUnambiguousWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     
@@ -914,8 +975,10 @@ public class SelectFsTest {
         .isEmpty();
   }
   
-  @Test
-  public void thatSelectPrecedingUnambiguousFindsZeroWidth() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectPrecedingUnambiguousFindsZeroWidth(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     
@@ -934,8 +997,10 @@ public class SelectFsTest {
         .containsExactly(stream(expected).map(a -> (Annotation) a).toArray(Annotation[]::new));
   }
   
-  @Test
-  public void thatCoveredByFindsTypeUsingSubtype() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByFindsTypeUsingSubtype(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation superType = addToIndexes(new Annotation(cas.getJCas(), 5, 10));
     Token subType = addToIndexes(new Token(cas.getJCas(), 5, 10));
 
@@ -943,8 +1008,10 @@ public class SelectFsTest {
         .containsExactly(superType);
   }
   
-  @Test
-  public void thatCoveredByFindsTypeUsingUnindexedSubtype() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByFindsTypeUsingUnindexedSubtype(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation superType = addToIndexes(new Annotation(cas.getJCas(), 5, 10));
     Token subType = addToIndexes(new Token(cas.getJCas(), 5, 10));
 
@@ -952,8 +1019,10 @@ public class SelectFsTest {
         .containsExactly(superType);
   }
 
-  @Test
-  public void thatCoveredByFindsSubtypeUsingType() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByFindsSubtypeUsingType(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation superType = addToIndexes(new Annotation(cas.getJCas(), 5, 10));
     Annotation subType = addToIndexes(new Token(cas.getJCas(), 5, 10));
 
@@ -961,8 +1030,10 @@ public class SelectFsTest {
         .containsExactly(subType);
   }
 
-  @Test
-  public void thatCoveredByFindsZeroWidth() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByFindsZeroWidth(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation x = addToIndexes(new Annotation(cas.getJCas(), 5, 10));
     Annotation y = addToIndexes(new Annotation(cas.getJCas(), 5, 10));
 
@@ -970,16 +1041,20 @@ public class SelectFsTest {
         .containsExactly(y);
   }
 
-  @Test
-  public void thatCoveredByWorksWithOffsets() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredByWorksWithOffsets(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation a = addToIndexes(new Annotation(cas.getJCas(), 5, 10));
 
     assertThat(cas.select(Annotation.class).coveredBy(5, 10).asList())
         .containsExactly(a);
   }
   
-  @Test
-  public void thatCoveredBySkipsIndexedAnchorAnnotation() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatCoveredBySkipsIndexedAnchorAnnotation(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     JCas jCas = cas.getJCas();
 
     Annotation[] a = addToIndexes(
@@ -1001,8 +1076,10 @@ public class SelectFsTest {
         .containsExactly(a[0], a[7], a[4], a[6], a[5]);
   }
 
-  @Test
-  public void thatSelectAtFindsSupertype() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectAtFindsSupertype(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 5, 10),
         new Token(cas.getJCas(), 5, 10));
@@ -1011,8 +1088,10 @@ public class SelectFsTest {
         .containsExactly(a[0]);
   }
 
-  @Test
-  public void thatSelectBetweenWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectBetweenWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation[] a = addToIndexes(
         new Sentence(cas.getJCas(), 47, 67),
         new Sentence(cas.getJCas(), 55, 66),
@@ -1023,8 +1102,10 @@ public class SelectFsTest {
         .containsExactly((Sentence) a[1]);
   }
 
-  @Test
-  public void thatSelectColocatedFindsOtherAnnotation() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectColocatedFindsOtherAnnotation(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation x, y;
     addToIndexes(
         new Annotation(cas.getJCas(), 66, 84),
@@ -1035,8 +1116,10 @@ public class SelectFsTest {
         .containsExactly(x);
   }
 
-  @Test
-  public void thatSelectColocatedFindsSiblingType() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectColocatedFindsSiblingType(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1057,8 +1140,10 @@ public class SelectFsTest {
         .containsExactly((Annotation) x);
   }
 
-  @Test
-  public void thatSelectColocatedFindsSiblingType2() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectColocatedFindsSiblingType2(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1083,8 +1168,10 @@ public class SelectFsTest {
         .containsExactly((Annotation) x);
   }
   
-  @Test
-  public void thatSelectCoveringDoesNotFindItselfWhenSelectingSupertype() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveringDoesNotFindItselfWhenSelectingSupertype(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1103,8 +1190,10 @@ public class SelectFsTest {
         .isEmpty();
   }
   
-  @Test
-  public void thatSelectAtInitialPositionIsSameAsFirstPosition() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectAtInitialPositionIsSameAsFirstPosition(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation y = new Token(cas.getJCas(), 42, 71);
     addToIndexes(
         new Token(cas.getJCas(), 13, 34),
@@ -1117,8 +1206,10 @@ public class SelectFsTest {
     assertThat(it.isValid() ? it.get() : null).isSameAs(initial);
   }
 
-  @Test
-  public void thatSelectFollowingInitialPositionIsSameAsFirstPosition() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingInitialPositionIsSameAsFirstPosition(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation y = new Token(cas.getJCas(), 13, 34);
     addToIndexes(
         new Token(cas.getJCas(), 13, 34),
@@ -1131,8 +1222,10 @@ public class SelectFsTest {
     assertThat(it.isValid() ? it.get() : null).isSameAs(initial);
   }
 
-  @Test
-  public void thatSelectBackwardsIterationMatchesForward() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectBackwardsIterationMatchesForward(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     addToIndexes(
         new Sentence(cas.getJCas(), 15, 25),
         new Token(cas.getJCas(), 14, 19),
@@ -1149,8 +1242,10 @@ public class SelectFsTest {
     assertThat(actual).isEqualTo(expected);
   }
 
-  @Test
-  public void thatSelectFollowingBackwardsIterationMatchesForward() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingBackwardsIterationMatchesForward(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation y = new Token(cas.getJCas(), 13, 17);
     addToIndexes(
         new Token(cas.getJCas(), 13, 17),
@@ -1162,8 +1257,10 @@ public class SelectFsTest {
     assertThat(actual).isEqualTo(expected);
   }
   
-  @Test
-  public void thatSelectColocatedBackwardsIterationMatchesForward() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectColocatedBackwardsIterationMatchesForward(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation y = new Token(cas.getJCas(), 99, 123);
     addToIndexes(
         new Token(cas.getJCas(), 99, 123),
@@ -1175,8 +1272,10 @@ public class SelectFsTest {
     assertThat(actual).isEqualTo(expected);
   }
   
-  @Test
-  public void thatSelectColocatedIterationWithMoveTo() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectColocatedIterationWithMoveTo(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     Annotation y;
     Token expected;
     addToIndexes(
@@ -1189,7 +1288,8 @@ public class SelectFsTest {
     assertThat(it.get()).isEqualTo(expected);
   }
   
-  @Test
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
   public void thatSelectCoveringBackwardsIterationMatchesForwardWithCoEndingAnnotations()
       throws Exception {
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
@@ -1221,8 +1321,10 @@ public class SelectFsTest {
         .containsExactly(expected);
   }
 
-  @Test
-  public void thatSelectCoveringBackwardsIterationMatchesForward2() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveringBackwardsIterationMatchesForward2(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1249,8 +1351,10 @@ public class SelectFsTest {
         .containsExactly(expected);
   }
   
-  @Test
-  public void thatSelectCoveredBackwardsIterationMatchesForward() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveredBackwardsIterationMatchesForward(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1276,8 +1380,10 @@ public class SelectFsTest {
         .containsExactly(expected);
   }
   
-  @Test
-  public void thatSelectCoveredBackwardsIterationMatchesForward2() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveredBackwardsIterationMatchesForward2(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1303,8 +1409,10 @@ public class SelectFsTest {
         .containsExactly(expected);
   }
   
-  @Test
-  public void thatSelectFollowingBackwardsIterationMatchesForward2() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectFollowingBackwardsIterationMatchesForward2(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1330,8 +1438,10 @@ public class SelectFsTest {
         .containsExactly(expected);
   }
   
-  @Test
-  public void thatSelectCoveredBySeekToInitialThenMoveToNextWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveredBySeekToInitialThenMoveToNextWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1369,8 +1479,10 @@ public class SelectFsTest {
     assertThat(it2.get()).isSameAs(expected[1]);
   }
   
-  @Test
-  public void thatSelectCoveredBySeekNonStrictWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveredBySeekNonStrictWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1400,8 +1512,10 @@ public class SelectFsTest {
     assertThat(it.get()).isSameAs(expected[1]);
   }
   
-  @Test
-  public void thatSelectCoveredBySeekUnambiguousNonStrictWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveredBySeekUnambiguousNonStrictWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1441,8 +1555,10 @@ public class SelectFsTest {
     assertThat(it.get()).isSameAs(expected);
   }
   
-  @Test
-  public void thatSelectCoveredBySeekUnambiguousWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveredBySeekUnambiguousWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", CAS.TYPE_NAME_ANNOTATION);
@@ -1480,8 +1596,10 @@ public class SelectFsTest {
     assertThat(it.get()).isSameAs(expected);
   }
   
-  @Test
-  public void thatSelectCoveredBySeekLimitedWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveredBySeekLimitedWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1518,8 +1636,10 @@ public class SelectFsTest {
     assertThat(it.get()).isSameAs(expected[1]);
   }
   
-  @Test
-  public void thatSelectCoveredByUnambiguousSeekWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveredByUnambiguousSeekWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1562,8 +1682,10 @@ public class SelectFsTest {
     assertThat(it.get()).isSameAs(expected[2]);
   }
 
-  @Test
-  public void thatSelectColocatedSeekToInitialThenMoveToNextWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectColocatedSeekToInitialThenMoveToNextWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1589,8 +1711,10 @@ public class SelectFsTest {
     assertThat(it.isValid());
   }
   
-  @Test
-  public void thatSelectCoveringSeekToInitialThenMoveToNextWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveringSeekToInitialThenMoveToNextWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1637,8 +1761,10 @@ public class SelectFsTest {
     assertThat(it.get()).isSameAs(expected[1]);
   }
   
-  @Test
-  public void thatSelectColocatedSeekWithLimitWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectColocatedSeekWithLimitWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1665,8 +1791,10 @@ public class SelectFsTest {
     assertThat(it.get()).isSameAs(expected[0]);
   }
   
-  @Test
-  public void thatSelectCoveringSeekThenMoveToNextWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectCoveringSeekThenMoveToNextWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1695,8 +1823,10 @@ public class SelectFsTest {
     assertThat(it.isValid()).isTrue();
   }
   
-  @Test
-  public void thatSelectColocatedSeekWorks() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectColocatedSeekWorks(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1722,8 +1852,10 @@ public class SelectFsTest {
     assertThat(it.isValid()).isTrue();
   }
   
-  @Test
-  public void thatSelectColocatedSeekWorks2() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectColocatedSeekWorks2(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1747,8 +1879,10 @@ public class SelectFsTest {
     assertThat(it.isValid()).isTrue();
   }
   
-  @Test
-  public void thatSelectColocatedSeekWorks3() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSelectColocatedSeekWorks3(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", "test.Type1");
@@ -1776,8 +1910,10 @@ public class SelectFsTest {
     assertThat(it.isValid()).isTrue();
   }  
   
-  @Test
-  public void thatSeekingIteratorToOutOfIndexPositionOnRightIsInvalid() throws Exception {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("prios")
+  public void thatSeekingIteratorToOutOfIndexPositionOnRightIsInvalid(Mode aMode, String[] aPrioTypeNames) throws Exception {
+    setup(aMode, aPrioTypeNames);
     TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION);
     tsd.addType("test.Type2", "", CAS.TYPE_NAME_ANNOTATION);

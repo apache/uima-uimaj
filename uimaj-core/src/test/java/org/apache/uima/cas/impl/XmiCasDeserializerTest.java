@@ -87,9 +87,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 
@@ -104,7 +104,7 @@ public class XmiCasDeserializerTest {
 
   private TypeSystemDescription typeSystem;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
@@ -123,7 +123,7 @@ public class XmiCasDeserializerTest {
    * test case for https://issues.apache.org/jira/projects/UIMA/issues/UIMA-5558
    * @throws Exception
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSerialize_with_0_length_array() throws Exception {
     
     TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
@@ -210,7 +210,7 @@ public class XmiCasDeserializerTest {
    * test case for https://issues.apache.org/jira/browse/UIMA-5532
    * @throws Exception
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSerialize_withPartialMultiRefs() throws Exception {
    
     TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
@@ -440,7 +440,7 @@ public class XmiCasDeserializerTest {
   /*
    * https://issues.apache.org/jira/browse/UIMA-3396
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDeltaCasIndexing() throws Exception {
     try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -482,7 +482,7 @@ public class XmiCasDeserializerTest {
     }
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMultiThreadedSerialize() throws Exception {
     try {
       File tsWithNoMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
@@ -681,7 +681,7 @@ public class XmiCasDeserializerTest {
     assertTrue(deserFsIter.hasNext());
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDeltaCasIndexExistingFsInNewView() throws Exception {
     CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
             indexes);
@@ -732,7 +732,7 @@ public class XmiCasDeserializerTest {
   }
 
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMultipleSofas() throws Exception {
     try {
       CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -798,7 +798,7 @@ public class XmiCasDeserializerTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testTypeSystemFiltering() throws Exception {
     try {
       // deserialize a complex CAS from XCAS
@@ -992,7 +992,7 @@ public class XmiCasDeserializerTest {
     assertTrue(v1cas.getDocumentText().equals("some text for the default text sofa."));
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDuplicateNsPrefixes() throws Exception {
     TypeSystemDescription ts = new TypeSystemDescription_impl();
     ts.addType("org.bar.foo.Foo", "", "uima.tcas.Annotation");
@@ -1019,12 +1019,12 @@ public class XmiCasDeserializerTest {
     CasComparer.assertEquals(cas, cas2);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMerging() throws Exception {
     testMerging(false);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDeltaCasMerging() throws Exception {
     testMerging(true);
   }
@@ -1340,7 +1340,7 @@ public class XmiCasDeserializerTest {
   }
   
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDeltaCasInvalidMarker() throws Exception {
 	  try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -1395,7 +1395,7 @@ public class XmiCasDeserializerTest {
   }
   
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDeltaCasNoChanges() throws Exception {
 	    try {
 	      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -1776,7 +1776,7 @@ public class XmiCasDeserializerTest {
     }
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDeltaCasListFS() throws Exception {
 	   try {
 	      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -1899,7 +1899,7 @@ public class XmiCasDeserializerTest {
   
   
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testOutOfTypeSystemData() throws Exception {
     // deserialize a simple XMI into a CAS with no TypeSystem    
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(),

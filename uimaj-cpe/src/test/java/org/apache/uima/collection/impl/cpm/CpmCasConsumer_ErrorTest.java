@@ -21,9 +21,9 @@ package org.apache.uima.collection.impl.cpm;
 
 import java.util.Iterator;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
@@ -133,7 +133,7 @@ public class CpmCasConsumer_ErrorTest {
    * 
    * @throws Exception -
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testInitializeWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
@@ -174,7 +174,7 @@ public class CpmCasConsumer_ErrorTest {
    * 
    * @throws Exception -
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testInitializeWithOutOfMemoryError() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
@@ -332,7 +332,7 @@ public class CpmCasConsumer_ErrorTest {
             exceptionSequence), FunctionErrorStore.getCount());
   }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }

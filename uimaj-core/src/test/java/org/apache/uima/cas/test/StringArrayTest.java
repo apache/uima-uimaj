@@ -28,9 +28,9 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -43,7 +43,7 @@ public class StringArrayTest {
 
   private TypeSystem ts;
 
-    @Before
+    @BeforeEach
     public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -53,7 +53,7 @@ public class StringArrayTest {
     }
   }
 
-    @After
+    @AfterEach
     public void tearDown() {
     this.cas = null;
     this.ts = null;
@@ -126,7 +126,7 @@ public class StringArrayTest {
     assertTrue(exceptionCaught);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testToArray() {
     // From CAS array to Java array.
     StringArrayFS array = this.cas.createStringArrayFS(3);
@@ -177,7 +177,7 @@ public class StringArrayTest {
   }
   
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testStringArrayNullValue() throws Exception{
      String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
     + CASTestSetup.LEMMA_LIST_FEAT;

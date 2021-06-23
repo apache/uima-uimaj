@@ -31,10 +31,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testclass for Sequencers with a capabilityLanguageFlow
@@ -44,7 +43,7 @@ public class SequencerCapabilityLanguageTest {
 
   private File testBaseDir = null;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
@@ -97,7 +96,7 @@ public class SequencerCapabilityLanguageTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsEn() throws Exception {
 
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en",
@@ -105,7 +104,7 @@ public class SequencerCapabilityLanguageTest {
 
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsEnResultSpec() throws Exception {
 
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en",
@@ -113,19 +112,19 @@ public class SequencerCapabilityLanguageTest {
 
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsEnUS() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en-US",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsEnUS.txt", false);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsEnUSResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en-US",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsEnResultSpec.txt", true);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsAr() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "ar",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt", false);
@@ -137,7 +136,7 @@ public class SequencerCapabilityLanguageTest {
             "SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt", true);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsUnkown() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "unknown",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", false);
@@ -149,19 +148,19 @@ public class SequencerCapabilityLanguageTest {
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", true);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsZhCN() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-CN",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt", false);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsZhCNResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-CN",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt", true);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsXunSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "x-unspecified",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", false);
@@ -173,31 +172,31 @@ public class SequencerCapabilityLanguageTest {
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", true);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEn() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "en",
             "SequencerTest/SequencerCapabilityLanguageExpectedEn.txt", false);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEnResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "en",
             "SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt", true);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEnResultSpecCapital() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "EN",
             "SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt", true);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageJa() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "ja",
             "SequencerTest/SequencerCapabilityLanguageExpectedJa.txt", false);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageJaResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "ja",
             "SequencerTest/SequencerCapabilityLanguageExpectedJaResultSpec.txt", true);
@@ -209,7 +208,7 @@ public class SequencerCapabilityLanguageTest {
             "SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt", false);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageXunSpecResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "x-unspecified",
             "SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt", true);
@@ -221,25 +220,25 @@ public class SequencerCapabilityLanguageTest {
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", false);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsFooBarResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "foo-BAR",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", true);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsZhCNSmall() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-cn",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt", false);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageEsZhCNResultSpecSmall() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-cn",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt", true);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerCapabilityLanguageResultSpecSetByFlowController() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateResultSpec.xml", "en",
             "SequencerTest/SequencerCapabilityLanguageExpectedResultSpecSetByFlowController.txt", false);

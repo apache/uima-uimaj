@@ -25,9 +25,9 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 public class PositiveIntSetTest {
@@ -80,7 +80,7 @@ public class PositiveIntSetTest {
   }
   
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testBasic() {
     PositiveIntSet_impl s = new PositiveIntSet_impl();
     s.add(128);
@@ -269,7 +269,7 @@ public class PositiveIntSetTest {
        1010, 1011, 1012, 1013, 1014, 1259}));
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testRandom() {
     long seed = rand.nextLong();
     System.out.println("PositiveIntSet test random seed = " + seed);

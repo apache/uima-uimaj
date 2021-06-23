@@ -22,9 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 public class Obj2IntIdentityHashMapTest {
@@ -42,12 +43,12 @@ public class Obj2IntIdentityHashMapTest {
 
   Map<Integer, Integer> im = new HashMap<>();
   
-    @Before
+    @BeforeEach
     public void setUp() {
     ihm = new Obj2IntIdentityHashMap<>(Integer.class, Integer.MIN_VALUE);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testBasic() {
     
     Integer I15 = 15;
@@ -113,7 +114,7 @@ public class Obj2IntIdentityHashMapTest {
     return im.get(v);
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testRandom() {
     int countAdd = 0;
     int dupsA = 0;

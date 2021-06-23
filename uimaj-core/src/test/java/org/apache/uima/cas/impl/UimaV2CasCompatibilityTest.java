@@ -39,7 +39,7 @@ import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.CasLoadMode;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UimaV2CasCompatibilityTest {
 
@@ -65,7 +65,7 @@ public class UimaV2CasCompatibilityTest {
     assertCasLoadsCorrectly("src/test/resources/uima-v2-serialized-cas/simpleCas.xmi", REINIT);
   }
 
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatReadingMixedV2andV3FilesWorks() throws Exception {
     assertCasMixedLoadingWorks("simpleCas.bins4", DEFAULT);
     assertCasMixedLoadingWorks("simpleCas.bins4", REINIT);

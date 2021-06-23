@@ -73,11 +73,12 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLSerializer;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 public class SofaTest {
@@ -95,7 +96,7 @@ public class SofaTest {
   private Feature otherFeat;
 
 //  private Feature annotSofaFeat;
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       this.casMgr = CASFactory.createCAS();
@@ -134,7 +135,7 @@ public class SofaTest {
     }
   }
   
-    @After
+    @AfterEach
     public void tearDown() {
     casMgr = null;
     cas = null;
@@ -147,7 +148,7 @@ public class SofaTest {
   /**
    * Test driver.
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMain() throws Exception {
     try {
 
@@ -360,7 +361,7 @@ public class SofaTest {
   /*
    * Test stream access to Sofa Data.
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSofaDataStream() throws Exception {
     try {
 
@@ -596,7 +597,7 @@ public class SofaTest {
     assertEquals(TEST_TEXT, testView.getSofaDataString());
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetSofaDataStringOnInitialView() {
     final String TEST_TEXT = "this is a test";
     final String TEST_MIME = "text/plain";
@@ -606,7 +607,7 @@ public class SofaTest {
     assertEquals(TEST_TEXT, this.cas.getSofaDataString());
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetSofaDataURI() {
     final String TEST_URI = "file:/test";
     final String TEST_MIME = "text/plain";
@@ -616,7 +617,7 @@ public class SofaTest {
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetSofaDataURIonInitialView() throws Exception {
     // This test uses platform encoding both for reading and writing.  
     String someText="remote text.";
@@ -651,7 +652,7 @@ public class SofaTest {
     assertTrue(testFile.delete());
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetSofaDataArray() {
     final String TEST_MIME = "text/plain";    
     CAS testView = this.cas.createView("TestView");
@@ -663,7 +664,7 @@ public class SofaTest {
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSetSofaDataArrayOnInitialView() {
     final String TEST_MIME = "text/plain";    
     ByteArrayFS sofaDataArray = this.cas.createByteArrayFS(2);
@@ -674,7 +675,7 @@ public class SofaTest {
     assertEquals(TEST_MIME, this.cas.getSofa().getSofaMime());
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testReset() {
     this.cas.reset();
     this.cas.setDocumentText("setDocumentText creates the _InitialView Sofa");
@@ -701,7 +702,7 @@ public class SofaTest {
     assertEquals(i, cas_s.length);
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetViewIterator() throws Exception {
     this.cas.reset();
     CAS view1 = this.cas.createView("View1");

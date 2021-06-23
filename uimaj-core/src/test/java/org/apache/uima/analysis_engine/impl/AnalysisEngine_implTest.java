@@ -26,13 +26,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -89,7 +87,6 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.FileCompare;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Settings;
@@ -100,9 +97,9 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.xml.sax.ContentHandler;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -110,7 +107,7 @@ import static org.junit.Assert.*;
  * 
  */
 public class AnalysisEngine_implTest {
-    @Test
+    @org.junit.jupiter.api.Test
     public void testInitialize() throws Exception {
     try {
       PrimitiveAnalysisEngine_impl ae1 = new PrimitiveAnalysisEngine_impl();
@@ -401,7 +398,7 @@ public class AnalysisEngine_implTest {
     assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testParameterGroups() throws Exception {
     // Check that both groups parameters and non-group parameters are validated
     XMLInputSource in = new XMLInputSource(
@@ -596,7 +593,7 @@ public class AnalysisEngine_implTest {
     ae.destroy();
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
@@ -1511,7 +1508,7 @@ public class AnalysisEngine_implTest {
   }
 
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testProcessWithError() throws Exception {
     try {
       //This test uses an aggregate AE fails if the document text is set to "ERROR".
@@ -1574,7 +1571,7 @@ public class AnalysisEngine_implTest {
     }    
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testThrottleLogging() throws Exception {
   //This test uses an aggregate AE fails if the document text is set to "ERROR".
     AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
@@ -1628,7 +1625,7 @@ public class AnalysisEngine_implTest {
     System.err.println("should see no logging above");
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testMissingSuper() throws Exception {
     try {
       // initialize simple primitive TextAnalysisEngine
@@ -1643,7 +1640,7 @@ public class AnalysisEngine_implTest {
       JUnitExtension.handleException(e);
     }
   }
-    @Test
+    @org.junit.jupiter.api.Test
     public void testManyDelegates() throws Exception {
     // test with and without validation - UIMA-2453
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
@@ -1740,7 +1737,7 @@ public class AnalysisEngine_implTest {
    * Creating a 2nd identical AE should be OK even if the types are assembled in a different order.
    * Creating an AE with an unseen type, type-priority, or index should fail. 
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAdditionalAEs() throws Exception {
 
     // Create an AE and "freeze" the type-system

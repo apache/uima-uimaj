@@ -39,9 +39,10 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 public class ArrayIndexTest implements TextAnnotator {
@@ -50,7 +51,7 @@ public class ArrayIndexTest implements TextAnnotator {
 
   private AnalysisEngine ae = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     // Start up TAE
     XMLInputSource input = new XMLInputSource(JUnitExtension
@@ -89,7 +90,7 @@ public class ArrayIndexTest implements TextAnnotator {
     return count;
   }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     this.ae.destroy();
   }

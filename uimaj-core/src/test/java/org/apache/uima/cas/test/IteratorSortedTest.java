@@ -33,8 +33,8 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -98,7 +98,7 @@ public class IteratorSortedTest {
     System.out.println("Iterator Test Sorted, random seed = " + seed); 
   }
     
-    @Before
+    @BeforeEach
     public void setUp() {
     CASImpl casMgr = (CASImpl) CASFactory.createCAS();
     TypeSystemImpl tsi = (TypeSystemImpl) casMgr.getTypeSystemMgr();

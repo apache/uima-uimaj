@@ -18,9 +18,9 @@
  */
 package org.apache.uima.jcas.tcas;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -55,7 +55,7 @@ public class DocumentAnnotationTest {
   private CAS source;
   private CAS target;
   
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
@@ -74,7 +74,7 @@ public class DocumentAnnotationTest {
     }
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testCreateDocumentAnnot() throws Exception {
     try {
       DocumentAnnotation b = (DocumentAnnotation) jcas.getDocumentAnnotationFs();
@@ -85,7 +85,7 @@ public class DocumentAnnotationTest {
     }
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testDocMeta() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem_docmetadata.xml");
     TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
@@ -124,7 +124,7 @@ public class DocumentAnnotationTest {
     assertTrue(CasCompare.compareCASes((CASImpl)source, (CASImpl)target));
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testToString() throws InvalidXMLException, IOException, ResourceInitializationException, CASException {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem_docmetadata.xml");
     TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(

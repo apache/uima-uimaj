@@ -22,9 +22,9 @@ package org.apache.uima.collection.impl.cpm;
 import java.util.Date;
 import java.util.Iterator;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
@@ -95,7 +95,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetNextWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 5; // the sequence in which errors are produced
@@ -136,7 +136,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetNextWithCollectionException() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 2; // the sequence in which errors are produced
@@ -173,7 +173,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetNextWithIOException() throws Exception {
       int TIMEOUT = 10; // seconds, till the test is aborted
       int documentCount = 20; // number of documents processed
@@ -229,7 +229,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetNextWithNullPointerException() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 2; // the sequence in which errors are produced
@@ -267,7 +267,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHasNextWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 4; // the sequence in which errors are produced
@@ -303,7 +303,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testHasNextWithNullPointerException() throws Exception {
       int TIMEOUT = 20; // seconds, till the test is aborted
       int documentCount = 30; // number of documents processed
@@ -356,7 +356,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testInitializeWithResourceInitializationException()
          throws Exception {
       int documentCount = 20; // number of documents processed
@@ -461,7 +461,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testInitializeWithOutOfMemoryError() throws Exception {
       boolean outOfMemoryError = false;
       int documentCount = 20; // number of documents processed
@@ -511,7 +511,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetProgressWithIOException() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 3; // the sequence in which errors are produced
@@ -553,7 +553,7 @@ public class CpmCollectionReader_ErrorTest {
     * 
     * @throws Exception -
     */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetProcessWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
       int exceptionSequence = 3; // the sequence in which errors are produced
@@ -665,7 +665,7 @@ public class CpmCollectionReader_ErrorTest {
    // // that's it.
    // }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
       FunctionErrorStore.resetCount();
 //      System.gc();

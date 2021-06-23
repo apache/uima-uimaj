@@ -36,9 +36,10 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 public class IndexCorruptionReportingTest {
@@ -60,7 +61,7 @@ public class IndexCorruptionReportingTest {
   File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
   File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));

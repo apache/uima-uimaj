@@ -29,17 +29,16 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the ResourceServiceAdapter_impl class.
  * 
  */
 public class ResourceServiceAdapter_implTest {
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     try {
       mServiceStub = new TestResourceServiceStub();

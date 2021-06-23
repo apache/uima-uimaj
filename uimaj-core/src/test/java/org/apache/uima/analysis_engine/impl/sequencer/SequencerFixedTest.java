@@ -32,10 +32,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /*
  */
@@ -46,13 +45,13 @@ import static org.junit.Assert.*;
 public class SequencerFixedTest {
   private File testBaseDir;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     // get test base path
     this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerFixedEn() throws Exception {
     AnalysisEngine ae = null;
     try {
@@ -97,7 +96,7 @@ public class SequencerFixedTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerFixedEN() throws Exception {
     AnalysisEngine ae = null;
     try {
@@ -142,7 +141,7 @@ public class SequencerFixedTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerFixedEnUS() throws Exception {
     AnalysisEngine ae = null;
     try {
@@ -187,7 +186,7 @@ public class SequencerFixedTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerFixedEnus() throws Exception {
     AnalysisEngine ae = null;
     try {
@@ -232,7 +231,7 @@ public class SequencerFixedTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerFixedUnkown() throws Exception {
     AnalysisEngine ae = null;
     try {
@@ -277,7 +276,7 @@ public class SequencerFixedTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testSequencerFixedFooBar() throws Exception {
     AnalysisEngine ae = null;
     try {

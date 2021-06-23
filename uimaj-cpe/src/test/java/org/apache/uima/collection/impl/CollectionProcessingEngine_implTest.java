@@ -23,32 +23,29 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CasInitializer;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.CollectionReader;
-import org.apache.uima.collection.EntityProcessStatus;
-import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.impl.cpm.utils.TestStatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.BeforeEach;
 
 public class CollectionProcessingEngine_implTest {
   protected final String TEST_DATAPATH = JUnitExtension.getFile(
       "CollectionProcessingEngineImplTest").getPath()
       + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     File referenceFile = JUnitExtension
 	.getFile("CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml");

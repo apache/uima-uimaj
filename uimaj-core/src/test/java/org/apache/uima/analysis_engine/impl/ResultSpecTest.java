@@ -36,9 +36,10 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.*;
 
 public class ResultSpecTest {
@@ -63,7 +64,7 @@ public class ResultSpecTest {
   /**
    * Tests for https://issues.apache.org/jira/browse/UIMA-1840
    */
-    @Test
+    @org.junit.jupiter.api.Test
     public void testIntersection() {
     checkl(X, I, X, I, X);
     checkl(X, I, EN, I,            EN);
@@ -154,7 +155,7 @@ public class ResultSpecTest {
     }
   }
   
-    @Test
+    @org.junit.jupiter.api.Test
     public void testComputeAnalysisComponentResultSpecInherit() throws Exception {
     try {
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()

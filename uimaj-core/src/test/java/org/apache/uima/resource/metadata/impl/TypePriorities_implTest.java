@@ -30,14 +30,15 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 
 public class TypePriorities_implTest {
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
   }
@@ -45,12 +46,12 @@ public class TypePriorities_implTest {
   /*
    * @see TestCase#tearDown()
    */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testBuildFromXmlElement() throws Exception {
     try {
       // simple type priorties (backwards compatibility check)
@@ -134,7 +135,7 @@ public class TypePriorities_implTest {
     }
   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testClone() throws Exception {
     try {
       File descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/TestTypePriorities.xml");

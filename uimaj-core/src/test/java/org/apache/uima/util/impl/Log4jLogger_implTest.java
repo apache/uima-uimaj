@@ -27,9 +27,9 @@ import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -37,12 +37,12 @@ import static org.junit.Assert.*;
  */
 public class Log4jLogger_implTest {
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 //      BasicConfigurator.configure();
    }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
 //      BasicConfigurator.resetConfiguration();
    }
@@ -61,7 +61,7 @@ public class Log4jLogger_implTest {
 //      logLevels.put("ALL", Level.ALL);
 //   }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLogWrapperCreation() throws Exception {
       org.apache.uima.util.Logger uimaLogger = Log4jLogger_impl.getInstance();
       org.apache.uima.util.Logger classLogger = Log4jLogger_impl
