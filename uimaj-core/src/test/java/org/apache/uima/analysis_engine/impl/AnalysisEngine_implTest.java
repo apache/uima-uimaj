@@ -100,13 +100,16 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.xml.sax.ContentHandler;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Tests the TextAnalysisEngine_impl class.
  * 
  */
-public class AnalysisEngine_implTest extends TestCase {
+public class AnalysisEngine_implTest {
   /**
    * Constructor for TextAnalysisEngine_implTest.
    * 
@@ -119,11 +122,8 @@ public class AnalysisEngine_implTest extends TestCase {
   /**
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  public void testInitialize() throws Exception {
+    @Test
+    public void testInitialize() throws Exception {
     try {
       PrimitiveAnalysisEngine_impl ae1 = new PrimitiveAnalysisEngine_impl();
 
@@ -413,7 +413,8 @@ public class AnalysisEngine_implTest extends TestCase {
     assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
   }
 
-  public void testParameterGroups() throws Exception {
+    @Test
+    public void testParameterGroups() throws Exception {
     // Check that both groups parameters and non-group parameters are validated
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithGroupParameterError.xml"));
@@ -456,7 +457,8 @@ public class AnalysisEngine_implTest extends TestCase {
 //  }
   
   
-  public void testProcess() throws Exception {
+    @Test
+    public void testProcess() throws Exception {
     try {
       // test simple primitive TextAnalysisEngine (using TestAnnotator class)
       // This test should work with or without a type system description
@@ -612,7 +614,8 @@ public class AnalysisEngine_implTest extends TestCase {
     ae.destroy();
   }
 
-  public void testReconfigure() throws Exception {
+    @Test
+    public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
@@ -679,7 +682,8 @@ public class AnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testCreateAnalysisProcessData() throws Exception {
+    @Test
+    public void testCreateAnalysisProcessData() throws Exception {
     try {
       // create simple primitive TAE with type system and indexes
       AnalysisEngineDescription desc = new AnalysisEngineDescription_impl();
@@ -817,7 +821,8 @@ public class AnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testProcessDelegateAnalysisEngineMetaData() throws Exception {
+    @Test
+    public void testProcessDelegateAnalysisEngineMetaData() throws Exception {
     try {
       // create aggregate analysis engine whose delegates each declare
       // type system, type priorities, and indexes
@@ -917,7 +922,8 @@ public class AnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testCollectionProcessComplete() throws Exception {
+    @Test
+    public void testCollectionProcessComplete() throws Exception {
     try {
       // test simple primitive TextAnalysisEngine (using TestAnnotator class)
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
@@ -951,7 +957,8 @@ public class AnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testBatchProcessComplete() throws Exception {
+    @Test
+    public void testBatchProcessComplete() throws Exception {
     try {
       // test simple primitive TextAnalysisEngine (using TestAnnotator class)
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
@@ -979,7 +986,8 @@ public class AnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testTypeSystemInit() throws Exception {
+    @Test
+    public void testTypeSystemInit() throws Exception {
     try {
       AnalysisEngineDescription aggWithCcDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension
@@ -996,7 +1004,8 @@ public class AnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testProcessAndOutputNewCASes() throws Exception {
+    @Test
+    public void testProcessAndOutputNewCASes() throws Exception {
     try {
       // primitive
       AnalysisEngineDescription segmenterDesc = UIMAFramework.getXMLParser()
@@ -1216,7 +1225,8 @@ public class AnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testProcessAndOutputNewCASesWithError() throws Exception {
+    @Test
+    public void testProcessAndOutputNewCASesWithError() throws Exception {
     try {
       // aggregate
       AnalysisEngineDescription aggSegDesc = UIMAFramework
@@ -1433,7 +1443,8 @@ public class AnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testResegment() throws Exception {
+    @Test
+    public void testResegment() throws Exception {
     try {
       // primitive
       AnalysisEngineDescription segmenterDesc = UIMAFramework.getXMLParser()
@@ -1518,7 +1529,8 @@ public class AnalysisEngine_implTest extends TestCase {
   }
 
 
-  public void testProcessWithError() throws Exception {
+    @Test
+    public void testProcessWithError() throws Exception {
     try {
       //This test uses an aggregate AE fails if the document text is set to "ERROR".
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
@@ -1580,7 +1592,8 @@ public class AnalysisEngine_implTest extends TestCase {
     }    
   }
   
-  public void testThrottleLogging() throws Exception {
+    @Test
+    public void testThrottleLogging() throws Exception {
   //This test uses an aggregate AE fails if the document text is set to "ERROR".
     AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
             .parseAnalysisEngineDescription(
@@ -1633,7 +1646,8 @@ public class AnalysisEngine_implTest extends TestCase {
     System.err.println("should see no logging above");
   }
   
-  public void testMissingSuper() throws Exception {
+    @Test
+    public void testMissingSuper() throws Exception {
     try {
       // initialize simple primitive TextAnalysisEngine
       AnalysisEngine ae1 = new PrimitiveAnalysisEngine_impl();
@@ -1647,7 +1661,8 @@ public class AnalysisEngine_implTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
-  public void testManyDelegates() throws Exception {
+    @Test
+    public void testManyDelegates() throws Exception {
     // test with and without validation - UIMA-2453
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
     try {
@@ -1705,7 +1720,8 @@ public class AnalysisEngine_implTest extends TestCase {
     cloneFile.delete();
   }
 
-  public void testMultiViewAnnotatorInput() throws Exception {
+    @Test
+    public void testMultiViewAnnotatorInput() throws Exception {
     try {
       AnalysisEngineDescription transAnnotatorDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension
@@ -1742,7 +1758,8 @@ public class AnalysisEngine_implTest extends TestCase {
    * Creating a 2nd identical AE should be OK even if the types are assembled in a different order.
    * Creating an AE with an unseen type, type-priority, or index should fail. 
    */
-  public void testAdditionalAEs() throws Exception {
+    @Test
+    public void testAdditionalAEs() throws Exception {
 
     // Create an AE and "freeze" the type-system
     AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(

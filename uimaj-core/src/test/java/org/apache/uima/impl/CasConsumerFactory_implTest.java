@@ -25,18 +25,23 @@ import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.impl.CasConsumerDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class CasConsumerFactory_implTest extends TestCase {
+public class CasConsumerFactory_implTest {
  
   private CasConsumerFactory_impl ccFactory;
 
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     ccFactory = new CasConsumerFactory_impl();
   }
 
-  public void testInvalidFrameworkImplementation() {
+    @Test
+    public void testInvalidFrameworkImplementation() {
     CasConsumerDescription desc = new CasConsumerDescription_impl();
     desc.setFrameworkImplementation("foo");    
     try {

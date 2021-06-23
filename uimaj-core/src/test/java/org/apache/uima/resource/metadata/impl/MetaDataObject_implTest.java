@@ -61,8 +61,8 @@ public class MetaDataObject_implTest {
   private TestFruitObject orange;
   private TestFruitBagObject fruitBag;
 
-  @Before
-  public void setUp() {
+    @Before
+    public void setUp() {
     // create an object that can represent a fruit
     unknownFruit = new TestFruitObject();
   
@@ -117,8 +117,8 @@ public class MetaDataObject_implTest {
   /**
    * Test the getAttributes method
    */
-  @Test
-  public void testGetAttributes() throws Exception {
+    @Test
+    public void testGetAttributes() throws Exception {
     assertThat(apple1.getAttributes()).containsAll(TestFruitObject.getMetaDataAttrSet());
     assertThat(orange.getAttributes()).containsAll(TestFruitObject.getMetaDataAttrSet());
     assertThat(fruitBag.getAttributes()).containsAll(TestFruitBagObject.getMetaDataAttrSet());
@@ -127,8 +127,8 @@ public class MetaDataObject_implTest {
   /**
    * Tests the {@link MetaDataObject#equals(Object)} method.
    */
-  @Test
-  public void testEquals() throws Exception {
+    @Test
+    public void testEquals() throws Exception {
     assertThat(unknownFruit).isEqualTo(unknownFruit);
     assertThat(apple1).isEqualTo(apple2);
     assertThat(apple2).isEqualTo(apple1);
@@ -160,8 +160,8 @@ public class MetaDataObject_implTest {
   /**
    * Tests the {@link MetaDataObject#toString()} method.
    */
-  @Test
-  public void testToString() throws Exception {
+    @Test
+    public void testToString() throws Exception {
     String apple1Str = apple1.toString();
     String apple2Str = apple2.toString();
     String orangeStr = orange.toString();
@@ -176,8 +176,8 @@ public class MetaDataObject_implTest {
    * exercise the {@link MetaDataObject#getAttributeValue(String)} and
    * {@link MetaDataObject#setAttributeValue(String,Object)} methods.
    */
-  @Test
-  public void testXMLization() throws Exception {
+    @Test
+    public void testXMLization() throws Exception {
     // write objects to XML
     String apple1xml = toXmlString(apple1);
     String apple2xml = toXmlString(apple2);
@@ -247,8 +247,8 @@ public class MetaDataObject_implTest {
     Assert.assertEquals("raspberry", raspberry.getName());
   }
 
-  @Test
-  public void testSerialization() throws Exception {
+    @Test
+    public void testSerialization() throws Exception {
     assertThat(deserialize(serialize(apple1)))
         .isInstanceOf(TestFruitObject.class)
         .isEqualTo(apple1);

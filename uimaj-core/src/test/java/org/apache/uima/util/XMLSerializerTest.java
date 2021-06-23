@@ -25,15 +25,19 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.apache.uima.internal.util.XMLUtils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class XMLSerializerTest extends TestCase {
+public class XMLSerializerTest {
 
-  public void testXml10() throws Exception {
+    @Test
+    public void testXml10() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);
     ContentHandler ch = sax2xml.getContentHandler();    
@@ -45,7 +49,8 @@ public class XMLSerializerTest extends TestCase {
     assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><foo/>", xmlStr);    
   }
   
-  public void testXml11() throws Exception {
+    @Test
+    public void testXml11() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);
     sax2xml.setOutputProperty(OutputKeys.VERSION, "1.1");
@@ -75,7 +80,8 @@ public class XMLSerializerTest extends TestCase {
     assertEquals("<?xml version=\"1.1\" encoding=\"UTF-8\"?><foo/>", xmlStr);
   }
   
-  public void testXml10Error() throws Exception {
+    @Test
+    public void testXml10Error() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);
     ContentHandler ch = sax2xml.getContentHandler();    
@@ -95,7 +101,8 @@ public class XMLSerializerTest extends TestCase {
     assertTrue(eh);
   }
 
-  public void testXml11Error() throws Exception {
+    @Test
+    public void testXml11Error() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);
     sax2xml.setOutputProperty(OutputKeys.VERSION, "1.1");
@@ -113,7 +120,8 @@ public class XMLSerializerTest extends TestCase {
     assertFalse(eh);
   }
 
-  public void testXml11Error2() throws Exception {
+    @Test
+    public void testXml11Error2() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);
     sax2xml.setOutputProperty(OutputKeys.VERSION, "1.1");

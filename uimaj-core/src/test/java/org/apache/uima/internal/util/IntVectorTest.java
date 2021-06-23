@@ -32,12 +32,16 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class IntVectorTest extends TestCase {
+public class IntVectorTest {
 
-  public void testSortDedup() throws Exception {
+    @Test
+    public void testSortDedup() throws Exception {
     IntVector iv = new IntVector();
     iv.add(new int[] {5, 3, 2, 7, 5, 3, 4, 5, 6, 5, 9, 8, 7});
     iv.sortDedup();
@@ -62,7 +66,8 @@ public class IntVectorTest extends TestCase {
   
   // verify that several CASes in a pool in different views share the same type system
   
-  public void testPool() throws Exception {
+    @Test
+    public void testPool() throws Exception {
     try {
       
       AnalysisEngineDescription aed = (AnalysisEngineDescription)UIMAFramework.getXMLParser().parse(

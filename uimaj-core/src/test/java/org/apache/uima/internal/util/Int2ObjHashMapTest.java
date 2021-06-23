@@ -22,9 +22,12 @@ import java.util.Random;
 
 import org.apache.uima.util.IntEntry;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class Int2ObjHashMapTest extends TestCase {
+public class Int2ObjHashMapTest {
   
   // a number of extras needed to cause rebalance
   // is > 1 because it might turn out randomly that
@@ -34,11 +37,13 @@ public class Int2ObjHashMapTest extends TestCase {
 
   Int2ObjHashMap<Integer, Integer> ihm;
   
-  public void setUp() {
+    @Before
+    public void setUp() {
     ihm = new Int2ObjHashMap<>(Integer.class);
   }
 
-  public void testBasic() {
+    @Test
+    public void testBasic() {
     
     ihm.put(15, 150);
     ihm.put(188, 1880);
@@ -62,7 +67,8 @@ public class Int2ObjHashMapTest extends TestCase {
     
   }
   
-  public void testRebalance() {
+    @Test
+    public void testRebalance() {
     // 100 elements, require 256 table (128 * .66 = 85)
     for (int i = 1; i < 101; i++) {
       ihm.put(i, i * 10);
@@ -93,7 +99,8 @@ public class Int2ObjHashMapTest extends TestCase {
     
   }
   
-  public void testRandom() {
+    @Test
+    public void testRandom() {
     int countAdd = 0;
     int dupsA = 0;
     int notPres = 0;

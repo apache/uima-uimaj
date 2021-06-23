@@ -40,10 +40,13 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class AnalysisEnginePoolTest extends TestCase {
+public class AnalysisEnginePoolTest {
 
   private TypeSystem mLastTypeSystem;
 
@@ -59,7 +62,8 @@ public class AnalysisEnginePoolTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       super.setUp();
       mSimpleDesc = new AnalysisEngineDescription_impl();
@@ -79,7 +83,8 @@ public class AnalysisEnginePoolTest extends TestCase {
     }
   }
 
-  public void testGetAnalysisEngineMetaData() throws Exception {
+    @Test
+    public void testGetAnalysisEngineMetaData() throws Exception {
     AnalysisEnginePool pool = null;
     try {
       // create pool
@@ -97,7 +102,8 @@ public class AnalysisEnginePoolTest extends TestCase {
     }
   }
 
-  public void testProcess() throws Exception {
+    @Test
+    public void testProcess() throws Exception {
     try {
       // test simple primitive MultithreadableTextAnalysisEngine
       // (using TestAnnotator class)
@@ -155,7 +161,8 @@ public class AnalysisEnginePoolTest extends TestCase {
    
   }
 
-  public void testReconfigure() throws Exception {
+    @Test
+    public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();

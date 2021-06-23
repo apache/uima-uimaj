@@ -46,22 +46,22 @@ public class PearInstallationVerificationTest {
   // Temporary working directory, used to install the pear package
   public @Rule TemporaryFolder temp = new TemporaryFolder();
   
-  @Test
-  public void testAePearVerification() throws Exception {
+    @Test
+    public void testAePearVerification() throws Exception {
     assertThatPearInstalls(
             getFile("pearTests/analysisEngine.pear"), 
             temp.newFolder("pear_verification_test_tmp"));
   }
 
-  @Test
-  public void testCcPearVerification() throws Exception {
+    @Test
+    public void testCcPearVerification() throws Exception {
     assertThatPearInstalls(
             getFile("pearTests/casConsumer.pear"), 
             temp.newFolder("pear_verification_test_tmp"));
   }
 
-  @Test
-  public void testTsPearVerification() throws Exception {
+    @Test
+    public void testTsPearVerification() throws Exception {
     assertThatPearInstalls(
             getFile("pearTests/typeSystem.pear"), 
             temp.newFolder("pear_verification_test_tmp"));

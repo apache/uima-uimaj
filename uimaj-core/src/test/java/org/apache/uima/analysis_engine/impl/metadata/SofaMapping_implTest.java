@@ -31,9 +31,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Assert;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class SofaMapping_implTest extends TestCase {
+public class SofaMapping_implTest {
   SofaMapping_impl sm1;
 
   SofaMapping_impl sm2;
@@ -43,7 +46,8 @@ public class SofaMapping_implTest extends TestCase {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     super.setUp();
     sm1 = new SofaMapping_impl();
     sm1.setAggregateSofaName("aggSofa");
@@ -55,7 +59,8 @@ public class SofaMapping_implTest extends TestCase {
     sm2.setComponentKey("myAnnotator2");
   }
 
-  public void testXmlization() throws Exception {
+    @Test
+    public void testXmlization() throws Exception {
     try {
       // write to XML
       StringWriter writer = new StringWriter();

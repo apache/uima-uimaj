@@ -36,9 +36,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class IndexCorruptionReportingTest extends TestCase {
+public class IndexCorruptionReportingTest {
   
   static {
     System.setProperty("uima.report_fs_update_corrupts_index", "true");
@@ -57,7 +60,8 @@ public class IndexCorruptionReportingTest extends TestCase {
   File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
   File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
@@ -71,11 +75,8 @@ public class IndexCorruptionReportingTest extends TestCase {
     return new FsIndex_bag<>(cas, ts.getTopType(), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
-  public void testReport() throws Exception {
+    @Test
+    public void testReport() throws Exception {
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 10);
     a.addToIndexes();

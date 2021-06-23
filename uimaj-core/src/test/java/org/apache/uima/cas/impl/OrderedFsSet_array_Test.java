@@ -45,9 +45,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class OrderedFsSet_array_Test extends TestCase {
+public class OrderedFsSet_array_Test {
 
   static File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
   static int SZ = 23;
@@ -70,7 +73,8 @@ public class OrderedFsSet_array_Test extends TestCase {
   
   private OrderedFsSet_array<TOP> a;   
   
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     
     TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));
@@ -91,7 +95,8 @@ public class OrderedFsSet_array_Test extends TestCase {
    *   remove n, insert n in random order
    * 
    */
-  public void testInsert() {
+    @Test
+    public void testInsert() {
     int i = 0;
 //    for (; i < 100; i++) {  //enable for lots of iterationss, disable for normal test case
       seed = r.nextLong();

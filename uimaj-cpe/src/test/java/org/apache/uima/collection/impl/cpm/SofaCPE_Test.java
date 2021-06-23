@@ -21,7 +21,10 @@ package org.apache.uima.collection.impl.cpm;
 
 import java.io.File;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -32,7 +35,7 @@ import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-public class SofaCPE_Test extends TestCase {
+public class SofaCPE_Test {
 
   private File cpeSpecifierFile = null;
 
@@ -54,7 +57,8 @@ public class SofaCPE_Test extends TestCase {
     super(arg0);
   }
 
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
     cpeSpecifierFile = JUnitExtension.getFile("CpeSofaTest/SofaCPE.xml");
     // Use the specifier file to determine where the specifiers live.
@@ -69,7 +73,8 @@ public class SofaCPE_Test extends TestCase {
     firstFailure = null;
   }
 
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     cpeDesc = null;
     cpe = null;
     cpeSpecifierFile = null;
@@ -77,7 +82,8 @@ public class SofaCPE_Test extends TestCase {
 //    System.gc();
   }
 
-  public void testProcess() throws Throwable {
+    @Test
+    public void testProcess() throws Throwable {
     // System.out.println("method testProcess");
     try {
       cpe.process();

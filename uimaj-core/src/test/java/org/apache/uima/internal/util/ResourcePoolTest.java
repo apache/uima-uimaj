@@ -29,13 +29,16 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.Level;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Tests the ResourcePool_impl class.
  * 
  */
-public class ResourcePoolTest extends TestCase {
+public class ResourcePoolTest {
   /**
    * Constructor for ResourcePool_implTest.
    * 
@@ -48,7 +51,8 @@ public class ResourcePoolTest extends TestCase {
   /**
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       super.setUp();
       // create resource specifier and a pool containing 3 instances
@@ -63,7 +67,8 @@ public class ResourcePoolTest extends TestCase {
     }
   }
   
-  public void tearDown() {
+    @After
+    public void tearDown() {
     mDesc = null;
     pool1.destroy();
     pool1 = null;
@@ -72,7 +77,8 @@ public class ResourcePoolTest extends TestCase {
   /*
    * Test for Resource_impl getResource()
    */
-  public void testGetResource() throws Exception {
+    @Test
+    public void testGetResource() throws Exception {
     try {
       Assert.assertEquals(3, pool1.getFreeInstances().size());
 
@@ -102,7 +108,8 @@ public class ResourcePoolTest extends TestCase {
   /*
    * Test for Resource_impl getResource(long)
    */
-  public void testGetResourceJ() throws Exception {
+    @Test
+    public void testGetResourceJ() throws Exception {
     try {
       // ask for resources with timeout of 1 second. should respond quickly
       // until resources are exhausted, then it will pause 1 second before
@@ -149,7 +156,8 @@ public class ResourcePoolTest extends TestCase {
     }
   }
 
-  public void testReleaseResource() throws Exception {
+    @Test
+    public void testReleaseResource() throws Exception {
     try {
       // acquire all the resources
       Assert.assertEquals(3, pool1.getFreeInstances().size());
@@ -183,7 +191,8 @@ public class ResourcePoolTest extends TestCase {
     }
   }
 
-  public void testDestroy() throws Exception {
+    @Test
+    public void testDestroy() throws Exception {
     try {
       // do some stuff
       Resource foo = pool1.getResource();
@@ -206,7 +215,8 @@ public class ResourcePoolTest extends TestCase {
     }
   }
 
-  public void testGetMetaData() throws Exception {
+    @Test
+    public void testGetMetaData() throws Exception {
     try {
       ResourceMetaData descMetaData = mDesc.getMetaData();
       ResourceMetaData poolMetaData = pool1.getMetaData();

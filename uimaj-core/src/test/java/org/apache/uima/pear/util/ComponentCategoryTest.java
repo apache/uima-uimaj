@@ -25,7 +25,10 @@ import java.io.FileNotFoundException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * The <code>ComponentCategoryTest</code> class provides JUnit test cases for the
@@ -33,7 +36,7 @@ import junit.framework.TestCase;
  * based on the sample XML descriptors located in the 'pearTests/componentCategoryTests' folder.
  * 
  */
-public class ComponentCategoryTest extends TestCase {
+public class ComponentCategoryTest {
   // relative location of test descriptors
   private static String TEST_FOLDER = "pearTests/componentCategoryTests";
 
@@ -54,7 +57,8 @@ public class ComponentCategoryTest extends TestCase {
   /**
    * Runs test case for Analysis Engine descriptor.
    */
-  public void testAeDescriptor() throws Exception {
+    @Test
+    public void testAeDescriptor() throws Exception {
     File aeDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + AE_DESC_NAME);
     if (!aeDescFile.isFile())
       throw new FileNotFoundException("AE descriptor not found");
@@ -65,7 +69,8 @@ public class ComponentCategoryTest extends TestCase {
   /**
    * Runs test case for CAS Consumer descriptor.
    */
-  public void testCcDescriptor() throws Exception {
+    @Test
+    public void testCcDescriptor() throws Exception {
     File ccDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CC_DESC_NAME);
     if (!ccDescFile.isFile())
       throw new FileNotFoundException("CC descriptor not found");
@@ -76,7 +81,8 @@ public class ComponentCategoryTest extends TestCase {
   /**
    * Runs test case for CAS Initializer descriptor.
    */
-  public void testCiDescriptor() throws Exception {
+    @Test
+    public void testCiDescriptor() throws Exception {
     File ciDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CI_DESC_NAME);
     if (!ciDescFile.isFile())
       throw new FileNotFoundException("CI descriptor not found");
@@ -87,7 +93,8 @@ public class ComponentCategoryTest extends TestCase {
   /**
    * Runs test case for Collection Reader descriptor.
    */
-  public void testCrDescriptor() throws Exception {
+    @Test
+    public void testCrDescriptor() throws Exception {
     File crDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CR_DESC_NAME);
     if (!crDescFile.isFile())
       throw new FileNotFoundException("CR descriptor not found");
@@ -98,7 +105,8 @@ public class ComponentCategoryTest extends TestCase {
   /**
    * Runs test case for Type System descriptor.
    */
-  public void testTsDescriptor() throws Exception {
+    @Test
+    public void testTsDescriptor() throws Exception {
     File tsDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + TS_DESC_NAME);
     if (!tsDescFile.isFile())
       throw new FileNotFoundException("TS descriptor not found");

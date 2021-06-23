@@ -41,13 +41,16 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Class comment for FilteredIteratorTest.java goes here.
  * 
  */
-public class AnnotationIndexTest extends TestCase {
+public class AnnotationIndexTest {
   
 //  static class Miter {
 //    final int outerIter;
@@ -102,7 +105,8 @@ public class AnnotationIndexTest extends TestCase {
 //  public static ThreadLocal<long[]> startIter = ThreadLocal.withInitial(() -> new long[1]);
   
 
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     long startTime = System.nanoTime();
     TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));
@@ -139,7 +143,8 @@ public class AnnotationIndexTest extends TestCase {
    *   remove n, insert n in random order
    * 
    */
-   public void testInsert() {
+    @Test
+    public void testInsert() {
     insert1(0);
     valTime = 0L;
     long startTime = System.nanoTime();

@@ -21,11 +21,14 @@ package org.apache.uima.internal.util;
 
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
 
-public class Int2IntPerfTest extends TestCase {
+public class Int2IntPerfTest {
   /**
    * Set to false to run the performance test
    */
@@ -44,7 +47,8 @@ public class Int2IntPerfTest extends TestCase {
   int k10ki = 0;
   
   
-  public void testPerf() {
+    @Test
+    public void testPerf() {
     if (SKIP) return;
     m1 = new Int2IntRBT(16);
 //    m2 = new Int2IntHashMap(16);

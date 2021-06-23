@@ -42,14 +42,18 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class FeaturePathTest extends TestCase {
+public class FeaturePathTest {
 
    /*
     * Tests all primitive feature path types.
     */
-   public void testPrimitiveFeaturePathTypes() throws Exception {
+    @Test
+    public void testPrimitiveFeaturePathTypes() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -223,7 +227,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests advanced feature paths.
     */
-   public void testAdvancedFeaturePaths() throws Exception {
+    @Test
+    public void testAdvancedFeaturePaths() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -337,7 +342,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests the supported built-in functions for the feature path
     */
-   public void testBuiltInFeaturePathFunctions() throws Exception {
+    @Test
+    public void testBuiltInFeaturePathFunctions() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -446,7 +452,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests some error conditions for the feature path implementation
     */
-   public void testErrorCases() throws Exception {
+    @Test
+    public void testErrorCases() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -596,7 +603,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests the addFeature() API
     */
-   public void testAddAPI() throws Exception {
+    @Test
+    public void testAddAPI() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -650,7 +658,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests the addFeature() API together with initialize()
     */
-   public void testInitializeWithAddAPI() throws Exception {
+    @Test
+    public void testInitializeWithAddAPI() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -690,7 +699,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests all array types.
     */
-   public void testArrayTypes() throws Exception {
+    @Test
+    public void testArrayTypes() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));

@@ -38,13 +38,16 @@ import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test the variations possible for index compare functions
  * 
  */
-public class IndexComparitorTest extends TestCase {
+public class IndexComparitorTest {
 
   CAS cas;
 
@@ -245,7 +248,8 @@ public class IndexComparitorTest extends TestCase {
     }
   }
 
-  public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       this.cas = CASInitializer.initCas(new SetupForIndexCompareTesting(), ts -> reinitTypes(ts));
       assertNotNull(cas);
@@ -324,7 +328,8 @@ public class IndexComparitorTest extends TestCase {
     type1Sub2Ignored = tsm.refreshFeature(type1Sub2Ignored);
   }
 
-  public void tearDown() {
+    @After
+    public void tearDown() {
     fss = null;
     this.cas = null;
     this.ts = null;
@@ -371,7 +376,8 @@ public class IndexComparitorTest extends TestCase {
     return f;
   }
 
-  public void testFindSubtype() throws Exception {
+    @Test
+    public void testFindSubtype() throws Exception {
     cas.reset();
     
     ir.addFS(createFs(type1, 0, 0));
@@ -389,7 +395,8 @@ public class IndexComparitorTest extends TestCase {
     assertTrue(sortedType1Sub1.contains(testProbeSuper));
   }
   
-  public void testCompare() throws Exception {
+    @Test
+    public void testCompare() throws Exception {
     try {
       assertTrue(0 == sortedType1.compare(fss[0][0][0], fss[0][0][1]));
       assertTrue(1 == sortedType1.compare(fss[0][1][0], fss[0][0][0]));
@@ -535,7 +542,8 @@ public class IndexComparitorTest extends TestCase {
    *      see if moveTo finds both
    *      see if iterator returns both  
    */
-  public void testSetUsesType() throws Exception {
+    @Test
+    public void testSetUsesType() throws Exception {
     cas.reset();
     
     ir.addFS(createFs(type1, 1, 1));
@@ -559,7 +567,8 @@ public class IndexComparitorTest extends TestCase {
   
 
   // note: this test is here because the setup is done
-  public void testProtectIndex() throws Exception {
+    @Test
+    public void testProtectIndex() throws Exception {
     FSIterator<FeatureStructure> it = sortedType1.iterator();
     FeatureStructure fs = it.get();
     boolean ok = false;

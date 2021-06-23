@@ -51,10 +51,13 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class MultiprocessingAnalysisEngine_implTest extends TestCase {
+public class MultiprocessingAnalysisEngine_implTest {
   
   private final static boolean doSleeps = true;  // running w/ dosleeps = false should show 100% cpu
   
@@ -76,7 +79,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       super.setUp();
       mSimpleDesc = new AnalysisEngineDescription_impl();
@@ -109,7 +113,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testInitialize() throws Exception {
+    @Test
+    public void testInitialize() throws Exception {
     try {
       // initialize MultiprocesingTextAnalysisEngine
       MultiprocessingAnalysisEngine_impl mtae = new MultiprocessingAnalysisEngine_impl();
@@ -140,7 +145,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testGetAnalysisEngineMetaData() throws Exception {
+    @Test
+    public void testGetAnalysisEngineMetaData() throws Exception {
     try {
       MultiprocessingAnalysisEngine_impl mtae = new MultiprocessingAnalysisEngine_impl();
       boolean result = mtae.initialize(mSimpleDesc, null);
@@ -154,7 +160,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testNewCAS() throws Exception {
+    @Test
+    public void testNewCAS() throws Exception {
     try {
       MultiprocessingAnalysisEngine_impl mtae = new MultiprocessingAnalysisEngine_impl();
       boolean result = mtae.initialize(mSimpleDesc, null);
@@ -192,7 +199,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
   }
 
   
-  public void testProcess() throws Exception {
+    @Test
+    public void testProcess() throws Exception {
     try {
       // test simple primitive MultiprocessingTextAnalysisEngine
       // (using TestAnnotator class)
@@ -274,7 +282,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testProcessManyCM() throws Exception {
+    @Test
+    public void testProcessManyCM() throws Exception {
     //get Resource Specifier from XML file
     XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleCasGenerator.xml");
     ResourceSpecifier specifier = 
@@ -284,7 +293,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
   
-  public void testProcessManyAgg() throws Exception {
+    @Test
+    public void testProcessManyAgg() throws Exception {
     //get Resource Specifier from XML file
     XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleTestAggregate.xml");
     ResourceSpecifier specifier = 
@@ -352,7 +362,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testReconfigure() throws Exception {
+    @Test
+    public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();

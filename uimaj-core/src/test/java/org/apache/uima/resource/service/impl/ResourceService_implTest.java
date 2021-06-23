@@ -27,13 +27,16 @@ import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Tests the ResourceService_impl class.
  * 
  */
-public class ResourceService_implTest extends TestCase {
+public class ResourceService_implTest {
   /**
    * Constructor for ResourceService_implTest.
    * 
@@ -46,7 +49,8 @@ public class ResourceService_implTest extends TestCase {
   /**
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       super.setUp();
       // create resource specifier and a pool containing 2 instances
@@ -69,7 +73,8 @@ public class ResourceService_implTest extends TestCase {
     }
   }
 
-  public void testGetMetaData() throws Exception {
+    @Test
+    public void testGetMetaData() throws Exception {
     try {
       ResourceMetaData md = service.getMetaData();
       Assert.assertNotNull(md);

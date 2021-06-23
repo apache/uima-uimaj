@@ -35,10 +35,13 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class ConfigurableResource_implTest extends TestCase {
+public class ConfigurableResource_implTest {
 
   /**
    * Constructor for ConfigurableResource_implTest.
@@ -49,7 +52,8 @@ public class ConfigurableResource_implTest extends TestCase {
     super(arg0);
   }
 
-  public void testReconfigure() throws Exception {
+    @Test
+    public void testReconfigure() throws Exception {
     try {
       // set up some resource metadata and create a resource
       ResourceCreationSpecifier specifier = new MyTestSpecifier();
@@ -226,7 +230,8 @@ public class ConfigurableResource_implTest extends TestCase {
   /*
    * Test for Object getConfigParameterValue(String)
    */
-  public void testGetConfigParameterValueString() throws Exception {
+    @Test
+    public void testGetConfigParameterValueString() throws Exception {
     try {
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));

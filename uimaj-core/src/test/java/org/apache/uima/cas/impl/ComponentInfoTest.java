@@ -27,11 +27,15 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class ComponentInfoTest extends TestCase {
-  public void testComponentInfo() throws Exception {
+public class ComponentInfoTest {
+    @Test
+    public void testComponentInfo() throws Exception {
     //test the CAS.getCurrentComponentInfo() is null after a component has
     //been processed
     File descFile = JUnitExtension.getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml");

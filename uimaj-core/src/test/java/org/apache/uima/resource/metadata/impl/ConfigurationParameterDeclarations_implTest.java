@@ -30,10 +30,13 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.w3c.dom.Document;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class ConfigurationParameterDeclarations_implTest extends TestCase {
+public class ConfigurationParameterDeclarations_implTest {
 
   /**
    * Constructor for ConfigurationParameterDeclarations_implTest.
@@ -44,7 +47,8 @@ public class ConfigurationParameterDeclarations_implTest extends TestCase {
     super(arg0);
   }
 
-  public void testBuildFromXmlElement() throws Exception {
+    @Test
+    public void testBuildFromXmlElement() throws Exception {
     // parse XML
     DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();

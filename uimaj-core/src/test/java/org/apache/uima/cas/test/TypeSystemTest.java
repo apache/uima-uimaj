@@ -49,13 +49,16 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Class comment for TypeSystemTest.java goes here.
  * 
  */
-public class TypeSystemTest extends TestCase {
+public class TypeSystemTest {
 
   private class SetupTest implements AnnotatorInitializer {
     /**
@@ -300,7 +303,8 @@ public class TypeSystemTest extends TestCase {
   /**
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     super.setUp();
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -311,24 +315,28 @@ public class TypeSystemTest extends TestCase {
     }
   }
 
-  public void tearDown() {
+    @After
+    public void tearDown() {
     this.cas = null;
     this.ts = null;
   }
 
-  public void testSuperTypeBuiltIn() {
+    @Test
+    public void testSuperTypeBuiltIn() {
     CAS cas = CASInitializer.initCas(new SetupTest(), null);
     TypeSystem ts = cas.getTypeSystem();
     Type stringArray = ts.getType("uima.cas.StringArray");
     assertEquals("uima.cas.ArrayBase", ts.getParent(stringArray).getName());
   }
   
-  public void testNameChecking() {
+    @Test
+    public void testNameChecking() {
     CAS tcas = CASInitializer.initCas(new SetupTest(), null);
     assertTrue(tcas != null);
   }
 
-  public void testGetParent() {
+    @Test
+    public void testGetParent() {
     assertTrue(this.ts.getParent(this.ts.getType(CAS.TYPE_NAME_TOP)) == null);
     Type annotBase = this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
     assertTrue(this.ts.getParent(annotBase) == this.ts.getTopType());
@@ -337,7 +345,8 @@ public class TypeSystemTest extends TestCase {
     assertTrue(this.ts.getParent(this.ts.getType(CASTestSetup.TOKEN_TYPE)) == annot);
   }
 
-  public void testGetType() {
+    @Test
+    public void testGetType() {
     Type top = this.ts.getTopType();
     assertTrue(top != null);
     assertTrue(top.getName().equals(CAS.TYPE_NAME_TOP));
@@ -350,7 +359,8 @@ public class TypeSystemTest extends TestCase {
   /*
    * Test for Feature getFeature(String)
    */
-  public void testGetFeature() {
+    @Test
+    public void testGetFeature() {
     Type annot = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     Feature start = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     Feature end = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
@@ -366,7 +376,8 @@ public class TypeSystemTest extends TestCase {
     assertTrue(start == start2);
   }
 
-  public void testGetTypeIterator() {
+    @Test
+    public void testGetTypeIterator() {
     Iterator<Type> it = this.ts.getTypeIterator();
     // Put the type names in a vector and do some spot checks.
     List<String> v = new ArrayList<>();
@@ -380,7 +391,8 @@ public class TypeSystemTest extends TestCase {
     assertTrue(v.contains(CASTestSetup.SENT_TYPE));
   }
 
-  public void testGetFeatures() {
+    @Test
+    public void testGetFeatures() {
     Iterator<Feature> it = this.ts.getFeatures();
     // Put feature names in vector and test for some known features.
     List<String> v = new ArrayList<>();
@@ -397,13 +409,15 @@ public class TypeSystemTest extends TestCase {
     // assertTrue(v.contains(arrayPrefix + CAS.ARRAY_LENGTH_FEAT));
   }
 
-  public void testGetTopType() {
+    @Test
+    public void testGetTopType() {
     Type top = this.ts.getTopType();
     assertTrue(top != null);
     assertTrue(top.getName().equals(CAS.TYPE_NAME_TOP));
   }
 
-  public void testGetDirectlySubsumedTypes() {
+    @Test
+    public void testGetDirectlySubsumedTypes() {
     List<Type> subTypes = this.ts.getDirectSubtypes(this.ts.getType(CAS.TYPE_NAME_TOP));
     Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
     assertTrue(subTypes.contains(intType));
@@ -418,7 +432,8 @@ public class TypeSystemTest extends TestCase {
   /*
    * Test for boolean subsumes(Type, Type)
    */
-  public void testSubsumes() {
+    @Test
+    public void testSubsumes() {
     Type top = this.ts.getTopType();
     Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
     Type annotType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
@@ -438,7 +453,8 @@ public class TypeSystemTest extends TestCase {
   /**
    * Test presence of builtin types and their properties.
    */
-  public void testBuiltinTypes() {
+    @Test
+    public void testBuiltinTypes() {
     assertTrue(this.cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isInheritanceFinal());
     assertTrue(this.cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isFeatureFinal());
     assertTrue(this.cas.getTypeSystem().getTopType().isFeatureFinal());
@@ -448,7 +464,8 @@ public class TypeSystemTest extends TestCase {
   /**
    * Test creation of type system with static [T]CASFactory methods.
    */
-  public void testCreateTypeSystem() {
+    @Test
+    public void testCreateTypeSystem() {
     // Test creation of CAS type system.
     TypeSystemMgr tsMgr = CASFactory.createTypeSystem();
     Type top = tsMgr.getTopType();
@@ -466,7 +483,8 @@ public class TypeSystemTest extends TestCase {
    * Test array types.
    * 
    */
-  public void testArrayTypes() {
+    @Test
+    public void testArrayTypes() {
     // Our version of object arrays. Type is built-in and has special name,
     // for backwards compatibility.
     Type fsArrayType = this.ts.getType(CAS.TYPE_NAME_FS_ARRAY);
@@ -500,7 +518,8 @@ public class TypeSystemTest extends TestCase {
     // assertFalse(this.ts.subsumes(annotationArray, fsArrayType));
   }
   
-  public void testSerializeTypeSystem() {
+    @Test
+    public void testSerializeTypeSystem() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/arrayValueDescriptor.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
         .exists());
@@ -557,7 +576,8 @@ public class TypeSystemTest extends TestCase {
     }
   }
   
-  public void testSerializeParameterizedArrayTypeSystem() {
+    @Test
+    public void testSerializeParameterizedArrayTypeSystem() {
     
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     try {

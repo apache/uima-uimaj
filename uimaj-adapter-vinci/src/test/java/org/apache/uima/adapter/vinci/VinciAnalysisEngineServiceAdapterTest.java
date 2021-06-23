@@ -20,7 +20,10 @@
 package org.apache.uima.adapter.vinci;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
@@ -33,7 +36,7 @@ import org.apache.uima.resource.URISpecifier;
 /**
  * The Class VinciAnalysisEngineServiceAdapterTest.
  */
-public class VinciAnalysisEngineServiceAdapterTest extends TestCase {
+public class VinciAnalysisEngineServiceAdapterTest {
 
   /**
    * Constructor for VinciAnalysisEngineServiceAdapterTest.
@@ -49,7 +52,8 @@ public class VinciAnalysisEngineServiceAdapterTest extends TestCase {
    *
    * @throws ResourceInitializationException the resource initialization exception
    */
-  public void testInitialize() throws ResourceInitializationException {
+    @Test
+    public void testInitialize() throws ResourceInitializationException {
     // Don't want an actual network dependency so will test only with services that
     // don't exist. The tests just make sure that the AnalysisEngineServiceAdapter.initialize
     // method just returns false when passed an inappropriate specifier and throws an

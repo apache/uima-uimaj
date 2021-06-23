@@ -87,10 +87,13 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class XmiCasDeserializerTest extends TestCase {
+public class XmiCasDeserializerTest {
   
   // normally set to true, set to false for comparative performance measurement
   //   because this adds ~ 10 seconds or so to the time it takes to run the junit tests
@@ -110,7 +113,8 @@ public class XmiCasDeserializerTest extends TestCase {
     super(arg0);
   }
 
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
@@ -128,7 +132,8 @@ public class XmiCasDeserializerTest extends TestCase {
    * test case for https://issues.apache.org/jira/projects/UIMA/issues/UIMA-5558
    * @throws Exception
    */
-  public void testSerialize_with_0_length_array() throws Exception {
+    @Test
+    public void testSerialize_with_0_length_array() throws Exception {
     
     TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(JUnitExtension.getFile("ExampleCas/testTypeSystem_small_withoutMultiRefs.xml")));
@@ -214,7 +219,8 @@ public class XmiCasDeserializerTest extends TestCase {
    * test case for https://issues.apache.org/jira/browse/UIMA-5532
    * @throws Exception
    */
-  public void testSerialize_withPartialMultiRefs() throws Exception {
+    @Test
+    public void testSerialize_withPartialMultiRefs() throws Exception {
    
     TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(JUnitExtension.getFile("ExampleCas/testTypeSystem_small_withMultiRefs.xml")));
@@ -309,7 +315,8 @@ public class XmiCasDeserializerTest extends TestCase {
 
   }
 
-  public void testDeserializeAndReserialize() throws Exception {
+    @Test
+    public void testDeserializeAndReserialize() throws Exception {
     try {
       File tsWithNoMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
       doTestDeserializeAndReserialize(tsWithNoMultiRefs,false);
@@ -323,7 +330,8 @@ public class XmiCasDeserializerTest extends TestCase {
     }
   }
   
-  public void testDeserializeAndReserializeV2() throws Exception {
+    @Test
+    public void testDeserializeAndReserializeV2() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
       File tsWithNoMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
       doTestDeserializeAndReserialize(tsWithNoMultiRefs,false);
@@ -441,7 +449,8 @@ public class XmiCasDeserializerTest extends TestCase {
   /*
    * https://issues.apache.org/jira/browse/UIMA-3396
    */
-  public void testDeltaCasIndexing() throws Exception {
+    @Test
+    public void testDeltaCasIndexing() throws Exception {
     try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               indexes);
@@ -482,7 +491,8 @@ public class XmiCasDeserializerTest extends TestCase {
     }
   }
   
-  public void testMultiThreadedSerialize() throws Exception {
+    @Test
+    public void testMultiThreadedSerialize() throws Exception {
     try {
       File tsWithNoMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
       doTestMultiThreadedSerialize(tsWithNoMultiRefs);
@@ -573,7 +583,8 @@ public class XmiCasDeserializerTest extends TestCase {
     MultiThreadUtils.terminateThreads(threads);
   }
 
-  public void testDeltaCasIndexExistingFsInView() throws Exception {
+    @Test
+    public void testDeltaCasIndexExistingFsInView() throws Exception {
     CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
             indexes);
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -623,7 +634,8 @@ public class XmiCasDeserializerTest extends TestCase {
   }
 
   // test - initial view, no Sofa, 
-  public void testDeltaCasIndexExistingFsInInitialView() throws Exception {
+    @Test
+    public void testDeltaCasIndexExistingFsInInitialView() throws Exception {
     CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
             indexes);
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -678,7 +690,8 @@ public class XmiCasDeserializerTest extends TestCase {
     assertTrue(deserFsIter.hasNext());
   }
   
-  public void testDeltaCasIndexExistingFsInNewView() throws Exception {
+    @Test
+    public void testDeltaCasIndexExistingFsInNewView() throws Exception {
     CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
             indexes);
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -728,7 +741,8 @@ public class XmiCasDeserializerTest extends TestCase {
   }
 
 
-  public void testMultipleSofas() throws Exception {
+    @Test
+    public void testMultipleSofas() throws Exception {
     try {
       CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               new FsIndexDescription[0]);
@@ -793,7 +807,8 @@ public class XmiCasDeserializerTest extends TestCase {
     }
   }
 
-  public void testTypeSystemFiltering() throws Exception {
+    @Test
+    public void testTypeSystemFiltering() throws Exception {
     try {
       // deserialize a complex CAS from XCAS
       CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
@@ -853,7 +868,8 @@ public class XmiCasDeserializerTest extends TestCase {
     }
   }
  
-  public void testNoInitialSofa() throws Exception {
+    @Test
+    public void testNoInitialSofa() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
             new FsIndexDescription[0]);
     // create non-annotation type so as not to create the _InitialView Sofa
@@ -906,7 +922,8 @@ public class XmiCasDeserializerTest extends TestCase {
     assertTrue(xml2.equals(xml));
   }
 
-  public void testv1FormatXcas() throws Exception {
+    @Test
+    public void testv1FormatXcas() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
             new FsIndexDescription[0]);
     TypeSystem ts = cas.getTypeSystem();
@@ -984,7 +1001,8 @@ public class XmiCasDeserializerTest extends TestCase {
     assertTrue(v1cas.getDocumentText().equals("some text for the default text sofa."));
   }
   
-  public void testDuplicateNsPrefixes() throws Exception {
+    @Test
+    public void testDuplicateNsPrefixes() throws Exception {
     TypeSystemDescription ts = new TypeSystemDescription_impl();
     ts.addType("org.bar.foo.Foo", "", "uima.tcas.Annotation");
     ts.addType("org.baz.foo.Foo", "", "uima.tcas.Annotation");
@@ -1010,11 +1028,13 @@ public class XmiCasDeserializerTest extends TestCase {
     CasComparer.assertEquals(cas, cas2);
   }
 
-  public void testMerging() throws Exception {
+    @Test
+    public void testMerging() throws Exception {
     testMerging(false);
   }
 
-  public void testDeltaCasMerging() throws Exception {
+    @Test
+    public void testDeltaCasMerging() throws Exception {
     testMerging(true);
   }
   
@@ -1197,7 +1217,8 @@ public class XmiCasDeserializerTest extends TestCase {
     
   }
   
-  public void testDeltaCasIgnorePreexistingFS() throws Exception {
+    @Test
+    public void testDeltaCasIgnorePreexistingFS() throws Exception {
    try {
 	  CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
 	          indexes);
@@ -1262,7 +1283,8 @@ public class XmiCasDeserializerTest extends TestCase {
    }
   }
   
-  public void testDeltaCasDisallowPreexistingFSMod() throws Exception {
+    @Test
+    public void testDeltaCasDisallowPreexistingFSMod() throws Exception {
     try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               indexes);
@@ -1327,7 +1349,8 @@ public class XmiCasDeserializerTest extends TestCase {
   }
   
   
-  public void testDeltaCasInvalidMarker() throws Exception {
+    @Test
+    public void testDeltaCasInvalidMarker() throws Exception {
 	  try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               indexes);
@@ -1381,7 +1404,8 @@ public class XmiCasDeserializerTest extends TestCase {
   }
   
   
-  public void testDeltaCasNoChanges() throws Exception {
+    @Test
+    public void testDeltaCasNoChanges() throws Exception {
 	    try {
 	      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
 	              indexes);
@@ -1421,7 +1445,8 @@ public class XmiCasDeserializerTest extends TestCase {
 		}
 	  }
   
-  public void testDeltaCasDisallowPreexistingFSViewMod() throws Exception {
+    @Test
+    public void testDeltaCasDisallowPreexistingFSViewMod() throws Exception {
     try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               indexes);
@@ -1546,7 +1571,8 @@ public class XmiCasDeserializerTest extends TestCase {
    *         
    * @throws Exception
    */
-  public void testDeltaCasAllowPreexistingFS() throws Exception {
+    @Test
+    public void testDeltaCasAllowPreexistingFS() throws Exception {
    try {
           
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -1759,7 +1785,8 @@ public class XmiCasDeserializerTest extends TestCase {
     }
   }
   
-  public void testDeltaCasListFS() throws Exception {
+    @Test
+    public void testDeltaCasListFS() throws Exception {
 	   try {
 	      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
 	              indexes);
@@ -1881,7 +1908,8 @@ public class XmiCasDeserializerTest extends TestCase {
   
   
   
-  public void testOutOfTypeSystemData() throws Exception {
+    @Test
+    public void testOutOfTypeSystemData() throws Exception {
     // deserialize a simple XMI into a CAS with no TypeSystem    
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
             new TypePriorities_impl(), new FsIndexDescription[0]);
@@ -1943,7 +1971,8 @@ public class XmiCasDeserializerTest extends TestCase {
     CasComparer.assertEquals(newCas1, newCas2);    
  }
   
-  public void testOutOfTypeSystemArrayElement() throws Exception {
+    @Test
+    public void testOutOfTypeSystemArrayElement() throws Exception {
     //add to type system an annotation type that has an FSArray feature
     TypeDescription testAnnotTypeDesc = typeSystem.addType("org.apache.uima.testTypeSystem.TestAnnotation", "", "uima.tcas.Annotation");
     testAnnotTypeDesc.addFeature("arrayFeat", "", "uima.cas.FSArray");
@@ -2002,7 +2031,8 @@ public class XmiCasDeserializerTest extends TestCase {
     CasComparer.assertEquals(cas, cas2);    
   }
   
-  public void testOutOfTypeSystemListElement() throws Exception {
+    @Test
+    public void testOutOfTypeSystemListElement() throws Exception {
     //add to type system an annotation type that has an FSList feature
     TypeDescription testAnnotTypeDesc = typeSystem.addType("org.apache.uima.testTypeSystem.TestAnnotation", "", "uima.tcas.Annotation");
     testAnnotTypeDesc.addFeature("listFeat", "", "uima.cas.FSList");
@@ -2076,7 +2106,8 @@ public class XmiCasDeserializerTest extends TestCase {
     CasComparer.assertEquals(cas, cas2);    
   }
   
-  public void testOutOfTypeSystemDataComplexCas() throws Exception {
+    @Test
+    public void testOutOfTypeSystemDataComplexCas() throws Exception {
     // deserialize a complex XCAS
     CAS originalCas = CasCreationUtils.createCas(typeSystem, null, indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));

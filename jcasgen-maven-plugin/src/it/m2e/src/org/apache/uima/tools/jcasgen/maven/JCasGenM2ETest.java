@@ -33,7 +33,8 @@ import org.eclipse.m2e.core.MavenPlugin;
 
 @SuppressWarnings("restriction")
 public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
-  public void testSimple() throws Exception {
+    @Test
+    public void testSimple() throws Exception {
     System.out.println("Using this repository: " + MavenPlugin.getMaven().getLocalRepository());
     
     ResolverConfiguration configuration = new ResolverConfiguration();
@@ -73,7 +74,8 @@ public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
     assertTrue(classpathEntries.contains("/simple/target/generated-sources/jcasgen"));
   }
 
-  public void testEmptyOutputDirectory() throws Exception {
+    @Test
+    public void testEmptyOutputDirectory() throws Exception {
     ResolverConfiguration configuration = new ResolverConfiguration();
     IProject project = importProject("target/projects/jcasgen/simple/pom.xml", configuration);
     waitForJobsToComplete();
@@ -99,7 +101,8 @@ public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
     assertTrue(project.getFolder("target/generated-sources/jcasgen").exists());
   }
 
-  public void testTypeSystemReferences() throws Exception {
+    @Test
+    public void testTypeSystemReferences() throws Exception {
     ResolverConfiguration configuration = new ResolverConfiguration();
     IProject project = importProject("target/projects/jcasgen/classpath/pom.xml", configuration);
     waitForJobsToComplete();
@@ -178,7 +181,8 @@ public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
     assertTrue(dependencyFile.getModificationStamp() > dependencyTime);
   }
 
-  public void testCrossProjectReferences() throws Exception {
+    @Test
+    public void testCrossProjectReferences() throws Exception {
     ResolverConfiguration configuration = new ResolverConfiguration();
     String[] projectPoms = new String[] { "crossref1/pom.xml", "crossref2/pom.xml" };
     IProject[] projects = importProjects("target/projects/jcasgen", projectPoms, configuration);

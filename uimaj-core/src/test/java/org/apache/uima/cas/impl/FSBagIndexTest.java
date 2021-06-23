@@ -24,7 +24,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
@@ -39,7 +42,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-public class FSBagIndexTest extends TestCase {
+public class FSBagIndexTest {
 
   private TypeSystemDescription typeSystemDescription;
   
@@ -56,7 +59,8 @@ public class FSBagIndexTest extends TestCase {
   FsIndex_bag<TOP> bi;
   
   
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
@@ -73,11 +77,8 @@ public class FSBagIndexTest extends TestCase {
     return new FsIndex_bag<>(cas, ts.getType("uima.cas.TOP"), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
-  public void testInsert() {
+    @Test
+    public void testInsert() {
     JCas jcas = cas.getJCas();
     // starts out as bit set;
     TOP[] ns = new TOP[] {new TOP(jcas), new TOP(jcas), new TOP(jcas)};

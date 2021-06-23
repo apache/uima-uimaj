@@ -22,9 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class Obj2IntIdentityHashMapTest extends TestCase {
+public class Obj2IntIdentityHashMapTest {
   
   // a number of extras needed to cause rebalance
   // is > 1 because it might turn out randomly that
@@ -39,11 +42,13 @@ public class Obj2IntIdentityHashMapTest extends TestCase {
 
   Map<Integer, Integer> im = new HashMap<>();
   
-  public void setUp() {
+    @Before
+    public void setUp() {
     ihm = new Obj2IntIdentityHashMap<>(Integer.class, Integer.MIN_VALUE);
   }
 
-  public void testBasic() {
+    @Test
+    public void testBasic() {
     
     Integer I15 = 15;
     Integer I188 = 188;
@@ -71,7 +76,8 @@ public class Obj2IntIdentityHashMapTest extends TestCase {
     
   }
   
-  public void testRebalance() {
+    @Test
+    public void testRebalance() {
     // 100 elements, require 256 table (128 * .66 = 85)
     for (int i = 1; i < 101; i++) {
       ihm.put(I[i], i * 10);
@@ -107,7 +113,8 @@ public class Obj2IntIdentityHashMapTest extends TestCase {
     return im.get(v);
   }
   
-  public void testRandom() {
+    @Test
+    public void testRandom() {
     int countAdd = 0;
     int dupsA = 0;
     int notPres = 0;

@@ -36,9 +36,12 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class ResultSpecTest extends TestCase {
+public class ResultSpecTest {
 
   private CAS cas;
   
@@ -60,7 +63,8 @@ public class ResultSpecTest extends TestCase {
   /**
    * Tests for https://issues.apache.org/jira/browse/UIMA-1840
    */
-  public void testIntersection() {
+    @Test
+    public void testIntersection() {
     checkl(X, I, X, I, X);
     checkl(X, I, EN, I,            EN);
     checkl(EN, I,            X, I, EN);
@@ -126,7 +130,8 @@ public class ResultSpecTest extends TestCase {
       }
     } 
   }
-  public void testComputeAnalysisComponentResultSpec() throws Exception {
+    @Test
+    public void testComputeAnalysisComponentResultSpec() throws Exception {
     try {
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(
@@ -149,7 +154,8 @@ public class ResultSpecTest extends TestCase {
     }
   }
   
-  public void testComputeAnalysisComponentResultSpecInherit() throws Exception {
+    @Test
+    public void testComputeAnalysisComponentResultSpecInherit() throws Exception {
     try {
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(

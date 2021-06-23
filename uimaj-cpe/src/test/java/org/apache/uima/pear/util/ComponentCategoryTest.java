@@ -23,7 +23,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
@@ -33,7 +36,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
  * based on the sample XML descriptors located in the 'pearTests/componentCategoryTests' folder.
  * 
  */
-public class ComponentCategoryTest extends TestCase {
+public class ComponentCategoryTest {
   // relative location of test descriptors
   private static String TEST_FOLDER = "pearTests/componentCategoryTests";
 
@@ -43,7 +46,8 @@ public class ComponentCategoryTest extends TestCase {
   /**
    * Runs test case for CPE descriptor.
    */
-  public void testCpeDescriptor() throws Exception {
+    @Test
+    public void testCpeDescriptor() throws Exception {
     File cpeDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CPE_DESC_NAME);
     if (!cpeDescFile.isFile())
       throw new FileNotFoundException("CPE descriptor not found");

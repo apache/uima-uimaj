@@ -22,18 +22,22 @@ package org.apache.uima.util.impl;
 import org.apache.uima.util.Level;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * UIMA Logging interface implementation test without using an logging toolkit
  * 
  */
-public class Logger_implTest extends TestCase {
+public class Logger_implTest {
   public Logger_implTest(String arg0) {
     super(arg0);
   }
 
-  public void testLogWrapperCreation() throws Exception {
+    @Test
+    public void testLogWrapperCreation() throws Exception {
     org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();
     org.apache.uima.util.Logger rootLogger1 = Logger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = Logger_impl.getInstance(this.getClass());
@@ -53,7 +57,8 @@ public class Logger_implTest extends TestCase {
     Assert.assertNotSame(classLogger, classLogger1);
   }
 
-  public void testMessageLeveling() throws Exception {
+    @Test
+    public void testMessageLeveling() throws Exception {
     // create logger
     
     org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();

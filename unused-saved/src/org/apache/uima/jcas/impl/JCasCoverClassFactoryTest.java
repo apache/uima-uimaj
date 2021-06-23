@@ -38,8 +38,8 @@ import org.junit.Test;
 
 public class JCasCoverClassFactoryTest {
 
-  @Test
-  public void testCreateJCasCoverClass() throws InvalidXMLException, IOException, ResourceInitializationException {
+    @Test
+    public void testCreateJCasCoverClass() throws InvalidXMLException, IOException, ResourceInitializationException {
     File file = JUnitExtension.getFile("JCasGen/typeSystemAllKinds.xml");
     TypeSystemDescription tsDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(file));

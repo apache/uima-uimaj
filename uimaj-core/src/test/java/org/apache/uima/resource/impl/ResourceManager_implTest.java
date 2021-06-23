@@ -39,10 +39,13 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class ResourceManager_implTest extends TestCase {
+public class ResourceManager_implTest {
   private final File TEST_DATA_FILE = JUnitExtension
           .getFile("ResourceTest/ResourceManager_implTest_tempDataFile.dat");
 
@@ -71,7 +74,8 @@ public class ResourceManager_implTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       super.setUp();
       mManager = new ResourceManager_impl();
@@ -155,11 +159,13 @@ public class ResourceManager_implTest extends TestCase {
     }
   }
 
-  public void tearDown() {
+    @After
+    public void tearDown() {
     mManager = null;
   }
   
-  public void testSetDataPath() throws Exception {
+    @Test
+    public void testSetDataPath() throws Exception {
     try {
       String path = "c:\\this\\path\\is;for\\windows";
       mManager.setDataPath(path);
@@ -169,7 +175,8 @@ public class ResourceManager_implTest extends TestCase {
     }
   }
 
-  public void testGetResource() throws Exception {
+    @Test
+    public void testGetResource() throws Exception {
     try {
       // test retrieval
       DataResource r1 = (DataResource) mManager.getResource(TEST_CONTEXT_NAME + "myDataKey");
@@ -221,7 +228,8 @@ public class ResourceManager_implTest extends TestCase {
     }
   }
 
-  public void testResolveAndValidateDependencies() throws Exception {
+    @Test
+    public void testResolveAndValidateDependencies() throws Exception {
     try {
       // dependencies 1-4 are for the resource bindings created in setUp()
       ExternalResourceDependency dep1 = new ExternalResourceDependency_impl();
@@ -254,7 +262,8 @@ public class ResourceManager_implTest extends TestCase {
     }
   }
 
-  public void testOverrides() throws Exception {
+    @Test
+    public void testOverrides() throws Exception {
     try {
       final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath();
 

@@ -24,7 +24,10 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.TaeDescription;
@@ -42,9 +45,10 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
 
-public class ProtectIndexTest extends TestCase {
+public class ProtectIndexTest {
 
-  public void testProtectIndex() throws CASException, ResourceInitializationException {
+    @Test
+    public void testProtectIndex() throws CASException, ResourceInitializationException {
     JCas jcas = CasCreationUtils.createCas((TypeSystemDescription)null, null, null).getJCas();
     
     Annotation a = new Annotation(jcas, 0, 2);

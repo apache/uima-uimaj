@@ -29,13 +29,16 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Tests the ResourceServiceAdapter_impl class.
  * 
  */
-public class ResourceServiceAdapter_implTest extends TestCase {
+public class ResourceServiceAdapter_implTest {
   /**
    * Constructor for ResourceServiceAdapter_implTest.
    * 
@@ -48,7 +51,8 @@ public class ResourceServiceAdapter_implTest extends TestCase {
   /**
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       super.setUp();
       mServiceStub = new TestResourceServiceStub();
@@ -63,7 +67,8 @@ public class ResourceServiceAdapter_implTest extends TestCase {
     }
   }
 
-  public void testGetMetaData() throws Exception {
+    @Test
+    public void testGetMetaData() throws Exception {
     try {
       ResourceMetaData md = new ResourceMetaData_impl();
       md.setName("Test");

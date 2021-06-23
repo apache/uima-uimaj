@@ -28,7 +28,8 @@ import org.junit.Test;
 public class JCasCoverClassFactoryTest {
 
 @Test
-  public void testCreateJCasCoverClass() throws UnsupportedEncodingException  {
+    @Test
+    public void testCreateJCasCoverClass() throws UnsupportedEncodingException  {
     
     TypeSystemImpl tsi = new TypeSystemImpl();
     

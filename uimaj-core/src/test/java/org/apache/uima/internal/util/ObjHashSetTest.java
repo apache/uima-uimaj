@@ -21,20 +21,25 @@ package org.apache.uima.internal.util;
 
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class ObjHashSetTest extends TestCase {
+public class ObjHashSetTest {
   
   ObjHashSet<Integer> ihs;
   
   Random random;
   
-  public void setUp() {
+    @Before
+    public void setUp() {
     ihs = new ObjHashSet<>(Integer.class, Integer.MIN_VALUE);
   }
   
-  public void testBasic() {
+    @Test
+    public void testBasic() {
     
     ihs.add(15);
     ihs.add(188);
@@ -53,7 +58,8 @@ public class ObjHashSetTest extends TestCase {
     ihs.add(1001);    
   }
   
-  public void testContains() {
+    @Test
+    public void testContains() {
     ihs.add(1188);
     ihs.add(1040);
     assertTrue(ihs.contains(1188));
@@ -68,7 +74,8 @@ public class ObjHashSetTest extends TestCase {
 //    assertEquals(32, ihs.tableSpace(21));
 //  }
     
-  public void testExpandNpe() {
+    @Test
+    public void testExpandNpe() {
     ihs.add(15);
     ihs.add(150000);  // makes 4 byte table entries
     
@@ -77,7 +84,8 @@ public class ObjHashSetTest extends TestCase {
     }
   }
   
-  public void testAddIntoRemovedSlot() {
+    @Test
+    public void testAddIntoRemovedSlot() {
     long seed = // -4571976104270514645L;
         new Random().nextLong();
     System.out.println("Random seed for testAddIntoRemovedSlot in " + this.getClass().getName() + ": "  + seed);
@@ -144,7 +152,8 @@ public class ObjHashSetTest extends TestCase {
     
   }
  
-  public void testRandom() {
+    @Test
+    public void testRandom() {
     int countAdd = 0;
     int dupsA = 0;
     int notPres = 0;

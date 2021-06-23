@@ -20,7 +20,10 @@
 package org.apache.uima.collection.impl.cpm;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionProcessingEngine;
@@ -38,13 +41,14 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
  * document should be processed exactly one time.
  * 
  */
-public class CpmProcessingTest extends TestCase {
+public class CpmProcessingTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
@@ -54,7 +58,8 @@ public class CpmProcessingTest extends TestCase {
    * @throws Exception -
    * @see junit.framework.TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     super.tearDown();
     FunctionErrorStore.resetCount();
   }
@@ -64,7 +69,8 @@ public class CpmProcessingTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testCasConsumerProcessingSingleThreadSingleDocument() throws Exception {
+    @Test
+    public void testCasConsumerProcessingSingleThreadSingleDocument() throws Exception {
     // process only a single document and a single thread
     int documentCount = 1;
     int threadCount = 1;
@@ -101,7 +107,8 @@ public class CpmProcessingTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testCasConsumerProcessingSingleThreadMultipleDocuments() throws Exception {
+    @Test
+    public void testCasConsumerProcessingSingleThreadMultipleDocuments() throws Exception {
     // process 100 documents and a single thread
     int documentCount = 100;
     int threadCount = 1;
@@ -138,7 +145,8 @@ public class CpmProcessingTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testCasConsumerProcessingMultipleThreadsSingleDocument() throws Exception {
+    @Test
+    public void testCasConsumerProcessingMultipleThreadsSingleDocument() throws Exception {
     // process only a single document and multiple threads
     int documentCount = 1;
     int threadCount = 5;
@@ -175,7 +183,8 @@ public class CpmProcessingTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testCasConsumerProcessingMultipleThreadsMultipleDocuments() throws Exception {
+    @Test
+    public void testCasConsumerProcessingMultipleThreadsMultipleDocuments() throws Exception {
     // process 100 documents and multiple threads
     int documentCount = 100;
     int threadCount = 5;

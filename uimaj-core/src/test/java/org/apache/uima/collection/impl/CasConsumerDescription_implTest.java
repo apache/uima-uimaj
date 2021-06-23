@@ -62,12 +62,16 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class CasConsumerDescription_implTest extends TestCase {
+public class CasConsumerDescription_implTest {
   CasConsumerDescription_impl mTestDesc;
 
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       super.setUp();
 
@@ -182,7 +186,8 @@ public class CasConsumerDescription_implTest extends TestCase {
     }
   }
 
-  public void testXMLization() throws Exception {
+    @Test
+    public void testXMLization() throws Exception {
     try {
       // write objects to XML
       StringWriter writer = new StringWriter();
@@ -202,7 +207,8 @@ public class CasConsumerDescription_implTest extends TestCase {
     }
   }
 
-  public void testSerialization() throws Exception {
+    @Test
+    public void testSerialization() throws Exception {
     try {
       // serialize objects to byte array
 

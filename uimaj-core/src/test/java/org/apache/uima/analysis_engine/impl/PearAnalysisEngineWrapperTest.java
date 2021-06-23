@@ -34,9 +34,12 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.Assert;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class PearAnalysisEngineWrapperTest extends TestCase {
+public class PearAnalysisEngineWrapperTest {
 
   // This parameter is defined in the PEAR specifier file!
   private final static String PARAMETER_NAME = "StringParam";
@@ -56,8 +59,8 @@ public class PearAnalysisEngineWrapperTest extends TestCase {
     super(arg0);
   }
 
-  @Override
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 
     this.pearAnalysisEngineWrapper = new PearAnalysisEngineWrapper();
 
@@ -66,12 +69,13 @@ public class PearAnalysisEngineWrapperTest extends TestCase {
     this.installedPearPackage = this.installPearPackage();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     this.removeInstallationDirectory();
   }
 
-  public void testInitializeWithOverride() throws Exception {
+    @Test
+    public void testInitializeWithOverride() throws Exception {
 
     PearSpecifier_impl pearSpecifier = new PearSpecifier_impl();
     pearSpecifier.setPearPath(this.installedPearPackage.getRootDirectory().toString());
@@ -85,7 +89,8 @@ public class PearAnalysisEngineWrapperTest extends TestCase {
         .as("The value of StringParam was overridden");
   }
 
-  public void testInitializeWithOverrideLegacy() throws Exception {
+    @Test
+    public void testInitializeWithOverrideLegacy() throws Exception {
 
     PearSpecifier_impl pearSpecifier = new PearSpecifier_impl();
     pearSpecifier.setPearPath(this.installedPearPackage.getRootDirectory().toString());
@@ -99,7 +104,8 @@ public class PearAnalysisEngineWrapperTest extends TestCase {
         .as("The value of StringParam was overridden");
   }
 
-  public void testInitializeWithOverrideModernTakingPrecedenceOverLegacy() throws Exception {
+    @Test
+    public void testInitializeWithOverrideModernTakingPrecedenceOverLegacy() throws Exception {
 
     PearSpecifier_impl pearSpecifier = new PearSpecifier_impl();
     pearSpecifier.setPearPath(this.installedPearPackage.getRootDirectory().toString());
@@ -114,7 +120,8 @@ public class PearAnalysisEngineWrapperTest extends TestCase {
         .as("The value of StringParam was overridden");
   }
 
-  public void testInitializeWithoutOverride() throws Exception {
+    @Test
+    public void testInitializeWithoutOverride() throws Exception {
 
     PearSpecifier pearSpecifier = this.createPearSpecifierWithoutParameters();
 

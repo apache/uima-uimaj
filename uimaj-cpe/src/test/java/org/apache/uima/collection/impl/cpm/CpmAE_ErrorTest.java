@@ -19,7 +19,10 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.annotator.JTextAnnotator;
@@ -70,7 +73,7 @@ import org.apache.uima.util.Level;
  * @see org.apache.uima.collection.impl.cpm.CpmCasConsumer_ErrorTest
  * @see org.apache.uima.collection.impl.cpm.CpmCollectionReader_ErrorTest
  */
-public class CpmAE_ErrorTest extends TestCase {
+public class CpmAE_ErrorTest {
 
   private static final String FS = System.getProperties().getProperty("file.separator");
 
@@ -98,7 +101,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testProcessWithAnnotatorProcessException() throws Exception {
+    @Test
+    public void testProcessWithAnnotatorProcessException() throws Exception {
     int documentCount = 20; // number of document to process
     int exceptionSequence = 4; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -132,7 +136,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testProcessWithOutOfMemoryException() throws Exception {
+    @Test
+    public void testProcessWithOutOfMemoryException() throws Exception {
     int documentCount = 20; // number of documents to process
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -167,7 +172,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testProcessWithNullPointerException() throws Exception {
+    @Test
+    public void testProcessWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents to process
     int exceptionSequence = 3; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -202,7 +208,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testInitializeWithNullPointerException() throws Exception {
+    @Test
+    public void testInitializeWithNullPointerException() throws Exception {
     int documentCount = 20; // number of document to process
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean exceptionThrown = false;
@@ -243,7 +250,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testInitializeWithOutOfMemoryException() throws Exception {
+    @Test
+    public void testInitializeWithOutOfMemoryException() throws Exception {
     int documentCount = 20; // number of document to process
     int exceptionSequence = 1; // the sequence in which errors are produced
     ManageOutputDevice.setAllSystemOutputToNirvana();
@@ -280,7 +288,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testInitializeWithAnnotatorInitializationException() throws Exception {
+    @Test
+    public void testInitializeWithAnnotatorInitializationException() throws Exception {
     int documentCount = 20; // number of document to process
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean exceptionThrown = false;
@@ -322,7 +331,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testInitializeWithAnnotatorConfigurationException() throws Exception {
+    @Test
+    public void testInitializeWithAnnotatorConfigurationException() throws Exception {
     int documentCount = 20; // number of documents processed
     int exceptionSequence = 1; // the sequence in which errors are produced
     boolean exceptionThrown = false;
@@ -403,7 +413,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAeProcessingUnitThreadCount() throws Exception {
+    @Test
+    public void testAeProcessingUnitThreadCount() throws Exception {
     int documentCount = 20; // number of documents processed
     int count = 5; // thread number
     TestStatusCallbackListener listener = null;
@@ -442,7 +453,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAeErrorRateThresholdTerminateDefault() throws Exception {
+    @Test
+    public void testAeErrorRateThresholdTerminateDefault() throws Exception {
     int documentCount = 1000; // number of documents to process
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
     int exceptionSequence = 5;
@@ -486,7 +498,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAeErrorRateThresholdTerminateModified1() throws Exception {
+    @Test
+    public void testAeErrorRateThresholdTerminateModified1() throws Exception {
     int documentCount = 500; // number of documents to process
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
     int exceptionSequence = 5;
@@ -529,7 +542,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAeErrorRateThresholdTerminateModified2() throws Exception {
+    @Test
+    public void testAeErrorRateThresholdTerminateModified2() throws Exception {
     int exceptionSequence = 5;
     int documentCount = 100; // number of documents processed
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -576,7 +590,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAeErrorRateThresholdContinue() throws Exception {
+    @Test
+    public void testAeErrorRateThresholdContinue() throws Exception {
     int exceptionSequence = 4;
     int documentCount = 20; // number of documents processed
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -621,7 +636,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testAeErrorRateThresholdDisable() throws Exception {
+    @Test
+    public void testAeErrorRateThresholdDisable() throws Exception {
     int exceptionSequence = 2;
     int documentCount = 50; // number of documents processed
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -656,7 +672,8 @@ public class CpmAE_ErrorTest extends TestCase {
     assertEquals("There are not as much exceptions as expected! ", 6, FunctionErrorStore.getCount());
   }
 
-  public void testAeErrorRateActionOnMaxRestarts() throws Exception {
+    @Test
+    public void testAeErrorRateActionOnMaxRestarts() throws Exception {
     int exceptionSequence = 1;
     int documentCount = 10; // number of documents processed
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -700,7 +717,8 @@ public class CpmAE_ErrorTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testNumToProcess() throws Exception {
+    @Test
+    public void testNumToProcess() throws Exception {
     int exceptionSequence = 25;
     int documentCount = 50; // number of documents processed
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
@@ -739,8 +757,8 @@ public class CpmAE_ErrorTest extends TestCase {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
-  @Override
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     super.tearDown();
     FunctionErrorStore.resetCount();
 //    System.gc();

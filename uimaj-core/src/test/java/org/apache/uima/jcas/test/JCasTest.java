@@ -69,7 +69,10 @@ import org.apache.uima.util.CasCreationUtils;
 
 import aa.ConcreteType;
 import aa.Root;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import x.y.z.EndOfSentence;
 import x.y.z.Sentence;
 import x.y.z.Token;
@@ -78,7 +81,7 @@ import x.y.z.Token;
  * Class comment for CASTest.java goes here.
  * 
  */
-public class JCasTest extends TestCase {
+public class JCasTest {
 
 	private CAS cas;
 
@@ -97,7 +100,8 @@ public class JCasTest extends TestCase {
 		super(arg0);
 	}
 
-	public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 		try {
 			try {
 				this.cas = CASInitializer.initCas(new CASTestSetup(), null);
@@ -141,14 +145,16 @@ public class JCasTest extends TestCase {
 			assertTrue(false);
 	}
 
-	public void tearDown() {
+    @After
+    public void tearDown() {
 		this.cas = null;
 //		this.ts = null;
 		this.jcas = null;
 		this.endOfSentenceInstance = null;
 	}
 
-	public void testMissingFeatureInCas() throws Exception {
+    @Test
+    public void testMissingFeatureInCas() throws Exception {
 		try {
 			// jcasCasMisMatch(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS, CASException.JCAS_INIT_ERROR);
 //			CAS localCas;
@@ -165,7 +171,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testChangedFType() throws Exception {
+    @Test
+    public void testChangedFType() throws Exception {
 		try {
 			jcasCasMisMatch(CASTestSetup.BAD_CHANGED_FEATURE_TYPE, UIMARuntimeException.INTERNAL_ERROR);
 		} catch (Exception e) {
@@ -197,7 +204,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testIteratorCopy() {
+    @Test
+    public void testIteratorCopy() {
 		Annotation something = new Annotation(jcas);
 		something.addToIndexes();
 
@@ -208,7 +216,8 @@ public class JCasTest extends TestCase {
 		assertTrue(i3 != null);
 	}
 
-	public void testGetFSIndexRepository() throws Exception {
+    @Test
+    public void testGetFSIndexRepository() throws Exception {
 		try {
 			FSIndexRepository ir = jcas.getFSIndexRepository();
 			LowLevelIndexRepository ll_ir = jcas.getLowLevelIndexRepository();
@@ -222,7 +231,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testMisc() throws Exception {
+    @Test
+    public void testMisc() throws Exception {
 		try {
 			try {
 				jcas.getRequiredType("uima.tcas.Annotation");
@@ -262,7 +272,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testJCasAccessing() throws Exception {
+    @Test
+    public void testJCasAccessing() throws Exception {
 		try {
 			Root r1 = new Root(jcas);
 			r1.setArrayFloat(new FloatArray(jcas, 2));
@@ -402,7 +413,8 @@ public class JCasTest extends TestCase {
    * 
    */
 
-	public void testRandom() throws Exception {
+    @Test
+    public void testRandom() throws Exception {
 		try {
 			// System.out.print("Making Random: ");
 			for (int i = 0; i < 50; i++) {
@@ -425,7 +437,8 @@ public class JCasTest extends TestCase {
 	static interface MakeAndTest {
 		public void make();
 
-		public void test(Object o);
+    @Test
+    public void test(Object o);
 	}
 
 	MakeAndTest root1 = new MakeAndTest() {
@@ -447,7 +460,8 @@ public class JCasTest extends TestCase {
 			r1.addToIndexes();
 		}
 
-		public void test(Object o1) {
+    @Test
+    public void test(Object o1) {
 			assertTrue(o1 instanceof Root);
 			Root r1 = (Root) o1;
 			int k = System.identityHashCode(r1);
@@ -463,7 +477,8 @@ public class JCasTest extends TestCase {
 		}
 	};
 
-	public void test2CASs() throws Exception {
+    @Test
+    public void test2CASs() throws Exception {
 		try {
 			try {
 				CAS cas2 = CASInitializer.initCas(new CASTestSetup(), null);
@@ -483,7 +498,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testAbstract() throws Exception {
+    @Test
+    public void testAbstract() throws Exception {
 		try {
 			boolean caughtExc = true;
 			try {
@@ -507,7 +523,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testNonJCasCoveredByJCas() throws Exception {
+    @Test
+    public void testNonJCasCoveredByJCas() throws Exception {
 		try {
 			CAS localCas = jcas.getCas();
 			Type subTok = localCas.getTypeSystem().getType("SubToken");
@@ -535,7 +552,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testFSListNotPromoted() throws Exception {
+    @Test
+    public void testFSListNotPromoted() throws Exception {
 		try {
 			CAS localCas = jcas.getCas();
 			TypeSystem ts = localCas.getTypeSystem();
@@ -547,7 +565,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testCreateFSafterReset() throws Exception {
+    @Test
+    public void testCreateFSafterReset() throws Exception {
 		try {
 //			CAS localCas = jcas.getCas();
 			cas.reset();
@@ -560,7 +579,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testIteratorGetsJCasType() throws Exception {
+    @Test
+    public void testIteratorGetsJCasType() throws Exception {
 		try {
 			Token tok1 = new Token(jcas);
 			tok1.addToIndexes();
@@ -618,7 +638,8 @@ public class JCasTest extends TestCase {
 //    assertTrue(iter.hasNext());    // OK for both, because Sentence is before Token in both Java 7 and 8    
 //  }  
   
-	public void testGetNthFSList() throws Exception {
+    @Test
+    public void testGetNthFSList() throws Exception {
 		try {
 			Token tok1 = new Token(jcas);
 			Token tok2 = new Token(jcas);
@@ -665,7 +686,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testGetNthIntegerList() throws Exception {
+    @Test
+    public void testGetNthIntegerList() throws Exception {
 		try {
 
 			NonEmptyIntegerList intList1 = new NonEmptyIntegerList(jcas);
@@ -710,7 +732,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testGetNthFloatList() throws Exception {
+    @Test
+    public void testGetNthFloatList() throws Exception {
 		try {
 
 			NonEmptyFloatList floatList1 = new NonEmptyFloatList(jcas);
@@ -755,7 +778,8 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	public void testGetNthStringList() throws Exception {
+    @Test
+    public void testGetNthStringList() throws Exception {
 		try {
 			NonEmptyStringList stringList1 = new NonEmptyStringList(jcas);
 			stringList1.setHead("2");
@@ -799,7 +823,8 @@ public class JCasTest extends TestCase {
 		}
 	}
   
-	public void testStringListAPI() {
+    @Test
+    public void testStringListAPI() {
 	  StringList sl = new EmptyStringList(jcas);
 	  sl = sl.push("2");
 	  sl = sl.push("1");
@@ -814,7 +839,8 @@ public class JCasTest extends TestCase {
 	  assert(Arrays.equals(expected, sa));
 	}
 	
-	public void testStringArrayAPI() {
+    @Test
+    public void testStringArrayAPI() {
 	  StringArray sa = new StringArray(jcas, 3);
 	  String[] values = {"1", "2", "3"}; 
 	  sa.copyFromArray(values, 0, 0, 3);
@@ -825,7 +851,8 @@ public class JCasTest extends TestCase {
     }
 	}
 
-  public void testFSListAPI() {
+    @Test
+    public void testFSListAPI() {
     FSList<TOP> sl = new EmptyFSList<>(jcas);
     TOP fs1 = new TOP(jcas);
     TOP fs2 = new TOP(jcas);
@@ -848,7 +875,8 @@ public class JCasTest extends TestCase {
     assert(Arrays.equals(expected, fss));
   }
 	  
-  public void testFSArrayAPI() {
+    @Test
+    public void testFSArrayAPI() {
     FSArray sa = new FSArray<>(jcas, 2);
     TOP fs1 = new TOP(jcas);
     TOP fs2 = new TOP(jcas);
@@ -863,7 +891,8 @@ public class JCasTest extends TestCase {
     }
   }
   
-  public void testOtherListAPI() {
+    @Test
+    public void testOtherListAPI() {
     // float and integer
     IntegerList sl = new EmptyIntegerList(jcas);
     sl = sl.push(2);
@@ -963,7 +992,8 @@ public class JCasTest extends TestCase {
     
   }  
   
-  public void testUndefinedType() throws Exception {
+    @Test
+    public void testUndefinedType() throws Exception {
     //create jcas with no type system
     JCas localJcas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null).getJCas();
     localJcas.setDocumentText("This is a test.");

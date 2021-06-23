@@ -40,13 +40,16 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * The PEAR runtime tests installs two pears files that both use JCas classes 
  * in their processing.
  */
-public class PearRuntimeTest extends TestCase {
+public class PearRuntimeTest {
 
   // Temporary working directory, used to install the pear package
   private File tempInstallDir = null;
@@ -54,7 +57,8 @@ public class PearRuntimeTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 
     // create temporary working directory
     File tempFile = File.createTempFile("pear_runtime_test_", "tmp");
@@ -68,13 +72,15 @@ public class PearRuntimeTest extends TestCase {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     if (this.tempInstallDir != null) {
       FileUtil.deleteDirectory(this.tempInstallDir);
     }
   }
 
-  public void testPearSofaMapping() throws Exception {
+    @Test
+    public void testPearSofaMapping() throws Exception {
     AnalysisEngineDescription desc = createAeDescriptionFromPears(new String[]{"pearTests/pearSofaMap.pear"});
     Capability[] capabilities = new Capability[]{UIMAFramework.getResourceSpecifierFactory().createCapability()};
     capabilities[0].setInputSofas(new String[] {"_InitialView"});
@@ -97,7 +103,8 @@ public class PearRuntimeTest extends TestCase {
     CAS cas = runDesc(desc);
   }
 
-  public void testPearRuntime() throws Exception {
+    @Test
+    public void testPearRuntime() throws Exception {
 
     CAS cas = this.runPearRuntimeTestcase(new String[]{"pearTests/DateTime.pear", "pearTests/RoomNumber.pear"});
     
@@ -114,7 +121,8 @@ public class PearRuntimeTest extends TestCase {
 
   
 
-  public void testPearRuntimeDocAnnot() throws Exception {
+    @Test
+    public void testPearRuntimeDocAnnot() throws Exception {
 
     CAS cas = this.runPearRuntimeTestcase(new String[]{"pearTests/analysisEngine.pear", "pearTests/analysisEngine2.pear"});
 

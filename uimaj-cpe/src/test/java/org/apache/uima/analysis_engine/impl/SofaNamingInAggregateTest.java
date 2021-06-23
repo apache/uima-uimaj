@@ -22,7 +22,10 @@ package org.apache.uima.analysis_engine.impl;
 import java.util.HashMap;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -40,7 +43,7 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-public class SofaNamingInAggregateTest extends TestCase {
+public class SofaNamingInAggregateTest {
   HashMap additionalParams;
 
   AggregateAnalysisEngine_impl aggregateAE;
@@ -58,7 +61,8 @@ public class SofaNamingInAggregateTest extends TestCase {
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       super.setUp();
       UIMAFramework.getXMLParser().enableSchemaValidation(true);
@@ -98,7 +102,8 @@ public class SofaNamingInAggregateTest extends TestCase {
   /**
    * Do full validation of descriptor; this checks validity of Sofa Mappings.
    */
-  public void testFullValidation() throws Exception {
+    @Test
+    public void testFullValidation() throws Exception {
     try {
       aeDescriptor.doFullValidation();
     } catch (Exception e) {
@@ -111,7 +116,8 @@ public class SofaNamingInAggregateTest extends TestCase {
    * delegate AE.
    * 
    */
-  public void testGetSofaMappings() throws Exception {
+    @Test
+    public void testGetSofaMappings() throws Exception {
     try {
       SofaID[] sofamappings = delegateAE.getUimaContext().getSofaMappings();
       Assert.assertEquals(2, sofamappings.length);
@@ -130,7 +136,8 @@ public class SofaNamingInAggregateTest extends TestCase {
    * Test the mapToSofaID method in UimaContext.
    * 
    */
-  public void testGetUimaContextMapToSofaID() throws Exception {
+    @Test
+    public void testGetUimaContextMapToSofaID() throws Exception {
     try {
       SofaID sofaid1 = delegateAE.getUimaContext().mapToSofaID("EnglishDocument");
       Assert.assertEquals("SourceDocument", sofaid1.getSofaID());
@@ -155,7 +162,8 @@ public class SofaNamingInAggregateTest extends TestCase {
    * Test the mapToSofaID method in UimaContext.
    * 
    */
-  public void testMapRootSofaNameToSofaID() throws Exception {
+    @Test
+    public void testMapRootSofaNameToSofaID() throws Exception {
     try {
       SofaID sofaid1 = delegateAE.getUimaContext().mapToSofaID("EnglishDocument.1.txt");
       Assert.assertEquals("SourceDocument.1.txt", sofaid1.getSofaID());
@@ -170,7 +178,8 @@ public class SofaNamingInAggregateTest extends TestCase {
    * Test the mapToSofaID method in Annotator Context.
    * 
    */
-  public void testGetAnnotatorContextMapToSofaID() throws Exception {
+    @Test
+    public void testGetAnnotatorContextMapToSofaID() throws Exception {
     try {
       AnnotatorContext context = new AnnotatorContext_impl(delegateAE.getUimaContextAdmin());
       SofaID sofaid1 = context.mapToSofaID("EnglishDocument");
@@ -186,7 +195,8 @@ public class SofaNamingInAggregateTest extends TestCase {
    * Test the whether input sofa specified in the AE descriptar are in the AE meta data.
    * 
    */
-  public void testGetInputSofas() throws Exception {
+    @Test
+    public void testGetInputSofas() throws Exception {
     try {
       Capability[] capabilities = aggregateAE.getAnalysisEngineMetaData().getCapabilities();
       String[] inputSofas = capabilities[0].getInputSofas();
@@ -201,7 +211,8 @@ public class SofaNamingInAggregateTest extends TestCase {
    * Test whether the output sofa specified in the AE descriptor are in the AE meta data.
    * 
    */
-  public void testGetOutputSofas() throws Exception {
+    @Test
+    public void testGetOutputSofas() throws Exception {
     try {
       Capability[] capabilities = aggregateAE.getAnalysisEngineMetaData().getCapabilities();
       String[] outputSofas = capabilities[0].getOutputSofas();
@@ -217,7 +228,8 @@ public class SofaNamingInAggregateTest extends TestCase {
    * Tests programmatically specifying the sofa name mapping in a aggregate AE.
    * 
    */
-  public void testSetSofaNameMappingInAggregateDescriptor() throws Exception {
+    @Test
+    public void testSetSofaNameMappingInAggregateDescriptor() throws Exception {
     try {
       // create aggregate analysis engine with sofa name mappings
       XMLInputSource in1 = new XMLInputSource(JUnitExtension

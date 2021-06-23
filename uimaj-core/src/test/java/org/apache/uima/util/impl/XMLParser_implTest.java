@@ -42,9 +42,12 @@ import org.apache.uima.util.XMLParser;
 import org.xml.sax.XMLReader;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class XMLParser_implTest extends TestCase {
+public class XMLParser_implTest {
 
   private XMLParser mXmlParser;
 
@@ -60,7 +63,8 @@ public class XMLParser_implTest extends TestCase {
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     super.setUp();
     mXmlParser = UIMAFramework.getXMLParser();
 
@@ -74,13 +78,15 @@ public class XMLParser_implTest extends TestCase {
   /*
    * @see TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     super.tearDown();
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
 
-  public void testParse() throws Exception {
+    @Test
+    public void testParse() throws Exception {
     try {
       // JTalentAndStringMatch.xml contains imports,
       // JTalentAndStringMatch_Expanded.xml has had them manually expanded
@@ -105,7 +111,8 @@ public class XMLParser_implTest extends TestCase {
     }
   }
 
-  public void testParseXMLInputSourceParseOptions() throws Exception {
+    @Test
+    public void testParseXMLInputSourceParseOptions() throws Exception {
     try {
       // test for env var refs
       File envVarRefTest = JUnitExtension.getFile("XmlParserTest/EnvVarRefTest.xml");
@@ -129,7 +136,8 @@ public class XMLParser_implTest extends TestCase {
     }
   }
 
-  public void testParseResourceSpecifier() throws Exception {
+    @Test
+    public void testParseResourceSpecifier() throws Exception {
     try {
       //can't run this test under Sun Java 1.4 with no Xerces installed, as
       //it doesn't support schema validation.  The following is a test for that.
@@ -158,14 +166,16 @@ public class XMLParser_implTest extends TestCase {
     }
   }
   
-  public void testParseFlowControllerDescription() throws Exception {
+    @Test
+    public void testParseFlowControllerDescription() throws Exception {
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("TextAnalysisEngineImplTest/FlowControllerForErrorTest.xml"));
     FlowControllerDescription desc = mXmlParser.parseFlowControllerDescription(in);
     assertEquals("Flow Controller for Error Test", desc.getMetaData().getName());
   }
   
-  public void testParseURISpecifier() throws Exception {
+    @Test
+    public void testParseURISpecifier() throws Exception {
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("XmlParserTest/TestUriSpecifier.xml"));
     URISpecifier uriSpec = mXmlParser.parseURISpecifier(in);
@@ -180,7 +190,8 @@ public class XMLParser_implTest extends TestCase {
     assertEquals("9000", params[1].getValue());    
   }
   
-  public void testParseCustomResourceSpecifier() throws Exception {
+    @Test
+    public void testParseCustomResourceSpecifier() throws Exception {
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("XmlParserTest/TestCustomResourceSpecifier.xml"));
     CustomResourceSpecifier uriSpec = mXmlParser.parseCustomResourceSpecifier(in);
@@ -193,7 +204,8 @@ public class XMLParser_implTest extends TestCase {
     assertEquals("val2", params[1].getValue());  
   }
   
-  public void testParsePearSpecifier() throws Exception {
+    @Test
+    public void testParsePearSpecifier() throws Exception {
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("XmlParserTest/TestPearSpecifier.xml"));
     PearSpecifier pearSpec = this.mXmlParser.parsePearSpecifier(in);

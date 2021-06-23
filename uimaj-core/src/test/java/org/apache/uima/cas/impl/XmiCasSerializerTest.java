@@ -40,13 +40,16 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test case for XMI serialization, in particular, invalid XML 1.0 characters. Other aspects of XMI
  * serialization are tested elsewhere.
  */
-public class XmiCasSerializerTest extends TestCase {
+public class XmiCasSerializerTest {
   
   private  static boolean XML1_1_SUPPORTED = false;
   
@@ -75,7 +78,8 @@ public class XmiCasSerializerTest extends TestCase {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     // Temp output file, deleted on exit.
     this.outputFile = new File(JUnitExtension.getFile("ExampleCas"),
@@ -84,7 +88,8 @@ public class XmiCasSerializerTest extends TestCase {
         new XMLInputSource(typeSystemFile));
   }
 
-  public void testInvalidCharsInDocumentText() throws Exception {
+    @Test
+    public void testInvalidCharsInDocumentText() throws Exception {
     CAS cas = CasCreationUtils.createCas(this.typeSystemDesc, null, null);
     char badChar = 0x1A;
     cas.setDocumentText("Text with bad char: " + badChar);
@@ -119,7 +124,8 @@ public class XmiCasSerializerTest extends TestCase {
     }
   }
 
-  public void testInvalidCharsInFeatureValue() throws Exception {
+    @Test
+    public void testInvalidCharsInFeatureValue() throws Exception {
     CAS cas = CasCreationUtils.createCas(this.typeSystemDesc, null, null);
     char badChar = 0x1A;
     cas.setDocumentLanguage("a" + badChar);
@@ -155,7 +161,8 @@ public class XmiCasSerializerTest extends TestCase {
    * 
    * @see junit.framework.TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     if ((this.outputFile != null) && this.outputFile.exists()) {
       this.outputFile.delete();
     }

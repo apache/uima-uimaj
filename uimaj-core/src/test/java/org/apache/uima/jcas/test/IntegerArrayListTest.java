@@ -27,14 +27,17 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.IntegerArrayList;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import x.y.z.EndOfSentence;
 
 /**
  * Test FSArrayList
  * 
  */
-public class IntegerArrayListTest extends TestCase {
+public class IntegerArrayListTest {
 
 	private CAS cas;
 
@@ -53,7 +56,8 @@ public class IntegerArrayListTest extends TestCase {
 		super(arg0);
 	}
 
-	public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 		this.cas = CASInitializer.initCas(new CASTestSetup(),
 		    null
 //		    (tsm -> {
@@ -66,7 +70,8 @@ public class IntegerArrayListTest extends TestCase {
 		this.jcas = cas.getJCas();
 	}
 
-	public void testBasic() {
+    @Test
+    public void testBasic() {
 	  IntegerArrayList al = new IntegerArrayList(jcas);
 	  al.add(1);
 	  al.add(2);

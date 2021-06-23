@@ -23,7 +23,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -48,7 +51,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
  *   Note: install handles converting classpath separator characters, etc.
  * 
  */
-public class PearCasPoolTest extends TestCase {
+public class PearCasPoolTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
   
   // Temporary working directory, used to install the pear package
@@ -60,7 +63,8 @@ public class PearCasPoolTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
@@ -74,7 +78,8 @@ public class PearCasPoolTest extends TestCase {
    * @throws Exception -
    * @see junit.framework.TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     super.tearDown();
     FunctionErrorStore.resetCount();
   }
@@ -85,7 +90,8 @@ public class PearCasPoolTest extends TestCase {
    * 
    * @throws Exception -
    */
-  public void testCasPool() throws Exception {
+    @Test
+    public void testCasPool() throws Exception {
     ResourceManager rm = UIMAFramework.newDefaultResourceManager();
     
     // check temporary working directory

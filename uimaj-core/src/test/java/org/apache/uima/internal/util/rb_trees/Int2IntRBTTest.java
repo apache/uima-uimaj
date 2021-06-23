@@ -27,11 +27,15 @@ import java.util.Set;
 import org.apache.uima.internal.util.IntKeyValueIterator;
 import org.apache.uima.internal.util.IntListIterator;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class Int2IntRBTTest extends TestCase {
+public class Int2IntRBTTest {
   
-  public void testexpand() {
+    @Test
+    public void testexpand() {
     Int2IntRBT ia = new Int2IntRBT();
     
     int shiftpoint = 1 + (1 << 30);
@@ -49,7 +53,8 @@ public class Int2IntRBTTest extends TestCase {
   }
   
   
-  public void testIterator() {
+    @Test
+    public void testIterator() {
     Int2IntRBT ia = new Int2IntRBT();
     Integer[] vs = new Integer[] {2, 2, 5, 1, 6, 7, 3, 4};
     for (Integer i : vs) {
@@ -89,7 +94,8 @@ public class Int2IntRBTTest extends TestCase {
     
   }
   
-  public void testFastLookup() {
+    @Test
+    public void testFastLookup() {
     Int2IntRBT ia = new Int2IntRBT();
     Random r = new Random();
     Set<Integer> keys = new HashSet<>(1000);

@@ -49,7 +49,10 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.Assert;
 import org.junit.Test;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class CasIOUtilsTest extends TestCase{
 
@@ -65,7 +68,8 @@ public class CasIOUtilsTest extends TestCase{
     super(arg0);
   }
   
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
     FsIndexDescription[] indexes = UIMAFramework.getXMLParser()
             .parseFsIndexCollection(new XMLInputSource(indexesFile)).getFsIndexes();
@@ -87,17 +91,20 @@ public class CasIOUtilsTest extends TestCase{
     cas2 = CasCreationUtils.createCas(typeSystem2, new TypePriorities_impl(), indexes);
   }
   
-  public void testXMI() throws Exception
+    @Test
+    public void testXMI() throws Exception
   {
     testXMI(false);
   }
 
-  public void testXMILenient() throws Exception
+    @Test
+    public void testXMILenient() throws Exception
   {
     testXMI(true);
   }
 
-  public void testXMI(boolean leniently) throws Exception {
+    @Test
+    public void testXMI(boolean leniently) throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.xmi");
     casFile.getParentFile().mkdirs();
     FileOutputStream docOS = new FileOutputStream(casFile);
@@ -121,17 +128,20 @@ public class CasIOUtilsTest extends TestCase{
     assertCorrectlyLoaded(casToUse, leniently);
   }
   
-  public void testXCAS() throws Exception
+    @Test
+    public void testXCAS() throws Exception
   {
     testXCAS(false);
   }
 
-  public void testXCASLenient() throws Exception
+    @Test
+    public void testXCASLenient() throws Exception
   {
     testXCAS(true);
   }
 
-  public void testXCAS(boolean leniently) throws Exception {
+    @Test
+    public void testXCAS(boolean leniently) throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.xcas");
     casFile.getParentFile().mkdirs();
     try (FileOutputStream docOS = new FileOutputStream(casFile)) {
@@ -146,43 +156,53 @@ public class CasIOUtilsTest extends TestCase{
     assertCorrectlyLoaded(casToUse, leniently);
   }
 
-  public void testS() throws Exception {
+    @Test
+    public void testS() throws Exception {
     testFormat(SerialFormat.SERIALIZED, "bins", false);
   }
   
-  public void testSp() throws Exception {
+    @Test
+    public void testSp() throws Exception {
     testFormat(SerialFormat.SERIALIZED_TSI, "binsp", false);
   }
   
-  public void testS6p() throws Exception {
+    @Test
+    public void testS6p() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED_TSI, "bins6p", false);
   }
   
-  public void testS6pTs() throws Exception {
+    @Test
+    public void testS6pTs() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED_TS, "bins6pTs", false);
   }
 
-  public void testS6pLenient() throws Exception {
+    @Test
+    public void testS6pLenient() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED_TSI, "bins6", true);
   }
 
-  public void testS0() throws Exception {
+    @Test
+    public void testS0() throws Exception {
     testFormat(SerialFormat.BINARY, "bins0", false);
   }
 
-  public void testS0tsi() throws Exception {
+    @Test
+    public void testS0tsi() throws Exception {
     testFormat(SerialFormat.BINARY_TSI, "bins0", false);
   }
 
-  public void testS4() throws Exception {
+    @Test
+    public void testS4() throws Exception {
     testFormat(SerialFormat.COMPRESSED, "bins4", false);
   }
   
-  public void testS4tsi() throws Exception {
+    @Test
+    public void testS4tsi() throws Exception {
     testFormat(SerialFormat.COMPRESSED_TSI, "bins4", false);
   }
 
-  public void testS6() throws Exception {
+    @Test
+    public void testS6() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED, "bins6", false);
   }
 
@@ -245,7 +265,8 @@ public class CasIOUtilsTest extends TestCase{
     Assert.assertEquals(expectedTypes, fsTypes);
   }
   
-  public void testWrongInputStream() throws Exception {
+    @Test
+    public void testWrongInputStream() throws Exception {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     ObjectOutput out = null;
 
@@ -266,7 +287,8 @@ public class CasIOUtilsTest extends TestCase{
     Assert.fail("An exception should have been thrown for wrong input.");
   }
   
-  public void testWrongFormat() throws Exception {
+    @Test
+    public void testWrongFormat() throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.wrong");
     try {
       CasIOUtils.save(cas, new FileOutputStream(casFile), SerialFormat.UNKNOWN);
@@ -277,7 +299,8 @@ public class CasIOUtilsTest extends TestCase{
     Assert.fail("An exception should have been thrown for wrong format.");
   }
   
-  public void testDocumentAnnotationIsNotResurrected() throws Exception {
+    @Test
+    public void testDocumentAnnotationIsNotResurrected() throws Exception {
     String refererAnnoTypeName = "org.apache.uima.testing.Referer";
     String customDocAnnoTypeName = "org.apache.uima.testing.CustomDocumentAnnotation";
       
@@ -325,7 +348,8 @@ public class CasIOUtilsTest extends TestCase{
         .containsExactly(customDocAnnoTypeName);
   }
 
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     cas.release();
   }
 }

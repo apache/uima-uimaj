@@ -22,20 +22,25 @@ package org.apache.uima.internal.util;
 import java.util.Arrays;
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class IntHashSetTest extends TestCase {
+public class IntHashSetTest {
   
   IntHashSet ihs;
   
   Random random;
   
-  public void setUp() {
+    @Before
+    public void setUp() {
     ihs = new IntHashSet();
   }
   
-  public void testBasic() {
+    @Test
+    public void testBasic() {
     
     ihs.add(15);
     ihs.add(188);
@@ -68,7 +73,8 @@ public class IntHashSetTest extends TestCase {
     assertTrue(Arrays.equals(sv, new int[]{-1000, -500, 189, 500, 1001}));
   }
   
-  public void testSwitching224() {
+    @Test
+    public void testSwitching224() {
     final int OS = 100000;
     ihs = new IntHashSet(16, OS);
     ihs.add(OS - 1);
@@ -96,7 +102,8 @@ public class IntHashSetTest extends TestCase {
     return r;
   }
   
-  public void testContains() {
+    @Test
+    public void testContains() {
     ihs.add(1188);
     ihs.add(1040);
     assertTrue(ihs.contains(1188));
@@ -111,14 +118,16 @@ public class IntHashSetTest extends TestCase {
 //    assertEquals(32, ihs.tableSpace(21));
 //  }
   
-  public void testWontExpand() {
+    @Test
+    public void testWontExpand() {
     ihs = new IntHashSet(21);
     assertEquals(16, ihs.getSpaceUsedInWords());
     assertTrue(ihs.wontExpand(20));
     assertFalse(ihs.wontExpand(21));
   }
   
-  public void testExpandNpe() {
+    @Test
+    public void testExpandNpe() {
     ihs.add(15);
     ihs.add(150000);  // makes 4 byte table entries
     
@@ -127,7 +136,8 @@ public class IntHashSetTest extends TestCase {
     }
   }
   
-  public void testAddIntoRemovedSlot() {
+    @Test
+    public void testAddIntoRemovedSlot() {
     long seed = // 6738591171221169418L;
         new Random().nextLong();
     System.out.println("Random seed for testAddIntoRemovedSlot in " + this.getClass().getName() + ": "  + seed);
@@ -204,7 +214,8 @@ public class IntHashSetTest extends TestCase {
     
   }
  
-  public void testRandom() {
+    @Test
+    public void testRandom() {
     int countAdd = 0;
     int dupsA = 0;
     int notPres = 0;

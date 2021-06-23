@@ -25,18 +25,23 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class AnalysisEngineFactory_implTest extends TestCase {
+public class AnalysisEngineFactory_implTest {
  
   private AnalysisEngineFactory_impl aeFactory;
 
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     aeFactory = new AnalysisEngineFactory_impl();
   }
 
-  public void testInvalidFrameworkImplementation() {
+    @Test
+    public void testInvalidFrameworkImplementation() {
     AnalysisEngineDescription desc = new AnalysisEngineDescription_impl();
     desc.setFrameworkImplementation("foo");    
     try {

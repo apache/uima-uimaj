@@ -107,8 +107,8 @@ public class AnnotationIteratorTest {
   private int callCount = -1;
   private Type[] types = new Type[3];
 
-  @Before
-  public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     // make a cas with various types, fairly complex -- see CASTestSetup class
     cas = CASInitializer.initCas(new CASTestSetup(), null);
     assertTrue(cas != null);
@@ -150,8 +150,8 @@ public class AnnotationIteratorTest {
     types[2] = tokenType;
   }
 
-  @After
-  public void tearDown() {
+    @After
+    public void tearDown() {
     cas = null;
     this.ts = null;
     this.tokenType = null;
@@ -186,8 +186,8 @@ public class AnnotationIteratorTest {
 //  }
   
 
-  @Test
-  public void testIterator1() throws Exception {
+    @Test
+    public void testIterator1() throws Exception {
     final int annotCount = setupTheCas();
     
     FSIndexRepository indexRepository = cas.getIndexRepository();
@@ -710,8 +710,8 @@ public class AnnotationIteratorTest {
     return fssStart;
   }
   
-  @Test
-  public void testIncorrectIndexTypeException() {
+    @Test
+    public void testIncorrectIndexTypeException() {
     boolean caughtException = false;
     try {
       cas.getAnnotationIndex(this.stringType);
@@ -740,8 +740,8 @@ public class AnnotationIteratorTest {
    * index the subiterator was applied to always to be returned, even if outside the boundary
    * annotation.
    */
-  @Test
-  public void testUnambiguousSubiteratorOnIndex() {
+    @Test
+    public void testUnambiguousSubiteratorOnIndex() {
     try {
       //                        0    0    1    1    2    2    3    3    4    4    5
       //                        0    5    0    5    0    5    0    5    0    5    0
@@ -834,8 +834,8 @@ public class AnnotationIteratorTest {
     }
   }
    
-  @Test
-  public void testEdges() {
+    @Test
+    public void testEdges() {
     Annotation ba = indexNew(phraseType, 10, 20);  // the bounding annotation
     edge(ba, "-", coveredBy, "--:--:--:--", 0);
     edge(ba, "-", covering, "--:--:--:--", 0);

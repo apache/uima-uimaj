@@ -53,9 +53,12 @@ import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class CasCreationUtilsTest extends TestCase {
+public class CasCreationUtilsTest {
 
   /**
    * Constructor for CasCreationUtilsTest.
@@ -71,7 +74,8 @@ public class CasCreationUtilsTest extends TestCase {
   // using debug one can see that no errors are thrown if the allowed values for subtypes of string differ when merging
   // and that no merging occurs of the allowed values - the 1st one "wins"  (as of 5/2013)
   // See Jira https://issues.apache.org/jira/browse/UIMA-2917
-  public void testStringSubtype() throws Exception {
+    @Test
+    public void testStringSubtype() throws Exception {
     try {
 
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser()
@@ -87,7 +91,8 @@ public class CasCreationUtilsTest extends TestCase {
     }    
   }
 
-  public void testMergeTypeSystems() throws Exception {
+    @Test
+    public void testMergeTypeSystems() throws Exception {
     try {
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/TypeSystem1.xml")));
@@ -124,7 +129,8 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
   
-  public void testMergeTypeSystemElementType() throws Exception {
+    @Test
+    public void testMergeTypeSystemElementType() throws Exception {
     try {
 
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser()
@@ -193,7 +199,8 @@ public class CasCreationUtilsTest extends TestCase {
     return mergedTS;
   }
   
-  public void testMergeTypeSystemsWithDifferentSupertypes() throws Exception {
+    @Test
+    public void testMergeTypeSystemsWithDifferentSupertypes() throws Exception {
     try {
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/SupertypeMergeTest1.xml")));
@@ -224,7 +231,8 @@ public class CasCreationUtilsTest extends TestCase {
   }
   
 
-  public void testAggregateWithImports() throws Exception {
+    @Test
+    public void testAggregateWithImports() throws Exception {
     try {
       String pathSep = System.getProperty("path.separator");
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
@@ -281,7 +289,8 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
 
-  public void testMergeDelegateAnalysisEngineTypeSystems() throws Exception {
+    @Test
+    public void testMergeDelegateAnalysisEngineTypeSystems() throws Exception {
     try {
       File descFile = JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
@@ -347,7 +356,8 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
 
-  public void testMergeDelegateAnalysisEngineTypePriorities() throws Exception {
+    @Test
+    public void testMergeDelegateAnalysisEngineTypePriorities() throws Exception {
     try {
       File descFile = JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
@@ -372,7 +382,8 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
 
-  public void testMergeDelegateAnalysisEngineFsIndexCollections() throws Exception {
+    @Test
+    public void testMergeDelegateAnalysisEngineFsIndexCollections() throws Exception {
     try {
       File descFile = JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
@@ -400,7 +411,8 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
 
-  public void testSetupTypeSystem() throws Exception {
+    @Test
+    public void testSetupTypeSystem() throws Exception {
     try {
       // test that duplicate feature names on supertype and subtype works
       // regardless of the order in which the types appear in the TypeSystemDescription
@@ -428,7 +440,8 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
 
-  public void testCreateCasCollectionPropertiesResourceManager() throws Exception {
+    @Test
+    public void testCreateCasCollectionPropertiesResourceManager() throws Exception {
     try {
       // parse an AE descriptor
       File taeDescriptorWithImport = JUnitExtension
@@ -469,7 +482,8 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
 
-  public void testCreateCasCollection() throws Exception {
+    @Test
+    public void testCreateCasCollection() throws Exception {
     try {
       // create two Type System description objects
       TypeSystemDescription tsd1 = new TypeSystemDescription_impl();
@@ -547,7 +561,8 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
 
-  public void testCreateCasTypeSystemDescription() throws Exception {
+    @Test
+    public void testCreateCasTypeSystemDescription() throws Exception {
     try {
       //parse type system description
       TypeSystemDescription tsDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
@@ -567,7 +582,8 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
 
-  public void testMergeDelegateAnalysisEngineMetaData() throws Exception {
+    @Test
+    public void testMergeDelegateAnalysisEngineMetaData() throws Exception {
     try {
       File descFile = JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");

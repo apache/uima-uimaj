@@ -25,13 +25,16 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test various kinds of inheritance issues 
  * involving result specifications and type system
  */
-public class ResultSpecWithTypeSystemTest extends TestCase {
+public class ResultSpecWithTypeSystemTest {
   
   private static class TofLs {
     TypeOrFeature tof;
@@ -92,7 +95,8 @@ public class ResultSpecWithTypeSystemTest extends TestCase {
   
   // no languages
   // check type inheritance
-  public void testTypeInheritance() {
+    @Test
+    public void testTypeInheritance() {
     check(tofT1allFeat, K.Contains, t1);
     check(tofT1, K.Contains, t1);
     check(tofT1, K.Contains, t2);
@@ -104,7 +108,8 @@ public class ResultSpecWithTypeSystemTest extends TestCase {
   
   // no languages
   // check feat inheritance  
-  public void testFeatInheritance() {
+    @Test
+    public void testFeatInheritance() {
     check(tofT1allFeat, K.Contains, f1);
     check(tofT1, K.NotContain, f1);
     check(tofF1, K.Contains, f1);
@@ -122,7 +127,8 @@ public class ResultSpecWithTypeSystemTest extends TestCase {
   
   // languages
   // check type inheritance
-  public void testTypeInheritanceL() {
+    @Test
+    public void testTypeInheritanceL() {
     check(tofT1allFeat, X, K.Contains, t1, X);
     check(tofT1allFeat, EN, K.NotContain, t1, X);
     check(tofT1allFeat, EN, K.Contains, t1, EN);
@@ -136,7 +142,8 @@ public class ResultSpecWithTypeSystemTest extends TestCase {
 
   }
   
-  public void testFeatInheritanceL() {
+    @Test
+    public void testFeatInheritanceL() {
     check(tofT1allFeat, X, K.Contains, f1, X);
     check(tofT1allFeat, EN, K.NotContain, f1, X);
     check(tofT1allFeat, EN, K.Contains, f1, EN);

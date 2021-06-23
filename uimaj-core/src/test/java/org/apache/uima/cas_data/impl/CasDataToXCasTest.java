@@ -27,10 +27,13 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class CasDataToXCasTest extends TestCase {
+public class CasDataToXCasTest {
 
   /**
    * Constructor for CasDataToXCasTest.
@@ -44,7 +47,8 @@ public class CasDataToXCasTest extends TestCase {
   /*
    * Test for void generateXCas(CasData)
    */
-  public void testGenerateXCasCasData() throws Exception {
+    @Test
+    public void testGenerateXCasCasData() throws Exception {
     try {
       CasData casData = new CasDataImpl();
       FeatureStructure testFS = new FeatureStructureImpl();

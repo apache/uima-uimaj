@@ -19,12 +19,15 @@
 
 package org.apache.uima.internal.util;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test XML utilities.
  */
-public class XmlUtilsTest extends TestCase {
+public class XmlUtilsTest {
 
   /**
    */
@@ -32,7 +35,8 @@ public class XmlUtilsTest extends TestCase {
     super(arg0);
   }
 
-  public void testXMLChars() {
+    @Test
+    public void testXMLChars() {
     // Create a string with chars from all the valid ranges.
     char[] chars = new char[] { 0x9, 0xA, 0xD, 0x20, 0x25, 0xD7FF, 0xE000, 0xEFFF, 0xFFFD, 0xD800,
         0xDC00, 0xDBFF, 0xDFFF };

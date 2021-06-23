@@ -30,7 +30,10 @@ import org.apache.uima.jcas.cas.FSLinkedHashSet;
 import org.apache.uima.jcas.cas.Int2FS;
 import org.apache.uima.util.IntEntry;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import x.y.z.EndOfSentence;
 import x.y.z.Token;
 
@@ -38,7 +41,7 @@ import x.y.z.Token;
  * Test FSHashSet
  * 
  */
-public class FSHashSetTest extends TestCase {
+public class FSHashSetTest {
 
 	private CAS cas;
 
@@ -50,7 +53,8 @@ public class FSHashSetTest extends TestCase {
 		super(arg0);
 	}
 
-	public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 		this.cas = CASInitializer.initCas(new CASTestSetup(),
 		    null
 //		    (tsm -> {
@@ -84,12 +88,14 @@ public class FSHashSetTest extends TestCase {
     assertEquals(fa.get(0), k);	  
 	}
 	
-	public void testBasic() {
+    @Test
+    public void testBasic() {
 	  basic(new FSHashSet<>(jcas));
 	  basic(new FSLinkedHashSet<>(jcas));
 	}
 	
-	public void testBasicInt2FS() {
+    @Test
+    public void testBasicInt2FS() {
 	  Int2FS<Token> m = new Int2FS<>(jcas);
 	  Int2FS<Token> m2 = new Int2FS<>(jcas, 11);
 

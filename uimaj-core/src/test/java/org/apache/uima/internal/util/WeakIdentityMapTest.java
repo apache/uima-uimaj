@@ -42,8 +42,8 @@ public class WeakIdentityMapTest {
 
   private Random random = new Random();
   
-  @Test
-  public void testSimpleHashMap() {
+    @Test
+    public void testSimpleHashMap() {
     final WeakIdentityMap<String,String> map =
       WeakIdentityMap.newHashMap(random.nextBoolean());
     // we keep strong references to the keys,
@@ -173,8 +173,8 @@ public class WeakIdentityMapTest {
     assertTrue(map.isEmpty());
   }
 
-  @Test
-  public void testConcurrentHashMap() throws Exception {
+    @Test
+    public void testConcurrentHashMap() throws Exception {
     // don't make threadCount and keyCount random, otherwise easily OOMs or fails otherwise:
     final int threadCount = 4;
     final int keyCount = 1024;

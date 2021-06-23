@@ -55,21 +55,21 @@ public class TypeSystemDescription_implTest {
 
   private XMLParser xmlParser;
 
-  @Before
-  public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     xmlParser = UIMAFramework.getXMLParser();
     xmlParser.enableSchemaValidation(true);
   }
 
-  @After
-  public void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     // Note that the XML parser is a singleton in the framework, so we have to set this back to the
     // default.
     xmlParser.enableSchemaValidation(false);
   }
 
-  @Test
-  public void testBuildFromXmlElement() throws Exception {
+    @Test
+    public void testBuildFromXmlElement() throws Exception {
     File descriptor = getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
 
@@ -104,8 +104,8 @@ public class TypeSystemDescription_implTest {
                 "uima.cas.FSArray", null, true));
   }
 
-  @Test
-  public void testResolveImports() throws Exception {
+    @Test
+    public void testResolveImports() throws Exception {
     File descriptor = getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
 
@@ -187,8 +187,8 @@ public class TypeSystemDescription_implTest {
         .containsExactlyElementsOf(asList(typeSystemWithResolvedImports2.getTypes()));
   }
 
-  @Test
-  public void testInvalidTypeSystem() throws Exception {
+    @Test
+    public void testInvalidTypeSystem() throws Exception {
     File file = getFile("TypeSystemDescriptionImplTest/InvalidTypeSystem1.xml");
 
     TypeSystemDescription tsDesc = xmlParser.parseTypeSystemDescription(new XMLInputSource(file));

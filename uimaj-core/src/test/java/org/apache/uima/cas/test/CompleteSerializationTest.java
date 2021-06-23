@@ -69,8 +69,8 @@ public class CompleteSerializationTest {
     System.getProperties().remove("uima.enable_strict_type_source_check");
   }
 
-  @Test
-  public void testSerialization() throws Exception {
+    @Test
+    public void testSerialization() throws Exception {
     CASMgr cas = (CASMgr) CASInitializer.initCas(new CASTestSetup(), null);
 
     ((CAS) cas).setDocumentText("Create the sofa for the inital view");
@@ -99,8 +99,8 @@ public class CompleteSerializationTest {
             .isThrownBy(() -> ((LowLevelCAS) newCas).ll_enableV2IdRefs());
   }
 
-  @Test
-  public void testSerializationV2IdRefs() throws Exception {
+    @Test
+    public void testSerializationV2IdRefs() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
       CAS cas = CASInitializer.initCas(new CASTestSetup(), null);
       JCas jcas = cas.getJCas();

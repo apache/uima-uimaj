@@ -30,10 +30,13 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class FsIndexCollection_implTest extends TestCase {
+public class FsIndexCollection_implTest {
 
   /**
    * Constructor for TypeSystemDescription_implTest.
@@ -47,7 +50,8 @@ public class FsIndexCollection_implTest extends TestCase {
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     super.setUp();
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
   }
@@ -55,12 +59,14 @@ public class FsIndexCollection_implTest extends TestCase {
   /*
    * @see TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     super.tearDown();
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-  public void testBuildFromXmlElement() throws Exception {
+    @Test
+    public void testBuildFromXmlElement() throws Exception {
     try {
       File descriptor = JUnitExtension
               .getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
@@ -85,7 +91,8 @@ public class FsIndexCollection_implTest extends TestCase {
     }
   }
 
-  public void testResolveImports() throws Exception {
+    @Test
+    public void testResolveImports() throws Exception {
     try {
       File descriptor = JUnitExtension
               .getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");

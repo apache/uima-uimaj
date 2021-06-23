@@ -28,7 +28,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
@@ -55,7 +58,7 @@ import org.apache.uima.util.CasCreationUtils;
  * Class comment for TokenizerTest.java goes here.
  * 
  */
-public class SerializationNoMDTest extends TestCase {
+public class SerializationNoMDTest {
 
   public static final String TOKEN_TYPE = "Token";
 
@@ -101,7 +104,8 @@ public class SerializationNoMDTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     super.setUp();
     casMgr = initCAS();
     cas = (CASImpl)casMgr;
@@ -118,7 +122,8 @@ public class SerializationNoMDTest extends TestCase {
     sentenceType = ts.getType(SENT_TYPE);
   }
 
-  public void tearDown() {
+    @After
+    public void tearDown() {
     casMgr = null;
     cas = null;
     wordType = null;
@@ -379,7 +384,8 @@ public class SerializationNoMDTest extends TestCase {
   /**
    * Test driver.
    */
-  public void testMain() throws Exception {
+    @Test
+    public void testMain() throws Exception {
 
     // Read the document into a String. I'm sure there are better ways to
     // do this.

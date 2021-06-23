@@ -25,18 +25,23 @@ import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.Resource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class CustomResourceSpecifierFactory_implTest extends TestCase {
+public class CustomResourceSpecifierFactory_implTest {
  
   private CustomResourceFactory_impl crFactory;
 
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     crFactory = new CustomResourceFactory_impl();
   }
 
-  public void testProduceResource() throws Exception {
+    @Test
+    public void testProduceResource() throws Exception {
     CustomResourceSpecifier specifier = UIMAFramework.getResourceSpecifierFactory().createCustomResourceSpecifier();
     specifier.setResourceClassName("org.apache.uima.impl.SomeCustomResource");
     Parameter[] parameters = new Parameter[2];

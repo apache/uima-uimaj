@@ -31,13 +31,16 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Testclass for Sequencers with a capabilityLanguageFlow
  * 
  */
-public class SequencerCapabilityLanguageTest extends TestCase {
+public class SequencerCapabilityLanguageTest {
 
   private File testBaseDir = null;
 
@@ -53,7 +56,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
@@ -105,126 +109,150 @@ public class SequencerCapabilityLanguageTest extends TestCase {
     }
   }
 
-  public void testSequencerCapabilityLanguageEsEn() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsEn() throws Exception {
 
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt", false);
 
   }
 
-  public void testSequencerCapabilityLanguageEsEnResultSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsEnResultSpec() throws Exception {
 
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsEnResultSpec.txt", true);
 
   }
 
-  public void testSequencerCapabilityLanguageEsEnUS() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsEnUS() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en-US",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsEnUS.txt", false);
   }
 
-  public void testSequencerCapabilityLanguageEsEnUSResultSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsEnUSResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en-US",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsEnResultSpec.txt", true);
   }
 
-  public void testSequencerCapabilityLanguageEsAr() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsAr() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "ar",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt", false);
   }
 
-  public void testSequencerCapabilityLanguageEsArResultSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsArResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "ar",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt", true);
   }
 
-  public void testSequencerCapabilityLanguageEsUnkown() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsUnkown() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "unknown",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", false);
   }
 
-  public void testSequencerCapabilityLanguageEsUnkownResultSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsUnkownResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "unknown",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", true);
   }
 
-  public void testSequencerCapabilityLanguageEsZhCN() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsZhCN() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-CN",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt", false);
   }
 
-  public void testSequencerCapabilityLanguageEsZhCNResultSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsZhCNResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-CN",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt", true);
   }
 
-  public void testSequencerCapabilityLanguageEsXunSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsXunSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "x-unspecified",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", false);
   }
 
-  public void testSequencerCapabilityLanguageEsXunSpecResultSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsXunSpecResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "x-unspecified",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", true);
   }
 
-  public void testSequencerCapabilityLanguageEn() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEn() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "en",
             "SequencerTest/SequencerCapabilityLanguageExpectedEn.txt", false);
   }
 
-  public void testSequencerCapabilityLanguageEnResultSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEnResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "en",
             "SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt", true);
   }
 
-  public void testSequencerCapabilityLanguageEnResultSpecCapital() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEnResultSpecCapital() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "EN",
             "SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt", true);
   }
 
-  public void testSequencerCapabilityLanguageJa() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageJa() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "ja",
             "SequencerTest/SequencerCapabilityLanguageExpectedJa.txt", false);
   }
 
-  public void testSequencerCapabilityLanguageJaResultSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageJaResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "ja",
             "SequencerTest/SequencerCapabilityLanguageExpectedJaResultSpec.txt", true);
   }
 
-  public void testSequencerCapabilityLanguageXunSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageXunSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "x-unspecified",
             "SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt", false);
   }
 
-  public void testSequencerCapabilityLanguageXunSpecResultSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageXunSpecResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "x-unspecified",
             "SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt", true);
   }
 
-  public void testSequencerCapabilityLanguageEsFooBar() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsFooBar() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "foo-BAR",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", false);
   }
 
-  public void testSequencerCapabilityLanguageEsFooBarResultSpec() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsFooBarResultSpec() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "foo-BAR",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", true);
   }
 
-  public void testSequencerCapabilityLanguageEsZhCNSmall() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsZhCNSmall() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-cn",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt", false);
   }
 
-  public void testSequencerCapabilityLanguageEsZhCNResultSpecSmall() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageEsZhCNResultSpecSmall() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-cn",
             "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt", true);
   }
 
-  public void testSequencerCapabilityLanguageResultSpecSetByFlowController() throws Exception {
+    @Test
+    public void testSequencerCapabilityLanguageResultSpecSetByFlowController() throws Exception {
     runTest("SequencerTest/SequencerCapabilityLanguageAggregateResultSpec.xml", "en",
             "SequencerTest/SequencerCapabilityLanguageExpectedResultSpecSetByFlowController.txt", false);
   }

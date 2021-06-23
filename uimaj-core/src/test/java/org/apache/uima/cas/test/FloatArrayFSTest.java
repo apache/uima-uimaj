@@ -23,9 +23,12 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FloatArrayFS;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class FloatArrayFSTest extends TestCase {
+public class FloatArrayFSTest {
 
 	private CAS cas;
 
@@ -38,7 +41,8 @@ public class FloatArrayFSTest extends TestCase {
 		super(arg0);
 	}
 
-	public void setUp() {
+    @Before
+    public void setUp() {
 		try {
 			this.cas = CASInitializer.initCas(new CASTestSetup(), null);
 		} catch (Exception e) {
@@ -46,7 +50,8 @@ public class FloatArrayFSTest extends TestCase {
 		}
 	}
 
-	public void tearDown() {
+    @After
+    public void tearDown() {
 		this.cas = null;
 	}
 
@@ -54,7 +59,8 @@ public class FloatArrayFSTest extends TestCase {
 		junit.textui.TestRunner.run(FloatArrayFSTest.class);
 	}
 
-	public void testSet() {
+    @Test
+    public void testSet() {
 		FloatArrayFS array = this.cas.createFloatArrayFS(0);
 		assertTrue(array != null);
 		assertTrue(array.size() == 0);
@@ -115,7 +121,8 @@ public class FloatArrayFSTest extends TestCase {
 		assertTrue(exceptionCaught);
 	}
 
-	public void testToArray() {
+    @Test
+    public void testToArray() {
 		// From CAS array to Java array.
 		FloatArrayFS array = this.cas.createFloatArrayFS(3);
 		float[] fsArray = array.toArray();

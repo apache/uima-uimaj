@@ -28,7 +28,10 @@ import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.Utilities;
 import org.apache.uima.jcas.cas.TOP;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Run this as a single test with yourkit, and look at the retained storage for both maps.
@@ -37,7 +40,7 @@ import junit.framework.TestCase;
  *                JCasHashmap              showed ~0.835 MB * 8 
  *
  */
-public class JCasHashMapCompareTest extends TestCase {
+public class JCasHashMapCompareTest {
     
   private static final long rm =  0x5deece66dL;
 
@@ -50,7 +53,8 @@ public class JCasHashMapCompareTest extends TestCase {
   private long custNbr = 0;
 
   
-  public void testComp() throws Exception {
+    @Test
+    public void testComp() throws Exception {
     Thread.sleep(0000);  // set non-zero to delay so you can get yourkit tooling hooked up, if using yourkit
     int numberOfThreads =  Utilities.numberOfCores; 
     numberOfThreads = Math.min(8, Utilities.nextHigherPowerOf2(numberOfThreads));  // avoid too big slowdown on giant machines.

@@ -52,8 +52,8 @@ public class SelectFsNoJCasTest  {
   }
   
 
-  @Test
-  public void testOpsNeedingAnnotation() {
+    @Test
+    public void testOpsNeedingAnnotation() {
     Type type = cas.getTypeSystem().getType("x.y.z.SentenceNoJCas");
     FeatureStructure s = cas.createAnnotation(type, 0,  4);
     cas.indexRepository.addFS(s);

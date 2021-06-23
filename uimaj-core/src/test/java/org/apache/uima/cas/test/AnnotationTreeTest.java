@@ -38,9 +38,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class AnnotationTreeTest extends TestCase {
+public class AnnotationTreeTest {
 
   private static final String casDataDirName = "CASTests";
 
@@ -54,7 +57,8 @@ public class AnnotationTreeTest extends TestCase {
     super(desc);
   }
 
-  public void testTree() throws Exception {
+    @Test
+    public void testTree() throws Exception {
 
     // The two XCASes used in this test contain the same data, but the
     // second one contains all annotations twice. So in that case, every

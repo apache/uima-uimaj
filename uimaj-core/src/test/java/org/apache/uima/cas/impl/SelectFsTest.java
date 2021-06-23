@@ -106,8 +106,8 @@ public class SelectFsTest {
     cas.reset();
   }
   
-  @Test
-  public void testSelect_asList() {
+    @Test
+    public void testSelect_asList() {
     JCas jcas = cas.getJCas();
     
     Token p1 = new Token(jcas, 0, 1); 
@@ -133,8 +133,8 @@ public class SelectFsTest {
         .isEmpty();
   }
 
-  @Test
-  public void testPrecedingAndShifted() {
+    @Test
+    public void testPrecedingAndShifted() {
     Annotation[] a = addToIndexes(
         new Annotation(cas.getJCas(), 0, 1),
         new Annotation(cas.getJCas(), 2, 3),
@@ -152,8 +152,8 @@ public class SelectFsTest {
         .containsExactly(a[0], a[1]);
   }
   
-  @Test
-  public void testBetween() {
+    @Test
+    public void testBetween() {
     JCas jCas = cas.getJCas();
     
     Token t1 = new Token(jCas, 45, 57);
@@ -171,8 +171,8 @@ public class SelectFsTest {
         .containsExactly(s1);
   }
   
-  @Test
-  public void testBackwards() {
+    @Test
+    public void testBackwards() {
     cas.setDocumentText("t1 t2 t3 t4");
     
     addToIndexes(
@@ -199,8 +199,8 @@ public class SelectFsTest {
         .isTrue();
   }
   
-  @Test
-  public void testSelectFollowingPrecedingDifferentTypes() {
+    @Test
+    public void testSelectFollowingPrecedingDifferentTypes() {
     
     JCas jCas = cas.getJCas();
     jCas.setDocumentText("A B C D E");

@@ -28,7 +28,8 @@ public class JsonXmiCasSerializerTest extends JsonCasSerializerTest {
    * It extends the other JsonCasSerializerTest but sets up some flags
    *********************************************************************/
   @Override 
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     super.setUp();
     jcs = new JsonCasSerializer();
     doJson = false;

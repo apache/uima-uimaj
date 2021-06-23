@@ -67,13 +67,16 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test the TaeDescription_impl class.
  * 
  */
-public class TaeDescription_implTest extends TestCase {
+public class TaeDescription_implTest {
   
   private AnalysisEngineDescription primitiveDesc;
 
@@ -91,7 +94,8 @@ public class TaeDescription_implTest extends TestCase {
   /**
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       super.setUp();
 
@@ -246,12 +250,14 @@ public class TaeDescription_implTest extends TestCase {
     }
   }
 
-  public void tearDown() {
+    @After
+    public void tearDown() {
     primitiveDesc = null;
     aggregateDesc = null;
   }
 
-  public void testXMLization() throws Exception {
+    @Test
+    public void testXMLization() throws Exception {
     try {
       // write objects to XML
       StringWriter writer = new StringWriter();
@@ -278,7 +284,8 @@ public class TaeDescription_implTest extends TestCase {
     }
   }
 
-  public void testSerialization() throws Exception {
+    @Test
+    public void testSerialization() throws Exception {
     try {
       byte[] primitiveDescBytes = SerializationUtils.serialize(primitiveDesc);
       AnalysisEngineDescription_impl primitiveDesc2 = (AnalysisEngineDescription_impl) SerializationUtils

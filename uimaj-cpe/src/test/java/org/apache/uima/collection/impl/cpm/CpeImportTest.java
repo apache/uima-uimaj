@@ -22,7 +22,10 @@ package org.apache.uima.collection.impl.cpm;
 import java.io.File;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionProcessingEngine;
@@ -42,13 +45,14 @@ import org.apache.uima.util.XMLInputSource;
  * document should be processed exactly one time.
  * 
  */
-public class CpeImportTest extends TestCase {
+public class CpeImportTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
@@ -58,7 +62,8 @@ public class CpeImportTest extends TestCase {
    * @throws Exception -
    * @see junit.framework.TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     super.tearDown();
     FunctionErrorStore.resetCount();
   }
@@ -66,7 +71,8 @@ public class CpeImportTest extends TestCase {
   /**
    * Test a CPE descriptor that uses the import syntax.
    */
-  public void testImports() throws Exception {
+    @Test
+    public void testImports() throws Exception {
     CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
             new XMLInputSource(JUnitExtension.getFile("CollectionProcessingEngineImplTest/CpeImportTest.xml")));            
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc);
@@ -96,7 +102,8 @@ public class CpeImportTest extends TestCase {
   /**
    * Test a CPE descriptor using import by name and requiring data patht o be set
    */
-  public void testImportsWithDataPath() throws Exception {
+    @Test
+    public void testImportsWithDataPath() throws Exception {
     CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
             new XMLInputSource(JUnitExtension.getFile("CollectionProcessingEngineImplTest/CpeImportDataPathTest.xml")));
     ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();

@@ -65,13 +65,16 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test for binary serialization and deserialization (no compression)
  * 
  */
-public class SerializationReinitTest extends TestCase {
+public class SerializationReinitTest {
 
   public static final String TOKEN_TYPE = "Token";
 
@@ -160,7 +163,8 @@ public class SerializationReinitTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     
     /**
      * sets up two type systems:
@@ -204,7 +208,8 @@ public class SerializationReinitTest extends TestCase {
                 .getFsIndexes();
   }
 
-  public void tearDown() {
+    @After
+    public void tearDown() {
     casMgr = null;
     cas = null;
     wordType = null;
@@ -283,7 +288,8 @@ public class SerializationReinitTest extends TestCase {
     return (CASMgr) aCas.getCAS().getCurrentView();
   }
 
-  public void testReset() {
+    @Test
+    public void testReset() {
     cas.reset();
     casMgr.enableReset(false);
     boolean exc = false;
@@ -429,7 +435,8 @@ public class SerializationReinitTest extends TestCase {
   /**
    * Test driver.
    */
-  public void testMain() throws Exception {
+    @Test
+    public void testMain() throws Exception {
 
     // System.out.println("Setting up CAS.");
     // Create the initial CAS.
@@ -524,7 +531,8 @@ public class SerializationReinitTest extends TestCase {
 
   /** Test basic blob serialization
    */
-  public void testBlob() throws Exception {
+    @Test
+    public void testBlob() throws Exception {
 
     /*
      * Test that FS, indexes and strings work after repeated blob serialization
@@ -611,7 +619,8 @@ public class SerializationReinitTest extends TestCase {
     }  
   }
 
-  public void testDeltaBinaryShortLongArrayMods() throws Exception {
+    @Test
+    public void testDeltaBinaryShortLongArrayMods() throws Exception {
     CASImpl cas2 = (CASImpl) initCAS();
     CASImpl cas3 = (CASImpl) initCAS();
 
@@ -678,7 +687,8 @@ public class SerializationReinitTest extends TestCase {
    * 
    * @throws Exception
    */
-  public void testDeltaBlobSerialization() throws Exception {
+    @Test
+    public void testDeltaBlobSerialization() throws Exception {
    try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               indexes);
@@ -892,7 +902,8 @@ public class SerializationReinitTest extends TestCase {
 	}
   }
   
-  public void testDeltaBlobWithInvalidMarker() throws Exception {
+    @Test
+    public void testDeltaBlobWithInvalidMarker() throws Exception {
     try {
        CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
                indexes);

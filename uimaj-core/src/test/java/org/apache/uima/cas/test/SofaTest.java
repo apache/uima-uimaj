@@ -75,9 +75,12 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class SofaTest extends TestCase {
+public class SofaTest {
 
   private CASMgr casMgr;
 
@@ -100,7 +103,8 @@ public class SofaTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       super.setUp();
       this.casMgr = CASFactory.createCAS();
@@ -139,7 +143,8 @@ public class SofaTest extends TestCase {
     }
   }
   
-  public void tearDown() {
+    @After
+    public void tearDown() {
     casMgr = null;
     cas = null;
     annotationType = null;
@@ -151,7 +156,8 @@ public class SofaTest extends TestCase {
   /**
    * Test driver.
    */
-  public void testMain() throws Exception {
+    @Test
+    public void testMain() throws Exception {
     try {
 
       // Create a Sofa (using old APIs for now)
@@ -363,7 +369,8 @@ public class SofaTest extends TestCase {
   /*
    * Test stream access to Sofa Data.
    */
-  public void testSofaDataStream() throws Exception {
+    @Test
+    public void testSofaDataStream() throws Exception {
     try {
 
       // Create Sofas
@@ -587,7 +594,8 @@ public class SofaTest extends TestCase {
     }
   }
   
-  public void testSetSofaDataString() {
+    @Test
+    public void testSetSofaDataString() {
     final String TEST_TEXT = "this is a test";
     final String TEST_MIME = "text/plain";
     CAS testView = this.cas.createView("TestView");
@@ -597,7 +605,8 @@ public class SofaTest extends TestCase {
     assertEquals(TEST_TEXT, testView.getSofaDataString());
   }
   
-  public void testSetSofaDataStringOnInitialView() {
+    @Test
+    public void testSetSofaDataStringOnInitialView() {
     final String TEST_TEXT = "this is a test";
     final String TEST_MIME = "text/plain";
     this.cas.setSofaDataString(TEST_TEXT, TEST_MIME);
@@ -606,7 +615,8 @@ public class SofaTest extends TestCase {
     assertEquals(TEST_TEXT, this.cas.getSofaDataString());
   }
 
-  public void testSetSofaDataURI() {
+    @Test
+    public void testSetSofaDataURI() {
     final String TEST_URI = "file:/test";
     final String TEST_MIME = "text/plain";
     CAS testView = this.cas.createView("TestView");
@@ -615,7 +625,8 @@ public class SofaTest extends TestCase {
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
   }
   
-  public void testSetSofaDataURIonInitialView() throws Exception {
+    @Test
+    public void testSetSofaDataURIonInitialView() throws Exception {
     // This test uses platform encoding both for reading and writing.  
     String someText="remote text.";
     String someTextFile="./someUriText.txt";
@@ -649,7 +660,8 @@ public class SofaTest extends TestCase {
     assertTrue(testFile.delete());
   }
   
-  public void testSetSofaDataArray() {
+    @Test
+    public void testSetSofaDataArray() {
     final String TEST_MIME = "text/plain";    
     CAS testView = this.cas.createView("TestView");
     ByteArrayFS sofaDataArray = testView.createByteArrayFS(2);
@@ -660,7 +672,8 @@ public class SofaTest extends TestCase {
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
   }
   
-  public void testSetSofaDataArrayOnInitialView() {
+    @Test
+    public void testSetSofaDataArrayOnInitialView() {
     final String TEST_MIME = "text/plain";    
     ByteArrayFS sofaDataArray = this.cas.createByteArrayFS(2);
     sofaDataArray.set(0, (byte)0);
@@ -670,7 +683,8 @@ public class SofaTest extends TestCase {
     assertEquals(TEST_MIME, this.cas.getSofa().getSofaMime());
   }
   
-  public void testReset() {
+    @Test
+    public void testReset() {
     this.cas.reset();
     this.cas.setDocumentText("setDocumentText creates the _InitialView Sofa");
     CAS testView = this.cas.createView("TestView");
@@ -696,7 +710,8 @@ public class SofaTest extends TestCase {
     assertEquals(i, cas_s.length);
   }
   
-  public void testGetViewIterator() throws Exception {
+    @Test
+    public void testGetViewIterator() throws Exception {
     this.cas.reset();
     CAS view1 = this.cas.createView("View1");
     CAS view2 = this.cas.createView("View2");

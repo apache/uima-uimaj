@@ -38,10 +38,13 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class GetAllIndexedTest extends TestCase {
+public class GetAllIndexedTest {
 
   // Index name constants.
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
@@ -91,7 +94,8 @@ public class GetAllIndexedTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     super.setUp();
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile.exists());
@@ -125,7 +129,8 @@ public class GetAllIndexedTest extends TestCase {
     assertTrue(this.annotationBaseType != null);
   }
 
-  public void tearDown() {
+    @After
+    public void tearDown() {
     this.cas = null;
 //    this.tokenType = null;
 //    this.sentenceType = null;
@@ -168,7 +173,8 @@ public class GetAllIndexedTest extends TestCase {
   /**
    * Test driver.
    */
-  public void testGetAllIndexed() throws Exception {
+    @Test
+    public void testGetAllIndexed() throws Exception {
     initTest();
     FeatureStructure docAnnotation = this.cas.getDocumentAnnotation();
   	assertNotNull(docAnnotation);

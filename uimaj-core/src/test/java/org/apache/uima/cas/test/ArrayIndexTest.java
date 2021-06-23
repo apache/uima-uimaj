@@ -39,7 +39,10 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
@@ -47,7 +50,8 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
   private AnalysisEngine ae = null;
 
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     super.setUp();
     // Start up TAE
     XMLInputSource input = new XMLInputSource(JUnitExtension
@@ -57,7 +61,8 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
   }
 
-  public void testArrayIndex() {
+    @Test
+    public void testArrayIndex() {
     try {
       CAS cas = this.ae.newCAS();
       FSIndexRepository ir = cas.getIndexRepository();
@@ -85,7 +90,8 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
     return count;
   }
 
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     super.tearDown();
     this.ae.destroy();
   }

@@ -30,9 +30,12 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
 import aa.T;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class JCasReinitTest extends TestCase {
+public class JCasReinitTest {
 
   private TypeSystemDescription typeSystemDescription;
 
@@ -59,7 +62,8 @@ public class JCasReinitTest extends TestCase {
    */
 
   
-  public void testReinit() throws Throwable {
+    @Test
+    public void testReinit() throws Throwable {
     File typeSystemFile1;
     
 //    // x.y.z.Token with no features

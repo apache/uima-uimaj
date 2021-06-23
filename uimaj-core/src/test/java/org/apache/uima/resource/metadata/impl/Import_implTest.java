@@ -36,9 +36,12 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.w3c.dom.Document;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class Import_implTest extends TestCase {
+public class Import_implTest {
 
   /**
    * Constructor for Import_implTest.
@@ -52,18 +55,11 @@ public class Import_implTest extends TestCase {
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
   /*
    * @see TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
-  public void testBuildFromXmlElement() throws Exception {
+    @Test
+    public void testBuildFromXmlElement() throws Exception {
     try {
       DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -114,7 +110,8 @@ public class Import_implTest extends TestCase {
     }
   }
 
-  public void testFindAbsoluteUrl() throws Exception {
+    @Test
+    public void testFindAbsoluteUrl() throws Exception {
     try {
       // location import
       Import_impl importObj = new Import_impl();
@@ -151,7 +148,8 @@ public class Import_implTest extends TestCase {
     }
   }
 
-  public void testNestedImports() throws Exception {
+    @Test
+    public void testNestedImports() throws Exception {
     try {
       File baseDescriptorFile = JUnitExtension
               .getFile("ImportImplTest/subdir/subdir2/AggregateTaeForNestedImportTest.xml");

@@ -44,13 +44,16 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Class comment for IteratorTest.java goes here.
  * 
  */
-public class GrowingTheCasTest extends TestCase {
+public class GrowingTheCasTest {
 
   private AnalysisEngine ae = null;
 
@@ -62,7 +65,8 @@ public class GrowingTheCasTest extends TestCase {
     super(arg0);
   }
 
-  public void setUp() {
+    @Before
+    public void setUp() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
 	.exists());
@@ -91,7 +95,8 @@ public class GrowingTheCasTest extends TestCase {
 
   }
 
-  public void tearDown() {
+    @After
+    public void tearDown() {
     if (this.ae != null) {
       this.ae.destroy();
       this.ae = null;
@@ -286,7 +291,8 @@ public class GrowingTheCasTest extends TestCase {
 //    }
   }
   
-  public void testAnnotator() {
+    @Test
+    public void testAnnotator() {
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String text = null;
     try {

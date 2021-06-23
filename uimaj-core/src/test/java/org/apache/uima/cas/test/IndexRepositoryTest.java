@@ -35,10 +35,13 @@ import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class IndexRepositoryTest extends TestCase {
+public class IndexRepositoryTest {
 
   CAS cas;
 
@@ -53,20 +56,23 @@ public class IndexRepositoryTest extends TestCase {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     super.setUp();
     this.cas = CASInitializer.initCas(new CASTestSetup(), null);
     this.typeSystem = this.cas.getTypeSystem();
     this.indexRep = this.cas.getIndexRepository();
   }
 
-  public void tearDown() {
+    @After
+    public void tearDown() {
     cas = null;
     typeSystem = null;
     indexRep = null;
   }
   
-  public void testMissingSofaRef() throws Exception {
+    @Test
+    public void testMissingSofaRef() throws Exception {
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 4);
     FeatureImpl feat = (FeatureImpl) cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION_BASE)
@@ -81,7 +87,8 @@ public class IndexRepositoryTest extends TestCase {
     fail("required exception not thrown"); // fail
   }
   
-  public void testDefaultBagIndex() throws Exception {
+    @Test
+    public void testDefaultBagIndex() throws Exception {
     // create an instance of a non-annotation type
     Type tokenTypeType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE_TYPE);
     FeatureStructure tokenTypeFs1 = this.cas.createFS(tokenTypeType);
@@ -110,7 +117,8 @@ public class IndexRepositoryTest extends TestCase {
     assertFalse(iter.hasNext());
   }
   
-  public void testSetIndex() throws Exception {
+    @Test
+    public void testSetIndex() throws Exception {
     Feature beginFeat = this.typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
     // create an instance of an annotation type
     Type tokenTypeType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE);
@@ -159,7 +167,8 @@ public class IndexRepositoryTest extends TestCase {
    *   -Duima.allow_duplicate_add_to_indexes
    * @throws CASException
    */
-  public void testDupFsIndex() throws CASException {
+    @Test
+    public void testDupFsIndex() throws CASException {
     cas.setSofaDataString("something", "text"); // otherwise triggers failure in addFsToIndex - no sofa ref
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 4);
@@ -174,7 +183,8 @@ public class IndexRepositoryTest extends TestCase {
   
   public static int NBR_ITEMS = 40000;
   
-  public void testRemovalSpeed() throws Exception {
+    @Test
+    public void testRemovalSpeed() throws Exception {
     // create an instance of an annotation type
     Feature beginFeat = this.typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
     Type fsType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE);
@@ -205,12 +215,14 @@ public class IndexRepositoryTest extends TestCase {
 //    }
   }
   
-  public void testAddSpeed() {
+    @Test
+    public void testAddSpeed() {
     running = "testAddSpeed - 2 sorted, 1 set, 1 bag";
     runAddSpeed();
   }
   
-  public void testAddSpeedSorted() {
+    @Test
+    public void testAddSpeedSorted() {
     FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) cas.getIndexRepository();
     ir.removeIndex(CASTestSetup.ANNOT_SET_INDEX);
     ir.removeIndex(CASTestSetup.ANNOT_SORT_INDEX);
@@ -254,7 +266,8 @@ public class IndexRepositoryTest extends TestCase {
     
   }
   
-  public void testRemovalSpeedBagAlone() throws Exception {
+    @Test
+    public void testRemovalSpeedBagAlone() throws Exception {
    
     FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) cas.getIndexRepository();
     // run with bag only

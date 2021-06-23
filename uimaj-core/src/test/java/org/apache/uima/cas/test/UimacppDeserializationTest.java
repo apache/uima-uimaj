@@ -19,13 +19,16 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Class comment for UimacppDeserializationTest.java goes here.
  * 
  */
-public class UimacppDeserializationTest extends TestCase {
+public class UimacppDeserializationTest {
 
   /**
    * Constructor for UimacppDeserializationTest.
@@ -38,7 +41,8 @@ public class UimacppDeserializationTest extends TestCase {
 
   // Test case does not work: need serialized TAF form
   // keep a null test here to avoid having suite complain there are no tests here
-  public void testNothing() {
+    @Test
+    public void testNothing() {
     assertTrue(true);
   }
 

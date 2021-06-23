@@ -37,11 +37,15 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class ConfigurableDataResourceSpecifier_implTest extends TestCase {
-  public void testXmlization() throws Exception {
+public class ConfigurableDataResourceSpecifier_implTest {
+    @Test
+    public void testXmlization() throws Exception {
     try {
       // create a ConfigurableDataResourceSpecifier
       ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();

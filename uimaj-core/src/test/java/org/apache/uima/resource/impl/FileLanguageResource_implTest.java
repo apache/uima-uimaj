@@ -29,13 +29,16 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Tests the FileLanguageResource_impl class.
  * 
  */
-public class FileLanguageResource_implTest extends TestCase {
+public class FileLanguageResource_implTest {
 
   /**
    * Constructor for FileLanguageResource_implTest.
@@ -49,7 +52,8 @@ public class FileLanguageResource_implTest extends TestCase {
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     try {
       super.setUp();
 
@@ -64,7 +68,8 @@ public class FileLanguageResource_implTest extends TestCase {
     }
   }
 
-  public void testGetDataResource() throws Exception {
+    @Test
+    public void testGetDataResource() throws Exception {
     try {
       DataResource enResource = mResource.getDataResource(new String[] { "en" });
       DataResource deResource = mResource.getDataResource(new String[] { "de" });

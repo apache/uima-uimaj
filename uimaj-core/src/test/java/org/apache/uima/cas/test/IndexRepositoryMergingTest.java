@@ -32,7 +32,10 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Check these use cases:
@@ -41,7 +44,7 @@ import junit.framework.TestCase;
  * 
  *
  */
-public class IndexRepositoryMergingTest extends TestCase {
+public class IndexRepositoryMergingTest {
 
   CASImpl cas;
 
@@ -57,7 +60,8 @@ public class IndexRepositoryMergingTest extends TestCase {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     cas = (CASImpl) CASFactory.createCAS();
     
     TypeSystemImpl ts = this.typeSystem = cas.getTypeSystemImpl();
@@ -95,11 +99,9 @@ public class IndexRepositoryMergingTest extends TestCase {
     ir.commit();
   }
 
-  public void tearDown() {
-  }
-  
 
-  public void testIndexes() {
+    @Test
+    public void testIndexes() {
     FSIndex<Annotation> ix1 = ir.getIndex("Annot Index");
     FSIndex<Annotation> ix2 = ir.getIndex("Annot Index2");
     FSIndex<Annotation> ix3 = ir.getIndex("Annot Index", annotSubtype);

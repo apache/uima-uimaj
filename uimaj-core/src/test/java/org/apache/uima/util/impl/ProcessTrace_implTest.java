@@ -25,10 +25,13 @@ import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class ProcessTrace_implTest extends TestCase {
+public class ProcessTrace_implTest {
 
   /**
    * Constructor for ProcessTrace_implTest.
@@ -42,11 +45,8 @@ public class ProcessTrace_implTest extends TestCase {
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  public void testStartAndEndEvent() {
+    @Test
+    public void testStartAndEndEvent() {
     ProcessTrace pt = new ProcessTrace_impl();
     // should be nothing on event list
     Assert.assertTrue(pt.getEvents().isEmpty());
@@ -97,7 +97,8 @@ public class ProcessTrace_implTest extends TestCase {
     Assert.assertEquals(3, evt1.getSubEvents().size());
   }
 
-  public void testAddEvent() {
+    @Test
+    public void testAddEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // should be nothing on event list
     Assert.assertTrue(pt.getEvents().isEmpty());
@@ -123,7 +124,8 @@ public class ProcessTrace_implTest extends TestCase {
   /*
    * Test for List getEventsByComponentName(String, boolean)
    */
-  public void testGetEventsByComponentName() {
+    @Test
+    public void testGetEventsByComponentName() {
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
     pt.startEvent("c1", "t1", "testing");
@@ -166,7 +168,8 @@ public class ProcessTrace_implTest extends TestCase {
   /*
    * Test for List getEventsByType(String, boolean)
    */
-  public void testGetEventsByType() {
+    @Test
+    public void testGetEventsByType() {
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
     pt.startEvent("c1", "t1", "testing");
@@ -199,7 +202,8 @@ public class ProcessTrace_implTest extends TestCase {
   /*
    * Test for ProcessTraceEvent getEvent(String, String)
    */
-  public void testGetEvent() {
+    @Test
+    public void testGetEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // create some events
     pt.startEvent("c1", "t1", "testing");
@@ -222,7 +226,8 @@ public class ProcessTrace_implTest extends TestCase {
     Assert.assertNull(evt);
   }
 
-  public void testAggregate() {
+    @Test
+    public void testAggregate() {
     // create two ProcessTrace objects
     ProcessTrace_impl pt1 = new ProcessTrace_impl();
     pt1.addEvent("c1", "t1", "testing", 1000, "success");

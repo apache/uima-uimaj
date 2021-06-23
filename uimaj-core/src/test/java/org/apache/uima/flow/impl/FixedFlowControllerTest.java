@@ -56,8 +56,8 @@ public class FixedFlowControllerTest {
   private Map<String, AnalysisEngineMetaData> analysisEngineMetaDataMap;
   private FixedFlowController fixedFlowController;
   
-  @Before
-  public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     analysisEngineMetaDataMap = new HashMap<>();
     AnalysisEngineMetaData delegateMd = new AnalysisEngineMetaData_impl();
     delegateMd.setOperationalProperties(new OperationalProperties_impl());
@@ -83,8 +83,8 @@ public class FixedFlowControllerTest {
     fixedFlowController.initialize(fcContext);    
   }
 
-  @Test
-  public void testComputeFlow() throws Exception {
+    @Test
+    public void testComputeFlow() throws Exception {
     CAS cas1 = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
     CAS cas2 = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
     Flow flow1 = fixedFlowController.computeFlow(cas1);
@@ -124,8 +124,8 @@ public class FixedFlowControllerTest {
     assertTrue(step instanceof FinalStep);
   }
   
-  @Test
-  public void testAddAnalysisEngines() throws Exception {
+    @Test
+    public void testAddAnalysisEngines() throws Exception {
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
     Flow flow = fixedFlowController.computeFlow(cas);
     //two steps in flow
@@ -182,8 +182,8 @@ public class FixedFlowControllerTest {
     assertTrue(step instanceof FinalStep);
   }
   
-  @Test
-  public void testRemoveAnalysisEngines() throws Exception {
+    @Test
+    public void testRemoveAnalysisEngines() throws Exception {
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
     Flow flow = fixedFlowController.computeFlow(cas);
     //one step in flow

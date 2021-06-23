@@ -32,7 +32,10 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /*
  */
@@ -40,7 +43,7 @@ import junit.framework.TestCase;
 /**
  * TestCase for the Sequencer with a fixedFlow
  */
-public class SequencerFixedTest extends TestCase {
+public class SequencerFixedTest {
   private File testBaseDir;
 
   /**
@@ -55,12 +58,14 @@ public class SequencerFixedTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     // get test base path
     this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
-  public void testSequencerFixedEn() throws Exception {
+    @Test
+    public void testSequencerFixedEn() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -104,7 +109,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedEN() throws Exception {
+    @Test
+    public void testSequencerFixedEN() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -148,7 +154,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedEnUS() throws Exception {
+    @Test
+    public void testSequencerFixedEnUS() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -192,7 +199,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedEnus() throws Exception {
+    @Test
+    public void testSequencerFixedEnus() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -236,7 +244,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedUnkown() throws Exception {
+    @Test
+    public void testSequencerFixedUnkown() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -280,7 +289,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedFooBar() throws Exception {
+    @Test
+    public void testSequencerFixedFooBar() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -324,7 +334,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedXunSpec() throws Exception {
+    @Test
+    public void testSequencerFixedXunSpec() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test

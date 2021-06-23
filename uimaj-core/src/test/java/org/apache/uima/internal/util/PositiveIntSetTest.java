@@ -25,9 +25,12 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class PositiveIntSetTest extends TestCase {
+public class PositiveIntSetTest {
    
   Random rand = new Random();
   
@@ -47,7 +50,8 @@ public class PositiveIntSetTest extends TestCase {
   private PositiveIntSet s;
   private int gi;
   
-  public void testSwitchFromHashToBitWithOffset() {
+    @Test
+    public void testSwitchFromHashToBitWithOffset() {
     PositiveIntSet_impl s = new PositiveIntSet_impl();
     int [] x = new int[100];
     int ix = 0;
@@ -76,7 +80,8 @@ public class PositiveIntSetTest extends TestCase {
   }
   
 
-  public void testBasic() {
+    @Test
+    public void testBasic() {
     PositiveIntSet_impl s = new PositiveIntSet_impl();
     s.add(128);
     assertTrue(s.isBitSet);
@@ -169,7 +174,8 @@ public class PositiveIntSetTest extends TestCase {
     assertTrue(reached);
   }
   
-  public void testiterators() {
+    @Test
+    public void testiterators() {
     PositiveIntSet_impl s = new PositiveIntSet_impl();
     int [] e = new int [] {123, 987, 789, 155, 
                            156, 177, 444, 333,
@@ -207,7 +213,8 @@ public class PositiveIntSetTest extends TestCase {
    * 2) Switching from bit set (tiny) to intSet  
    */
   
-  public void testBit2ShortHash() {
+    @Test
+    public void testBit2ShortHash() {
     PositiveIntSet_impl s = new PositiveIntSet_impl();
     for (int i = 0; i < 16; i++) {
       s.add(1000 + i);
@@ -262,7 +269,8 @@ public class PositiveIntSetTest extends TestCase {
        1010, 1011, 1012, 1013, 1014, 1259}));
   }
   
-  public void testRandom() {
+    @Test
+    public void testRandom() {
     long seed = rand.nextLong();
     System.out.println("PositiveIntSet test random seed = " + seed);
 //    seed = 3324098689001789475L;

@@ -33,14 +33,17 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * The PearInstallerTest tests the PEAR installation and checks some
  * parameters of the installed PEAR file
  * 
  */
-public class PearInstallerTest extends TestCase {
+public class PearInstallerTest {
 
   // Temporary working directory, used to install the pear package
   private File tempInstallDir = null;
@@ -48,7 +51,8 @@ public class PearInstallerTest extends TestCase {
   /**
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     
     // create temporary working directory
     File tempFile = File.createTempFile("pear_installer_test_", "tmp");
@@ -62,13 +66,15 @@ public class PearInstallerTest extends TestCase {
   /**
    * @see junit.framework.TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     if (this.tempInstallDir != null) {
       FileUtil.deleteDirectory(this.tempInstallDir);
     }
   }
   
-  public void testPearInstall() throws Exception {
+    @Test
+    public void testPearInstall() throws Exception {
     
     // check temporary working directory
     if (this.tempInstallDir == null)

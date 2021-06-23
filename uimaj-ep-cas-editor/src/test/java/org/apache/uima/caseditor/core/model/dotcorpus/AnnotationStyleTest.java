@@ -34,8 +34,8 @@ public class AnnotationStyleTest {
   /**
    * Tests the {@link AnnotationStyle#equals(Object)} method.
    */
-  @Test
-  public void testEquals() {
+    @Test
+    public void testEquals() {
     AnnotationStyle a = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
             255, 255, 0), 0);
 
@@ -54,7 +54,8 @@ public class AnnotationStyleTest {
    * Test the {@link AnnotationStyle#hashCode()} method.
    *
    */
-  public void testHashCode() {
+    @Test
+    public void testHashCode() {
     AnnotationStyle a = new AnnotationStyle("testType", AnnotationStyle.Style.BRACKET, new Color(
             255, 255, 0), 0);
 
