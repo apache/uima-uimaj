@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas_data.impl;
 
 import java.util.Iterator;
@@ -34,7 +33,7 @@ import org.apache.uima.util.Level;
  * Some utilities for dealing with CasData
  */
 public class CasDataUtils {
-  
+
   /**
    * resource bundle for log messages
    */
@@ -48,11 +47,11 @@ public class CasDataUtils {
   public static boolean hasFeature(CasData aCAS, String featureName) {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
-        FeatureStructure fs = it.next();
-        FeatureValue fValue = fs.getFeatureValue(featureName);
-        if (fValue != null) {
-          return true;
-        }
+      FeatureStructure fs = it.next();
+      FeatureValue fValue = fs.getFeatureValue(featureName);
+      if (fValue != null) {
+        return true;
+      }
     }
     return false;
   }
@@ -60,10 +59,10 @@ public class CasDataUtils {
   public static boolean hasFeatureStructure(CasData aCAS, String aName) {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
-        FeatureStructure fs = it.next();
-        if (fs.getType().equals(aName)) {
-          return true;
-        }
+      FeatureStructure fs = it.next();
+      if (fs.getType().equals(aName)) {
+        return true;
+      }
     }
     return false;
   }
@@ -71,19 +70,19 @@ public class CasDataUtils {
   public static void dumpFeatures(CasData aCAS) {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
-        FeatureStructure fs = it.next();
-        UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "dumpFeatures",
-                LOG_RESOURCE_BUNDLE, "UIMA_cas_feature_structure_type__FINE", fs.getType());
+      FeatureStructure fs = it.next();
+      UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "dumpFeatures",
+              LOG_RESOURCE_BUNDLE, "UIMA_cas_feature_structure_type__FINE", fs.getType());
 
-        String[] names = fs.getFeatureNames();
-        for (int i = 0; names != null && i < names.length; i++) {
-          FeatureValue fValue = fs.getFeatureValue(names[i]);
-          if (fValue != null) {
-            UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(),
-                    "dumpFeatures", LOG_RESOURCE_BUNDLE, "UIMA_cas_feature_name__FINE",
-                    new Object[] { names[i], fValue.toString() });
-          }
+      String[] names = fs.getFeatureNames();
+      for (int i = 0; names != null && i < names.length; i++) {
+        FeatureValue fValue = fs.getFeatureValue(names[i]);
+        if (fValue != null) {
+          UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(),
+                  "dumpFeatures", LOG_RESOURCE_BUNDLE, "UIMA_cas_feature_name__FINE",
+                  new Object[] { names[i], fValue.toString() });
         }
+      }
     }
 
   }
@@ -92,36 +91,38 @@ public class CasDataUtils {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     String featureValue = null;
     while (it.hasNext()) {
-        FeatureStructure fs = it.next();
-        if (System.getProperty("DEBUG") != null)
-          System.out.println("FeatureName::::::::::::::::::::::::::::::::::::::::::>"
-                  + fs.getType() + " Searching For::" + featureName);
-        if (featureName.equals(fs.getType())) {
-          String[] names = fs.getFeatureNames();
-          for (int i = 0; names != null && i < names.length; i++) {
-            if (System.getProperty("DEBUG") != null)
-              System.out.println("Feature Structure:::" + fs.getType() + " Has Value::" + names[i]);
+      FeatureStructure fs = it.next();
+      if (System.getProperty("DEBUG") != null) {
+        System.out.println("FeatureName::::::::::::::::::::::::::::::::::::::::::>" + fs.getType()
+                + " Searching For::" + featureName);
+      }
+      if (featureName.equals(fs.getType())) {
+        String[] names = fs.getFeatureNames();
+        for (int i = 0; names != null && i < names.length; i++) {
+          if (System.getProperty("DEBUG") != null) {
+            System.out.println("Feature Structure:::" + fs.getType() + " Has Value::" + names[i]);
           }
+        }
 
-          if ("uima.cpm.DocumentText".equals(featureName) || "UTF8:UTF8Content".equals(featureName)) {
-            FeatureValue fValue = fs.getFeatureValue("value");
-            if (fValue == null) {
-              return null;
-            }
-            return fValue.toString();
-          } else if ("Detag:DetagContent".equals(featureName)) {
-            FeatureValue fValue = fs.getFeatureValue("Doc:SpannedText");
-            if (fValue == null) {
-              return null;
-            }
-            return fValue.toString();
+        if ("uima.cpm.DocumentText".equals(featureName) || "UTF8:UTF8Content".equals(featureName)) {
+          FeatureValue fValue = fs.getFeatureValue("value");
+          if (fValue == null) {
+            return null;
+          }
+          return fValue.toString();
+        } else if ("Detag:DetagContent".equals(featureName)) {
+          FeatureValue fValue = fs.getFeatureValue("Doc:SpannedText");
+          if (fValue == null) {
+            return null;
+          }
+          return fValue.toString();
 
-          }
-          FeatureValue fValue = fs.getFeatureValue(featureName);
-          if (fValue != null) {
-            featureValue = fValue.toString();
-            break;
-          }
+        }
+        FeatureValue fValue = fs.getFeatureValue(featureName);
+        if (fValue != null) {
+          featureValue = fValue.toString();
+          break;
+        }
       }
     }
     return featureValue;
@@ -133,18 +134,18 @@ public class CasDataUtils {
     String featureValue = null;
     Vector<String> v = new Vector<>();
     while (it.hasNext()) {
-        FeatureStructure fs = it.next();
-        if (featureStructureName.equals(fs.getType())) {
-          String[] names = fs.getFeatureNames();
-          for (int i = 0; names != null && i < names.length; i++) {
-            if (names[i].equals(featureName)) {
-              FeatureValue fValue = fs.getFeatureValue(featureName);
-              if (fValue != null) {
-                featureValue = fValue.toString();
-                v.add(featureValue);
-              }
+      FeatureStructure fs = it.next();
+      if (featureStructureName.equals(fs.getType())) {
+        String[] names = fs.getFeatureNames();
+        for (int i = 0; names != null && i < names.length; i++) {
+          if (names[i].equals(featureName)) {
+            FeatureValue fValue = fs.getFeatureValue(featureName);
+            if (fValue != null) {
+              featureValue = fValue.toString();
+              v.add(featureValue);
             }
           }
+        }
       }
     }
     String[] features = new String[v.size()];
@@ -193,5 +194,4 @@ public class CasDataUtils {
     }
     return valuePairSet;
   }
-
 }

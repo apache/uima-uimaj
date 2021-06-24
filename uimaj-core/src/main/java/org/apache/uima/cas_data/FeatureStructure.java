@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas_data;
 
 import java.io.Serializable;
@@ -35,8 +34,6 @@ import java.io.Serializable;
  * FeatureStructures also have a property <code>indexed</code>, which determines whether the
  * FeatureStructure should be added to the CAS's indexes if the CAS Data is converted to a CAS
  * Object. The CasData itself does not provide indexes.
- * 
- * 
  */
 public interface FeatureStructure extends Serializable// extends FeatureValue
 {
@@ -108,7 +105,8 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    * @return true if this FS should be indexed, false if not
    * @deprecated Use {@link #getIndexed()} instead
    */
-  @Deprecated boolean isIndexed();
+  @Deprecated
+  boolean isIndexed();
 
   /**
    * Sets whether this FeatureStructure should be indexed if the CasData is converted to a CAS
@@ -118,7 +116,8 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    *          true if this FS should be indexed, false if not
    * @deprecated Use {@link #setIndexed(int[])} instead
    */
-  @Deprecated void setIndexed(boolean aIndexed);
+  @Deprecated
+  void setIndexed(boolean aIndexed);
 
   /**
    * Gets the index repositories that this FeatureStrucutre should be indexed in if the CasData is
