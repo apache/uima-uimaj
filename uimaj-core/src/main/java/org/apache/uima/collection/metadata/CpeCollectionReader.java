@@ -38,8 +38,7 @@ public interface CpeCollectionReader extends MetaDataObject {
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated
-  public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
+  @Deprecated void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
           throws CpeDescriptorException;
 
   /**
@@ -51,15 +50,14 @@ public interface CpeCollectionReader extends MetaDataObject {
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated
-  public CpeCollectionReaderCasInitializer getCasInitializer() throws CpeDescriptorException;
+  @Deprecated CpeCollectionReaderCasInitializer getCasInitializer() throws CpeDescriptorException;
 
   /**
    * Removes {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer} from
    * CollectionReader
    * 
    */
-  public void removeCasInitializer();
+  void removeCasInitializer();
 
   /**
    * Sets descriptor path containing configuration for the CollectionReader
@@ -67,7 +65,7 @@ public interface CpeCollectionReader extends MetaDataObject {
    * @param aDescriptor -
    *          component containing descriptor path
    */
-  public void setDescriptor(CpeComponentDescriptor aDescriptor);
+  void setDescriptor(CpeComponentDescriptor aDescriptor);
 
   /**
    * Returns {@link org.apache.uima.collection.metadata.CpeComponentDescriptor} containing
@@ -75,7 +73,7 @@ public interface CpeCollectionReader extends MetaDataObject {
    * 
    * @return component containing descriptor path
    */
-  public CpeComponentDescriptor getDescriptor();
+  CpeComponentDescriptor getDescriptor();
 
   /**
    * Returns {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings}
@@ -83,7 +81,7 @@ public interface CpeCollectionReader extends MetaDataObject {
    * 
    * @return - object containing parameter setting overrides
    */
-  public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();
+  CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();
 
   /**
    * Sets the {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings}
@@ -93,10 +91,10 @@ public interface CpeCollectionReader extends MetaDataObject {
    *          object containing parameter setting overrides
    * @throws CpeDescriptorException tbd
    */
-  public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
+  void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
           throws CpeDescriptorException;
 
-  public void setCollectionIterator(CpeCollectionReaderIterator iterator);
+  void setCollectionIterator(CpeCollectionReaderIterator iterator);
 
-  public CpeCollectionReaderIterator getCollectionIterator();
+  CpeCollectionReaderIterator getCollectionIterator();
 }

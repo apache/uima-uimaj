@@ -33,5 +33,5 @@ public interface CasConsumerDescription extends ResourceCreationSpecifier {
    * @return the <code>ProcessingResourceMetaData</code> object containing the CasConsumer's
    *         metadata. This object can be modified.
    */
-  public ProcessingResourceMetaData getCasConsumerMetaData();
+  ProcessingResourceMetaData getCasConsumerMetaData();
 }

@@ -31,14 +31,14 @@ public interface FileResourceSpecifier extends ResourceSpecifier {
    * 
    * @return a URL string
    */
-  public String getFileUrl();
+  String getFileUrl();
 
   /**
    * Gets the file name for the local cache of a remote resource file. This is optional.
    * 
    * @return the file name of the local cache, <code>null</code> if none.
    */
-  public String getLocalCache();
+  String getLocalCache();
 
   /**
    * Sets the URL of the file.
@@ -46,7 +46,7 @@ public interface FileResourceSpecifier extends ResourceSpecifier {
    * @param aUrl
    *          a URL string
    */
-  public void setFileUrl(String aUrl);
+  void setFileUrl(String aUrl);
 
   /**
    * Sets the file name for the local cache of a remote resource file. This is optional.
@@ -54,5 +54,5 @@ public interface FileResourceSpecifier extends ResourceSpecifier {
    * @param aFileName
    *          file name of the local cache, <code>null</code> if none.
    */
-  public void setLocalCache(String aFileName);
+  void setLocalCache(String aFileName);
 }

@@ -63,7 +63,6 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
    * Instantiates a new cpe description impl.
    */
   public CpeDescriptionImpl() {
-    super();
   }
 
   /**

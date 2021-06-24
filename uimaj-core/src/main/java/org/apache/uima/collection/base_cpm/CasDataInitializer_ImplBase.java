@@ -41,7 +41,6 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_ImplBase implements
         CasDataInitializer {
   public CasDataInitializer_ImplBase() {
-    super();
   }
 
   /**

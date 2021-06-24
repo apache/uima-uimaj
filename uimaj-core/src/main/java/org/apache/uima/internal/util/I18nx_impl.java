@@ -87,7 +87,6 @@ public class I18nx_impl {
    */
   public I18nx_impl(String aResourceBundleName, String aMessageKey, 
           Object[] aArguments, Throwable aCause) {
-     super();
      originalContextClassLoader = Thread.currentThread().getContextClassLoader();
      try {
        I18nUtil.setTccl(originalContextClassLoader); 

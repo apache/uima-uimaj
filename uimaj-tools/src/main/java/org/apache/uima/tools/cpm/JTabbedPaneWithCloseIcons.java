@@ -50,7 +50,6 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
    * Instantiates a new j tabbed pane with close icons.
    */
   public JTabbedPaneWithCloseIcons() {
-    super();
     addMouseListener(this);
   }
 

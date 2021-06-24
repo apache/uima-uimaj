@@ -22,6 +22,7 @@ package org.apache.uima.pear.actions;
 import org.apache.uima.pear.PearException;
 import org.apache.uima.pear.insd.edit.PearInstallationDescriptor;
 import org.apache.uima.pear.nature.ProjectCustomizer;
+import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
@@ -31,8 +32,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-
-import org.apache.uima.pear.tools.InstallationDescriptor;
 
 
 /**
@@ -47,7 +46,6 @@ public class AddUimaNatureAction implements IObjectActionDelegate {
    * Constructor.
    */
   public AddUimaNatureAction() {
-    super();
   }
 
   /**

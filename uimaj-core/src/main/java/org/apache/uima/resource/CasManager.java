@@ -136,5 +136,5 @@ public interface CasManager extends CasOwner {
    *   <code>,casPoolContextName=[contextName]</code> to the root component name, where
    *   [contextName] is the requestorContextName for the CasPool.
    */
-  public void setJmxInfo(Object aMBeanServer, String aRootComponentMBeanName);
+  void setJmxInfo(Object aMBeanServer, String aRootComponentMBeanName);
 }

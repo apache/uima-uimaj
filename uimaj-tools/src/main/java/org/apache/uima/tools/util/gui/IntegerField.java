@@ -44,8 +44,6 @@ public class IntegerField extends JFormattedTextField {
    * @param initialValue the initial value
    */
   public IntegerField(int min, int max, int initialValue) {
-    super();
-
     NumberFormatter formatter = new NumberFormatter(numberFormat);
     formatter.setMinimum(min);
     formatter.setMaximum(max);

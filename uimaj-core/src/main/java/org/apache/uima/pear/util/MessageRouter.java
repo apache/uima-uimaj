@@ -53,10 +53,10 @@ public class MessageRouter implements Runnable {
    * each standard message channel listener.
    * 
    */
-  public static interface StdChannelListener {
-    public void errMsgPosted(String errMsg);
+  public interface StdChannelListener {
+    void errMsgPosted(String errMsg);
 
-    public void outMsgPosted(String outMsg);
+    void outMsgPosted(String outMsg);
   }
 
   // constants

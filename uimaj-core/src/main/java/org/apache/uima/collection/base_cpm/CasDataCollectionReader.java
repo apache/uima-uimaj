@@ -46,7 +46,7 @@ public interface CasDataCollectionReader extends BaseCollectionReader {
    * @throws CollectionException
    *           if there is some other problem with reading from the Collection
    */
-  public CasData getNext() throws IOException, CollectionException;
+  CasData getNext() throws IOException, CollectionException;
 
   /**
    * Gets multiple <code>CasData</code> objects from this <code>CasDataCollectionReader</code>.
@@ -67,7 +67,7 @@ public interface CasDataCollectionReader extends BaseCollectionReader {
    * @throws CollectionException
    *           if there is some other problem with reading from the Collection
    */
-  public CasData[] getNext(int aNumToGet) throws IOException, CollectionException;
+  CasData[] getNext(int aNumToGet) throws IOException, CollectionException;
 
   /**
    * Gets the CAS Data Initializer that has been assigned to this Collection Reader. Note that
@@ -78,8 +78,7 @@ public interface CasDataCollectionReader extends BaseCollectionReader {
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated
-  public CasDataInitializer getCasDataInitializer();
+  @Deprecated CasDataInitializer getCasDataInitializer();
 
   /**
    * Assigns a CAS Data Initializer for this Collection Reader to use. Note that* CollectionReader
@@ -91,7 +90,6 @@ public interface CasDataCollectionReader extends BaseCollectionReader {
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated
-  public void setCasInitializer(CasDataInitializer aCasDataInitializer);
+  @Deprecated void setCasInitializer(CasDataInitializer aCasDataInitializer);
 
 }

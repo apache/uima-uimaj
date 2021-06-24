@@ -50,7 +50,6 @@ public class UIMA_IllegalArgumentException extends UIMARuntimeException {
    * Creates a new exception with a null message.
    */
   public UIMA_IllegalArgumentException() {
-    super();
   }
 
   /**

@@ -40,7 +40,6 @@ public class VarValList {
    * Constructor.
    */
   public VarValList() {
-    super();
     this.initData();
   }
 

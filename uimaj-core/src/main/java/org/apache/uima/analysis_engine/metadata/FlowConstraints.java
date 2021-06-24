@@ -49,7 +49,7 @@ public interface FlowConstraints extends MetaDataObject {
    * 
    * @return the type identifier String for this <code>FlowConstraints</code> object
    */
-  public String getFlowConstraintsType();
+  String getFlowConstraintsType();
 
   /**
    * Remaps the AE identifier Strings used in this FlowConstraints object. This method is
@@ -60,5 +60,5 @@ public interface FlowConstraints extends MetaDataObject {
    *          values (the new IDs). Any identifiers that do not appear in this Map will not be
    *          remapped.
    */
-  public void remapIDs(Map<String, String> aIDMap);
+  void remapIDs(Map<String, String> aIDMap);
 }

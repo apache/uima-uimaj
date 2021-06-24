@@ -16,8 +16,6 @@
  */
 package org.apache.uima.internal.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,6 +32,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceArray;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * <p>This implementation was adapted from <a href="http://lucene.apache.org/">Apache Lucene</a>.

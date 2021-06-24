@@ -36,18 +36,18 @@ public interface CpeCasProcessor extends MetaDataObject {
    *          CasProcessor name
    * @throws CpeDescriptorException tbd
    */
-  public void setName(String aName) throws CpeDescriptorException;
+  void setName(String aName) throws CpeDescriptorException;
 
   /**
    * Returns CasProcessor's name
    * 
    * @return - name
    */
-  public String getName();
+  String getName();
 
-  public void setSOFA(String aSOFA) throws CpeDescriptorException;
+  void setSOFA(String aSOFA) throws CpeDescriptorException;
 
-  public String getSOFA();
+  String getSOFA();
 
   /**
    * Sets CasProcessor descriptor path.
@@ -57,8 +57,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @throws CpeDescriptorException tbd
    * @deprecated Doesn't support the new import syntax.  Use setCpeComponentDescriptor() instead.
    */
-  @Deprecated
-  public void setDescriptor(String aDescriptor) throws CpeDescriptorException;
+  @Deprecated void setDescriptor(String aDescriptor) throws CpeDescriptorException;
 
   /**
    * Returns CasProcessor descriptor.
@@ -66,8 +65,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @return descriptor
    * @deprecated Doesn't support the new import syntax.  Use getCpeComponentDescriptor().findAbsoluteUrl() instead.
    */
-  @Deprecated
-  public String getDescriptor();
+  @Deprecated String getDescriptor();
 
   /**
    * Returns the {@link CpeComponentDescriptor} instance associated with this Cas Processor. That
@@ -75,7 +73,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @return {@link CpeComponentDescriptor} instance
    */
-  public CpeComponentDescriptor getCpeComponentDescriptor();
+  CpeComponentDescriptor getCpeComponentDescriptor();
 
   /**
    * Sets the {@link CpeComponentDescriptor} instance associated with this Cas Processor. That
@@ -84,7 +82,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @param aDescriptor {@link CpeComponentDescriptor} instance
    * @throws CpeDescriptorException tbd
    */ 
-  public void setCpeComponentDescriptor(CpeComponentDescriptor aDescriptor) throws CpeDescriptorException;
+  void setCpeComponentDescriptor(CpeComponentDescriptor aDescriptor) throws CpeDescriptorException;
 
   /**
    * Returns CasProcessor deployment type. Three types are currently supported:
@@ -96,7 +94,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @return - deployment mode
    */
-  public String getDeployment();
+  String getDeployment();
 
   /**
    * Sets CasProcessor filter expression used by the CPE to route CASs. A CasProcessor can be
@@ -117,7 +115,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    *          filter
    * @throws CpeDescriptorException tbd
    */
-  public void setCasProcessorFilter(String aFilterExpression) throws CpeDescriptorException;
+  void setCasProcessorFilter(String aFilterExpression) throws CpeDescriptorException;
 
   /**
    * Returns CasProcessor filter expression. A CasProcessor can be configured in the CPE Descriptor
@@ -135,7 +133,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @return - filter expression
    */
-  public String getCasProcessorFilter();
+  String getCasProcessorFilter();
 
   /**
    * Sets CasProcessor's batch size.
@@ -143,14 +141,14 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @param aBatchSize -
    *          size of CasProcessor batch
    */
-  public void setBatchSize(int aBatchSize);
+  void setBatchSize(int aBatchSize);
 
   /**
    * Returns CasProcessor batch size
    * 
    * @return - batch size
    */
-  public int getBatchSize();
+  int getBatchSize();
 
   /**
    * Returns {@link org.apache.uima.collection.metadata.CasProcessorErrorHandling} object containing
@@ -159,7 +157,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @return {@link org.apache.uima.collection.metadata.CasProcessorErrorHandling}
    */
-  public CasProcessorErrorHandling getErrorHandling();
+  CasProcessorErrorHandling getErrorHandling();
 
   /**
    * Returns {@link org.apache.uima.collection.metadata.CpeCheckpoint} object containing checkpoint
@@ -167,7 +165,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @return {@link org.apache.uima.collection.metadata.CasProcessorErrorHandling}
    */
-  public CpeCheckpoint getCheckpoint();
+  CpeCheckpoint getCheckpoint();
 
   /**
    * Returns {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParams} object
@@ -178,7 +176,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @return - object containing list of
    *         {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
    */
-  public CasProcessorDeploymentParams getDeploymentParams();
+  CasProcessorDeploymentParams getDeploymentParams();
 
   /**
    * Sets the max number of errors tolerated by the CPE. If the the threshold is exceeded the CPE
@@ -189,7 +187,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @param aErrorCount -
    *          max error threshold
    */
-  public void setMaxErrorCount(int aErrorCount);
+  void setMaxErrorCount(int aErrorCount);
 
   /**
    * Returns the max number of errors tolerated by the CPE. If the the threshold is exceeded the CPE
@@ -199,7 +197,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @return - max error threshold
    */
-  public int getMaxErrorCount();
+  int getMaxErrorCount();
 
   /**
    * Sets the sample size. Max Error is defined in terms of a quotient, like 3/1000. Where 3 is the
@@ -208,7 +206,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @param aErrorSampleSize the sample size
    */
-  public void setMaxErrorSampleSize(int aErrorSampleSize);
+  void setMaxErrorSampleSize(int aErrorSampleSize);
 
   /**
    * Returns sample size. Max Error is defined in terms of a quotient, like 3/1000. Where 3 is the
@@ -217,7 +215,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @return - sample size
    */
-  public int getMaxErrorSampleSize();
+  int getMaxErrorSampleSize();
 
   /**
    * Sets a strategy for dealing with exceeding error thresholds. The three supported strategies
@@ -231,7 +229,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @param aAction -
    *          action to take
    */
-  public void setActionOnMaxError(String aAction);
+  void setActionOnMaxError(String aAction);
 
   /**
    * Returns strategy for dealing with exceeding error thresholds. The three supported strategies
@@ -244,7 +242,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @return - action to take
    */
-  public String getActionOnMaxError();
+  String getActionOnMaxError();
 
   /**
    * Sets max tolerated restarts threshold for CasProcessor
@@ -252,14 +250,14 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @param aErrorCount -
    *          max restart count
    */
-  public void setMaxRestartCount(int aErrorCount);
+  void setMaxRestartCount(int aErrorCount);
 
   /**
    * Returns max restarts threshold fro CasProcessor
    * 
    * @return - max restart count
    */
-  public int getMaxRestartCount();
+  int getMaxRestartCount();
 
   /**
    * Sets strategy for dealing with exceeding error thresholds. The three supported strategies are:
@@ -272,7 +270,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @param aAction -
    *          action to take
    */
-  public void setActionOnMaxRestart(String aAction);
+  void setActionOnMaxRestart(String aAction);
 
   /**
    * Returns strategy for dealing with exceeding error thresholds. The three supported strategies
@@ -285,7 +283,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @return the action to take when the error threshold is exceeded
    */
-  public String getActionOnMaxRestart();
+  String getActionOnMaxRestart();
 
   /**
    * Sets the timeout value. The amount of time the CPE will wait for response from CasProcessor
@@ -293,14 +291,14 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @param aTimeoutValue -
    *          timeout value
    */
-  public void setTimeout(int aTimeoutValue);
+  void setTimeout(int aTimeoutValue);
 
   /**
    * Returns the timeout value. The amount of time the CPE will wait for response from CasProcessor
    * 
    * @return - timeout value
    */
-  public int getTimeout();
+  int getTimeout();
 
   /**
    * Adds deployment parameter used by the CPE when launching CasProcessor
@@ -311,7 +309,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    *          param value
    * @throws CpeDescriptorException tbd
    */
-  public void addDeployParam(String aParamName, String aParamValue) throws CpeDescriptorException;
+  void addDeployParam(String aParamName, String aParamValue) throws CpeDescriptorException;
 
   /**
    * Returns {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings}
@@ -319,7 +317,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @return - object containing parameter setting overrides
    */
-  public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();
+  CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();
 
   /**
    * Sets the {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings}
@@ -329,19 +327,19 @@ public interface CpeCasProcessor extends MetaDataObject {
    *          object containing parameter setting overrides
    * @throws CpeDescriptorException tbd
    */
-  public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
+  void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
           throws CpeDescriptorException;
 
-  public CpeSofaMappings getSofaNameMappings();
+  CpeSofaMappings getSofaNameMappings();
 
   /**
    * @param mappings -
    */
-  public void setSofaNameMappings(CpeSofaMappings mappings);
+  void setSofaNameMappings(CpeSofaMappings mappings);
 
-  public CasProcessorRunInSeperateProcess getRunInSeparateProcess();
+  CasProcessorRunInSeperateProcess getRunInSeparateProcess();
 
-  public void setIsParallelizable(boolean isP);
+  void setIsParallelizable(boolean isP);
 
-  public boolean getIsParallelizable();
+  boolean getIsParallelizable();
 }

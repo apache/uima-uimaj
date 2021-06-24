@@ -18,6 +18,9 @@
  */
 package org.apache.uima.jcas.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,11 +30,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.Utilities;
 import org.apache.uima.jcas.cas.TOP;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 /**
  * Run this as a single test with yourkit, and look at the retained storage for both maps.

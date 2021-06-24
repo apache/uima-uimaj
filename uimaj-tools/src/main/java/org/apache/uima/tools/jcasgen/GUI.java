@@ -147,7 +147,6 @@ public class GUI extends JFrame {
      * @param gui the gui
      */
     public G(GUI gui) {
-      super();
       this.gui = gui;
 
       GridBagLayout gbG = new GridBagLayout();

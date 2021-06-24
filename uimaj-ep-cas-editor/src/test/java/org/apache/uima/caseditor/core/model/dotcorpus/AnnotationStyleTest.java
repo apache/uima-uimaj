@@ -19,12 +19,12 @@
 
 package org.apache.uima.caseditor.core.model.dotcorpus;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.awt.Color;
 
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit test for the {@link AnnotationStyle} class.

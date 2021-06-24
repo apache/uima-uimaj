@@ -69,8 +69,8 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class JCasClassLoaderTest {
   
@@ -556,7 +556,7 @@ public class JCasClassLoaderTest {
     }
   }
   
-  public static interface JCasCreator {
+  public interface JCasCreator {
     JCas createJCas(ClassLoader cl, TypeSystemDescription tsd);
   }
   

@@ -19,6 +19,11 @@
 
 package org.apache.uima.resource.metadata.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.File;
 
 import org.apache.uima.UIMAFramework;
@@ -29,12 +34,9 @@ import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 
 public class TypePriorities_implTest {

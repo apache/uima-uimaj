@@ -38,21 +38,21 @@ public interface SynchPoint extends Serializable {
    * @throws InvalidClassException
    *           if aSynchPointData class is not supported by implementation
    */
-  public void set(Object aSynchPointData) throws InvalidClassException;
+  void set(Object aSynchPointData) throws InvalidClassException;
 
   /**
    * Retrieves data to facilitate recovery
    * 
    * @return Object - data containing recovery information
    */
-  public Object get();
+  Object get();
 
   /**
    * Serializes internal representation of the SynchPoint to XML
    * 
    * @return - serialized SynchPoint as String
    */
-  public String serializeToXML();
+  String serializeToXML();
 
   /**
    * Ingests SynchPoint data from the InputStream. InputStream contains xml representation of the
@@ -63,6 +63,6 @@ public interface SynchPoint extends Serializable {
    * @throws Exception -
    *           unable to process the input stream
    */
-  public void deserialize(InputStream aInputStream) throws Exception;
+  void deserialize(InputStream aInputStream) throws Exception;
 
 }

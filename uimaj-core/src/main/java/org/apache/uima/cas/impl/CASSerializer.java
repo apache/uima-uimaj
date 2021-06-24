@@ -122,7 +122,6 @@ public class CASSerializer implements Serializable {
    * Constructor for CASSerializer.
    */
   public CASSerializer() {
-    super();
   }
 
   /**

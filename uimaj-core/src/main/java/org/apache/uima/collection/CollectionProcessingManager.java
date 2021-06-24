@@ -65,7 +65,7 @@ public interface CollectionProcessingManager {
    * @return the <code>AnalysisEngine</code> that this CPM will use to analyze each CAS in the
    *         collection.
    */
-  public AnalysisEngine getAnalysisEngine();
+  AnalysisEngine getAnalysisEngine();
 
   /**
    * Sets the <code>AnalysisEngine</code> that is assigned to this CPM.
@@ -77,7 +77,7 @@ public interface CollectionProcessingManager {
    * @throws ResourceConfigurationException
    *           if this CPM is currently processing
    */
-  public void setAnalysisEngine(AnalysisEngine aAnalysisEngine)
+  void setAnalysisEngine(AnalysisEngine aAnalysisEngine)
           throws ResourceConfigurationException;
 
   /**
@@ -85,7 +85,7 @@ public interface CollectionProcessingManager {
    * 
    * @return an array of <code>CasConsumer</code>s
    */
-  public CasConsumer[] getCasConsumers();
+  CasConsumer[] getCasConsumers();
 
   /**
    * Adds a <code>CasConsumer</code> to this CPM.
@@ -96,7 +96,7 @@ public interface CollectionProcessingManager {
    * @throws ResourceConfigurationException
    *           if this CPM is currently processing
    */
-  public void addCasConsumer(CasConsumer aCasConsumer) throws ResourceConfigurationException;
+  void addCasConsumer(CasConsumer aCasConsumer) throws ResourceConfigurationException;
 
   /**
    * Removes a <code>CasConsumer</code> from this CPM.
@@ -107,7 +107,7 @@ public interface CollectionProcessingManager {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if this CPM is currently processing
    */
-  public void removeCasConsumer(CasConsumer aCasConsumer);
+  void removeCasConsumer(CasConsumer aCasConsumer);
 
   /**
    * Gets whether this CPM is required to process the collection's elements serially (as opposed to
@@ -116,7 +116,7 @@ public interface CollectionProcessingManager {
    * 
    * @return true if and only if serial processing is required
    */
-  public boolean isSerialProcessingRequired();
+  boolean isSerialProcessingRequired();
 
   /**
    * Sets whether this CPM is required to process the collection's elements serially* (as opposed to
@@ -130,7 +130,7 @@ public interface CollectionProcessingManager {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if this CPM is currently processing
    */
-  public void setSerialProcessingRequired(boolean aRequired);
+  void setSerialProcessingRequired(boolean aRequired);
 
   /**
    * Gets whether this CPM will automatically pause processing if an exception occurs. If processing
@@ -138,7 +138,7 @@ public interface CollectionProcessingManager {
    * 
    * @return true if and only if this CPM will pause on exception
    */
-  public boolean isPauseOnException();
+  boolean isPauseOnException();
 
   /**
    * Sets whether this CPM will automatically pause processing if an exception occurs. If processing
@@ -150,7 +150,7 @@ public interface CollectionProcessingManager {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if this CPM is currently processing
    */
-  public void setPauseOnException(boolean aPause);
+  void setPauseOnException(boolean aPause);
 
   /**
    * Registers a listsner to receive status callbacks.
@@ -158,7 +158,7 @@ public interface CollectionProcessingManager {
    * @param aListener
    *          the listener to add
    */
-  public void addStatusCallbackListener(StatusCallbackListener aListener);
+  void addStatusCallbackListener(StatusCallbackListener aListener);
 
   /**
    * Unregisters a status callback listener.
@@ -166,7 +166,7 @@ public interface CollectionProcessingManager {
    * @param aListener
    *          the listener to remove
    */
-  public void removeStatusCallbackListener(StatusCallbackListener aListener);
+  void removeStatusCallbackListener(StatusCallbackListener aListener);
 
   /**
    * Initiates processing of a collection. CollectionReader initializes the CAS with Documents from
@@ -187,7 +187,7 @@ public interface CollectionProcessingManager {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if this CPM is currently processing
    */
-  public void process(CollectionReader aCollectionReader) throws ResourceInitializationException;
+  void process(CollectionReader aCollectionReader) throws ResourceInitializationException;
 
   /**
    * Initiates processing of a collection. This method works in the same way as
@@ -205,7 +205,7 @@ public interface CollectionProcessingManager {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if this CPM is currently processing
    */
-  public void process(CollectionReader aCollectionReader, int aBatchSize)
+  void process(CollectionReader aCollectionReader, int aBatchSize)
           throws ResourceInitializationException;
 
   /**
@@ -215,7 +215,7 @@ public interface CollectionProcessingManager {
    * 
    * @return true if and only if this CPM is currently processing.
    */
-  public boolean isProcessing();
+  boolean isProcessing();
 
   /**
    * Pauses processing. Processing can later be resumed by calling the {@link #resume(boolean)}
@@ -224,14 +224,14 @@ public interface CollectionProcessingManager {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if no processing is currently occurring
    */
-  public void pause();
+  void pause();
 
   /**
    * Determines whether this CPM's processing is currently paused.
    * 
    * @return true if and only if this CPM's processing is currently paused.
    */
-  public boolean isPaused();
+  boolean isPaused();
 
   /**
    * Resumes processing that has been paused.
@@ -246,7 +246,7 @@ public interface CollectionProcessingManager {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if processing is not currently paused
    */
-  public void resume(boolean aRetryFailed);
+  void resume(boolean aRetryFailed);
 
   /**
    * Resumes processing that has been paused.
@@ -254,7 +254,7 @@ public interface CollectionProcessingManager {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if processing is not currently paused
    */
-  public void resume();
+  void resume();
 
   /**
    * Stops processing.
@@ -262,14 +262,14 @@ public interface CollectionProcessingManager {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if no processing is currently occuring
    */
-  public void stop();
+  void stop();
 
   /**
    * Gets a performance report for the processing that is currently occurring or has just completed.
    * 
    * @return an object containing performance statistics
    */
-  public ProcessTrace getPerformanceReport();
+  ProcessTrace getPerformanceReport();
 
   /**
    * Gets a progress report for the processing that is currently occurring or has just completed.
@@ -277,5 +277,5 @@ public interface CollectionProcessingManager {
    * @return an array of <code>Progress</code> objects, each of which represents the progress in a
    *         different set of units (for example number of entities or bytes)
    */
-  public Progress[] getProgress();
+  Progress[] getProgress();
 }

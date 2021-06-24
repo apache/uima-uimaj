@@ -40,7 +40,7 @@ public interface CasObjectProcessor extends CasProcessor {
    * @throws ResourceProcessException
    *           if processing fails
    */
-  public void processCas(CAS aCAS) throws ResourceProcessException;
+  void processCas(CAS aCAS) throws ResourceProcessException;
 
   /**
    * Processes multiple CASes.
@@ -52,7 +52,7 @@ public interface CasObjectProcessor extends CasProcessor {
    * @throws ResourceProcessException
    *           if processing fails for any of the CASes
    */
-  public void processCas(CAS[] aCASes) throws ResourceProcessException;
+  void processCas(CAS[] aCASes) throws ResourceProcessException;
 
   /**
    * Informs this CasConsumer that the CAS TypeSystem has changed. The CPM calls this method prior
@@ -67,6 +67,6 @@ public interface CasObjectProcessor extends CasProcessor {
    * @throws ResourceInitializationException
    *           if the type system is not compatible with this Cas Consumer
    */
-  public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException;
+  void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException;
 
 }

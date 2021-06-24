@@ -67,7 +67,6 @@ public class FSTreeModel implements TreeModel {
    * Constructor for FSTreeModel.
    */
   public FSTreeModel() {
-    super();
     this.root = new FSNode(this, FSNode.DISPLAY_NODE, null, 0, null);
     this.root.setChildren(new ArrayList<>());
   }

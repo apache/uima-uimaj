@@ -27,14 +27,14 @@ public interface MQMessagingSpecifier extends MessagingSpecifier {
    * 
    * @return String
    */
-  public int getHostServerChannelPort();
+  int getHostServerChannelPort();
 
   /**
    * Returns the target serverChannelPort.
    * 
    * @return String
    */
-  public int getTargetServerChannelPort();
+  int getTargetServerChannelPort();
 
   /**
    * Sets the host serverChannelPort.
@@ -42,7 +42,7 @@ public interface MQMessagingSpecifier extends MessagingSpecifier {
    * @param serverChannelPort
    *          The serverChannelPort to set
    */
-  public void setHostServerChannelPort(int serverChannelPort);
+  void setHostServerChannelPort(int serverChannelPort);
 
   /**
    * Sets the target serverChannelPort.
@@ -50,5 +50,5 @@ public interface MQMessagingSpecifier extends MessagingSpecifier {
    * @param serverChannelPort
    *          The serverChannelPort to set
    */
-  public void setTargetServerChannelPort(int serverChannelPort);
+  void setTargetServerChannelPort(int serverChannelPort);
 }

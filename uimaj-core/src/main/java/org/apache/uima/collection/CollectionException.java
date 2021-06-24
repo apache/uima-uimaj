@@ -46,7 +46,6 @@ public class CollectionException extends UIMAException {
    * Creates a new exception with a null message.
    */
   public CollectionException() {
-    super();
   }
 
   /**

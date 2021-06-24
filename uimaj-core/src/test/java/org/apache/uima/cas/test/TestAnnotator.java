@@ -30,7 +30,6 @@ import org.apache.uima.cas.FeatureStructure;
 public class TestAnnotator extends CasAnnotator_ImplBase {
 
   public TestAnnotator() {
-    super();
   }
 
   public void process(CAS cas) {

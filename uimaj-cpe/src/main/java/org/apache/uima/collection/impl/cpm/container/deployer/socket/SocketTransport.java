@@ -39,7 +39,7 @@ public interface SocketTransport {
    *
    * @return - String uniquely identifying the transport.
    */
-  public String getName();
+  String getName();
 
   /**
    * Creates a socket connection to a given endpoint. This method blocks until all Connections are
@@ -52,7 +52,7 @@ public interface SocketTransport {
    * 
    * @throws SocketException Failed to connect
    */
-  public Socket connect(URL aURI, long aTimeout) throws SocketException;
+  Socket connect(URL aURI, long aTimeout) throws SocketException;
 
   /**
    * Invokes fenced CasProcessor.
@@ -64,7 +64,7 @@ public interface SocketTransport {
    * @throws SocketException the socket exception
    * @throws AnalysisEngineProcessException the analysis engine process exception
    */
-  public CAS process(Socket aSocket, CAS aCas) throws SocketTimeoutException, SocketException,
+  CAS process(Socket aSocket, CAS aCas) throws SocketTimeoutException, SocketException,
           AnalysisEngineProcessException;
 
   /**
@@ -76,7 +76,7 @@ public interface SocketTransport {
    * @throws SocketException passthru
    * @throws AnalysisEngineProcessException passthru
    */
-  public ProcessingResourceMetaData getProcessingResourceMetaData(Socket aSocket)
+  ProcessingResourceMetaData getProcessingResourceMetaData(Socket aSocket)
           throws SocketException, AnalysisEngineProcessException;
 
 }

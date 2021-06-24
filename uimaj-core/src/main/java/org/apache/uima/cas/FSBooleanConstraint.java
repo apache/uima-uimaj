@@ -38,12 +38,12 @@ public interface FSBooleanConstraint extends FSConstraint {
    * Set the constraint.
    * @param condition The condition that needs to be matched to satisfy the constraint.
    */
-  public void eq(boolean condition);
+  void eq(boolean condition);
   
   /**
    * Check the condition.
    * @param condition Value to compare with the condition.
    * @return True if value and constraint are equal, false else.
    */
-  public boolean match(boolean condition);
+  boolean match(boolean condition);
 }

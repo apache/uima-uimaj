@@ -26,7 +26,6 @@ import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 
 /**

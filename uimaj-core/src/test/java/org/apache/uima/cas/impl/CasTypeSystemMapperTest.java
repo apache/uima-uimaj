@@ -18,6 +18,10 @@
  */
 package org.apache.uima.cas.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashSet;
@@ -33,11 +37,7 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.resource.ResourceInitializationException;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 /**
  * CasTypeSystemMapper maintains resources to map between two type systems, and handles

@@ -38,7 +38,6 @@ public class CASCompleteSerializer implements Serializable {
    * Constructor for CASCompleteSerializer.
    */
   public CASCompleteSerializer() {
-    super();
   }
 
   public CASCompleteSerializer(CASImpl cas) {

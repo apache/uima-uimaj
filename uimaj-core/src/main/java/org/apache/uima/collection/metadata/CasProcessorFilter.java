@@ -45,12 +45,12 @@ public interface CasProcessorFilter extends MetaDataObject {
    * @param aFilterString -
    *          expression
    */
-  public void setFilterString(String aFilterString);
+  void setFilterString(String aFilterString);
 
   /**
    * Returns a filter expression as String
    * 
    * @return - filter expression
    */
-  public String getFilterString();
+  String getFilterString();
 }

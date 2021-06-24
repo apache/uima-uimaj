@@ -125,7 +125,6 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
    * The constructor, version 3.
    */
   public TAEConfiguratorPlugin() {
-    super();
     plugin = this;
     pluginId = getBundle().getSymbolicName();
     try {

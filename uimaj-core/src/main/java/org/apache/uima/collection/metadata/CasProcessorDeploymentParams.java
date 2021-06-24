@@ -33,7 +33,7 @@ public interface CasProcessorDeploymentParams {
    * @param aParam -
    *          parameter to add
    */
-  public void add(CasProcessorDeploymentParam aParam);
+  void add(CasProcessorDeploymentParam aParam);
 
   /**
    * Returns {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} instance
@@ -44,7 +44,7 @@ public interface CasProcessorDeploymentParams {
    * @return - instance of {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
    * @throws CpeDescriptorException tbd
    */
-  public CasProcessorDeploymentParam get(String aParamName) throws CpeDescriptorException;
+  CasProcessorDeploymentParam get(String aParamName) throws CpeDescriptorException;
 
   /**
    * Returns all instances of
@@ -53,7 +53,7 @@ public interface CasProcessorDeploymentParams {
    * @return - array of {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
    *         instances
    */
-  public CasProcessorDeploymentParam[] getAll();
+  CasProcessorDeploymentParam[] getAll();
 
   /**
    * Deletes named instance of
@@ -63,5 +63,5 @@ public interface CasProcessorDeploymentParams {
    *          parameter to remove
    * @throws CpeDescriptorException tbd
    */
-  public void remove(CasProcessorDeploymentParam aParam) throws CpeDescriptorException;
+  void remove(CasProcessorDeploymentParam aParam) throws CpeDescriptorException;
 }

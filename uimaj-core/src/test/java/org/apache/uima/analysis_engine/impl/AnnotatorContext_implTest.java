@@ -19,6 +19,9 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -38,12 +41,9 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.TestResourceInterface;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 
 public class AnnotatorContext_implTest {

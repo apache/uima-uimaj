@@ -27,13 +27,6 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-
 import org.apache.vinci.debug.Debug;
 import org.apache.vinci.transport.FrameComponent;
 import org.apache.vinci.transport.FrameLeaf;
@@ -42,6 +35,12 @@ import org.apache.vinci.transport.TransportConstants;
 import org.apache.vinci.transport.Transportable;
 import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.util.TransportableConverter;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Class for parsing an XML document and representing it using any of the various jVinci-compatible

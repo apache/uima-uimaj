@@ -46,7 +46,6 @@ public class IntRedBlackTree {
 
   /** Default constructor, does nothing. */
   public IntRedBlackTree() {
-    super();
   }
 
   public final int size() {

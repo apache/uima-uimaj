@@ -112,7 +112,6 @@ public class XMLUtil {
    * XMLUtil constructor comment.
    */
   public XMLUtil() {
-    super();
   }
 
   /**

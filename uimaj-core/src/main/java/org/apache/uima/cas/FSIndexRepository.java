@@ -189,7 +189,7 @@ public interface FSIndexRepository {
    * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
    *         of the specified type (including subtypes)
    */
-  public <T extends TOP> Collection<T> getIndexedFSs(Type type);
+  <T extends TOP> Collection<T> getIndexedFSs(Type type);
   
   /**
    * Returns an unmodifiable collection of all the FSs of this type and its subtypes, 
@@ -201,7 +201,7 @@ public interface FSIndexRepository {
    * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
    *         of the specified type (including subtypes)
    */
-  public <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz);
+  <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz);
  
   /**
    * Returns an unmodifiable collection of all of the FSs
@@ -211,6 +211,6 @@ public interface FSIndexRepository {
    * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
    *         of the specified type (including subtypes)
    */
-  public <T extends TOP> Collection<T> getIndexedFSs();
+  <T extends TOP> Collection<T> getIndexedFSs();
 
 }

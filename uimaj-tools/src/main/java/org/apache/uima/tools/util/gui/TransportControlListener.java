@@ -35,20 +35,20 @@ public interface TransportControlListener {
   /**
    * Control started.
    */
-  public void controlStarted();
+  void controlStarted();
 
   /**
    * Control paused.
    */
-  public void controlPaused();
+  void controlPaused();
 
   /**
    * Control resumed.
    */
-  public void controlResumed(); // Following pause.
+  void controlResumed(); // Following pause.
 
   /**
    * Control stopped.
    */
-  public void controlStopped();
+  void controlStopped();
 }

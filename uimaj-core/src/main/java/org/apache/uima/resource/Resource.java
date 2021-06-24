@@ -72,7 +72,7 @@ public interface Resource {
    * @throws UIMA_IllegalStateException
    *           if this method is called more than once on a single Resource instance.
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+  boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
 
   /**
@@ -80,21 +80,21 @@ public interface Resource {
    * 
    * @return an object containing all metadata for this resource.
    */
-  public ResourceMetaData getMetaData();
+  ResourceMetaData getMetaData();
 
   /**
    * Gets the {@link ResourceManager} that this Resource uses to locate other Resources.
    * 
    * @return the ResourceManager
    */
-  public ResourceManager getResourceManager();
+  ResourceManager getResourceManager();
 
   /**
    * Gets the Logger that this Resource is currently using.
    * 
    * @return this Resource's logger
    */
-  public Logger getLogger();
+  Logger getLogger();
 
   /**
    * Sets the Logger that this Resource will use. If this method is not called, the default logger ({@link org.apache.uima.UIMAFramework#getLogger()})
@@ -103,12 +103,12 @@ public interface Resource {
    * @param aLogger
    *          the logger for this Resource to use
    */
-  public void setLogger(Logger aLogger);
+  void setLogger(Logger aLogger);
 
   /**
    * Releases all resources held by this <code>Resource</code>.
    */
-  public void destroy();
+  void destroy();
 
   /**
    * Gets the UIMA Context for this Resource. This can be used to access external resources or
@@ -116,7 +116,7 @@ public interface Resource {
    * 
    * @return the UimaContext for use by this Resource
    */
-  public UimaContext getUimaContext();
+  UimaContext getUimaContext();
 
   /**
    * Gets the Administrative interface to the UIMA Context. This can be used by deployment wrappers
@@ -124,7 +124,7 @@ public interface Resource {
    * 
    * @return the administrative interface to this Resource's UimaContext
    */
-  public UimaContextAdmin getUimaContextAdmin();
+  UimaContextAdmin getUimaContextAdmin();
 
   /**
    * Key for the initialization parameter whose value is a reference to the {@link UimaContext} that
@@ -132,7 +132,7 @@ public interface Resource {
    * This value is used as a key in the <code>aAdditionalParams</code> Map that is passed to the
    * {@link #initialize(ResourceSpecifier,Map)} method.
    */
-  public static final String PARAM_UIMA_CONTEXT = "UIMA_CONTEXT";
+  String PARAM_UIMA_CONTEXT = "UIMA_CONTEXT";
 
   /**
    * Key for the initialization parameter whose value is a reference to the {@link ResourceManager}
@@ -140,7 +140,7 @@ public interface Resource {
    * in the <code>aAdditionalParams</code> Map that is passed to the
    * {@link #initialize(ResourceSpecifier,Map)} method.
    */
-  public static final String PARAM_RESOURCE_MANAGER = "RESOURCE_MANAGER";
+  String PARAM_RESOURCE_MANAGER = "RESOURCE_MANAGER";
 
   /**
    * Key for the initialization parameter whose value is a
@@ -150,7 +150,7 @@ public interface Resource {
    * the <code>aAdditionalParams</code> Map that is passed to the
    * {@link #initialize(ResourceSpecifier,Map)} method.
    */
-  public static final String PARAM_CONFIG_PARAM_SETTINGS = "CONFIG_PARAM_SETTINGS";
+  String PARAM_CONFIG_PARAM_SETTINGS = "CONFIG_PARAM_SETTINGS";
   
   /**
    * Key for the initialization parameter whose value is a {@link org.apache.uima.util.Settings}
@@ -160,7 +160,7 @@ public interface Resource {
    * This value is used as a key in the <code>aAdditionalParams</code> Map that is passed to the
    * {@link #initialize(ResourceSpecifier,Map)} method.
    */
-  public static final String PARAM_EXTERNAL_OVERRIDE_SETTINGS = "EXTERNAL_OVERRIDE_SETTINGS";
+  String PARAM_EXTERNAL_OVERRIDE_SETTINGS = "EXTERNAL_OVERRIDE_SETTINGS";
 
   /**
    * Key for the initialization parameter whose value is a {@link java.util.Properties} object that
@@ -170,7 +170,7 @@ public interface Resource {
    * 
    * @see org.apache.uima.UIMAFramework#getDefaultPerformanceTuningProperties()
    */
-  public static final String PARAM_PERFORMANCE_TUNING_SETTINGS = "PERFORMANCE_TUNING_SETTINGS";
+  String PARAM_PERFORMANCE_TUNING_SETTINGS = "PERFORMANCE_TUNING_SETTINGS";
 
   // /**
   // * Key for the initialization parameter whose value is an array of
@@ -180,7 +180,7 @@ public interface Resource {
   // * is passed to the {@link #initialize(ResourceSpecifier,Map)} method.
   // */
   /** Used to pass the sofa mappings to the ASB */
-  public static final String PARAM_AGGREGATE_SOFA_MAPPINGS = "AGGREGATE_SOFA_MAPPINGS";  // internal use only
+  String PARAM_AGGREGATE_SOFA_MAPPINGS = "AGGREGATE_SOFA_MAPPINGS";  // internal use only
   
   /**
    * Key to specify a pre-existing 
@@ -192,6 +192,6 @@ public interface Resource {
    * the <code>aAdditionalParams</code> Map that is passed to the
    * {@link #initialize(ResourceSpecifier,Map)} method.
    */
-  public static final String PARAM_CONFIG_MANAGER = "CONFIG_MANAGER";
+  String PARAM_CONFIG_MANAGER = "CONFIG_MANAGER";
 
 }

@@ -28,7 +28,7 @@ public interface IProgressMonitor {
   /**
    * Done.
    */
-  public void done();
+  void done();
 
   /**
    * Begin task.
@@ -36,19 +36,19 @@ public interface IProgressMonitor {
    * @param name the name
    * @param totalWorked the total worked
    */
-  public void beginTask(String name, int totalWorked);
+  void beginTask(String name, int totalWorked);
 
   /**
    * Sub task.
    *
    * @param name the name
    */
-  public void subTask(String name);
+  void subTask(String name);
 
   /**
    * Worked.
    *
    * @param work the work
    */
-  public void worked(int work);
+  void worked(int work);
 }

@@ -43,7 +43,6 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.XmlElementName;
-import org.apache.uima.internal.util.function.Consumer_withSaxException;
 import org.apache.uima.jcas.cas.CommonList;
 import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.FSArray;

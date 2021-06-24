@@ -40,7 +40,6 @@ public class CharacterUtils {
    * Constructor for CharacterUtils.
    */
   public CharacterUtils() {
-    super();
   }
 
   private static final boolean isType(char c, int[] types) {

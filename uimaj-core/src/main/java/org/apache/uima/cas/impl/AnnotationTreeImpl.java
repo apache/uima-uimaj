@@ -31,7 +31,6 @@ public class AnnotationTreeImpl<T extends AnnotationFS>  implements AnnotationTr
   private AnnotationTreeNodeImpl<T> root = null;
 
   AnnotationTreeImpl() {
-    super();
   }
 
   public AnnotationTreeNode<T> getRoot() {

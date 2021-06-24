@@ -35,7 +35,7 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
    * @return an array of <code>NameValuePair</code> objects, each of which contains a parameter
    *         name and the value of that parameter
    */
-  public NameValuePair[] getParameterSettings();
+  NameValuePair[] getParameterSettings();
 
   /**
    * Sets the settings for configuration parameters that are not in any group.
@@ -44,7 +44,7 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
    *          an array of <code>NameValuePair</code> objects, each of which contains a parameter
    *          name and the value of that parameter
    */
-  public void setParameterSettings(NameValuePair[] aSettings);
+  void setParameterSettings(NameValuePair[] aSettings);
 
   /**
    * Gets the settings for configuration parameters that are defined within groups.
@@ -52,7 +52,7 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
    * @return a Map with <code>String</code> keys (the group names) and {@link NameValuePair}[]
    *         values (the settings for parameters in that group.
    */
-  public Map<String, NameValuePair[]> getSettingsForGroups();
+  Map<String, NameValuePair[]> getSettingsForGroups();
 
   /**
    * Looks up the value of a parameter. This is a "dumb" getter and does not follow any fallback
@@ -63,7 +63,7 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
    * 
    * @return the value of the parameter with name <code>aParamName</code>
    */
-  public Object getParameterValue(String aParamName);
+  Object getParameterValue(String aParamName);
 
   /**
    * Looks up the value of a parameter in a group. This is a "dumb" getter and does not follow any
@@ -78,7 +78,7 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
    * @return the value of the parameter in group <code>aGroupName</code> with 
    *         name <code>aParamName</code>
    */
-  public Object getParameterValue(String aGroupName, String aParamName);
+  Object getParameterValue(String aGroupName, String aParamName);
 
   /**
    * Sets the value of a parameter. This only works for a parameter that is not defined in any
@@ -89,7 +89,7 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
    * @param aValue
    *          the value to assign to the parameter
    */
-  public void setParameterValue(String aParamName, Object aValue);
+  void setParameterValue(String aParamName, Object aValue);
 
   /**
    * Sets the value of a parameter in a group.
@@ -101,5 +101,5 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
    * @param aValue
    *          the value to assign to the parameter
    */
-  public void setParameterValue(String aGroupName, String aParamName, Object aValue);
+  void setParameterValue(String aGroupName, String aParamName, Object aValue);
 }

@@ -54,8 +54,7 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    *         int).
    * @deprecated - use getAttributes() instead, don't override it, use getAdditionalAttributes to specify additional ones
    */
-  @Deprecated
-  public List<NameClassPair> listAttributes();
+  @Deprecated List<NameClassPair> listAttributes();
 
   /**
    * Retrieves the value of an attribute of this <code>MetaDataObject</code>.
@@ -66,7 +65,7 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    * @return the value of the parameter named <code>aName</code>. Returns <code>null</code> if
    *         there is no attribute with that name.
    */
-  public Object getAttributeValue(String aName);
+  Object getAttributeValue(String aName);
 
   /**
    * Returns whether this <code>MetaDataObject</code> allows the values of its attributes to be
@@ -74,7 +73,7 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    * 
    * @return true if and only if this object's attributes may be modified.
    */
-  public boolean isModifiable();
+  boolean isModifiable();
 
   /**
    * Sets the value of an attribute of this <code>MetaDataObject</code>. Applications should
@@ -92,7 +91,7 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    * @throws UIMA_IllegalArgumentException
    *           if the given value is not appropriate for the given attribute.
    */
-  public void setAttributeValue(String aName, Object aValue);
+  void setAttributeValue(String aName, Object aValue);
 
   /**
    * Creates a clone of this <code>MetaDataObject</code>. This performs a "deep" copy by cloning
@@ -100,7 +99,7 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    * 
    * @return a clone of this <code>MetaDataObject</code>
    */
-  public Object clone();
+  Object clone();
 
   /**
    * Determines if this object is equal to another. Two MetaDataObjects are equal if they share the
@@ -111,7 +110,7 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    * 
    * @return true if and only if this object equals <code>aObj</code>
    */
-  public boolean equals(Object aObj);
+  boolean equals(Object aObj);
 
   /**
    * Gets the URL from which this object was parsed. When this object is parsed from an XML file,
@@ -124,7 +123,7 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    * 
    * @return the source URL from which this object was parsed
    */
-  public URL getSourceUrl();
+  URL getSourceUrl();
 
   /**
    * If the sourceURL of this object is non-null, returns its string representation. If it is null,
@@ -132,7 +131,7 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    * 
    * @return the source URL as a string, or "&lt;unknown&gt;"
    */
-  public String getSourceUrlString();
+  String getSourceUrlString();
 
   /**
    * Sets the URL from which this object was parsed. Typically only the XML parser sets this. This
@@ -141,5 +140,5 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    * @param aUrl
    *          the location of the XML file from which this object was parsed
    */
-  public void setSourceUrl(URL aUrl);
+  void setSourceUrl(URL aUrl);
 }

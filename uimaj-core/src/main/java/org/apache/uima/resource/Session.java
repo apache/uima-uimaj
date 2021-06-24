@@ -41,12 +41,12 @@ public interface Session extends Serializable {
    * @param aKey Key
    * @param aValue Value
    */
-  public void put(String aKey, Object aValue);
+  void put(String aKey, Object aValue);
 
   /**
    * Gets an object from the Session
    * @param aKey Key  
    * @return the associated value
    */
-  public Object get(String aKey);
+  Object get(String aKey);
 }

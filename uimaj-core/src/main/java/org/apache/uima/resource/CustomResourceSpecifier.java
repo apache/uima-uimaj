@@ -34,7 +34,7 @@ public interface CustomResourceSpecifier extends ResourceSpecifier {
    * 
    * @return a fully-qualified Java class name.  The named class should implement {@link Resource}.
    */
-  public String getResourceClassName();
+  String getResourceClassName();
 
   /**
    * Setss the name of the Java class that will be instantiated when
@@ -43,7 +43,7 @@ public interface CustomResourceSpecifier extends ResourceSpecifier {
    * 
    * @param aResourceClassName a fully-qualified Java class name.  The named class should implement {@link Resource}.
    */
-  public void setResourceClassName(String aResourceClassName);
+  void setResourceClassName(String aResourceClassName);
 
 
   /**
@@ -51,13 +51,13 @@ public interface CustomResourceSpecifier extends ResourceSpecifier {
    * 
    * @return an array of parameters.  This will never return <code>null</code>.
    */
-  public Parameter[] getParameters();
+  Parameter[] getParameters();
 
   /**
    * Sets parameters that may be read by the custom resource class when it is initialized.
    * 
    * @param parameters the Parameters to set.
    */
-  public void setParameters(Parameter[] parameters);
+  void setParameters(Parameter[] parameters);
 
 }

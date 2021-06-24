@@ -35,7 +35,7 @@ final class StringSet {
   final private HashMap<String, Integer> string2int = new HashMap<>();
   
   // Reset the string heap (called on CAS reset).
-  final void reset() {
+  void reset() {
     strings.clear();
     strings.add(null);
     string2int.clear();
@@ -70,7 +70,7 @@ final class StringSet {
   }
   
   
-  final int getSize() {
+  int getSize() {
 	  return this.strings.size();
   }
   

@@ -19,8 +19,6 @@
 
 package org.apache.uima.internal.util;
 
-import java.util.NoSuchElementException;
-
 /**
  * This class implements a set of integers. It does not implement the <code>Set</code> interface
  * for performance reasons, though methods with the same name are equivalent.

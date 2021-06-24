@@ -34,7 +34,6 @@ public class IndexingException extends UIMAException {
    * Creates a new exception with a null message.
    */
   public IndexingException() {
-    super();
   }
 
   /**

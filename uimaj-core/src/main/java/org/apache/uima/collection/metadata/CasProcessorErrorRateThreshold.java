@@ -38,7 +38,7 @@ public interface CasProcessorErrorRateThreshold extends MetaDataObject {
    * @param aErrorCount -
    *          max tolerated errors for CasProcessor
    */
-  public void setMaxErrorCount(int aErrorCount);
+  void setMaxErrorCount(int aErrorCount);
 
   /**
    * Returns max number of errors tolerated by the CPE. If the the threshold is exceeded the CPE
@@ -48,7 +48,7 @@ public interface CasProcessorErrorRateThreshold extends MetaDataObject {
    * 
    * @return - max error count
    */
-  public int getMaxErrorCount();
+  int getMaxErrorCount();
 
   /**
    * Sets the sample size. Max Error is defined in terms of a quotient, like 3/1000. Where 3 is the
@@ -57,7 +57,7 @@ public interface CasProcessorErrorRateThreshold extends MetaDataObject {
    * 
    * @param aSampleSize the sample size
    */
-  public void setMaxErrorSampleSize(int aSampleSize);
+  void setMaxErrorSampleSize(int aSampleSize);
 
   /**
    * Returns sample size. Max Error is defined in terms of a quotient, like 3/1000. Where 3 is the
@@ -66,7 +66,7 @@ public interface CasProcessorErrorRateThreshold extends MetaDataObject {
    * 
    * @return - sample size
    */
-  public int getMaxErrorSampleSize();
+  int getMaxErrorSampleSize();
 
   /**
    * Sets a strategy for dealing with exceeding error thresholds. The three supported strategies
@@ -80,7 +80,7 @@ public interface CasProcessorErrorRateThreshold extends MetaDataObject {
    * @param aAction -
    *          action to take
    */
-  public void setAction(String aAction);
+  void setAction(String aAction);
 
   /**
    * Returns strategy for dealing with exceeding error thresholds. The three supported strategies
@@ -93,5 +93,5 @@ public interface CasProcessorErrorRateThreshold extends MetaDataObject {
    * 
    * @return String - action to take
    */
-  public String getAction();
+  String getAction();
 }

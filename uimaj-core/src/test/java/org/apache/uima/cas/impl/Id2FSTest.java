@@ -18,17 +18,16 @@
  */
 package org.apache.uima.cas.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.cas.test.CASTestSetup;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.*;
 
 public class Id2FSTest {
 

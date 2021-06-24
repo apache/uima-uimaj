@@ -45,5 +45,5 @@ public interface SharedResourceObject {
    * @throws ResourceInitializationException
    *           if a failure occurs during loading.
    */
-  public void load(DataResource aData) throws ResourceInitializationException;
+  void load(DataResource aData) throws ResourceInitializationException;
 }

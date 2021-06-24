@@ -33,7 +33,7 @@ public interface AllowedValue extends MetaDataObject {
    * 
    * @return the allowed value string
    */
-  public String getString();
+  String getString();
 
   /**
    * Sets the allowed value.
@@ -41,14 +41,14 @@ public interface AllowedValue extends MetaDataObject {
    * @param aString
    *          the allowed value string
    */
-  public void setString(String aString);
+  void setString(String aString);
 
   /**
    * Gets the verbose description of this allowed value.
    * 
    * @return the description of this allowed value
    */
-  public String getDescription();
+  String getDescription();
 
   /**
    * Sets the verbose description of this allowed value.
@@ -56,5 +56,5 @@ public interface AllowedValue extends MetaDataObject {
    * @param aDescription
    *          the description of this allowed value
    */
-  public void setDescription(String aDescription);
+  void setDescription(String aDescription);
 }

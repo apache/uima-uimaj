@@ -84,7 +84,7 @@ public interface IndexBuildSpecification extends XMLizable, Serializable {
    * 
    * @return the build items
    */
-  public IndexBuildItem[] getIndexBuildItems();
+  IndexBuildItem[] getIndexBuildItems();
 
   /**
    * Sets the <code>IndexBuildItem</code> objects that comprise this index build specification.
@@ -93,5 +93,5 @@ public interface IndexBuildSpecification extends XMLizable, Serializable {
    * @param aItems
    *          the build items
    */
-  public void setIndexBuildItems(IndexBuildItem[] aItems);
+  void setIndexBuildItems(IndexBuildItem[] aItems);
 }

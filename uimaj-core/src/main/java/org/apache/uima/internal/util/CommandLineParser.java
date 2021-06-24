@@ -47,7 +47,6 @@ public class CommandLineParser {
     private final boolean hasArg;
 
     private CmdLineParam(boolean hasArg) {
-      super();
       this.hasArg = hasArg;
     }
 
@@ -63,7 +62,6 @@ public class CommandLineParser {
    * Create a new command line parser.
    */
   public CommandLineParser() {
-    super();
     this.paramMap = new HashMap<>();
   }
 

@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 import org.apache.uima.cas.impl.LowLevelIndex;
-import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -74,24 +73,24 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
    * Indexing strategy: sorted index. A sorted index contains all elements, including duplicates.
    * Iterators over sorted indexes will return elements in sorted order.
    */
-  public static final int SORTED_INDEX = 0;
+  int SORTED_INDEX = 0;
 
   /**
    * Indexing strategy: set index. A set index contains no duplicates of the same type, where a
    * duplicate is defined by the indexing comparator. A set index is not guaranteed to be sorted.
    */
-  public static final int SET_INDEX = 1;
+  int SET_INDEX = 1;
 
   /**
    * Indexing strategy: bag index. A bag index contains all elements, in no particular order.
    */
-  public static final int BAG_INDEX = 2;
+  int BAG_INDEX = 2;
   
   /**
    * Special indexes used by the framework to implement
    * {@link FSIndexRepository#getAllIndexedFS(Type)}.  Not user-definable.
    */
-  public static final int DEFAULT_BAG_INDEX = 3;
+  int DEFAULT_BAG_INDEX = 3;
   
 //  /**
 //   * Special indexes used by the framework to implement flattened indexes

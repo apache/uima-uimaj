@@ -52,7 +52,7 @@ public interface Settings {
    * @param in - Stream holding properties
    * @throws IOException if name characters illegal
    */
-  public void load(InputStream in) throws IOException;
+  void load(InputStream in) throws IOException;
 
   /**
    * Load properties from the comma-separated list of files specified in the system property 
@@ -61,7 +61,7 @@ public interface Settings {
    * 
    * @throws ResourceConfigurationException wraps IOException
    */
-  public void loadSystemDefaults() throws ResourceConfigurationException;
+  void loadSystemDefaults() throws ResourceConfigurationException;
 
   /**
    * Look up the value for a property.
@@ -76,14 +76,14 @@ public interface Settings {
    * @return     - value of property
    * @throws ResourceConfigurationException if the value references an undefined property
    */
-  public String lookUp(String name) throws ResourceConfigurationException;
+  String lookUp(String name) throws ResourceConfigurationException;
 
   /**
    * Return a set of keys of all properties loaded
    * 
    * @return - set of strings
    */
-  public Set<String> getKeys();
+  Set<String> getKeys();
 
   /**
    * Get the value of an external override setting.
@@ -103,6 +103,6 @@ public interface Settings {
   * @throws ResourceConfigurationException 
   *                  if the value references an undefined property, or the value is not an array
   */
-  public String[] getSettingArray(String name) throws ResourceConfigurationException;
+  String[] getSettingArray(String name) throws ResourceConfigurationException;
   
 }

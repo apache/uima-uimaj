@@ -20,9 +20,6 @@
 package org.apache.uima.ep_debug;
 
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.jdt.internal.debug.ui.IJDIPreferencesConstants;
-import org.eclipse.jdt.internal.debug.ui.JDIDebugUIPlugin;
-import org.eclipse.ui.IStartup;
 import org.osgi.framework.BundleContext;
 
 // TODO: Auto-generated Javadoc

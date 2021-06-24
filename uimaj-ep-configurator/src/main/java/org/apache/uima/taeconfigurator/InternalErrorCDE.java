@@ -29,7 +29,6 @@ public class InternalErrorCDE extends RuntimeException {
    * Instantiates a new internal error CDE.
    */
   public InternalErrorCDE() {
-    super();
   }
 
   /**

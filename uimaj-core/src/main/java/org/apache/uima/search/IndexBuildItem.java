@@ -40,7 +40,7 @@ public interface IndexBuildItem extends XMLizable, Serializable {
    * 
    * @return the CAS type name for this build item
    */
-  public String getName();
+  String getName();
 
   /**
    * Sets the name of the CAS type for which this item defines the indexing behavior.
@@ -48,7 +48,7 @@ public interface IndexBuildItem extends XMLizable, Serializable {
    * @param aName
    *          the CAS type name for this build item
    */
-  public void setName(String aName);
+  void setName(String aName);
 
   /**
    * Gets the <code>IndexRule</code> that defines how annotations matching this build item should
@@ -56,7 +56,7 @@ public interface IndexBuildItem extends XMLizable, Serializable {
    * 
    * @return the indexing rule for this build item
    */
-  public IndexRule getIndexRule();
+  IndexRule getIndexRule();
 
   /**
    * Sets the <code>IndexRule</code> that defines how annotations matching this build item should
@@ -65,7 +65,7 @@ public interface IndexBuildItem extends XMLizable, Serializable {
    * @param aRule
    *          the indexing rule for this build item
    */
-  public void setIndexRule(IndexRule aRule);
+  void setIndexRule(IndexRule aRule);
 
   /**
    * Gets the <code>Filter</code> that identifies which instances of the named CAS type are
@@ -74,7 +74,7 @@ public interface IndexBuildItem extends XMLizable, Serializable {
    * 
    * @return the Filter for this build item, null if none
    */
-  public Filter getFilter();
+  Filter getFilter();
 
   /**
    * Sets the <code>Filter</code> that identifies which instances of the named CAS type are
@@ -84,5 +84,5 @@ public interface IndexBuildItem extends XMLizable, Serializable {
    * @param aFilter
    *          the Filter for this build item, null if none
    */
-  public void setFilter(Filter aFilter);
+  void setFilter(Filter aFilter);
 }

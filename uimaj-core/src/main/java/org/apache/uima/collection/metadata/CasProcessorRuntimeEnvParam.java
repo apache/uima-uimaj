@@ -35,7 +35,7 @@ public interface CasProcessorRuntimeEnvParam extends MetaDataObject {
    *          param name
    * @throws CpeDescriptorException tbd
    */
-  public void setEnvParamName(String aEnvParamName) throws CpeDescriptorException;
+  void setEnvParamName(String aEnvParamName) throws CpeDescriptorException;
 
   /**
    * Returns a name of parameter
@@ -43,7 +43,7 @@ public interface CasProcessorRuntimeEnvParam extends MetaDataObject {
    * @return - parm name
    * @throws CpeDescriptorException tbd
    */
-  public String getEnvParamName() throws CpeDescriptorException;
+  String getEnvParamName() throws CpeDescriptorException;
 
   /**
    * Sets a value for new parameter
@@ -52,7 +52,7 @@ public interface CasProcessorRuntimeEnvParam extends MetaDataObject {
    *          param value
    * @throws CpeDescriptorException tbd
    */
-  public void setEnvParamValue(String aEnvParamValue) throws CpeDescriptorException;
+  void setEnvParamValue(String aEnvParamValue) throws CpeDescriptorException;
 
   /**
    * Returns parameter value
@@ -60,5 +60,5 @@ public interface CasProcessorRuntimeEnvParam extends MetaDataObject {
    * @return - param value
    * @throws CpeDescriptorException tbd
    */
-  public String getEnvParamValue() throws CpeDescriptorException;
+  String getEnvParamValue() throws CpeDescriptorException;
 }

@@ -77,7 +77,6 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   private static final Class<UimacppAnalysisComponent> CLASS_NAME = UimacppAnalysisComponent.class;
 
   public UimacppAnalysisComponent(ResourceCreationSpecifier aeDescription, AnalysisEngineImplBase ae) {
-	    super();
 	    this.ae = ae;
 	    // TAF won't except the new <fsIndexCollection> element, but actuall it doesn't need it,
 	    // because the index definitions are transmitted with the serialized CAS. So we can

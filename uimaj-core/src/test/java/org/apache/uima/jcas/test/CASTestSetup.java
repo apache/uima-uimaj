@@ -121,12 +121,10 @@ public class CASTestSetup implements AnnotatorInitializer {
    * Constructor for CASTestSetup.
    */
   public CASTestSetup() {
-    super();
     bad = 0;
   }
 
   public CASTestSetup(int bad) {
-    super();
     this.bad = bad;
   }
 

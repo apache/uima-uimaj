@@ -51,7 +51,7 @@ public interface CasInitializer extends ConfigurableResource {
    * @throws ResourceInitializationException
    *           if the type system is not compatible with this CAS Initializer
    */
-  public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException;
+  void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException;
 
   /**
    * Reads content and metadata from an Object and initializes a <code>CAS</code>.
@@ -66,12 +66,12 @@ public interface CasInitializer extends ConfigurableResource {
    * @throws IOException
    *           if an I/O failure occurs
    */
-  public void initializeCas(Object aObj, CAS aCAS) throws CollectionException, IOException;
+  void initializeCas(Object aObj, CAS aCAS) throws CollectionException, IOException;
 
   /**
    * Gets the metadata that describes this <code>CasInitializer</code>.
    * 
    * @return an object containing all metadata for this CasInitializer
    */
-  public ProcessingResourceMetaData getProcessingResourceMetaData();
+  ProcessingResourceMetaData getProcessingResourceMetaData();
 }

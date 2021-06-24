@@ -44,7 +44,6 @@ class VarValCellModifier implements ICellModifier {
    */
   public VarValCellModifier(VarValViewerHandler tableViewerExample, String[] columnNames,
           VarValList tableRowList) {
-    super();
     this.tableRowList = tableRowList;
     this.tableViewerExample = tableViewerExample;
   }

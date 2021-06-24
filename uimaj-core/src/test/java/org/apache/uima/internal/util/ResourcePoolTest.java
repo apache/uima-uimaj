@@ -19,6 +19,8 @@
 
 package org.apache.uima.internal.util;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -27,12 +29,10 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.Level;
-
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 /**
  * Tests the ResourcePool_impl class.

@@ -50,7 +50,6 @@ public class CharArrayString {
    * @pre string != null
    */
   public CharArrayString(String string) {
-    super();
     this.len = string.length();
     this.start = 0;
     this.end = this.len;
@@ -85,7 +84,6 @@ public class CharArrayString {
    * @pre length &le; charArray.length - startPos
    */
   public CharArrayString(char[] charArray, int startPos, int length) {
-    super();
     this.start = startPos;
     this.len = length;
     this.end = this.start + this.len;

@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
  */
 public interface CpeDescription extends MetaDataObject {
 
-  public void addCollectionReader(CpeCollectionReader aCollectionReader)
+  void addCollectionReader(CpeCollectionReader aCollectionReader)
           throws CpeDescriptorException;
 
   /**
@@ -53,7 +53,7 @@ public interface CpeDescription extends MetaDataObject {
    * 
    * @throws CpeDescriptorException tbd
    */
-  public CpeCollectionReader addCollectionReader(String aCollectionReaderPath)
+  CpeCollectionReader addCollectionReader(String aCollectionReaderPath)
           throws CpeDescriptorException;
 
   /**
@@ -67,8 +67,7 @@ public interface CpeDescription extends MetaDataObject {
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated
-  public CpeCollectionReaderCasInitializer addCasInitializer(String aCasInitializerPath)
+  @Deprecated CpeCollectionReaderCasInitializer addCasInitializer(String aCasInitializerPath)
           throws CpeDescriptorException;
 
   /**
@@ -79,9 +78,9 @@ public interface CpeDescription extends MetaDataObject {
    * 
    * @throws CpeDescriptorException tbd
    */
-  public CpeCollectionReader[] getAllCollectionCollectionReaders() throws CpeDescriptorException;
+  CpeCollectionReader[] getAllCollectionCollectionReaders() throws CpeDescriptorException;
 
-  public void setAllCollectionCollectionReaders(CpeCollectionReader[] readers)
+  void setAllCollectionCollectionReaders(CpeCollectionReader[] readers)
           throws CpeDescriptorException;
 
   /**
@@ -100,7 +99,7 @@ public interface CpeDescription extends MetaDataObject {
    * 
    * @throws CpeDescriptorException tbd
    */
-  public CpeCasProcessors getCpeCasProcessors() throws CpeDescriptorException;
+  CpeCasProcessors getCpeCasProcessors() throws CpeDescriptorException;
 
   /**
    * Appends a instance of {@link org.apache.uima.collection.metadata.CpeCasProcessor} to the end of
@@ -116,7 +115,7 @@ public interface CpeDescription extends MetaDataObject {
    *          instance of {@link org.apache.uima.collection.metadata.CpeCasProcessor} to add.
    * @throws CpeDescriptorException tbd
    */
-  public void addCasProcessor(CpeCasProcessor aCasProcessor) throws CpeDescriptorException;
+  void addCasProcessor(CpeCasProcessor aCasProcessor) throws CpeDescriptorException;
 
   /**
    * Adds a instance of {@link org.apache.uima.collection.metadata.CpeCasProcessor} at a specified
@@ -130,7 +129,7 @@ public interface CpeDescription extends MetaDataObject {
    * 
    * @throws CpeDescriptorException tbd
    */
-  public void addCasProcessor(int index, CpeCasProcessor aCasProcessor)
+  void addCasProcessor(int index, CpeCasProcessor aCasProcessor)
           throws CpeDescriptorException;
 
   /**
@@ -151,7 +150,7 @@ public interface CpeDescription extends MetaDataObject {
    * 
    * @throws CpeDescriptorException tbd
    */
-  public CpeConfiguration getCpeConfiguration() throws CpeDescriptorException;
+  CpeConfiguration getCpeConfiguration() throws CpeDescriptorException;
 
   /**
    * Defines the size for the InputQueue. This queue is used by the CPE to store bundles of CAS as
@@ -165,14 +164,14 @@ public interface CpeDescription extends MetaDataObject {
    * 
    * @throws CpeDescriptorException tbd
    */
-  public void setInputQueueSize(int aSize) throws CpeDescriptorException;
+  void setInputQueueSize(int aSize) throws CpeDescriptorException;
 
   /**
    * 
    * @param aSize the number of threads
    * @throws CpeDescriptorException tbd
    */
-  public void setProcessingUnitThreadCount(int aSize) throws CpeDescriptorException;
+  void setProcessingUnitThreadCount(int aSize) throws CpeDescriptorException;
 
   /**
    * Defines the size for the OutputQueue. This queue is used by the CPE to store bundles of CAS
@@ -186,7 +185,7 @@ public interface CpeDescription extends MetaDataObject {
    * 
    * @throws CpeDescriptorException tbd
    */
-  public void setOutputQueueSize(int aSize) throws CpeDescriptorException;
+  void setOutputQueueSize(int aSize) throws CpeDescriptorException;
 
   /**
    * Add checkpoint file and frequency (in millis) of checkpoints
@@ -196,7 +195,7 @@ public interface CpeDescription extends MetaDataObject {
    * @param aFrequency -
    *          frequency in terms of mills for checkpoints
    */
-  public void setCheckpoint(String aCheckpointFile, int aFrequency);
+  void setCheckpoint(String aCheckpointFile, int aFrequency);
 
   /**
    * Add name of the class that implements (@link org.apache.uima.util.UimaTimer} interface. This
@@ -205,7 +204,7 @@ public interface CpeDescription extends MetaDataObject {
    * @param aTimerClass -
    *          name of the UimaTimer class
    */
-  public void setTimer(String aTimerClass);
+  void setTimer(String aTimerClass);
 
   /**
    * Define startup mode for the CPE. The three supported options are:
@@ -218,7 +217,7 @@ public interface CpeDescription extends MetaDataObject {
    * @param aDeployMode -
    *          CPM deployment mode
    */
-  public void setDeployment(String aDeployMode);
+  void setDeployment(String aDeployMode);
 
   /**
    * Defines number of entities to process by the CPE.
@@ -226,7 +225,7 @@ public interface CpeDescription extends MetaDataObject {
    * @param aEntityCount -
    *          entity count
    */
-  public void setNumToProcess(long aEntityCount);
+  void setNumToProcess(long aEntityCount);
 
   /**
    * Defines an id of the first entity to process.
@@ -234,7 +233,7 @@ public interface CpeDescription extends MetaDataObject {
    * @param aStartEntityId -
    *          entity id
    */
-  public void setStartingEntityId(String aStartEntityId);
+  void setStartingEntityId(String aStartEntityId);
 
   /**
    * Defines the path to Resource Manager Configuration
@@ -242,7 +241,7 @@ public interface CpeDescription extends MetaDataObject {
    * @param aResMgrConfPagth -
    *          path to Resource Manager Configuration file.
    */
-  public void setResourceManagerConfiguration(String aResMgrConfPagth);
+  void setResourceManagerConfiguration(String aResMgrConfPagth);
 
   /**
    * Defines the path to Resource Manager Configuration
@@ -250,16 +249,16 @@ public interface CpeDescription extends MetaDataObject {
    * @param aResMgrConfPagth -
    *          path to Resource Manager Configuration file.
    */
-  public void setCpeResourceManagerConfiguration(CpeResourceManagerConfiguration aResMgrConfPagth);
+  void setCpeResourceManagerConfiguration(CpeResourceManagerConfiguration aResMgrConfPagth);
 
   /**
    * Returns ResourceManagerConfiguration instance.
    * 
    * @return {@link org.apache.uima.collection.metadata.CpeResourceManagerConfiguration}
    */
-  public CpeResourceManagerConfiguration getResourceManagerConfiguration();
+  CpeResourceManagerConfiguration getResourceManagerConfiguration();
 
-  public void setCpeCasProcessors(CpeCasProcessors aCasProcessors);
+  void setCpeCasProcessors(CpeCasProcessors aCasProcessors);
 
   /**
    * Generates XML for the CPE Descriptor and writes it out to the provided OutputStream.
@@ -267,7 +266,7 @@ public interface CpeDescription extends MetaDataObject {
    * @param aStream -
    *          stream to write
    */
-  public void toXML(OutputStream aStream) throws SAXException, IOException;
+  void toXML(OutputStream aStream) throws SAXException, IOException;
 
-  public void setCpeConfiguration(CpeConfiguration aConfiguration);
+  void setCpeConfiguration(CpeConfiguration aConfiguration);
 }

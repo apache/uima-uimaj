@@ -39,5 +39,5 @@ public interface CasDataStatusCallbackListener extends BaseStatusCallbackListene
    *          the status of the processing. This object contains a record of any Exception that
    *          occurred, as well as timing information.
    */
-  public void entityProcessComplete(CasData aCasData, EntityProcessStatus aStatus);
+  void entityProcessComplete(CasData aCasData, EntityProcessStatus aStatus);
 }

@@ -45,7 +45,6 @@ public class ResourceProcessException extends UIMAException {
    * Creates a new exception with a null message.
    */
   public ResourceProcessException() {
-    super();
   }
 
   /**

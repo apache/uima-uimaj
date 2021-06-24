@@ -92,7 +92,6 @@ public class AnalysisEngineProcessException extends ResourceProcessException {
    * Creates a new exception with a null message.
    */
   public AnalysisEngineProcessException() {
-    super();
   }
 
   /**

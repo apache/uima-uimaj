@@ -59,7 +59,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * 
    * @return the framework implementation name
    */
-  public String getFrameworkImplementation();
+  String getFrameworkImplementation();
 
   /**
    * Sets the name of the AE framework implementation within which the <code>ResourceCreationSpecifier</code> executes. The
@@ -68,7 +68,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * @param aFrameworkImplementation
    *          the framework implementation name
    */
-  public void setFrameworkImplementation(String aFrameworkImplementation);
+  void setFrameworkImplementation(String aFrameworkImplementation);
 
   /**
    * Retrieves the name of this <code>ResourceCreationSpecifier</code>'s implementation. This must be a fully qualified Java class
@@ -76,7 +76,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * 
    * @return the implementation name of the CasConsumer
    */
-  public String getImplementationName();
+  String getImplementationName();
 
   /**
    * Sets the name of this <code>ResourceCreationSpecifier</code>'s implementation. This must be a fully qualified Java class
@@ -85,14 +85,14 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * @param aImplementationName
    *          the implementation name of the CasConsumer
    */
-  public void setImplementationName(String aImplementationName);
+  void setImplementationName(String aImplementationName);
 
   /**
    * Retrieves the <code>ResourceMetaData</code> to assign to the newly constructed <code>ResourceCreationSpecifier</code>.
    * 
    * @return the metadata for the new resource. This will always be modifiable.
    */
-  public ResourceMetaData getMetaData();
+  ResourceMetaData getMetaData();
 
   /**
    * Sets the MetaData for this <code>ResourceCreationSpecifier</code>.
@@ -100,7 +100,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * @param aMetaData
    *          metadata to assign
    */
-  public void setMetaData(ResourceMetaData aMetaData);
+  void setMetaData(ResourceMetaData aMetaData);
 
   /**
    * Retrieves descriptions of this <code>ResourceCreationSpecifier</code>'s dependencies on external resources. Each
@@ -112,7 +112,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * @return an array of {@link ExternalResourceDependency} objects that describe this
    *         AnalysisEngine's resource dependencies.
    */
-  public ExternalResourceDependency[] getExternalResourceDependencies();
+  ExternalResourceDependency[] getExternalResourceDependencies();
 
   /**
    * Sets the descriptions of this <code>ResourceCreationSpecifier</code>'s dependencies on external resources.
@@ -121,7 +121,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    *          an array of {@link ExternalResourceDependency} objects that describe this
    *          <code>ResourceCreationSpecifier</code>'s resource dependencies.
    */
-  public void setExternalResourceDependencies(ExternalResourceDependency[] aDependencies);
+  void setExternalResourceDependencies(ExternalResourceDependency[] aDependencies);
 
   /**
    * Gets the external resource dependency with the given key.
@@ -131,7 +131,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * 
    * @return the resource dependency with the specified key, <code>null</code> if none.
    */
-  public ExternalResourceDependency getExternalResourceDependency(String aKey);
+  ExternalResourceDependency getExternalResourceDependency(String aKey);
 
   /**
    * Retrieves the Resource Manager configuration, which declares the resources that satisfy the
@@ -140,7 +140,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * @return the Resource Manager configuration that describes how external resource dependencies
    *         are bound to actual resources.
    */
-  public ResourceManagerConfiguration getResourceManagerConfiguration();
+  ResourceManagerConfiguration getResourceManagerConfiguration();
 
   /**
    * Sets the Resource Manager configuration, which declares the resources that satisfy the
@@ -150,7 +150,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    *          the Resource Manager configuration that describes how external resource dependencies
    *          are bound to actual resources.
    */
-  public void setResourceManagerConfiguration(
+  void setResourceManagerConfiguration(
           ResourceManagerConfiguration aResourceManagerConfiguration);
 
   /**
@@ -164,7 +164,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * @throws ResourceConfigurationException
    *           if the configuration parameter settings in <code>aDesc</code> are invalid
    */
-  public void validate() throws ResourceInitializationException, ResourceConfigurationException;
+  void validate() throws ResourceInitializationException, ResourceConfigurationException;
 
   /**
    * Checks that this <code>ResourceCreationSpecifier</code> is valid. 
@@ -180,7 +180,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * @throws ResourceConfigurationException
    *           if the configuration parameter settings in <code>aDesc</code> are invalid
    */
-  public void validate(ResourceManager aResourceManager) throws ResourceInitializationException,
+  void validate(ResourceManager aResourceManager) throws ResourceInitializationException,
           ResourceConfigurationException;
 
   /**
@@ -193,7 +193,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * @throws ResourceInitializationException
    *           if validation failed
    */
-  public void doFullValidation() throws ResourceInitializationException;
+  void doFullValidation() throws ResourceInitializationException;
 
   /**
    * Does full validation of this <code>ResourceCreationSpecifier</code>. 
@@ -208,7 +208,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * @throws ResourceInitializationException
    *           if validation failed
    */
-  public void doFullValidation(ResourceManager aResourceManager)
+  void doFullValidation(ResourceManager aResourceManager)
           throws ResourceInitializationException;
 
 }

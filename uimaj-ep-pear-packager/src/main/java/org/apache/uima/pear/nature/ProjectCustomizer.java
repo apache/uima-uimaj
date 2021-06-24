@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.uima.pear.PearException;
 import org.apache.uima.pear.insd.edit.PearInstallationDescriptor;
+import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -32,8 +33,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Path;
-
-import org.apache.uima.pear.tools.InstallationDescriptor;
 
 /**
  * 

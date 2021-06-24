@@ -161,12 +161,12 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
   /**
    * an empty iterator
    */
-  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator_empty<>();
+  LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator_empty<>();
   
   /**
    * Internal use constants
    */
-  static final boolean IS_ORDERED = false;
+  boolean IS_ORDERED = false;
   
   /**
    * @return false if this iterator is over an unordered collection or set or bag

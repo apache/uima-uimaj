@@ -41,7 +41,7 @@ public interface TCasFormatter {
    * @exception CASException
    *              if an exception occurs reading from the CAS
    */
-  public String format(CAS aCAS) throws CASException;
+  String format(CAS aCAS) throws CASException;
 
   /**
    * Produces a string representation of a CAS. Only those feature structures that satisfy the
@@ -58,5 +58,5 @@ public interface TCasFormatter {
    * @exception CASException
    *              if an exception occurs reading from the CAS
    */
-  public String format(CAS aCAS, FSMatchConstraint aFilter) throws CASException;
+  String format(CAS aCAS, FSMatchConstraint aFilter) throws CASException;
 }

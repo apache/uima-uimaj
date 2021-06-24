@@ -46,7 +46,6 @@ public class PearException extends Exception {
    * Instantiates a new pear exception.
    */
   public PearException() {
-    super();
   }
 
   /**

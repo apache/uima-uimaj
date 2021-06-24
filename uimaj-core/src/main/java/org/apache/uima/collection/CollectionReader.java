@@ -66,7 +66,7 @@ public interface CollectionReader extends BaseCollectionReader, ConfigurableReso
    * @throws ResourceInitializationException
    *           if the type system is not compatible with this Collection Reader
    */
-  public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException;
+  void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException;
 
   /**
    * Gets the next element of the collection. The element will be stored in the provided CAS object.
@@ -83,7 +83,7 @@ public interface CollectionReader extends BaseCollectionReader, ConfigurableReso
    * @throws CollectionException
    *           if there is some other problem with reading from the Collection
    */
-  public void getNext(CAS aCAS) throws IOException, CollectionException;
+  void getNext(CAS aCAS) throws IOException, CollectionException;
 
   /**
    * Gets the CAS Initializer that has been assigned to this Collection Reader. Note that
@@ -94,8 +94,7 @@ public interface CollectionReader extends BaseCollectionReader, ConfigurableReso
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated
-  public CasInitializer getCasInitializer();
+  @Deprecated CasInitializer getCasInitializer();
 
   /**
    * Assigns a CAS Initializer for this Collection Reader to use. Note that CollectionReader
@@ -107,7 +106,6 @@ public interface CollectionReader extends BaseCollectionReader, ConfigurableReso
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated
-  public void setCasInitializer(CasInitializer aCasInitializer);
+  @Deprecated void setCasInitializer(CasInitializer aCasInitializer);
 
 }

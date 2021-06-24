@@ -77,7 +77,6 @@ public class BaseServer {
     private final int which;
 
     PooledThread(int which) {
-      super();
       this.which = which;
       socket = null;
       run_me = null;

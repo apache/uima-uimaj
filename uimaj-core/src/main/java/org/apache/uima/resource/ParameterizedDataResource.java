@@ -43,5 +43,5 @@ public interface ParameterizedDataResource extends Resource {
    * @throws ResourceInitializationException
    *           if no <code>DataResource</code> could be initialized from the specified parameters
    */
-  public DataResource getDataResource(String[] aParams) throws ResourceInitializationException;
+  DataResource getDataResource(String[] aParams) throws ResourceInitializationException;
 }

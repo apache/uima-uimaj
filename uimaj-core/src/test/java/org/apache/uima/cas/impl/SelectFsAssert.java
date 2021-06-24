@@ -822,17 +822,17 @@ public class SelectFsAssert {
   }
 
   @FunctionalInterface
-  public static interface RelativeAnnotationPredicate {
+  public interface RelativeAnnotationPredicate {
     boolean apply(CAS cas, Type type, Annotation x, Annotation y);
   }
 
   @FunctionalInterface
-  public static interface TypeByContextSelector {
+  public interface TypeByContextSelector {
     List<AnnotationFS> select(CAS aCas, Type aType, Annotation aContext);
   }
 
   @FunctionalInterface
-  public static interface TypeByContextSelectorAsSelection {
+  public interface TypeByContextSelectorAsSelection {
     SelectFSs<Annotation> select(CAS aCas, Type aType, Annotation aContext);
   }
 }

@@ -150,7 +150,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  */
 public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> {
   
-  public static enum BoundsUse {
+  public enum BoundsUse {
     coveredBy,  // iterate within bounds specified by controlling Feature Structure
     covering,   // iterate over FSs which cover the bounds specified by controlling Feature Structure
     sameBeginEnd,  // iterate over FSs having the same begin and end 

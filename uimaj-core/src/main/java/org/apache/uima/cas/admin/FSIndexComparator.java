@@ -21,7 +21,6 @@ package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.FeatureImpl;
 
 /**
  * This interface describes objects which specify the comparison used in indexes for keys. 
@@ -29,22 +28,22 @@ import org.apache.uima.cas.impl.FeatureImpl;
 public interface FSIndexComparator extends Comparable<FSIndexComparator> {
   
 
-  static final int FEATURE_KEY = 0;
+  int FEATURE_KEY = 0;
 
-  static final int TYPE_ORDER_KEY = 1;
+  int TYPE_ORDER_KEY = 1;
 
   /**
    * Compare key1 of fs1 with key2 of fs2 so that the order of fs1 and fs2 is the same as that of
    * key1 and key2 in the standard order for that kind of key. For integer and float values, this is
    * the standard linear order, and for strings it is lexicographic order.
    */
-  static final int STANDARD_COMPARE = 0;
+  int STANDARD_COMPARE = 0;
 
   /**
    * Compare key1 of fs1 with key2 of fs2 so that the order of fs1 and fs2 is the reverse as that of
    * key1 and key2 (with respect to the standard order of that key).
    */
-  static final int REVERSE_STANDARD_COMPARE = 1;
+  int REVERSE_STANDARD_COMPARE = 1;
 
   /**
    * Set the type of this comparator. Note that you can use this method more than once, in case you

@@ -36,15 +36,15 @@ final class ByteHeap extends CommonAuxHeap {
     super(heapBaseSize, heapMultLimit);
   }
 
-  final void initMemory() {
+  void initMemory() {
     this.heap = new byte[this.heapBaseSize];
   }
   
-  final void initMemory(int size) {
+  void initMemory(int size) {
     this.heap = new byte[size];
   }
 
-  final int getCapacity() {
+  int getCapacity() {
     return this.heap.length;
   }
 

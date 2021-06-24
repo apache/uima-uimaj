@@ -185,7 +185,6 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     protected int currentNode;
 
     protected IntArrayRBTKeyIterator() {
-      super();
       moveToStart();
     }
 
@@ -278,7 +277,6 @@ public class IntArrayRBT extends IntArrayRBTcommon {
   }
 
   public IntArrayRBT(int initialSize) {
-    super();
   }
     
   /**

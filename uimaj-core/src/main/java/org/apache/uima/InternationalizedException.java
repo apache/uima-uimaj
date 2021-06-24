@@ -101,7 +101,6 @@ public class InternationalizedException extends Exception {
    */
   public InternationalizedException(String aResourceBundleName, String aMessageKey,
           Object[] aArguments, Throwable aCause) {
-    super();
     c = new I18nx_impl(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

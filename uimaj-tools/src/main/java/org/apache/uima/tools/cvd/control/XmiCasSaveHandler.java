@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.swing.JFileChooser;
+
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.XMLSerializer;
@@ -48,7 +49,6 @@ public class XmiCasSaveHandler implements ActionListener {
   // Default constructor
   @SuppressWarnings("unused")
   private XmiCasSaveHandler() {
-    super();
     this.main = null;
   }
   
@@ -58,7 +58,6 @@ public class XmiCasSaveHandler implements ActionListener {
    * @param main the main
    */
   public XmiCasSaveHandler(MainFrame main) {
-    super();
     this.main = main;
   }
 

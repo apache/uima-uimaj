@@ -37,7 +37,7 @@ public interface MimeTypePrecondition extends SimplePrecondition {
    * 
    * @return the MIME Types that satisfy this precondition
    */
-  public String[] getMimeTypes();
+  String[] getMimeTypes();
 
   /**
    * Sets the MIME types that satisfy this precondition.
@@ -52,5 +52,5 @@ public interface MimeTypePrecondition extends SimplePrecondition {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setMimeTypes(String[] aMimeTypes);
+  void setMimeTypes(String[] aMimeTypes);
 }

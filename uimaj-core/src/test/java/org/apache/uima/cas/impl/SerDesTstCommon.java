@@ -30,9 +30,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 import junit.framework.TestCase;
 

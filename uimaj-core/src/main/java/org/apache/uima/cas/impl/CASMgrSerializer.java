@@ -184,7 +184,6 @@ public class CASMgrSerializer implements Serializable {
    * Constructor for CASMgrSerializer.
    */
   public CASMgrSerializer() {
-    super();
   }
 
   /**

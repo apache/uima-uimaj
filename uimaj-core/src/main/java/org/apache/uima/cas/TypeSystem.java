@@ -52,19 +52,19 @@ public interface TypeSystem extends Iterable<Type> {
    * This is the character that separates a type name from a feature name. Ex.:
    * <code>uima.cas.Annotation:begin</code>.
    */
-  static final char FEATURE_SEPARATOR = ':';
+  char FEATURE_SEPARATOR = ':';
 
   /**
    * This is the character that separates name spaces. Ex.: <code>uima.cas.Annotation</code>
    */
-  static final char NAMESPACE_SEPARATOR = '.';
+  char NAMESPACE_SEPARATOR = '.';
 
   /**
    * Add this to the additionalParameters map to skip adding the prebuilt types to the type system.
    * Used by applicaitons only for backwards compatibility 
    * with binary serialization forms requiring exactly matching type systems
    */
-  static final String PARAM_EXCLUDE_PREBUILT_TYPES = "EXCLUDE_PREBUILT_TYPES";
+  String PARAM_EXCLUDE_PREBUILT_TYPES = "EXCLUDE_PREBUILT_TYPES";
   
   /**
    * Get a type object for a given type name. See documentation on <a href="./Type.html#names">type

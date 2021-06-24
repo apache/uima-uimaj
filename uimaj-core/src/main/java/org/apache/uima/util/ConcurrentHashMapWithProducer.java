@@ -34,7 +34,6 @@ public class ConcurrentHashMapWithProducer<K, V> extends ConcurrentHashMap<K, V>
   private static final long serialVersionUID = 1L;
 
   public ConcurrentHashMapWithProducer() {
-    super();
   }
 
   public ConcurrentHashMapWithProducer(int initialCapacity, float loadFactor, int concurrencyLevel) {

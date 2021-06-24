@@ -19,6 +19,9 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,13 +68,10 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 
 public class JcasSofaTest {

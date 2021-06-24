@@ -29,7 +29,6 @@ public class Base64FormatException extends IOException {
   private static final long serialVersionUID = -7684434340122235922L;
 
   public Base64FormatException() {
-    super();
   }
 
   public Base64FormatException(String message) {

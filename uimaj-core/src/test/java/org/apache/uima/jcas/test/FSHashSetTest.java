@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Iterator;
 
 import org.apache.uima.cas.CAS;
@@ -28,11 +31,9 @@ import org.apache.uima.jcas.cas.FSHashSet;
 import org.apache.uima.jcas.cas.FSLinkedHashSet;
 import org.apache.uima.jcas.cas.Int2FS;
 import org.apache.uima.util.IntEntry;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
+
 import x.y.z.EndOfSentence;
 import x.y.z.Token;
 

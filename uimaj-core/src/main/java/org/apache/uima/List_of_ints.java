@@ -35,7 +35,7 @@ public interface List_of_ints extends Iterable<Integer> {
    * 
    * @see java.util.List#size()
    */
-  public int size();
+  int size();
 
   /*
    * (non-Javadoc)
@@ -60,92 +60,91 @@ public interface List_of_ints extends Iterable<Integer> {
    * 
    * @see java.util.List#toArray()
    */
-  public int[] toArray();
+  int[] toArray();
 
   /**
    * Avoid copying, return the original array, if start/end offsets not in use
    * 
    * @return -
    */
-  public int[] toArrayMinCopy();
+  int[] toArrayMinCopy();
 
   /*
    * (non-Javadoc)
    * 
    * @see java.util.List#add(java.lang.Object)
    */
-  public boolean add(int i);
+  boolean add(int i);
 
   /*
    * (non-Javadoc)
    * 
    * @see java.util.List#remove(java.lang.Object)
    */
-  public boolean remove(int i);
+  boolean remove(int i);
 
   /*
    * (non-Javadoc)
    * 
    * @see java.util.List#clear()
    */
-  public void clear();
+  void clear();
 
   /*
    * (non-Javadoc)
    * 
    * @see java.util.List#get(int)
    */
-  public int get(int index);
+  int get(int index);
 
   /*
    * (non-Javadoc)
    * 
    * @see java.util.List#set(int, java.lang.Object)
    */
-  public int set(int index, int element);
+  int set(int index, int element);
 
   /*
    * (non-Javadoc)
    * 
    * @see java.util.List#add(int, java.lang.Object)
    */
-  public void add(int index, int element);
+  void add(int index, int element);
 
   /*
    * (non-Javadoc)
    * 
    * @see java.util.List#remove(int)
    */
-  public int removeAtIndex(int index);
+  int removeAtIndex(int index);
 
   /*
    * (non-Javadoc)
    * 
    * @see java.util.List#indexOf(java.lang.Object)
    */
-  public int indexOf(int i);
+  int indexOf(int i);
 
   /*
    * (non-Javadoc)
    * 
    * @see java.util.List#lastIndexOf(java.lang.Object)
    */
-  public int lastIndexOf(int i);
+  int lastIndexOf(int i);
 
-  public List_of_ints subList(int fromIndex, int toIndex);
+  List_of_ints subList(int fromIndex, int toIndex);
 
-  @Override
-  public OfInt iterator();
+  @Override OfInt iterator();
 
-  public IntListIterator intListIterator();
+  IntListIterator intListIterator();
 
-  public void copyFromArray(int[] src, int srcPos, int destPos, int length);
+  void copyFromArray(int[] src, int srcPos, int destPos, int length);
 
-  public void copyToArray(int srcPos, int[] dest, int destPos, int length);
+  void copyToArray(int srcPos, int[] dest, int destPos, int length);
 
-  public void sort();
+  void sort();
 
-  public static List_of_ints EMPTY_LIST() {
+  static List_of_ints EMPTY_LIST() {
     return new List_of_ints() {
 
       @Override

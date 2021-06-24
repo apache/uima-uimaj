@@ -130,7 +130,6 @@ public class InvalidXMLException extends UIMAException {
    * Creates a new exception with a null message.
    */
   public InvalidXMLException() {
-    super();
   }
 
   /**

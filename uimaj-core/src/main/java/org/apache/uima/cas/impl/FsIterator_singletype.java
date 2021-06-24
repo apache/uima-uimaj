@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.ArrayList;
-
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 

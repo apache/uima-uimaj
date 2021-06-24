@@ -84,7 +84,6 @@ public class CASException extends UIMAException {
   
 
   public CASException() {
-    super();
   }
 
   public CASException(String aMessageKey, Object[] aArguments, Throwable aCause) {

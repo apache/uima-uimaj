@@ -19,6 +19,11 @@
 
 package org.apache.uima.jcas.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.PrimitiveIterator.OfInt;
@@ -66,16 +71,13 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
-
-import aa.ConcreteType;
-import aa.Root;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.Assert.*;
-
 import org.junit.jupiter.api.Test;
+
+import aa.ConcreteType;
+import aa.Root;
 import x.y.z.EndOfSentence;
 import x.y.z.Sentence;
 import x.y.z.Token;
@@ -428,11 +430,10 @@ public class JCasTest {
 		}
 	}
 
-	static interface MakeAndTest {
-		public void make();
+	interface MakeAndTest {
+		void make();
 
-    @org.junit.jupiter.api.Test
-    public void test(Object o);
+    @org.junit.jupiter.api.Test void test(Object o);
 	}
 
 	MakeAndTest root1 = new MakeAndTest() {

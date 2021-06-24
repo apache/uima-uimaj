@@ -29,6 +29,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
+import org.apache.uima.internal.util.Misc;
+
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.Buffer;
 import com.strobel.assembler.metadata.CompositeTypeLoader;
@@ -36,7 +38,6 @@ import com.strobel.assembler.metadata.ITypeLoader;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
-import org.apache.uima.internal.util.Misc;
 
 /**
  * Decompiler

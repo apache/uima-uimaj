@@ -208,7 +208,6 @@ public class VinciClient extends BaseClient {
    * return documents.
    */
   public VinciClient() {
-    super();
   }
 
   /**

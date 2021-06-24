@@ -36,7 +36,7 @@ public interface CasProcessorExecArg extends MetaDataObject {
    * 
    * @throws CpeDescriptorException tbd
    */
-  public void setArgValue(String aArgValue) throws CpeDescriptorException;
+  void setArgValue(String aArgValue) throws CpeDescriptorException;
 
   /**
    * Returns argument value
@@ -45,5 +45,5 @@ public interface CasProcessorExecArg extends MetaDataObject {
    * 
    * @throws CpeDescriptorException tbd
    */
-  public String getArgValue() throws CpeDescriptorException;
+  String getArgValue() throws CpeDescriptorException;
 }

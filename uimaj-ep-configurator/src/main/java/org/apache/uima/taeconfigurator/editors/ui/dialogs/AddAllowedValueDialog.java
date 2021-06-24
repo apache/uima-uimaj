@@ -19,13 +19,12 @@
 
 package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
+import org.apache.uima.resource.metadata.AllowedValue;
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-
-import org.apache.uima.resource.metadata.AllowedValue;
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
 
 /**

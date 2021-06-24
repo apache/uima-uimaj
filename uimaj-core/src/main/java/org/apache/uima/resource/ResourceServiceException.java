@@ -59,7 +59,6 @@ public class ResourceServiceException extends UIMAException {
    * Creates a new exception with a null message.
    */
   public ResourceServiceException() {
-    super();
   }
 
   /**

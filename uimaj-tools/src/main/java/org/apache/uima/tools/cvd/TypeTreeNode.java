@@ -42,7 +42,6 @@ public class TypeTreeNode {
    * Constructor for TypeTreeNode.
    */
   public TypeTreeNode() {
-    super();
     this.type = null;
     this.label = null;
     this.size = -1;
@@ -56,7 +55,6 @@ public class TypeTreeNode {
    * @param size the size
    */
   public TypeTreeNode(Type type, String label, int size) {
-    super();
     this.type = type;
     this.label = label;
     this.size = size;

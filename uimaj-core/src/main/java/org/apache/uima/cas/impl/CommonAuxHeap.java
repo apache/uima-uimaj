@@ -58,7 +58,6 @@ abstract class CommonAuxHeap {
   }
 
   CommonAuxHeap(int heapBaseSize, int heapMultLimit) {
-    super();
     this.heapBaseSize = Math.max(heapBaseSize, MIN_HEAP_BASE_SIZE);
     this.heapMultLimit = Math.max(heapMultLimit, DEFAULT_HEAP_MULT_LIMIT);
     initMemory();

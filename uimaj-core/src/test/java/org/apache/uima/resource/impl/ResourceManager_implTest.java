@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.impl;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
@@ -36,12 +38,10 @@ import org.apache.uima.resource.metadata.impl.ExternalResourceBinding_impl;
 import org.apache.uima.resource.metadata.impl.ResourceManagerConfiguration_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 
 public class ResourceManager_implTest {

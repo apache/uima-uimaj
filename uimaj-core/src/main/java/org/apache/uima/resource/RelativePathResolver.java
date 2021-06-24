@@ -29,7 +29,7 @@ import java.net.URL;
  */
 public interface RelativePathResolver {
 
-  static final String UIMA_DATAPATH_PROP = "uima.datapath";
+  String UIMA_DATAPATH_PROP = "uima.datapath";
 
   /**
    * Gets the data path used to resolve relative paths. More than one directory may be specified by
@@ -38,7 +38,7 @@ public interface RelativePathResolver {
    * 
    * @return the data path
    */
-  public String getDataPath();
+  String getDataPath();
 
   /**
    * Sets the data path used to resolve relative paths. More than one directory may be specified by
@@ -51,7 +51,7 @@ public interface RelativePathResolver {
    * @throws MalformedURLException
    *           if a file path could not be converted to a URL
    */
-  public void setDataPath(String aPath) throws MalformedURLException;
+  void setDataPath(String aPath) throws MalformedURLException;
 
   /**
    * Resolves a relative URL to an absolute URL. This will attempt to resolve the URL relative to
@@ -66,7 +66,7 @@ public interface RelativePathResolver {
    * 
    * @return the absolute URL at which the file exists, <code>null</code> it none could be found.
    */
-  public URL resolveRelativePath(URL aRelativeUrl);
+  URL resolveRelativePath(URL aRelativeUrl);
 
   /**
    * Sets the ClassLoader that should be used to resolve the resources.
@@ -74,6 +74,6 @@ public interface RelativePathResolver {
    * @param aClassLoader
    *          the ClassLoader that should be used to resolve the resources.
    */
-  public void setPathResolverClassLoader(ClassLoader aClassLoader);
+  void setPathResolverClassLoader(ClassLoader aClassLoader);
 
 }

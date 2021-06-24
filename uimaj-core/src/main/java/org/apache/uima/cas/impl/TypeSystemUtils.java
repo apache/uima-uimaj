@@ -34,7 +34,7 @@ import org.apache.uima.cas.TypeSystem;
 public abstract class TypeSystemUtils {
 
   // Return value constants for feature path checking on type system
-  public static enum PathValid {
+  public enum PathValid {
     NEVER, POSSIBLE, ALWAYS
   }
 
@@ -43,7 +43,6 @@ public abstract class TypeSystemUtils {
     private ParsingError error = null;
 
     protected TypeSystemParse() {
-      super();
     }
 
     boolean hasError() {
@@ -76,7 +75,6 @@ public abstract class TypeSystemUtils {
     private String name;
 
     NameSpaceParse() {
-      super();
     }
 
     /**
@@ -107,7 +105,6 @@ public abstract class TypeSystemUtils {
     private NameSpaceParse nameSpace;
 
     TypeParse() {
-      super();
     }
 
     TypeParse(String name) {

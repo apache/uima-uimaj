@@ -29,14 +29,14 @@ import org.apache.uima.resource.metadata.ConfigurationParameter;
  * Constants
  */
 public interface Constants {
-  static String[] EMPTY_STRING_ARRAY = new String[0];
-  static FeatureImpl[] EMPTY_FEATURE_ARRAY = new FeatureImpl[0];
-  static int[] EMPTY_INT_ARRAY = new int[0];
-  static Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
-  static char[] EMPTY_CHAR_ARRAY = new char[0];
-  static TOP[] EMPTY_TOP_ARRAY = new TOP[0];
-  static File[] EMPTY_FILE_ARRAY = new File[0];
-  static URL[] EMPTY_URL_ARRAY = new URL[0];
-  static ConfigurationParameter[] EMPTY_CONFIG_PARM_ARRAY = new ConfigurationParameter[0];
-  static Object[] EMPTY_OBJ_ARRAY = new Object[0];
+  String[] EMPTY_STRING_ARRAY = new String[0];
+  FeatureImpl[] EMPTY_FEATURE_ARRAY = new FeatureImpl[0];
+  int[] EMPTY_INT_ARRAY = new int[0];
+  Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
+  char[] EMPTY_CHAR_ARRAY = new char[0];
+  TOP[] EMPTY_TOP_ARRAY = new TOP[0];
+  File[] EMPTY_FILE_ARRAY = new File[0];
+  URL[] EMPTY_URL_ARRAY = new URL[0];
+  ConfigurationParameter[] EMPTY_CONFIG_PARM_ARRAY = new ConfigurationParameter[0];
+  Object[] EMPTY_OBJ_ARRAY = new Object[0];
 }

@@ -38,7 +38,7 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * 
    * @return true if and only if this AnalysisEngine supports asynchronous communication
    */
-  public boolean isAsynchronousModeSupported();
+  boolean isAsynchronousModeSupported();
 
   /**
    * Sets whether this AnalysisEngine supports asynchronous communication. If this is set to true
@@ -51,7 +51,7 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setAsynchronousModeSupported(boolean aSupported);
+  void setAsynchronousModeSupported(boolean aSupported);
 
   /**
    * For an aggregate AnalysisEngine only, gets the constraints on the execution sequence of the
@@ -67,7 +67,7 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * @return the flow constraints for the AnalysisEngine, or <code>null</code> if no flow
    *         constraints are published by this AnalysisEngine.
    */
-  public FlowConstraints getFlowConstraints();
+  FlowConstraints getFlowConstraints();
 
   /**
    * For an aggregate AnalysisEngine only, sets the constraints on the execution sequence of the
@@ -87,7 +87,7 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setFlowConstraints(FlowConstraints aFlowConstraints);
+  void setFlowConstraints(FlowConstraints aFlowConstraints);
 
   /**
    * For an aggregate AnalysisEngine only, gets the metadata of the delegate AnalysisEngines.
@@ -97,5 +97,5 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * @return an array of delegate AnalysisEngine metadata, or <code>null</code> if that
    *         information is not available.
    */
-  public AnalysisEngineMetaData[] getDelegateAnalysisEngineMetaData();
+  AnalysisEngineMetaData[] getDelegateAnalysisEngineMetaData();
 }

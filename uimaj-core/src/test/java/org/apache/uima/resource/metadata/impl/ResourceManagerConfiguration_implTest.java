@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.metadata.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 
 import org.apache.uima.UIMAFramework;
@@ -29,11 +31,9 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 
 public class ResourceManagerConfiguration_implTest {

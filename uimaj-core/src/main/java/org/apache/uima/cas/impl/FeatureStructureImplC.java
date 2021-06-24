@@ -976,7 +976,6 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     private int count;
 
     private PrintReferences() {
-      super();
       this.count = 0;
     }
 

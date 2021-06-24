@@ -43,7 +43,7 @@ public interface CasProcessorDeployer {
    * @throws ResourceConfigurationException -
    *           failed to deploy Cas Processor
    */
-  public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
+  ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
           throws ResourceConfigurationException;
 
   /**
@@ -55,11 +55,11 @@ public interface CasProcessorDeployer {
    * @throws ResourceConfigurationException -
    *           failed to deploy Cas Processor
    */
-  public void deployCasProcessor(ProcessingContainer aProcessingContainer)
+  void deployCasProcessor(ProcessingContainer aProcessingContainer)
           throws ResourceConfigurationException;
 
-  public void undeploy() throws CasProcessorDeploymentException;
+  void undeploy() throws CasProcessorDeploymentException;
 
-  public void undeploy(URL aUrl) throws CasProcessorDeploymentException;
+  void undeploy(URL aUrl) throws CasProcessorDeploymentException;
 
 }

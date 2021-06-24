@@ -60,8 +60,8 @@ import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CasInitializerDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.flow.FlowControllerDescription;
-import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.internal.util.Class_TCCL;
+import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.jcas.jcasgenp.MergerImpl;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -676,7 +676,6 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * Instantiates a new multi page editor.
    */
   public MultiPageEditor() {
-    super();
     currentEditor = this; // default
     initCDE (); // specific for CDE
   }

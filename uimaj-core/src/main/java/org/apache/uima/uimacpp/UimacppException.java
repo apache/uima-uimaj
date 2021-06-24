@@ -40,7 +40,6 @@ public class UimacppException extends Exception {
    *          the nested exception
    */
   public UimacppException(Exception ex) {
-    super();
     detail = ex;
   }
 

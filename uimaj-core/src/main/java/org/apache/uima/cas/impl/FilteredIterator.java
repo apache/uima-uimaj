@@ -39,7 +39,6 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
 
   // Private...
   private FilteredIterator() {
-    super();
   }
 
   /**

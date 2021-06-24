@@ -31,7 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -51,15 +50,10 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.FixMethodOrder;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 import x.y.z.Sentence;
 import x.y.z.Token;
@@ -67,7 +61,7 @@ import x.y.z.Token;
 // Sorting only to keep the list in Eclipse ordered so it is easier spot if related tests fail
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SelectFsTest {
-  private static enum Mode {
+  private enum Mode {
     ANNOTATION_FIRST,
     ANNOTATION_LAST;
   }

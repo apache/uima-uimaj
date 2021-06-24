@@ -33,7 +33,6 @@ public class SortedIntSet {
 
   /** Default constructor. */
   public SortedIntSet() {
-    super();
     this.vector = new IntVector();
   }
 

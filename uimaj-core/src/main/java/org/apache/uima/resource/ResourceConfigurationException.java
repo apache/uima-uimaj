@@ -115,7 +115,6 @@ public class ResourceConfigurationException extends UIMAException {
    * Creates a new exception with a null message.
    */
   public ResourceConfigurationException() {
-    super();
   }
 
   /**

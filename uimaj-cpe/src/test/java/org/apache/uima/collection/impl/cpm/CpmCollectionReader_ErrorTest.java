@@ -19,13 +19,10 @@
 
 package org.apache.uima.collection.impl.cpm;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 import java.util.Iterator;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -41,6 +38,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.test.junit_extension.ManageOutputDevice;
 import org.apache.uima.util.Level;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test CollectionReader Error Handling<br>

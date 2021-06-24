@@ -92,7 +92,7 @@ public interface JCas extends AbstractCas {
   /**
    * (internal use)
    */
-  public final static int INVALID_FEATURE_CODE = -1;
+  int INVALID_FEATURE_CODE = -1;
 
   // *********************************
   // * Getters for read-only objects *
@@ -124,7 +124,7 @@ public interface JCas extends AbstractCas {
    * @param i the CAS type constant, written as Foo.type
    * @return none - throws an exception
    */
-  public abstract TOP_Type getType(int i);
+  TOP_Type getType(int i);
   
   /**
    * get the JCas x_Type instance for a particular Java instance of a type
@@ -133,8 +133,7 @@ public interface JCas extends AbstractCas {
    * @return the associated xxx_Type instance
    * @deprecated use instance.jcasType instead - faster
    */
-  @Deprecated
-  public abstract TOP_Type getType(TOP instance);
+  @Deprecated TOP_Type getType(TOP instance);
 
 
   /**
@@ -788,7 +787,7 @@ public interface JCas extends AbstractCas {
    * @param clazz a JCas cover class
    * @return the corresponding UIMA Type object
    */
-  public Type getCasType(Class<? extends FeatureStructure> clazz);
+  Type getCasType(Class<? extends FeatureStructure> clazz);
   
   /**
    * Get the standard annotation index.

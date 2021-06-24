@@ -36,14 +36,14 @@ public interface CasProcessorExecutable extends MetaDataObject {
    * @param aExecutable -
    *          program name (like java.exe)
    */
-  public void setExecutable(String aExecutable);
+  void setExecutable(String aExecutable);
 
   /**
    * Returns an executable program that the CPE will use for launching CasProcessor.
    * 
    * @return - exec program as String
    */
-  public String getExecutable();
+  String getExecutable();
 
   /**
    * Adds a {@link org.apache.uima.collection.metadata.CasProcessorExecArg} argument to be supplied
@@ -52,7 +52,7 @@ public interface CasProcessorExecutable extends MetaDataObject {
    * @param aArgs -
    *          argument for the executable program
    */
-  public void addCasProcessorExecArg(CasProcessorExecArg aArgs);
+  void addCasProcessorExecArg(CasProcessorExecArg aArgs);
 
   /**
    * Returns a {@link org.apache.uima.collection.metadata.CasProcessorExecArg} argument identified by
@@ -62,14 +62,14 @@ public interface CasProcessorExecutable extends MetaDataObject {
    *          position of argument to return
    * @return {@link org.apache.uima.collection.metadata.CasProcessorExecArg} argument
    */
-  public CasProcessorExecArg getCasProcessorExecArg(int aIndex);
+  CasProcessorExecArg getCasProcessorExecArg(int aIndex);
 
   /**
    * Returns ALL {@link org.apache.uima.collection.metadata.CasProcessorExecArg} arguments
    * 
    * @return array of {@link org.apache.uima.collection.metadata.CasProcessorExecArg}
    */
-  public CasProcessorExecArg[] getAllCasProcessorExecArgs();
+  CasProcessorExecArg[] getAllCasProcessorExecArgs();
 
   /**
    * Removes program argument from the list. The argument for deletion is identified by provided
@@ -78,13 +78,13 @@ public interface CasProcessorExecutable extends MetaDataObject {
    * @param aIndex -
    *          position of argument to delete
    */
-  public void removeCasProcessorExecArg(int aIndex);
+  void removeCasProcessorExecArg(int aIndex);
 
-  public ArrayList<CasProcessorRuntimeEnvParam> getEnvs();
+  ArrayList<CasProcessorRuntimeEnvParam> getEnvs();
 
   /**
    * @param params the CAS Processor Runtime Environment parameters
    */
-  public void setEnvs(ArrayList<CasProcessorRuntimeEnvParam> params);
+  void setEnvs(ArrayList<CasProcessorRuntimeEnvParam> params);
 
 }

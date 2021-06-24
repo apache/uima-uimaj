@@ -81,72 +81,72 @@ public interface LowLevelCAS {
    * Not a valid type. Type class constant returned by
    * {@link #ll_getTypeClass(int) ll_getTypeClass()}.
    */
-  public static final int TYPE_CLASS_INVALID = 0;
+  int TYPE_CLASS_INVALID = 0;
 
   /**
    * Integer type. Type class constant returned by {@link #ll_getTypeClass(int) ll_getTypeClass()}.
    */
-  public static final int TYPE_CLASS_INT = 1;
+  int TYPE_CLASS_INT = 1;
 
   /**
    * Float type. Type class constant returned by {@link #ll_getTypeClass(int) ll_getTypeClass()}.
    */
-  public static final int TYPE_CLASS_FLOAT = 2;
+  int TYPE_CLASS_FLOAT = 2;
 
   /**
    * String type. Type class constant returned by {@link #ll_getTypeClass(int) ll_getTypeClass()}.
    */
-  public static final int TYPE_CLASS_STRING = 3;
+  int TYPE_CLASS_STRING = 3;
 
   /**
    * Integer type. Type class constant returned by {@link #ll_getTypeClass(int) ll_getTypeClass()}.
    */
-  public static final int TYPE_CLASS_INTARRAY = 4;
+  int TYPE_CLASS_INTARRAY = 4;
 
   /**
    * Float array type. Type class constant returned by
    * {@link #ll_getTypeClass(int) ll_getTypeClass()}.
    */
-  public static final int TYPE_CLASS_FLOATARRAY = 5;
+  int TYPE_CLASS_FLOATARRAY = 5;
 
   /**
    * String array type. Type class constant returned by
    * {@link #ll_getTypeClass(int) ll_getTypeClass()}.
    */
-  public static final int TYPE_CLASS_STRINGARRAY = 6;
+  int TYPE_CLASS_STRINGARRAY = 6;
 
   /**
    * FS array type. Type class constant returned by {@link #ll_getTypeClass(int) ll_getTypeClass()}.
    */
-  public static final int TYPE_CLASS_FSARRAY = 7;
+  int TYPE_CLASS_FSARRAY = 7;
 
   /**
    * FS type (all other types, include all user-defined ones). Type class constant returned by
    * {@link #ll_getTypeClass(int) ll_getTypeClass()}.
    */
-  public static final int TYPE_CLASS_FS = 8;
+  int TYPE_CLASS_FS = 8;
 
-  public static final int TYPE_CLASS_BOOLEAN = 9;
+  int TYPE_CLASS_BOOLEAN = 9;
 
-  public static final int TYPE_CLASS_BYTE = 10;
+  int TYPE_CLASS_BYTE = 10;
 
-  public static final int TYPE_CLASS_SHORT = 11;
+  int TYPE_CLASS_SHORT = 11;
 
-  public static final int TYPE_CLASS_LONG = 12;
+  int TYPE_CLASS_LONG = 12;
 
-  public static final int TYPE_CLASS_DOUBLE = 13;
+  int TYPE_CLASS_DOUBLE = 13;
 
-  public static final int TYPE_CLASS_BOOLEANARRAY = 14;
+  int TYPE_CLASS_BOOLEANARRAY = 14;
 
-  public static final int TYPE_CLASS_BYTEARRAY = 15;
+  int TYPE_CLASS_BYTEARRAY = 15;
 
-  public static final int TYPE_CLASS_SHORTARRAY = 16;
+  int TYPE_CLASS_SHORTARRAY = 16;
 
-  public static final int TYPE_CLASS_LONGARRAY = 17;
+  int TYPE_CLASS_LONGARRAY = 17;
 
-  public static final int TYPE_CLASS_DOUBLEARRAY = 18;
+  int TYPE_CLASS_DOUBLEARRAY = 18;
   
-  static final int NULL_FS_REF = 0;
+  int NULL_FS_REF = 0;
 
   /**
    * Get the low-level version of the type system object. It provides access to the low-level type

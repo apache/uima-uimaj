@@ -19,10 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.annotator.JTextAnnotator;
@@ -36,6 +33,8 @@ import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.test.junit_extension.ManageOutputDevice;
 import org.apache.uima.util.Level;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * The TestCase aims to test the behaviour of the cpm faced with different error scenarios<br>

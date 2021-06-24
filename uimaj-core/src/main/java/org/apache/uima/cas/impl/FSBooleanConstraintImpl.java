@@ -33,7 +33,6 @@ public class FSBooleanConstraintImpl implements FSBooleanConstraint {
    * Default constructor.
    */
   public FSBooleanConstraintImpl() {
-    super();
   }
 
   /* (non-Javadoc)

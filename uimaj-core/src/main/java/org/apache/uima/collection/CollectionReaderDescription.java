@@ -35,6 +35,6 @@ public interface CollectionReaderDescription extends ResourceCreationSpecifier {
    * @return the <code>ResourceMetaData</code> object containing the CollectionReader's metadata.
    *         This object can be modified.
    */
-  public ProcessingResourceMetaData getCollectionReaderMetaData();
+  ProcessingResourceMetaData getCollectionReaderMetaData();
 
 }

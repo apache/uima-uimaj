@@ -48,7 +48,7 @@ public interface DataResource extends Resource {
    * @throws IOException
    *           if an I/O error occurred when trying to open the stream
    */
-  public InputStream getInputStream() throws IOException;
+  InputStream getInputStream() throws IOException;
 
   /**
    * Gets the URI of the data. In general, this method will return a URI that is equivalent to the
@@ -58,7 +58,7 @@ public interface DataResource extends Resource {
    * 
    * @return The URI of the data
    */
-  public URI getUri();
+  URI getUri();
 
   /**
    * Gets the URL where the data is stored. This method may return null if there is no appropriate
@@ -68,7 +68,7 @@ public interface DataResource extends Resource {
    * 
    * @return the URL where the data is stored, or null if this is not available.
    */
-  public URL getUrl();
+  URL getUrl();
 
   /**
    * Determines if this <code>DataResource</code> is equal to another <code>DataResource</code>.
@@ -84,7 +84,7 @@ public interface DataResource extends Resource {
    * @return true if and only if <code>aObj</code> is a <code>DataResource</code> and provides
    *         access to the same data as this object.
    */
-  public boolean equals(Object aObj);
+  boolean equals(Object aObj);
 
   /**
    * Gest the hash code for this <code>DataResource</code>. As always, if the
@@ -93,7 +93,7 @@ public interface DataResource extends Resource {
    * 
    * @return the hash code for this object
    */
-  public int hashCode();
+  int hashCode();
 
   /**
    * Key for the initialization parameter whose value is a reference to the
@@ -101,5 +101,5 @@ public interface DataResource extends Resource {
    * URLs. This value is used as a key in the <code>aAdditionalParams</code> Map that is passed to
    * the {@link #initialize(ResourceSpecifier,Map)} method.
    */
-  public static final String PARAM_RELATIVE_PATH_RESOLVER = "RELATIVE_PATH_RESOLVER";
+  String PARAM_RELATIVE_PATH_RESOLVER = "RELATIVE_PATH_RESOLVER";
 }

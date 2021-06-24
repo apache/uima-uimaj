@@ -32,7 +32,7 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
    * 
    * @return a string
    */
-  public String getPearPath();
+  String getPearPath();
 
   /**
    * Sets the PEAR path at which a Resource is located.
@@ -40,7 +40,7 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
    * @param aPearPath
    *          a pear path string
    */
-  public void setPearPath(String aPearPath);
+  void setPearPath(String aPearPath);
 
   /**
    * Gets legacy string-valued parameters that may be read by the pear resource class when it is
@@ -57,8 +57,7 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
    * @deprecated These parameters only support string values. Better use
    *             {@link #getPearParameters}.
    */
-  @Deprecated
-  public Parameter[] getParameters();
+  @Deprecated Parameter[] getParameters();
 
   /**
    * Sets legacy string-valued parameters that may be read by the pear resource class when it is 
@@ -70,8 +69,7 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
    * @deprecated These parameters only support string values. Better use
    *             {@link #setPearParameters}.
    */
-  @Deprecated
-  public void setParameters(Parameter... parameters);
+  @Deprecated void setParameters(Parameter... parameters);
   
   /**
    * Gets parameters that may be read by the pear resource class when it is initialized. These 
@@ -88,7 +86,7 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
    * 
    * @return an array of pearParameters. This will never return <code>null</code>.
    */
-  public NameValuePair[] getPearParameters();
+  NameValuePair[] getPearParameters();
 
   /**
    * Sets pearParameters that may be read by the pear resource class when it is initialized.
@@ -97,5 +95,5 @@ public interface PearSpecifier extends ResourceServiceSpecifier {
    * 
    * @see #getPearParameters()
    */
-  public void setPearParameters(NameValuePair... pearParameters);
+  void setPearParameters(NameValuePair... pearParameters);
 }

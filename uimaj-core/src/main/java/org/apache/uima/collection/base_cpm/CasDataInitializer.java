@@ -54,12 +54,12 @@ public interface CasDataInitializer extends ConfigurableResource {
    * @throws IOException
    *           if an I/O failure occurs
    */
-  public CasData initializeCas(Object aObj) throws CollectionException, IOException;
+  CasData initializeCas(Object aObj) throws CollectionException, IOException;
 
   /**
    * Gets the metadata that describes this <code>CasDataInitializer</code>.
    * 
    * @return an object containing all metadata for this CasDataInitializer
    */
-  public ProcessingResourceMetaData getCasInitializerMetaData();
+  ProcessingResourceMetaData getCasInitializerMetaData();
 }

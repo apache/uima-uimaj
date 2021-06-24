@@ -19,10 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;

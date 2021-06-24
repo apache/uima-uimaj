@@ -20,21 +20,23 @@ package org.apache.uima.cas.text;
 
 import static java.lang.Integer.MAX_VALUE;
 import static java.util.Arrays.asList;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.BEGINNING_WITH;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COLOCATED;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERED_BY;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.*;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.COVERING;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.ENDING_WITH;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_AT_BEGIN;
 import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.OVERLAPPING_AT_END;
-import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.FOLLOWING;
+import static org.apache.uima.cas.text.AnnotationPredicateTestData.RelativePosition.PRECEDING;
 
 import java.util.List;
 
 import org.apache.uima.cas.text.AnnotationPredicateAssert.TestCase;
 
 public class AnnotationPredicateTestData {
-  public static enum RelativePosition {
+  public enum RelativePosition {
     COLOCATED,
     OVERLAPPING,
     OVERLAPPING_AT_BEGIN,

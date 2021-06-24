@@ -39,14 +39,14 @@ public interface FileLanguageResourceSpecifier extends ResourceSpecifier {
    * 
    * @return the URL prefix
    */
-  public String getFileUrlPrefix();
+  String getFileUrlPrefix();
 
   /**
    * Retrieves the URL suffix.
    * 
    * @return the URL suffix
    */
-  public String getFileUrlSuffix();
+  String getFileUrlSuffix();
 
   /**
    * Sets the URL prefix.
@@ -54,7 +54,7 @@ public interface FileLanguageResourceSpecifier extends ResourceSpecifier {
    * @param aPrefix
    *          the URL prefix
    */
-  public void setFileUrlPrefix(String aPrefix);
+  void setFileUrlPrefix(String aPrefix);
 
   /**
    * Sets the URL suffix.
@@ -62,5 +62,5 @@ public interface FileLanguageResourceSpecifier extends ResourceSpecifier {
    * @param aSuffix
    *          the URL suffix
    */
-  public void setFileUrlSuffix(String aSuffix);
+  void setFileUrlSuffix(String aSuffix);
 }

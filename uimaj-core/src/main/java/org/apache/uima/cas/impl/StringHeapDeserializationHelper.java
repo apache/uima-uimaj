@@ -54,7 +54,6 @@ public class StringHeapDeserializationHelper {
   protected char[] charHeap;
 
   public StringHeapDeserializationHelper() {
-    super();
   }
 
 }

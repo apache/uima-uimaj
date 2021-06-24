@@ -44,7 +44,6 @@ public class OFSocketTransportImpl implements SocketTransport {
    * Instantiates a new OF socket transport impl.
    */
   public OFSocketTransportImpl() {
-    super();
 
   }
 

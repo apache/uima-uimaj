@@ -30,13 +30,13 @@ public interface CasPoolManagement extends ManagementObject {
    * Get the total size of the CAS Pool.
    * @return the pool size
    */
-  public int getPoolSize();
+  int getPoolSize();
   
   /**
    * Get the number of CAS instances currently available in the pool.
    * @return the number of available CAS instances
    */
-  public int getAvailableInstances();
+  int getAvailableInstances();
   
 //  /**
 //   * Get the average time, in milliseconds, that getCas() requests on

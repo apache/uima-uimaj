@@ -254,7 +254,6 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
    * @throws java.awt.HeadlessException the java.awt. headless exception
    */
   public AnnotationDisplayCustomizationFrame() {
-    super();
   }
 
   /**

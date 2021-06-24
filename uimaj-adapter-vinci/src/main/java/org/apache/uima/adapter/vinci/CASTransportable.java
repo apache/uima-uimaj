@@ -23,10 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.adapter.vinci.util.Constants;
@@ -44,6 +40,9 @@ import org.apache.vinci.transport.Transportable;
 import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.XTalkTransporter;
 import org.apache.vinci.transport.document.XTalkToSAX;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 public class CASTransportable extends DefaultHandler implements Transportable {
   private CasPool myCasPool;

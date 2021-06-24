@@ -292,7 +292,6 @@ public class XmiCasDeserializer {
      */
     private XmiCasDeserializerHandler(CASImpl aCAS, boolean lenient, 
             XmiSerializationSharedData sharedData, int mergePoint, AllowPreexistingFS allowPreexistingFS) {
-      super();
       this.casBeingFilled = aCAS.getBaseCAS();
       this.lenient = lenient;
       this.sharedData = 
@@ -2074,7 +2073,6 @@ public class XmiCasDeserializer {
    * @param uimaContext the UIMA Context to use for the deserialization
    */
   public XmiCasDeserializer(TypeSystem ts, UimaContext uimaContext) {
-    super();
     this.ts = (TypeSystemImpl) ts;
   }
 

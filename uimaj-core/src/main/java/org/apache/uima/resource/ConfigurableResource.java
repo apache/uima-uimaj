@@ -51,7 +51,7 @@ public interface ConfigurableResource extends Resource {
    * @return the value of the parameter with name <code>aParamName</code>, <code>null</code> is
    *         either the parameter does not exist or it has not been assigned a value.
    */
-  public Object getConfigParameterValue(String aParamName);
+  Object getConfigParameterValue(String aParamName);
 
   /**
    * Looks up the value of a configuration parameter in a group. If the parameter has no value
@@ -72,7 +72,7 @@ public interface ConfigurableResource extends Resource {
    *         name <code>aParamName</code>,,<code>null</code> is either the 
    *         parameter does not exist or it has not been assigned a value.
    */
-  public Object getConfigParameterValue(String aGroupName, String aParamName);
+  Object getConfigParameterValue(String aGroupName, String aParamName);
 
   /**
    * Sets the value of a configuration parameter. This only works for a parameter that is not
@@ -84,7 +84,7 @@ public interface ConfigurableResource extends Resource {
    * @param aValue
    *          the value to assign to the parameter
    */
-  public void setConfigParameterValue(String aParamName, Object aValue);
+  void setConfigParameterValue(String aParamName, Object aValue);
 
   /**
    * Sets the value of a configuration parameter in a group. Note that there is no guarantee that
@@ -97,7 +97,7 @@ public interface ConfigurableResource extends Resource {
    * @param aParamName the name of a parameter in the group
    * @param aValue the value to assign to the parameter.
    */
-  public void setConfigParameterValue(String aGroupName, String aParamName, Object aValue);
+  void setConfigParameterValue(String aGroupName, String aParamName, Object aValue);
 
   /**
    * Instructs this Resource to re-read its configuration parameter settings.
@@ -105,5 +105,5 @@ public interface ConfigurableResource extends Resource {
    * @throws ResourceConfigurationException
    *           if the configuration is not valid
    */
-  public void reconfigure() throws ResourceConfigurationException;
+  void reconfigure() throws ResourceConfigurationException;
 }

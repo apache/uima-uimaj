@@ -62,7 +62,6 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
   
   // might be called to produce removed marker
   public NonEmptyFSList() {
-    super();
   }
 
   public NonEmptyFSList(JCas jcas) {

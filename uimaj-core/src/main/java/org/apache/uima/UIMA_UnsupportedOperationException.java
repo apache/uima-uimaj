@@ -55,7 +55,6 @@ public class UIMA_UnsupportedOperationException extends UIMARuntimeException {
    * Creates a new exception with a null message.
    */
   public UIMA_UnsupportedOperationException() {
-    super();
   }
 
   /**

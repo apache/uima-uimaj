@@ -19,6 +19,9 @@
 
 package org.apache.uima.pear.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,12 +42,9 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * The PEAR runtime tests installs two pears files that both use JCas classes 

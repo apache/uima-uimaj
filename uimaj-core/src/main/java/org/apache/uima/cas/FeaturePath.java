@@ -103,7 +103,7 @@ public interface FeaturePath {
     * @throws CASException
     *            Throws an exception if the feature path syntax is invalid.
     */
-   public void initialize(String featurePath) throws CASException;
+   void initialize(String featurePath) throws CASException;
 
    /**
     * Check the feature path for the given type and initialize internal
@@ -116,7 +116,7 @@ public interface FeaturePath {
     *            Throws an exception if the feature path is not valid for the
     *            given type
     */
-   public void typeInit(Type featurePathType) throws CASException;
+   void typeInit(Type featurePathType) throws CASException;
 
    /**
     * Returns the feature path value as string for the given FeatureStructure.
@@ -134,7 +134,7 @@ public interface FeaturePath {
     * @return Returns the value of the feature path as String or null if the
     *         feature path was not set or some features along the path were null.
     */
-   public String getValueAsString(FeatureStructure fs);
+   String getValueAsString(FeatureStructure fs);
 
    /**
     * Returns the feature path value as string for the given FeatureStructure.
@@ -154,7 +154,7 @@ public interface FeaturePath {
     * 
     * @return Returns the value of the feature path as String
     */
-   public String ll_getValueAsString(int fsRef, LowLevelCAS llCas);
+   String ll_getValueAsString(int fsRef, LowLevelCAS llCas);
 
    /**
     * Returns the type of the feature path.
@@ -165,7 +165,7 @@ public interface FeaturePath {
     * @return Returns the type of the feature path or null if the feature path
     *         is not set.
     */
-   public Type getType(FeatureStructure fs);
+   Type getType(FeatureStructure fs);
 
    /**
     * Returns the type class of the feature path.
@@ -177,8 +177,7 @@ public interface FeaturePath {
     *         path is not set
     * @deprecated use getTypeClass (spelling fix)
     */
-   @Deprecated
-   public TypeClass getTypClass(FeatureStructure fs);
+   @Deprecated TypeClass getTypClass(FeatureStructure fs);
 
    /**
     * Returns the type class of the feature path.
@@ -189,14 +188,14 @@ public interface FeaturePath {
     * @return Returns the type class of the feature path or null if the feature
     *         path is not set
     */
-   public TypeClass getTypeClass(FeatureStructure fs);
+   TypeClass getTypeClass(FeatureStructure fs);
 
    /**
     * Returns the feature path as string.
     * 
     * @return Returns the feature path as string.
     */
-   public String getFeaturePath();
+   String getFeaturePath();
 
    /**
     * Returns the String value of a string valued feature path.
@@ -207,7 +206,7 @@ public interface FeaturePath {
     * @return Returns the String value of a string valued feature path or null
     *         if the feature path was not set
     */
-   public String getStringValue(FeatureStructure fs);
+   String getStringValue(FeatureStructure fs);
 
    /**
     * Returns the Integer value of an integer valued feature path.
@@ -218,7 +217,7 @@ public interface FeaturePath {
     * @return Returns the Integer value of a integer valued feature path or null
     *         if the feature path was not set
     */
-   public Integer getIntValue(FeatureStructure fs);
+   Integer getIntValue(FeatureStructure fs);
 
    /**
     * Returns the Boolean value of a boolean valued feature path.
@@ -229,7 +228,7 @@ public interface FeaturePath {
     * @return Returns the Boolean value of a boolean valued feature path or null
     *         if the feature path was not set
     */
-   public Boolean getBooleanValue(FeatureStructure fs);
+   Boolean getBooleanValue(FeatureStructure fs);
 
    /**
     * Returns the Byte value of a byte valued feature path.
@@ -240,7 +239,7 @@ public interface FeaturePath {
     * @return Returns the Byte value of a byte valued feature path or null if
     *         the feature path was not set
     */
-   public Byte getByteValue(FeatureStructure fs);
+   Byte getByteValue(FeatureStructure fs);
 
    /**
     * Returns the Double value of a double valued feature path.
@@ -251,7 +250,7 @@ public interface FeaturePath {
     * @return Returns the Double value of a double valued feature path or null
     *         if the feature path was not set
     */
-   public Double getDoubleValue(FeatureStructure fs);
+   Double getDoubleValue(FeatureStructure fs);
 
    /**
     * Returns the Float value of a float valued feature path.
@@ -262,7 +261,7 @@ public interface FeaturePath {
     * @return Returns the Float value of a float valued feature path or null if
     *         the feature path was not set
     */
-   public Float getFloatValue(FeatureStructure fs);
+   Float getFloatValue(FeatureStructure fs);
 
    /**
     * Returns the Long value of a long valued feature path.
@@ -273,7 +272,7 @@ public interface FeaturePath {
     * @return Returns the Long value of a long valued feature path or null if
     *         the feature path was not set
     */
-   public Long getLongValue(FeatureStructure fs);
+   Long getLongValue(FeatureStructure fs);
 
    /**
     * Returns the Short value of a short valued feature path.
@@ -284,7 +283,7 @@ public interface FeaturePath {
     * @return Returns the Short value of a short valued feature path or null if
     *         the feature path was not set
     */
-   public Short getShortValue(FeatureStructure fs);
+   Short getShortValue(FeatureStructure fs);
 
    /**
     * Returns the FeatureStructure of a FeatureStructure valued feature path.
@@ -295,7 +294,7 @@ public interface FeaturePath {
     * @return Returns the FeatureStructure value of a FeatureStructure valued
     *         feature path or null if the feature path was not set
     */
-   public FeatureStructure getFSValue(FeatureStructure fs);
+   FeatureStructure getFSValue(FeatureStructure fs);
 
 //   /**
 //    * Returns the Java Object value of a JavaObject valued feature path.

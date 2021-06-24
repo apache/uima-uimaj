@@ -25,7 +25,6 @@ package org.apache.vinci.transport;
 public class Attributes extends VinciFrame {
 
   public Attributes() {
-    super();
   }
 
   public Attributes(int initialCapacity) {

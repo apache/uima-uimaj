@@ -38,5 +38,5 @@ public interface CasInitializerDescription extends ResourceCreationSpecifier {
    * @return the <code>ProcessingResourceMetaData</code> object containing the CasInitializer's
    *         metadata. This object can be modified.
    */
-  public ProcessingResourceMetaData getCasInitializerMetaData();
+  ProcessingResourceMetaData getCasInitializerMetaData();
 }

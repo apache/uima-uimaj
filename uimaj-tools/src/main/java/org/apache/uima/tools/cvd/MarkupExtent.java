@@ -46,7 +46,6 @@ public class MarkupExtent {
    * @param markupDepth the markup depth
    */
   public MarkupExtent(int start, int end, int markupDepth) {
-    super();
     this.start = start;
     this.end = end;
     this.markupDepth = markupDepth;

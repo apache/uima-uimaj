@@ -54,7 +54,6 @@ import org.apache.uima.collection.impl.cpm.utils.ChunkMetadata;
 import org.apache.uima.collection.impl.cpm.utils.CpmLocalizedMessage;
 import org.apache.uima.collection.impl.cpm.vinci.DATACasUtils;
 import org.apache.uima.collection.metadata.CpeConfiguration;
-import org.apache.uima.internal.util.Misc;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.Level;

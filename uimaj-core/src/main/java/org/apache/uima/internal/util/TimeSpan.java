@@ -81,7 +81,6 @@ public class TimeSpan {
    * Create an uninstantiated <code>TimeSpan</code>.
    */
   public TimeSpan() {
-    super();
   }
 
   /**

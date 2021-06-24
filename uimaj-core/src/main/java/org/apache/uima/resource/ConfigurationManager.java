@@ -53,7 +53,7 @@ public interface ConfigurationManager {
    * @throws ResourceConfigurationException
    *           if the configuration settings are invalid
    */
-  public void createContext(String aContextName, ResourceMetaData aResourceMetaData, Settings externalSettings)
+  void createContext(String aContextName, ResourceMetaData aResourceMetaData, Settings externalSettings)
           throws ResourceConfigurationException;
 
   /**
@@ -69,7 +69,7 @@ public interface ConfigurationManager {
    *          the session object used to store configuration parameter overrides made by a
    *          particular client.
    */
-  public void setSession(Session aSession);
+  void setSession(Session aSession);
 
   /**
    * Retrieves the value for a configuration parameter.
@@ -82,7 +82,7 @@ public interface ConfigurationManager {
    *         type of the parameter. If the parameter does not exist,<code>null</code> is
    *         returned.
    */
-  public Object getConfigParameterValue(String aQualifiedName);
+  Object getConfigParameterValue(String aQualifiedName);
 
   /**
    * Retrieves the value for a configuration parameter in a group.
@@ -96,7 +96,7 @@ public interface ConfigurationManager {
    *         type of the parameter. If the parameter does not exist,<code>null</code> is
    *         returned.
    */
-  public Object getConfigParameterValue(String aQualifiedParamName, String aGroupName);
+  Object getConfigParameterValue(String aQualifiedParamName, String aGroupName);
 
   /**
    * Sets the value of a configuration parameter. This only works for a parameter that is not
@@ -109,7 +109,7 @@ public interface ConfigurationManager {
    * @param aValue
    *          the value to assign to the parameter
    */
-  public void setConfigParameterValue(String aQualifiedParamName, Object aValue);
+  void setConfigParameterValue(String aQualifiedParamName, Object aValue);
 
   /**
    * Sets the value of a configuration parameter in a group. Note that there is no guarantee that
@@ -124,7 +124,7 @@ public interface ConfigurationManager {
    *   {@link #setConfigParameterValue(String,Object) setParameterValue(String,Object)}.
    * @param aValue the value to assign to the parameter
    */
-  public void setConfigParameterValue(String aQualifiedParamName, String aGroupName, Object aValue);
+  void setConfigParameterValue(String aQualifiedParamName, String aGroupName, Object aValue);
 
   /**
    * Completes the reconfiguration of parameters within the specified context. Also validates the
@@ -136,7 +136,7 @@ public interface ConfigurationManager {
    * @throws ResourceConfigurationException
    *           if the new configuration is invalid
    */
-  public void reconfigure(String aContextName) throws ResourceConfigurationException;
+  void reconfigure(String aContextName) throws ResourceConfigurationException;
 
   /**
    * Gets the ConfigurationParameterDeclarations for the given context.
@@ -146,7 +146,7 @@ public interface ConfigurationManager {
    * 
    * @return parameter declarations for the context
    */
-  public ConfigurationParameterDeclarations getConfigParameterDeclarations(String aContextName);
+  ConfigurationParameterDeclarations getConfigParameterDeclarations(String aContextName);
 
   /**
    * Gets an object containing the current settings for all configuration parameters within the
@@ -157,6 +157,6 @@ public interface ConfigurationManager {
    * 
    * @return an object containing the current configuration parameter settings
    */
-  public ConfigurationParameterSettings getCurrentConfigParameterSettings(String aContextName);
+  ConfigurationParameterSettings getCurrentConfigParameterSettings(String aContextName);
 
 }

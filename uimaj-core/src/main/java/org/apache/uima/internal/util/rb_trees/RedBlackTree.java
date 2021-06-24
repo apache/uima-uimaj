@@ -67,7 +67,6 @@ public class RedBlackTree<T> implements Iterable<T> {
 
   /** Default constructor, does nothing. */
   public RedBlackTree() {
-    super();
   }
 
   /**

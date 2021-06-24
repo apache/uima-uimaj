@@ -46,7 +46,7 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    * 
    * @return this FeatureStructure's ID, null if none
    */
-  public String getId();
+  String getId();
 
   /**
    * Sets the ID of this FeatureStructure. IDs are optional, so null may be passed to this method. A
@@ -57,14 +57,14 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    *          responsibiltiy to ensure that this ID is unique within the CasData containing this
    *          FeatureStructure.
    */
-  public void setId(String aId);
+  void setId(String aId);
 
   /**
    * Gets the type of this FeatureStructure
    * 
    * @return this FeatureStructure's type, as a string
    */
-  public String getType();
+  String getType();
 
   /**
    * Sets the type of this FeatureStructure
@@ -72,14 +72,14 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    * @param aType
    *          this FeatureStructure's type, as a string
    */
-  public void setType(String aType);
+  void setType(String aType);
 
   /**
    * Gets the names of all features on this FeatureStructure.
    * 
    * @return an array of feature names
    */
-  public String[] getFeatureNames();
+  String[] getFeatureNames();
 
   /**
    * Gets the value of a feature
@@ -89,7 +89,7 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    * 
    * @return value of feature named <code>aName</code>, or null if there is no such feature
    */
-  public FeatureValue getFeatureValue(String aName);
+  FeatureValue getFeatureValue(String aName);
 
   /**
    * Sets the value of a feature
@@ -99,7 +99,7 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    * @param aValue
    *          value of feature
    */
-  public void setFeatureValue(String aName, FeatureValue aValue);
+  void setFeatureValue(String aName, FeatureValue aValue);
 
   /**
    * Gets whether this FeatureStructure should be indexed if the CasData is converted to a CAS
@@ -108,8 +108,7 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    * @return true if this FS should be indexed, false if not
    * @deprecated Use {@link #getIndexed()} instead
    */
-  @Deprecated
-  public boolean isIndexed();
+  @Deprecated boolean isIndexed();
 
   /**
    * Sets whether this FeatureStructure should be indexed if the CasData is converted to a CAS
@@ -119,8 +118,7 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    *          true if this FS should be indexed, false if not
    * @deprecated Use {@link #setIndexed(int[])} instead
    */
-  @Deprecated
-  public void setIndexed(boolean aIndexed);
+  @Deprecated void setIndexed(boolean aIndexed);
 
   /**
    * Gets the index repositories that this FeatureStrucutre should be indexed in if the CasData is
@@ -129,7 +127,7 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    * @return an array containing the numbers of the index repsositories that should contain this FS.
    *         Returns an empty array if this FS is not indexed.
    */
-  public int[] getIndexed();
+  int[] getIndexed();
 
   /**
    * Sets the index repositories that this FeatureStrucutre should be indexed in if the CasData is
@@ -139,5 +137,5 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    *          an array containing the numbers of the index repsositories that should contain this
    *          FS. Passing null is equivalent to passing an empty array.
    */
-  public void setIndexed(int[] aIndexed);
+  void setIndexed(int[] aIndexed);
 }

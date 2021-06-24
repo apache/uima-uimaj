@@ -36,7 +36,7 @@ public interface CasProcessorErrorHandling extends MetaDataObject {
    * @param aCasPRestarts -
    *          {@link org.apache.uima.collection.metadata.CasProcessorMaxRestarts} instance
    */
-  public void setMaxConsecutiveRestarts(CasProcessorMaxRestarts aCasPRestarts);
+  void setMaxConsecutiveRestarts(CasProcessorMaxRestarts aCasPRestarts);
 
   /**
    * Returns max number of restarts allowed for a CasProcessor and an action to take by the CPE in
@@ -44,7 +44,7 @@ public interface CasProcessorErrorHandling extends MetaDataObject {
    * 
    * @return {@link org.apache.uima.collection.metadata.CasProcessorMaxRestarts} instance
    */
-  public CasProcessorMaxRestarts getMaxConsecutiveRestarts();
+  CasProcessorMaxRestarts getMaxConsecutiveRestarts();
 
   /**
    * Sets max number of errors allowed for a CasProcessor and an action to take by the CPE in case
@@ -53,7 +53,7 @@ public interface CasProcessorErrorHandling extends MetaDataObject {
    * @param aCasPErrorThreshold -
    *          {@link org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold}
    */
-  public void setErrorRateThreshold(CasProcessorErrorRateThreshold aCasPErrorThreshold);
+  void setErrorRateThreshold(CasProcessorErrorRateThreshold aCasPErrorThreshold);
 
   /**
    * Returns max number of restarts allowed for a CasProcessor and an action to take by the CPE in
@@ -61,7 +61,7 @@ public interface CasProcessorErrorHandling extends MetaDataObject {
    * 
    * @return {@link org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold} instance
    */
-  public CasProcessorErrorRateThreshold getErrorRateThreshold();
+  CasProcessorErrorRateThreshold getErrorRateThreshold();
 
   /**
    * Sets the timeout the CPE will wait for a response from CasProcessor.
@@ -69,12 +69,12 @@ public interface CasProcessorErrorHandling extends MetaDataObject {
    * @param aTimeout
    *          {@link org.apache.uima.collection.metadata.CasProcessorTimeout}
    */
-  public void setTimeout(CasProcessorTimeout aTimeout);
+  void setTimeout(CasProcessorTimeout aTimeout);
 
   /**
    * Returns the timeout the CPE will wait for a response from CasProcessor.
    * 
    * @return {@link org.apache.uima.collection.metadata.CasProcessorTimeout} instance
    */
-  public CasProcessorTimeout getTimeout();
+  CasProcessorTimeout getTimeout();
 }

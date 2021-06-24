@@ -84,15 +84,15 @@ import org.apache.uima.cas.impl.LowLevelTypeSystem;
 @Deprecated
 public interface FeatureValuePath {
 
-  public Object evaluate(int currentFS, LowLevelCAS cas);
+  Object evaluate(int currentFS, LowLevelCAS cas);
 
-  public Float evaluateAsFloat(int currentFS, LowLevelCAS cas);
+  Float evaluateAsFloat(int currentFS, LowLevelCAS cas);
 
-  public Float[] evaluateAsFloatArray(int currentFS, LowLevelCAS cas);
+  Float[] evaluateAsFloatArray(int currentFS, LowLevelCAS cas);
 
-  public Integer evaluateAsInt(int currentFS, LowLevelCAS cas);
+  Integer evaluateAsInt(int currentFS, LowLevelCAS cas);
 
-  public Integer[] evaluateAsIntArray(int currentFS, LowLevelCAS cas);
+  Integer[] evaluateAsIntArray(int currentFS, LowLevelCAS cas);
 
   /**
    * Evaluates each snippet of the feature path. Returns a String representation of the leaf value
@@ -104,9 +104,9 @@ public interface FeatureValuePath {
    * @param cas -
    * @return A string representation of the leaf value.
    */
-  public String evaluateAsString(int currentFS, LowLevelCAS cas);
+  String evaluateAsString(int currentFS, LowLevelCAS cas);
 
-  public String[] evaluateAsStringArray(int currentFS, LowLevelCAS cas);
+  String[] evaluateAsStringArray(int currentFS, LowLevelCAS cas);
 
   /**
    * Returns the type for which the last feature in the feature path is defined. Assumes that
@@ -122,7 +122,7 @@ public interface FeatureValuePath {
    * 
    * @return int the type for which the last feature in the feature path is defined.
    */
-  public int getFSType();
+  int getFSType();
 
   /**
    * Returns the type that this feature path will evaluate to. Can be used to select the correct
@@ -138,8 +138,8 @@ public interface FeatureValuePath {
    *         <li>CAS.TYPE_NAME_FLOAT_ARRAY
    *         </ul>
    */
-  public String getValueType();
+  String getValueType();
 
-  public void typeSystemInit(int fsType, LowLevelTypeSystem ts) throws CASRuntimeException;
+  void typeSystemInit(int fsType, LowLevelTypeSystem ts) throws CASRuntimeException;
 
 }

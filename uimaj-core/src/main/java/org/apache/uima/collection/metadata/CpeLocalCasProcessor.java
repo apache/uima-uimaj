@@ -36,7 +36,7 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
    * @return true if java program, false otherwise
    * @throws CpeDescriptorException -
    */
-  public boolean isJava() throws CpeDescriptorException;
+  boolean isJava() throws CpeDescriptorException;
 
   /**
    * Defines if this Cas Processor is a java program
@@ -45,7 +45,7 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
    *          true if java, false otherwise
    * @throws CpeDescriptorException -
    */
-  public void setIsJava(boolean aJava) throws CpeDescriptorException;
+  void setIsJava(boolean aJava) throws CpeDescriptorException;
 
   /**
    * Defines the name of a program to run when launching this Cas Processor. A program can be a java
@@ -56,7 +56,7 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
    * 
    * @throws CpeDescriptorException tbd
    */
-  public void setExecutable(String aCasProcessorExecutable) throws CpeDescriptorException;
+  void setExecutable(String aCasProcessorExecutable) throws CpeDescriptorException;
 
   /**
    * Returns a name of a program to use when launching this CasProcessor
@@ -64,15 +64,15 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
    * @return the name of the program to execute
    * @throws CpeDescriptorException tbd
    */
-  public String getExecutable() throws CpeDescriptorException;
+  String getExecutable() throws CpeDescriptorException;
 
-  public void addExecEnv(String aEnvParamName, String aEnvParamValue) throws CpeDescriptorException;
+  void addExecEnv(String aEnvParamName, String aEnvParamValue) throws CpeDescriptorException;
 
-  public void addExecArg(String aArgValue) throws CpeDescriptorException;
+  void addExecArg(String aArgValue) throws CpeDescriptorException;
 
-  public void setRunInSeperateProcess(CasProcessorRunInSeperateProcess aSepProcess)
+  void setRunInSeperateProcess(CasProcessorRunInSeperateProcess aSepProcess)
           throws CpeDescriptorException;
 
-  public CasProcessorRunInSeperateProcess getRunInSeperateProcess() throws CpeDescriptorException;
+  CasProcessorRunInSeperateProcess getRunInSeperateProcess() throws CpeDescriptorException;
 
 }

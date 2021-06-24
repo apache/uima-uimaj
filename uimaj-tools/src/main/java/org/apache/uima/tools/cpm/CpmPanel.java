@@ -296,7 +296,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
    * Instantiates a new cpm panel.
    */
   public CpmPanel() {
-    super();
+    
 
     // The following is VERY flaky:
     // Don't 'try' this at home:
@@ -2159,7 +2159,6 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
      * Instantiates a new resetable meta data panel.
      */
     public ResetableMetaDataPanel() {
-      super();
     }
 
     /**

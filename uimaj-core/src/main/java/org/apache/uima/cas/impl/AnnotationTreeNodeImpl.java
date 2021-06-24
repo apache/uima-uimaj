@@ -37,7 +37,6 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
   private int pos;
 
   AnnotationTreeNodeImpl() {
-    super();
     this.dtrs = new ArrayList<>();
   }
 

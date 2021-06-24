@@ -95,7 +95,7 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
    */
   Comparator<TOP> getComparator(); 
   
-  static final Comparator<TOP> FS_ID_COMPARATOR = 
+  Comparator<TOP> FS_ID_COMPARATOR = 
       (TOP fs1, TOP fs2) -> Integer.compare(fs1._id, fs2._id); 
   
   default void flush() {   // probably not needed, but left for backwards compatibility  4/2015
@@ -214,7 +214,7 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
   /**
    * Internal use constants
    */
-  static final boolean IS_ORDERED = false;
-  static final boolean IS_TYPE_ORDER = false;
+  boolean IS_ORDERED = false;
+  boolean IS_TYPE_ORDER = false;
 
 }

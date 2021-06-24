@@ -89,58 +89,58 @@ public interface CAS extends AbstractCas {
   /**
    * UIMA CAS name space.
    */
-  static final String NAME_SPACE_UIMA_CAS = "uima" + TypeSystem.NAMESPACE_SEPARATOR + "cas";
+  String NAME_SPACE_UIMA_CAS = "uima" + TypeSystem.NAMESPACE_SEPARATOR + "cas";
 
   /**
    * UIMA CAS name space prefix to prepend to type names (adds an extra period to the name space
    * proper.
    */
-  static final String UIMA_CAS_PREFIX = NAME_SPACE_UIMA_CAS + TypeSystem.NAMESPACE_SEPARATOR;
+  String UIMA_CAS_PREFIX = NAME_SPACE_UIMA_CAS + TypeSystem.NAMESPACE_SEPARATOR;
 
   /**
    * Top type.
    */
-  static final String TYPE_NAME_TOP = UIMA_CAS_PREFIX + "TOP";
+  String TYPE_NAME_TOP = UIMA_CAS_PREFIX + "TOP";
 
   /**
    * Integer type.
    */
-  static final String TYPE_NAME_INTEGER = UIMA_CAS_PREFIX + "Integer";
+  String TYPE_NAME_INTEGER = UIMA_CAS_PREFIX + "Integer";
 
   /**
    * Float type.
    */
-  static final String TYPE_NAME_FLOAT = UIMA_CAS_PREFIX + "Float";
+  String TYPE_NAME_FLOAT = UIMA_CAS_PREFIX + "Float";
 
   /**
    * String type.
    */
-  static final String TYPE_NAME_STRING = UIMA_CAS_PREFIX + "String";
+  String TYPE_NAME_STRING = UIMA_CAS_PREFIX + "String";
 
   /**
    * Boolean type.
    */
-  static final String TYPE_NAME_BOOLEAN = UIMA_CAS_PREFIX + "Boolean";
+  String TYPE_NAME_BOOLEAN = UIMA_CAS_PREFIX + "Boolean";
 
   /**
    * Byte type.
    */
-  static final String TYPE_NAME_BYTE = UIMA_CAS_PREFIX + "Byte";
+  String TYPE_NAME_BYTE = UIMA_CAS_PREFIX + "Byte";
 
   /**
    * Short type.
    */
-  static final String TYPE_NAME_SHORT = UIMA_CAS_PREFIX + "Short";
+  String TYPE_NAME_SHORT = UIMA_CAS_PREFIX + "Short";
 
   /**
    * Long type.
    */
-  static final String TYPE_NAME_LONG = UIMA_CAS_PREFIX + "Long";
+  String TYPE_NAME_LONG = UIMA_CAS_PREFIX + "Long";
 
   /**
    * Double type.
    */
-  static final String TYPE_NAME_DOUBLE = UIMA_CAS_PREFIX + "Double";
+  String TYPE_NAME_DOUBLE = UIMA_CAS_PREFIX + "Double";
 
 //  /**
 //   * Java Object type
@@ -160,52 +160,52 @@ public interface CAS extends AbstractCas {
   /**
    * ArrayBase type.
    */
-  static final String TYPE_NAME_ARRAY_BASE = UIMA_CAS_PREFIX + "ArrayBase";
+  String TYPE_NAME_ARRAY_BASE = UIMA_CAS_PREFIX + "ArrayBase";
 
   /**
    * Feature structure array type.
    */
-  static final String TYPE_NAME_FS_ARRAY = UIMA_CAS_PREFIX + "FSArray";
+  String TYPE_NAME_FS_ARRAY = UIMA_CAS_PREFIX + "FSArray";
 
   /**
    * Integer array type.
    */
-  static final String TYPE_NAME_INTEGER_ARRAY = UIMA_CAS_PREFIX + "IntegerArray";
+  String TYPE_NAME_INTEGER_ARRAY = UIMA_CAS_PREFIX + "IntegerArray";
 
   /**
    * Float array type.
    */
-  static final String TYPE_NAME_FLOAT_ARRAY = UIMA_CAS_PREFIX + "FloatArray";
+  String TYPE_NAME_FLOAT_ARRAY = UIMA_CAS_PREFIX + "FloatArray";
 
   /**
    * String array type.
    */
-  static final String TYPE_NAME_STRING_ARRAY = UIMA_CAS_PREFIX + "StringArray";
+  String TYPE_NAME_STRING_ARRAY = UIMA_CAS_PREFIX + "StringArray";
 
   /**
    * Boolean array type.
    */
-  static final String TYPE_NAME_BOOLEAN_ARRAY = UIMA_CAS_PREFIX + "BooleanArray";
+  String TYPE_NAME_BOOLEAN_ARRAY = UIMA_CAS_PREFIX + "BooleanArray";
 
   /**
    * Byte array type.
    */
-  static final String TYPE_NAME_BYTE_ARRAY = UIMA_CAS_PREFIX + "ByteArray";
+  String TYPE_NAME_BYTE_ARRAY = UIMA_CAS_PREFIX + "ByteArray";
 
   /**
    * Short array type.
    */
-  static final String TYPE_NAME_SHORT_ARRAY = UIMA_CAS_PREFIX + "ShortArray";
+  String TYPE_NAME_SHORT_ARRAY = UIMA_CAS_PREFIX + "ShortArray";
 
   /**
    * Long array type.
    */
-  static final String TYPE_NAME_LONG_ARRAY = UIMA_CAS_PREFIX + "LongArray";
+  String TYPE_NAME_LONG_ARRAY = UIMA_CAS_PREFIX + "LongArray";
 
   /**
    * Double array type.
    */
-  static final String TYPE_NAME_DOUBLE_ARRAY = UIMA_CAS_PREFIX + "DoubleArray";
+  String TYPE_NAME_DOUBLE_ARRAY = UIMA_CAS_PREFIX + "DoubleArray";
 
 //  /**
 //   * FSHashSet type
@@ -214,12 +214,12 @@ public interface CAS extends AbstractCas {
   /**
    * Sofa type.
    */
-  static final String TYPE_NAME_SOFA = UIMA_CAS_PREFIX + "Sofa";
+  String TYPE_NAME_SOFA = UIMA_CAS_PREFIX + "Sofa";
 
   /**
    * Name of annotation base type.
    */
-  static final String TYPE_NAME_ANNOTATION_BASE = UIMA_CAS_PREFIX + "AnnotationBase";
+  String TYPE_NAME_ANNOTATION_BASE = UIMA_CAS_PREFIX + "AnnotationBase";
 
   // /////////////////////////////////////////////////////////////////////////
   // Sofa features.
@@ -227,78 +227,78 @@ public interface CAS extends AbstractCas {
   /**
    * Base name of Sofa Number feature.
    */
-  static final String FEATURE_BASE_NAME_SOFANUM = "sofaNum";
+  String FEATURE_BASE_NAME_SOFANUM = "sofaNum";
 
   /**
    * Base name of Sofa ID feature.
    */
-  static final String FEATURE_BASE_NAME_SOFAID = "sofaID";
+  String FEATURE_BASE_NAME_SOFAID = "sofaID";
 
   /**
    * Base name of Sofa mime type feature.
    */
-  static final String FEATURE_BASE_NAME_SOFAMIME = "mimeType";
+  String FEATURE_BASE_NAME_SOFAMIME = "mimeType";
 
   /**
    * Base name of Sofa URI feature.
    */
-  static final String FEATURE_BASE_NAME_SOFAURI = "sofaURI";
+  String FEATURE_BASE_NAME_SOFAURI = "sofaURI";
 
   /**
    * Base name of Sofa string data feature.
    */
-  static final String FEATURE_BASE_NAME_SOFASTRING = "sofaString";
+  String FEATURE_BASE_NAME_SOFASTRING = "sofaString";
 
   /**
    * Base name of Sofa array fs data feature.
    */
-  static final String FEATURE_BASE_NAME_SOFAARRAY = "sofaArray";
+  String FEATURE_BASE_NAME_SOFAARRAY = "sofaArray";
 
   /**
    * Base name of FSArrayList fsArray feature.
    * Base name of FSHashSet   fsArray feature.
    */
-  static final String FEATURE_BASE_NAME_FS_ARRAY = "fsArray";
+  String FEATURE_BASE_NAME_FS_ARRAY = "fsArray";
 
   /**
    * Base name of FSArrayList fsArray feature.
    */
-  static final String FEATURE_BASE_NAME_INT_ARRAY = "intArray";
+  String FEATURE_BASE_NAME_INT_ARRAY = "intArray";
  
   /**
    * Qualified name of Sofa number feature.
    */
-  static final String FEATURE_FULL_NAME_SOFANUM = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
+  String FEATURE_FULL_NAME_SOFANUM = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
           + FEATURE_BASE_NAME_SOFANUM;
 
   /**
    * Qualified name of Sofa id feature.
    */
-  static final String FEATURE_FULL_NAME_SOFAID = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
+  String FEATURE_FULL_NAME_SOFAID = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
           + FEATURE_BASE_NAME_SOFAID;
 
   /**
    * Qualified name of Sofa mime type feature.
    */
-  static final String FEATURE_FULL_NAME_SOFAMIME = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
+  String FEATURE_FULL_NAME_SOFAMIME = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
           + FEATURE_BASE_NAME_SOFAMIME;
 
   /**
    * Qualified name of Sofa URI feature.
    */
-  static final String FEATURE_FULL_NAME_SOFAURI = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
+  String FEATURE_FULL_NAME_SOFAURI = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
           + FEATURE_BASE_NAME_SOFAURI;
 
   /**
    * Qualified name of Sofa string data feature.
    */
-  static final String FEATURE_FULL_NAME_SOFASTRING = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
+  String FEATURE_FULL_NAME_SOFASTRING = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
           + FEATURE_BASE_NAME_SOFASTRING;
 
   /**
    * Qualified name of Sofa array fs data feature.
    */
-  static final String FEATURE_FULL_NAME_SOFAARRAY = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
+  String FEATURE_FULL_NAME_SOFAARRAY = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
           + FEATURE_BASE_NAME_SOFAARRAY;
 
   // ////////////////////////////////////////////////////////////////////////
@@ -307,7 +307,7 @@ public interface CAS extends AbstractCas {
   /**
    * Sofa Index name.
    */
-  static final String SOFA_INDEX_NAME = "SofaIndex";
+  String SOFA_INDEX_NAME = "SofaIndex";
 
   /**
    * Sofa name for the default text sofa.
@@ -315,209 +315,208 @@ public interface CAS extends AbstractCas {
    * @deprecated As of v2.0, this is replaced by {@link #NAME_DEFAULT_SOFA}, and the value has
    *             changed. In general, user code should not need to refer to this name.
    */
-  @Deprecated
-  static final String NAME_DEFAULT_TEXT_SOFA = "_InitialView";
+  @Deprecated String NAME_DEFAULT_TEXT_SOFA = "_InitialView";
 
   /**
    * Sofa name for the initial view's sofa.
    */
-  static final String NAME_DEFAULT_SOFA = "_InitialView";
+  String NAME_DEFAULT_SOFA = "_InitialView";
 
   /**
    * Abstract list base type.
    */
-  static final String TYPE_NAME_LIST_BASE = UIMA_CAS_PREFIX + "ListBase";
+  String TYPE_NAME_LIST_BASE = UIMA_CAS_PREFIX + "ListBase";
 
   /**
    * Feature structure list type.
    */
-  static final String TYPE_NAME_FS_LIST = UIMA_CAS_PREFIX + "FSList";
+  String TYPE_NAME_FS_LIST = UIMA_CAS_PREFIX + "FSList";
 
   /**
    * Non-empty feature structure list type.
    */
-  static final String TYPE_NAME_NON_EMPTY_FS_LIST = UIMA_CAS_PREFIX + "NonEmptyFSList";
+  String TYPE_NAME_NON_EMPTY_FS_LIST = UIMA_CAS_PREFIX + "NonEmptyFSList";
 
   /**
    * Empty feature structure list type.
    */
-  static final String TYPE_NAME_EMPTY_FS_LIST = UIMA_CAS_PREFIX + "EmptyFSList";
+  String TYPE_NAME_EMPTY_FS_LIST = UIMA_CAS_PREFIX + "EmptyFSList";
 
   /**
    * Integer list type.
    */
-  static final String TYPE_NAME_INTEGER_LIST = UIMA_CAS_PREFIX + "IntegerList";
+  String TYPE_NAME_INTEGER_LIST = UIMA_CAS_PREFIX + "IntegerList";
 
   /**
    * Non-empty integer list type.
    */
-  static final String TYPE_NAME_NON_EMPTY_INTEGER_LIST = UIMA_CAS_PREFIX + "NonEmptyIntegerList";
+  String TYPE_NAME_NON_EMPTY_INTEGER_LIST = UIMA_CAS_PREFIX + "NonEmptyIntegerList";
 
   /**
    * Empty integer list type.
    */
-  static final String TYPE_NAME_EMPTY_INTEGER_LIST = UIMA_CAS_PREFIX + "EmptyIntegerList";
+  String TYPE_NAME_EMPTY_INTEGER_LIST = UIMA_CAS_PREFIX + "EmptyIntegerList";
 
   /**
    * Float list type.
    */
-  static final String TYPE_NAME_FLOAT_LIST = UIMA_CAS_PREFIX + "FloatList";
+  String TYPE_NAME_FLOAT_LIST = UIMA_CAS_PREFIX + "FloatList";
 
   /**
    * Non-empty float list type.
    */
-  static final String TYPE_NAME_NON_EMPTY_FLOAT_LIST = UIMA_CAS_PREFIX + "NonEmptyFloatList";
+  String TYPE_NAME_NON_EMPTY_FLOAT_LIST = UIMA_CAS_PREFIX + "NonEmptyFloatList";
 
   /**
    * Empty float type.
    */
-  static final String TYPE_NAME_EMPTY_FLOAT_LIST = UIMA_CAS_PREFIX + "EmptyFloatList";
+  String TYPE_NAME_EMPTY_FLOAT_LIST = UIMA_CAS_PREFIX + "EmptyFloatList";
 
   /**
    * String list type.
    */
-  static final String TYPE_NAME_STRING_LIST = UIMA_CAS_PREFIX + "StringList";
+  String TYPE_NAME_STRING_LIST = UIMA_CAS_PREFIX + "StringList";
 
   /**
    * Non-empty string list type.
    */
-  static final String TYPE_NAME_NON_EMPTY_STRING_LIST = UIMA_CAS_PREFIX + "NonEmptyStringList";
+  String TYPE_NAME_NON_EMPTY_STRING_LIST = UIMA_CAS_PREFIX + "NonEmptyStringList";
 
   /**
    * Empty string list type.
    */
-  static final String TYPE_NAME_EMPTY_STRING_LIST = UIMA_CAS_PREFIX + "EmptyStringList";
+  String TYPE_NAME_EMPTY_STRING_LIST = UIMA_CAS_PREFIX + "EmptyStringList";
 
   /**
    * Base name of list head feature.
    */
-  static final String FEATURE_BASE_NAME_HEAD = "head";
+  String FEATURE_BASE_NAME_HEAD = "head";
 
   /**
    * Base name of list tail feature.
    */
-  static final String FEATURE_BASE_NAME_TAIL = "tail";
+  String FEATURE_BASE_NAME_TAIL = "tail";
 
   /**
    * Qualified name of fs list head feature.
    */
-  static final String FEATURE_FULL_NAME_FS_LIST_HEAD = TYPE_NAME_NON_EMPTY_FS_LIST
+  String FEATURE_FULL_NAME_FS_LIST_HEAD = TYPE_NAME_NON_EMPTY_FS_LIST
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
 
   /**
    * Qualified name of integer list head feature.
    */
-  static final String FEATURE_FULL_NAME_INTEGER_LIST_HEAD = TYPE_NAME_NON_EMPTY_INTEGER_LIST
+  String FEATURE_FULL_NAME_INTEGER_LIST_HEAD = TYPE_NAME_NON_EMPTY_INTEGER_LIST
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
 
   /**
    * Qualified name of float list head feature.
    */
-  static final String FEATURE_FULL_NAME_FLOAT_LIST_HEAD = TYPE_NAME_NON_EMPTY_FLOAT_LIST
+  String FEATURE_FULL_NAME_FLOAT_LIST_HEAD = TYPE_NAME_NON_EMPTY_FLOAT_LIST
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
 
   /**
    * Qualified name of string list head feature.
    */
-  static final String FEATURE_FULL_NAME_STRING_LIST_HEAD = TYPE_NAME_NON_EMPTY_STRING_LIST
+  String FEATURE_FULL_NAME_STRING_LIST_HEAD = TYPE_NAME_NON_EMPTY_STRING_LIST
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
 
   /**
    * Qualified name of fs list tail feature.
    */
-  static final String FEATURE_FULL_NAME_FS_LIST_TAIL = TYPE_NAME_NON_EMPTY_FS_LIST
+  String FEATURE_FULL_NAME_FS_LIST_TAIL = TYPE_NAME_NON_EMPTY_FS_LIST
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
 
   /**
    * Qualified name of integer list tail feature.
    */
-  static final String FEATURE_FULL_NAME_INTEGER_LIST_TAIL = TYPE_NAME_NON_EMPTY_INTEGER_LIST
+  String FEATURE_FULL_NAME_INTEGER_LIST_TAIL = TYPE_NAME_NON_EMPTY_INTEGER_LIST
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
 
   /**
    * Qualified name of float list tail feature.
    */
-  static final String FEATURE_FULL_NAME_FLOAT_LIST_TAIL = TYPE_NAME_NON_EMPTY_FLOAT_LIST
+  String FEATURE_FULL_NAME_FLOAT_LIST_TAIL = TYPE_NAME_NON_EMPTY_FLOAT_LIST
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
 
   /**
    * Qualified name of string list tail feature.
    */
-  static final String FEATURE_FULL_NAME_STRING_LIST_TAIL = TYPE_NAME_NON_EMPTY_STRING_LIST
+  String FEATURE_FULL_NAME_STRING_LIST_TAIL = TYPE_NAME_NON_EMPTY_STRING_LIST
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
 
   /**
    * Name of Text CAS name space.
    */
-  static final String NAME_SPACE_UIMA_TCAS = "uima" + TypeSystem.NAMESPACE_SEPARATOR + "tcas";
+  String NAME_SPACE_UIMA_TCAS = "uima" + TypeSystem.NAMESPACE_SEPARATOR + "tcas";
 
   /**
    * UIMA TCAS name space prefix to prepend to type names (adds an extra period to the name space
    * proper.
    */
-  static final String UIMA_TCAS_PREFIX = NAME_SPACE_UIMA_TCAS + TypeSystem.NAMESPACE_SEPARATOR;
+  String UIMA_TCAS_PREFIX = NAME_SPACE_UIMA_TCAS + TypeSystem.NAMESPACE_SEPARATOR;
 
   /**
    * Name of annotation type.
    */
-  static final String TYPE_NAME_ANNOTATION = UIMA_TCAS_PREFIX + "Annotation";
+  String TYPE_NAME_ANNOTATION = UIMA_TCAS_PREFIX + "Annotation";
 
   /**
    * Name of document annotation type.
    */
-  static final String TYPE_NAME_DOCUMENT_ANNOTATION = UIMA_TCAS_PREFIX + "DocumentAnnotation";
+  String TYPE_NAME_DOCUMENT_ANNOTATION = UIMA_TCAS_PREFIX + "DocumentAnnotation";
 
    
   /**
    * Sofa ID feature that is the handle to a text Sofa.
    */
-  static final String FEATURE_BASE_NAME_SOFA = "sofa";
+  String FEATURE_BASE_NAME_SOFA = "sofa";
 
   /**
    * Base name of annotation begin feature.
    */
-  static final String FEATURE_BASE_NAME_BEGIN = "begin";
+  String FEATURE_BASE_NAME_BEGIN = "begin";
 
   /**
    * Base name of annotation end feature.
    */
-  static final String FEATURE_BASE_NAME_END = "end";
+  String FEATURE_BASE_NAME_END = "end";
 
   /**
    * Base name of document language feature.
    */
-  static final String FEATURE_BASE_NAME_LANGUAGE = "language";
+  String FEATURE_BASE_NAME_LANGUAGE = "language";
 
   /**
    * Fully qualified name of annotation begin feature.
    */
-  static final String FEATURE_FULL_NAME_BEGIN = TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR
+  String FEATURE_FULL_NAME_BEGIN = TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR
           + FEATURE_BASE_NAME_BEGIN;
 
   /**
    * Fully qualified name of annotation sofa feature.
    */
-  static final String FEATURE_FULL_NAME_SOFA = TYPE_NAME_ANNOTATION_BASE + TypeSystem.FEATURE_SEPARATOR
+  String FEATURE_FULL_NAME_SOFA = TYPE_NAME_ANNOTATION_BASE + TypeSystem.FEATURE_SEPARATOR
           + FEATURE_BASE_NAME_SOFA;
 
   /**
    * Fully qualified name of annotation end feature.
    */
-  static final String FEATURE_FULL_NAME_END = TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR
+  String FEATURE_FULL_NAME_END = TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR
           + FEATURE_BASE_NAME_END;
 
   /**
    * Fully qualified name of document language feature.
    */
-  static final String FEATURE_FULL_NAME_LANGUAGE = TYPE_NAME_DOCUMENT_ANNOTATION
+  String FEATURE_FULL_NAME_LANGUAGE = TYPE_NAME_DOCUMENT_ANNOTATION
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_LANGUAGE;
 
   /**
    * Name of the built-in index on annotations.
    */
-  static final String STD_ANNOTATION_INDEX = "AnnotationIndex";
+  String STD_ANNOTATION_INDEX = "AnnotationIndex";
 
-  static final String DEFAULT_LANGUAGE_NAME = "x-unspecified";
+  String DEFAULT_LANGUAGE_NAME = "x-unspecified";
 
   /**
    * Create a new FeatureStructure.

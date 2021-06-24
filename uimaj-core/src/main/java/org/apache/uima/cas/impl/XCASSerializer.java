@@ -135,7 +135,6 @@ public class XCASSerializer {
     // We write to a SAXDocStack, a simplified interface to a
     // ContentHandler.
     private XCASDocSerializer(ContentHandler ch, CASImpl cas) {
-      super();
       this.ch = ch;
       this.cas = cas;
       this.numDuplicates = 0;
@@ -798,7 +797,6 @@ public class XCASSerializer {
   private String docTextFeature = DEFAULT_DOC_TEXT_FEAT;
 
   public XCASSerializer(TypeSystem ts, UimaContext uimaContext) {
-    super();
     // System.out.println("Creating serializer for type system.");
     this.ts = (TypeSystemImpl) ts;
     // Create feature name cache.

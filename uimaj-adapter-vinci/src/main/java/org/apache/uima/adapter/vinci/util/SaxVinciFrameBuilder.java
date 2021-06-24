@@ -21,12 +21,11 @@ package org.apache.uima.adapter.vinci.util;
 
 import java.util.Stack;
 
+import org.apache.vinci.transport.document.AFrame;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import org.apache.vinci.transport.document.AFrame;
 
 // TODO: Auto-generated Javadoc
 /**

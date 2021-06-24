@@ -33,14 +33,14 @@ public interface CasProcessorMaxRestarts extends MetaDataObject {
    * @param aRestartCount -
    *          max restart count
    */
-  public void setRestartCount(int aRestartCount);
+  void setRestartCount(int aRestartCount);
 
   /**
    * Returns max restarts threshold fro CasProcessor
    * 
    * @return - restart count
    */
-  public int getRestartCount();
+  int getRestartCount();
 
   /**
    * Sets a strategy to apply by the CPE when max restart count is exceeded. The three supported
@@ -53,7 +53,7 @@ public interface CasProcessorMaxRestarts extends MetaDataObject {
    * @param aAction -
    *          action to take
    */
-  public void setAction(String aAction);
+  void setAction(String aAction);
 
   /**
    * Returns a strategy to apply by the CPE when max restart count is exceeded. The three supported
@@ -65,17 +65,17 @@ public interface CasProcessorMaxRestarts extends MetaDataObject {
    * </ul>
    * @return - action as String
    */
-  public String getAction();
+  String getAction();
 
   /**
    * 
    * @return the wait time between successive retries
    */
-  public int getWaitTimeBetweenRetries();
+  int getWaitTimeBetweenRetries();
 
   /**
    * @param i time to wait between successive retries
    */
-  public void setWaitTimeBetweenRetries(int i);
+  void setWaitTimeBetweenRetries(int i);
 
 }

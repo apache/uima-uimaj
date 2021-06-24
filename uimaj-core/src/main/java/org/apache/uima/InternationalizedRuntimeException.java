@@ -105,7 +105,6 @@ public class InternationalizedRuntimeException extends RuntimeException {
    */
   public InternationalizedRuntimeException(String aResourceBundleName, String aMessageKey,
           Object[] aArguments, Throwable aCause) {
-    super();
     c = new I18nx_impl(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

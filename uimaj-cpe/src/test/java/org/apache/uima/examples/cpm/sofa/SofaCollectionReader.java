@@ -26,7 +26,6 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
-import org.apache.uima.impl.SofaID_impl;
 import org.apache.uima.util.Progress;
 
 /*

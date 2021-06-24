@@ -37,12 +37,12 @@ public interface LowLevelTypeSystem {
   /**
    * Type code that is returned on unknown type names.
    */
-  static final int UNKNOWN_TYPE_CODE = 0;
+  int UNKNOWN_TYPE_CODE = 0;
 
   /**
    * Feature code that is returned on unknown feature names.
    */
-  static final int UNKNOWN_FEATURE_CODE = 0;
+  int UNKNOWN_FEATURE_CODE = 0;
 
   /**
    * Get the type code for a given type name.

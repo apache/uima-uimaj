@@ -23,11 +23,10 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.vinci.transport.XTalkTransporter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
-import org.apache.vinci.transport.XTalkTransporter;
 
 /**
  * Class for converting XTalk streams into SAX events.

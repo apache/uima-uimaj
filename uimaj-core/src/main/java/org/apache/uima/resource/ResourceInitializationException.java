@@ -492,7 +492,6 @@ public class ResourceInitializationException extends UIMAException {
    * Creates a new exception with a null message.
    */
   public ResourceInitializationException() {
-    super();
   }
 
   /**

@@ -24,6 +24,6 @@ package org.apache.uima.tutorial.ex6;
  * 
  */
 public interface StringMapResource {
-  public String get(String aKey);
+  String get(String aKey);
 
 }

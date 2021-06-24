@@ -52,7 +52,6 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
    private File testBaseDir;
 
    public SequencerTestAnnotator() {
-      super();
       this.testBaseDir = JUnitExtension.getFile("SequencerTest");
    }
 

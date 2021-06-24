@@ -54,7 +54,7 @@ public interface XMLizable {
    *           if an I/O failure occurs
    * @throws SAXException passthru
    */
-  public void toXML(Writer aWriter) throws SAXException, IOException;
+  void toXML(Writer aWriter) throws SAXException, IOException;
 
   /**
    * Writes this object's XML representation as a string in UTF-8 encoding.
@@ -66,7 +66,7 @@ public interface XMLizable {
    *           if an I/O failure occurs
    * @throws SAXException pass thru
    */
-  public void toXML(OutputStream aOutputStream) throws SAXException, IOException;
+  void toXML(OutputStream aOutputStream) throws SAXException, IOException;
 
   /**
    * Writes this object's XML representation by making calls on a SAX {@link ContentHandler}. This
@@ -79,7 +79,7 @@ public interface XMLizable {
    * 
    * @throws SAXException pass thru
    */
-  public void toXML(ContentHandler aContentHandler) throws SAXException;
+  void toXML(ContentHandler aContentHandler) throws SAXException;
 
   /**
    * Writes this object's XML representation by making calls on a SAX {@link ContentHandler}.
@@ -93,7 +93,7 @@ public interface XMLizable {
    * 
    * @throws SAXException pass thru
    */
-  public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
+  void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException;
 
   /**
@@ -109,7 +109,7 @@ public interface XMLizable {
    * @throws InvalidXMLException
    *           if the input XML element does not specify a valid object
    */
-  public void buildFromXMLElement(Element aElement, XMLParser aParser) throws InvalidXMLException;
+  void buildFromXMLElement(Element aElement, XMLParser aParser) throws InvalidXMLException;
 
   /**
    * Initializes this object from its XML DOM representation. This method is typically called from
@@ -126,7 +126,7 @@ public interface XMLizable {
    * @throws InvalidXMLException
    *           if the input XML element does not specify a valid object
    */
-  public void buildFromXMLElement(Element aElement, XMLParser aParser,
+  void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException;
   
 }

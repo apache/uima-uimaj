@@ -37,17 +37,17 @@ public class AnnotationPredicateAssert {
   }
   
   @FunctionalInterface
-  public static interface RelativePositionPredicate {
+  public interface RelativePositionPredicate {
     boolean apply(int beginA, int endA, int beginB, int endB);
   }
 
   @FunctionalInterface
-  public static interface RelativeAnnotationPositionPredicate {
+  public interface RelativeAnnotationPositionPredicate {
     boolean apply(AnnotationFS aAnnotation, int beginB, int endB);
   }
 
   @FunctionalInterface
-  public static interface RelativeAnnotationPredicate {
+  public interface RelativeAnnotationPredicate {
     boolean apply(AnnotationFS aAnnotationA, AnnotationFS aAnnotationB);
   }
 

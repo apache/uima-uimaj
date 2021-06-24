@@ -39,7 +39,6 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.util.Level;
 
 /**
  * The common (among all index kinds - set, sorted, bag) info for an index over
@@ -162,7 +161,6 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
    */
   protected FsIndex_singletype(CASImpl cas, Type type, int indexType,
       FSIndexComparator comparatorForIndexSpecs) {
-    super();
     this.indexType = indexType;
     this.casImpl = cas;
     this.type = (TypeImpl) type;

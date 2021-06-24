@@ -20,6 +20,9 @@
 package org.apache.uima.resource.metadata.impl;
 
 import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -34,12 +37,8 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.w3c.dom.Document;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
+import org.w3c.dom.Document;
 
 public class Import_implTest {
     @Test

@@ -42,10 +42,10 @@ import org.xml.sax.SAXException;
  */
 public interface CommonList extends FeatureStructure {
 
-  public final static String _FeatName_head = "head";
-  public final static String _FeatName_tail = "tail";
+  String _FeatName_head = "head";
+  String _FeatName_tail = "tail";
 
-  static final List<String> EMPTY_LIST_STRING = Collections.emptyList();
+  List<String> EMPTY_LIST_STRING = Collections.emptyList();
 
   /**
    * Get the nth node.

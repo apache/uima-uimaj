@@ -1157,7 +1157,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
 
   public CASImpl(TypeSystemImpl typeSystem, int initialHeapSize ) {
-    super();
     TypeSystemImpl ts;
     final boolean externalTypeSystem = (typeSystem != null);
 

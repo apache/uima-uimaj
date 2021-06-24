@@ -41,7 +41,7 @@ public interface ExternalResourceDependency extends MetaDataObject {
    * 
    * @return the key for this resource.
    */
-  public String getKey();
+  String getKey();
 
   /**
    * Sets the key by which the resource is identified.
@@ -49,14 +49,14 @@ public interface ExternalResourceDependency extends MetaDataObject {
    * @param aKey
    *          the key for this resource.
    */
-  public void setKey(String aKey);
+  void setKey(String aKey);
 
   /**
    * Retrieves the textual description of the resource.
    * 
    * @return the textual description of the resource.
    */
-  public String getDescription();
+  String getDescription();
 
   /**
    * Retrieves the textual description of the resource.
@@ -64,14 +64,14 @@ public interface ExternalResourceDependency extends MetaDataObject {
    * @param aDescription
    *          the textual description of the resource.
    */
-  public void setDescription(String aDescription);
+  void setDescription(String aDescription);
 
   /**
    * Retrieves the name of the Java interface through which this resource will be accessed.
    * 
    * @return the name of the Java interface for this external resource, <code>null</code> if none.
    */
-  public String getInterfaceName();
+  String getInterfaceName();
 
   /**
    * Sets the name of the Java interface through which this resource will be accessed.
@@ -83,7 +83,7 @@ public interface ExternalResourceDependency extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setInterfaceName(String aName);
+  void setInterfaceName(String aName);
 
   /**
    * Gets whether this resource dependency is optional. Dependencies that are not optional must be
@@ -92,7 +92,7 @@ public interface ExternalResourceDependency extends MetaDataObject {
    * 
    * @return true if this resource dependency is optional, false if not
    */
-  public boolean isOptional();
+  boolean isOptional();
 
   /**
    * Sets whether this resource dependency is optional. Dependencies that are not optional must be
@@ -102,5 +102,5 @@ public interface ExternalResourceDependency extends MetaDataObject {
    * @param aOptional
    *          true if this resource dependency is optional, false if not
    */
-  public void setOptional(boolean aOptional);
+  void setOptional(boolean aOptional);
 }

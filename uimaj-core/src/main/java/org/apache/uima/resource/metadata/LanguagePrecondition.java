@@ -39,7 +39,7 @@ public interface LanguagePrecondition extends SimplePrecondition {
    * 
    * @return the languages that satisfy this precondition
    */
-  public String[] getLanguages();
+  String[] getLanguages();
 
   /**
    * Sets the languages that satisfy this precondition. This will be an array of ISO language
@@ -61,5 +61,5 @@ public interface LanguagePrecondition extends SimplePrecondition {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setLanguages(String[] aLanguages);
+  void setLanguages(String[] aLanguages);
 }

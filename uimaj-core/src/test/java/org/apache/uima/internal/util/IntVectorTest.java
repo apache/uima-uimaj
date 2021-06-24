@@ -19,6 +19,8 @@
 
 package org.apache.uima.internal.util;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 
 import org.apache.uima.UIMAFramework;
@@ -30,13 +32,8 @@ import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.*;
 
 
 public class IntVectorTest {

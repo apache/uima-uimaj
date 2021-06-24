@@ -24,14 +24,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.uima.cas.CAS;
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.List;
-
-import org.apache.uima.cas.CAS;
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
 
 /**

@@ -34,7 +34,7 @@ final class LongSet {
   final private HashMap<Long, Integer> long2int = new HashMap<>();
   
   // Reset the long heap (called on CAS reset).
-  final void reset() {
+  void reset() {
     longs.clear();
     longs.add(null);
     long2int.clear();
@@ -69,7 +69,7 @@ final class LongSet {
   }
   
   
-  final int getSize() {
+  int getSize() {
 	  return this.longs.size();
   }
   

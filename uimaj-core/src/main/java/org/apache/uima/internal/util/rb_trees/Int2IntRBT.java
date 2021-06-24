@@ -124,7 +124,6 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     private int currentNode;
 
     private KeyIterator() {
-      super();
       this.currentNode = getFirstNode();
     }
 

@@ -36,18 +36,15 @@ final class ShortHeap extends CommonAuxHeap {
     super(heapBaseSize, heapMultLimit);
   }
 
-  @Override
-  final void initMemory() {
+  @Override void initMemory() {
     this.heap = new short[this.heapBaseSize];
   }
   
-  @Override
-  final void initMemory(int size) {
+  @Override void initMemory(int size) {
     this.heap = new short[size];
   }
 
-  @Override
-  final int getCapacity() {
+  @Override int getCapacity() {
     return this.heap.length;
   }
 

@@ -20,7 +20,6 @@
 package org.apache.uima.internal.util;
 
 import java.util.BitSet;
-import java.util.NoSuchElementException;
 
 import org.apache.uima.util.impl.Constants;
 

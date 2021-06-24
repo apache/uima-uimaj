@@ -45,7 +45,6 @@ public class LoadRecentDescFileEventHandler implements ActionListener {
    * @param fileName the file name
    */
   public LoadRecentDescFileEventHandler(MainFrame frame, String fileName) {
-    super();
     this.main = frame;
     this.fileName = fileName;
   }

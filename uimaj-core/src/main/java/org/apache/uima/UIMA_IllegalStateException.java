@@ -94,7 +94,6 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    * Creates a new exception with a null message.
    */
   public UIMA_IllegalStateException() {
-    super();
   }
 
   /**

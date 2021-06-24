@@ -18,6 +18,8 @@
  */
 package org.apache.uima.util;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -38,12 +40,7 @@ import org.apache.uima.testTypeSystem_arrays.OfShorts;
 import org.apache.uima.testTypeSystem_arrays.OfStrings;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.*;
 
 
 public class CasToInlineXmlTest {

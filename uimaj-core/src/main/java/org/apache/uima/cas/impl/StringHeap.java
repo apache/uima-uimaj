@@ -35,13 +35,12 @@ final class StringHeap {
   private List<String> stringList;
 
   StringHeap() {
-    super();
     initMemory();
   }
 
   // Initialize internal datastructures.  This used to be a lot more complicated when we had the
   // character heap option.  
-  private final void initMemory() {
+  private void initMemory() {
     this.stringList = new ArrayList<>();
     this.stringList.add(null);
   }
@@ -50,7 +49,7 @@ final class StringHeap {
    * 
    * @param shdh Serialization helper datastructure.
    */
-  final void reinit(StringHeapDeserializationHelper shdh, boolean delta) {
+  void reinit(StringHeapDeserializationHelper shdh, boolean delta) {
   	if (!delta) {
         initMemory();
   	}
@@ -119,7 +118,7 @@ final class StringHeap {
   }
 
   // Reset the string heap (called on CAS reset).
-  final void reset() {
+  void reset() {
     initMemory();
   }
 
@@ -171,19 +170,19 @@ final class StringHeap {
   }
 
 
-  final int getCharArrayLength(int stringCode) {
+  int getCharArrayLength(int stringCode) {
     return this.stringList.get(stringCode).length();
   }
 
-  final int getLeastStringCode() {
+  int getLeastStringCode() {
     return leastStringCode;
   }
 
-  final int getLargestStringCode() {
+  int getLargestStringCode() {
     return this.stringList.size() - 1;
   }
   
-  final int getSize() {
+  int getSize() {
 	  return this.stringList.size();
   }
   

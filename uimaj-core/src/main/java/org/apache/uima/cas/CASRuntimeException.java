@@ -341,7 +341,6 @@ public class CASRuntimeException extends UIMARuntimeException {
    *     
    */
 	public CASRuntimeException() {
-		super();
 	}
 	
 	public CASRuntimeException(String aMessageKey, Object[] aArguments, Throwable aCause) {

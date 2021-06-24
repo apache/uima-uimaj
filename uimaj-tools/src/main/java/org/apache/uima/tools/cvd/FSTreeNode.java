@@ -38,7 +38,6 @@ public abstract class FSTreeNode {
    * Instantiates a new FS tree node.
    */
   public FSTreeNode() {
-    super();
     // TODO Auto-generated constructor stub
   }
 

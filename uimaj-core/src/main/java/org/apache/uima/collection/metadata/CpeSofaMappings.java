@@ -27,13 +27,13 @@ public interface CpeSofaMappings extends MetaDataObject {
    * 
    * @return an array of Sofa Mappings
    */
-  public CpeSofaMapping[] getSofaNameMappings();
+  CpeSofaMapping[] getSofaNameMappings();
 
   /**
    * Set Sofa Name Mappings
    * 
    * @param sofaMappings an array of sofaMappings
    */
-  public void setSofaNameMappings(CpeSofaMapping[] sofaMappings);
+  void setSofaNameMappings(CpeSofaMapping[] sofaMappings);
 
 }

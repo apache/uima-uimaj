@@ -201,7 +201,6 @@ public class XCASDeserializer {
     private int fsId;
 
     private XCASDeserializerHandler(CASImpl aCAS, OutOfTypeSystemData ootsData) {
-      super();
       this.cas = aCAS.getBaseCAS();
       // Reset the CAS.
       cas.resetNoQuestions();
@@ -1210,7 +1209,6 @@ public class XCASDeserializer {
    * @param uimaContext the UIMA Context for the deserialization
    */
   public XCASDeserializer(TypeSystem ts, UimaContext uimaContext) {
-    super();
     this.ts = (TypeSystemImpl) ts;
     // this.featureMap = new HashMap(); - APL
   }

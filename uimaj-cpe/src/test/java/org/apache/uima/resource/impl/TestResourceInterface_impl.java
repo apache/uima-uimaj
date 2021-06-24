@@ -31,7 +31,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
 import org.apache.uima.resource.SharedResourceObject;
-import org.apache.uima.resource.impl.TestResourceInterface;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 

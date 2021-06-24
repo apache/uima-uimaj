@@ -92,7 +92,6 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
      * @param ts the type system
      */
     private TotalTypeOrder(int[] typeList, TypeSystem ts, boolean isEmpty) {
-      super();
       TypeSystemImpl tsi = (TypeSystemImpl) ts;
       this.order = typeList;
       final int sz = this.order.length + tsi.getSmallestType();
@@ -342,7 +341,6 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
 
   public LinearTypeOrderBuilderImpl(TypeSystem ts) {
-    super();
     this.order = new Graph();
     this.ts = ts;
   }

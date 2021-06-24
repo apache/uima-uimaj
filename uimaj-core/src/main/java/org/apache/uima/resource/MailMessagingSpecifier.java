@@ -27,28 +27,28 @@ public interface MailMessagingSpecifier extends MessagingSpecifier {
    * 
    * @return int
    */
-  public int getHostImapPort();
+  int getHostImapPort();
 
   /**
    * Returns the hostSmtpPort.
    * 
    * @return int
    */
-  public int getHostSmtpPort();
+  int getHostSmtpPort();
 
   /**
    * Returns the targetImapPort.
    * 
    * @return int
    */
-  public int getTargetImapPort();
+  int getTargetImapPort();
 
   /**
    * Returns the targetSmtpPort.
    * 
    * @return int
    */
-  public int getTargetSmtpPort();
+  int getTargetSmtpPort();
 
   /**
    * Sets the hostImapPort.
@@ -56,7 +56,7 @@ public interface MailMessagingSpecifier extends MessagingSpecifier {
    * @param hostImapPort
    *          The hostImapPort to set
    */
-  public void setHostImapPort(int hostImapPort);
+  void setHostImapPort(int hostImapPort);
 
   /**
    * Sets the hostSmtpPort.
@@ -64,7 +64,7 @@ public interface MailMessagingSpecifier extends MessagingSpecifier {
    * @param hostSmtpPort
    *          The hostSmtpPort to set
    */
-  public void setHostSmtpPort(int hostSmtpPort);
+  void setHostSmtpPort(int hostSmtpPort);
 
   /**
    * Sets the targetImapPort.
@@ -72,7 +72,7 @@ public interface MailMessagingSpecifier extends MessagingSpecifier {
    * @param targetImapPort
    *          The targetImapPort to set
    */
-  public void setTargetImapPort(int targetImapPort);
+  void setTargetImapPort(int targetImapPort);
 
   /**
    * Sets the targetSmtpPort.
@@ -80,5 +80,5 @@ public interface MailMessagingSpecifier extends MessagingSpecifier {
    * @param targetSmtpPort
    *          The targetSmtpPort to set
    */
-  public void setTargetSmtpPort(int targetSmtpPort);
+  void setTargetSmtpPort(int targetSmtpPort);
 }

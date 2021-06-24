@@ -22,8 +22,6 @@ package org.apache.uima.jcas.test;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.JCas;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 
 /**
  * Test for adjusted offset computation between varieties of JCas implementations and type systems.

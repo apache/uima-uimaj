@@ -64,7 +64,7 @@ public interface SimplePrecondition extends Precondition {
    * 
    * @return {@link #PRECONDITION_TYPE}
    */
-  public String getPreconditionType();
+  String getPreconditionType();
 
   /**
    * Retrieves the name of the FeatureStructure index containing FeatureStructures to be tested by
@@ -73,7 +73,7 @@ public interface SimplePrecondition extends Precondition {
    * @return the name of the FS index, <code>null</code> if the default annotation index should be
    *         used
    */
-  public String getFsIndexName();
+  String getFsIndexName();
 
   /**
    * Sets the name of the FeatureStructure index containing FeatureStructures to be tested by this
@@ -86,7 +86,7 @@ public interface SimplePrecondition extends Precondition {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setFsIndexName(String aIndexName);
+  void setFsIndexName(String aIndexName);
 
   /**
    * Retrieves the FSMatchConstraint that determines which CAS feature structures will be tested by
@@ -94,7 +94,7 @@ public interface SimplePrecondition extends Precondition {
    * 
    * @return the FS match constraint, <code>null</code> if none
    */
-  public FSMatchConstraint getFsMatchConstraint();
+  FSMatchConstraint getFsMatchConstraint();
 
   /**
    * Sets the FSMatchConstraint that determines which CAS feature structures will be tested by this
@@ -106,14 +106,14 @@ public interface SimplePrecondition extends Precondition {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setFsMatchConstraint(FSMatchConstraint aConstraint);
+  void setFsMatchConstraint(FSMatchConstraint aConstraint);
 
   /**
    * Gets the name of the feature to be tested.
    * 
    * @return the feature name, <code>null</code> if none
    */
-  public String getFeatureName();
+  String getFeatureName();
 
   /**
    * Sets the name of the feature to be tested.
@@ -124,7 +124,7 @@ public interface SimplePrecondition extends Precondition {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setFeatureName(String aFeatureName);
+  void setFeatureName(String aFeatureName);
 
   /**
    * Retrieves the literal value to which features' values will be compared.
@@ -132,7 +132,7 @@ public interface SimplePrecondition extends Precondition {
    * @return the value, which must be a String, Integer, Float, Boolean or an array of one of those
    *         four types.
    */
-  public Object getComparisonValue();
+  Object getComparisonValue();
 
   /**
    * Sets the literal value to which features' values will be compared.
@@ -144,7 +144,7 @@ public interface SimplePrecondition extends Precondition {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setComparisonValue(Object aValue);
+  void setComparisonValue(Object aValue);
 
   /**
    * Retrieves the predicate used to compare the test value to the comparison value.
@@ -152,7 +152,7 @@ public interface SimplePrecondition extends Precondition {
    * @return a String that identifies the predicate used. This will always match one of the
    *         constants defined on this interface.
    */
-  public String getPredicate();
+  String getPredicate();
 
   /**
    * Sets the predicate used to compare the test value to the comparison value.
@@ -166,7 +166,7 @@ public interface SimplePrecondition extends Precondition {
    * @throws UIMA_IllegalArgumentException
    *           if the given value is not appropriate for the given attribute.
    */
-  public void setPredicate(String aPredicate);
+  void setPredicate(String aPredicate);
 
   /**
    * Retrieves the default value for this precondition. This is the value returned if there is no
@@ -174,7 +174,7 @@ public interface SimplePrecondition extends Precondition {
    * 
    * @return the default value
    */
-  public boolean getDefault();
+  boolean getDefault();
 
   /**
    * Sets the default value for this precondition. This is the value returned if there is no
@@ -186,27 +186,27 @@ public interface SimplePrecondition extends Precondition {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  public void setDefault(boolean aDefault);
+  void setDefault(boolean aDefault);
 
   /**
    * The type identifier for this class of precondition. This is the return value of
    * {@link #getPreconditionType()}.
    */
-  public static final String PRECONDITION_TYPE = "SIMPLE";
+  String PRECONDITION_TYPE = "SIMPLE";
 
   /**
    * Identifies the EQUAL predicate. This predicate evaluates to true if and only if the test value
    * and the comparison value are of the same data type and are equal, according to the equality
    * rules of that data type.
    */
-  public static final String EQUAL = "Equal";
+  String EQUAL = "Equal";
 
   /**
    * Identifies the ELEMENT_OF predicate. For this predicate, the comparison value must be an array.
    * ELEMENT_OF evaluates to true if and only if the test value is equal to one of the elements of
    * the array. (If the comparison value is not an array, ELEMENT_OF always evaluates to false.)
    */
-  public static final String ELEMENT_OF = "ElementOf";
+  String ELEMENT_OF = "ElementOf";
 
   /**
    * Identifies the LANGUAGE_SUBSUMED predicate. For this predicate, the comparison value must be an
@@ -214,5 +214,5 @@ public interface SimplePrecondition extends Precondition {
    * value is an ISO language identifier that is subsumed by one of the values of the comparison
    * array. (For example, "en_US" is subsumed by "en.")
    */
-  public static final String LANGUAGE_SUBSUMED = "LanguageSubsumed";
+  String LANGUAGE_SUBSUMED = "LanguageSubsumed";
 }

@@ -21,7 +21,6 @@ package org.apache.uima.cas.impl;
 
 import java.util.Comparator;
 
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.cas.TOP;

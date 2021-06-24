@@ -37,7 +37,6 @@ class DisjunctiveConstraint implements FSMatchConstraint {
   private FSMatchConstraint c2;
 
   private DisjunctiveConstraint() {
-    super();
   }
 
   /**

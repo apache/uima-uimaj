@@ -44,7 +44,6 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
    * Instantiates a new cpe local cas processor impl.
    */
   public CpeLocalCasProcessorImpl() {
-    super();
     try {
       super.setDeployment("local");
       addDefaults();
@@ -60,7 +59,6 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
    * @param initializeWithDefaultValues the initialize with default values
    */
   public CpeLocalCasProcessorImpl(boolean initializeWithDefaultValues) {
-    super();
     try {
       super.setDeployment("local");
       if (initializeWithDefaultValues) {
@@ -80,7 +78,6 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
    * @throws CpeDescriptorException the cpe descriptor exception
    */
   protected CpeLocalCasProcessorImpl(String aName, String aSoFa) throws CpeDescriptorException {
-    super();
     try {
       super.setName(aName);
       // super.setContentTag(aSoFa);

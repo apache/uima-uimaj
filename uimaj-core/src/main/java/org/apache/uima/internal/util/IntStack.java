@@ -30,7 +30,6 @@ public class IntStack extends IntVector {
 
   /** Creates an empty stack. */
   public IntStack() {
-    super();
   }
 
   /** Creates an empty stack.

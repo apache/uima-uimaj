@@ -44,7 +44,6 @@ public class FeatureTableModel extends AbstractTableModel {
    * Instantiates a new feature table model.
    */
   public FeatureTableModel() {
-    super();
   }
 
   /**
@@ -53,7 +52,6 @@ public class FeatureTableModel extends AbstractTableModel {
    * @param type the type
    */
   public FeatureTableModel(Type type) {
-    super();
     this.type = type;
   }
 

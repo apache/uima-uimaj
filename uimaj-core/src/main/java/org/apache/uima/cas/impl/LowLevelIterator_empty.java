@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.lang.reflect.Array;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 

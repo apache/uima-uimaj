@@ -36,7 +36,7 @@ public interface CpeCollectionReaderCasInitializer extends MetaDataObject {
    * @param aDescriptor -
    *          descriptor path
    */
-  public void setDescriptor(CpeComponentDescriptor aDescriptor);
+  void setDescriptor(CpeComponentDescriptor aDescriptor);
 
   /**
    * Returns {@link org.apache.uima.collection.metadata.CpeComponentDescriptor} containing
@@ -44,7 +44,7 @@ public interface CpeCollectionReaderCasInitializer extends MetaDataObject {
    * 
    * @return {@link org.apache.uima.collection.metadata.CpeComponentDescriptor}
    */
-  public CpeComponentDescriptor getDescriptor();
+  CpeComponentDescriptor getDescriptor();
 
   /**
    * Returns {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings}
@@ -52,7 +52,7 @@ public interface CpeCollectionReaderCasInitializer extends MetaDataObject {
    * 
    * @return - object containing parameter setting overrides
    */
-  public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();
+  CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();
 
   /**
    * Sets the {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings}
@@ -62,14 +62,14 @@ public interface CpeCollectionReaderCasInitializer extends MetaDataObject {
    *          object containing parameter setting overrides
    * @throws CpeDescriptorException tbd         
    */
-  public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
+  void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
           throws CpeDescriptorException;
 
-  public CpeSofaMappings getSofaNameMappings();
+  CpeSofaMappings getSofaNameMappings();
 
   /**
    * @param mappings the sofa mappings
    */
-  public void setSofaNameMappings(CpeSofaMappings mappings);
+  void setSofaNameMappings(CpeSofaMappings mappings);
 
 }

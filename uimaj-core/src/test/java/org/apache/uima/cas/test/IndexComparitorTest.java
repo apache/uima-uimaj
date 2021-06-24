@@ -19,6 +19,12 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
@@ -37,11 +43,9 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 /**
  * Test the variations possible for index compare functions

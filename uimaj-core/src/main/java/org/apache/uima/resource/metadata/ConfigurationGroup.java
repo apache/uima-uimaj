@@ -36,7 +36,7 @@ public interface ConfigurationGroup extends MetaDataObject {
    * @return an array of group names.  Names are not allowed to contain
    *   whitespace.
    */
-  public String[] getNames();
+  String[] getNames();
 
   /**
    * Sets the group names for this <code>ConfigurationGroup</code> object.
@@ -44,7 +44,7 @@ public interface ConfigurationGroup extends MetaDataObject {
    * @param aNames an array of group names.  Names are not allowed to
    *   contain whitespace.
    */
-  public void setNames(String[] aNames);
+  void setNames(String[] aNames);
 
   /**
    * Gets the configuration parameters in this group.
@@ -52,7 +52,7 @@ public interface ConfigurationGroup extends MetaDataObject {
    * @return an array containing {@link ConfigurationParameter} objects, each of which describes a
    *         configuration parameter in this group.
    */
-  public ConfigurationParameter[] getConfigurationParameters();
+  ConfigurationParameter[] getConfigurationParameters();
 
   /**
    * Sets the configuration parameters in this group.
@@ -61,7 +61,7 @@ public interface ConfigurationGroup extends MetaDataObject {
    *          an array containing {@link ConfigurationParameter} objects, each of which describes a
    *          configuration parameter in this group.
    */
-  public void setConfigurationParameters(ConfigurationParameter[] aParams);
+  void setConfigurationParameters(ConfigurationParameter[] aParams);
 
   /**
    * Adds a Configuration Parameter to this group.
@@ -72,7 +72,7 @@ public interface ConfigurationGroup extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void addConfigurationParameter(ConfigurationParameter aConfigurationParameter);
+  void addConfigurationParameter(ConfigurationParameter aConfigurationParameter);
 
   /**
    * Removes an Configuration Parameter from this group.
@@ -84,6 +84,6 @@ public interface ConfigurationGroup extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter);
+  void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter);
 
 }

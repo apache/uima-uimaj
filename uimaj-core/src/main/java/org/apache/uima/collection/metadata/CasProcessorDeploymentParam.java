@@ -35,7 +35,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    *          a name
    * @throws CpeDescriptorException tbd
    */
-  public void setParameterName(String aParamName) throws CpeDescriptorException;
+  void setParameterName(String aParamName) throws CpeDescriptorException;
 
   /**
    * Returns the name of the parameter
@@ -43,7 +43,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    * @return - name as String
    * @throws CpeDescriptorException tbd
    */
-  public String getParameterName() throws CpeDescriptorException;
+  String getParameterName() throws CpeDescriptorException;
 
   /**
    * Sets the value of the deployment parameter
@@ -52,7 +52,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    *          parameter value
    * @throws CpeDescriptorException tbd
    */
-  public void setParameterValue(String aParamValue) throws CpeDescriptorException;
+  void setParameterValue(String aParamValue) throws CpeDescriptorException;
 
   /**
    * Returns deployment parameter value
@@ -60,7 +60,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    * @return - value as String
    * @throws CpeDescriptorException tbd
    */
-  public String getParameterValue() throws CpeDescriptorException;
+  String getParameterValue() throws CpeDescriptorException;
 
   /**
    * Sets deployment parameter value type
@@ -69,7 +69,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    *          value type (string, int, etc)
    * @throws CpeDescriptorException tbd
    */
-  public void setParameterType(String aParamType) throws CpeDescriptorException;
+  void setParameterType(String aParamType) throws CpeDescriptorException;
 
   /**
    * Returns deployment parameter value type
@@ -77,5 +77,5 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    * @return - value type (string, int, etc)
    * @throws CpeDescriptorException tbd
    */
-  public String getParameterType() throws CpeDescriptorException;
+  String getParameterType() throws CpeDescriptorException;
 }

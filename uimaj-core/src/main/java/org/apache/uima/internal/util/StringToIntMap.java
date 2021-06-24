@@ -39,7 +39,6 @@ public class StringToIntMap {
    * @see java.lang.Object#Object()
    */
   public StringToIntMap() {
-    super();
     this.map = new HashMap<>();
   }
 

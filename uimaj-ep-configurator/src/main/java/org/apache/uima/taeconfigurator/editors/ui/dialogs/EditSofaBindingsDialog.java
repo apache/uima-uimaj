@@ -22,14 +22,13 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
 
 /**

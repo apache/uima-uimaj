@@ -33,10 +33,10 @@ public interface ResourceServiceStub {
    * @return metadata for the Resource
    * @throws ResourceServiceException passthru
    */
-  public ResourceMetaData callGetMetaData() throws ResourceServiceException;
+  ResourceMetaData callGetMetaData() throws ResourceServiceException;
 
   /**
    * Called when this stub is no longer needed, so any open connections can be closed.
    */
-  public void destroy();
+  void destroy();
 }

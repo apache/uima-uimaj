@@ -44,7 +44,7 @@ public interface ResourceManager {
    * 
    * @return the data path
    */
-  public String getDataPath();
+  String getDataPath();
 
   /**
    * Sets the data path used to resolve relative paths. More than one directory may be specified by
@@ -57,7 +57,7 @@ public interface ResourceManager {
    * @throws MalformedURLException
    *           if an element of the path is neither a valid URL or a valid file path
    */
-  public void setDataPath(String aPath) throws MalformedURLException;
+  void setDataPath(String aPath) throws MalformedURLException;
 
   /**
    * Attempts to resolve a relative path to an absolute path using the same mechanism that the
@@ -71,7 +71,7 @@ public interface ResourceManager {
    *         matching <code>aRelativePath</code> is found.
    * @throws MalformedURLException if the path cannot be converted to a URL
    */
-  public URL resolveRelativePath(String aRelativePath) throws MalformedURLException;
+  URL resolveRelativePath(String aRelativePath) throws MalformedURLException;
 
   /**
    * Gets the instance of the implementation object for a resource that has been registered under the specified name.
@@ -88,7 +88,7 @@ public interface ResourceManager {
    *           been called instead of this method.
    * @throws ResourceAccessException tbd
    */
-  public Object getResource(String aName) throws ResourceAccessException;
+  Object getResource(String aName) throws ResourceAccessException;
 
   /**
    * Returns one of two kinds of objects (or null):
@@ -132,7 +132,7 @@ public interface ResourceManager {
    *           if there is a resource registered under <code>aName</code> but it could not be
    *           instantiated for the specified parameters.
    */
-  public Object getResource(String aName, String[] aParams) throws ResourceAccessException;
+  Object getResource(String aName, String[] aParams) throws ResourceAccessException;
 
   /**
    * Gets the Class of the Resource that will be returned by a call to {@link #getResource(String)}
@@ -147,7 +147,7 @@ public interface ResourceManager {
    * @return the Class for the resource named <code>aName</code>, <code>null</code> if there is
    *         no resource registered under that name.
    */
-  public <N> Class<N> getResourceClass(String aName);
+  <N> Class<N> getResourceClass(String aName);
 
   /**
    * Retrieves the URL to the named resource. This can be used, for example, to locate configuration
@@ -166,7 +166,7 @@ public interface ResourceManager {
    * @throws ResourceAccessException
    *           if a failure occurs in accessing the resource
    */
-  public URL getResourceURL(String aKey) throws ResourceAccessException;
+  URL getResourceURL(String aKey) throws ResourceAccessException;
 
   /**
    * Retrieves an InputStream for reading from the named resource. This can be used, for example, to
@@ -186,7 +186,7 @@ public interface ResourceManager {
    * @throws ResourceAccessException
    *           if a failure occurs in accessing the resource
    */
-  public InputStream getResourceAsStream(String aKey) throws ResourceAccessException;
+  InputStream getResourceAsStream(String aKey) throws ResourceAccessException;
 
   /**
    * Retrieves the URL to the named resource. This can be used, for example, to locate configuration
@@ -209,7 +209,7 @@ public interface ResourceManager {
    * @throws ResourceAccessException
    *           if a failure occurs in accessing the resource
    */
-  public URL getResourceURL(String aKey, String[] aParams) throws ResourceAccessException;
+  URL getResourceURL(String aKey, String[] aParams) throws ResourceAccessException;
 
   /**
    * Retrieves an InputStream for reading from the named resource. This can be used, for example, to
@@ -233,7 +233,7 @@ public interface ResourceManager {
    * @throws ResourceAccessException
    *           if a failure occurs in accessing the resource
    */
-  public InputStream getResourceAsStream(String aKey, String[] aParams)
+  InputStream getResourceAsStream(String aKey, String[] aParams)
           throws ResourceAccessException;
 
   /**
@@ -264,7 +264,7 @@ public interface ResourceManager {
    * @throws ResourceInitializationException
    *           if an initialization failure occurs
    */
-  public void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
+  void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
           String aQualifiedContextName, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
 
@@ -294,7 +294,7 @@ public interface ResourceManager {
    * @throws ResourceInitializationException
    *           if a required dependency is not satisfied
    */
-  public void resolveAndValidateResourceDependencies(ExternalResourceDependency[] aDependencies,
+  void resolveAndValidateResourceDependencies(ExternalResourceDependency[] aDependencies,
           String aQualifiedContextName) throws ResourceInitializationException;
 
   /**
@@ -309,7 +309,7 @@ public interface ResourceManager {
    * @throws MalformedURLException
    *           if a malformed URL has occurred in the classpath string.
    */
-  public void setExtensionClassPath(String classpath, boolean resolveResource)
+  void setExtensionClassPath(String classpath, boolean resolveResource)
           throws MalformedURLException;
 
   /**
@@ -327,7 +327,7 @@ public interface ResourceManager {
    * @throws MalformedURLException
    *           if a malformed URL has occurred in the classpath string.
    */
-  public void setExtensionClassPath(ClassLoader parent, String classpath, boolean resolveResource)
+  void setExtensionClassPath(ClassLoader parent, String classpath, boolean resolveResource)
           throws MalformedURLException;
 
   /**
@@ -346,13 +346,13 @@ public interface ResourceManager {
    * 
    * @return ClassLoader - returns the UIMA extension class loader of null if it is not available.
    */
-  public ClassLoader getExtensionClassLoader();
+  ClassLoader getExtensionClassLoader();
 
   /**
    * Gets the CasManager, which manages the creation and pooling of CASes.
    * @return the CasManager
    */
-  public CasManager getCasManager();
+  CasManager getCasManager();
 
   /**
    * Sets the CasManager, which manages the creation and pooling of CASes.
@@ -368,7 +368,7 @@ public interface ResourceManager {
    * 
    * @param aCasManager CAS Manager instance to plug in
    */
-  public void setCasManager(CasManager aCasManager);
+  void setCasManager(CasManager aCasManager);
   
   /**
    * Gets a cache of imported descriptors, so that the parsed objects can be reused if the
@@ -376,8 +376,7 @@ public interface ResourceManager {
    * @return A map from absolute URL to the XMLizable object that was parsed from that URL
    * @deprecated  Intended just for internal use.
    */
-  @Deprecated
-  public Map<String,XMLizable> getImportCache();
+  @Deprecated Map<String,XMLizable> getImportCache();
   
   /**
    * Loads a user class using either the UIMA extension class loader (if specified) or
@@ -391,7 +390,7 @@ public interface ResourceManager {
    * @return the class
    * @throws ClassNotFoundException -
    */
-  public <N> Class<N> loadUserClass(String name) throws ClassNotFoundException;
+  <N> Class<N> loadUserClass(String name) throws ClassNotFoundException;
   
   /**
    * Frees all resources held by this ResourceManager, and marks the ResourceManager as having been destroyed.
@@ -411,7 +410,7 @@ public interface ResourceManager {
    * a ResourceManager instance should be destroyed.  This is because the containing application is the only
    * knowledgeable source; for example a single ResourceManager might be used for multiple UIMA Pipelines.
    */
-  public void destroy();
+  void destroy();
       
   /**
    * 
@@ -419,5 +418,5 @@ public interface ResourceManager {
    *         For parameterized resources, those which have been asked for (having unique parameter sets) 
    *         are included.
    */
-  public List<Object> getExternalResources();
+  List<Object> getExternalResources();
 }

@@ -35,13 +35,13 @@ public interface Timer {
    * Start.
    */
   // starts the time
-  public void start();
+  void start();
 
   /**
    * End.
    */
   // ends the timer
-  public void end();
+  void end();
 
   /**
    * Gets the duration.
@@ -49,34 +49,34 @@ public interface Timer {
    * @return the duration
    */
   // returns duration (in ms) between start() and end() calls
-  public long getDuration();
+  long getDuration();
 
   /**
    * Gets the time in secs.
    *
    * @return the time in secs
    */
-  public long getTimeInSecs();
+  long getTimeInSecs();
 
   /**
    * Gets the time in millis.
    *
    * @return the time in millis
    */
-  public long getTimeInMillis();
+  long getTimeInMillis();
 
   /**
    * Gets the time in micros.
    *
    * @return the time in micros
    */
-  public long getTimeInMicros();
+  long getTimeInMicros();
 
   /**
    * Gets the resolution.
    *
    * @return the resolution
    */
-  public long getResolution();
+  long getResolution();
 
 }

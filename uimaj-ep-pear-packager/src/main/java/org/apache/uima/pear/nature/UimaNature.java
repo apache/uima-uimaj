@@ -33,7 +33,6 @@ public class UimaNature implements IProjectNature {
    * constructor.
    */
   public UimaNature() {
-    super();
   }
 
   /**

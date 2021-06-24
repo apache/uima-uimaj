@@ -18,17 +18,16 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 /**
  * Test various kinds of inheritance issues 
@@ -88,7 +87,7 @@ public class ResultSpecWithTypeSystemTest {
   private static final TypeOrFeature tofT2F1      = makeTof("T2:F1", false, false);  // feature spec'd at subtype, but exists in supertype
   private static final TypeOrFeature tofT4F1      = makeTof("T4:F1", false, false);
 
-  static enum K { // test kind
+  enum K { // test kind
     Contains,
     NotContain,
   }

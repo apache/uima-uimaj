@@ -24,14 +24,13 @@ import java.io.IOException;
 
 import org.apache.uima.pear.PearException;
 import org.apache.uima.pear.nature.ProjectCustomizer;
+import org.apache.uima.pear.tools.InstallationDescriptor;
+import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.xml.sax.SAXException;
-
-import org.apache.uima.pear.tools.InstallationDescriptor;
-import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
 
 /**

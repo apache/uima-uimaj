@@ -46,7 +46,6 @@ public class IndexTreeNode {
    * @param size the size
    */
   public IndexTreeNode(String name, Type type, int size) {
-    super();
     this.name = name;
     this.type = type;
     this.size = size;
@@ -56,7 +55,6 @@ public class IndexTreeNode {
    * Constructor for IndexTreeNode.
    */
   public IndexTreeNode() {
-    super();
     this.name = null;
     this.type = null;
     this.size = 0;

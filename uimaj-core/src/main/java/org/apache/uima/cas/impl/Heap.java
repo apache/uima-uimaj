@@ -94,7 +94,6 @@ public final class Heap {
    *                instead.
    */
   public Heap(int initialSize) {
-    super();
     if (initialSize < MIN_SIZE) {
       initialSize = MIN_SIZE;
     }
@@ -102,13 +101,13 @@ public final class Heap {
     initHeap();
   }
 
-  private final void initHeap() {
+  private void initHeap() {
     this.heap = new int[this.initialSize];
     this.pos = 1; // 0 is not a valid address
     this.max = this.heap.length;
   }
   
-  private final void initHeap(int size) {
+  private void initHeap(int size) {
     this.heap = new int[size];
     this.pos = 1; // 0 is not a valid address
     this.max = this.heap.length;

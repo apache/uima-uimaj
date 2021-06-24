@@ -19,7 +19,6 @@
 
 package org.apache.uima.collection.impl.cpm.container.deployer;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;

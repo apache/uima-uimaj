@@ -41,10 +41,10 @@ public class ProcessUtil {
    * selected process.
    * 
    */
-  public static interface StdStreamListener {
-    public void errMsgPrinted(String errMsg);
+  public interface StdStreamListener {
+    void errMsgPrinted(String errMsg);
 
-    public void outMsgPrinted(String outMsg);
+    void outMsgPrinted(String outMsg);
   } // end of StdStreamListener
 
   /**

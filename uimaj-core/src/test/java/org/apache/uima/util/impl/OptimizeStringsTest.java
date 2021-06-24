@@ -19,10 +19,9 @@
 
 package org.apache.uima.util.impl;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 public class OptimizeStringsTest {
 

@@ -25,7 +25,6 @@ import org.apache.uima.jcas.JCas;
 public class SubiteratorAnnotator extends JCasAnnotator_ImplBase {
 
   public SubiteratorAnnotator() {
-    super();
   }
 
   public void process(JCas jCas) {

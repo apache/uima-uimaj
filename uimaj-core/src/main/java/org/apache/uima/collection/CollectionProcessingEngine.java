@@ -79,7 +79,7 @@ public interface CollectionProcessingEngine {
    * @throws UIMA_IllegalStateException
    *           if this method is called more than once on a single instance.
    */
-  public void initialize(CpeDescription aCpeDescription, Map<String, Object> aAdditionalParams)
+  void initialize(CpeDescription aCpeDescription, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
 
   /**
@@ -88,7 +88,7 @@ public interface CollectionProcessingEngine {
    * @param aListener
    *          the listener to add
    */
-  public void addStatusCallbackListener(StatusCallbackListener aListener);
+  void addStatusCallbackListener(StatusCallbackListener aListener);
 
   /**
    * Unregisters a status callback listener.
@@ -96,7 +96,7 @@ public interface CollectionProcessingEngine {
    * @param aListener
    *          the listener to remove
    */
-  public void removeStatusCallbackListener(StatusCallbackListener aListener);
+  void removeStatusCallbackListener(StatusCallbackListener aListener);
 
   /**
    * Initiates processing of a collection. This method starts the processing in another thread and
@@ -113,7 +113,7 @@ public interface CollectionProcessingEngine {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if this CPE is currently processing
    */
-  public void process() throws ResourceInitializationException;
+  void process() throws ResourceInitializationException;
 
   /**
    * Determines whether this CPE is currently processing. This means that a processing request has
@@ -122,7 +122,7 @@ public interface CollectionProcessingEngine {
    * 
    * @return true if and only if this CPE is currently processing.
    */
-  public boolean isProcessing();
+  boolean isProcessing();
 
   /**
    * Pauses processing. Processing can later be resumed by calling the {@link #resume()} method.
@@ -130,14 +130,14 @@ public interface CollectionProcessingEngine {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if no processing is currently occuring
    */
-  public void pause();
+  void pause();
 
   /**
    * Determines whether this CPE's processing is currently paused.
    * 
    * @return true if and only if this CPE's processing is currently paused.
    */
-  public boolean isPaused();
+  boolean isPaused();
 
   /**
    * Resumes processing that has been paused.
@@ -145,7 +145,7 @@ public interface CollectionProcessingEngine {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if processing is not currently paused
    */
-  public void resume();
+  void resume();
 
   /**
    * Stops processing.
@@ -153,14 +153,14 @@ public interface CollectionProcessingEngine {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if no processing is currently occuring
    */
-  public void stop();
+  void stop();
 
   /**
    * Gets a performance report for the processing that is currently occurring or has just completed.
    * 
    * @return an object containing performance statistics
    */
-  public ProcessTrace getPerformanceReport();
+  ProcessTrace getPerformanceReport();
 
   /**
    * Gets a progress report for the processing that is currently occurring or has just completed.
@@ -168,14 +168,14 @@ public interface CollectionProcessingEngine {
    * @return an array of <code>Progress</code> objects, each of which represents the progress in a
    *         different set of units (for example number of entities or bytes)
    */
-  public Progress[] getProgress();
+  Progress[] getProgress();
 
   /**
    * Gets the Collection Reader for this CPE.
    * 
    * @return the collection reader
    */
-  public BaseCollectionReader getCollectionReader();
+  BaseCollectionReader getCollectionReader();
 
   /**
    * Gets the <code>CasProcessors</code>s in this CPE, in the order in which they will be
@@ -183,12 +183,12 @@ public interface CollectionProcessingEngine {
    * 
    * @return an array of <code>CasProcessor</code>s
    */
-  public CasProcessor[] getCasProcessors();
+  CasProcessor[] getCasProcessors();
 
   /**
    * Kill CPM hard.
    * 
    */
-  public void kill();
+  void kill();
 
 }

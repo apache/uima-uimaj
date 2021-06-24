@@ -41,7 +41,6 @@ public class Language {
 
   
   public Language(String language) {
-    super();
     this.lang = normalize(language);
     this.parseLanguage();
   }

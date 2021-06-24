@@ -41,15 +41,15 @@ public class MultiThreadUtils extends TestCase {
   
   public final static boolean debug = false;
   
-  public static interface Run2isb {
-    public void call(int threadNumber, int repeatNumber, StringBuilder sb) throws Exception;
+  public interface Run2isb {
+    void call(int threadNumber, int repeatNumber, StringBuilder sb) throws Exception;
   }
   
   public static Runnable emptyReset = new Runnable() {public void run() {}};
 
   // also serves as a lock
   
-  private static enum ThreadControl {
+  private enum ThreadControl {
     WAIT,   // causes test thread to wait, is the initial state 
     RUN,    // causes test thread to run; when run is done, thread goes back to waiting and sets global entry in thread array to WAIT
     TERMINATE,  // causes test thread to finish 
@@ -296,7 +296,6 @@ public class MultiThreadUtils extends TestCase {
     }
     
     public ThreadM() {
-      super();
     }
   }
   

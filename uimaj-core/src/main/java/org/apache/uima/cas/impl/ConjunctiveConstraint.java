@@ -37,7 +37,6 @@ class ConjunctiveConstraint implements FSMatchConstraint {
   private FSMatchConstraint c2;
 
   private ConjunctiveConstraint() {
-    super();
   }
 
   /**

@@ -36,12 +36,12 @@ public interface RecoverableCollectionReader {
    *          contains recovery information
    * @throws CollectionException passthru
    */
-  public void moveTo(SynchPoint aSynchPoint) throws CollectionException;
+  void moveTo(SynchPoint aSynchPoint) throws CollectionException;
 
   /**
    * Retrieves data facilitating recovery of the CollectionReader
    * 
    * @return the SynchPoint for the current position of the CollectionReader
    */
-  public SynchPoint getSynchPoint();
+  SynchPoint getSynchPoint();
 }

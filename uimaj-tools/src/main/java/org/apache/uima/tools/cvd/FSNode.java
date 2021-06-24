@@ -153,7 +153,6 @@ public class FSNode extends FSTreeNode {
    * @param feat the feat
    */
   FSNode(FSTreeModel fSTreeModel, int nodeClass, Object fsOrString, long intOrLongLikeValue, Feature feat) {
-    super();
     this.fSTreeModel = fSTreeModel;
     this.nodeClass = nodeClass;
     this.intOrLongLikeValue = intOrLongLikeValue;
@@ -174,7 +173,6 @@ public class FSNode extends FSTreeNode {
    * @param elementIndex the element index
    */
   FSNode(FSTreeModel fSTreeModel, int nodeClass, Object fsOrString, long intOrLongLikeValue, int elementIndex) {
-    super();
     this.fSTreeModel = fSTreeModel;
     this.nodeClass = nodeClass;
     this.intOrLongLikeValue = intOrLongLikeValue;

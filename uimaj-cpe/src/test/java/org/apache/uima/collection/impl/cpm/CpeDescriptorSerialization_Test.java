@@ -19,13 +19,13 @@
 
 package org.apache.uima.collection.impl.cpm;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.Assert.*;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
@@ -43,6 +43,7 @@ import org.apache.uima.collection.metadata.CpeLocalCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * reading an example Descriptor from FileSystem and adding other CasProcessors via API

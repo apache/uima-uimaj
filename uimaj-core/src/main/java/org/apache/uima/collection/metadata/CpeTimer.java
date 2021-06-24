@@ -28,12 +28,12 @@ public interface CpeTimer {
    * 
    * @throws CpeDescriptorException tbd
    */
-  public void set(String aTimerClass) throws CpeDescriptorException;
+  void set(String aTimerClass) throws CpeDescriptorException;
 
   /**
    * Return a name of the timer class
    * 
    * @return - class as string
    */
-  public String get();
+  String get();
 }

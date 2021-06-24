@@ -109,7 +109,6 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    *          the CasData to which FeatureStructures parsed from XCAS will be appended
    */
   public XCasToCasDataSaxHandler(CasData aCasData) {
-    super();
     this.buffer = new StringBuffer();
     this.cas = aCasData;
   }

@@ -118,7 +118,6 @@ public class CASTestSetup  implements AnnotatorInitializer {
    * Constructor for CASTestSetup.
    */
   public CASTestSetup() {
-    super();
   }
 
   /**

@@ -58,8 +58,6 @@ public class CasEditorPlugin extends AbstractUIPlugin {
    * The constructor.
    */
   public CasEditorPlugin() {
-    super();
-
     sPlugin = this;
   }
 

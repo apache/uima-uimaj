@@ -22,6 +22,13 @@
 package org.apache.uima.cas.test;
 
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.uima.UimaSerializableFSs;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureStructureImplC;
@@ -31,13 +38,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.TOP;
-
-import java.lang.invoke.CallSite;
-import java.lang.invoke.MethodHandle;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 /**

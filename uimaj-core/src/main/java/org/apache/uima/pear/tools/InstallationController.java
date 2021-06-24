@@ -120,7 +120,7 @@ public class InstallationController {
    * The <code>InstallationMonitor</code> interface defines methods required for notifying of
    * component installation status and location of the installed PEAR packages.
    */
-  public static interface InstallationMonitor {
+  public interface InstallationMonitor {
     /**
      * Notifies of the installation status of a given component. Acceptable status values are
      * defined in the <code>InstallationController</code> class.
@@ -132,7 +132,7 @@ public class InstallationController {
      *          Note: Acceptable status values are defined in the
      *          <code>InstallationController</code> class.
      */
-    public void setInstallationStatus(String componentId, String status);
+    void setInstallationStatus(String componentId, String status);
 
     /**
      * Notifies of the installed PEAR package location for a given component.
@@ -143,7 +143,7 @@ public class InstallationController {
      *          The root directory path of the given installed PEAR package in the local file
      *          system.
      */
-    public void setInstallationLocation(String componentId, String componentRootPath);
+    void setInstallationLocation(String componentId, String componentRootPath);
   }
 
   /**
@@ -151,7 +151,7 @@ public class InstallationController {
    * automatically selecting installed PEAR package root directories and PEAR package files.
    * 
    */
-  public static interface PackageSelector {
+  public interface PackageSelector {
     /**
      * Selects root directory of an installed PEAR package in the local file system. If the given
      * component is not installed yet, returns <code>null</code>.
@@ -161,7 +161,7 @@ public class InstallationController {
      * @return The root directory of the installed PEAR package, or <code>null</code>, if the
      *         given component is not installed yet.
      */
-    public File selectPackageDirectory(String componentId);
+    File selectPackageDirectory(String componentId);
 
     /**
      * Selects a PEAR package file in the local file system. If the given component PEAR file is not
@@ -172,7 +172,7 @@ public class InstallationController {
      * @return The given PEAR package file, or <code>null</code>, if the PEAR file is not found
      *         in the local file system.
      */
-    public File selectPackageFile(String componentId);
+    File selectPackageFile(String componentId);
 
     /**
      * Selects a PEAR package URL in the network. If the given component PEAR package URL is not
@@ -183,7 +183,7 @@ public class InstallationController {
      * @return The given PEAR package URL, or <code>null</code>, if the PEAR package URL is not
      *         found.
      */
-    public URL selectPackageUrl(String componentId);
+    URL selectPackageUrl(String componentId);
   }
 
   /**

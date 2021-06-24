@@ -20,9 +20,7 @@
 package org.apache.uima.jcas.cas;
 
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -33,9 +31,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.internal.util.function.Consumer_withSaxException;
 import org.apache.uima.jcas.JCas;
-import org.xml.sax.SAXException;
 
 /**
  * 
@@ -46,7 +42,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
  
 	// for removed markers
 	protected FSList() {// Disable default constructor
-	  super();
+	  
 	}
 
 	public FSList(JCas jcas) {

@@ -35,7 +35,7 @@ public interface CasProcessorRunInSeperateProcess extends MetaDataObject {
    * @param aExec -
    *          {@link org.apache.uima.collection.metadata.CasProcessorExecutable}
    */
-  public void setExecutable(CasProcessorExecutable aExec);
+  void setExecutable(CasProcessorExecutable aExec);
 
   /**
    * Returns {@link org.apache.uima.collection.metadata.CasProcessorExecutable} program used by the
@@ -43,5 +43,5 @@ public interface CasProcessorRunInSeperateProcess extends MetaDataObject {
    * 
    * @return {@link org.apache.uima.collection.metadata.CasProcessorExecutable}
    */
-  public CasProcessorExecutable getExecutable();
+  CasProcessorExecutable getExecutable();
 }

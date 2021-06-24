@@ -42,7 +42,7 @@ public interface Precondition extends MetaDataObject {
    * 
    * @return the type identifier String for this precondition
    */
-  public String getPreconditionType();
+  String getPreconditionType();
 
   /**
    * Determines if this precondition is satisfied by a CAS.
@@ -52,5 +52,5 @@ public interface Precondition extends MetaDataObject {
    * 
    * @return true if and only if the CAS satisfies this precondition.
    */
-  public boolean evaluate(CAS aCAS);
+  boolean evaluate(CAS aCAS);
 }

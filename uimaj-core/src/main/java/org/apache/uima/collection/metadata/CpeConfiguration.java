@@ -53,7 +53,7 @@ public interface CpeConfiguration extends MetaDataObject {
    *          deployment mode of the CPE
    * @throws CpeDescriptorException tbd
    */
-  public void setDeployment(String aDeploy) throws CpeDescriptorException;
+  void setDeployment(String aDeploy) throws CpeDescriptorException;
 
   /**
    * Returns CPE deployment mode as "immediate", "vinceService", "interactive".
@@ -62,7 +62,7 @@ public interface CpeConfiguration extends MetaDataObject {
    * 
    * @return - deployment mode
    */
-  public String getDeployment();
+  String getDeployment();
 
   /**
    * Sets number of entities to process by the CPE.
@@ -71,14 +71,14 @@ public interface CpeConfiguration extends MetaDataObject {
    *          number of entities to process (-1 - for ALL)
    * @throws CpeDescriptorException tbd
    */
-  public void setNumToProcess(int aNumToProcess) throws CpeDescriptorException;
+  void setNumToProcess(int aNumToProcess) throws CpeDescriptorException;
 
   /**
    * Returns number of entities to process
    * 
    * @return - number of entities to process (-1 - for ALL)
    */
-  public int getNumToProcess();
+  int getNumToProcess();
 
   /**
    * Sets id of the first entity the CPE will beging processing. Usefull when starting the CPE from
@@ -87,7 +87,7 @@ public interface CpeConfiguration extends MetaDataObject {
    * @param aEntityId -
    *          id of first entity
    */
-  public void setStartingEntityId(String aEntityId);
+  void setStartingEntityId(String aEntityId);
 
   /**
    * Returns id of the first entity the CPE will beging processing. Usefull when starting the CPE
@@ -95,7 +95,7 @@ public interface CpeConfiguration extends MetaDataObject {
    * 
    * @return - id of first entity
    */
-  public String getStartingEntityId();
+  String getStartingEntityId();
 
   /**
    * Sets Checkpoint object containing checkpoint file and frequency of checkpoints.
@@ -104,20 +104,20 @@ public interface CpeConfiguration extends MetaDataObject {
    *          checkpoint object
    * @throws CpeDescriptorException tbd
    */
-  public void setCheckpoint(CpeCheckpoint aCheckpoint) throws CpeDescriptorException;
+  void setCheckpoint(CpeCheckpoint aCheckpoint) throws CpeDescriptorException;
 
   /**
    * Returns Checkpoint object containing checkpoint file and frequency of checkpoints.
    * 
    * @return {@link org.apache.uima.collection.metadata.CpeCheckpoint}
    */
-  public CpeCheckpoint getCheckpoint();
+  CpeCheckpoint getCheckpoint();
 
   /**
    * Removes checkpoint object
    * 
    */
-  public void removeCheckpoint();
+  void removeCheckpoint();
 
   /**
    * Sets the timer class implementing UimeTimer interface. This timer will be used to time CPE
@@ -126,7 +126,7 @@ public interface CpeConfiguration extends MetaDataObject {
    * @param aTimer -
    *          timer class
    */
-  public void setCpeTimer(CpeTimer aTimer);
+  void setCpeTimer(CpeTimer aTimer);
 
   /**
    * Returns the timer class implementing UimeTimer interface. This timer will be used to time CPE
@@ -134,14 +134,14 @@ public interface CpeConfiguration extends MetaDataObject {
    * 
    * @return - timer class
    */
-  public CpeTimer getCpeTimer();
+  CpeTimer getCpeTimer();
 
-  public String getTimerImpl();
+  String getTimerImpl();
 
-  public void removeCpeTimer();
+  void removeCpeTimer();
 
-  public OutputQueue getOutputQueue();
+  OutputQueue getOutputQueue();
 
-  public int getMaxTimeToWait();
+  int getMaxTimeToWait();
 
 }

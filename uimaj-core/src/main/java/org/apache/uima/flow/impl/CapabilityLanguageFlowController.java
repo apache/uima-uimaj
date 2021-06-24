@@ -21,8 +21,6 @@ package org.apache.uima.flow.impl;
 
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TypeOrFeature;
@@ -45,13 +42,7 @@ import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Capability;
-import org.apache.uima.resource.metadata.ConfigurationParameter;
-import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
-import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
-import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
 
 /**
  * FlowController for the CapabilityLanguageFlow, which uses a linear flow but may skip some of the

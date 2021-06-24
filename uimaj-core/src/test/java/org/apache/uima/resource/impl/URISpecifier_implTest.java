@@ -20,6 +20,7 @@
 package org.apache.uima.resource.impl;
 
 import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -29,12 +30,8 @@ import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.*;
 
 public class URISpecifier_implTest {
   URISpecifier_impl uriSpec;

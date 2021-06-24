@@ -42,7 +42,7 @@ public interface CasDataProcessor extends CasProcessor {
    * @throws ResourceProcessException
    *           if processing fails
    */
-  public CasData process(CasData aCAS) throws ResourceProcessException;
+  CasData process(CasData aCAS) throws ResourceProcessException;
 
   /**
    * Process multiple CasData objects.
@@ -56,5 +56,5 @@ public interface CasDataProcessor extends CasProcessor {
    * @throws ResourceProcessException
    *           if processing fails
    */
-  public CasData[] process(CasData[] aCASes) throws ResourceProcessException;
+  CasData[] process(CasData[] aCASes) throws ResourceProcessException;
 }
