@@ -106,14 +106,36 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
     return (fs1 == fs2) ? 0 : (fs1._id() < fs2._id()) ? -1 : 1;
   }
 
+  // @formatter:off
   /*
-   * // Do binary search on index. private final int binarySearch(int [] array, int ele, int start,
-   * int end) { --end; // Make end a legal value. int i; // Current position int comp; // Compare
-   * value while (start <= end) { i = (start + end) / 2; comp = compare(ele, array[i]); if (comp ==
-   * 0) { return i; } if (start == end) { if (comp < 0) { return (-i)-1; } else { // comp > 0 return
-   * (-i)-2; // (-(i+1))-1 } } if (comp < 0) { end = i-1; } else { // comp > 0 start = i+1; } }
-   * //This means that the input span is empty. return (-start)-1; }
+   * // Do binary search on index. 
+   * private final int binarySearch(int [] array, int ele, int start, int end) { 
+   *   --end;  // Make end a legal value. 
+   *   int i; // Current position 
+   *   int comp; // Compare value 
+   *   while (start <= end) { 
+   *     i = (start + end) / 2; 
+   *     comp = compare(ele, array[i]); 
+   *     if (comp ==  0) { 
+   *       return i; 
+   *     } 
+   *     if (start == end) {
+   *       if (comp < 0) {
+   *         return (-i)-1;
+   *       } else { // comp > 0 
+   *         return (-i)-2; // (-(i+1))-1
+   *       } 
+   *     } 
+   *     if (comp < 0) {
+   *       end = i-1; 
+   *     } else { // comp > 0 
+   *       start = i+1;
+   *     } 
+   *   } //This means that the input span is empty. 
+   *   return (-start)-1; 
+   * }
    */
+  // @formatter:on
 
   // public FsIterator_bag<T>SIteratorSingleType_ImplBase<T> createFSIterator(int[]
   // detectIllegalIndexUpdates, int typeCode) {

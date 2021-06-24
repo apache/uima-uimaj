@@ -28,20 +28,22 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasHashMap;
 import org.apache.uima.util.IteratorNvc;
 
+// @formatter:off
 /**
  * A map from ints representing FS id's (or "addresses") to those FSs There is one map instance per
  * CAS (all views).
  * 
- * The map is not populated, normally. It is only populated when there is a need to be able to map
- * from the id to the FS, or to prevent the FS from being GC'd -- The low level CAS apis for
- * creating FSs have this need, because they return the id, and this won't prevent the FS from being
- * GC'd.
+ * The map is not populated, normally.  It is only populated when there is a need to
+ *   be able to map from the id to the FS, or to prevent the FS from being GC'd
+ *   -- The low level CAS apis for creating FSs have this need, because they return the id, and this
+ *      won't prevent the FS from being GC'd.  
  * 
  * Removes not supported; they happen when the map is reset / cleared This corresponds to the v2
  * property of "once created, a FS cannot be reclaimed (until reset)"
  * 
  * Threading: to support read-only views, concurrent with updates, needs to be thread safe
  */
+// @formatter:on
 public class Id2FS implements Iterable<TOP> {
 
   static final boolean MEASURE = false;
@@ -81,11 +83,13 @@ public class Id2FS implements Iterable<TOP> {
   }
 
   private void maybeReport() {
-    if (!IS_REPORT_PINNING)
+    if (!IS_REPORT_PINNING) {
       return;
+    }
     pinning_count--;
-    if (pinning_count < 0)
+    if (pinning_count < 0) {
       return;
+    }
     System.out.println("UIMA Report: FS pinning " + pinning_count + " occuring here:");
     new Throwable().printStackTrace(System.out);
   }
@@ -255,8 +259,9 @@ public class Id2FS implements Iterable<TOP> {
       StackTraceElement[] e = Thread.currentThread().getStackTrace();
       MeasureCaller k = new MeasureCaller();
       for (int i = 3, j = 0; i < e.length; i++, j++) {
-        if (j >= MEASURE_STACK_SIZE)
+        if (j >= MEASURE_STACK_SIZE) {
           break;
+        }
         k.className[j] = e[i].getClassName();
         k.methodName[j] = e[i].getMethodName();
         k.lineNumber[j] = e[i].getLineNumber();
@@ -328,10 +333,12 @@ public class Id2FS implements Iterable<TOP> {
       StringBuilder sb = new StringBuilder();
 
       for (int i = 0; i < MEASURE_STACK_SIZE; i++) {
-        if (c.className[i] == null)
+        if (c.className[i] == null) {
           break;
-        if (i != 0)
+        }
+        if (i != 0) {
           sb.append(", ");
+        }
         sb.append(Misc.formatcaller(c.className[i], c.methodName[i], c.lineNumber[i]));
       }
 

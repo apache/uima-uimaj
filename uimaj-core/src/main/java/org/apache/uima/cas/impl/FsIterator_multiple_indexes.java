@@ -25,20 +25,24 @@ import java.util.Comparator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
 
+// @formatter:off
 /**
- * Common code for both aggregation of indexes (e.g. select, iterating over multiple views)
+ * Common code for both
+ *   aggregation of indexes (e.g. select, iterating over multiple views)
  * aggregation of indexes in type/subtype hierarchy
  *
- * Supports creating corresponding iterators just for the non-empty ones Supports reinit -
- * evaluating when one or more formerly empty indexes is no longer empty, and recalculating the
+ * Supports creating corresponding iterators just for the non-empty ones
+ * Supports reinit - evaluating when one or more formerly empty indexes is no longer empty, and recalculating the 
  * iterator set
  * 
- * Supports move-to-leftmost when typeOrdering is to be ignored -- when no typeorder key -- when
- * typeorder key, but select framework requests no typeordering for move to leftmost
+ * Supports move-to-leftmost when typeOrdering is to be ignored
+ *   -- when no typeorder key
+ *   -- when typeorder key, but select framework requests no typeordering for move to leftmost
  * 
  * @param <T>
  *          the highest type returned by these iterators
  */
+// @formatter:on
 public abstract class FsIterator_multiple_indexes<T extends FeatureStructure>
         implements LowLevelIterator<T> {
 

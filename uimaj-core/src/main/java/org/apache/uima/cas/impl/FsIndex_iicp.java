@@ -107,13 +107,17 @@ class FsIndex_iicp<T extends FeatureStructure> extends AbstractCollection<T>
   // return fsIndexRepositoryImpl.createFSIterator(this, is_unordered);
   // }
 
+  // @formatter:off
   /**
-   * Two iicps are equal if and only if: - the types they index are the same, and - the comparators
-   * are equal, and - the indexing stragtegy (bag/set/sorted) are the same Used when creating the
-   * index iterator cache to select from the set of all instances of these the one that goes with
-   * the same index definition Used by CasComplete serialization to merge multiple index names
-   * referring to the same index
+   * Two iicps are equal if and only if:
+   *   - the types they index are the same, and
+   *   - the comparators are equal, and
+   *   - the indexing stragtegy (bag/set/sorted) are the same
+   * Used when creating the index iterator cache to select from the
+   *   set of all instances of these the one that goes with the same index definition
+   * Used by CasComplete serialization to merge multiple index names referring to the same index  
    */
+  // @formatter:on
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof FsIndex_iicp)) {
@@ -463,16 +467,19 @@ class FsIndex_iicp<T extends FeatureStructure> extends AbstractCollection<T>
     return fsIndex_singletype.isSorted();
   }
 
+  // @formatter:off
   /**
    * Iterator varieties
    * 
-   * All iterators are over a Type + subtypes (because that's the purpose of this class) - ambiguous
-   * / unambiguous (for AnnotationIndex) - not strict / strict (for AnnotationIndex) - ignoring type
-   * priorities or not (for any index) - "unordered" - no need to preserve order
+   *  All iterators are over a Type + subtypes (because that's the purpose of this class)
+   *    - ambiguous / unambiguous  (for AnnotationIndex)
+   *    - not strict / strict      (for AnnotationIndex)
+   *    - ignoring type priorities or not  (for any index)
+   *    - "unordered" - no need to preserve order
    * 
    * These may be combined.
    */
-
+  // @formatter:on
   @Override
   public LowLevelIterator<T> iterator() {
     return iterator(false, false);

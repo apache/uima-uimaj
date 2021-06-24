@@ -33,11 +33,13 @@ import org.apache.uima.internal.util.OrderedFsSet_array;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
+// @formatter:off
 /**
  * Common index impl for set and sorted indexes.
  * 
- * Differences: - Number of "equal" (but not identical) FSs: Set: 1, Sorted, N - Iterators: Set:
- * unordered, Sorted: ordered
+ * Differences:
+ *   - Number of "equal" (but not identical) FSs: Set: 1, Sorted, N
+ *   - Iterators: Set: unordered, Sorted: ordered 
  * 
  * This is an index over just one type (excluding subtypes)
  * 
@@ -47,6 +49,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * @param <T>
  *          the Java class type for this index
  */
+// @formatter:on
 final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_singletype<T> {
 
   // /**h
@@ -105,22 +108,27 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
     indexedFSs.add(fs, isSorted() ? comparatorNoTypeWithID : comparatorNoTypeWithoutID);
   }
 
+  // @formatter:off
   /**
-   * find any arbitrary matching FS two comparators: cp, and cpx (has extra id comparing)
+   * find any arbitrary matching FS
+   *   two comparators:  cp, and cpx (has extra id comparing)
    * 
-   * First find an FS in the index that's the smallest that's GE to key using cpx - if none found,
-   * then all of the entries in the index are LessThan the key (using cpx); but one might be equal
-   * using cp -- if one or more would be equal using cp, it would be because the only reason for the
-   * inequality using cpx was due to the _id miscompare. Therefore we only need to check the last of
-   * the previous ones to see if it is cp equal - if we find one that is GE using cpx, -- if it is
-   * equal then return it (any equal one is ok) -- if it is GT, then the ones preceding it are
-   * LessThan (using cpx) the key. Do the same check as above to see if the last of the preceding
-   * ones is equal using cp.
+   * First find an FS in the index that's the smallest that's GE to key using cpx
+   *   - if none found, then all of the entries in the index are LessThan the key (using cpx); 
+   *                    but one might be equal using cp
+   *     -- if one or more would be equal using cp, it would be because 
+   *           the only reason for the inequality using cpx was due to the _id miscompare.
+   *           Therefore we only need to check the last of the previous ones to see if it is cp equal
+   *  - if we find one that is GE using cpx, 
+   *     -- if it is equal then return it (any equal one is ok)
+   *     -- if it is GT, then the ones preceding it are LessThan (using cpx) the key.
+   *           Do the same check as above to see if the last of the preceding ones is equal using cp.
    * 
    * @param templateKey
    *          the matching fs template
    * @return an arbitrary fs that matches
    */
+  // @formatter:on
   @Override
   public T find(FeatureStructure templateKey) {
     int pos = this.indexedFSs.findWithoutID((TOP) templateKey);

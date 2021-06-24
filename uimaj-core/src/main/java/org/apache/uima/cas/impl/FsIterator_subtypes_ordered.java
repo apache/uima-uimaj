@@ -301,17 +301,17 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     return d * dir < 0;
   }
 
+  // @formatter:off
   /**
    * Only used to compare two iterator's with different types position
-   * 
-   * @param fsLeft
-   *          the left iterator's element
-   * @param fsRight
-   *          the right iterator's element
-   * @return 1 if left > right, (compare maybe ignores type) -1 if left < right, (compare maybe
-   *         ignores type) 1 if left == right and left.id > right.id -1 if left == right and left.id
-   *         < right.id
+   * @param fsLeft the left iterator's element
+   * @param fsRight the right iterator's element
+   * @return  1 if left > right,   (compare maybe ignores type)
+   *         -1 if left < right,   (compare maybe ignores type)
+   *          1 if left == right and left.id > right.id
+   *         -1 if left == right and left.id < right.id
    */
+  // @formatter:on
   private int compare(FeatureStructure fsLeft, FeatureStructure fsRight) {
     int d = comparatorMaybeNoTypeWithoutId.compare((TOP) fsLeft, (TOP) fsRight);
 

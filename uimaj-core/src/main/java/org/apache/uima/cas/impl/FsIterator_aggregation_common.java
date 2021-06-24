@@ -31,15 +31,18 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
 
+// @formatter:off
 /**
- * Aggregate several FS iterators. Simply iterates over one after the other without any sorting or
- * merging. Used by getAllIndexedFS and FsIterator_subtypes when unordered underlying iterators
- * could be any (bag, set, or ordered underlying iterators could be complex (unambiguous annotation,
- * filtered,...)
+ * Aggregate several FS iterators.  Simply iterates over one after the other
+ * without any sorting or merging.
+ * Used by getAllIndexedFS and FsIterator_subtypes when unordered
+ *   underlying iterators could be any (bag, set, or ordered)
+ *   underlying iterators could be complex (unambiguous annotation, filtered,...)
  * 
  * The iterators can be for single types or for types with subtypes. Exception: if the ll_index is
  * accessed, it is presumed to be of type FsIndex_subtypes.
  */
+// @formatter:on
 class FsIterator_aggregation_common<T extends FeatureStructure>
         extends FsIterator_multiple_indexes<T> {
 
