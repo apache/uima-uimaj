@@ -51,7 +51,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
   private UimaContext mUimaContext;
 
   private boolean mSofaAware;
-  
+
   private boolean mProcessCalled;
 
   /**
@@ -128,8 +128,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
       } catch (ResourceConfigurationException e) {
         throw new AnalysisEngineProcessException(e);
       }
-    }
-    else {
+    } else {
       mProcessCalled = true;
     }
   }
@@ -217,13 +216,14 @@ public class CollectionReaderAdapter implements AnalysisComponent {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_component.AnalysisComponent#next(org.apache.uima.core.AbstractCas)
+   * @see
+   * org.apache.uima.analysis_component.AnalysisComponent#next(org.apache.uima.core.AbstractCas)
    */
   public void next(AbstractCas aEmptyCas) throws AnalysisEngineProcessException {
     if (!CAS.class.isAssignableFrom(aEmptyCas.getClass())) {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
-                  aEmptyCas.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
+              new Object[] { CAS.class, aEmptyCas.getClass() });
     }
 
   }
