@@ -67,8 +67,8 @@ public interface FlowControllerDeclaration extends MetaDataObject {
   void setImport(Import aImport);
 
   /**
-   * Retrieves the <code>ResourceSpecifier</code> used to determine which FlowController is used
-   * by the AnalysisEngine.
+   * Retrieves the <code>ResourceSpecifier</code> used to determine which FlowController is used by
+   * the AnalysisEngine.
    * 
    * @return the <code>ResourceSpecifier</code> that specifies a FlowController.
    */
@@ -84,9 +84,9 @@ public interface FlowControllerDeclaration extends MetaDataObject {
   void setSpecifier(ResourceSpecifier aSpecifier);
 
   /**
-   * Resolves an imported FlowController specifier, if there is one. The <code>specifier</code>property
-   * of this object is set to the result of parsing the imported descriptor. The import is then
-   * deleted.
+   * Resolves an imported FlowController specifier, if there is one. The
+   * <code>specifier</code>property of this object is set to the result of parsing the imported
+   * descriptor. The import is then deleted.
    * 
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
@@ -94,9 +94,9 @@ public interface FlowControllerDeclaration extends MetaDataObject {
   void resolveImports() throws InvalidXMLException;
 
   /**
-   * Resolves an imported FlowController specifier, if there is one. The <code>specifier</code>property
-   * of this object is set to the result of parsing the imported descriptor. The import is then
-   * deleted.
+   * Resolves an imported FlowController specifier, if there is one. The
+   * <code>specifier</code>property of this object is set to the result of parsing the imported
+   * descriptor. The import is then deleted.
    * 
    * @param aResourceManager
    *          the Resource Manager used to locate an XML file imported by name

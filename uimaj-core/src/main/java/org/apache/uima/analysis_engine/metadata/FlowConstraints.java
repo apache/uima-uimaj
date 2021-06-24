@@ -31,9 +31,9 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * This interface implements no methods for flow constraint specification. It serves as a common
  * superclass for different ways of specifying flow constraints.
  * <p>
- * Flow constraints must refer to delegate AnalysisEngines; the <code>FlowConstraints</code>
- * object refers to these AEs using String identifiers. The <code>FlowConstraints</code> object
- * does not assign any particular meaning to these Strings - it is the user of the
+ * Flow constraints must refer to delegate AnalysisEngines; the <code>FlowConstraints</code> object
+ * refers to these AEs using String identifiers. The <code>FlowConstraints</code> object does not
+ * assign any particular meaning to these Strings - it is the user of the
  * <code>FlowConstraints</code> object that must understand how to map them to the AnalysisEngines
  * themselves. It may be desirable to remap these identifiers; FlowConstraints implementations must
  * support this via the {@link #remapIDs(Map)} method.

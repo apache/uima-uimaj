@@ -20,8 +20,8 @@
 package org.apache.uima.analysis_engine.metadata;
 
 /**
- * A <code>CapabilityLanguageFlow</code> is a simple type of {@link FlowConstraints} that
- * specifies the complete flow as a capabilityLanguage sequence.
+ * A <code>CapabilityLanguageFlow</code> is a simple type of {@link FlowConstraints} that specifies
+ * the complete flow as a capabilityLanguage sequence.
  * <p>
  * Each element in the sequence is specified as a String identifier. In a
  * <code>CapabilityLanguageFlow</code> skipping of the included AnalysisEngines is possible if the

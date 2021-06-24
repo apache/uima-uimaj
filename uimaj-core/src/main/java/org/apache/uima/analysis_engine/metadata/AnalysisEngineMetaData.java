@@ -25,8 +25,8 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * Encapsulates all of the metadata for an Analysis Engine.
  * 
  * As with all {@link org.apache.uima.resource.metadata.MetaDataObject}s, an
- * <code>AnalysisEngineMetaData</code> may or may not be modifiable. An application can find out
- * by calling the {@link #isModifiable()} method.
+ * <code>AnalysisEngineMetaData</code> may or may not be modifiable. An application can find out by
+ * calling the {@link #isModifiable()} method.
  * 
  * 
  */
@@ -42,8 +42,8 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
 
   /**
    * Sets whether this AnalysisEngine supports asynchronous communication. If this is set to true
-   * then the AnalysisEngine should implement the <code>AsynchronousAnalysisEngine</code>
-   * interface (not yet implemented).
+   * then the AnalysisEngine should implement the <code>AsynchronousAnalysisEngine</code> interface
+   * (not yet implemented).
    * 
    * @param aSupported
    *          true if and only if this AnalysisEngine supports asynchronous communication
@@ -81,8 +81,8 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * map.
    * 
    * @param aFlowConstraints
-   *          the flow constraints for the AnalysisEngine, or <code>null</code> if there are no
-   *          flow constraints
+   *          the flow constraints for the AnalysisEngine, or <code>null</code> if there are no flow
+   *          constraints
    * 
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
@@ -94,8 +94,8 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * <p>
    * Publishing this information is optional; some implementations may always return null here.
    * 
-   * @return an array of delegate AnalysisEngine metadata, or <code>null</code> if that
-   *         information is not available.
+   * @return an array of delegate AnalysisEngine metadata, or <code>null</code> if that information
+   *         is not available.
    */
   AnalysisEngineMetaData[] getDelegateAnalysisEngineMetaData();
 }

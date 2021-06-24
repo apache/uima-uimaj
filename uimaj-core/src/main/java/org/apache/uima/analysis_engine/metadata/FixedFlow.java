@@ -20,21 +20,20 @@
 package org.apache.uima.analysis_engine.metadata;
 
 /**
- * A <code>FixedFlow</code> is a simple type of {@link FlowConstraints} that specifies the
- * complete flow as a fixed sequence.
+ * A <code>FixedFlow</code> is a simple type of {@link FlowConstraints} that specifies the complete
+ * flow as a fixed sequence.
  * <p>
  * Each element in the sequence is specified as a String identifier. The <code>FixedFlow</code>
  * object does not assign any particular meaning to these Strings - it is the user of the
- * <code>FixedFlow</code> object that must understand how to map them to AnalysisEngines
- * themselves.
+ * <code>FixedFlow</code> object that must understand how to map them to AnalysisEngines themselves.
  * 
  * 
  */
 public interface FixedFlow extends FlowConstraints {
 
   /**
-   * The type identifier for this class of <code>FlowConstraints</code>. This is the return value
-   * of {@link #getFlowConstraintsType()}.
+   * The type identifier for this class of <code>FlowConstraints</code>. This is the return value of
+   * {@link #getFlowConstraintsType()}.
    */
   String FLOW_CONSTRAINTS_TYPE = "FIXED";
 
