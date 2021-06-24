@@ -71,46 +71,59 @@ import org.slf4j.MDC;
  * 
  * 
  */
-public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBase implements
-        TextAnalysisEngine {
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.Resource_ImplBase#setMetaData(org.apache.uima.resource.metadata.ResourceMetaData)
+public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBase
+        implements TextAnalysisEngine {
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.Resource_ImplBase#setMetaData(org.apache.uima.resource.metadata.
+   * ResourceMetaData)
    */
   @Override
-  //*****************************************************************************************
-  // NOTICE: This method is logically not needed it would seem, because the superclass of the superclass of this 
+  // *****************************************************************************************
+  // NOTICE: This method is logically not needed it would seem, because the superclass of the
+  // superclass of this
   // implements it.
-  // However, there is an obscure issue here involving the precise definition of "protected". 
-  // If it is not included in this class and this class is not in the same package as the class needing
-  // this, then a class (e.g. PearAnalysisEngineWrapper) which does 
-  //        ((AnalysisEngineImplBase)ae).setMetaData(...) fails with a compile error saying that
+  // However, there is an obscure issue here involving the precise definition of "protected".
+  // If it is not included in this class and this class is not in the same package as the class
+  // needing
+  // this, then a class (e.g. PearAnalysisEngineWrapper) which does
+  // ((AnalysisEngineImplBase)ae).setMetaData(...) fails with a compile error saying that
   // the method setMetaData in the Resource_ImplBase is not visible (even though it is "protected")
   // This makes that problem go away.
   // Details of this issue are explained in section 6.6.2.1, Access to a protected member,
-  //   in The Java Language Specification (pg 139).
-  //   
-  //*****************************************************************************************
-  
+  // in The Java Language Specification (pg 139).
+  //
+  // *****************************************************************************************
+
   protected void setMetaData(ResourceMetaData aMetaData) {
     super.setMetaData(aMetaData);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.AnalysisEngine#batchProcessComplete()
    */
   public void batchProcessComplete() throws AnalysisEngineProcessException {
- 
+
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.AnalysisEngine#collectionProcessComplete()
    */
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.AnalysisEngine#processAndOutputNewCASes(org.apache.uima.cas.CAS)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.apache.uima.analysis_engine.AnalysisEngine#processAndOutputNewCASes(org.apache.uima.cas.
+   * CAS)
    */
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
     return null;
@@ -126,7 +139,6 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * passed down to delegates.
    */
   public static final String PARAM_VERIFICATION_MODE = "VERIFICATION_MODE";
-
 
   /**
    * Performance Tuning setting in effect for this Analysis Engine.
@@ -151,8 +163,8 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier,
-   *      java.util.Map)
+   * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.
+   * ResourceSpecifier, java.util.Map)
    */
   @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
@@ -163,7 +175,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       // type system, priorities, and indexes (clone it first, to ensure
       // CasManager's version doesn't change).
       AnalysisEngineMetaData md = getAnalysisEngineMetaData();
-      getCasManager().addMetaData((AnalysisEngineMetaData)md.clone());
+      getCasManager().addMetaData((AnalysisEngineMetaData) md.clone());
 
       // read parameters from additionalParams map
       Properties perfSettings = null;
@@ -172,7 +184,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       if (aAdditionalParams != null) {
         perfSettings = (Properties) aAdditionalParams.get(PARAM_PERFORMANCE_TUNING_SETTINGS);
         mMBeanServer = aAdditionalParams.get(PARAM_MBEAN_SERVER);
-        mMBeanNamePrefix = (String)aAdditionalParams.get(PARAM_MBEAN_NAME_PREFIX);
+        mMBeanNamePrefix = (String) aAdditionalParams.get(PARAM_MBEAN_NAME_PREFIX);
       }
       // set performance tuning settings
       if (perfSettings != null) {
@@ -183,11 +195,11 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       // (Java 1.5 only)
       getMBean().setName(getMetaData().getName(), getUimaContextAdmin(), mMBeanNamePrefix);
       JmxMBeanAgent.registerMBean(getManagementInterface(), mMBeanServer);
-      
-      //if this is the root component, also configure the CAS Manager's JMX info at this point
-      //TODO: not really necessary to do this every time, only for the first AE we initialize that
-      //uses this CasManager.
-      getCasManager().setJmxInfo(mMBeanServer, 
+
+      // if this is the root component, also configure the CAS Manager's JMX info at this point
+      // TODO: not really necessary to do this every time, only for the first AE we initialize that
+      // uses this CasManager.
+      getCasManager().setJmxInfo(mMBeanServer,
               getUimaContextAdmin().getRootContext().getManagementInterface().getUniqueMBeanName());
     }
     return result;
@@ -263,8 +275,9 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     setResultSpecification(aResultSpec);
     process(aCAS);
-    if (isProcessTraceEnabled()) {  // a slight performance speedup https://issues.apache.org/jira/browse/UIMA-4151
-      buildProcessTraceFromMBeanStats(aTrace); 
+    if (isProcessTraceEnabled()) { // a slight performance speedup
+                                   // https://issues.apache.org/jira/browse/UIMA-4151
+      buildProcessTraceFromMBeanStats(aTrace);
     }
   }
 
@@ -276,8 +289,9 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       cas.release();
     }
     // https://issues.apache.org/jira/browse/UIMA-4151
-    return isProcessTraceEnabled() ? buildProcessTraceFromMBeanStats() : ProcessTrace_impl.disabledProcessTrace;
-//    return buildProcessTraceFromMBeanStats();
+    return isProcessTraceEnabled() ? buildProcessTraceFromMBeanStats()
+            : ProcessTrace_impl.disabledProcessTrace;
+    // return buildProcessTraceFromMBeanStats();
   }
 
   /**
@@ -307,8 +321,8 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
 
   @Deprecated
   public void process(org.apache.uima.analysis_engine.AnalysisProcessData aProcessData,
-          ResultSpecification aResultSpec) throws ResultNotSupportedException,
-          AnalysisEngineProcessException {
+          ResultSpecification aResultSpec)
+          throws ResultNotSupportedException, AnalysisEngineProcessException {
     process(aProcessData.getCAS(), aResultSpec, aProcessData.getProcessTrace());
   }
 
@@ -363,12 +377,14 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   public synchronized String[] getFeatureNamesForType(String aTypeName) {
     // build CAS and populate mFirstTypeSystem
-    CASImpl cas = (CASImpl) getCasManager().getCas(this.getUimaContextAdmin().getQualifiedContextName());
+    CASImpl cas = (CASImpl) getCasManager()
+            .getCas(this.getUimaContextAdmin().getQualifiedContextName());
     TypeSystemImpl ts = cas.getTypeSystemImpl();
     getCasManager().releaseCas(cas);
 
     TypeImpl t = ts.getType(aTypeName);
-    return (t == null) ? null : t.getFeaturesAsStream().map(f -> f.getShortName()).toArray(size -> new String[size]);
+    return (t == null) ? null
+            : t.getFeaturesAsStream().map(f -> f.getShortName()).toArray(size -> new String[size]);
   }
 
   /*
@@ -414,7 +430,8 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(org.apache.uima.analysis_engine.ResultSpecification)
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(org.apache.uima.
+   * analysis_engine.ResultSpecification)
    */
   public void setResultSpecification(ResultSpecification aResultSpec) {
     // does nothing by default (for service adapters)
@@ -432,14 +449,14 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     return uc == null ? null : uc.getManagementInterface();
   }
 
-  public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-          IOException {
+  public void batchProcessComplete(ProcessTrace aTrace)
+          throws ResourceProcessException, IOException {
     batchProcessComplete();
 
   }
 
-  public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-          IOException {
+  public void collectionProcessComplete(ProcessTrace aTrace)
+          throws ResourceProcessException, IOException {
     collectionProcessComplete();
   }
 
@@ -482,13 +499,13 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @return -
    */
   protected ConfigurationParameterSettings getCurrentConfigParameterSettings() {
-    return getUimaContextAdmin().getConfigurationManager().getCurrentConfigParameterSettings(
-            getUimaContextAdmin().getQualifiedContextName());
+    return getUimaContextAdmin().getConfigurationManager()
+            .getCurrentConfigParameterSettings(getUimaContextAdmin().getQualifiedContextName());
   }
 
   /**
    * @return the MBean that provides the management interface to this AE. Returns the same object as
-   * getManagementInterface() but casted to the AnalysisEngineManagement type.
+   *         getManagementInterface() but casted to the AnalysisEngineManagement type.
    */
   protected AnalysisEngineManagementImpl getMBean() {
     return (AnalysisEngineManagementImpl) getUimaContextAdmin().getManagementInterface();
@@ -522,9 +539,9 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   /**
-   * @return a constructed ProcessTrace object that represents the last execution of this AnalysisEngine. This
-   * is used so that we can return a ProcessTrace object from each process() call for backwards
-   * compatibility with version 1.x.
+   * @return a constructed ProcessTrace object that represents the last execution of this
+   *         AnalysisEngine. This is used so that we can return a ProcessTrace object from each
+   *         process() call for backwards compatibility with version 1.x.
    */
   protected ProcessTrace buildProcessTraceFromMBeanStats() {
     ProcessTrace trace = new ProcessTrace_impl(getPerformanceTuningSettings());
@@ -536,7 +553,9 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * Modify an existing ProcessTrace object by adding events that represent the last excecution of
    * this AnalysisEngine. This is used so that we can return a ProcessTrace object from each
    * process() call for backwards compatibility with version 1.x.
-   * @param trace -
+   * 
+   * @param trace
+   *          -
    */
   protected void buildProcessTraceFromMBeanStats(ProcessTrace trace) {
     // this is the implementation for primitives only. Aggregate AE overrides.
@@ -552,16 +571,16 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
 
       // now check Analysis time
       int analysisTime = (int) getMBean().getAnalysisTimeSinceMark();
-      if (analysisTime > 0 || 
-          // Jira http://issues.apache.org/jira/browse/uima-941
-          // intent is to skip recording analysis times of 0
-          //   if these are coming from a remote which supports
-          //   serviceCallTime but not analysisTime
-          //   If both are 0, the presumption is that the time really
-          //   was 0.  If only analysisTime is 0, the presumption is
-          //   that the remote didn't implement it, in favor of
-          //   returning serviceCallTime.
-          (analysisTime == 0 && serviceCallTime == 0)) {
+      if (analysisTime > 0 ||
+      // Jira http://issues.apache.org/jira/browse/uima-941
+      // intent is to skip recording analysis times of 0
+      // if these are coming from a remote which supports
+      // serviceCallTime but not analysisTime
+      // If both are 0, the presumption is that the time really
+      // was 0. If only analysisTime is 0, the presumption is
+      // that the remote didn't implement it, in favor of
+      // returning serviceCallTime.
+              (analysisTime == 0 && serviceCallTime == 0)) {
         ProcessTraceEvent_impl analysisEvent = new ProcessTraceEvent_impl(getMetaData().getName(),
                 "Analysis", "");
         analysisEvent.setDuration(analysisTime);
@@ -588,82 +607,86 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   protected boolean isProcessTraceEnabled() {
     return mProcessTraceEnabled;
   }
-  
+
   protected Object getMBeanServer() {
     return mMBeanServer;
   }
-  
+
   protected String getMBeanNamePrefix() {
     return mMBeanNamePrefix;
   }
-  
+
   private static final boolean isMDC;
   static {
     MDC.put("uima_test", "uima_test");
     isMDC = null != MDC.get("uima_test");
     MDC.remove("uima_test");
   }
-  protected void callInitializeMethod(AnalysisComponent component, UimaContext context) throws ResourceInitializationException {
-//    component.initialize(context);
+
+  protected void callInitializeMethod(AnalysisComponent component, UimaContext context)
+          throws ResourceInitializationException {
+    // component.initialize(context);
     try {
       withContexts(component, context, null, () -> component.initialize(context));
     } catch (Exception e) {
-      throw (e instanceof ResourceInitializationException)
-              ? ((ResourceInitializationException)e) 
+      throw (e instanceof ResourceInitializationException) ? ((ResourceInitializationException) e)
               : new ResourceInitializationException(e);
     }
   }
-  
+
   protected void callProcessMethod(AnalysisComponent component, AbstractCas cas) throws Exception {
-//    component.process(cas);
-//    getMBean().incrementCASesProcessed();
-    withContexts(component, 
-                getUimaContext(), 
-                cas,
-                 () -> {component.process(cas); 
-                        getMBean().incrementCASesProcessed();});
+    // component.process(cas);
+    // getMBean().incrementCASesProcessed();
+    withContexts(component, getUimaContext(), cas, () -> {
+      component.process(cas);
+      getMBean().incrementCASesProcessed();
+    });
   }
-  
-  private void withContexts(AnalysisComponent component, UimaContext context, AbstractCas cas, Runnable_withException r) throws Exception {
+
+  private void withContexts(AnalysisComponent component, UimaContext context, AbstractCas cas,
+          Runnable_withException r) throws Exception {
     if (isMDC) {
-    UimaContext_ImplBase ucib = (UimaContext_ImplBase)context;
-    String prevCN = pushMDCstring(MDC_ANNOTATOR_CONTEXT_NAME, ucib.getQualifiedContextName());
-    String prevAN = pushMDCstring(MDC_ANNOTATOR_IMPL_NAME, component.getClass().getName());
-    String prevRID = pushMDCstring(MDC_ROOT_CONTEXT_ID, ((UimaContext_ImplBase)ucib.getRootContext())
-                                                     .getMdcId());
-    String prevCAS = null;
-    if (cas != null) {
-      CASImpl casImpl = (cas instanceof JCas) ? ((JCasImpl)cas).getCasImpl() : (CASImpl)cas;
-      prevCAS = pushMDCstring(MDC_CAS_ID, casImpl.getCasId());
-    }
-    try {
-      r.run();
-    } finally {
-      popMDCstring(MDC_ANNOTATOR_CONTEXT_NAME, prevCN);
-      popMDCstring(MDC_ANNOTATOR_IMPL_NAME, prevAN);
-      popMDCstring(MDC_ROOT_CONTEXT_ID, prevRID);
+      UimaContext_ImplBase ucib = (UimaContext_ImplBase) context;
+      String prevCN = pushMDCstring(MDC_ANNOTATOR_CONTEXT_NAME, ucib.getQualifiedContextName());
+      String prevAN = pushMDCstring(MDC_ANNOTATOR_IMPL_NAME, component.getClass().getName());
+      String prevRID = pushMDCstring(MDC_ROOT_CONTEXT_ID,
+              ((UimaContext_ImplBase) ucib.getRootContext()).getMdcId());
+      String prevCAS = null;
       if (cas != null) {
-        popMDCstring(MDC_CAS_ID, prevCAS);
+        CASImpl casImpl = (cas instanceof JCas) ? ((JCasImpl) cas).getCasImpl() : (CASImpl) cas;
+        prevCAS = pushMDCstring(MDC_CAS_ID, casImpl.getCasId());
       }
-    }
+      try {
+        r.run();
+      } finally {
+        popMDCstring(MDC_ANNOTATOR_CONTEXT_NAME, prevCN);
+        popMDCstring(MDC_ANNOTATOR_IMPL_NAME, prevAN);
+        popMDCstring(MDC_ROOT_CONTEXT_ID, prevRID);
+        if (cas != null) {
+          popMDCstring(MDC_CAS_ID, prevCAS);
+        }
+      }
     } else {
       r.run();
     }
   }
-    
+
   private String pushMDCstring(String key, String value) {
-    if (value == null) value = "";  // protect against failures if no value
+    if (value == null)
+      value = ""; // protect against failures if no value
     String v = MDC.get(key);
-    if (value.equals(v)) return value;
+    if (value.equals(v))
+      return value;
     MDC.put(key, (v == null) ? value : v + " : " + value);
     return v;
   }
-  
+
   private void popMDCstring(String key, String prev) {
     String v = MDC.get(key);
-    if (v.equals(prev)) return;
+    if (v.equals(prev))
+      return;
     if (prev != null) {
-      MDC.put(key,  prev);
+      MDC.put(key, prev);
     } else {
       MDC.remove(key);
     }

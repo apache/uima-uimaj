@@ -98,7 +98,8 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames()
+   * @see
+   * org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames()
    */
   public String[] getConfigParameterNames() {
     return mUimaContext.getConfigParameterNames();
@@ -107,7 +108,9 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames(java.lang.String)
+   * @see
+   * org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames(java.
+   * lang.String)
    */
   public String[] getConfigParameterNames(String aGroup) {
     return mUimaContext.getConfigParameterNames(aGroup);
@@ -129,7 +132,8 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURI(java.lang.String)
+   * @see
+   * org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURI(java.lang.String)
    */
   public URI getResourceURI(String aKey) throws AnnotatorContextException {
     try {
@@ -142,7 +146,8 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceFilePath(java.lang.String)
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceFilePath(java.lang.
+   * String)
    */
   public String getResourceFilePath(String aKey) throws AnnotatorContextException {
     try {
@@ -218,8 +223,9 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURI(java.lang.String,
-   *      java.lang.String[])
+   * @see
+   * org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURI(java.lang.String,
+   * java.lang.String[])
    */
   public URI getResourceURI(String aKey, String[] aParams) throws AnnotatorContextException {
     try {
@@ -232,10 +238,11 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceFilePath(java.lang.String,
-   *      java.lang.String[])
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceFilePath(java.lang.
+   * String, java.lang.String[])
    */
-  public String getResourceFilePath(String aKey, String[] aParams) throws AnnotatorContextException {
+  public String getResourceFilePath(String aKey, String[] aParams)
+          throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceFilePath(aKey, aParams);
     } catch (ResourceAccessException e) {
@@ -256,7 +263,9 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * <p>
    * This method is to be called from the Analysis Engine, not the Annotator, so it is not part of
    * the AnnotatorContext interface.
-   * @param aProcessTrace -
+   * 
+   * @param aProcessTrace
+   *          -
    */
   public void setProcessTrace(ProcessTrace aProcessTrace) {
     mUimaContext.setProcessTrace(aProcessTrace);

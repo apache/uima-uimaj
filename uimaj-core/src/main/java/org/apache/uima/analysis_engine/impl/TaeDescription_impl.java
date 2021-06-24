@@ -40,6 +40,7 @@ public class TaeDescription_impl extends AnalysisEngineDescription_impl implemen
   // property info set below
 
   static {
-    XMLIZATION_INFO.propertyInfo = AnalysisEngineDescription_impl.getXmlizationInfoForClass().propertyInfo;
+    XMLIZATION_INFO.propertyInfo = AnalysisEngineDescription_impl
+            .getXmlizationInfoForClass().propertyInfo;
   }
 }
