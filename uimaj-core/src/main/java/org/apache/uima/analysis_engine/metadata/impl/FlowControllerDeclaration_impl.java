@@ -42,8 +42,8 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * Declares which FlowController is used by the Aggregate Analysis Engine.
  */
-public class FlowControllerDeclaration_impl extends MetaDataObject_impl implements
-        FlowControllerDeclaration {
+public class FlowControllerDeclaration_impl extends MetaDataObject_impl
+        implements FlowControllerDeclaration {
   private static final long serialVersionUID = 1526130202197517743L;
 
   private String mKey;
@@ -64,7 +64,8 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration#setKey(java.lang.String)
+   * @see
+   * org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration#setKey(java.lang.String)
    */
   public void setKey(String aKey) {
     mKey = aKey;
@@ -113,7 +114,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
    */
   public void resolveImports() throws InvalidXMLException {
     if (getImport() != null) {
-      resolveImports(UIMAFramework.newDefaultResourceManager());      
+      resolveImports(UIMAFramework.newDefaultResourceManager());
     }
   }
 
@@ -121,10 +122,11 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
    * (non-Javadoc)
    * 
    * @see FlowControllerDeclaration#resolveImports(org.apache.uima.resource.ResourceManager)
-   * Synchronized to support parallel initialization calls on primitive AEs, sharing
-   * a common Resource Manager, and perhaps common UIMA Contexts
+   * Synchronized to support parallel initialization calls on primitive AEs, sharing a common
+   * Resource Manager, and perhaps common UIMA Contexts
    */
-  public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+  public synchronized void resolveImports(ResourceManager aResourceManager)
+          throws InvalidXMLException {
     Import theImport = getImport();
     if (theImport != null) {
       URL url = theImport.findAbsoluteUrl(aResourceManager);
@@ -152,8 +154,9 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
-   *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
+   * @see
+   * org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.
+   * Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {

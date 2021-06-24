@@ -30,8 +30,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.impl.Constants;
 
 /**
- * A <code>CapabilityLanguageFlow</code> is a simple type of {@link FlowConstraints} that
- * specifies the complete flow as a capabilityLanguage sequence.
+ * A <code>CapabilityLanguageFlow</code> is a simple type of {@link FlowConstraints} that specifies
+ * the complete flow as a capabilityLanguage sequence.
  * <p>
  * Each element in the sequence is specified as a String identifier. In a
  * <code>CapabilityLanguageFlow</code> skipping of the included AnalysisEngines is possible if the
@@ -39,12 +39,12 @@ import org.apache.uima.util.impl.Constants;
  * another AnalysisEngine.
  * 
  */
-public class CapabilityLanguageFlow_impl extends MetaDataObject_impl implements
-        CapabilityLanguageFlow {
+public class CapabilityLanguageFlow_impl extends MetaDataObject_impl
+        implements CapabilityLanguageFlow {
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "capabilityLanguageFlow", new PropertyXmlInfo[] { new PropertyXmlInfo(
-                  "capabilityLanguageFlow", null, true, "node") });
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("capabilityLanguageFlow",
+          new PropertyXmlInfo[] {
+              new PropertyXmlInfo("capabilityLanguageFlow", null, true, "node") });
 
   /** Array of AnalysisEngine identifiers indicating the capabilityLanguage flow. */
   private String[] mCapabilityLanguageFlow = Constants.EMPTY_STRING_ARRAY;

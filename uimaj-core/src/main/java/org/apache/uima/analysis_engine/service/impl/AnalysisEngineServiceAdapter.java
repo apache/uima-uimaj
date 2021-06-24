@@ -46,14 +46,14 @@ import org.apache.uima.util.UimaTimer;
  * know whether it is calling a local AnalysisEngine or a remote service.
  * <p>
  * Subclasses must provide an implementation of the {@link #initialize(ResourceSpecifier,Map)}
- * method, which must create an {@link AnalysisEngineServiceStub} object that can communicate with the
- * remote service. The stub must be passed to the {@link #setStub(AnalysisEngineServiceStub)} method of
- * this class.
+ * method, which must create an {@link AnalysisEngineServiceStub} object that can communicate with
+ * the remote service. The stub must be passed to the {@link #setStub(AnalysisEngineServiceStub)}
+ * method of this class.
  * 
  * 
  */
-public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBase implements
-        TextAnalysisEngine, CasConsumer {
+public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBase
+        implements TextAnalysisEngine, CasConsumer {
 
   /**
    * current class

@@ -29,7 +29,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * Implementation of {@link SofaMapping}.
  */
 public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping {
-  
+
   private static final long serialVersionUID = -6115544748030506703L;
 
   private String mComponentKey = CAS.NAME_DEFAULT_TEXT_SOFA;
@@ -68,7 +68,8 @@ public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#setComponentSofaName(java.lang.String)
+   * @see
+   * org.apache.uima.analysis_engine.metadata.SofaMapping#setComponentSofaName(java.lang.String)
    */
   public void setComponentSofaName(String aComponentSofaName) {
     mComponentSofaName = aComponentSofaName;
@@ -86,7 +87,8 @@ public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#setAggregateSofaName(java.lang.String)
+   * @see
+   * org.apache.uima.analysis_engine.metadata.SofaMapping#setAggregateSofaName(java.lang.String)
    */
   public void setAggregateSofaName(String aAggregateSofaName) {
     mAggregateSofaName = aAggregateSofaName;

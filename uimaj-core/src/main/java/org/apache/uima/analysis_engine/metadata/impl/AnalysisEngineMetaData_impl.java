@@ -47,8 +47,8 @@ import org.xml.sax.SAXException;
  * 
  * 
  */
-public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implements
-        AnalysisEngineMetaData {
+public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl
+        implements AnalysisEngineMetaData {
   static final long serialVersionUID = -3030574527767871396L;
 
   private boolean mAsynchronousModeSupported;
@@ -79,7 +79,9 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#resolveImports(org.apache.uima.resource.ResourceManager)
+   * @see
+   * org.apache.uima.resource.metadata.ProcessingResourceMetaData#resolveImports(org.apache.uima.
+   * resource.ResourceManager)
    */
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
     if (getTypeSystem() != null) {
@@ -139,7 +141,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
     mTypePriorities = aTypePriorities;
   }
 
-  /** 
+  /**
    * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#getFsIndexCollection()
    */
   public FsIndexCollection getFsIndexCollection() {
@@ -181,11 +183,13 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.metadata.impl.PropertyXmlInfo,
-   *      java.lang.String, org.xml.sax.ContentHandler)
+   * @see
+   * org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(org.apache.
+   * uima.resource.metadata.impl.PropertyXmlInfo, java.lang.String, org.xml.sax.ContentHandler)
    */
   @Override
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace)
+          throws SAXException {
     // Prevent the fsIndexes property from being written to XML - it exists only so old-style XML
     // can be read.
     if (!"fsIndexes".equals(aPropInfo.propertyName)) {
@@ -290,14 +294,15 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
 
   /**
    * Static method to get XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
+   * 
    * @return XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
    */
   protected static XmlizationInfo getXmlizationInfoForClass() {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "analysisEngineMetaData", null); // properties assigned below
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("analysisEngineMetaData",
+          null); // properties assigned below
 
   static {
     // this class's Xmlization info is derived from that of its superclass
@@ -307,12 +312,9 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
 
     PropertyXmlInfo[] newProperties = new PropertyXmlInfo[] {
         new PropertyXmlInfo("flowConstraints"), new PropertyXmlInfo("typeSystem", null),
-        new PropertyXmlInfo("typePriorities", null),
-        new PropertyXmlInfo("fsIndexCollection", null), 
-        new PropertyXmlInfo("fsIndexes"),
-        new PropertyXmlInfo("capabilities", false),
-        new PropertyXmlInfo("operationalProperties", null), 
-        new PropertyXmlInfo("casInterface") };
+        new PropertyXmlInfo("typePriorities", null), new PropertyXmlInfo("fsIndexCollection", null),
+        new PropertyXmlInfo("fsIndexes"), new PropertyXmlInfo("capabilities", false),
+        new PropertyXmlInfo("operationalProperties", null), new PropertyXmlInfo("casInterface") };
 
     XMLIZATION_INFO.propertyInfo = new PropertyXmlInfo[superclassInfo.propertyInfo.length
             + newProperties.length];
