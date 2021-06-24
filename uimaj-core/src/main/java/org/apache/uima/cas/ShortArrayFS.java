@@ -16,19 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas;
 
 /**
  * Short array interface. To create a short array object, use
- * {@link org.apache.uima.cas.CAS#createShortArrayFS CAS.createShortArrayFS(int)} or
- * new ShortArray(aJCas, length)
+ * {@link org.apache.uima.cas.CAS#createShortArrayFS CAS.createShortArrayFS(int)} or new
+ * ShortArray(aJCas, length)
  */
 public interface ShortArrayFS extends CommonArrayFS<Short> {
 
   /**
    * Get the i-th element from the array.
-   * @param i the index
+   * 
+   * @param i
+   *          the index
    * @return The i-th element.
    * @exception ArrayIndexOutOfBoundsException
    *              If the index is out of bounds.
@@ -48,8 +49,8 @@ public interface ShortArrayFS extends CommonArrayFS<Short> {
   void set(int i, short b) throws ArrayIndexOutOfBoundsException;
 
   /**
-   * Copy the contents of the array from <code>start</code> to <code>end</code> to the
-   * destination <code>destArray</code> with destination offset <code>destOffset</code>.
+   * Copy the contents of the array from <code>start</code> to <code>end</code> to the destination
+   * <code>destArray</code> with destination offset <code>destOffset</code>.
    * 
    * @param srcOffset
    *          The index of the first element to copy.

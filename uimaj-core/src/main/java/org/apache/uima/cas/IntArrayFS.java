@@ -21,14 +21,16 @@ package org.apache.uima.cas;
 
 /**
  * Interface for CAS int arrays. To create an int array object, use
- * {@link org.apache.uima.cas.CAS#createIntArrayFS CAS.createIntArrayFS(int)} or
- * new IntegerArray(aJCas, length)
+ * {@link org.apache.uima.cas.CAS#createIntArrayFS CAS.createIntArrayFS(int)} or new
+ * IntegerArray(aJCas, length)
  */
 public interface IntArrayFS extends CommonArrayFS<Integer> {
 
   /**
    * Get the element at position <code>index</code>.
-   * @param index the index
+   * 
+   * @param index
+   *          the index
    * @return The element.
    * @exception ArrayIndexOutOfBoundsException
    *              If <code>index</code> is out of bounds.
@@ -48,8 +50,8 @@ public interface IntArrayFS extends CommonArrayFS<Integer> {
   void set(int index, int value);
 
   /**
-   * Copy the contents of the array from <code>start</code> to <code>end</code> to the
-   * destination <code>destArray</code> with destination offset <code>destOffset</code>.
+   * Copy the contents of the array from <code>start</code> to <code>end</code> to the destination
+   * <code>destArray</code> with destination offset <code>destOffset</code>.
    * 
    * @param srcOffset
    *          The index of the first element to copy.
@@ -80,7 +82,7 @@ public interface IntArrayFS extends CommonArrayFS<Integer> {
    */
   void copyFromArray(int[] src, int srcOffset, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
-  
+
   /**
    * Create a Java array that is a copy of the internal CAS array.
    * 
