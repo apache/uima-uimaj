@@ -22,8 +22,8 @@ package org.apache.uima.internal.util;
 import java.util.HashMap;
 
 /**
- * Straightforward, many-to-one map from Strings to ints, based on a Java
- * {@link java.util.HashMap HashMap}.
+ * Straightforward, many-to-one map from Strings to ints, based on a Java {@link java.util.HashMap
+ * HashMap}.
  * 
  * 
  */
@@ -59,8 +59,8 @@ public class StringToIntMap {
    * 
    * @param key
    *          The string to be looked up.
-   * @return The int value for <code>key</code>, or <code>0</code> if <code>key</code> is not
-   *         a key in the map. Use {@link #containsKey(String) containsKey()} to find out if
+   * @return The int value for <code>key</code>, or <code>0</code> if <code>key</code> is not a key
+   *         in the map. Use {@link #containsKey(String) containsKey()} to find out if
    *         <code>key</code> is actually defined in the map.
    */
   public int get(String key) {

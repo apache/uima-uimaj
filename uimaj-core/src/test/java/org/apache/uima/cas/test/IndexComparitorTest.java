@@ -79,7 +79,7 @@ public class IndexComparitorTest {
   Feature type1UsedBoolean;
   Feature type1UsedString;
   Feature type1UsedLong;
-  Feature type1UsedDouble;  
+  Feature type1UsedDouble;
 
   Feature type1Ignored;
 
@@ -89,7 +89,7 @@ public class IndexComparitorTest {
   Feature type1Sub1UsedBoolean;
   Feature type1Sub1UsedString;
   Feature type1Sub1UsedLong;
-  Feature type1Sub1UsedDouble;  
+  Feature type1Sub1UsedDouble;
 
   Feature type1Sub1Ignored;
 
@@ -99,7 +99,7 @@ public class IndexComparitorTest {
   Feature type1Sub2UsedBoolean;
   Feature type1Sub2UsedString;
   Feature type1Sub2UsedLong;
-  Feature type1Sub2UsedDouble;  
+  Feature type1Sub2UsedDouble;
 
   Feature type1Sub2Ignored;
 
@@ -108,9 +108,8 @@ public class IndexComparitorTest {
   FSIndexRepository ir;
 
   /**
-   * first  index: 0 = Type1, 1 = Type1Sub1, 2 = Type1Sub2
-   * second index: value of f1 = 0 or 1
-   * thrid  index: value of f2 = 0 or 1
+   * first index: 0 = Type1, 1 = Type1Sub1, 2 = Type1Sub2 second index: value of f1 = 0 or 1 thrid
+   * index: value of f2 = 0 or 1
    */
   FeatureStructure fss[][][];
 
@@ -138,7 +137,6 @@ public class IndexComparitorTest {
 
   private FSIndex<FeatureStructure> bagType1Sub1TypeOrder;
 
-
   /**
    * class which sets up
    */
@@ -158,7 +156,7 @@ public class IndexComparitorTest {
       longType = tsm.getType("uima.cas.Long");
       byteType = tsm.getType("uima.cas.Byte");
       shortType = tsm.getType("uima.cas.Short");
-      
+
       type1 = tsm.addType("Type1", topType);
       type1Sub1 = tsm.addType("Type1Sub1", type1);
       type1Sub2 = tsm.addType("Type1Sub2", type1);
@@ -170,7 +168,7 @@ public class IndexComparitorTest {
       type1UsedString = tsm.addFeature("usedString", type1, stringType);
       type1UsedLong = tsm.addFeature("usedLong", type1, longType);
       type1UsedDouble = tsm.addFeature("usedDouble", type1, doubleType);
-      
+
       type1Ignored = tsm.addFeature("ignored", type1, integerType);
 
       type1Sub1Used = tsm.addFeature("used", type1Sub1, integerType);
@@ -192,7 +190,6 @@ public class IndexComparitorTest {
       type1Sub2Ignored = tsm.addFeature("ignored", type1Sub2, integerType);
     }
 
-    
     @Override
     public void initIndexes(FSIndexRepositoryMgr parmIrm, TypeSystem parmTs) {
       IndexComparitorTest.this.ts = parmTs;
@@ -249,8 +246,8 @@ public class IndexComparitorTest {
     }
   }
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       this.cas = CASInitializer.initCas(new SetupForIndexCompareTesting(), ts -> reinitTypes(ts));
       assertNotNull(cas);
@@ -283,9 +280,9 @@ public class IndexComparitorTest {
       JUnitExtension.handleException(e);
     }
   }
-  
+
   private void reinitTypes(TypeSystemImpl tsm) {
-    
+
     // Add new types and features.
     topType = tsm.getTopType();
     integerType = tsm.refreshType(integerType);
@@ -295,7 +292,7 @@ public class IndexComparitorTest {
     longType = tsm.refreshType(longType);
     byteType = tsm.refreshType(byteType);
     shortType = tsm.refreshType(shortType);
-    
+
     type1 = tsm.refreshType(type1);
     type1Sub1 = tsm.refreshType(type1Sub1);
     type1Sub2 = tsm.refreshType(type1Sub2);
@@ -307,7 +304,7 @@ public class IndexComparitorTest {
     type1UsedString = tsm.refreshFeature(type1UsedString);
     type1UsedLong = tsm.refreshFeature(type1UsedLong);
     type1UsedDouble = tsm.refreshFeature(type1UsedDouble);
-    
+
     type1Ignored = tsm.refreshFeature(type1Ignored);
 
     type1Sub1Used = tsm.refreshFeature(type1Sub1Used);
@@ -329,8 +326,8 @@ public class IndexComparitorTest {
     type1Sub2Ignored = tsm.refreshFeature(type1Sub2Ignored);
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     fss = null;
     this.cas = null;
     this.ts = null;
@@ -346,7 +343,7 @@ public class IndexComparitorTest {
     type1Sub1Ignored = null;
     type1Sub2Used = null;
     type1Sub2Ignored = null;
-    
+
     irm = null;
     ir = null;
     sortedType1 = null;
@@ -377,27 +374,27 @@ public class IndexComparitorTest {
     return f;
   }
 
-    @Test
-    public void testFindSubtype() throws Exception {
+  @Test
+  public void testFindSubtype() throws Exception {
     cas.reset();
-    
+
     ir.addFS(createFs(type1, 0, 0));
     ir.addFS(createFs(type1Sub1, 1, 1));
-    FeatureStructure testprobe = createFs(type1Sub1, 1, 1);  // not in index, used only for key values
-    
-    //  https://issues.apache.org/jira/browse/UIMA-4352
-    assertTrue(sortedType1.contains(testprobe));  
-    
+    FeatureStructure testprobe = createFs(type1Sub1, 1, 1); // not in index, used only for key
+                                                            // values
+
+    // https://issues.apache.org/jira/browse/UIMA-4352
+    assertTrue(sortedType1.contains(testprobe));
+
     assertTrue(sortedType1Sub1.contains(testprobe));
-    
-    
+
     FeatureStructure testProbeSuper = createFs(type1, 1, 1);
-    
+
     assertTrue(sortedType1Sub1.contains(testProbeSuper));
   }
-  
-    @Test
-    public void testCompare() throws Exception {
+
+  @Test
+  public void testCompare() throws Exception {
     try {
       assertTrue(0 == sortedType1.compare(fss[0][0][0], fss[0][0][1]));
       assertTrue(1 == sortedType1.compare(fss[0][1][0], fss[0][0][0]));
@@ -441,7 +438,7 @@ public class IndexComparitorTest {
       assertFalse(bagType1.contains(testType1_0_0));
       assertFalse(bagType1.contains(testType1_0_x));
       assertFalse(bagType1.contains(testTypeSub1_0_x));
-      
+
       FeatureStructure testType1_0_0_eq = fss[0][0][0];
       FeatureStructure testType1_0_x_eq = fss[0][0][0];
       FeatureStructure testTypeSub1_0_x_eq = fss[1][0][0];
@@ -456,14 +453,14 @@ public class IndexComparitorTest {
       assertFalse(bagType1TypeOrder.contains(testType1_0_x));
       assertFalse(bagType1TypeOrder.contains(testTypeSub1_0_x));
 
-//       for (Iterator it = sortedType1TypeOrder.iterator(); it.hasNext();) {
-//       System.out.println(it.next().toString());
-//       }
+      // for (Iterator it = sortedType1TypeOrder.iterator(); it.hasNext();) {
+      // System.out.println(it.next().toString());
+      // }
       // current impl of "contains" - not used, but is implemented to only check
       // the type, not the subtypes.
       // So the next tests fail.
-//      assertTrue(sortedType1TypeOrder.contains(testTypeSub1_0_0));
-//      assertTrue(sortedType1TypeOrder.contains(testTypeSub1_0_x));
+      // assertTrue(sortedType1TypeOrder.contains(testTypeSub1_0_0));
+      // assertTrue(sortedType1TypeOrder.contains(testTypeSub1_0_x));
 
       // test find
 
@@ -535,26 +532,24 @@ public class IndexComparitorTest {
     }
 
   }
-  
+
   /*
-   * test set index:
-   *   put the same FS (by set comparator) into type and typeSub1
-   *   See if index contains both
-   *      see if moveTo finds both
-   *      see if iterator returns both  
+   * test set index: put the same FS (by set comparator) into type and typeSub1 See if index
+   * contains both see if moveTo finds both see if iterator returns both
    */
-    @Test
-    public void testSetUsesType() throws Exception {
+  @Test
+  public void testSetUsesType() throws Exception {
     cas.reset();
-    
+
     ir.addFS(createFs(type1, 1, 1));
-    ir.addFS(createFs(type1Sub1, 1, 1));  // same fs keys, different type
-    FeatureStructure testprobe = createFs(type1Sub1, 1, 1);  // not in index, used only for key values
+    ir.addFS(createFs(type1Sub1, 1, 1)); // same fs keys, different type
+    FeatureStructure testprobe = createFs(type1Sub1, 1, 1); // not in index, used only for key
+                                                            // values
     FeatureStructure testprobe2 = createFs(type1, 1, 1);
-    
+
     assertEquals(2, sortedType1.size());
     assertEquals(2, setType1.size());
-    
+
     FSIterator<FeatureStructure> it = setType1.iterator();
     it.moveTo(testprobe);
     assertEquals("Type1", it.get().getType().getShortName());
@@ -563,19 +558,19 @@ public class IndexComparitorTest {
     it.moveToFirst();
     assertEquals("Type1", it.next().getType().getShortName());
     assertEquals("Type1Sub1", it.next().getType().getShortName());
-    
+
   }
-  
 
   // note: this test is here because the setup is done
-    @Test
-    public void testProtectIndex() throws Exception {
+  @Test
+  public void testProtectIndex() throws Exception {
     FSIterator<FeatureStructure> it = sortedType1.iterator();
     FeatureStructure fs = it.get();
     boolean ok = false;
     try {
       System.setProperty(CASImpl.THROW_EXCEPTION_FS_UPDATES_CORRUPTS, "true");
-      fs.setBooleanValue(type1UsedBoolean, ! fs.getBooleanValue(type1UsedBoolean));  // should cause protection
+      fs.setBooleanValue(type1UsedBoolean, !fs.getBooleanValue(type1UsedBoolean)); // should cause
+                                                                                   // protection
     } catch (Exception e) {
       ok = true;
     } finally {

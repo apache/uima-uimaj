@@ -33,13 +33,14 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
  * engine, the most common precondition is a check on the language of the document.</li>
  * </ul>
  * 
- * As with all {@link MetaDataObject}s, a <code>Capability</code> may or may not be modifiable.
- * An application can find out by calling the {@link #isModifiable()} method.
+ * As with all {@link MetaDataObject}s, a <code>Capability</code> may or may not be modifiable. An
+ * application can find out by calling the {@link #isModifiable()} method.
  * 
  * 
  */
 public interface Capability extends MetaDataObject {
   Capability[] EMPTY_CAPABILITIES = new Capability[0];
+
   /**
    * Gets the description of this Capability.
    * 
@@ -172,8 +173,8 @@ public interface Capability extends MetaDataObject {
   /**
    * A convenience method that sets the MIME types that this Resource can take as input.
    * <p>
-   * Calling this method affects the preconditions of this <code>Capability</code>. All other
-   * MIME type preconditions will be removed, but other preconditions will be unaffected.
+   * Calling this method affects the preconditions of this <code>Capability</code>. All other MIME
+   * type preconditions will be removed, but other preconditions will be unaffected.
    * 
    * @param aMimeTypes
    *          an array of MIME types. This may be empty if the Resource does not declare MIME type
@@ -224,14 +225,16 @@ public interface Capability extends MetaDataObject {
   /**
    * A convenience method that adds an input Sofa name to this Capability.
    * 
-   * @param aSofaName the sofa to add to the inputs
+   * @param aSofaName
+   *          the sofa to add to the inputs
    */
   void addInputSofa(String aSofaName);
 
   /**
    * A convenience method that adds an output Sofa name to this Capability.
    * 
-   * @param aSofaName the sofa to add as an output 
+   * @param aSofaName
+   *          the sofa to add as an output
    */
   void addOutputSofa(String aSofaName);
 

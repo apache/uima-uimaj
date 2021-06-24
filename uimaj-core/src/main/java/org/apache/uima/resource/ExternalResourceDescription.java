@@ -32,7 +32,7 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * resource (for simple data resources this will be a
  * {@link org.apache.uima.resource.FileResourceSpecifier} that contains a URL to the data file.</li>
  * <li>The name of a Java class that implements the specified interface and which also implements
- * {@link org.apache.uima.resource.SharedResourceObject}. </li>
+ * {@link org.apache.uima.resource.SharedResourceObject}.</li>
  * </ul>
  * 
  * 
@@ -40,6 +40,7 @@ import org.apache.uima.resource.metadata.MetaDataObject;
 public interface ExternalResourceDescription extends MetaDataObject {
 
   ExternalResourceDescription[] EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS = new ExternalResourceDescription[0];
+
   /**
    * Retrieves the name by which the resource is identified.
    * 

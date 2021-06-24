@@ -29,8 +29,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * 
  */
-public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
-        FileResourceSpecifier {
+public class FileResourceSpecifier_impl extends MetaDataObject_impl
+        implements FileResourceSpecifier {
 
   static final long serialVersionUID = -4595981135298755811L;
 
@@ -47,9 +47,9 @@ public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
   }
 
   /**
-   * UIMA-5274  Expand any references to external overrides when name and location are fetched.
-   * Cache the value if the evaluation succeeds (later fetches may not have the settings defined!)
-   * Leave value unmodified if any settings are undefined and log a warning message.
+   * UIMA-5274 Expand any references to external overrides when name and location are fetched. Cache
+   * the value if the evaluation succeeds (later fetches may not have the settings defined!) Leave
+   * value unmodified if any settings are undefined and log a warning message.
    * 
    * @see org.apache.uima.resource.FileResourceSpecifier#getFileUrl()
    */

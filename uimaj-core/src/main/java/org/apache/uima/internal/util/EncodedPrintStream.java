@@ -27,8 +27,8 @@ import java.io.UnsupportedEncodingException;
  * Allow a <code>PrintStream</code> to specify an encoding.
  * 
  * <p>
- * This functionality is provided out of the box by the Java 1.4 version of <code>PrintStream</code>.
- * This class is strictly for backwards compatibility.
+ * This functionality is provided out of the box by the Java 1.4 version of
+ * <code>PrintStream</code>. This class is strictly for backwards compatibility.
  * 
  */
 public class EncodedPrintStream extends PrintStream {

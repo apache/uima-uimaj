@@ -66,16 +66,16 @@ public class TypePriorityTest {
 
   private TypeSystem ts;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     casMgr = initCAS();
     cas = casMgr.getCAS().getCurrentView();
     irm = casMgr.getIndexRepositoryMgr();
     ts = cas.getTypeSystem();
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     casMgr = null;
     cas = null;
     irm = null;
@@ -159,24 +159,21 @@ public class TypePriorityTest {
   }
 
   /*
-   * Diagram to figure out what the answers should be 
-   *                                                a                                                    b
-   *                        aa                                             ab                           ba ... 
-   *            aaa                     aab                   aba                     abb              baa ... 
-   *     aaaa        aaab        aaba        aabb       abaa        abab        abba        abbb      baaa ...
-   * aaaaa aaaab aaaba aaabb aabaa aabab aabba aabbb abaaa abaab ababa ababb abbaa abbab abbba abbbb baaaa ...
+   * Diagram to figure out what the answers should be a b aa ab ba ... aaa aab aba abb baa ... aaaa
+   * aaab aaba aabb abaa abab abba abbb baaa ... aaaaa aaaab aaaba aaabb aabaa aabab aabba aabbb
+   * abaaa abaab ababa ababb abbaa abbab abbba abbbb baaaa ...
    */
-  
-//  public void testLearnLto() throws CASException {
-//    LinearTypeOrderBuilder order = irm.createTypeSortOrder();
-//    LinearTypeOrder lo = order.getOrder();
-//    System.out.println("debug linearTypeOrder " + lo);
-//  }
+
+  // public void testLearnLto() throws CASException {
+  // LinearTypeOrderBuilder order = irm.createTypeSortOrder();
+  // LinearTypeOrder lo = order.getOrder();
+  // System.out.println("debug linearTypeOrder " + lo);
+  // }
   /**
    * Test driver.
    */
-    @Test
-    public void testMain() throws Exception {    
+  @Test
+  public void testMain() throws Exception {
     LinearTypeOrderBuilder order = irm.createTypeSortOrder();
     order = irm.createTypeSortOrder();
     LinearTypeOrder lo;
@@ -189,24 +186,24 @@ public class TypePriorityTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testN1() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testN1() throws Exception {
     LinearTypeOrderBuilder order = irm.createTypeSortOrder();
     order = irm.createTypeSortOrder();
     LinearTypeOrder lo;
     try {
       // aaa (and all its subtypes) come before bbb (and all its subtypes)
       order.add(new String[] { "aaa", "bbb" });
-      // aa (and all its subtypes) come before 
-      //   abaa (and all its subtypes) come before
-      //     abbbb (and all its subtypes)
+      // aa (and all its subtypes) come before
+      // abaa (and all its subtypes) come before
+      // abbbb (and all its subtypes)
       order.add(new String[] { "aa", "abaa", "abbbb" });
       lo = order.getOrder();
       check(lo, new String[] { "aa", "abaa", "abbbb" });
       check(lo, "aaa", "bbb");
 
-      check(lo, "aaa", "abaaa"); 
-      check(lo, "aaab", "abaab");  
+      check(lo, "aaa", "abaaa");
+      check(lo, "aaab", "abaab");
       check(lo, "aa", "abbbb");
       check(lo, "abaa", "abbbb");
     } catch (CASException e) {
@@ -214,8 +211,8 @@ public class TypePriorityTest {
     }
   }
 
-    @Test
-    public void testLoop2() throws Exception {
+  @Test
+  public void testLoop2() throws Exception {
     try {
       LinearTypeOrderBuilder obuilder;
       LinearTypeOrder order;

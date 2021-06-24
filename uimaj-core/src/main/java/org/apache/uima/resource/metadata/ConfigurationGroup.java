@@ -33,16 +33,15 @@ public interface ConfigurationGroup extends MetaDataObject {
   /**
    * Gets the group names for this <code>ConfigurationGroup</code> object.
    * 
-   * @return an array of group names.  Names are not allowed to contain
-   *   whitespace.
+   * @return an array of group names. Names are not allowed to contain whitespace.
    */
   String[] getNames();
 
   /**
    * Sets the group names for this <code>ConfigurationGroup</code> object.
    * 
-   * @param aNames an array of group names.  Names are not allowed to
-   *   contain whitespace.
+   * @param aNames
+   *          an array of group names. Names are not allowed to contain whitespace.
    */
   void setNames(String[] aNames);
 

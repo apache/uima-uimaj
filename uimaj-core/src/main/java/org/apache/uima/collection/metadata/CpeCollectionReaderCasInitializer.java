@@ -33,8 +33,8 @@ public interface CpeCollectionReaderCasInitializer extends MetaDataObject {
   /**
    * Sets descriptor path containing configuration for the CasInitializer
    * 
-   * @param aDescriptor -
-   *          descriptor path
+   * @param aDescriptor
+   *          - descriptor path
    */
   void setDescriptor(CpeComponentDescriptor aDescriptor);
 
@@ -60,7 +60,8 @@ public interface CpeCollectionReaderCasInitializer extends MetaDataObject {
    * 
    * @param aSettings
    *          object containing parameter setting overrides
-   * @throws CpeDescriptorException tbd         
+   * @throws CpeDescriptorException
+   *           tbd
    */
   void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
           throws CpeDescriptorException;
@@ -68,7 +69,8 @@ public interface CpeCollectionReaderCasInitializer extends MetaDataObject {
   CpeSofaMappings getSofaNameMappings();
 
   /**
-   * @param mappings the sofa mappings
+   * @param mappings
+   *          the sofa mappings
    */
   void setSofaNameMappings(CpeSofaMappings mappings);
 

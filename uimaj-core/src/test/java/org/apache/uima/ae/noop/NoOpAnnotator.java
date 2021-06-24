@@ -43,11 +43,11 @@ public class NoOpAnnotator extends CasAnnotator_ImplBase {
   int finalCount = 0;
 
   int cpcDelay = 0;
-  
+
   @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
-    
+
     if (getContext().getConfigParameterValue("FailDuringInitialization") != null) {
       throw new ResourceInitializationException(new FileNotFoundException("Simulated Exception"));
     }
@@ -59,8 +59,8 @@ public class NoOpAnnotator extends CasAnnotator_ImplBase {
 
     if (getContext().getConfigParameterValue("CpCDelay") != null) {
       cpcDelay = (Integer) getContext().getConfigParameterValue("CpCDelay");
-      System.out.println("NoOpAnnotator.initialize() Initializing With CpC Delay of " + cpcDelay
-              + " millis");
+      System.out.println(
+              "NoOpAnnotator.initialize() Initializing With CpC Delay of " + cpcDelay + " millis");
     }
     if (getContext().getConfigParameterValue("ProcessDelay") != null) {
       processDelay = (Integer) getContext().getConfigParameterValue("ProcessDelay");
@@ -83,8 +83,8 @@ public class NoOpAnnotator extends CasAnnotator_ImplBase {
 
   @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
-    System.out
-            .println("NoOpAnnotator.collectionProcessComplete() Called -------------------------------------");
+    System.out.println(
+            "NoOpAnnotator.collectionProcessComplete() Called -------------------------------------");
 
     if (cpcDelay > 0) {
       try {

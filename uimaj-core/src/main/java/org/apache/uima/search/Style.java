@@ -24,8 +24,8 @@ import java.io.Serializable;
 import org.apache.uima.util.XMLizable;
 
 /**
- * An indexing style. A set of indexing styles make up a {@link IndexRule}, which is then applied
- * to an {@link IndexBuildItem} in order to assign indexing behavior to an annotation type.
+ * An indexing style. A set of indexing styles make up a {@link IndexRule}, which is then applied to
+ * an {@link IndexBuildItem} in order to assign indexing behavior to an annotation type.
  * <p>
  * We support an open-ended schema for styles. Each style has a {@link #getName() name} and zero or
  * more {@link #getAttributes()}, where each attribute has a name and a value. Any given indexer
@@ -42,8 +42,8 @@ import org.apache.uima.util.XMLizable;
  * be indexed.</li>
  * </ul>
  * </li>
- * <li><b>Breaking</b> - the indexer should record a sentence boundary before and after the span
- * of this annotation.
+ * <li><b>Breaking</b> - the indexer should record a sentence boundary before and after the span of
+ * this annotation.
  * <ul>
  * <li>no attributes defined</li>
  * </ul>
@@ -60,7 +60,7 @@ import org.apache.uima.util.XMLizable;
  * values for both <i>nameFeature</i> and <i>fixedName</i>.</li>
  * </ul>
  * An annotation style can also have {@link #getAttributeMappings() attribute mappings}, which
- * specify which how the features (properties) of the annotation should be indexed. </li>
+ * specify which how the features (properties) of the annotation should be indexed.</li>
  * </ul>
  * This object implements the {@link XMLizable} interface and can be parsed from an XML
  * representation.
@@ -71,8 +71,8 @@ public interface Style extends XMLizable, Serializable {
 
   /**
    * Gets the name of this style. See the class comment for a list of defined style names.
-   * Implementations must make sure that all names are {@link String#intern()}ed so that they can
-   * be compared with the == operator.
+   * Implementations must make sure that all names are {@link String#intern()}ed so that they can be
+   * compared with the == operator.
    * 
    * @return the name of this style
    */
@@ -80,8 +80,8 @@ public interface Style extends XMLizable, Serializable {
 
   /**
    * Sets the name of this style. See the class comment for a list of defined style names.
-   * Implementations must make sure that all names are {@link String#intern()}ed so that they can
-   * be compared with the == operator.
+   * Implementations must make sure that all names are {@link String#intern()}ed so that they can be
+   * compared with the == operator.
    * 
    * @param aName
    *          the name of this style
@@ -129,8 +129,9 @@ public interface Style extends XMLizable, Serializable {
    * Sets the mappings that specify which features (properties) of the annotation should be indexed,
    * and under which names.
    * 
-   * @param aMappings an array of objects that each specify a mapping from a CAS feature name to the
-   *       name under which this feature should be recorded in the index.
+   * @param aMappings
+   *          an array of objects that each specify a mapping from a CAS feature name to the name
+   *          under which this feature should be recorded in the index.
    */
   void setAttributeMappings(Mapping[] aMappings);
 

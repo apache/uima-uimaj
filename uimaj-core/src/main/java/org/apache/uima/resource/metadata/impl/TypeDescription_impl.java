@@ -34,9 +34,9 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   static final long serialVersionUID = 7505580429981863281L;
 
   static final private FeatureDescription[] EMPTY_FEAT_DESC_ARRAY = new FeatureDescription[0];
-  
+
   static final private AllowedValue[] EMPTY_ALLOWED_VALUE_ARRAY = new AllowedValue[0];
-  
+
   /** Name of this Type. */
   private String mName;
 
@@ -63,7 +63,8 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
    * 
    * @param aName
    *          name of the Type
-   * @param aDescription -
+   * @param aDescription
+   *          -
    * @param aSupertypeName
    *          name of the type's supertype
    */

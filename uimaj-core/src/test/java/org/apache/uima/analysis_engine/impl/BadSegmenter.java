@@ -37,7 +37,7 @@ public class BadSegmenter extends CasMultiplier_ImplBase {
    */
   @Override
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
-    //do nothing
+    // do nothing
   }
 
   /*

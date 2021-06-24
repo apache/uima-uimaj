@@ -31,8 +31,8 @@ public interface CasProcessorExecArgs extends Serializable// extends MetaDataObj
   /**
    * Adds new {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance to the list.
    * 
-   * @param aArg -
-   *          new argument
+   * @param aArg
+   *          - new argument
    */
   void add(CasProcessorExecArg aArg);
 
@@ -40,11 +40,12 @@ public interface CasProcessorExecArgs extends Serializable// extends MetaDataObj
    * Returns an {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance located
    * with provided index.
    * 
-   * @param aIndex -
-   *          position of argument in the list
+   * @param aIndex
+   *          - position of argument in the list
    * 
    * @return - {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
   CasProcessorExecArg get(int aIndex) throws CpeDescriptorException;
 
@@ -59,8 +60,8 @@ public interface CasProcessorExecArgs extends Serializable// extends MetaDataObj
    * Removes {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance found in the
    * list in a given position.
    * 
-   * @param aIndex -
-   *          position of argument to remove.
+   * @param aIndex
+   *          - position of argument to remove.
    */
   void remove(int aIndex);
 }

@@ -32,9 +32,10 @@ public interface CpeCheckpoint extends MetaDataObject {
   /**
    * Sets the file where checkpoint information will be stored
    * 
-   * @param aCheckpointFilePath -
-   *          checkpoint file path
-   * @throws CpeDescriptorException tbd
+   * @param aCheckpointFilePath
+   *          - checkpoint file path
+   * @throws CpeDescriptorException
+   *           tbd
    */
   void setFilePath(String aCheckpointFilePath) throws CpeDescriptorException;
 
@@ -48,10 +49,10 @@ public interface CpeCheckpoint extends MetaDataObject {
   /**
    * Sets frequency of checkpoints. Currently only time-based checkpointing is supported.
    * 
-   * @param aFrequency -
-   *          number of millis between checkpoints
-   * @param aTimeBased -
-   *          true if checkpoint is based on time
+   * @param aFrequency
+   *          - number of millis between checkpoints
+   * @param aTimeBased
+   *          - true if checkpoint is based on time
    */
   void setFrequency(int aFrequency, boolean aTimeBased);
 
@@ -71,7 +72,8 @@ public interface CpeCheckpoint extends MetaDataObject {
 
   /**
    * 
-   * @param aBatchSize the size of the batch
+   * @param aBatchSize
+   *          the size of the batch
    */
   void setBatchSize(int aBatchSize);
 

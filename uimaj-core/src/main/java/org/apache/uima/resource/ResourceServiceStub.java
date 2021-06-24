@@ -31,7 +31,8 @@ public interface ResourceServiceStub {
    * Performs service call to retrieve resource meta data.
    * 
    * @return metadata for the Resource
-   * @throws ResourceServiceException passthru
+   * @throws ResourceServiceException
+   *           passthru
    */
   ResourceMetaData callGetMetaData() throws ResourceServiceException;
 

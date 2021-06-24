@@ -59,7 +59,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 public class CasWrapperForTstng implements CAS {
 
   private CAS originalCAS;
-  
+
   public CasWrapperForTstng(CAS original) {
     originalCAS = original;
   }
@@ -100,7 +100,8 @@ public class CasWrapperForTstng implements CAS {
   }
 
   @Override
-  public FeatureValuePath createFeatureValuePath(String featureValuePath) throws CASRuntimeException {
+  public FeatureValuePath createFeatureValuePath(String featureValuePath)
+          throws CASRuntimeException {
     return originalCAS.createFeatureValuePath(featureValuePath);
   }
 
@@ -133,7 +134,7 @@ public class CasWrapperForTstng implements CAS {
   public Marker createMarker() {
     return originalCAS.createMarker();
   }
-  
+
   @Override
   public ShortArrayFS createShortArrayFS(int length) throws CASRuntimeException {
     return originalCAS.createShortArrayFS(length);
@@ -356,7 +357,7 @@ public class CasWrapperForTstng implements CAS {
   public int size() {
     return originalCAS.size();
   }
-  
+
   @Override
   public void protectIndexes(Runnable runnable) {
     originalCAS.protectIndexes(runnable);
@@ -366,5 +367,5 @@ public class CasWrapperForTstng implements CAS {
   public AutoCloseable protectIndexes() {
     return originalCAS.protectIndexes();
   }
-  
+
 }

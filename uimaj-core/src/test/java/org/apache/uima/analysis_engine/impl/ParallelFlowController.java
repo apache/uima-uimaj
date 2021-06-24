@@ -36,7 +36,7 @@ import org.apache.uima.resource.ResourceInitializationException;
  * FlowController for testing ParallelStep.
  */
 public class ParallelFlowController extends CasFlowController_ImplBase {
-  
+
   @Override
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
@@ -56,13 +56,13 @@ public class ParallelFlowController extends CasFlowController_ImplBase {
 
   class ParallelFlowObject extends CasFlow_ImplBase {
     private boolean done = false;
-    
+
     /**
      * Create a new fixed flow starting at step <code>startStep</code> of the fixed sequence.
      * 
      */
     public ParallelFlowObject() {
-      //do nothing
+      // do nothing
     }
 
     /*
@@ -76,23 +76,26 @@ public class ParallelFlowController extends CasFlowController_ImplBase {
         done = true;
         Set keys = getContext().getAnalysisEngineMetaDataMap().keySet();
         return new ParallelStep(keys);
-      }
-      else {
+      } else {
         return new FinalStep();
       }
-        
+
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(org.apache.uima.cas.CAS, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(org.apache.uima.cas.CAS,
+     * java.lang.String)
      */
     @Override
-    protected Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
-      //for this test, new segments don't continue in the flow
+    protected Flow newCasProduced(CAS newCas, String producedBy)
+            throws AnalysisEngineProcessException {
+      // for this test, new segments don't continue in the flow
       return new EmptyFlow();
-    }     
+    }
   }
-  
+
   class EmptyFlow extends CasFlow_ImplBase {
     @Override
     public Step next() {

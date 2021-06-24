@@ -30,10 +30,10 @@ import java.util.List;
  * application classes with convenient access to the message channels via the
  * <code>PrintWriter</code> class. The <code>MessageRouter</code> class, by default, defines 2
  * standard message channels - for standard output and standard error messages. Applications can
- * publish their standard output and standard error messages using the <code>outWriter()</code>
- * and <code>errWriter()</code> methods correspondingly. <br>The <code>MessageRouter</code>
- * class distributes the messages to a number of message channel listeners, added by applications.
- * Standard message channel listeners should implement the
+ * publish their standard output and standard error messages using the <code>outWriter()</code> and
+ * <code>errWriter()</code> methods correspondingly. <br>
+ * The <code>MessageRouter</code> class distributes the messages to a number of message channel
+ * listeners, added by applications. Standard message channel listeners should implement the
  * <code>MessageRouter.StdChannelListener</code> interface. The <code>MessageRouter</code> class
  * collects all published messages. When a new message channel listener is added, it receives all
  * collected messages from the message history.
@@ -41,8 +41,9 @@ import java.util.List;
  * The <code>MessageRouter</code> code runs in a separate thread that should be started and
  * terminated by applications. Applications should use the <code>start()</code> and
  * <code>terminate()</code> methods to start and terminate the <code>MessageRouter</code> thread
- * correspondingly. <br>For terminology see the <a
- * href="http://www.eaipatterns.com/MessageRouter.html"> Enterprise Integration Patterns</a> book.
+ * correspondingly. <br>
+ * For terminology see the <a href="http://www.eaipatterns.com/MessageRouter.html"> Enterprise
+ * Integration Patterns</a> book.
  * </p>
  * 
  */
@@ -109,9 +110,9 @@ public class MessageRouter implements Runnable {
   }
 
   /**
-   * Adds a given object, implementing the <code>StdChannelListener</code> interface, to the list
-   * of standard message channel listeners. Sends to the new listener all previously collected
-   * messages for this channel.
+   * Adds a given object, implementing the <code>StdChannelListener</code> interface, to the list of
+   * standard message channel listeners. Sends to the new listener all previously collected messages
+   * for this channel.
    * 
    * @param listener
    *          The given new standard message channel listener.

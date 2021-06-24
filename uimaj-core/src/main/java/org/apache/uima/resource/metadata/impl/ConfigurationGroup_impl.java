@@ -85,7 +85,9 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#addConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
+   * @see
+   * org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#addConfigurationParameter(
+   * org.apache.uima.resource.metadata.ConfigurationParameter)
    */
   @Override
   public void addConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
@@ -99,7 +101,8 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#removeConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
+   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#
+   * removeConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
    */
   @Override
   public void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
@@ -144,8 +147,8 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String names = aElement.getAttribute("names");
     if (names.length() == 0) {
-      throw new InvalidXMLException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING, new Object[] {
-          "names", "configurationGroup" });
+      throw new InvalidXMLException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
+              new Object[] { "names", "configurationGroup" });
     }
     // treat names as a space-separated list
     StringTokenizer tokenizer = new StringTokenizer(names, " \t");
@@ -171,6 +174,6 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("configurationGroup",
           new PropertyXmlInfo[] {
-          // NOTE: names property is XMLized as an attribute
-          new PropertyXmlInfo("configurationParameters", null), });
+              // NOTE: names property is XMLized as an attribute
+              new PropertyXmlInfo("configurationParameters", null), });
 }

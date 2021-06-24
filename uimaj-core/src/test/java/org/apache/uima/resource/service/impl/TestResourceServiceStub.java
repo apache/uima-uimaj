@@ -54,7 +54,7 @@ public class TestResourceServiceStub implements ResourceServiceStub {
    */
   @Override
   public void destroy() {
-    //do nothing
+    // do nothing
   }
 
 }

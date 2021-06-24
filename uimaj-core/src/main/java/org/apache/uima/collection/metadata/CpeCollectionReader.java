@@ -32,13 +32,15 @@ public interface CpeCollectionReader extends MetaDataObject {
    * Sets CasInitializer for the CollectionReader will use. This object initializes the CAS with
    * SoFas.
    * 
-   * @param aCasInitializer -
-   *          {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer}
-   * @throws CpeDescriptorException tbd
+   * @param aCasInitializer
+   *          - {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer}
+   * @throws CpeDescriptorException
+   *           tbd
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
+  @Deprecated
+  void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
           throws CpeDescriptorException;
 
   /**
@@ -46,11 +48,13 @@ public interface CpeCollectionReader extends MetaDataObject {
    * SoFas.
    * 
    * @return {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer}
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated CpeCollectionReaderCasInitializer getCasInitializer() throws CpeDescriptorException;
+  @Deprecated
+  CpeCollectionReaderCasInitializer getCasInitializer() throws CpeDescriptorException;
 
   /**
    * Removes {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer} from
@@ -62,8 +66,8 @@ public interface CpeCollectionReader extends MetaDataObject {
   /**
    * Sets descriptor path containing configuration for the CollectionReader
    * 
-   * @param aDescriptor -
-   *          component containing descriptor path
+   * @param aDescriptor
+   *          - component containing descriptor path
    */
   void setDescriptor(CpeComponentDescriptor aDescriptor);
 
@@ -89,7 +93,8 @@ public interface CpeCollectionReader extends MetaDataObject {
    * 
    * @param aSettings
    *          object containing parameter setting overrides
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
   void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
           throws CpeDescriptorException;

@@ -28,17 +28,16 @@ import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
  * implements ObjHashSet partially, for iterator use
  */
 
-public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOnWriteIndexPart<T>{
-  
+public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOnWriteIndexPart<T> {
+
   private ObjHashSet<T> ohs;
-  
+
   private ObjHashSet<T> original;
-  
+
   private final int original_size;
-  
-  
+
   public CopyOnWriteObjHashSet(ObjHashSet<T> original) {
-    this.ohs = original;    
+    this.ohs = original;
     this.original = original;
     this.original_size = original.size();
   }
@@ -50,32 +49,36 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
   public void makeReadOnlyCopy() {
     ohs = new ObjHashSet<>(ohs, true); // true - read-only copy
   }
-  
+
   /*****************************************************
-   * These methods to make this class easily usable by *
-   * FsIterator_bag                                    *
+   * These methods to make this class easily usable by * FsIterator_bag *
    *****************************************************/
-  
+
   /**
-   * @param obj the object to find in the table (if it is there)
+   * @param obj
+   *          the object to find in the table (if it is there)
    * @return the position of obj in the table, or -1 if not in the table
    */
   public int find(T obj) {
     return ohs.find(obj);
   }
-    
+
   /**
    * For iterator use
-   * @param index a magic number returned by the internal find
-   * @return the T at that spot, or null if nothing there 
+   * 
+   * @param index
+   *          a magic number returned by the internal find
+   * @return the T at that spot, or null if nothing there
    */
   public T get(int index) {
     return ohs.get(index);
   }
-  
+
   /**
    * advance pos until it points to a non 0 or is 1 past end
-   * @param pos -
+   * 
+   * @param pos
+   *          -
    * @return updated pos
    */
   public int moveToNextFilled(int pos) {
@@ -84,19 +87,20 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
 
   /**
    * decrement pos until it points to a non 0 or is -1
-   * @param pos -
+   * 
+   * @param pos
+   *          -
    * @return updated pos
    */
   public int moveToPreviousFilled(int pos) {
     return ohs.moveToPreviousFilled(pos);
   }
-  
+
   @Override
   public Iterator<T> iterator() {
     return new Iterator<T>() {
       /**
-       * Keep this always pointing to a non-0 entry, or
-       * if not valid, outside the range
+       * Keep this always pointing to a non-0 entry, or if not valid, outside the range
        */
       protected int curPosition = moveToNextFilled(0);
 
@@ -123,7 +127,7 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
       public void remove() {
         throw new UnsupportedOperationException();
       }
-      
+
       private int moveToPrevious(int position) {
         if (position >= getCapacity()) {
           return -1;
@@ -135,27 +139,29 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
   }
 
   /**
-   * if the fs is in the set, the iterator should return it.
-   * if not, return -1 (makes iterator invalid)
-   * @param fs position to this fs
+   * if the fs is in the set, the iterator should return it. if not, return -1 (makes iterator
+   * invalid)
+   * 
+   * @param fs
+   *          position to this fs
    * @return the index if present, otherwise -1;
    */
   public int moveTo(FeatureStructure fs) {
     return ohs.moveTo(fs);
   }
- 
+
   @Override
   public String toString() {
     return ohs.toString();
   }
 
-//  /**
-//   * @see ObjHashSet#getModificationCount()
-//   * @return the modification count
-//   */
-//  public int getModificationCount() {
-//    return ohs.getModificationCount();
-//  }
+  // /**
+  // * @see ObjHashSet#getModificationCount()
+  // * @return the modification count
+  // */
+  // public int getModificationCount() {
+  // return ohs.getModificationCount();
+  // }
 
   /**
    * @see ObjHashSet#getCapacity()
@@ -174,7 +180,9 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
     return original_size;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#isOriginal(java.lang.Object)
    */
   @Override
@@ -182,8 +190,11 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
     return ohs == original;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#copyToArray(org.apache.uima.jcas.cas.TOP[], int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#copyToArray(org.apache.uima.jcas.cas.TOP[],
+   * int)
    */
   @Override
   public int copyToArray(T[] target, int startingIndexInTarget) {
@@ -195,5 +206,4 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
     return i;
   }
 
-  
 }

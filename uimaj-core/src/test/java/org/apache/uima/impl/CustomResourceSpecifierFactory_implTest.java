@@ -30,19 +30,19 @@ import org.apache.uima.resource.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class CustomResourceSpecifierFactory_implTest {
- 
+
   private CustomResourceFactory_impl crFactory;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     crFactory = new CustomResourceFactory_impl();
   }
 
-    @Test
-    public void testProduceResource() throws Exception {
-    CustomResourceSpecifier specifier = UIMAFramework.getResourceSpecifierFactory().createCustomResourceSpecifier();
+  @Test
+  public void testProduceResource() throws Exception {
+    CustomResourceSpecifier specifier = UIMAFramework.getResourceSpecifierFactory()
+            .createCustomResourceSpecifier();
     specifier.setResourceClassName("org.apache.uima.impl.SomeCustomResource");
     Parameter[] parameters = new Parameter[2];
     parameters[0] = UIMAFramework.getResourceSpecifierFactory().createParameter();
@@ -51,18 +51,18 @@ public class CustomResourceSpecifierFactory_implTest {
     parameters[1] = UIMAFramework.getResourceSpecifierFactory().createParameter();
     parameters[1].setName("param2");
     parameters[1].setValue("val2");
-    specifier.setParameters(parameters);    
-    
-    Resource res = crFactory.produceResource(Resource.class, specifier, Collections.EMPTY_MAP);   
+    specifier.setParameters(parameters);
+
+    Resource res = crFactory.produceResource(Resource.class, specifier, Collections.EMPTY_MAP);
     assertTrue(res instanceof SomeCustomResource);
-    assertEquals("val1", ((SomeCustomResource)res).paramMap.get("param1"));
-    assertEquals("val2", ((SomeCustomResource)res).paramMap.get("param2"));
-    
-    //also UIMAFramework.produceResource should do the same thing
-    res = UIMAFramework.produceResource(specifier, Collections.EMPTY_MAP);    
+    assertEquals("val1", ((SomeCustomResource) res).paramMap.get("param1"));
+    assertEquals("val2", ((SomeCustomResource) res).paramMap.get("param2"));
+
+    // also UIMAFramework.produceResource should do the same thing
+    res = UIMAFramework.produceResource(specifier, Collections.EMPTY_MAP);
     assertTrue(res instanceof SomeCustomResource);
-    assertEquals("val1", ((SomeCustomResource)res).paramMap.get("param1"));
-    assertEquals("val2", ((SomeCustomResource)res).paramMap.get("param2"));  
+    assertEquals("val1", ((SomeCustomResource) res).paramMap.get("param1"));
+    assertEquals("val2", ((SomeCustomResource) res).paramMap.get("param2"));
   }
 
 }

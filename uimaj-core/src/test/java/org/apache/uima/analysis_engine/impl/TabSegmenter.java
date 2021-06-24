@@ -26,7 +26,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 
-
 public class TabSegmenter extends CasMultiplier_ImplBase {
   StringTokenizer mStringTok;
 

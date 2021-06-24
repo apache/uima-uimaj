@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Test;
  * 
  */
 public class LevelTest {
-    @org.junit.jupiter.api.Test
-    public void testLevelOff() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testLevelOff() throws Exception {
     Level level = Level.OFF;
 
     // check if level is on
@@ -63,8 +63,8 @@ public class LevelTest {
 
   }
 
-    @org.junit.jupiter.api.Test
-    public void testLevelALL() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testLevelALL() throws Exception {
     Level level = Level.ALL;
 
     // check if level is on
@@ -98,8 +98,8 @@ public class LevelTest {
     Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
   }
 
-    @org.junit.jupiter.api.Test
-    public void testLevelFINEST() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testLevelFINEST() throws Exception {
     Level level = Level.FINEST;
 
     // check if level is on
@@ -134,8 +134,8 @@ public class LevelTest {
 
   }
 
-    @org.junit.jupiter.api.Test
-    public void testLevelFINER() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testLevelFINER() throws Exception {
     Level level = Level.FINER;
 
     // check if level is on
@@ -170,8 +170,8 @@ public class LevelTest {
 
   }
 
-    @Test
-    public void testLevelFINE() throws Exception {
+  @Test
+  public void testLevelFINE() throws Exception {
     Level level = Level.FINE;
 
     // check if level is on
@@ -206,8 +206,8 @@ public class LevelTest {
 
   }
 
-    @org.junit.jupiter.api.Test
-    public void testLevelCONFIG() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testLevelCONFIG() throws Exception {
     Level level = Level.CONFIG;
 
     // check if level is on
@@ -242,8 +242,8 @@ public class LevelTest {
 
   }
 
-    @org.junit.jupiter.api.Test
-    public void testLevelINFO() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testLevelINFO() throws Exception {
     Level level = Level.INFO;
 
     // check if level is on
@@ -277,8 +277,8 @@ public class LevelTest {
     Assert.assertTrue(level.isGreaterOrEqual(Level.OFF));
   }
 
-    @org.junit.jupiter.api.Test
-    public void testLevelWARNING() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testLevelWARNING() throws Exception {
     Level level = Level.WARNING;
 
     // check if level is on
@@ -313,8 +313,8 @@ public class LevelTest {
 
   }
 
-    @org.junit.jupiter.api.Test
-    public void testLevelSEVERE() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testLevelSEVERE() throws Exception {
     Level level = Level.SEVERE;
 
     // check if level is on
@@ -349,8 +349,8 @@ public class LevelTest {
 
   }
 
-    @org.junit.jupiter.api.Test
-    public void testEquals() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testEquals() throws Exception {
     Level level = Level.SEVERE;
     Integer myInt = 70000;
 
@@ -362,8 +362,8 @@ public class LevelTest {
     Assert.assertFalse(level.equals(null));
   }
 
-    @org.junit.jupiter.api.Test
-    public void testisGreaterOrEqual() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testisGreaterOrEqual() throws Exception {
     Level level = Level.INFO;
 
     // check if level "ALL" is greater or equal to "INFO"

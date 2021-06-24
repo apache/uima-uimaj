@@ -81,7 +81,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * resource bundle for log messages
    */
   private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
-  
+
   private static final String LOGGER_CLASS_SYSTEM_PROPERTY = "org.apache.uima.logger.class";
   /**
    * current class
@@ -162,7 +162,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * HashMap includes all log wrapper classes
    */
   private ConcurrentHashMap<String, Logger> mLoggers;
-  
+
   /**
    * Creates a new UIMAFramework_impl.
    */
@@ -185,8 +185,8 @@ public class UIMAFramework_impl extends UIMAFramework {
 
     // read performance tuning properties
     mDefaultPerformanceTuningProperties = new Properties();
-    mDefaultPerformanceTuningProperties.load(UIMAFramework_impl.class
-            .getResourceAsStream("performanceTuning.properties"));
+    mDefaultPerformanceTuningProperties
+            .load(UIMAFramework_impl.class.getResourceAsStream("performanceTuning.properties"));
 
     // create new HashMap for the LogWrappers
     mLoggers = new ConcurrentHashMap<>(200, 1.0f);
@@ -239,8 +239,8 @@ public class UIMAFramework_impl extends UIMAFramework {
   }
 
   /**
-   * To be implemented by subclasses; this should return a reference to the UIMA
-   * {@link XMLParser} used by this implementation.
+   * To be implemented by subclasses; this should return a reference to the UIMA {@link XMLParser}
+   * used by this implementation.
    * 
    * @return the <code>XMLParser</code> to be used by the application.
    */
@@ -269,8 +269,8 @@ public class UIMAFramework_impl extends UIMAFramework {
   }
 
   /**
-   * To be implemented by subclasses; this should return a reference to the UIMA
-   * {@link Logger} used by this implementation.
+   * To be implemented by subclasses; this should return a reference to the UIMA {@link Logger} used
+   * by this implementation.
    * 
    * @return the <code>Logger</code> to be used by the application.
    */
@@ -287,8 +287,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    */
   @Override
   protected Logger _getLogger(Class component) {
-    
-    
+
     // search for the source class logger in the HashMap
     Logger o = mLoggers.get(component.getName());
 
@@ -298,7 +297,7 @@ public class UIMAFramework_impl extends UIMAFramework {
         o = mLoggers.get(component.getName());
 
         if (o == null) { // source class logger not available
-      
+
           // create new Logger for the source class
           // set method argument type
           Class[] argumentTypes = { Class.class };
@@ -309,11 +308,13 @@ public class UIMAFramework_impl extends UIMAFramework {
             Method instanceMethod = mLoggerClass.getMethod("getInstance", argumentTypes);
             // invoke getInstance(Class component) method and retrieve logger object
             o = (Logger) instanceMethod.invoke(null, arguments);
-            if (AnalysisComponent_ImplBase.class.isAssignableFrom(component) || 
-                // Watch out: next Annotat_ImplBase class exists in 2 packages, this one is old one, needed for backwards compat.
-                org.apache.uima.analysis_engine.annotator.Annotator_ImplBase.class.isAssignableFrom(component)) {  
-              ((Logger_common_impl)o).setAnnotatorLogger(true); 
-            } 
+            if (AnalysisComponent_ImplBase.class.isAssignableFrom(component) ||
+            // Watch out: next Annotat_ImplBase class exists in 2 packages, this one is old one,
+            // needed for backwards compat.
+                    org.apache.uima.analysis_engine.annotator.Annotator_ImplBase.class
+                            .isAssignableFrom(component)) {
+              ((Logger_common_impl) o).setAnnotatorLogger(true);
+            }
           } catch (NoSuchMethodException e) {
             throw new UIMARuntimeException(e);
           } catch (InvocationTargetException e) {
@@ -321,7 +322,7 @@ public class UIMAFramework_impl extends UIMAFramework {
           } catch (IllegalAccessException e) {
             throw new UIMARuntimeException(e);
           }
-    
+
           // put created logger to the HashMap
           mLoggers.put(component.getName(), o);
         }
@@ -378,7 +379,8 @@ public class UIMAFramework_impl extends UIMAFramework {
   @Override
   protected ResourceManager _newDefaultResourceManagerPearWrapper() {
     try {
-      return (ResourceManager) Class.forName(mResourceManagerPearWrapperImplClassName).newInstance();
+      return (ResourceManager) Class.forName(mResourceManagerPearWrapperImplClassName)
+              .newInstance();
     } catch (InstantiationException e) {
       throw new UIMARuntimeException(e);
     } catch (IllegalAccessException e) {
@@ -442,8 +444,9 @@ public class UIMAFramework_impl extends UIMAFramework {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.UIMAFramework#_produceCollectionProcessingEngine(org.apache.uima.collection.metadata.cpeDescription,
-   *      java.util.Map)
+   * @see
+   * org.apache.uima.UIMAFramework#_produceCollectionProcessingEngine(org.apache.uima.collection.
+   * metadata.cpeDescription, java.util.Map)
    */
   @Override
   protected CollectionProcessingEngine _produceCollectionProcessingEngine(
@@ -481,10 +484,14 @@ public class UIMAFramework_impl extends UIMAFramework {
    *           if the XML parser could not be configured
    * @throws SAXException
    *           if factoryConfig.xml could not be parsed
-   * @throws ClassNotFoundException -
-   * @throws IllegalAccessException -
-   * @throws InstantiationException -
-   * @throws IOException -
+   * @throws ClassNotFoundException
+   *           -
+   * @throws IllegalAccessException
+   *           -
+   * @throws InstantiationException
+   *           -
+   * @throws IOException
+   *           -
    */
   protected void parseFactoryConfig() throws ParserConfigurationException, SAXException,
           IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -499,9 +506,8 @@ public class UIMAFramework_impl extends UIMAFramework {
 
     reader.setContentHandler(handler);
     reader.setErrorHandler(handler);
-    reader
-            .parse(new InputSource(UIMAFramework_impl.class
-                    .getResourceAsStream("factoryConfig.xml")));
+    reader.parse(
+            new InputSource(UIMAFramework_impl.class.getResourceAsStream("factoryConfig.xml")));
   }
 
   /**
@@ -543,21 +549,22 @@ public class UIMAFramework_impl extends UIMAFramework {
             throws SAXException {
       if ("logger".equals(qName)) {
         if (context != CONTEXT_FACTORY_CONFIG) {
-          throw new SAXException(I18nUtil
-                  .localizeMessage(UIMAException.STANDARD_MESSAGE_CATALOG, Locale.getDefault(),
-                          "element_unexpected_in_context", new Object[] { "<logger>" }));
+          throw new SAXException(I18nUtil.localizeMessage(UIMAException.STANDARD_MESSAGE_CATALOG,
+                  Locale.getDefault(), "element_unexpected_in_context",
+                  new Object[] { "<logger>" }));
         }
         try {
           // get logger class
           // check first if a system property for the logger class was specified
           String loggerClass = System.getProperty(LOGGER_CLASS_SYSTEM_PROPERTY);
-          if(loggerClass == null) {
-             //no system property was specified, use factoryConfig.xml setting
-             loggerClass = attributes.getValue("class");
+          if (loggerClass == null) {
+            // no system property was specified, use factoryConfig.xml setting
+            loggerClass = attributes.getValue("class");
           }
           mLoggerClass = Class.forName(loggerClass);
           // get static method getInstance()
-          Method instanceMethod = mLoggerClass.getMethod("getInstance", Constants.EMPTY_CLASS_ARRAY);
+          Method instanceMethod = mLoggerClass.getMethod("getInstance",
+                  Constants.EMPTY_CLASS_ARRAY);
           // invoke getInstance() method and retrieve default logger object
           mDefaultLogger = (Logger) instanceMethod.invoke(null, Constants.EMPTY_CLASS_ARRAY);
         } catch (Exception e) {
@@ -582,7 +589,7 @@ public class UIMAFramework_impl extends UIMAFramework {
                   Locale.getDefault(), "element_unexpected_in_context",
                   new Object[] { "<resourceManagerPearWrapper>" }));
         }
-        mResourceManagerPearWrapperImplClassName = attributes.getValue("class");      
+        mResourceManagerPearWrapperImplClassName = attributes.getValue("class");
       } else if ("configurationManager".equals(qName)) {
         if (context != CONTEXT_FACTORY_CONFIG) {
           throw new SAXException(I18nUtil.localizeMessage(UIMAException.STANDARD_MESSAGE_CATALOG,
@@ -606,21 +613,22 @@ public class UIMAFramework_impl extends UIMAFramework {
       } else if ("timer".equals(qName)) {
         if (context != CONTEXT_FACTORY_CONFIG) {
           throw new SAXException(I18nUtil.localizeMessage(UIMAException.STANDARD_MESSAGE_CATALOG,
-                  Locale.getDefault(), "element_unexpected_in_context", new Object[] { "<timer>" }));
+                  Locale.getDefault(), "element_unexpected_in_context",
+                  new Object[] { "<timer>" }));
         }
         mTimerClassName = attributes.getValue("class");
       } else if ("resourceSpecifier".equals(qName)) {
         if (mLoggerClass == null) {
           throw new SAXException(I18nUtil.localizeMessage(UIMAException.STANDARD_MESSAGE_CATALOG,
-                  Locale.getDefault(), "expected_x_but_found_y", new Object[] { "<logger>",
-                      "<resourceSpecifier>" }));
+                  Locale.getDefault(), "expected_x_but_found_y",
+                  new Object[] { "<logger>", "<resourceSpecifier>" }));
         }
         context = CONTEXT_RESOURCE_SPECIFIER;
       } else if ("resource".equals(qName)) {
         if (mLoggerClass == null) {
           throw new SAXException(I18nUtil.localizeMessage(UIMAException.STANDARD_MESSAGE_CATALOG,
-                  Locale.getDefault(), "expected_x_but_found_y", new Object[] { "<logger>",
-                      "<resource>" }));
+                  Locale.getDefault(), "expected_x_but_found_y",
+                  new Object[] { "<logger>", "<resource>" }));
         }
         context = CONTEXT_RESOURCE;
       } else if ("simpleFactory".equals(qName)) {
@@ -636,8 +644,8 @@ public class UIMAFramework_impl extends UIMAFramework {
         if (context == CONTEXT_RESOURCE_SPECIFIER) {
           try {
             mXMLParser.addMapping(attributes.getValue("element"), attributes.getValue("class"));
-            mResourceSpecifierFactory.addMapping(attributes.getValue("interface"), attributes
-                    .getValue("class"));
+            mResourceSpecifierFactory.addMapping(attributes.getValue("interface"),
+                    attributes.getValue("class"));
           } catch (ClassNotFoundException e) {
             // not an error
             if (debug) {
@@ -648,8 +656,8 @@ public class UIMAFramework_impl extends UIMAFramework {
           }
         } else if (context == CONTEXT_SIMPLE_FACTORY) {
           try {
-            simpleFactory.addMapping(attributes.getValue("specifier"), attributes
-                    .getValue("resource"));
+            simpleFactory.addMapping(attributes.getValue("specifier"),
+                    attributes.getValue("resource"));
           } catch (ClassNotFoundException e) {
             // not an error
             if (debug) {

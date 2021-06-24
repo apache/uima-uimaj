@@ -17,7 +17,6 @@
  * under the License.
  */
 
-   
 /* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
 
 package org.apache.uima.cas.test;
@@ -32,111 +31,132 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
 
-
-/** 
- * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
- * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
- * @generated */
+/**
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017 XML source:
+ * C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * 
+ * @generated
+ */
 public class CrossAnnotation extends Annotation {
- 
-  /** @generated
-   * @ordered 
+
+  /**
+   * @generated
+   * @ordered
    */
-  @SuppressWarnings ("hiding")
+  @SuppressWarnings("hiding")
   public final static String _TypeName = "org.apache.uima.cas.test.CrossAnnotation";
-  
-  /** @generated
-   * @ordered 
+
+  /**
+   * @generated
+   * @ordered
    */
-  @SuppressWarnings ("hiding")
+  @SuppressWarnings("hiding")
   public final static int typeIndexID = JCasRegistry.register(CrossAnnotation.class);
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
-  @SuppressWarnings ("hiding")
+  @SuppressWarnings("hiding")
   public final static int type = typeIndexID;
-  /** @generated
-   * @return index of the type  
+
+  /**
+   * @generated
+   * @return index of the type
    */
   @Override
-  public              int getTypeIndexID() {return typeIndexID;}
- 
- 
-  /* *******************
-   *   Feature Offsets *
-   * *******************/ 
-   
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /*
+   * ******************* Feature Offsets *
+   *******************/
+
   public final static String _FeatName_otherAnnotation = "otherAnnotation";
 
-
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_otherAnnotation = TypeSystemImpl.createCallSite(CrossAnnotation.class, "otherAnnotation");
+  private final static CallSite _FC_otherAnnotation = TypeSystemImpl
+          .createCallSite(CrossAnnotation.class, "otherAnnotation");
   private final static MethodHandle _FH_otherAnnotation = _FC_otherAnnotation.dynamicInvoker();
 
-   
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected CrossAnnotation() {/* intentionally empty block */}
-    
-  /** Internal - constructor used by generator 
+  /**
+   * Never called. Disable default constructor
+   * 
    * @generated
-   * @param casImpl the CAS this Feature Structure belongs to
-   * @param type the type of this Feature Structure 
+   */
+  protected CrossAnnotation() {
+    /* intentionally empty block */}
+
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   * @param casImpl
+   *          the CAS this Feature Structure belongs to
+   * @param type
+   *          the type of this Feature Structure
    */
   public CrossAnnotation(TypeImpl type, CASImpl casImpl) {
     super(type, casImpl);
     readObject();
   }
-  
-  /** @generated
-   * @param jcas JCas to which this Feature Structure belongs 
+
+  /**
+   * @generated
+   * @param jcas
+   *          JCas to which this Feature Structure belongs
    */
   public CrossAnnotation(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
+    readObject();
+  }
 
-
-  /** @generated
-   * @param jcas JCas to which this Feature Structure belongs
-   * @param begin offset to the begin spot in the SofA
-   * @param end offset to the end spot in the SofA 
-  */  
+  /**
+   * @generated
+   * @param jcas
+   *          JCas to which this Feature Structure belongs
+   * @param begin
+   *          offset to the begin spot in the SofA
+   * @param end
+   *          offset to the end spot in the SofA
+   */
   public CrossAnnotation(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
     readObject();
-  }   
+  }
 
-  /** 
-   * <!-- begin-user-doc -->
-   * Write your own initialization here
-   * <!-- end-user-doc -->
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
    *
-   * @generated modifiable 
+   * @generated modifiable
    */
-  private void readObject() {/*default - does nothing empty block */}
-     
- 
-    
-  //*--------------*
-  //* Feature: otherAnnotation
+  private void readObject() {
+    /* default - does nothing empty block */}
 
-  /** getter for otherAnnotation - gets 
+  // *--------------*
+  // * Feature: otherAnnotation
+
+  /**
+   * getter for otherAnnotation - gets
+   * 
    * @generated
-   * @return value of the feature 
+   * @return value of the feature
    */
-  public Annotation getOtherAnnotation() { return (Annotation)(_getFeatureValueNc(wrapGetIntCatchException(_FH_otherAnnotation)));}
-    
-  /** setter for otherAnnotation - sets  
+  public Annotation getOtherAnnotation() {
+    return (Annotation) (_getFeatureValueNc(wrapGetIntCatchException(_FH_otherAnnotation)));
+  }
+
+  /**
+   * setter for otherAnnotation - sets
+   * 
    * @generated
-   * @param v value to set into the feature 
+   * @param v
+   *          value to set into the feature
    */
   public void setOtherAnnotation(Annotation v) {
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_otherAnnotation), v);
-  }    
-    
   }
 
-    
+}

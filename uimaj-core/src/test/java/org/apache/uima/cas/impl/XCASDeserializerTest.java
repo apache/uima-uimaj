@@ -61,26 +61,25 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-
 public class XCASDeserializerTest {
 
   private TypeSystemDescription typeSystem;
 
   private FsIndexDescription[] indexes;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
-    typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-            new XMLInputSource(typeSystemFile));
+    typeSystem = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
             .getFsIndexes();
   }
 
-    @Test
-    public void testNoInitialSofa() throws Exception {
+  @Test
+  public void testNoInitialSofa() throws Exception {
 
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     // create non-annotation type so as not to create the _InitialView Sofa
@@ -120,17 +119,17 @@ public class XCASDeserializerTest {
     assertTrue(xml2.equals(xml));
   }
 
-    @Test
-    public void testDeserializeAndReserialize() throws Exception {
+  @Test
+  public void testDeserializeAndReserialize() throws Exception {
     doTestDeserializeAndReserialize(false);
     doTestDeserializeAndReserialize(true);
   }
-  
-    @org.junit.jupiter.api.Test
-    public void testDeserializeAndReserializeV2Ids() throws Exception {
+
+  @org.junit.jupiter.api.Test
+  public void testDeserializeAndReserializeV2Ids() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
       doTestDeserializeAndReserialize(false);
-      doTestDeserializeAndReserialize(true);      
+      doTestDeserializeAndReserialize(true);
     }
   }
 
@@ -142,62 +141,63 @@ public class XCASDeserializerTest {
       cas.getJCas();
     }
     TypeSystemImpl tsi = casImpl.getTypeSystemImpl();
-    
+
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
-    
-    XCASDeserializer.deserialize(serCasStream, cas, false);  // not lenient
-    
+
+    XCASDeserializer.deserialize(serCasStream, cas, false); // not lenient
+
     // next is missing the support for v2 ids
-//    XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
-//    ContentHandler deserHandler = deser.getXCASHandler(cas);
-//    SAXParserFactory fact = SAXParserFactory.newInstance();
-//    SAXParser parser = fact.newSAXParser();
-//    XMLReader xmlReader = parser.getXMLReader();
-//    xmlReader.setContentHandler(deserHandler);
-//    xmlReader.parse(new InputSource(serCasStream));
+    // XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
+    // ContentHandler deserHandler = deser.getXCASHandler(cas);
+    // SAXParserFactory fact = SAXParserFactory.newInstance();
+    // SAXParser parser = fact.newSAXParser();
+    // XMLReader xmlReader = parser.getXMLReader();
+    // xmlReader.setContentHandler(deserHandler);
+    // xmlReader.parse(new InputSource(serCasStream));
     serCasStream.close();
 
-//    //print some statistics to aid in verifying deserialization was correct
-//    FSIndexRepository iri = cas.getIndexRepository();
-//    FSIterator<TOP> it = iri.getAllIndexedFS(tsi.getTopType());
-//    List<TOP> allFSs = new ArrayList<>();
-//    while (it.hasNext()) {
-//      allFSs.add(it.next());
-//    }
-//    
-//    Collections.sort(allFSs, (fs1, fs2) -> 
-//       { int c = fs1._typeImpl.getName().compareTo(fs2._typeImpl.getName());
-//         if (0 == c) {
-//           return Integer.compare(fs1._id, fs2._id);
-//         }
-//         return c;
-//       });
-//    
-//    {
-//      int i = 0;
-//    
-//      int si = 0;
-//      String prevName = "";
-//      for (TOP fs : allFSs) {
-//        String thisName = fs._typeImpl.getName();
-//        if (thisName.equals(prevName)) {
-//          i ++;
-//          continue;
-//        }
-//        if (!prevName.equals("")) {
-//          System.out.format("%,d %,d %s%n", si, i-1, prevName);
-//        }
-//        prevName = thisName;
-//        si = i;
-//        i++;
-//      }
-//      System.out.format("%,d %,d %s%n", si, i-1, prevName);
-//    }
-    
+    // //print some statistics to aid in verifying deserialization was correct
+    // FSIndexRepository iri = cas.getIndexRepository();
+    // FSIterator<TOP> it = iri.getAllIndexedFS(tsi.getTopType());
+    // List<TOP> allFSs = new ArrayList<>();
+    // while (it.hasNext()) {
+    // allFSs.add(it.next());
+    // }
+    //
+    // Collections.sort(allFSs, (fs1, fs2) ->
+    // { int c = fs1._typeImpl.getName().compareTo(fs2._typeImpl.getName());
+    // if (0 == c) {
+    // return Integer.compare(fs1._id, fs2._id);
+    // }
+    // return c;
+    // });
+    //
+    // {
+    // int i = 0;
+    //
+    // int si = 0;
+    // String prevName = "";
+    // for (TOP fs : allFSs) {
+    // String thisName = fs._typeImpl.getName();
+    // if (thisName.equals(prevName)) {
+    // i ++;
+    // continue;
+    // }
+    // if (!prevName.equals("")) {
+    // System.out.format("%,d %,d %s%n", si, i-1, prevName);
+    // }
+    // prevName = thisName;
+    // si = i;
+    // i++;
+    // }
+    // System.out.format("%,d %,d %s%n", si, i-1, prevName);
+    // }
+
     // check that array refs are not null
     Type entityType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
-    Iterator<FeatureStructure> iter = cas.getIndexRepository().getIndex("testEntityIndex").iterator();
+    Iterator<FeatureStructure> iter = cas.getIndexRepository().getIndex("testEntityIndex")
+            .iterator();
     assertTrue(iter.hasNext());
     while (iter.hasNext()) {
       FeatureStructure fs = iter.next();
@@ -220,37 +220,39 @@ public class XCASDeserializerTest {
       cas2.getJCas();
     }
 
-    XCASDeserializer.deserialize(new StringReader(xml), cas2, false);  // not lenient
+    XCASDeserializer.deserialize(new StringReader(xml), cas2, false); // not lenient
 
     // next doesn't handle v2 form
     // deserialize into another CAS
-//    XCASDeserializer deser2 = new XCASDeserializer(cas2.getTypeSystem());
-//    ContentHandler deserHandler2 = deser2.getXCASHandler(cas2);
-//    xmlReader.setContentHandler(deserHandler2);
-////    // debug
-////    PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream("debug.log.txt", false)));
-////    ps.println(xml);
-////    ps.close();
-//    xmlReader.parse(new InputSource(new StringReader(xml)));
+    // XCASDeserializer deser2 = new XCASDeserializer(cas2.getTypeSystem());
+    // ContentHandler deserHandler2 = deser2.getXCASHandler(cas2);
+    // xmlReader.setContentHandler(deserHandler2);
+    //// // debug
+    //// PrintStream ps = new PrintStream(new BufferedOutputStream(new
+    // FileOutputStream("debug.log.txt", false)));
+    //// ps.println(xml);
+    //// ps.close();
+    // xmlReader.parse(new InputSource(new StringReader(xml)));
 
     // compare
-//    if (cas.getAnnotationIndex().size() != cas2.getAnnotationIndex().size()) {
-//      System.out.println("debug");
-//    }
+    // if (cas.getAnnotationIndex().size() != cas2.getAnnotationIndex().size()) {
+    // System.out.println("debug");
+    // }
     assertEquals(cas.getAnnotationIndex().size(), cas2.getAnnotationIndex().size());
     if (XmiCasDeserializerTest.IS_CAS_COMPARE) {
       long start = System.nanoTime();
-      CasCompare cc = new CasCompare((CASImpl)cas, (CASImpl)cas2);
-      cc.compareIds(((CASImpl)cas).is_ll_enableV2IdRefs());
+      CasCompare cc = new CasCompare((CASImpl) cas, (CASImpl) cas2);
+      cc.compareIds(((CASImpl) cas).is_ll_enableV2IdRefs());
       assertTrue(cc.compareCASes());
-      System.out.format("compareCASes, time: %,d millisec%n",(System.nanoTime() - start) / 1000000L);
+      System.out.format("compareCASes, time: %,d millisec%n",
+              (System.nanoTime() - start) / 1000000L);
     } else {
-      CasComparer.assertEquals(cas,cas2);
+      CasComparer.assertEquals(cas, cas2);
     }
   }
 
-    @Test
-    public void testOutOfTypeSystem2() throws Exception {
+  @Test
+  public void testOutOfTypeSystem2() throws Exception {
     // deserialize a complex CAS into one with no TypeSystem
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
             new TypePriorities_impl(), new FsIndexDescription[0]);
@@ -271,9 +273,9 @@ public class XCASDeserializerTest {
     XMLSerializer xmlSer = new XMLSerializer(sw, false);
     xcasSer.serialize(cas, xmlSer.getContentHandler(), true, ootsd);
     String xml = sw.getBuffer().toString();
-//    System.out.println("debug writing temp/xmlv3.xml");
-//    FileUtils.saveString2File(xml, new File("c:/temp/xmlv3.xml"));
-//    System.out.println(xml);
+    // System.out.println("debug writing temp/xmlv3.xml");
+    // FileUtils.saveString2File(xml, new File("c:/temp/xmlv3.xml"));
+    // System.out.println(xml);
 
     // deserialize into a CAS that accepts the full typesystem
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
@@ -286,7 +288,8 @@ public class XCASDeserializerTest {
     // check that array refs are not null
     Type entityType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
-    Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
+    Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex")
+            .iterator();
     assertTrue(iter.hasNext());
     while (iter.hasNext()) {
       FeatureStructure fs = iter.next();
@@ -298,8 +301,8 @@ public class XCASDeserializerTest {
     }
   }
 
-    @Test
-    public void testOutOfTypeSystem3() throws Exception {
+  @Test
+  public void testOutOfTypeSystem3() throws Exception {
     // deserialize an XCAS using the implicit value feature into a CAS with no TypeSystem
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
             new TypePriorities_impl(), new FsIndexDescription[0]);
@@ -326,16 +329,11 @@ public class XCASDeserializerTest {
     assertTrue(xml.indexOf("value=\"this is the value feature\"") != -1);
   }
 
-    @Test
-    public void testMultipleSofas() throws Exception {
+  @Test
+  public void testMultipleSofas() throws Exception {
     /*************************************************
-     * Make CAS with 2 sofas, initial and OtherSofa  *
-     *                                               *
-     * Add instance of TOP and index in both views   *
-     *                                               *
-     * Serialize to string "xml"                     *
-     *                                               *
-     * Deserialize from string                       *
+     * Make CAS with 2 sofas, initial and OtherSofa * * Add instance of TOP and index in both views
+     * * * Serialize to string "xml" * * Deserialize from string *
      *************************************************/
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     // set document text for the initial view
@@ -344,20 +342,23 @@ public class XCASDeserializerTest {
     CAS cas2 = cas.createView("OtherSofa");
     cas2.setDocumentText("This is only a test");
 
-    // Change this test to create an instance of TOP because you cannot add an annotation to other than 
-    //   the view it is created in. https://issues.apache.org/jira/browse/UIMA-4099
+    // Change this test to create an instance of TOP because you cannot add an annotation to other
+    // than
+    // the view it is created in. https://issues.apache.org/jira/browse/UIMA-4099
     // create a TOP and add to index of both views
     Type topType = cas.getTypeSystem().getTopType();
     FeatureStructure aTOP = cas.createFS(topType);
     cas.getIndexRepository().addFS(aTOP);
-    cas2.getIndexRepository().addFS(aTOP); 
+    cas2.getIndexRepository().addFS(aTOP);
     FSIterator<FeatureStructure> it = cas.getIndexRepository().getAllIndexedFS(topType);
     FSIterator<FeatureStructure> it2 = cas2.getIndexRepository().getAllIndexedFS(topType);
-    it.next(); it.next();
-    it2.next(); it2.next(); 
+    it.next();
+    it.next();
+    it2.next();
+    it2.next();
     assertFalse(it.hasNext());
     assertFalse(it2.hasNext());
-     
+
     // serialize
     StringWriter sw = new StringWriter();
     XMLSerializer xmlSer = new XMLSerializer(sw, false);
@@ -384,18 +385,20 @@ public class XCASDeserializerTest {
       // check that annotation is still indexed in both views
       it = newCas.getIndexRepository().getAllIndexedFS(topType);
       it2 = newCas2.getIndexRepository().getAllIndexedFS(topType);
-      it.next(); it.next();
-      it2.next(); it2.next(); 
+      it.next();
+      it.next();
+      it2.next();
+      it2.next();
       assertFalse(it.hasNext());
       assertFalse(it2.hasNext());
-//      assertTrue(tIndex.size() == 2); // document annot and this one
-//      assertTrue(t2Index.size() == 2); // ditto
-      newCas.reset();  // testing if works after cas reset, go around loop 2nd time
+      // assertTrue(tIndex.size() == 2); // document annot and this one
+      // assertTrue(t2Index.size() == 2); // ditto
+      newCas.reset(); // testing if works after cas reset, go around loop 2nd time
     }
   }
 
-    @Test
-    public void testv1FormatXcas() throws Exception {
+  @Test
+  public void testv1FormatXcas() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     CAS v1cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
 
@@ -407,7 +410,7 @@ public class XCASDeserializerTest {
     SAXParser parser = fact.newSAXParser();
     XMLReader xmlReader = parser.getXMLReader();
     xmlReader.setContentHandler(deserHandler);
-    xmlReader.parse(new InputSource(serCasStream)); 
+    xmlReader.parse(new InputSource(serCasStream));
     serCasStream.close();
 
     // get a v1.x version of the same CAS
@@ -468,27 +471,28 @@ public class XCASDeserializerTest {
     assertTrue(gerView.getDocumentText().equals("das bier ist gut"));
     assertTrue(gerView.getAnnotationIndex().size() == 5); // 4 annots plus documentAnnotation
   }
-  
-    @Test
-    public void testStringArrayWithNullValues() throws Exception {
+
+  @Test
+  public void testStringArrayWithNullValues() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     StringArrayFS strArray = cas.createStringArrayFS(3);
     strArray.set(1, "value");
     cas.getIndexRepository().addFS(strArray);
-    
+
     assertEquals(null, strArray.get(0));
     assertEquals("value", strArray.get(1));
     assertEquals(null, strArray.get(2));
-    
-    //serialize to XCAS and back
+
+    // serialize to XCAS and back
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    XCASSerializer.serialize(cas,baos);
+    XCASSerializer.serialize(cas, baos);
     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
     XCASDeserializer.deserialize(bais, cas);
 
-    //check
-    Iterator iter = cas.getIndexRepository().getAllIndexedFS(cas.getTypeSystem().getType("uima.cas.StringArray"));
-    StringArrayFS strArrayOut = (StringArrayFS)iter.next();
+    // check
+    Iterator iter = cas.getIndexRepository()
+            .getAllIndexedFS(cas.getTypeSystem().getType("uima.cas.StringArray"));
+    StringArrayFS strArrayOut = (StringArrayFS) iter.next();
     assertEquals(null, strArrayOut.get(0));
     assertEquals("value", strArrayOut.get(1));
     assertEquals(null, strArrayOut.get(2));

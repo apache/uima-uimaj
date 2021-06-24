@@ -51,7 +51,7 @@ public class CommandLineParser {
     }
 
   }
-  
+
   private HashMap<String, CmdLineParam> paramMap = null;
 
   private HashMap<CmdLineParam, String> cmdLineMap = null;
@@ -161,9 +161,8 @@ public class CommandLineParser {
    * 
    * @param paramName
    *          The name of the parameter.
-   * @return <code>true</code> iff the name was added with
-   *         {@link #addParameter(String, boolean) addParameter()} or
-   *         {@link #addAlias(String, String) addAlias()}.
+   * @return <code>true</code> iff the name was added with {@link #addParameter(String, boolean)
+   *         addParameter()} or {@link #addAlias(String, String) addAlias()}.
    */
   public boolean isKnownParameter(String paramName) {
     return this.paramMap.containsKey(paramName);

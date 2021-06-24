@@ -116,14 +116,12 @@ public class InvalidXMLException extends UIMAException {
    */
   public static final String FS_INDEXES_OUTSIDE_FS_INDEX_COLLECTION = "fs_indexes_outside_fs_index_collection";
 
-    /**
-   * Message key for a standard UIMA exception message: "Element type {0} cannot be duplicated within
-   * element type {1}."
+  /**
+   * Message key for a standard UIMA exception message: "Element type {0} cannot be duplicated
+   * within element type {1}."
    */
   public static final String DUPLICATE_ELEMENT_FOUND = "duplicate_element_found";
-  
-  
-  
+
   private static final long serialVersionUID = 4470343379909952803L;
 
   /**
@@ -150,8 +148,8 @@ public class InvalidXMLException extends UIMAException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -168,8 +166,8 @@ public class InvalidXMLException extends UIMAException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -186,8 +184,8 @@ public class InvalidXMLException extends UIMAException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -202,8 +200,8 @@ public class InvalidXMLException extends UIMAException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.

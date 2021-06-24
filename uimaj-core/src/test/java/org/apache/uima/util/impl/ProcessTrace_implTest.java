@@ -26,13 +26,12 @@ import org.apache.uima.util.ProcessTraceEvent;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-
 public class ProcessTrace_implTest {
   /*
    * @see TestCase#setUp()
    */
-    @org.junit.jupiter.api.Test
-    public void testStartAndEndEvent() {
+  @org.junit.jupiter.api.Test
+  public void testStartAndEndEvent() {
     ProcessTrace pt = new ProcessTrace_impl();
     // should be nothing on event list
     Assert.assertTrue(pt.getEvents().isEmpty());
@@ -83,8 +82,8 @@ public class ProcessTrace_implTest {
     Assert.assertEquals(3, evt1.getSubEvents().size());
   }
 
-    @org.junit.jupiter.api.Test
-    public void testAddEvent() {
+  @org.junit.jupiter.api.Test
+  public void testAddEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // should be nothing on event list
     Assert.assertTrue(pt.getEvents().isEmpty());
@@ -110,8 +109,8 @@ public class ProcessTrace_implTest {
   /*
    * Test for List getEventsByComponentName(String, boolean)
    */
-    @Test
-    public void testGetEventsByComponentName() {
+  @Test
+  public void testGetEventsByComponentName() {
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
     pt.startEvent("c1", "t1", "testing");
@@ -154,8 +153,8 @@ public class ProcessTrace_implTest {
   /*
    * Test for List getEventsByType(String, boolean)
    */
-    @org.junit.jupiter.api.Test
-    public void testGetEventsByType() {
+  @org.junit.jupiter.api.Test
+  public void testGetEventsByType() {
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
     pt.startEvent("c1", "t1", "testing");
@@ -188,8 +187,8 @@ public class ProcessTrace_implTest {
   /*
    * Test for ProcessTraceEvent getEvent(String, String)
    */
-    @org.junit.jupiter.api.Test
-    public void testGetEvent() {
+  @org.junit.jupiter.api.Test
+  public void testGetEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // create some events
     pt.startEvent("c1", "t1", "testing");
@@ -212,8 +211,8 @@ public class ProcessTrace_implTest {
     Assert.assertNull(evt);
   }
 
-    @org.junit.jupiter.api.Test
-    public void testAggregate() {
+  @org.junit.jupiter.api.Test
+  public void testAggregate() {
     // create two ProcessTrace objects
     ProcessTrace_impl pt1 = new ProcessTrace_impl();
     pt1.addEvent("c1", "t1", "testing", 1000, "success");

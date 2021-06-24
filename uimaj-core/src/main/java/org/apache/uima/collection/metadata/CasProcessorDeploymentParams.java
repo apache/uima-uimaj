@@ -16,22 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.metadata;
 
 /**
  * An object that contains all
  * {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} instances. Provides the
  * means to add, get, and delete deployment parameters.
- * 
- * 
  */
 public interface CasProcessorDeploymentParams {
   /**
    * Adds new {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} param
    * 
-   * @param aParam -
-   *          parameter to add
+   * @param aParam
+   *          - parameter to add
    */
   void add(CasProcessorDeploymentParam aParam);
 
@@ -39,10 +36,11 @@ public interface CasProcessorDeploymentParams {
    * Returns {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} instance
    * identified by aParamName.
    * 
-   * @param aParamName -
-   *          name of the parameter to get
+   * @param aParamName
+   *          - name of the parameter to get
    * @return - instance of {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
   CasProcessorDeploymentParam get(String aParamName) throws CpeDescriptorException;
 
@@ -59,9 +57,10 @@ public interface CasProcessorDeploymentParams {
    * Deletes named instance of
    * {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
    * 
-   * @param aParam -
-   *          parameter to remove
-   * @throws CpeDescriptorException tbd
+   * @param aParam
+   *          - parameter to remove
+   * @throws CpeDescriptorException
+   *           tbd
    */
   void remove(CasProcessorDeploymentParam aParam) throws CpeDescriptorException;
 }

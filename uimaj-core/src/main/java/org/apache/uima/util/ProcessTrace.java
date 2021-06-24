@@ -98,8 +98,8 @@ public interface ProcessTrace extends java.io.Serializable {
   void addEvent(ProcessTraceEvent aEvent);
 
   /**
-   * Adds a list of completed event objects to this <code>ProcessTrace</code>. This method is
-   * useful for copying events from one ProcessTrace into another.
+   * Adds a list of completed event objects to this <code>ProcessTrace</code>. This method is useful
+   * for copying events from one ProcessTrace into another.
    * 
    * @param aEventList
    *          a List of event object to be added to this <code>ProcessTrace</code>
@@ -125,7 +125,8 @@ public interface ProcessTrace extends java.io.Serializable {
    * 
    * @return a List of ProcessTraceEvents having the given component name
    */
-  List<ProcessTraceEvent> getEventsByComponentName(String aComponentName, boolean aRecurseWithinMatch);
+  List<ProcessTraceEvent> getEventsByComponentName(String aComponentName,
+          boolean aRecurseWithinMatch);
 
   /**
    * Gets all events that have the given type

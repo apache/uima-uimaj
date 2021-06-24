@@ -31,69 +31,77 @@ import org.apache.uima.jcas.impl.JCasImpl;
 // * Implementation of TOP *
 // *********************************
 /**
- * The JCas Class model corresponding to the Cas TOP type. This type is the super type of all
- * JCas feature structures.
+ * The JCas Class model corresponding to the Cas TOP type. This type is the super type of all JCas
+ * feature structures.
  */
 public class TOP extends FeatureStructureImplC {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_TOP; // the official xml name
-	/**
+  /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-	public final static int typeIndexID = JCasRegistry.register(TOP.class);  
+  public final static int typeIndexID = JCasRegistry.register(TOP.class);
 
-	public final static int type = typeIndexID;
+  public final static int type = typeIndexID;
 
-	/**
+  /**
    * 
    * @return the type array index
    */
-	// can't be factored - refs locally defined field
-	@Override
-	public int getTypeIndexID() {
-		return typeIndexID;
-	}
+  // can't be factored - refs locally defined field
+  @Override
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
 
   // maybe called to create unique removed marker, but not otherwise used
   public TOP() {
   }
-  
+
   /**
    * For use when creating a search key
-   * @param id -
+   * 
+   * @param id
+   *          -
    */
   private TOP(int id) {
     super(id);
   }
 
   /**
-   * used by generator
-   * Make a new TOP
-   * @param c -
-   * @param t -
+   * used by generator Make a new TOP
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
    */
 
-	public TOP(TypeImpl t, CASImpl c) {
-	  super(t, c);
-	}
+  public TOP(TypeImpl t, CASImpl c) {
+    super(t, c);
+  }
 
-	/**
-	 * This version is used by user code new XXX(jcas)
-	 * @param jcas -
-	 */
-	public TOP(JCas jcas) {
-	  super((JCasImpl) jcas);	  
-	}
+  /**
+   * This version is used by user code new XXX(jcas)
+   * 
+   * @param jcas
+   *          -
+   */
+  public TOP(JCas jcas) {
+    super((JCasImpl) jcas);
+  }
 
   public static TOP _createSearchKey(int id) {
-    return new TOP(id);  // special super class, does nothing except create this TOP instance
+    return new TOP(id); // special super class, does nothing except create this TOP instance
   }
-  
+
   /**
    * for internal use only, creates a reserved marker
-   * @param id -
+   * 
+   * @param id
+   *          -
    * @return -
    */
   public static TOP _createJCasHashMapReserve(int id) {
@@ -103,7 +111,7 @@ public class TOP extends FeatureStructureImplC {
   }
 
   /**
-   * Internal use - used as removed marker in maps 
+   * Internal use - used as removed marker in maps
    */
-	final public static TOP _singleton = new TOP();
+  final public static TOP _singleton = new TOP();
 }

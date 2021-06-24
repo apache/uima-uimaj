@@ -28,14 +28,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-
 public class CasDataToXCasTest {
 
   /*
    * Test for void generateXCas(CasData)
    */
-    @Test
-    public void testGenerateXCasCasData() throws Exception {
+  @Test
+  public void testGenerateXCasCasData() throws Exception {
     try {
       CasData casData = new CasDataImpl();
       FeatureStructure testFS = new FeatureStructureImpl();
@@ -89,7 +88,7 @@ public class CasDataToXCasTest {
      * (non-Javadoc)
      * 
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
-     *      java.lang.String, org.xml.sax.Attributes)
+     * java.lang.String, org.xml.sax.Attributes)
      */
     @Override
     public void startElement(String arg0, String arg1, String arg2, Attributes arg3)
@@ -117,7 +116,7 @@ public class CasDataToXCasTest {
      * (non-Javadoc)
      * 
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
-     *      java.lang.String)
+     * java.lang.String)
      */
     @Override
     public void endElement(String arg0, String arg1, String arg2) throws SAXException {

@@ -180,8 +180,8 @@ public class CharacterUtils {
       if (range.start == range.end) {
         System.out.print(" '" + toUnicodeChar(range.start) + "'");
       } else {
-        System.out.print(" '" + toUnicodeChar(range.start) + "' .. '" + toUnicodeChar(range.end)
-                + "' ");
+        System.out.print(
+                " '" + toUnicodeChar(range.start) + "' .. '" + toUnicodeChar(range.end) + "' ");
       }
     }
     System.out.println("\n" + spaces + " ;");

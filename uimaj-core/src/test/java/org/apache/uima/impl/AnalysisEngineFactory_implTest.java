@@ -32,27 +32,27 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class AnalysisEngineFactory_implTest {
- 
+
   private AnalysisEngineFactory_impl aeFactory;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     aeFactory = new AnalysisEngineFactory_impl();
   }
 
-    @Test
-    public void testInvalidFrameworkImplementation() {
+  @Test
+  public void testInvalidFrameworkImplementation() {
     AnalysisEngineDescription desc = new AnalysisEngineDescription_impl();
-    desc.setFrameworkImplementation("foo");    
+    desc.setFrameworkImplementation("foo");
     try {
       aeFactory.produceResource(AnalysisEngine.class, desc, Collections.EMPTY_MAP);
       fail();
     } catch (ResourceInitializationException e) {
       assertNotNull(e.getMessage());
       assertFalse(e.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
-      assertEquals(e.getMessageKey(), ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
+      assertEquals(e.getMessageKey(),
+              ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
     }
   }
 

@@ -165,16 +165,16 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
     // check to make sure value is legal
     if (!isValidPredicateName(aPredicate)) {
       throw new UIMA_IllegalArgumentException(
-              UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
-                  aPredicate, "predicate" });
+              UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH,
+              new Object[] { aPredicate, "predicate" });
     }
     mPredicate = aPredicate;
   }
 
   /**
    * Determines whether the given String is a valid name a predicate defined by this class. Valid
-   * predicate names are legal arguments to the {@link #setPredicate(String)} method, and are defined
-   * by constants on the {@link SimplePrecondition} interface.
+   * predicate names are legal arguments to the {@link #setPredicate(String)} method, and are
+   * defined by constants on the {@link SimplePrecondition} interface.
    * 
    * @param aName
    *          an Object to test
@@ -191,8 +191,8 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "simplePrecondition",
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("simplePrecondition",
           new PropertyXmlInfo[] { new PropertyXmlInfo("featureDescription", null),
-              new PropertyXmlInfo("comparisonValue"), new PropertyXmlInfo("predicate", "predicate") });
+              new PropertyXmlInfo("comparisonValue"),
+              new PropertyXmlInfo("predicate", "predicate") });
 }

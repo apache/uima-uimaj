@@ -27,8 +27,8 @@ package org.apache.uima.resource;
  * 
  * 
  */
-public abstract class ConfigurableResource_ImplBase extends Resource_ImplBase implements
-        ConfigurableResource {
+public abstract class ConfigurableResource_ImplBase extends Resource_ImplBase
+        implements ConfigurableResource {
 
   /**
    * @see org.apache.uima.resource.ConfigurableResource#getConfigParameterValue(java.lang.String)
@@ -72,8 +72,8 @@ public abstract class ConfigurableResource_ImplBase extends Resource_ImplBase im
    */
   @Override
   public void reconfigure() throws ResourceConfigurationException {
-    getUimaContextAdmin().getConfigurationManager().reconfigure(
-            getUimaContextAdmin().getQualifiedContextName());
+    getUimaContextAdmin().getConfigurationManager()
+            .reconfigure(getUimaContextAdmin().getQualifiedContextName());
   }
 
 }

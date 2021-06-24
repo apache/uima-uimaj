@@ -19,44 +19,43 @@
 
 package org.apache.uima.resource;
 
-
 /**
- * A type of <code>ResourceSpecifier</code> that specifically names the
- * Java class that should be created.  This allows users to plug in their own
- * custom resource implementations.
+ * A type of <code>ResourceSpecifier</code> that specifically names the Java class that should be
+ * created. This allows users to plug in their own custom resource implementations.
  */
 public interface CustomResourceSpecifier extends ResourceSpecifier {
 
   /**
-   * Retrieves the name of the Java class that will be instantiated when
-   * one of the <code>UIMAFramework.produceXXX(ResourceSpecifier,...)</code> methods is called
-   * with this resource specifier.
+   * Retrieves the name of the Java class that will be instantiated when one of the
+   * <code>UIMAFramework.produceXXX(ResourceSpecifier,...)</code> methods is called with this
+   * resource specifier.
    * 
-   * @return a fully-qualified Java class name.  The named class should implement {@link Resource}.
+   * @return a fully-qualified Java class name. The named class should implement {@link Resource}.
    */
   String getResourceClassName();
 
   /**
-   * Setss the name of the Java class that will be instantiated when
-   * one of the <code>UIMAFramework.produceXXX(ResourceSpecifier,...)</code> methods is called
-   * with this resource specifier.
+   * Setss the name of the Java class that will be instantiated when one of the
+   * <code>UIMAFramework.produceXXX(ResourceSpecifier,...)</code> methods is called with this
+   * resource specifier.
    * 
-   * @param aResourceClassName a fully-qualified Java class name.  The named class should implement {@link Resource}.
+   * @param aResourceClassName
+   *          a fully-qualified Java class name. The named class should implement {@link Resource}.
    */
   void setResourceClassName(String aResourceClassName);
-
 
   /**
    * Gets parameters that may be read by the custom resource class when it is initialized.
    * 
-   * @return an array of parameters.  This will never return <code>null</code>.
+   * @return an array of parameters. This will never return <code>null</code>.
    */
   Parameter[] getParameters();
 
   /**
    * Sets parameters that may be read by the custom resource class when it is initialized.
    * 
-   * @param parameters the Parameters to set.
+   * @param parameters
+   *          the Parameters to set.
    */
   void setParameters(Parameter[] parameters);
 

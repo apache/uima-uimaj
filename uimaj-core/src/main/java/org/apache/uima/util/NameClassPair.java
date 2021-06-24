@@ -81,11 +81,11 @@ public class NameClassPair implements java.io.Serializable {
     }
     NameClassPair that = (NameClassPair) aObj;
 
-    boolean nameMatch = this.getName() == null ? that.getName() == null : this.getName().equals(
-            that.getName());
+    boolean nameMatch = this.getName() == null ? that.getName() == null
+            : this.getName().equals(that.getName());
 
-    boolean classNameMatch = this.getClassName() == null ? that.getClassName() == null : this
-            .getClassName().equals(that.getClassName());
+    boolean classNameMatch = this.getClassName() == null ? that.getClassName() == null
+            : this.getClassName().equals(that.getClassName());
 
     return nameMatch && classNameMatch;
   }

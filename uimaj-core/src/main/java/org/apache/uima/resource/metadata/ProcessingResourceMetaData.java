@@ -27,8 +27,8 @@ import org.apache.uima.util.InvalidXMLException;
  * Metadata that describes a "Processing" {@link org.apache.uima.resource.Resource} - that is, one
  * that reads or writes to the {@link org.apache.uima.cas.CAS}.
  * <p>
- * As with all {@link MetaDataObject}s, a <code>ProcessingResourceMetaData</code> may or may not
- * be modifiable. An application can find out by calling the {@link #isModifiable()} method.
+ * As with all {@link MetaDataObject}s, a <code>ProcessingResourceMetaData</code> may or may not be
+ * modifiable. An application can find out by calling the {@link #isModifiable()} method.
  * 
  * 
  */
@@ -36,9 +36,9 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
 
   /**
    * Retrieves the Type System used by this Processing Resource. The Type System contains
-   * {@link TypeDescription}s and {@link FeatureDescription}s that are the inputs and/or outputs
-   * of this Resource.  Some Processing Resources, such as aggregate analysis engines, may not
-   * contain a type system and return <code>null</code>.
+   * {@link TypeDescription}s and {@link FeatureDescription}s that are the inputs and/or outputs of
+   * this Resource. Some Processing Resources, such as aggregate analysis engines, may not contain a
+   * type system and return <code>null</code>.
    * 
    * @return a description of the type system used by this Resource
    */
@@ -46,8 +46,8 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
 
   /**
    * Retrieves the Type System used by this Processing Resource. The Type System contains
-   * {@link TypeDescription}s and {@link FeatureDescription}s that are the inputs and/or outputs
-   * of this Resource.
+   * {@link TypeDescription}s and {@link FeatureDescription}s that are the inputs and/or outputs of
+   * this Resource.
    * 
    * @param aTypeSystem
    *          a description of the type system used by this Resource.

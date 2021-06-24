@@ -19,9 +19,8 @@
 package org.apache.uima.internal.util;
 
 /**
- * Data structure used to encapsulate the different pieces of information that 
- * make up the name of an XML element - namely, the Namespace URI, the local 
- * name, and the qname (qualified name).
+ * Data structure used to encapsulate the different pieces of information that make up the name of
+ * an XML element - namely, the Namespace URI, the local name, and the qname (qualified name).
  */
 public class XmlElementName {
   public XmlElementName(String nsUri, String localName, String qName) {
@@ -30,9 +29,10 @@ public class XmlElementName {
     this.qName = qName;
   }
 
-  public String nsUri;  // the URI for the type name, or (JSON) the fully-qualified type name
+  public String nsUri; // the URI for the type name, or (JSON) the fully-qualified type name
 
-  public String localName;  // the type name without any package prefix
+  public String localName; // the type name without any package prefix
 
-  public String qName;  // the type name with its namespace, written as name_space_name:short_type_name
+  public String qName; // the type name with its namespace, written as
+                       // name_space_name:short_type_name
 }

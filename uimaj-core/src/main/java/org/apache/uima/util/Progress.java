@@ -21,8 +21,8 @@ package org.apache.uima.util;
 
 /**
  * Progress statistics for a process. This is represented by an amount completed, a total amount (if
- * known), and a unit. There are some predefined unit types ({@link #BYTES}, {@link #ENTITIES}),
- * but any unit can be used.
+ * known), and a unit. There are some predefined unit types ({@link #BYTES}, {@link #ENTITIES}), but
+ * any unit can be used.
  * 
  * 
  */
@@ -45,8 +45,7 @@ public interface Progress extends java.io.Serializable {
 
   /**
    * The unit type represented by the {@link #getCompleted()} and {@link #getTotal()} numbers. There
-   * are some predefined unit types ({@link #BYTES}, {@link #ENTITIES}), but any unit can be
-   * used.
+   * are some predefined unit types ({@link #BYTES}, {@link #ENTITIES}), but any unit can be used.
    * 
    * @return the unit
    */

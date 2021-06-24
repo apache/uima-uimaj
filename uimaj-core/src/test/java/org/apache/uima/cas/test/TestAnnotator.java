@@ -24,8 +24,8 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 
 /**
- * Annotator for CAS test cases.  Does nothing.  Its only purpose is to load a type system and
- * provide a CAS for testing.
+ * Annotator for CAS test cases. Does nothing. Its only purpose is to load a type system and provide
+ * a CAS for testing.
  */
 public class TestAnnotator extends CasAnnotator_ImplBase {
 
@@ -39,7 +39,5 @@ public class TestAnnotator extends CasAnnotator_ImplBase {
     fs = cas.createFS(cas.getTypeSystem().getType("OtherAnnotation"));
     cas.addFsToIndexes(fs);
   }
-  
-  
 
 }

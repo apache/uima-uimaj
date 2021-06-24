@@ -46,7 +46,7 @@ public final class IntArrayUtils {
     if (array.length == 0)
       return new int[req];
     int new_array_size = array.length;
-    
+
     while (new_array_size < req) {
       if (new_array_size < multiplication_limit) {
         new_array_size = new_array_size * growth_factor;
@@ -58,7 +58,7 @@ public final class IntArrayUtils {
     System.arraycopy(array, 0, new_array, 0, array.length);
     return new_array;
   }
-  
+
   public static boolean[] ensure_size(boolean[] array, int req, int growth_factor,
           int multiplication_limit) {
     if (array.length < req) {
@@ -120,16 +120,16 @@ public final class IntArrayUtils {
    * @param end
    *          Look up to this point (non-inclusive).
    * @return The position of <code>ele</code>, if found; <code>-insertPos-1</code>, if not.
-   *         <code>insertPos</code> is the position where <code>ele</code> would be inserted.
-   *         Note that the return value is <code>&gt;= start</code> iff <code>ele</code> was
-   *         found; see {@link java.util.Arrays java.util.Arrays}.
+   *         <code>insertPos</code> is the position where <code>ele</code> would be inserted. Note
+   *         that the return value is <code>&gt;= start</code> iff <code>ele</code> was found; see
+   *         {@link java.util.Arrays java.util.Arrays}.
    */
   public static int binarySearch(int[] array, int ele, int start, int end) {
     --end; // Make end a legal value.
     int i; // Current position
     int current; // Current value
     while (start <= end) {
-      i = (int)(((long)start + end) / 2);
+      i = (int) (((long) start + end) / 2);
       current = array[i];
       if (ele == current) {
         return i;
@@ -158,8 +158,8 @@ public final class IntArrayUtils {
    *          The int to find.
    * @param a
    *          The array.
-   * @return The position (first occurence) where <code>x</code> was found; <code>-1</code> if
-   *         not found.
+   * @return The position (first occurence) where <code>x</code> was found; <code>-1</code> if not
+   *         found.
    */
   public static int find(int x, int[] a) {
     final int max = a.length;

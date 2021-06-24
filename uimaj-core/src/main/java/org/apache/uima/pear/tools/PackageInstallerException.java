@@ -34,8 +34,8 @@ public class PackageInstallerException extends InternationalizedRuntimeException
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -53,8 +53,8 @@ public class PackageInstallerException extends InternationalizedRuntimeException
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    */
   public PackageInstallerException(String aResourceBundleName, String aMessageKey) {
     super(aResourceBundleName, aMessageKey, null, null);
@@ -68,12 +68,13 @@ public class PackageInstallerException extends InternationalizedRuntimeException
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aCause
    *          the original exception that caused this exception to be thrown, if any
    */
-  public PackageInstallerException(String aResourceBundleName, String aMessageKey, Throwable aCause) {
+  public PackageInstallerException(String aResourceBundleName, String aMessageKey,
+          Throwable aCause) {
     super(aResourceBundleName, aMessageKey, null, aCause);
   }
 
@@ -85,8 +86,8 @@ public class PackageInstallerException extends InternationalizedRuntimeException
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.

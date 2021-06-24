@@ -47,8 +47,8 @@ public abstract class JCasFlowController_ImplBase extends FlowController_ImplBas
       return computeFlow((JCas) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
-                  aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
+              new Object[] { JCas.class, aCAS.getClass() });
     }
   }
 
@@ -59,9 +59,9 @@ public abstract class JCasFlowController_ImplBase extends FlowController_ImplBas
    * use information in the CAS to make routing decisions.
    * <p>
    * FlowController implementations will typically define their own class that implements
-   * {@link Flow} by extending from the base class {@link JCasFlow_ImplBase}. This method would
-   * then just instantiate the flow object, call its <code>setCas</code> method to provide a
-   * handle to the JCas, and return the flow object.
+   * {@link Flow} by extending from the base class {@link JCasFlow_ImplBase}. This method would then
+   * just instantiate the flow object, call its <code>setCas</code> method to provide a handle to
+   * the JCas, and return the flow object.
    * 
    * @param aJCas
    *          the JCas to be routed

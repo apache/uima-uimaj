@@ -43,21 +43,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * The setup:
- *   Token (super = Annotation)
- *   Sentence (super = Annotation)
- *   
- *   Annotator:  (in descr) SubIteratorAnnotator
+ * The setup: Token (super = Annotation) Sentence (super = Annotation)
+ * 
+ * Annotator: (in descr) SubIteratorAnnotator
  */
 public class SubiteratorTest {
 
   private AnalysisEngine ae = null;
 
-    @BeforeEach
-    public void setUp() {
+  @BeforeEach
+  public void setUp() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
-    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
-        .exists());
+    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
+            descriptorFile.exists());
 
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
@@ -76,16 +74,16 @@ public class SubiteratorTest {
 
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     if (this.ae != null) {
       this.ae.destroy();
       this.ae = null;
     }
   }
 
-    @Test
-    public void testAnnotator() {
+  @Test
+  public void testAnnotator() {
     File textFile = JUnitExtension.getFile("CASTests/verjuice.txt");
     String text = null;
     try {
@@ -104,9 +102,9 @@ public class SubiteratorTest {
     jcas.setDocumentText(text);
     try {
       this.ae.process(jcas);
-      
+
       iterateAndcheck(jcas);
-          
+
       iterateAndcheck(jcas);
     } catch (AnalysisEngineProcessException e) {
       e.printStackTrace();
@@ -116,17 +114,17 @@ public class SubiteratorTest {
       assertTrue(false);
     }
   }
-  
+
   private void iterateAndcheck(JCas jcas) {
     AnnotationIndex<Token> tokenIndex = jcas.getAnnotationIndex(Token.class);
     Annotation sentence = jcas.getAnnotationIndex(Sentence.class).iterator().next();
     FSIterator<Token> tokenIterator = tokenIndex.subiterator(sentence);
     Annotation token = tokenIndex.iterator().next();
     // debug token.toString();
-    tokenIterator.moveTo(token); //throws ClassCastException 
-    
+    tokenIterator.moveTo(token); // throws ClassCastException
+
     // check unambiguous iterator creation
-    
+
     FSIterator<Token> it = tokenIndex.iterator(false);
     it.moveTo(token);
   }

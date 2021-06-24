@@ -30,75 +30,83 @@ import org.apache.uima.jcas.JCas;
 
 public abstract class FloatList extends TOP implements CommonList, Iterable<Float> {
 
-	// Never called.
-	protected FloatList() {// Disable default constructor
-	}
+  // Never called.
+  protected FloatList() {// Disable default constructor
+  }
 
-	public FloatList(JCas jcas) {
-		super(jcas);
-	}
+  public FloatList(JCas jcas) {
+    super(jcas);
+  }
 
   /**
-  * used by generator
-  * Make a new AnnotationBase
-  * @param c -
-  * @param t -
-  */
+   * used by generator Make a new AnnotationBase
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
+   */
 
-   public FloatList(TypeImpl t, CASImpl c) {
-     super(t, c);
-   }
-   
+  public FloatList(TypeImpl t, CASImpl c) {
+    super(t, c);
+  }
+
   public float getNthElement(int i) {
     return ((NonEmptyFloatList) getNonEmptyNthNode(i)).getHead();
   }
-  
-  
+
   @Override
   public NonEmptyFloatList createNonEmptyNode() {
     return new NonEmptyFloatList(this._casView.getJCasImpl());
   }
-  
-  /**
-  * pushes item onto front of this list
-  * @param item the item to push onto the list
-  * @return the new list, with this item as the head value of the first element
-  */
- public NonEmptyFloatList push(float item) {
-   return new NonEmptyFloatList(_casView.getJCasImpl(), item, this);
- }
 
-  /* (non-Javadoc)
+  /**
+   * pushes item onto front of this list
+   * 
+   * @param item
+   *          the item to push onto the list
+   * @return the new list, with this item as the head value of the first element
+   */
+  public NonEmptyFloatList push(float item) {
+    return new NonEmptyFloatList(_casView.getJCasImpl(), item, this);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Iterable#iterator()
    */
   @Override
   public Iterator<Float> iterator() {
-    return Collections.emptyIterator();  // overridden by NonEmptyXxList
+    return Collections.emptyIterator(); // overridden by NonEmptyXxList
   }
-  
+
   @Override
   public EmptyFloatList emptyList() {
     return this._casView.emptyFloatList();
   }
-  
+
   /**
    * Create an FloatList from an existing array of Feature Structures
-   * @param jcas the JCas to use
-   * @param a the array of Floats to populate the list with
+   * 
+   * @param jcas
+   *          the JCas to use
+   * @param a
+   *          the array of Floats to populate the list with
    * @return an FloatList, with the elements from the array
    */
   public static FloatList create(JCas jcas, Float[] a) {
-    FloatList floatList = jcas.getCasImpl().emptyFloatList();   
+    FloatList floatList = jcas.getCasImpl().emptyFloatList();
     for (int i = a.length - 1; i >= 0; i--) {
       floatList = floatList.push(a[i]);
-    }   
+    }
     return floatList;
   }
-  
+
   public Stream<Float> stream() {
     return StreamSupport.stream(spliterator(), false);
   }
-  
+
   public boolean contains(float v) {
     FloatList node = this;
     while (node instanceof NonEmptyFloatList) {

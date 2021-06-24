@@ -42,7 +42,7 @@ import org.apache.uima.util.XMLizable;
  * example, the following are valid filters:
  * <ul>
  * <li>foo = "hello world"</li>
- * <li>foo &lt; 42 </li>
+ * <li>foo &lt; 42</li>
  * <li>bar7 = "\"Blah,\" he said."
  * <li>bar7 &gt;= 0.5</li>
  * </ul>

@@ -31,6 +31,7 @@ package org.apache.uima.resource.metadata;
 public interface ExternalResourceBinding extends MetaDataObject {
 
   ExternalResourceBinding[] EMPTY_RESOURCE_BINDINGS = new ExternalResourceBinding[0];
+
   /**
    * Retrieves the key that identifies the
    * {@link org.apache.uima.resource.ExternalResourceDependency} being bound. If this binding is

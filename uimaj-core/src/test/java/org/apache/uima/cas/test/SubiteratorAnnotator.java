@@ -61,12 +61,12 @@ public class SubiteratorAnnotator extends JCasAnnotator_ImplBase {
       if (text.charAt(i) == '.') {
         Sentence sentence = new Sentence(jCas);
         sentence.setBegin(sentenceStart);
-        sentence.setEnd(i+1);
+        sentence.setEnd(i + 1);
         sentence.addToIndexes();
         sentenceStart = i + 1;
       }
     }
-    
+
   }
 
 }

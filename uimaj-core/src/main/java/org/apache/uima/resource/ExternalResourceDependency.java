@@ -28,7 +28,8 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * <li>A key, by which the annotator will identify the resource.</li>
  * <li>A textual description of the resource dependency.</li>
  * <li>The name of a Java interface through which the data will be accessed. This is optional; if
- * not specified, the default {@link org.apache.uima.resource.DataResource} interface will be used.</li>
+ * not specified, the default {@link org.apache.uima.resource.DataResource} interface will be
+ * used.</li>
  * <li>Whether the resource is required or optional.</li>
  * </ul>
  * 
@@ -77,8 +78,7 @@ public interface ExternalResourceDependency extends MetaDataObject {
    * Sets the name of the Java interface through which this resource will be accessed.
    * 
    * @param aName
-   *          the name of the Java interface for this external resource, <code>null</code> if
-   *          none.
+   *          the name of the Java interface for this external resource, <code>null</code> if none.
    * 
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable

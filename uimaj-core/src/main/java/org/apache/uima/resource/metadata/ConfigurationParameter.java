@@ -86,7 +86,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    *           if this object is not modifiable
    */
   void setExternalOverrideName(String aExternalOverrideName);
-  
+
   /**
    * Retrieves the description of this configuration parameter.
    * 
@@ -183,12 +183,14 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @throws UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
+
   // public void setPublished(boolean aPublished);
   /**
    * Gets the parameters that are this parameter overrides. This is used for aggregate resources
-   * only. Overrides are expressed as strings of the form <i>componentName</i><code>/</code><i>parameterName</i>.
-   * For example the overrides <code>annotator1/parameter1</code> would override the parameter
-   * named <code>parameter1</code> within the component named <code>annotator1</code>.
+   * only. Overrides are expressed as strings of the form
+   * <i>componentName</i><code>/</code><i>parameterName</i>. For example the overrides
+   * <code>annotator1/parameter1</code> would override the parameter named <code>parameter1</code>
+   * within the component named <code>annotator1</code>.
    * 
    * @return the parameters this this parameter overrides
    */
@@ -196,9 +198,10 @@ public interface ConfigurationParameter extends MetaDataObject {
 
   /**
    * Sets the parameters that are this parameter overrides. This is used for aggregate resources
-   * only. Overrides are expressed as strings of the form <i>componentName</i><code>/</code><i>parameterName</i>.
-   * For example the overrides <code>annotator1/parameter1</code> would override the parameter
-   * named <code>parameter1</code> within the component named <code>annotator1</code>.
+   * only. Overrides are expressed as strings of the form
+   * <i>componentName</i><code>/</code><i>parameterName</i>. For example the overrides
+   * <code>annotator1/parameter1</code> would override the parameter named <code>parameter1</code>
+   * within the component named <code>annotator1</code>.
    * 
    * @param aOverrides
    *          the parameters this this parameter overrides

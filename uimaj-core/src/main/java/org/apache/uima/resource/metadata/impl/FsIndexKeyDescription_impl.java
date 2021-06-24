@@ -32,8 +32,8 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * 
  */
-public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
-        FsIndexKeyDescription {
+public class FsIndexKeyDescription_impl extends MetaDataObject_impl
+        implements FsIndexKeyDescription {
 
   static final long serialVersionUID = -4015997042353963398L;
 
@@ -103,7 +103,8 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
    * @see MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String)
    */
   @Override
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace)
+          throws SAXException {
     final SerialContext sc = serialContext.get();
     final Serializer serializer = sc.serializer;
 
@@ -112,11 +113,14 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
     if ("typePriority".equals(aPropInfo.propertyName)) {
       // if property is true, just write an empty tag, if false omit
       if (isTypePriority()) {
-        serializer.outputStartElement(node, namespace, "typePriority", "typePriority", new AttributesImpl());
-//        aContentHandler.startElement(getXmlizationInfo().namespace, "typePriority", "typePriority",
-//                new AttributesImpl());
+        serializer.outputStartElement(node, namespace, "typePriority", "typePriority",
+                new AttributesImpl());
+        // aContentHandler.startElement(getXmlizationInfo().namespace, "typePriority",
+        // "typePriority",
+        // new AttributesImpl());
         serializer.outputEndElement(node, namespace, "typePriority", "typePriority");
-//        aContentHandler.endElement(getXmlizationInfo().namespace, "typePriority", "typePriority");
+        // aContentHandler.endElement(getXmlizationInfo().namespace, "typePriority",
+        // "typePriority");
       }
     } else if (!isTypePriority()) // don't write other properties for a type priority key
     {
@@ -124,15 +128,16 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
         // This property has an interger-encoded value which is written to XML
         // as a more user-friendly string.
 
-        serializer.outputStartElement(node, namespace, "comparator", "comparator", new AttributesImpl());
-//        aContentHandler.startElement(getXmlizationInfo().namespace, "comparator", "comparator",
-//                new AttributesImpl());
+        serializer.outputStartElement(node, namespace, "comparator", "comparator",
+                new AttributesImpl());
+        // aContentHandler.startElement(getXmlizationInfo().namespace, "comparator", "comparator",
+        // new AttributesImpl());
 
         // write value as string
         String str = COMPARATOR_STRINGS[getComparator()];
         serializer.writeSimpleValue(str);
         serializer.outputEndElement(node, namespace, "comparator", "comparator");
-//        aContentHandler.endElement(getXmlizationInfo().namespace, "comparator", "comparator");
+        // aContentHandler.endElement(getXmlizationInfo().namespace, "comparator", "comparator");
       } else {
         // for all other attributes, use the default superclass behavior
         super.writePropertyAsElement(aPropInfo, aNamespace);
@@ -144,7 +149,8 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
    * Overridden to handle XML import of the <code>typePriority</code> and <code>comparator</code>
    * properties.
    * 
-   * @see MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
+   * @see MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser,
+   *      org.apache.uima.util.XMLParser.ParsingOptions)
    */
   @Override
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
@@ -166,8 +172,8 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
         }
       }
       if (!success) {
-        throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TEXT, new Object[] {
-            comparatorStr, "comparator" });
+        throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TEXT,
+                new Object[] { comparatorStr, "comparator" });
       }
     } else {
       // for all other attributes, use the default superclass behavior

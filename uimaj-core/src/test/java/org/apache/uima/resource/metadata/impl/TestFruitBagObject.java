@@ -31,9 +31,9 @@ public class TestFruitBagObject extends MetaDataObject_impl {
           new PropertyXmlInfo[] { new PropertyXmlInfo("fruits") });
 
   private TestFruitObject[] mFruits;
-  
+
   public TestFruitBagObject() {
-    //do nothing
+    // do nothing
   }
 
   public TestFruitObject[] getFruits() {
@@ -44,23 +44,22 @@ public class TestFruitBagObject extends MetaDataObject_impl {
     mFruits = aFruits;
   }
 
-//  /**
-//   * For testing purposes - a hardcoded attribute set. Should be compared with the results of
-//   * {@link #listAttributes()}.
-//   */
-//  static public Set<NameClassPair> getAttributeSet() {
-//    Set<NameClassPair> result = new HashSet<NameClassPair>();
-//    result.add(new NameClassPair("fruits", TestFruitObject[].class.getName()));
-//    return result;
-//  }
-  
+  // /**
+  // * For testing purposes - a hardcoded attribute set. Should be compared with the results of
+  // * {@link #listAttributes()}.
+  // */
+  // static public Set<NameClassPair> getAttributeSet() {
+  // Set<NameClassPair> result = new HashSet<NameClassPair>();
+  // result.add(new NameClassPair("fruits", TestFruitObject[].class.getName()));
+  // return result;
+  // }
+
   static public Set<MetaDataAttr> getMetaDataAttrSet() {
     Set<MetaDataAttr> result = new HashSet<>();
     try {
-    result.add(new MetaDataAttr("fruits", 
-        TestFruitBagObject.class.getDeclaredMethod("getFruits"), 
-        TestFruitBagObject.class.getDeclaredMethod("setFruits", TestFruitObject[].class),
-        TestFruitObject[].class));
+      result.add(new MetaDataAttr("fruits", TestFruitBagObject.class.getDeclaredMethod("getFruits"),
+              TestFruitBagObject.class.getDeclaredMethod("setFruits", TestFruitObject[].class),
+              TestFruitObject[].class));
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

@@ -26,8 +26,8 @@ import org.apache.uima.util.Settings;
 
 /**
  * Manages the configuration parameters of all components within a possibly aggregate
- * {@link org.apache.uima.resource.Resource}. Note that the <code>ConfigurationManager</code>
- * needs to make use of the {@link Session} object in order to store configuration settings that are
+ * {@link org.apache.uima.resource.Resource}. Note that the <code>ConfigurationManager</code> needs
+ * to make use of the {@link Session} object in order to store configuration settings that are
  * specific to a particular client session.
  * 
  * 
@@ -40,25 +40,27 @@ public interface ConfigurationManager {
    * performed on the configuration parameters declared in this context; if an error is found an
    * exception will be thrown.
    * 
-   * Multi-threading: This may be called with the same parameters on multiple threads.  
-   * Implementations should check for repeated calls to create the same context and just return in that case
+   * Multi-threading: This may be called with the same parameters on multiple threads.
+   * Implementations should check for repeated calls to create the same context and just return in
+   * that case
    * 
    * @param aContextName
    *          the name of the context in which the configuration parameter is being accessed. This
    *          corresponds to the path through the aggregate resource, e.g /subAE1/annotator1.
    * @param aResourceMetaData
    *          metadata object containing the configuration parameter declarations and settings.
-   * @param externalSettings the external overrides
+   * @param externalSettings
+   *          the external overrides
    * 
    * @throws ResourceConfigurationException
    *           if the configuration settings are invalid
    */
-  void createContext(String aContextName, ResourceMetaData aResourceMetaData, Settings externalSettings)
-          throws ResourceConfigurationException;
+  void createContext(String aContextName, ResourceMetaData aResourceMetaData,
+          Settings externalSettings) throws ResourceConfigurationException;
 
   /**
-   * Sets the current <code>Session</code>. The Configuration Manager uses the
-   * <code>Session</code> object to store changes to configuration settings made by calling the
+   * Sets the current <code>Session</code>. The Configuration Manager uses the <code>Session</code>
+   * object to store changes to configuration settings made by calling the
    * <code>setConfigParameterValue</code> methods. This ensures that in a multi-client deployment
    * those settings only apply to the same client that set them.
    * <p>
@@ -79,8 +81,7 @@ public interface ConfigurationManager {
    *          <code>ContextName + / + ParameterName</code>.
    * 
    * @return the value of the parameter with the given name. The caller is expected to know the data
-   *         type of the parameter. If the parameter does not exist,<code>null</code> is
-   *         returned.
+   *         type of the parameter. If the parameter does not exist,<code>null</code> is returned.
    */
   Object getConfigParameterValue(String aQualifiedName);
 
@@ -90,11 +91,11 @@ public interface ConfigurationManager {
    * @param aQualifiedParamName
    *          the fully-qualified configuration parameter name. This is of the form
    *          <code>ContextName + / + ParameterName</code>.
-   * @param aGroupName the name of the parameter group
+   * @param aGroupName
+   *          the name of the parameter group
    * 
    * @return the value of the parameter with the given name. The caller is expected to know the data
-   *         type of the parameter. If the parameter does not exist,<code>null</code> is
-   *         returned.
+   *         type of the parameter. If the parameter does not exist,<code>null</code> is returned.
    */
   Object getConfigParameterValue(String aQualifiedParamName, String aGroupName);
 
@@ -119,10 +120,11 @@ public interface ConfigurationManager {
    *          the fully-qualified configuration parameter name. This is of the form
    *          <code>ContextName + / + ParameterName</code>.
    * @param aGroupName
-   *          the name of a configuration group. If this parameter is
-   *          <code>null</code>, this method will have the same effect as
-   *   {@link #setConfigParameterValue(String,Object) setParameterValue(String,Object)}.
-   * @param aValue the value to assign to the parameter
+   *          the name of a configuration group. If this parameter is <code>null</code>, this method
+   *          will have the same effect as {@link #setConfigParameterValue(String,Object)
+   *          setParameterValue(String,Object)}.
+   * @param aValue
+   *          the value to assign to the parameter
    */
   void setConfigParameterValue(String aQualifiedParamName, String aGroupName, Object aValue);
 

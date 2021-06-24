@@ -32,8 +32,8 @@ public interface CasProcessorRunInSeperateProcess extends MetaDataObject {
    * Sets {@link org.apache.uima.collection.metadata.CasProcessorExecutable} executable program used
    * by the CPE to launch CasProcessor.
    * 
-   * @param aExec -
-   *          {@link org.apache.uima.collection.metadata.CasProcessorExecutable}
+   * @param aExec
+   *          - {@link org.apache.uima.collection.metadata.CasProcessorExecutable}
    */
   void setExecutable(CasProcessorExecutable aExec);
 

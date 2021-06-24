@@ -32,10 +32,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** Java Cas model for Cas FloatArray. */
-public final class FloatArray extends TOP 
-                              implements CommonPrimitiveArray<Float>,
-                                         Iterable<Float>,
-                                         FloatArrayFSImpl {
+public final class FloatArray extends TOP
+        implements CommonPrimitiveArray<Float>, Iterable<Float>, FloatArrayFSImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_FLOAT_ARRAY;
@@ -58,7 +56,7 @@ public final class FloatArray extends TOP
   public int getTypeIndexID() {
     return typeIndexID;
   }
-  
+
   private final float[] theArray;
 
   private FloatArray() { // never called. Here to disable default constructor
@@ -67,8 +65,11 @@ public final class FloatArray extends TOP
 
   /**
    * Make a new FloatArray of given size
-   * @param jcas the JCas
-   * @param length the size of the array
+   * 
+   * @param jcas
+   *          the JCas
+   * @param length
+   *          the size of the array
    */
   public FloatArray(JCas jcas, int length) {
     super(jcas);
@@ -78,27 +79,29 @@ public final class FloatArray extends TOP
     }
     if (_casView.isId2Fs()) {
       _casView.adjustLastFsV2Size_arrays(length);
-    }    
+    }
   }
-  
+
   /**
-   * used by generator
-   * Make a new FloatArray of given size
-   * @param c -
-   * @param t -
-   * @param length the length of the array in bytes
+   * used by generator Make a new FloatArray of given size
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
+   * @param length
+   *          the length of the array in bytes
    */
   public FloatArray(TypeImpl t, CASImpl c, int length) {
-    super(t, c);  
+    super(t, c);
     theArray = new float[length];
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
       _casView.adjustLastFsV2Size_arrays(length);
-    }    
+    }
   }
-
 
   // /**
   // * create a new FloatArray of a given size.
@@ -191,33 +194,40 @@ public final class FloatArray extends TOP
       set(i + destOffset, Float.parseFloat(src[i + srcOffset]));
     }
   }
-  
+
   // internal use only
   public float[] _getTheArray() {
     return theArray;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
   public void copyValuesFrom(CommonArrayFS v) {
     FloatArray bv = (FloatArray) v;
-    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    System.arraycopy(bv.theArray, 0, theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int,
+   * java.lang.String)
    */
   @Override
   public void setArrayValueFromString(int i, String v) {
-    set(i, Float.parseFloat(v));    
+    set(i, Float.parseFloat(v));
   }
-  
+
   /**
-   * @param jcas Which CAS to create the array in
-   * @param a the source for the array's initial values
+   * @param jcas
+   *          Which CAS to create the array in
+   * @param a
+   *          the source for the array's initial values
    * @return a newly created and populated array
    */
   public static FloatArray create(JCas jcas, float[] a) {
@@ -226,7 +236,9 @@ public final class FloatArray extends TOP
     return floatArray;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Iterable#iterator()
    */
   @Override
@@ -234,7 +246,7 @@ public final class FloatArray extends TOP
     return new Iterator<Float>() {
 
       int i = 0;
-      
+
       @Override
       public boolean hasNext() {
         return i < size();
@@ -246,13 +258,13 @@ public final class FloatArray extends TOP
           throw new NoSuchElementException();
         return get(i++);
       }
-      
+
     };
   }
 
-
   /**
-   * @param item the item to see if is in the array
+   * @param item
+   *          the item to see if is in the array
    * @return true if the item is in the array
    */
   public boolean contains(float item) {

@@ -25,9 +25,9 @@ package org.apache.uima.internal.util;
  * etc.
  * <p>
  * 
- * Note that the largest value you can represent with this class is 9223372036854775807 (<code>Long.MAX_VALUE</code>),
- * or equivalently, 292471208 yrs 247 days 7 hrs 12 min 55.807 sec. Overflow is not handled
- * gracefully by this class.
+ * Note that the largest value you can represent with this class is 9223372036854775807
+ * (<code>Long.MAX_VALUE</code>), or equivalently, 292471208 yrs 247 days 7 hrs 12 min 55.807 sec.
+ * Overflow is not handled gracefully by this class.
  * <p>
  * 
  * Also note that for the purposes of this class, a year has 365 days. I.e., a year corresponds to
@@ -88,8 +88,7 @@ public class TimeSpan {
    * 
    * @param milliseconds
    *          The interval in ms. If <code>milliseconds
-   &lt; 0</code>, an uninstantiated
-   *          <code>TimeSpan</code> is created.
+   &lt; 0</code>, an uninstantiated <code>TimeSpan</code> is created.
    */
   public TimeSpan(long milliseconds) {
     if (milliseconds >= 0) {
@@ -196,8 +195,7 @@ public class TimeSpan {
    * 
    * @param milliseconds
    *          The number of milliseconds.
-   * @return <code>false</code>, if <code>milliseconds &lt; 0</code>; <code>true</code>,
-   *         else.
+   * @return <code>false</code>, if <code>milliseconds &lt; 0</code>; <code>true</code>, else.
    */
   public boolean setMilliseconds(int milliseconds) {
     if (milliseconds < 0) {
@@ -214,8 +212,7 @@ public class TimeSpan {
    * 
    * @param milliseconds
    *          The number of milliseconds.
-   * @return <code>false</code>, if <code>milliseconds &lt; 0</code>; <code>true</code>,
-   *         else.
+   * @return <code>false</code>, if <code>milliseconds &lt; 0</code>; <code>true</code>, else.
    */
   public boolean setFullMilliseconds(long milliseconds) {
     if (milliseconds < 0) {

@@ -19,26 +19,26 @@
 
 package org.apache.uima.resource;
 
-
 /**
- * A <code>ResourceManagerPearWrapper</code> is a 
- * special Resource Manager, sharing all its fields with its parent,
- * except for the class path and data path fields.
+ * A <code>ResourceManagerPearWrapper</code> is a special Resource Manager, sharing all its fields
+ * with its parent, except for the class path and data path fields.
  * 
  * 
  */
 @Deprecated
 public interface ResourceManagerPearWrapper extends ResourceManager {
   /**
-   * N O T E :     N O   L O N G E R    U S E D    2018
+   * N O T E : N O L O N G E R U S E D 2018
    * 
-   * Pear Wrapper Resource Managers share all their values with their parent,
-   * except for the 2 values used to store the Classpath and Datapath.
+   * Pear Wrapper Resource Managers share all their values with their parent, except for the 2
+   * values used to store the Classpath and Datapath.
    * 
-   * This method is called immediately after the factory creates the 
-   * object (using the 0-argument constructor), and it initializes all
-   * the fields in this wrapper to share the values with their parent.
-   * @param resourceManager the parent ResourceManager
+   * This method is called immediately after the factory creates the object (using the 0-argument
+   * constructor), and it initializes all the fields in this wrapper to share the values with their
+   * parent.
+   * 
+   * @param resourceManager
+   *          the parent ResourceManager
    */
   void initializeFromParentResourceManager(ResourceManager resourceManager);
 }

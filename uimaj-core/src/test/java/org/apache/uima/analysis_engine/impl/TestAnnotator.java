@@ -46,19 +46,19 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
   public static boolean typeSystemInitCalled;
 
   public static synchronized String getLastDocument() {
-    return lastDocument;  
+    return lastDocument;
   }
-  
+
   public static synchronized ResultSpecification getLastResultSpec() {
     return lastResultSpec;
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.annotator.Annotator#initialize(AnnotatorContext)
    */
   @Override
-  public void initialize(AnnotatorContext aContext) throws AnnotatorConfigurationException,
-          AnnotatorInitializationException {
+  public void initialize(AnnotatorContext aContext)
+          throws AnnotatorConfigurationException, AnnotatorInitializationException {
     super.initialize(aContext);
     typeSystemInitCalled = false;
     lastResultSpec = null;

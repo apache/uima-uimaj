@@ -53,14 +53,15 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
 
   static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
 
-  private static final SAXTransformerFactory transformerFactory = XMLUtils.createSaxTransformerFactory();
+  private static final SAXTransformerFactory transformerFactory = XMLUtils
+          .createSaxTransformerFactory();
 
   private DOMResult mDOMResult;
 
   private XMLParser mUimaXmlParser;
 
   private XMLParser.ParsingOptions mOptions;
- 
+
   private TransformerHandler mTransformerHandler;
 
   private final boolean needsFix;
@@ -86,18 +87,18 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
       mTransformerHandler = transformerFactory.newTransformerHandler();
       mDOMResult = new DOMResult();
       mTransformerHandler.setResult(mDOMResult);
-      
-      // set up a test for old buggy XALAN (2.6.0) impl 
-      //   see https://issues.apache.org/jira/browse/UIMA-2155
+
+      // set up a test for old buggy XALAN (2.6.0) impl
+      // see https://issues.apache.org/jira/browse/UIMA-2155
       testTransformerHandler = transformerFactory.newTransformerHandler();
       testTransformerHandler.setResult(testDomResult);
     } catch (TransformerConfigurationException e) {
       throw new UIMARuntimeException(e);
     }
-    
-    // test for old buggy XALAN (2.6.0) impl 
-    //   see https://issues.apache.org/jira/browse/UIMA-2155
- 
+
+    // test for old buggy XALAN (2.6.0) impl
+    // see https://issues.apache.org/jira/browse/UIMA-2155
+
     AttributesImpl atts = new AttributesImpl();
     atts.addAttribute("", "xmlns", "xmlns", "CDATA", "http://some");
     boolean nf = false;
@@ -106,10 +107,10 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
       testTransformerHandler.startElement("http://some", "test", "test", atts);
     } catch (SAXException e) {
       nf = true;
-  }
+    }
     needsFix = nf;
   }
-  
+
   /**
    * Creates a new SAX Deserializer.
    * 
@@ -122,7 +123,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    *          not used
    * @param aOptions
    *          option settings
-   *          
+   * 
    * @deprecated Use {@link #SaxDeserializer_impl(XMLParser, XMLParser.ParsingOptions)} instead.
    */
   @Deprecated
@@ -148,13 +149,13 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
 
     return result;
   }
-  
+
   /**
    * @see org.xml.sax.ContentHandler#characters(char[], int, int)
    */
   @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
-//    System.out.format("SaxDeserializer_impl::characters: %s%n", new String(ch, start, length));
+    // System.out.format("SaxDeserializer_impl::characters: %s%n", new String(ch, start, length));
     mTransformerHandler.characters(ch, start, length);
   }
 
@@ -191,14 +192,14 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    */
   @Override
   public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-//    System.out.format("SaxDeserializer_impl::ignorableWS: %s%n", new String(ch, start, length));
+    // System.out.format("SaxDeserializer_impl::ignorableWS: %s%n", new String(ch, start, length));
     if (mOptions.preserveComments) {
       characters(ch, start, length);
-        // calling ignorableWhiteSpace results in the white space being dropped in the DOM
-      //  Note this method is only called when "validating"
-      // When not validating, the parser can't tell if it's real chars or ignorable, 
+      // calling ignorableWhiteSpace results in the white space being dropped in the DOM
+      // Note this method is only called when "validating"
+      // When not validating, the parser can't tell if it's real chars or ignorable,
       // so it calls characters.
-//      mTransformerHandler.ignorableWhitespace(ch, start, length);
+      // mTransformerHandler.ignorableWhitespace(ch, start, length);
     }
   }
 
@@ -248,19 +249,22 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
     if (needsFix) {
       mTransformerHandler.startElement(namespaceURI, localName, qName, fixNSbug(atts));
     } else {
-    mTransformerHandler.startElement(namespaceURI, localName, qName, atts);
+      mTransformerHandler.startElement(namespaceURI, localName, qName, atts);
+    }
   }
-  }
-  
+
   // bypass a bug in handling xmlns= attributes in some Javas impls,
-  // where it throws a org.w3c.dom.DOMException: NAMESPACE_ERR: An attempt is made to create or change an object in a way which is incorrect with regard to namespaces.
+  // where it throws a org.w3c.dom.DOMException: NAMESPACE_ERR: An attempt is made to create or
+  // change an object in a way which is incorrect with regard to namespaces.
   // confirmed happens on Java 1.6 Sun 6_22, but is OK on IBM Java 6
 
   private Attributes fixNSbug(Attributes atts) {
-    // fix: scan the attributes for the attribute "xmlns" and if found, add the correct namespace for that attribute.
+    // fix: scan the attributes for the attribute "xmlns" and if found, add the correct namespace
+    // for that attribute.
     for (int i = 0; i < atts.getLength(); i++) {
-      if ("xmlns".equals(atts.getQName(i))){
-        AttributesImpl result = new AttributesImpl(atts);  // make a copy of all the attributes, into an impl-neutral impl.
+      if ("xmlns".equals(atts.getQName(i))) {
+        AttributesImpl result = new AttributesImpl(atts); // make a copy of all the attributes, into
+                                                          // an impl-neutral impl.
         result.setURI(i, "http://www.w3.org/2000/xmlns/");
         return result;
       }
@@ -277,7 +281,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
     mTransformerHandler.startPrefixMapping(prefix, uri);
   }
 
-  //==============================================
+  // ==============================================
   // Methods for LexicalHandler interface
   @Override
   public void comment(char[] arg0, int arg1, int arg2) throws SAXException {
@@ -285,20 +289,26 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   }
 
   @Override
-  public void endCDATA() throws SAXException {}
+  public void endCDATA() throws SAXException {
+  }
 
   @Override
-  public void endDTD() throws SAXException {}
+  public void endDTD() throws SAXException {
+  }
 
   @Override
-  public void endEntity(String name) throws SAXException {}
+  public void endEntity(String name) throws SAXException {
+  }
 
   @Override
-  public void startCDATA() throws SAXException {}
+  public void startCDATA() throws SAXException {
+  }
 
   @Override
-  public void startDTD(String name, String publicId, String systemId) throws SAXException {}
+  public void startDTD(String name, String publicId, String systemId) throws SAXException {
+  }
 
   @Override
-  public void startEntity(String name) throws SAXException {}
+  public void startEntity(String name) throws SAXException {
+  }
 }

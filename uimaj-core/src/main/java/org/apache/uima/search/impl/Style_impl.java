@@ -149,6 +149,6 @@ public class Style_impl extends MetaDataObject_impl implements Style {
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("style",
           new PropertyXmlInfo[] {
-          // name is an attribute, not an element
+              // name is an attribute, not an element
               new PropertyXmlInfo("attributes", null), new PropertyXmlInfo("attributeMappings") });
 }

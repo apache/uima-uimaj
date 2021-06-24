@@ -37,22 +37,19 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /**
- * the JCas class model for the CAS type uima.cas.AnnotationBase. 
- * The AnnotationBase type defines one system-used feature which 
- * specifies for an annotation the subject of analysis (Sofa) to which it refers. 
- * Various annotation types (including the built-in uima.tcas.Annotation)
- * may be defined as subtypes of this type.
+ * the JCas class model for the CAS type uima.cas.AnnotationBase. The AnnotationBase type defines
+ * one system-used feature which specifies for an annotation the subject of analysis (Sofa) to which
+ * it refers. Various annotation types (including the built-in uima.tcas.Annotation) may be defined
+ * as subtypes of this type.
  * 
- * uima.tcas.Annotation is a subtype of this type, appropriate for
- * Subjects of Analysis which are text strings.  Other (not-built-in)
- * subtypes may be defined for other kinds of Subjects of Analysis.  For instance
- * an audio sample Subject of Analysis might define a start and end position as time points 
- * in the stream.  An image Subject of Analysis might define rectangular coordiantes
+ * uima.tcas.Annotation is a subtype of this type, appropriate for Subjects of Analysis which are
+ * text strings. Other (not-built-in) subtypes may be defined for other kinds of Subjects of
+ * Analysis. For instance an audio sample Subject of Analysis might define a start and end position
+ * as time points in the stream. An image Subject of Analysis might define rectangular coordiantes
  * describing a sub-area of the image.
  * 
- * If you are defining a type which needs a reference to the Subject of Analysis
- * (which is view-specific),
- * it should be a subtype of this base type.
+ * If you are defining a type which needs a reference to the Subject of Analysis (which is
+ * view-specific), it should be a subtype of this base type.
  */
 public class AnnotationBase extends TOP implements AnnotationBaseImpl {
 
@@ -68,46 +65,52 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
   public int getTypeIndexID() {
     return typeIndexID;
   }
-  
-  // private final static int _FI_sofa = JCasRegistry.registerFeature();  // only for journal-able or corruptable feature slots
-  
+
+  // private final static int _FI_sofa = JCasRegistry.registerFeature(); // only for journal-able or
+  // corruptable feature slots
+
   /* local data */
-//  public final static int _FI_sofa = TypeSystemImpl.getAdjustedFeatureOffset("sofa");
-  private final static CallSite _FC_sofa = TypeSystemImpl.createCallSiteForBuiltIn(AnnotationBase.class, "sofa");
+  // public final static int _FI_sofa = TypeSystemImpl.getAdjustedFeatureOffset("sofa");
+  private final static CallSite _FC_sofa = TypeSystemImpl
+          .createCallSiteForBuiltIn(AnnotationBase.class, "sofa");
   private final static MethodHandle _FH_sofa = _FC_sofa.dynamicInvoker();
-  
-//  private final Sofa _F_sofa;
-  
+
+  // private final Sofa _F_sofa;
+
   // Never called. Disable default constructor
   @Deprecated
   protected AnnotationBase() {
   }
 
-// /* Internal - Constructor used by generator */
-//  public AnnotationBase(int addr, TOP_Type type) {
-//    super(addr, type);
-//  }
+  // /* Internal - Constructor used by generator */
+  // public AnnotationBase(int addr, TOP_Type type) {
+  // super(addr, type);
+  // }
 
   public AnnotationBase(JCas jcas) {
     super(jcas);
     if (_casView.isBaseCas()) {
-      throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
+      throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS,
+              this.getClass().getName());
     }
     // no journaling, no index corruption checking
     _setRefValueCommon(wrapGetIntCatchException(_FH_sofa), _casView.getSofaRef());
   }
 
   /**
-   * used by generator
-   * Make a new AnnotationBase
-   * @param c -
-   * @param t -
+   * used by generator Make a new AnnotationBase
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
    */
 
   public AnnotationBase(TypeImpl t, CASImpl c) {
     super(t, c);
     if (_casView.isBaseCas()) {
-      throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
+      throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS,
+              this.getClass().getName());
     }
     // no journaling, no index corruption checking
     _setRefValueCommon(wrapGetIntCatchException(_FH_sofa), _casView.getSofaRef());
@@ -117,29 +120,31 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
   // * Feature: sofa
   // * Sofa reference of the annotation
   /*
-   * getter for sofa - gets Sofaref for annotation
-   * Return type is SofaFS for binary backwards compatibility with UIMA v2 https://issues.apache.org/jira/browse/UIMA-5974
+   * getter for sofa - gets Sofaref for annotation Return type is SofaFS for binary backwards
+   * compatibility with UIMA v2 https://issues.apache.org/jira/browse/UIMA-5974
    */
-  public SofaFS getSofa() { return (Sofa) _getFeatureValueNc(wrapGetIntCatchException(_FH_sofa)); }
-  
+  public SofaFS getSofa() {
+    return (Sofa) _getFeatureValueNc(wrapGetIntCatchException(_FH_sofa));
+  }
+
   // There is no setter for this
-  //   The value is set and is fixed when this is created
-    
+  // The value is set and is fixed when this is created
+
   @Override
   public CAS getView() {
     return _casView;
   }
-  
+
   @Override
   public void setFeatureValue(Feature feat, FeatureStructure v) {
     FeatureImpl fi = (FeatureImpl) feat;
     if (fi.getCode() == TypeSystemConstants.annotBaseSofaFeatCode) {
       // trying to set the sofa - don't do this, but check if the value
-      // is OK (note: may break backwards compatibility)  
+      // is OK (note: may break backwards compatibility)
       if (v != _getFeatureValueNc(wrapGetIntCatchException(_FH_sofa))) {
         throw new CASRuntimeException(CASRuntimeException.ILLEGAL_SOFAREF_MODIFICATION);
       }
     }
-    super.setFeatureValue(feat,  v);
+    super.setFeatureValue(feat, v);
   }
 }

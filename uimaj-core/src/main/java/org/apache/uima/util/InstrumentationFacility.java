@@ -22,9 +22,9 @@ package org.apache.uima.util;
 import org.apache.uima.UIMA_IllegalStateException;
 
 /**
- * The <code>InstrumentationFacility</code> interface defines a standard way for UIMA components
- * to be instrumented for performance evaluation. The UIMA framework will provide each UIMA
- * component with access to an implementation of this interface.
+ * The <code>InstrumentationFacility</code> interface defines a standard way for UIMA components to
+ * be instrumented for performance evaluation. The UIMA framework will provide each UIMA component
+ * with access to an implementation of this interface.
  * 
  * This interface is under development. In its current form, it basically just provides a write-only
  * interface to a {@link ProcessTrace} object.

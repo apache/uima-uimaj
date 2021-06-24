@@ -40,7 +40,7 @@ public class CASInitializer {
 
   public static CAS initCas(AnnotatorInitializer init, Consumer<TypeSystemImpl> reinitTypeSystem) {
     // Create an initial CASMgr from the factory.
-//    long startTime = System.nanoTime();
+    // long startTime = System.nanoTime();
     CASMgr casMgr0 = CASFactory.createCAS();
     CASMgr casMgr = null;
     try {
@@ -49,7 +49,7 @@ public class CASInitializer {
       // Create a writable type system.
       TypeSystemMgr tsa = casMgr0.getTypeSystemMgr();
       // Next not needed, type system is already uncommitted
-//      ((TypeSystemImpl) tsa).setCommitted(false);
+      // ((TypeSystemImpl) tsa).setCommitted(false);
       // do the type system tests
       init.initTypeSystem(tsa);
       // Commit the type system.
@@ -72,8 +72,8 @@ public class CASInitializer {
       throw new RuntimeException(e);
     }
 
-//    System.out.format("Debug SerDesTest6 setup time: %d micros%n", 
-//    (System.nanoTime() - startTime)/1000L);
+    // System.out.format("Debug SerDesTest6 setup time: %d micros%n",
+    // (System.nanoTime() - startTime)/1000L);
 
     // Create the default text Sofa and return CAS view
     return casMgr.getCAS().getCurrentView();

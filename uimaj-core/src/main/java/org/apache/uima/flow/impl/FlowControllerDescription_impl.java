@@ -40,8 +40,8 @@ import org.w3c.dom.Element;
 /**
  * Implementation of {@link FlowControllerDescription}.
  */
-public class FlowControllerDescription_impl extends ResourceCreationSpecifier_impl implements
-        FlowControllerDescription {
+public class FlowControllerDescription_impl extends ResourceCreationSpecifier_impl
+        implements FlowControllerDescription {
   private static final long serialVersionUID = 7478890390021821535L;
 
   /**
@@ -68,7 +68,9 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
+   * @see
+   * org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.
+   * ResourceManager)
    */
   @Override
   public void doFullValidation(ResourceManager aResourceManager)
@@ -119,8 +121,8 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "flowControllerDescription", new PropertyXmlInfo[] {
-              new PropertyXmlInfo("frameworkImplementation"),
+          "flowControllerDescription",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),
               new PropertyXmlInfo("externalResourceDependencies"),
               new PropertyXmlInfo("resourceManagerConfiguration", null) });

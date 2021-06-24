@@ -22,16 +22,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.extractor.Extractors.byName;
 
 public class MetaDataObjectAssert {
-  public static void assertFieldAsEqualButNotSameValue(Object original, Object copy, String field)
-  {
+  public static void assertFieldAsEqualButNotSameValue(Object original, Object copy, String field) {
     Object originalValue = byName(field).apply(original);
     Object copyValue = byName(field).apply(copy);
-    
+
     // null is considered to be "the same" by AssertJ, but for the given purpose, it is ok.
     if (originalValue == null && copyValue == null) {
       return;
     }
-    
+
     assertThat(copyValue) //
             .isEqualTo(originalValue) //
             .isNotSameAs(originalValue);

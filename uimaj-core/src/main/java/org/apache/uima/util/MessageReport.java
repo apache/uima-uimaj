@@ -28,27 +28,35 @@ public class MessageReport {
 
   /**
    * Issues message at warning or fine level (fine if enabled, includes stack trace)
-   * @param errorCount the count of errors used to decrease the frequency
-   * @param message the message
-   * @param logger the logger to use
+   * 
+   * @param errorCount
+   *          the count of errors used to decrease the frequency
+   * @param message
+   *          the message
+   * @param logger
+   *          the logger to use
    */
   public static void decreasingWithTrace(AtomicInteger errorCount, String message, Logger logger) {
     if (logger != null) {
       final int c = errorCount.incrementAndGet();
-      final int cTruncated = Integer.highestOneBit(c); 
+      final int cTruncated = Integer.highestOneBit(c);
       // log with decreasing frequency
       if (cTruncated == c) {
         if (logger.isLoggable(Level.FINE)) {
-          try { throw new Throwable();}
-          catch (Throwable e) {
+          try {
+            throw new Throwable();
+          } catch (Throwable e) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
             e.printStackTrace(ps);
-            message = "Message count: " + c + "; " + message + " Message count indicates messages skipped to avoid potential flooding.\n" + baos.toString();
+            message = "Message count: " + c + "; " + message
+                    + " Message count indicates messages skipped to avoid potential flooding.\n"
+                    + baos.toString();
             logger.log(Level.FINE, message);
           }
         } else {
-          message = "Message count: " + c + "; " + message + " Message count indicates messages skipped to avoid potential flooding. Set FINE logging level for stacktrace.";
+          message = "Message count: " + c + "; " + message
+                  + " Message count indicates messages skipped to avoid potential flooding. Set FINE logging level for stacktrace.";
           logger.log(Level.WARNING, message);
         }
       }

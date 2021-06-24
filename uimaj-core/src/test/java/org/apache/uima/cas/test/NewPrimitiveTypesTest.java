@@ -74,7 +74,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-
 public class NewPrimitiveTypesTest {
 
   private CASMgr casMgr;
@@ -115,10 +114,10 @@ public class NewPrimitiveTypesTest {
 
   private Feature doubleArrayFeature;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
-//      long startTime = System.nanoTime();
+      // long startTime = System.nanoTime();
       casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
       // Create a writable type system.
@@ -131,32 +130,32 @@ public class NewPrimitiveTypesTest {
       exampleType = tsa.addType("test.primitives.Example", annotationType);
 
       floatFeature = tsa.addFeature("floatFeature", exampleType, tsa.getType(CAS.TYPE_NAME_FLOAT));
-      stringFeature = tsa.addFeature("stringFeature", exampleType, tsa
-              .getType(CAS.TYPE_NAME_STRING));
-      booleanFeature = tsa.addFeature("boolFeature", exampleType, tsa
-              .getType(CAS.TYPE_NAME_BOOLEAN));
+      stringFeature = tsa.addFeature("stringFeature", exampleType,
+              tsa.getType(CAS.TYPE_NAME_STRING));
+      booleanFeature = tsa.addFeature("boolFeature", exampleType,
+              tsa.getType(CAS.TYPE_NAME_BOOLEAN));
       byteFeature = tsa.addFeature("byteFeature", exampleType, tsa.getType(CAS.TYPE_NAME_BYTE));
       shortFeature = tsa.addFeature("shortFeature", exampleType, tsa.getType(CAS.TYPE_NAME_SHORT));
       longFeature = tsa.addFeature("longFeature", exampleType, tsa.getType(CAS.TYPE_NAME_LONG));
-      doubleFeature = tsa.addFeature("doubleFeature", exampleType, tsa
-              .getType(CAS.TYPE_NAME_DOUBLE));
+      doubleFeature = tsa.addFeature("doubleFeature", exampleType,
+              tsa.getType(CAS.TYPE_NAME_DOUBLE));
 
-      intArrayFeature = tsa.addFeature("intArrayFeature", exampleType, tsa
-              .getType(CAS.TYPE_NAME_INTEGER_ARRAY));
-      floatArrayFeature = tsa.addFeature("floatArrayFeature", exampleType, tsa
-              .getType(CAS.TYPE_NAME_FLOAT_ARRAY), false);
-      stringArrayFeature = tsa.addFeature("stringArrayFeature", exampleType, tsa
-              .getType(CAS.TYPE_NAME_STRING_ARRAY), false);
-      booleanArrayFeature = tsa.addFeature("boolArrayFeature", exampleType, tsa
-              .getType(CAS.TYPE_NAME_BOOLEAN_ARRAY));
-      byteArrayFeature = tsa.addFeature("byteArrayFeature", exampleType, tsa
-              .getType(CAS.TYPE_NAME_BYTE_ARRAY), false);
-      shortArrayFeature = tsa.addFeature("shortArrayFeature", exampleType, tsa
-              .getType(CAS.TYPE_NAME_SHORT_ARRAY));
-      longArrayFeature = tsa.addFeature("longArrayFeature", exampleType, tsa
-              .getType(CAS.TYPE_NAME_LONG_ARRAY));
-      doubleArrayFeature = tsa.addFeature("doubleArrayFeature", exampleType, tsa
-              .getType(CAS.TYPE_NAME_DOUBLE_ARRAY), false);
+      intArrayFeature = tsa.addFeature("intArrayFeature", exampleType,
+              tsa.getType(CAS.TYPE_NAME_INTEGER_ARRAY));
+      floatArrayFeature = tsa.addFeature("floatArrayFeature", exampleType,
+              tsa.getType(CAS.TYPE_NAME_FLOAT_ARRAY), false);
+      stringArrayFeature = tsa.addFeature("stringArrayFeature", exampleType,
+              tsa.getType(CAS.TYPE_NAME_STRING_ARRAY), false);
+      booleanArrayFeature = tsa.addFeature("boolArrayFeature", exampleType,
+              tsa.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY));
+      byteArrayFeature = tsa.addFeature("byteArrayFeature", exampleType,
+              tsa.getType(CAS.TYPE_NAME_BYTE_ARRAY), false);
+      shortArrayFeature = tsa.addFeature("shortArrayFeature", exampleType,
+              tsa.getType(CAS.TYPE_NAME_SHORT_ARRAY));
+      longArrayFeature = tsa.addFeature("longArrayFeature", exampleType,
+              tsa.getType(CAS.TYPE_NAME_LONG_ARRAY));
+      doubleArrayFeature = tsa.addFeature("doubleArrayFeature", exampleType,
+              tsa.getType(CAS.TYPE_NAME_DOUBLE_ARRAY), false);
 
       // Commit the type system.
       ((CASImpl) casMgr).commitTypeSystem();
@@ -171,33 +170,33 @@ public class NewPrimitiveTypesTest {
       FSIndexComparator comp = irm.createComparator();
       comp.setType(tsa.getType("test.primitives.Example"));
       comp.addKey(tsa.getFeatureByFullName("test.primitives.Example:doubleFeature"),
-          FSIndexComparator.STANDARD_COMPARE);
+              FSIndexComparator.STANDARD_COMPARE);
       irm.createIndex(comp, "doubleIndex");
 
       comp = irm.createComparator();
       comp.setType(tsa.getType("test.primitives.Example"));
       comp.addKey(tsa.getFeatureByFullName("test.primitives.Example:longFeature"),
-          FSIndexComparator.REVERSE_STANDARD_COMPARE);
+              FSIndexComparator.REVERSE_STANDARD_COMPARE);
       irm.createIndex(comp, "longIndex");
 
       comp = irm.createComparator();
       comp.setType(tsa.getType("test.primitives.Example"));
       comp.addKey(tsa.getFeatureByFullName("test.primitives.Example:shortFeature"),
-          FSIndexComparator.STANDARD_COMPARE);
+              FSIndexComparator.STANDARD_COMPARE);
       irm.createIndex(comp, "shortIndex");
 
       irm.commit();
 
       cas = casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
-//      System.out.format("Debug NewPrimitiveTypesTest time to setup CAS: %,d microsec%n",
-//          (System.nanoTime() - startTime)/1000L);
+      // System.out.format("Debug NewPrimitiveTypesTest time to setup CAS: %,d microsec%n",
+      // (System.nanoTime() - startTime)/1000L);
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
 
   }
-  
+
   private void reinitTypeSystem(TypeSystemImpl tsa) {
     annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
 
@@ -222,8 +221,8 @@ public class NewPrimitiveTypesTest {
     doubleArrayFeature = tsa.refreshFeature(doubleArrayFeature);
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     casMgr = null;
     cas = null;
     annotationType = null;
@@ -244,9 +243,9 @@ public class NewPrimitiveTypesTest {
     longArrayFeature = null;
     doubleArrayFeature = null;
   }
-  
-    @Test
-    public void testCreateFS() throws Exception {
+
+  @Test
+  public void testCreateFS() throws Exception {
 
     // create FS
     FeatureStructure fs = createExampleFS(cas);
@@ -254,8 +253,8 @@ public class NewPrimitiveTypesTest {
     validateFSData(cas);
   }
 
-    @org.junit.jupiter.api.Test
-    public void testBlobSerialization() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testBlobSerialization() throws Exception {
 
     // create FS
     createExampleFS(cas);
@@ -275,8 +274,8 @@ public class NewPrimitiveTypesTest {
     validateFSData(cas);
   }
 
-    @Test
-    public void testJavaSerialization() throws Exception {
+  @Test
+  public void testJavaSerialization() throws Exception {
 
     // create FS
     createExampleFS(cas);
@@ -294,16 +293,16 @@ public class NewPrimitiveTypesTest {
     validateFSData(cas);
   }
 
-    @org.junit.jupiter.api.Test
-    public void testXCASSerialization() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testXCASSerialization() throws Exception {
 
     // create FS
     createExampleFS(cas);
 
     // serialize
     XCASSerializer ser = new XCASSerializer(cas.getTypeSystem());
-    OutputStream outputXCAS = new FileOutputStream(JUnitExtension
-            .getFile("ExampleCas/newprimitives.xcas"));
+    OutputStream outputXCAS = new FileOutputStream(
+            JUnitExtension.getFile("ExampleCas/newprimitives.xcas"));
     XMLSerializer xmlSer = new XMLSerializer(outputXCAS);
     ser.serialize(cas, xmlSer.getContentHandler());
 
@@ -311,8 +310,8 @@ public class NewPrimitiveTypesTest {
     cas.reset();
 
     // deserialize
-    InputStream inputXCAS = new FileInputStream(JUnitExtension
-            .getFile("ExampleCas/newprimitives.xcas"));
+    InputStream inputXCAS = new FileInputStream(
+            JUnitExtension.getFile("ExampleCas/newprimitives.xcas"));
     XCASDeserializer.deserialize(inputXCAS, cas, false);
 
     // check values
@@ -320,8 +319,8 @@ public class NewPrimitiveTypesTest {
 
   }
 
-    @Test
-    public void testXmiSerialization() throws Exception {
+  @Test
+  public void testXmiSerialization() throws Exception {
 
     // create FS
     createExampleFS(cas);
@@ -351,8 +350,8 @@ public class NewPrimitiveTypesTest {
 
   }
 
-    @Test
-    public void testFSPrettyPrint() throws Exception {
+  @Test
+  public void testFSPrettyPrint() throws Exception {
 
     // create FS
     createExampleFS(cas);
@@ -375,8 +374,8 @@ public class NewPrimitiveTypesTest {
     // System.out.println(sb.toString());
   }
 
-    @Test
-    public void testClone() throws Exception {
+  @Test
+  public void testClone() throws Exception {
     createExampleFS(cas);
     // get the example FS
     CAS englishView = cas.getView("EnglishDocument");
@@ -396,7 +395,7 @@ public class NewPrimitiveTypesTest {
     validateFSData(cas);
 
     // editing the original FS should not change the clone
-    englishView.removeFsFromIndexes(fs);  // does nothing, is not in the index, the clone is
+    englishView.removeFsFromIndexes(fs); // does nothing, is not in the index, the clone is
     fs.setStringValue(stringFeature, "foo");
     fs.setFloatValue(floatFeature, -1f);
     fs.setByteValue(byteFeature, (byte) -1);
@@ -404,8 +403,8 @@ public class NewPrimitiveTypesTest {
     fs.setShortValue(shortFeature, (short) -1);
     fs.setLongValue(longFeature, -1);
     fs.setDoubleValue(doubleFeature, -1);
-    fs.setBegin(clone.getBegin() + 1);  // to be sure that fs is beyond the original
-    englishView.addFsToIndexes(fs);  // will add, is no longer "equal" to the clone
+    fs.setBegin(clone.getBegin() + 1); // to be sure that fs is beyond the original
+    englishView.addFsToIndexes(fs); // will add, is no longer "equal" to the clone
     validateFSData(cas);
   }
 
@@ -577,61 +576,61 @@ public class NewPrimitiveTypesTest {
     fs.setFeatureValue(longArrayFeature, longArrayFS);
     fs.setDoubleValue(doubleFeature, Double.MAX_VALUE);
     fs.setFeatureValue(doubleArrayFeature, doubleArrayFS);
-    
+
     englishView.getIndexRepository().addFS(fs);
     return fs;
   }
 
-    @org.junit.jupiter.api.Test
-    public void testNewPrimitiveTypeKeys() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testNewPrimitiveTypeKeys() throws Exception {
     // Create FS with features set in reverse order
-    for (int i=0; i<5; i++) {
+    for (int i = 0; i < 5; i++) {
       AnnotationFS fs = cas.createAnnotation(exampleType, 0, 0);
-      fs.setDoubleValue(doubleFeature, 5.0 - i );
-      fs.setLongValue(longFeature, (long)1+i );
-      fs.setShortValue(shortFeature, (short)(5 - i) );
+      fs.setDoubleValue(doubleFeature, 5.0 - i);
+      fs.setLongValue(longFeature, (long) 1 + i);
+      fs.setShortValue(shortFeature, (short) (5 - i));
       cas.getIndexRepository().addFS(fs);
     }
 
     // test double as key
     FSIterator iter = cas.getIndexRepository().getIndex("doubleIndex", exampleType).iterator();
-//    System.out.println("\nDouble");
-    for (int i=0; i<5; i++) {
-      AnnotationFS testfs = (AnnotationFS)iter.get();
-//      System.out.println("exampleType has double=" + testfs.getDoubleValue(doubleFeature)
-//              + " long=" + testfs.getLongValue(longFeature)
-//              + " short=" + testfs.getShortValue(shortFeature));
-      assertTrue(1+i == testfs.getDoubleValue(doubleFeature));
-      assertTrue(5-i == testfs.getLongValue(longFeature));
-      assertTrue(1+i == testfs.getShortValue(shortFeature));
+    // System.out.println("\nDouble");
+    for (int i = 0; i < 5; i++) {
+      AnnotationFS testfs = (AnnotationFS) iter.get();
+      // System.out.println("exampleType has double=" + testfs.getDoubleValue(doubleFeature)
+      // + " long=" + testfs.getLongValue(longFeature)
+      // + " short=" + testfs.getShortValue(shortFeature));
+      assertTrue(1 + i == testfs.getDoubleValue(doubleFeature));
+      assertTrue(5 - i == testfs.getLongValue(longFeature));
+      assertTrue(1 + i == testfs.getShortValue(shortFeature));
       iter.moveToNext();
     }
 
     // test long as key
     iter = cas.getIndexRepository().getIndex("longIndex", exampleType).iterator();
-//    System.out.println("\nLong");
-    for (int i=0; i<5; i++) {
-      AnnotationFS testfs = (AnnotationFS)iter.get();
-//      System.out.println("exampleType has double=" + testfs.getDoubleValue(doubleFeature)
-//              + " long=" + testfs.getLongValue(longFeature)
-//              + " short=" + testfs.getShortValue(shortFeature));
-      assertTrue(1+i == testfs.getDoubleValue(doubleFeature));
-      assertTrue(5-i == testfs.getLongValue(longFeature));
-      assertTrue(1+i == testfs.getShortValue(shortFeature));
+    // System.out.println("\nLong");
+    for (int i = 0; i < 5; i++) {
+      AnnotationFS testfs = (AnnotationFS) iter.get();
+      // System.out.println("exampleType has double=" + testfs.getDoubleValue(doubleFeature)
+      // + " long=" + testfs.getLongValue(longFeature)
+      // + " short=" + testfs.getShortValue(shortFeature));
+      assertTrue(1 + i == testfs.getDoubleValue(doubleFeature));
+      assertTrue(5 - i == testfs.getLongValue(longFeature));
+      assertTrue(1 + i == testfs.getShortValue(shortFeature));
       iter.moveToNext();
     }
 
     // test short as key
     iter = cas.getIndexRepository().getIndex("shortIndex", exampleType).iterator();
-//    System.out.println("\nShort");
-    for (int i=0; i<5; i++) {
-      AnnotationFS testfs = (AnnotationFS)iter.get();
-//      System.out.println("exampleType has double=" + testfs.getDoubleValue(doubleFeature)
-//              + " long=" + testfs.getLongValue(longFeature)
-//              + " short=" + testfs.getShortValue(shortFeature));
-      assertTrue(1+i == testfs.getDoubleValue(doubleFeature));
-      assertTrue(5-i == testfs.getLongValue(longFeature));
-      assertTrue(1+i == testfs.getShortValue(shortFeature));
+    // System.out.println("\nShort");
+    for (int i = 0; i < 5; i++) {
+      AnnotationFS testfs = (AnnotationFS) iter.get();
+      // System.out.println("exampleType has double=" + testfs.getDoubleValue(doubleFeature)
+      // + " long=" + testfs.getLongValue(longFeature)
+      // + " short=" + testfs.getShortValue(shortFeature));
+      assertTrue(1 + i == testfs.getDoubleValue(doubleFeature));
+      assertTrue(5 - i == testfs.getLongValue(longFeature));
+      assertTrue(1 + i == testfs.getShortValue(shortFeature));
       iter.moveToNext();
     }
 
@@ -646,7 +645,7 @@ public class NewPrimitiveTypesTest {
   // ResourceSet resourceSet = new ResourceSetImpl();
   // URI outputURI = URI.createFileURI("test.ecore");
   // Resource outputResource = resourceSet.createResource(outputURI);
-  //    
+  //
   // //Convert UIMA Type System to Ecore
   // TypeSystemDescription ts =
   // TypeSystemUtil.typeSystem2TypeSystemDescription(cas.getTypeSystem());

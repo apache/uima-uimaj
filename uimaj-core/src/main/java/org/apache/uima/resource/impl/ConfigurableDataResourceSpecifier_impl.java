@@ -30,8 +30,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * 
  */
-public class ConfigurableDataResourceSpecifier_impl extends MetaDataObject_impl implements
-        ConfigurableDataResourceSpecifier {
+public class ConfigurableDataResourceSpecifier_impl extends MetaDataObject_impl
+        implements ConfigurableDataResourceSpecifier {
   private static final long serialVersionUID = -5414343447386950507L;
 
   /** URL of the data. */
@@ -75,7 +75,9 @@ public class ConfigurableDataResourceSpecifier_impl extends MetaDataObject_impl 
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.ConfigurableDataResourceSpecifier#setMetaData(org.apache.uima.resource.metadata.ResourceMetaData)
+   * @see
+   * org.apache.uima.resource.ConfigurableDataResourceSpecifier#setMetaData(org.apache.uima.resource
+   * .metadata.ResourceMetaData)
    */
   @Override
   public void setMetaData(ResourceMetaData aMetaData) {

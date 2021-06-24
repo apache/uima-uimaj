@@ -27,11 +27,11 @@ import java.util.Map;
 
 /**
  * <code>DataResource</code> is a simple resource that provides access to data. All
- * <code>DataResource</code>s will implement the {@link #getInputStream()} method to provide
- * access to their data.
+ * <code>DataResource</code>s will implement the {@link #getInputStream()} method to provide access
+ * to their data.
  * <p>
- * <code>DataResource</code>s may optionally implement {@link #getUrl()}, which would return the
- * URL where the data is located. This may be necessary for some applications, but it is strongly
+ * <code>DataResource</code>s may optionally implement {@link #getUrl()}, which would return the URL
+ * where the data is located. This may be necessary for some applications, but it is strongly
  * recommended the {@link #getInputStream()} be used whenever possible, because accessing the data
  * directly via the URL does not allow the ResourceManager to assist in caching or sharing of data.
  * 
@@ -71,12 +71,12 @@ public interface DataResource extends Resource {
   URL getUrl();
 
   /**
-   * Determines if this <code>DataResource</code> is equal to another <code>DataResource</code>.
-   * It is important that <code>DataResource</code> implementations override this method
-   * appropriately, because the {@link ResourceManager} can make use of this method to determine
-   * when cached data can be reused. Two <code>DataResource</code>s that are <code>equal</code>
-   * according to this method will be considered to provide access to the same data; therefore, a
-   * common cache can be used.
+   * Determines if this <code>DataResource</code> is equal to another <code>DataResource</code>. It
+   * is important that <code>DataResource</code> implementations override this method appropriately,
+   * because the {@link ResourceManager} can make use of this method to determine when cached data
+   * can be reused. Two <code>DataResource</code>s that are <code>equal</code> according to this
+   * method will be considered to provide access to the same data; therefore, a common cache can be
+   * used.
    * 
    * @param aObj
    *          the object to compare to

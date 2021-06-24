@@ -29,19 +29,18 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.Test;
 
-
 public class ProtectIndexTest {
 
-    @Test
-    public void testProtectIndex() throws CASException, ResourceInitializationException {
-    JCas jcas = CasCreationUtils.createCas((TypeSystemDescription)null, null, null).getJCas();
-    
+  @Test
+  public void testProtectIndex() throws CASException, ResourceInitializationException {
+    JCas jcas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null).getJCas();
+
     Annotation a = new Annotation(jcas, 0, 2);
-    
-    jcas.protectIndexes(() ->
-      { a.setBegin(a.getBegin() + 1);
-      });
-      
-    assertEquals(a.getBegin(),  1);  
+
+    jcas.protectIndexes(() -> {
+      a.setBegin(a.getBegin() + 1);
+    });
+
+    assertEquals(a.getBegin(), 1);
   }
 }

@@ -44,59 +44,61 @@ import org.junit.jupiter.api.Test;
 public class ResultSpecTest {
 
   private CAS cas;
-  
+
   private static final String EN = "en";
-  private static final String X  = "x-unspecified";
+  private static final String X = "x-unspecified";
   private static final String EN_US = "en-us";
   private static final String PTBR = "pt-br";
-  private static final String I = "I";  // split designator
-  
+  private static final String I = "I"; // split designator
+
   // types
-  
+
   private static final TypeSystemMgr tsm = CASFactory.createTypeSystem();
   private static final Type t1 = tsm.addType("T1", tsm.getTopType());
   private static final Feature f1 = tsm.addFeature("F1", t1, t1);
   private static final Feature f1a = tsm.addFeature("F1a", t1, t1);
   private static final TypeSystem ts;
-  static {ts = tsm.commit();};
+  static {
+    ts = tsm.commit();
+  };
 
   /**
    * Tests for https://issues.apache.org/jira/browse/UIMA-1840
    */
-    @org.junit.jupiter.api.Test
-    public void testIntersection() {
+  @org.junit.jupiter.api.Test
+  public void testIntersection() {
     checkl(X, I, X, I, X);
-    checkl(X, I, EN, I,            EN);
-    checkl(EN, I,            X, I, EN);
-    checkl(X, I, EN_US, I,        EN_US);
-    checkl(EN_US, I,       X, I, EN_US);
-    
+    checkl(X, I, EN, I, EN);
+    checkl(EN, I, X, I, EN);
+    checkl(X, I, EN_US, I, EN_US);
+    checkl(EN_US, I, X, I, EN_US);
+
     checkl(EN, I, EN, I, EN);
     checkl(EN, I, EN_US, I, EN_US);
     checkl(EN_US, I, EN, I, EN_US);
     checkl(EN_US, I, EN_US, I, EN_US);
-    
+
     checkl(X, EN, I, EN, X, I, X);
     checkl(X, EN, I, EN, I, EN);
     checkl(EN, EN_US, I, X, I, EN, EN_US);
-    
+
     checkl(X, PTBR, I, EN, I, EN);
     checkl(PTBR, I, EN, I, null);
   }
-  
+
   private void checkl(String... args) {
     List<String> rs1List = new ArrayList<>();
     List<String> rs2List = new ArrayList<>();
     List<String> expList = new ArrayList<>();
-    List<String>[] tgts = new List[]{rs1List, rs2List, expList};
+    List<String>[] tgts = new List[] { rs1List, rs2List, expList };
     int tgtI = 0;
-    
-    for (int i = 0; i < args.length; i++) { 
+
+    for (int i = 0; i < args.length; i++) {
       if (args[i] == I) {
-        tgtI ++;
+        tgtI++;
       } else {
         if (args[i] != null) {
-          tgts[tgtI].add(args[i]);    
+          tgts[tgtI].add(args[i]);
         }
       }
     }
@@ -106,17 +108,17 @@ public class ResultSpecTest {
 
     ResultSpecification_impl rs1 = new ResultSpecification_impl(ts);
     ResultSpecification_impl rs2 = new ResultSpecification_impl(ts);
-    ResultSpecification_impl rsE = new ResultSpecification_impl(ts); //expected
-    
+    ResultSpecification_impl rsE = new ResultSpecification_impl(ts); // expected
+
     addResultTypeOneAtATime(rs1, rs1langs);
     addResultTypeOneAtATime(rs2, rs2langs);
     addResultTypeOneAtATime(rsE, explangs);
-    
+
     ResultSpecification_impl rsQ = rs1.intersect(rs2);
     assertEquals(rsQ, rsE);
   }
-  
-  // we do this to avoid language normalization from collapsing x-unspecified 
+
+  // we do this to avoid language normalization from collapsing x-unspecified
   // plus other languages into just x-unspecified
   private void addResultTypeOneAtATime(ResultSpecification_impl rs, String[] languages) {
     if (languages.length == 0) {
@@ -126,12 +128,13 @@ public class ResultSpecTest {
       rs.addResultType("T1", true, languages);
     } else {
       for (int i = 0; i < languages.length; i++) {
-        rs.addResultType("T1", true, new String[]{languages[i]});
+        rs.addResultType("T1", true, new String[] { languages[i] });
       }
-    } 
+    }
   }
-    @Test
-    public void testComputeAnalysisComponentResultSpec() throws Exception {
+
+  @Test
+  public void testComputeAnalysisComponentResultSpec() throws Exception {
     try {
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(
@@ -142,7 +145,7 @@ public class ResultSpecTest {
       ResultSpecification_impl resultSpec = new ResultSpecification_impl();
       resultSpec.addResultType("uima.tt.TokenLikeAnnotation", true);
       resultSpec.setTypeSystem(cas.getTypeSystem());
-      
+
       ResultSpecification_impl rs2 = new ResultSpecification_impl(cas.getTypeSystem());
       rs2.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ResultSpecification acResultSpec = resultSpec.intersect(rs2);
@@ -153,9 +156,9 @@ public class ResultSpecTest {
       JUnitExtension.handleException(e);
     }
   }
-  
-    @org.junit.jupiter.api.Test
-    public void testComputeAnalysisComponentResultSpecInherit() throws Exception {
+
+  @org.junit.jupiter.api.Test
+  public void testComputeAnalysisComponentResultSpecInherit() throws Exception {
     try {
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(
@@ -165,7 +168,7 @@ public class ResultSpecTest {
       CAS cas = ae.newCAS();
       ResultSpecification_impl resultSpec = new ResultSpecification_impl(cas.getTypeSystem());
       resultSpec.addResultType("uima.tcas.Annotation", true);
-      
+
       ResultSpecification_impl rs2 = new ResultSpecification_impl(cas.getTypeSystem());
       rs2.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
       ResultSpecification acResultSpec = resultSpec.intersect(rs2);
@@ -176,13 +179,13 @@ public class ResultSpecTest {
       JUnitExtension.handleException(e);
     }
   }
-  
+
   private ResultSpecification createResultSpec(String language) {
     ResultSpecification resultSpec = new ResultSpecification_impl(cas.getTypeSystem());
-    resultSpec.addResultType("Type1", true, new String[] {language});
+    resultSpec.addResultType("Type1", true, new String[] { language });
     return resultSpec;
   }
-    
+
   /**
    * Auxiliary method used by testProcess()
    * 
@@ -195,7 +198,7 @@ public class ResultSpecTest {
     cas = ae.newCAS();
 
     ResultSpecification resultSpec = createResultSpec(language);
-    
+
     cas.setDocumentText("new test");
     ae.process(cas, resultSpec);
     cas.reset();

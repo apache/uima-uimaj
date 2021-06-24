@@ -37,25 +37,24 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class FsIndexCollection_implTest {
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
   }
 
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-    @Test
-    public void testBuildFromXmlElement() throws Exception {
+  @Test
+  public void testBuildFromXmlElement() throws Exception {
     try {
       File descriptor = JUnitExtension
               .getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
-      FsIndexCollection indexColl = UIMAFramework.getXMLParser().parseFsIndexCollection(
-              new XMLInputSource(descriptor));
+      FsIndexCollection indexColl = UIMAFramework.getXMLParser()
+              .parseFsIndexCollection(new XMLInputSource(descriptor));
 
       assertEquals("TestFsIndexCollection", indexColl.getName());
       assertEquals("This is a test.", indexColl.getDescription());
@@ -75,13 +74,13 @@ public class FsIndexCollection_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testResolveImports() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testResolveImports() throws Exception {
     try {
       File descriptor = JUnitExtension
               .getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
-      FsIndexCollection ic = UIMAFramework.getXMLParser().parseFsIndexCollection(
-              new XMLInputSource(descriptor));
+      FsIndexCollection ic = UIMAFramework.getXMLParser()
+              .parseFsIndexCollection(new XMLInputSource(descriptor));
 
       FsIndexDescription[] indexes = ic.getFsIndexes();
       assertEquals(2, indexes.length);
@@ -99,8 +98,8 @@ public class FsIndexCollection_implTest {
 
       // set data path correctly and it should work
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-      resMgr.setDataPath(JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir")
-              .getAbsolutePath());
+      resMgr.setDataPath(
+              JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsolutePath());
       ic.resolveImports(resMgr);
 
       indexes = ic.getFsIndexes();

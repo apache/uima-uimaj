@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.impl;
 
 import java.util.ArrayList;
@@ -41,12 +40,8 @@ import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 
-/**
- * 
- * 
- */
-public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl implements
-        CasConsumerDescription {
+public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl
+        implements CasConsumerDescription {
 
   private static final long serialVersionUID = -3876854246385758053L;
 
@@ -77,7 +72,9 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
+   * @see
+   * org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.
+   * ResourceManager)
    */
   @Override
   public void doFullValidation(ResourceManager aResourceManager)
@@ -131,9 +128,8 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "casConsumerDescription", new PropertyXmlInfo[] {
-              new PropertyXmlInfo("frameworkImplementation"),
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casConsumerDescription",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),
               new PropertyXmlInfo("externalResourceDependencies"),
               new PropertyXmlInfo("resourceManagerConfiguration", null) });

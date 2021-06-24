@@ -98,10 +98,10 @@ public class SerializationNoMDTest {
 
   private Feature endFeature;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     casMgr = initCAS();
-    cas = (CASImpl)casMgr;
+    cas = (CASImpl) casMgr;
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
@@ -115,8 +115,8 @@ public class SerializationNoMDTest {
     sentenceType = ts.getType(SENT_TYPE);
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     casMgr = null;
     cas = null;
     wordType = null;
@@ -197,8 +197,8 @@ public class SerializationNoMDTest {
     int endOfSentenceCounter = 0;
     AnnotationFS tokenAnnot;
     while (tokenizer.isValid()) {
-      tokenAnnot = cas.createAnnotation(tokenType, tokenizer.getTokenStart(), tokenizer
-              .getTokenEnd());
+      tokenAnnot = cas.createAnnotation(tokenType, tokenizer.getTokenStart(),
+              tokenizer.getTokenEnd());
       tokenTypeCode = tokenizer.getTokenType();
       switch (tokenTypeCode) {
         case TextStringTokenizer.EOS: {
@@ -377,8 +377,8 @@ public class SerializationNoMDTest {
   /**
    * Test driver.
    */
-    @Test
-    public void testMain() throws Exception {
+  @Test
+  public void testMain() throws Exception {
 
     // Read the document into a String. I'm sure there are better ways to
     // do this.

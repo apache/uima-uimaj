@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.impl;
 
 import java.util.ArrayList;
@@ -40,9 +39,8 @@ import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 
-
-public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_impl implements
-        CollectionReaderDescription {
+public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_impl
+        implements CollectionReaderDescription {
 
   private static final long serialVersionUID = -6654886877117758267L;
 
@@ -70,7 +68,9 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
+   * @see
+   * org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.
+   * ResourceManager)
    */
   @Override
   public void doFullValidation(ResourceManager aResourceManager)
@@ -94,15 +94,15 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
     // verify the user class implements CollectionReader
     if (!CollectionReader.class.isAssignableFrom(implClass)) {
       throw new ResourceInitializationException(
-              ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE, new Object[] {
-                  getImplementationName(), CollectionReader.class.getName(), getSourceUrlString() });
+              ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
+              new Object[] { getImplementationName(), CollectionReader.class.getName(),
+                  getSourceUrlString() });
     }
     // try to create a CAS
     ArrayList<ProcessingResourceMetaData> metadata = new ArrayList<>();
     metadata.add(getCollectionReaderMetaData());
-    CasCreationUtils.createCas(metadata, 
-        UIMAFramework.getDefaultPerformanceTuningProperties(),
-        aResourceManager);
+    CasCreationUtils.createCas(metadata, UIMAFramework.getDefaultPerformanceTuningProperties(),
+            aResourceManager);
   }
 
   /**
@@ -128,10 +128,9 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "collectionReaderDescription", new PropertyXmlInfo[] {
-              new PropertyXmlInfo("frameworkImplementation"),
+          "collectionReaderDescription",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),
               new PropertyXmlInfo("externalResourceDependencies"),
               new PropertyXmlInfo("resourceManagerConfiguration", null) });
-
 }

@@ -38,7 +38,6 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.ProcessTrace;
 
-
 /**
  * The AnnotationWriter class writes specified annotations to an output file. The encoding of the
  * output file is UTF-8
@@ -78,7 +77,8 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.collection.CasConsumer_ImplBase#typeSystemInit(org.apache.uima.cas.TypeSystem)
+   * @see
+   * org.apache.uima.collection.CasConsumer_ImplBase#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
   @Override
   public void typeSystemInit(TypeSystem arg0) throws ResourceInitializationException {
@@ -100,7 +100,8 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   public synchronized void processCas(CAS aCAS) throws ResourceProcessException {
     try {
       // iterate and print annotations
-      FSIterator<Annotation> typeIterator = aCAS.getCurrentView().<Annotation>getAnnotationIndex().iterator();
+      FSIterator<Annotation> typeIterator = aCAS.getCurrentView().<Annotation> getAnnotationIndex()
+              .iterator();
 
       for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext()) {
         AnnotationFS annot = typeIterator.get();
@@ -128,8 +129,8 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * @see org.apache.uima.collection.CasConsumer#batchProcessComplete(ProcessTrace)
    */
   @Override
-  public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-          IOException {
+  public void batchProcessComplete(ProcessTrace aTrace)
+          throws ResourceProcessException, IOException {
     // nothing to do in this case as AnnotationPrinter doesnot do
     // anything cumulatively
   }
@@ -146,8 +147,8 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * @see org.apache.uima.collection.CasConsumer#collectionProcessComplete(ProcessTrace)
    */
   @Override
-  public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-          IOException {
+  public void collectionProcessComplete(ProcessTrace aTrace)
+          throws ResourceProcessException, IOException {
     if (this.fileWriter != null) {
       this.fileWriter.close();
     }
@@ -165,7 +166,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    */
   @Override
   public void reconfigure() throws ResourceConfigurationException {
-    //do nothing
+    // do nothing
   }
 
   /**

@@ -25,10 +25,9 @@ import org.apache.uima.resource.metadata.ExternalResourceBinding;
  * 
  * 
  */
-public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
-        ExternalResourceBinding {
+public class ExternalResourceBinding_impl extends MetaDataObject_impl
+        implements ExternalResourceBinding {
 
-  
   private static final long serialVersionUID = 8736222753308388218L;
 
   private String mResourceName;
@@ -68,7 +67,8 @@ public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.ExternalResourceBinding#setResourceName(java.lang.String)
+   * @see
+   * org.apache.uima.resource.metadata.ExternalResourceBinding#setResourceName(java.lang.String)
    */
   @Override
   public void setResourceName(String aName) {

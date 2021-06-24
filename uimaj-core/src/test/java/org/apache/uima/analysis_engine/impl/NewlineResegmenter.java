@@ -28,7 +28,6 @@ import org.apache.uima.examples.SourceDocumentInformation;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-
 public class NewlineResegmenter extends JCasMultiplier_ImplBase {
   JCas mCurrentInputCas;
 
@@ -143,8 +142,8 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
   }
 
   private String getCasSourceUri(JCas jcas) {
-    Iterator<Annotation> iter = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
-            .iterator();
+    Iterator<Annotation> iter = jcas.getJFSIndexRepository()
+            .getAnnotationIndex(SourceDocumentInformation.type).iterator();
     if (iter.hasNext()) {
       SourceDocumentInformation sdi = (SourceDocumentInformation) iter.next();
       return sdi.getUri();

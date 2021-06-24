@@ -44,15 +44,16 @@ public interface OutputQueue extends MetaDataObject {
   /**
    * Define the time (in ms) to wait for a new message
    * 
-   * @param i the time (in ms) to wait for a new message
+   * @param i
+   *          the time (in ms) to wait for a new message
    */
   void setDequeueTimeout(int i);
 
   /**
    * Define a class for a queue object
    * 
-   * @param string -
-   *          name of the queue class
+   * @param string
+   *          - name of the queue class
    */
   void setQueueClass(String string);
 }

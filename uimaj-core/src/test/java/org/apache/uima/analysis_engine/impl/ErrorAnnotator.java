@@ -39,7 +39,7 @@ public class ErrorAnnotator extends Annotator_ImplBase implements TextAnnotator 
     if ("ERROR".equals(aCAS.getDocumentText())) {
       throw new RuntimeException("Test Error");
     }
-    
+
     if ("LOG".equals(aCAS.getDocumentText())) {
       try {
         getContext().getLogger().warn("Test Warn Log");

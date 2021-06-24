@@ -29,6 +29,7 @@ package org.apache.uima.resource.metadata;
 public interface TypeDescription extends MetaDataObject {
 
   TypeDescription[] EMPTY_TYPE_DESCRIPTIONS = new TypeDescription[0];
+
   /**
    * Gets the name of this Type.
    * 
@@ -102,8 +103,8 @@ public interface TypeDescription extends MetaDataObject {
   /**
    * Sets the allowed values for instances of this Type. This is used only for special "enumerated
    * types" that extend the String type and define a specific set of allowed values. For all other
-   * Types this property should be <code>null</code>. Note that if a type has allowed values, it
-   * may not have features.
+   * Types this property should be <code>null</code>. Note that if a type has allowed values, it may
+   * not have features.
    * 
    * @param aAllowedValues
    *          the allowed values for instances of this Type
@@ -122,8 +123,7 @@ public interface TypeDescription extends MetaDataObject {
    * 
    * @return description of the new Feature
    */
-  FeatureDescription addFeature(String aFeatureName, String aDescription,
-          String aRangeTypeName);
+  FeatureDescription addFeature(String aFeatureName, String aDescription, String aRangeTypeName);
 
   /**
    * Convenience method which adds a FeatureDescription to this TypeDescription. Used for array or
@@ -144,6 +144,6 @@ public interface TypeDescription extends MetaDataObject {
    * 
    * @return description of the new Feature
    */
-  FeatureDescription addFeature(String aFeatureName, String aDescription,
-          String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed);
+  FeatureDescription addFeature(String aFeatureName, String aDescription, String aRangeTypeName,
+          String aElementTypeName, Boolean aMultipleReferencesAllowed);
 }

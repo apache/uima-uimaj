@@ -19,7 +19,6 @@
 
 package org.apache.uima.resource;
 
-
 public interface JMSMessagingSpecifier extends MessagingSpecifier {
 
   String defaultInitialContextFactory = "com.sun.jndi.ldap.LdapCtxFactory";

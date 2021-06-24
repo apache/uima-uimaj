@@ -32,8 +32,8 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
   /**
    * Gets the settings for configuration parameters that are not in any group.
    * 
-   * @return an array of <code>NameValuePair</code> objects, each of which contains a parameter
-   *         name and the value of that parameter
+   * @return an array of <code>NameValuePair</code> objects, each of which contains a parameter name
+   *         and the value of that parameter
    */
   NameValuePair[] getParameterSettings();
 
@@ -70,13 +70,13 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
    * fallback strategies.
    * 
    * @param aGroupName
-   *          the name of a configuration group. If this parameter is
-   *          <code>null</code>, this method will return the same value as
-   *   {@link #getParameterValue(String)}.
-   * @param aParamName the name of a parameter in the group
+   *          the name of a configuration group. If this parameter is <code>null</code>, this method
+   *          will return the same value as {@link #getParameterValue(String)}.
+   * @param aParamName
+   *          the name of a parameter in the group
    * 
-   * @return the value of the parameter in group <code>aGroupName</code> with 
-   *         name <code>aParamName</code>
+   * @return the value of the parameter in group <code>aGroupName</code> with name
+   *         <code>aParamName</code>
    */
   Object getParameterValue(String aGroupName, String aParamName);
 

@@ -29,16 +29,15 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 /**
  * Reference implementation of {@link AnalysisEngineDescription}. Note that this class has a
  * slightly nonstandard XML representation because the "key" property is represented in XML by an
- * attribute rather than a child element. 
+ * attribute rather than a child element.
  * 
- * 9/2013: toXML and buildFromXMLElement not overridden...
- * Therefore, we override the toXML() method and the
- * buildFromXMLElement(Element,XMLParser) method.
+ * 9/2013: toXML and buildFromXMLElement not overridden... Therefore, we override the toXML() method
+ * and the buildFromXMLElement(Element,XMLParser) method.
  * 
  * 
  */
-public class ExternalResourceDescription_impl extends MetaDataObject_impl implements
-        ExternalResourceDescription {
+public class ExternalResourceDescription_impl extends MetaDataObject_impl
+        implements ExternalResourceDescription {
 
   static final long serialVersionUID = -6995615796561255268L;
 

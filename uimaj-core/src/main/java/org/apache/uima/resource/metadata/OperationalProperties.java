@@ -80,5 +80,5 @@ public interface OperationalProperties {
    *          true if this component may output new CASes, false if it does not
    */
   void setOutputsNewCASes(boolean aOutputsNewCASes);
-  
+
 }

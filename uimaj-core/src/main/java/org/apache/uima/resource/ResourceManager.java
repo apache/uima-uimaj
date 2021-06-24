@@ -69,64 +69,64 @@ public interface ResourceManager {
    * 
    * @return the absolute URL of an actual file in the datapath or classpath, null if no file
    *         matching <code>aRelativePath</code> is found.
-   * @throws MalformedURLException if the path cannot be converted to a URL
+   * @throws MalformedURLException
+   *           if the path cannot be converted to a URL
    */
   URL resolveRelativePath(String aRelativePath) throws MalformedURLException;
 
   /**
-   * Gets the instance of the implementation object for a resource that has been registered under the specified name.
+   * Gets the instance of the implementation object for a resource that has been registered under
+   * the specified name.
    * 
    * @param aName
    *          the name of the resource to retrieve
    * 
-   * @return the instance of the implementation object for the resource, registered under <code>aName</code>, 
-   *         <code>null</code> if none  exists.
+   * @return the instance of the implementation object for the resource, registered under
+   *         <code>aName</code>, <code>null</code> if none exists.
    * 
    * @throws ResourceAccessException
    *           if the requested resource could not be initialized. A common cause is that it
    *           requires parameters and the {@link #getResource(String,String[])} method should have
    *           been called instead of this method.
-   * @throws ResourceAccessException tbd
+   * @throws ResourceAccessException
+   *           tbd
    */
   Object getResource(String aName) throws ResourceAccessException;
 
   /**
-   * Returns one of two kinds of objects (or null):
-   *   - an instance of the implementation object for a resource, that has 
-   *     been loaded with a DataResource resource produced by the resource given the aParms
-   *     
-   *   - (if there is no implementation defined for this resource) 
-   *     returns an instance of the DataResource, itself, produced by the resource given the aParms
-   *    
-   *   An example of a parameterized Resource is a
-   *     dictionary whose data depend on a specified language identifier.
-   *   
-   *   If the implementation object class exists, but no instance has been 
-   *   created (yet) for the particular data resource corresponding to the parameters,
-   *   then this method will create and register a new instance and call its
-   *   load() api using the data resource corresponding to the parameters, and
-   *   return that.
+   * Returns one of two kinds of objects (or null): - an instance of the implementation object for a
+   * resource, that has been loaded with a DataResource resource produced by the resource given the
+   * aParms
+   * 
+   * - (if there is no implementation defined for this resource) returns an instance of the
+   * DataResource, itself, produced by the resource given the aParms
+   * 
+   * An example of a parameterized Resource is a dictionary whose data depend on a specified
+   * language identifier.
+   * 
+   * If the implementation object class exists, but no instance has been created (yet) for the
+   * particular data resource corresponding to the parameters, then this method will create and
+   * register a new instance and call its load() api using the data resource corresponding to the
+   * parameters, and return that.
    * 
    * @param aName
    *          the name of the parameterized resource to retrieve
    * @param aParams
-   *          the parameters determining which particular instance is returned
-   *          and specifying a particular DataResource instance to use in initializing
-   *          the implementation of the resource (if there is an implementation).
-   *          
-   *          If there is no implementation, the DataResource instance 
-   *          produced from the named Resource given these
-   *          parameters is returned instead.
+   *          the parameters determining which particular instance is returned and specifying a
+   *          particular DataResource instance to use in initializing the implementation of the
+   *          resource (if there is an implementation).
    * 
-   * @return one of two kinds of objects (or null):
-   *         an instance of the requested implementation of the named resource where that instance 
-   *         has been initialized by calling its load method with the DataResource instance produced
-   *         from the Resource given aParams,
-   *         
-   *         or, (if the named resource has no implementation) the DataResource instance 
-   *         corresponding to the named Resource, given aParams, 
+   *          If there is no implementation, the DataResource instance produced from the named
+   *          Resource given these parameters is returned instead.
    * 
-   *         or if no resource with this name exists, <code>null</code>.  
+   * @return one of two kinds of objects (or null): an instance of the requested implementation of
+   *         the named resource where that instance has been initialized by calling its load method
+   *         with the DataResource instance produced from the Resource given aParams,
+   * 
+   *         or, (if the named resource has no implementation) the DataResource instance
+   *         corresponding to the named Resource, given aParams,
+   * 
+   *         or if no resource with this name exists, <code>null</code>.
    * 
    * @throws ResourceAccessException
    *           if there is a resource registered under <code>aName</code> but it could not be
@@ -138,14 +138,16 @@ public interface ResourceManager {
    * Gets the Class of the Resource that will be returned by a call to {@link #getResource(String)}
    * or {@link #getResource(String,String[])}.
    * 
-   * For those resource specifications which include an implementation class, this call returns that class.
+   * For those resource specifications which include an implementation class, this call returns that
+   * class.
    * 
    * @param aName
    *          the name of a resource
-   * @param <N> The generic type for the returned class
-   *          
-   * @return the Class for the resource named <code>aName</code>, <code>null</code> if there is
-   *         no resource registered under that name.
+   * @param <N>
+   *          The generic type for the returned class
+   * 
+   * @return the Class for the resource named <code>aName</code>, <code>null</code> if there is no
+   *         resource registered under that name.
    */
   <N> Class<N> getResourceClass(String aName);
 
@@ -160,8 +162,8 @@ public interface ResourceManager {
    *          name and is looked up in the {@link #getDataPath() data path} or in the class path
    *          using {@link java.lang.ClassLoader#getResource(String)}.
    * 
-   * @return the <code>URL</code> at which the named resource is located, <code>null</code> if
-   *         the named resource could not be found.
+   * @return the <code>URL</code> at which the named resource is located, <code>null</code> if the
+   *         named resource could not be found.
    * 
    * @throws ResourceAccessException
    *           if a failure occurs in accessing the resource
@@ -179,9 +181,9 @@ public interface ResourceManager {
    *          resource name and is looked up in the {@link #getDataPath() data path} or in the class
    *          path using {@link java.lang.ClassLoader#getResource(String)}.
    * 
-   * @return an <code>InputStream</code> for reading from the named resource, <code>null</code>
-   *         if the named resource could not be found. It is the caller's responsibility to close
-   *         this stream once it is no longer needed.
+   * @return an <code>InputStream</code> for reading from the named resource, <code>null</code> if
+   *         the named resource could not be found. It is the caller's responsibility to close this
+   *         stream once it is no longer needed.
    * 
    * @throws ResourceAccessException
    *           if a failure occurs in accessing the resource
@@ -203,8 +205,8 @@ public interface ResourceManager {
    * @param aParams
    *          parameters used to further identify the resource
    * 
-   * @return the <code>URL</code> at which the named resource is located, <code>null</code> if
-   *         the named resource could not be found.
+   * @return the <code>URL</code> at which the named resource is located, <code>null</code> if the
+   *         named resource could not be found.
    * 
    * @throws ResourceAccessException
    *           if a failure occurs in accessing the resource
@@ -226,33 +228,31 @@ public interface ResourceManager {
    * @param aParams
    *          parameters used to further identify the resource
    * 
-   * @return an <code>InputStream</code> for reading from the named resource, <code>null</code>
-   *         if the named resource could not be found. It is the caller's responsibility to close
-   *         this stream once it is no longer needed.
+   * @return an <code>InputStream</code> for reading from the named resource, <code>null</code> if
+   *         the named resource could not be found. It is the caller's responsibility to close this
+   *         stream once it is no longer needed.
    * 
    * @throws ResourceAccessException
    *           if a failure occurs in accessing the resource
    */
-  InputStream getResourceAsStream(String aKey, String[] aParams)
-          throws ResourceAccessException;
+  InputStream getResourceAsStream(String aKey, String[] aParams) throws ResourceAccessException;
 
   /**
-   * Initializes all external resources declared in a ResourceCreationSpecifier.
-   * Multi-threading: may be called on multiple threads.  
+   * Initializes all external resources declared in a ResourceCreationSpecifier. Multi-threading:
+   * may be called on multiple threads.
    * 
-   *   Initialization should be done once, on the first call
+   * Initialization should be done once, on the first call
    * 
-   * External resources have a Container class representing the resource, 
-   * which are instances of Resource.
+   * External resources have a Container class representing the resource, which are instances of
+   * Resource.
    * 
-   * This may act as the implementation class, or they may also have a
-   * separately specified implementation class, which may or may not implement Resource.
+   * This may act as the implementation class, or they may also have a separately specified
+   * implementation class, which may or may not implement Resource.
    * 
-   * As part of the initialization of the Container class, 
-   * by default, External Resource Bindings are processed to hook them up
-   * with defined External Resources, using the default implementation
+   * As part of the initialization of the Container class, by default, External Resource Bindings
+   * are processed to hook them up with defined External Resources, using the default implementation
    * of resolveAndValidateResourceDependencies.
-   *     
+   * 
    * @param aConfiguration
    *          the ResourceManagerConfiguration containing resource declarations and bindings
    * @param aQualifiedContextName
@@ -273,14 +273,12 @@ public interface ResourceManager {
    * 
    * The default implementation has special defaulting logic:
    * 
-   *   If a binding specifies a non-existing resource, 
-   *   an attempt is made to interpret the key as a file name, looked up 
-   *   using the current context for relative path resolution.  
-   *     - If successfully found, a FileResourceSpecifier is created using the file
-   *       and used as the implementing class. 
+   * If a binding specifies a non-existing resource, an attempt is made to interpret the key as a
+   * file name, looked up using the current context for relative path resolution. - If successfully
+   * found, a FileResourceSpecifier is created using the file and used as the implementing class.
    * 
-   *   If no resource can be found at all, then unless the dependency is marked "optional", 
-   *   an ResourceInitializationException is thrown.
+   * If no resource can be found at all, then unless the dependency is marked "optional", an
+   * ResourceInitializationException is thrown.
    * 
    * Multi-threading: may be called on multiple threads, repeatedly for the same set of resources.
    * Implementations should recognize this and skip repeated resolutions.
@@ -332,15 +330,18 @@ public interface ResourceManager {
 
   /**
    * Set an extension class loader into the Resource Manager
-   * @param classLoader the loader to use.  If this is an instance of UIMAClassLoader, it is
-   *               used directly; otherwise, a new UIMAClassLoader with no classpath, having
-   *               the classLoader as a parent is created and used.
-   * @param resolveResources true to also use this to resolve resources
+   * 
+   * @param classLoader
+   *          the loader to use. If this is an instance of UIMAClassLoader, it is used directly;
+   *          otherwise, a new UIMAClassLoader with no classpath, having the classLoader as a parent
+   *          is created and used.
+   * @param resolveResources
+   *          true to also use this to resolve resources
    */
   default void setExtensionClassLoader(ClassLoader classLoader, boolean resolveResources) {
-    ((ResourceManager_impl)this).setExtensionClassLoaderImpl(classLoader, resolveResources);
+    ((ResourceManager_impl) this).setExtensionClassLoaderImpl(classLoader, resolveResources);
   }
-  
+
   /**
    * Returns the UIMA extension class loader.
    * 
@@ -350,72 +351,79 @@ public interface ResourceManager {
 
   /**
    * Gets the CasManager, which manages the creation and pooling of CASes.
+   * 
    * @return the CasManager
    */
   CasManager getCasManager();
 
   /**
-   * Sets the CasManager, which manages the creation and pooling of CASes.
-   * This method does not normally need to be called by an application.  It allows
-   * a custom CAS Manager implementation to be substituted for the default one,
-   * which may be useful when embedding UIMA in other middleware where a different
-   * CAS Manager implementation may be desired.
+   * Sets the CasManager, which manages the creation and pooling of CASes. This method does not
+   * normally need to be called by an application. It allows a custom CAS Manager implementation to
+   * be substituted for the default one, which may be useful when embedding UIMA in other middleware
+   * where a different CAS Manager implementation may be desired.
    * <p>
-   * This method can only be called once, and must be called before creating any 
-   * AnalysisEngines that use this ResourceManager.  An Exception will be thrown if this 
-   * method is called twice or is called after {@link #getCasManager()} has already been called 
-   * (which happens during AE initialization).
+   * This method can only be called once, and must be called before creating any AnalysisEngines
+   * that use this ResourceManager. An Exception will be thrown if this method is called twice or is
+   * called after {@link #getCasManager()} has already been called (which happens during AE
+   * initialization).
    * 
-   * @param aCasManager CAS Manager instance to plug in
+   * @param aCasManager
+   *          CAS Manager instance to plug in
    */
   void setCasManager(CasManager aCasManager);
-  
+
   /**
-   * Gets a cache of imported descriptors, so that the parsed objects can be reused if the
-   * same URL is imported more than once.
-   * @return A map from absolute URL to the XMLizable object that was parsed from that URL
-   * @deprecated  Intended just for internal use.
-   */
-  @Deprecated Map<String,XMLizable> getImportCache();
-  
-  /**
-   * Loads a user class using either the UIMA extension class loader (if specified) or
-   * the ThreadLocal Context Class Loader (if available) or 
-   * the loader the UIMA framework is running in.
+   * Gets a cache of imported descriptors, so that the parsed objects can be reused if the same URL
+   * is imported more than once.
    * 
-   * If the class is not found in the ThreadLocal COntext Class Loader, then 
-   * the loader the UIMA framework is running in will be searched.
-   * @param name the class to load
-   * @param <N> generic class of class
+   * @return A map from absolute URL to the XMLizable object that was parsed from that URL
+   * @deprecated Intended just for internal use.
+   */
+  @Deprecated
+  Map<String, XMLizable> getImportCache();
+
+  /**
+   * Loads a user class using either the UIMA extension class loader (if specified) or the
+   * ThreadLocal Context Class Loader (if available) or the loader the UIMA framework is running in.
+   * 
+   * If the class is not found in the ThreadLocal COntext Class Loader, then the loader the UIMA
+   * framework is running in will be searched.
+   * 
+   * @param name
+   *          the class to load
+   * @param <N>
+   *          generic class of class
    * @return the class
-   * @throws ClassNotFoundException -
+   * @throws ClassNotFoundException
+   *           -
    */
   <N> Class<N> loadUserClass(String name) throws ClassNotFoundException;
-  
+
   /**
-   * Frees all resources held by this ResourceManager, and marks the ResourceManager as having been destroyed.
-   * A destroyed ResourceManager will throw an exception if an attempt is made to continue using it.
+   * Frees all resources held by this ResourceManager, and marks the ResourceManager as having been
+   * destroyed. A destroyed ResourceManager will throw an exception if an attempt is made to
+   * continue using it.
    * 
-   * Resources managed by a ResourceManager include all of the external shared Resources.
-   * If there is an extension class loader in use, it will be closed. 
-   * Any class loaders (including PEAR class loaders) that might use this as a parent will be
-   * affected by this closure.
+   * Resources managed by a ResourceManager include all of the external shared Resources. If there
+   * is an extension class loader in use, it will be closed. Any class loaders (including PEAR class
+   * loaders) that might use this as a parent will be affected by this closure.
    * 
    * Any streams opened using getResourceAsStream will also be closed.
    * 
    * The Resources managed by this manager will have their destroy() methods called, as part of the
    * execution of this API.
    * 
-   * The framework does not call this method; it is up to the containing application to decide if and when
-   * a ResourceManager instance should be destroyed.  This is because the containing application is the only
-   * knowledgeable source; for example a single ResourceManager might be used for multiple UIMA Pipelines.
+   * The framework does not call this method; it is up to the containing application to decide if
+   * and when a ResourceManager instance should be destroyed. This is because the containing
+   * application is the only knowledgeable source; for example a single ResourceManager might be
+   * used for multiple UIMA Pipelines.
    */
   void destroy();
-      
+
   /**
    * 
-   * @return a List of External Shared Resource instances instantiated by this Resource Manager.
-   *         For parameterized resources, those which have been asked for (having unique parameter sets) 
+   * @return a List of External Shared Resource instances instantiated by this Resource Manager. For
+   *         parameterized resources, those which have been asked for (having unique parameter sets)
    *         are included.
    */
   List<Object> getExternalResources();

@@ -98,7 +98,7 @@ public class FileUtils {
     ArrayList<File> dirList = new ArrayList<>();
 
     for (File file : directory.listFiles()) {
-       if (file.isDirectory()) {
+      if (file.isDirectory()) {
         dirList.add(file);
       }
     }
@@ -188,26 +188,29 @@ public class FileUtils {
    */
   public static void saveString2File(String s, File file, String encoding) throws IOException {
     try (BufferedWriter writer = new BufferedWriter(
-        new OutputStreamWriter(new FileOutputStream(file), encoding))) {
+            new OutputStreamWriter(new FileOutputStream(file), encoding))) {
       writer.write(s);
     }
   }
 
   /**
-   * Efficiently Writes string data as UTF-8 characters to path
-   *   added for backwards compatibility with v2
-   * @param path where to write to, creating a new file if it doesn't already exist
-   * @param data the data to write
+   * Efficiently Writes string data as UTF-8 characters to path added for backwards compatibility
+   * with v2
+   * 
+   * @param path
+   *          where to write to, creating a new file if it doesn't already exist
+   * @param data
+   *          the data to write
    */
-  public static void writeToFile(Path path, String data) {   
+  public static void writeToFile(Path path, String data) {
     // try with resources, closes bw at end
-    try (BufferedWriter bw = Files.newBufferedWriter(path, StandardOpenOption.CREATE)) {  
+    try (BufferedWriter bw = Files.newBufferedWriter(path, StandardOpenOption.CREATE)) {
       bw.write(data);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
-  
+
   /**
    * Delete all files in a directory (not recursive).
    * 
@@ -300,15 +303,19 @@ public class FileUtils {
   /**
    * @deprecated use Java 7 methods for this see
    *             {@link java.io.File#createTempFile(String, String, File)}
-   * @param prefix -
-   * @param suffix -
-   * @param tempDir -
+   * @param prefix
+   *          -
+   * @param suffix
+   *          -
+   * @param tempDir
+   *          -
    * @return the file
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   @Deprecated
   public static final File createTempFile(String prefix, String suffix, File tempDir)
-      throws IOException {
+          throws IOException {
     File file = File.createTempFile(prefix, suffix, tempDir);
     file.deleteOnExit();
     return file;
@@ -340,8 +347,8 @@ public class FileUtils {
       throw new IOException("File does not exist or is not readable: " + file.getAbsolutePath());
     }
     if (!dir.exists() || !dir.isDirectory()) {
-      throw new IOException("Destination does not exist or is not a directory: "
-          + dir.getAbsolutePath());
+      throw new IOException(
+              "Destination does not exist or is not a directory: " + dir.getAbsolutePath());
     }
     File outFile = new File(dir, file.getName());
     if (outFile.exists() && !outFile.canWrite()) {
@@ -349,7 +356,7 @@ public class FileUtils {
     }
     byte[] bytes = new byte[(int) file.length()];
     try (FileInputStream is = new FileInputStream(file);
-         FileOutputStream os = new FileOutputStream(outFile)) {
+            FileOutputStream os = new FileOutputStream(outFile)) {
 
       while (true) {
         int count = is.read(bytes);
@@ -369,7 +376,8 @@ public class FileUtils {
    * @param relativeToDir
    *          directory that the path should be relative to
    * @return a relative path. This always uses / as the separator character.
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   public static String findRelativePath(File file, File relativeToDir) throws IOException {
     String canonicalFile = file.getCanonicalPath();
@@ -378,7 +386,7 @@ public class FileUtils {
     String[] relToPathComponents = getPathComponents(canonicalRelTo);
     int i = 0;
     while (i < filePathComponents.length && i < relToPathComponents.length
-        && filePathComponents[i].equals(relToPathComponents[i])) {
+            && filePathComponents[i].equals(relToPathComponents[i])) {
       i++;
     }
     StringBuilder sb = new StringBuilder();

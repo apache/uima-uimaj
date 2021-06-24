@@ -41,8 +41,8 @@ public class ArrayFSTest {
 
   private TypeSystem ts;
 
-    @BeforeEach
-    public void setUp() {
+  @BeforeEach
+  public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
@@ -51,14 +51,14 @@ public class ArrayFSTest {
     }
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     this.cas = null;
     this.ts = null;
   }
 
-    @Test
-    public void testSet() {
+  @Test
+  public void testSet() {
     // Check that we can't create arrays of size smaller than 0.
     boolean exceptionCaught = false;
     try {
@@ -91,7 +91,7 @@ public class ArrayFSTest {
       String[] stringArray = array.toStringArray();
       assertTrue(stringArray.length == 3);
       for (int i = 0; i < array.size(); i++) {
-	assertNotNull(stringArray[i]);
+        assertNotNull(stringArray[i]);
       }
     } catch (ArrayIndexOutOfBoundsException e) {
       assertTrue(false);
@@ -129,8 +129,8 @@ public class ArrayFSTest {
     assertTrue(exceptionCaught);
   }
 
-    @Test
-    public void testToArray() {
+  @Test
+  public void testToArray() {
     // From CAS array to Java array.
     FeatureStructure fs1 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
     FeatureStructure fs2 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP));
@@ -164,8 +164,8 @@ public class ArrayFSTest {
     assertTrue(array.get(0) == null);
   }
 
-    @Test
-    public void testCopyToArray() {
+  @Test
+  public void testCopyToArray() {
     FeatureStructure fs1 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
     FeatureStructure fs2 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP));
     FeatureStructure fs3 = this.cas.createFS(this.ts.getType(CASTestSetup.TOKEN_TYPE));
@@ -183,9 +183,9 @@ public class ArrayFSTest {
     array.copyToArray(1, fsArray, destinationOffset, array.size() - 1);
     array.copyToArray(1, stringArray, destinationOffset, array.size() - 1);
     assertTrue(fs2.equals(fsArray[destinationOffset]));
-    assertTrue(fs3.equals(fsArray[destinationOffset+1]));
+    assertTrue(fs3.equals(fsArray[destinationOffset + 1]));
     assertNotNull(stringArray[destinationOffset]);
-    assertNotNull(stringArray[destinationOffset+1]);
+    assertNotNull(stringArray[destinationOffset + 1]);
     for (int i = 0; i < destinationOffset; i++) {
       assertNull(fsArray[i]);
       assertNull(stringArray[i]);
@@ -195,9 +195,9 @@ public class ArrayFSTest {
       assertNull(stringArray[i]);
     }
   }
-  
-    @Test
-    public void testArraysOfArrays() {
+
+  @Test
+  public void testArraysOfArrays() {
     Type annotationType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     AnnotationFS annot = this.cas.createAnnotation(annotationType, 0, 5);
     IntArrayFS intArray = this.cas.createIntArrayFS(3);

@@ -41,41 +41,42 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class IndexCorruptionReportingTest {
-  
+
   static {
     System.setProperty("uima.report_fs_update_corrupts_index", "true");
-//    System.setProperty("uima.disable_auto_protect_indexes", "false");
-//    System.setProperty("uima.exception_when_fs_update_corrupts_index", "true");
+    // System.setProperty("uima.disable_auto_protect_indexes", "false");
+    // System.setProperty("uima.exception_when_fs_update_corrupts_index", "true");
   }
-  
+
   private TypeSystemDescription typeSystemDescription;
-  
+
   private TypeSystem ts;
 
   private FsIndexDescription[] indexes;
-  
+
   private CASImpl cas;
 
   File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
   File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
-    @BeforeEach
-    public void setUp() throws Exception {
-    typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-        new XMLInputSource(typeSystemFile1));
+  @BeforeEach
+  public void setUp() throws Exception {
+    typeSystemDescription = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile1));
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
-        .getFsIndexes();
-    cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), indexes);
+            .getFsIndexes();
+    cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(),
+            indexes);
     ts = cas.getTypeSystem();
   }
-  
+
   private FsIndex_bag<TOP> cbi() {
     FSIndexComparator comparatorForIndexSpecs = new FSIndexComparatorImpl();
     return new FsIndex_bag<>(cas, ts.getTopType(), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
   }
 
-    @Test
-    public void testReport() throws Exception {
+  @Test
+  public void testReport() throws Exception {
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 10);
     a.addToIndexes();

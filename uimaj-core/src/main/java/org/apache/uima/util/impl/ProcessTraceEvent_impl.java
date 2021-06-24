@@ -103,7 +103,8 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   }
 
   /**
-   * @param aName the component name for this event
+   * @param aName
+   *          the component name for this event
    */
   public void setComponentName(String aName) {
     mComponentName = aName;
@@ -118,7 +119,8 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   }
 
   /**
-   * @param aType the type of this event
+   * @param aType
+   *          the type of this event
    */
   public void setType(String aType) {
     mType = aType;
@@ -133,7 +135,8 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   }
 
   /**
-   * @param aDescription the description for this event
+   * @param aDescription
+   *          the description for this event
    */
   public void setDescription(String aDescription) {
     mDescription = aDescription;
@@ -148,14 +151,16 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   }
 
   /**
-   * @param aDuration the duration for this event
+   * @param aDuration
+   *          the duration for this event
    */
   public void setDuration(int aDuration) {
     mDuration = aDuration;
   }
 
   /**
-   * @param aAdditionalDuration Adds this to the duration of this event
+   * @param aAdditionalDuration
+   *          Adds this to the duration of this event
    */
   public void addToDuration(long aAdditionalDuration) {
     mDuration += aAdditionalDuration;
@@ -170,7 +175,8 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   }
 
   /**
-   * @param aResultMessage the Result Message for this event
+   * @param aResultMessage
+   *          the Result Message for this event
    */
   public void setResultMessage(String aResultMessage) {
     mResultMessage = aResultMessage;
@@ -189,7 +195,8 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   }
 
   /**
-   * @param aEvent Adds this sub-event to this event.
+   * @param aEvent
+   *          Adds this sub-event to this event.
    */
   public void addSubEvent(ProcessTraceEvent aEvent) {
     if (mSubEvents == null) {

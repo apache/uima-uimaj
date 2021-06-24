@@ -38,8 +38,8 @@ import org.w3c.dom.NodeList;
  * 
  */
 
-public class ConfigurationParameter_impl extends MetaDataObject_impl implements
-        ConfigurationParameter {
+public class ConfigurationParameter_impl extends MetaDataObject_impl
+        implements ConfigurationParameter {
 
   static final long serialVersionUID = 4234432343384779535L;
 
@@ -131,8 +131,8 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
     // check to make sure value is legal
     if (!isValidDataTypeName(aType)) {
       throw new UIMA_IllegalArgumentException(
-              UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] { aType,
-                  "type" });
+              UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH,
+              new Object[] { aType, "type" });
     }
     mType = aType;
   }
@@ -252,8 +252,8 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    *          true if and only if the configuration parameter is multi-valued. If true,
    *          <code>aClass</code> is expected to be an array.
    * 
-   * @return true if and only if an object of class <code>aClass</code> can be legally assigned to
-   *         a parameter described by <code>aTypeName</code> and <code>aMultiValued</code>.
+   * @return true if and only if an object of class <code>aClass</code> can be legally assigned to a
+   *         parameter described by <code>aTypeName</code> and <code>aMultiValued</code>.
    */
   public static boolean typeMatch(Class aClass, String aTypeName, boolean aMultiValued) {
     if (aMultiValued) {
@@ -280,8 +280,8 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
 
   /**
    * Determines whether the given String is a valid name for a data type. Valid data type names are
-   * legal arguments to the {@link #setType(String)} method, and are defined by the TYPE constants on
-   * the {@link ConfigurationParameter} interface.
+   * legal arguments to the {@link #setType(String)} method, and are defined by the TYPE constants
+   * on the {@link ConfigurationParameter} interface.
    * 
    * @param aTypeName
    *          an Object to test
@@ -333,8 +333,8 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
             valueList.add(elemText);
           } else
             // element type does not match
-            throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE, new Object[] {
-                aPropXmlInfo.arrayElementTagName, curElem.getTagName() });
+            throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE,
+                    new Object[] { aPropXmlInfo.arrayElementTagName, curElem.getTagName() });
         }
       }
       // set property
@@ -352,10 +352,10 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "configurationParameter", new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
-              new PropertyXmlInfo("externalOverrideName"),
-              new PropertyXmlInfo("description"), new PropertyXmlInfo("type"),
-              new PropertyXmlInfo("multiValued"), new PropertyXmlInfo("mandatory"),
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("configurationParameter",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+              new PropertyXmlInfo("externalOverrideName"), new PropertyXmlInfo("description"),
+              new PropertyXmlInfo("type"), new PropertyXmlInfo("multiValued"),
+              new PropertyXmlInfo("mandatory"),
               new PropertyXmlInfo("overrides", "overrides", true, "parameter"), });
 }

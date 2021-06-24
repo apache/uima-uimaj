@@ -122,7 +122,9 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
   }
 
   /**
-   * only used for uima framework things, setting up the mappings between intfc and impl for the framework parts
+   * only used for uima framework things, setting up the mappings between intfc and impl for the
+   * framework parts
+   * 
    * @see org.apache.uima.ResourceSpecifierFactory#addMapping(String, String)
    */
   @Override
@@ -326,7 +328,8 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
    */
   @Override
   public ConfigurationParameterDeclarations createConfigurationParameterDeclarations() {
-    return (ConfigurationParameterDeclarations) createObject(ConfigurationParameterDeclarations.class);
+    return (ConfigurationParameterDeclarations) createObject(
+            ConfigurationParameterDeclarations.class);
   }
 
   /**
@@ -344,7 +347,7 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
   public Settings createSettings() {
     return (Settings) createObject(Settings.class);
   }
-  
+
   /**
    * @see org.apache.uima.ResourceSpecifierFactory#createTypePriorities()
    */
@@ -493,25 +496,26 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
   public FlowControllerDeclaration createFlowControllerDeclaration() {
     return (FlowControllerDeclaration) createObject(FlowControllerDeclaration.class);
   }
-  
+
   @Override
   public FlowControllerDescription createFlowControllerDescription() {
     return (FlowControllerDescription) createObject(FlowControllerDescription.class);
   }
-  
+
   @Override
   public CustomResourceSpecifier createCustomResourceSpecifier() {
     return (CustomResourceSpecifier) createObject(CustomResourceSpecifier.class);
-  }  
+  }
 
   @Override
   public PearSpecifier createPearSpecifier() {
     return (PearSpecifier) createObject(PearSpecifier.class);
-  }  
+  }
 
   @Override
   public CpeCollectionReaderCasInitializer createCasInitializer() {
-    return (CpeCollectionReaderCasInitializer) createObject(CpeCollectionReaderCasInitializer.class);
+    return (CpeCollectionReaderCasInitializer) createObject(
+            CpeCollectionReaderCasInitializer.class);
   }
 
   @Override

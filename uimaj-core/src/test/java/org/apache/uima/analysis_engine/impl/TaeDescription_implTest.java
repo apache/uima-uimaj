@@ -75,13 +75,13 @@ import org.junit.jupiter.api.Test;
  * 
  */
 public class TaeDescription_implTest {
-  
+
   private AnalysisEngineDescription primitiveDesc;
 
   private AnalysisEngineDescription aggregateDesc;
-  
-    @BeforeEach
-    public void setUp() throws Exception {
+
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Fake", "A Fake Type", "Annotation");
@@ -162,8 +162,8 @@ public class TaeDescription_implTest {
       ConfigurationGroup cfgGrp2 = new ConfigurationGroup_impl();
       cfgGrp2.setNames(new String[] { "cfgGrp2a", "cfgGrp2b" });
       cfgGrp2.setConfigurationParameters(new ConfigurationParameter[] { cfgParam3 });
-      md.getConfigurationParameterDeclarations().setConfigurationGroups(
-              new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
+      md.getConfigurationParameterDeclarations()
+              .setConfigurationGroups(new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
       md.getConfigurationParameterDeclarations().setDefaultGroupName("cfgGrp1");
 
       NameValuePair nvp1 = new NameValuePair_impl("param1", "test");
@@ -179,14 +179,15 @@ public class TaeDescription_implTest {
       aggregateDesc = new AnalysisEngineDescription_impl();
       aggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggregateDesc.setPrimitive(false);
-      Map<String, MetaDataObject> delegateTaeMap = aggregateDesc.getDelegateAnalysisEngineSpecifiersWithImports();
+      Map<String, MetaDataObject> delegateTaeMap = aggregateDesc
+              .getDelegateAnalysisEngineSpecifiersWithImports();
       delegateTaeMap.put("Test", primitiveDesc);
       AnalysisEngineDescription_impl primDesc2 = new AnalysisEngineDescription_impl();
       primDesc2.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       primDesc2.setAnnotatorImplementationName("fakeClass");
       primDesc2.getAnalysisEngineMetaData().setName("fakeAnnotator");
-      primDesc2.getAnalysisEngineMetaData().setCapabilities(
-              new Capability[] { new Capability_impl() });
+      primDesc2.getAnalysisEngineMetaData()
+              .setCapabilities(new Capability[] { new Capability_impl() });
       delegateTaeMap.put("Empty", primDesc2);
       URISpecifier uriSpec = new URISpecifier_impl();
       uriSpec.setUri("http://www.incubator.apache.org/uima");
@@ -234,14 +235,14 @@ public class TaeDescription_implTest {
     }
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     primitiveDesc = null;
     aggregateDesc = null;
   }
 
-    @org.junit.jupiter.api.Test
-    public void testXMLization() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testXMLization() throws Exception {
     try {
       // write objects to XML
       StringWriter writer = new StringWriter();
@@ -255,11 +256,11 @@ public class TaeDescription_implTest {
 
       // parse objects back from XML
       InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes(encoding));
-      AnalysisEngineDescription newPrimitiveDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(is, null));
+      AnalysisEngineDescription newPrimitiveDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(new XMLInputSource(is, null));
       is = new ByteArrayInputStream(aggregateDescXml.getBytes(encoding));
-      AnalysisEngineDescription newAggregateDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(is, null));
+      AnalysisEngineDescription newAggregateDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(new XMLInputSource(is, null));
 
       Assert.assertEquals(primitiveDesc, newPrimitiveDesc);
       Assert.assertEquals(aggregateDesc, newAggregateDesc);
@@ -268,8 +269,8 @@ public class TaeDescription_implTest {
     }
   }
 
-    @Test
-    public void testSerialization() throws Exception {
+  @Test
+  public void testSerialization() throws Exception {
     try {
       byte[] primitiveDescBytes = SerializationUtils.serialize(primitiveDesc);
       AnalysisEngineDescription_impl primitiveDesc2 = (AnalysisEngineDescription_impl) SerializationUtils

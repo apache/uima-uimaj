@@ -44,7 +44,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class IndexSerializationTest {
 
   // Index name constants.
@@ -91,10 +90,10 @@ public class IndexSerializationTest {
 
   private Feature endFeature;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     casMgr = initCAS();
-    cas = (CASImpl)casMgr;
+    cas = (CASImpl) casMgr;
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
@@ -110,8 +109,8 @@ public class IndexSerializationTest {
     assertTrue(annotationType != null);
   }
 
-    @AfterEach
-    public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     casMgr = null;
     cas = null;
     annotationType = null;
@@ -124,7 +123,7 @@ public class IndexSerializationTest {
     startFeature = null;
     endFeature = null;
   }
-  
+
   // Initialize the first CAS.
   private static CASMgr initCAS() {
     // // Create a CASMgr. Ensures existence of AnnotationFS type.
@@ -150,7 +149,7 @@ public class IndexSerializationTest {
     tsa.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     // Commit the type system.
     ((CASImpl) casMgr).commitTypeSystem();
-    tsa = casMgr.getTypeSystemMgr();  // because of type system consolidation
+    tsa = casMgr.getTypeSystemMgr(); // because of type system consolidation
     // assert(tsa.isCommitted());
     // // Create the CAS indexes.
     // tcas.initCASIndexes();
@@ -183,8 +182,8 @@ public class IndexSerializationTest {
   /**
    * Test driver.
    */
-    @Test
-    public void testMain() throws Exception {
+  @Test
+  public void testMain() throws Exception {
 
     for (int i = 0; i < 10; i++) {
       cas.getIndexRepository().addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
@@ -224,8 +223,9 @@ public class IndexSerializationTest {
     CASCompleteSerializer cs;
     cs = Serialization.serializeCASComplete(casMgr);
     // casMgr = CASFactory.createCAS();
-    CASMgr realCasMgr = CASFactory.createCAS();  // creates base view, but no ts, so no ir
-    ((CASImpl) realCasMgr).commitTypeSystem();   // also makes index repo (which will be replaced), but doesn't init the built-in indexes
+    CASMgr realCasMgr = CASFactory.createCAS(); // creates base view, but no ts, so no ir
+    ((CASImpl) realCasMgr).commitTypeSystem(); // also makes index repo (which will be replaced),
+                                               // but doesn't init the built-in indexes
     Serialization.deserializeCASComplete(cs, realCasMgr);
     cas = ((CASImpl) realCasMgr).getCurrentView();
     casMgr = (CASMgr) cas;

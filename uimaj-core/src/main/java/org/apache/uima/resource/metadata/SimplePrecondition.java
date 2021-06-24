@@ -28,12 +28,11 @@ import org.apache.uima.cas.FSMatchConstraint;
  * {@link org.apache.uima.cas.CAS}.
  * <p>
  * A value in the CAS (see below) will be compared against the precondition's
- * {@link #getComparisonValue() comparisonValue} property using the specified
- * {@link #getPredicate() predicate}.
+ * {@link #getComparisonValue() comparisonValue} property using the specified {@link #getPredicate()
+ * predicate}.
  * <p>
- * The value in the CAS is specified by providing values for
- * {@link #setFsIndexName(String) indexName},
- * {@link #setFsMatchConstraint(FSMatchConstraint) fsMatchConstraint}, and
+ * The value in the CAS is specified by providing values for {@link #setFsIndexName(String)
+ * indexName}, {@link #setFsMatchConstraint(FSMatchConstraint) fsMatchConstraint}, and
  * {@link #setFeatureName(String) featureName}. If any FeatureStructure in the specified index
  * matches the FS match constraint and has a feature value that satisfies this precondition's
  * precicate, the precondition will be considered satisfied. If the index name is omitted, the
@@ -42,8 +41,8 @@ import org.apache.uima.cas.FSMatchConstraint;
  * The possible predicates are defined by constants on this interface. The currently avaialble
  * predicates are:
  * <ul>
- * <li><code>EQUAL</code> - evaluates to true if and only if the values are equal (according to
- * the equality rules of their data type).</li>
+ * <li><code>EQUAL</code> - evaluates to true if and only if the values are equal (according to the
+ * equality rules of their data type).</li>
  * <li><code>ELEMENT_OF</code> - the comparison value must be an array. Evaluates to true if and
  * only if the test value is equal to one of the elements of the comparison array.</li>
  * <li><code>LANGUAGE_SUBSUMED</code> - the comparison value must be an array of Strings, each of
@@ -58,9 +57,9 @@ import org.apache.uima.cas.FSMatchConstraint;
 public interface SimplePrecondition extends Precondition {
 
   /**
-   * Gets the type of this precondition. Each sub-interface of <code>Precondition</code> has its
-   * own standard type identifier String. These identifier Strings are used instead of Java class
-   * names in order to ease portability of metadata to other languages.
+   * Gets the type of this precondition. Each sub-interface of <code>Precondition</code> has its own
+   * standard type identifier String. These identifier Strings are used instead of Java class names
+   * in order to ease portability of metadata to other languages.
    * 
    * @return {@link #PRECONDITION_TYPE}
    */
@@ -81,8 +80,8 @@ public interface SimplePrecondition extends Precondition {
    * precondition.
    * 
    * @param aIndexName
-   *          the name of the FS index, <code>null</code> if the default annotation index should
-   *          be used
+   *          the name of the FS index, <code>null</code> if the default annotation index should be
+   *          used
    * 
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.

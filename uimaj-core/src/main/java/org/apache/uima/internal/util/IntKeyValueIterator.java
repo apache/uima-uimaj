@@ -25,5 +25,5 @@ package org.apache.uima.internal.util;
 public interface IntKeyValueIterator extends IntPointerIterator {
 
   int getValue();
-  
+
 }

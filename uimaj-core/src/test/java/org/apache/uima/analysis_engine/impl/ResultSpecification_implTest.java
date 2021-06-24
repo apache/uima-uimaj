@@ -44,21 +44,20 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class ResultSpecification_implTest {
 
   private TypeOrFeature[] mTypesAndFeatures;
 
   private Capability[] capabilities;
-  
+
   private Capability cap4;
 
   private List<String[]> languages;
 
   private TypeOrFeature t1, t2, f1;
-  
-    @BeforeEach
-    public void setUp() throws Exception {
+
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       // create array of types and features for use in testing
       t1 = new TypeOrFeature_impl();
@@ -116,8 +115,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testAddCapabilities() throws Exception {
+  @Test
+  public void testAddCapabilities() throws Exception {
     try {
       // create ResultSpecification with capabilities
       ResultSpecification_impl resultSpecLanguage = new ResultSpecification_impl();
@@ -133,10 +132,10 @@ public class ResultSpecification_implTest {
       for (int i = 0; i < result.length; i++) {
         Assert.assertEquals(mTypesAndFeatures[i], result[i]);
       }
-      
+
       // test defaulting - if no language, should be x-unspecified
       resultSpecLanguage = new ResultSpecification_impl();
-      resultSpecLanguage.addCapabilities(new Capability[] {cap4});
+      resultSpecLanguage.addCapabilities(new Capability[] { cap4 });
       assertTrue(resultSpecLanguage.containsFeature("FakeType:FakeFeature"));
       assertTrue(resultSpecLanguage.containsFeature("FakeType:FakeFeature", "en"));
     } catch (Exception e) {
@@ -144,33 +143,33 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testAddCapabilitiesWithoutLanguage() throws Exception {
-     try {
-       
-        TypeOrFeature t4 = new TypeOrFeature_impl();
-        t4.setType(true);
-        t4.setName("AnotherFakeType");
-        t4.setAllAnnotatorFeatures(false);
+  @Test
+  public void testAddCapabilitiesWithoutLanguage() throws Exception {
+    try {
 
-        // capability 4 - using t4 but now language
-        Capability cap4 = new Capability_impl();
-        TypeOrFeature[] tofs4 = { t4 };
-        cap4.setOutputs(tofs4);
+      TypeOrFeature t4 = new TypeOrFeature_impl();
+      t4.setType(true);
+      t4.setName("AnotherFakeType");
+      t4.setAllAnnotatorFeatures(false);
 
-        // create ResultSpecification with capabilities
-       ResultSpecification_impl resultSpec = new ResultSpecification_impl();
-       // add capabilities to the result spec
-       resultSpec.addCapabilities(new Capability[] { cap4 });
+      // capability 4 - using t4 but now language
+      Capability cap4 = new Capability_impl();
+      TypeOrFeature[] tofs4 = { t4 };
+      cap4.setOutputs(tofs4);
 
-       assertTrue(resultSpec.containsType("AnotherFakeType"));
-     } catch (Exception e) {
-       JUnitExtension.handleException(e);
-     }
-   }
+      // create ResultSpecification with capabilities
+      ResultSpecification_impl resultSpec = new ResultSpecification_impl();
+      // add capabilities to the result spec
+      resultSpec.addCapabilities(new Capability[] { cap4 });
 
-    @Test
-    public void testSetResultTypesAndFeatures() throws Exception {
+      assertTrue(resultSpec.containsType("AnotherFakeType"));
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
+  @Test
+  public void testSetResultTypesAndFeatures() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);
@@ -189,8 +188,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testSetResultTypesAndFeaturesWithLanguage() throws Exception {
+  @Test
+  public void testSetResultTypesAndFeaturesWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures, languages.get(0));
@@ -213,8 +212,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @org.junit.jupiter.api.Test
-    public void testAddResultTypeOrFeature() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testAddResultTypeOrFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       for (int i = 0; i < mTypesAndFeatures.length; i++) {
@@ -234,8 +233,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testAddResultTypeOrFeatureWithLanguage() throws Exception {
+  @Test
+  public void testAddResultTypeOrFeatureWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       for (int i = 0; i < mTypesAndFeatures.length; i++) {
@@ -268,8 +267,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testAddResultType() throws Exception {
+  @Test
+  public void testAddResultType() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addResultType("FakeType", false);
@@ -291,8 +290,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testAddResultTypeWithLanguage() throws Exception {
+  @Test
+  public void testAddResultTypeWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addResultType("FakeType", false, languages.get(0));
@@ -329,8 +328,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testAddResultFeature() throws Exception {
+  @Test
+  public void testAddResultFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addResultFeature("FakeType:FakeFeature");
@@ -351,8 +350,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testAddResultFeatureWithLanguage() throws Exception {
+  @Test
+  public void testAddResultFeatureWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addResultFeature("FakeType:FakeFeature", new String[] { "ja" });
@@ -374,8 +373,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testContainsType() throws Exception {
+  @Test
+  public void testContainsType() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);
@@ -390,8 +389,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testContainsTypeWithLanguage() throws Exception {
+  @Test
+  public void testContainsTypeWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addCapabilities(capabilities);
@@ -408,8 +407,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testContainsFeature() throws Exception {
+  @Test
+  public void testContainsFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);
@@ -425,8 +424,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testContainsFeatureWithLanguage() throws Exception {
+  @Test
+  public void testContainsFeatureWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addCapabilities(capabilities);
@@ -446,8 +445,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testRemoveTypeOrFeature() throws Exception {
+  @Test
+  public void testRemoveTypeOrFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addCapabilities(capabilities);
@@ -469,8 +468,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testCompile() throws Exception {
+  @Test
+  public void testCompile() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);
@@ -498,15 +497,16 @@ public class ResultSpecification_implTest {
       Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
       Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
       Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl"));  // unknown features are there, if the type says allFeats
+      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl")); // unknown features are there,
+                                                                      // if the type says allFeats
       Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
 
-    @Test
-    public void testCompileWithCapabilities() throws Exception {
+  @Test
+  public void testCompileWithCapabilities() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addCapabilities(capabilities);
@@ -528,7 +528,7 @@ public class ResultSpecification_implTest {
       // check
       Assert.assertFalse(rs.containsType("FakeType"));
       Assert.assertTrue(rs.containsType("FakeType", "en"));
-      Assert.assertTrue(rs.containsType("FakeType", "en-us"));      
+      Assert.assertTrue(rs.containsType("FakeType", "en-us"));
       Assert.assertTrue(rs.containsType("FakeType", "EN_US"));
       Assert.assertFalse(rs.containsType("NotThere"));
       Assert.assertTrue(rs.containsType("AnotherType"));
@@ -538,7 +538,8 @@ public class ResultSpecification_implTest {
       Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
       Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
       Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl")); // unknown features are there if type says allfeats
+      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl")); // unknown features are there
+                                                                      // if type says allfeats
       Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
       Assert.assertFalse(rs.containsFeature("NotThere:FakeFeature"));
       Assert.assertFalse(rs.containsType("SubType"));
@@ -548,8 +549,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testXmlization() throws Exception {
+  @Test
+  public void testXmlization() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       Arrays.sort(mTypesAndFeatures);
@@ -563,8 +564,8 @@ public class ResultSpecification_implTest {
 
       // parse object back from XML
       InputStream is = new ByteArrayInputStream(rsXml.getBytes(encoding));
-      ResultSpecification newRS = UIMAFramework.getXMLParser().parseResultSpecification(
-              new XMLInputSource(is, null));
+      ResultSpecification newRS = UIMAFramework.getXMLParser()
+              .parseResultSpecification(new XMLInputSource(is, null));
       TypeOrFeature[] tofs = newRS.getResultTypesAndFeatures();
       Arrays.sort(tofs);
       newRS.setResultTypesAndFeatures(tofs);
@@ -574,8 +575,8 @@ public class ResultSpecification_implTest {
     }
   }
 
-    @Test
-    public void testClone() throws Exception {
+  @Test
+  public void testClone() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);

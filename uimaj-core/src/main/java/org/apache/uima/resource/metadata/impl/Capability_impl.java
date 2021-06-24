@@ -39,9 +39,9 @@ import org.apache.uima.util.impl.Constants;
 public class Capability_impl extends MetaDataObject_impl implements Capability {
 
   static final long serialVersionUID = -2821073595288674925L;
-  
+
   private final static TypeOrFeature[] EMPTY_TYPE_OR_FEATURE_ARRAY = new TypeOrFeature[0];
-  
+
   private final static Precondition[] EMPTY_PRECONDITION_ARRAY = new Precondition[0];
 
   /** a description of this capability */
@@ -221,8 +221,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.Capability#addInputType(java.lang.String,
-   *      boolean)
+   * @see org.apache.uima.resource.metadata.Capability#addInputType(java.lang.String, boolean)
    */
   @Override
   public void addInputType(String aTypeName, boolean aAllAnnotatorFeatures) {
@@ -255,8 +254,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.Capability#addOutputType(java.lang.String,
-   *      boolean)
+   * @see org.apache.uima.resource.metadata.Capability#addOutputType(java.lang.String, boolean)
    */
   @Override
   public void addOutputType(String aTypeName, boolean aAllAnnotatorFeatures) {

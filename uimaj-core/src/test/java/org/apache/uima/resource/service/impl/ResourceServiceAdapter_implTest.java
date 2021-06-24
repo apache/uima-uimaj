@@ -36,8 +36,8 @@ import org.junit.jupiter.api.Test;
  * 
  */
 public class ResourceServiceAdapter_implTest {
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       mServiceStub = new TestResourceServiceStub();
       mAdapter = new ResourceServiceAdapter() {
@@ -52,8 +52,8 @@ public class ResourceServiceAdapter_implTest {
     }
   }
 
-    @Test
-    public void testGetMetaData() throws Exception {
+  @Test
+  public void testGetMetaData() throws Exception {
     try {
       ResourceMetaData md = new ResourceMetaData_impl();
       md.setName("Test");
@@ -63,8 +63,8 @@ public class ResourceServiceAdapter_implTest {
       p1.setDescription("multi-valued parameter with Integer data type");
       p1.setType(ConfigurationParameter.TYPE_INTEGER);
       p1.setMultiValued(true);
-      md.getConfigurationParameterDeclarations().setConfigurationParameters(
-              new ConfigurationParameter[] { p1 });
+      md.getConfigurationParameterDeclarations()
+              .setConfigurationParameters(new ConfigurationParameter[] { p1 });
 
       mServiceStub.getMetaDataReturnValue = md;
       ResourceMetaData result = mAdapter.getMetaData();

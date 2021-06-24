@@ -25,16 +25,14 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * An object to contains configuration specific to error handling applicable to every CasProcossor.
  * It provides the means of configuring max # of restarts for CasProcessor, error thresholds, and
  * max timeout.
- * 
- * 
  */
 public interface CasProcessorErrorHandling extends MetaDataObject {
   /**
    * Sets max number of restarts allowed for a CasProcessor and an action to take by the CPE in case
    * the threshold is reached.
    * 
-   * @param aCasPRestarts -
-   *          {@link org.apache.uima.collection.metadata.CasProcessorMaxRestarts} instance
+   * @param aCasPRestarts
+   *          - {@link org.apache.uima.collection.metadata.CasProcessorMaxRestarts} instance
    */
   void setMaxConsecutiveRestarts(CasProcessorMaxRestarts aCasPRestarts);
 
@@ -50,8 +48,8 @@ public interface CasProcessorErrorHandling extends MetaDataObject {
    * Sets max number of errors allowed for a CasProcessor and an action to take by the CPE in case
    * the threshold is reached.
    * 
-   * @param aCasPErrorThreshold -
-   *          {@link org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold}
+   * @param aCasPErrorThreshold
+   *          - {@link org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold}
    */
   void setErrorRateThreshold(CasProcessorErrorRateThreshold aCasPErrorThreshold);
 

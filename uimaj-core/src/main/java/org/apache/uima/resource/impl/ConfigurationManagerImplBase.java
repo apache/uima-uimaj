@@ -59,21 +59,18 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   protected static final String SESSION_CONFIGURATION_KEY = "config";
 
   /**
-   * Map from context name to ConfigurationParameterDeclarations for that context.
-   * Not sync'd based on belief:
-   *   setup of values must be complete before any reference occurs, even in multi-threaded context.
-   *   The setup is done under a sync'd control to insure only one setup is done, and to
-   *   publish the updated results to other threads
+   * Map from context name to ConfigurationParameterDeclarations for that context. Not sync'd based
+   * on belief: setup of values must be complete before any reference occurs, even in multi-threaded
+   * context. The setup is done under a sync'd control to insure only one setup is done, and to
+   * publish the updated results to other threads
    */
-  final private Map<String, ConfigurationParameterDeclarations> mContextNameToParamDeclsMap =
-      new HashMap<>();
+  final private Map<String, ConfigurationParameterDeclarations> mContextNameToParamDeclsMap = new HashMap<>();
 
   /**
    * Map the fully-qualified name of a parameter to the fully-qualified name of the parameter it is
-   * linked to (from which it takes its value).
-   * Not sync'd based on belief:
-   *   setup of values must be complete before any reference occurs, even in multi-threaded context.
-   *   The setup is done under a sync'd control to insure only one setup is done
+   * linked to (from which it takes its value). Not sync'd based on belief: setup of values must be
+   * complete before any reference occurs, even in multi-threaded context. The setup is done under a
+   * sync'd control to insure only one setup is done
    * 
    */
   final protected Map<String, String> mLinkMap = new HashMap<>();
@@ -82,20 +79,20 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * Set of parameters (fully qualified names) that explicitly declare overrides. This is used to
    * prevent implicit (name-based) overrides for these parameters.
    */
-//  final private Set<String> mExplicitlyOverridingParameters = new HashSet<String>();
+  // final private Set<String> mExplicitlyOverridingParameters = new HashSet<String>();
 
   /**
-   * Current session. Used to store parameter settings done by the
-   * settings via API tae.setConfigParameterValue(...)
+   * Current session. Used to store parameter settings done by the settings via API
+   * tae.setConfigParameterValue(...)
    * 
    * can be set by multiple threads, but ought to be set to the same session object
    */
   private volatile Session mSession = null;
 
-//  /**
-//   * Holds the externalOverrideSettings from the top-level Analysis Engine
-//   */
-//  protected OperationalProperties mOperationalProperties = null;
+  // /**
+  // * Holds the externalOverrideSettings from the top-level Analysis Engine
+  // */
+  // protected OperationalProperties mOperationalProperties = null;
 
   /*
    * (non-Javadoc)
@@ -106,18 +103,18 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   public void setSession(Session aSession) {
     mSession = aSession;
   }
-         
+
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.ConfigurationManager#createContext(java.lang.String,
-   *      org.apache.uima.resource.metadata.ResourceMetaData)
-   *      
+   * org.apache.uima.resource.metadata.ResourceMetaData)
+   * 
    * Could be called multiple times on different threads - first one does the context creation
    */
   @Override
-  public synchronized void createContext(String aContextName, ResourceMetaData aResourceMetaData, Settings externalOverrides)
-          throws ResourceConfigurationException {
+  public synchronized void createContext(String aContextName, ResourceMetaData aResourceMetaData,
+          Settings externalOverrides) throws ResourceConfigurationException {
     if (mContextNameToParamDeclsMap.containsKey(aContextName)) {
       return;
     }
@@ -167,8 +164,6 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     // validate
     validateConfigurationParameterSettings(aContextName);
   }
-  
-  
 
   /*
    * (non-Javadoc)
@@ -201,7 +196,9 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.ConfigurationManager#getConfigParameterValue(java.lang.String,java.lang.String)
+   * @see
+   * org.apache.uima.resource.ConfigurationManager#getConfigParameterValue(java.lang.String,java.
+   * lang.String)
    */
   @Override
   public Object getConfigParameterValue(String aQualifiedParameterName, String aGroupName) {
@@ -209,8 +206,8 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
             .get(computeParentContextName(aQualifiedParameterName));
     if (decls != null) {
-      return getConfigParameterValue(aQualifiedParameterName, aGroupName,
-              decls.getSearchStrategy(), decls.getDefaultGroupName());
+      return getConfigParameterValue(aQualifiedParameterName, aGroupName, decls.getSearchStrategy(),
+              decls.getDefaultGroupName());
     } else {
       return getConfigParameterValue(aQualifiedParameterName, aGroupName, null, null);
     }
@@ -220,7 +217,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.ConfigurationManager#setConfigParameterValue(java.lang.String,
-   *      java.lang.Object)
+   * java.lang.Object)
    */
   @Override
   public void setConfigParameterValue(String aQualifiedParamName, Object aValue) {
@@ -235,10 +232,11 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.ConfigurationManager#setConfigParameterValue(java.lang.String,
-   *      java.lang.String, java.lang.Object)
+   * java.lang.String, java.lang.Object)
    */
   @Override
-  public void setConfigParameterValue(String aQualifiedParamName, String aGroupName, Object aValue) {
+  public void setConfigParameterValue(String aQualifiedParamName, String aGroupName,
+          Object aValue) {
     if (aGroupName == null) {
       setConfigParameterValue(aQualifiedParamName, aValue);
     } else {
@@ -255,7 +253,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.ConfigurationManager#reconfigure(java.lang.String,
-   *      org.apache.uima.resource.metadata.ConfigurationParameterDeclarations)
+   * org.apache.uima.resource.metadata.ConfigurationParameterDeclarations)
    */
   @Override
   public void reconfigure(String aContextName) throws ResourceConfigurationException {
@@ -268,7 +266,8 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.ConfigurationManager#getConfigParameterDeclarations(java.lang.String)
+   * @see
+   * org.apache.uima.resource.ConfigurationManager#getConfigParameterDeclarations(java.lang.String)
    */
   @Override
   public ConfigurationParameterDeclarations getConfigParameterDeclarations(String aContextName) {
@@ -278,14 +277,13 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.ConfigurationManager#getCurrentConfigParameterSettings(java.lang.String,
-   *      org.apache.uima.resource.metadata.ConfigurationParameterDeclarations)
+   * @see org.apache.uima.resource.ConfigurationManager#getCurrentConfigParameterSettings(java.lang.
+   * String, org.apache.uima.resource.metadata.ConfigurationParameterDeclarations)
    */
   @Override
   public ConfigurationParameterSettings getCurrentConfigParameterSettings(String aContextName) {
     // get declarations
-    ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
-            .get(aContextName);
+    ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap.get(aContextName);
 
     ConfigurationParameterSettings settings = UIMAFramework.getResourceSpecifierFactory()
             .createConfigurationParameterSettings();
@@ -304,16 +302,16 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
           {
             for (int j = 0; j < names.length; j++) {
               // common params
-              NameValuePair[] commonParamSettings = getParamSettings(names[j], decls
-                      .getCommonParameters(), aContextName);
-              NameValuePair[] specificParamSettings = getParamSettings(names[j], groups[i]
-                      .getConfigurationParameters(), aContextName);
+              NameValuePair[] commonParamSettings = getParamSettings(names[j],
+                      decls.getCommonParameters(), aContextName);
+              NameValuePair[] specificParamSettings = getParamSettings(names[j],
+                      groups[i].getConfigurationParameters(), aContextName);
               NameValuePair[] mergedSettings = new NameValuePair[commonParamSettings.length
                       + specificParamSettings.length];
               System.arraycopy(commonParamSettings, 0, mergedSettings, 0,
                       commonParamSettings.length);
-              System.arraycopy(specificParamSettings, 0, mergedSettings,
-                      commonParamSettings.length, specificParamSettings.length);
+              System.arraycopy(specificParamSettings, 0, mergedSettings, commonParamSettings.length,
+                      specificParamSettings.length);
               settings.getSettingsForGroups().put(names[j], mergedSettings);
             }
           }
@@ -326,7 +324,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
 
   /**
    * Does a direct lookup of a complete name, including the group. Follows links but does not do any
-   * fallback processing.  An external name definition overrides all
+   * fallback processing. An external name definition overrides all
    * 
    * @param aCompleteName
    *          complete name, of the form context/parameter$group
@@ -365,12 +363,13 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @param aContextName
    *          name of context containing this parameter
    * @param aExternalOverrides
-   *          settings for parameters with external overrides 
-   * @throws ResourceConfigurationException passthru
+   *          settings for parameters with external overrides
+   * @throws ResourceConfigurationException
+   *           passthru
    */
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
-          ConfigurationParameterSettings aSettings, String aContextName, Settings aExternalOverrides)
-          throws ResourceConfigurationException {
+          ConfigurationParameterSettings aSettings, String aContextName,
+          Settings aExternalOverrides) throws ResourceConfigurationException {
     // iterate over config. param _declarations_
     if (aParams != null) {
       for (int i = 0; i < aParams.length; i++) {
@@ -492,8 +491,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   private void validateConfigurationParameterSettings(String aContext)
           throws ResourceConfigurationException {
     // get declarations
-    ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
-            .get(aContext);
+    ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap.get(aContext);
     // check that all required parameters have values
     ConfigurationParameter[] params = decls.getConfigurationParameters();
     if (params.length > 0) {
@@ -543,12 +541,12 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
       if (val == null && aParams[i].isMandatory()) {
         if (aGroupName != null) {
           throw new ResourceConfigurationException(
-                  ResourceConfigurationException.MANDATORY_VALUE_MISSING_IN_GROUP, new Object[] {
-                      aParams[i].getName(), aGroupName, aContext });
+                  ResourceConfigurationException.MANDATORY_VALUE_MISSING_IN_GROUP,
+                  new Object[] { aParams[i].getName(), aGroupName, aContext });
         } else {
           throw new ResourceConfigurationException(
-                  ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] {
-                      aParams[i].getName(), aContext });
+                  ResourceConfigurationException.MANDATORY_VALUE_MISSING,
+                  new Object[] { aParams[i].getName(), aContext });
         }
       }
       // check datatype
@@ -580,8 +578,8 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
 
       if (!valClass.equals(getParameterExpectedValueClass(aParam))) {
         throw new ResourceConfigurationException(
-                ResourceConfigurationException.PARAMETER_TYPE_MISMATCH, new Object[] {
-                    aContextName, valClass.getName(), aParam.getName(), aParam.getType() });
+                ResourceConfigurationException.PARAMETER_TYPE_MISMATCH, new Object[] { aContextName,
+                    valClass.getName(), aParam.getName(), aParam.getType() });
       }
     }
   }
@@ -640,7 +638,8 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    */
   private Object getConfigParameterValue(String aQualifiedParameterName, String aGroupName,
           String aSearchStrategy, String aDefaultGroup) {
-    if (ConfigurationParameterDeclarations.SEARCH_STRATEGY_DEFAULT_FALLBACK.equals(aSearchStrategy)) {
+    if (ConfigurationParameterDeclarations.SEARCH_STRATEGY_DEFAULT_FALLBACK
+            .equals(aSearchStrategy)) {
       // try in specified group then in default group
       Object value = getConfigParameterValue(aQualifiedParameterName, aGroupName,
               ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
@@ -681,8 +680,8 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     // default - no fallback
     {
       // just to direct look up in the specified group
-      return lookup(aGroupName == null ? aQualifiedParameterName : (aQualifiedParameterName
-              + GROUP_SEPARATOR + aGroupName));
+      return lookup(aGroupName == null ? aQualifiedParameterName
+              : (aQualifiedParameterName + GROUP_SEPARATOR + aGroupName));
     }
   }
 

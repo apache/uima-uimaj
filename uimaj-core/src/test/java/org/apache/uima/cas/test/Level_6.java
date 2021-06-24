@@ -25,64 +25,75 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 public class Level_6 extends Level_5 {
- 
-  @SuppressWarnings ("hiding")
+
+  @SuppressWarnings("hiding")
   public final static String _TypeName = "org.apache.uima.cas.test.Level_2";
-  
-  @SuppressWarnings ("hiding")
+
+  @SuppressWarnings("hiding")
   public final static int typeIndexID = JCasRegistry.register(Level_6.class);
 
-  @SuppressWarnings ("hiding")
+  @SuppressWarnings("hiding")
   public final static int type = typeIndexID;
-  
+
   @Override
-  public              int getTypeIndexID() {return typeIndexID;}
-  
-   
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected Level_6() {/* intentionally empty block */}
-    
-  /** Internal - constructor used by generator 
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
+   * Never called. Disable default constructor
+   * 
    * @generated
-   * @param casImpl the CAS this Feature Structure belongs to
-   * @param type the type of this Feature Structure 
+   */
+  protected Level_6() {
+    /* intentionally empty block */}
+
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   * @param casImpl
+   *          the CAS this Feature Structure belongs to
+   * @param type
+   *          the type of this Feature Structure
    */
   public Level_6(TypeImpl type, CASImpl casImpl) {
     super(type, casImpl);
     readObject();
   }
-  
-  /** @generated
-   * @param jcas JCas to which this Feature Structure belongs 
+
+  /**
+   * @generated
+   * @param jcas
+   *          JCas to which this Feature Structure belongs
    */
   public Level_6(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
+    readObject();
+  }
 
-
-  /** @generated
-   * @param jcas JCas to which this Feature Structure belongs
-   * @param begin offset to the begin spot in the SofA
-   * @param end offset to the end spot in the SofA 
-  */  
+  /**
+   * @generated
+   * @param jcas
+   *          JCas to which this Feature Structure belongs
+   * @param begin
+   *          offset to the begin spot in the SofA
+   * @param end
+   *          offset to the end spot in the SofA
+   */
   public Level_6(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
     readObject();
-  }   
+  }
 
-  /** 
-   * <!-- begin-user-doc -->
-   * Write your own initialization here
-   * <!-- end-user-doc -->
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
    *
-   * @generated modifiable 
+   * @generated modifiable
    */
-  private void readObject() {/*default - does nothing empty block */}
-  
-}
+  private void readObject() {
+    /* default - does nothing empty block */}
 
-    
+}

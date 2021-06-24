@@ -68,7 +68,7 @@ public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
      * 
      * @param cas
      *          aCAS
-     *          
+     * 
      * @param startStep
      *          index of mSequence to start at
      */
@@ -108,7 +108,8 @@ public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
      * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(CAS, String)
      */
     @Override
-    public Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
+    public Flow newCasProduced(CAS newCas, String producedBy)
+            throws AnalysisEngineProcessException {
       // record that the input CAS has been segmented (affects its subsequent flow)
       wasSegmented = true;
       // start the new segment CAS from the next node after the Segmenter that produced it

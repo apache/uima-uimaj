@@ -19,7 +19,6 @@
 
 package org.apache.uima.resource;
 
-
 public interface MessagingSpecifier extends ResourceServiceSpecifier {
 
   /**

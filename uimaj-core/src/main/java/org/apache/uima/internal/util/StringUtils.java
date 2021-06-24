@@ -51,7 +51,8 @@ public class StringUtils {
    *          Number of spaces to print.
    * @param writer
    *          Writer to print to.
-   * @throws IOException -
+   * @throws IOException
+   *           -
    */
   public static final void printSpaces(int n, Writer writer) throws IOException {
     for (int i = 0; i < n; i++) {
@@ -66,12 +67,12 @@ public class StringUtils {
   /**
    * Converts occurance of patterns in a sourceString with provided replacement String.
    * 
-   * @param aSourceString -
-   *          String to convert
-   * @param aPattern -
-   *          pattern for matching
-   * @param aReplaceString -
-   *          replacement String for aPattern
+   * @param aSourceString
+   *          - String to convert
+   * @param aPattern
+   *          - pattern for matching
+   * @param aReplaceString
+   *          - replacement String for aPattern
    * @return - converted String
    */
   public static String replaceAll(String aSourceString, String aPattern, String aReplaceString) {

@@ -22,22 +22,23 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Data structure used to encapsulate an XML element name (including Namespace URI, 
- * local name, and the qname) as well as its attributes and character content.
+ * Data structure used to encapsulate an XML element name (including Namespace URI, local name, and
+ * the qname) as well as its attributes and character content.
  */
 public class XmlElementNameAndContents {
   public XmlElementNameAndContents(XmlElementName name, String contents) {
-    this(name, contents, Collections.<XmlAttribute>emptyList());
+    this(name, contents, Collections.<XmlAttribute> emptyList());
   }
 
-  public XmlElementNameAndContents(XmlElementName name, String contents, List<XmlAttribute> attributes) {
+  public XmlElementNameAndContents(XmlElementName name, String contents,
+          List<XmlAttribute> attributes) {
     this.name = name;
     this.contents = contents;
     this.attributes = attributes;
   }
 
   final public XmlElementName name;
-  
+
   /**
    * List of XmlAttribute objects each holding name and value of an attribute.
    */

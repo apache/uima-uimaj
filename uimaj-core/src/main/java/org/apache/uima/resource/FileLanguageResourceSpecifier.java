@@ -27,8 +27,7 @@ package org.apache.uima.resource;
  * Instead of a single URL, this specifier defines a URL prefix and a URL suffix. The ISO language
  * identifier is then placed between the prefix and suffix to form the complete URL of the file. If
  * that file does not exist, more general language identifiers will be tried. For example, if there
- * is no resource for <code>en-US</code>, the resource for <code>en</code> will be used
- * instead.
+ * is no resource for <code>en-US</code>, the resource for <code>en</code> will be used instead.
  * 
  * 
  */

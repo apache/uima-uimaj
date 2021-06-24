@@ -30,8 +30,8 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * 
  * &lt;analysisEngienMetaData&gt;, for compatibility with existing descriptors.
  */
-public class ProcessingResourceMetaData_impl extends AnalysisEngineMetaData_impl implements
-        ProcessingResourceMetaData {
+public class ProcessingResourceMetaData_impl extends AnalysisEngineMetaData_impl
+        implements ProcessingResourceMetaData {
 
   static final long serialVersionUID = -4839907155580879702L;
 

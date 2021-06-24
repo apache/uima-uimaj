@@ -24,30 +24,29 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.resource.CasManager;
 import org.junit.jupiter.api.Test;
 
-
 public class CasManager_implTest {
-    @Test
-    public void testEnableReset() throws Exception {
+  @Test
+  public void testEnableReset() throws Exception {
     CasManager mgr = UIMAFramework.newDefaultResourceManager().getCasManager();
     mgr.defineCasPool("test", 1, null);
     CAS cas = mgr.getCas("test");
-    
-    ((CASImpl)cas).enableReset(false);
-    
-//    try {
-//      cas.release();
-//      fail();
-//    }
-//    catch (CASAdminException e) {
-//      //expected
-//    }
 
-    cas.release();  // should work, release unlocks things.
-  
+    ((CASImpl) cas).enableReset(false);
+
+    // try {
+    // cas.release();
+    // fail();
+    // }
+    // catch (CASAdminException e) {
+    // //expected
+    // }
+
+    cas.release(); // should work, release unlocks things.
+
     cas = mgr.getCas("test");
-    ((CASImpl)cas).enableReset(true);
+    ((CASImpl) cas).enableReset(true);
     cas.release();
 
   }
-  
+
 }

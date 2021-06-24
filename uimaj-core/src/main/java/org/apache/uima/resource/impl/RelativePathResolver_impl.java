@@ -49,7 +49,8 @@ public class RelativePathResolver_impl implements RelativePathResolver {
 
   public RelativePathResolver_impl() {
     this(null);
-    mClassLoader = getClass().getClassLoader();  // default value, maybe overridden by setPathResolverClassLoader
+    mClassLoader = getClass().getClassLoader(); // default value, maybe overridden by
+                                                // setPathResolverClassLoader
   }
 
   public RelativePathResolver_impl(ClassLoader aClassLoader) {
@@ -146,12 +147,12 @@ public class RelativePathResolver_impl implements RelativePathResolver {
     if (mClassLoader != null) {
       absURL = mClassLoader.getResource(f);
     } else {// if no ClassLoader specified (could be the bootstrap classloader), try the system
-    // classloader
-    
+      // classloader
+
       // https://issues.apache.org/jira/browse/UIMA-5902
       ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-      absURL = (tccl != null) ? tccl.getResource(f)  
-                              : ClassLoader.getSystemClassLoader().getResource(f);
+      absURL = (tccl != null) ? tccl.getResource(f)
+              : ClassLoader.getSystemClassLoader().getResource(f);
     }
     return absURL;
   }

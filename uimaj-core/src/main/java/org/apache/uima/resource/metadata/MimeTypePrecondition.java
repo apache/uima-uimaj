@@ -31,9 +31,8 @@ public interface MimeTypePrecondition extends SimplePrecondition {
   /**
    * Gets the MIME types that satisfy this precondition.
    * <p>
-   * Note that if the document's MIME Type is unknown, the value of the
-   * {@link #setDefault(boolean) default} property determines whether this precondition is
-   * satisfied.
+   * Note that if the document's MIME Type is unknown, the value of the {@link #setDefault(boolean)
+   * default} property determines whether this precondition is satisfied.
    * 
    * @return the MIME Types that satisfy this precondition
    */
@@ -42,9 +41,8 @@ public interface MimeTypePrecondition extends SimplePrecondition {
   /**
    * Sets the MIME types that satisfy this precondition.
    * <p>
-   * Note that if the document's MIME Type is unknown, the value of the
-   * {@link #setDefault(boolean) default} property determines whether this precondition is
-   * satisfied.
+   * Note that if the document's MIME Type is unknown, the value of the {@link #setDefault(boolean)
+   * default} property determines whether this precondition is satisfied.
    * 
    * @param aMimeTypes
    *          the MIME Types that satisfy this precondition

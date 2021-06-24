@@ -25,9 +25,9 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * An object that holds configuration that is part of the CPE descriptor. Provides the means of
  * defining and obtaining CPE specific configuration that includes:
  * <ul>
- * <li> Number of entities to process
- * <li> Checkpoint file and frequency of checkpoints
- * <li> Plug-in timer class
+ * <li>Number of entities to process
+ * <li>Checkpoint file and frequency of checkpoints
+ * <li>Plug-in timer class
  * </ul>
  * 
  */
@@ -40,18 +40,19 @@ public interface CpeConfiguration extends MetaDataObject {
    * This element is used by an application that uses the CPE. The CPE is an embeddable component,
    * part of a larger application.
    * <ul>
-   * <li> "immediate" mode: this is the way the CPE is typically run. In this mode the application
-   * is initializing the CPE and starts in without user interaction. The CPE runs to completion in
-   * this case. </li>
+   * <li>"immediate" mode: this is the way the CPE is typically run. In this mode the application is
+   * initializing the CPE and starts in without user interaction. The CPE runs to completion in this
+   * case.</li>
    * <li>"interactive" mode: The application interacts with the CPE via an API to stop, pause, or
-   * resume the CPE. </li>
+   * resume the CPE.</li>
    * <li>"vinciService" mode: used to indicate control of CPE in terms of stop, pause, resume, and
-   * query for performance info, from a remote console. </li>
+   * query for performance info, from a remote console.</li>
    * </ul>
    * 
-   * @param aDeploy -
-   *          deployment mode of the CPE
-   * @throws CpeDescriptorException tbd
+   * @param aDeploy
+   *          - deployment mode of the CPE
+   * @throws CpeDescriptorException
+   *           tbd
    */
   void setDeployment(String aDeploy) throws CpeDescriptorException;
 
@@ -67,9 +68,10 @@ public interface CpeConfiguration extends MetaDataObject {
   /**
    * Sets number of entities to process by the CPE.
    * 
-   * @param aNumToProcess -
-   *          number of entities to process (-1 - for ALL)
-   * @throws CpeDescriptorException tbd
+   * @param aNumToProcess
+   *          - number of entities to process (-1 - for ALL)
+   * @throws CpeDescriptorException
+   *           tbd
    */
   void setNumToProcess(int aNumToProcess) throws CpeDescriptorException;
 
@@ -84,8 +86,8 @@ public interface CpeConfiguration extends MetaDataObject {
    * Sets id of the first entity the CPE will beging processing. Usefull when starting the CPE from
    * a known point.
    * 
-   * @param aEntityId -
-   *          id of first entity
+   * @param aEntityId
+   *          - id of first entity
    */
   void setStartingEntityId(String aEntityId);
 
@@ -100,9 +102,10 @@ public interface CpeConfiguration extends MetaDataObject {
   /**
    * Sets Checkpoint object containing checkpoint file and frequency of checkpoints.
    * 
-   * @param aCheckpoint -
-   *          checkpoint object
-   * @throws CpeDescriptorException tbd
+   * @param aCheckpoint
+   *          - checkpoint object
+   * @throws CpeDescriptorException
+   *           tbd
    */
   void setCheckpoint(CpeCheckpoint aCheckpoint) throws CpeDescriptorException;
 
@@ -123,8 +126,8 @@ public interface CpeConfiguration extends MetaDataObject {
    * Sets the timer class implementing UimeTimer interface. This timer will be used to time CPE
    * events. By default, the CPE uses System.currentTimeMillis() to obtain time.
    * 
-   * @param aTimer -
-   *          timer class
+   * @param aTimer
+   *          - timer class
    */
   void setCpeTimer(CpeTimer aTimer);
 

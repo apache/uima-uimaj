@@ -60,15 +60,13 @@ public class FSCreatedInPearContextTest {
     assertThat(casImpl.select(Token.type).asList()) //
             .as("Same trampoline returned by [select(Token.type)] after classloader switch")
             .usingElementComparator((a, b) -> a == b ? 0 : 1) //
-            .containsExactly(token)
-            .allMatch(t -> t.getClass().getClassLoader() == clForToken);
+            .containsExactly(token).allMatch(t -> t.getClass().getClassLoader() == clForToken);
 
     casImpl.restoreClassLoaderUnlockCas();
     assertThat(casImpl.select(Token.type).asList()) //
             .as("After switching back out of the the classloader context, we get the base FS")
             .usingElementComparator((a, b) -> a._id() == b._id() ? 0 : 1) //
-            .containsExactly(token)
-            .allMatch(t -> t.getClass().getClassLoader() == rootCl);
+            .containsExactly(token).allMatch(t -> t.getClass().getClassLoader() == rootCl);
   }
 
   private TypeSystemDescription loadTokensAndSentencesTS() throws InvalidXMLException, IOException {

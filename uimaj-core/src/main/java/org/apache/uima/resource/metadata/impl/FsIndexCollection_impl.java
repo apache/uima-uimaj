@@ -48,7 +48,7 @@ import org.apache.uima.util.XMLizable;
 public class FsIndexCollection_impl extends MetaDataObject_impl implements FsIndexCollection {
 
   private static final long serialVersionUID = -7687383527183197102L;
-  
+
   private static final FsIndexDescription[] EMPTY_FS_INDEX_DESCRIPTION_ARRAY = new FsIndexDescription[0];
 
   private String mName;
@@ -141,7 +141,9 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#setImports(org.apache.uima.resource.metadata.Import[])
+   * @see
+   * org.apache.uima.resource.metadata.TypeSystemDescription#setImports(org.apache.uima.resource.
+   * metadata.Import[])
    */
   @Override
   public void setImports(Import[] aImports) {
@@ -168,7 +170,8 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.metadata.FsIndexCollection#setFsIndexes(org.apache.uima.resource.metadata.FsIndexDescription[])
+   * @see org.apache.uima.resource.metadata.FsIndexCollection#setFsIndexes(org.apache.uima.resource.
+   * metadata.FsIndexDescription[])
    */
   @Override
   public void setFsIndexes(FsIndexDescription[] aFSIndexes) {
@@ -218,7 +221,8 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   }
 
   @Override
-  public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+  public synchronized void resolveImports(ResourceManager aResourceManager)
+          throws InvalidXMLException {
     resolveImports((getImports().length == 0) ? null : new TreeSet<>(), aResourceManager);
   }
 
@@ -231,7 +235,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
       if (getSourceUrl() != null) {
         aAlreadyImportedFsIndexURLs.add(getSourceUrl().toString());
       }
-      
+
       importedIndexes = new ArrayList<>();
       Import[] imports = getImports();
       for (int i = 0; i < imports.length; i++) {
@@ -240,7 +244,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
         if (imports[i] instanceof Import_impl) {
           ((Import_impl) imports[i]).setSourceUrlIfNull(this.getSourceUrl());
         }
-  
+
         URL url = imports[i].findAbsoluteUrl(aResourceManager);
         if (!aAlreadyImportedFsIndexURLs.contains(url.toString())) {
           aAlreadyImportedFsIndexURLs.add(url.toString());
@@ -272,27 +276,28 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   }
 
   private void resolveImport(URL aURL, Collection<String> aAlreadyImportedFsIndexCollectionURLs,
-          Collection<FsIndexDescription> aResults, ResourceManager aResourceManager) throws InvalidXMLException,
-          IOException {
-    //check the import cache
-    FsIndexCollection desc;    
+          Collection<FsIndexDescription> aResults, ResourceManager aResourceManager)
+          throws InvalidXMLException, IOException {
+    // check the import cache
+    FsIndexCollection desc;
     String urlString = aURL.toString();
-    Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
-    Map<String, Set<String>> importUrlsCache = ((ResourceManager_impl)aResourceManager).getImportUrlsCache();
-    synchronized(importCache) {
+    Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
+    Map<String, Set<String>> importUrlsCache = ((ResourceManager_impl) aResourceManager)
+            .getImportUrlsCache();
+    synchronized (importCache) {
       XMLizable cachedObject = importCache.get(urlString);
       if (cachedObject instanceof FsIndexCollection) {
-        desc = (FsIndexCollection)cachedObject;
+        desc = (FsIndexCollection) cachedObject;
         // Add the URLs parsed for this cached object to the list already-parsed (UIMA-5058)
         aAlreadyImportedFsIndexCollectionURLs.addAll(importUrlsCache.get(urlString));
-      } else {   
+      } else {
         XMLInputSource input;
         input = new XMLInputSource(aURL);
         desc = UIMAFramework.getXMLParser().parseFsIndexCollection(input);
         TreeSet<String> previouslyImported = new TreeSet<>(aAlreadyImportedFsIndexCollectionURLs);
         desc.resolveImports(aAlreadyImportedFsIndexCollectionURLs, aResourceManager);
         importCache.put(urlString, desc);
-        // Save the URLS parsed by this import 
+        // Save the URLS parsed by this import
         TreeSet<String> locallyImported = new TreeSet<>(aAlreadyImportedFsIndexCollectionURLs);
         locallyImported.removeAll(previouslyImported);
         importUrlsCache.put(urlString, locallyImported);

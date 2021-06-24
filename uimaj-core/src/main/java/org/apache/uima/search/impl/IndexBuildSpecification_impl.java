@@ -29,8 +29,8 @@ import org.apache.uima.search.IndexBuildSpecification;
  * 
  * 
  */
-public class IndexBuildSpecification_impl extends MetaDataObject_impl implements
-        IndexBuildSpecification {
+public class IndexBuildSpecification_impl extends MetaDataObject_impl
+        implements IndexBuildSpecification {
   private static final long serialVersionUID = -5922996488248689708L;
 
   private IndexBuildItem[] mItems = new IndexBuildItem[0];
@@ -48,7 +48,8 @@ public class IndexBuildSpecification_impl extends MetaDataObject_impl implements
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.search.IndexBuildSpecification#setIndexBuildItems(org.apache.uima.search.IndexBuildItem[])
+   * @see org.apache.uima.search.IndexBuildSpecification#setIndexBuildItems(org.apache.uima.search.
+   * IndexBuildItem[])
    */
   @Override
   public void setIndexBuildItems(IndexBuildItem[] aItems) {
@@ -66,6 +67,6 @@ public class IndexBuildSpecification_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "indexBuildSpecification", new PropertyXmlInfo[] { new PropertyXmlInfo("indexBuildItems",
-                  null), });
+          "indexBuildSpecification",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("indexBuildItems", null), });
 }

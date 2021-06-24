@@ -31,8 +31,8 @@ public interface CasProcessorTimeout extends MetaDataObject {
   /**
    * Sets the timeout value
    * 
-   * @param aTimeoutValue -
-   *          timeout
+   * @param aTimeoutValue
+   *          - timeout
    */
   void set(int aTimeoutValue);
 

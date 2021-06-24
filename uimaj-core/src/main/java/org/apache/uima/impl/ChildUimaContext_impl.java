@@ -54,16 +54,15 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
   private final SessionNamespaceView_impl mSessionNamespaceView;
 
   /**
-   * ResourceManager used to locate and access external resources
-   * Set non-null only for Pear resources contained in an aggregate
+   * ResourceManager used to locate and access external resources Set non-null only for Pear
+   * resources contained in an aggregate
    */
-  
+
   private volatile ResourceManager mPearResourceManager = null;
 
   /**
-   * ref to the parent.  
-   * This is only used to find containing resource managers
-   * that may exist due to Pear Wrappers
+   * ref to the parent. This is only used to find containing resource managers that may exist due to
+   * Pear Wrappers
    *
    */
   private final UimaContextAdmin parentContext;
@@ -84,9 +83,9 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.UimaContextAdmin#initialize(org.apache.uima.resource.ResourceCreationSpecifier,
-   *      org.apache.uima.util.Logger, org.apache.uima.resource.ResourceManager,
-   *      ConfigurationManager)
+   * @see
+   * org.apache.uima.UimaContextAdmin#initialize(org.apache.uima.resource.ResourceCreationSpecifier,
+   * org.apache.uima.util.Logger, org.apache.uima.resource.ResourceManager, ConfigurationManager)
    */
   @Override
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
@@ -128,14 +127,15 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
   }
 
   /**
-   * Set the Pear resource manager, to be used instead of any
-   * containing Resource Manager.
-   * @param resourceManager -
+   * Set the Pear resource manager, to be used instead of any containing Resource Manager.
+   * 
+   * @param resourceManager
+   *          -
    */
   public void setPearResourceManager(ResourceManager resourceManager) {
     mPearResourceManager = resourceManager;
   }
-  
+
   /*
    * (non-Javadoc)
    * 

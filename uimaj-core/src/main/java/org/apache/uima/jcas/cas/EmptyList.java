@@ -24,4 +24,5 @@ import org.apache.uima.cas.FeatureStructure;
 /**
  * a marker interface for empty lists
  */
-public interface EmptyList extends FeatureStructure {}
+public interface EmptyList extends FeatureStructure {
+}

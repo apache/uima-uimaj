@@ -219,7 +219,8 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    * @see ResourceMetaData#setConfigurationParameterDeclarations(ConfigurationParameterDeclarations)
    */
   @Override
-  public void setConfigurationParameterDeclarations(ConfigurationParameterDeclarations aDeclarations) {
+  public void setConfigurationParameterDeclarations(
+          ConfigurationParameterDeclarations aDeclarations) {
     mConfigurationParameterDeclarations = aDeclarations;
   }
 
@@ -249,16 +250,16 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
 
     // check that all settings refer to declared parameters and are of the correct data type
     // Must check both the group-less ones AND any group ones'
-    // For backwards compatibility (see Jira 3123) if have some group-less settings and 
+    // For backwards compatibility (see Jira 3123) if have some group-less settings and
     // if special environment variable is set then ignore any errors in group parameter settings.
     // NOTE - for 2.4.1 act as if backwards compatibility is enabled.
     boolean support240bug = false;
     NameValuePair[] nvps = cfgParamSettings.getParameterSettings();
     if (nvps.length > 0) {
       validateConfigurationParameterSettings(nvps, null, cfgParamDecls);
-      support240bug = true; // System.getenv("UIMA_Jira3123") != null;  // restore this post 2.4.1
+      support240bug = true; // System.getenv("UIMA_Jira3123") != null; // restore this post 2.4.1
     }
-    
+
     try {
       Map<String, NameValuePair[]> settingsForGroups = cfgParamSettings.getSettingsForGroups();
       Set<Map.Entry<String, NameValuePair[]>> entrySet = settingsForGroups.entrySet();
@@ -276,11 +277,13 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
       // If the error was ignored in old releases describe the work-around
       if (!support240bug) {
         if (nvps.length > 0) {
-          UIMAFramework.getLogger().log(Level.SEVERE, "To restore back-level support for this error set environment variable UIMA_Jira3123");
+          UIMAFramework.getLogger().log(Level.SEVERE,
+                  "To restore back-level support for this error set environment variable UIMA_Jira3123");
         }
         throw e;
       }
-      UIMAFramework.getLogger().log(Level.WARNING, "Ignoring error in parameter setting: " + e.getMessage());
+      UIMAFramework.getLogger().log(Level.WARNING,
+              "Ignoring error in parameter setting: " + e.getMessage());
     }
   }
 
@@ -310,12 +313,12 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
       if (param == null) {
         if (aGroupName == null) {
           throw new ResourceConfigurationException(
-                  ResourceConfigurationException.NONEXISTENT_PARAMETER, new Object[] { name,
-                      getName() });
+                  ResourceConfigurationException.NONEXISTENT_PARAMETER,
+                  new Object[] { name, getName() });
         } else {
           throw new ResourceConfigurationException(
-                  ResourceConfigurationException.NONEXISTENT_PARAMETER_IN_GROUP, new Object[] {
-                      name, aGroupName, getName() });
+                  ResourceConfigurationException.NONEXISTENT_PARAMETER_IN_GROUP,
+                  new Object[] { name, aGroupName, getName() });
         }
       } else {
         // check datatype
@@ -365,10 +368,11 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
 
     if (valClass != getClassForParameterType(paramType)) {
       throw new ResourceConfigurationException(
-              ResourceConfigurationException.PARAMETER_TYPE_MISMATCH, new Object[] { getName(),
-                  valClass.getName(), paramName, paramType });
-      /*  Parameter type mismatch in component "{0}".  A value of class {1} cannot be 
-          assigned to the configuration parameter {2}, which has type {3}.
+              ResourceConfigurationException.PARAMETER_TYPE_MISMATCH,
+              new Object[] { getName(), valClass.getName(), paramName, paramType });
+      /*
+       * Parameter type mismatch in component "{0}". A value of class {1} cannot be assigned to the
+       * configuration parameter {2}, which has type {3}.
        */
     }
   }
@@ -419,6 +423,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
 
   /**
    * Static method to get XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
+   * 
    * @return -
    */
   protected static XmlizationInfo getXmlizationInfoForClass() {

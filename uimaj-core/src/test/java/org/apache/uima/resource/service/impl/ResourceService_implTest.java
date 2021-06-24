@@ -34,8 +34,8 @@ import org.junit.jupiter.api.Test;
  * 
  */
 public class ResourceService_implTest {
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       // create resource specifier and a pool containing 2 instances
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
@@ -57,8 +57,8 @@ public class ResourceService_implTest {
     }
   }
 
-    @Test
-    public void testGetMetaData() throws Exception {
+  @Test
+  public void testGetMetaData() throws Exception {
     try {
       ResourceMetaData md = service.getMetaData();
       Assert.assertNotNull(md);

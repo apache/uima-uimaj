@@ -30,29 +30,28 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
 
-
 public class ComponentInfoTest {
-    @Test
-    public void testComponentInfo() throws Exception {
-    //test the CAS.getCurrentComponentInfo() is null after a component has
-    //been processed
+  @Test
+  public void testComponentInfo() throws Exception {
+    // test the CAS.getCurrentComponentInfo() is null after a component has
+    // been processed
     File descFile = JUnitExtension.getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml");
-    AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-            new XMLInputSource(descFile));
+    AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(descFile));
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc);
     CAS cas = ae.newCAS();
     ae.process(cas);
-    assertNull(((CASImpl)cas).getCurrentComponentInfo());
-    
-    //same test for aggregate
-    //test the CAS.getCurrentComponentInfo() is null after a component has
-    //been processed
+    assertNull(((CASImpl) cas).getCurrentComponentInfo());
+
+    // same test for aggregate
+    // test the CAS.getCurrentComponentInfo() is null after a component has
+    // been processed
     descFile = JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
-    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-            new XMLInputSource(descFile));
+    desc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(descFile));
     ae = UIMAFramework.produceAnalysisEngine(desc);
     cas = ae.newCAS();
     ae.process(cas);
-    assertNull(((CASImpl)cas).getCurrentComponentInfo());
+    assertNull(((CASImpl) cas).getCurrentComponentInfo());
   }
 }

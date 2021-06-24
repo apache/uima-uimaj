@@ -24,52 +24,51 @@ import java.util.Arrays;
 /**
  * A map&lt;int, int&gt;
  * 
- * based on having a key and value int array, where the keys are sorted 
+ * based on having a key and value int array, where the keys are sorted
  * 
  * Supports sharing a single key array with multiple value arrays
  * 
- * Implements Map - like interface:
- *   keys and values are ints
- *   
+ * Implements Map - like interface: keys and values are ints
+ * 
  * values can be anything except 0; 0 is the value returned by get if not found
  * 
  * All adds must occur before any gets; then a sort must be called unless the adds are in sort order
  *
- * Threading: instances of this class may be accessed on multiple threads 
- *   (different iterators may be on different threads)
+ * Threading: instances of this class may be accessed on multiple threads (different iterators may
+ * be on different threads)
  */
 public class Int2IntArrayMapFixedSize {
-  
-  private final int [] values;
+
+  private final int[] values;
   private final boolean isSmall;
-      
+
   public Int2IntArrayMapFixedSize(int length) {
     values = new int[length];
     isSmall = length <= 4;
   }
-    
-  public int get(int key, final int[] sortedKeys) {    
+
+  public int get(int key, final int[] sortedKeys) {
     int f = isSmall ? quickFind(key, sortedKeys) : Arrays.binarySearch(sortedKeys, key);
     if (f < 0) {
       throw new RuntimeException(); // return 0; // not found
     }
     return values[f];
   }
-  
+
   private int quickFind(int key, final int[] sortedKeys) {
     for (int i = 0; i < sortedKeys.length; i++) {
       if (key == sortedKeys[i]) {
         return i;
       }
     }
-    throw new RuntimeException();  // not found
+    throw new RuntimeException(); // not found
   }
-  
+
   public int getAtIndex(int index) {
     return values[index];
   }
-   
+
   public void putAtIndex(int index, int value) {
     values[index] = value;
-  }    
+  }
 }

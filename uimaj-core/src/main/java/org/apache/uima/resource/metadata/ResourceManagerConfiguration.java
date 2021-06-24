@@ -40,9 +40,9 @@ import org.apache.uima.util.InvalidXMLException;
  * is initialized (e.g. during AnalysisEngine initialization).
  * <p>
  * Resource Manager Configurations can optionally be assigned a {@link #getName() name},
- * {@link #getDescription() description}, {@link #getVendor() vendor}, and
- * {@link #getVersion() version}. It is recommended that these properties be set on any Resource
- * Manager Configuration that is meant to be shared by (imported by) multiple components.
+ * {@link #getDescription() description}, {@link #getVendor() vendor}, and {@link #getVersion()
+ * version}. It is recommended that these properties be set on any Resource Manager Configuration
+ * that is meant to be shared by (imported by) multiple components.
  */
 public interface ResourceManagerConfiguration extends MetaDataObject {
   /**
@@ -143,7 +143,8 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    * @deprecated Use {@link #getImports()} instead. There may be many imports; this method only
    *             returns the first.
    */
-  @Deprecated Import getImport();
+  @Deprecated
+  Import getImport();
 
   /**
    * Sets the import declared by this Resource Manager Configuration, if any.
@@ -153,7 +154,8 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    *          manager configuration. Null indicates that there is no import.
    * @deprecated Use {@link #setImports(Import[])} instead.
    */
-  @Deprecated void setImport(Import aImport);
+  @Deprecated
+  void setImport(Import aImport);
 
   /**
    * Gets the descriptions of the external resources to be instantiated and managed by the resource

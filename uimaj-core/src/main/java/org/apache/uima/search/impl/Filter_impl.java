@@ -47,8 +47,10 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
   }
 
   /**
-   * @param aSyntax -
-   * @param aExpression -
+   * @param aSyntax
+   *          -
+   * @param aExpression
+   *          -
    */
   public Filter_impl(String aSyntax, String aExpression) {
     setSyntax(aSyntax);
@@ -99,7 +101,7 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
    * (non-Javadoc)
    * 
    * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
-   *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
+   * org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)

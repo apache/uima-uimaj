@@ -36,12 +36,13 @@ import org.junit.jupiter.api.Test;
  */
 public class FileLanguageResource_implTest {
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     try {
       FileLanguageResourceSpecifier spec = new FileLanguageResourceSpecifier_impl();
-      File baseDir = JUnitExtension.getFile("ResourceTest");     
-      spec.setFileUrlPrefix(new File(baseDir, "FileLanguageResource_implTest_data_").toURL().toString());
+      File baseDir = JUnitExtension.getFile("ResourceTest");
+      spec.setFileUrlPrefix(
+              new File(baseDir, "FileLanguageResource_implTest_data_").toURL().toString());
       spec.setFileUrlSuffix(".dat");
       mResource = new FileLanguageResource_impl();
       mResource.initialize(spec, Collections.EMPTY_MAP);
@@ -50,8 +51,8 @@ public class FileLanguageResource_implTest {
     }
   }
 
-    @Test
-    public void testGetDataResource() throws Exception {
+  @Test
+  public void testGetDataResource() throws Exception {
     try {
       DataResource enResource = mResource.getDataResource(new String[] { "en" });
       DataResource deResource = mResource.getDataResource(new String[] { "de" });

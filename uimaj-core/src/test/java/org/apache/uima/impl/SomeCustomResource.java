@@ -28,18 +28,21 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
 import org.junit.Assert;
 
-
 public class SomeCustomResource extends Resource_ImplBase {
-  
+
   public Map<String, String> paramMap = new HashMap<>();
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.
+   * ResourceSpecifier, java.util.Map)
    */
   @Override
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams) throws ResourceInitializationException {
+  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+          throws ResourceInitializationException {
     Assert.assertTrue(aSpecifier instanceof CustomResourceSpecifier);
-    Parameter[] params = ((CustomResourceSpecifier)aSpecifier).getParameters();
+    Parameter[] params = ((CustomResourceSpecifier) aSpecifier).getParameters();
     for (int i = 0; i < params.length; i++) {
       paramMap.put(params[i].getName(), params[i].getValue());
     }

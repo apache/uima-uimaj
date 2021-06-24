@@ -39,8 +39,8 @@ import org.junit.jupiter.api.Test;
  */
 public class ConfigurableDataResource_implTest {
 
-    @Test
-    public void testInitialize() throws Exception {
+  @Test
+  public void testInitialize() throws Exception {
     try {
       // create a ConfigurableDataResourceSpecifier
       ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();

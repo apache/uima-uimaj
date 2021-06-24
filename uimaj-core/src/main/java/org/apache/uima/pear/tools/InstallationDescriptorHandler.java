@@ -345,8 +345,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
       oWriter.println();
       // 3rd level elements
       String dlgId = dlgList.next();
-      InstallationDescriptor.ComponentInfo dlgInfo = dlgTable
-              .get(dlgId);
+      InstallationDescriptor.ComponentInfo dlgInfo = dlgTable.get(dlgId);
       XMLUtil.printXMLElement(ID_TAG, dlgId, oWriter, 3);
       oWriter.println();
       XMLUtil.printXMLElement(NAME_TAG, dlgInfo.name, oWriter, 3);
@@ -399,13 +398,12 @@ public class InstallationDescriptorHandler extends DefaultHandler {
   public static void saveInstallationDescriptor(InstallationDescriptor insdObject, File xmlFile)
           throws IOException {
     try (PrintWriter oWriter = new PrintWriter(
-                                 new OutputStreamWriter(
-                                   new FileOutputStream(xmlFile), StandardCharsets.UTF_8))) {
+            new OutputStreamWriter(new FileOutputStream(xmlFile), StandardCharsets.UTF_8))) {
       oWriter.println(XML_HEADER);
       printInstallationDescriptor(insdObject, oWriter);
     } catch (IOException exc) {
       throw exc;
-    }    
+    }
   }
 
   /**
@@ -627,8 +625,8 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    * @throws SAXException
    *           Any SAX exception, possibly wrapping another exception.
    */
-  public synchronized void parseInstallationDescriptor(JarFile pearFile) throws IOException,
-          SAXException {
+  public synchronized void parseInstallationDescriptor(JarFile pearFile)
+          throws IOException, SAXException {
     String insdFilePath = InstallationProcessor.INSD_FILE_PATH;
     JarEntry insdJarEntry = pearFile.getJarEntry(insdFilePath);
     if (insdJarEntry != null) {

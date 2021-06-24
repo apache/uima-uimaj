@@ -39,7 +39,7 @@ public class EmptyStringList extends StringList implements EmptyList {
   public int getTypeIndexID() {
     return typeIndexID;
   }
-  
+
   // Never called. Disable default constructor
   protected EmptyStringList() {
   }
@@ -47,16 +47,18 @@ public class EmptyStringList extends StringList implements EmptyList {
   public EmptyStringList(TypeImpl_list ti) {
     super(ti, null);
   }
-  
+
   public EmptyStringList(JCas jcas) {
     super(jcas);
   }
 
   /**
-   * used by generator
-   * Make a new AnnotationBase
-   * @param c -
-   * @param t -
+   * used by generator Make a new AnnotationBase
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
    */
 
   public EmptyStringList(TypeImpl t, CASImpl c) {

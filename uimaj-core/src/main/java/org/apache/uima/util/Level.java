@@ -25,7 +25,7 @@ package org.apache.uima.util;
 public class Level {
   /** level value */
   private int level;
-  
+
   /** level name */
   private String levelText;
 
@@ -64,7 +64,7 @@ public class Level {
   public final static int DEBUG_INT = FINE_INT;
   /** level value for level "TRACE" */
   public final static int TRACE_INT = FINER_INT;
-  
+
   /** message level "OFF" */
   final static public Level OFF = new Level(OFF_INT, "OFF");
 

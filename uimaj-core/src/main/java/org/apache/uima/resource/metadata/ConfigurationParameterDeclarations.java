@@ -216,14 +216,14 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @param aGroupName
    *          the name of a group
    * 
-   * @return an array of ConfigurationGroup declarations having the name <code>aGroupName</code>.
-   *         If there are no such groups, an empty array is returned.
+   * @return an array of ConfigurationGroup declarations having the name <code>aGroupName</code>. If
+   *         there are no such groups, an empty array is returned.
    */
   ConfigurationGroup[] getConfigurationGroupDeclarations(String aGroupName);
 
   /**
-   * A value for the <code>searchStrategy</code> property indicating that there is no fallback. If
-   * a request is made for the value of a parameter in a group and there is no such value in that
+   * A value for the <code>searchStrategy</code> property indicating that there is no fallback. If a
+   * request is made for the value of a parameter in a group and there is no such value in that
    * exact group, <code>null</code> will be returned.
    */
   String SEARCH_STRATEGY_NONE = "none";
@@ -239,9 +239,8 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * country codes are used as configuration group names. If there is no value declared in a group,
    * look in more general groups. The fallback sequence is
    * <code>lang-country-region -%gt; lang-country -%gt; 
-   * lang -%gt; default</code>. For example, if a
-   * request is made for the value of a parameter in the "en-GB" group and no such group exists, the
-   * value from the "en" group will be used instead.
+   * lang -%gt; default</code>. For example, if a request is made for the value of a parameter in
+   * the "en-GB" group and no such group exists, the value from the "en" group will be used instead.
    */
   String SEARCH_STRATEGY_LANGUAGE_FALLBACK = "language_fallback";
 

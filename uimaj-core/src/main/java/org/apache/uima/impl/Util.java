@@ -29,76 +29,72 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.CasManager_impl;
 
 /**
- * Shared code refactored from other spots to reduce duplication
- * and improve maintainability
+ * Shared code refactored from other spots to reduce duplication and improve maintainability
  *
  */
 public class Util {
-  
+
   public static CASImpl getStartingView(CAS cas, boolean sofaAware, ComponentInfo componentInfo) {
     // OLD behavior:
-      // if this is a sofa-aware component, give it the Base CAS
-      // if it is a sofa-unaware component, give it whatever view maps to the _InitialView
+    // if this is a sofa-aware component, give it the Base CAS
+    // if it is a sofa-unaware component, give it whatever view maps to the _InitialView
     // NEW behavior:
-      // always return whatever view maps to the _InitialView
+    // always return whatever view maps to the _InitialView
     CASImpl ci;
     // need to set the componentInfo for the getView to find the sofa mappings
     // Do this *before* the getView call below
     // note: this is in a shared view part of the CAS
-    cas.setCurrentComponentInfo(componentInfo);  
-//    if (sofaAware) {
-//      ci = ((CASImpl) cas).getBaseCAS();
-//    } else {
-//      ci = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);
-//    }
+    cas.setCurrentComponentInfo(componentInfo);
+    // if (sofaAware) {
+    // ci = ((CASImpl) cas).getBaseCAS();
+    // } else {
+    // ci = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);
+    // }
     ci = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);
-    
+
     return ci;
   }
-  
-  public static AbstractCas setupViewSwitchClassLoadersLockCas(
-      CAS cas, 
-      boolean sofaAware, 
-      ComponentInfo componentInfo,
-      ResourceManager resourceManager, 
-      Class<? extends AbstractCas> casInterface) {
+
+  public static AbstractCas setupViewSwitchClassLoadersLockCas(CAS cas, boolean sofaAware,
+          ComponentInfo componentInfo, ResourceManager resourceManager,
+          Class<? extends AbstractCas> casInterface) {
     CASImpl ci = getStartingView(cas, sofaAware, componentInfo);
     // get requested interface to CAS (CAS or JCas)
     // next will create JCas if needed, but not already created
     // must precede the switchClassLoader call - that one needs the JCas link, if it is being used
     AbstractCas r = CasManager_impl.getCasInterfaceStatic(ci, casInterface);
     // This cas will be unlocked and its class loader restored when the
-    //   next() method returns it
-    // Insure the same view is passed for switching/restoring  https://issues.apache.org/jira/browse/UIMA-2211
-    ci.switchClassLoaderLockCasCL(resourceManager.getExtensionClassLoader());    
+    // next() method returns it
+    // Insure the same view is passed for switching/restoring
+    // https://issues.apache.org/jira/browse/UIMA-2211
+    ci.switchClassLoaderLockCasCL(resourceManager.getExtensionClassLoader());
     return r;
   }
 
-  public static <T extends AbstractCas> T setupViewSwitchClassLoaders(
-      CAS cas, 
-      boolean sofaAware, 
-      ComponentInfo componentInfo,
-      ResourceManager resourceManager, 
-      Class<T> casInterface) {
+  public static <T extends AbstractCas> T setupViewSwitchClassLoaders(CAS cas, boolean sofaAware,
+          ComponentInfo componentInfo, ResourceManager resourceManager, Class<T> casInterface) {
     CASImpl ci = getStartingView(cas, sofaAware, componentInfo);
     // get requested interface to CAS (CAS or JCas)
     // next will create JCas if needed, but not already created
     // must precede the switchClassLoader call - that one needs the JCas link, if it is being used
-    T r = CasManager_impl.<T>getCasInterfaceStatic(ci, casInterface);
+    T r = CasManager_impl.<T> getCasInterfaceStatic(ci, casInterface);
     // This cas will be unlocked and its class loader restored when the
-    //   next() method returns it
-    // Insure the same view is passed for switching/restoring  https://issues.apache.org/jira/browse/UIMA-2211
+    // next() method returns it
+    // Insure the same view is passed for switching/restoring
+    // https://issues.apache.org/jira/browse/UIMA-2211
     // putting back the switch of class loaders for Pears and other
-    //   possible structures.  Corresponds to v2 impl  7/2019
-    //   See https://issues.apache.org/jira/browse/UIMA-5030   
+    // possible structures. Corresponds to v2 impl 7/2019
+    // See https://issues.apache.org/jira/browse/UIMA-5030
     boolean wasLocked = ci.isCasLocked();
-    ci.switchClassLoader(resourceManager.getExtensionClassLoader(), wasLocked);    
+    ci.switchClassLoader(resourceManager.getExtensionClassLoader(), wasLocked);
     return r;
   }
-  
+
   /**
    * Calls userCode and then restores the context holder
-   * @param userCode run this code within the current context
+   * 
+   * @param userCode
+   *          run this code within the current context
    */
   public static void preserveContextHolder(Runnable userCode) {
     UimaContext prevContext = UimaContextHolder.getContext();
@@ -111,8 +107,11 @@ public class Util {
 
   /**
    * Calls userCode with specified context, then restores the context holder
-   * @param context to use while running the userCode
-   * @param userCode the code to run.
+   * 
+   * @param context
+   *          to use while running the userCode
+   * @param userCode
+   *          the code to run.
    */
   public static void withContextHolder(UimaContext context, Runnable userCode) {
     UimaContext prevContext = UimaContextHolder.setContext(context);
@@ -122,20 +121,25 @@ public class Util {
       UimaContextHolder.setContext(prevContext);
     }
   }
-  
+
   /**
    * Calls userCode with specified context, then restores the context holder
-   * @param context to use while running the userCode
-   * @param userCode the code to run.
-   * @throws Exception -
+   * 
+   * @param context
+   *          to use while running the userCode
+   * @param userCode
+   *          the code to run.
+   * @throws Exception
+   *           -
    */
-  public static void withContextHolderX(UimaContext context, Runnable_withException userCode) throws Exception {
+  public static void withContextHolderX(UimaContext context, Runnable_withException userCode)
+          throws Exception {
     UimaContext prevContext = UimaContextHolder.setContext(context);
     try {
       userCode.run();
     } finally {
       UimaContextHolder.setContext(prevContext);
     }
-  }  
+  }
 
 }

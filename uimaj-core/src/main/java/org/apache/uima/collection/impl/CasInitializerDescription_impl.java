@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.impl;
 
 import java.util.ArrayList;
@@ -45,8 +44,8 @@ import org.w3c.dom.Element;
  * @deprecated As of v2.0, CAS Initializers are deprecated.
  */
 @Deprecated
-public class CasInitializerDescription_impl extends ResourceCreationSpecifier_impl implements
-        CasInitializerDescription {
+public class CasInitializerDescription_impl extends ResourceCreationSpecifier_impl
+        implements CasInitializerDescription {
 
   private static final long serialVersionUID = -4559482063745943204L;
 
@@ -77,7 +76,9 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
+   * @see
+   * org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.
+   * ResourceManager)
    */
   @Override
   public void doFullValidation(ResourceManager aResourceManager)
@@ -132,8 +133,8 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "casInitializerDescription", new PropertyXmlInfo[] {
-              new PropertyXmlInfo("frameworkImplementation"),
+          "casInitializerDescription",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),
               new PropertyXmlInfo("externalResourceDependencies"),
               new PropertyXmlInfo("resourceManagerConfiguration", null) });

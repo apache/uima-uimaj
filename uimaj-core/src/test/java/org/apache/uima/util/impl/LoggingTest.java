@@ -31,8 +31,8 @@ import org.junit.jupiter.api.Test;
  * 
  */
 public class LoggingTest {
-    @Test
-    public void testDefaultLoggerCreation() throws Exception {
+  @Test
+  public void testDefaultLoggerCreation() throws Exception {
     try {
       // get default logger
       Logger logger = UIMAFramework.getLogger();
@@ -48,14 +48,15 @@ public class LoggingTest {
       logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
 
       // https://issues.apache.org/jira/browse/UIMA-5719
-      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
+      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages",
+              "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     }
   }
 
-    @Test
-    public void testClassLoggerCreation() throws Exception {
+  @Test
+  public void testClassLoggerCreation() throws Exception {
     try {
       // get class logger
       Logger logger = UIMAFramework.getLogger(this.getClass());
@@ -75,16 +76,17 @@ public class LoggingTest {
 
       // test base logging functions
       logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
-      
+
       // https://issues.apache.org/jira/browse/UIMA-5719
-      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
+      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages",
+              "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     }
   }
 
-    @Test
-    public void testSetLevel() throws Exception {
+  @Test
+  public void testSetLevel() throws Exception {
     Logger uimaLogger = UIMAFramework.getLogger(); // should affect everything in
     // org.apache.uima.*
     try {

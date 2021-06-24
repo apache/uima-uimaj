@@ -38,7 +38,7 @@ import org.apache.uima.util.UimaTimer;
  */
 public class ProcessTrace_impl implements ProcessTrace {
   private static final long serialVersionUID = 7566277176545062757L;
- 
+
   public static ProcessTrace disabledProcessTrace = new ProcessTrace_impl(false);
   /**
    * List of closed events.
@@ -66,7 +66,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   public ProcessTrace_impl() {
     this(UIMAFramework.getDefaultPerformanceTuningProperties());
   }
-  
+
   ProcessTrace_impl(boolean enabled) {
     mEnabled = enabled;
     if (mEnabled) {
@@ -82,12 +82,12 @@ public class ProcessTrace_impl implements ProcessTrace {
    *          disabled.
    */
   public ProcessTrace_impl(Properties aPerformanceTuningSettings) {
-//    if (aPerformanceTuningSettings == null) {
-//      aPerformanceTuningSettings = UIMAFramework.getDefaultPerformanceTuningProperties();
-//    }
-    this("true".equalsIgnoreCase(
-        ((aPerformanceTuningSettings == null) ? UIMAFramework.getDefaultPerformanceTuningProperties() : aPerformanceTuningSettings)
-        .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED)));
+    // if (aPerformanceTuningSettings == null) {
+    // aPerformanceTuningSettings = UIMAFramework.getDefaultPerformanceTuningProperties();
+    // }
+    this("true".equalsIgnoreCase(((aPerformanceTuningSettings == null)
+            ? UIMAFramework.getDefaultPerformanceTuningProperties()
+            : aPerformanceTuningSettings).getProperty(UIMAFramework.PROCESS_TRACE_ENABLED)));
   }
 
   /**
@@ -114,8 +114,8 @@ public class ProcessTrace_impl implements ProcessTrace {
     if (aPerformanceTuningSettings == null) {
       aPerformanceTuningSettings = UIMAFramework.getDefaultPerformanceTuningProperties();
     }
-    mEnabled = "true".equalsIgnoreCase(aPerformanceTuningSettings
-            .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED));
+    mEnabled = "true".equalsIgnoreCase(
+            aPerformanceTuningSettings.getProperty(UIMAFramework.PROCESS_TRACE_ENABLED));
   }
 
   /**
@@ -246,7 +246,8 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#getEventsByComponentName(String, boolean)
    */
   @Override
-  public List<ProcessTraceEvent> getEventsByComponentName(String aComponentName, boolean aRecurseAfterMatch) {
+  public List<ProcessTraceEvent> getEventsByComponentName(String aComponentName,
+          boolean aRecurseAfterMatch) {
     List<ProcessTraceEvent> result = new ArrayList<>();
     for (ProcessTraceEvent event : getEvents()) {
       getEventsByComponentName(event, aComponentName, aRecurseAfterMatch, result);
@@ -263,7 +264,7 @@ public class ProcessTrace_impl implements ProcessTrace {
     for (ProcessTraceEvent event : getEvents()) {
       getEventsByType(event, aType, aRecurseAfterMatch, result);
     }
-      
+
     return result;
   }
 
@@ -276,7 +277,8 @@ public class ProcessTrace_impl implements ProcessTrace {
     return getEvent(events, aComponentName, aType);
   }
 
-  protected ProcessTraceEvent getEvent(List<ProcessTraceEvent> aEvents, String aComponentName, String aType) {
+  protected ProcessTraceEvent getEvent(List<ProcessTraceEvent> aEvents, String aComponentName,
+          String aType) {
     Iterator<ProcessTraceEvent> it = aEvents.iterator();
     while (it.hasNext()) {
       ProcessTraceEvent event = it.next();
@@ -331,7 +333,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   public String toString() {
     // count total time so we can do percentages
     int totalTime = 0;
-    
+
     for (ProcessTraceEvent event : mEventList) {
       totalTime += event.getDuration();
     }
@@ -346,11 +348,16 @@ public class ProcessTrace_impl implements ProcessTrace {
   }
 
   /**
-   * Utility method used by getEventsByComponentName(String)   * 
-   * @param aEvent -
-   * @param aComponentName -
-   * @param aRecurseAfterMatch -
-   * @param aResultList -
+   * Utility method used by getEventsByComponentName(String) *
+   * 
+   * @param aEvent
+   *          -
+   * @param aComponentName
+   *          -
+   * @param aRecurseAfterMatch
+   *          -
+   * @param aResultList
+   *          -
    */
   protected void getEventsByComponentName(ProcessTraceEvent aEvent, String aComponentName,
           boolean aRecurseAfterMatch, List<ProcessTraceEvent> aResultList) {
@@ -370,13 +377,17 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * Utility method used by getEventsByType(String)
    * 
-   * @param aEvent -
-   * @param aType -
-   * @param aRecurseAfterMatch -
-   * @param aResultList -
+   * @param aEvent
+   *          -
+   * @param aType
+   *          -
+   * @param aRecurseAfterMatch
+   *          -
+   * @param aResultList
+   *          -
    */
-  protected void getEventsByType(ProcessTraceEvent aEvent, String aType,
-          boolean aRecurseAfterMatch, List<ProcessTraceEvent> aResultList) {
+  protected void getEventsByType(ProcessTraceEvent aEvent, String aType, boolean aRecurseAfterMatch,
+          List<ProcessTraceEvent> aResultList) {
     if (aType.equals(aEvent.getType())) {
       aResultList.add(aEvent);
       if (!aRecurseAfterMatch) {

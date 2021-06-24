@@ -48,8 +48,9 @@ public class AnalysisEngineFactory_impl implements ResourceFactory {
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   @Override
-  public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
-          Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
+  public Resource produceResource(Class<? extends Resource> aResourceClass,
+          ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+          throws ResourceInitializationException {
     // It is important to know whether we need a Multiprocessing-capable
     // Analysis Engine implementation - this is determined by whether there
     // is a value for the PARAM_NUM_SIMULTANEOUS_REQUESTS parameter.
@@ -87,7 +88,8 @@ public class AnalysisEngineFactory_impl implements ResourceFactory {
         } else {
           throw new ResourceInitializationException(
                   ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION,
-                  new Object[] { spec.getFrameworkImplementation(), aSpecifier.getSourceUrlString() });
+                  new Object[] { spec.getFrameworkImplementation(),
+                      aSpecifier.getSourceUrlString() });
         }
       }
     }

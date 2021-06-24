@@ -45,17 +45,18 @@ import org.xml.sax.SAXException;
  * 
  * 
  */
-public class ConfigurationParameterSettings_impl extends MetaDataObject_impl implements
-        ConfigurationParameterSettings {
+public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
+        implements ConfigurationParameterSettings {
 
   static final long serialVersionUID = 3476535733588304983L;
 
   static final NameValuePair[] EMPTY_NAME_VALUE_PAIR_ARRAY = new NameValuePair[0];
-  
+
   private static final Method methodGetSettingsForGroups;
   static {
     try {
-      methodGetSettingsForGroups = ConfigurationParameterSettings.class.getDeclaredMethod("getSettingsForGroups");
+      methodGetSettingsForGroups = ConfigurationParameterSettings.class
+              .getDeclaredMethod("getSettingsForGroups");
     } catch (Exception e) {
       throw new UIMARuntimeException(e);
     }
@@ -116,8 +117,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   }
 
   /**
-   * @see ConfigurationParameterSettings#getParameterValue(java.lang.String,
-   *      java.lang.String)
+   * @see ConfigurationParameterSettings#getParameterValue(java.lang.String, java.lang.String)
    */
   @Override
   public Object getParameterValue(String aGroupName, String aParamName) {
@@ -137,8 +137,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   }
 
   /**
-   * @see ConfigurationParameterSettings#setParameterValue(java.lang.String,
-   *      java.lang.Object)
+   * @see ConfigurationParameterSettings#setParameterValue(java.lang.String, java.lang.Object)
    */
   @Override
   public void setParameterValue(String aParamName, Object aValue) {
@@ -181,8 +180,8 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   }
 
   /**
-   * @see ConfigurationParameterSettings#setParameterValue(java.lang.String,
-   *      java.lang.String, java.lang.Object)
+   * @see ConfigurationParameterSettings#setParameterValue(java.lang.String, java.lang.String,
+   *      java.lang.Object)
    */
   @Override
   public void setParameterValue(String aGroupName, String aParamName, Object aValue) {
@@ -238,14 +237,12 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
 
   @Override
   public List<MetaDataAttr> getAdditionalAttributes() {
-    return Collections.singletonList(
-        new MetaDataAttr(
-            "settingsForGroups",
-            methodGetSettingsForGroups,
-            null,  // no writer
-            Map.class));
+    return Collections
+            .singletonList(new MetaDataAttr("settingsForGroups", methodGetSettingsForGroups, null, // no
+                                                                                                   // writer
+                    Map.class));
   }
-  
+
   /**
    * Overridden to add the settingsForGroups property to the result list. Default introspection
    * implementation won't return it because it has no set method. We've also overridden the XML
@@ -266,8 +263,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * Overridden becuase of settingsForGroups property, which is a Map and isn't handled by default
    * XMLization routines.
    * 
-   * @see XMLizable#buildFromXMLElement(org.w3c.dom.Element,
-   *      org.apache.uima.util.XMLParser)
+   * @see XMLizable#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser)
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
@@ -300,8 +296,8 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
             mSettingsForGroups.put(key, valArr);
           }
         } else {
-          throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { elem
-                  .getTagName() });
+          throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT,
+                  new Object[] { elem.getTagName() });
         }
       }
     }
@@ -317,7 +313,8 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * @see MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String)
    */
   @Override
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace)
+          throws SAXException {
     if ("settingsForGroups".equals(aPropInfo.propertyName)) {
       this.writeMapPropertyToXml("settingsForGroups", null, "name", "settingsForGroup", true,
               aNamespace);
@@ -327,8 +324,8 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-          "configurationParameterSettings", new PropertyXmlInfo[] {
-              new PropertyXmlInfo("parameterSettings", null),
+          "configurationParameterSettings",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("parameterSettings", null),
               new PropertyXmlInfo("settingsForGroups", null) // NOTE: custom XMLization
           });
 }

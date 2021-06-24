@@ -39,11 +39,11 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * 
  */
-public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl implements
-        ConfigurationParameterDeclarations {
+public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
+        implements ConfigurationParameterDeclarations {
 
   static final long serialVersionUID = -2248322904617280983L;
-  
+
   static final ConfigurationGroup[] EMPTY_CONFIG_GROUP_ARRAY = new ConfigurationGroup[0];
 
   /** Configuration Parameters that are not in any group */
@@ -344,8 +344,8 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
         } else if ("configurationGroup".equals(elem.getTagName())) {
           groups.add(aParser.buildObject(elem, aOptions));
         } else {
-          throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { elem
-                  .getTagName() });
+          throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT,
+                  new Object[] { elem.getTagName() });
         }
       }
     }
@@ -360,9 +360,10 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   /**
    * Overridden to return defaultGroup and searchStrategy as XML attributes.
    * 
-   * 9/2013: superclasses don't have this method, so can't be overridden.
-   * 9/2013: method never called
-   * @return - 
+   * 9/2013: superclasses don't have this method, so can't be overridden. 9/2013: method never
+   * called
+   * 
+   * @return -
    */
   protected String getXMLAttributeString() {
     StringBuffer buf = new StringBuffer();
@@ -404,9 +405,9 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   protected XmlizationInfo getXmlizationInfo() {
     // NOTE: custom XMLization is used for reading. This information
     // is only used for writing.
-    return new XmlizationInfo("configurationParameters", new PropertyXmlInfo[] {
-        new PropertyXmlInfo("configurationParameters", null),
-        new PropertyXmlInfo("commonParameters", "commonParameters"),
-        new PropertyXmlInfo("configurationGroups", null) });
+    return new XmlizationInfo("configurationParameters",
+            new PropertyXmlInfo[] { new PropertyXmlInfo("configurationParameters", null),
+                new PropertyXmlInfo("commonParameters", "commonParameters"),
+                new PropertyXmlInfo("configurationGroups", null) });
   }
 }

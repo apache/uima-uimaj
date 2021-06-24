@@ -26,7 +26,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 
-
 public class NewlineSegmenter extends CasMultiplier_ImplBase {
   StringTokenizer mStringTok;
   private boolean casAvailable;
@@ -50,7 +49,7 @@ public class NewlineSegmenter extends CasMultiplier_ImplBase {
    */
   @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
-    // Check if have already returned true without an intervening next()  
+    // Check if have already returned true without an intervening next()
     if (casAvailable) {
       throw new RuntimeException("CasMultiplier's hasNext() called twice");
     }

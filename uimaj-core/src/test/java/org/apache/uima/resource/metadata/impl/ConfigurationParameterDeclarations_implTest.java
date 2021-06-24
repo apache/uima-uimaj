@@ -31,10 +31,9 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
-
 public class ConfigurationParameterDeclarations_implTest {
-    @Test
-    public void testBuildFromXmlElement() throws Exception {
+  @Test
+  public void testBuildFromXmlElement() throws Exception {
     // parse XML
     DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();

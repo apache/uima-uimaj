@@ -29,8 +29,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * 
  */
-public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl implements
-        FileLanguageResourceSpecifier {
+public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl
+        implements FileLanguageResourceSpecifier {
 
   static final long serialVersionUID = 4660680936104675527L;
 

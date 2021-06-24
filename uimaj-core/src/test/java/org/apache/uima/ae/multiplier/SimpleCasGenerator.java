@@ -63,15 +63,15 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
   private String text;
 
   long docCount = 0;
-  
+
   public static String lastDocument;
 
   public static ResultSpecification lastResultSpec;
-  
+
   public static synchronized String getLastDocument() {
-    return lastDocument;  
+    return lastDocument;
   }
-  
+
   public static synchronized ResultSpecification getLastResultSpec() {
     return lastResultSpec;
   }
@@ -95,7 +95,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
       File file = null;
       try {
         URL url = this.getClass().getClassLoader().getResource(filename);
-//        System.out.println("************ File::::" + url.getPath());
+        // System.out.println("************ File::::" + url.getPath());
         // open input stream to file
         file = new File((null == url) ? filename : url.getPath());
       } catch (Exception e) {

@@ -17,8 +17,6 @@
  * under the License.
  */
 /**
- * Custom Functional Interfaces used by various UIMA methods
- *   - generators and by
- *   - de/serializers
+ * Custom Functional Interfaces used by various UIMA methods - generators and by - de/serializers
  */
 package org.apache.uima.internal.util.function;

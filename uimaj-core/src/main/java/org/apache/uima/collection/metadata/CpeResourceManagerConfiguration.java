@@ -32,8 +32,8 @@ public interface CpeResourceManagerConfiguration extends MetaDataObject {
   /**
    * Sets a path of the Resource Manager configuration file
    * 
-   * @param aPath -
-   *          file path
+   * @param aPath
+   *          - file path
    */
   void set(String aPath);
 

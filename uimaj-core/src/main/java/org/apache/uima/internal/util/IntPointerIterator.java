@@ -20,8 +20,8 @@
 package org.apache.uima.internal.util;
 
 /**
- * Int iterator moving forwards and backwards, in the UIMA style.
- * Contrast with IntListIterator, which is the Java style.
+ * Int iterator moving forwards and backwards, in the UIMA style. Contrast with IntListIterator,
+ * which is the Java style.
  */
 public interface IntPointerIterator {
 

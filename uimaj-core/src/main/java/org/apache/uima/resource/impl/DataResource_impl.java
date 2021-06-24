@@ -78,34 +78,33 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
 
     // Get Relative Path Resolver
     RelativePathResolver relPathResolver = getRelativePathResolver(aAdditionalParams);
-      
+
     // Get the file URL, resolving relative path as necessary
     IOException ioEx = null;
     try {
-      // Get the file URL from the specifier.  If the user has passed a file path
+      // Get the file URL from the specifier. If the user has passed a file path
       // (e.g. c:\Program Files\...) instead of a URL, be lenient and convert it to
       // a URL
       URL relativeUrl;
       try {
         relativeUrl = new URL(spec.getFileUrl());
-      }
-      catch (MalformedURLException e) {
-        //try to treat the URL as a file name.  
+      } catch (MalformedURLException e) {
+        // try to treat the URL as a file name.
         File file = new File(spec.getFileUrl());
         if (file.isAbsolute()) {
-          //for absolute paths, use File.toURL(), which handles
-          //windows absolute paths correctly
+          // for absolute paths, use File.toURL(), which handles
+          // windows absolute paths correctly
           relativeUrl = file.toURL();
         } else {
-          //for relative paths, we can' use File.toURL() because it always
-          //produces an absolute URL.  Instead we do the following, which
-          //won't work for windows absolute paths (but that's OK, since we
-          //know we're working with a relative path)
+          // for relative paths, we can' use File.toURL() because it always
+          // produces an absolute URL. Instead we do the following, which
+          // won't work for windows absolute paths (but that's OK, since we
+          // know we're working with a relative path)
           relativeUrl = new URL("file", "", spec.getFileUrl());
         }
       }
-      
-      //resolve relative paths
+
+      // resolve relative paths
       mFileUrl = relPathResolver.resolveRelativePath(relativeUrl);
 
       // Store local cache info, even though it is not used
@@ -120,10 +119,10 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
     }
     if (mFileUrl == null) {
       throw new ResourceInitializationException(
-              ResourceInitializationException.COULD_NOT_ACCESS_DATA, new Object[] { spec
-                      .getFileUrl() }, ioEx);
+              ResourceInitializationException.COULD_NOT_ACCESS_DATA,
+              new Object[] { spec.getFileUrl() }, ioEx);
     }
-    
+
     // call super initialize to set uima context from additional params if available
     // this context is to allow getting access to the Resource Manager.
     // https://issues.apache.org/jira/browse/UIMA-5153
@@ -204,7 +203,8 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
     // add hash codes of member variables
     int hashCode = 0;
     if (mFileUrl != null)
-      hashCode += mFileUrl.toString().hashCode(); //don't use URL.hashCode(), which does DNS resolution
+      hashCode += mFileUrl.toString().hashCode(); // don't use URL.hashCode(), which does DNS
+                                                  // resolution
     if (mLocalCache != null)
       hashCode += mLocalCache.hashCode();
 

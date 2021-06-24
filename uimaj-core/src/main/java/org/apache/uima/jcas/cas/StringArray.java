@@ -34,7 +34,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for StringArray */
-public final class StringArray extends TOP implements Iterable<String>, CommonPrimitiveArray<String>, StringArrayFSImpl {
+public final class StringArray extends TOP
+        implements Iterable<String>, CommonPrimitiveArray<String>, StringArrayFSImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_STRING_ARRAY;
@@ -59,6 +60,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
   }
 
   private final String[] theArray;
+
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
   private StringArray() {
@@ -67,8 +69,11 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
 
   /**
    * Make a new StringArray of given size
-   * @param jcas The JCas
-   * @param length The number of elements in the new array
+   * 
+   * @param jcas
+   *          The JCas
+   * @param length
+   *          The number of elements in the new array
    */
   public StringArray(JCas jcas, int length) {
     super(jcas);
@@ -78,25 +83,28 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
     }
     if (_casView.isId2Fs()) {
       _casView.adjustLastFsV2Size_arrays(length);
-    }    
+    }
   }
 
   /**
-   * used by generator
-   * Make a new StringArray of given size
-   * @param c -
-   * @param t -
-   * @param length the length of the array in bytes
+   * used by generator Make a new StringArray of given size
+   * 
+   * @param c
+   *          -
+   * @param t
+   *          -
+   * @param length
+   *          the length of the array in bytes
    */
   public StringArray(TypeImpl t, CASImpl c, int length) {
-    super(t, c);  
+    super(t, c);
     theArray = new String[length];
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
       _casView.adjustLastFsV2Size_arrays(length);
-    }    
+    }
   }
 
   /**
@@ -151,23 +159,28 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
   public String[] _getTheArray() {
     return theArray;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
   public void copyValuesFrom(CommonArrayFS v) {
     StringArray bv = (StringArray) v;
-    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    System.arraycopy(bv.theArray, 0, theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int,
+   * java.lang.String)
    */
   @Override
   public void setArrayValueFromString(int i, String v) {
-    set(i, v);    
+    set(i, v);
   }
 
   @Override
@@ -175,7 +188,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
     return new Iterator<String>() {
 
       int i = 0;
-      
+
       @Override
       public boolean hasNext() {
         return i < size();
@@ -187,13 +200,15 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
           throw new NoSuchElementException();
         }
         return get(i++);
-      }      
+      }
     };
   }
 
   /**
-   * @param jcas Which CAS to create the array in
-   * @param a the source for the array's initial values
+   * @param jcas
+   *          Which CAS to create the array in
+   * @param a
+   *          the source for the array's initial values
    * @return a newly created and populated array
    */
   public static StringArray create(JCas jcas, String[] a) {
@@ -201,9 +216,10 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
     stringArray.copyFromArray(a, 0, 0, a.length);
     return stringArray;
   }
-  
+
   /**
-   * @param v the compare object
+   * @param v
+   *          the compare object
    * @return true if v is equal to one (or more) of the array elements
    */
   public boolean contains(String v) {

@@ -52,18 +52,19 @@ public class ArrayIndexTest implements TextAnnotator {
 
   private AnalysisEngine ae = null;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     // Start up TAE
-    XMLInputSource input = new XMLInputSource(JUnitExtension
-            .getFile("CASTests/desc/ArrayIndexTest.xml"));
-    AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(input);
+    XMLInputSource input = new XMLInputSource(
+            JUnitExtension.getFile("CASTests/desc/ArrayIndexTest.xml"));
+    AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(input);
     this.ae = UIMAFramework.produceAnalysisEngine(desc);
 
   }
 
-    @Test
-    public void testArrayIndex() {
+  @Test
+  public void testArrayIndex() {
     try {
       CAS cas = this.ae.newCAS();
       FSIndexRepository ir = cas.getIndexRepository();
@@ -73,7 +74,8 @@ public class ArrayIndexTest implements TextAnnotator {
 
       FSIndex<FeatureStructure> arrayIndexAll = ir.getIndex(idxId);
       assertEquals(countIndexMembers(arrayIndexAll), 0);
-      FSIndex<FeatureStructure> arrayIndexFSArray = ir.getIndex(idxId, ts.getType(CAS.TYPE_NAME_FS_ARRAY));
+      FSIndex<FeatureStructure> arrayIndexFSArray = ir.getIndex(idxId,
+              ts.getType(CAS.TYPE_NAME_FS_ARRAY));
       assertEquals(countIndexMembers(arrayIndexFSArray), 0);
       FSIndex<FeatureStructure> arrayIndexAnnotArray = ir.getIndex(idxId, annotArrayType);
       assertNull(arrayIndexAnnotArray);
@@ -91,8 +93,8 @@ public class ArrayIndexTest implements TextAnnotator {
     return count;
   }
 
-    @AfterEach
-    public void tearDown() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     this.ae.destroy();
   }
 
@@ -102,20 +104,20 @@ public class ArrayIndexTest implements TextAnnotator {
   }
 
   @Override
-  public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
-          AnnotatorConfigurationException {
+  public void initialize(AnnotatorContext aContext)
+          throws AnnotatorInitializationException, AnnotatorConfigurationException {
     // do nothing
   }
 
   @Override
-  public void typeSystemInit(TypeSystem aTypeSystem) throws AnnotatorInitializationException,
-          AnnotatorConfigurationException {
+  public void typeSystemInit(TypeSystem aTypeSystem)
+          throws AnnotatorInitializationException, AnnotatorConfigurationException {
     // do nothing
   }
 
   @Override
-  public void reconfigure() throws AnnotatorConfigurationException,
-          AnnotatorInitializationException {
+  public void reconfigure()
+          throws AnnotatorConfigurationException, AnnotatorInitializationException {
     // do nothing
   }
 

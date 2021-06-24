@@ -28,10 +28,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-
 public class RelativePathResolver_implTest {
-    @org.junit.jupiter.api.Test
-    public void testSetDataPath() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testSetDataPath() throws Exception {
     try {
       RelativePathResolver_impl resolver = new RelativePathResolver_impl();
       // specify path by file names
@@ -47,8 +46,8 @@ public class RelativePathResolver_implTest {
     }
   }
 
-    @Test
-    public void testResolveRelativePath() throws Exception {
+  @Test
+  public void testResolveRelativePath() throws Exception {
     try {
       RelativePathResolver_impl resolver = new RelativePathResolver_impl();
       // file should not be found

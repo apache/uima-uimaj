@@ -28,8 +28,8 @@ package org.apache.uima.resource;
  * cause the Resource to re-read its configuration settings.
  * <p>
  * Note that if the Resource attempts to access its configuration settings between the call to
- * <code>setConfigParameterValue</code> and the call to <code>reconfigure</code>, it may
- * retrieve either the old value or the new value. This decision is left to the framework's
+ * <code>setConfigParameterValue</code> and the call to <code>reconfigure</code>, it may retrieve
+ * either the old value or the new value. This decision is left to the framework's
  * {@link ConfigurationManager} implementation.
  * 
  * 
@@ -40,9 +40,9 @@ public interface ConfigurableResource extends Resource {
    * Looks up the value of a configuration parameter. This method will only return the value of a
    * parameter that is not defined in any group.
    * <p>
-   * This method returns <code>null</code> if the parameter is optional and has not been assigned
-   * a value. (For mandatory parameters, an exception is thrown during initialization if no value
-   * has been assigned.) This method also returns <code>null</code> if there is no declared
+   * This method returns <code>null</code> if the parameter is optional and has not been assigned a
+   * value. (For mandatory parameters, an exception is thrown during initialization if no value has
+   * been assigned.) This method also returns <code>null</code> if there is no declared
    * configuration parameter with the specified name.
    * 
    * @param aParamName
@@ -57,20 +57,21 @@ public interface ConfigurableResource extends Resource {
    * Looks up the value of a configuration parameter in a group. If the parameter has no value
    * assigned within the group, fallback strategies will be followed.
    * <p>
-   * This method returns <code>null</code> if the parameter is optional and has not been assigned
-   * a value. (For mandatory parameters, an exception is thrown during initialization if no value
-   * has been assigned.) This method also returns <code>null</code> if there is no declared
+   * This method returns <code>null</code> if the parameter is optional and has not been assigned a
+   * value. (For mandatory parameters, an exception is thrown during initialization if no value has
+   * been assigned.) This method also returns <code>null</code> if there is no declared
    * configuration parameter with the specified name.
    * 
    * @param aGroupName
-   *          the name of a configuration group. If the group name is
-   *          <code>null</code>, this method will return the same value as
-   *   {@link #getConfigParameterValue(String) getParameterValue(String)}.
-   * @param aParamName the name of a parameter in the group
+   *          the name of a configuration group. If the group name is <code>null</code>, this method
+   *          will return the same value as {@link #getConfigParameterValue(String)
+   *          getParameterValue(String)}.
+   * @param aParamName
+   *          the name of a parameter in the group
    * 
-   * @return the value of the parameter in group <code>aGroupName</code> with 
-   *         name <code>aParamName</code>,,<code>null</code> is either the 
-   *         parameter does not exist or it has not been assigned a value.
+   * @return the value of the parameter in group <code>aGroupName</code> with name
+   *         <code>aParamName</code>,,<code>null</code> is either the parameter does not exist or it
+   *         has not been assigned a value.
    */
   Object getConfigParameterValue(String aGroupName, String aParamName);
 
@@ -91,11 +92,13 @@ public interface ConfigurableResource extends Resource {
    * the change will take effect until {@link #reconfigure()} is called.
    * 
    * @param aGroupName
-   *          the name of a configuration group. If this parameter is
-   *          <code>null</code>, this method will have the same effect as
-   *   {@link #setConfigParameterValue(String,Object) setParameterValue(String,Object)}.
-   * @param aParamName the name of a parameter in the group
-   * @param aValue the value to assign to the parameter.
+   *          the name of a configuration group. If this parameter is <code>null</code>, this method
+   *          will have the same effect as {@link #setConfigParameterValue(String,Object)
+   *          setParameterValue(String,Object)}.
+   * @param aParamName
+   *          the name of a parameter in the group
+   * @param aValue
+   *          the value to assign to the parameter.
    */
   void setConfigParameterValue(String aGroupName, String aParamName, Object aValue);
 

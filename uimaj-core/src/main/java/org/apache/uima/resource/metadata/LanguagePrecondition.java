@@ -33,9 +33,8 @@ public interface LanguagePrecondition extends SimplePrecondition {
    * identifiers. For this precondition to be satisfied, the document's language must be subsumed by
    * one of these identifiers (for example, en-GB is subsumed by en).
    * <p>
-   * Note that if the document's language is unknown, the value of the
-   * {@link #setDefault(boolean) default} property determines whether this precondition is
-   * satisfied.
+   * Note that if the document's language is unknown, the value of the {@link #setDefault(boolean)
+   * default} property determines whether this precondition is satisfied.
    * 
    * @return the languages that satisfy this precondition
    */
@@ -46,14 +45,12 @@ public interface LanguagePrecondition extends SimplePrecondition {
    * identifiers. For this precondition to be satisfied, the document's language must be subsumed by
    * one of these identifiers (for example, en-GB is subsumed by en).
    * <p>
-   * Note that if the document's language is unknown, the value of the
-   * {@link #setDefault(boolean) default} property determines whether this precondition is
-   * satisfied.
+   * Note that if the document's language is unknown, the value of the {@link #setDefault(boolean)
+   * default} property determines whether this precondition is satisfied.
    * 
-   * The ISO language identifiers are cannonicalized by lower-casing them and replacing
-   * underscores with hyphens.  Also, if any of the identifiers are x-unspecified, the array
-   * is replaced with an array of just one element: x-unspecified, since all languages are defined
-   * to match that one.
+   * The ISO language identifiers are cannonicalized by lower-casing them and replacing underscores
+   * with hyphens. Also, if any of the identifiers are x-unspecified, the array is replaced with an
+   * array of just one element: x-unspecified, since all languages are defined to match that one.
    * 
    * @param aLanguages
    *          the languages that satisfy this precondition

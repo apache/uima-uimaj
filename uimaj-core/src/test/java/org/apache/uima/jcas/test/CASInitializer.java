@@ -34,8 +34,8 @@ import org.apache.uima.cas.impl.CASImpl;
  */
 public class CASInitializer {
 
-  public static CAS initCas(AnnotatorInitializer init,
-                            Consumer<TypeSystemMgr> moreTypes) throws CASException {
+  public static CAS initCas(AnnotatorInitializer init, Consumer<TypeSystemMgr> moreTypes)
+          throws CASException {
     // Create an initial CASMgr from the factory.
     CASMgr casMgr = CASFactory.createCAS();
     // Create a writable type system.
@@ -61,6 +61,5 @@ public class CASInitializer {
 
     return casMgr.getCAS().getCurrentView();
   }
-  
 
 }

@@ -34,16 +34,18 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
    * Returns true if the local Cas Processor is a java program
    * 
    * @return true if java program, false otherwise
-   * @throws CpeDescriptorException -
+   * @throws CpeDescriptorException
+   *           -
    */
   boolean isJava() throws CpeDescriptorException;
 
   /**
    * Defines if this Cas Processor is a java program
    * 
-   * @param aJava -
-   *          true if java, false otherwise
-   * @throws CpeDescriptorException -
+   * @param aJava
+   *          - true if java, false otherwise
+   * @throws CpeDescriptorException
+   *           -
    */
   void setIsJava(boolean aJava) throws CpeDescriptorException;
 
@@ -51,10 +53,11 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
    * Defines the name of a program to run when launching this Cas Processor. A program can be a java
    * exec, a shell script, or any program that can run in a separate process.
    * 
-   * @param aCasProcessorExecutable -
-   *          name of a program
+   * @param aCasProcessorExecutable
+   *          - name of a program
    * 
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
   void setExecutable(String aCasProcessorExecutable) throws CpeDescriptorException;
 
@@ -62,7 +65,8 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
    * Returns a name of a program to use when launching this CasProcessor
    * 
    * @return the name of the program to execute
-   * @throws CpeDescriptorException tbd
+   * @throws CpeDescriptorException
+   *           tbd
    */
   String getExecutable() throws CpeDescriptorException;
 

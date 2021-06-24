@@ -47,9 +47,8 @@ import org.w3c.dom.Element;
  * <p>
  * An application obtains a reference to the <code>XMLParser</code> by calling the
  * {@link org.apache.uima.UIMAFramework#getXMLParser()} method. The application then uses the
- * <code>XMLParser</code> by passing an <code>InputStream</code> to one of its
- * <code>parse</code> methods - for example
- * {@link #parseAnalysisEngineDescription(XMLInputSource)} for parsing an
+ * <code>XMLParser</code> by passing an <code>InputStream</code> to one of its <code>parse</code>
+ * methods - for example {@link #parseAnalysisEngineDescription(XMLInputSource)} for parsing an
  * {@link AnalysisEngineDescription} from its XML representation.
  * <p>
  * XML schema validation is off by default; it can be turned on by calling the method
@@ -62,8 +61,8 @@ import org.w3c.dom.Element;
  * {@link XMLizable#buildFromXMLElement(Element, XMLParser)}.
  * <p>
  * Note that we are considering replacing this ad-hoc XML data binding interface with the java
- * standard extension JAXB. See <a href="http://java.sun.com/xml/jaxb"> http://java.sun.com/xml/jaxb</a>
- * for details on JAXB.
+ * standard extension JAXB. See <a href="http://java.sun.com/xml/jaxb">
+ * http://java.sun.com/xml/jaxb</a> for details on JAXB.
  * 
  * 
  */
@@ -287,7 +286,8 @@ public interface XMLParser {
    * @deprecated As of v2.0, {@link #parseAnalysisEngineDescription(XMLInputSource)} should be used
    *             instead.
    */
-  @Deprecated TaeDescription parseTaeDescription(XMLInputSource aInput) throws InvalidXMLException;
+  @Deprecated
+  TaeDescription parseTaeDescription(XMLInputSource aInput) throws InvalidXMLException;
 
   /**
    * Parses a TaeDescription from an XML input stream.
@@ -305,7 +305,8 @@ public interface XMLParser {
    * @deprecated As of v2.0, {@link #parseAnalysisEngineDescription(XMLInputSource,ParsingOptions)}
    *             should be used instead.
    */
-  @Deprecated TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
+  @Deprecated
+  TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException;
 
   /**
@@ -335,8 +336,8 @@ public interface XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid CasConsumerDescription
    */
-  CasConsumerDescription parseCasConsumerDescription(XMLInputSource aInput,
-          ParsingOptions aOptions) throws InvalidXMLException;
+  CasConsumerDescription parseCasConsumerDescription(XMLInputSource aInput, ParsingOptions aOptions)
+          throws InvalidXMLException;
 
   /**
    * Parses a CasInitializerDescription from an XML input stream.
@@ -425,8 +426,7 @@ public interface XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid ResultSpecification
    */
-  ResultSpecification parseResultSpecification(XMLInputSource aInput)
-          throws InvalidXMLException;
+  ResultSpecification parseResultSpecification(XMLInputSource aInput) throws InvalidXMLException;
 
   /**
    * Parses a ResultSpecification from an XML input stream.
@@ -471,8 +471,8 @@ public interface XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid TypeSystemDescription
    */
-  TypeSystemDescription parseTypeSystemDescription(XMLInputSource aInput,
-          ParsingOptions aOptions) throws InvalidXMLException;
+  TypeSystemDescription parseTypeSystemDescription(XMLInputSource aInput, ParsingOptions aOptions)
+          throws InvalidXMLException;
 
   /**
    * Parses a TypePriorities declaration from an XML input stream.
@@ -635,8 +635,7 @@ public interface XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid PearSpecifier
    */
-  PearSpecifier parsePearSpecifier(XMLInputSource aInput)
-          throws InvalidXMLException;
+  PearSpecifier parsePearSpecifier(XMLInputSource aInput) throws InvalidXMLException;
 
   /**
    * Parses a PearSpecifier from an XML input stream.
@@ -651,8 +650,8 @@ public interface XMLParser {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid PearSpecifier
    */
-  PearSpecifier parsePearSpecifier(XMLInputSource aInput,
-          ParsingOptions aOptions) throws InvalidXMLException;
+  PearSpecifier parsePearSpecifier(XMLInputSource aInput, ParsingOptions aOptions)
+          throws InvalidXMLException;
 
   /**
    * Parses an IndexBuildSpecification from an XML input stream.
@@ -714,8 +713,7 @@ public interface XMLParser {
    * @throws InvalidXMLException
    *           if the XML element does not specify a valid object
    */
-  XMLizable buildObject(Element aElement, ParsingOptions aOptions)
-          throws InvalidXMLException;
+  XMLizable buildObject(Element aElement, ParsingOptions aOptions) throws InvalidXMLException;
 
   /**
    * Builds an object from its XML DOM representation. This method is not typically called by
@@ -809,14 +807,14 @@ public interface XMLParser {
      * @deprecated XInclude is no longer supported
      */
     @Deprecated
-	  public boolean expandXIncludes;
+    public boolean expandXIncludes;
 
     /**
      * Whether to expand &lt;envVarRef&gt;VARNAME&lt;/envVarRef&gt; elements by substituting the
      * value of the System property VARNAME.
      */
     public boolean expandEnvVarRefs;
-    
+
     /**
      * Whether to preserve comments and ignorable whitespace
      */
@@ -833,7 +831,7 @@ public interface XMLParser {
      * @deprecated XInclude is no longer supported
      */
     @Deprecated
-	  public ParsingOptions(boolean aExpandXIncludes, boolean aExpandEnvVarRefs) {
+    public ParsingOptions(boolean aExpandXIncludes, boolean aExpandEnvVarRefs) {
       expandXIncludes = aExpandXIncludes;
       expandEnvVarRefs = aExpandEnvVarRefs;
     }

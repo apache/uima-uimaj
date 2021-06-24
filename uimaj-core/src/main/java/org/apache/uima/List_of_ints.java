@@ -134,7 +134,8 @@ public interface List_of_ints extends Iterable<Integer> {
 
   List_of_ints subList(int fromIndex, int toIndex);
 
-  @Override OfInt iterator();
+  @Override
+  OfInt iterator();
 
   IntListIterator intListIterator();
 

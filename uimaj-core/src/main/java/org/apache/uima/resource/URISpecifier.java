@@ -20,8 +20,8 @@
 package org.apache.uima.resource;
 
 /**
- * A type of <code>ResourceSpecifier</code> that locates an existing <code>Resource</code>
- * service by its URI.
+ * A type of <code>ResourceSpecifier</code> that locates an existing <code>Resource</code> service
+ * by its URI.
  * 
  * 
  */

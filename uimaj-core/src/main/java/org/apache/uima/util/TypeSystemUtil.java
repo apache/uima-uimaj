@@ -51,8 +51,8 @@ public class TypeSystemUtil {
     List<TypeDescription> typeDescs = new ArrayList<>();
     while (typeIter.hasNext()) {
       Type type = typeIter.next();
-      if (!type.getName().startsWith("uima.cas") && !type.getName().equals("uima.tcas.Annotation") &&
-          !type.isArray()) {
+      if (!type.getName().startsWith("uima.cas") && !type.getName().equals("uima.tcas.Annotation")
+              && !type.isArray()) {
         typeDescs.add(type2TypeDescription(type, aTypeSystem));
       }
     }
@@ -90,7 +90,7 @@ public class TypeSystemUtil {
       typeDesc.setAllowedValues(avObjs);
     } else {
       List<FeatureDescription> featDescs = new ArrayList<>();
-      for (Feature feat : aType.getFeatures()){ 
+      for (Feature feat : aType.getFeatures()) {
         if (!superType.getFeatures().contains(feat)) {
           featDescs.add(feature2FeatureDescription(feat));
         }
@@ -117,16 +117,15 @@ public class TypeSystemUtil {
       featDesc.setMultipleReferencesAllowed(true);
     }
     Type rangeType = aFeature.getRange();
-    //special check for array range types, which are represented in the CAS as
-    //elementType[] but in the descriptor as an FSArray with an <elementType>
+    // special check for array range types, which are represented in the CAS as
+    // elementType[] but in the descriptor as an FSArray with an <elementType>
     if (rangeType.isArray() && !rangeType.getComponentType().isPrimitive()) {
       featDesc.setRangeTypeName(CAS.TYPE_NAME_FS_ARRAY);
       String elementTypeName = rangeType.getComponentType().getName();
       if (!CAS.TYPE_NAME_TOP.equals(elementTypeName)) {
         featDesc.setElementType(elementTypeName);
       }
-    }
-    else {
+    } else {
       featDesc.setRangeTypeName(rangeType.getName());
     }
     return featDesc;
@@ -137,9 +136,9 @@ public class TypeSystemUtil {
    * 
    * @param aType
    *          the type, which must be a subtype of uima.cas.String
-   * @param aTypeSystem the type system to use
-   * @return array of allowed values for <code>aType</code> TODO - this should be a method on
-   *         Type.
+   * @param aTypeSystem
+   *          the type system to use
+   * @return array of allowed values for <code>aType</code> TODO - this should be a method on Type.
    */
   public static String[] getAllowedValuesForType(Type aType, TypeSystem aTypeSystem) {
     LowLevelTypeSystem lts = aTypeSystem.getLowLevelTypeSystem();

@@ -35,59 +35,59 @@ import org.apache.uima.util.XMLInputSource;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-
 public class IntVectorTest {
 
-    @Test
-    public void testSortDedup() throws Exception {
+  @Test
+  public void testSortDedup() throws Exception {
     IntVector iv = new IntVector();
-    iv.add(new int[] {5, 3, 2, 7, 5, 3, 4, 5, 6, 5, 9, 8, 7});
+    iv.add(new int[] { 5, 3, 2, 7, 5, 3, 4, 5, 6, 5, 9, 8, 7 });
     iv.sortDedup();
-    assertTrue(Arrays.equals(iv.toArray(), new int[] {2, 3, 4, 5, 6, 7, 8, 9}));    
+    assertTrue(Arrays.equals(iv.toArray(), new int[] { 2, 3, 4, 5, 6, 7, 8, 9 }));
 
     // check 3 edge cases: no dups, and last 2 items are dups, and 0 length
     iv = new IntVector();
-    iv.add(new int[] {1, 3, 5, 7});
+    iv.add(new int[] { 1, 3, 5, 7 });
     iv.sortDedup();
-    assertTrue(Arrays.equals(iv.toArray(), new int[] {1, 3, 5, 7}));
-    
+    assertTrue(Arrays.equals(iv.toArray(), new int[] { 1, 3, 5, 7 }));
+
     iv = new IntVector();
-    iv.add(new int[] {1,3, 5, 7, 7});
+    iv.add(new int[] { 1, 3, 5, 7, 7 });
     iv.sortDedup();
-    assertTrue(Arrays.equals(iv.toArray(), new int[] {1, 3, 5, 7}));
-    
+    assertTrue(Arrays.equals(iv.toArray(), new int[] { 1, 3, 5, 7 }));
+
     iv = new IntVector();
     iv.sortDedup();
     assertTrue(Arrays.equals(iv.toArray(), new int[] {}));
-    
+
   }
-  
+
   // verify that several CASes in a pool in different views share the same type system
-  
-    @org.junit.jupiter.api.Test
-    public void testPool() throws Exception {
+
+  @org.junit.jupiter.api.Test
+  public void testPool() throws Exception {
     try {
-      
-      AnalysisEngineDescription aed = (AnalysisEngineDescription)UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
-      
+
+      AnalysisEngineDescription aed = (AnalysisEngineDescription) UIMAFramework.getXMLParser()
+              .parse(new XMLInputSource(
+                      JUnitExtension.getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
+
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aed);
 
       // define a caspool of size 2
-      CasManager cm = ((UimaContext_ImplBase)ae.getUimaContext()).getResourceManager().getCasManager();
+      CasManager cm = ((UimaContext_ImplBase) ae.getUimaContext()).getResourceManager()
+              .getCasManager();
       cm.defineCasPool("uniqueString", 2, null);
-      
+
       CAS c1 = cm.getCas("uniqueString");
       CAS c2 = cm.getCas("uniqueString");
       c1.getJCas();
-      
+
       CAS c1v2 = c1.createView("view2");
       CAS c2v2 = c2.createView("view3");
       c2v2.getJCas();
-      
+
       TypeSystem ts = c1.getTypeSystem();
-      
+
       Assert.assertTrue(ts == c2.getTypeSystem());
       Assert.assertTrue(ts == c1v2.getTypeSystem());
       Assert.assertTrue(ts == c2v2.getTypeSystem());
