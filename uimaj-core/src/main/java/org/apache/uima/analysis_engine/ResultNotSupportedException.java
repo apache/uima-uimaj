@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.analysis_engine;
 
 import org.apache.uima.UIMAException;
@@ -28,8 +27,6 @@ import org.apache.uima.cas.CAS;
  * {@link AnalysisEngine#process(CAS,ResultSpecification)} method when it is given a
  * {@link org.apache.uima.analysis_engine.ResultSpecification} that is outside the scope of its
  * {@link org.apache.uima.resource.metadata.Capability} specification.
- * 
- * 
  */
 public class ResultNotSupportedException extends UIMAException {
   private static final long serialVersionUID = -3483648897752163432L;
@@ -44,7 +41,6 @@ public class ResultNotSupportedException extends UIMAException {
    * Creates a new exception with a null message.
    */
   public ResultNotSupportedException() {
-    super();
   }
 
   /**
@@ -65,8 +61,8 @@ public class ResultNotSupportedException extends UIMAException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -84,8 +80,8 @@ public class ResultNotSupportedException extends UIMAException {
    *          located.
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -102,8 +98,8 @@ public class ResultNotSupportedException extends UIMAException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
@@ -118,8 +114,8 @@ public class ResultNotSupportedException extends UIMAException {
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
+   *          placeholders for arguments as defined by the {@link java.text.MessageFormat
+   *          MessageFormat} class.
    * @param aArguments
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.

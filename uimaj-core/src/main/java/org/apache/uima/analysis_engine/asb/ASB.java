@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.analysis_engine.asb;
 
 import java.util.Map;
@@ -36,18 +35,17 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
- * The Analysis Structure Broker (<code>ASB</code>) is the component responsible for the details
- * of communicating with Analysis Engines that may potentially be distributed across different
- * physical machines. The ASB hides all such details from the rest of the AnalysisEngine, which
- * should be able to operate with no knowledge of whether Analysis Engines are co-located or
- * distributed.
+ * The Analysis Structure Broker (<code>ASB</code>) is the component responsible for the details of
+ * communicating with Analysis Engines that may potentially be distributed across different physical
+ * machines. The ASB hides all such details from the rest of the AnalysisEngine, which should be
+ * able to operate with no knowledge of whether Analysis Engines are co-located or distributed.
  */
 public interface ASB extends Resource {
   /**
    * Key for the initialization parameter whose value is the name of the aggregate analysis engine
    * that owns this ASB. This is used for recording ProcessTrace events.
    */
-  public static final String PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME = "PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME";
+  String PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME = "PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME";
 
   /**
    * Called by the Aggregate Analysis Engine to provide this ASB with information it needs to
@@ -61,8 +59,8 @@ public interface ASB extends Resource {
    * This method is where the component AnalysisEngines and the FlowController are instantiated.
    * 
    * @param aComponentSpecifiers
-   *          a Map from String keys to <code>ResourceSpecifier</code> values, which specify how
-   *          to create or locate the component CasObjectProcessors.
+   *          a Map from String keys to <code>ResourceSpecifier</code> values, which specify how to
+   *          create or locate the component CasObjectProcessors.
    * @param aParentContext
    *          the UIMA Context of the parent AnalysisEngine, used to construct the subcontexts for
    *          the components.
@@ -76,7 +74,7 @@ public interface ASB extends Resource {
    *           CasObjectProcessor instance for one of the specifiers in
    *           <code>aComponentSpecifiers</code>.
    */
-  public void setup(Map<String, ResourceSpecifier> aComponentSpecifiers, UimaContextAdmin aParentContext,
+  void setup(Map<String, ResourceSpecifier> aComponentSpecifiers, UimaContextAdmin aParentContext,
           FlowControllerDeclaration aFlowControllerDeclaration,
           AnalysisEngineMetaData aAggregateMetadata) throws ResourceInitializationException;
 
@@ -88,9 +86,11 @@ public interface ASB extends Resource {
    *         {@link AnalysisEngineMetaData} values.
    * 
    * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if {@link #setup(Map, UimaContextAdmin, FlowControllerDeclaration, AnalysisEngineMetaData)} has not been called yet.
+   *           if
+   *           {@link #setup(Map, UimaContextAdmin, FlowControllerDeclaration, AnalysisEngineMetaData)}
+   *           has not been called yet.
    */
-  public Map<String, AnalysisEngineMetaData> getComponentAnalysisEngineMetaData();
+  Map<String, AnalysisEngineMetaData> getComponentAnalysisEngineMetaData();
 
   /**
    * Gets the metadata for all components known to this ASB. This includes the FlowController as
@@ -99,19 +99,21 @@ public interface ASB extends Resource {
    * @return a Map from String keys (the same keys used in the aggregate AE descriptor) to
    *         {@link ProcessingResourceMetaData} values.
    */
-  public Map<String, ProcessingResourceMetaData> getAllComponentMetaData();
+  Map<String, ProcessingResourceMetaData> getAllComponentMetaData();
 
   /**
    * Gets references to the component AnalysisEngines known to this <code>ASB</code>.
    * 
    * @return a Map from String keys (the same keys used in
-   *         {@link  AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()} to
+   *         {@link AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()} to
    *         {@link AnalysisEngine} objects.
    * 
    * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if {@link #setup(Map, UimaContextAdmin, FlowControllerDeclaration, AnalysisEngineMetaData)} has not been called yet.
+   *           if
+   *           {@link #setup(Map, UimaContextAdmin, FlowControllerDeclaration, AnalysisEngineMetaData)}
+   *           has not been called yet.
    */
-  public Map<String, AnalysisEngine> getComponentAnalysisEngines();
+  Map<String, AnalysisEngine> getComponentAnalysisEngines();
 
   /**
    * Invokes the processing of the aggregate on the given input CAS. This returns a CasIterator that
@@ -126,16 +128,16 @@ public interface ASB extends Resource {
    *          the CAS to process
    * 
    * @return an iterator over all output CASes
-   * @throws AnalysisEngineProcessException -
+   * @throws AnalysisEngineProcessException
+   *           -
    */
-  public CasIterator process(CAS aCAS) throws AnalysisEngineProcessException;
-  
-  
+  CasIterator process(CAS aCAS) throws AnalysisEngineProcessException;
+
   /**
-   * Gets the <code>FlowControllerContainer</code> known to this ASB. This includes the FlowController as
-   * well as the component AnalysisEngines.
+   * Gets the <code>FlowControllerContainer</code> known to this ASB. This includes the
+   * FlowController as well as the component AnalysisEngines.
    * 
    * @return an instance of {@link FlowControllerContainer}
    */
-  public FlowControllerContainer getFlowControllerContainer();
+  FlowControllerContainer getFlowControllerContainer();
 }
