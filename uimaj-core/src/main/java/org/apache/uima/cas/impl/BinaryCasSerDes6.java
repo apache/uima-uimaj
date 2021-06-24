@@ -3017,10 +3017,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     }
   }
 
-  /*
-   * ******************************************************************* methods common to
-   * serialization / deserialization etc.
-   ********************************************************************/
+  // *******************************************************************
+  // methods common to serialization / deserialization etc.
+  // *******************************************************************
 
   // @formatter:off
   /*

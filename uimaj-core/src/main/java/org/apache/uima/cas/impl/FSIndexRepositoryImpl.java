@@ -57,24 +57,28 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
+// @formatter:off
 /**
  * There is one instance of this class per CAS View.
  * 
  * Some parts of the data here are shared between all views of a CAS.
  * 
- * Many things refer to specific types, and their associated Java Cover classes. Java impl classes
- * are always used for each type; If there is no JCas cover class defined for a type, then the most
- * specific superclass which has a JCas defined class is used; this is the class TOP or one of its
- * subclasses.
+ * Many things refer to specific types, and their associated Java Cover classes.
+ *    Java impl classes are always used for each type; 
+ *        If there is no JCas cover class defined for a type, then
+ *        the most specific superclass which has a JCas defined class is used;
+ *        this is the class TOP or one of its subclasses.
  * 
  *
- * Generic typing: User facing APIs can make use of the (JCas) Java cover types, for indexes and
- * iterators over them The general generic type used is typically written here as T extends
- * FeatureStructure, where FeatureStructure is the super interface of all JCas types.
+ * Generic typing: 
+ *   User facing APIs can make use of the (JCas) Java cover types, for indexes and iterators over them
+ *   The general generic type used is typically written here as T extends FeatureStructure, where
+ *   FeatureStructure is the super interface of all JCas types.  
  *
  * APIs having no reference to Java cover types (i.e., low level iterators) are not generic, unless
  * they are needed to be to pass along the associated type to other APIs.
  */
+//@formatter:on
 public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelIndexRepository {
 
   // private final static boolean DEBUG = false;
@@ -119,39 +123,47 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // FsIndex_iicps by comparing their
   // index.getComparator()s.
 
+//@formatter:off
   /**
    * The index repository holds instances of defined and built-in indexes.
    * 
    * Indexes implement Java's NavigableSet ( *** do this later ??? may be a bit of work to make work
    * over subtypes )
    * 
-   * There are various kinds of iterators that can be obtained: Iterator - plain Java iterator -
-   * goes forward only FSIterator - an extension that can go in either direction, and can locate a
-   * position via an FS
+   * There are various kinds of iterators that can be obtained:
+   *   Iterator - plain Java iterator - goes forward only
+   *   FSIterator - an extension that can go in either direction, and can locate a position via an FS
    * 
-   * Low-level iterators return internal "ints" representing FS ids; these are only for backwards
-   * compatibility IntPointerIterator - for backwards compatibility - a wrapper around FSIterator,
-   * plus inc() dec() - may be dropped if only internally used LowLevelIterator - for backwards
-   * compatibility - a wrapper around FSIterator, plus ll_get, ll_indexSize, ll_getIndex
+   *   Low-level iterators return internal "ints" representing FS ids; these are only for backwards compatibility   
+   *   IntPointerIterator - for backwards compatibility - a wrapper around FSIterator, plus inc() dec()
+   *     - may be dropped if only internally used
+   *   LowLevelIterator - for backwards compatibility - a wrapper around FSIterator, plus ll_get, ll_indexSize, ll_getIndex
    * 
-   * To obtain normal iterators, use the FSIndex methods iterator iterator(FeatureStructure) - to
-   * initially position to the FS) index.withSnapshotIterators() - to get snapshot versions of the
-   * indexes to iterate over
+   * To obtain normal iterators, use the FSIndex methods 
+   *   iterator
+   *   iterator(FeatureStructure) - to initially position to the FS)
+   *   index.withSnapshotIterators() - to get snapshot versions of the indexes to iterate over   
    * 
-   * To get the low level iterators, get a low-level indexrepository (CAS -> getLowLevelCAS -> get
-   * low-level index repository), and from there get a low-level index get a low-level iterator
+   * To get the low level iterators, 
+   *   get a low-level indexrepository (CAS -> getLowLevelCAS -> get low-level index repository), and from there
+   *     get a low-level index
+   *       get a low-level iterator
    */
 
   /**
    * General FSIterator creation
    * 
-   * There are some alternatives If the index has subtypes, then - the iterator may be
-   * ordered/unordered. - Ordered ones select among the subtypes as needed. - Unordered ones return
-   * all elements from each subtype and then switch to the next subtype. This is for efficiency. -
-   * (currently disabled) flattened indexes may be created and used If the index says to use
-   * snapshots, then each call makes a snapshot of the index, and iterates over that. - these don't
-   * throw ConcurrentModificationExceptions.
+   *   There are some alternatives
+   *     If the index has subtypes, then 
+   *       - the iterator may be ordered/unordered.  
+   *         - Ordered ones select among the subtypes as needed.
+   *         - Unordered ones return all elements from each subtype and then switch to the next subtype.
+   *           This is for efficiency.
+   *       - (currently disabled) flattened indexes may be created and used    
+   *     If the index says to use snapshots, then each call makes a snapshot of the index, and iterates over that.
+   *       - these don't throw ConcurrentModificationExceptions.
    */
+//@formatter:on
 
   /*************************************************************
    * Information about indexes that is shared across all views *
@@ -499,10 +511,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private void init() {
     final TypeSystemImpl ts = this.sii.tsi;
 
-    /*
-     * ********************************************** for each type in the TypeSystem, create a list
-     * of iicp's each one corresponding to a defined index
-     **********************************************/
+    // **********************************************
+    // for each type in the TypeSystem, 
+    //   create a list of iicp's 
+    //     each one corresponding to a defined index
+    // **********************************************
     final int numTypes = ts.getNumberOfTypes() + 1; // Type counting starts at 1.
     // Can't instantiate arrays of generic types, but this is ok for ArrayList.
     for (int i = 1; i < numTypes; i++) {
@@ -513,9 +526,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     mPii = new ProcessedIndexInfo();
   }
 
-  /*
-   * *************** Create indexes
-   ***************/
+  // ***************
+  // Create indexes 
+  // ***************
 
   /**
    * create indexes in a view, by copying the baseCas's index repository's definitions
@@ -610,14 +623,18 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // }
   }
 
+//@formatter:off
   /**
-   * just for testing purposes removes the named index Also removes indexes for all subtypes. - NOTE
-   * this might remove another index definition's index, if it matches Only valid if no add-to-index
-   * operations have happened.
+   * just for testing purposes
+   * removes the named index
+   * Also removes indexes for all subtypes.  
+   *   - NOTE this might remove another index definition's index, if it matches
+   * Only valid if no add-to-index operations have happened.
    * 
    * @param label
    *          the name of the index to remove
    */
+//@formatter:on
   public void removeIndex(String label) {
     FsIndex_iicp<TOP> cp = this.name2indexMap.get(label);
     if (cp == null) {
@@ -698,9 +715,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // iteratedSortedIndexes.clear();
   // }
 
-  /*
-   * ***************************************** Adding indexes to the index repository
-   *******************************************/
+  // *****************************************
+  // Adding indexes to the index repository
+  // *****************************************
 
   private FsIndex_iicp<TOP> addNewIndex(FSIndexComparatorImpl comparator, int indexType) {
     return addNewIndex(comparator, DEFAULT_INDEX_SIZE, indexType);
@@ -937,8 +954,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * During this walk up, if we find a fast reset bitset, stop the walk there.
    * 
    * To make this work, the iicp has a parent pointer, and a position int set at creation time.
-   * 
-   * 
    * 
    * @return an array of BitSets [0] is the flattenedIndexValid bitset, all initialized to false (0)
    *         [1 - n] depth-first order of getDirectlySubsumedTypes, the "reset"
@@ -1234,9 +1249,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // }
   // }
 
-  /*
-   * ***************************************** Adding/removing FS to/from the index
-   *****************************************/
+  // *****************************************
+  //    Adding/removing FS to/from the index
+  // *****************************************
   public void addFS(int fsRef) {
     ll_addFS(fsRef);
   }
@@ -1279,15 +1294,19 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     removeFS(cas.getFsFromId_checked(fsRef));
   }
 
+//@formatter:off
   /*
-   * Only used by test cases Others call getDefaultOrderBuilder
+   * Only used by test cases
+   * Others call getDefaultOrderBuilder
    * 
-   * This method always returns the newly created object which may be different (not identical == )
-   * to the this.defaultOrderBuilder. Not sure if that's important or a small bug... Oct 2014 schor
+   * This method always returns the newly created object which may be different
+   * (not identical == ) to the this.defaultOrderBuilder.  
+   * Not sure if that's important or a small bug... Oct 2014 schor
    * (non-Javadoc)
    * 
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#createTypeSortOrder()
    */
+//@formatter:on
   @Override
   public LinearTypeOrderBuilder createTypeSortOrder() {
     final LinearTypeOrderBuilder orderBuilder = new LinearTypeOrderBuilderImpl(this.sii.tsi);
@@ -1446,13 +1465,16 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     boolean wasRemoved = false;
 
+  //@formatter:off
     /**
-     * some optimization speedup - skip remove if
+     * some optimization speedup 
+     * - skip remove if 
      * 
-     * -- there is no sorted index AND -- there is no bag index and no set index (no index at all)
-     * OR -- this is a bag index but it doesn't have this fs
+     *   -- there is no sorted index AND
+     *     -- there is no bag index and no set index (no index at all) OR
+     *     -- this is a bag index but it doesn't have this fs
      */
-
+  //@formatter:on
     if (i4t.aSortedIndex < 0) {
       int bi = i4t.aBagIndex; // >= 0 if there is a bag index
       if (bi < 0 && !i4t.hasSetIndex) {
@@ -1925,20 +1947,28 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   // Delta Serialization support
+//@formatter:off
   /**
-   * Go through the journal, and use those entries to update added, deleted, and reindexed lists in
-   * such a way as to guarantee: a FS is in only one of these lists, (or in none)
+   * Go through the journal, and use those entries to update
+   *   added, deleted, and reindexed lists
+   * in such a way as to guarantee:
+   *   a FS is in only one of these lists, (or in none)
    * 
-   * For a journal "add-to-indexes" event: fs in "deleted": remove from "deleted", add to
-   * "reindexed" fs in "reindexed": do nothing fs in "added": do nothing fs not in any of these: add
-   * to "added"
+   * For a journal "add-to-indexes" event:
+   *   fs in "deleted":  remove from "deleted", add to "reindexed"
+   *   fs in "reindexed": do nothing
+   *   fs in "added": do nothing
+   *   fs not in any of these: add to "added"
    * 
-   * For a journal "remove-from-indexes" event: fs in "added": remove from "added" (don't add to
-   * "deleted") fs in "reindexed": remove from "reindexed" and add to "deleted") fs in "deleted": do
-   * nothing fs not in any of these: add to "deleted"
+   * For a journal "remove-from-indexes" event:
+   *   fs in "added": remove from "added" (don't add to "deleted")
+   *   fs in "reindexed": remove from "reindexed" and add to "deleted")
+   *   fs in "deleted": do nothing
+   *   fs not in any of these: add to "deleted"
    * 
    * The journal is cleared after processing.
    */
+//@formatter:on
   private void processIndexUpdates() {
 
     final ProcessedIndexInfo pii = mPii;

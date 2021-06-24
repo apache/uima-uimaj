@@ -87,8 +87,8 @@ import org.apache.uima.util.impl.SerializationMeasures;
  * 
  * How to Serialize:  
  * 
- * You can reuse the instance for a different CAS (as long as the type system is the same); this
- * will save setup time.
+ * 1) create an instance of this class, specifying some options that don't change very much
+ * 2) call serialize(CAS) to serialize the cas * 
  * 
  * You can reuse the instance for a different CAS (as long as the type system is the same);
  * this will save setup time.

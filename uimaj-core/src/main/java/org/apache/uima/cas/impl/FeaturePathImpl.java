@@ -516,6 +516,7 @@ class FeaturePathImpl implements FeaturePath {
     return null;
   }
 
+//@formatter:off
   /**
    * evaluates the internal feature path for the given FeatureStructure
    * 
@@ -525,15 +526,18 @@ class FeaturePathImpl implements FeaturePath {
    * @param fs
    *          FeatureStructure to use as the starting point for the feature path
    * 
-   * @return the Feature Structure result, or the Feature Structure to run feature or array
-   *         extraction on, or the Feature Structure to run a built-in function on or null (meaning
-   *         no fs was found that matched the path).
+   * @return
+   *   the Feature Structure result, 
+   *   or the Feature Structure to run feature or array extraction on,
+   *   or the Feature Structure to run a built-in function on
+   *   or null (meaning no fs was found that matched the path).
    * 
    *         For 0 element feature paths, this is the same as the argument.
    * 
    *         For null fs, the returned value is null;
    * 
    */
+//@formatter:on
   private TOP getTargetFs(TOP fs) {
 
     if (null == fs) {
@@ -614,10 +618,14 @@ class FeaturePathImpl implements FeaturePath {
             if (i == (this.featurePathElementNames.size() - 1)) {
               // at the last element, keep targetType == to the range type
             } else {
-              /*
-               * not at the last element, so terminating the feature path prematurely. There are 2
-               * cases: - the PathValid is POSSIBLE - the PathValid is ALWAYS
-               */
+              //@formatter:off
+            /*
+             * not at the last element, so terminating the feature path prematurely.
+             * There are 2 cases:
+             *   - the PathValid is POSSIBLE 
+             *   - the PathValid is ALWAYS 
+             */
+              //@formatter:on
               PathValid pathValid = TypeSystemUtils.isPathValid(this.boundBaseType,
                       this.featurePathElementNames);
               if (pathValid == PathValid.POSSIBLE) {

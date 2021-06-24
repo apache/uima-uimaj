@@ -29,12 +29,19 @@ import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.AutoCloseableNoException;
 
+//@formatter:off
 /**
  * Record information on what was removed, from which view, and (optionally) how many times.
  * 
- * 4 varieties: 1) for a single FS a) without count b) with count 2) for multiple FSs a) without
- * count b) with count
+ * 4 varieties:
+ *   1) for a single FS
+ *      a) without count
+ *      b) with count
+ *   2) for multiple FSs
+ *      a) without count
+ *      b) with count   
  */
+//@formatter:on
 abstract class FSsTobeAddedback implements AutoCloseableNoException {
 
   final static boolean SHOW = false;
@@ -110,17 +117,25 @@ abstract class FSsTobeAddedback implements AutoCloseableNoException {
     }
   }
 
+//@formatter:off
   /**
-   * add back all the FSs that were removed in a protect block -- for "Multiple" subclass
+   * add back all the FSs that were removed in a protect block
+   *   -- for "Multiple" subclass
    */
+//@formatter:on
   void addback() {
     throw new UnsupportedOperationException();
   } // is overridden in one subclass, throws in other
 
+//@formatter:off
   /**
-   * add back the single FS that was removed due to - automatic protection or - delta
-   * deserialization or - updating document annotation -- for "Single" subclass
+   * add back the single FS that was removed due to 
+   *   -  automatic protection or 
+   *   -  delta deserialization or 
+   *   -  updating document annotation
+   *   -- for "Single" subclass
    */
+//@formatter:on
   void addback(TOP fs) {
     throw new UnsupportedOperationException();
   } // is overridden in one subclass, throws in other

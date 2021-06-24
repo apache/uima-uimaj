@@ -52,18 +52,28 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasImpl;
 
+//@formatter:off
 /**
  * Feature structure implementation (for non JCas and JCas)
  * 
- * Each FS has - int data - used for boolean, byte, short, int, long, float, double data -- long and
- * double use 2 int slots - may be null if all slots are in JCas cover objects as fields - ref data
- * - used for references to other Java objects, such as -- strings -- other feature structures --
- * arbitrary Java Objects - may be null if all slots are in JCas cover objects as fields - an id: an
- * incrementing integer, starting at 1, per CAS, of all FSs created for that CAS - a ref to the
- * casView where this FS was created - a ref to the TypeImpl for this class -- can't be static - may
- * be multiple type systems in use
+ * Each FS has 
+ *   - int data 
+ *     - used for boolean, byte, short, int, long, float, double data
+ *       -- long and double use 2 int slots
+ *     - may be null if all slots are in JCas cover objects as fields
+ *   - ref data
+ *     - used for references to other Java objects, such as 
+ *       -- strings
+ *       -- other feature structures
+ *       -- arbitrary Java Objects
+ *     - may be null if all slots are in JCas cover objects as fields
+ *   - an id: an incrementing integer, starting at 1, per CAS, of all FSs created for that CAS
+ *   - a ref to the casView where this FS was created
+ *   - a ref to the TypeImpl for this class
+ *     -- can't be static - may be multiple type systems in use
  * 
  */
+//@formatter:on
 public class FeatureStructureImplC implements FeatureStructureImpl {
 
   // note: these must be enabled to make the test cases work
@@ -83,6 +93,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   // next is for experiment (Not implemented) of allocating multiple int arrays for different fss
 
+//@formatter:off
   // // 3322 2222 2222 1111 1111 1100 0000 0000
   // // 1098 7654 3210 9876 5432 1098 7654 3210
   // //-------------------------------------------
@@ -93,6 +104,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   // private static final int bitMaskRefOffset = 0x7fe00000;
   // private static final int shiftIntOffset = 11;
   // private static final int shiftRefOffset = 21;
+//@formatter:on
 
   private static final int _BIT_IN_SET_SORTED_INDEX = 1;
   private static final int _BIT_PEAR_TRAMPOLINE = 2;
@@ -101,19 +113,25 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   // data storage
   // slots start with _ to prevent name collision with JCas style getters and setters.
 
+//@formatter:off
   /**
-   * Experiment: goal: speed up allocation and maybe improve locality of reference a) have _intData
-   * and _refData point to 1) for array sizes < 256, a common shared array used with an offset 2)
-   * for array sizes > 256, individual arrays as is the previous design case
+   * Experiment:
+   *   goal: speed up allocation and maybe improve locality of reference
+   *         a) have _intData and _refData point to 
+   *             1) for array sizes < 256, a common shared array used with an offset
+   *             2) for array sizes > 256, individual arrays as is the previous design case
    * 
-   * b) have accesses use an offset kept in the flags; allocate in blocks of 1k the larger, the less
-   * java object overhead per the larger, the less "breakage" waste the smaller, the better GC
+   *         b) have accesses use an offset kept in the flags; 
+   *            allocate in blocks of 1k
+   *              the larger, the less java object overhead per
+   *              the larger, the less "breakage" waste
+   *              the smaller, the better GC 
    * offset = 10 bits * 2 (one for int, one for ref)
    * 
-   * results: on 16-way processor (64 hyperthreaded cores), caused 2x slowdown, probably due to
-   * cache contention.
+   *   results: on 16-way processor (64 hyperthreaded cores), caused 2x slowdown, probably due to cache
+   *     contention.         
    */
-
+//@formatter:on
   private final int[] _intData;
   private final Object[] _refData;
   protected final int _id; // a separate slot for access without loading _intData object
@@ -266,9 +284,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     return null;
   }
 
-  /*
-   * *********************** Index Add Remove
-   ***********************/
+  // ***********************
+  //    Index Add Remove
+  // ***********************
 
   /**
    * add the corresponding FeatureStructure to all Cas indexes in the view where this FS was created
@@ -325,9 +343,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     return _casView;
   }
 
-  /*
-   * ******************************* IDs and Type
-   *********************************/
+  // *******************************
+  //    IDs and Type
+  // *******************************
   /**
    * NOTE: Possible name collision
    * 
@@ -365,45 +383,61 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     return _casView;
   }
 
-  /*
-   * ********************************************************* Get and Set features indirectly, via
-   * Feature objects
+//@formatter:off
+  /* *********************************************************
+   * Get and Set features indirectly, via Feature objects
    * 
-   * There are two implementations, depending on whether or not the feature has a JCas
-   * getter/setter. - If yes, then these just delegate to that (via a functional interface stored in
-   * the Feature) -- there are multiple functional interfaces, corresponding to the all the
-   * different (primitive) return values: boolean, byte, short, int, long, float, double, and
-   * "Object" used for String and FeatureStructures - if no, then converge the code to an _intData
-   * or _refData reference
+   * There are two implementations, depending on whether or not
+   * the feature has a JCas getter/setter.
+   *   - If yes, then these just delegate to that (via a 
+   *     functional interface stored in the Feature)
+   *     -- there are multiple functional interfaces, corresponding
+   *        to the all the different (primitive) return values:
+   *        boolean, byte, short, int, long, float, double, and "Object"
+   *          used for String and FeatureStructures
+   *   - if no, then converge the code to an _intData or _refData reference
    ***********************************************************/
+//@formatter:on
 
+//@formatter:off
   /**************************************
-   * S E T T E R S 4 levels of checking: - check feature for validity (fv) -- this is skipped with
-   * feature comes from fs type info (internal calls) - check for setting something which could
-   * corrupt indexes (ci) -- this is skipped when the caller knows --- the FS is not in the index,
-   * perhaps because they just created it -- skipped when the range is not a valid index key - check
-   * for needing to log (journal) setting (jrnl) -- this is skipped when the caller knows --- no
-   * journalling is enabled or --- the FS is a new (above-the-line) FS - check the value is suitable
-   * -- this can be skipped if Java is doing the checking (via the type of the argument) -- done for
-   * string subtypes and Feature References --- skipped if the caller knows the value is OK (e.g.,
-   * it is copying an existing FS)
+   *           S E T T E R S 
+   * 4 levels of checking:  
+   *   - check feature for validity (fv)
+   *     -- this is skipped with feature comes from fs type info (internal calls)
+   *   - check for setting something which could corrupt indexes (ci)
+   *     -- this is skipped when the caller knows 
+   *        --- the FS is not in the index, perhaps because they just created it
+   *     -- skipped when the range is not a valid index key   
+   *   - check for needing to log (journal) setting  (jrnl)
+   *     -- this is skipped when the caller knows 
+   *       --- no journalling is enabled or
+   *       --- the FS is a new (above-the-line) FS
+   *   - check the value is suitable
+   *     -- this can be skipped if Java is doing the checking (via the type of the argument)
+   *     -- done for string subtypes and Feature References
+   *       --- skipped if the caller knows the value is OK (e.g., it is copying an existing FS)
    * 
-   * The jrnl and ic checks require the FeatureImpl. For setters using these checks, there are two
-   * versions: - one with the arg being the FeatureImpl (if it is available at the caller) and - one
-   * with the int offset (common code coverts this to the Feature Impl).
+   *   The jrnl and ic checks require the FeatureImpl. 
+   *     For setters using these checks, there are two versions: 
+   *       - one with the arg being the FeatureImpl (if it is available at the caller) and
+   *       - one with the int offset (common code coverts this to the Feature Impl).
    * 
    * all 4 checks are normally done by the standard API call in the FeatureStructure interface
    * setXyzValue(Feature, value)
    * 
-   * Besides the standard API call, other setter methods have suffixes and prefixes to the setter
-   * name - prefix is "_" to avoid conflicting with existing other names - suffixes are: -- Nfc:
-   * skip feature validity checking, ( ! fv, jrnl, ci ) (int/Feat) -- NcNj: implies Nfc, ( ! fv, !
-   * jrnl, ! ci ) (int/Feat) -- NcWj: implies Nfc, ( ! fv, jrnl, ! ci ) (int) The is for setters
-   * where value checking might be needed (i.e., Java checking isn't sufficient) -- NcNjNv: implies
-   * Nfc, skips all checks
+   * Besides the standard API call, other setter methods have suffixes and prefixes to the setter name
+   *   - prefix is "_" to avoid conflicting with existing other names
+   *   - suffixes are: 
+   *     -- Nfc:    skip feature validity checking, ( ! fv,   jrnl,   ci )  (int/Feat)
+   *     -- NcNj:   implies Nfc,                    ( ! fv, ! jrnl, ! ci )  (int/Feat)
+   *     -- NcWj:   implies Nfc,                    ( ! fv,   jrnl, ! ci )  (int)
+   *          The is for setters where value checking might be needed (i.e., Java checking isn't sufficient)
+   *     -- NcNjNv: implies Nfc, skips all checks
    * 
    * For JCas setters: convert offset to feature
    **************************************/
+//@formatter:on
 
   private void checkFeatRange(Feature feat, String shortRangeName) {
     if (!(feat.getRange().getShortName().equals(shortRangeName))) {
@@ -771,17 +805,17 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     _casView.setWithCheckAndJournal((TOP) this, fi.getCode(), () -> _setRefValueCommon(fi, v));
   }
 
+//@formatter:off
   /********************************************************************************************************
    * G E T T E R S
    * 
-   * (The array getters are part of the Classes for the built-in arrays, here are only the non-array
-   * ones)
+   *  (The array getters are part of the Classes for the built-in arrays, here are only the non-array ones)
    * 
-   * getXyzValue(Feature feat) - this is the standard from V2 plain API - it does validity checking
-   * (normally) that the feature belongs to the type getXyzValueNc(FeatureImpl feat) - skips the
-   * validity checking that the feature belongs to the type.
+   *  getXyzValue(Feature feat) - this is the standard from V2 plain API
+   *                            - it does validity checking (normally) that the feature belongs to the type
+   *  getXyzValueNc(FeatureImpl feat) - skips the validity checking that the feature belongs to the type.                          
    *********************************************************************************************************/
-
+//@formatter:on
   @Override
   public boolean getBooleanValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION)
@@ -951,28 +985,32 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     return this._casView;
   }
 
+//@formatter:off
   /**
-   * See
-   * http://www.javaworld.com/article/2076332/java-se/how-to-avoid-traps-and-correctly-override-methods-from-java-lang-object.html
+   * See http://www.javaworld.com/article/2076332/java-se/how-to-avoid-traps-and-correctly-override-methods-from-java-lang-object.html
    * for suggestions on avoiding bugs in implementing clone
    * 
-   * Because we have final fields for _intData, _refData, and _id, we can't use clone. Instead, we
-   * use the createFS to create the FS of the right type. This will use the generators.
+   * Because we have final fields for _intData, _refData, and _id, we can't use clone.
+   * Instead, we use the createFS to create the FS of the right type.  This will use the generators.
    * 
-   * Strategy for cloning: Goal is to create an independent instance of some subtype of this class,
-   * with all the fields properly copied from this instance. - some fields could be in the _intData
-   * and _refData - some fields could be stored as features
+   * Strategy for cloning:
+   *   Goal is to create an independent instance of some subtype of this class, with 
+   *   all the fields properly copied from this instance.
+   *     - some fields could be in the _intData and _refData
+   *     - some fields could be stored as features
    * 
-   * Subcases to handle: - arrays - these have no features.
+   * Subcases to handle:
+   *   - arrays - these have no features.
    * 
-   * Note: CasCopier doesn't call this because it needs to do a deep copy This is not used by the
-   * framework
+   * Note: CasCopier doesn't call this because it needs to do a deep copy
+   *       This is not used by the framework
    * 
-   * @return a new Feature Structure as a new instance of the same class, with a new _id field, with
-   *         its features set to the values of the features in this Feature Structure
-   * @throws CASRuntimeException
-   *           (different from Object.clone()) if an exception occurs
+   * @return a new Feature Structure as a new instance of the same class, 
+   *         with a new _id field, 
+   *         with its features set to the values of the features in this Feature Structure
+   * @throws CASRuntimeException (different from Object.clone()) if an exception occurs   
    */
+//@formatter:on
   @Override
   public FeatureStructureImplC clone() throws CASRuntimeException {
 
@@ -1479,23 +1517,21 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     }
   }
 
+//@formatter:off
   /**
-   * For printing arrays except FSArrays; called after printing the type:nnn prints the length if
-   * the length = 0 that's all otherwise: uses Misc.addElementsToStringBuilder to output the
-   * elements. This routine does [ + array contents + ], unless the line is too long, in which case
-   * it switches to multi-line
-   * 
-   * @param arrayLen
-   *          the length
-   * @param f
-   *          the feature structure
-   * @param indent
-   *          the current indent
-   * @param incr
-   *          the indent incr
-   * @param buf
-   *          the stringbuilder where the result is added
+   * For printing arrays except FSArrays; called after printing the type:nnn
+   *   prints the length
+   *   if the length = 0 that's all
+   *   otherwise:
+   *   uses Misc.addElementsToStringBuilder to output the elements.  This routine does
+   *       [ + array contents + ], unless the line is too long, in which case it switches to multi-line
+   * @param arrayLen the length
+   * @param f the feature structure
+   * @param indent the current indent
+   * @param incr the indent incr
+   * @param buf the stringbuilder where the result is added
    */
+//@formatter:on
   private void printArrayElements(int arrayLen, IntConsumer f, int indent, int incr,
           StringBuilder buf) {
     Misc.indent(buf, indent);
@@ -1522,9 +1558,12 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     }
   }
 
+//@formatter:off
   /**
-   * For printing FSArrays; called after printing the type:nnn Only called if ! IS_V2_PRETTY_PRINT,
-   * since v2 didn't print the array contents prints the length if the length = 0 that's all
+   * For printing FSArrays; called after printing the type:nnn
+   * Only called if ! IS_V2_PRETTY_PRINT, since v2 didn't print the array contents
+   *   prints the length
+   *   if the length = 0 that's all
    * otherwise:
    * 
    * @param arrayLen
@@ -1538,6 +1577,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    * @param buf
    *          the stringbuilder where the result is added
    */
+//@formatter:on
   private void printFSArrayElements(FSArray fsarray, int indent, int incr, StringBuilder buf,
           boolean useShortNames, PrintReferences printRefs, boolean isShortForm) {
     Misc.indent(buf, indent);
