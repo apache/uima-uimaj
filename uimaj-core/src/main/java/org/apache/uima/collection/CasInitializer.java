@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection;
 
 import java.io.IOException;
@@ -35,7 +34,6 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * @deprecated As of v2.0, CAS Initializers are deprecated. A component that performs an operation
  *             like HTML detagging should instead be implemented as a "multi-Sofa" annotator. See
  *             org.apache.uima.examples.XmlDetagger for an example.
- * 
  */
 @Deprecated
 public interface CasInitializer extends ConfigurableResource {
@@ -47,7 +45,8 @@ public interface CasInitializer extends ConfigurableResource {
    * Type and Features to the actual {@link org.apache.uima.cas.Type} and
    * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
-   * @param aTypeSystem the type system to use
+   * @param aTypeSystem
+   *          the type system to use
    * @throws ResourceInitializationException
    *           if the type system is not compatible with this CAS Initializer
    */

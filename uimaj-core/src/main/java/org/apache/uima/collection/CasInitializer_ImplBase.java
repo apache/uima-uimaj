@@ -39,8 +39,8 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  *             org.apache.uima.examples.XmlDetagger for an example.
  */
 @Deprecated
-public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplBase implements
-        CasInitializer {
+public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplBase
+        implements CasInitializer {
   /**
    * Called by the framework to initialize this CAS Initializer. Subclasses should NOT override this
    * method; instead they should override the zero-argument {@link #initialize()} method and access

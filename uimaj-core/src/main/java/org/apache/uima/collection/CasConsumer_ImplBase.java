@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection;
 
 import java.io.IOException;
@@ -35,18 +34,16 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.ProcessTrace;
 
 /**
- * Base class for CAS Consumers in UIMA SDK v1.x, which developers should extend 
- * with their own CAS Consumer implementation classes.
+ * Base class for CAS Consumers in UIMA SDK v1.x, which developers should extend with their own CAS
+ * Consumer implementation classes.
  * 
- * As of v2.0, there is no difference in capability between CAS Consumers
- * and ordinary Analysis Engines, except for the default setting of the XML
- * parameters for multipleDeploymentAllowed and modifiesCas. We recommend
- * for future work that users implement and use Analysis Engine components
+ * As of v2.0, there is no difference in capability between CAS Consumers and ordinary Analysis
+ * Engines, except for the default setting of the XML parameters for multipleDeploymentAllowed and
+ * modifiesCas. We recommend for future work that users implement and use Analysis Engine components
  * instead of CAS Consumers.
- *  
  */
-public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase implements
-        CasConsumer {
+public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
+        implements CasConsumer {
   /**
    * Called by the framework to initialize this CAS Consumer. Subclasses should NOT override this
    * method; instead they should override the zero-argument {@link #initialize()} method and access
@@ -147,8 +144,8 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    * @see org.apache.uima.collection.base_cpm.CasProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   @Override
-  public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
-          IOException {
+  public void collectionProcessComplete(ProcessTrace arg0)
+          throws ResourceProcessException, IOException {
     // no default behavior
   }
 

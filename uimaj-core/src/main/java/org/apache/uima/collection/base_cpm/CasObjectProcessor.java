@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.base_cpm;
 
 import org.apache.uima.cas.CAS;
@@ -26,8 +25,6 @@ import org.apache.uima.resource.ResourceProcessException;
 
 /**
  * Interface for CAS Processors that want to use the full {@link CAS} implementation.
- * 
- * 
  */
 public interface CasObjectProcessor extends CasProcessor {
   /**
@@ -63,10 +60,10 @@ public interface CasObjectProcessor extends CasProcessor {
    * and Features to the actual {@link org.apache.uima.cas.Type} and
    * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
-   * @param aTypeSystem the type system to use
+   * @param aTypeSystem
+   *          the type system to use
    * @throws ResourceInitializationException
    *           if the type system is not compatible with this Cas Consumer
    */
   void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException;
-
 }

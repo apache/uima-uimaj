@@ -23,8 +23,8 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
- * An <code>CasConsumerDescription</code> contains all of the information needed to instantiate
- * and use an {@link org.apache.uima.collection.CasConsumer}.
+ * An <code>CasConsumerDescription</code> contains all of the information needed to instantiate and
+ * use an {@link org.apache.uima.collection.CasConsumer}.
  */
 public interface CasConsumerDescription extends ResourceCreationSpecifier {
   /**

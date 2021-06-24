@@ -16,17 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection;
 
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
- * An <code>CollectionReaderDescription</code> contains all of the information needed to
- * instantiate and use an {@link CollectionReader}.
- * 
- * 
+ * An <code>CollectionReaderDescription</code> contains all of the information needed to instantiate
+ * and use an {@link CollectionReader}.
  */
 public interface CollectionReaderDescription extends ResourceCreationSpecifier {
   /**
@@ -36,5 +33,4 @@ public interface CollectionReaderDescription extends ResourceCreationSpecifier {
    *         This object can be modified.
    */
   ProcessingResourceMetaData getCollectionReaderMetaData();
-
 }

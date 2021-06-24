@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.base_cpm;
 
 /**
@@ -30,5 +29,4 @@ public class SkipCasException extends Exception {
   public SkipCasException(String msg) {
     super(msg);
   }
-
 }

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection;
 
 import java.io.Serializable;
@@ -27,8 +26,6 @@ import org.apache.uima.util.ProcessTrace;
 /**
  * Contains information about the successful or unsuccessful processing of an entity (an element of
  * a collection) by the {@link CollectionProcessingManager}.
- * 
- * 
  */
 public interface EntityProcessStatus extends Serializable {
   /**
@@ -63,8 +60,8 @@ public interface EntityProcessStatus extends Serializable {
 
   /**
    * Gets the <code>ProcessTrace</code> object for the Entity's processing. The
-   * <code>ProcessTrace</code> object contains a record of each component involved in the
-   * processing and how much time that component took to complete its processing.
+   * <code>ProcessTrace</code> object contains a record of each component involved in the processing
+   * and how much time that component took to complete its processing.
    * 
    * @return the object containing trace and timing information for the Entity's processing.
    */
@@ -76,5 +73,4 @@ public interface EntityProcessStatus extends Serializable {
    * @return true if an entity was skipped, false otherwise
    */
   boolean isEntitySkipped();
-
 }

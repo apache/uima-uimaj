@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -55,8 +54,6 @@ import org.apache.uima.util.Progress;
  * <p>
  * A <code>CollectionProcessingManager</code> instance can be obtained by calling
  * {@link org.apache.uima.UIMAFramework#newCollectionProcessingManager()}.
- * 
- * 
  */
 public interface CollectionProcessingManager {
   /**
@@ -77,8 +74,7 @@ public interface CollectionProcessingManager {
    * @throws ResourceConfigurationException
    *           if this CPM is currently processing
    */
-  void setAnalysisEngine(AnalysisEngine aAnalysisEngine)
-          throws ResourceConfigurationException;
+  void setAnalysisEngine(AnalysisEngine aAnalysisEngine) throws ResourceConfigurationException;
 
   /**
    * Gets the <code>CasConsumers</code>s assigned to this CPM.
@@ -192,8 +188,8 @@ public interface CollectionProcessingManager {
   /**
    * Initiates processing of a collection. This method works in the same way as
    * {@link #process(CollectionReader)}, but it breaks the processing up into batches of a size
-   * determined by the <code>aBatchSize</code> parameter. Each {@link CasConsumer} will be
-   * notified at the end of each batch.
+   * determined by the <code>aBatchSize</code> parameter. Each {@link CasConsumer} will be notified
+   * at the end of each batch.
    * 
    * @param aCollectionReader
    *          the <code>CollectionReader</code> from which to obtain the Entities to be processed
@@ -238,10 +234,10 @@ public interface CollectionProcessingManager {
    * 
    * @param aRetryFailed
    *          if processing was paused because an exception occurred (see
-   *          {@link #setPauseOnException(boolean)}), setting a value of <code>true</code> for
-   *          this parameter will cause the failed entity to be retried. A value of
-   *          <code>false</code> (the default) will cause processing to continue with the next
-   *          entity after the failure.
+   *          {@link #setPauseOnException(boolean)}), setting a value of <code>true</code> for this
+   *          parameter will cause the failed entity to be retried. A value of <code>false</code>
+   *          (the default) will cause processing to continue with the next entity after the
+   *          failure.
    * 
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if processing is not currently paused

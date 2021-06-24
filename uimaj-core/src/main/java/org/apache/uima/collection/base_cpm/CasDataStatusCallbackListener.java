@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.base_cpm;
 
 import org.apache.uima.cas_data.CasData;
@@ -26,8 +25,6 @@ import org.apache.uima.collection.EntityProcessStatus;
  * Interface for a Listener that receives notification from the
  * {@link org.apache.uima.collection.CollectionProcessingManager} as various events occur. The most
  * common event is that the processing of an Entity has completed.
- * 
- * 
  */
 public interface CasDataStatusCallbackListener extends BaseStatusCallbackListener {
   /**

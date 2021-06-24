@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection;
 
 import java.io.IOException;
@@ -42,13 +41,11 @@ import org.apache.uima.util.XMLInputSource;
  * Users of a <code>CollectionReader</code> should always {@link #close() close} it when they are
  * finished using it.
  * <p>
- * <code>CollectionReader</code>s are also {@link ConfigurableResource}s, and can be
- * instantiated from descriptors. See
+ * <code>CollectionReader</code>s are also {@link ConfigurableResource}s, and can be instantiated
+ * from descriptors. See
  * {@link org.apache.uima.util.XMLParser#parseCollectionReaderDescription(XMLInputSource)} and
  * {@link org.apache.uima.UIMAFramework#produceCollectionReader(ResourceSpecifier,Map)} for more
  * information.
- * 
- * 
  */
 public interface CollectionReader extends BaseCollectionReader, ConfigurableResource {
   /**
@@ -70,8 +67,8 @@ public interface CollectionReader extends BaseCollectionReader, ConfigurableReso
 
   /**
    * Gets the next element of the collection. The element will be stored in the provided CAS object.
-   * If this is a consuming <code>CollectionReader</code> (see {@link #isConsuming()}), this
-   * element will also be removed from the collection.
+   * If this is a consuming <code>CollectionReader</code> (see {@link #isConsuming()}), this element
+   * will also be removed from the collection.
    * 
    * @param aCAS
    *          the CAS to populate with the next element of the collection
@@ -94,7 +91,8 @@ public interface CollectionReader extends BaseCollectionReader, ConfigurableReso
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated CasInitializer getCasInitializer();
+  @Deprecated
+  CasInitializer getCasInitializer();
 
   /**
    * Assigns a CAS Initializer for this Collection Reader to use. Note that CollectionReader
@@ -106,6 +104,6 @@ public interface CollectionReader extends BaseCollectionReader, ConfigurableReso
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated void setCasInitializer(CasInitializer aCasInitializer);
-
+  @Deprecated
+  void setCasInitializer(CasInitializer aCasInitializer);
 }

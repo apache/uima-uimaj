@@ -49,15 +49,15 @@ public interface CasDataCollectionReader extends BaseCollectionReader {
   CasData getNext() throws IOException, CollectionException;
 
   /**
-   * Gets multiple <code>CasData</code> objects from this <code>CasDataCollectionReader</code>.
-   * If this is a consuming Collection Reader (see {@link #isConsuming()}), these entities will
-   * also be removed from the collection.
+   * Gets multiple <code>CasData</code> objects from this <code>CasDataCollectionReader</code>. If
+   * this is a consuming Collection Reader (see {@link #isConsuming()}), these entities will also be
+   * removed from the collection.
    * 
    * @param aNumToGet
    *          the number of <code>CasData</code> objects to get
    * 
-   * @return an array containing the <code>CasData</code> objects. The length of this array will
-   *         be at most <code>aNumToGet</code>, although it may be less (if there are not enough
+   * @return an array containing the <code>CasData</code> objects. The length of this array will be
+   *         at most <code>aNumToGet</code>, although it may be less (if there are not enough
    *         elements left in the collection).
    * 
    * @throws org.apache.uima.UIMA_IllegalStateException
@@ -78,7 +78,8 @@ public interface CasDataCollectionReader extends BaseCollectionReader {
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated CasDataInitializer getCasDataInitializer();
+  @Deprecated
+  CasDataInitializer getCasDataInitializer();
 
   /**
    * Assigns a CAS Data Initializer for this Collection Reader to use. Note that* CollectionReader
@@ -90,6 +91,7 @@ public interface CasDataCollectionReader extends BaseCollectionReader {
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  @Deprecated void setCasInitializer(CasDataInitializer aCasDataInitializer);
+  @Deprecated
+  void setCasInitializer(CasDataInitializer aCasDataInitializer);
 
 }

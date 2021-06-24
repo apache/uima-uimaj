@@ -29,8 +29,8 @@ import org.apache.uima.util.Progress;
 /**
  * The Base <code>CollectionReader</code> interface. Collection Readers should not implement this
  * interface directly. Instead they should implement
- * {@link org.apache.uima.collection.CollectionReader} or {@link CasDataCollectionReader}. Most
- * UIMA developers will prefer to use the former.
+ * {@link org.apache.uima.collection.CollectionReader} or {@link CasDataCollectionReader}. Most UIMA
+ * developers will prefer to use the former.
  * <p>
  * A <i>consuming</i> <code>CollectionReader</code> is one that removes each element from the
  * collection as it is read. To find out whether a <code>CollectionReader</code> will consume
@@ -58,8 +58,8 @@ public interface BaseCollectionReader extends Resource {
 
   /**
    * Gets whether this is a <i>consuming</i> <code>CollectionReader</code>. Consuming
-   * <code>CollectionReader</code>s remove each element from the <code>Collection</code> as it
-   * is read.
+   * <code>CollectionReader</code>s remove each element from the <code>Collection</code> as it is
+   * read.
    * 
    * @return true if and only if this is a consuming <code>CollectionReader</code>
    */
@@ -67,8 +67,8 @@ public interface BaseCollectionReader extends Resource {
 
   /**
    * Gets information about the number of entities and/or amount of data that has been read from
-   * this <code>CollectionReader</code>, and the total amount that remains (if that information
-   * is available).
+   * this <code>CollectionReader</code>, and the total amount that remains (if that information is
+   * available).
    * <p>
    * This method returns an array of <code>Progress</code> objects so that results can be reported
    * using different units. For example, the CollectionReader could report progress in terms of the

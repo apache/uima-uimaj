@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.base_cpm;
 
 import java.io.IOException;
@@ -47,8 +46,6 @@ import org.apache.uima.util.ProcessTrace;
  * <p>
  * All CAS processors must publish their metadata via the {@link #getProcessingResourceMetaData()}
  * method.
- * 
- * 
  */
 public interface CasProcessor {
   /**
@@ -86,8 +83,7 @@ public interface CasProcessor {
    * @throws IOException
    *           if an I/O failure occurs
    */
-  void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-          IOException;
+  void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException;
 
   /**
    * Completes the processing of an entire collection.
@@ -100,7 +96,5 @@ public interface CasProcessor {
    * @throws IOException
    *           if an I/O failure occurs
    */
-  void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-          IOException;
-
+  void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException;
 }

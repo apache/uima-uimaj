@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection;
 
 import java.util.Map;
@@ -36,10 +35,10 @@ import org.apache.uima.util.Progress;
  * <p>
  * A CPE consists of a {@link org.apache.uima.collection.CollectionReader}, zero or more
  * {@link org.apache.uima.analysis_engine.AnalysisEngine}s and zero or more
- * {@link org.apache.uima.collection.CasConsumer}s. The Collection Reader is responsible for
- * reading artifacts from a collection and setting up the CAS. The AnalysisEngines analyze each CAS
- * and the results are passed on to the CAS Consumers. CAS Consumers perform analysis over multiple
- * CASes and generally produce collection-level results in some application-specific data structure.
+ * {@link org.apache.uima.collection.CasConsumer}s. The Collection Reader is responsible for reading
+ * artifacts from a collection and setting up the CAS. The AnalysisEngines analyze each CAS and the
+ * results are passed on to the CAS Consumers. CAS Consumers perform analysis over multiple CASes
+ * and generally produce collection-level results in some application-specific data structure.
  * <p>
  * Processing is started by calling the {@link #process()} method. Processing can be controlled via
  * the{@link #pause()}, {@link #resume()}, and {@link #stop()} methods.
@@ -59,8 +58,6 @@ import org.apache.uima.util.Progress;
  * <p>
  * A <code>CollectionProcessingEngine</code> instance can be obtained by calling
  * {@link org.apache.uima.UIMAFramework#produceCollectionProcessingEngine(CpeDescription)}.
- * 
- * 
  */
 public interface CollectionProcessingEngine {
   /**
@@ -178,8 +175,7 @@ public interface CollectionProcessingEngine {
   BaseCollectionReader getCollectionReader();
 
   /**
-   * Gets the <code>CasProcessors</code>s in this CPE, in the order in which they will be
-   * executed.
+   * Gets the <code>CasProcessors</code>s in this CPE, in the order in which they will be executed.
    * 
    * @return an array of <code>CasProcessor</code>s
    */
@@ -190,5 +186,4 @@ public interface CollectionProcessingEngine {
    * 
    */
   void kill();
-
 }

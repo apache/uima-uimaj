@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection;
 
 import java.io.IOException;
@@ -35,12 +34,9 @@ import org.apache.uima.util.Level;
 /**
  * Base class for Collection Readers, which developers should extend with their own Collection
  * Reader implementation classes.
- * 
- * 
  */
-
-public abstract class CollectionReader_ImplBase extends ConfigurableResource_ImplBase implements
-        CollectionReader {
+public abstract class CollectionReader_ImplBase extends ConfigurableResource_ImplBase
+        implements CollectionReader {
   @Deprecated
   private CasInitializer mCasInitializer;
 
@@ -162,8 +158,8 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
 
   /**
    * Notifies this Collection Reader that its configuration parameter settings have been changed. By
-   * default this method just calls {@link #destroy()} followed by {@link #initialize()}.
-   * Collection Readers that have expensive initialization that does not need to be redone whenever
+   * default this method just calls {@link #destroy()} followed by {@link #initialize()}. Collection
+   * Readers that have expensive initialization that does not need to be redone whenever
    * configuration parameters change may wish to override this method to provide a more efficient
    * implementation.
    * 

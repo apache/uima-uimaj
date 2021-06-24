@@ -32,8 +32,8 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * Base class from which to extend when writing CAS Consumers that use the {@link CasData} interface
  * to access the CAS.
  */
-public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_ImplBase implements
-        CasDataConsumer {
+public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_ImplBase
+        implements CasDataConsumer {
   /**
    * Called by the framework to initialize this CAS Consumer. Subclasses should NOT override this
    * method; instead they should override the zero-argument {@link #initialize()} method and access

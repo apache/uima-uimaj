@@ -78,16 +78,16 @@ public interface BaseCPM {
   void setCollectionReader(BaseCollectionReader aCollectionReader);
 
   /**
-   * Gets the <code>CasProcessors</code>s assigned to this CPM, in the order in which they will
-   * be called by the CPM.
+   * Gets the <code>CasProcessors</code>s assigned to this CPM, in the order in which they will be
+   * called by the CPM.
    * 
    * @return an array of <code>CasProcessor</code>s
    */
   CasProcessor[] getCasProcessors();
 
   /**
-   * Adds a <code>CasProcessor</code> to this CPM's list of consumers. The new CasProcessor will
-   * be added to the end of the list of CAS Processors.
+   * Adds a <code>CasProcessor</code> to this CPM's list of consumers. The new CasProcessor will be
+   * added to the end of the list of CAS Processors.
    * 
    * @param aCasProcessor
    *          a <code>CasProcessor</code> to add
@@ -98,8 +98,8 @@ public interface BaseCPM {
   void addCasProcessor(CasProcessor aCasProcessor) throws ResourceConfigurationException;
 
   /**
-   * Adds a <code>CasProcessor</code> to this CPM's list of consumers. The new CasProcessor will
-   * be added at the specified index.
+   * Adds a <code>CasProcessor</code> to this CPM's list of consumers. The new CasProcessor will be
+   * added at the specified index.
    * 
    * @param aCasProcessor
    *          the CasProcessor to add
@@ -228,10 +228,10 @@ public interface BaseCPM {
    * 
    * @param aRetryFailed
    *          if processing was paused because an exception occurred (see
-   *          {@link #setPauseOnException(boolean)}), setting a value of <code>true</code> for
-   *          this parameter will cause the failed entity to be retried. A value of
-   *          <code>false</code> (the default) will cause processing to continue with the next
-   *          entity after the failure.
+   *          {@link #setPauseOnException(boolean)}), setting a value of <code>true</code> for this
+   *          parameter will cause the failed entity to be retried. A value of <code>false</code>
+   *          (the default) will cause processing to continue with the next entity after the
+   *          failure.
    * 
    */
   void resume(boolean aRetryFailed);

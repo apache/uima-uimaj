@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.collection.base_cpm;
 
 import org.apache.uima.collection.CollectionException;
@@ -24,17 +23,15 @@ import org.apache.uima.collection.CollectionException;
 /**
  * Interface facilitating CollectionReader recovery from failures. Any CollectionReader supporting
  * recovery must implement this interface.
- * 
- * 
- * 
  */
 public interface RecoverableCollectionReader {
   /**
    * Start CollectionReader recovery to a given synch point
    * 
-   * @param aSynchPoint -
-   *          contains recovery information
-   * @throws CollectionException passthru
+   * @param aSynchPoint
+   *          - contains recovery information
+   * @throws CollectionException
+   *           passthru
    */
   void moveTo(SynchPoint aSynchPoint) throws CollectionException;
 
