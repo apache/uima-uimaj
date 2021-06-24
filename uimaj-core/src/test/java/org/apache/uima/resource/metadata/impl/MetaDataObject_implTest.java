@@ -37,14 +37,11 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
-import org.apache.uima.test.junit_extension.PrintExceptionsWhenRunFromCommandLineRule;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -53,16 +50,14 @@ import org.xml.sax.SAXException;
  * Tests the MetaDataObject_impl class.
  */
 public class MetaDataObject_implTest {
-  public @Rule TestRule exceptingHandlingRule = new PrintExceptionsWhenRunFromCommandLineRule();
-
   private TestFruitObject unknownFruit;
   private TestFruitObject apple1;
   private TestFruitObject apple2;
   private TestFruitObject orange;
   private TestFruitBagObject fruitBag;
 
-  @Before
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     // create an object that can represent a fruit
     unknownFruit = new TestFruitObject();
   
@@ -117,8 +112,8 @@ public class MetaDataObject_implTest {
   /**
    * Test the getAttributes method
    */
-  @Test
-  public void testGetAttributes() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testGetAttributes() throws Exception {
     assertThat(apple1.getAttributes()).containsAll(TestFruitObject.getMetaDataAttrSet());
     assertThat(orange.getAttributes()).containsAll(TestFruitObject.getMetaDataAttrSet());
     assertThat(fruitBag.getAttributes()).containsAll(TestFruitBagObject.getMetaDataAttrSet());
@@ -127,8 +122,8 @@ public class MetaDataObject_implTest {
   /**
    * Tests the {@link MetaDataObject#equals(Object)} method.
    */
-  @Test
-  public void testEquals() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testEquals() throws Exception {
     assertThat(unknownFruit).isEqualTo(unknownFruit);
     assertThat(apple1).isEqualTo(apple2);
     assertThat(apple2).isEqualTo(apple1);
@@ -160,8 +155,8 @@ public class MetaDataObject_implTest {
   /**
    * Tests the {@link MetaDataObject#toString()} method.
    */
-  @Test
-  public void testToString() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testToString() throws Exception {
     String apple1Str = apple1.toString();
     String apple2Str = apple2.toString();
     String orangeStr = orange.toString();
@@ -176,8 +171,8 @@ public class MetaDataObject_implTest {
    * exercise the {@link MetaDataObject#getAttributeValue(String)} and
    * {@link MetaDataObject#setAttributeValue(String,Object)} methods.
    */
-  @Test
-  public void testXMLization() throws Exception {
+    @Test
+    public void testXMLization() throws Exception {
     // write objects to XML
     String apple1xml = toXmlString(apple1);
     String apple2xml = toXmlString(apple2);
@@ -247,8 +242,8 @@ public class MetaDataObject_implTest {
     Assert.assertEquals("raspberry", raspberry.getName());
   }
 
-  @Test
-  public void testSerialization() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSerialization() throws Exception {
     assertThat(deserialize(serialize(apple1)))
         .isInstanceOf(TestFruitObject.class)
         .isEqualTo(apple1);

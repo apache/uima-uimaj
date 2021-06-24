@@ -53,30 +53,25 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests XCasToCasDataSaxHandler. Also Tests CasDataToXCas.
  * 
  */
-public class XCasToCasDataSaxHandlerTest extends TestCase {
-
-  /**
-   * Constructor for XCasToCasDataSaxHandlerTest.
-   * 
-   * @param arg0
-   */
-  public XCasToCasDataSaxHandlerTest(String arg0) {
-    super(arg0);
-  }
-
-  public void testParse() throws Exception {
+public class XCasToCasDataSaxHandlerTest {
+    @Test
+    public void testParse() throws Exception {
     try {
       CasData casData = new CasDataImpl();
       XCasToCasDataSaxHandler handler = new XCasToCasDataSaxHandler(casData);
@@ -107,7 +102,8 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
     }
   }
 
-  public void testConversions() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testConversions() throws Exception {
     try {
       // complex CAS obtained by deserialization
       File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");

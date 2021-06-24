@@ -43,15 +43,20 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 
-public class CasCopierTest extends TestCase {
+public class CasCopierTest {
   private TypeSystemDescription typeSystem;
 
   private FsIndexDescription[] indexes;
 
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
@@ -61,7 +66,8 @@ public class CasCopierTest extends TestCase {
             .getFsIndexes();
   }
 
-  public void testCopyCas() throws Exception {
+    @Test
+    public void testCopyCas() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension
@@ -120,7 +126,8 @@ public class CasCopierTest extends TestCase {
     assertEquals(ee, null);
   }
   
-  public void testCopyCasWithDifferentTypeSystemObject() throws Exception {
+    @Test
+    public void testCopyCasWithDifferentTypeSystemObject() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension
@@ -187,7 +194,8 @@ public class CasCopierTest extends TestCase {
     CasComparer.assertEquals(srcCasBase, destCasBase);
   }  
 
-  public void testCopyCasView() throws Exception {
+    @Test
+    public void testCopyCasView() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
@@ -253,7 +261,8 @@ public class CasCopierTest extends TestCase {
     
   }
   
-  public void testCopyCasViewsWithWrapper() throws Exception {
+    @Test
+    public void testCopyCasViewsWithWrapper() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
@@ -288,7 +297,8 @@ public class CasCopierTest extends TestCase {
     
   }
 
-  public void testCopyFs() throws Exception {
+    @Test
+    public void testCopyFs() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
@@ -368,7 +378,8 @@ public class CasCopierTest extends TestCase {
 
   }
 
-  public void testAnnotationWithNullSofaRef() throws Exception {
+    @Test
+    public void testAnnotationWithNullSofaRef() throws Exception {
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     CAS srcCasView = srcCas.createView("TestView");
     srcCasView.setDocumentText("This is a test");

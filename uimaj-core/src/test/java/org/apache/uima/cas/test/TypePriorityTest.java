@@ -34,7 +34,10 @@ import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 /**
  * tests of type priorities
@@ -47,7 +50,7 @@ import junit.framework.TestCase;
  * Encoding: Each type name has a root based on a single letter, e.g. a, b, c name of type is its
  * root preceeded by its ancestors to the top
  */
-public class TypePriorityTest extends TestCase {
+public class TypePriorityTest {
 
   public static final Properties casCreateProperties = new Properties();
   static {
@@ -62,22 +65,16 @@ public class TypePriorityTest extends TestCase {
 
   private TypeSystem ts;
 
-  public TypePriorityTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
+    @BeforeEach
+    public void setUp() throws Exception {
     casMgr = initCAS();
     cas = casMgr.getCAS().getCurrentView();
     irm = casMgr.getIndexRepositoryMgr();
     ts = cas.getTypeSystem();
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     casMgr = null;
     cas = null;
     irm = null;
@@ -177,7 +174,8 @@ public class TypePriorityTest extends TestCase {
   /**
    * Test driver.
    */
-  public void testMain() throws Exception {    
+    @Test
+    public void testMain() throws Exception {    
     LinearTypeOrderBuilder order = irm.createTypeSortOrder();
     order = irm.createTypeSortOrder();
     LinearTypeOrder lo;
@@ -190,7 +188,8 @@ public class TypePriorityTest extends TestCase {
     }
   }
 
-  public void testN1() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testN1() throws Exception {
     LinearTypeOrderBuilder order = irm.createTypeSortOrder();
     order = irm.createTypeSortOrder();
     LinearTypeOrder lo;
@@ -214,7 +213,8 @@ public class TypePriorityTest extends TestCase {
     }
   }
 
-  public void testLoop2() throws Exception {
+    @Test
+    public void testLoop2() throws Exception {
     try {
       LinearTypeOrderBuilder obuilder;
       LinearTypeOrder order;
@@ -275,9 +275,4 @@ public class TypePriorityTest extends TestCase {
       assertTrue(false);
     }
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(TypePriorityTest.class);
-  }
-
 }

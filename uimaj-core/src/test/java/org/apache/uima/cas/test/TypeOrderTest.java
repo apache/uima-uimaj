@@ -49,10 +49,14 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.Assert.*;
 
 
-public class TypeOrderTest extends TestCase {
+public class TypeOrderTest {
 
   // Index name constants.
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
@@ -88,15 +92,8 @@ public class TypeOrderTest extends TestCase {
 
   private Type sentenceType;
 
-  public TypeOrderTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
+    @BeforeEach
+    public void setUp() throws Exception {
 //    this.casMgr = initCAS();
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile.exists());
@@ -126,7 +123,8 @@ public class TypeOrderTest extends TestCase {
     assertTrue(this.annotationType != null);
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
 //    this.casMgr = null;
     this.cas = null;
     this.tokenType = null;
@@ -135,7 +133,8 @@ public class TypeOrderTest extends TestCase {
   }
 
   // Initialize the first CAS.
-  public void testInitCAS() {
+    @Test
+    public void testInitCAS() {
     // Create a CASMgr. Ensures existence of AnnotationFS type.
     CASMgr cas1 = CASFactory.createCAS();
     // Create a writable type system.
@@ -188,7 +187,8 @@ public class TypeOrderTest extends TestCase {
   /**
    * Test driver.
    */
-  public void testMain() throws Exception {
+    @Test
+    public void testMain() throws Exception {
 
     File refFile = JUnitExtension.getFile("CASTests/CasTypeOrderTestRef.txt");
     Assert.assertNotNull(refFile);
@@ -231,9 +231,4 @@ public class TypeOrderTest extends TestCase {
     //System.out.println(outputFile.getAbsolutePath());
     Assert.assertTrue("Comparing ref " + refFile.getAbsolutePath() + " and output " + outputFile.getAbsolutePath(), FileCompare.compare(refFile, outputFile));
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(TypeOrderTest.class);
-  }
-
 }

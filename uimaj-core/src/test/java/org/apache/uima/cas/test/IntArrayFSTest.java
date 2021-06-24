@@ -23,22 +23,17 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.IntArrayFS;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
-public class IntArrayFSTest extends TestCase {
+public class IntArrayFSTest {
 
   private CAS cas;
 
-  /**
-   * Constructor for ArrayFSTest.
-   * 
-   * @param arg0
-   */
-  public IntArrayFSTest(String arg0) {
-    super(arg0);
-  }
-
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
     } catch (Exception e) {
@@ -46,15 +41,13 @@ public class IntArrayFSTest extends TestCase {
     }
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     this.cas = null;
   }
 
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(IntArrayFSTest.class);
-  }
-
-  public void testSet() {
+    @Test
+    public void testSet() {
     IntArrayFS array = this.cas.createIntArrayFS(0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
@@ -115,7 +108,8 @@ public class IntArrayFSTest extends TestCase {
     assertTrue(exceptionCaught);
   }
 
-  public void testToArray() {
+    @Test
+    public void testToArray() {
     // From CAS array to Java array.
     IntArrayFS array = this.cas.createIntArrayFS(3);
     int[] fsArray = array.toArray();

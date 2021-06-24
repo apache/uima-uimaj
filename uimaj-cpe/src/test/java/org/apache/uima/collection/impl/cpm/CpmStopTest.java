@@ -19,7 +19,9 @@
 
 package org.apache.uima.collection.impl.cpm;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionProcessingEngine;
@@ -31,18 +33,16 @@ import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-public class CpmStopTest extends TestCase {
+public class CpmStopTest {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
-  /**
-   * @see junit.framework.TestCase#tearDown()
-   */
-  protected void tearDown() throws Exception {
-    super.tearDown();
+    @AfterEach
+    public void tearDown() throws Exception {
     FunctionErrorStore.resetCount();
   }
 
-  public void testCpmStopSingleThread() throws Exception {
+    @Test
+    public void testCpmStopSingleThread() throws Exception {
     int documentCount = 100000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;
 
@@ -68,7 +68,8 @@ public class CpmStopTest extends TestCase {
     }
   }
 
-  public void testCpmStopMultipleThreads() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testCpmStopMultipleThreads() throws Exception {
     int documentCount = 100000; // hopefully enough that we won't finish before we abort
     int threadCount = 5;
 
@@ -94,7 +95,8 @@ public class CpmStopTest extends TestCase {
     }
   }
 
-  public void testCpmStopSlowAnnotator() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testCpmStopSlowAnnotator() throws Exception {
     int documentCount = 1000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;
 
@@ -120,7 +122,8 @@ public class CpmStopTest extends TestCase {
     }
   }
 
-  public void testCpmStopImmediate() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testCpmStopImmediate() throws Exception {
     int documentCount = 100000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;
 

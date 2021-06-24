@@ -30,7 +30,10 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.util.Misc;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 /**
  * Run this as a single test with yourkit, and look at the retained storage for both maps.
@@ -39,7 +42,7 @@ import junit.framework.TestCase;
  *                JCasHashmap              showed ~0.835 MB * 8 
  *
  */
-public class JCasHashMapCompareTest extends TestCase {
+public class JCasHashMapCompareTest {
   
   private static class FakeTopType extends TOP_Type {
     public FakeTopType() {
@@ -56,7 +59,8 @@ public class JCasHashMapCompareTest extends TestCase {
   private ConcurrentMap<Integer, FeatureStructureImpl> concurrentMap;
 
   
-  public void testComp() throws Exception {
+    @Test
+    public void testComp() throws Exception {
     Thread.sleep(0000);  // set non-zero to delay so you can get yourkit tooling hooked up, if using yourkit
     int numberOfThreads =  Misc.numberOfCores; 
     numberOfThreads = Math.min(8, Misc.nextHigherPowerOf2(numberOfThreads));  // avoid too big slowdown on giant machines.

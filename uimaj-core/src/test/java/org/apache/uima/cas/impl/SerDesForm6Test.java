@@ -42,7 +42,6 @@ import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
@@ -66,7 +65,9 @@ import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.impl.SerializationMeasures;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Serializer and Deserializer testing
@@ -282,7 +283,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     return m;
   }
 
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
 //    long startTime = System.nanoTime();
     mSrc = setupTTypeSystem(TwoTypes);
     casSrc = mSrc.cas;
@@ -298,7 +300,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
 
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     remoteCas = null;
     lfs = null;
     mSrc = null;
@@ -330,7 +333,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  public void testDocText() {
+    @org.junit.jupiter.api.Test
+    public void testDocText() {
     try {
       CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
       cas.setDocumentLanguage("latin");
@@ -351,7 +355,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  public void testDocumentText() {
+    @org.junit.jupiter.api.Test
+    public void testDocumentText() {
     // serdesSimple(getTT(EqTwoTypes));
     remoteCas = setupCas(getTT(EqTwoTypes));
     casSrc.reset();
@@ -372,7 +377,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
    * serialize to byte stream, deserialize into new cas, compare
    */
 
-  public void testAllKinds() {
+    @org.junit.jupiter.api.Test
+    public void testAllKinds() {
     if (doPlain) {
       serdesSimple(getTT(EqTwoTypes), "EqTwoTypes");
     } else {
@@ -401,7 +407,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
   
-  public void testAllKindsV2() {
+    @org.junit.jupiter.api.Test
+    public void testAllKindsV2() {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs();
          AutoCloseableNoException b = casSrc.ll_enableV2IdRefs()) { // because casSrc set in setup
       testAllKinds();
@@ -416,7 +423,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
   // T1 fsArray ref -> T2 -> T1 (new) (indexed)
   // T1 ref -> T2 -> T1 (new) (indexed)
 
-  public void testRefThroughFilteredType() {
+    @org.junit.jupiter.api.Test
+    public void testRefThroughFilteredType() {
     reftft(OneType, 0);
     for (int i = 0; i < 10; i++) {
       reftft(TwoTypesSubsetFeatures, i);
@@ -461,7 +469,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
   }
 
   // broken out special instances of random tests
-  public void testDeltaWithStringArrayMod() {
+    @Test
+    public void testDeltaWithStringArrayMod() {
     // casSrc -> remoteCas,remoteCas updated, serialized back to srcCas
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
@@ -489,7 +498,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  public void testDeltaWithDblArrayMod() {
+    @org.junit.jupiter.api.Test
+    public void testDeltaWithDblArrayMod() {
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
       remoteCas = setupCas(m);
@@ -516,7 +526,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  public void testDeltaWithByteArrayMod() {
+    @org.junit.jupiter.api.Test
+    public void testDeltaWithByteArrayMod() {
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
       remoteCas = setupCas(m);
@@ -543,7 +554,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     }
   }
 
-  public void testDeltaWithStrArrayMod() {
+    @org.junit.jupiter.api.Test
+    public void testDeltaWithStrArrayMod() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
@@ -587,7 +599,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
    * 
    * 
    */
-  public void testDelta() {
+    @Test
+    public void testDelta() {
     if (doPlain) {
       serdesDelta(getTT(EqTwoTypes));
     } else {
@@ -623,7 +636,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     verifyDelta(marker, ri); 
   }
 
-  public void testDeltaWithRefsBelow() {
+    @Test
+    public void testDeltaWithRefsBelow() {
     lfs.clear();
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
@@ -643,7 +657,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     verifyDelta(marker, ri);
   }
 
-  public void testDeltaWithMods() {
+    @org.junit.jupiter.api.Test
+    public void testDeltaWithMods() {
     lfs.clear();
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
@@ -671,7 +686,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
    * 
    * 
    */
-  public void testDeltaWithAllMods() {
+    @Test
+    public void testDeltaWithAllMods() {
 
     for (int i = 0; i < 100; i++) {
       checkDeltaWithAllMods();
@@ -705,7 +721,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
 
   }
 
-  public void testDeltaWithIndexMods() {
+    @org.junit.jupiter.api.Test
+    public void testDeltaWithIndexMods() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
@@ -728,7 +745,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     verifyDelta(marker, ri);
   }
 
-  public void testWithOtherSerializer() {
+    @org.junit.jupiter.api.Test
+    public void testWithOtherSerializer() {
     doPlain = true;
     testDeltaWithMods();
     tearDown(); setUp();
@@ -808,7 +826,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
    * for the CAS layout because they're not findable during scanning, and
    * therefore, delta mods won't be correct.
    */
-  public void testWithPrevGenerated() {
+    @org.junit.jupiter.api.Test
+    public void testWithPrevGenerated() {
     isKeep = true; // forces all akof fss to be indexed
     usePrevData = true;
     initReadSavedInts();
@@ -828,7 +847,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     tearDown();
   }
 
-  public void testArrayAux() {
+    @Test
+    public void testArrayAux() {
     ArrayList<FeatureStructure> fsList = new ArrayList<>();
     /**
      * Strings, non-array Long/Double:

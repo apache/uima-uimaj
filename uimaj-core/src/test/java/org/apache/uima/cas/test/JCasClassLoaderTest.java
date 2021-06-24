@@ -69,8 +69,8 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 public class JCasClassLoaderTest {
   
@@ -88,7 +88,7 @@ public class JCasClassLoaderTest {
   public static Class tokenClassAddedToArray;
   public static Class tokenClassFetchedFromArray;
 
-  @Before
+  @BeforeEach
   public void setup()
   {
     casTokenClassViaClassloader = null;
@@ -119,7 +119,7 @@ public class JCasClassLoaderTest {
    * {@link ResourceManager} of the engines to load the JCas wrapper classes. So each of the anlysis
    * engines should use its own version of the JCas wrappers to access the CAS.
    */
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatCASCanBeDefinedWithoutJCasWrappersAndTheyComeInWithAnnotatorsViaClasspath() throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
 
@@ -370,7 +370,7 @@ public class JCasClassLoaderTest {
     }
   }
   
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatFSArraySpliteratorReturnsProperJCasWrapper() throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
 
@@ -415,7 +415,7 @@ public class JCasClassLoaderTest {
     }
   }
 
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatFSArrayToArrayReturnsProperJCasWrapper() throws Exception {
     ClassLoader rootCl = getClass().getClassLoader();
 

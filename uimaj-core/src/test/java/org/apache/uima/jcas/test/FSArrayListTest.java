@@ -27,7 +27,12 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSArrayList;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.Test;
 import x.y.z.EndOfSentence;
 import x.y.z.Token;
 
@@ -35,7 +40,7 @@ import x.y.z.Token;
  * Test FSArrayList
  * 
  */
-public class FSArrayListTest extends TestCase {
+public class FSArrayListTest {
 
 	private CAS cas;
 
@@ -45,16 +50,8 @@ public class FSArrayListTest extends TestCase {
 
 	public EndOfSentence endOfSentenceInstance;
 
-	/**
-   * Constructor for CASTest.
-   * 
-   * @param arg0
-   */
-	public FSArrayListTest(String arg0) {
-		super(arg0);
-	}
-
-	public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
 		this.cas = CASInitializer.initCas(new CASTestSetup(),
 		    null  // FsArrayList type setup in CASTestSetup's initTypeSystem
 //		    (tsm -> {
@@ -67,7 +64,8 @@ public class FSArrayListTest extends TestCase {
 		this.jcas = cas.getJCas();
 	}
 
-	public void testBasic() {
+    @Test
+    public void testBasic() {
 	  FSArrayList<Token> al = new FSArrayList<>(jcas);
 	  Token t1 = new Token(jcas);
     Token t2 = new Token(jcas);

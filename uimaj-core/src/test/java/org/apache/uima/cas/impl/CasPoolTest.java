@@ -44,10 +44,14 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 
-public class CasPoolTest extends TestCase {
+public class CasPoolTest {
 
   private static XMLizable parseNoException() {
     try {
@@ -65,7 +69,8 @@ public class CasPoolTest extends TestCase {
   private AnalysisEngine analysisEngine;
   private CasManager casManager;
   
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     try {
       analysisEngine = UIMAFramework.produceAnalysisEngine(aed);
     } catch (ResourceInitializationException e) {
@@ -74,11 +79,8 @@ public class CasPoolTest extends TestCase {
     casManager = ((UimaContext_ImplBase)analysisEngine.getUimaContext()).getResourceManager().getCasManager();
   }
   
-  public void tearDown() {
-    
-  }
-  
-  public void testCasReleaseNotAllowed() throws Exception {
+    @Test
+    public void testCasReleaseNotAllowed() throws Exception {
     final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);   
     casManager.defineCasPool("id",  2,  p);
@@ -103,7 +105,8 @@ public class CasPoolTest extends TestCase {
         
   }
 
-  public void testMultiThread() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testMultiThread() throws Exception {
     final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);   
     int numberOfThreads = Math.min(50, Misc.numberOfCores * 10);    
@@ -164,7 +167,8 @@ public class CasPoolTest extends TestCase {
   
   // verify that several CASes in a pool in different views share the same type system
   
-  public void testPool() throws Exception {
+    @Test
+    public void testPool() throws Exception {
     try {
            
       casManager.defineCasPool("uniqueString", 2, null);

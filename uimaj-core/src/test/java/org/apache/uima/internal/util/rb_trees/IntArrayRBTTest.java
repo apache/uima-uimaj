@@ -25,9 +25,12 @@ import java.util.Set;
 
 import org.apache.uima.internal.util.IntListIterator;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
-public class IntArrayRBTTest extends TestCase {
+public class IntArrayRBTTest {
   private final static int NIL = 0;
   static final Random rand = new Random();    
   static {  
@@ -82,7 +85,8 @@ public class IntArrayRBTTest extends TestCase {
     checkParents(ia, right);
   }
   
-  public void testStructure() {
+    @Test
+    public void testStructure() {
     
     for (int ol = 0; ol < 100; ol ++) {
       IntArrayRBT ia = new IntArrayRBT(4);
@@ -101,7 +105,8 @@ public class IntArrayRBTTest extends TestCase {
   }
   
   
-  public void testFindInsertionPoint() {
+    @org.junit.jupiter.api.Test
+    public void testFindInsertionPoint() {
     IntArrayRBT ia = new IntArrayRBT();
     Integer[] vs = new Integer[] {2, 2, 5, 1, 6, 7, 3, 4};
     for (Integer i : vs) {
@@ -113,7 +118,8 @@ public class IntArrayRBTTest extends TestCase {
     
   }
   
-  public void testIterator() {
+    @org.junit.jupiter.api.Test
+    public void testIterator() {
     IntArrayRBT ia = new IntArrayRBT();
     
     ia.insertKey(4);
@@ -172,7 +178,8 @@ public class IntArrayRBTTest extends TestCase {
     
 //  }
   
-  public void testLargeInsertsDeletes() {
+    @org.junit.jupiter.api.Test
+    public void testLargeInsertsDeletes() {
     IntArrayRBT ia = new IntArrayRBT();
     System.gc();
     long fm1 = Runtime.getRuntime().freeMemory();

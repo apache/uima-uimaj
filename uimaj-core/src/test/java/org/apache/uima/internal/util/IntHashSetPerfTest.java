@@ -23,9 +23,12 @@ import java.util.Random;
 
 import org.apache.uima.internal.util.rb_trees.IntArrayRBT;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
-public class IntHashSetPerfTest extends TestCase {
+public class IntHashSetPerfTest {
   /**
    * Set to false to run the performance test
    * 
@@ -47,7 +50,8 @@ public class IntHashSetPerfTest extends TestCase {
   int k10ki = 0;
   
   
-  public void testPerf() {
+    @Test
+    public void testPerf() {
     if (SKIP) return;
     m1 = new IntArrayRBT(16);
     m2 = new IntHashSet(16);

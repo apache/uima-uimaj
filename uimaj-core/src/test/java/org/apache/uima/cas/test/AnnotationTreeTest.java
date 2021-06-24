@@ -38,9 +38,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
-public class AnnotationTreeTest extends TestCase {
+public class AnnotationTreeTest {
 
   private static final String casDataDirName = "CASTests";
 
@@ -50,11 +53,8 @@ public class AnnotationTreeTest extends TestCase {
 
   private static final String sampleTsFileName = "sample.ts";
 
-  public AnnotationTreeTest(String desc) {
-    super(desc);
-  }
-
-  public void testTree() throws Exception {
+    @Test
+    public void testTree() throws Exception {
 
     // The two XCASes used in this test contain the same data, but the
     // second one contains all annotations twice. So in that case, every

@@ -30,31 +30,20 @@ import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests the DataResource_impl class.
  * 
  */
-public class ConfigurableDataResource_implTest extends TestCase {
+public class ConfigurableDataResource_implTest {
 
-  /**
-   * Constructor for DataResource_implTest.
-   * 
-   * @param arg0
-   */
-  public ConfigurableDataResource_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  public void testInitialize() throws Exception {
+    @Test
+    public void testInitialize() throws Exception {
     try {
       // create a ConfigurableDataResourceSpecifier
       ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();

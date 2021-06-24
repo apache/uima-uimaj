@@ -50,27 +50,27 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * CAS complete serialization test class
  */
 public class CompleteSerializationTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     System.setProperty("uima.enable_strict_type_source_check", "true");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
     System.getProperties().remove("uima.enable_strict_type_source_check");
   }
 
-  @Test
-  public void testSerialization() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSerialization() throws Exception {
     CASMgr cas = (CASMgr) CASInitializer.initCas(new CASTestSetup(), null);
 
     ((CAS) cas).setDocumentText("Create the sofa for the inital view");
@@ -99,8 +99,8 @@ public class CompleteSerializationTest {
             .isThrownBy(() -> ((LowLevelCAS) newCas).ll_enableV2IdRefs());
   }
 
-  @Test
-  public void testSerializationV2IdRefs() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSerializationV2IdRefs() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
       CAS cas = CASInitializer.initCas(new CASTestSetup(), null);
       JCas jcas = cas.getJCas();

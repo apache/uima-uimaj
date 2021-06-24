@@ -41,10 +41,14 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 
-public class ResultSpecification_implTest extends TestCase {
+public class ResultSpecification_implTest {
 
   private TypeOrFeature[] mTypesAndFeatures;
 
@@ -56,19 +60,8 @@ public class ResultSpecification_implTest extends TestCase {
 
   private TypeOrFeature t1, t2, f1;
   
-  /**
-   * Constructor for ResultSpecification_implTest.
-   * 
-   * @param arg0
-   */
-  public ResultSpecification_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     try {
       // create array of types and features for use in testing
       t1 = new TypeOrFeature_impl();
@@ -126,7 +119,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testAddCapabilities() throws Exception {
+    @Test
+    public void testAddCapabilities() throws Exception {
     try {
       // create ResultSpecification with capabilities
       ResultSpecification_impl resultSpecLanguage = new ResultSpecification_impl();
@@ -153,7 +147,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testAddCapabilitiesWithoutLanguage() throws Exception {
+    @Test
+    public void testAddCapabilitiesWithoutLanguage() throws Exception {
      try {
        
         TypeOrFeature t4 = new TypeOrFeature_impl();
@@ -177,7 +172,8 @@ public class ResultSpecification_implTest extends TestCase {
      }
    }
 
-  public void testSetResultTypesAndFeatures() throws Exception {
+    @Test
+    public void testSetResultTypesAndFeatures() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);
@@ -196,7 +192,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testSetResultTypesAndFeaturesWithLanguage() throws Exception {
+    @Test
+    public void testSetResultTypesAndFeaturesWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures, languages.get(0));
@@ -219,7 +216,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testAddResultTypeOrFeature() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testAddResultTypeOrFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       for (int i = 0; i < mTypesAndFeatures.length; i++) {
@@ -239,7 +237,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testAddResultTypeOrFeatureWithLanguage() throws Exception {
+    @Test
+    public void testAddResultTypeOrFeatureWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       for (int i = 0; i < mTypesAndFeatures.length; i++) {
@@ -272,7 +271,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testAddResultType() throws Exception {
+    @Test
+    public void testAddResultType() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addResultType("FakeType", false);
@@ -294,7 +294,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testAddResultTypeWithLanguage() throws Exception {
+    @Test
+    public void testAddResultTypeWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addResultType("FakeType", false, languages.get(0));
@@ -331,7 +332,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testAddResultFeature() throws Exception {
+    @Test
+    public void testAddResultFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addResultFeature("FakeType:FakeFeature");
@@ -352,7 +354,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testAddResultFeatureWithLanguage() throws Exception {
+    @Test
+    public void testAddResultFeatureWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addResultFeature("FakeType:FakeFeature", new String[] { "ja" });
@@ -374,7 +377,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testContainsType() throws Exception {
+    @Test
+    public void testContainsType() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);
@@ -389,7 +393,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testContainsTypeWithLanguage() throws Exception {
+    @Test
+    public void testContainsTypeWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addCapabilities(capabilities);
@@ -406,7 +411,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testContainsFeature() throws Exception {
+    @Test
+    public void testContainsFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);
@@ -422,7 +428,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testContainsFeatureWithLanguage() throws Exception {
+    @Test
+    public void testContainsFeatureWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addCapabilities(capabilities);
@@ -442,7 +449,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testRemoveTypeOrFeature() throws Exception {
+    @Test
+    public void testRemoveTypeOrFeature() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addCapabilities(capabilities);
@@ -464,7 +472,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testCompile() throws Exception {
+    @Test
+    public void testCompile() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);
@@ -499,7 +508,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testCompileWithCapabilities() throws Exception {
+    @Test
+    public void testCompileWithCapabilities() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.addCapabilities(capabilities);
@@ -541,7 +551,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testXmlization() throws Exception {
+    @Test
+    public void testXmlization() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       Arrays.sort(mTypesAndFeatures);
@@ -566,7 +577,8 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
-  public void testClone() throws Exception {
+    @Test
+    public void testClone() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       rs.setResultTypesAndFeatures(mTypesAndFeatures);

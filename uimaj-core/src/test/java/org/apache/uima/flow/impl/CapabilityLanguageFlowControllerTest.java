@@ -25,11 +25,11 @@ import java.io.StringWriter;
 
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CapabilityLanguageFlowControllerTest {
 
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatGeneratedDefaultFlowDescriptionIsEqualToXmlDescription() throws Exception
   {
     FlowControllerDescription desc1 = CapabilityLanguageFlowController.getDescription();

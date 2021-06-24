@@ -37,9 +37,13 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class StringSubtypeTest extends TestCase {
+import static org.junit.Assert.*;
+
+public class StringSubtypeTest {
 
   private static final String specifier = "./CASTests/desc/StringSubtypeTest.xml";
 
@@ -67,12 +71,8 @@ public class StringSubtypeTest extends TestCase {
 
   }
 
-  public StringSubtypeTest(String arg0) {
-    super(arg0);
-  }
-
-  protected void setUp() throws Exception {
-    super.setUp();
+    @BeforeEach
+    public void setUp() throws Exception {
     File specifierFile = JUnitExtension.getFile(specifier);
     XMLInputSource in = new XMLInputSource(specifierFile);
     ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
@@ -80,13 +80,14 @@ public class StringSubtypeTest extends TestCase {
     this.jcas = this.ae.newJCas();
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
+    @AfterEach
+    public void tearDown() throws Exception {
     this.ae.destroy();
     this.jcas = null;
   }
 
-  public void testJcas() {
+    @org.junit.jupiter.api.Test
+    public void testJcas() {
     StringSubtypeAnnotation annot = new StringSubtypeAnnotation(this.jcas);
     annot.setStringSetFeature(definedValue1);
     annot.setStringSetFeature(definedValue2);
@@ -100,7 +101,8 @@ public class StringSubtypeTest extends TestCase {
     assertTrue(exCaught);
   }
 
-  public void testLowLevelCas() {
+    @org.junit.jupiter.api.Test
+    public void testLowLevelCas() {
     LowLevelCAS cas = this.jcas.getLowLevelCas();
     LowLevelTypeSystem ts = cas.ll_getTypeSystem();
     final int annotType = ts.ll_getCodeForTypeName(annotationTypeName);
@@ -121,7 +123,8 @@ public class StringSubtypeTest extends TestCase {
     assertTrue(exCaught);
   }
 
-  public void testCas() {
+    @Test
+    public void testCas() {
     CAS cas = this.jcas.getCas();
     TypeSystem ts = cas.getTypeSystem();
     Type annotType = ts.getType(annotationTypeName);

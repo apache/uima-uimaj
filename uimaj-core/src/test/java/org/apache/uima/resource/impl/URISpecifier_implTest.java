@@ -30,12 +30,17 @@ import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class URISpecifier_implTest extends TestCase {
+import static org.junit.Assert.*;
+
+public class URISpecifier_implTest {
   URISpecifier_impl uriSpec;
 
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     uriSpec = new URISpecifier_impl();
     uriSpec.setProtocol("Vinci");
     uriSpec.setUri("foo.bar");
@@ -43,7 +48,8 @@ public class URISpecifier_implTest extends TestCase {
         new Parameter_impl("VNS_PORT", "42") });
   }
 
-  public void testXmlization() throws Exception {
+    @Test
+    public void testXmlization() throws Exception {
     try {
       StringWriter sw = new StringWriter();
       uriSpec.toXML(sw);

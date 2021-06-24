@@ -32,7 +32,11 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Check these use cases:
@@ -41,7 +45,7 @@ import junit.framework.TestCase;
  * 
  *
  */
-public class IndexRepositoryMergingTest extends TestCase {
+public class IndexRepositoryMergingTest {
 
   CASImpl cas;
 
@@ -57,7 +61,8 @@ public class IndexRepositoryMergingTest extends TestCase {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     cas = (CASImpl) CASFactory.createCAS();
     
     TypeSystemImpl ts = this.typeSystem = cas.getTypeSystemImpl();
@@ -85,7 +90,7 @@ public class IndexRepositoryMergingTest extends TestCase {
       tob.add(new String[] { "annotSubtype", CAS.TYPE_NAME_ANNOTATION  });  // is !equal AnnotationIndex
       comp.addKey(tob.getOrder(), FSIndexComparator.STANDARD_COMPARE);
     } catch (CASException e) {
-      TestCase.assertTrue(false);
+      assertTrue(false);
     }
     ir.createIndex(comp, "Annot Index");  // should not be the same as the built-in one due to different type order
     ir.createIndex(comp, "Annot Index2");  // should not be the same as the built-in one due to different type order
@@ -95,11 +100,9 @@ public class IndexRepositoryMergingTest extends TestCase {
     ir.commit();
   }
 
-  public void tearDown() {
-  }
-  
 
-  public void testIndexes() {
+    @Test
+    public void testIndexes() {
     FSIndex<Annotation> ix1 = ir.getIndex("Annot Index");
     FSIndex<Annotation> ix2 = ir.getIndex("Annot Index2");
     FSIndex<Annotation> ix3 = ir.getIndex("Annot Index", annotSubtype);

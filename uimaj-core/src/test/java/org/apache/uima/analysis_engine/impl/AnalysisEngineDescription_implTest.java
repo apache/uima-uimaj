@@ -91,26 +91,21 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.test.junit_extension.PrintExceptionsWhenRunFromCommandLineRule;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
 import org.assertj.core.api.InstanceOfAssertFactories;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 /**
  * Test the AnalysisEngineDescription_impl class.
  */
 public class AnalysisEngineDescription_implTest {
-
-  public @Rule TestRule exceptingHandlingRule = new PrintExceptionsWhenRunFromCommandLineRule();
 
   // Text encoding to use for the various byte/character conversions happening in this test case.
   // Public because also used by other test cases.
@@ -123,8 +118,8 @@ public class AnalysisEngineDescription_implTest {
   private AnalysisEngineDescription primitiveDesc;
   private AnalysisEngineDescription aggregateDesc;
 
-  @Before
-  public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     xmlParser = UIMAFramework.getXMLParser();
     xmlParser.enableSchemaValidation(true);
 
@@ -295,8 +290,8 @@ public class AnalysisEngineDescription_implTest {
     md.setFlowConstraints(fixedFlow);
   }
 
-  @After
-  public void tearDown() throws Exception {
+    @AfterEach
+    public void tearDown() throws Exception {
     // Note that the XML parser is a singleton in the framework, so we have to set this back to the
     // default.
     xmlParser.enableSchemaValidation(false);
@@ -304,8 +299,8 @@ public class AnalysisEngineDescription_implTest {
     aggregateDesc = null;
   }
 
-  @Test
-  public void testMulticoreInitialize() throws Exception {
+    @Test
+    public void testMulticoreInitialize() throws Exception {
     ResourceManager resourceManager = newDefaultResourceManager();
     ConfigurationManager configManager = newConfigurationManager();
     Logger logger = UIMAFramework.getLogger(this.getClass());
@@ -413,8 +408,8 @@ public class AnalysisEngineDescription_implTest {
     }
   }
 
-  @Test
-  public void testDefaultingOperationalParameters() throws Exception {
+    @Test
+    public void testDefaultingOperationalParameters() throws Exception {
     XMLInputSource in = new XMLInputSource(JUnitExtension
         .getFile("TextAnalysisEngineImplTest/TestPrimitiveOperationalParmsDefaults.xml"));
     AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(in);
@@ -433,7 +428,7 @@ public class AnalysisEngineDescription_implTest {
     assertThat(newPrimitiveDesc).isEqualTo(primitiveDesc);
   }
 
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatAggregateDescriptionCanBeSerialized() throws Exception {
     byte[] aggregateDescBytes = SerializationUtils.serialize(aggregateDesc);
     AnalysisEngineDescription newAggregateDesc = (AnalysisEngineDescription) SerializationUtils
@@ -441,8 +436,8 @@ public class AnalysisEngineDescription_implTest {
     assertThat(newAggregateDesc).isEqualTo(aggregateDesc);
   }
 
-  @Test
-  public void testDelegateImports() throws Exception {
+    @Test
+    public void testDelegateImports() throws Exception {
     // create aggregate TAE description and add delegate AE import
     Import_impl delegateImport = new Import_impl();
     delegateImport.setLocation(
@@ -477,7 +472,7 @@ public class AnalysisEngineDescription_implTest {
         .allMatch(d -> d instanceof AnalysisEngineDescription);
   }
 
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatCloneDoesNotResolveDelegateImports() throws Exception {
     // create aggregate TAE description and add delegate AE import
     Import_impl delegateImport = new Import_impl();
@@ -546,8 +541,8 @@ public class AnalysisEngineDescription_implTest {
             "mDelegateAnalysisEngineSpecifiersWithImports");
   }
 
-  @Test
-  public void testDoFullValidation() throws Exception {
+    @Test
+    public void testDoFullValidation() throws Exception {
     // try some descriptors that are invalid due to config. param problems
     for (int i = 1; i <= 13; i++) {
       assertDescriptorIsNotValid("TextAnalysisEngineImplTest/InvalidConfigParams" + i + ".xml");
@@ -604,8 +599,8 @@ public class AnalysisEngineDescription_implTest {
     desc.doFullValidation(resMgr);
   }
 
-  @Test
-  public void testValidate() throws Exception {
+    @Test
+    public void testValidate() throws Exception {
     // test aggregate with import by name and configuration parameter overrides
     XMLInputSource in = new XMLInputSource(
         getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
@@ -629,8 +624,8 @@ public class AnalysisEngineDescription_implTest {
         });
   }
 
-  @Test
-  public void testGetAllComponentSpecifiers() throws Exception {
+    @Test
+    public void testGetAllComponentSpecifiers() throws Exception {
     Map<String, ResourceSpecifier> allSpecs = aggregateDesc.getAllComponentSpecifiers(null);
 
     assertThat((FlowControllerDescription) allSpecs.get("TestFlowController")) //
@@ -642,8 +637,8 @@ public class AnalysisEngineDescription_implTest {
         .extracting(desc -> desc.getMetaData().getName()).isEqualTo("Test TAE");
   }
 
-  @Test
-  public void testDocumentAnnotationRedefine() throws Exception {
+    @Test
+    public void testDocumentAnnotationRedefine() throws Exception {
     File file = getFile(
         "org/apache/uima/analysis_engine/impl/documentAnnotationRedefinitionTS.xml");
     TypeSystemDescription tsd = xmlParser.parseTypeSystemDescription(new XMLInputSource(file));
@@ -652,8 +647,8 @@ public class AnalysisEngineDescription_implTest {
         .isInstanceOf(ResourceInitializationException.class);
   }
 
-  @Test
-  public void testNoDelegatesToResolve() throws Exception {
+    @Test
+    public void testNoDelegatesToResolve() throws Exception {
     ResourceSpecifierFactory f = UIMAFramework.getResourceSpecifierFactory();
 
     AnalysisEngineDescription outer = f.createAnalysisEngineDescription();

@@ -25,28 +25,17 @@ import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
-public class ProcessTrace_implTest extends TestCase {
-
-  /**
-   * Constructor for ProcessTrace_implTest.
-   * 
-   * @param arg0
-   */
-  public ProcessTrace_implTest(String arg0) {
-    super(arg0);
-  }
-
+public class ProcessTrace_implTest {
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  public void testStartAndEndEvent() {
+    @org.junit.jupiter.api.Test
+    public void testStartAndEndEvent() {
     ProcessTrace pt = new ProcessTrace_impl();
     // should be nothing on event list
     Assert.assertTrue(pt.getEvents().isEmpty());
@@ -97,7 +86,8 @@ public class ProcessTrace_implTest extends TestCase {
     Assert.assertEquals(3, evt1.getSubEvents().size());
   }
 
-  public void testAddEvent() {
+    @org.junit.jupiter.api.Test
+    public void testAddEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // should be nothing on event list
     Assert.assertTrue(pt.getEvents().isEmpty());
@@ -123,7 +113,8 @@ public class ProcessTrace_implTest extends TestCase {
   /*
    * Test for List getEventsByComponentName(String, boolean)
    */
-  public void testGetEventsByComponentName() {
+    @Test
+    public void testGetEventsByComponentName() {
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
     pt.startEvent("c1", "t1", "testing");
@@ -166,7 +157,8 @@ public class ProcessTrace_implTest extends TestCase {
   /*
    * Test for List getEventsByType(String, boolean)
    */
-  public void testGetEventsByType() {
+    @org.junit.jupiter.api.Test
+    public void testGetEventsByType() {
     ProcessTrace pt = new ProcessTrace_impl();
     // create some events
     pt.startEvent("c1", "t1", "testing");
@@ -199,7 +191,8 @@ public class ProcessTrace_implTest extends TestCase {
   /*
    * Test for ProcessTraceEvent getEvent(String, String)
    */
-  public void testGetEvent() {
+    @org.junit.jupiter.api.Test
+    public void testGetEvent() {
     ProcessTrace_impl pt = new ProcessTrace_impl();
     // create some events
     pt.startEvent("c1", "t1", "testing");
@@ -222,7 +215,8 @@ public class ProcessTrace_implTest extends TestCase {
     Assert.assertNull(evt);
   }
 
-  public void testAggregate() {
+    @org.junit.jupiter.api.Test
+    public void testAggregate() {
     // create two ProcessTrace objects
     ProcessTrace_impl pt1 = new ProcessTrace_impl();
     pt1.addEvent("c1", "t1", "testing", 1000, "success");

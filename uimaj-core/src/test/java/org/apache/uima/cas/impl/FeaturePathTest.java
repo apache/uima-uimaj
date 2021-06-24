@@ -42,14 +42,19 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
-public class FeaturePathTest extends TestCase {
+public class FeaturePathTest {
 
    /*
     * Tests all primitive feature path types.
     */
-   public void testPrimitiveFeaturePathTypes() throws Exception {
+    @Test
+    public void testPrimitiveFeaturePathTypes() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -107,8 +112,8 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(1.12f, featurePath.getFloatValue(cas
-            .getDocumentAnnotation()));
+      Assertions.assertThat(featurePath.getFloatValue(cas
+              .getDocumentAnnotation())).isEqualTo(1.12f);
       assertEquals("1.12", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
       assertEquals(TypeClass.TYPE_CLASS_FLOAT, featurePath.getTypClass(cas
@@ -127,8 +132,8 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(100.5, featurePath.getDoubleValue(cas
-            .getDocumentAnnotation()));
+      Assertions.assertThat(featurePath.getDoubleValue(cas
+              .getDocumentAnnotation())).isEqualTo(100.5);
       assertEquals("100.5", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
       assertEquals(TypeClass.TYPE_CLASS_DOUBLE, featurePath.getTypClass(cas
@@ -223,7 +228,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests advanced feature paths.
     */
-   public void testAdvancedFeaturePaths() throws Exception {
+    @Test
+    public void testAdvancedFeaturePaths() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -337,7 +343,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests the supported built-in functions for the feature path
     */
-   public void testBuiltInFeaturePathFunctions() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testBuiltInFeaturePathFunctions() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -446,7 +453,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests some error conditions for the feature path implementation
     */
-   public void testErrorCases() throws Exception {
+    @Test
+    public void testErrorCases() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -596,7 +604,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests the addFeature() API
     */
-   public void testAddAPI() throws Exception {
+    @Test
+    public void testAddAPI() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -650,7 +659,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests the addFeature() API together with initialize()
     */
-   public void testInitializeWithAddAPI() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testInitializeWithAddAPI() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));
@@ -690,7 +700,8 @@ public class FeaturePathTest extends TestCase {
    /*
     * Tests all array types.
     */
-   public void testArrayTypes() throws Exception {
+    @Test
+    public void testArrayTypes() throws Exception {
 
       XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("featurePathTests/FeaturePathTestTypeSystem.xml"));

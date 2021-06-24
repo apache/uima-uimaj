@@ -25,20 +25,15 @@ import java.net.URL;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 
-public class RelativePathResolver_implTest extends TestCase {
-  /**
-   * Constructor for RelativePathResolver_implTest.
-   * 
-   * @param arg0
-   */
-  public RelativePathResolver_implTest(String arg0) {
-    super(arg0);
-  }
-
-  public void testSetDataPath() throws Exception {
+public class RelativePathResolver_implTest {
+    @org.junit.jupiter.api.Test
+    public void testSetDataPath() throws Exception {
     try {
       RelativePathResolver_impl resolver = new RelativePathResolver_impl();
       // specify path by file names
@@ -54,7 +49,8 @@ public class RelativePathResolver_implTest extends TestCase {
     }
   }
 
-  public void testResolveRelativePath() throws Exception {
+    @Test
+    public void testResolveRelativePath() throws Exception {
     try {
       RelativePathResolver_impl resolver = new RelativePathResolver_impl();
       // file should not be found

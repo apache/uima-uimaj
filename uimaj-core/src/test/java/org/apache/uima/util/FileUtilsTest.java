@@ -21,11 +21,16 @@ package org.apache.uima.util;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 
-public class FileUtilsTest extends TestCase {
-  public void testFindRelativePath() throws Exception {
+public class FileUtilsTest {
+    @Test
+    public void testFindRelativePath() throws Exception {
     File target = new File("/this/is/a/file.txt");
     File base = new File("/this/is/a/test");
     assertEquals("../file.txt", FileUtils.findRelativePath(target, base));
@@ -41,7 +46,8 @@ public class FileUtilsTest extends TestCase {
     }
   }
 
-  public void testReadWriteTempFile() throws IOException {
+    @org.junit.jupiter.api.Test
+    public void testReadWriteTempFile() throws IOException {
     final String tmpDirPath = System.getProperty("java.io.tmpdir");
     assertNotNull("java.io.tmpdir system property not available", tmpDirPath);
     File tmpDir = FileUtils.createTempDir(new File(tmpDirPath), "fileUtilsTest");

@@ -39,10 +39,14 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 
-public class IndexSerializationTest extends TestCase {
+public class IndexSerializationTest {
 
   // Index name constants.
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
@@ -88,15 +92,8 @@ public class IndexSerializationTest extends TestCase {
 
   private Feature endFeature;
 
-  public IndexSerializationTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
+    @BeforeEach
+    public void setUp() throws Exception {
     casMgr = initCAS();
     cas = (CASImpl)casMgr;
 
@@ -114,7 +111,8 @@ public class IndexSerializationTest extends TestCase {
     assertTrue(annotationType != null);
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     casMgr = null;
     cas = null;
     annotationType = null;
@@ -186,7 +184,8 @@ public class IndexSerializationTest extends TestCase {
   /**
    * Test driver.
    */
-  public void testMain() throws Exception {
+    @Test
+    public void testMain() throws Exception {
 
     for (int i = 0; i < 10; i++) {
       cas.getIndexRepository().addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
@@ -253,9 +252,4 @@ public class IndexSerializationTest extends TestCase {
     assertTrue(index.size() == setSize);
 
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(IndexSerializationTest.class);
-  }
-
 }

@@ -19,11 +19,12 @@
 
 package org.apache.uima.util.impl;
 
-import java.lang.reflect.Field;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
-import junit.framework.TestCase;
-
-public class OptimizeStringsTest extends TestCase {
+public class OptimizeStringsTest {
 
   // modern Javas do this in various ways, can't depend on internal impl
 //private static Field STRING_OFFSET;
@@ -58,7 +59,8 @@ public static int getStringOffset(String s) {
 //    throw new RuntimeException(e);
 //  }
 }   
-  public void testOpStr() {
+    @Test
+    public void testOpStr() {
     OptimizeStrings os = new OptimizeStrings(true, 6);
     os.add("a0");
     os.add("b0");
@@ -95,7 +97,8 @@ public static int getStringOffset(String s) {
     }
   }
   
-  public void testSort() {
+    @Test
+    public void testSort() {
     OptimizeStrings os = new OptimizeStrings(true, 5);
     
     os.add("abc");
@@ -122,7 +125,8 @@ public static int getStringOffset(String s) {
     checkOffset(abcde, 0);   
   }
  
-  public void testSort2() {
+    @org.junit.jupiter.api.Test
+    public void testSort2() {
     OptimizeStrings os = new OptimizeStrings(true, 7);
     
     os.add("abc");
@@ -148,7 +152,8 @@ public static int getStringOffset(String s) {
     checkOffset(abcde, 0);   
   }
   
-  public void testSort3() {
+    @org.junit.jupiter.api.Test
+    public void testSort3() {
     OptimizeStrings os = new OptimizeStrings(true);
     
     os.add("abc");

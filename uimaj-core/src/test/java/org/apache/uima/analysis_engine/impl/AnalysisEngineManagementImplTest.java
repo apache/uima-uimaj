@@ -26,11 +26,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class AnalysisEngineManagementImplTest extends TestCase {
+import static org.junit.Assert.*;
 
-  public void testNameGenerate() throws Exception {
+public class AnalysisEngineManagementImplTest {
+
+    @Test
+    public void testNameGenerate() throws Exception {
     assertEquals("foo", AnalysisEngineManagementImpl.getRootName("foo"));
     assertEquals("foo2", AnalysisEngineManagementImpl.getRootName("foo"));
     assertEquals("foo3", AnalysisEngineManagementImpl.getRootName("foo"));

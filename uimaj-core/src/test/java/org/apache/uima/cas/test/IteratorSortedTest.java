@@ -33,8 +33,9 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test many variations of rattling iterators (sorted)
@@ -70,7 +71,7 @@ import junit.framework.TestCase;
  *    
  * 
  */
-public class IteratorSortedTest extends TestCase {
+public class IteratorSortedTest {
   static final int REPETITIONS = // 100_000_000; 1000 secs = 17 min
                                   100_000;  // 1 second + startup time ~ .8 sec
 //                                    1000000;
@@ -97,7 +98,8 @@ public class IteratorSortedTest extends TestCase {
     System.out.println("Iterator Test Sorted, random seed = " + seed); 
   }
     
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     CASImpl casMgr = (CASImpl) CASFactory.createCAS();
     TypeSystemImpl tsi = (TypeSystemImpl) casMgr.getTypeSystemMgr();
     TypeImpl level_1_type = tsi.addType("org.apache.uima.cas.test.Level_1", tsi.annotType);
@@ -121,16 +123,9 @@ public class IteratorSortedTest extends TestCase {
     }
   }
   
-  public void tearDown() {
-    
-  }
-  
  
-  public IteratorSortedTest(String arg) {
-    super(arg);
-  }
-  
-  public void testIterator() {
+    @Test
+    public void testIterator() {
     
     for (int i = 0; i < REPETITIONS; i++) {
       try {
@@ -162,7 +157,7 @@ public class IteratorSortedTest extends TestCase {
           validate();
         }
       }
-      } catch (AssertionFailedError | IllegalArgumentException e) {
+      } catch (Exception e) {
         System.err.format("exception, i = %,d%n", i);
         throw e;
       }

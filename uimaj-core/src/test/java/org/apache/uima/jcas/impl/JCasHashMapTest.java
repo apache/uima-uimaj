@@ -30,9 +30,12 @@ import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.jcas.cas.TOP;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
-public class JCasHashMapTest extends TestCase {
+public class JCasHashMapTest {
   
   static final int SIZE = 20000;  // set > 2 million for cache avoidance timing tests
 
@@ -66,7 +69,8 @@ public class JCasHashMapTest extends TestCase {
   
   private final AtomicBoolean okToProceed = new AtomicBoolean(); 
    
-  public void testBasic() {
+    @Test
+    public void testBasic() {
     JCasHashMap m;
 
     for (int i = 1; i <= 128; i *= 2) {
@@ -87,7 +91,8 @@ public class JCasHashMapTest extends TestCase {
     }
   }
   
-  public void testWithPerf()  {
+    @Test
+    public void testWithPerf()  {
     
     for (int i = 0; i <  5; i++ ) {
       arun(SIZE);
@@ -101,7 +106,8 @@ public class JCasHashMapTest extends TestCase {
 
   }
   
-  public void testMultiThread() throws Exception {
+    @Test
+    public void testMultiThread() throws Exception {
     final Random random = new Random();
     int numberOfThreads = Misc.numberOfCores;    
     System.out.format("test JCasHashMap with up to %d threads%n", numberOfThreads);
@@ -141,7 +147,8 @@ public class JCasHashMapTest extends TestCase {
     }
   }
 
-  public void testMultiThreadCompare() throws Exception {
+    @Test
+    public void testMultiThreadCompare() throws Exception {
     final Random random = new Random();
 //    random.setSeed(1234L);  // debug
     int numberOfThreads = Misc.numberOfCores;    
@@ -214,7 +221,8 @@ public class JCasHashMapTest extends TestCase {
    *     == fs to the first one.   
    * @throws Exception
    */
-  public void testMultiThreadCollide() throws Exception {
+    @Test
+    public void testMultiThreadCollide() throws Exception {
     int numberOfThreads = Misc.numberOfCores;
     if (numberOfThreads < 2) {
       return;
@@ -482,7 +490,8 @@ public class JCasHashMapTest extends TestCase {
     
   }
   
-  public void testGrowth() {
+    @Test
+    public void testGrowth() {
     System.out.println("JCasHashMapTest growth");
     while (true) { // loop for skew retry
       boolean skewOk = true;

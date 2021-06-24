@@ -28,24 +28,20 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
-public class ArrayFSTest extends TestCase {
+import static org.junit.Assert.*;
+
+public class ArrayFSTest {
 
   private CAS cas;
 
   private TypeSystem ts;
 
-  /**
-   * Constructor for ArrayFSTest.
-   * 
-   * @param arg0
-   */
-  public ArrayFSTest(String arg0) {
-    super(arg0);
-  }
-
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
@@ -54,16 +50,14 @@ public class ArrayFSTest extends TestCase {
     }
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     this.cas = null;
     this.ts = null;
   }
 
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(ArrayFSTest.class);
-  }
-
-  public void testSet() {
+    @Test
+    public void testSet() {
     // Check that we can't create arrays of size smaller than 0.
     boolean exceptionCaught = false;
     try {
@@ -134,7 +128,8 @@ public class ArrayFSTest extends TestCase {
     assertTrue(exceptionCaught);
   }
 
-  public void testToArray() {
+    @Test
+    public void testToArray() {
     // From CAS array to Java array.
     FeatureStructure fs1 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
     FeatureStructure fs2 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP));
@@ -168,7 +163,8 @@ public class ArrayFSTest extends TestCase {
     assertTrue(array.get(0) == null);
   }
 
-  public void testCopyToArray() {
+    @Test
+    public void testCopyToArray() {
     FeatureStructure fs1 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
     FeatureStructure fs2 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP));
     FeatureStructure fs3 = this.cas.createFS(this.ts.getType(CASTestSetup.TOKEN_TYPE));
@@ -199,7 +195,8 @@ public class ArrayFSTest extends TestCase {
     }
   }
   
-  public void testArraysOfArrays() {
+    @Test
+    public void testArraysOfArrays() {
     Type annotationType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     AnnotationFS annot = this.cas.createAnnotation(annotationType, 0, 5);
     IntArrayFS intArray = this.cas.createIntArrayFS(3);

@@ -62,14 +62,16 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
-public class CasInitializerDescription_implTest extends TestCase {
+public class CasInitializerDescription_implTest {
   CasInitializerDescription_impl mTestDesc;
 
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     try {
-      super.setUp();
 
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Fake", "<b>Fake</b> Type", "Annotation");
@@ -182,7 +184,8 @@ public class CasInitializerDescription_implTest extends TestCase {
     }
   }
 
-  public void testXMLization() throws Exception {
+    @Test
+    public void testXMLization() throws Exception {
     try {
       // write objects to XML
       StringWriter writer = new StringWriter();
@@ -202,7 +205,8 @@ public class CasInitializerDescription_implTest extends TestCase {
     }
   }
 
-  public void testSerialization() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSerialization() throws Exception {
     try {
       // serialize objects to byte array
 

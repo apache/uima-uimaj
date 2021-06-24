@@ -38,7 +38,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasIOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SerDesForm6ExtraTest {
   private final static String TYPE_NAME_ELEMENT = "Element";

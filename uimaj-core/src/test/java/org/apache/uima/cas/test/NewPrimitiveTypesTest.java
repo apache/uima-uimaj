@@ -68,10 +68,13 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 
-public class NewPrimitiveTypesTest extends TestCase {
+public class NewPrimitiveTypesTest {
 
   private CASMgr casMgr;
 
@@ -111,17 +114,10 @@ public class NewPrimitiveTypesTest extends TestCase {
 
   private Feature doubleArrayFeature;
 
-  public NewPrimitiveTypesTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     try {
 //      long startTime = System.nanoTime();
-      super.setUp();
       casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
       // Create a writable type system.
@@ -225,7 +221,8 @@ public class NewPrimitiveTypesTest extends TestCase {
     doubleArrayFeature = tsa.refreshFeature(doubleArrayFeature);
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     casMgr = null;
     cas = null;
     annotationType = null;
@@ -247,7 +244,8 @@ public class NewPrimitiveTypesTest extends TestCase {
     doubleArrayFeature = null;
   }
   
-  public void testCreateFS() throws Exception {
+    @Test
+    public void testCreateFS() throws Exception {
 
     // create FS
     FeatureStructure fs = createExampleFS(cas);
@@ -255,7 +253,8 @@ public class NewPrimitiveTypesTest extends TestCase {
     validateFSData(cas);
   }
 
-  public void testBlobSerialization() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testBlobSerialization() throws Exception {
 
     // create FS
     createExampleFS(cas);
@@ -275,7 +274,8 @@ public class NewPrimitiveTypesTest extends TestCase {
     validateFSData(cas);
   }
 
-  public void testJavaSerialization() throws Exception {
+    @Test
+    public void testJavaSerialization() throws Exception {
 
     // create FS
     createExampleFS(cas);
@@ -293,7 +293,8 @@ public class NewPrimitiveTypesTest extends TestCase {
     validateFSData(cas);
   }
 
-  public void testXCASSerialization() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testXCASSerialization() throws Exception {
 
     // create FS
     createExampleFS(cas);
@@ -318,7 +319,8 @@ public class NewPrimitiveTypesTest extends TestCase {
 
   }
 
-  public void testXmiSerialization() throws Exception {
+    @Test
+    public void testXmiSerialization() throws Exception {
 
     // create FS
     createExampleFS(cas);
@@ -348,7 +350,8 @@ public class NewPrimitiveTypesTest extends TestCase {
 
   }
 
-  public void testFSPrettyPrint() throws Exception {
+    @Test
+    public void testFSPrettyPrint() throws Exception {
 
     // create FS
     createExampleFS(cas);
@@ -371,7 +374,8 @@ public class NewPrimitiveTypesTest extends TestCase {
     // System.out.println(sb.toString());
   }
 
-  public void testClone() throws Exception {
+    @Test
+    public void testClone() throws Exception {
     createExampleFS(cas);
     // get the example FS
     CAS englishView = cas.getView("EnglishDocument");
@@ -577,7 +581,8 @@ public class NewPrimitiveTypesTest extends TestCase {
     return fs;
   }
 
-  public void testNewPrimitiveTypeKeys() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testNewPrimitiveTypeKeys() throws Exception {
     // Create FS with features set in reverse order
     for (int i=0; i<5; i++) {
       AnnotationFS fs = cas.createAnnotation(exampleType, 0, 0);
@@ -659,9 +664,4 @@ public class NewPrimitiveTypesTest extends TestCase {
   // EcorePackage ecore = EcorePackage.eINSTANCE;
   // EPackage.Registry.INSTANCE.put(ecore.getNsURI(), ecore);
   // }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(NewPrimitiveTypesTest.class);
-  }
-
 }

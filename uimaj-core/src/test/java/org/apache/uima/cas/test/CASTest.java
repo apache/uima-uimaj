@@ -27,28 +27,24 @@ import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.text.AnnotationIndex;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.Assert.*;
 
 /**
  * Class comment for CASTest.java goes here.
  * 
  */
-public class CASTest extends TestCase {
+public class CASTest {
 
   private CAS cas;
 
   private TypeSystem ts;
 
-  /**
-   * Constructor for CASTest.
-   * 
-   * @param arg0
-   */
-  public CASTest(String arg0) {
-    super(arg0);
-  }
-
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
@@ -57,16 +53,19 @@ public class CASTest extends TestCase {
     }
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     this.cas = null;
     this.ts = null;
   }
 
-  public void testGetTypeSystem() {
+    @org.junit.jupiter.api.Test
+    public void testGetTypeSystem() {
     assertTrue(this.cas.getTypeSystem() != null);
   }
   
-  public void testGetAnnotationIndex() {
+    @Test
+    public void testGetAnnotationIndex() {
     AnnotationIndex index = this.cas.getAnnotationIndex();
     assertNotNull(index);
     assertTrue(index.iterator() != null);
@@ -79,7 +78,8 @@ public class CASTest extends TestCase {
     assertTrue(caughtException);
   }
 
-  public void testCreateFS() {
+    @Test
+    public void testCreateFS() {
     // Can create FS of type "Top"
     assertTrue(this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP)) != null);
     boolean caughtExc = false;
@@ -130,43 +130,9 @@ public class CASTest extends TestCase {
     // assertTrue(caughtExc);
   }
 
-  public void testCreateCAS() {
+    @Test
+    public void testCreateCAS() {
     TypeSystemMgr tsm = CASFactory.createTypeSystem();
     tsm.commit();
   }
-
-  public void testCreateArrayFS() {
-    // Has its own test class.
-  }
-
-  public void testCreateIntArrayFS() {
-    // Has its own test class.
-  }
-
-  public void testCreateStringArrayFS() {
-    // Has its own test class.
-  }
-
-  // public void testCreateFilteredIterator() {
-  // }
-  //
-  // public void testCommitFS() {
-  // }
-  //
-  // public void testGetConstraintFactory() {
-  // }
-  //
-  // public void testCreateFeaturePath() {
-  // }
-  //
-  // public void testGetIndexRepository() {
-  // }
-  //
-  // public void testFs2listIterator() {
-  // }
-  //
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(CASTest.class);
-  }
-
 }

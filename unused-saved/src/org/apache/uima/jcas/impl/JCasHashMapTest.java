@@ -30,9 +30,12 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.util.Misc;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
-public class JCasHashMapTest extends TestCase {
+public class JCasHashMapTest {
   static private class FakeTopType extends TOP_Type {
     public FakeTopType() {
       super();
@@ -60,7 +63,8 @@ public class JCasHashMapTest extends TestCase {
     }
   }
    
-  public void testBasic() {
+    @Test
+    public void testBasic() {
     JCasHashMap m;
 
     for (int i = 1; i <= 128; i *= 2) {
@@ -81,7 +85,8 @@ public class JCasHashMapTest extends TestCase {
     }
   }
   
-  public void testWithPerf()  {
+    @Test
+    public void testWithPerf()  {
     
     for (int i = 0; i <  5; i++ ) {
       arun(SIZE);
@@ -95,7 +100,8 @@ public class JCasHashMapTest extends TestCase {
 
   }
   
-  public void testMultiThread() throws Exception {
+    @Test
+    public void testMultiThread() throws Exception {
     final Random random = new Random();
     int numberOfThreads = Misc.numberOfCores;    
     System.out.format("test JCasHashMap with up to %d threads%n", numberOfThreads);
@@ -133,7 +139,8 @@ public class JCasHashMapTest extends TestCase {
     }
   }
 
-  public void testMultiThreadCompare() throws Exception {
+    @Test
+    public void testMultiThreadCompare() throws Exception {
     final Random random = new Random();
     int numberOfThreads = Misc.numberOfCores;    
     System.out.format("test JCasHashMap with compare with up to %d threads%n", numberOfThreads);
@@ -196,7 +203,8 @@ public class JCasHashMapTest extends TestCase {
    *   
    * @throws Exception
    */
-  public void testMultiThreadCollide() throws Exception {
+    @Test
+    public void testMultiThreadCollide() throws Exception {
     int numberOfThreads = Misc.numberOfCores;
     if (numberOfThreads < 2) {
       return;
@@ -365,7 +373,8 @@ public class JCasHashMapTest extends TestCase {
 
   }
   
-  public void testGrowth() {
+    @Test
+    public void testGrowth() {
     System.out.println("JCasHashMapTest growth");
     for (int th = 2; th <= 128; th *= 2) {
       JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);

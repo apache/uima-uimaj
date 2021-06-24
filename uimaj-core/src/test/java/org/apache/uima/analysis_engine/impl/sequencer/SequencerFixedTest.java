@@ -32,7 +32,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /*
  */
@@ -40,27 +42,17 @@ import junit.framework.TestCase;
 /**
  * TestCase for the Sequencer with a fixedFlow
  */
-public class SequencerFixedTest extends TestCase {
+public class SequencerFixedTest {
   private File testBaseDir;
 
-  /**
-   * Constructor for SequencerTest
-   * 
-   * @param arg0
-   */
-  public SequencerFixedTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() throws Exception {
     // get test base path
     this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
-  public void testSequencerFixedEn() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSequencerFixedEn() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -104,7 +96,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedEN() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSequencerFixedEN() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -148,7 +141,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedEnUS() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSequencerFixedEnUS() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -192,7 +186,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedEnus() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSequencerFixedEnus() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -236,7 +231,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedUnkown() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSequencerFixedUnkown() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -280,7 +276,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedFooBar() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSequencerFixedFooBar() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -324,7 +321,8 @@ public class SequencerFixedTest extends TestCase {
     }
   }
 
-  public void testSequencerFixedXunSpec() throws Exception {
+    @Test
+    public void testSequencerFixedXunSpec() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test

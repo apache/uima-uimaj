@@ -27,34 +27,27 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 /*
  * UIMA ClassLoader test
  * 
  */
-public class UIMAClassLoaderTest extends TestCase {
+public class UIMAClassLoaderTest {
 
   private String testClassPath;
 
-  /**
-   * Constructor for UIMAClassLoaderTest
-   * 
-   * @param arg0
-   */
-  public UIMAClassLoaderTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     
     this.testClassPath = JUnitExtension.getFile("ClassLoaderTest/classLoadingTest.jar").getAbsolutePath();
   }
 
-  public void testSimpleRsrcMgrCLassLoaderCreation() throws Exception {
+    @Test
+    public void testSimpleRsrcMgrCLassLoaderCreation() throws Exception {
     ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
 
     assertNull(rsrcMgr.getExtensionClassLoader());
@@ -77,7 +70,8 @@ public class UIMAClassLoaderTest extends TestCase {
     }
   }
 
-  public void testAdvancedRsrcMgrCLassLoaderCreation() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testAdvancedRsrcMgrCLassLoaderCreation() throws Exception {
     ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
 
     assertNull(rsrcMgr.getExtensionClassLoader());
@@ -88,7 +82,8 @@ public class UIMAClassLoaderTest extends TestCase {
 
   }
 
-  public void testSimpleClassloadingSampleString() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSimpleClassloadingSampleString() throws Exception {
     UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
     Class testClass = null;
 
@@ -103,7 +98,8 @@ public class UIMAClassLoaderTest extends TestCase {
     assertEquals(this.getClass().getClassLoader(),testClass.getClassLoader());
   }
   
-  public void testParallelClassLoading() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testParallelClassLoading() throws Exception {
     final UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
     final Class<?>[] loadedClasses = new Class<?>[Misc.numberOfCores];
     
@@ -121,7 +117,8 @@ public class UIMAClassLoaderTest extends TestCase {
     }
   }
 
-  public void testSimpleClassloadingSampleURL() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSimpleClassloadingSampleURL() throws Exception {
     URL[] urlClasspath = new URL[] { new File(this.testClassPath).toURL() };
     UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
     Class testClass = null;
@@ -138,7 +135,8 @@ public class UIMAClassLoaderTest extends TestCase {
     assertEquals(this.getClass().getClassLoader(),testClass.getClassLoader());
   }
 
-  public void testAdvancedClassloadingSampleString() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testAdvancedClassloadingSampleString() throws Exception {
     UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
     Class testClass = null;
 
@@ -153,7 +151,8 @@ public class UIMAClassLoaderTest extends TestCase {
     assertEquals(this.getClass().getClassLoader(), testClass.getClassLoader());
   }
 
-  public void testAdvancedClassloadingSampleURL() throws Exception {
+    @Test
+    public void testAdvancedClassloadingSampleURL() throws Exception {
     URL[] urlClasspath = new URL[] { new File(this.testClassPath).toURL() };
     UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
     Class testClass = null;

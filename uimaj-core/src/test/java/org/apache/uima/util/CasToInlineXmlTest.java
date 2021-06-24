@@ -39,10 +39,14 @@ import org.apache.uima.testTypeSystem_arrays.OfStrings;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 
-public class CasToInlineXmlTest extends TestCase {
+public class CasToInlineXmlTest {
  
   private final String IND = saxonVersion() == null ? "    " : "   ";   // Saxon defaults to an indent of 3
   
@@ -58,7 +62,8 @@ public class CasToInlineXmlTest extends TestCase {
     }
   }
 
-  public void testCAStoString() throws Exception {
+    @Test
+    public void testCAStoString() throws Exception {
     // create a source CAS by deserializing from XCAS
     File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
@@ -101,7 +106,8 @@ public class CasToInlineXmlTest extends TestCase {
     // Assert.assertEquals(formattedXml, unformattedXml);
   }
   
-  public void testCasToInlineXml() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testCasToInlineXml() throws Exception {
     // Jira https://issues.apache.org/jira/browse/UIMA-2406
     
     File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem_arrays.xml");

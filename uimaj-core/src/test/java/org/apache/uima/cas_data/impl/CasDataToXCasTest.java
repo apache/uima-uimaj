@@ -22,29 +22,23 @@ package org.apache.uima.cas_data.impl;
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 
-public class CasDataToXCasTest extends TestCase {
-
-  /**
-   * Constructor for CasDataToXCasTest.
-   * 
-   * @param arg0
-   */
-  public CasDataToXCasTest(String arg0) {
-    super(arg0);
-  }
+public class CasDataToXCasTest {
 
   /*
    * Test for void generateXCas(CasData)
    */
-  public void testGenerateXCasCasData() throws Exception {
+    @Test
+    public void testGenerateXCasCasData() throws Exception {
     try {
       CasData casData = new CasDataImpl();
       FeatureStructure testFS = new FeatureStructureImpl();

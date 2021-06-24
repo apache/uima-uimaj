@@ -65,12 +65,16 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.Assert.*;
 
 
-public class JcasSofaTest extends TestCase {
+public class JcasSofaTest {
 
   private CASMgr casMgr;
 
@@ -78,16 +82,9 @@ public class JcasSofaTest extends TestCase {
 
   private JCas jcas;
 
-  public JcasSofaTest(String arg) {
-    super(arg);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     try {
-      super.setUp();
       casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
       // Create a writable type system.
@@ -112,7 +109,8 @@ public class JcasSofaTest extends TestCase {
     }
   }
   
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     casMgr = null;
     jcas = null;
     cas = null;
@@ -121,7 +119,8 @@ public class JcasSofaTest extends TestCase {
   /**
    * Test driver.
    */
-  public void testMain() throws Exception {
+    @Test
+    public void testMain() throws Exception {
     try {
 
       // Create a Sofa using OLD APIs for now
@@ -324,7 +323,8 @@ public class JcasSofaTest extends TestCase {
   /*
    * Test stream access to Sofa Data.
    */
-  public void testSofaDataStream() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testSofaDataStream() throws Exception {
     try {
 
       // Create Sofas
@@ -507,7 +507,8 @@ public class JcasSofaTest extends TestCase {
     }
   }
   
-  public void testIndexTwice() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testIndexTwice() throws Exception {
     try {
       CAS newCas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
       JCas newJCas = newCas.getJCas();
@@ -529,7 +530,8 @@ public class JcasSofaTest extends TestCase {
     }    
   }
   
-  public void testGetSofa() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testGetSofa() throws Exception {
     try {
       File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
       TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
@@ -546,9 +548,4 @@ public class JcasSofaTest extends TestCase {
       JUnitExtension.handleException(e);      
     }      
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(JcasSofaTest.class);
-  }
-
 }

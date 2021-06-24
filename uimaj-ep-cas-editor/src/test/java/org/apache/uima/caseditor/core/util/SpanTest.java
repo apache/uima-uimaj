@@ -19,11 +19,10 @@
 
 package org.apache.uima.caseditor.core.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.caseditor.editor.util.Span;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for the <code>Span</code> class.
@@ -32,129 +31,129 @@ public class SpanTest {
   /**
    * Test the Span.equals() method.
    */
-  @Test
-  public void testEquals() {
+    @Test
+    public void testEquals() {
     Span a = new Span(100, 1000);
     Span b = new Span(100, 1000);
 
-    assertEquals(a.equals(b), true);
+    assertThat(a.equals(b)).isTrue();
   }
 
   /**
    * Test the Span.equals() method.
    */
-  @Test
-  public void testEqualsWithAnotherObject() {
+    @org.junit.jupiter.api.Test
+    public void testEqualsWithAnotherObject() {
     Span a = new Span(0, 0);
 
-    assertFalse(Boolean.TRUE.equals(a));
+    assertThat(Boolean.TRUE.equals(a)).isFalse();
   }
 
   /**
    * Test the Span.equals() method.
    */
-  @Test
-  public void testEqualsWithNull() {
+    @org.junit.jupiter.api.Test
+    public void testEqualsWithNull() {
     Span a = new Span(0, 0);
 
-    assertEquals(a.equals(null), false);
+    assertThat(a.equals(null)).isFalse();
   }
 
   /**
    * Test the Span.compareTo(Object) method.
    */
-  @Test
-  public void testCompareToWithBiggerSpan() {
+    @org.junit.jupiter.api.Test
+    public void testCompareToWithBiggerSpan() {
     Span a = new Span(100, 1000);
     Span b = new Span(5000, 900);
 
-    assertEquals(true, a.compareTo(b) > 0);
+    assertThat(a.compareTo(b) > 0).isTrue();
   }
 
   /**
    * Test the Span.compareTo(Object) method.
    */
-  @Test
-  public void testCompareToWithBiggerIntersectSpan() {
+    @org.junit.jupiter.api.Test
+    public void testCompareToWithBiggerIntersectSpan() {
     Span a = new Span(100, 1000);
     Span b = new Span(900, 900);
 
-    assertEquals(true, a.compareTo(b) > 0);
+    assertThat(a.compareTo(b) > 0).isTrue();
   }
 
   /**
    * Test the Span.compareTo(Object) method.
    */
-  @Test
-  public void testCompareToWithLowerSpan() {
+    @org.junit.jupiter.api.Test
+    public void testCompareToWithLowerSpan() {
     Span a = new Span(5000, 900);
     Span b = new Span(100, 1000);
 
-    assertEquals(true, a.compareTo(b) < 0);
+    assertThat(a.compareTo(b) < 0).isTrue();
   }
 
   /**
    * Test the Span.compareTo(Object) method.
    */
-  @Test
-  public void testCompareToWithLowerIntersectSpan() {
+    @org.junit.jupiter.api.Test
+    public void testCompareToWithLowerIntersectSpan() {
     Span a = new Span(5000, 900);
     Span b = new Span(4900, 1000);
 
-    assertEquals(true, a.compareTo(b) < 0);
+    assertThat(a.compareTo(b) < 0).isTrue();
   }
 
   /**
    * Test the Span.compareTo(Object) method.
    */
-  @Test
-  public void testCompareToEquals() {
+    @org.junit.jupiter.api.Test
+    public void testCompareToEquals() {
     Span a = new Span(4900, 1000);
     Span b = new Span(4900, 1000);
 
-    assertEquals(true, a.compareTo(b) == 0);
+    assertThat(a.compareTo(b) == 0).isTrue();
   }
 
   /**
    * Test the Span.IsContaining(Span) method.
    */
-  @Test
-  public void testIsContaining() {
+    @Test
+    public void testIsContaining() {
     Span a = new Span(5000, 900);
     Span b = new Span(5200, 600);
 
-    assertEquals(true, a.isContaining(b));
+    assertThat(a.isContaining(b)).isTrue();
   }
 
   /**
    * Test the Span.IsContaining(Span) method.
    */
-  @Test
-  public void testIsContainingWithEqual() {
+    @org.junit.jupiter.api.Test
+    public void testIsContainingWithEqual() {
     Span a = new Span(5000, 900);
 
-    assertEquals(true, a.isContaining(a));
+    assertThat(a.isContaining(a)).isTrue();
   }
 
   /**
    * Test the Span.IsContaining(Span) method.
    */
-  @Test
-  public void testIsContainingWithLowerIntersect() {
+    @org.junit.jupiter.api.Test
+    public void testIsContainingWithLowerIntersect() {
     Span a = new Span(5000, 900);
     Span b = new Span(4500, 1000);
 
-    assertEquals(false, a.isContaining(b));
+    assertThat(a.isContaining(b)).isFalse();
   }
 
   /**
    * Test the Span.IsContaining(Span) method.
    */
-  @Test
-  public void testIsContainingWithHigherIntersect() {
+    @org.junit.jupiter.api.Test
+    public void testIsContainingWithHigherIntersect() {
     Span a = new Span(5000, 900);
     Span b = new Span(5000, 1000);
 
-    assertEquals(false, a.isContaining(b));
+    assertThat(a.isContaining(b)).isFalse();
   }
 }

@@ -26,7 +26,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -57,9 +59,10 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.jupiter.api.BeforeEach;
 import org.xml.sax.SAXException;
 
-public class JsonCasSerializerTest extends TestCase {
+public class JsonCasSerializerTest {
   /*********************************************************************
    *    I N S T R U C T I O N S                                        *
    *    for regenerating the expected:                                 *
@@ -99,16 +102,13 @@ public class JsonCasSerializerTest extends TestCase {
   private FeatureStructure fsa3;
   private FSArray fsaa;    // a feature structure array
  
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     jcs = new JsonCasSerializer();
     jcs.setOmit0Values(true);
     doJson = true;
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-  
   /**
    * Use "all types" - 
    *   instances of:
@@ -146,7 +146,8 @@ public class JsonCasSerializerTest extends TestCase {
    *   File, Writer, OutputStream
    */
 
-  public void testBasic() throws Exception {
+    @Test
+    public void testBasic() throws Exception {
     
     // test omits: context, subtypes, and expanded names
     // also test including / excluding type-name-reference  
@@ -201,7 +202,8 @@ public class JsonCasSerializerTest extends TestCase {
 
   }
   
-  public void testNameSpaceCollision() throws Exception {
+    @Test
+    public void testNameSpaceCollision() throws Exception {
     setupTypeSystem("nameSpaceNeeded.xml");
     Type t1 = tsi.getType("org.apache.uima.test.Token");
     Type t2 = tsi.getType("org.apache.uimax.test.Token");
@@ -251,7 +253,8 @@ public class JsonCasSerializerTest extends TestCase {
     
   }
   
-  public void testAllValues() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testAllValues() throws Exception {
     setupTypeSystem("allTypes.xml");
     setAllValues(0);
     jcs.setPrettyPrint(true).setOmit0Values(true);
@@ -265,7 +268,8 @@ public class JsonCasSerializerTest extends TestCase {
     
   }
   
-  public void testMultipleViews() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testMultipleViews() throws Exception {
     setupTypeSystem("allTypes.xml");
     setAllValues(1);
     cas = (CASImpl) cas.createView("View2");
@@ -275,7 +279,8 @@ public class JsonCasSerializerTest extends TestCase {
     serializeAndCompare("multipleViews.txt");
         
   }
-  public void testDynamicLists() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testDynamicLists() throws Exception {
     setupTypeSystem("allTypes.xml");
     
     FeatureStructure[] fss = new FeatureStructure[20];
@@ -321,7 +326,8 @@ public class JsonCasSerializerTest extends TestCase {
    * 
    */
   
-  public void testRefs() throws Exception {
+    @Test
+    public void testRefs() throws Exception {
     setupTypeSystem("refTypes.xml");
     jcs.setPrettyPrint(true);
     jcs.setJsonContext(JsonContextFormat.omitContext);

@@ -37,7 +37,11 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * The setup:
@@ -46,15 +50,12 @@ import junit.framework.TestCase;
  *   
  *   Annotator:  (in descr) SubIteratorAnnotator
  */
-public class SubiteratorTest extends TestCase {
+public class SubiteratorTest {
 
   private AnalysisEngine ae = null;
 
-  public SubiteratorTest(String arg0) {
-    super(arg0);
-  }
-
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
         .exists());
@@ -76,14 +77,16 @@ public class SubiteratorTest extends TestCase {
 
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     if (this.ae != null) {
       this.ae.destroy();
       this.ae = null;
     }
   }
 
-  public void testAnnotator() {
+    @Test
+    public void testAnnotator() {
     File textFile = JUnitExtension.getFile("CASTests/verjuice.txt");
     String text = null;
     try {
@@ -128,9 +131,4 @@ public class SubiteratorTest extends TestCase {
     FSIterator<Token> it = tokenIndex.iterator(false);
     it.moveTo(token);
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SubiteratorTest.class);
-  }
-
 }

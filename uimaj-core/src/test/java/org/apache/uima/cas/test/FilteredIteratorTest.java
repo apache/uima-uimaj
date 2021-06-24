@@ -36,13 +36,17 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Class comment for FilteredIteratorTest.java goes here.
  * 
  */
-public class FilteredIteratorTest extends TestCase {
+public class FilteredIteratorTest {
 
   private CAS cas;
 
@@ -76,16 +80,8 @@ public class FilteredIteratorTest extends TestCase {
 
   private Type annotationType;
 
-  /**
-   * Constructor for FilteredIteratorTest.
-   * 
-   * @param arg0
-   */
-  public FilteredIteratorTest(String arg0) {
-    super(arg0);
-  }
-
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       assertTrue(cas != null);
@@ -125,7 +121,8 @@ public class FilteredIteratorTest extends TestCase {
     assertTrue(annotationType != null);
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     this.cas = null;
     this.ts = null;
     this.stringType = null;
@@ -144,7 +141,8 @@ public class FilteredIteratorTest extends TestCase {
     this.annotationType = null;
   }
 
-  public void testIterator1() {
+    @org.junit.jupiter.api.Test
+    public void testIterator1() {
 
     try {
       // cas.setDocumentText("A test."); can't set document text twice
@@ -220,7 +218,8 @@ public class FilteredIteratorTest extends TestCase {
     assertTrue(countAll == countFiltered);
   }
 
-  public void testIterator1a() {
+    @Test
+    public void testIterator1a() {
 
     try {
       // cas.setDocumentText("A test."); can't set document text twice!
@@ -300,7 +299,8 @@ public class FilteredIteratorTest extends TestCase {
    * it.moveToNext(); } }
    */
 
-  public void testIterator2() {
+    @org.junit.jupiter.api.Test
+    public void testIterator2() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");
 
@@ -379,7 +379,8 @@ public class FilteredIteratorTest extends TestCase {
     // assertTrue(count == 4);
   }
   
-  public void testIterator2a() {
+    @Test
+    public void testIterator2a() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");
 
@@ -458,7 +459,8 @@ public class FilteredIteratorTest extends TestCase {
 
   }
 
-  public void testIterator2b() {
+    @org.junit.jupiter.api.Test
+    public void testIterator2b() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");
 

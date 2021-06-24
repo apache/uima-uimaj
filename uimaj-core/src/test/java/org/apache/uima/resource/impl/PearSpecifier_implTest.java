@@ -25,25 +25,27 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 /**
  * PearSpecifier creation and Xmlization test
  */
-public class PearSpecifier_implTest extends TestCase {
+public class PearSpecifier_implTest {
  
   /*
    * pearSpecifier creation test
    */
-  public void testProducePearResource() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testProducePearResource() throws Exception {
     PearSpecifier specifier = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
     specifier.setPearPath("/home/user/uimaApp/installedPears/testpear");
     specifier.setParameters(new Parameter_impl("legacyParam1", "legacyVal1"),
@@ -87,7 +89,8 @@ public class PearSpecifier_implTest extends TestCase {
   /*
    * pearSpecifier xmlization test
    */
-  public void testXmlization() throws Exception {
+    @Test
+    public void testXmlization() throws Exception {
     try {
       PearSpecifier pearSpec = new PearSpecifier_impl();
       pearSpec.setPearPath("/home/user/uimaApp/installedPears/testpear");

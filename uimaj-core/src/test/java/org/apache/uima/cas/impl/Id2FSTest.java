@@ -24,15 +24,20 @@ import org.apache.uima.cas.test.CASTestSetup;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class Id2FSTest extends TestCase {
+import static org.junit.Assert.*;
+
+public class Id2FSTest {
 
   CASImpl cas;
   JCas jcas;
   TypeSystem ts;
 
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     try {
       this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
       this.jcas = cas.getJCas();
@@ -42,7 +47,8 @@ public class Id2FSTest extends TestCase {
     }
   }
 
-  public void testId2fs() throws InterruptedException {
+    @Test
+    public void testId2fs() throws InterruptedException {
     
     TOP fs1 = new TOP(jcas);
     cas.setId2FSsMaybeUnconditionally(fs1);

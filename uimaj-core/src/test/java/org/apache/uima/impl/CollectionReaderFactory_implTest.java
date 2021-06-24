@@ -25,18 +25,23 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.impl.CollectionReaderDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 
-public class CollectionReaderFactory_implTest extends TestCase {
+public class CollectionReaderFactory_implTest {
  
   private CollectionReaderFactory_impl ccFactory;
 
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     ccFactory = new CollectionReaderFactory_impl();
   }
 
-  public void testInvalidFrameworkImplementation() {
+    @Test
+    public void testInvalidFrameworkImplementation() {
     CollectionReaderDescription desc = new CollectionReaderDescription_impl();
     desc.setFrameworkImplementation("foo");    
     try {

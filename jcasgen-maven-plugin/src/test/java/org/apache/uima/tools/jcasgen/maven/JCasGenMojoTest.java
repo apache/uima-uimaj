@@ -32,10 +32,12 @@ import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
+import org.junit.Test;
 
 public class JCasGenMojoTest extends AbstractMojoTestCase {
 
-  public void testInvalidFeature() throws Exception {
+    @Test
+    public void testInvalidFeature() throws Exception {
     Exception ee = null;
     try {
       this.test("invalidFeature");
@@ -46,23 +48,28 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     assertEquals("JCasGen: The feature name 'type', specified in Type 'type.span.Sentence' is reserved. Please choose another name.", ee.getMessage());
   }
   
-  public void testSimple() throws Exception {
+    @Test
+    public void testSimple() throws Exception {
     this.test("simple", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
   }
 
-  public void testClasspath() throws Exception {
+    @Test
+    public void testClasspath() throws Exception {
     this.test("classpath", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
   }
 
-  public void testWildcard() throws Exception {
+    @Test
+    public void testWildcard() throws Exception {
     this.test("wildcard", "type.span.Sentence", "type.span.Token");
   }
 
-  public void testExclude() throws Exception {
+    @Test
+    public void testExclude() throws Exception {
     this.test("exclude", "type.span.Sentence");
   }
 
-  public void test(String projectName, String... types) throws Exception {
+    @Test
+    public void test(String projectName, String... types) throws Exception {
 
     File projectSourceDirectory = getTestFile("src/test/resources/" + projectName);
     File projectDirectory = getTestFile("target/project-" + projectName + "-test");

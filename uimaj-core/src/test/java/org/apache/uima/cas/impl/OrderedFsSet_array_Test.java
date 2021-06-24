@@ -20,34 +20,27 @@
 package org.apache.uima.cas.impl;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Random;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.cas.FSIndex;
-import org.apache.uima.cas.FSIndexRepository;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.admin.FSIndexComparator;
-import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.OrderedFsSet_array;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class OrderedFsSet_array_Test extends TestCase {
+import static org.junit.Assert.*;
+
+public class OrderedFsSet_array_Test {
 
   static File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
   static int SZ = 23;
@@ -70,7 +63,8 @@ public class OrderedFsSet_array_Test extends TestCase {
   
   private OrderedFsSet_array<TOP> a;   
   
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     
     TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));
@@ -91,7 +85,8 @@ public class OrderedFsSet_array_Test extends TestCase {
    *   remove n, insert n in random order
    * 
    */
-  public void testInsert() {
+    @Test
+    public void testInsert() {
     int i = 0;
 //    for (; i < 100; i++) {  //enable for lots of iterationss, disable for normal test case
       seed = r.nextLong();

@@ -24,12 +24,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MiscTest {
 
-  @Test
-  public void test() {
+    @Test
+    public void test() {
     assertEquals(8, Misc.nextHigherPowerOfX(0, 8));
     assertEquals(8, Misc.nextHigherPowerOfX(-0, 8));
     assertEquals(8, Misc.nextHigherPowerOfX(1, 8));

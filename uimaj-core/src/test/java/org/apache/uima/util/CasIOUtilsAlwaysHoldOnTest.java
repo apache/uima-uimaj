@@ -29,7 +29,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CasIOUtilsAlwaysHoldOnTest {
   @Test

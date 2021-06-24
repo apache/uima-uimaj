@@ -59,13 +59,16 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 /**
  * Class comment for IteratorTest.java goes here.
  * 
  */
-public class IteratorTest extends TestCase {
+public class IteratorTest {
 
   private CASImpl cas;
 
@@ -131,16 +134,8 @@ public class IteratorTest extends TestCase {
 
   private Type wType;
 
-  /**
-   * Constructor for FilteredIteratorTest.
-   * 
-   * @param arg0
-   */
-  public IteratorTest(String arg0) {
-    super(arg0);
-  }
-
-  public void setUp() throws CASException {
+    @BeforeEach
+    public void setUp() throws CASException {
     // try {
     // this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup());
     // assertTrue(this.cas != null);
@@ -203,7 +198,8 @@ public class IteratorTest extends TestCase {
     assertTrue(this.subsentenceType != null);
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     this.cas = null;
     this.ts = null;
     this.stringType = null;
@@ -239,7 +235,8 @@ public class IteratorTest extends TestCase {
 
   }
   
-  public void testEmptySnapshotIterator() {
+    @org.junit.jupiter.api.Test
+    public void testEmptySnapshotIterator() {
     setupindexes();
     FSIterator<FeatureStructure> it = sortedIndex.iterator();
     assertEquals(0, it.size());
@@ -264,14 +261,16 @@ public class IteratorTest extends TestCase {
     assertTrue(ok);    
   }
   
-  public void testGetIndexes() {
+    @org.junit.jupiter.api.Test
+    public void testGetIndexes() {
      Iterator<FSIndex<FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
       assertNotNull(it.next());
     }
   }
 
-  public void testMoveTo() {
+    @org.junit.jupiter.api.Test
+    public void testMoveTo() {
     // Add some arbitrary annotations
     for (int i = 0; i < 10; i++) {
       createFSs(i);  // add annotation, sentence, and 3 tokens, all with same begin / end
@@ -303,7 +302,8 @@ public class IteratorTest extends TestCase {
     assertTrue(index.compare(match, ssit.get()) > 0);
   }
   
-  public void testMoveToPastEnd() {  // https://issues.apache.org/jira/browse/UIMA-4094
+    @org.junit.jupiter.api.Test
+    public void testMoveToPastEnd() {  // https://issues.apache.org/jira/browse/UIMA-4094
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.annotationType, 1,2));
     
@@ -321,7 +321,8 @@ public class IteratorTest extends TestCase {
 
   }
   
-  public void testMoveToFirstOfEqualOneType() {
+    @Test
+    public void testMoveToFirstOfEqualOneType() {
     for (int i = 0; i < 2; i++) {
       cas.reset();
       if (i == 0) {
@@ -418,7 +419,8 @@ public class IteratorTest extends TestCase {
     }
   }
   
-  public void testMultithreadedIterator() {
+    @org.junit.jupiter.api.Test
+    public void testMultithreadedIterator() {
     setupFSs();
     final FSIndex<FeatureStructure> bagIndex = this.cas.getIndexRepository().getIndex(
         CASTestSetup.ANNOT_BAG_INDEX);
@@ -478,7 +480,8 @@ public class IteratorTest extends TestCase {
     MultiThreadUtils.terminateThreads(threads);
   }
   
-  public void testIterator() {
+    @org.junit.jupiter.api.Test
+    public void testIterator() {
     setupFSs();  
     
     setupindexes();
@@ -1102,7 +1105,8 @@ public class IteratorTest extends TestCase {
   /**
    * Test deleting FSs from indexes.
    */
-  public void testDelete() {
+    @org.junit.jupiter.api.Test
+    public void testDelete() {
     // Create a bunch of FSs.
     // have 10% of them be the same key
     // have the order be scrambled somewhat, not strictly increasing
@@ -1221,7 +1225,8 @@ public class IteratorTest extends TestCase {
     assertEquals(nbr, i);
   }
 
-  public void testRemoveAll() {
+    @org.junit.jupiter.api.Test
+    public void testRemoveAll() {
     AnnotationFS[] fsArray = new AnnotationFS[100];
     AnnotationFS[] subFsArray = new AnnotationFS[100];
     FSIndexRepository ir = this.cas.getIndexRepository();
@@ -1378,7 +1383,8 @@ public class IteratorTest extends TestCase {
   }
   
   
-  public void testInvalidIndexRequest() {
+    @org.junit.jupiter.api.Test
+    public void testInvalidIndexRequest() {
     boolean exc = false;
     try {
       this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.stringType);
@@ -1386,10 +1392,6 @@ public class IteratorTest extends TestCase {
       exc = true;
     }
     assertTrue(exc);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(IteratorTest.class);
   }
 
   private void fsBeginEndEqual(AnnotationFS fs1, AnnotationFS fs2) {

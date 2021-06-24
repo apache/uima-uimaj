@@ -27,28 +27,18 @@ import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the ResourceService_impl class.
  * 
  */
-public class ResourceService_implTest extends TestCase {
-  /**
-   * Constructor for ResourceService_implTest.
-   * 
-   * @param arg0
-   */
-  public ResourceService_implTest(String arg0) throws java.io.FileNotFoundException {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+public class ResourceService_implTest {
+    @BeforeEach
+    public void setUp() throws Exception {
     try {
-      super.setUp();
       // create resource specifier and a pool containing 2 instances
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
@@ -69,7 +59,8 @@ public class ResourceService_implTest extends TestCase {
     }
   }
 
-  public void testGetMetaData() throws Exception {
+    @Test
+    public void testGetMetaData() throws Exception {
     try {
       ResourceMetaData md = service.getMetaData();
       Assert.assertNotNull(md);

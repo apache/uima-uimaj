@@ -38,21 +38,22 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.Assert.*;
 
 /**
  * Class comment for IteratorTest.java goes here.
  * 
  */
-public class TypeSystemUtilsTest extends TestCase {
+public class TypeSystemUtilsTest {
 
   private CAS cas;
 
-  public TypeSystemUtilsTest(String arg0) {
-    super(arg0);
-  }
-
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
 
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/pathValidationTS.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
@@ -76,7 +77,8 @@ public class TypeSystemUtilsTest extends TestCase {
 
   }
   
-  public void testPathValidation() {
+    @Test
+    public void testPathValidation() {
     Type type1 = this.cas.getTypeSystem().getType("Type1");
     // Type1, f0/begin, always
     List<String> path = new ArrayList<>();
@@ -113,12 +115,8 @@ public class TypeSystemUtilsTest extends TestCase {
     assertTrue(TypeSystemUtils.isPathValid(t1, path) == PathValid.ALWAYS);
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     this.cas = null;
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(TypeSystemUtilsTest.class);
-  }
-
 }

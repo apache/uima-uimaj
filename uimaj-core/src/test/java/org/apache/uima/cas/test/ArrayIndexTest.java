@@ -39,16 +39,20 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ArrayIndexTest extends TestCase implements TextAnnotator {
+import static org.junit.Assert.*;
+
+public class ArrayIndexTest implements TextAnnotator {
 
   private static final String idxId = "ArrayIndex";
 
   private AnalysisEngine ae = null;
 
-  protected void setUp() throws Exception {
-    super.setUp();
+    @BeforeEach
+    public void setUp() throws Exception {
     // Start up TAE
     XMLInputSource input = new XMLInputSource(JUnitExtension
             .getFile("CASTests/desc/ArrayIndexTest.xml"));
@@ -57,7 +61,8 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
   }
 
-  public void testArrayIndex() {
+    @Test
+    public void testArrayIndex() {
     try {
       CAS cas = this.ae.newCAS();
       FSIndexRepository ir = cas.getIndexRepository();
@@ -85,8 +90,8 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
     return count;
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
+    @AfterEach
+    public void tearDown() throws Exception {
     this.ae.destroy();
   }
 
@@ -112,9 +117,4 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
   public void destroy() {
     // do nothing
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(ArrayIndexTest.class);
-  }
-
 }

@@ -31,31 +31,17 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the DataResource_impl class.
  * 
  */
-public class DataResource_implTest extends TestCase {
-
-  /**
-   * Constructor for DataResource_implTest.
-   * 
-   * @param arg0
-   */
-  public DataResource_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  public void testInitialize() throws Exception {
+public class DataResource_implTest {
+    @Test
+    public void testInitialize() throws Exception {
     try {
       // create a FileResourceSpecifier
       FileResourceSpecifier_impl spec = new FileResourceSpecifier_impl();
@@ -90,7 +76,8 @@ public class DataResource_implTest extends TestCase {
     }
   }
 
-  public void testGetInputStream() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testGetInputStream() throws Exception {
     try {
       // write a File (APL: changed to use preexisting file - 6/28/04)
       File tempDataFile = JUnitExtension

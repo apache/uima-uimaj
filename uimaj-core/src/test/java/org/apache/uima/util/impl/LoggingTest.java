@@ -25,24 +25,17 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Logger implementation test
  * 
  */
-public class LoggingTest extends TestCase {
-
-  /**
-   * Constructor for SequencerTest
-   * 
-   * @param arg0
-   */
-  public LoggingTest(String arg0) {
-    super(arg0);
-  }
-
-  public void testDefaultLoggerCreation() throws Exception {
+public class LoggingTest {
+    @Test
+    public void testDefaultLoggerCreation() throws Exception {
     try {
       // get default logger
       Logger logger = UIMAFramework.getLogger();
@@ -64,7 +57,8 @@ public class LoggingTest extends TestCase {
     }
   }
 
-  public void testClassLoggerCreation() throws Exception {
+    @Test
+    public void testClassLoggerCreation() throws Exception {
     try {
       // get class logger
       Logger logger = UIMAFramework.getLogger(this.getClass());
@@ -92,7 +86,8 @@ public class LoggingTest extends TestCase {
     }
   }
 
-  public void testSetLevel() throws Exception {
+    @Test
+    public void testSetLevel() throws Exception {
     Logger uimaLogger = UIMAFramework.getLogger(); // should affect everything in
     // org.apache.uima.*
     try {

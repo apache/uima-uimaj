@@ -41,11 +41,15 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 
-public class TypeSystemReinitTest extends TestCase {
-  public void testReinitCASCompleteSerializer() throws Exception {
+public class TypeSystemReinitTest {
+    @Test
+    public void testReinitCASCompleteSerializer() throws Exception {
     try {
       AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension
@@ -80,7 +84,8 @@ public class TypeSystemReinitTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
-  public void testReinitCASCompleteSerializerWithArrays() throws Exception {
+    @Test
+    public void testReinitCASCompleteSerializerWithArrays() throws Exception {
     try {
       AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension

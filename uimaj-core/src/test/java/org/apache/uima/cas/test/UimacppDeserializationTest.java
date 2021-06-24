@@ -19,26 +19,21 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Class comment for UimacppDeserializationTest.java goes here.
  * 
  */
-public class UimacppDeserializationTest extends TestCase {
-
-  /**
-   * Constructor for UimacppDeserializationTest.
-   * 
-   * @param arg0
-   */
-  public UimacppDeserializationTest(String arg0) {
-    super(arg0);
-  }
-
+public class UimacppDeserializationTest {
   // Test case does not work: need serialized TAF form
   // keep a null test here to avoid having suite complain there are no tests here
-  public void testNothing() {
+    @Test
+    public void testNothing() {
     assertTrue(true);
   }
 
@@ -88,8 +83,4 @@ public class UimacppDeserializationTest extends TestCase {
    * String text = null; // try { // text = cas.getDocumentText(); // } catch (CASException e) { //
    * assertTrue(false); // } // assertTrue(text != null); }
    */
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(UimacppDeserializationTest.class);
-  }
-
 }

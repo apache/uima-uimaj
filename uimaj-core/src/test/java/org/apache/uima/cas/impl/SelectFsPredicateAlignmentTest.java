@@ -37,7 +37,7 @@ import org.apache.uima.cas.text.AnnotationPredicates;
 import org.apache.uima.cas.text.AxiomaticAnnotationPredicates;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.FixMethodOrder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runners.MethodSorters;
 
 //Sorting only to keep the list in Eclipse ordered so it is easier spot if related tests fail
@@ -48,7 +48,7 @@ public class SelectFsPredicateAlignmentTest {
   private static final int DEFAULT_ITERATIONS = 30;
   private static final int DEFAULT_TYPE_COUNT = 10;
   
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatSelectFollowingAlignsWithPrecedingPredicate() throws Exception {
     // In order to find annotations that X is preceding, we select the following annotations
     assertSelectFS(
@@ -153,7 +153,7 @@ public class SelectFsPredicateAlignmentTest {
             .following(y));
   }
 
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatSelectFollowingAlignsWithFollowingPredicateOnIndexRandomized() throws Exception
   {
     System.out.print("Following (Index select by annotation) -- ");
@@ -233,7 +233,7 @@ public class SelectFsPredicateAlignmentTest {
             .coveredBy(y.getBegin(), y.getEnd()));
   }
 
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatSelectCoveredByAlignsWithCoveredByPredicateOnIndexRandomized() throws Exception
   {
     System.out.print("CoveredBy (Index select by annotation) -- ");
@@ -253,7 +253,7 @@ public class SelectFsPredicateAlignmentTest {
             .coveredBy(y.getBegin(), y.getEnd()));
   }
   
-  @Test
+  @org.junit.jupiter.api.Test
   public void thatSelectCoveredByAlignsWithCoveredByPredicateOnIndexRandomizedNonStrict() throws Exception
   {
     System.out.print("CoveredBy* (CAS select by annotation)  -- ");

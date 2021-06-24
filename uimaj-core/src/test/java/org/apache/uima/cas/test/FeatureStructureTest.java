@@ -39,13 +39,17 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import junit.framework.TestCase;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 /**
  * Class comment for FeatureStructureTest.java goes here.
  * 
  */
-public class FeatureStructureTest extends TestCase {
+public class FeatureStructureTest {
 
 	private CASImpl cas;
 
@@ -97,16 +101,8 @@ public class FeatureStructureTest extends TestCase {
 
 	private Feature hdFeature;
 
-	/**
-   * Constructor for FeatureStructureTest.
-   * 
-   * @param arg0
-   */
-	public FeatureStructureTest(String arg0) {
-		super(arg0);
-	}
-
-	public void setUp() {
+    @BeforeEach
+    public void setUp() {
 		try {
 			this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
 			assertTrue(this.cas != null);
@@ -166,7 +162,8 @@ public class FeatureStructureTest extends TestCase {
 		assertTrue(this.hdFeature != null);
 	}
 
-	public void tearDown() {
+    @AfterEach
+    public void tearDown() {
 		this.cas = null;
 
 		this.ts = null;
@@ -191,7 +188,8 @@ public class FeatureStructureTest extends TestCase {
 		this.descr = null;
 	}
 
-	public void testErrorDerefDifferentCAS() {
+    @Test
+    public void testErrorDerefDifferentCAS() {
 	  CAS cas2 = CASInitializer.initCas(new CASTestSetup(), null);
 	  Type tokenType1 = this.ts.getType(CASTestSetup.TOKEN_TYPE);
 	  Feature tokenTypeFeature = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":" + CASTestSetup.TOKEN_TYPE_FEAT);
@@ -207,7 +205,8 @@ public class FeatureStructureTest extends TestCase {
 	  assertTrue(caught);
 	}
 	
-	public void testGetType() {
+    @Test
+    public void testGetType() {
 		Type tokenType1 = this.ts.getType(CASTestSetup.TOKEN_TYPE);
 		Type wordType1 = this.ts.getType(CASTestSetup.WORD_TYPE);
 		FeatureStructure word = this.cas.createFS(wordType1);
@@ -221,7 +220,8 @@ public class FeatureStructureTest extends TestCase {
 	 * The goal is to match what V2 did for low level cas access
 	 * The area this is testing is the use of the LL int operations to change the type of an existing feature structure.
 	 */
-	public void testLLsetType() {
+    @org.junit.jupiter.api.Test
+    public void testLLsetType() {
 	  LowLevelCAS llc = cas.getLowLevelCAS();
     FSArray fsa = new FSArray(ts.getType(CAS.TYPE_NAME_FS_ARRAY), cas, 3);
     fsa.addToIndexes();  // otherwise won't be replaced later
@@ -240,9 +240,9 @@ public class FeatureStructureTest extends TestCase {
     TOP ttfv = cas.createFS(tokenTypeType);
     token.setFeatureValue(tokenTypeFeat, ttfv);
     token.setFloatValue(tokenFloatFeat, 1.1f);
-    assertEquals(1.1f, token.getFloatValue(tokenFloatFeat));
+    Assertions.assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(1.1f);
     token.setDoubleValue(tokenDoubleFeat, 1.7d);
-    assertEquals(1.7d, token.getDoubleValue(tokenDoubleFeat));
+    Assertions.assertThat(token.getDoubleValue(tokenDoubleFeat)).isEqualTo(1.7d);
     token.setBegin(3);
     token.setEnd(5);
     
@@ -274,7 +274,7 @@ public class FeatureStructureTest extends TestCase {
     assertEquals(fs.getBegin(), 3);
     assertEquals(fs.getEnd(), 5);
     assertEquals(sofa, fs.getSofa());
-    assertEquals(1.1f, token.getFloatValue(tokenFloatFeat));
+    Assertions.assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(1.1f);
     assertEquals(ttfv, token.getFeatureValue(tokenTypeFeat));
     assertTrue(fsa.get(0) == token);
     assertTrue(fsl.getHead() == token);
@@ -299,14 +299,15 @@ public class FeatureStructureTest extends TestCase {
     assertEquals(token.getBegin(), 0);
     assertEquals(token.getEnd(), 0);
     assertEquals(sofa, token.getSofa());
-    assertEquals(0.0f, token.getFloatValue(tokenFloatFeat));
+    Assertions.assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(0.0f);
     assertEquals(null, token.getFeatureValue(tokenTypeFeat));
     assertTrue(fsa.get(0) == token);
     assertTrue(fsl.getHead() == token);
 
 	}
 
-	public void testSetArrayValuedFeature() {
+    @org.junit.jupiter.api.Test
+    public void testSetArrayValuedFeature() {
 		FeatureStructure testFS = this.cas.createFS(this.arrayFsWithSubtypeType);
 		assertTrue(testFS.getFeatureValue(this.arrayFsWithSubtypeTypeFeat) == null);
 		ArrayFS arrayFS = this.cas.createArrayFS(1);
@@ -322,7 +323,8 @@ public class FeatureStructureTest extends TestCase {
 		assertTrue(caughtExc);
 	}
 
-	public void testSetFeatureValue() {
+    @Test
+    public void testSetFeatureValue() {
 //		FeatureStructure token = this.cas.createFS(this.tokenType);
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int i = llcas.ll_createFS(this.tokenType.getCode());
@@ -394,7 +396,8 @@ public class FeatureStructureTest extends TestCase {
 		assertEquals(token.getFeatureValue(tokenTypeFeat), word2);
 	}
 
-	public void testSetFloatValue() {
+    @Test
+    public void testSetFloatValue() {
 //		AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int i = llcas.ll_createFS(this.tokenType.getCode());
@@ -428,11 +431,12 @@ public class FeatureStructureTest extends TestCase {
 		// low level
 		int ffc = ((FeatureImpl)tokenFloatFeat).getCode();
 		llcas.ll_setIntValue(token._id(), ffc, CASImpl.float2int(123.456f));
-		assertEquals(token.getFloatValue(tokenFloatFeat), 123.456f);
+		Assertions.assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(123.456f);
 		assertEquals(llcas.ll_getIntValue(token._id(), ffc), CASImpl.float2int(123.456f));
 	}
 	
-  public void testSetLongValue() {
+    @Test
+    public void testSetLongValue() {
 //	  AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int i = llcas.ll_createFS(this.tokenType.getCode());
@@ -461,7 +465,8 @@ public class FeatureStructureTest extends TestCase {
     assertEquals(f, token.getLongValue(this.tokenLongFeat));
   }
 
-  public void testSetDoubleValue() {
+    @org.junit.jupiter.api.Test
+    public void testSetDoubleValue() {
 //    AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int i = llcas.ll_createFS(this.tokenType.getCode());
@@ -484,13 +489,14 @@ public class FeatureStructureTest extends TestCase {
     
     double g = 23;
     token.setDoubleValue(this.tokenDoubleFeat, g);
-    assertEquals(g, token.getDoubleValue(this.tokenDoubleFeat));
+    Assertions.assertThat(token.getDoubleValue(this.tokenDoubleFeat)).isEqualTo(g);
     
     llcas.ll_setIntValue(token._id(), ffc, h);
-    assertEquals(f, token.getDoubleValue(this.tokenDoubleFeat));
+    Assertions.assertThat(token.getDoubleValue(this.tokenDoubleFeat)).isEqualTo(f);
   }
 
-	public void testSetIntValue() {
+    @org.junit.jupiter.api.Test
+    public void testSetIntValue() {
 //		AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
 //  AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
     LowLevelCAS llcas = cas.getLowLevelCAS();
@@ -523,7 +529,8 @@ public class FeatureStructureTest extends TestCase {
 		assertTrue(token.getIntValue(this.startFeature) == i);
 	}
 
-	public void testStrings() {
+    @Test
+    public void testStrings() {
 		FeatureStructure lp = this.cas.createFS(this.langPairType);
 		assertTrue(lp != null);
 		// Check that all strings are initially null.
@@ -614,11 +621,13 @@ public class FeatureStructureTest extends TestCase {
     assertEquals(1, llc.ll_getIntValue(addr, lemmaFeatCode));
 	}
 
-	public void testEquals() {
+    @org.junit.jupiter.api.Test
+    public void testEquals() {
 		// ???
 	}
 
-	public void testToString() {
+    @org.junit.jupiter.api.Test
+    public void testToString() {
 		FeatureStructure listFS = this.cas.createFS(this.neListType);
 		listFS.setFeatureValue(this.tlFeature, listFS);
 		System.out.println("toString for fslist, tail -> node, head is null");
@@ -632,9 +641,4 @@ public class FeatureStructureTest extends TestCase {
 		System.out.println("toString for fslist, tail is prev, prev's head: new token, head is same as rpev's head");
 		System.out.println(newList.toString());
 	}
-
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(FeatureStructureTest.class);
-	}
-
 }

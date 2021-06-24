@@ -23,11 +23,14 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.resource.CasManager;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
-public class CasManager_implTest extends TestCase {
-  public void testEnableReset() throws Exception {
+public class CasManager_implTest {
+    @Test
+    public void testEnableReset() throws Exception {
     CasManager mgr = UIMAFramework.newDefaultResourceManager().getCasManager();
     mgr.defineCasPool("test", 1, null);
     CAS cas = mgr.getCas("test");

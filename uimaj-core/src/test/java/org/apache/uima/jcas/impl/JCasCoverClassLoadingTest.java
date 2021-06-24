@@ -24,7 +24,7 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.CasCreationUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JCasCoverClassLoadingTest {
   

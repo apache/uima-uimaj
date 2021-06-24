@@ -20,9 +20,6 @@
 package org.apache.uima.cas.test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Random;
 
 import org.apache.uima.UIMAFramework;
@@ -33,7 +30,6 @@ import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
@@ -41,13 +37,17 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Class comment for FilteredIteratorTest.java goes here.
  * 
  */
-public class AnnotationIndexTest extends TestCase {
+public class AnnotationIndexTest {
   
 //  static class Miter {
 //    final int outerIter;
@@ -102,7 +102,8 @@ public class AnnotationIndexTest extends TestCase {
 //  public static ThreadLocal<long[]> startIter = ThreadLocal.withInitial(() -> new long[1]);
   
 
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     long startTime = System.nanoTime();
     TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));
@@ -139,7 +140,8 @@ public class AnnotationIndexTest extends TestCase {
    *   remove n, insert n in random order
    * 
    */
-   public void testInsert() {
+    @Test
+    public void testInsert() {
     insert1(0);
     valTime = 0L;
     long startTime = System.nanoTime();

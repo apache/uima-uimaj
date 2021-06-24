@@ -34,7 +34,10 @@ import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 /**
  * CasTypeSystemMapper maintains resources to map between two type systems, and handles
@@ -54,7 +57,7 @@ import junit.framework.TestCase;
  *   Verify appropriate mapping is there.
  */
 
-public class CasTypeSystemMapperTest extends TestCase {
+public class CasTypeSystemMapperTest {
   
   private static TypeSystemImpl tsi = (TypeSystemImpl) CASFactory.createTypeSystem();  // just to get the built-ins
   private static int t0 = tsi.getNumberOfTypes();
@@ -67,14 +70,6 @@ public class CasTypeSystemMapperTest extends TestCase {
   
   private CasTypeSystemMapper m;
 
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-  
    // to run this test, change the visibility in TypeSystemImpl of typeSystemMappers to public
 //  public void testCasReuseWithDifferentTypeSystems() throws Exception {
 //    // Create a CAS
@@ -113,7 +108,8 @@ public class CasTypeSystemMapperTest extends TestCase {
 //    }
 //  }
 
-  public void testCasTypeSystemMapperFull() throws ResourceInitializationException {
+    @org.junit.jupiter.api.Test
+    public void testCasTypeSystemMapperFull() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts2 = createTs(3, 0x1ffff, 0x1ffff); // become == type systems
     m = new CasTypeSystemMapper(ts1, ts2);
@@ -121,7 +117,8 @@ public class CasTypeSystemMapperTest extends TestCase {
     assertTrue(m.isEqual());
   }
   
-  public void testMissingType1() throws ResourceInitializationException {
+    @org.junit.jupiter.api.Test
+    public void testMissingType1() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t2 = t2t;
     ts2 = createTs(1, 0x1ffff, 0x1ffff);  // missing t2t
@@ -132,7 +129,8 @@ public class CasTypeSystemMapperTest extends TestCase {
     assertFalse(m.isEqual());
   }
 
-  public void testMissingType2() throws ResourceInitializationException {
+    @Test
+    public void testMissingType2() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
     ts1t2 = t2t;
@@ -147,7 +145,8 @@ public class CasTypeSystemMapperTest extends TestCase {
     assertFalse(m.isEqual());
   }
   
-  public void testMissingType3() throws ResourceInitializationException {
+    @org.junit.jupiter.api.Test
+    public void testMissingType3() throws ResourceInitializationException {
     ts1 = createTs(1, 0x1ffff, 0x1ffff);
     ts2 = createTs(3, 0x1ffff, 0x1ffff); 
 
@@ -157,7 +156,8 @@ public class CasTypeSystemMapperTest extends TestCase {
     assertFalse(m.isEqual());
   }
   
-  public void testMissingType4() throws ResourceInitializationException {
+    @Test
+    public void testMissingType4() throws ResourceInitializationException {
     ts1 = createTs(2, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
     ts2 = createTs(3, 0x1ffff, 0x1ffff); 
@@ -171,7 +171,8 @@ public class CasTypeSystemMapperTest extends TestCase {
     assertFalse(m.isEqual());
   }
   
-  public void testMissingType5() throws ResourceInitializationException {
+    @org.junit.jupiter.api.Test
+    public void testMissingType5() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeImpl ts1t1 = t1t;
     TypeImpl ts1t2 = t2t;    
@@ -184,7 +185,8 @@ public class CasTypeSystemMapperTest extends TestCase {
     assertFalse(m.isEqual());
   }
 
-  public void testMissingType6() throws ResourceInitializationException {
+    @Test
+    public void testMissingType6() throws ResourceInitializationException {
     ts1 = createTs(0, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
     ts1t2 = t2t;    
@@ -198,7 +200,8 @@ public class CasTypeSystemMapperTest extends TestCase {
   }
 
   
-  public void testMissingFeature0() throws ResourceInitializationException {
+    @Test
+    public void testMissingFeature0() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
     ts1t2 = t2t;    
@@ -217,7 +220,8 @@ public class CasTypeSystemMapperTest extends TestCase {
    } 
   }
 
-  public void testMissingFeature0r() throws ResourceInitializationException {
+    @org.junit.jupiter.api.Test
+    public void testMissingFeature0r() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
     ts1t2 = t2t;    
@@ -236,7 +240,8 @@ public class CasTypeSystemMapperTest extends TestCase {
     }
   }
 
-  public void testMissingFeature0f() throws ResourceInitializationException {
+    @Test
+    public void testMissingFeature0f() throws ResourceInitializationException {
     ts2 = createTs(3, 0x1ffff, 0x1ffff);
     ts2t1 = t1t;
     ts2t2 = t2t;    
@@ -255,7 +260,8 @@ public class CasTypeSystemMapperTest extends TestCase {
     }
   }
 
-  public void testMissingFeature0f2() throws ResourceInitializationException {
+    @Test
+    public void testMissingFeature0f2() throws ResourceInitializationException {
     ts2 = createTs(3, 0x1ffff, 0x1ffff);  
     ts2t1 = t1t;
     ts2t2 = t2t;
@@ -274,7 +280,8 @@ public class CasTypeSystemMapperTest extends TestCase {
     }
   }
   
-  public void testMissingAllFeat1() throws ResourceInitializationException {
+    @org.junit.jupiter.api.Test
+    public void testMissingAllFeat1() throws ResourceInitializationException {
     int mf = 0x1ffff;
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
@@ -292,7 +299,8 @@ public class CasTypeSystemMapperTest extends TestCase {
     assertFalse(m.isEqual());
   }
 
-  public void testMissingAllFeat2() throws ResourceInitializationException {
+    @Test
+    public void testMissingAllFeat2() throws ResourceInitializationException {
     int mf = 0x1ffff;
     ts1 = createTs(3, 0x1ffff, 0x1ffff - mf);
     ts1t1 = t1t;

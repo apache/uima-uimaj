@@ -20,7 +20,6 @@ package org.apache.uima.cas.impl;
 
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
-import static org.apache.uima.cas.SelectFSs.select;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.coveredBy;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.covering;
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.notBounded;
@@ -48,7 +47,6 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.cas.test.CASTestSetup;
@@ -60,9 +58,9 @@ import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.assertj.core.groups.Tuple;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Setup:  all kinds of types, primitives and non-primitives
@@ -107,8 +105,8 @@ public class AnnotationIteratorTest {
   private int callCount = -1;
   private Type[] types = new Type[3];
 
-  @Before
-  public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     // make a cas with various types, fairly complex -- see CASTestSetup class
     cas = CASInitializer.initCas(new CASTestSetup(), null);
     assertTrue(cas != null);
@@ -150,8 +148,8 @@ public class AnnotationIteratorTest {
     types[2] = tokenType;
   }
 
-  @After
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     cas = null;
     this.ts = null;
     this.tokenType = null;
@@ -186,8 +184,8 @@ public class AnnotationIteratorTest {
 //  }
   
 
-  @Test
-  public void testIterator1() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testIterator1() throws Exception {
     final int annotCount = setupTheCas();
     
     FSIndexRepository indexRepository = cas.getIndexRepository();
@@ -710,8 +708,8 @@ public class AnnotationIteratorTest {
     return fssStart;
   }
   
-  @Test
-  public void testIncorrectIndexTypeException() {
+    @Test
+    public void testIncorrectIndexTypeException() {
     boolean caughtException = false;
     try {
       cas.getAnnotationIndex(this.stringType);
@@ -740,8 +738,8 @@ public class AnnotationIteratorTest {
    * index the subiterator was applied to always to be returned, even if outside the boundary
    * annotation.
    */
-  @Test
-  public void testUnambiguousSubiteratorOnIndex() {
+    @Test
+    public void testUnambiguousSubiteratorOnIndex() {
     try {
       //                        0    0    1    1    2    2    3    3    4    4    5
       //                        0    5    0    5    0    5    0    5    0    5    0
@@ -834,8 +832,8 @@ public class AnnotationIteratorTest {
     }
   }
    
-  @Test
-  public void testEdges() {
+    @Test
+    public void testEdges() {
     Annotation ba = indexNew(phraseType, 10, 20);  // the bounding annotation
     edge(ba, "-", coveredBy, "--:--:--:--", 0);
     edge(ba, "-", covering, "--:--:--:--", 0);

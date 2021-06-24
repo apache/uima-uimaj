@@ -27,20 +27,23 @@ import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 /**
  * UIMA Logging Test
  */
-public class Log4jLogger_implTest extends TestCase {
+public class Log4jLogger_implTest {
 
-   @Override
-  public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
 //      BasicConfigurator.configure();
    }
 
-   @Override
-  public void tearDown() throws Exception {
+    @AfterEach
+    public void tearDown() throws Exception {
 //      BasicConfigurator.resetConfiguration();
    }
 
@@ -58,7 +61,8 @@ public class Log4jLogger_implTest extends TestCase {
 //      logLevels.put("ALL", Level.ALL);
 //   }
 
-   public void testLogWrapperCreation() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testLogWrapperCreation() throws Exception {
       org.apache.uima.util.Logger uimaLogger = Log4jLogger_impl.getInstance();
       org.apache.uima.util.Logger classLogger = Log4jLogger_impl
             .getInstance(this.getClass());
@@ -76,7 +80,8 @@ public class Log4jLogger_implTest extends TestCase {
       uimaLogger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
    }
 
-   public void testIsLoggable() throws Exception {
+    @Test
+    public void testIsLoggable() throws Exception {
       // create logger
      org.apache.uima.util.Logger uimaLogger = null;
       try {
@@ -184,7 +189,8 @@ public class Log4jLogger_implTest extends TestCase {
       classLogger.setLevel(defaultLogLevel);
    }
 
-   public void testMessageLogMethods() throws Exception {
+    @Test
+    public void testMessageLogMethods() throws Exception {
 //     final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
      final int[] nbrcalls = new int[1];
      nbrcalls[0] = 0;
@@ -299,7 +305,8 @@ public class Log4jLogger_implTest extends TestCase {
    }
 
    
-   public void testMessageKeyLogMethods() throws Exception {
+    @Test
+    public void testMessageKeyLogMethods() throws Exception {
      final int[] nbrcalls = new int[1];
      nbrcalls[0] = 0;
      
@@ -409,7 +416,8 @@ public class Log4jLogger_implTest extends TestCase {
      }
    }
 
-   public void testLoggerFromUIMAFramework() {
+    @Test
+    public void testLoggerFromUIMAFramework() {
       org.apache.uima.util.Logger logger = UIMAFramework.getLogger(this
             .getClass());
 

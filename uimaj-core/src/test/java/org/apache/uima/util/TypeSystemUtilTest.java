@@ -27,10 +27,13 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TypeSystemUtilTest extends TestCase {
-  public void testTypeSystem2TypeSystemDescription() throws Exception {
+public class TypeSystemUtilTest {
+    @Test
+    public void testTypeSystem2TypeSystemDescription() throws Exception {
     //create a CAS with example type system
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     TypeSystemDescription tsDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(

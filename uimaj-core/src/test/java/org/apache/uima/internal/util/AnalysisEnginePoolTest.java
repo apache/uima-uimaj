@@ -40,28 +40,19 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 
-public class AnalysisEnginePoolTest extends TestCase {
+public class AnalysisEnginePoolTest {
 
   private TypeSystem mLastTypeSystem;
 
-  /**
-   * Constructor for MultithreadableAnalysisEngine_implTest.
-   * 
-   * @param arg0
-   */
-  public AnalysisEnginePoolTest(String arg0) throws java.io.FileNotFoundException {
-    super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     try {
-      super.setUp();
       mSimpleDesc = new AnalysisEngineDescription_impl();
       mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mSimpleDesc.setPrimitive(true);
@@ -79,7 +70,8 @@ public class AnalysisEnginePoolTest extends TestCase {
     }
   }
 
-  public void testGetAnalysisEngineMetaData() throws Exception {
+    @Test
+    public void testGetAnalysisEngineMetaData() throws Exception {
     AnalysisEnginePool pool = null;
     try {
       // create pool
@@ -97,7 +89,8 @@ public class AnalysisEnginePoolTest extends TestCase {
     }
   }
 
-  public void testProcess() throws Exception {
+    @Test
+    public void testProcess() throws Exception {
     try {
       // test simple primitive MultithreadableTextAnalysisEngine
       // (using TestAnnotator class)
@@ -155,7 +148,8 @@ public class AnalysisEnginePoolTest extends TestCase {
    
   }
 
-  public void testReconfigure() throws Exception {
+    @Test
+    public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
@@ -198,12 +192,6 @@ public class AnalysisEnginePoolTest extends TestCase {
     }
   }
 
-  /**
-   * Auxilliary method used by testProcess()
-   * 
-   * @param aTaeDesc
-   *          description of TextAnalysisEngine to test
-   */
   protected void _testProcess(AnalysisEnginePool aPool, int i)
           throws UIMAException {
     AnalysisEngine tae = aPool.getAnalysisEngine(0);

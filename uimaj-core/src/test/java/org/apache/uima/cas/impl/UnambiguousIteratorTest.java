@@ -32,14 +32,17 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 
 
 /**
  * Testclass for the JTok annotator.
  */
-public class UnambiguousIteratorTest extends TestCase {
+public class UnambiguousIteratorTest {
 
   private static final String casDataDirName = "CASTests";
 
@@ -51,7 +54,8 @@ public class UnambiguousIteratorTest extends TestCase {
 
   private static final String sampleTsFileName = "sample.ts";
 
-  public void testUnambiguous() throws Exception {
+    @Test
+    public void testUnambiguous() throws Exception {
 
     // The two XCASes used in this test contain the same data, but the
     // second one contains all annotations twice. So in that case, every

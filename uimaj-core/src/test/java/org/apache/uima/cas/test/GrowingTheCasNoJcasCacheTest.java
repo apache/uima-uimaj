@@ -38,13 +38,16 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 /**
  * Class comment for IteratorTest.java goes here.
  * 
  */
-public class GrowingTheCasNoJcasCacheTest extends TestCase {
+public class GrowingTheCasNoJcasCacheTest {
   
   private final static int REPETITIONS = 1;
 
@@ -52,11 +55,8 @@ public class GrowingTheCasNoJcasCacheTest extends TestCase {
 
   private JCas smallHeapCas = null;
 
-  public GrowingTheCasNoJcasCacheTest(String arg0) {
-    super(arg0);
-  }
-
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
         .exists());
@@ -102,14 +102,16 @@ public class GrowingTheCasNoJcasCacheTest extends TestCase {
 
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     if (this.ae != null) {
       this.ae.destroy();
       this.ae = null;
     }
   }
 
-  public void testAnnotator() {
+    @Test
+    public void testAnnotator() {
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String text = null;
     try {
@@ -170,9 +172,4 @@ public class GrowingTheCasNoJcasCacheTest extends TestCase {
     smallHeapCas = null;  // some junit runners hold onto instances of test classes after the test finishes
 
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(GrowingTheCasNoJcasCacheTest.class);
-  }
-
 }

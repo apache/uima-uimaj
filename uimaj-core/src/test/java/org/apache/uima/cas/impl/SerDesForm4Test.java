@@ -18,25 +18,14 @@
  */
 package org.apache.uima.cas.impl;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
@@ -64,7 +53,9 @@ import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.impl.SerializationMeasures;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Serializer and Deserializer testing
@@ -266,7 +257,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
   public SerDesForm4Test() {
   }
 
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
 //    long seed = 1_449_257_605_347_913_923L;
     // long seed = 949_754_466_380_345_024L;
 //     long seed = 6_761_039_426_734_540_557L;
@@ -288,7 +280,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
     }
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     this.cas = null;
     this.ts = null;
     deserCas = null;
@@ -301,7 +294,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * stream, deserialize into new cas, compare
    */
 
-  public void testAllKinds() {
+    @org.junit.jupiter.api.Test
+    public void testAllKinds() {
     loadCas(lfs);
     // uncomment this to test toString()
 //    int i = 0;
@@ -311,7 +305,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
     verify("AllKinds");   
   }
   
-  public void testAllKindsV2() {
+    @org.junit.jupiter.api.Test
+    public void testAllKindsV2() {
     try (AutoCloseableNoException a = cas.ll_enableV2IdRefs();
          AutoCloseableNoException b = deserCas.ll_enableV2IdRefs()) {
       loadCas(lfs);
@@ -334,7 +329,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * 
    * 
    */
-  public void testDelta() {
+    @org.junit.jupiter.api.Test
+    public void testDelta() {
     lfs.clear();
     loadCas(lfs);
     setupCas2ForDeltaSerialization();
@@ -344,7 +340,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
     verifyDelta(marker, "Delta");
   }
 
-  public void testDeltaWithRefsBelow() {
+    @org.junit.jupiter.api.Test
+    public void testDeltaWithRefsBelow() {
     lfs.clear();
     loadCas(lfs);
     setupCas2ForDeltaSerialization();
@@ -362,7 +359,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
     verifyDelta(marker, "DeltaWithRefsBelow");
   }
 
-  public void testDeltaWithMods() {
+    @Test
+    public void testDeltaWithMods() {
     lfs.clear();
     loadCas(lfs);
     
@@ -384,7 +382,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * Driver for random values pick among random and "interesting" edge case
    * values
    */
-  public void testDeltaWithAllMods() throws IOException {
+    @org.junit.jupiter.api.Test
+    public void testDeltaWithAllMods() throws IOException {
     boolean prev = isKeep;
     isKeep = true;
     for (int i = 0; i < 100; i++) {
@@ -512,7 +511,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
   }
 
-  public void testDeltaWithIndexMods() {
+    @org.junit.jupiter.api.Test
+    public void testDeltaWithIndexMods() {
     lfs.clear();
     loadCas(lfs);
     setupCas2ForDeltaSerialization();
@@ -532,7 +532,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
     verifyDelta(marker, "DeltaWithIndexMods");
   }
 
-  public void testArrayAux() {
+    @org.junit.jupiter.api.Test
+    public void testArrayAux() {
     ArrayList<FeatureStructure> fsl = new ArrayList<>();
     /**
      * Strings, non-array Long/Double:
@@ -577,7 +578,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
     assertEquals(la1.get(2), 123);
   }
 
-  public void testWithOtherSerializer() throws IOException {
+    @org.junit.jupiter.api.Test
+    public void testWithOtherSerializer() throws IOException {
     doPlain = true;
     testDeltaWithMods();
     tearDown(); setUp();
@@ -597,7 +599,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
    *   layout because they're not findable during scanning, and therefore, delta mods won't be correct.
    * @throws IOException
    */
-  public void testWithPrevGenerated() throws IOException {
+    @org.junit.jupiter.api.Test
+    public void testWithPrevGenerated() throws IOException {
     isKeep = true;    // forces all akof fss to be indexed 
     usePrevData = true;
     initReadSavedInts();

@@ -40,10 +40,13 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 
-public class AnnotatorContext_implTest extends TestCase {
+public class AnnotatorContext_implTest {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
           + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
@@ -60,21 +63,12 @@ public class AnnotatorContext_implTest extends TestCase {
 
   private AnnotatorContext mAC5;
 
-  /**
-   * Constructor for AnnotatorContext_implTest.
-   * 
-   * @param arg0
-   */
-  public AnnotatorContext_implTest(String arg0) {
-    super(arg0);
-  }
-
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     try {
-      super.setUp();
       // create primitive analysis engine with configuration groups
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
@@ -138,7 +132,8 @@ public class AnnotatorContext_implTest extends TestCase {
   /*
    * Test for Object getConfigParameterValue(String)
    */
-  public void testGetConfigParameterValueString() throws Exception {
+    @Test
+    public void testGetConfigParameterValueString() throws Exception {
     try {
       // this method should get parameter values from the default "en" group
       String str = (String) mAC1.getConfigParameterValue("StringParam");
@@ -186,7 +181,8 @@ public class AnnotatorContext_implTest extends TestCase {
   /*
    * Test for Object getConfigParameterValue(String, String)
    */
-  public void testGetConfigParameterValueStringString() throws Exception {
+    @Test
+    public void testGetConfigParameterValueStringString() throws Exception {
     try {
       // en-US group
       String str = (String) mAC1.getConfigParameterValue("en-US", "StringParam");
@@ -279,7 +275,8 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
-  public void testGetConfigurationGroupNames() {
+    @Test
+    public void testGetConfigurationGroupNames() {
     String[] names = mAC1.getConfigurationGroupNames();
     Assert.assertEquals(5, names.length);
     List<String> l = new ArrayList<>(Arrays.asList(names));
@@ -294,7 +291,8 @@ public class AnnotatorContext_implTest extends TestCase {
     Assert.assertEquals(0, names.length);
   }
 
-  public void testGetConfigParameterNames() {
+    @Test
+    public void testGetConfigParameterNames() {
     String[] names = mAC5.getConfigParameterNames();
     Assert.assertEquals(6, names.length);
     Assert.assertEquals("StringParam", names[0]);
@@ -309,7 +307,8 @@ public class AnnotatorContext_implTest extends TestCase {
     Assert.assertEquals(0, names.length);
   }
 
-  public void testGetConfigParameterNamesString() {
+    @Test
+    public void testGetConfigParameterNamesString() {
     String[] names = mAC1.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
     List<String> l = new ArrayList<>(Arrays.asList(names));
@@ -327,7 +326,8 @@ public class AnnotatorContext_implTest extends TestCase {
     Assert.assertEquals(0, names.length);
   }
 
-  public void testGetResourceObjectString() throws Exception {
+    @Test
+    public void testGetResourceObjectString() throws Exception {
     try {
       // custom object
       Object r = mAC3.getResourceObject("TestResourceObject");
@@ -364,7 +364,8 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
-  public void testGetResourceURLString() throws Exception {
+    @Test
+    public void testGetResourceURLString() throws Exception {
     try {
       // standard data resource (should succeed)
       URL url = mAC3.getResourceURL("TestFileResource");
@@ -418,7 +419,8 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
-  public void testGetResourceURIString() throws Exception {
+    @Test
+    public void testGetResourceURIString() throws Exception {
     try {
       // standard data resource (should succeed)
       URI uri = mAC3.getResourceURI("TestFileResource");
@@ -472,7 +474,8 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
-  public void testGetResourceFilePathString() throws Exception {
+    @Test
+    public void testGetResourceFilePathString() throws Exception {
     try {
       // standard data resource (should succeed)
       String path = mAC3.getResourceFilePath("TestFileResource");
@@ -527,7 +530,8 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
-  public void testGetResourceAsStreamString() throws Exception {
+    @Test
+    public void testGetResourceAsStreamString() throws Exception {
     try {
       // standard data resource (should succeed)
       InputStream strm = mAC3.getResourceAsStream("TestFileResource");
@@ -574,7 +578,8 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
-  public void testGetResourceObjectStringStringArray() throws Exception {
+    @Test
+    public void testGetResourceObjectStringStringArray() throws Exception {
     try {
       // standard data resource
       Object r = mAC3.getResourceObject("TestFileLanguageResource", new String[] { "en" });
@@ -636,7 +641,8 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
-  public void testGetResourceAsStreamStringStringArray() throws Exception {
+    @Test
+    public void testGetResourceAsStreamStringStringArray() throws Exception {
     try {
       // standard data resource
       InputStream strm = mAC3
@@ -695,7 +701,8 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
-  public void testGetResourceURLStringStringArray() throws Exception {
+    @Test
+    public void testGetResourceURLStringStringArray() throws Exception {
     try {
       // standard data resource
       URL url = mAC3.getResourceURL("TestFileLanguageResource", new String[] { "en" });
@@ -751,7 +758,8 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
-  public void testGetResourceURIStringStringArray() throws Exception {
+    @Test
+    public void testGetResourceURIStringStringArray() throws Exception {
     try {
       // standard data resource
       URI uri = mAC3.getResourceURI("TestFileLanguageResource", new String[] { "en" });
@@ -807,7 +815,8 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
-  public void testGetResourceFilePathStringStringArray() throws Exception {
+    @Test
+    public void testGetResourceFilePathStringStringArray() throws Exception {
     try {
       // standard data resource
       String path = mAC3.getResourceFilePath("TestFileLanguageResource", new String[] { "en" });
@@ -863,7 +872,8 @@ public class AnnotatorContext_implTest extends TestCase {
     }
   }
 
-  public void testGetDataPath() throws Exception {
+    @Test
+    public void testGetDataPath() throws Exception {
     try {
       Assert.assertEquals(TEST_DATAPATH, mAC1.getDataPath());
       Assert.assertEquals(System.getProperty("user.dir"), mAC4.getDataPath());

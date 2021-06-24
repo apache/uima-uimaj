@@ -30,37 +30,31 @@ import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 
-public class ResourceManagerConfiguration_implTest extends TestCase {
-
-  /**
-   * Constructor for TypeSystemDescription_implTest.
-   * 
-   * @param arg0
-   */
-  public ResourceManagerConfiguration_implTest(String arg0) {
-    super(arg0);
-  }
-
+public class ResourceManagerConfiguration_implTest {
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
-    super.setUp();
+    @BeforeEach
+    public void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
   }
 
   /*
    * @see TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
-    super.tearDown();
+    @AfterEach
+    public void tearDown() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
-  public void testBuildFromXmlElement() throws Exception {
+    @Test
+    public void testBuildFromXmlElement() throws Exception {
     try {
       File descriptor = JUnitExtension
               .getFile("ResourceManagerConfigurationImplTest/TestResourceManagerConfiguration.xml");
@@ -90,7 +84,8 @@ public class ResourceManagerConfiguration_implTest extends TestCase {
     }
   }
 
-  public void testResolveImports() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testResolveImports() throws Exception {
     try {
       File descriptor = JUnitExtension
               .getFile("ResourceManagerConfigurationImplTest/TaeImportingResourceManagerConfiguration.xml");
@@ -124,7 +119,8 @@ public class ResourceManagerConfiguration_implTest extends TestCase {
     }
   }
 
-  public void testClone() throws Exception {
+    @Test
+    public void testClone() throws Exception {
     try {
       File descriptor = JUnitExtension
               .getFile("ResourceManagerConfigurationImplTest/TaeImportingResourceManagerConfiguration.xml");

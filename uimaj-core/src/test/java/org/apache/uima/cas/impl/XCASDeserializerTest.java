@@ -54,26 +54,20 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 
-public class XCASDeserializerTest extends TestCase {
+public class XCASDeserializerTest {
 
   private TypeSystemDescription typeSystem;
 
   private FsIndexDescription[] indexes;
 
-  /**
-   * Constructor for XCASDeserializerTest.
-   * 
-   * @param arg0
-   */
-  public XCASDeserializerTest(String arg0) {
-    super(arg0);
-  }
-
-  @Override
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
@@ -83,7 +77,8 @@ public class XCASDeserializerTest extends TestCase {
             .getFsIndexes();
   }
 
-  public void testNoInitialSofa() throws Exception {
+    @Test
+    public void testNoInitialSofa() throws Exception {
 
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     // create non-annotation type so as not to create the _InitialView Sofa
@@ -123,12 +118,14 @@ public class XCASDeserializerTest extends TestCase {
     assertTrue(xml2.equals(xml));
   }
 
-  public void testDeserializeAndReserialize() throws Exception {
+    @Test
+    public void testDeserializeAndReserialize() throws Exception {
     doTestDeserializeAndReserialize(false);
     doTestDeserializeAndReserialize(true);
   }
   
-  public void testDeserializeAndReserializeV2Ids() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testDeserializeAndReserializeV2Ids() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
       doTestDeserializeAndReserialize(false);
       doTestDeserializeAndReserialize(true);      
@@ -250,7 +247,8 @@ public class XCASDeserializerTest extends TestCase {
     }
   }
 
-  public void testOutOfTypeSystem2() throws Exception {
+    @Test
+    public void testOutOfTypeSystem2() throws Exception {
     // deserialize a complex CAS into one with no TypeSystem
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
             new TypePriorities_impl(), new FsIndexDescription[0]);
@@ -298,7 +296,8 @@ public class XCASDeserializerTest extends TestCase {
     }
   }
 
-  public void testOutOfTypeSystem3() throws Exception {
+    @Test
+    public void testOutOfTypeSystem3() throws Exception {
     // deserialize an XCAS using the implicit value feature into a CAS with no TypeSystem
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
             new TypePriorities_impl(), new FsIndexDescription[0]);
@@ -325,7 +324,8 @@ public class XCASDeserializerTest extends TestCase {
     assertTrue(xml.indexOf("value=\"this is the value feature\"") != -1);
   }
 
-  public void testMultipleSofas() throws Exception {
+    @Test
+    public void testMultipleSofas() throws Exception {
     /*************************************************
      * Make CAS with 2 sofas, initial and OtherSofa  *
      *                                               *
@@ -392,7 +392,8 @@ public class XCASDeserializerTest extends TestCase {
     }
   }
 
-  public void testv1FormatXcas() throws Exception {
+    @Test
+    public void testv1FormatXcas() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     CAS v1cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
 
@@ -466,7 +467,8 @@ public class XCASDeserializerTest extends TestCase {
     assertTrue(gerView.getAnnotationIndex().size() == 5); // 4 annots plus documentAnnotation
   }
   
-  public void testStringArrayWithNullValues() throws Exception {
+    @Test
+    public void testStringArrayWithNullValues() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     StringArrayFS strArray = cas.createStringArrayFS(3);
     strArray.set(1, "value");

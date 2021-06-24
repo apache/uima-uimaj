@@ -30,8 +30,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -44,13 +42,17 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Class comment for IteratorTest.java goes here.
  * 
  */
-public class GrowingTheCasTest extends TestCase {
+public class GrowingTheCasTest {
 
   private AnalysisEngine ae = null;
 
@@ -58,11 +60,8 @@ public class GrowingTheCasTest extends TestCase {
 
   private JCas jcas;
 
-  public GrowingTheCasTest(String arg0) {
-    super(arg0);
-  }
-
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
 	.exists());
@@ -91,7 +90,8 @@ public class GrowingTheCasTest extends TestCase {
 
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     if (this.ae != null) {
       this.ae.destroy();
       this.ae = null;
@@ -286,7 +286,8 @@ public class GrowingTheCasTest extends TestCase {
 //    }
   }
   
-  public void testAnnotator() {
+    @Test
+    public void testAnnotator() {
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String text = null;
     try {
@@ -365,9 +366,4 @@ public class GrowingTheCasTest extends TestCase {
 //    System.gc();
 //    System.out.format("Size of 0 heaps: %,d after 2 gcs%n", r.totalMemory() - r.freeMemory());   
   }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(GrowingTheCasTest.class);
-  }
-
 }

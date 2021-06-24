@@ -23,20 +23,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.Assert.*;
 
 
-public class IntBitSetTest extends TestCase {
+public class IntBitSetTest {
   
   IntBitSet ibs;
   IntBitSet ibs1k;
   
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     ibs = new IntBitSet();
     ibs1k = new IntBitSet(63, 1000);
   }
 
-  public void testBasic() {
+    @org.junit.jupiter.api.Test
+    public void testBasic() {
     
     ibs.add(15);
     ibs.add(188);
@@ -86,7 +92,8 @@ public class IntBitSetTest extends TestCase {
     
   }
   
-  public void testoffset() {
+    @Test
+    public void testoffset() {
     ibs = new IntBitSet(64,1000);
     ibs.add(1064);
     IntListIterator it = ibs.iterator();
@@ -116,7 +123,8 @@ public class IntBitSetTest extends TestCase {
     assertTrue(Arrays.equals(ints.toArray(), new Object[]{1, 10}));
   }
   
-  public void testRemove() {
+    @org.junit.jupiter.api.Test
+    public void testRemove() {
     ibs.add(15);
     ibs.add(188);
     ibs.add(101);
@@ -133,7 +141,8 @@ public class IntBitSetTest extends TestCase {
     
   }
   
-  public void testContains() {
+    @org.junit.jupiter.api.Test
+    public void testContains() {
     ibs = new IntBitSet(63, 1000);
     
     ibs.add(1015);
@@ -148,7 +157,8 @@ public class IntBitSetTest extends TestCase {
     
   }
   
-  public void testIterator() {
+    @Test
+    public void testIterator() {
     ibs = new IntBitSet(63, 1000);
     for (int i = 0; i < 10; i = i + 4) {
       ibs.add(1000 + i);

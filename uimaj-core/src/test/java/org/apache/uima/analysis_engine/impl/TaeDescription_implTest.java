@@ -67,34 +67,23 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test the TaeDescription_impl class.
  * 
  */
-public class TaeDescription_implTest extends TestCase {
+public class TaeDescription_implTest {
   
   private AnalysisEngineDescription primitiveDesc;
 
   private AnalysisEngineDescription aggregateDesc;
   
-  /**
-   * Constructor for TaeDescription_implTest.
-   * 
-   * @param arg0
-   */
-  public TaeDescription_implTest(String arg0) {
-    super(arg0);
-  }
-
-  /**
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
     try {
-      super.setUp();
-
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Fake", "A Fake Type", "Annotation");
       FeatureDescription feature1 = type1.addFeature("TestFeature", "For Testing Only",
@@ -246,12 +235,14 @@ public class TaeDescription_implTest extends TestCase {
     }
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     primitiveDesc = null;
     aggregateDesc = null;
   }
 
-  public void testXMLization() throws Exception {
+    @org.junit.jupiter.api.Test
+    public void testXMLization() throws Exception {
     try {
       // write objects to XML
       StringWriter writer = new StringWriter();
@@ -278,7 +269,8 @@ public class TaeDescription_implTest extends TestCase {
     }
   }
 
-  public void testSerialization() throws Exception {
+    @Test
+    public void testSerialization() throws Exception {
     try {
       byte[] primitiveDescBytes = SerializationUtils.serialize(primitiveDesc);
       AnalysisEngineDescription_impl primitiveDesc2 = (AnalysisEngineDescription_impl) SerializationUtils

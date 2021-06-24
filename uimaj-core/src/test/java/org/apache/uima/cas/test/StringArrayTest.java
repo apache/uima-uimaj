@@ -28,28 +28,23 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 /**
  * Class comment for StringArrayTest.java goes here.
  * 
  */
-public class StringArrayTest extends TestCase {
+public class StringArrayTest {
 
   private CAS cas;
 
   private TypeSystem ts;
 
-  /**
-   * Constructor for ArrayFSTest.
-   * 
-   * @param arg0
-   */
-  public StringArrayTest(String arg0) {
-    super(arg0);
-  }
-
-  public void setUp() {
+    @BeforeEach
+    public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
@@ -58,16 +53,14 @@ public class StringArrayTest extends TestCase {
     }
   }
 
-  public void tearDown() {
+    @AfterEach
+    public void tearDown() {
     this.cas = null;
     this.ts = null;
   }
 
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(StringArrayTest.class);
-  }
-
-  public void testSet() {
+    @Test
+    public void testSet() {
     StringArrayFS array = this.cas.createStringArrayFS(0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
@@ -133,7 +126,8 @@ public class StringArrayTest extends TestCase {
     assertTrue(exceptionCaught);
   }
 
-  public void testToArray() {
+    @org.junit.jupiter.api.Test
+    public void testToArray() {
     // From CAS array to Java array.
     StringArrayFS array = this.cas.createStringArrayFS(3);
     String[] fsArray = array.toArray();
@@ -164,7 +158,8 @@ public class StringArrayTest extends TestCase {
     assertTrue(array.get(0) == null);
   }
 
-  public void testStringArrayValue() {
+    @Test
+    public void testStringArrayValue() {
     String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
 	+ CASTestSetup.LEMMA_LIST_FEAT;
     final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
@@ -182,7 +177,8 @@ public class StringArrayTest extends TestCase {
   }
   
 
-  public void testStringArrayNullValue() throws Exception{
+    @org.junit.jupiter.api.Test
+    public void testStringArrayNullValue() throws Exception{
      String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
     + CASTestSetup.LEMMA_LIST_FEAT;
      final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
