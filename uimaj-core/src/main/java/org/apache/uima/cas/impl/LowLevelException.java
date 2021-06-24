@@ -33,7 +33,7 @@ public class LowLevelException extends UIMARuntimeException {
 
   /** Error in low-level CAS APIs: accessing FS with id {0}, but no such FS exists in this CAS. */
   public static final String INVALID_FS_REF = "INVALID_FS_REF";
-  
+
   /**
    * Error in low-level CAS APIs: attempt to interpret heap value {0} at {1} as type code, but {0}
    * is not a valid type code. This is likely caused by a bad FS reference.
@@ -43,7 +43,9 @@ public class LowLevelException extends UIMARuntimeException {
   /** Error in low-level CAS APIs: {0} is not a valid feature code. */
   public static final String INVALID_FEATURE_CODE = "INVALID_FEATURE_CODE";
 
-  /** Error in low-level CAS APIs: type "{1}" (code: {0}) does not define feature "{3}" (code: {2}). */
+  /**
+   * Error in low-level CAS APIs: type "{1}" (code: {0}) does not define feature "{3}" (code: {2}).
+   */
   public static final String FEAT_DOM_ERROR = "FEAT_DOM_ERROR";
 
   /**
@@ -67,7 +69,9 @@ public class LowLevelException extends UIMARuntimeException {
   /** Error in low-level CAS APIs: array index out of range: {0}. */
   public static final String ARRAY_INDEX_OUT_OF_RANGE = "ARRAY_INDEX_OUT_OF_RANGE";
 
-  /** Error in low-level CAS APIs: array index and or length out of range. index: {0}, length: {1}. */
+  /**
+   * Error in low-level CAS APIs: array index and or length out of range. index: {0}, length: {1}.
+   */
   public static final String ARRAY_INDEX_LENGTH_OUT_OF_RANGE = "ARRAY_INDEX_LENGTH_OUT_OF_RANGE";
 
   /** Error in low-level CAS APIs: can't create FS reference for type code {0}. */
@@ -87,7 +91,7 @@ public class LowLevelException extends UIMARuntimeException {
 
   /** Error in low-level CAS APIs: illegal type code argument: {0}. */
   public static final String INVALID_TYPE_ARGUMENT = "INVALID_TYPE_ARGUMENT";
-  
+
   /** Invalid Type Code value: {0}. */
   public static final String INVALID_TYPECODE = "INVALID_TYPECODE";
 
@@ -100,7 +104,6 @@ public class LowLevelException extends UIMARuntimeException {
   public LowLevelException(String aMessageKey, Object... aArguments) {
     super(aMessageKey, aArguments);
   }
-
 
   public LowLevelException(String aMessageKey, Object[] aArguments, Throwable aCause) {
     super(aCause, aMessageKey, aArguments);

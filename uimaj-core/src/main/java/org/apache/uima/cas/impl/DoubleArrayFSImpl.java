@@ -21,11 +21,11 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.DoubleArrayFS;
 
 /**
- * V2 compatibility only
- * The non-JCas cover class for Double Array
+ * V2 compatibility only The non-JCas cover class for Double Array
+ * 
  * @deprecated use DoubleArray instead
  */
 @Deprecated
 public interface DoubleArrayFSImpl extends DoubleArrayFS {
-  
+
 }

@@ -21,11 +21,11 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.StringArrayFS;
 
 /**
- * V2 compatibility only
- * The non-JCas cover class for String Array
+ * V2 compatibility only The non-JCas cover class for String Array
+ * 
  * @deprecated use StringArray instead
  */
 @Deprecated
 public interface StringArrayFSImpl extends StringArrayFS {
-  
+
 }

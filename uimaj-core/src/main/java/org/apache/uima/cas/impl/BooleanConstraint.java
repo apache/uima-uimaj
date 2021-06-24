@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
@@ -28,12 +27,12 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 
 /**
- * Implementation of boolean match constraint.  See interface for documentation.
+ * Implementation of boolean match constraint. See interface for documentation.
  */
 public class BooleanConstraint extends PathConstraint implements FSMatchConstraint {
 
   private final FSBooleanConstraint cons;
-  
+
   BooleanConstraint(ArrayList<String> path, FSBooleanConstraint constraint) {
     super(path);
     this.cons = constraint;

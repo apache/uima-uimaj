@@ -45,7 +45,7 @@ public interface SlotKindsConstants {
   boolean CAN_BE_NEGATIVE = true;
   boolean IGNORED = true;
   boolean IN_MAIN_HEAP = true;
-  
+
   int arrayLength_i = Slot_ArrayLength.ordinal();
   int heapRef_i = Slot_HeapRef.ordinal();
   int int_i = Slot_Int.ordinal();
@@ -64,7 +64,6 @@ public interface SlotKindsConstants {
   int strChars_i = Slot_StrChars.ordinal();
   int control_i = Slot_Control.ordinal();
   int strSeg_i = Slot_StrSeg.ordinal();
-  
+
   int NBR_SLOT_KIND_ZIP_STREAMS = Slot_StrRef.ordinal();
 }
-

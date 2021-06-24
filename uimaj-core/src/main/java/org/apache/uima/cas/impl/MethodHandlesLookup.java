@@ -23,8 +23,9 @@ import java.lang.invoke.MethodHandles;
 
 public class MethodHandlesLookup {
 
-  private MethodHandlesLookup(){}
-  
+  private MethodHandlesLookup() {
+  }
+
   public static MethodHandles.Lookup getMethodHandlesLookup() {
     return MethodHandles.lookup();
   }

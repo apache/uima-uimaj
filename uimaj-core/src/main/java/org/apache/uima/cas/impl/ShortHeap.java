@@ -36,15 +36,18 @@ final class ShortHeap extends CommonAuxHeap {
     super(heapBaseSize, heapMultLimit);
   }
 
-  @Override void initMemory() {
+  @Override
+  void initMemory() {
     this.heap = new short[this.heapBaseSize];
   }
-  
-  @Override void initMemory(int size) {
+
+  @Override
+  void initMemory(int size) {
     this.heap = new short[size];
   }
 
-  @Override int getCapacity() {
+  @Override
+  int getCapacity() {
     return this.heap.length;
   }
 
@@ -94,7 +97,7 @@ final class ShortHeap extends CommonAuxHeap {
     System.arraycopy(shortHeap, 0, heap, 0, argLength);
     this.heapPos = argLength;
   }
-  
+
   public short[] toArray() {
     short[] r = new short[heapPos];
     System.arraycopy(heap, 0, r, 0, heapPos);

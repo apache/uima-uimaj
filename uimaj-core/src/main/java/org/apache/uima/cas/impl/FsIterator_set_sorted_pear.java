@@ -25,17 +25,20 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
- * @param <T> the type of FSs being returned from the iterator, supplied by the calling context
+ * @param <T>
+ *          the type of FSs being returned from the iterator, supplied by the calling context
  */
 class FsIterator_set_sorted_pear<T extends FeatureStructure> extends FsIterator_set_sorted2<T> {
-  
-  FsIterator_set_sorted_pear(FsIndex_set_sorted<T> ll_index, CopyOnWriteIndexPart cow_wrapper, Comparator<TOP> comparatorMaybeNoTypeWithoutID) {
+
+  FsIterator_set_sorted_pear(FsIndex_set_sorted<T> ll_index, CopyOnWriteIndexPart cow_wrapper,
+          Comparator<TOP> comparatorMaybeNoTypeWithoutID) {
     super(ll_index, cow_wrapper, comparatorMaybeNoTypeWithoutID);
   }
-  
-//  FsIterator_set_sorted_pear createInstance(OrderedFsSet_array orderedFsSet_array, LowLevelIndex ll_index) {
-//    orderedFsSet_array.new LL_Iterator(ll_index);
-//  }    
+
+  // FsIterator_set_sorted_pear createInstance(OrderedFsSet_array orderedFsSet_array, LowLevelIndex
+  // ll_index) {
+  // orderedFsSet_array.new LL_Iterator(ll_index);
+  // }
 
   @Override
   public T getNvc() {

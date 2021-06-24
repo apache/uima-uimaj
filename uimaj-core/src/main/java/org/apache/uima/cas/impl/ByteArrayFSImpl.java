@@ -21,11 +21,11 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.ByteArrayFS;
 
 /**
- * V2 compatibility only
- * The non-JCas cover class for Byte Array
+ * V2 compatibility only The non-JCas cover class for Byte Array
+ * 
  * @deprecated use ByteArray instead
  */
 @Deprecated
 public interface ByteArrayFSImpl extends ByteArrayFS {
-  
+
 }

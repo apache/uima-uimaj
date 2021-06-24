@@ -20,8 +20,8 @@
 package org.apache.uima.cas.impl;
 
 /**
- * UNUSED V3, backwards compat only
- * Interface to compare two feature structures, represented by their addresses.
+ * UNUSED V3, backwards compat only Interface to compare two feature structures, represented by
+ * their addresses.
  * 
  */
 public interface FSImplComparator {
@@ -33,8 +33,8 @@ public interface FSImplComparator {
    *          Address of FS1.
    * @param addr2
    *          Address of FS2.
-   * @return <code>-1</code>, if FS1 is "smaller" than FS2; <code>1</code>, if FS2 is smaller
-   *         than FS1; and <code>0</code>, if FS1 equals FS2.
+   * @return <code>-1</code>, if FS1 is "smaller" than FS2; <code>1</code>, if FS2 is smaller than
+   *         FS1; and <code>0</code>, if FS1 equals FS2.
    */
   int compare(int addr1, int addr2);
 

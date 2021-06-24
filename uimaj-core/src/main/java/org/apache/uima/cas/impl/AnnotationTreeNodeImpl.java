@@ -25,8 +25,7 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationTreeNode;
 
-
-public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements AnnotationTreeNode<T> {
+public class AnnotationTreeNodeImpl<T extends AnnotationFS> implements AnnotationTreeNode<T> {
 
   private T annot;
 
@@ -115,5 +114,5 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements Annotati
     child.parent = this;
     this.dtrs.add(child);
   }
-  
+
 }

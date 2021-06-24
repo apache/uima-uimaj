@@ -21,10 +21,8 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.CAS;
 
 /**
- * This interface defines static final constants for Type Systems
- *   For the built-in types and features:
- *     - the type and feature codes
- *     - the adjOffsets
+ * This interface defines static final constants for Type Systems For the built-in types and
+ * features: - the type and feature codes - the adjOffsets
  *
  */
 public interface TypeSystemConstants {
@@ -43,18 +41,18 @@ public interface TypeSystemConstants {
   int intArrayTypeCode = 8;
   int stringArrayTypeCode = 9;
   // 10 list base
-  int fsListTypeCode = 11; // 11           fs list
-  int fsEListTypeCode = 12;// 12 empty     fs list
+  int fsListTypeCode = 11; // 11 fs list
+  int fsEListTypeCode = 12;// 12 empty fs list
   int fsNeListTypeCode = 13;// 13 non-empty fs list
-  int floatListTypeCode = 14; // 14           float list
-  int floatEListTypeCode = 15;// 15 empty     float list
-  int floatNeListTypeCode = 16;  // 16 non-empty float list
-  int intListTypeCode = 17; // 17           integer list
-  int intEListTypeCode = 18;  // 18 empty     integer list
+  int floatListTypeCode = 14; // 14 float list
+  int floatEListTypeCode = 15;// 15 empty float list
+  int floatNeListTypeCode = 16; // 16 non-empty float list
+  int intListTypeCode = 17; // 17 integer list
+  int intEListTypeCode = 18; // 18 empty integer list
   int intNeListTypeCode = 19; // 19 non-empty integer list
-  int stringListTypeCode = 20;  // 20           string list
-  int stringEListTypeCode = 21;  // 21 empty     string list
-  int stringNeListTypeCode = 22;  // 22 non-empty string list
+  int stringListTypeCode = 20; // 20 string list
+  int stringEListTypeCode = 21; // 21 empty string list
+  int stringNeListTypeCode = 22; // 22 non-empty string list
 
   int booleanTypeCode = 23;
   int byteTypeCode = 24;
@@ -69,24 +67,24 @@ public interface TypeSystemConstants {
   int sofaTypeCode = 33;
   int annotBaseTypeCode = 34;
   int annotTypeCode = 35;
-  int docTypeCode = 36;  // DocumentAnnotation
+  int docTypeCode = 36; // DocumentAnnotation
 
-//  static final int lastBuiltinV2TypeCode = 36;
+  // static final int lastBuiltinV2TypeCode = 36;
 
   // new v3 type codes.. Above codes match v2
-//  static final int fsArrayListTypeCode = 37;
-//  static final int intArrayListTypeCode = 38;
-//  static final int fsHashSetTypeCode = 39;
+  // static final int fsArrayListTypeCode = 37;
+  // static final int intArrayListTypeCode = 38;
+  // static final int fsHashSetTypeCode = 39;
 
-//  static final int numberOfNewBuiltInsSinceV2 = 3;
+  // static final int numberOfNewBuiltInsSinceV2 = 3;
 
-//  static final int javaObjectTypeCode = 37;
-//  static final int javaObjectArrayTypeCode = 38;
+  // static final int javaObjectTypeCode = 37;
+  // static final int javaObjectArrayTypeCode = 38;
 
   /**
    * Static final constants for built-in features
    */
-  int sofaNumFeatCode = 9;  // ref from another pkg
+  int sofaNumFeatCode = 9; // ref from another pkg
   int sofaIdFeatCode = 10;
   int sofaStringFeatCode = 13;
   int sofaMimeFeatCode = 11;
@@ -100,14 +98,23 @@ public interface TypeSystemConstants {
   /**
    * adjOffsets for builtin Features
    */
-  int sofaNumFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFANUM);  
-  int sofaIdFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAID);
-  int sofaStringFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFASTRING);
-  int sofaMimeFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAMIME);
-  int sofaUriFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAURI);
-  int sofaArrayFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAARRAY);
-  int annotBaseSofaFeatAdjOffset = TypeSystemImpl.staticTsi.annotBaseType.getAdjOffset(CAS.FEATURE_BASE_NAME_SOFA);
-  int beginFeatAdjOffset = TypeSystemImpl.staticTsi.annotType.getAdjOffset(CAS.FEATURE_BASE_NAME_BEGIN);
+  int sofaNumFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFANUM);
+  int sofaIdFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAID);
+  int sofaStringFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFASTRING);
+  int sofaMimeFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAMIME);
+  int sofaUriFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAURI);
+  int sofaArrayFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAARRAY);
+  int annotBaseSofaFeatAdjOffset = TypeSystemImpl.staticTsi.annotBaseType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFA);
+  int beginFeatAdjOffset = TypeSystemImpl.staticTsi.annotType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_BEGIN);
   int endFeatAdjOffset = TypeSystemImpl.staticTsi.annotType.getAdjOffset(CAS.FEATURE_BASE_NAME_END);
-  int langFeatAdjOffset = TypeSystemImpl.staticTsi.docType.getAdjOffset(CAS.FEATURE_BASE_NAME_LANGUAGE);
+  int langFeatAdjOffset = TypeSystemImpl.staticTsi.docType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_LANGUAGE);
 }

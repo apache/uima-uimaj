@@ -16,17 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 
 /**
- * This interface describes objects which specify the comparison used in indexes for keys. 
+ * This interface describes objects which specify the comparison used in indexes for keys.
  */
 public interface FSIndexComparator extends Comparable<FSIndexComparator> {
-  
 
   int FEATURE_KEY = 0;
 
@@ -74,8 +72,10 @@ public interface FSIndexComparator extends Comparable<FSIndexComparator> {
 
   /**
    * 
-   * @param typeOrder the type order
-   * @param compareKey the direction
+   * @param typeOrder
+   *          the type order
+   * @param compareKey
+   *          the direction
    * @return the number of the key
    */
   int addKey(LinearTypeOrder typeOrder, int compareKey);
@@ -108,8 +108,7 @@ public interface FSIndexComparator extends Comparable<FSIndexComparator> {
   int getKeyComparator(int key);
 
   /**
-   * Test for equality against another <code>FSIndexComparator</code>
-   *  <code>true</code> iff the
+   * Test for equality against another <code>FSIndexComparator</code> <code>true</code> iff the
    * comparators have the same keys and comparators.
    */
   @Override
@@ -121,9 +120,7 @@ public interface FSIndexComparator extends Comparable<FSIndexComparator> {
    * method only returns true or false. It doesn't tell you what's actually wrong. Maybe we need to
    * change that?
    * 
-   * @return <code>true</code> iff all key features are appropriate for the type of this
-   *         comparator.
+   * @return <code>true</code> iff all key features are appropriate for the type of this comparator.
    */
   boolean isValid();
-
 }

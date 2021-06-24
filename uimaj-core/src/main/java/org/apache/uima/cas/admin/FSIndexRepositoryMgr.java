@@ -16,14 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.FSIndexRepository;
 
 /**
- * Repository of indexes. Indexes are defined via
- * {@link org.apache.uima.cas.admin.FSIndexComparator FSIndexComparator}s.
+ * Repository of indexes. Indexes are defined via {@link org.apache.uima.cas.admin.FSIndexComparator
+ * FSIndexComparator}s.
  * 
  * @see org.apache.uima.cas.FSIndex
  */
@@ -98,10 +97,10 @@ public interface FSIndexRepositoryMgr extends FSIndexRepository {
    */
   LinearTypeOrderBuilder createTypeSortOrder();
 
-//  /**
-//   * Create a new index comparator for creating an index.
-//   * 
-//   * @return A new index comparator.
-//   */
+  // /**
+  // * Create a new index comparator for creating an index.
+  // *
+  // * @return A new index comparator.
+  // */
   // FSIndexComparator createIndexComparator();
 }

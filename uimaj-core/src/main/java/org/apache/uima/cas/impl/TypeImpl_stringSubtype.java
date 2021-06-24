@@ -24,19 +24,21 @@ import java.util.Set;
 
 import org.apache.uima.cas.CASRuntimeException;
 
-public class TypeImpl_stringSubtype extends TypeImpl_string {  // string considered a primitive e.g. in index comparators
-  
+public class TypeImpl_stringSubtype extends TypeImpl_string { // string considered a primitive e.g.
+                                                              // in index comparators
+
   private final Set<String> allowedValues;
 
-  public TypeImpl_stringSubtype(String name, TypeSystemImpl tsi, TypeImpl supertype, Set<String> allowedValues) {
+  public TypeImpl_stringSubtype(String name, TypeSystemImpl tsi, TypeImpl supertype,
+          Set<String> allowedValues) {
     super(name, tsi, supertype);
     this.allowedValues = Collections.unmodifiableSet(allowedValues);
   }
-  
+
   Set<String> getAllowedValues() {
     return allowedValues;
   }
-  
+
   void validateIsInAllowedValues(String s) {
     if (s != null && !allowedValues.contains(s)) {
       /** Error setting string value: string "{0}" is not valid for a value of type "{1}". */

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.CAS;
@@ -24,8 +23,6 @@ import org.apache.uima.cas.CASException;
 
 /**
  * Class comment for CASMgr.java goes here.
- * 
- * 
  */
 public interface CASMgr {
 
@@ -38,7 +35,7 @@ public interface CASMgr {
 
   /**
    * @return a writable version of the index repository. Note that the type system must be committed
-   * before this method can be called.
+   *         before this method can be called.
    * @exception CASAdminException
    *              If the type system has not been committed.
    */
@@ -71,20 +68,25 @@ public interface CASMgr {
   /**
    * Enable/disable resetting the CAS with {@link CAS#reset CAS.reset()}.
    * 
-   * @param flag true to enable reset
+   * @param flag
+   *          true to enable reset
    */
   void enableReset(boolean flag);
 
   /**
    * Does nothing, kept only for backwards compatibility
-   * @param cas -
+   * 
+   * @param cas
+   *          -
    */
   @Deprecated
   void setCAS(CAS cas);
 
   /**
    * Install the standard built-in indexes into the base CAS
-   * @throws CASException if an error occurs
+   * 
+   * @throws CASException
+   *           if an error occurs
    */
   void initCASIndexes() throws CASException;
 
@@ -104,5 +106,4 @@ public interface CASMgr {
    *          the JCas ClassLoder for this CAS
    */
   void setJCasClassLoader(ClassLoader classLoader);
-
 }

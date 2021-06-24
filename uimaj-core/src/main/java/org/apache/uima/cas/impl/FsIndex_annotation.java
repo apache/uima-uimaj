@@ -28,14 +28,12 @@ import org.apache.uima.cas.text.AnnotationTree;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
- * Implementation of annotation indexes.
- * Implements AnnotationIndex
- * replaces AnnotationIndexImpl in v2
+ * Implementation of annotation indexes. Implements AnnotationIndex replaces AnnotationIndexImpl in
+ * v2
  */
-public class FsIndex_annotation <T extends AnnotationFS> 
-                 extends FsIndex_iicp<T> 
-                 implements AnnotationIndex<T> {
-  
+public class FsIndex_annotation<T extends AnnotationFS> extends FsIndex_iicp<T>
+        implements AnnotationIndex<T> {
+
   public FsIndex_annotation(FsIndex_singletype<T> fsIndex_singletype) {
     super(fsIndex_singletype);
   }
@@ -51,51 +49,51 @@ public class FsIndex_annotation <T extends AnnotationFS>
       return iterator();
     }
     // return non-constrained, non-strict, unambiguous iterator
-    boolean strict = false;  // https://issues.apache.org/jira/browse/UIMA-5063
-    return new Subiterator<>(iterator(),
-        null, // no bounding fs
-        null, // no bounding fs
-        ambiguous,
-        strict,
-        null, // no BoundsUse
-        true, // type priority used
-        true, // ignored
-        true, // isStrictIncludesAnnotationsStartingAtEndPosition
-        true, // isIncludeZeroWidthAtBegin
-        true  // isIncludeZeroWidthAtEnd
+    boolean strict = false; // https://issues.apache.org/jira/browse/UIMA-5063
+    return new Subiterator<>(iterator(), null, // no bounding fs
+            null, // no bounding fs
+            ambiguous, strict, null, // no BoundsUse
+            true, // type priority used
+            true, // ignored
+            true, // isStrictIncludesAnnotationsStartingAtEndPosition
+            true, // isIncludeZeroWidthAtBegin
+            true // isIncludeZeroWidthAtEnd
     );
   }
-  
+
   /**
-   * @param ambiguous false for unambiguous
-   * @param strict true for strict
-   * @param orderNotNeeded true for unordered
-   * @param ignoreType -
-   * @return - 
+   * @param ambiguous
+   *          false for unambiguous
+   * @param strict
+   *          true for strict
+   * @param orderNotNeeded
+   *          true for unordered
+   * @param ignoreType
+   *          -
+   * @return -
    */
-  public LowLevelIterator<T> iterator(boolean ambiguous, boolean strict, boolean orderNotNeeded, boolean ignoreType) {
+  public LowLevelIterator<T> iterator(boolean ambiguous, boolean strict, boolean orderNotNeeded,
+          boolean ignoreType) {
     if (ambiguous) {
       return iterator(orderNotNeeded, ignoreType);
     }
     // return non-constrained, non-strict, unambiguous iterator
-    return new Subiterator<>(iterator(orderNotNeeded, ignoreType),
-        null,   // no bounding fs
-        null,   // no bounding fs
-        ambiguous,
-        strict,
-        null, // no BoundsUse
-        !ignoreType, // type priority used
-        true, // ignored - only for coveredBy or covering,
-        true, // isStrictIncludesAnnotationsStartingAtEndPosition
-        true, // isIncludeZeroWidthAtBegin
-        true  // isIncludeZeroWidthAtEnd
+    return new Subiterator<>(iterator(orderNotNeeded, ignoreType), null, // no bounding fs
+            null, // no bounding fs
+            ambiguous, strict, null, // no BoundsUse
+            !ignoreType, // type priority used
+            true, // ignored - only for coveredBy or covering,
+            true, // isStrictIncludesAnnotationsStartingAtEndPosition
+            true, // isIncludeZeroWidthAtBegin
+            true // isIncludeZeroWidthAtEnd
     );
   }
 
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS)
+   * @see
+   * org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS)
    */
   @Override
   public FSIterator<T> subiterator(AnnotationFS annot) {
@@ -105,22 +103,19 @@ public class FsIndex_annotation <T extends AnnotationFS>
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS,
-   *      boolean, boolean)
+   * @see
+   * org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS,
+   * boolean, boolean)
    */
   @Override
   public FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
-    return new Subiterator<>(iterator(),
-        (Annotation) annot,
-        null, // no secondary bounding fs
-        ambiguous,
-        strict,
-        BoundsUse.coveredBy,  // isBounded 
-        true,  // uses type priority
-        true,  // skip returning results equal to annot
-        true, // isStrictIncludesAnnotationsStartingAtEndPosition
-        true, // isIncludeZeroWidthAtBegin
-        true  // isIncludeZeroWidthAtEnd
+    return new Subiterator<>(iterator(), (Annotation) annot, null, // no secondary bounding fs
+            ambiguous, strict, BoundsUse.coveredBy, // isBounded
+            true, // uses type priority
+            true, // skip returning results equal to annot
+            true, // isStrictIncludesAnnotationsStartingAtEndPosition
+            true, // isIncludeZeroWidthAtBegin
+            true // isIncludeZeroWidthAtEnd
     );
   }
 
@@ -154,8 +149,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
   @Override
   public FSIndex<T> withSnapshotIterators() {
     FsIndex_singletype<T> idx = getFsIndex_singleType();
-    return new FsIndex_snapshot<>(this, idx.comparatorWithoutID, 
-                                        idx.comparatorNoTypeWithoutID);
+    return new FsIndex_snapshot<>(this, idx.comparatorWithoutID, idx.comparatorNoTypeWithoutID);
   }
-  
- }
+
+}

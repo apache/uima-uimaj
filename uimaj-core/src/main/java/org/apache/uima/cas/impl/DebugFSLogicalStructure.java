@@ -112,7 +112,9 @@ public class DebugFSLogicalStructure {
 
     /**
      * Create information about a view for given CAS.
-     * @param cas -
+     * 
+     * @param cas
+     *          -
      */
     public ViewInfo(CAS cas) {
       this.cas = cas;
@@ -157,13 +159,13 @@ public class DebugFSLogicalStructure {
     }
 
     /**
-    * @param cas
-    *          The CAS the index lives in.
-    * @param indexName
-    *          The name of the index to create the helper object for.
-    * @param type
-    *          The subtype to restrict the index to, <code>null</code> to use the index base type.
-    */          
+     * @param cas
+     *          The CAS the index lives in.
+     * @param indexName
+     *          The name of the index to create the helper object for.
+     * @param type
+     *          The subtype to restrict the index to, <code>null</code> to use the index base type.
+     */
     public IndexInfo(CAS cas, String indexName, Type type) {
       this.indexName = indexName;
       this.cas = cas;
@@ -271,8 +273,8 @@ public class DebugFSLogicalStructure {
       fillFeatures(featResults, 0, fs, features);
       result[i++] = new DebugNameValuePair("Features", featResults);
       result[i++] = new DebugNameValuePair("Covered Text", ((AnnotationFS) fs).getCoveredText());
-      result[i++] = new DebugNameValuePair("SubAnnotations", new UnexpandedFeatureStructures(
-              (AnnotationFS) fs));
+      result[i++] = new DebugNameValuePair("SubAnnotations",
+              new UnexpandedFeatureStructures((AnnotationFS) fs));
     } else {
       fillFeatures(result, isJCasClass ? 0 : 1, fs, features);
     }
@@ -365,11 +367,11 @@ public class DebugFSLogicalStructure {
   // FSIndexRepository ir = indexInfo.cas.getIndexRepository();
   // Type type = fsIndex.getType();
   // List subtypes = indexInfo.cas.getTypeSystem().getProperlySubsumedTypes(type);
-  //    
+  //
   // DebugNameValuePair [] r = new DebugNameValuePair[1 + subtypes.size()];
   // r[0] = new DebugNameValuePair("Type: " + type.getName(), new
   // UnexpandedFeatureStructures(fsIndex));
-  //    
+  //
   // int i = 1;
   // Iterator it = subtypes.iterator();
   // while (it.hasNext()) {
