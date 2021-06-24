@@ -48,7 +48,8 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.AnalysisComponent.AnalysisComponent#initialize(org.apache.uima.AnalysisComponent.AnalysisComponentContext)
+   * @see org.apache.uima.AnalysisComponent.AnalysisComponent#initialize(org.apache.uima.
+   * AnalysisComponent.AnalysisComponentContext)
    */
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     mContext = aContext;
@@ -56,8 +57,8 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
 
   /**
    * Notifies this AnalysisComponent that its configuration parameters have changed. This
-   * implementation just calls {@link #destroy()} followed by {@link #initialize(UimaContext)}. Subclasses can
-   * override to provide more efficient reconfiguration logic if necessary.
+   * implementation just calls {@link #destroy()} followed by {@link #initialize(UimaContext)}.
+   * Subclasses can override to provide more efficient reconfiguration logic if necessary.
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#reconfigure()
    */
@@ -96,8 +97,8 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
   /**
    * Sets the Result Specification for this Analysis Component. This implementation just saves the
    * Result Specification to a field, where it can later be accessed by calling
-   * {@link #getResultSpecification()}. An AnalysisComponent implementation may override this
-   * method if it would like to do specific processing when its ResultSpecificatin is changed.
+   * {@link #getResultSpecification()}. An AnalysisComponent implementation may override this method
+   * if it would like to do specific processing when its ResultSpecificatin is changed.
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#setResultSpecification(ResultSpecification)
    */
@@ -114,11 +115,11 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
   protected final UimaContext getContext() {
     if (null == mContext) {
       // wrapped in RuntimeException because we don't want to change the API of this method
-      throw new UIMARuntimeException(UIMARuntimeException.UIMA_CONTEXT_NULL, new Object[] {} );
-    }    
+      throw new UIMARuntimeException(UIMARuntimeException.UIMA_CONTEXT_NULL, new Object[] {});
+    }
     return mContext;
   }
-  
+
   /**
    * 
    * @return the Logger associated with this uima Analysis Engine component
@@ -126,7 +127,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
   protected Logger getLogger() {
     return getContext().getLogger();
   }
-  
+
   /**
    * Gets the ResultSpecification for this AnalysisComponent. The ResultSpecification is a set of
    * types and features that this AnalysisComponent is asked to produce. An Analysis Component may
@@ -138,7 +139,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
   protected ResultSpecification getResultSpecification() {
     if (null == mResultSpecification) {
       // wrapped in RuntimeException because we don't want to change the API of this method
-      throw new UIMARuntimeException(UIMARuntimeException.RESULT_SPEC_NULL, new Object[] {} );
+      throw new UIMARuntimeException(UIMARuntimeException.RESULT_SPEC_NULL, new Object[] {});
     }
     return mResultSpecification;
   }
